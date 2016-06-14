@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\App;
@@ -40,7 +39,6 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\OptionsArray;
-use Orb\Util\Util;
 use Orb\Util\WorkHoursSet;
 
 /**
@@ -54,7 +52,7 @@ use Orb\Util\WorkHoursSet;
 class CheckWorkingHours extends AbstractTriggerTerm
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getOptionsDef()
     {
@@ -65,9 +63,8 @@ class CheckWorkingHours extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
     {
@@ -94,15 +91,15 @@ class CheckWorkingHours extends AbstractTriggerTerm
         $working_hours = Arrays::removeEmptyString($working_hours);
 
         $working_hours = new OptionsArray($working_hours);
-        $wh = new WorkHoursSet(
-            $working_hours->get('start_hour', 9) * 3600 + $working_hours->get('start_minute', 0) * 60,
-            $working_hours->get('end_hour', 18) * 3600 + $working_hours->get('end_minute', 0) * 60,
+        $wh            = new WorkHoursSet(
+            $working_hours->get('start_hour', 9) * 3600 + $working_hours->get('start_min', 0) * 60,
+            $working_hours->get('end_hour', 18) * 3600 + $working_hours->get('end_min', 0) * 60,
             $working_hours->get('work_days', array(1, 2, 3, 4, 5)),
             $working_hours->get('timezone', $working_hours->get('timezone', 'UTC')),
             $working_hours->get('holidays', array())
         );
 
-        $context->getLogger()->debug('[CheckWorkingHours] Config: ' . Arrays::implodeTemplate($working_hours->all(), '{KEY}: {VAL}, '));
+        $context->getLogger()->debug('[CheckWorkingHours] Config: '.Arrays::implodeTemplate($working_hours->all(), '{KEY}: {VAL}, '));
 
         try {
             $tz = new \DateTimeZone($working_hours->get('timezone', 'UTC'));

@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\App;
@@ -83,17 +81,16 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
         $this->is_bounce_mode = true;
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findExistingTicket(AbstractReader $reader)
     {
-        $this->getLogger()->logDebug("[CodeTicketDetector] Finding ticket");
+        $this->getLogger()->logDebug('[CodeTicketDetector] Finding ticket');
 
         $this->_found_person = null;
 
-        $search_text = array();
+        $search_text   = array();
         $search_text[] = $reader->getSubject()->subject;
         $search_text[] = $reader->getBodyText()->getBody();
         $search_text[] = $reader->getBodyHtml()->getBody();
@@ -118,15 +115,10 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
             }
 
             $m = null;
-            if (preg_match_all('#(P?)TAC\-([A-Za-z0-9]+)\.#', $body, $m, \PREG_SET_ORDER)) {
+            if (preg_match_all('#(?:PTAC|TAC|TICKET)\-([A-Za-z0-9]+)\.#', $body, $m, \PREG_SET_ORDER)) {
                 foreach ($m as $match) {
-                    if ($match[1]) {
-                        $this->getLogger()->logDebug("[CodeTicketDetector] Found PTAC in body-headers: " . $match[2]);
-                    } else {
-                        $this->getLogger()->logDebug("[CodeTicketDetector] Found TAC in body-headers: " . $match[2]);
-                    }
-
-                    $search_text[] = '(#' . $match[2] . ')';
+                    $this->getLogger()->logDebug('[CodeTicketDetector] Found PTAC in body-headers: '.$match[1]);
+                    $search_text[] = '(#'.$match[1].')';
                 }
             }
         }
@@ -134,14 +126,9 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
         // Add them to search text so below code will parse them out and treat them the same
         foreach ($check_headers as $header) {
             $m = null;
-            if (preg_match('#(P?)TAC\-([A-Za-z0-9]+)\.#', $header, $m)) {
-                if ($m[1]) {
-                    $this->getLogger()->logDebug("[CodeTicketDetector] Found PTAC in headers: " . $m[2]);
-                } else {
-                    $this->getLogger()->logDebug("[CodeTicketDetector] Found TAC in headers: " . $m[2]);
-                }
-
-                $search_text[] = '(#' . $m[2] . ')';
+            if (preg_match('#(?:PTAC|TAC|TICKET)\-([A-Za-z0-9]+)\.#', $header, $m)) {
+                $this->getLogger()->logDebug('[CodeTicketDetector] Found PTAC in body-headers: '.$m[1]);
+                $search_text[] = '(#'.$m[1].')';
             }
         }
 
@@ -168,7 +155,6 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
         $matches = null;
         if (preg_match_all('/\(#([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\)/', $search_text, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $m) {
-
                 if (isset($already_checked[$m[1]])) {
                     continue;
                 }
@@ -178,11 +164,11 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
 
                 $tac = App::getEntityRepository('DeskPRO:TicketAccessCode')->getTacArrayFromAccessCode($m[1]);
                 if (!$tac) {
-                    $this->getLogger()->logDebug("[CodeTicketDetector] -- Invalid code");
+                    $this->getLogger()->logDebug('[CodeTicketDetector] -- Invalid code');
                     continue;
                 }
 
-                $this->getLogger()->logDebug("[CodeTicketDetector] -- Valid code");
+                $this->getLogger()->logDebug('[CodeTicketDetector] -- Valid code');
 
                 $ticket = App::getEntityRepository('DeskPRO:Ticket')->find($tac['ticket_id']);
                 if ($ticket && !$ticket->isArchived()) {
@@ -218,7 +204,6 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
         $matches = null;
         if (preg_match_all('/\(#([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\)/', $search_text, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $m) {
-
                 if (isset($already_checked[$m[1]])) {
                     continue;
                 }
@@ -240,15 +225,15 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
                     return $ticket;
                 }
 
-                $this->getLogger()->logDebug("[CodeTicketDetector] -- Invalid code");
+                $this->getLogger()->logDebug('[CodeTicketDetector] -- Invalid code');
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
     {
@@ -256,11 +241,11 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
             return $this->_found_person;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findTacPerson(AbstractReader $reader)
     {
@@ -268,7 +253,7 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
     {
@@ -276,7 +261,8 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
     }
 
     /**
-     * Set the logger
+     * Set the logger.
+     *
      * @param \Orb\Log\Logger $logger
      */
     public function setLogger(Logger $logger)

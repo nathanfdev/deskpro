@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1350488520 extends AbstractBuild
@@ -43,18 +40,18 @@ class Build1350488520 extends AbstractBuild
 
     public function run()
     {
-        $this->out("Copying out chat departments that are also ticket departments");
+        $this->out('Copying out chat departments that are also ticket departments');
 
-        $this->deps = $this->container->getDb()->fetchAllKeyed("
+        $this->deps = $this->container->getDb()->fetchAllKeyed('
             SELECT * FROM departments
             ORDER BY id ASC
-        ", array(), 'id');
+        ', array(), 'id');
 
-        $proc_deps = $this->container->getDb()->fetchAllCol("
+        $proc_deps = $this->container->getDb()->fetchAllCol('
             SELECT id FROM departments
             WHERE is_tickets_enabled = 1 AND is_chat_enabled = 1
             ORDER BY id ASC
-        ");
+        ');
 
         foreach ($proc_deps as $dep_id) {
             $this->container->getDb()->beginTransaction();
@@ -69,11 +66,11 @@ class Build1350488520 extends AbstractBuild
         }
 
         // Now update those deps so they arent chat anymore
-        $this->container->getDb()->executeUpdate("
+        $this->container->getDb()->executeUpdate('
             UPDATE departments
             SET is_chat_enabled = 0
             WHERE is_tickets_enabled = 1 AND is_chat_enabled = 1
-        ");
+        ');
     }
 
     protected function handleDep(array $dep)
@@ -114,10 +111,10 @@ class Build1350488520 extends AbstractBuild
         }
 
         // Update chats
-        $this->container->getDb()->executeQuery("
+        $this->container->getDb()->executeQuery('
             UPDATE chat_conversations
             SET department_id = ?
             WHERE department_id = ?
-        ", array($new_dep['id'], $dep['id']));
+        ', array($new_dep['id'], $dep['id']));
     }
 }

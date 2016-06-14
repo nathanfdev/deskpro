@@ -1,0 +1,43 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td class="nowrap" width="50" style="padding: 10px; vertical-align: top">
+					<label class="row-label">
+						Delete Attachments
+					</label>
+				</td>
+				<td>
+					<label style="padding: 10px; display: block;">
+						<input type="checkbox" ng-model="model.must_match" />
+						Filename MUST match
+					</label>
+
+					<div ng-show="model.must_match" style="padding: 10px;">
+						<input type="text" ng-model="model.must_match_value" />
+					</div>
+
+					<label style="padding: 10px; display: block;">
+						<input type="checkbox" ng-model="model.must_not_match" />
+						Filename MUST NOT match
+					</label>
+					<div ng-show="model.must_not_match" style="padding: 10px;">
+						<input type="text" ng-model="model.must_not_match_value" />
+					</div>
+
+					<label style="padding: 10px; display: block;">
+						<input type="checkbox" ng-model="model.at_least" />
+						Only delete files that are at least
+						<input type="number" style="width: 70px;" ng-model="model.at_least_value" />
+						KB
+					</label>
+
+					<label style="padding: 10px; display: block;">
+						<input type="checkbox" ng-model="model.skip_inline" />
+						Skip inline images (such as pasted images or signature images)
+					</label>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

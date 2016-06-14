@@ -1,41 +1,37 @@
 <?php
 
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
-
-
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Kernel;
 
-abstract class LoaderAbstract
+abstract class serve_abstract
 {
     /**
      * @var string
@@ -88,18 +84,23 @@ abstract class LoaderAbstract
         spl_autoload_register(function ($class) {
             switch ($class) {
                 case 'Orb\\Util\\Util':
-                    require(DP_ROOT . '/src/Orb/Util/Util.php');
+                    require DP_ROOT.'/src/Orb/Util/Util.php';
 
                     return;
                 case 'Orb\\Util\\Strings':
-                    require(DP_ROOT . '/src/Orb/Util/Strings.php');
+                    require DP_ROOT.'/src/Orb/Util/Strings.php';
+
+                    return;
+
+                case 'DeskPRO\Kernel\HelpdeskOfflineMessage':
+                    require DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
                     return;
             }
 
             if (strpos($class, 'Orb\\') === 0) {
-                $path = DP_ROOT . '/src/' . str_replace('\\', '/', $class) . '.php';
-                require($path);
+                $path = DP_ROOT.'/src/'.str_replace('\\', '/', $class).'.php';
+                require $path;
             }
         });
 
@@ -135,7 +136,7 @@ abstract class LoaderAbstract
         # Serve 503 if helpdesk is offline
         #------------------------------
 
-        if (is_file(dp_get_data_dir() . '/helpdesk-offline.trigger') || is_file(DP_WEB_ROOT.'/auto-update-is-running.trigger')) {
+        if (is_file(dp_get_data_dir().'/helpdesk-offline.trigger') || is_file(DP_WEB_ROOT.'/auto-update-is-running.trigger')) {
             header('HTTP/1.1 503 Service Unavailable');
             echo HelpdeskOfflineMessage::getOfflineMessage();
             exit(1);
@@ -152,15 +153,13 @@ abstract class LoaderAbstract
         }
     }
 
-
     /**
      * @return mixed
      */
     abstract protected function runAction();
 
-
     /**
-     * Handle a fatal exception
+     * Handle a fatal exception.
      *
      * @param \Exception $e
      */
@@ -170,17 +169,16 @@ abstract class LoaderAbstract
             $container = $this->bootFullSystem();
         } catch (\Exception $e) {
             error_log("Error handling error: {$e->getMessage()}");
-            echo "Error while processing error";
+            echo 'Error while processing error';
             exit(1);
         }
 
         KernelErrorHandler::handleException($e);
 
-        header("HTTP/1.1 500 Internal Server Error");
-        echo "There was an error while processing your request.";
+        header('HTTP/1.1 500 Internal Server Error');
+        echo 'There was an error while processing your request.';
         exit(1);
     }
-
 
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
@@ -191,15 +189,15 @@ abstract class LoaderAbstract
 
         if (!$container) {
             global $DP_CONFIG;
-            $env = 'prod';
+            $env   = 'prod';
             $debug = false;
 
             if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
-                $env = 'dev';
+                $env   = 'dev';
                 $debug = true;
             }
 
-            require DP_ROOT . '/sys/KernelBooter.php';
+            require DP_ROOT.'/sys/KernelBooter.php';
             \DeskPRO\Kernel\KernelBooter::bootstrapLib(true);
 
             $kernel_class = 'DeskPRO\\Kernel\\DpKernel';
@@ -212,13 +210,12 @@ abstract class LoaderAbstract
             $container = $kernel->getContainer();
 
             // Set PDO now that we are connected...
-            $this->pdo = $container->getDb();
+            $this->pdo      = $container->getDb();
             $this->pdo_read = $container->getDb();
         }
 
         return $container;
     }
-
 
     /**
      * @return \PDO
@@ -231,8 +228,8 @@ abstract class LoaderAbstract
 
         global $DP_CONFIG;
 
-        $port = '';
-        $dbhost = isset($DP_CONFIG['db']['host']) ? $DP_CONFIG['db']['host'] : '';
+        $port        = '';
+        $dbhost      = isset($DP_CONFIG['db']['host']) ? $DP_CONFIG['db']['host'] : '';
         $unix_socket = null;
 
         $m = null;
@@ -262,7 +259,6 @@ abstract class LoaderAbstract
         return $this->pdo;
     }
 
-
     /**
      * @return \PDO
      */
@@ -280,8 +276,8 @@ abstract class LoaderAbstract
             return $this->getPdo();
         }
 
-        $port = '';
-        $dbhost = isset($DP_CONFIG[$key]['host']) ? $DP_CONFIG[$key]['host'] : '';
+        $port        = '';
+        $dbhost      = isset($DP_CONFIG[$key]['host']) ? $DP_CONFIG[$key]['host'] : '';
         $unix_socket = null;
 
         $m = null;
@@ -311,7 +307,6 @@ abstract class LoaderAbstract
         return $this->pdo_read;
     }
 
-
     /**
      * @return array
      */
@@ -323,10 +318,10 @@ abstract class LoaderAbstract
 
         $this->settings = array();
 
-        $q = $this->getPdo()->prepare("
+        $q = $this->getPdo()->prepare('
             SELECT name, value
             FROM settings
-        ");
+        ');
         $q->execute();
         while ($row = $q->fetch(\PDO::FETCH_NUM)) {
             $this->settings[$row[0]] = $row[1];
@@ -335,11 +330,9 @@ abstract class LoaderAbstract
         return $this->settings;
     }
 
-
     /**
-     * @param  string $name
-     * @param  null   $default
-     * @return null
+     * @param string $name
+     * @param null   $default
      */
     public function getSetting($name, $default = null)
     {
@@ -349,7 +342,6 @@ abstract class LoaderAbstract
 
         return isset($this->settings[$name]) ? $this->settings[$name] : $default;
     }
-
 
     ####################################################################################################################
     # Request Helpers
@@ -384,11 +376,10 @@ abstract class LoaderAbstract
             return $requestUri;
         }
 
-        $this->path_info = (string)$pathInfo;
+        $this->path_info = (string) $pathInfo;
 
         return $this->path_info;
     }
-
 
     /**
      * @see \Symfony\Component\HttpFoundation\Request
@@ -467,7 +458,6 @@ abstract class LoaderAbstract
 
         return $this->base_url;
     }
-
 
     /**
      * @see \Symfony\Component\HttpFoundation\Request
@@ -569,14 +559,13 @@ abstract class LoaderAbstract
     public static function formatBacktrace(array $backtrace)
     {
         $trace = '';
-        foreach($backtrace as $k=>$v){
-
+        foreach ($backtrace as $k => $v) {
             $line = "#$k ";
 
             if (isset($v['object'])) {
-                $line .= get_class($v['object']) . "::";
+                $line .= get_class($v['object']).'::';
             } elseif (isset($v['class'])) {
-                $line .= $v['class'] . "::";
+                $line .= $v['class'].'::';
             }
 
             $line .= "{$v['function']}(";
@@ -585,7 +574,7 @@ abstract class LoaderAbstract
                 $line .= self::varToString($v['args']);
             }
 
-            $line .= ")";
+            $line .= ')';
 
             if (!empty($v['file'])) {
                 $line .= " called at [{$v['file']}:{$v['line']}]";
@@ -610,7 +599,7 @@ abstract class LoaderAbstract
                 $a[] = sprintf('%s => %s', $k, self::varToString($v));
             }
 
-            return sprintf("[array](%s)", implode(', ', $a));
+            return sprintf('[array](%s)', implode(', ', $a));
         }
         if (is_resource($var)) {
             return '[resource]';

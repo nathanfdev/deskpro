@@ -10,54 +10,48 @@ define [
 
     init: ->
       @list = []
+      @list_satisfaction = []
+      @list_statuses = []
       @escData = @DataService.get('TicketEscalations')
 
-      @sortedListOptions = {
-        axis: 'y',
-        handle: '.drag-handle',
-        update: (ev, data) =>
-          $list = data.item.closest('ul')
 
-          orders = []
-          $list.find('li').each(->
-            id = parseInt($(this).data('id'))
-            console.log(id)
-
-            if id
-              orders.push(id)
-          )
-
-          @escData.saveRunOrder(orders).then( =>
-            @pingElement('run_orders')
-          )
-      }
 
     initialLoad: ->
-      promise = @escData.loadList()
-      promise.then( (list) =>
-
-        @list = list
-
+      @loadList().then((list) =>
         if @$state.current.name == 'tickets.ticket_escalations'
           if @list[0]
-            @$state.go('tickets.ticket_escalations.edit', { id: @list[0].id })
+            @$state.go('tickets.ticket_escalations.edit', {id: @list[0].id})
           else
             @$state.go('tickets.ticket_escalations.create')
       )
 
-      return promise
+
+
+    loadList:    ->
+      d = @$q.defer()
+      @escData.loadList().then (list) =>
+        @list.length = 0
+        @list_satisfaction.length = 0
+        @list_statuses.length = 0
+        return d.resolve([]) if !list
+
+        list.map (item) =>
+          if 'satisfaction' == item.sys_type
+            @list_satisfaction.push item
+          else if 'statuses' == item.sys_type
+            @list_statuses.push item
+          else
+            @list.push item
+        d.resolve list
+      d.promise
+
 
 
     ###
     # Show the delete dlg
     ###
-    startDelete: (esc_id) ->
-
-      esc = null
-      for v in @list
-        if v.id == esc
-          esc = v
-          break
+    startDelete: (esc) ->
+      return if esc?.sys_name?
 
       inst = @$modal.open({
         templateUrl: @getTemplatePath('TicketEscalations/delete-modal.html'),
@@ -71,8 +65,11 @@ define [
       });
 
       inst.result.then( =>
-        @escData.deleteEscalationById(esc_id).then(=>
-          if @$state.current.name == 'tickets.ticket_escalations.edit' and parseInt(@$state.params.id) == esc_id
+        @escData.deleteEscalationById(esc.id).then(=>
+          @list = @list.filter (item) -> esc.id != item.id
+          @list_satisfaction = @list_satisfaction.filter (item) -> esc.id != item.id
+          @list_statuses = @list_statuses.filter (item) -> esc.id != item.id
+          if @$state.current.name == 'tickets.ticket_escalations.edit' and parseInt(@$state.params.id) == esc.id
             @$state.go('tickets.ticket_escalations')
         )
       )

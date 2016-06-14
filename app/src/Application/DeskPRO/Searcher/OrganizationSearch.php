@@ -1,64 +1,65 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization;
+use Orb\Util\Arrays;
 use Orb\Util\Util;
 
 class OrganizationSearch extends SearcherAbstract
 {
-    const TERM_ID                   = 'org_id';
-    const TERM_NAME                 = 'org_name';
-    const TERM_ORGANIZATION_FIELD   = 'org_field';
-    const TERM_LABEL                = 'org_label';
-    const TERM_CONTACT_PHONE        = 'org_contact_phone';
-    const TERM_CONTACT_ADDRESS      = 'org_contact_address';
-    const TERM_CONTACT_IM           = 'org_contact_im';
-    const TERM_EMAIL_DOMAIN         = 'org_email_domain';
+    const TERM_ID                 = 'org_id';
+    const TERM_PARENT_ID          = 'org_parent_id';
+    const TERM_NAME               = 'org_name';
+    const TERM_ORGANIZATION_FIELD = 'org_field';
+    const TERM_LABEL              = 'org_label';
+    const TERM_CONTACT_PHONE      = 'org_contact_phone';
+    const TERM_CONTACT_ADDRESS    = 'org_contact_address';
+    const TERM_CONTACT_IM         = 'org_contact_im';
+    const TERM_EMAIL_DOMAIN       = 'org_email_domain';
 
     /**
-     * Summary of terms in phrases
+     * Summary of terms in phrases.
+     *
      * @var array
      */
     protected $summary = array();
 
-
     /**
      * Run the search and return an array of matching ID's.
      *
-     * @param  int   $limit
+     * @param int $limit
+     *
      * @return array
      */
     public function getMatches()
@@ -71,7 +72,7 @@ class OrganizationSearch extends SearcherAbstract
     }
 
     /**
-     * Get the summary of crtiera
+     * Get the summary of crtiera.
      *
      * @array
      */
@@ -83,16 +84,16 @@ class OrganizationSearch extends SearcherAbstract
     }
 
     /**
-     * Get the SQL query that'll fetch the results
+     * Get the SQL query that'll fetch the results.
+     *
      * @return string
      */
     public function getSql()
     {
-        $sql = "SELECT organizations.id FROM organizations ";
+        $sql = 'SELECT organizations.id FROM organizations ';
 
-        $parts = $this->getSqlParts();
+        $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
-
 
         #------------------------------
         # Add joins
@@ -100,7 +101,7 @@ class OrganizationSearch extends SearcherAbstract
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
-                $sql .= $j[1] . " ";
+                $sql .= $j[1].' ';
             } else {
                 $sql .= "LEFT JOIN $j ON $j.organization_id = organizations.id ";
             }
@@ -116,21 +117,27 @@ class OrganizationSearch extends SearcherAbstract
         # Add wheres
         #------------------------------
 
+        $sql .= 'WHERE ';
+
         if ($parts['wheres']) {
-            $sql .= "WHERE ";
-            $sql .= implode(" AND ", $parts['wheres']);
+            $sql .= implode(' AND ', $parts['wheres']);
+        }
+        if (!empty($parts['wheres_any'])) {
+            $sql .= ' AND ('.implode(' OR ', $parts['wheres_any']).')';
         }
 
-        $sql .= " GROUP BY organizations.id ";
+        if (empty($parts['wheres']) && empty($parts['wheres_any'])) {
+            $sql .= '1=1';
+        }
+
+        $sql .= ' GROUP BY organizations.id ';
         if ($order_by) {
             $sql .= " ORDER BY $order_by ";
         }
-        $sql .= " LIMIT 1000";
+        $sql .= ' LIMIT 1000';
 
         return $sql;
     }
-
-
 
     /**
      * Get the ORDER BY clause based on order info set.
@@ -147,17 +154,16 @@ class OrganizationSearch extends SearcherAbstract
         list($type, $dir) = $this->order_by;
 
         $dir = strtoupper($dir);
-        if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
+        if ($dir != self::ORDER_ASC and $dir != self::ORDER_DESC) {
             $dir = self::ORDER_DESC;
         }
 
         $term_id = null;
-        $m = null;
+        $m       = null;
         if (preg_match('#^(.*?)\[(.*?)\]$#', $type, $m)) {
-            $type = $m[1];
+            $type    = $m[1];
             $term_id = $m[2];
         }
-
 
         $order_by = '';
 
@@ -168,14 +174,16 @@ class OrganizationSearch extends SearcherAbstract
 
             case 'organization.num_members':
                 $order_by = array(
-                    "INNER JOIN people AS sort_table ON (sort_table.organization_id = organizations.id)",
-                    "COUNT(sort_table.id) $dir, organizations.name DESC"
+                    'INNER JOIN people AS sort_table ON (sort_table.organization_id = organizations.id)',
+                    "COUNT(sort_table.id) $dir, organizations.name DESC",
                 );
                 break;
 
             case 'organization.organization_field':
                 $field = App::getEntityRepository('DeskPRO:CustomDefOrganization')->find($term_id);
-                if (!$field) break;
+                if (!$field) {
+                    break;
+                }
 
                 $search_type = $field->getHandler()->getSearchType();
 
@@ -184,7 +192,7 @@ class OrganizationSearch extends SearcherAbstract
                     case 'value':
                         $order_by = array(
                             "INNER JOIN custom_data_organizationss AS sort_table ON (sort_table.organization_id = organizations.id AND sort_table.id = $term_id)",
-                            "sort_table.$search_type $dir"
+                            "sort_table.$search_type $dir",
                         );
                         break;
                 }
@@ -193,8 +201,6 @@ class OrganizationSearch extends SearcherAbstract
 
         return $order_by;
     }
-
-
 
     /**
      * Get the SQL parts we need in the query.
@@ -208,239 +214,344 @@ class OrganizationSearch extends SearcherAbstract
         $db = App::getDbRead('search.filter.people');
         $tr = App::getTranslator();
 
-        $wheres = array();
-        $joins = array();
+        $wheres_all = array();
+        $wheres_any = array();
+        $joins      = array();
 
-        foreach ($this->terms as $info) {
-            $join_id = Util::requestUniqueId();
-            $join_name = "j_$join_id";
-
-            list($term, $op, $choice) = $info;
-
-            $term_id = null;
-
-            // $term of people_field[12] becomes $term=people_field, $term_id=12
-            $m = null;
-            if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
-                $term = $m[1];
-                $term_id = $m[2];
+        foreach (array(array('all', $this->terms), array('any', $this->terms_any)) as $term_set) {
+            if ($term_set[0] == 'all') {
+                $wheres = &$wheres_all;
+            } else {
+                $wheres = &$wheres_any;
             }
 
-            switch ($term) {
-                case self::TERM_ID:
-                    $wheres[] = $this->_rangeMatch("$org_table.id", $op, $choice, true);
-                    break;
+            foreach ($term_set[1] as $info) {
+                if (!$info || !is_array($info)) {
+                    continue;
+                }
 
-                case self::TERM_NAME:
-                    $wheres[] = $this->_stringMatch("organizations.name", $op, $choice);
-                    break;
+                $join_id   = Util::requestUniqueId();
+                $join_name = "j_$join_id";
 
-                case self::TERM_CONTACT_PHONE:
+                list($term, $op, $choice) = $info;
 
-                    if (is_array($choice)) $choice = $choice['phone'];
+                $term_id = null;
 
-                    $choice = preg_replace('#[^0-9A-Za-z]#', '', $choice);
+                // $term of people_field[12] becomes $term=people_field, $term_id=12
+                $m = null;
+                if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
+                    $term    = $m[1];
+                    $term_id = $m[2];
+                }
 
-                    $joins[] = array(
-                        'organizations_contact_data',
-                        "LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.contact_type = 'phone')"
-                    );
-                    $wheres[] = $this->_stringMatch("$join_name.field_2", $op, $choice, false, true);
+                // The term handlers below that only accept single values
+                // will use $choice as a single value for brevity
+                if (is_array($choice) and count($choice) == 1) {
+                    $choice = Arrays::getFirstItem($choice);
+                }
 
-                    break;
+                switch ($term) {
+                    case self::TERM_ID:
+                        $wheres[] = $this->_rangeMatch("$org_table.id", $op, $choice, true);
+                        break;
 
-                case self::TERM_CONTACT_ADDRESS:
+                    case self::TERM_PARENT_ID:
+                        $wheres[] = $this->_rangeMatch("$org_table.parent_id", $op, $choice, true);
+                        break;
 
-                    if (is_array($choice)) $choice = $choice['address'];
+                    case self::TERM_NAME:
+                        $wheres[] = $this->_stringMatch('organizations.name', $op, $choice);
+                        break;
 
-                    $joins[] = array(
-                        'organizations_contact_data',
-                        "LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.contact_type = 'address')"
-                    );
-                    $wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
+                    case self::TERM_CONTACT_PHONE:
 
-                    break;
-
-                case self::TERM_CONTACT_IM:
-
-                    if (is_array($choice)) $choice = $choice['im'];
-
-                    $joins[] = array(
-                        'organizations_contact_data',
-                        "LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.contact_type = 'instant_message')"
-                    );
-                    $wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
-
-                    break;
-
-                case self::TERM_EMAIL_DOMAIN:
-                    $joins[] = array(
-                        'organization_email_domains',
-                        "LEFT JOIN organization_email_domains AS $join_name ON ($join_name.organization_id = organizations.id)"
-                    );
-                    $wheres[] = $this->_stringMatch("$join_name.domain", $op, $choice, false);
-
-                    $choice = implode(' or ', (array)$choice);
-                    break;
-
-                case self::TERM_LABEL:
-                    $this->_normalizeOpAndChoice($op, $choice);
-
-                    $choices_in = array();
-                    if (is_array($choice)) {
-                        foreach ((array)$choice as $c) {
-                            $choices_in[] = $db->quote($c);
+                        if (is_array($choice)) {
+                            $choice = $choice['phone'];
                         }
-                        $choices_in = implode(',', $choices_in);
-                        if (!$choices_in) $choices_in = '\'\'';
-                    }
 
-                    switch ($op) {
-                        case self::OP_IS:
-                            $joins[] = array(
-                                'labels_organizations',
-                                "LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id)"
-                            );
-                            $wheres[] = "$join_name.label = " . $db->quote($choice);
-                            break;
-                        case self::OP_NOT:
-                            $joins[] = array(
-                                'labels_organizations',
-                                "LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.label = ".$db->quote($choice).")"
-                            );
-                            $wheres[] = "$join_name.person_id IS NULL";
-                            break;
-                        case self::OP_CONTAINS:
-                            $joins[] = array(
-                                'labels_organizations',
-                                "LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id)"
-                            );
-                            $wheres[] = "$join_name.label IN ($choices_in)";
-                            break;
+                        $choice = preg_replace('#[^0-9A-Za-z]#', '', $choice);
 
-                        case self::OP_NOTCONTAINS:
-                            $joins[] = array(
-                                'labels_organizations',
-                                "LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.label IN ($choices_in)"
-                            );
-                            $wheres[] = "$join_name.person_id IS NULL";
-                            break;
-                    }
-                    break;
+                        $joins[] = array(
+                            'organizations_contact_data',
+                            "LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.contact_type = 'phone')",
+                        );
+                        $wheres[] = $this->_stringMatch("$join_name.field_2", $op, $choice, false, true);
 
-                case self::TERM_ORGANIZATION_FIELD:
+                        break;
 
-                    $field = App::getEntityRepository('DeskPRO:CustomDefOrganization')->find($term_id);
-                    if (!$field) break;
+                    case self::TERM_CONTACT_ADDRESS:
 
-                    $search_type = $field->getHandler()->getSearchType();
+                        if (is_array($choice)) {
+                            $choice = $choice['address'];
+                        }
 
-                    if (isset($choice['custom_fields']['field_' . $term_id])) {
-                        $choice = $choice['custom_fields']['field_' . $term_id];
-                    }
+                        $joins[] = array(
+                            'organizations_contact_data',
+                            "LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.contact_type = 'address')",
+                        );
+                        $_wheres = array();
+                        for ($i = 1; $i <= 5; ++$i) {
+                            $_wheres[] = $this->_stringMatch("$join_name.field_$i", $op, $choice, false, true);
+                        }
+                        $_op = $op === self::OP_IS || $op === self::OP_CONTAINS
+                            ? ' OR '
+                            : ' AND ';
+                        $wheres[] = '('.implode($_op, $_wheres).')';
 
-                    switch ($search_type) {
-                        case 'input':
-                        case 'value':
+                        break;
 
-                            $join_id = Util::requestUniqueId();
-                            $joins[] = array(
-                                'custom_data_organizations',
-                                "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.field_id = $term_id)"
-                            );
+                    case self::TERM_CONTACT_IM:
 
-                            if (is_array($choice)) {
-                                $choice = array_pop($choice);
+                        if (is_array($choice)) {
+                            $choice = $choice['im'];
+                        }
+
+                        $joins[] = array(
+                            'organizations_contact_data',
+                            "LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.contact_type = 'instant_message')",
+                        );
+                        $wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
+
+                        break;
+
+                    case self::TERM_EMAIL_DOMAIN:
+                        $joins[] = array(
+                            'organization_email_domains',
+                            "LEFT JOIN organization_email_domains AS $join_name ON ($join_name.organization_id = organizations.id)",
+                        );
+                        $wheres[] = $this->_stringMatch("$join_name.domain", $op, $choice, false);
+
+                        $choice = implode(' or ', (array) $choice);
+                        break;
+
+                    case self::TERM_LABEL:
+                        $this->_normalizeOpAndChoice($op, $choice);
+
+                        $choices_in = array();
+                        if (is_array($choice)) {
+                            foreach ((array) $choice as $c) {
+                                $choices_in[] = $db->quote($c);
                             }
-
-                            if ($choice === null){
-                                $choice = 'DP_NO_SELECTION';
-                            }
-
-                            $field = 'custom_data_organizations_'.$join_id.'.'.$search_type;
-                            switch ($op) {
-                                case self::OP_IS:
-                                    $wheres[] = "$field = " . $db->quote($choice);
-                                    break;
-                                case self::OP_NOT:
-                                    $wheres[] = "$field != " . $db->quote($choice);
-                                    break;
-                                case self::OP_CONTAINS:
-                                case self::OP_NOTCONTAINS:
-                                    $op = 'LIKE';
-                                    if ($op == self::OP_NOTCONTAINS) $op = 'NOT LIKE';
-                                    $wheres[] = "$field $op " . $db->quote('%'.$choice.'%');
-                                    break;
-                            }
-                            break;
-
-                        case 'id':
-                            $join_id = Util::requestUniqueId();
-                            $choices_in = array();
-
-                            if ($choice != 'DP_NO_SELECTION') {
-                                $choice = (array)$choice;
-                                if (isset($choice["field_{$field->getId()}"])) {
-                                    $choice = $choice["field_{$field->getId()}"];
-                                }
-                                if (!is_array($choice)) {
-                                    $choice = array($choice);
-                                }
-                                foreach ($choice as $c) {
-                                    $choices_in[] = (int)$c;
-                                }
-                                $choices_in = implode(',', $choices_in);
-                            }
-
+                            $choices_in = implode(',', $choices_in);
                             if (!$choices_in) {
-                                $choice = 'DP_NO_SELECTION';
+                                $choices_in = '\'\'';
                             }
+                        }
 
-                            $field = 'custom_data_organizations_'.$join_id.'.field_id';
-                            switch ($op) {
-                                case self::OP_CONTAINS:
-                                case self::OP_IS:
-                                    if ($choice == 'DP_NO_SELECTION') {
-                                        $joins[] = array(
-                                            'custom_data_organizations',
-                                            "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field->id})"
-                                        );
-                                        $wheres[] = "custom_data_organizations_$join_id.id IS NULL";
-                                    } else {
-                                        $joins[] = array(
-                                            'custom_data_organizations',
-                                            "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND $field IN ($choices_in))"
-                                        );
-                                        $wheres[] = "custom_data_organizations_$join_id.id IS NOT NULL";
-                                    }
-                                    break;
+                        switch ($op) {
+                            case self::OP_IS:
+                                $joins[] = array(
+                                    'labels_organizations',
+                                    "LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id)",
+                                );
+                                $wheres[] = "$join_name.label = ".$db->quote($choice);
+                                break;
+                            case self::OP_NOT:
+                                $joins[] = array(
+                                    'labels_organizations',
+                                    "LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.label = ".$db->quote($choice).')',
+                                );
+                                $wheres[] = "$join_name.person_id IS NULL";
+                                break;
+                            case self::OP_CONTAINS:
+                                $joins[] = array(
+                                    'labels_organizations',
+                                    "LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id)",
+                                );
+                                $wheres[] = "$join_name.label IN ($choices_in)";
+                                break;
 
-                                case self::OP_NOTCONTAINS:
-                                case self::OP_NOT:
-                                    if ($choice == 'DP_NO_SELECTION') {
-                                        $joins[] = array(
-                                            'custom_data_organizations',
-                                            "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field->id})"
-                                        );
-                                        $wheres[] = "custom_data_organizations_$join_id.id IS NOT NULL";
-                                    } else {
-                                        $joins[] = array(
-                                            'custom_data_organizations',
-                                            "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND $field IN ($choices_in))"
-                                        );
-                                        $wheres[] = "custom_data_organizations_$join_id.id IS NULL";
-                                    }
-                                    break;
-                            }
+                            case self::OP_NOTCONTAINS:
+                                $joins[] = array(
+                                    'labels_organizations',
+                                    "LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.label IN ($choices_in))",
+                                );
+                                $wheres[] = "$join_name.organization_id IS NULL";
+                                break;
+                        }
+                        break;
+
+                    case self::TERM_ORGANIZATION_FIELD:
+
+                        $field = App::getEntityRepository('DeskPRO:CustomDefOrganization')->find($term_id);
+                        if (!$field) {
                             break;
-                    }
-                    break; // end TERM_ORGANIZATION_FIELD
+                        }
+
+                        $field_def = $field;
+
+                        $search_type = $field->getHandler()->getSearchType();
+
+                        $isDate = isset($choice['date1']) || isset($choice['date1_relative']);
+                        if (is_array($choice) && isset($choice['value']) && !$isDate) {
+                            $choice = $choice['value'];
+                        }
+                        if (is_array($choice) && isset($choice['custom_fields'])) {
+                            $choice = $choice['custom_fields'];
+                        }
+                        if (is_array($choice) && isset($choice['field_'.$field->getId()])) {
+                            $choice = $choice['field_'.$field->getId()];
+                        }
+
+                        switch ($search_type) {
+                            case 'input':
+                            case 'value':
+
+                                if (is_array($choice) && !$isDate) {
+                                    $choice = array_pop($choice);
+                                }
+
+                                if ($choice === null) {
+                                    $choice = 'DP_NO_SELECTION';
+                                }
+
+                                $joins[] = array(
+                                    'custom_data_organizations',
+                                    "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.field_id = $term_id)",
+                                );
+
+                                $field = 'custom_data_organizations_'.$join_id.'.'.$search_type;
+                                switch ($op) {
+                                    case self::OP_IS:
+                                        $wheres[] = "$field = ".$db->quote($choice);
+                                        break;
+                                    case self::OP_NOT:
+                                        $wheres[] = "$field != ".$db->quote($choice);
+                                        break;
+                                    case self::OP_CONTAINS:
+                                    case self::OP_NOTCONTAINS:
+                                        $op = 'LIKE';
+                                        if ($op == self::OP_NOTCONTAINS) {
+                                            $op = 'NOT LIKE';
+                                        }
+                                        $w = "$field $op ".$this->quoteDbValue('%'.$choice.'%');
+
+                                        if ($op == self::OP_NOTCONTAINS) {
+                                            $w = "($w OR $field IS NULL)";
+                                        }
+
+                                        $wheres[] = $w;
+                                        break;
+                                    case self::OP_LTE:
+                                    case self::OP_GTE:
+                                        $op = self::OP_LTE === $op ? '<=' : '>=';
+                                        if ($isDate) {
+                                            if (!empty($choice['date1'])) {
+                                                $wheres[] = "$field $op ".(int) $choice['date1'];
+                                            } elseif (!empty($choice['date1_relative'])) {
+                                                $wheres[] = "$field $op ".strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
+                                            }
+                                        } elseif (!is_array($choice) && strlen($choice) && 'DP_NO_SELECTION' !== $choice) {
+                                            $wheres[] = "$field $op ".$this->quoteDbValue('%'.$choice.'%');
+                                        }
+                                        break;
+                                    case self::OP_BETWEEN:
+                                        if ($isDate) {
+                                            if (!empty($choice['date1'])) {
+                                                $wheres[] = $field.' BETWEEN '.(int) $choice['date1'].' AND '.(int) @$choice['date2'];
+                                            } elseif (!empty($choice['date1_relative'])) {
+                                                $d1 = strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
+                                                $d2 = strtotime('-'.@$choice['date2_relative'].' '.@$choice['date2_relative_type']);
+                                                if ($d1 < $d2) {
+                                                    $wheres[] = "$field BETWEEN $d1 AND $d2";
+                                                } else {
+                                                    $wheres[] = "$field BETWEEN $d2 AND $d1";
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case 'not_isset':
+                                        $wheres[] = "$field IS NULL";
+                                        break;
+                                    case 'isset':
+                                        $wheres[] = "$field IS NOT NULL";
+                                        break;
+                                }
+                                break;
+
+                            case 'id':
+                                $join_id    = Util::requestUniqueId();
+                                $choices_in = array();
+
+                                if ($choice != 'DP_NO_SELECTION') {
+                                    $choice = (array) $choice;
+                                    if (isset($choice["field_{$field->getId()}"])) {
+                                        $choice = $choice["field_{$field->getId()}"];
+                                    }
+                                    if (!is_array($choice)) {
+                                        $choice = array($choice);
+                                    }
+                                    foreach ($choice as $c) {
+                                        $choices_in[] = (int) $c;
+                                    }
+                                    $choices_in = implode(',', $choices_in);
+                                }
+
+                                if (!$choices_in) {
+                                    $choice = 'DP_NO_SELECTION';
+                                }
+
+                                $field = 'custom_data_organizations_'.$join_id.'.field_id';
+                                switch ($op) {
+                                    case self::OP_CONTAINS:
+                                    case self::OP_IS:
+                                        if ($choice == 'DP_NO_SELECTION') {
+                                            $joins[] = array(
+                                                'custom_data_organizations',
+                                                "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field_def->id})",
+                                            );
+                                            $wheres[] = "custom_data_organizations_$join_id.id IS NULL";
+                                        } else {
+                                            $joins[] = array(
+                                                'custom_data_organizations',
+                                                "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND $field IN ($choices_in))",
+                                            );
+                                            $wheres[] = "custom_data_organizations_$join_id.id IS NOT NULL";
+                                        }
+                                        break;
+
+                                    case self::OP_NOTCONTAINS:
+                                    case self::OP_NOT:
+                                        if ($choice == 'DP_NO_SELECTION') {
+                                            $joins[] = array(
+                                                'custom_data_organizations',
+                                                "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field_def->id})",
+                                            );
+                                            $wheres[] = "custom_data_organizations_$join_id.id IS NOT NULL";
+                                        } else {
+                                            $joins[] = array(
+                                                'custom_data_organizations',
+                                                "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND $field IN ($choices_in))",
+                                            );
+                                            $wheres[] = "custom_data_organizations_$join_id.id IS NULL";
+                                        }
+                                        break;
+                                    case 'not_isset':
+                                        $joins[] = array(
+                                            'custom_data_organizations',
+                                            "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field_def->id})",
+                                        );
+                                        $wheres[] = "custom_data_organizations_$join_id.id IS NULL";
+                                        break;
+                                    case 'isset':
+                                        $joins[] = array(
+                                            'custom_data_organizations',
+                                            "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field_def->id})",
+                                        );
+                                        $wheres[] = "custom_data_organizations_$join_id.id IS NOT NULL";
+                                        break;
+                                }
+                                break;
+                        }
+                        break; // end TERM_ORGANIZATION_FIELD
+                }
             }
         }
 
         return array(
-            'joins' => $joins,
-            'wheres' => $wheres
+            'joins'      => $joins,
+            'wheres'     => $wheres_all,
+            'wheres_any' => $wheres_any,
         );
     }
 
@@ -457,16 +568,24 @@ class OrganizationSearch extends SearcherAbstract
                 case self::TERM_NAME:
                     switch ($op) {
                         case self::OP_IS:
-                            if (strtolower($org['name']) != strtolower($choice)) return false;
+                            if (strtolower($org['name']) != strtolower($choice)) {
+                                return false;
+                            }
                             break;
                         case self::OP_NOT:
-                            if (strtolower($org['name']) == strtolower($choice)) return false;
+                            if (strtolower($org['name']) == strtolower($choice)) {
+                                return false;
+                            }
                             break;
                         case self::OP_CONTAINS:
-                            if (strpos(strtolower($org['name']), strtolower($choice)) === false) return false;
+                            if (strpos(strtolower($org['name']), strtolower($choice)) === false) {
+                                return false;
+                            }
                             break;
                         case self::OP_NOTCONTAINS:
-                            if (strpos(strtolower($org['name']), strtolower($choice)) !== false) return false;
+                            if (strpos(strtolower($org['name']), strtolower($choice)) !== false) {
+                                return false;
+                            }
                             break;
                     }
                     break;
@@ -485,7 +604,7 @@ class OrganizationSearch extends SearcherAbstract
                         }
                     }
 
-                    if ($op == self::OP_CONTAINS AND !$any) {
+                    if ($op == self::OP_CONTAINS and !$any) {
                         return false;
                     }
                     break;
@@ -493,9 +612,15 @@ class OrganizationSearch extends SearcherAbstract
                 case self::TERM_CONTACT_ADDRESS:
                 case self::TERM_CONTACT_IM:
                 case self::TERM_CONTACT_PHONE:
-                    if ($term == self::TERM_CONTACT_ADDRESS) $field = 'addresss';
-                    if ($term == self::TERM_CONTACT_IM)      $field = 'instant_message';
-                    if ($term == self::TERM_CONTACT_PHONE)   $field = 'phone';
+                    if ($term == self::TERM_CONTACT_ADDRESS) {
+                        $field = 'addresss';
+                    }
+                    if ($term == self::TERM_CONTACT_IM) {
+                        $field = 'instant_message';
+                    }
+                    if ($term == self::TERM_CONTACT_PHONE) {
+                        $field = 'phone';
+                    }
 
                     $any = false;
                     foreach ($org->getContactData($field) as $cd) {
@@ -507,7 +632,7 @@ class OrganizationSearch extends SearcherAbstract
                         }
                     }
 
-                    if ($op == self::OP_CONTAINS AND !$any) {
+                    if ($op == self::OP_CONTAINS and !$any) {
                         return false;
                     }
                     break;
@@ -527,7 +652,7 @@ class OrganizationSearch extends SearcherAbstract
                         }
                     }
 
-                    if ($op == self::OP_CONTAINS AND !$any) {
+                    if ($op == self::OP_CONTAINS and !$any) {
                         return false;
                     }
                     break;

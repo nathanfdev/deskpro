@@ -22,26 +22,18 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       , 1500)
 
     updateStatus: ->
-      @Api.sendDataGet({
-        'settings': '/elastic-search/settings',
-        'status':   '/elastic-search/index-status'
-      }).then( (res) =>
-        if not @hasInit
-          @$scope.settings       = res.data.settings.elastic_settings
-          @$scope.was_on         = @$scope.settings.enabled
-          @hasInit = true
+      @Api.sendGet('/elastic-search/index-status').then (res) =>
+        @$scope.status         = res.data
+        @$scope.indexer_status = res.data?.indexer_status
+        @$scope.indexer_log    = res.data?.indexer_log
+        @$scope.info           = res.data?.info
+        @startStatusPoller() if @$scope.status.is_indexing
 
-        @$scope.status         = res.data.status
-        @$scope.indexer_status = res.data.status?.indexer_status
-        @$scope.indexer_log    = res.data.status?.indexer_log
-        @$scope.info           = res.data.status?.info
-
-        if @$scope.status.is_indexing
-          @startStatusPoller()
-
-
-        return null
-      )
+      @Api.sendGet('/elastic-search/settings').then (res) =>
+        return if @hasInit
+        @$scope.settings       = res.data.elastic_settings
+        @$scope.was_on         = @$scope.settings.enabled
+        @hasInit = true
 
     saveSettings: ->
       @startSpinner('saving')
@@ -60,7 +52,9 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           @Growl.success(@getRegisteredMessage('saved_settings'))
         )
       ).error( (info, code) =>
+        @Growl.error(info.error_message)
         @stopSpinner('saving', true)
+        @$scope.settings.enabled = false
       )
 
     startReindex: ->
@@ -87,7 +81,10 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     testSettingsModal: ->
       loadAccountTest = =>
         postData = {
-          url: @$scope.settings.url
+          url: @$scope.settings.url,
+          tika_enabled: @$scope.settings.tika_enabled,
+          tika_ip: @$scope.settings.tika_ip,
+          tika_port: @$scope.settings.tika_port
         }
         return @Api.sendPostJson('/elastic-search/settings/test', postData)
 

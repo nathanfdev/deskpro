@@ -1,45 +1,42 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Service\Phirehose;
 
 /**
  * Concrete Twitter API User Stream consuming class.
- *
  */
 class UserStream extends \UserstreamPhirehose
 {
-    const URL_BASE         = 'https://userstream.twitter.com/1.1/';
+    const URL_BASE = 'https://userstream.twitter.com/1.1/';
 
     /**
      * @var array
@@ -69,8 +66,7 @@ class UserStream extends \UserstreamPhirehose
     /**
      * Suppress Phirehose @error_log output.
      *
-     * @param  string $message
-     * @return void
+     * @param string $message
      */
     protected function log($message)
     {
@@ -87,7 +83,6 @@ class UserStream extends \UserstreamPhirehose
 
     /**
      * @param \Doctrine\DBAL\Connection
-     * @return void
      */
     public function setConnection(\Doctrine\DBAL\Connection $connection = null)
     {
@@ -119,8 +114,7 @@ class UserStream extends \UserstreamPhirehose
     }
 
     /**
-     * @param  array $account
-     * @return void
+     * @param array $account
      */
     public function setAccount(array $account)
     {
@@ -146,15 +140,14 @@ class UserStream extends \UserstreamPhirehose
     /**
      * Process raw streaming data.
      *
-     * @param  string $status
-     * @return void
+     * @param string $status
      */
     public function enqueueStatus($status)
     {
         try {
             if ($this->callback) {
                 $callback = $this->callback;
-                $status = $callback($status, $this);
+                $status   = $callback($status, $this);
             }
 
             // skip "ping -> pong"
@@ -166,7 +159,7 @@ class UserStream extends \UserstreamPhirehose
 
             // decode json
             $status = json_decode($status);
-            $event = 'unknown';
+            $event  = 'unknown';
 
             // check if status is a tweet
             if (isset($status->text)) {
@@ -193,10 +186,10 @@ class UserStream extends \UserstreamPhirehose
             }
 
             $data = array(
-                'account_id' => $this->account['id'],
-                'event' => $event,
-                'data' => serialize($status),
-                'date_created' => gmdate('Y-m-d H:i:s')
+                'account_id'   => $this->account['id'],
+                'event'        => $event,
+                'data'         => serialize($status),
+                'date_created' => gmdate('Y-m-d H:i:s'),
             );
 
             if ($this->write_callback) {

@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @category Auth
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Auth
+ */
 namespace Orb\Auth\Adapter;
 
 use Orb\Auth\Identity;
@@ -56,14 +55,12 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
      */
     private $domain;
 
-
     public function __construct($cid, $cs, $domain)
     {
-        $this->cid = $cid;
-        $this->cs = $cs;
+        $this->cid    = $cid;
+        $this->cs     = $cs;
         $this->domain = $domain;
     }
-
 
     /**
      * Initialize the auth process by setting state, and returning a redirect result.
@@ -78,8 +75,6 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
 
         return $result;
     }
-
-
 
     /**
      * Process the callback and return a final result.
@@ -100,18 +95,22 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
                     return new Result(
                         Result::FAILURE, null,
                         array(
-                            'error_code' => 'invalid_argument',
-                            'error_message' => 'email does not match specified domain'
+                            'error_code'    => 'invalid_argument',
+                            'error_message' => 'email does not match specified domain',
                         )
                     );
                 }
 
+                if (empty($attrs['payload']) || empty($attrs['payload']['sub'])) {
+                    throw new \Exception('Google API payload was changed.');
+                }
+
                 $identity = new Identity(
-                    $attrs['payload']['id'],
+                    $attrs['payload']['sub'],
                     array(
                         'email'          => $attrs['payload']['email'],
                         'email_verified' => $attrs['payload']['email_verified'],
-                        'id'             => $attrs['payload']['id']
+                        'sub'            => $attrs['payload']['sub'],
                     )
                 );
                 $identity->setFriendlyIdentity($attrs['payload']['email']);
@@ -130,7 +129,6 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
         );
     }
 
-
     /**
      * @return \Google_Client
      */
@@ -145,14 +143,13 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
         return $client;
     }
 
-
     /**
      * @return array
      */
     public function getExtraDetails()
     {
         return array(
-            'callback_url' => $this->getCallbackUrl()
+            'callback_url' => $this->getCallbackUrl(),
         );
     }
 }

@@ -8,6 +8,8 @@ define([
   'Admin/Apps/Ctrl/InstallProgress',
   'Admin/Apps/Ctrl/PackageInfo',
   'Admin/Apps/Ctrl/PackageInstall',
+  'Admin/Apps/Ctrl/ImportersList',
+  'Admin/Apps/Ctrl/ImportersView',
   'Admin/Apps/Ctrl/Resync',
   'Admin/AuditLog/Ctrl/List',
   'Admin/AuditLog/Ctrl/View',
@@ -39,6 +41,7 @@ define([
   'Admin/CustomFields/Chat/Ctrl/Edit',
   'Admin/CustomFields/User/Ctrl/Edit',
   'Admin/CustomFields/Org/Ctrl/Edit',
+  'Admin/CustomFields/Billing/Ctrl/Edit',
   'Admin/Labels/Ctrl/List',
   'Admin/Labels/Ctrl/Edit',
   'Admin/Languages/Ctrl/Edit',
@@ -66,10 +69,13 @@ define([
   'Admin/TicketAccounts/Ctrl/List',
   'Admin/TicketAccounts/Ctrl/Edit',
   'Admin/TicketAccounts/Ctrl/Settings',
+  'Admin/TicketBilling/Ctrl/Fields',
   'Admin/TicketDeps/Ctrl/List',
   'Admin/TicketDeps/Ctrl/Edit',
   'Admin/TicketEscalations/Ctrl/List',
   'Admin/TicketEscalations/Ctrl/Edit',
+  'Admin/TicketEscalations/Ctrl/EditSatisfaction',
+  'Admin/TicketEscalations/Ctrl/EditStatuses',
   'Admin/TicketFields/Ctrl/EditCategories',
   'Admin/TicketFields/Ctrl/EditPriorities',
   'Admin/TicketFields/Ctrl/EditProducts',
@@ -93,9 +99,11 @@ define([
   'Admin/TicketStatuses/Ctrl/EditResolved',
   'Admin/TicketTriggers/Ctrl/EditDepartmentTrigger',
   'Admin/TicketTriggers/Ctrl/EditEmailAccountTrigger',
+  'Admin/TicketTriggers/Ctrl/EditSatisfactionTrigger',
   'Admin/TicketTriggers/Ctrl/Edit',
   'Admin/TicketTriggers/Ctrl/List',
   'Admin/TicketUrgencies/Ctrl/List',
+  'Admin/TicketProblems/Ctrl/Settings',
   'Admin/FeedbackStatuses/Ctrl/List',
   'Admin/FeedbackStatuses/Ctrl/Edit',
   'Admin/FeedbackTypes/Ctrl/List',
@@ -117,6 +125,7 @@ define([
   'Admin/Server/Ctrl/ServerTaskQueue',
   'Admin/Server/Ctrl/ServerCronList',
   'Admin/Server/Ctrl/ServerCronLogs',
+  'Admin/Server/Ctrl/ServerEnc',
   'Admin/Server/Ctrl/ServerFileUploads',
   'Admin/Server/Ctrl/ServerFileCheck',
   'Admin/Server/Ctrl/ServerReportFile',
@@ -127,12 +136,14 @@ define([
   'Admin/Settings/Ctrl/RegSettings',
   'Admin/Settings/Ctrl/PasswordSettings',
   'Admin/Settings/Ctrl/ServerSettings',
+  'Admin/Settings/Ctrl/ResetDemo',
   'Admin/UserGroups/Ctrl/List',
   'Admin/UserGroups/Ctrl/Edit',
   'Admin/Usersources/Ctrl/UsersourcesList',
   'Admin/Usersources/Ctrl/Edit',
   'Admin/Usersources/Ctrl/New',
   'Admin/Usersources/Ctrl/EditInstance',
+  'Admin/Usersources/Ctrl/SyncInformation',
   'Admin/Usersources/Helper/UsersourceTypeDecider',
   'Admin/ChatFields/Ctrl/List',
   'Admin/ChatSetup/Ctrl/ChatSetup',
@@ -161,6 +172,18 @@ define([
   'CloudAdminLoad'
 
 ], function(angular) {
+
+  /**
+   * ace editor hotfix
+   * see https://github.com/angular-ui/ui-ace/issues/104
+   * @type {Function}
+   */
+  var old = window.ace.edit;
+  window.ace.edit = function() {
+    var instance = old.apply(old, arguments);
+    instance.$blockScrolling = Infinity;
+    return instance;
+  };
 
   if (!window.console) {
     window.console = {

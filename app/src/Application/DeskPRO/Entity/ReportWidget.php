@@ -1,48 +1,46 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Report builder query
+ * Report builder query.
  *
  * @property int $id
  * @property ReportWidget $parent
@@ -52,6 +50,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property boolean $is_custom
  * @property array $labels
  * @property integer $display_order
+ * @property string $category
  */
 class ReportWidget extends DomainObject
 {
@@ -111,7 +110,6 @@ class ReportWidget extends DomainObject
         $this->favorited_by = new ArrayCollection();
     }
 
-
     /**
      * @return ReportWidget
      */
@@ -120,10 +118,10 @@ class ReportWidget extends DomainObject
         return new self();
     }
 
-
     /**
-     * @param  string       $type
-     * @param  array        $params
+     * @param string $type
+     * @param array  $params
+     *
      * @return mixed|string
      */
     public function getTitle($type = 'raw', $params = array())
@@ -134,12 +132,12 @@ class ReportWidget extends DomainObject
             return preg_replace('/\[(.+?)\]/', '$1',  $this->title);
         }
 
-        $repository = $this->getRepository();
+        $repository  = $this->getRepository();
         $groupParams = $repository->getReportGroupParams();
 
         if (!is_array($params)) {
             $newParams = array();
-            foreach ($params ? explode(',', $params) : array() AS $k => $v) {
+            foreach ($params ? explode(',', $params) : array() as $k => $v) {
                 $newParams[$k + 1] = $v;
             }
             $params = $newParams;
@@ -186,7 +184,7 @@ class ReportWidget extends DomainObject
                 return $default[0];
             }
 
-            return "<date>";
+            return '<date>';
         }, $title);
 
         $title = preg_replace_callback('/<(\d+):(field group):([a-zA-Z0-9_]+)([^>]*)>/', function ($match) use ($params, $groupParams, $getDefault) {
@@ -201,7 +199,7 @@ class ReportWidget extends DomainObject
                 return $default[0];
             }
 
-            return "<field>";
+            return '<field>';
         }, $title);
 
         $title = preg_replace_callback('/<(\d+):(status group):([a-zA-Z0-9_]+)([^>]*)>/', function ($match) use ($params, $groupParams, $getDefault) {
@@ -216,7 +214,7 @@ class ReportWidget extends DomainObject
                 return $default[0];
             }
 
-            return "<status>";
+            return '<status>';
         }, $title);
 
         $title = preg_replace_callback('/<(\d+):(order group):([a-zA-Z0-9_]+)([^>]*)>/', function ($match) use ($params, $groupParams, $getDefault) {
@@ -231,7 +229,7 @@ class ReportWidget extends DomainObject
                 return $default[0];
             }
 
-            return "<order>";
+            return '<order>';
         }, $title);
 
         $title = preg_replace('/<chart:[a-zA-Z0-9_-]+>/', '', $title);
@@ -246,10 +244,10 @@ class ReportWidget extends DomainObject
                     return '';
                 } elseif ($firstMatch == 'nothing') {
                     // first group is nothing, but second on something
-                    return $match[1] . $match[2] . ' ' . $match[4];
+                    return $match[1].$match[2].' '.$match[4];
                 } elseif ($secondMatch == 'nothing') {
                     // first group is something, but second on nothing
-                    return $match[1] . $match[2] . ' ' . $match[3];
+                    return $match[1].$match[2].' '.$match[3];
                 }
 
                 return $match[0];
@@ -261,15 +259,14 @@ class ReportWidget extends DomainObject
         return $title;
     }
 
-
     /**
-     * Gets the DPQL parts for this report's query
+     * Gets the DPQL parts for this report's query.
      *
      * @return array
      */
     public function getParts()
     {
-        $compiler = new \Application\DeskPRO\Dpql\Compiler();
+        $compiler  = new \Application\DeskPRO\Dpql\Compiler();
         $statement = $compiler->compile($this->query);
 
         return $statement->getDpqlParts();
@@ -301,21 +298,21 @@ class ReportWidget extends DomainObject
      */
     public function isQueryDifferent($query)
     {
-        $query = preg_replace('/\s/', '', $query);
+        $query     = preg_replace('/\s/', '', $query);
         $thisQuery = preg_replace('/\s/', '', $this->query);
 
         return ($query != $thisQuery);
     }
 
     /**
-     * Quick lookup handler to determine if a particular user has favorited this
+     * Quick lookup handler to determine if a particular user has favorited this.
      *
      * @var array
      */
     protected $_is_favorited = array();
 
     /**
-     * Returns true if the specified person has favorited this
+     * Returns true if the specified person has favorited this.
      *
      * @param Person|null $person Defaults to current person
      *
@@ -381,8 +378,8 @@ class ReportWidget extends DomainObject
                      'parent_id_idx' => array('columns' => array('parent_id'))
                  ),
                  'uniqueConstraints' => array(
-                     'unique_key_idx' => array('columns' => array('unique_key'))
-                 )
+                     'unique_key_idx' => array('columns' => array('unique_key')),
+                 ),
             )
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);

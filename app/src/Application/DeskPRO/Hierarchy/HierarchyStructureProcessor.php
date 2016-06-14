@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Hierarchy;
 
 use Doctrine\ORM\EntityManager;
@@ -41,200 +39,197 @@ use Doctrine\ORM\EntityManager;
  */
 class HierarchyStructureProcessor
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
 
-	/**
-	 * @var string
-	 */
-	private $entity_name;
+    /**
+     * @var string
+     */
+    private $entity_name;
 
-	/**
-	 * @var array
-	 */
-	private $properties;
+    /**
+     * @var array
+     */
+    private $properties;
 
-	/**
-	 * False to disable any hierarchy handling
-	 *
-	 * @var bool
-	 */
-	private $is_hierarchy = true;
+    /**
+     * False to disable any hierarchy handling.
+     *
+     * @var bool
+     */
+    private $is_hierarchy = true;
 
+    /**
+     * @param EntityManager $em
+     * @param string        $entity_name The name of the entity to save to
+     * @param string[]      $properties  Array of property names to assign from the array (id, display_order and title are always used/detected)
+     */
+    public function __construct(EntityManager $em, $entity_name, array $properties = array())
+    {
+        $this->em          = $em;
+        $this->entity_name = $entity_name;
+        $this->properties  = $properties;
+    }
 
-	/**
-	 * @param EntityManager $em
-	 * @param string        $entity_name   The name of the entity to save to
-	 * @param string[]      $properties    Array of property names to assign from the array (id, display_order and title are always used/detected)
-	 */
-	public function __construct(EntityManager $em, $entity_name, array $properties = array())
-	{
-		$this->em          = $em;
-		$this->entity_name = $entity_name;
-		$this->properties  = $properties;
-	}
+    /**
+     * Disables hierarchy handling.
+     */
+    public function disableHierarchy()
+    {
+        $this->is_hierarchy = false;
+    }
 
+    /**
+     * Returns an array of entities that are ready to be saved or validated.
+     *
+     * @param array $structure
+     *
+     * @return array
+     */
+    public function getRecords(array $structure)
+    {
+        $recs                = array();
+        $child_to_parent_map = array();
 
-	/**
-	 * Disables hierarchy handling
-	 */
-	public function disableHierarchy()
-	{
-		$this->is_hierarchy = false;
-	}
+        #------------------------------
+        # First pass is to gather info:
+        # - Loads cats
+        # - Creates pristine entities for new ones
+        # - Maps children to their parents
+        #------------------------------
 
+        $cat_ids   = array();
+        $classname = $this->em->getRepository($this->entity_name)->getClassName();
+        foreach ($structure as $cat) {
+            if (empty($cat['@is_new'])) {
+                $cat_ids[] = $cat['id'];
+            } else {
+                $obj              = new $classname();
+                $recs[$cat['id']] = $obj;
+            }
 
-	/**
-	 * Returns an array of entities that are ready to be saved or validated
-	 *
-	 * @param array $structure
-	 * @return array
-	 */
-	public function getRecords(array $structure)
-	{
-		$recs                = array();
-		$child_to_parent_map = array();
+            if ($this->is_hierarchy && !empty($cat['parent_id']) && $cat['parent_id']) {
+                $child_to_parent_map[$cat['id']] = $cat['parent_id'];
+            }
+        }
 
-		#------------------------------
-		# First pass is to gather info:
-		# - Loads cats
-		# - Creates pristine entities for new ones
-		# - Maps children to their parents
-		#------------------------------
+        if ($cat_ids) {
+            foreach ($this->em->getRepository($this->entity_name)->getByIds($cat_ids) as $k => $v) {
+                $recs[$k] = $v;
+            }
+        }
 
-		$cat_ids = array();
-		$classname = $this->em->getRepository($this->entity_name)->getClassName();
-		foreach ($structure as $cat) {
-			if (empty($cat['@is_new'])) {
-				$cat_ids[] = $cat['id'];
-			} else {
-				$obj = new $classname();
-				$recs[$cat['id']] = $obj;
-			}
+        #------------------------------
+        # Second pass applies the array to the object
+        #------------------------------
 
-			if ($this->is_hierarchy && !empty($cat['parent_id']) && $cat['parent_id']) {
-				$child_to_parent_map[$cat['id']] = $cat['parent_id'];
-			}
-		}
+        foreach ($structure as $cat) {
+            $cat_id = $cat['id'];
+            if (!isset($recs[$cat_id])) {
+                throw new \Exception('Could not find category in collection: '.$cat_id);
+            }
 
-		if ($cat_ids) {
-			foreach ($this->em->getRepository($this->entity_name)->getByIds($cat_ids) as $k => $v) {
-				$recs[$k] = $v;
-			}
-		}
+            $obj = $recs[$cat_id];
+            $this->applyProperties($obj, $cat);
 
-		#------------------------------
-		# Second pass applies the array to the object
-		#------------------------------
+            // Also hook up children to their parents
+            if ($this->is_hierarchy) {
+                if (isset($child_to_parent_map[$cat_id])) {
+                    $parent_obj  = $recs[$child_to_parent_map[$cat_id]];
+                    $obj->parent = $parent_obj;
+                } else {
+                    $obj->parent = null;
+                }
+            }
+        }
 
-		foreach ($structure as $cat) {
-			$cat_id = $cat['id'];
-			if (!isset($recs[$cat_id])) {
-				throw new \Exception("Could not find category in collection: " . $cat_id);
-			}
+        return $recs;
+    }
 
-			$obj = $recs[$cat_id];
-			$this->applyProperties($obj, $cat);
+    /**
+     * @param array $records
+     * @param bool  $remove_missing True to delete records that are not in the record array (e.g., they were deleted from the structure)
+     *
+     * @return array
+     */
+    public function saveRecords(array $records, $remove_missing = false)
+    {
+        if ($remove_missing) {
+            $have_ids = array(0);
+            foreach ($records as $r) {
+                if ($r->id) {
+                    $have_ids[] = $r->id;
+                }
+            }
 
-			// Also hook up children to their parents
-			if ($this->is_hierarchy) {
-				if (isset($child_to_parent_map[$cat_id])) {
-					$parent_obj  = $recs[$child_to_parent_map[$cat_id]];
-					$obj->parent = $parent_obj;
-				} else {
-					$obj->parent = null;
-				}
-			}
-		}
-
-		return $recs;
-	}
-
-
-
-	/**
-	 * @param array $records
-	 * @param bool $remove_missing  True to delete records that are not in the record array (e.g., they were deleted from the structure)
-	 * @return array
-	 */
-	public function saveRecords(array $records, $remove_missing = false)
-	{
-		if ($remove_missing) {
-			$have_ids = array(0);
-			foreach ($records as $r) {
-				if ($r->id) {
-					$have_ids[] = $r->id;
-				}
-			}
-
-			$missing_recs = $this->em->createQuery("
+            $missing_recs = $this->em->createQuery("
 				SELECT r
 				FROM {$this->entity_name} r
 				WHERE r NOT IN (?0)
 			")->execute(array($have_ids));
 
-			foreach ($missing_recs as $r) {
-				if ($this->is_hierarchy && $r->parent) {
-					$this->em->remove($r);
-				}
-			}
-			foreach ($missing_recs as $r) {
-				$this->em->remove($r);
-			}
-		}
+            foreach ($missing_recs as $r) {
+                if ($this->is_hierarchy && $r->parent) {
+                    $this->em->remove($r);
+                }
+            }
+            foreach ($missing_recs as $r) {
+                $this->em->remove($r);
+            }
+        }
 
-		foreach ($records as $r) {
-			$this->em->persist($r);
-		}
+        foreach ($records as $r) {
+            $this->em->persist($r);
+        }
 
-		$this->em->getConnection()->beginTransaction();
-		try {
-			$this->em->flush();
-			$this->em->commit();
-		} catch (\Exception $e) {
-			$this->em->rollback();
-			throw $e;
-		}
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->em->flush();
+            $this->em->commit();
+        } catch (\Exception $e) {
+            $this->em->rollback();
+            throw $e;
+        }
 
-		return $records;
-	}
+        return $records;
+    }
 
+    /**
+     * This is the same as calling getRecords followed by saveRecords.
+     *
+     * @param array $structure
+     *
+     * @return array
+     */
+    public function save(array $structure)
+    {
+        $recs = $this->getRecords($structure);
+        $this->saveRecords($recs, true);
 
-	/**
-	 * This is the same as calling getRecords followed by saveRecords
-	 * @param array $structure
-	 * @return array
-	 */
-	public function save(array $structure)
-	{
-		$recs = $this->getRecords($structure);
-		$this->saveRecords($recs, true);
+        return $recs;
+    }
 
-		return $recs;
-	}
+    /**
+     * Apply properties to the category object.
+     *
+     * @param mixed $object
+     * @param array $values
+     */
+    private function applyProperties($object, array $values)
+    {
+        foreach ($this->properties as $k) {
+            if (array_key_exists($k, $values)) {
+                $object->$k = $values[$k];
+            }
+        }
 
-
-	/**
-	 * Apply properties to the category object
-	 *
-	 * @param mixed $object
-	 * @param array $values
-	 */
-	private function applyProperties($object, array $values)
-	{
-		foreach ($this->properties as $k) {
-			if (array_key_exists($k, $values)) {
-				$object->$k = $values[$k];
-			}
-		}
-
-		// Built-in props
-		foreach (array('title', 'display_order') as $k) {
-			if (array_key_exists($k, $values)) {
-				$object->$k = $values[$k];
-			}
-		}
-	}
+        // Built-in props
+        foreach (array('title', 'display_order') as $k) {
+            if (array_key_exists($k, $values)) {
+                $object->$k = $values[$k];
+            }
+        }
+    }
 }

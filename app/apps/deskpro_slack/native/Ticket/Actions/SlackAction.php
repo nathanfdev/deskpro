@@ -1,0 +1,190 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ *
+ * @category Slack
+ */
+
+namespace deskpro_slack\Ticket\Actions;
+
+use Application\DeskPRO\Entity\AppInstance;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Tickets\Actions\AbstractContainerAwareAction;
+use Application\DeskPRO\Tickets\Actions\ActionInterface;
+use Application\DeskPRO\Tickets\Actions\AppActionInterface;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use GuzzleHttp\Client as GuzzleClient;
+use Orb\Util\Strings;
+use Orb\Util\Util;
+
+class SlackAction extends AbstractContainerAwareAction implements ActionInterface, AppActionInterface
+{
+    /**
+     * @var
+     */
+    private $app;
+
+    /**
+     * @return AppInstance
+     */
+    private function getApp()
+    {
+        if ($this->app !== null) {
+            return $this->app;
+        }
+
+        $this->app   = false;
+        $app_manager = $this->getContainer()->getAppManager();
+        $app_id      = $this->getMetaData()->get('app_id', 0);
+
+        if ($app_manager->hasApp($app_id)) {
+            $this->app = $app_manager->getApp($app_id);
+        }
+
+        return $this->app === false ? null : $this->app;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $app = $this->getApp();
+        if (!$app) {
+            $context->getLogger()->debug(sprintf('[SlackAction] No app (app id: %d)', $this->getMetaData()->get('app_id')));
+
+            return;
+        }
+
+        $message = $this->renderMessage($ticket, $context);
+        $channel = $this->getActionOption('channel');
+
+        $context->getLogger()->debug("[SlackAction] Sending message to channel: $channel");
+
+        try {
+            $client = new GuzzleClient();
+
+            $client->request(
+                'POST',
+                $app->getSetting('webhook_url'),
+                array('form_params' => array('payload' => $this->generatePayload($message)))
+            );
+        } catch (\Exception $e) {
+            $context->getLogger()->notice("[SlackAction] Error sending Slack message: {$e->getMessage()}");
+
+            $ticket->getStateChangeRecorder()->recordData('app_message',
+            array('app_id'         => $app->id, 'app_title' => $app->title, 'package_name' => $app->package->name,
+                   'package_title' => $app->package->title, 'message' => "Failed sending message to channel \"$channel\"", ));
+        }
+    }
+
+    /**
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
+     * @return string
+     */
+    public function renderMessage(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $statechange = $ticket->getStateChangeRecorder();
+
+        $fallback = '#'.$ticket->id.' ';
+        $fallback .= '<'.$this->getContainer()->getSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id.'|'.htmlspecialchars($ticket->subject).'> ';
+
+        /* @var TicketMessage $message */
+        $messages = $ticket->getDisplayableMessages();
+        $message  = array_pop($messages);
+
+        $attachment = array(
+            'color'      => '#1D7AB2',
+            'text'       => Strings::htmlEntityEncodeUtf8($message->getMessagePreviewText(160)),
+            'title'      => '#'.$ticket->id.' '.htmlspecialchars($ticket->subject),
+            'title_link' => $this->getContainer()->getSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id,
+        );
+
+        if ($context->getEventType() == 'newticket') {
+            $pretext = 'New ticket';
+        } elseif ($context->getEventType() == 'newreply') {
+            if ($statechange->hasNewAgentNote()) {
+                $pretext = 'New agent note';
+            } elseif ($statechange->hasNewAgentReply()) {
+                $pretext = 'New agent reply';
+            } else {
+                $pretext = 'New user reply';
+            }
+        } else {
+            $pretext = 'Ticket updated';
+        }
+        $attachment['pretext'] = $pretext;
+        $fallback .= $pretext;
+        if ($context->getPersonContext()) {
+            $fallback .= ' by '.htmlspecialchars($context->getPersonContext()->getDisplayContact());
+            $attachment['author_name'] = htmlspecialchars($context->getPersonContext()->getDisplayName());
+            $attachment['author_icon'] = $context->getPersonContext()->getPictureUrl();
+            $attachment['author_link'] = 'mailto:'.$context->getPersonContext()->getPrimaryEmailAddress();
+        } else {
+            $fallback .= ' by system';
+        }
+
+        // slack wants entities for unicode characters so convert them
+        $fallback = Strings::htmlEntityEncodeUtf8($fallback);
+
+        $attachment['fallback'] = $fallback;
+
+        return $attachment;
+    }
+
+    /**
+     * @param $message
+     *
+     * @return array
+     */
+    private function generatePayload($message)
+    {
+        $payload = array(
+            'attachments' => array($message),
+            'username'    => 'DeskPro',
+        );
+        if ($this->getActionOption('channel')) {
+            $payload['channel'] = $this->getActionOption('channel');
+        }
+
+        return json_encode($payload);
+    }
+
+    /**
+     * @return string
+     */
+    public function getActionType()
+    {
+        return Util::getBaseClassname($this).$this->getMetaData()->get('app_id', 0);
+    }
+}

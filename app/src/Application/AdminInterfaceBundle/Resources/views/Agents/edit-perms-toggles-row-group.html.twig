@@ -1,0 +1,51 @@
+{% macro perm_row(typename, permname, opts) %}
+    {% set row_id = 'perm_' ~ typename ~ '_' ~ permname %}
+
+    <tr
+            class="{% if opts.first %}first-of-type{% endif %} {% if opts.toggleName %}nested{% endif %}"
+            {% if opts.toggleName %}
+                {% set toggleNameId = 'perm_' ~ opts.toggleName|replace({'.':'_'}) %}
+                ng-show="{{ toggleNameId }}_toggler"
+            {% endif %}
+            >
+        <td width="100%">
+            <span class="title">
+                {% if has_phrase('adm.agents.perm_' ~ typename ~ '_' ~ permname) %}
+                    {{ phrase('adm.agents.perm_' ~ typename ~ '_' ~ permname) }}
+                {% else %}
+                    {{ phrase('adm.agents.perm_' ~ typename ~ '_' ~ permname|replace({'_own': '', '_followed': '', '_unassigned': '', '_others': ''})) }}
+                {% endif %}
+            </span>
+
+            {% if opts.showToggler %}
+                <span class="toggle-wrap" ng-click="{{ row_id }}_toggler = !{{ row_id }}_toggler">
+                <span ng-show="!{{ row_id }}_toggler">expand <i class="fa fa-caret-down"></i></span>
+                <span ng-show="{{ row_id }}_toggler">collapse <i class="fa fa-caret-up"></i></span>
+            </span>
+            {% endif %}
+        </td>
+        <td>
+            <input
+                    dp-slider-switch
+                    ng-model="EditCtrl.group.perms.{{ typename }}.{{ permname }}"
+                    {% if opts.toggleName %}
+                        {% if opts.destructive %}
+                            is-on="EditCtrl.group.perms.{{ opts.toggleName }} || EditCtrl.group.sys_name == 'agent_all_perms'"
+                        {% else %}
+                            is-on="EditCtrl.group.perms.{{ opts.toggleName }} || all_locked_perms"
+                        {% endif %}
+                        is-locked="all_locked_perms || EditCtrl.group.perms.{{ opts.toggleName }}"
+                        locked-tip="This permission is locked because the parent permission is enabled"
+                    {% else %}
+                        {% if opts.destructive %}
+                            is-on="EditCtrl.group.perms.{{ typename }}.{{ permname }} || EditCtrl.group.sys_name == 'agent_all_perms'"
+                        {% else %}
+                            is-on="EditCtrl.group.perms.{{ typename }}.{{ permname }} || all_locked_perms"
+                        {% endif %}
+                        is-locked="all_locked_perms"
+                    {% endif %}
+                    ng-change="EditCtrl.updateAllPermsState()"
+                    />
+        </td>
+    </tr>
+{% endmacro %}

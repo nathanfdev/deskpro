@@ -16,7 +16,7 @@
 			</header>
 			<div class="body-text" style="cursor: pointer">
 				<div class="body-text-message unreset" style="max-height: 70px; overflow: hidden" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %}>
-					{{message.message_html|safe_link_urls_html }}
+					{{message.message_html|raw}}
 				</div>
 				<div class="fade-bar" style="display: block; height: 25px"></div>
 			</div>

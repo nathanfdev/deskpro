@@ -257,14 +257,21 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 									var el = $('[name$="'+this.makeArrayName(k_name,true)+'"]', new_row);
 									if (el.is('select')) {
 										el.find('[value="' + v + '"]').prop('selected', true);
+									} else if (el.is(':checkbox')) {
+										el.each(function(){
+											if(v === $(this).val()) $(this).prop('checked', true);
+										});
 									}
 								}, this);
 							} else {
-								var el = $('[name="'+sub_name_safe+'"], [name$="'+this.makeArrayName(sub_name,true)+'"], [name$="'+this.makeArrayName(sub_name+'[]',true)+'"]', new_row).first();
+								var el = $('[name="'+sub_name_safe+'"], [name$="'+this.makeArrayName(sub_name,true)+'"], [name$="'+this.makeArrayName(sub_name+'[]',true)+'"]', new_row);
 								if (el.is('select')) {
 									el.find('[value="' + subval + '"]').prop('selected', true);
-								} else if (el.is(':checkbox')) {
-									el.prop('checked', true).change();
+									el.trigger('change');
+								} else if (el.is(':checkbox') || el.is(':radio')) {
+									el.each(function(){
+										if(subval === $(this).val()) $(this).prop('checked', true);
+									});
 								} else {
 									el.val(subval).change();
 								}
@@ -388,6 +395,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 		}
 		row.find('.select2').css('max-width', 150);
 		DP.select(row.find('.select2'));
+    row.find('[data-custom-field]').dpMultiLevelSelect();
 
 		if (row.data('form-base-name')) {
 			this.updateFormName($('.builder-op', row), row.data('form-base-name'));
@@ -406,7 +414,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 		var opSel = $('.builder-op select', row);
 		var updateOp = function() {
 			var val = opSel.val();
-			if (val == 'changed') {
+			if (val == 'changed' || val == 'not_isset' || val == 'isset') {
 				$('.builder-options', row).hide();
 			} else {
 				$('.builder-options', row).show();

@@ -301,8 +301,14 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		} else {
 			var preparedOutput = DeskPRO_Window.prepareWidgetedHtml(page.getHtml());
 
-			data.wrapper = $('<div id="'+data.wrapperId+'" class="tabViewDetailContent" style="display: none">' + preparedOutput.html + '</div>').appendTo(this.bodyPane);
+			data.wrapper = $('<div id="'+data.wrapperId+'" class="tabViewDetailContent" style="display: none"></div>');
+			data.wrapper.html(preparedOutput.html);
 
+			if (page && page.prepareWrapper) {
+				page.prepareWrapper(data.wrapper);
+			}
+
+			data.wrapper.appendTo(this.bodyPane);
 			DeskPRO_Window.runWidgetedJs(data.page, preparedOutput.jsSource, preparedOutput.jsInline);
 		}
 
@@ -404,8 +410,17 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			page.LOADING_TYPENAME = routeData.forTypename;
 		}
 
+		var existTab = null;
+		if (page.meta && page.meta.routeUrl) {
+			existTab = this.findTabByRouteUrl(page.meta.routeUrl);
+		}
+
 		var id = this.addTab(page);
-		this.activateTabById(id);
+		if (existTab && this.getActiveTab() === existTab) {
+			// nothing, dont focus it
+		} else {
+			this.activateTabById(id);
+		}
 
 		if (routeData.tabLoad) {
 			routeData.tabLoad();

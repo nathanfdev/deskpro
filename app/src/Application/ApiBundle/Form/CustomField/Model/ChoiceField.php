@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage AdminBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Form\CustomField\Model;
 
 use Orb\Util\Arrays;
@@ -76,24 +73,24 @@ class ChoiceField extends CustomFieldAbstract
 
         if ($this->_field->getOption('min_length')) {
             $this->validation_type = 'required';
-            $this->required = true;
-            $this->min_length = $this->_field->getOption('min_length');
+            $this->required        = true;
+            $this->min_length      = $this->_field->getOption('min_length');
         }
         if ($this->_field->getOption('max_length')) {
             $this->validation_type = 'required';
-            $this->required = true;
-            $this->max_length = $this->_field->getOption('max_length');
+            $this->required        = true;
+            $this->max_length      = $this->_field->getOption('max_length');
         }
 
         if ($this->_field->getOption('agent_min_length')) {
             $this->agent_validation_type = 'required';
-            $this->agent_required = true;
-            $this->agent_min_length = $this->_field->getOption('agent_min_length');
+            $this->agent_required        = true;
+            $this->agent_min_length      = $this->_field->getOption('agent_min_length');
         }
         if ($this->_field->getOption('agent_max_length')) {
             $this->agent_validation_type = 'required';
-            $this->agent_required = true;
-            $this->agent_max_length = $this->_field->getOption('agent_max_length');
+            $this->agent_required        = true;
+            $this->agent_max_length      = $this->_field->getOption('agent_max_length');
         }
 
         if ($this->_field->getOption('agent_validation_resolve')) {
@@ -199,7 +196,7 @@ class ChoiceField extends CustomFieldAbstract
         $choices_structure = $this->choices_structure;
         $choices_structure = Arrays::keyFromData($choices_structure, 'id');
 
-        $choices = array();
+        $choices     = array();
         $removed_ids = array();
         foreach ($this->_field->children as $ch) {
             if (!isset($choices_structure[$ch->id])) {
@@ -215,15 +212,17 @@ class ChoiceField extends CustomFieldAbstract
         do {
             $changed = false;
             foreach ($choices as $ch) {
-                if ($ch->getOption('parent_id') && isset($removed_ids[$ch->getOption('parent_id')])) {
+                if (@$removed_ids[$ch->getOption('parent_id')] && !@$removed_ids[$ch->id]) {
                     $this->_em->remove($ch);
-                    $removed_id[$ch->id] = true;
-                    $changed = true;
+                    $removed_ids[$ch->id] = true;
+                    $changed              = true;
                 }
             }
         } while ($changed);
 
-        foreach ($removed_ids as $rid) unset($choices[$rid]);
+        foreach ($removed_ids as $rid) {
+            unset($choices[$rid]);
+        }
 
         // Now add new ones
         foreach ($choices_structure as $cinfo) {
@@ -233,6 +232,7 @@ class ChoiceField extends CustomFieldAbstract
 
             $ch = $this->_field->createChild();
             $ch->setTitle($cinfo['title']);
+            $ch->setOption('cb', str_replace('cb_', '', $cinfo['id']));
 
             $choices[$cinfo['id']] = $ch;
             $this->_em->persist($ch);
@@ -258,18 +258,22 @@ class ChoiceField extends CustomFieldAbstract
                 $ch->title = $cinfo['title'];
             }
 
-            $ch->display_order = (int)$cinfo['display_order'];
+            $ch->display_order = (int) $cinfo['display_order'];
             $this->_em->persist($ch);
         }
 
         $this->_em->flush();
 
-        if ($this->default_value != $this->_field->default_value) {
+        if ($this->default_value != $this->_field->default_value || false !== strpos($this->default_value, 'cb_')) {
             $this->_field->default_value = null;
 
-            if (isset($choices[$this->default_value])) {
-                $this->_field->default_value = $choices[$this->default_value]->id;
+            $defaults = array();
+            foreach (explode(',', $this->default_value) as $dval) {
+                if (isset($choices[$dval])) {
+                    $defaults[] = $choices[$dval]->id;
+                }
             }
+            $this->_field->default_value = implode(',', $defaults);
 
             $this->_em->persist($this->_field);
             $this->_em->flush();

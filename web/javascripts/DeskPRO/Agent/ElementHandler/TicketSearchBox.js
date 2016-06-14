@@ -14,6 +14,8 @@ DeskPRO.Agent.ElementHandler.TicketSearchBox = new Orb.Class({
 		this.idInput     = $('input.ticket-id', this.el);
 		this.resultsBox  = $('.ticket-search-box', this.el);
 		this.resultsList = $('.results-list', this.resultsBox);
+		this.exclude 		 = this.el.data('exclude') ? (this.el.data('exclude')+'').split(',') : [];
+		for (var i = 0; i < this.exclude.length; i++) this.exclude[i] = parseInt(this.exclude[i]) || 0;
 
 		this.termInput.on('focus', function() {
 			self.open();
@@ -125,6 +127,9 @@ DeskPRO.Agent.ElementHandler.TicketSearchBox = new Orb.Class({
 		this.resultsList.on('click', 'li', function(ev) {
 			ev.preventDefault();
 			var ticketId = $(this).data('ticket-id');
+			if (self.exclude.indexOf(ticketId) > -1) {
+				return;
+			}
 			var subject = $('.ticket-subject', this).text().trim();
 
 			self.el.trigger('ticketsearchboxclick', [ticketId, subject, self]);
@@ -204,6 +209,7 @@ DeskPRO.Agent.ElementHandler.TicketSearchBox = new Orb.Class({
 
 		var url = this.el.data('search-url');
 		var term = this.getTerm();
+		var self = this;
 
 		var postData = [];
 		postData.push({
@@ -243,6 +249,11 @@ DeskPRO.Agent.ElementHandler.TicketSearchBox = new Orb.Class({
 						row.find('.ticket-status').addClass('archived').text('Archived');
 					} else {
 						row.find('.ticket-status').remove();
+					}
+
+					if (self.exclude.indexOf(ticket.id) > -1) {
+						row.addClass('disabled');
+						row.find('.ticket-status').text('CURRENT TICKET');
 					}
 
 					var d = new Date(ticket.last_activity*1000);

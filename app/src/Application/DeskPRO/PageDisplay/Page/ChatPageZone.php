@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\PageDisplay\Page;
 
 use Application\DeskPRO\App;
@@ -49,13 +46,14 @@ class ChatPageZone extends BasicPage implements PersonContextInterface
     protected $person_context;
 
     /**
-     * The department context for all these pagedisplays
+     * The department context for all these pagedisplays.
+     *
      * @var \Application\DeskPRO\Entity\Department
      */
     protected $department;
 
     /**
-     * The zone we're in
+     * The zone we're in.
      */
     protected $zone;
 
@@ -70,7 +68,7 @@ class ChatPageZone extends BasicPage implements PersonContextInterface
      */
     public function __construct($zone, Department $department = null)
     {
-        $this->zone = $zone;
+        $this->zone       = $zone;
         $this->department = $department;
 
         $this->interface = defined('DP_INTERFACE') ? DP_INTERFACE : '';
@@ -85,8 +83,7 @@ class ChatPageZone extends BasicPage implements PersonContextInterface
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\Person $person
-     * @return void
+     * @param \Application\DeskPRO\Entity\Person $person
      */
     public function setPersonContext(Person $person)
     {
@@ -94,8 +91,7 @@ class ChatPageZone extends BasicPage implements PersonContextInterface
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\PageDisplayAbstract $page_display
-     * @return void
+     * @param \Application\DeskPRO\Entity\PageDisplayAbstract $page_display
      */
     public function addPageDisplay(PageDisplayAbstract $page_display)
     {
@@ -104,7 +100,7 @@ class ChatPageZone extends BasicPage implements PersonContextInterface
         }
 
         if ($this->zone != $page_display['zone']) {
-            throw new \InvalidArgumentException('Invalid zone context. Must be: ' . $this->zone);
+            throw new \InvalidArgumentException('Invalid zone context. Must be: '.$this->zone);
         }
 
         // Filter out agent_only items
@@ -123,8 +119,7 @@ class ChatPageZone extends BasicPage implements PersonContextInterface
     }
 
     /**
-     * Reads page displays from the TicketPageDisplay entity repository
-     * @return void
+     * Reads page displays from the TicketPageDisplay entity repository.
      */
     public function addPageDisplaysFromDb()
     {
@@ -133,7 +128,7 @@ class ChatPageZone extends BasicPage implements PersonContextInterface
     }
 
     /**
-     * Get the zone
+     * Get the zone.
      *
      * @return string
      */
@@ -143,7 +138,7 @@ class ChatPageZone extends BasicPage implements PersonContextInterface
     }
 
     /**
-     * Get the department
+     * Get the department.
      *
      * @return \Application\DeskPRO\Entity\Department
      */
@@ -159,11 +154,11 @@ class ChatPageZone extends BasicPage implements PersonContextInterface
         $function_tokens = array();
 
         foreach ($this->page_displays as $ticket_page) {
-            /** @var $ticket_page \Application\DeskPRO\Entity\ChatPageDisplay */
+            /* @var $ticket_page \Application\DeskPRO\Entity\ChatPageDisplay */
             $page_part = $this->compileChatPage($ticket_page, $function_tokens);
 
             if ($page_part) {
-                $part = array_merge($part,$page_part);
+                $part = array_merge($part, $page_part);
             }
         }
 
@@ -210,9 +205,9 @@ class ChatPageZone extends BasicPage implements PersonContextInterface
 
     protected function _compileArrayForItem($ticket_page, $item, array &$function_tokens)
     {
-        $part = array();
+        $part            = array();
         $part['section'] = $ticket_page['section'];
-        $part['id'] = $item['id'];
+        $part['id']      = $item['id'];
 
         if (isset($item['field_type'])) {
             $part['field_type'] = $item['field_type'];

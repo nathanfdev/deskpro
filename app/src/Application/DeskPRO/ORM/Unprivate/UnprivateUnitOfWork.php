@@ -774,6 +774,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 break;
             case self::STATE_REMOVED:
                                 unset($this->entityDeletions[$oid]);
+                $this->addToIdentityMap($entity);
                 $this->entityStates[$oid] = self::STATE_MANAGED;
                 break;
             case self::STATE_DETACHED:
@@ -1161,6 +1162,9 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 }
                 if ($lockVersion === null) {
                     return;
+                }
+                if ($entity instanceof Proxy && !$entity->__isInitialized__) {
+                    $entity->__load();
                 }
                 $entityVersion = $class->reflFields[$class->versionField]->getValue($entity);
                 if ($entityVersion != $lockVersion) {

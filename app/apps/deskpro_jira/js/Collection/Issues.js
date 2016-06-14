@@ -14,25 +14,27 @@ define(function () {
 	    };
 
 	    this.push = function() {
-          for (var i = 0; i < arguments.length; i++) {
-            var issue = arguments[i];
-            if (!issue) continue;
+        for (var i = 0; i < arguments.length; i++) {
+          var issue = arguments[i];
+          if (!issue) continue;
 
-            if (issue instanceof Array) {
-                return issue.each(function(el){self.push(el);});
-            }
-
-            Array.prototype.push.call(self, issue);
-            issue.url = issue.self.replace('rest/api/2/issue/' + issue.id, 'browse/' + issue.key);
-
-            // replace fields with rendered format
-            if (issue.renderedFields) {
-              for (var i in issue.renderedFields) {
-                issue.fields[i] = issue.renderedFields[i];
-                issue.renderedFields[i] = true;
-              }
-            }
+          if (issue instanceof Array) {
+            return issue.each(function (el) {
+              self.push(el);
+            });
           }
+
+          Array.prototype.push.call(self, issue);
+          issue.url = issue.self.replace('rest/api/2/issue/' + issue.id, 'browse/' + issue.key);
+
+          // replace fields with rendered format
+          if (!issue.renderedFields) return;
+          for (var i in issue.renderedFields) {
+            if (!issue.renderedFields[i]) continue;
+            issue.fields[i] = issue.renderedFields[i];
+            issue.renderedFields[i] = true;
+          }
+        }
 	    };
 
       /**
@@ -44,11 +46,11 @@ define(function () {
         self.loading = true;
         var d = $q.defer();
 
-        $http.get('/agent/jira/ticket/' + $ticket.id + '/issue')
+        $http.get(window.DP_BASE_URL + 'agent/jira/ticket/' + $ticket.id + '/issue')
           .success(function (data, status, headers, config) {
             self.loading = false;
             data && self.push(data.issues);
-            d.resolve(self);
+            //d.resolve(self);
           })
           .error(function (data, status, headers, config) {
             self.loading = false;
@@ -67,7 +69,7 @@ define(function () {
       this.create = function (data) {
         var d = $q.defer();
 
-        $http.post('/agent/jira/ticket/' + $ticket.id + '/issue', data)
+        $http.post(window.DP_BASE_URL + 'agent/jira/ticket/' + $ticket.id + '/issue', data)
           .success(function (data, status, headers, config) {
             data && self.push(data.issues);
             d.resolve(self.last());
@@ -94,7 +96,7 @@ define(function () {
 		    }
 		    var d = $q.defer();
 
-		    $http.put('/agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id, {fields: fields})
+		    $http.put(window.DP_BASE_URL + 'agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id, {fields: fields})
 				    .success(function (data, status, headers, config) {
 					    for (var i in fields) {
 						    if (undefined !== issue.fields[i]) {
@@ -121,7 +123,7 @@ define(function () {
         var d = $q.defer();
         issueId = issue ? issue.id : 0;
 
-        $http.post('/agent/jira/ticket/' + $ticket.id + '/issue/' + issueId + '/comments', msg)
+        $http.post(window.DP_BASE_URL + 'agent/jira/ticket/' + $ticket.id + '/issue/' + issueId + '/comments', msg)
           .success(function (data, status, headers, config) {
             if (!data) return d.resolve(data);
 
@@ -164,7 +166,7 @@ define(function () {
           return d.promise;
         }
 
-        $http.get('/agent/jira/search?q=' + $window.encodeURI(q))
+        $http.get(window.DP_BASE_URL + 'agent/jira/search?q=' + $window.encodeURI(q))
           .success(function (data, status, headers, config) {
             d.resolve(data.issues);
           })
@@ -184,7 +186,7 @@ define(function () {
       this.link = function (issue) {
         var d = $q.defer();
 
-        $http.post('/agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id + '/link')
+        $http.post(window.DP_BASE_URL + 'agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id + '/link')
           .success(function (data, status, headers, config) {
             data && self.push(data.issues);
             d.resolve(self.last());
@@ -205,7 +207,7 @@ define(function () {
       this.unlink = function (issue) {
         var d = $q.defer();
 
-        $http.delete('/agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id + '/link')
+        $http.delete(window.DP_BASE_URL + 'agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id + '/link')
           .success(function (data, status, headers, config) {
             self.splice(self.indexOf(issue), 1);
             d.resolve();

@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\InstallBundle\Upgrade\Build\Helper201405;
 
 use Application\DeskPRO\Tickets\Triggers\Terms;
@@ -59,19 +57,19 @@ class TriggerTermConverter
         $func = "upgradeTerm_{$t}";
 
         if (!method_exists($this, $func)) {
-            $e = new \Exception("Unknown trigger term: " . $info['type']);
+            $e = new \Exception('Unknown trigger term: '.$info['type']);
             KernelErrorHandler::logException($e);
 
-            return null;
+            return;
         }
 
         return $this->$func($info['type'], $info['op'], new OptionsArray($info['options']), $event_trigger);
     }
 
-
     /**
-     * @param  OptionsArray $options
-     * @param  string       $key
+     * @param OptionsArray $options
+     * @param string       $key
+     *
      * @return array
      */
     private function getSingleArrayValue(OptionsArray $options, $key)
@@ -136,9 +134,12 @@ class TriggerTermConverter
     {
         // before: date('w') (0=sun), new: iso8601 (1=mon, 7=sun)
         $opt = array_map(function ($d) {
-            $d = (int)$d;
-            if ($d == 0) return 7;
-            else return $d;
+            $d = (int) $d;
+            if ($d == 0) {
+                return 7;
+            } else {
+                return $d;
+            }
         }, $this->getSingleArrayValue($options, 'days'));
 
         return new Terms\CheckDayOfWeek($op, array('days' => $opt, 'tz' => 'UTC', 'var' => 'now'));
@@ -148,9 +149,12 @@ class TriggerTermConverter
     {
         // before: date('w') (0=sun), new: iso8601 (1=mon, 7=sun)
         $opt = array_map(function ($d) {
-            $d = (int)$d;
-            if ($d == 0) return 7;
-            else return $d;
+            $d = (int) $d;
+            if ($d == 0) {
+                return 7;
+            } else {
+                return $d;
+            }
         }, $this->getSingleArrayValue($options, 'days'));
 
         return new Terms\CheckDayOfWeek($op, array('days' => $opt, 'tz' => 'UTC', 'var' => 'date_created'));
@@ -166,7 +170,7 @@ class TriggerTermConverter
     private function upgradeTerm_email_account_bcc($type, $op, OptionsArray $options)
     {
         // no translation
-        return null;
+        return;
     }
 
     private function upgradeTerm_email_body($type, $op, OptionsArray $options)
@@ -212,7 +216,7 @@ class TriggerTermConverter
     private function upgradeTerm_email_header($type, $op, OptionsArray $options)
     {
         return new Terms\CheckEmailHeader($op, array(
-            'name' => $options->get('header_name', 'NO NAME'),
+            'name'  => $options->get('header_name', 'NO NAME'),
             'value' => $options->get('header_value', 'NO VALUE'),
         ));
     }
@@ -238,21 +242,21 @@ class TriggerTermConverter
     {
         // Not a criteria anymore
         // instead: mode=email
-        return null;
+        return;
     }
 
     private function upgradeTerm_is_via_email_reply($type, $op, OptionsArray $options)
     {
         // Not a criteria anymore
         // instead: event_trigger=reply, mode=email
-        return null;
+        return;
     }
 
     private function upgradeTerm_is_via_interface($type, $op, OptionsArray $options)
     {
         // Not a criteria anymore
         // instead: mode=web,form,portal,widget
-        return null;
+        return;
     }
 
     private function upgradeTerm_label($type, $op, OptionsArray $options)
@@ -270,11 +274,15 @@ class TriggerTermConverter
         $labels = Arrays::removeEmptyString($labels);
 
         if (!$labels) {
-            return null;
+            return;
         }
 
-        if ($op == 'is') $op = 'contains';
-        else if ($op == 'not') $op = 'notcontains';
+        if ($op == 'is') {
+            $op = 'contains';
+        } elseif ($op == 'not') {
+            $op = 'notcontains';
+        }
+
         return new Terms\CheckLabel($op, array('labels' => $labels));
     }
 
@@ -335,7 +343,7 @@ class TriggerTermConverter
     private function upgradeTerm_person_email_domain($type, $op, OptionsArray $options)
     {
         $domain = $options->get('email_domain', 'NO DOMAIN');
-        $regex = '/^(.*?)@' . preg_quote($domain, '/') . '$/';
+        $regex  = '/^(.*?)@'.preg_quote($domain, '/').'$/';
 
         switch ($op) {
             case 'is': $op = 'is_regex'; break;
@@ -348,27 +356,29 @@ class TriggerTermConverter
     private function upgradeTerm_person_field($type, $op, OptionsArray $options)
     {
         $field_id = Strings::extractRegexMatch('#\[(\d+)\]$#', $type);
-        if (!$field_id) return null;
+        if (!$field_id) {
+            return;
+        }
 
-        $value = Arrays::getValue($options->all(), 'custom_fields.field_'. $field_id);
+        $value = Arrays::getValue($options->all(), 'custom_fields.field_'.$field_id);
 
         return new Terms\CheckUserField($op, array(
             'field_id' => $field_id,
-            'value'    => $value
+            'value'    => $value,
         ));
     }
 
     private function upgradeTerm_agent_performer($type, $op, OptionsArray $options)
     {
         return new Terms\CheckPerformer($op, array(
-            'person_ids' => $this->getSingleArrayValue($options, 'agent_ids')
+            'person_ids' => $this->getSingleArrayValue($options, 'agent_ids'),
         ));
     }
 
     private function upgradeTerm_person_name($type, $op, OptionsArray $options)
     {
         return new Terms\CheckUserName($op, array(
-            'name' => $options->get('name', 'NO NAME')
+            'name' => $options->get('name', 'NO NAME'),
         ));
     }
 
@@ -419,7 +429,7 @@ class TriggerTermConverter
 
         return new Terms\CheckSlaStatus($op, array(
             'sla_ids'    => $this->getSingleArrayValue($options, 'sla_id'),
-            'sla_status' => $status
+            'sla_status' => $status,
         ));
     }
 
@@ -436,22 +446,24 @@ class TriggerTermConverter
     private function upgradeTerm_ticket_field($type, $op, OptionsArray $options)
     {
         $field_id = Strings::extractRegexMatch('#\[(\d+)\]$#', $type);
-        if (!$field_id) return null;
+        if (!$field_id) {
+            return;
+        }
 
-        $value = Arrays::getValue($options->all(), 'custom_fields.field_'. $field_id);
+        $value = Arrays::getValue($options->all(), 'custom_fields.field_'.$field_id);
 
         return new Terms\CheckTicketField($op, array(
             'field_id' => $field_id,
-            'value'    => $value
+            'value'    => $value,
         ));
     }
 
     private function upgradeTerm_time_created($type, $op, OptionsArray $options)
     {
         return new Terms\CheckTimeOfDay($op, array(
-            'time1' => $options->get('hour1', '00') . ':' . $options->get('minute1', '00'),
+            'time1' => $options->get('hour1', '00').':'.$options->get('minute1', '00'),
             'tz'    => 'UTC',
-            'var'   => 'date_created'
+            'var'   => 'date_created',
         ));
     }
 

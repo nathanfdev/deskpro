@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\EntityRepository\Helper;
 
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
@@ -59,29 +58,28 @@ class IdentityHelper
      */
     protected $collections = array();
 
-
     /**
      * @param \Doctrine\ORM\EntityManager                                    $em
      * @param \Application\DeskPRO\EntityRepository\AbstractEntityRepository $repos
      */
     public function __construct(EntityManager $em, AbstractEntityRepository $repos)
     {
-        $this->repos = $repos;
-        $this->em = $em;
+        $this->repos       = $repos;
+        $this->em          = $em;
         $this->entity_name = $repos->getName();
     }
-
 
     /**
      * Find a set of records by ID.
      *
-     * @param  int[] $ids
+     * @param int[] $ids
+     *
      * @return array
      */
     public function findByIds(array $ids, $same_order = true)
     {
         $missing = array();
-        $return = array();
+        $return  = array();
 
         if (!$this->hasIdentityMap()) {
             $missing = $ids;
@@ -116,7 +114,7 @@ class IdentityHelper
     }
 
     /**
-     * Get an array of all loaded entities of this type
+     * Get an array of all loaded entities of this type.
      *
      * @return array
      */
@@ -136,7 +134,7 @@ class IdentityHelper
     }
 
     /**
-     * Check if there are any objects in the Doctrine identity map at all
+     * Check if there are any objects in the Doctrine identity map at all.
      *
      * @return bool
      */
@@ -149,12 +147,13 @@ class IdentityHelper
 
     /**
      * @param $id
+     *
      * @return array|null
      */
     public function getCollection($name)
     {
         if (!isset($this->collections[$name])) {
-            return null;
+            return;
         }
 
         $return = array();
@@ -171,19 +170,20 @@ class IdentityHelper
 
     /**
      * @param string
+     *
      * @return array
      */
     public function getCollectionIds($name)
     {
         if (!isset($this->collections[$name])) {
-            return null;
+            return;
         }
 
         return $this->collections[$name];
     }
 
     /**
-     * Add a collection
+     * Add a collection.
      *
      * @param $name
      * @param array $ids
@@ -194,7 +194,7 @@ class IdentityHelper
     }
 
     /**
-     * Adds a collection from an array result set of objects
+     * Adds a collection from an array result set of objects.
      *
      * @param $name
      * @param array $results
@@ -209,7 +209,7 @@ class IdentityHelper
     }
 
     /**
-     * Clear a collection
+     * Clear a collection.
      *
      * @param $name
      */
@@ -219,9 +219,10 @@ class IdentityHelper
     }
 
     /**
-     * Check if a collection exists
+     * Check if a collection exists.
      *
      * @param $name
+     *
      * @return bool
      */
     public function hasCollection($name)

@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -43,25 +42,25 @@ class PersonEmail extends AbstractEntityRepository
     public function getEmail($email_address)
     {
         if (App::getDb()->isTransactionActive()) {
-            return $this->getEntityManager()->createQuery("
+            return $this->getEntityManager()->createQuery('
                 SELECT e
                 FROM DeskPRO:PersonEmail e
                 WHERE e.email = ?1
-            ")->setLockMode(LockMode::PESSIMISTIC_READ)->setParameters(array(1=> $email_address))->setMaxResults(1)->getOneOrNullResult();
+            ')->setLockMode(LockMode::PESSIMISTIC_READ)->setParameters(array(1 => $email_address))->setMaxResults(1)->getOneOrNullResult();
         } else {
-            return $this->getEntityManager()->createQuery("
+            return $this->getEntityManager()->createQuery('
                 SELECT e
                 FROM DeskPRO:PersonEmail e
                 WHERE e.email = ?1
-            ")->setParameters(array(1=> $email_address))->setMaxResults(1)->getOneOrNullResult();
+            ')->setParameters(array(1 => $email_address))->setMaxResults(1)->getOneOrNullResult();
         }
     }
-
 
     /**
      * Count the number of email addresses at one or more arrays.
      *
-     * @param  array|string $domains
+     * @param array|string $domains
+     *
      * @return array|int
      */
     public function countDomains($domains)
@@ -69,7 +68,7 @@ class PersonEmail extends AbstractEntityRepository
         $single = false;
         if (!is_array($domains)) {
             $domains = array($domains);
-            $single = true;
+            $single  = true;
         }
 
         // Init all to zero
@@ -97,12 +96,12 @@ class PersonEmail extends AbstractEntityRepository
         return $results;
     }
 
-
     /**
      * Count the number of email addresses at one or more emails where the user belongs to a company
      * that isnt this one.
      *
-     * @param  array|string $domains
+     * @param array|string $domains
+     *
      * @return array|int
      */
     public function countDomainsWithOtherCompany($domains, $org)
@@ -119,12 +118,12 @@ class PersonEmail extends AbstractEntityRepository
 
         if (!is_array($domains)) {
             $domains = array($domains);
-            $single = true;
+            $single  = true;
         }
 
         // Init all to zero
         $results = array_combine($domains, array_fill(0, count($domains), 0));
-        $org = is_object($org) ? $org->id : $org;
+        $org     = is_object($org) ? $org->id : $org;
 
         $results = array_merge($results, $this->getEntityManager()->getConnection()->fetchAllKeyValue('
             SELECT people_emails.email_domain, COUNT(DISTINCT people.id) as count
@@ -145,7 +144,8 @@ class PersonEmail extends AbstractEntityRepository
      * Count the number of email addresses at one or more emails where the user does not
      * belong to any company.
      *
-     * @param  array|string $domains
+     * @param array|string $domains
+     *
      * @return array|int
      */
     public function countDomainsWithNoCompany($domains)
@@ -161,7 +161,7 @@ class PersonEmail extends AbstractEntityRepository
         $single = false;
         if (!is_array($domains)) {
             $domains = array($domains);
-            $single = true;
+            $single  = true;
         }
 
         // Init all to zero
@@ -190,5 +190,13 @@ class PersonEmail extends AbstractEntityRepository
         }
 
         return $results;
+    }
+
+    public function search($query, $limit = 10)
+    {
+        return $this->_em->getConnection()->fetchAll(
+            sprintf('select id, email from %s where email like :email limit %d', $this->getTableName(), $limit),
+            array('email' => '%'.mb_strtolower($query).'%')
+        );
     }
 }

@@ -1,42 +1,42 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Controller
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Controller
+ */
 namespace Application\DeskPRO\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\AuthInterfaceSettings;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * The abstract controller sets up some default objects.
@@ -60,13 +60,13 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         }
 
         switch ($prop) {
-            case 'em': $service = $this->get('doctrine.orm.entity_manager');break;
-            case 'db': $service = $this->get('database_connection');break;
-            case 'in': $service = $this->get('deskpro.core.input_reader');break;
-            case 'cleaner': $service = $this->get('deskpro.core.input_cleaner');break;
+            case 'em': $service       = $this->get('doctrine.orm.entity_manager');break;
+            case 'db': $service       = $this->get('database_connection');break;
+            case 'in': $service       = $this->get('deskpro.core.input_reader');break;
+            case 'cleaner': $service  = $this->get('deskpro.core.input_cleaner');break;
             case 'settings': $service = $this->get('deskpro.core.settings');break;
-            case 'session': $service = $this->get('session');break;
-            case 'tpl': $service = $this->get('templating');break;
+            case 'session': $service  = $this->get('session');break;
+            case 'tpl': $service      = $this->get('templating');break;
             default:
                 throw new \InvalidArgumentException("Unknown property {$prop}");
         }
@@ -84,12 +84,12 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return ($this->get('request')->getMethod() == 'POST');
     }
 
-
     /**
-     * Checks a request token in a form
+     * Checks a request token in a form.
      *
-     * @param  string $name
-     * @param  string $field_name
+     * @param string $name
+     * @param string $field_name
+     *
      * @return bool
      */
     public function checkRequestToken($name = '', $field_name = '_dp_security_token')
@@ -98,7 +98,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
             return true;
         }
 
-        $header_name = "HTTP_" . str_replace('-', '_', strtoupper('X-DeskPRO-' . trim($field_name, '_-')));
+        $header_name = 'HTTP_'.str_replace('-', '_', strtoupper('X-DeskPRO-'.trim($field_name, '_-')));
 
         if (!empty($_REQUEST[$field_name])) {
             $in_token = $_REQUEST[$field_name];
@@ -129,7 +129,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return $this->session->getEntity()->checkSecurityToken($name, $in_token);
     }
 
-
     /**
      * Checks the standard request token.
      *
@@ -140,19 +139,19 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return $this->checkRequestToken('request_token', '_rt');
     }
 
-
     /**
      * Protects against double-submitted requests. If an exact form is submitted a second time, then this method
      * returns true.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function consumeRequest($name = '')
     {
-        $hash = md5($name . App::getRequest()->getUri());
+        $hash = md5($name.App::getRequest()->getUri());
         if (App::getRequest()->getMethod() == 'POST') {
-            $hash = md5($hash . serialize($_GET + $_POST));
+            $hash = md5($hash.serialize($_GET + $_POST));
         }
 
         $used = $this->session->get('consumed_tokens', array());
@@ -172,9 +171,8 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return true;
     }
 
-
     /**
-     * Just like checkRequestToken but this shows an error for you if its bad
+     * Just like checkRequestToken but this shows an error for you if its bad.
      *
      * @param string $name
      * @param string $field_name
@@ -186,9 +184,8 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         }
     }
 
-
     /**
-     * Just like checkRequestToken but this shows an error for you if its bad
+     * Just like checkRequestToken but this shows an error for you if its bad.
      *
      * @param string $name
      * @param string $field_name
@@ -198,12 +195,12 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return $this->ensureRequestToken('request_token', '_rt');
     }
 
-
     /**
-     * Checks a request token $token
+     * Checks a request token $token.
      *
-     * @param  string $name
-     * @param  string $token
+     * @param string $name
+     * @param string $token
+     *
      * @return bool
      */
     public function checkAuthToken($name, $token)
@@ -215,9 +212,8 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return $this->session->getEntity()->checkSecurityToken($name, $token);
     }
 
-
     /**
-     * Just like checkAuthToken but this shows an error for you if its bad
+     * Just like checkAuthToken but this shows an error for you if its bad.
      *
      * @param string $name
      * @param string $field_name
@@ -229,16 +225,17 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         }
     }
 
-
     /**
      * Just enables 'smart view resoltion' when the at sign is used.
      *
      * When the at sign is used, the bundle and optionally the sub-directory can be inferred from the calling controller.
+     *
      * @list.html.twig will get SomeBundle:MyController:list.html.
      *
-     * @param  string                                     $view
-     * @param  array                                      $parameters
-     * @param  \Symfony\Component\HttpFoundation\Response $response
+     * @param string                                     $view
+     * @param array                                      $parameters
+     * @param \Symfony\Component\HttpFoundation\Response $response
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function render($view, array $parameters = array(), Response $response = null)
@@ -250,7 +247,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
             }
 
             if ($m[1] == 'Cloud') {
-                $bundle = 'Cloud' . $m[2];
+                $bundle = 'Cloud'.$m[2];
             } else {
                 $bundle = $m[2];
             }
@@ -260,7 +257,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
                 $pre = "$bundle:";
             } else {
                 $controller = \Orb\Util\Strings::extractRegexMatch('#\\\\([A-Za-z0-9_\-]+)Controller$#', get_class($this), 1);
-                $pre = "$bundle:$controller:";
+                $pre        = "$bundle:$controller:";
             }
 
             $view = preg_replace('#^@#', $pre, $view);
@@ -268,7 +265,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 
         return parent::render($view, $parameters, $response);
     }
-
 
     /**
      * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
@@ -281,7 +277,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return $auth->getUserInterfaceSettings();
     }
 
-
     /**
      * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
      */
@@ -293,12 +288,12 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return $auth->getAgentInterfaceSettings();
     }
 
-
     /**
-     * Returns a RedirectResponse if SSO says it needs to redirect
+     * Returns a RedirectResponse if SSO says it needs to redirect.
      *
-     * @param  bool                                               $has_just_logged_out
-     * @param  AuthInterfaceSettings                              $authInterfaceSettings
+     * @param bool                  $has_just_logged_out
+     * @param AuthInterfaceSettings $authInterfaceSettings
+     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     protected function checkAuthSystemForResponse(
@@ -308,12 +303,24 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
             if ($url = $authInterfaceSettings->getLogoutRedirectUrl()) {
                 return $this->redirect($url);
             }
+
+            // if user has just logged out, and we dont get a redirect url from the auth system, we don't
+            // want to continue execution in this method.
+            return;
         }
 
         if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {
             if ($sso_result->isRedirectRequired()) {
-
-                $return = $this->request->getReturnParam();
+                if (!$return = $this->request->getReturnParam()) {
+                    try {
+                        $return = $this->generateUrl(
+                            $this->request->attributes->get('_route'),
+                            $this->request->attributes->get('_route_params'),
+                            UrlGeneratorInterface::ABSOLUTE_URL);
+                    } catch (\Exception $e) {
+                        $return = null;
+                    }
+                }
                 $this->session->set('auth_return', $return);
                 $this->session->save();
 
@@ -323,7 +330,8 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
     }
 
     /**
-     * @param  AuthInterfaceSettings $authInterfaceSettings
+     * @param AuthInterfaceSettings $authInterfaceSettings
+     *
      * @return null|\Orb\Auth\Result an auth result is returned if the sso redirect is enabled
      */
     protected function handleAutomaticSso(AuthInterfaceSettings $authInterfaceSettings)
@@ -332,6 +340,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
             return $authInterfaceSettings->getSsoAuthAdapter()->authenticate();
         }
 
-        return null;
+        return;
     }
 }

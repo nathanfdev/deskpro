@@ -1,59 +1,79 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
+use Orb\Util\CheckedOptionsException;
 
+/**
+ * Operations about ticket filters
+ * Class TicketFiltersController.
+ *
+ * @SWG\Resource(
+ * 	resourcePath="/ticket_filters",
+ * 	description="Operations about Ticket urgencies",
+ * 	basePath="/api"
+ * )
+ */
 class TicketFiltersController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
         return new AdminManagePermission();
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_filters",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get all defined filters",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     */
     public function listAction()
     {
         $filters = $this->em->getRepository('DeskPRO:TicketFilter')->getDefinedFilters();
@@ -62,21 +82,21 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
 
         foreach ($filters as $filter) {
             $row = array(
-                'id'                => $filter->id,
-                'title'             => $filter->title,
-                'is_enabled'        => $filter->is_enabled,
-                'sys_name'          => $filter->sys_name,
-                'display_order'     => $filter->display_order,
-                'is_global'         => $filter->is_global,
-                'person'            => $filter->person ? $filter->person->toApiData(true) : null,
-                'agent_team'        => $filter->agent_team ? $filter->agent_team->toApiData(true) : null,
+                'id'            => $filter->id,
+                'title'         => $filter->title,
+                'is_enabled'    => $filter->is_enabled,
+                'sys_name'      => $filter->sys_name,
+                'display_order' => $filter->display_order,
+                'is_global'     => $filter->is_global,
+                'person'        => $filter->person ? $filter->person->toApiData(true) : null,
+                'agent_team'    => $filter->agent_team ? $filter->agent_team->toApiData(true) : null,
             );
 
             $data[] = $row;
         }
 
         return $this->createApiResponse(array(
-            'filters' => $data
+            'filters' => $data,
         ));
     }
 
@@ -84,6 +104,30 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
     # get
     ####################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_filters/{id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get ticket filter by Id",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="ID of given filter",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function getAction($id)
     {
         $filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($id);
@@ -93,13 +137,13 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
         }
 
         $trans = new LegacyTermsTransformer();
-        $crit = $trans->toFilterTerms($filter->terms);
+        $crit  = $trans->toFilterTerms($filter->terms);
 
-        $filter = $this->getApiData($filter);
+        $filter          = $this->getApiData($filter);
         $filter['terms'] = $crit->exportToArray();
 
         return $this->createApiResponse(array(
-            'filter' => $filter
+            'filter' => $filter,
         ));
     }
 
@@ -107,6 +151,64 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
     # save
     ####################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @SWG\Api(
+     * 	path="/ticket_filters/{id}",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Save ticket filter details",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="ticket id",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="filter.title",
+     *				description="Title for this filter",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="filter.is_global",
+     *				description="ticket global flag",
+     *				paramType="query",
+     *				required=false,
+     *				type="boolean",
+     *			),
+     *          @SWG\Parameter(
+     *				name="filter.person_id",
+     *				description="Added person identificator",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="filter.agent_team_id",
+     *				description="Agent team identificator",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="filter.terms",
+     *				description="",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer[]",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function saveAction($id)
     {
         if ($id) {
@@ -116,11 +218,11 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
                 throw $this->createNotFoundException();
             }
         } else {
-            $filter = new TicketFilter();
+            $filter         = new TicketFilter();
             $filter->person = $this->person;
         }
 
-        $filter->title = $this->in->getString('filter.title');
+        $filter->title     = $this->in->getString('filter.title');
         $filter->is_global = $this->in->getBool('filter.is_global');
 
         $filter->person = null;
@@ -129,7 +231,7 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
         }
 
         $filter->agent_team = null;
-        if ($this->in->getUint('filter.agent_team_id')){
+        if ($this->in->getUint('filter.agent_team_id')) {
             $filter->agent_team = $this->container->getAgentData()->getTeam($this->in->getUint('filter.agent_team_id'));
         }
 
@@ -137,10 +239,14 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
         foreach ($this->in->getArrayValue('filter.terms') as $term_info) {
             try {
                 $crit->addTermFromArray($term_info);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+                if ($e instanceof CheckedOptionsException) {
+                    return $this->createApiErrorResponse('validation_error', $e->getMessage());
+                }
+            }
         }
 
-        $trans = new LegacyTermsTransformer();
+        $trans         = new LegacyTermsTransformer();
         $filter->terms = $trans->toLegacyTerms($crit);
 
         $this->em->persist($filter);
@@ -160,6 +266,30 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
     # remove
     ####################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_filters/{id}",
+     * 	@SWG\Operation(
+     * 		method="DELETE",
+     * 		summary="Delete ticket filter by ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="ticket filter id",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function removeAction($id)
     {
         $filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($id);
@@ -172,7 +302,7 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
         $this->em->flush();
 
         return $this->createSuccessResponse(array(
-            'old_id' => $id
+            'old_id' => $id,
         ));
     }
 
@@ -180,11 +310,33 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
     # save-display-order
     ####################################################################################################################
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_filters/display_order",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Rearrange order in which filters are following",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="display_order",
+     *				description="",
+     *				paramType="path",
+     *				required=false,
+     *				type="int[]",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function saveDisplayOrderAction()
     {
         $display_order = $this->in->getCleanValueArray('display_order', 'uint', 'discard');
         $this->em->getRepository('DeskPRO:TicketFilter')->updateDisplayOrder($display_order);
 
-        return $this->createSuccessResponse();
+        return $this->listAction();
     }
 }

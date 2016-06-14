@@ -3,7 +3,7 @@
 		<table class="display-table">
 			<tr>
 				<td class="nowrap" width="50"><label class="row-label">Create Task</label></td>
-				<td ng-show="rowOpts.rowEnabled">
+				<td ng-show="rowOpts.rowEnabled" class="row-options">
 					<table class="display-table spaced" width="100%">
 						<tr>
 							<td style="vertical-align: top; white-space: nowrap" nowrap width="100">
@@ -19,8 +19,13 @@
                             </td>
                             <td>
                                 <input type="text" class="form-control" style="width: 140px; display: inline-block;"
-                                       datepicker-popup="dd MMMM yyyy" ng-model="model.date_due"
-                                       datepicker-options="{'show-weeks': false}" />
+                                       ng-model="model.date_due"
+                                       dp-datetime-popup="DD MMMM YYYY"
+		                                />
+                                <select ui-select2="{dropdownAutoWidth:true}" ng-model="model.offset"
+                                        style="min-width: 200px;" placeholder="Timezone Offset">
+                                    <option ng-repeat="tz in model.timezones" value="{{ ng_var('tz.id') }}">{{ ng_var('tz.title') }}</option>
+                                </select>
                             </td>
                         </tr>
                         <tr>
@@ -61,6 +66,16 @@
                                                 value="team:{{ ng_var('team.id') }}">{{ ng_var('team.name') }}</option>
                                     </optgroup>
                                 </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top; white-space: nowrap" nowrap width="100">
+                                Link to ticket:
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="checkbox" ng-model="model.link" /> Yes
+                                </label>
                             </td>
                         </tr>
 					</table>

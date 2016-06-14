@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\TicketLayout;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -53,7 +52,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
      */
     private $terms = array();
 
-
     /**
      * @param \Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface[] $terms
      * @param string                                                              $mode
@@ -69,7 +67,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         }
     }
 
-
     /**
      * @param TicketLayoutTermInterface $term
      */
@@ -77,7 +74,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
     {
         $this->terms[] = $term;
     }
-
 
     /**
      * @return \Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface[]
@@ -87,7 +83,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         return $this->terms;
     }
 
-
     /**
      * @return string
      */
@@ -96,19 +91,18 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         return $this->mode;
     }
 
-
     /**
      * @param string $mode
      */
     public function setMode($mode)
     {
-        $mode = strtoupper($mode);
+        $mode       = strtolower($mode);
         $this->mode = ($mode == self::CRIT_ALL ? self::CRIT_ALL : self::CRIT_ANY);
     }
 
-
     /**
-     * @param  Ticket $ticket
+     * @param Ticket $ticket
+     *
      * @return bool
      */
     public function isTicketMatch(Ticket $ticket)
@@ -132,22 +126,21 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         }
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function compileJsCheck()
     {
         if (!$this->terms) {
-            return "function () { return true; }";
+            return 'function () { return true; }';
         }
 
         $js = "(function () {\n";
         $js .= "\tvar checkFn = [\n";
         $fn_bits = array();
         foreach ($this->terms as $t) {
-            $t_js = $t->compileJsCheck();
-            $t_js = trim(Strings::modifyLines($t_js, "\t\t"));
+            $t_js      = $t->compileJsCheck();
+            $t_js      = trim(Strings::modifyLines($t_js, "\t\t"));
             $fn_bits[] = "\t\t$t_js";
         }
         $js .= implode(",\n", $fn_bits);
@@ -156,9 +149,9 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         $js .= "\treturn function (ticket) {\n";
         $js .= "\t\tfor(var i = 0; i < checkFn.length; i++) { ";
         if ($this->mode == self::CRIT_ANY) {
-            $js .= "if (checkFn[i](ticket)) return true;";
+            $js .= 'if (checkFn[i](ticket)) return true;';
         } else {
-            $js .= "if (!checkFn[i](ticket)) return true;";
+            $js .= 'if (!checkFn[i](ticket)) return false;';
         }
         $js .= " }\n";
 
@@ -169,11 +162,10 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         }
 
         $js .= "\t};\n";
-        $js .= "})()";
+        $js .= '})()';
 
         return $js;
     }
-
 
     /**
      * @return array
@@ -190,13 +182,12 @@ class LayoutFieldCriteria implements \Serializable, \Countable
             $data['terms'][] = array(
                 'type'    => $t->getTermType(),
                 'op'      => $t->getTermOperator(),
-                'options' => $t->getTermOptions()
+                'options' => $t->getTermOptions(),
             );
         }
 
         return $data;
     }
-
 
     /**
      * @return string
@@ -206,7 +197,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         return json_encode($this->exportToArray());
     }
 
-
     /**
      * @param array $data
      */
@@ -215,12 +205,11 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         $this->setMode($data['mode']);
 
         foreach ($data['terms'] as $t) {
-            $classname = "Application\\DeskPRO\\TicketLayout\\Terms\\{$t['type']}";
-            $obj = new $classname($t['op'], $t['options']);
+            $classname = 'Application\\DeskPRO\\TicketLayout\\Terms\\'.$t['type'];
+            $obj       = new $classname($t['op'], $t['options']);
             $this->addTerm($obj);
         }
     }
-
 
     /**
      * @return string
@@ -229,7 +218,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
     {
         return $this->exportToJson();
     }
-
 
     /**
      * @param string $data

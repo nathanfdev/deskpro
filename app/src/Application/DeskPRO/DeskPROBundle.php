@@ -1,40 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
+ * DeskPRO.
+ */
 namespace Application\DeskPRO;
 
-use Application\DeskPRO\DependencyInjection\DoctrineEntityListenerPass;
 use Application\DeskPRO\DependencyInjection\CoreExtension;
+use Application\DeskPRO\DependencyInjection\DoctrineEntityListenerPass;
 use Application\DeskPRO\DependencyInjection\ElasticaClientPass;
 use Application\DeskPRO\DependencyInjection\SearchExtension;
 use Symfony\Component\Console\Application;
@@ -66,6 +64,8 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
         $commands = array(
             'Application\\DeskPRO\\Command\\AgentsCommand',
             'Application\\DeskPRO\\Command\\AsseticCommand',
+            'Application\\DeskPRO\\Command\\CheckBlobStorageCommand',
+            'Application\\DeskPRO\\Command\\CollectEmailCommand',
             'Application\\DeskPRO\\Command\\DbCollationChangeCommand',
             'Application\\DeskPRO\\Command\\DecodeTacCommand',
             'Application\\DeskPRO\\Command\\DefaultDataCommand',
@@ -76,15 +76,15 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\DevGenChangelogDocCommand',
             'Application\\DeskPRO\\Command\\DevGenDpqlDocsCommand',
             'Application\\DeskPRO\\Command\\DevJobCreateIncomingSmsCommand',
-            'Application\\DeskPRO\\Command\\DevLangCheckPhraseIdsCommand',
             'Application\\DeskPRO\\Command\\DevLangCheckVarsCommand',
             'Application\\DeskPRO\\Command\\DevLangOneSkyInitCommand',
             'Application\\DeskPRO\\Command\\DevLoadDataCommand',
-            'Application\\DeskPRO\\Command\\DevPagelogCommand',
             'Application\\DeskPRO\\Command\\DevRebuildSyncDataCommand',
             'Application\\DeskPRO\\Command\\DevTestApiCommand',
+            'Application\\DeskPRO\\Command\\FixBlobPathsCommand',
             'Application\\DeskPRO\\Command\\GenBuildClassCommand',
             'Application\\DeskPRO\\Command\\GenerateSchemaFileCommand',
+            'Application\\DeskPRO\\Command\\GenerateReportFileCommand',
             'Application\\DeskPRO\\Command\\GenRandomEmailCommand',
             'Application\\DeskPRO\\Command\\InstallCommand',
             'Application\\DeskPRO\\Command\\IndexElasticsearchCommand',
@@ -95,16 +95,19 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\LicenseInfoCommand',
             'Application\\DeskPRO\\Command\\LoginTokenCommand',
             'Application\\DeskPRO\\Command\\MoveBlobsCommand',
-            'Application\\DeskPRO\\Command\\PhraseCheckCommand',
+            'Application\\DeskPRO\\Command\\OptimisePermsCommand',
             'Application\\DeskPRO\\Command\\PopulateElasticsearchCommand',
             'Application\\DeskPRO\\Command\\ProcessEmailCommand',
             'Application\\DeskPRO\\Command\\RecountRatingsCommand',
             'Application\\DeskPRO\\Command\\RefillTicketActiveCommand',
+            'Application\\DeskPRO\\Command\\ReplayNewReplyTriggersCommand',
+            'Application\\DeskPRO\\Command\\ResendTicketEmailNotificationsCommand',
             'Application\\DeskPRO\\Command\\SchemaCommand',
             'Application\\DeskPRO\\Command\\SearchReindexCommand',
             'Application\\DeskPRO\\Command\\SyncDataCommand',
             'Application\\DeskPRO\\Command\\TestCommand',
             'Application\\DeskPRO\\Command\\TestEmailDecodeCommand',
+            'Application\\DeskPRO\\Command\\TestFilterCommand',
             'Application\\DeskPRO\\Command\\UpgradeCommand',
             'Application\\DeskPRO\\Command\\VerifyBlobsCommand',
             'Application\\DeskPRO\\Command\\VerifySearchTablesCommand',
@@ -112,7 +115,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
         );
 
         foreach ($commands as $cmd) {
-            $application->add(new $cmd);
+            $application->add(new $cmd());
         }
     }
 

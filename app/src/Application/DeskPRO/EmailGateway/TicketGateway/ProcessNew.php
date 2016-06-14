@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category EmailGateway
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category EmailGateway
+ */
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
@@ -43,8 +42,8 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
+use Application\DeskPRO\Translate\Translate;
 use Orb\Util\Strings;
-use \Application\DeskPRO\Translate\Translate;
 
 class ProcessNew extends ProcessAbstract
 {
@@ -63,7 +62,6 @@ class ProcessNew extends ProcessAbstract
      */
     protected $cleaner;
 
-
     /**
      * @param EmailAccount        $account
      * @param Person              $person
@@ -71,20 +69,19 @@ class ProcessNew extends ProcessAbstract
      */
     public function __construct(EmailAccount $account, Person $person, TicketIncomingEmail $ticket_email,
         Translate $translator
-    )
-    {
-        $this->account       = $account;
-        $this->person        = $person;
-        $this->ticket_email  = $ticket_email;
-        $this->reader        = $ticket_email->reader;
-        $this->cleaner       = App::get('deskpro.core.input_cleaner');
-        $this->translator    = $translator;
+    ) {
+        $this->account      = $account;
+        $this->person       = $person;
+        $this->ticket_email = $ticket_email;
+        $this->reader       = $ticket_email->reader;
+        $this->cleaner      = App::get('deskpro.core.input_cleaner');
+        $this->translator   = $translator;
     }
 
-
     /**
-     * @return Ticket|mixed
      * @throws \Exception
+     *
+     * @return Ticket|mixed
      */
     public function run()
     {
@@ -146,7 +143,7 @@ class ProcessNew extends ProcessAbstract
                 $this->logMessage('[TicketGatewayProcessor] runNewTicket read text email');
                 $txt = $this->ticket_email->email_body_text;
                 if (!$txt && $this->ticket_email->email_body_text) {
-                    $txt = $this->ticket_email->email_body_text;
+                    $txt                       = $this->ticket_email->email_body_text;
                     $email_info->charset_error = $this->reader->getBodyText()->getOriginalCharset();
                 }
 
@@ -155,13 +152,13 @@ class ProcessNew extends ProcessAbstract
                     $txt = substr($txt, 0, 25000);
                 }
 
-                $email_info->body = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
+                $email_info->body         = Strings::text2html($txt, 'plaintext-email');
                 $email_info->body_is_html = false;
             }
 
             // Replace inline image tags with tokens
-            $email_info->body_raw = $email_info->body;
-            $email_info->body = $inline_images->processTokens($email_info->body);
+            $email_info->body_raw  = $email_info->body;
+            $email_info->body      = $inline_images->processTokens($email_info->body);
             $email_info->body_full = '';
 
             if ($email_info->body_is_html) {
@@ -184,9 +181,9 @@ class ProcessNew extends ProcessAbstract
         $use_lang = null;
 
         if (!App::getDataService('Language')->isLangSystemEnabled()) {
-            $this->logMessage("Helpdesk is in single-language mode");
+            $this->logMessage('Helpdesk is in single-language mode');
         } elseif ($this->person->getRealLanguage()) {
-            $this->logMessage("Person has language set: ".$this->person->getRealLanguage()->id." ".$this->person->getRealLanguage()->title);
+            $this->logMessage('Person has language set: '.$this->person->getRealLanguage()->id.' '.$this->person->getRealLanguage()->title);
         } else {
             $detect_body = strip_tags($email_info->body);
             if (strlen($detect_body) < 300) {
@@ -194,7 +191,7 @@ class ProcessNew extends ProcessAbstract
             } else {
                 /** @var $lang_detect \Application\DeskPRO\Languages\Detect */
                 $lang_detect = App::getSystemService('language_detect');
-                $this->logMessage("Detectable languages: ".implode(', ', $lang_detect->getDetectableLanguages()));
+                $this->logMessage('Detectable languages: '.implode(', ', $lang_detect->getDetectableLanguages()));
 
                 $lang = $lang_detect->detectLanguage($detect_body);
                 if ($lang) {
@@ -221,7 +218,7 @@ class ProcessNew extends ProcessAbstract
             $this->logMessage('[TicketGatewayProcessor] No existing person found, will try and create it');
             $person = Person::newContactPerson(array(
                 'email' => $this->reader->getFromAddress()->getEmail(),
-                'name'  => $this->reader->getFromAddress()->getNameUtf8() ?: ''
+                'name'  => $this->reader->getFromAddress()->getNameUtf8() ?: '',
             ));
 
             App::getDb()->beginTransaction();
@@ -233,20 +230,6 @@ class ProcessNew extends ProcessAbstract
                 App::getDb()->rollback();
                 throw $e;
             }
-        }
-
-        $executor_context = $this->getTicketManager()->createUserExecutorContext(
-            $this->person,
-            'newticket',
-            'email'
-        );
-
-        $executor_context->setEmailContext($this->reader);
-        $executor_context->getVars()->set('ticket_email', $this->ticket_email);
-
-        if ($this->logger) {
-            $orb_logger_adapter = new OrbLoggerAdapterHandler($this->logger);
-            $executor_context->getLogger()->pushHandler($orb_logger_adapter);
         }
 
         #------------------------------
@@ -264,11 +247,11 @@ class ProcessNew extends ProcessAbstract
             $subject = '(No Subject)';
         }
 
-        $ticket = $this->getTicketManager()->createTicket();
-        $ticket->subject = $subject;
-        $ticket->person = $this->person;
-        $ticket->status = 'awaiting_agent';
-        $ticket->email_account = $this->account;
+        $ticket                  = $this->getTicketManager()->createTicket();
+        $ticket->subject         = $subject;
+        $ticket->person          = $this->person;
+        $ticket->status          = 'awaiting_agent';
+        $ticket->email_account   = $this->account;
         $ticket->creation_system = 'gateway.person';
 
         if ($use_lang) {
@@ -283,11 +266,11 @@ class ProcessNew extends ProcessAbstract
             }
         }
 
-        $ticket_message = new TicketMessage($this->reader->getId());
-        $ticket_message->person = $this->person;
+        $ticket_message              = new TicketMessage($this->reader->getId());
+        $ticket_message->person      = $this->person;
         $ticket_message->message_raw = $email_info->body_raw;
         $ticket_message->setMessageHtml($email_info->body);
-        $ticket_message->withNewSubject = $subject;
+        $ticket_message->withNewSubject  = $subject;
         $ticket_message->creation_system = 'gateway.person';
 
         if ($this->reader->getProperty('email_source')) {
@@ -297,8 +280,8 @@ class ProcessNew extends ProcessAbstract
         $ticket->addMessage($ticket_message);
 
         foreach ($this->processBlobs() as $blob) {
-            $attach = new TicketAttachment();
-            $attach['blob'] = $blob;
+            $attach           = new TicketAttachment();
+            $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
             if (isset($this->inline_blobs[$blob->id])) {
@@ -320,7 +303,7 @@ class ProcessNew extends ProcessAbstract
         if ($this->person && !$this->person->isNewPerson()) {
             if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, null, 10800, $this->getLogger())) {
                 $this->setError(EmailSource::ERR_DUPE);
-                $this->logMessage('[TicketGatewayProcessor] Duplicate message ' . $dupe_message->getId());
+                $this->logMessage('[TicketGatewayProcessor] Duplicate message '.$dupe_message->getId());
 
                 return $dupe_message;
             }
@@ -331,9 +314,9 @@ class ProcessNew extends ProcessAbstract
         #------------------------------
 
         if ($this->ticket_email->reply_actions) {
-            $reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
-            $reply_actions_context = new ReplyActionsContext();
-            $reply_actions_context->ticket = $ticket;
+            $reply_actions_apply            = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
+            $reply_actions_context          = new ReplyActionsContext();
+            $reply_actions_context->ticket  = $ticket;
             $reply_actions_context->message = $ticket_message;
             $reply_actions_apply->apply($reply_actions_context);
         }
@@ -342,10 +325,41 @@ class ProcessNew extends ProcessAbstract
         # Process new ticket
         #------------------------------
 
+        // User is an agent and the ticket owner isn't the person who submitted
+        // the email. Means the agent used the #user action code and is
+        // creting a ticket on behalf of someone else
+        if ($this->person->is_agent && $ticket->person !== $this->person) {
+            $executor_context = $this->getTicketManager()->createAgentExecutorContext(
+                $this->person,
+                'newticket',
+                'email'
+            );
+        } else {
+            $executor_context = $this->getTicketManager()->createUserExecutorContext(
+                $this->person,
+                'newticket',
+                'email'
+            );
+        }
+
+        $executor_context->setEmailContext($this->reader);
+        $executor_context->getVars()->set('ticket_email', $this->ticket_email);
+
+        if ($this->ticket_email->is_bounce) {
+            $executor_context->getVars()->set('is_bounce_message', true);
+        }
+        if ($this->reader->isFromRobot()) {
+            $executor_context->getVars()->set('is_robot_message', true);
+        }
+
+        if ($this->logger) {
+            $orb_logger_adapter = new OrbLoggerAdapterHandler($this->logger);
+            $executor_context->getLogger()->pushHandler($orb_logger_adapter);
+        }
+
         App::getDb()->beginTransaction();
 
         try {
-
             if ($this->reader->getCcAddresses() || count($this->reader->getToAddresses()) > 1) {
                 $this->logMessage('[TicketGatewayProcessor] Has CC');
                 $this->handleCc($ticket, $this->reader->getDeliveredAddresses());
@@ -370,7 +384,7 @@ class ProcessNew extends ProcessAbstract
         }
 
         return array(
-            'ticket' => $ticket,
+            'ticket'         => $ticket,
             'ticket_message' => $ticket_message,
         );
     }

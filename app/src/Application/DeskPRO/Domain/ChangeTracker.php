@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Tickets
+ */
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\Entity;
@@ -58,16 +57,13 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
         $this->entity = $entity;
     }
 
-
     /**
-     * Get the entity
+     * Get the entity.
      */
     public function getEntity()
     {
         return $this->entity;
     }
-
-
 
     public function propertyChanged($sender, $prop, $old_val, $new_val)
     {
@@ -75,7 +71,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Log a property change
+     * Log a property change.
      *
      * @param  $prop
      * @param  $old_val
@@ -108,10 +104,8 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
         $this->changes[$prop] = $this->getChangeData($prop, $old_val, $new_val);
     }
 
-
-
     /**
-     * Log a property change where the value is multiple, such as additions to a collection
+     * Log a property change where the value is multiple, such as additions to a collection.
      *
      * @param  $prop
      * @param  $old_val
@@ -119,16 +113,18 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
      */
     public function recordMultiPropertyChanged($prop, $old_val, $new_val)
     {
-        if (!isset($this->changes[$prop])) $this->changes[$prop] = array();
+        if (!isset($this->changes[$prop])) {
+            $this->changes[$prop] = array();
+        }
 
         $this->changes[$prop][] = $this->getChangeData($prop, $old_val, $new_val);
     }
-
 
     /**
      * @param $prop
      * @param $old_val
      * @param $new_val
+     *
      * @return array
      */
     public function getChangeData($prop, $old_val, $new_val)
@@ -137,9 +133,10 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Get details of a property change
+     * Get details of a property change.
      *
      * @param  $prop
+     *
      * @return array|null
      */
     public function getChangedProperty($prop)
@@ -148,7 +145,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Get array of all property changes
+     * Get array of all property changes.
      *
      * @return array
      */
@@ -158,7 +155,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Get the names of all changed properties
+     * Get the names of all changed properties.
      *
      * @return array
      */
@@ -168,9 +165,10 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Check if a specific property is changed
+     * Check if a specific property is changed.
      *
      * @param  $prop
+     *
      * @return bool
      */
     public function isPropertyChanged($prop)
@@ -179,7 +177,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Record some extra data about a ticket event that listeners might be interested in
+     * Record some extra data about a ticket event that listeners might be interested in.
      *
      * @param  $key
      * @param  $value
@@ -203,9 +201,10 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Get extra data
+     * Get extra data.
      *
      * @param  $key
+     *
      * @return array|null
      */
     public function getExtra($key)
@@ -214,7 +213,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Get an array of all registered extra data
+     * Get an array of all registered extra data.
      *
      * @return array
      */
@@ -224,9 +223,10 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Check if some extra data item is set
+     * Check if some extra data item is set.
      *
      * @param  $key
+     *
      * @return bool
      */
     public function isExtraSet($key)
@@ -235,9 +235,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Notify all listeners that changes to the entity have been committed
-     *
-     * @return void
+     * Notify all listeners that changes to the entity have been committed.
      */
     abstract public function done();
 }

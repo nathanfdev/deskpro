@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
@@ -67,7 +66,6 @@ class FilterTerms implements \Serializable, FilterTermInterface
         $this->term_factory = new FilterTermFactory();
     }
 
-
     /**
      * @return FilterTermInterface[]
      */
@@ -76,9 +74,9 @@ class FilterTerms implements \Serializable, FilterTermInterface
         return $this->criteria->getAll();
     }
 
-
     /**
-     * @param  FilterTermInterface       $term
+     * @param FilterTermInterface $term
+     *
      * @throws \InvalidArgumentException
      */
     public function addTerm(FilterTermInterface $term)
@@ -90,9 +88,9 @@ class FilterTerms implements \Serializable, FilterTermInterface
         $this->criteria->add($term);
     }
 
-
     /**
-     * @param  array                     $term_info
+     * @param array $term_info
+     *
      * @throws \InvalidArgumentException
      */
     public function addTermFromArray(array $term_info)
@@ -111,9 +109,9 @@ class FilterTerms implements \Serializable, FilterTermInterface
         }
     }
 
-
     /**
-     * @param  array                     $term_info
+     * @param array $term_info
+     *
      * @throws \InvalidArgumentException
      */
     private function getTermFromArray(array $term_info)
@@ -121,16 +119,15 @@ class FilterTerms implements \Serializable, FilterTermInterface
         return $this->term_factory->createFromArray($term_info);
     }
 
-
     /**
-     * @param  ExecutorContextInterface                                    $context
+     * @param ExecutorContextInterface $context
+     *
      * @return \Application\DeskPRO\Tickets\Filters\Terms\FilterQuery|null
      */
     public function getFilterQuery(ExecutorContextInterface $context = null)
     {
         return $this->criteria->getFilterQuery($context);
     }
-
 
     /**
      * @return array
@@ -139,8 +136,8 @@ class FilterTerms implements \Serializable, FilterTermInterface
     {
         $data = array();
 
-        $data['version']  = 1;
-        $data['terms'] = array();
+        $data['version'] = 1;
+        $data['terms']   = array();
         foreach ($this->criteria->getAll() as $criteria) {
             if ($criteria instanceof FilterTermComposite) {
                 $set_terms = array();
@@ -152,13 +149,13 @@ class FilterTerms implements \Serializable, FilterTermInterface
                     $set_terms[] = array(
                         'type'    => $set_criteria->getTermType(),
                         'op'      => $set_criteria->getTermOperator(),
-                        'options' => $set_criteria->getTermOptions()->all()
+                        'options' => $set_criteria->getTermOptions()->all(),
                     );
                 }
 
                 if ($set_terms) {
                     $data['terms'][] = array(
-                        'set_terms' => $set_terms
+                        'set_terms' => $set_terms,
                     );
                 }
             } else {
@@ -169,14 +166,13 @@ class FilterTerms implements \Serializable, FilterTermInterface
                 $data['terms'][] = array(
                     'type'    => $criteria->getTermType(),
                     'op'      => $criteria->getTermOperator(),
-                    'options' => $criteria->getTermOptions()->all()
+                    'options' => $criteria->getTermOptions()->all(),
                 );
             }
         }
 
         return $data;
     }
-
 
     /**
      * @param array $data
@@ -188,7 +184,6 @@ class FilterTerms implements \Serializable, FilterTermInterface
         }
     }
 
-
     /**
      * @return string
      */
@@ -197,7 +192,6 @@ class FilterTerms implements \Serializable, FilterTermInterface
         return json_encode($this->exportToArray());
     }
 
-
     /**
      * @return string
      */
@@ -205,7 +199,6 @@ class FilterTerms implements \Serializable, FilterTermInterface
     {
         return $this->exportToJson();
     }
-
 
     /**
      * @param string $data
@@ -220,7 +213,7 @@ class FilterTerms implements \Serializable, FilterTermInterface
                 $this->addTermFromArray($term_info);
             } catch (\Exception $e) {
                 if (!empty($term_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('filter_' . $term_info['type']));
+                    KernelErrorHandler::logException($e, false, md5('filter_'.$term_info['type']));
                 }
             }
         }

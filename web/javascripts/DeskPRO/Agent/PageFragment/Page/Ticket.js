@@ -18,6 +18,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.popoutPage = null;
 		this.lastActiveDate = null;
 		this.ticketReplyBox = null;
+    if (DeskPRO_Window.$q) {
+      this.initDeferred = DeskPRO_Window.$q.defer();
+      this.initPromise = this.initDeferred.promise;
+    }
 	},
 
 	getAlertId: function() {
@@ -33,10 +37,43 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		);
 	},
 
+	replaceLinks: function() {
+		$('.body-text-message a', this.wrapper).each(function(){
+			var $a = $(this)
+				, href = $a.attr('href')
+				;
+			$a.attr('target', '_blank');
+			if (!href || href.length < 5 || href.substr(0, 4) === 'http' || href.substr(0, 6) === 'mailto' || href.substr(0, 1) === '/') return;
+			$a.attr('href', 'http://' + href);
+		});
+	},
+
+	prepareWrapper: function(wrapper) {
+		this.rewriteRadioNames(wrapper);
+	},
+
+	rewriteRadioNames: function(wrapper) {
+		var baseId = this.meta.baseId;
+
+		// we need to rename custom radio fields or else they are all
+		// part of the same 'group' within the page
+		this.getEl('field_holders').find('input[type="radio"]').each(function () {
+			$(this).attr('name', baseId + '_' + $(this).attr('name'));
+		});
+
+		// the name will be replaced on submit in TicketFields.js
+	},
+
 	initPage: function(el) {
 		this.wrapper = el;
 		var self = this;
+
+		var replyBoxHandler = this.getEl('replybox_wrap').find('[data-element-handler]:first').data('handler');
+		if (replyBoxHandler) {
+			replyBoxHandler.page = this;
+		}
 		this.getEl('replybox_wrap').data('page', this);
+
 		this.hasReplyFocused = false;
 
 		if (this.getEl('linked_count').data('count') == "0") {
@@ -107,6 +144,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
 				self.closeSelf();
 			}
+      if (undefined !== data.labels) {
+        self.labelsInput.setLabels(data.labels);
+      }
 		});
 
 		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
@@ -141,6 +181,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initTasks();
 		this._initEditName();
 		this._initSlas();
+    this._initProblems();
 
 		// Change email menu
 		var emailText = this.getEl('user_email_text');
@@ -242,24 +283,33 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.locked-status', function(info) {
-			var ticketId = parseInt(info.ticket_id),
-				byAgentId = info.locked_by ? (parseInt(info.locked_by) || null) : null,
-				isLocked = info.is_locked;
+      if (self.meta.ticket_id != info.ticket_id) return;
 
-			if (self.meta.ticket_id == ticketId) {
-				if (byAgentId && byAgentId != DESKPRO_PERSON_ID) {
-					// Reload the ticket page
-					DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
-					self.closeSelf();
-					return;
-				} else if (!byAgentId) {
-					self.wrapper.find('.lock-overlay').remove();
-					self.getEl('locked_message').hide();
-					self.getEl('locked_message').data('locked-self', false);
-					self.getEl('lock_ticket').show();
-					self.getEl('unlock_ticket').hide();
-				}
-			}
+      if (info.locked_by) {
+
+        self.getEl('locked_message').show();
+
+        if (info.locked_by != DESKPRO_PERSON_ID) {
+          self.wrapper.find('.lock-overlay').show();
+          self.getEl('locked_message_self').hide();
+          self.getEl('locked_message_other').show().children('span').text(info.locked_by_name);
+          self.getEl('locked_message').data('locked-self', 0);
+          self.getEl('lock_ticket').hide();
+          self.getEl('unlock_ticket').show();
+        } else {
+          self.getEl('locked_message_self').show();
+          self.getEl('locked_message_other').hide();
+          self.getEl('locked_message').data('locked-self', 1);
+        }
+
+      } else {
+        self.wrapper.find('.lock-overlay').hide();
+        self.getEl('locked_message').hide();
+        self.getEl('locked_message').data('locked-self', 0);
+        self.getEl('lock_ticket').show();
+        self.getEl('unlock_ticket').hide();
+      }
+
 		}, null, [this.OBJ_ID]);
 
 		this.addEvent('shortcutFocusReply', function(ev) {
@@ -557,7 +607,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				};
 			})();
 		}
-        
+
 		this.linkExistingTicket = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket(this, {
 			loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-overlay",
 			saveUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link",
@@ -833,6 +883,18 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				expandBtn.addClass('open');
 			}
 		});
+
+    window.setTimeout(function() {
+      if (self.wrapper.find('.with-handler-failed')[0]) {
+        DeskPRO_Window.showConfirm("There was a problem loading some elements on this tab. The tab will re-load now.", function() {
+          DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+          self.closeSelf();
+        });
+      }
+    }, 1500);
+
+    this.replaceLinks();
+    this.initDeferred && this.initDeferred.resolve();
 	},
 
 	setTicketReplyBox: function(rb) {
@@ -1071,8 +1133,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				return;
 			}
 
-			self.handleTicketUpdate(result);
-
 			// Reload the message row in results
 			//addTicket
 			if (DeskPRO_Window.sections.tickets_section && DeskPRO_Window.sections.tickets_section.listPage) {
@@ -1081,6 +1141,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					DeskPRO_Window.sections.tickets_section.listPage.refreshTicketResults([self.meta.ticket_id]);
 				}
 			}
+
+			self.handleTicketUpdate(result);
 		};
 
 		this.clearAlerts();
@@ -1150,6 +1212,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           }
 
           if (trigger && action) {
+	          result.id = self.meta.ticket_id;
             DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.new_reply', result, action);
           }
         }
@@ -1165,8 +1228,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					});
 				}
 
-				ajaxHit = result;
-				hitDone();
+        if (keepOpen) {
+          self.changeManager.updateDataholders();
+        }
+        ajaxHit = result;
+        hitDone();
 			}
 		});
 	},
@@ -1270,6 +1336,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (data.replybox_html) {
 			// Only refresh the box if we've not begun writing a message
 			if (!this.getEl('replybox_wrap').find('textarea.touched')[0]) {
+				var chargeCheckboxState = $('input[name="charge_time"]', this.wrapper).prop('checked');
 				var textarea = this.getReplyTextArea();
 				if (textarea.data('redactor')) {
 					textarea.destroyEditor();
@@ -1277,6 +1344,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				this.getEl('replybox_wrap').empty().append(data.replybox_html);
 				DeskPRO_Window.initInterfaceServices(this.getEl('replybox_wrap'));
 				$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
+				$('input[name="charge_time"]', this.wrapper).prop('checked', chargeCheckboxState);
 			}
 		}
 
@@ -1292,20 +1360,32 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		}
 
-		if (data.locked_by_agent_id && data.locked_by_agent_id != DESKPRO_PERSON_ID) {
-			// Reload the ticket page
-			DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
-			self.closeSelf();
-			return;
+		if (data.locked_by_agent_id) {
+
+			self.getEl('locked_message').show();
+
+			if (data.locked_by_agent_id != DESKPRO_PERSON_ID) {
+				self.wrapper.find('.lock-overlay').show();
+				self.getEl('locked_message_self').hide();
+				self.getEl('locked_message_other').show().children('span').text(data.locked_by_agent_name);
+				self.getEl('locked_message').data('locked-self', 0);
+				self.getEl('lock_ticket').hide();
+				self.getEl('unlock_ticket').show();
+			} else {
+				self.getEl('locked_message_self').show();
+				self.getEl('locked_message_other').hide();
+				self.getEl('locked_message').data('locked-self', 1);
+			}
+
 		} else {
-			this.wrapper.find('.lock-overlay').remove();
-			this.getEl('locked_message').hide();
-			this.getEl('locked_message').data('locked-self', false);
-			this.getEl('lock_ticket').show();
-			this.getEl('unlock_ticket').hide();
+			self.wrapper.find('.lock-overlay').hide();
+			self.getEl('locked_message').hide();
+			self.getEl('locked_message').data('locked-self', 0);
+			self.getEl('lock_ticket').show();
+			self.getEl('unlock_ticket').hide();
 		}
 
-		var props = ['status', 'department_id', 'category_id', 'product_id', 'workflow_id', 'priority_id', 'urgency', 'is_hold'];
+		var props = ['status', 'urgency', 'is_hold', 'department_id'];
 		if (data.via_reply) {
 			if (data.changed_agent) {
 				props.push('agent_id');
@@ -1325,7 +1405,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 
 			var prop = this.changeManager.getPropertyManager(propId);
-			prop.setIncomingValue(val);
+			prop.setIncomingValue(val, data);
 		}, this);
 
 		if (data.dupe_message) {
@@ -1345,6 +1425,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.getEl('messagebox_tabs').find('.logs').addClass('dirty');
 		this.refreshLogTypes();
+		this.replaceLinks();
+		this.changeManager.updateDataholders();
 	},
 
 	updateUi: function(toReplyHeight) {
@@ -1389,8 +1471,30 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var self = this;
 		var imageEls = $('ul.attachment-list li.is-image a, a.dp-is-image', messageEl);
 
+		// open links in new window
+		$(messageEl).find('a').on('click', function(ev) {
+			if ($(this).hasClass('cboxElement')) {
+				return;
+			}
+      if (!$(this).attr('href')) {
+        return;
+      }
+
+			ev.preventDefault();
+			ev.stopPropagation();
+			var o = window.open($(this).attr('href'));
+			o.opener = null;
+		});
+
 		DeskPRO_Window.initStickyTips(messageEl);
-		
+		var $triggers = messageEl.find('.with-stickytip');
+		self.addEvent('destroy', function(){
+			$triggers.each(function(){
+				var id = $(this).data('stickytip-target');
+				if (id) $(id).remove();
+			});
+		});
+
 		DeskPRO_Window.util.filedownload(messageEl);
 
 		$('.timeago', messageEl).timeago();
@@ -1757,7 +1861,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			type: 'POST',
 			context: this,
 			data: data,
-			dataType: 'json'
+			dataType: 'json',
+			success: function(){
+				self.changeManager.updateDataholders();
+			}
 		});
 	},
 
@@ -1769,7 +1876,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var self = this;
 		$([this.getEl('unlock_ticket').get(0), this.getEl('unlock_ticket2').get(0)]).on('click', function() {
 			self.wrapper.find('.hide-locked').removeClass('hide-locked');
-			self.wrapper.find('.lock-overlay').remove();
+			self.wrapper.find('.lock-overlay').hide();
 			self.getEl('locked_message').hide();
 			self.getEl('locked_message').data('locked-self', false);
 			self.getEl('lock_ticket').show();
@@ -1785,7 +1892,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 
 		this.getEl('lock_ticket').on('click', function() {
-			self.wrapper.find('.lock-overlay').remove();
+			self.wrapper.find('.lock-overlay').hide();
 			self.getEl('locked_message').data('locked-self', true);
 			self.getEl('locked_message').show();
 			self.getEl('locked_message_self').show();
@@ -1894,10 +2001,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					case 'linked_ticket':
 						DeskPRO_Window.newTicketLoader.newLinkedTicket(self.meta.ticket_id);
 						break;
-						
-					case 'link_existing_ticket':
+
+          case 'link_existing_ticket':
 						self.linkExistingTicket.open();
-						break;	
+            break;
 
 					case 'kb-pending':
 						if (!self.pendingKbOverlay) {
@@ -1958,6 +2065,60 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}).bind(this));
 	},
 
+  _initCloseProblemOverlay: function () {
+    if (this.closeProblemOverlay) return;
+    this.closeProblemOverlayEl = $('.close-problem-overlay:first', this.wrapper);
+    if (!this.closeProblemOverlayEl) return;
+
+    this.closeProblemOverlay = new DeskPRO.UI.Overlay({
+      contentElement: this.closeProblemOverlayEl
+    });
+    this.ownObject(this.closeProblemOverlay);
+
+    $('.save-trigger', this.closeProblemOverlayEl).on('click', (function () {
+      this.doCloseProblem();
+    }).bind(this));
+  },
+
+  _initReopenProblemOverlay: function () {
+    if (this.reopenProblemOverlay) return;
+    this.reopenProblemOverlayEl = $('.reopen-problem-overlay:first', this.wrapper);
+    if (!this.reopenProblemOverlayEl) return;
+
+    this.reopenProblemOverlay = new DeskPRO.UI.Overlay({
+      contentElement: this.reopenProblemOverlayEl
+    });
+    this.ownObject(this.reopenProblemOverlay);
+
+    $('.save-trigger', this.reopenProblemOverlayEl).on('click', (function () {
+      this.doReopenProblem();
+    }).bind(this));
+  },
+
+  _initProblems: function () {
+    self = this;
+    this.getEl('field_holders').on('click', '.close-problem-link', function () {
+      self.showCloseProblemOverlay();
+    });
+
+		this.getEl('field_holders').on('click', '.incident-link', function () {
+			var pid = $(this).data('problem-id')
+				, $item = $('#problems-section li.is-nav-item[data-problem-id="' + pid + '"] [data-route]')
+				;
+      $item.trigger('click');
+
+      if (!$item.length) {
+        var $sel = $('#problems-section select.closed_problems_select');
+        $sel.children('option[data-problem-id="' + pid + '"]').prop('selected', true);
+        $sel.trigger('change');
+      }
+		});
+
+    this.getEl('field_holders').on('click', '.reopen-problem-link', function () {
+      self.showReopenProblemOverlay();
+    });
+  },
+
 	showDeleteOverlay: function(doBan) {
 		this._initDeleteOverlay();
 		this.deleteOverlay.doBan = doBan;
@@ -1970,6 +2131,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.deleteOverlay.openOverlay();
 	},
+
+  showCloseProblemOverlay: function () {
+    this._initCloseProblemOverlay();
+    this.closeProblemOverlay.openOverlay();
+  },
+
+  showReopenProblemOverlay: function () {
+    this._initReopenProblemOverlay();
+    this.reopenProblemOverlay.openOverlay();
+  },
 
 	doTicketDelete: function() {
 
@@ -2009,6 +2180,42 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		});
 	},
+
+  doCloseProblem: function () {
+    $('.loading-off', this.closeProblemOverlayEl).hide();
+    $('.loading-on', this.closeProblemOverlayEl).show();
+
+    var self = this;
+
+    DeskPRO_Window.util.ajaxWithClientMessages({
+      url:      BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/close_problem',
+      type:     'POST',
+      context:  this,
+      complete: function () {
+        self.closeProblemOverlay.closeOverlay();
+        DeskPRO_Window.removePage(self);
+        DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist: true});
+      }
+    });
+  },
+
+  doReopenProblem: function () {
+    $('.loading-off', this.reopenProblemOverlayEl).hide();
+    $('.loading-on', this.reopenProblemOverlayEl).show();
+
+    var self = this;
+
+    DeskPRO_Window.util.ajaxWithClientMessages({
+      url:      BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/reopen_problem',
+      type:     'POST',
+      context:  this,
+      complete: function () {
+        self.reopenProblemOverlay.closeOverlay();
+        DeskPRO_Window.removePage(self);
+        DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist: true});
+      }
+    });
+  },
 
 	doTicketSpam: function(doBan) {
 		var self = this;
@@ -2349,11 +2556,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					e.preventDefault();
 
 					form.addClass('loading');
+					var postData = form.serializeArray();
 
 					$.ajax({
 						url: form.attr('action'),
 						type: 'POST',
-						data: form.serializeArray(),
+						data: postData,
 						dataType: 'json'
 					}).always(function() {
 						form.removeClass('loading');
@@ -2367,6 +2575,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							}
 							return;
 						}
+
+						postData.forEach(function(el){
+							if('message_ids[]' != el.name) return;
+							self.getEl('messages_wrap').find('article.message-' + el.value + ':first').remove();
+						});
 
 						overlay.close();
 
@@ -2588,7 +2801,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 
-	doTicketUpdate: function() {
+	doTicketUpdate: function(isOwnUpdate) {
+    	var self = this;
 		if (this.doTicketUpdateRunning) {
 			this.doTicketUpdateRunning.abort();
 			this.doTicketUpdateRunning = null;
@@ -2601,7 +2815,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		formData.push({
 			name: 'last_log_id',
-			value: this.getEl('messages_wrap').find('.log-row').last().data('log-id')
+			value: this.getEl('logs_wrap').find('.log-row').last().data('log-id')
 		});
 
 		this.doTicketUpdateRunning = $.ajax({
@@ -2611,8 +2825,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			data: formData,
 			context: this,
 			success: function(result) {
-				this.alertTab();
-				this.handleTicketUpdate(result);
+				if (!isOwnUpdate) {
+					this.alertTab();
+				}
+				// this needs to happen instantly now, dont put this in any other promise
+				// or else it makes the ui feel slow
+				self.handleTicketUpdate(result);
 			}
 		});
 	},

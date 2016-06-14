@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Protocol;
 
 use Orb\Log\Loggable;
@@ -55,7 +52,6 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
      */
     protected $stream_timeout = 15;
 
-
     /**
      * @param string $host
      * @param null   $port
@@ -66,37 +62,38 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
      */
     public function __construct($host = '', $port = null, $ssl = false, Logger $logger = null, $connect_timeout = 8, $stream_timeout = 15)
     {
-        $this->logger = $logger;
+        $this->logger          = $logger;
         $this->connect_timeout = $connect_timeout;
-        $this->stream_timeout = $stream_timeout;
+        $this->stream_timeout  = $stream_timeout;
         parent::__construct($host, $port, $ssl = $ssl ? strtoupper($ssl) : $ssl);
     }
 
-
     /**
-     * @param  string                                         $host
-     * @param  null                                           $port
-     * @param  bool                                           $ssl
-     * @return string
+     * @param string $host
+     * @param null   $port
+     * @param bool   $ssl
+     *
      * @throws \Zend\Mail\Protocol\Exception\RuntimeException
+     *
+     * @return string
      */
     public function connect($host, $port = null, $ssl = false)
     {
         $ssl = $ssl ? strtoupper($ssl) : $ssl;
 
         if ($ssl == 'SSL') {
-            $host = 'ssl://' . $host;
+            $host = 'ssl://'.$host;
         }
 
         if ($port === null) {
             $port = $ssl == 'SSL' ? 995 : 110;
         }
 
-        $errno  =  0;
-        $errstr = '';
+        $errno        = 0;
+        $errstr       = '';
         $this->socket = @fsockopen($host, $port, $errno, $errstr, $this->connect_timeout);
         if (!$this->socket) {
-            throw new Exception\RuntimeException('cannot connect to host; error = ' . $errstr . ' (errno = ' . $errno . ' )');
+            throw new Exception\RuntimeException('cannot connect to host; error = '.$errstr.' (errno = '.$errno.' )');
         }
         stream_set_timeout($this->socket, $this->stream_timeout);
 
@@ -107,7 +104,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
         if (!strpos($this->timestamp, '@')) {
             $this->timestamp = null;
         } else {
-            $this->timestamp = '<' . $this->timestamp . '>';
+            $this->timestamp = '<'.$this->timestamp.'>';
         }
 
         if ($ssl === 'TLS') {
@@ -121,7 +118,6 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
         return $welcome;
     }
 
-
     /**
      * @param Logger $logger
      */
@@ -129,7 +125,6 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
     {
         $this->logger = $logger;
     }
-
 
     /**
      * @return Logger
@@ -139,11 +134,11 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
         return $this->logger;
     }
 
-
     /**
-     * Make a RETR call for retrieving a full message with headers and body
+     * Make a RETR call for retrieving a full message with headers and body.
      *
-     * @param  int    $msgno message number
+     * @param int $msgno message number
+     *
      * @return string message
      */
     public function retrieveToStream($msgno, $stream)
@@ -153,15 +148,15 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
         return $result;
     }
 
-
     /**
-     * Send request and get resposne
+     * Send request and get resposne.
      *
      * @see sendRequest(), readResponse()
      *
-     * @param  string   $request request
-     * @param  resource $stream  stream
-     * @return int      Number of bytes read to stream
+     * @param string   $request request
+     * @param resource $stream  stream
+     *
+     * @return int Number of bytes read to stream
      */
     public function requestToStream($request, $stream)
     {
@@ -170,35 +165,36 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
         return $this->readResponseToStream($stream);
     }
 
-
     /**
-     * @param  string $request
-     * @return null
+     * @param string $request
      */
     public function sendRequest($request)
     {
         if ($this->logger) {
             if (strpos($request, 'PASS ') === 0) {
-                $this->logger->logDebug("==> PASS xxxxxx");
+                $this->logger->logDebug('==> PASS xxxxxx');
             } else {
-                $this->logger->logDebug("==> " . $request);
+                $this->logger->logDebug('==> '.$request);
             }
         }
 
         return parent::sendRequest($request);
     }
 
-
     /**
-     * @param  bool                                           $multiline
-     * @return string
+     * @param bool $multiline
+     *
      * @throws \Zend\Mail\Protocol\Exception\RuntimeException
+     *
+     * @return string
      */
     public function readResponse($multiline = false)
     {
         $result = @fgets($this->socket);
         if (!is_string($result)) {
-            if ($this->logger) $this->logger->logDebug("<== read failed - connection closed?");
+            if ($this->logger) {
+                $this->logger->logDebug('<== read failed - connection closed?');
+            }
             throw new Exception\RuntimeException('read failed - connection closed?');
         }
 
@@ -206,18 +202,20 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
         if (strpos($result, ' ')) {
             list($status, $message) = explode(' ', $result, 2);
         } else {
-            $status = $result;
+            $status  = $result;
             $message = '';
         }
 
         if ($status != '+OK') {
-            if ($this->logger) $this->logger->logDebug("<== $status");
+            if ($this->logger) {
+                $this->logger->logDebug("<== $status");
+            }
             throw new Exception\RuntimeException('last request failed');
         }
 
         if ($multiline) {
             $message = '';
-            $line = fgets($this->socket);
+            $line    = fgets($this->socket);
             $log_msg = '';
             while ($line && rtrim($line, "\r\n") != '.') {
                 if ($line[0] == '.') {
@@ -229,42 +227,49 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
                     $log_msg .= $line;
                 }
             }
-            if ($this->logger) $this->logger->logDebug("<== $status $log_msg");
+            if ($this->logger) {
+                $this->logger->logDebug("<== $status $log_msg");
+            }
         }
 
         return $message;
     }
 
-
     /**
      * This reads a multi-line response to a stream and returns the number of bytes read.
      *
      * @param $stream
-     * @return int
+     *
      * @throws \Zend\Mail\Protocol\Exception\RuntimeException
+     *
+     * @return int
      */
     public function readResponseToStream($stream)
     {
         $result = @fgets($this->socket);
         if (!is_string($result)) {
-            if ($this->logger) $this->logger->logDebug("<== read failed - connection closed?");
+            if ($this->logger) {
+                $this->logger->logDebug('<== read failed - connection closed?');
+            }
             throw new Exception\RuntimeException('read failed - connection closed?');
         }
 
         $result = trim($result);
         if (strpos($result, ' ')) {
-            list($status, ) = explode(' ', $result, 2);
+            list($status) = explode(' ', $result, 2);
         } else {
             $status = $result;
         }
 
         if ($status != '+OK') {
-            if ($this->logger) $this->logger->logDebug("<== $status");
+            if ($this->logger) {
+                $this->logger->logDebug("<== $status");
+            }
             throw new Exception\RuntimeException('last request failed');
         }
 
-        $bytes = 0;
-        $line = fgets($this->socket);
+        $bytes   = 0;
+        $line    = fgets($this->socket);
         $log_msg = '';
         while ($line && rtrim($line, "\r\n") != '.') {
             if ($line[0] == '.') {
@@ -276,7 +281,10 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
                 $log_msg .= $line;
             }
         }
-        if ($this->logger) $this->logger->logDebug("<== $status $log_msg");
+        if ($this->logger) {
+            $this->logger->logDebug("<== $status $log_msg");
+        }
+
         return $bytes;
     }
 }

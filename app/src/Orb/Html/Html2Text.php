@@ -1,39 +1,41 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Orb\Html;
 
-use DOMDocument, DOMNode, DOMText, DOMDocumentType, DOMElement;
+use DOMDocument;
+use DOMDocumentType;
+use DOMElement;
+use DOMNode;
+use DOMText;
 use Orb\Util\Strings;
 
 /**
@@ -42,56 +44,78 @@ use Orb\Util\Strings;
  * Converts HTML documents into plaintext.
  *
  * Based on html2text by Jeven Wright: https://code.google.com/p/iaml/source/browse/trunk/org.openiaml.model.runtime/src/include/html2text/html2text.php
- *
- * @package Orb\Html
  */
 class Html2Text
 {
+    private $bq_level = 0;
+
     /**
-     * @param  string $html
+     * Array of tag => function.
+     *
+     * @var array
+     */
+    private $element_procs = array();
+
+    /**
+     * @param string $html
+     *
      * @return string
      */
     public static function convertHtml($html)
     {
-        $h2t = new Html2Text();
+        $h2t = new self();
 
         return $h2t->convert($html);
     }
 
+    /**
+     * @param string   $tagname The tagname.
+     * @param callable $fn      Function to call. Return null and the default convertNode routine is run.
+     */
+    public function addElementProcessor($tagname, $fn)
+    {
+        $this->element_procs[$tagname] = $fn;
+    }
 
     /**
-     * Convert an HTML string into plaintext
+     * Convert an HTML string into plaintext.
      *
-     * @param  string                    $html
-     * @return string
+     * @param string $html
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return string
      */
     public function convert($html)
     {
         $html = Strings::standardEol($html);
 
         // nbsp's
-        $html = str_replace('&nbsp;', ' ', $html);
-        $html = preg_replace('#\x{00a0}#u', ' ', $html);
+        $html = trim($html);
+        $html = str_replace('&nbsp;', 'xxxDP_NBSP_PLACExxx', $html);
+        $html = preg_replace('#\x{00a0}#u', 'xxxDP_NBSP_PLACExxx', $html);
 
-        $html = '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . $html;
+        $html = '<?xml version="1.0" encoding="UTF-8"?>'."\n".$html;
 
         $doc = new DOMDocument('1.0', 'UTF-8');
         if (!@$doc->loadHTML($html)) {
-            throw new \InvalidArgumentException("Error loading HTML into DOMDocument");
+            throw new \InvalidArgumentException('Error loading HTML into DOMDocument');
         }
 
+        $this->bq_level = 0;
+
         $txt = $this->convertNode($doc);
-        $txt = Strings::trimLines($txt);
+        $txt = str_replace('xxxDP_NBSP_PLACExxx', ' ', $txt);
         $txt = trim($txt);
 
         return $txt;
     }
 
     /**
-     * Convert a DOMNode/DOMDocument into plaintext
+     * Convert a DOMNode/DOMDocument into plaintext.
      *
-     * @param  DOMNode $node
+     * @param DOMNode $node
+     *
      * @return string
      */
     public function convertNode(DOMNode $node, $_depth = 0)
@@ -104,14 +128,20 @@ class Html2Text
         }
 
         $nextName = $this->getNextChildName($node);
-        //$prevName = $this->getPrevChildName($node);
 
         $name = strtolower($node->nodeName);
+
+        if (isset($this->element_procs[$name])) {
+            $output = call_user_func($this->element_procs[$name], $node, $nextName, $this);
+            if ($output !== null && $output !== false) {
+                return $output;
+            }
+        }
 
         $output = '';
         switch ($name) {
             case 'hr':
-                return "<DP_BR>------<DP_BR>";
+                return '<DP_BR>------<DP_BR>';
 
             case 'style':
             case 'head':
@@ -130,26 +160,33 @@ class Html2Text
                 $output = '<DP_BR>';
                 break;
 
-            case 'td':
-                $output = '<DP_SP>';
+            case 'tr':
+                $output = '<DP_BR_P>';
                 break;
 
             case 'p':
-            case 'div':
-            case 'tr':
-            case 'thead':
-            case 'tbody':
-            case 'tfoot':
                 $output = '<DP_BR>';
+                break;
+
+            case 'div':
+                $output = '<DP_BR_P>';
                 break;
         }
 
         if (!empty($node->childNodes)) {
             $len = $node->childNodes->length;
-            for ($i = 0; $i < $len; $i++) {
+            for ($i = 0; $i < $len; ++$i) {
                 $n = $node->childNodes->item($i);
                 if ($n) {
-                    $text = $this->convertNode($n, $_depth+1);
+                    $is_bq = false;
+                    if ($n instanceof DOMElement && ($n->getAttribute('data-dp-type') === 'blockquote' || strtolower($n->nodeName) == 'blockquote')) {
+                        $is_bq = true;
+                        ++$this->bq_level;
+                    }
+                    $text = $this->convertNode($n, $_depth + 1);
+                    if ($is_bq) {
+                        --$this->bq_level;
+                    }
                     $output .= $text;
                 }
             }
@@ -157,14 +194,6 @@ class Html2Text
 
         // end whitespace
         switch ($name) {
-            case 'style':
-            case 'head':
-            case 'title':
-            case 'meta':
-            case 'script':
-                // ignore these tags
-                return '';
-
             case 'h1':
             case 'h2':
             case 'h3':
@@ -174,32 +203,23 @@ class Html2Text
                 $output .= '<DP_BR>';
                 break;
 
-            case 'td':
-                $output .= '<DP_SP>';
-                break;
-
             case 'p':
             case 'br':
-                if ($nextName != "div") {
-                    $output .= '<DP_BR>';
-                }
+                $output .= '<DP_BR>';
                 break;
 
             case 'div':
-                // add one line only if the next child isn't a div
-                if ($nextName != "div" && $nextName != null) {
-                    $output .= '<DP_BR>';
-                }
+                $output .= '<DP_BR_P>';
                 break;
 
             case 'a':
-                if (!trim(str_replace('<DP_BR>', '', $output))) {
+                if (!trim(str_replace(array('<DP_BR>', '<DP_BR_P>', 'xxxDP_NBSP_PLACExxx'), '', $output))) {
                     $output = '';
                 } else {
-                    $href = $node->getAttribute("href");
+                    $href = $node->getAttribute('href');
                     if ($href == null) {
                         // it doesn't link anywhere
-                        if ($node->getAttribute("name") != null) {
+                        if ($node->getAttribute('name') != null) {
                             $output = "[$output]";
                         }
                     } else {
@@ -213,7 +233,7 @@ class Html2Text
 
                     // does the next node require additional whitespace?
                     switch ($nextName) {
-                        case "h1": case "h2": case "h3": case "h4": case "h5": case "h6":
+                        case 'h1': case 'h2': case 'h3': case 'h4': case 'h5': case 'h6':
                             $output .= '<DP_BR>';
                             break;
                     }
@@ -221,13 +241,33 @@ class Html2Text
                 break;
         }
 
-        $output = Strings::trimLines($output);
         $output = str_replace("\n", ' ', $output);
-        $output = preg_replace('#[ ]+#', ' ', $output); // multiple spaces to single
-        if ($_depth == 0) {
-            $output = str_replace('<DP_BR>', "\n", $output);
-            $output = str_replace('<DP_SP>', " ", $output);
+
+        $output = trim($output);
+
+        if ($node instanceof DOMElement && ($node->getAttribute('data-dp-type') === 'blockquote' || $name == 'blockquote')) {
+            $output = '<DP_BLOCKQUOTE_BEGIN_'.$this->bq_level.'>'.$output.'<DP_BLOCKQUOTE_END_'.$this->bq_level.'>';
+            if ($name == 'blockquote') {
+                $output .= '<DP_BR>'; // a real blockquote el has whitespace after it
+            }
         }
+
+        if ($_depth == 0) {
+            $output = preg_replace('#<DP_BR_P>\s*<DP_BR>#m', '<DP_BR>', $output);
+            $output = preg_replace('#<DP_BR>\s*<DP_BR_P>#m', '<DP_BR>', $output);
+            $output = preg_replace_callback('#(<DP_BR_P>\s*)+#m', function ($m) {
+                return str_repeat("\n", min(2, substr_count($m[1], '<DP_BR_P>')));
+            }, $output);
+            $output = str_replace('<DP_BR>', "\n", $output);
+            $output = str_replace('<DP_SP>', ' ', $output);
+
+            $output = preg_replace_callback('#<DP_BLOCKQUOTE_BEGIN_(\d+)>(.*?)<DP_BLOCKQUOTE_END_\\1>#ms', function ($m) {
+                $s = str_repeat('>', $m[1]).' ';
+
+                return Strings::modifyLines(trim($m[2]), $s);
+            }, $output);
+        }
+        $output = preg_replace('#[ ]+#', ' ', $output); // multiple spaces to single
 
         $output = trim($output);
 
@@ -235,7 +275,8 @@ class Html2Text
     }
 
     /**
-     * @param  DOMNode     $node
+     * @param DOMNode $node
+     *
      * @return null|string
      */
     protected function getNextChildName(DOMNode $node)
@@ -257,7 +298,8 @@ class Html2Text
     }
 
     /**
-     * @param  DOMNode     $node
+     * @param DOMNode $node
+     *
      * @return null|string
      */
     protected function getPrevChildName(DOMNode $node)
@@ -265,7 +307,7 @@ class Html2Text
         $nextNode = $node->previousSibling;
         while ($nextNode != null) {
             if ($nextNode instanceof DOMElement) {
-                    break;
+                break;
             }
             $nextNode = $nextNode->previousSibling;
         }

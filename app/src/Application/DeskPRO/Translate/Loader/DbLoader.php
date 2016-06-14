@@ -1,38 +1,39 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Translate
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Translate
+ */
 namespace Application\DeskPRO\Translate\Loader;
+
+use Application\DeskPRO\App;
 
 /**
  * Loads phrases from the database.
@@ -44,7 +45,8 @@ namespace Application\DeskPRO\Translate\Loader;
 class DbLoader implements LoaderInterface
 {
     /**
-     * Plain database connection for raw queries
+     * Plain database connection for raw queries.
+     *
      * @var \Application\DeskPRO\DBAL\Connection
      */
     protected $dbconn;
@@ -74,14 +76,23 @@ class DbLoader implements LoaderInterface
         // Langs to fetch in order of pri
         $langs = array();
         if ($language) {
-            $langs[] = $language->getId(); // the chosen lang
+            if (!$language->getId()) {
+                //todo default lang should be injected somehow,
+                //but theres a problem of cyclic depends so this is an ok solution for now
+                $language = App::$container->getLanguageData()->getDefault();
+            }
+            if ($language && $language->getId()) {
+                $langs[] = $language->getId(); // the chosen lang
+            }
         }
         $langs[] = $this->default_lang_id; // default deskpro lang
         $langs[] = 0; // system use
 
         foreach ($langs as $lid) {
             foreach ($groups as $g) {
-                if (empty($this->loaded[$lid][$g])) continue;
+                if (empty($this->loaded[$lid][$g])) {
+                    continue;
+                }
 
                 // obj_ translations only apply for specific language
                 // being reuqested (e.g., no english fallthrough)

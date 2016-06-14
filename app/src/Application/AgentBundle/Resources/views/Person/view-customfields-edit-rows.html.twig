@@ -41,7 +41,7 @@
 				<select name="language">
 					<option value=""></option>
 					{% for l in app.languages.getAll() %}
-						<option value="{{ l.id }}">{{ l.title }}</option>
+						<option value="{{ l.id }}" {% if l.id == person.real_language.id %}selected{% endif %}>{{ l.title }}</option>
 					{% endfor %}
 				</select>
 			</td>

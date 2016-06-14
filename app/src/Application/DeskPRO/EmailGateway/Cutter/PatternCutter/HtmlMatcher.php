@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Cutter\PatternCutter;
 
 class HtmlMatcher
@@ -77,7 +75,6 @@ class HtmlMatcher
      */
     protected $reverse = true;
 
-
     /**
      * @param string             $body
      * @param string|HtmlPattern $pattern
@@ -93,9 +90,8 @@ class HtmlMatcher
         $this->pattern = $pattern;
     }
 
-
     /**
-     * Given a tokenized pattern, process it against the body to find matching results
+     * Given a tokenized pattern, process it against the body to find matching results.
      *
      * @return array
      */
@@ -119,18 +115,18 @@ class HtmlMatcher
                 // Get rid of new lines that may affect the cutter.
                 // (Doesnt matter with HTML emails anyway)
                 // But only if we arent anchoring the pattern, where newlines matter
-                $try = str_replace(array("\r\n", "\n"), " ", $this->body);
+                $try = str_replace(array("\r\n", "\n"), ' ', $this->body);
             }
 
             if (preg_match($first_token[1], $this->body, $m)) {
-                $this->body = $try;
+                $this->body        = $try;
                 $this->marked_body = str_replace($m[0], self::CUT_MARK, $this->body);
 
                 $this->pattern_match = 'SIMPLE_MATCH';
 
                 return 'SIMPLE_MATCH';
             } else {
-                return null;
+                return;
             }
         }
 
@@ -144,7 +140,7 @@ class HtmlMatcher
             // This can happen if the document has no tags
             // (eg they were all stripped out, it was plaintext without a root etc)
             // -> So obviously it's a no match if there are no tags to parse
-            return null;
+            return;
         }
 
         if ($this->reverse) {
@@ -154,11 +150,11 @@ class HtmlMatcher
         foreach ($roots as $id => $root) {
             $use_tokens = $tokens;
 
-            $branch = $root->branch()->first();
+            $branch                = $root->branch()->first();
             $this->root_state[$id] = array(
-                'closed' => false,
-                'mark_spot' => null,
-                'mark_pattern' => null
+                'closed'       => false,
+                'mark_spot'    => null,
+                'mark_pattern' => null,
             );
 
             while ($use_tokens) {
@@ -173,14 +169,14 @@ class HtmlMatcher
             }
 
             if ($branch) {
-                $this->pattern_match = $root;
+                $this->pattern_match    = $root;
                 $this->pattern_match_id = $id;
 
                 return $this->pattern_match;
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -199,10 +195,11 @@ class HtmlMatcher
     }
 
     /**
-     * Process the pattern and if it matches, mark the beginning of the cut areas with self::CUT_MARK
+     * Process the pattern and if it matches, mark the beginning of the cut areas with self::CUT_MARK.
      *
-     * @param  string|HtmlPattern $pattern
-     * @param  string             $mark_string
+     * @param string|HtmlPattern $pattern
+     * @param string             $mark_string
+     *
      * @return string
      */
     public function getMarkedDocument()
@@ -242,12 +239,12 @@ class HtmlMatcher
             $piece2 = substr($this->marked_body, $wrap_pos);
 
             if (preg_match($this->root_state[$this->pattern_match_id]['mark_pattern'], $piece1)) {
-                $piece2 = preg_replace($this->root_state[$this->pattern_match_id]['mark_pattern'], self::CUT_MARK . '$0', $piece2, 1);
+                $piece2 = preg_replace($this->root_state[$this->pattern_match_id]['mark_pattern'], self::CUT_MARK.'$0', $piece2, 1);
             } else {
-                $piece2 = self::CUT_MARK . $piece2;
+                $piece2 = self::CUT_MARK.$piece2;
             }
 
-            $this->marked_body = $piece1 . $piece2;
+            $this->marked_body = $piece1.$piece2;
         }
 
         $this->marked_body = trim($this->marked_body);
@@ -258,11 +255,11 @@ class HtmlMatcher
         return $this->marked_body;
     }
 
-
     /**
-     * Cut at the first cut mark
+     * Cut at the first cut mark.
      *
-     * @param  string $mark_string
+     * @param string $mark_string
+     *
      * @return string
      */
     public function getCutBody()
@@ -277,12 +274,12 @@ class HtmlMatcher
         return substr($body, 0, $pos);
     }
 
-
     /**
-     * Consume  all navigate finds and return a new array of branches that match
+     * Consume  all navigate finds and return a new array of branches that match.
      *
-     * @param  array $results
-     * @param  array $tokens
+     * @param array $results
+     * @param array $tokens
+     *
      * @return array
      */
     public function consumeNavigates($id, $branch, array &$tokens)
@@ -308,13 +305,13 @@ class HtmlMatcher
                 if ($this->root_state[$id]['closed']) {
                     $current->next();
                     if (!$current->length || $current->get(0)->tagName != $sel) {
-                        return null;
+                        return;
                     }
                     $this->root_state[$id]['closed'] = false;
                 } else {
                     $current->find($sel)->first();
                     if (!$current->length) {
-                        return null;
+                        return;
                     }
                 }
             }
@@ -323,12 +320,12 @@ class HtmlMatcher
         return $current;
     }
 
-
     /**
      * Process all match requirements on the result set and return a new array of branches that match.
      *
-     * @param  array $results
-     * @param  array $tokens
+     * @param array $results
+     * @param array $tokens
+     *
      * @return array
      */
     public function consumeMatches($id, $branch, array &$tokens)
@@ -352,16 +349,17 @@ class HtmlMatcher
                 // Check entire contents
                 $html = $branch->innerHTML();
                 $text = str_replace(array('<br />', '<br/>', '<br>'), "\n", $html);
+                $text = str_replace("\n", ' ', $text);
                 $text = strip_tags($text);
                 $text = trim($text);
 
                 if (!preg_match($token[0], $text, $m)) {
-                    return null;
+                    return;
                 }
             }
 
             if (!$this->root_state[$id]['mark_spot']) {
-                $this->root_state[$id]['mark_spot'] = $m[0];
+                $this->root_state[$id]['mark_spot']    = $m[0];
                 $this->root_state[$id]['mark_pattern'] = $token[0];
                 $branch->addClass('DP_MARK_EL');
             }
@@ -370,20 +368,19 @@ class HtmlMatcher
         return $branch;
     }
 
-
     /**
      * Used internally by the PatternCutter to fetch the qp and set it on the next pattern when
      * we know a pattern didnt match and we havent mutated the collection, saves
      * from re-creating the doc.
      *
      * @internal
+     *
      * @param \QueryPath\DOMQuery $qp
      */
     public function _setQp(\QueryPath\DOMQuery $qp)
     {
         $this->qp = $qp;
     }
-
 
     /**
      * @return \QueryPath\DOMQuery

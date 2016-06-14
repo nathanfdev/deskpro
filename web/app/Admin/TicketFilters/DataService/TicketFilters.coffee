@@ -31,7 +31,7 @@ define [
         if model
           model.display_order = idx
 
-      promise = @Api.sendPostJson('/ticket_filters/display_order', { display_order: orders })
+      promise = @Api.sendPostJson('/ticket_filters/display_order', { display_order: orders }).then(=> @loadList(true))
       return promise
 
 

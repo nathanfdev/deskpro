@@ -119,7 +119,12 @@ pageMeta.baseId = '{{ baseId }}';
 				<li data-action="disable-user" data-flip="{{ phrase('agent.people.enable_account') }}">{{ phrase('agent.people.disable_account') }}</li>
 			{% endif %}
 		{% endif %}
-		{% if perms.reset_password and app.authenticationManager.isDeskPROEnabled('user') %}<li data-action="reset-password" class="reset-password">{{ phrase('agent.general.reset_password') }}</li>{% endif %}
+		{% if perms.reset_password and app.authenticationManager.isDeskPROEnabled('user') %}<li data-action="set-password" class="set-password">{{ phrase('agent.general.set_password') }}</li>{% endif %}
+
+		{% if perms.edit and app.authenticationManager.isDeskPROEnabled('user')  %}
+			<li data-action="reset-password" class="reset-password">{{ phrase('agent.general.reset_password') }}</li>
+		{% endif %}
+
 		{% if perms.delete %}
 			<li
 				data-action="ban"
@@ -196,15 +201,20 @@ pageMeta.baseId = '{{ baseId }}';
 {{ dp_app_loc(baseId, 'header.after') }}
 {{ dp_app_loc(baseId, 'main.before') }}
 
-<table class="layout-table" cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="60%">
-	<section class="content-col">
-		{% include 'AgentBundle:Person:view-content-col.html.twig' %}
-	</section>
-</td><td valign="top">
-	<section class="property-col">
-		{% include 'AgentBundle:Person:view-property-col.html.twig' %}
-	</section>
-</td></tr></table>
+<table class="layout-table" cellspacing="0" cellpadding="0" width="100%">
+    <tr>
+        <td valign="top" width="60%">
+            <section class="content-col">
+                {% include 'AgentBundle:Person:view-content-col.html.twig' %}
+            </section>
+        </td>
+        <td valign="top" width="40%">
+            <section class="property-col">
+                {% include 'AgentBundle:Person:view-property-col.html.twig' %}
+            </section>
+        </td>
+    </tr>
+</table>
 
 {{ dp_app_loc(baseId, 'main.after') }}
 {{ dp_app_loc(baseId, 'footer') }}
@@ -230,6 +240,10 @@ pageMeta.baseId = '{{ baseId }}';
 			{% if person_object_counts.tickets %}&bull; {{ phrase('agent.general.count_tickets', {count: person_object_counts.tickets}) }}<br/>{% endif %}
 			{% if person_object_counts.chats %}&bull; {{ phrase('agent.general.count_chat', {count: person_object_counts.chats}) }}<br/>{% endif %}
 		{% endif %}
+	</div>
+
+	<div id="{{ baseId }}_reset_password_confirm">
+		{{ phrase('agent.people.person_reset_password_confirm') }}
 	</div>
 </div>
 

@@ -1,67 +1,69 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Settings
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Settings
+ */
 namespace Application\DeskPRO\Settings;
 
 use Application\DeskPRO\DBAL\Connection;
 
-
 /**
- * This class fethces settings
+ * This class fethces settings.
  */
 class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 {
     /**
-     * File to fetch defaults from
+     * File to fetch defaults from.
+     *
      * @var array
      */
     private $default_settings_file = array();
 
     /**
-     * Array of array(group => array(settings)) for default settings read in with getDefault()
+     * Array of array(group => array(settings)) for default settings read in with getDefault().
+     *
      * @var array
      */
     private $default_settings = null;
 
     /**
-     * Plain database connection for raw queries
+     * Plain database connection for raw queries.
+     *
      * @var \Application\DeskPRO\DBAL\Connection
      */
     private $db;
 
     /**
-     * Settings we've loaded so far
+     * Settings we've loaded so far.
+     *
      * @var array
      */
     private $settings = null;
@@ -81,7 +83,6 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     private $virtual_settings = array();
 
-
     /**
      * @param string     $default_settings_file
      * @param Connection $db
@@ -89,7 +90,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
     public function __construct($default_settings_file, Connection $db = null)
     {
         $this->default_settings_file = $default_settings_file;
-        $this->db = $db;
+        $this->db                    = $db;
 
         $this->virtual_settings['core.interact_require_login'] = function ($settings) {
             return !$settings->get('core.reg_enabled') || $settings->get('core.reg_required');
@@ -100,36 +101,34 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         };
     }
 
-
     /**
-     * Loads settings
+     * Loads settings.
      *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
     private function _loadSettings()
     {
-        $this->settings = array();
+        $this->settings         = array();
         $this->default_settings = array();
 
         if ($this->default_settings_file) {
-            $this->default_settings = require($this->default_settings_file);
+            $this->default_settings = require $this->default_settings_file;
         }
 
         $this->settings = $this->default_settings;
 
         if ($this->db) {
-            $this->settings = array_merge($this->settings, $this->db->fetchAllKeyValue("
+            $this->settings = array_merge($this->settings, $this->db->fetchAllKeyValue('
                 SELECT name, value
                 FROM settings
-            "));
+            '));
         }
 
         if (isset($GLOBALS['DP_CONFIG']['SETTINGS']) && is_array($GLOBALS['DP_CONFIG']['SETTINGS'])) {
             $this->settings = array_merge($this->settings, $GLOBALS['DP_CONFIG']['SETTINGS']);
         }
     }
-
 
     /**
      * @throws \Doctrine\DBAL\DBALException
@@ -140,17 +139,19 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         $this->_loadSettings();
     }
 
-
     /**
-     * Get the value of a setting
+     * Get the value of a setting.
      *
      * @param $name
-     * @param  null       $default
+     * @param null $default
+     *
      * @return mixed|null
      */
     public function get($name, $default = null)
     {
-        if (!$name) return $default;
+        if (!$name) {
+            return $default;
+        }
 
         if ($this->settings === null) {
             $this->_loadSettings();
@@ -163,18 +164,19 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         return isset($this->settings[$name]) ? $this->settings[$name] : $default;
     }
 
-
     /**
-     * This loads the default for a value as defined in the setting file
+     * This loads the default for a value as defined in the setting file.
      *
-     * @param  string                       $name
-     * @return null
+     * @param string $name
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
     public function getDefault($name)
     {
-        if (!$name) return null;
+        if (!$name) {
+            return;
+        }
 
         if ($this->settings === null) {
             $this->_loadSettings();
@@ -183,15 +185,16 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         return isset($this->default_settings[$name]) ? $this->default_settings[$name] : null;
     }
 
-
     /**
-     * Get the default values for an entire group
+     * Get the default values for an entire group.
      *
-     * @param  string                       $group
-     * @param  bool                         $short True to strip off the group name, false to include the group name in the key
-     * @return array
+     * @param string $group
+     * @param bool   $short True to strip off the group name, false to include the group name in the key
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
+     *
+     * @return array
      */
     public function getDefaultGroup($group, $short = true)
     {
@@ -199,14 +202,14 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
             $this->_loadSettings();
         }
 
-        $group_dot = $group.".";
-        $len = strlen($group_dot);
+        $group_dot = $group.'.';
+        $len       = strlen($group_dot);
 
         $ret = array();
         foreach ($this->default_settings as $k => $v) {
             if (substr($k, 0, $len) === $group_dot) {
                 if ($short) {
-                    $k_short = substr($k, $len);
+                    $k_short       = substr($k, $len);
                     $ret[$k_short] = $v;
                 } else {
                     $ret[$k] = $v;
@@ -217,14 +220,15 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         return $ret;
     }
 
-
     /**
-     * Get all settings in a group
+     * Get all settings in a group.
      *
-     * @param  string                       $group
-     * @return array
+     * @param string $group
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
+     *
+     * @return array
      */
     public function getGroup($group)
     {
@@ -232,13 +236,13 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
             $this->_loadSettings();
         }
 
-        $group_dot = $group.".";
-        $len = strlen($group_dot);
+        $group_dot = $group.'.';
+        $len       = strlen($group_dot);
 
         $ret = array();
         foreach ($this->settings as $k => $v) {
             if (substr($k, 0, $len) === $group_dot) {
-                $k_short = substr($k, $len);
+                $k_short       = substr($k, $len);
                 $ret[$k_short] = $v;
             }
         }
@@ -246,14 +250,13 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         return $ret;
     }
 
-
-
     /**
      * Manually set the value for one or more settings. Note that these values are
      * temporary, they are NOT persisted. This is mainly useful for code overrides
      * or the like.
      *
-     * @param  array                        $settings
+     * @param array $settings
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
@@ -266,12 +269,12 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         $this->settings = array_merge($this->settings, $settings);
     }
 
-
     /**
-     * Persist a new value for a setting, and update this as well
+     * Persist a new value for a setting, and update this as well.
      *
-     * @param  string                       $setting
-     * @param  string                       $value
+     * @param string $setting
+     * @param string $value
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
@@ -283,19 +286,19 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 
         $this->db->beginTransaction();
         try {
-
             if ($value !== null) {
-                if ($value === true) $value = '1';
-                else if ($value === false) $value = '0';
+                if ($value === true) {
+                    $value = '1';
+                } elseif ($value === false) {
+                    $value = '0';
+                }
 
-                $this->db->executeUpdate("
-                    INSERT INTO settings
+                $this->db->executeUpdate('
+                    REPLACE INTO settings
                         (name, value)
                     VALUES
                         (?, ?)
-                    ON DUPLICATE KEY UPDATE
-                        value = VALUES(value)
-                ", array($setting, $value));
+                ', array($setting, $value));
             } else {
                 $this->db->delete('settings', array('name' => $setting));
             }
@@ -308,7 +311,6 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 
         $this->settings[$setting] = $value;
     }
-
 
     /**
      * @return \DateTimeZone
@@ -327,7 +329,6 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 
         return $this->default_timezone;
     }
-
 
     public function offsetExists($offset)
     {

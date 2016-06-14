@@ -1,0 +1,69 @@
+<?php
+/** @var \Symfony\CS\Config\Config $config */
+$config = require_once __DIR__ . "/.php_cs";
+
+if (!defined('PHP_CS_SRC_DIR')) {
+    define('PHP_CS_SRC_DIR', realpath(__DIR__ . '/../app'));
+}
+define('GIT_BASE_DIR', realpath(__DIR__.'/..'));
+
+$outputs = array();
+$return = 0;
+$exit_status = 0;
+exec('git rev-parse --verify HEAD 2> /dev/null', $outputs, $return);
+$against = $return == 0 ? 'HEAD' : '4b825dc642cb6eb9a060e54bf8d69288fbee4904'; // 4b825dc642cb6eb9a060e54bf8d69288fbee4904 = special "emtpy tree" sha1
+exec("git diff-index --cached --name-only {$against}", $outputs);
+
+$filename_pattern = '/\.php$/';
+
+$exclude_dirs = array(
+    PHP_CS_SRC_DIR.'/docs',
+    PHP_CS_SRC_DIR.'/sys/cache',
+    PHP_CS_SRC_DIR.'/vendor',
+    PHP_CS_SRC_DIR.'/vendor-src'
+);
+
+$exclude_file_names = array(
+    'StaticReflectionProperty_Real.php',
+    'UnprivateProxyFactory.php',
+    'UnprivateEntityManager.php',
+    'UnprivateUnitOfWork.php',
+);
+
+$changed_files = array_map(function($filename) {
+    return realpath(GIT_BASE_DIR.'/'.$filename);
+}, $outputs);
+
+$changed_files = array_filter($outputs, function($filename) use ($filename_pattern, $exclude_dirs, $exclude_file_names) {
+    if (!(preg_match($filename_pattern, $filename) && file_exists($filename))) {
+        return false;
+    }
+
+    foreach ($exclude_dirs as $test) {
+        if (strpos($filename, $test) === 0) {
+            return false;
+        }
+    }
+    foreach ($exclude_file_names as $test) {
+        if (basename($filename) === $test) {
+            return false;
+        }
+    }
+
+    if (strpos(file_get_contents($filename), '// dp: noparse') !== false) {
+        return false;
+    }
+
+    return true;
+});
+
+$changed_files = array_map(function($filename) {
+    return new \SplFileInfo($filename);
+}, $changed_files);
+print "Scanning changeset for code style fixes. Files include:".PHP_EOL;
+foreach ($changed_files as $file) {
+    print $file.PHP_EOL;
+}
+
+$config->finder(new ArrayObject($changed_files));
+return $config;

@@ -1,5 +1,32 @@
 <?php
-namespace DpUnitTests\DeskPRO\ApiResult;
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DpIntegrationTests\DeskPRO\ApiResult;
 
 abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 {
@@ -22,10 +49,38 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
     public function getApi()
     {
         if (!$this->api) {
-            $this->api = new \DeskPRO\Api('http://localhost:8888', '1:XXXXXXXXXXXXXXXXXXXXXXXXX');
+            $url       = defined('DP_TESTING_API_URL') ? DP_TESTING_API_URL : 'http://localhost:8888';
+            $this->api = new \DeskPRO\Api($url, '1:XXXXXXXXXXXXXXXXXXXXXXXXX');
         }
 
         return $this->api;
+    }
+
+    /**
+     * @param $expected
+     * @param $actual
+     * @param string $message
+     */
+    public static function assertApiArrayEqual($expected, $actual, $message = '')
+    {
+        $normalize = function ($expected, $actual) use (&$normalize) {
+            // Hack to 'pass' trivial differences (e.g., a date that is different becase we just inserted it)
+            if (is_array($expected) && is_array($actual)) {
+                foreach ($actual as $k => $v) {
+                    if (isset($expected[$k]) && gettype($expected[$k]) === gettype($v)) {
+                        if (is_array($v)) {
+                            $expected[$k] = $normalize($expected[$k], $v);
+                        } else {
+                            $expected[$k] = $v;
+                        }
+                    }
+                }
+            }
+
+            return $expected;
+        };
+
+        self::assertEquals($normalize($expected, $actual), $actual, $message);
     }
 
     /**
@@ -39,7 +94,8 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
     public function getApiWithLimitedAccess()
     {
         if (!$this->limitedAccessApi) {
-            $this->limitedAccessApi = new \DeskPRO\Api('http://localhost:8888', '2:' . str_repeat('Y', 25));
+            $url                    = defined('DP_TESTING_API_URL') ? DP_TESTING_API_URL : 'http://localhost:8888';
+            $this->limitedAccessApi = new \DeskPRO\Api($url, '2:YYYYYYYYYYYYYYYYYYYYYYYYY');
         }
 
         return $this->limitedAccessApi;
@@ -55,7 +111,7 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
                 'date_created_ts_ms',
                 'date_password_set',
                 'date_password_set_ts',
-                'date_password_set_ts_ms'
+                'date_password_set_ts_ms',
             ),
             'person_email' => array(
                 'date_created',
@@ -104,7 +160,7 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
                 'date_created',
                 'date_created_ts',
                 'date_created_ts_ms',
-            )
+            ),
         );
 
         if (array_key_exists($entity, $ignoreKeys)) {
@@ -128,7 +184,7 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 
     protected function _getExpectedTicket()
     {
-        return require 'Tickets'. DIRECTORY_SEPARATOR . 'Data' . DIRECTORY_SEPARATOR . 'ExpectedTicket.php';
+        return require 'Tickets'.DIRECTORY_SEPARATOR.'Data'.DIRECTORY_SEPARATOR.'ExpectedTicket.php';
     }
 
     protected function getDateTimeFields($entity)
@@ -143,14 +199,14 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
             ),
             'person' => array(
                 'date_created',
-                'date_password_set'
+                'date_password_set',
             ),
             'person_email' => array(
-                'date_created'
+                'date_created',
             ),
             'ticket_message' => array(
                 'date_created',
-            )
+            ),
         );
 
         return isset($datetimeFields[$entity]) ? $datetimeFields[$entity] : null;
@@ -177,16 +233,16 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
                 'date_created_ts',
                 'date_created_ts_ms',
                 'date_password_set_ts',
-                'date_password_set_ts_ms'
+                'date_password_set_ts_ms',
             ),
             'person_email' => array(
                 'date_created_ts',
-                'date_created_ts_ms'
+                'date_created_ts_ms',
             ),
             'ticket_message' => array(
                 'date_created_ts',
                 'date_created_ts_ms',
-            )
+            ),
         );
 
         return isset($timestampFields[$entity]) ? $timestampFields[$entity] : null;

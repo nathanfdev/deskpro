@@ -2,18 +2,26 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
   class EditAgentModel
     constructor: (agent, groups, teams, primary_phone_number_region) ->
       @form = {}
-
       #--------------------
       # Basic props
       #--------------------
 
       @form.name = agent.name
-      @form.primary_phone_number_text = agent.primary_phone_number_text
-      @form.primary_phone_number_region = agent.primary_phone_number_region
+      if agent.primary_phone
+        @form.primary_phone = {
+          region: agent.primary_phone.region || primary_phone_number_region
+          number: agent.primary_phone.number || ''
+          ext: agent.primary_phone.ext || ''
+        }
+      else
+        @form.primary_phone = {
+          region:  primary_phone_number_region
+          number:  ''
+          ext: ''
+        }
       @form.primary_team = agent.primary_team
       @form.notification_settings = agent.notification_settings
-      if !@form.primary_phone_number_region
-        @form.primary_phone_number_region = primary_phone_number_region
+
 
       if agent.override_display_name
         @form.enable_display_name = true
@@ -79,7 +87,9 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
     getFormData: ->
       formData = {}
       formData.name = @form.name
-      formData.primary_phone_number_text = @form.primary_phone_number_text
+      formData.primary_phone = {number: @form.primary_phone.number, ext: @form.primary_phone.ext}
+      if not formData.primary_phone.number
+        formData.primary_phone = null
       formData.notification_settings = @form.notification_settings
       formData.primary_team = if @form.primary_team then @form.primary_team.id else null
 

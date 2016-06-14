@@ -1,45 +1,73 @@
-<?php return array(
-    'ar'         => 'Arapça',
-    'bg'         => 'Bulgarca',
-    'ca'         => 'Katalanca',
-    'zh-CHS'     => 'Basitleştirilmiş Çince',
-    'zh-CHT'     => 'Geleneksel Çince',
-    'cs'         => 'Çekçe',
-    'da'         => 'Danca',
-    'nl'         => 'Hollanda dili',
-    'en'         => 'İngilizce',
-    'et'         => 'Estonca',
-    'fi'         => 'Fince',
-    'fr'         => 'Fransızca',
-    'de'         => 'Almanca',
-    'el'         => 'Yunanca',
-    'ht'         => 'Haiti Creole dili',
-    'he'         => 'İbranice',
-    'hi'         => 'Hintçe',
-    'mww'        => 'Hmong Daw dili',
-    'hu'         => 'Macarca',
-    'id'         => 'Endonezya dili',
-    'it'         => 'İtalyanca',
-    'ja'         => 'Japonca',
-    'tlh'        => 'Klingon',
-    'tlh-QON'    => 'Klingon (Kronos)',
-    'ko'         => 'Kore dili',
-    'lv'         => 'Letonca',
-    'lt'         => 'Litvanca',
-    'ms'         => 'Malay dili',
-    'no'         => 'Norveç dili',
-    'fa'         => 'Farsça',
-    'pl'         => 'Lehçe',
-    'pt'         => 'Portekizce',
-    'ro'         => 'Rumence',
-    'ru'         => 'Rusça',
-    'sk'         => 'Slovakça',
-    'sl'         => 'Slovence',
-    'es'         => 'İspanyolca',
-    'sv'         => 'İsveç dili',
-    'th'         => 'Tay dili',
-    'tr'         => 'Türkçe',
-    'uk'         => 'Ukrayna dili',
-    'ur'         => 'Urduca',
-    'vi'         => 'Vietnam dili',
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
+    'ar'      => 'Arapça',
+    'bg'      => 'Bulgarca',
+    'ca'      => 'Katalanca',
+    'zh-CHS'  => 'Basitleştirilmiş Çince',
+    'zh-CHT'  => 'Geleneksel Çince',
+    'cs'      => 'Çekçe',
+    'da'      => 'Danca',
+    'nl'      => 'Hollanda dili',
+    'en'      => 'İngilizce',
+    'et'      => 'Estonca',
+    'fi'      => 'Fince',
+    'fr'      => 'Fransızca',
+    'de'      => 'Almanca',
+    'el'      => 'Yunanca',
+    'ht'      => 'Haiti Creole dili',
+    'he'      => 'İbranice',
+    'hi'      => 'Hintçe',
+    'mww'     => 'Hmong Daw dili',
+    'hu'      => 'Macarca',
+    'id'      => 'Endonezya dili',
+    'it'      => 'İtalyanca',
+    'ja'      => 'Japonca',
+    'tlh'     => 'Klingon',
+    'tlh-QON' => 'Klingon (Kronos)',
+    'ko'      => 'Kore dili',
+    'lv'      => 'Letonca',
+    'lt'      => 'Litvanca',
+    'ms'      => 'Malay dili',
+    'no'      => 'Norveç dili',
+    'fa'      => 'Farsça',
+    'pl'      => 'Lehçe',
+    'pt'      => 'Portekizce',
+    'ro'      => 'Rumence',
+    'ru'      => 'Rusça',
+    'sk'      => 'Slovakça',
+    'sl'      => 'Slovence',
+    'es'      => 'İspanyolca',
+    'sv'      => 'İsveç dili',
+    'th'      => 'Tay dili',
+    'tr'      => 'Türkçe',
+    'uk'      => 'Ukrayna dili',
+    'ur'      => 'Urduca',
+    'vi'      => 'Vietnam dili',
 );

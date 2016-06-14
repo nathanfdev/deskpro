@@ -10,7 +10,6 @@ define([
   'DeskPRO/Service/Person',
   'DeskPRO/Service/AgentTeam',
   'DeskPRO/CategoryBuilder/Module',
-  'DeskPRO/Directive/DpDateTime',
 
   'AppPlatformConfig',
   'angularAnimate',
@@ -19,7 +18,8 @@ define([
   'angularUiSortable',
   'ngContextMenu',
   'angularSanitize',
-	'jquery.ui.i18n'
+	'jquery.ui.i18n',
+  'DeskPRO/Directive/DpDateTimePicker'
 ], function(
   angular,
   Functions,
@@ -31,8 +31,7 @@ define([
   DeskPRO_Directive_JIRAFormWidget,
   DeskPRO_Service_Person,
   DeskPRO_Service_AgentTeam,
-  DpCategoryBuilder,
-  DeskPRO_Directive_DateTime
+  DpCategoryBuilder
 ) {
   var AgentApp = angular.module('AgentApp', [
 	'ngAnimate',
@@ -41,7 +40,8 @@ define([
 	'ng-context-menu',
 	'deskpro.category_builder',
 	'ui.select2',
-    'ngSanitize'
+  'ngSanitize',
+  'dp.datetimepicker'
   ]);
 
 	// set default locale for UI DatePicker
@@ -202,6 +202,7 @@ define([
 	});
 
 	AgentApp.directive('dpTimeago', ['$interval', '$filter', function($interval, $filter) {
+    var TimeAgo = Orb.Util.TimeAgo;
 		return {
 			restrict: 'AE',
 			template: '<time class="dp-timeago"></time>',
@@ -249,7 +250,7 @@ define([
 						timeoutId = null;
 					}
 
-					element.text(time.fromNow(noSuffix)).attr('title', $filter('formatTimestamp')(time, 'fulltime'));
+					element.text(TimeAgo.get(time.toDate(), !noSuffix)).attr('title', $filter('formatTimestamp')(time, 'fulltime'));
 				}
 
 				element.on('$destroy', function() {
@@ -645,7 +646,6 @@ define([
 							});
 							$el.addClass('with-set');
 							isRunning = false;
-							update();
 						},10);
 					});
 				};
@@ -674,19 +674,18 @@ define([
 					}
 
 					if (doUpdate) {
-						update();
-						$timeout(function() { update(); });
+            updateDebounce();
 					}
 				};
 
 				$timeout(function() {
 					$timeout(function() {
-						update();
+            updateDebounce();
 						interval = $interval(function() {
 							updateIfChanged();
 						}, 750);
 						$timeout(function() {
-							update();
+              updateDebounce();
 						}, 200);
 					});
 				});
@@ -1110,23 +1109,6 @@ define([
 	AgentApp.directive('dpTicketQuickActions', DeskPRO_Directive_DpTicketQuickActions);
 	AgentApp.directive('dpSubmitForm', DeskPRO_Directive_DpSubmitForm);
 	AgentApp.directive('jiraFormWidget', DeskPRO_Directive_JIRAFormWidget);
-    AgentApp.directive('dpDatetime', DeskPRO_Directive_DateTime);
-
-    AgentApp.directive('dpDatetimeInput', function($parse){
-      return {
-        require: ['ngModel'],
-        restrict: 'A',
-        scope: {
-          getOptions: '&dpDatetimeInput'
-        },
-        link: function($scope, $el, $attr, ngModel) {
-          $el.on('click', function(){
-            $scope.$root.$emit('dp.datetime.show', ngModel[0], $el, $scope.getOptions() || {});
-          });
-        }
-      };
-    });
-
 
 	return AgentApp;
 });

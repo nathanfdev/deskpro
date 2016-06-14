@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\WidgetSelections;
 
 use Application\DeskPRO\App;
@@ -42,7 +40,6 @@ class WidgetSelections
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     public function __construct(EntityManager $em)
@@ -56,8 +53,8 @@ class WidgetSelections
         $downloads = App::getDb()->fetchAllKeyValue("SELECT id, title FROM downloads WHERE status = 'published'");
         $news      = App::getDb()->fetchAllKeyValue("SELECT id, title FROM news WHERE status = 'published'");
 
-        $article_cat_map  = App::getDb()->fetchAllGrouped(
-            "SELECT category_id, article_id FROM article_to_categories",
+        $article_cat_map = App::getDb()->fetchAllGrouped(
+            'SELECT category_id, article_id FROM article_to_categories',
             array(),
             'category_id',
             null,
@@ -65,15 +62,15 @@ class WidgetSelections
         );
 
         $download_cat_map = App::getDb()->fetchAllGrouped(
-            "SELECT category_id, id FROM downloads",
+            'SELECT category_id, id FROM downloads',
             array(),
             'category_id',
             null,
             'id'
         );
 
-        $news_cat_map     = App::getDb()->fetchAllGrouped(
-            "SELECT category_id, id FROM news",
+        $news_cat_map = App::getDb()->fetchAllGrouped(
+            'SELECT category_id, id FROM news',
             array(),
             'category_id',
             null,
@@ -83,11 +80,8 @@ class WidgetSelections
         $selections = App::getEntityRepository('DeskPRO:DataStore')->getByName('portal_widget_default_links');
 
         if ($selections) {
-
             $selections = $selections->getData('selections');
-
         } else {
-
             $selections = array();
         }
 
@@ -95,8 +89,7 @@ class WidgetSelections
         {
             $result = array();
 
-            foreach($categories as $category) {
-
+            foreach ($categories as $category) {
                 $data = array();
 
                 $data['id']       = $category->id;
@@ -111,19 +104,19 @@ class WidgetSelections
         }
 
         return array(
-            'selections'          => $selections,
+            'selections' => $selections,
 
             'article_categories'  => buildTree(App::getDataService('ArticleCategory')->getRootNodes()),
             'download_categories' => buildTree(App::getDataService('DownloadCategory')->getRootNodes()),
             'news_categories'     => buildTree(App::getDataService('NewsCategory')->getRootNodes()),
 
-            'articles'            => $articles,
-            'downloads'           => $downloads,
-            'news'                => $news,
+            'articles'  => $articles,
+            'downloads' => $downloads,
+            'news'      => $news,
 
-            'article_cat_map'     => $article_cat_map,
-            'download_cat_map'    => $download_cat_map,
-            'news_cat_map'        => $news_cat_map
+            'article_cat_map'  => $article_cat_map,
+            'download_cat_map' => $download_cat_map,
+            'news_cat_map'     => $news_cat_map,
         );
     }
 

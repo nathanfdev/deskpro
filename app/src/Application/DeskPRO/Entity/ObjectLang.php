@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -81,14 +80,16 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
     protected $_set_object;
 
     /**
-     * Create a new lang object
+     * Create a new lang object.
      *
-     * @param  Language|int                           $lang      The lang ID of a lang or the lang itself
-     * @param  object                                 $object    The domain object to set the lang for. This is any object that has getObjectRef
-     * @param  string                                 $prop_name The property ID of the thing we are translating
-     * @param  string                                 $value     The value ID of the thing we are translating
-     * @return \Application\DeskPRO\Entity\ObjectLang
+     * @param Language|int $lang      The lang ID of a lang or the lang itself
+     * @param object       $object    The domain object to set the lang for. This is any object that has getObjectRef
+     * @param string       $prop_name The property ID of the thing we are translating
+     * @param string       $value     The value ID of the thing we are translating
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return \Application\DeskPRO\Entity\ObjectLang
      */
     public static function createObjectLang($lang, $object, $prop_name, $value)
     {
@@ -99,7 +100,7 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
         }
 
         if (!$lang || !($lang instanceof Language)) {
-            throw new \InvalidArgumentException("Invalid language");
+            throw new \InvalidArgumentException('Invalid language');
         }
 
         $ol = new self();
@@ -120,7 +121,6 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
         return $ol;
     }
 
-
     /**
      * @param object $object
      */
@@ -130,7 +130,6 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
         $this->setRef($object->getObjectRef());
     }
 
-
     /**
      * @param string $ref
      */
@@ -139,7 +138,7 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('ref', $ref);
 
         if (strpos($ref, '.') !== false) {
-            list ($type, $id) = explode('.', $ref, 2);
+            list($type, $id) = explode('.', $ref, 2);
             $this->setModelField('ref_type', $type);
             $this->setModelField('ref_id', $id);
         } else {
@@ -148,13 +147,20 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-
     /**
      * @param string $prop_name
      */
     public function setPropName($prop_name)
     {
         $this->setModelField('prop_name', strtolower($prop_name));
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
     }
 
     public function _resetRefCode()
@@ -165,7 +171,6 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -174,23 +179,23 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(array(
-            'name' => 'object_lang',
+            'name'    => 'object_lang',
             'indexes' => array(
-                'prop_ref_type' => array('columns' => array('ref_type', 'ref_id'))
+                'prop_ref_type' => array('columns' => array('ref_type', 'ref_id')),
             ),
             'uniqueConstraints' => array(
-                'prop_ref' => array('columns' => array('ref', 'prop_name', 'language_id'))
-            )
+                'prop_ref' => array('columns' => array('ref', 'prop_name', 'language_id')),
+            ),
         ));
         $metadata->addLifecycleCallback('_resetRefCode', 'prePersist');
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'ref', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ref', ));
-        $metadata->mapField(array( 'fieldName' => 'ref_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'ref_type', ));
-        $metadata->mapField(array( 'fieldName' => 'ref_id', 'type' => 'integer', 'nullable' => true, 'columnName' => 'ref_id', ));
-        $metadata->mapField(array( 'fieldName' => 'prop_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'prop_name', ));
-        $metadata->mapField(array( 'fieldName' => 'value', 'type' => 'text', 'nullable' => false, 'columnName' => 'value', ));
+        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array('fieldName' => 'ref', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ref'));
+        $metadata->mapField(array('fieldName' => 'ref_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'ref_type'));
+        $metadata->mapField(array('fieldName' => 'ref_id', 'type' => 'integer', 'nullable' => true, 'columnName' => 'ref_id'));
+        $metadata->mapField(array('fieldName' => 'prop_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'prop_name'));
+        $metadata->mapField(array('fieldName' => 'value', 'type' => 'text', 'nullable' => false, 'columnName' => 'value'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array('fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Routing\Generator\Dumper;
 
 use Orb\Util\Strings;
@@ -44,49 +42,48 @@ class PhpGeneratorDumper extends BasePhpGeneratorDumper
     public function dump(array $options = array())
     {
         $this->className = $options['class'];
-        $class = trim(parent::dump($options));
+        $class           = trim(parent::dump($options));
 
         list($var_code, $method_code) = $this->getClassCode();
 
         // First opening brace, as in class {
-        $pos = strpos($class, '{') + 1;
-        $class = Strings::inject($class, "\n" . $var_code . "\n", $pos);
+        $pos   = strpos($class, '{') + 1;
+        $class = Strings::inject($class, "\n".$var_code."\n", $pos);
 
         // Last closing brace, as in } at the end of the class
-        $pos = strrpos($class, '}');
-        $class = Strings::inject($class, "\n" . $method_code . "\n", $pos);
+        $pos   = strrpos($class, '}');
+        $class = Strings::inject($class, "\n".$method_code."\n", $pos);
 
-        $class = str_replace("\$this->context = \$context;", "\$this->setContext(\$context);", $class);
+        $class = str_replace('$this->context = $context;', '$this->setContext($context);', $class);
 
         return $class;
     }
 
     protected function getClassCode()
     {
-        $route_patterns   = array();
-        $route_fragments  = array();
-        $fragment_names   = array();
-        $fragment_types   = array();
+        $route_patterns  = array();
+        $route_fragments = array();
+        $fragment_names  = array();
+        $fragment_types  = array();
 
         foreach ($this->getRoutes()->all() as $name => $route) {
-
             $route_patterns[$name] = $route->getPath();
 
             $a_name = $route->getOption('fragment_name');
             $a_type = $route->getOption('fragment_type');
             if ($a_name) {
-                $fragment_names[$a_name]  = $name;
-                $fragment_types[$a_name]  = $a_type ? $a_type : 'page';
-                $route_fragments[$name] = $a_name;
+                $fragment_names[$a_name] = $name;
+                $fragment_types[$a_name] = $a_type ? $a_type : 'page';
+                $route_fragments[$name]  = $a_name;
             }
         }
 
-        $var_code = array();
-        $var_code['routePatterns'] = 'static private $routePatterns = ' . var_export($route_patterns, true) . ';';
-        $var_code['routeFragments'] = 'static private $routeFragments = ' . var_export($route_fragments, true) . ';';
-        $var_code['fragmentNames']   = 'static private $fragmentNames = ' . var_export($fragment_names, true) . ';';
-        $var_code['fragmentTypes']   = 'static private $fragmentTypes = ' . var_export($fragment_types, true) . ';';
-        $var_code = implode("\n", $var_code);
+        $var_code                   = array();
+        $var_code['routePatterns']  = 'static private $routePatterns = '.var_export($route_patterns, true).';';
+        $var_code['routeFragments'] = 'static private $routeFragments = '.var_export($route_fragments, true).';';
+        $var_code['fragmentNames']  = 'static private $fragmentNames = '.var_export($fragment_names, true).';';
+        $var_code['fragmentTypes']  = 'static private $fragmentTypes = '.var_export($fragment_types, true).';';
+        $var_code                   = implode("\n", $var_code);
 
         if (preg_match('#DevUrlGenerator$#', $this->className)) {
             $env = 'dev';

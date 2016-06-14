@@ -10,7 +10,7 @@ DeskPRO.Agent.TicketList.Property.StandardOption = new Class({
 	optionName: null,
 
 	init: function() {
-		var valid_options = ['department', 'category', 'product', 'priority', 'workflow', 'status', 'agent', 'agent_team'];
+    var valid_options = ['department', 'category', 'product', 'priority', 'workflow', 'status', 'agent', 'agent_team', 'problem_id'];
 
 		if (valid_options.indexOf(this.options.optionName) == -1) {
 			throw 'invalidOptionName:'+this.options.optionName;
@@ -27,6 +27,10 @@ DeskPRO.Agent.TicketList.Property.StandardOption = new Class({
 			case 'status': this.displayNameType = 'status'; this.displayCaption = 'Status'; break;
 			case 'agent': this.displayNameType = 'agent'; this.displayCaption = 'Agent'; break;
 			case 'agent_team': this.displayNameType = 'agent_team'; this.displayCaption = 'Agent Team'; break;
+      case 'problem_id':
+        this.displayNameType = 'ticket_problem';
+        this.displayCaption = 'Problem';
+        break;
 		}
 	},
 

@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category DependencyInjection
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category DependencyInjection
+ */
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\App\AppManager;
@@ -45,46 +44,52 @@ class AppManagerService
     {
         $em = $container->getEm();
 
-        $apps = $em->createQuery("
+        $apps = $em->createQuery('
             SELECT app, package
             FROM DeskPRO:AppInstance app
             LEFT JOIN app.package package
-        ")->execute();
+        ')->execute();
 
         if (count($apps)) {
-            $names = array_map(function($a) { return $a->package->name; }, $apps);
+            $names = array_map(function ($a) { return $a->package->name; }, $apps);
 
             // This loads assets for installed apps
             // into the EM so we dont have a query-per-app
-            $em->createQuery("
+            $em->createQuery('
                 SELECT partial package.{name}, asset
                 FROM DeskPRO:AppPackage package
                 LEFT JOIN package.assets asset
                 WHERE package.name IN (:names)
                 ORDER BY package.title
-            ")->execute(array('names' => $names));
+            ')->execute(array('names' => $names));
         }
 
-        $packages = $em->createQuery("
+        $packages = $em->createQuery('
             SELECT package
             FROM DeskPRO:AppPackage package
             ORDER BY package.title
-        ")->execute();
+        ')->execute();
 
-        $usersources = $em->createQuery("
+        $usersources = $em->createQuery('
             SELECT usersource
             FROM DeskPRO:Usersource usersource
             LEFT JOIN usersource.app app
-        ")->execute();
+        ')->execute();
 
-        if ($apps instanceof ArrayCollection) $apps = $apps->toArray();
-        if ($packages instanceof ArrayCollection) $packages = $packages->toArray();
-        if ($usersources instanceof ArrayCollection) $usersources = $usersources->toArray();
+        if ($apps instanceof ArrayCollection) {
+            $apps = $apps->toArray();
+        }
+        if ($packages instanceof ArrayCollection) {
+            $packages = $packages->toArray();
+        }
+        if ($usersources instanceof ArrayCollection) {
+            $usersources = $usersources->toArray();
+        }
 
         $app_service_container = new AppServiceContainer($container);
 
         $app_paths = array(
-            'default' => DP_ROOT.'/apps'
+            'default' => DP_ROOT.'/apps',
         );
 
         if (dp_get_config('app_paths')) {

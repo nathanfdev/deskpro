@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Feedback;
 
 use Application\DeskPRO\CustomFields\FeedbackFieldManager;
@@ -70,14 +67,13 @@ class FeedbackCollection
     {
         $feedbacks = Arrays::keyFromData($feedbacks, 'id');
 
-        $this->feedbacks = $feedbacks;
-        $this->em = $em;
+        $this->feedbacks   = $feedbacks;
+        $this->em          = $em;
         $this->feedback_fm = $feedback_fm;
     }
 
-
     /**
-     * Get the full array of feedback
+     * Get the full array of feedback.
      *
      * @return \Application\DeskPRO\Entity\Feedback[]
      */
@@ -85,7 +81,6 @@ class FeedbackCollection
     {
         return $this->feedbacks;
     }
-
 
     /**
      * Get an array of display data which includes feedback and all associated data with it.
@@ -103,30 +98,29 @@ class FeedbackCollection
         return $data;
     }
 
-
     /**
-     * Get a display array for a feedback
+     * Get a display array for a feedback.
      *
-     * @param  \Application\DeskPRO\Entity\Feedback $feedback
+     * @param \Application\DeskPRO\Entity\Feedback $feedback
+     *
      * @return array
      */
     public function getDisplayArrayForFeedback(Feedback $feedback)
     {
-        $custom_data = $this->getDataForFeedback($feedback);
+        $custom_data   = $this->getDataForFeedback($feedback);
         $user_category = $this->getUserCategory($feedback);
 
         $data = array(
             'feedback'      => $feedback,
             'custom_data'   => $custom_data,
-            'user_category' => $user_category
+            'user_category' => $user_category,
         );
 
         return $data;
     }
 
-
     /**
-     * Get an array of all custom data on feedback
+     * Get an array of all custom data on feedback.
      *
      * @return \Application\DeskPRO\Entity\CustomDataFeedback[]
      */
@@ -141,12 +135,12 @@ class FeedbackCollection
         if ($this->feedbacks) {
             $ids = array_keys($this->feedbacks);
 
-            $results = $this->em->createQuery("
+            $results = $this->em->createQuery('
                 SELECT d
                 FROM DeskPRO:CustomDataFeedback d
                 LEFT JOIN d.field AS field
                 WHERE d.feedback IN (?0)
-            ")->setParameter(0, $ids)->execute();
+            ')->setParameter(0, $ids)->execute();
 
             foreach ($results as $data) {
                 if (!isset($this->feedback_data[$data->feedback->getId()])) {
@@ -160,11 +154,11 @@ class FeedbackCollection
         return $this->feedback_data;
     }
 
-
     /**
-     * Get data for a specific feedback
+     * Get data for a specific feedback.
      *
-     * @param  \Application\DeskPRO\Entity\Feedback             $feedback
+     * @param \Application\DeskPRO\Entity\Feedback $feedback
+     *
      * @return \Application\DeskPRO\Entity\CustomDataFeedback[]
      */
     public function getDataForFeedback(Feedback $feedback)
@@ -174,11 +168,11 @@ class FeedbackCollection
         return isset($all_data[$feedback->getId()]) ? $all_data[$feedback->getId()] : array();
     }
 
-
     /**
-     * Get the user category title
+     * Get the user category title.
      *
-     * @param  \Application\DeskPRO\Entity\Feedback            $feedback
+     * @param \Application\DeskPRO\Entity\Feedback $feedback
+     *
      * @return \Application\DeskPRO\Feedback\UserCategory|null
      */
     public function getUserCategory(Feedback $feedback)
@@ -191,14 +185,14 @@ class FeedbackCollection
         if (!$cat_field) {
             $this->user_cats[$feedback->getId()] = null;
 
-            return null;
+            return;
         }
 
         $options = $this->feedback_fm->getFieldChildren($cat_field);
         $options = Arrays::keyFromData($options, 'id');
 
         $custom_data = $this->getDataForFeedback($feedback);
-        $chosen = null;
+        $chosen      = null;
         foreach ($options as $opt) {
             if (isset($custom_data[$opt->getId()])) {
                 $chosen = $opt;
@@ -208,11 +202,11 @@ class FeedbackCollection
         if (!$chosen) {
             $this->user_cats[$feedback->getId()] = null;
 
-            return null;
+            return;
         }
 
         if ($chosen->getOption('parent_id')) {
-            $chosen_parent = $options[$chosen->getOption('parent_id')];
+            $chosen_parent                       = $options[$chosen->getOption('parent_id')];
             $this->user_cats[$feedback->getId()] = new UserCategory($chosen_parent, $chosen);
         } else {
             $this->user_cats[$feedback->getId()] = new UserCategory($chosen);

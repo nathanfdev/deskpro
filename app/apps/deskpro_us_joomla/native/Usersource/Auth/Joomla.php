@@ -1,48 +1,44 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace deskpro_us_joomla\Usersource\Auth;
 
 use Orb\Auth\Adapter;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
+use Orb\Log\Loggable;
+use Orb\Log\Logger;
 use Orb\Util\Arrays;
 
-use Orb\Log\Logger;
-use Orb\Log\Loggable;
-
-class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInterface, Loggable
+class Joomla extends Adapter\PluginAdapter implements Adapter\FormLoginInterface,    Adapter\UserInfoFetchableInterface, Loggable
 {
     /**
      * @var \Orb\Log\Logger
@@ -73,7 +69,7 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
     protected function initOptions()
     {
         $this->options = new \Orb\Util\OptionsArray(array(
-            'joomla_url' => '',
+            'joomla_url'    => '',
             'joomla_secret' => '',
         ));
     }
@@ -84,11 +80,11 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
      */
     public function setFormData(array $form_data)
     {
-        $this->set_username = !empty($form_data['username']) ? (string)$form_data['username'] : '';
-        $this->set_password = !empty($form_data['password']) ? (string)$form_data['password'] : '';
+        $this->set_username = !empty($form_data['username']) ? (string) $form_data['username'] : '';
+        $this->set_password = !empty($form_data['password']) ? (string) $form_data['password'] : '';
     }
 
-    public function authenticate()
+    public function doAuthenticate()
     {
         if (!$this->set_username) {
             return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_username', 'error_message' => 'No username provided'));
@@ -99,8 +95,8 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
 
         $time_start = microtime(true);
         if ($this->logger) {
-            $this->logger->log("START Joomla::authenticate", Logger::DEBUG);
-            $this->logger->log("Options: " . trim(Arrays::implodeTemplate($this->options, "{KEY}({VAL}) ")), Logger::DEBUG);
+            $this->logger->log('START Joomla::authenticate', Logger::DEBUG);
+            $this->logger->log('Options: '.trim(Arrays::implodeTemplate($this->options, '{KEY}({VAL}) ')), Logger::DEBUG);
             $this->logger->log("Request: {$this->set_username}:{$this->set_password}", Logger::DEBUG);
         }
 
@@ -124,18 +120,18 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
         $identity = $this->getIdentityFromUserInfo($userinfo);
 
         if ($this->logger) {
-            $this->logger->log("Found user " . $identity->getIdentity(), Logger::DEBUG);
-            $this->logger->log(sprintf("END Joomla::authenticate (took %.4fs)", microtime(true)-$time_start), Logger::DEBUG);
+            $this->logger->log('Found user '.$identity->getIdentity(), Logger::DEBUG);
+            $this->logger->log(sprintf('END Joomla::authenticate (took %.4fs)', microtime(true) - $time_start), Logger::DEBUG);
         }
 
         return new Result(Result::SUCCESS, $identity);
     }
 
-
     /**
-     * Get an Identity from a userinfo array
+     * Get an Identity from a userinfo array.
      *
-     * @param  array              $userinfo
+     * @param array $userinfo
+     *
      * @return \Orb\Auth\Identity
      */
     public function getIdentityFromUserInfo(array $userinfo)
@@ -147,10 +143,10 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
         return $identity;
     }
 
-
     /**
-     * @param  mixed       $id
-     * @param  string|null $id_type
+     * @param mixed       $id
+     * @param string|null $id_type
+     *
      * @return array
      */
     public function getUserInfoFromIdentity($id, $id_type = null)
@@ -179,9 +175,9 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
         return $userinfo;
     }
 
-
     /**
      * @param $id
+     *
      * @return array|null
      */
     public function getUserInfoForEmail($email)
@@ -191,12 +187,12 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
             return $record['user_info'];
         }
 
-        return null;
+        return;
     }
-
 
     /**
      * @param $id
+     *
      * @return array|null
      */
     public function getUserInfoForUsername($username)
@@ -206,12 +202,12 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
             return $record['user_info'];
         }
 
-        return null;
+        return;
     }
-
 
     /**
      * @param $id
+     *
      * @return array|null
      */
     public function getUserInfoForId($id)
@@ -221,39 +217,38 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
             return $record['user_info'];
         }
 
-        return null;
+        return;
     }
-
 
     public function getSsoShareSessionHtml($user_id)
     {
-        $time = time();
+        $time   = time();
         $params = array('action' => 'init_session', 'user_id' => $user_id);
         $params = base64_encode(json_encode($params));
-        $params = $time . '_' . sha1($time . $params . $this->options->get('joomla_secret')) . '_' . $params;
+        $params = $time.'_'.sha1($time.$params.$this->options->get('joomla_secret')).'_'.$params;
 
         $req_params = array('DATA' => $params, '__dp_call' => 1);
-        $url = $this->options->get('joomla_url') . '/index.php?' . http_build_query($req_params);
+        $url        = $this->options->get('joomla_url').'/index.php?'.http_build_query($req_params);
 
         return '<iframe width="1" height="0" border="0" frameborder="0" style="width:1px; height: 1px; overflow: hidden; border: none; opacity: 0; position: absolute; top: 0; left: 0; margin: 0; padding: 0; background: transparent;" src="'.$url.'"></iframe>';
     }
 
-
     /**
      * @param $id
+     *
      * @return array
      */
     public function _callJoomlaPlugin(array $params)
     {
-        $time = time();
+        $time   = time();
         $params = base64_encode(json_encode($params));
-        $params = $time . '_' . sha1($time . $params . $this->options->get('joomla_secret')) . '_' . $params;
+        $params = $time.'_'.sha1($time.$params.$this->options->get('joomla_secret')).'_'.$params;
 
         $req_params = array('DATA' => $params, '__dp_call' => 1);
 
         try {
-            require_once(DP_ROOT . '/src/Application/DeskPRO/LowUtil/RemoteRequest.php');
-            $result = \DeskPRO_LowUtil_RemoteRequester::create()->request($this->options->get('joomla_url') . '/index.php', $req_params);
+            require_once DP_ROOT.'/src/Application/DeskPRO/LowUtil/RemoteRequest.php';
+            $result = \DeskPRO_LowUtil_RemoteRequester::create()->request($this->options->get('joomla_url').'/index.php', $req_params);
             $result = @json_decode($result, true);
             if (!$result) {
                 $result = array();

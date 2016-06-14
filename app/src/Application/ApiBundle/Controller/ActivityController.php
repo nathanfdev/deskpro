@@ -1,62 +1,90 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Orb\Util\Arrays;
+use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Operations about activity.
+ *
+ * @SWG\Resource(
+ * 	resourcePath="/activity",
+ * 	description="Operations about activity",
+ * 	basePath="/api"
+ * )
+ */
 class ActivityController extends AbstractController
 {
     /**
      * @param int $since
+     *
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/activity/{since}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get activity since given time",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="since",
+     *				description="Since what time",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
      */
     public function getActivityAction($since)
     {
         if (!$since) {
-            $alert_recs = $this->em->createQuery("
-                SELECT a
-                FROM DeskPRO:AgentAlert a
-                WHERE a.person = ?0 AND a.is_dismissed = 0
-                ORDER BY a.id DESC
-			")->setParameters(array($this->person))->setMaxResults(100)->execute();
+            $alert_recs = $this->em->createQuery('
+				SELECT a
+				FROM DeskPRO:AgentAlert a
+				WHERE a.person = ?0 AND a.is_dismissed = 0
+				ORDER BY a.id DESC
+			')->setParameters(array($this->person))->setMaxResults(100)->execute();
         } else {
-            $alert_recs = $this->em->createQuery("
-                SELECT a
-                FROM DeskPRO:AgentAlert a
-                WHERE a.person = ?0 AND a.id >= ?1 AND a.is_dismissed = 0
-                ORDER BY a.id DESC
-			")->setParameters(array($this->person, $since))->setMaxResults(100)->execute();
+            $alert_recs = $this->em->createQuery('
+				SELECT a
+				FROM DeskPRO:AgentAlert a
+				WHERE a.person = ?0 AND a.id >= ?1 AND a.is_dismissed = 0
+				ORDER BY a.id DESC
+			')->setParameters(array($this->person, $since))->setMaxResults(100)->execute();
         }
 
         $alerts = array();
@@ -67,15 +95,40 @@ class ActivityController extends AbstractController
                 'date_created'       => $alert->date_created->format('Y-m-d H:i:s'),
                 'date_created_ts'    => $alert->date_created->getTimestamp(),
                 'date_created_ts_ms' => $alert->date_created->getTimestamp() * 1000,
-                'data'               => $this->container->getAgentAlertSender()->getDataArray($alert)
+                'data'               => $this->container->getAgentAlertSender()->getDataArray($alert),
             );
         }
 
-        $last_id = $this->db->fetchColumn("SELECT id FROM agent_alerts ORDER BY id DESC LIMIT 1");
+        $last_id = $this->db->fetchColumn('SELECT id FROM agent_alerts ORDER BY id DESC LIMIT 1');
 
         return $this->createApiResponse(array('last_id' => $last_id, 'alerts' => $alerts));
     }
 
+    /**
+     * @throws \Exception
+     *
+     * @return Response
+     *
+     *
+     * @SWG\Api(
+     * 	path="/activity/dismiss",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Dismiss activities by their IDs",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="dismiss_ids",
+     *				description="Escalation ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="string|integer[]",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function dismissAction()
     {
         // Could be a json encoded array
@@ -97,11 +150,11 @@ class ActivityController extends AbstractController
 
         if ($alert_ids) {
             if (in_array(-1, $alert_ids)) {
-                $this->db->executeUpdate("
+                $this->db->executeUpdate('
                     UPDATE agent_alerts
                     SET is_dismissed = 1
                     WHERE person_id = ?
-                ", array($this->person->getId()));
+                ', array($this->person->getId()));
             } else {
                 $ids_in = implode(',', $alert_ids);
                 $this->db->executeUpdate("

@@ -15,7 +15,8 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 			prefSaveResultId: null,
 			prefId: '',
 			refreshUrl: '',
-			refreshCallback: null
+			refreshCallback: null,
+			fields: null
 		};
 		this.setOptions(options);
 
@@ -34,7 +35,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		}).bind(this));
 
 		// Automatically set up the quick sort menu button
-		var menuBtn = $('button.order-by-trigger', this.page.wrapper);
+		var menuBtn = $('.order-by-menu-trigger button', this.page.wrapper);
 		var menuEl  = $('ul.order-by-menu', this.page.wrapper);
 		if (menuBtn.length && menuEl.length) {
 			this.orderByMenu = new DeskPRO.UI.Menu({
@@ -59,48 +60,29 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 			});
 		}
 
-		this.page.addEvent('destroy', (function() {
-			this.destroy();
-		}).bind(this));
-	},
+		if (this.options.fields) {
+			var $list = $('ul.display-fields-list.on-list', this.getWrapperElement()),
+					f = this.options.fields,
+					$children = $list.children().has('input:checked');
 
-	_initOverlay: function() {
+			$children.sort(function(a, b){
+				var ia = f.indexOf($(a).data('field')),
+						ib = f.indexOf($(b).data('field'));
 
-		if (this._hasInit) return;
-		this._hasInit = true;
+				if (ia > ib) {
+					return 1;
+				}
+				if (ia > -1 && ia < ib) {
+					return -1;
+				}
+				return 0;
+			});
+			$children.detach().prependTo($list);
+		}
 
-		var ul = $('ul.display-fields-list.on-list', this.wrapper);
-
-		var makeBogus = function(ul) {
-			// Use bogus invisible draggables so when dragging to end of the list, the dragging
-			// item is placed between one of these invisible ones. The event handlers
-			// make sure they're always at the end.
-			// - This is to fix making it too hard to position something at the end.
-			var exist = ul.find('> li.bogus').length;
-			for (var i = exist; i < 8; i++) {
-				var li = $('<li class="bogus">&nbsp;</li>');
-				li.css({
-					width: 30,
-					visibility: 'hidden'
-				});
-
-				ul.append(li);
-			}
-		};
-
-		this.wrapper = $('.display-options', this.page.wrapper).first();
-		this.optionsList = $('ul.display-fields-list.on-list', this.wrapper).sortable({
-			forceHelperSize:true,
-			opacity: 0.6,
-			update: function() {
-				ul.find('> li.bogus').remove();
-				makeBogus(ul);
-			}
-		});
-
-		var onList = this.optionsList;
-		var offList = $('ul.display-fields-list.off-list', this.wrapper);
-
+		var onList = $('ul.display-fields-list.on-list', this.getWrapperElement());
+		var offList = $('ul.display-fields-list.off-list', this.getWrapperElement());
+		var ul = $('ul.display-fields-list.on-list', this.getWrapperElement());
 		onList.find(':checkbox').on('click', function() {
 			var check = $(this);
 			var li = $(this).closest('li');
@@ -116,7 +98,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 			}
 
 			ul.find('> li.bogus').remove();
-			makeBogus(ul);
+			self.makeBogus(ul);
 		}).not(':checked').each(function() {
 			$(this).closest('li').detach().addClass('off').appendTo(offList);
 		});
@@ -124,10 +106,49 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 			offList.hide();
 		}
 
-		this.wrapper.detach().appendTo('body');
-		this.wrapper.css('z-index', '10101');
 
-		this.wrapper.on('click', function(ev) {
+		this.page.addEvent('destroy', (function() {
+			this.destroy();
+		}).bind(this));
+	},
+
+	makeBogus: function(ul) {
+		// Use bogus invisible draggables so when dragging to end of the list, the dragging
+		// item is placed between one of these invisible ones. The event handlers
+		// make sure they're always at the end.
+		// - This is to fix making it too hard to position something at the end.
+		var exist = ul.find('> li.bogus').length;
+		for (var i = exist; i < 8; i++) {
+			var li = $('<li class="bogus">&nbsp;</li>');
+			li.css({
+				width: 30,
+				visibility: 'hidden'
+			});
+
+			ul.append(li);
+		}
+	},
+
+	_initOverlay: function() {
+
+		if (this._hasInit) return;
+		this._hasInit = true;
+
+		var self = this;
+		var ul = $('ul.display-fields-list.on-list', this.getWrapperElement());
+		this.optionsList = $('ul.display-fields-list.on-list', this.getWrapperElement()).sortable({
+			forceHelperSize:true,
+			opacity: 0.6,
+			update: function() {
+				ul.find('> li.bogus').remove();
+				self.makeBogus(ul);
+			}
+		});
+
+		this.getWrapperElement().detach().appendTo('body');
+		this.getWrapperElement().css('z-index', '10101');
+
+		this.getWrapperElement().on('click', function(ev) {
 			ev.stopPropagation();
 		});
 
@@ -139,13 +160,13 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 			this.close();
 		}).bind(this));
 
-		$('header .close-trigger', this.wrapper).on('click', (function(ev) {
+		$('header .close-trigger', this.getWrapperElement()).on('click', (function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 			this.close();
 		}).bind(this));
 
-		$('.save-trigger', this.wrapper).on('click', (function() {
+		$('.save-trigger', this.getWrapperElement()).on('click', (function() {
 			this.saveDisplayOptions();
 		}).bind(this));
 	},
@@ -161,7 +182,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 	},
 
 	saveDisplayOptions: function() {
-		this.wrapper.addClass('loading');
+		this.getWrapperElement().addClass('loading');
 		this.saveAndRefresh();
 	},
 
@@ -248,7 +269,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 						this.options.refreshCompleteCallback(updateInfo);
 					}
 					if (this.isOpen()) {
-						this.wrapper.removeClass('loading');
+						this.getWrapperElement().removeClass('loading');
 						this.close();
 					}
 				},
@@ -268,16 +289,16 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 
 		this.updatePositions();
 
-		this.wrapper.addClass('open');
+		this.getWrapperElement().addClass('open');
 		this.backdropEl.show();
 
-		this.wrapper.addClass('open');
+		this.getWrapperElement().addClass('open');
 
 		this.fireEvent('opened', [this]);
 	},
 
 	isOpen: function() {
-		if (!this._hasInit || !this.wrapper.is('.open')) {
+		if (!this._hasInit || !this.getWrapperElement().is('.open')) {
 			return false;
 		}
 
@@ -287,7 +308,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 	close: function() {
 		if (!this._hasInit || !this.isOpen()) return;
 
-		this.wrapper.removeClass('open');
+		this.getWrapperElement().removeClass('open');
 		this.backdropEl.hide();
 		this.fireEvent('closed', [this]);
 	},
@@ -297,29 +318,25 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 	 */
 	updatePositions: function() {
 
-		var elW = this.wrapper.width();
-		var elH = this.wrapper.height();
+		var elW = this.getWrapperElement().width();
+		var elH = this.getWrapperElement().height();
 
 		var pageW = $(window).width();
 		var pageH = $(window).height();
 
-		this.wrapper.css({
+		this.getWrapperElement().css({
 			top: 55,
 			left: (pageW-elW) / 2
 		});
 	},
 
 	getWrapperElement: function() {
-		if (this._hasInit) {
-			return this.wrapper;
-		} else {
-			return $('.display-options:first', this.page.wrapper);
-		}
+		return this.wrapper ? this.wrapper : (this.wrapper = this.page.getEl('display-options'));
 	},
 
 	destroy: function() {
 		if (this._hasInit) {
-			this.wrapper.remove();
+			this.getWrapperElement().remove();
 			this.backdropEl.remove();
 		}
 

@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -42,7 +39,7 @@ use Orb\Util\Arrays;
 use Orb\Validator\StringEmail;
 
 /**
- * Adds participants
+ * Adds participants.
  */
 class AddCcAction extends AbstractAction
 {
@@ -75,7 +72,6 @@ class AddCcAction extends AbstractAction
         $this->add_emails = $valid;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\Person[]
      */
@@ -97,9 +93,9 @@ class AddCcAction extends AbstractAction
                 }
                 $person_processor = new PersonFromEmailProcessor();
 
-                $eml = new EmailAddress();
+                $eml        = new EmailAddress();
                 $eml->email = $email;
-                $person = $person_processor->createPerson($eml, false);
+                $person     = $person_processor->createPerson($eml, false);
 
                 if ($person) {
                     $this->add_people[$person->getId()] = $person;
@@ -110,9 +106,8 @@ class AddCcAction extends AbstractAction
         return $this->add_people;
     }
 
-
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -124,9 +119,8 @@ class AddCcAction extends AbstractAction
         }
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -136,14 +130,13 @@ class AddCcAction extends AbstractAction
 
         foreach ($this->getPeople() as $pid => $person) {
             $actions[] = array(
-                'action' => 'add_participant',
-                'person_id' => $pid
+                'action'    => 'add_participant',
+                'person_id' => $pid,
             );
         }
 
         return $actions;
     }
-
 
     /**
      * @return string[]
@@ -153,9 +146,9 @@ class AddCcAction extends AbstractAction
         return $this->add_emails;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
@@ -169,7 +162,6 @@ class AddCcAction extends AbstractAction
         return $new;
     }
 
-
     /**
      * @return string
      */
@@ -179,6 +171,6 @@ class AddCcAction extends AbstractAction
             return '';
         }
 
-        return "CC users: " . implode(', ', $this->add_emails);
+        return 'CC users: '.implode(', ', $this->add_emails);
     }
 }

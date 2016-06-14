@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 if (php_sapi_name() != 'cli') {
     echo "This script must only be run using the command line interface of PHP\n";
@@ -31,7 +32,7 @@ if (php_sapi_name() != 'cli') {
     exit(1);
 }
 
-/**
+/*
  * These are the consumer key and secret for the app to use.
  *
  * The token and secret are for the user that owns the app. (Generated on dev.twitter.com)
@@ -41,12 +42,12 @@ define('TWITTER_CONSUMER_SECRET', '');
 define('TWITTER_OAUTH_TOKEN', '');
 define('TWITTER_OAUTH_TOKEN_SECRET', '');
 
-/**
+/*
  * If true, uses site streams; if false, uses user streams.
  */
 define('TWITTER_SITE_STREAM', true);
 
-/**
+/*
  * The DB information to connect to. The DB name will store a couple of its
  * own tables. The user must be able to push data to individual DBs storing
  * each account. It must be able to insert into the twitter_stream table.
@@ -102,16 +103,15 @@ define('CLOUD_DB_USER', '');
 define('CLOUD_DB_PASSWORD', '');
 define('CLOUD_DB_NAME', '');
 
-/**
+/*
  * Control logging and general operations.
  *
  * Global logging is useful for debugging, but can get pretty big.
  */
-define('PID_FILE', __DIR__  .'/twitter-cloud.pid');
-define('CONTROL_FILE', __DIR__ . '/twitter-cloud-control.txt');
+define('PID_FILE', __DIR__.'/twitter-cloud.pid');
+define('CONTROL_FILE', __DIR__.'/twitter-cloud-control.txt');
 define('GLOBAL_LOGGING', true);
-define('GLOBAL_LOG_FILE', __DIR__ . '/twitter-cloud.log');
-
+define('GLOBAL_LOG_FILE', __DIR__.'/twitter-cloud.log');
 
 /*****************************************************************************/
 
@@ -121,9 +121,11 @@ setlocale(LC_CTYPE, 'C');
 date_default_timezone_set('UTC');
 ini_set('default_charset', 'UTF-8');
 set_time_limit(0);
-define('DP_ROOT', realpath(__DIR__ . '/../../../'));
-define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../../'));
-if (!defined('DP_CONFIG_FILE')) define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
+define('DP_ROOT', realpath(__DIR__.'/../../../'));
+define('DP_WEB_ROOT', realpath(__DIR__.'/../../../../'));
+if (!defined('DP_CONFIG_FILE')) {
+    define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
+}
 require_once DP_ROOT.'/sys/load_config.php';
 dp_load_config();
 
@@ -136,14 +138,14 @@ set_error_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleError', E_ALL | E_
 set_exception_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleException');
 
 $db_conf = array(
-    'host' => CLOUD_DB_HOST,
-    'user' => CLOUD_DB_USER,
+    'host'     => CLOUD_DB_HOST,
+    'user'     => CLOUD_DB_USER,
     'password' => CLOUD_DB_PASSWORD,
-    'dbname' => CLOUD_DB_NAME,
-    'driver' => 'pdo_mysql'
+    'dbname'   => CLOUD_DB_NAME,
+    'driver'   => 'pdo_mysql',
 );
 
-$pid_file = PID_FILE;
+$pid_file   = PID_FILE;
 $is_windows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 
 $get_db = function ($db_name = null) use ($db_conf) {
@@ -157,7 +159,7 @@ $get_db = function ($db_name = null) use ($db_conf) {
 
 $check_runner_active = function (&$pid = null) use ($is_windows) {
     $running = false;
-    $pid = null;
+    $pid     = null;
 
     if (file_exists(PID_FILE)) {
         $pid = intval(file_get_contents(PID_FILE));
@@ -166,7 +168,7 @@ $check_runner_active = function (&$pid = null) use ($is_windows) {
             if ($is_windows) {
                 $running = false;
                 exec('start "tasklist" /B tasklist.exe', $processes);
-                foreach ($processes AS $process_line) {
+                foreach ($processes as $process_line) {
                     if (preg_match('/^.*\s(\d+)\s/U', $process_line, $match)) {
                         if ($pid == intval($match[1])) {
                             $running = true;
@@ -206,8 +208,8 @@ $log_status = function ($status, $print = true) {
 
 class CloudSiteStream extends \UserstreamPhirehose
 {
-    const URL_BASE         = 'https://sitestream.twitter.com/1.1/';
-    const METHOD_SITE      = 'site';
+    const URL_BASE    = 'https://sitestream.twitter.com/1.1/';
+    const METHOD_SITE = 'site';
 
     /**
      * @var \Closure|null
@@ -237,8 +239,7 @@ class CloudSiteStream extends \UserstreamPhirehose
     /**
      * Suppress Phirehose @error_log output.
      *
-     * @param  string $message
-     * @return void
+     * @param string $message
      */
     protected function log($message)
     {
@@ -265,7 +266,6 @@ class CloudSiteStream extends \UserstreamPhirehose
     {
         return $this->log_callback;
     }
-
 
     /**
      * @param \Closure|null $callback
@@ -302,15 +302,14 @@ class CloudSiteStream extends \UserstreamPhirehose
     /**
      * Process raw streaming data.
      *
-     * @param  string $status
-     * @return void
+     * @param string $status
      */
     public function enqueueStatus($status)
     {
         try {
             if ($this->callback) {
                 $callback = $this->callback;
-                $status = $callback($status, $this);
+                $status   = $callback($status, $this);
             }
 
             // skip "ping -> pong"
@@ -322,12 +321,12 @@ class CloudSiteStream extends \UserstreamPhirehose
 
             // decode json
             $status = json_decode($status);
-            $event = 'unknown';
+            $event  = 'unknown';
 
             if (!empty($status->control)) {
                 $fp = @fopen(CONTROL_FILE, 'a');
                 if ($fp) {
-                    @fwrite($fp, getmypid() . ':' . $status->control_uri . "\n");
+                    @fwrite($fp, getmypid().':'.$status->control_uri."\n");
                     @fclose($fp);
                 }
 
@@ -336,7 +335,7 @@ class CloudSiteStream extends \UserstreamPhirehose
 
             // unwrap
             $for_user_id = $status->for_user;
-            $status = $status->message;
+            $status      = $status->message;
 
             // check if status is a tweet
             if (isset($status->text)) {
@@ -363,10 +362,10 @@ class CloudSiteStream extends \UserstreamPhirehose
             }
 
             $data = array(
-                'user_id' => $for_user_id,
-                'event' => $event,
-                'data' => serialize($status),
-                'date_created' => gmdate('Y-m-d H:i:s')
+                'user_id'      => $for_user_id,
+                'event'        => $event,
+                'data'         => serialize($status),
+                'date_created' => gmdate('Y-m-d H:i:s'),
             );
 
             if ($this->write_callback) {
@@ -385,7 +384,7 @@ class CloudSiteStream extends \UserstreamPhirehose
 
 class CloudUserStream extends \UserstreamPhirehose
 {
-    const URL_BASE         = 'https://userstream.twitter.com/1.1/';
+    const URL_BASE = 'https://userstream.twitter.com/1.1/';
 
     /**
      * @var \Closure|null
@@ -398,7 +397,7 @@ class CloudUserStream extends \UserstreamPhirehose
     protected $callback;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $user_id;
 
@@ -409,12 +408,10 @@ class CloudUserStream extends \UserstreamPhirehose
 
     protected $log_callback;
 
-
     /**
      * Suppress Phirehose @error_log output.
      *
-     * @param  string $message
-     * @return void
+     * @param string $message
      */
     protected function log($message)
     {
@@ -452,7 +449,6 @@ class CloudUserStream extends \UserstreamPhirehose
         return $this->user_id;
     }
 
-
     /**
      * @param \Closure|null $callback
      */
@@ -488,15 +484,14 @@ class CloudUserStream extends \UserstreamPhirehose
     /**
      * Process raw streaming data.
      *
-     * @param  string $status
-     * @return void
+     * @param string $status
      */
     public function enqueueStatus($status)
     {
         try {
             if ($this->callback) {
                 $callback = $this->callback;
-                $status = $callback($status, $this);
+                $status   = $callback($status, $this);
             }
 
             // skip "ping -> pong"
@@ -508,7 +503,7 @@ class CloudUserStream extends \UserstreamPhirehose
 
             // decode json
             $status = json_decode($status);
-            $event = 'unknown';
+            $event  = 'unknown';
 
             // check if status is a tweet
             if (isset($status->text)) {
@@ -535,10 +530,10 @@ class CloudUserStream extends \UserstreamPhirehose
             }
 
             $data = array(
-                'user_id' => $this->user_id,
-                'event' => $event,
-                'data' => serialize($status),
-                'date_created' => gmdate('Y-m-d H:i:s')
+                'user_id'      => $this->user_id,
+                'event'        => $event,
+                'data'         => serialize($status),
+                'date_created' => gmdate('Y-m-d H:i:s'),
             );
 
             if ($this->write_callback) {
@@ -559,10 +554,11 @@ class EpiSiteStreamTwitter extends EpiTwitter
 {
     public function siteStreamRequest($method, $endpoint, $params = null)
     {
-        $url = 'https://sitestream.twitter.com' . $endpoint;
-        $resp= new EpiTwitterJson(call_user_func(array($this, 'httpRequest'), $method, $url, $params, $this->isMultipart($params)), $this->debug);
-        if(!$this->isAsynchronous)
-          $resp->response;
+        $url  = 'https://sitestream.twitter.com'.$endpoint;
+        $resp = new EpiTwitterJson(call_user_func(array($this, 'httpRequest'), $method, $url, $params, $this->isMultipart($params)), $this->debug);
+        if (!$this->isAsynchronous) {
+            $resp->response;
+        }
 
         return $resp;
     }
@@ -570,44 +566,44 @@ class EpiSiteStreamTwitter extends EpiTwitter
 
 /**************************************************************************************/
 
-$runner_pid = null;
+$runner_pid    = null;
 $runner_active = $check_runner_active($runner_pid);
 
 if (!empty($argv[1])) {
     if (!$runner_active) {
-        echo "Can only be run when the runner is active.";
+        echo 'Can only be run when the runner is active.';
         exit(1);
     }
 
     $user_ids = $argv;
     unset($argv[0]);
     $user_ids = array_map(function ($i) { return strval($i + 0); }, $user_ids);
-    foreach ($user_ids AS $k => $id) {
+    foreach ($user_ids as $k => $id) {
         if (!$id) {
             unset($user_ids[$k]);
         }
     }
 
     if (!$user_ids) {
-        echo "No users to connect to.";
+        echo 'No users to connect to.';
         exit(1);
     }
 
-    $log_status("[Site Stream] Processor starting with PID " . getmypid() . " for users: " . implode(',', $user_ids) . ".");
+    $log_status('[Site Stream] Processor starting with PID '.getmypid().' for users: '.implode(',', $user_ids).'.');
 
     if (TWITTER_SITE_STREAM) {
         $consumer = new CloudSiteStream(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_TOKEN_SECRET);
         $consumer->setFollow($user_ids);
     } else {
         $user_id = reset($user_ids);
-        $db = $get_db();
-        $user = $db->fetchAssoc("
+        $db      = $get_db();
+        $user    = $db->fetchAssoc('
             SELECT *
             FROM cloud_twitter_associations
             WHERE user_id = ?
             ORDER BY id DESC
             LIMIT 1
-        ", array($user_id));
+        ', array($user_id));
         $db->close();
         $db = null;
 
@@ -633,20 +629,20 @@ if (!empty($argv[1])) {
         $my_pid = getmypid();
 
         if ($consumer instanceof CloudUserStream) {
-            $message_prefix = "[User Stream, PID $my_pid, User " . $consumer->getUserId() . "]";
+            $message_prefix = "[User Stream, PID $my_pid, User ".$consumer->getUserId().']';
         } else {
             $message_prefix = "[Site Stream, PID $my_pid]";
         }
 
         $log = sprintf(
-            "Data received (length: %d), runner pid: %d, memory: %s KB (peak: %s KB)",
+            'Data received (length: %d), runner pid: %d, memory: %s KB (peak: %s KB)',
             strlen(trim($status)), $runner_pid,
             number_format((memory_get_usage(true) / 1024), 0, ',', '.'),
             number_format(memory_get_peak_usage(true) / 1024, 0, ',', '.')
         );
         $log_status("{ $log");
         if (trim($status)) {
-            $log_status("\t\t" . trim($status), false);
+            $log_status("\t\t".trim($status), false);
         }
 
         gc_collect_cycles();
@@ -664,18 +660,18 @@ if (!empty($argv[1])) {
 
         if ($consumer instanceof CloudUserStream) {
             $db = $get_db();
-            $user = $db->fetchAssoc("
+            $user = $db->fetchAssoc('
                 SELECT *
                 FROM cloud_twitter_associations
                 WHERE user_id = ?
                 ORDER BY id DESC
                 LIMIT 1
-            ", array($consumer->getUserId()));
+            ', array($consumer->getUserId()));
             $db->close();
             $db = null;
 
             if (!$user) {
-                $log_status("$message_prefix User ID " . $consumer->getUserId() . " is not longer being retrieved. Terminating.");
+                $log_status("$message_prefix User ID ".$consumer->getUserId().' is not longer being retrieved. Terminating.');
                 exit;
             }
         }
@@ -688,9 +684,9 @@ if (!empty($argv[1])) {
     try {
         $consumer->consume();
     } catch (PhirehoseConnectLimitExceeded $e) {
-        $log_status("[Site Stream, PID $my_pid] Connection limit exceeded: " . $e->getMessage() . ". Likely no permission.");
+        $log_status("[Site Stream, PID $my_pid] Connection limit exceeded: ".$e->getMessage().'. Likely no permission.');
     } catch (Exception $e) {
-        $log_status("[Site Stream, PID $my_pid] General processor exception: " . $e->getMessage() . " at " . $e->getFile() . ':' . $e->getLine());
+        $log_status("[Site Stream, PID $my_pid] General processor exception: ".$e->getMessage().' at '.$e->getFile().':'.$e->getLine());
     }
 
     $log_status("[Site Stream, PID $my_pid] Exiting Normally.");
@@ -700,10 +696,10 @@ if (!empty($argv[1])) {
 
 /**************************************************************************************/
 
-$timer = 0;
+$timer        = 0;
 $sleep_length = 1; // needs to be divisible by 15
-$children = array();
-$php_path = dp_get_php_path(true);
+$children     = array();
+$php_path     = dp_get_php_path(true);
 
 if ($is_windows) {
     // this prevents black boxes when started via twitter-windows.php
@@ -723,17 +719,17 @@ if ($runner_active) {
 file_put_contents(PID_FILE, getmypid());
 file_put_contents(CONTROL_FILE, '');
 
-$log_status("[Runner, PID $my_pid] Starting with PID " . getmypid() . ".");
+$log_status("[Runner, PID $my_pid] Starting with PID ".getmypid().'.');
 
 if (function_exists('pcntl_signal')) {
-    declare(ticks = 1);
+    declare (ticks = 1);
     pcntl_signal(SIGTERM,  function () { exit; });
 }
 
 register_shutdown_function(function () use ($log_status, $my_pid) {
     global $children;
 
-    foreach ($children AS $process) {
+    foreach ($children as $process) {
         $info = proc_get_status($process);
         @proc_terminate($process);
         $log_status("[Runner, PID $my_pid] Terminated child PID $info[pid] during normal shutdown.");
@@ -747,17 +743,17 @@ register_shutdown_function(function () use ($log_status, $my_pid) {
     $log_status("[Runner, PID $my_pid] Normal shutdown completed.");
 });
 
-$associations = null;
-$child_user_map = array();
+$associations       = null;
+$child_user_map     = array();
 $control_stream_map = array();
-$add = array();
-$remove = array();
-$rest_api = new EpiSiteStreamTwitter(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_TOKEN_SECRET);
+$add                = array();
+$remove             = array();
+$rest_api           = new EpiSiteStreamTwitter(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_TOKEN_SECRET);
 
 while (true) {
     if ($timer % 30 == 0 && $timer > 0) {
         $running_pids = array();
-        foreach ($children AS $k => $process) {
+        foreach ($children as $k => $process) {
             $info = proc_get_status($process);
             if (!$info['running']) {
                 @proc_close($process);
@@ -774,13 +770,13 @@ while (true) {
         /** @var $db \Doctrine\DBAL\Connection */
         $db = $get_db();
 
-        $updates = $db->fetchAll("
+        $updates = $db->fetchAll('
             SELECT stream.*, associations.db, associations.account_id
             FROM cloud_twitter_stream AS stream
             LEFT JOIN cloud_twitter_associations AS associations ON (stream.user_id = associations.user_id)
             ORDER BY stream.id
-        ");
-        foreach ($updates AS $update) {
+        ');
+        foreach ($updates as $update) {
             if ($update['account_id']) {
                 $db->executeUpdate("
                     INSERT INTO `$update[db]`.twitter_stream
@@ -805,7 +801,7 @@ while (true) {
         }
 
         if ($kill) {
-            foreach ($children AS $process) {
+            foreach ($children as $process) {
                 @proc_terminate($process);
             }
 
@@ -814,31 +810,31 @@ while (true) {
         }
 
         if ($associations === null) {
-            $results = $db->fetchAll("
+            $results = $db->fetchAll('
                 SELECT user_id, COUNT(*) AS total
                 FROM cloud_twitter_associations
                 GROUP BY user_id
-            ");
+            ');
             $associations = array();
-            foreach ($results AS $result) {
+            foreach ($results as $result) {
                 $associations[$result['user_id']] = $result['total'];
             }
         }
 
         $control_stream_map = array();
-        foreach (explode("\n", file_get_contents(CONTROL_FILE)) AS $line) {
+        foreach (explode("\n", file_get_contents(CONTROL_FILE)) as $line) {
             $line = trim($line);
             if ($line) {
-                list($process_pid, $stream) = explode(':', $line);
+                list($process_pid, $stream)       = explode(':', $line);
                 $control_stream_map[$process_pid] = $stream;
             }
         }
 
-        foreach ($db->fetchAll('SELECT * FROM cloud_twitter_messages ORDER BY id') AS $message) {
+        foreach ($db->fetchAll('SELECT * FROM cloud_twitter_messages ORDER BY id') as $message) {
             if ($message['message_type'] == 'add') {
                 $data = @unserialize($message['data']);
                 if ($data) {
-                    $affected = $db->executeUpdate("
+                    $affected = $db->executeUpdate('
                         INSERT INTO cloud_twitter_associations
                             (db, user_id, account_id, oauth_token, oauth_token_secret)
                         VALUES
@@ -846,25 +842,25 @@ while (true) {
                         ON DUPLICATE KEY UPDATE
                             oauth_token = VALUES(oauth_token),
                             oauth_token_secret = VALUES(oauth_token_secret)
-                    ", array($message['db'], $message['user_id'], $message['account_id'], $data['oauth_token'], $data['oauth_token_secret']));
+                    ', array($message['db'], $message['user_id'], $message['account_id'], $data['oauth_token'], $data['oauth_token_secret']));
                     if ($affected == 1) {
                         // an insert (2 affected is an update)
                         if (isset($associations[$message['user_id']])) {
-                            $associations[$message['user_id']]++;
+                            ++$associations[$message['user_id']];
                         } else {
                             $associations[$message['user_id']] = 1;
-                            $add[] = $message['user_id'];
+                            $add[]                             = $message['user_id'];
                         }
                     }
                 }
             } elseif ($message['message_type'] == 'remove') {
                 $db->delete('cloud_twitter_associations', array(
-                    'db' => $message['db'],
-                    'user_id' => $message['user_id']
+                    'db'      => $message['db'],
+                    'user_id' => $message['user_id'],
                 ));
 
                 if (isset($associations[$message['user_id']])) {
-                    $associations[$message['user_id']]--;
+                    --$associations[$message['user_id']];
                     if ($associations[$message['user_id']] <= 0) {
                         unset($associations[$message['user_id']]);
                         $remove[] = $message['user_id'];
@@ -884,8 +880,8 @@ while (true) {
         }
 
         if ($remove) {
-            foreach ($remove AS $user_id) {
-                foreach ($child_user_map AS $child_pid => &$user_ids) {
+            foreach ($remove as $user_id) {
+                foreach ($child_user_map as $child_pid => &$user_ids) {
                     $key = array_search($user_ids, $user_id);
                     if ($key !== false) {
                         unset($user_ids[$key]);
@@ -893,17 +889,18 @@ while (true) {
                             $control = $control_stream_map[$child_pid];
                             try {
                                 $rest_api->siteStreamRequest('POST', "$control/remove_user.json", array(
-                                    'user_id' => $user_id
+                                    'user_id' => $user_id,
                                 ));
                             } catch (\EpiTwitterException $e) {
-                            } catch (\EpiOAuthException $e) {}
+                            } catch (\EpiOAuthException $e) {
+                            }
                         }
                     }
                 }
             }
         }
 
-        foreach ($child_user_map AS $child_pid => $user_ids) {
+        foreach ($child_user_map as $child_pid => $user_ids) {
             if (!isset($children[$child_pid])) {
                 $add = array_merge($add, $user_ids);
                 $add = array_unique($add);
@@ -911,7 +908,7 @@ while (true) {
             }
         }
 
-        foreach ($add AS $k => $v) {
+        foreach ($add as $k => $v) {
             if (!$v) {
                 unset($add[$k]);
             }
@@ -920,20 +917,21 @@ while (true) {
         if ($add) {
             if (TWITTER_SITE_STREAM) {
                 // site stream implementation
-                foreach ($child_user_map AS $child_pid => $user_ids) {
+                foreach ($child_user_map as $child_pid => $user_ids) {
                     while (count($user_ids) < 1000 && $add) {
-                        $slice_size = min(1000 - count($user_ids), 100);
-                        $user_ids = array_slice($add, 0, $slice_size);
-                        $add = array_slice($add, $slice_size);
+                        $slice_size                   = min(1000 - count($user_ids), 100);
+                        $user_ids                     = array_slice($add, 0, $slice_size);
+                        $add                          = array_slice($add, $slice_size);
                         $child_user_map[$info['pid']] = array_merge($child_user_map[$info['pid']], $user_ids);
 
                         $control = $control_stream_map[$child_pid];
                         try {
                             $rest_api->siteStreamRequest('POST', "$control/add_user.json", array(
-                                'user_id' => implode(',', $user_ids)
+                                'user_id' => implode(',', $user_ids),
                             ));
                         } catch (\EpiTwitterException $e) {
-                        } catch (\EpiOAuthException $e) {}
+                        } catch (\EpiOAuthException $e) {
+                        }
                         break;
                     }
 
@@ -945,31 +943,31 @@ while (true) {
                 if ($add) {
                     // need to spawn a new process
                     $user_ids = array_slice($add, 0, 100);
-                    $add = array_slice($add, 100);
+                    $add      = array_slice($add, 100);
 
-                    $log_status("[Runner, PID $my_pid] Starting new processor for users " . implode(', ', $user_ids) . ".");
+                    $log_status("[Runner, PID $my_pid] Starting new processor for users ".implode(', ', $user_ids).'.');
 
                     $pipes = array();
                     // windows doesn't like the arguments being quoted for some reason...
-                    $process = proc_open("$php_path " . basename(__FILE__) . " " . implode(' ', $user_ids), array(), $pipes, __DIR__);
-                    $info = proc_get_status($process);
-                    $children[$info['pid']] = $process;
+                    $process                      = proc_open("$php_path ".basename(__FILE__).' '.implode(' ', $user_ids), array(), $pipes, __DIR__);
+                    $info                         = proc_get_status($process);
+                    $children[$info['pid']]       = $process;
                     $child_user_map[$info['pid']] = $user_ids;
 
                     // can't add more here as we won't have the control stream yet
                 }
             } else {
                 // user stream implementation
-                foreach ($add AS $user_id) {
+                foreach ($add as $user_id) {
                     if ($timer > 0) {
                         $log_status("[Runner, PID $my_pid] Starting new processor for user $user_id.");
                     }
 
                     $pipes = array();
                     // windows doesn't like the arguments being quoted for some reason...
-                    $process = proc_open("$php_path " . basename(__FILE__) . " $user_id", array(), $pipes, __DIR__);
-                    $info = proc_get_status($process);
-                    $children[$info['pid']] = $process;
+                    $process                      = proc_open("$php_path ".basename(__FILE__)." $user_id", array(), $pipes, __DIR__);
+                    $info                         = proc_get_status($process);
+                    $children[$info['pid']]       = $process;
                     $child_user_map[$info['pid']] = array($user_id);
                 }
 

@@ -122,33 +122,45 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 			$(this).width(min);
 		});
-		DP.select(this.display.find('select'));
+
+    this.display.find('select[data-custom-field]').dpMultiLevelSelect();
+    DP.select(this.display.find('select'));
 
 		this.updateDisplay();
 
-		$('.Date.customfield input', this.display).datepicker({
-			dateFormat: 'yy-mm-dd',
-			showButtonPanel: true,
-			beforeShow: function(input) {
-				setTimeout(function() {
-					var buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane");
-
-					buttonPane.find('button:first').remove();
-
-					var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">Clear</button>');
-					btn.unbind("click").bind("click", function () { $.datepicker._clearDate( input ); });
-					btn.appendTo( buttonPane );
-
-					$(input).datepicker("widget").css('z-index', 30001);
-				},1);
-			}
+		$('.Date.customfield input', this.display).each(function(){
+			$(this).datetimepicker({
+				format: 'YYYY-MM-DD',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				widgetPositioning: { vertical: 'bottom' },
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
 		});
 
 		$('.DateTime.customfield input', this.display).each(function(){
 			$(this).datetimepicker({
-				format: 'yyyy-mm-dd hh:ii',
-				container: $(this).parent().css('position', 'relative'),
-				autoclose: true
+				format: 'YYYY-MM-DD HH:mm',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				widgetPositioning: { vertical: 'bottom' },
+				icons: {
+					time: 'fa fa-clock-o',
+					date: 'fa fa-calendar-o',
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
 			});
 		});
 
@@ -177,58 +189,49 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 	updateDisplay_modify: function() {
 		var fields = this.fieldDisplayModify.getFields(this.ticketReader.getDepartmentId());
+		var baseId = this.page.meta.baseId;
 		if (!fields || !fields['default']) {
 			fields['default'] = [];
 		}
 
 		fields = fields['default'];
-
-		// Check to see if the fields are the same and in the same order
-		if (fields.length == this.currentDisplayModify.length) {
-			var change = false;
-			for (var i = 0; i < fields.length; i++) {
-				if (this.currentDisplayModify && this.currentDisplayModify[i] && fields[i].field_type == this.currentDisplayModify[i].field_type) {
-					if (fields[i].field_type == 'ticket_field' && fields[i].field_id != this.currentDisplayModify[i].field_id) {
-						change = true;
-						break;
-					}
-				} else {
-					change = true;
-					break;
-				}
-			}
-		} else {
-			var change = true;
-		}
-
-		// No Changes, dont need to do any expensive dom work
-		if (!change) {
-			console.log("[TicketFields] No change");
-			return;
-		}
-
 		this.currentDisplayModify = fields;
 
-		this.display.find('tbody.item.item-on').hide().removeClass('item-on');
+		this.display.find('tbody.item.item-on').hide().removeClass('item-on').removeClass('always-display');
 		var last = this.display.find('tbody.always-bottom');
 
 		Array.each(this.currentDisplayModify, function(f) {
 			if (f.field_type == 'ticket_field') {
 				var classname = 'ticket_field_' + f.field_id;
-			} else if (f.field_type == 'custom_field') {
+			} else if (f.field_type == 'user_field') {
+        var classname = 'person_field_' + f.field_id;
+      } else if (f.field_type == 'org_field') {
+        var classname = 'org_field_' + f.field_id;
+      } else if (f.field_type == 'custom_field') {
 				var classname = 'custom_field_' + f.field_id;
 			} else {
 				var classname = f.field_type;
 			}
 
-			this.display.find('.item.' + classname).detach().appendTo(this.display).show().addClass('item-on');
+			var item = this.display.find('.item.' + classname);
+			item.detach().appendTo(this.display).show().addClass('item-on');
 		}, this);
+
+    this.display.find('select').not('.no-dp-select').dpMultiLevelSelect();
+    DP.select(this.display.find('select'));
+
+    this.display.find('.prop-input-problem_id').off('change.prob').on('change.prob', function () {
+      var $title = $(this).next('input');
+      if (!$title.length) return;
+      -1 == $(this).val() ? $title.show() : $title.hide();
+    });
 
 		last.detach().appendTo(this.display);
 	},
 
 	updateDisplay_view: function() {
 		var fields = this.fieldDisplay.getFields(this.ticketReader.getDepartmentId());
+		var change = false;
 		if (!fields || !fields['default']) {
 			fields['default'] = [];
 		}
@@ -237,7 +240,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		// Check to see if the fields are the same and in the same order
 		if (fields.length == this.currentDisplay.length) {
-			var change = false;
 			for (var i = 0; i < fields.length; i++) {
 				if (fields[i].field_type == this.currentDisplay[i].field_type) {
 					if (fields[i].field_type == 'ticket_field' && fields[i].field_id != this.currentDisplay[i].field_id) {
@@ -250,14 +252,16 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				}
 			}
 		} else {
-			var change = true;
+			change = true;
 		}
 
 		// No Changes, dont need to do any expensive dom work
 		if (!change) {
 			console.log("[TicketFields] No change");
-			return;
 		}
+
+		// still need to run through to make sure visibility on
+		// rows is set
 
 		this.currentDisplay = fields;
 
@@ -267,7 +271,11 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		Array.each(this.currentDisplay, function(f) {
 			if (f.field_type == 'ticket_field') {
 				var classname = 'ticket_field_' + f.field_id;
-			} else if (f.field_type == 'custom_field') {
+			} else if (f.field_type == 'user_field') {
+        var classname = 'person_field_' + f.field_id;
+      } else if (f.field_type == 'org_field') {
+        var classname = 'org_field_' + f.field_id;
+      } else if (f.field_type == 'custom_field') {
 				var classname = 'custom_field_' + f.field_id;
 			} else {
 				var classname = f.field_type;
@@ -287,6 +295,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 	saveChanges: function() {
 		var changeManager = this.page.changeManager;
+		var baseId = this.page.meta.baseId;
 
 		this.display.find('[data-prop-id]').each(function() {
 			var prop = changeManager.getPropertyManager($(this).data('prop-id'));
@@ -296,39 +305,45 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		});
 
 		var customFieldData = this.display.find('.custom-field input, .custom-field textarea, .custom-field select').serializeArray();
+		for (var i = 0; i < customFieldData.length; i++) {
+			customFieldData[i].name = customFieldData[i].name.replace(baseId + '_', '');
+		}
+		customFieldData.unshift({name: 'custom_fields[]', value: ''});
 
-		this.display.find('input[type="checkbox"][value="1"]').not(':checked').each(function() {
-			customFieldData.push({
-				name: $(this).attr('name'),
-				value: '0'
-			});
-		});
+		changeManager.saveChanges(
+			customFieldData,
+			(function(data) {
+				this.updateDisplay();
+				this.closeEditMode();
 
-		changeManager.saveChanges(customFieldData, (function(data) {
-			this.updateDisplay();
-			this.closeEditMode();
+				if (data.data && data.data.perm_errors) {
+					var div = $('<div/>');
+					div.append('<strong>You do not have permission to change some fields. The following changes were not saved:</strong>');
 
-			if (data.data && data.data.perm_errors) {
-				var div = $('<div/>');
-				div.append('<strong>You do not have permission to change some fields. The following changes were not saved:</strong>');
+					var list = $('<ul />');
+					list.appendTo(div);
 
-				var list = $('<ul />');
-				list.appendTo(div);
+					Array.each(data.data.perm_errors, function(err) {
+						var li = $('<li/>');
+						li.text(err.capitalize());
+						li.appendTo(list);
+					});
 
-				Array.each(data.data.perm_errors, function(err) {
-					var li = $('<li/>');
-					li.text(err.capitalize());
-					li.appendTo(list);
-				});
+					DeskPRO_Window.showAlert(div);
+				}
 
-				DeskPRO_Window.showAlert(div);
-			}
-
-			if (data.data && data.data.reload) {
-				this.page.closeSelf();
-				DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + this.page.meta.ticket_id);
-			}
-		}).bind(this));
+				if (data.data && data.data.reload) {
+					this.page.closeSelf();
+					DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + this.page.meta.ticket_id);
+				}
+			}).bind(this),
+			(function(xhr, code, message) {
+        this.closeEditMode();
+        var div = $('<div><strong>Server error: </strong>' + message + '</div>');
+        DeskPRO_Window.showAlert(div);
+				console.error(message);
+			}).bind(this)
+		);
 	},
 
 	replaceHolders: function(html) {
@@ -336,7 +351,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		last.detach();
 
 		var old = this.display;
-		this.display = $('<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">' + html + '</table>');
+		var newDisplay = $('<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">' + html + '</table>');
+		this.page.rewriteRadioNames(newDisplay);
+		this.display = newDisplay;
 		old.after(this.display);
 		old.remove();
 		this.display.append(last);

@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Tickets
+ */
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -40,7 +39,7 @@ use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Send an email to the user
+ * Send an email to the user.
  *
  * @option bool template       The template to send
  * @option bool from_name      Who to send the email from
@@ -50,7 +49,7 @@ use Orb\Util\CheckedOptionsArray;
 class SendUserEmail extends AbstractEmailAction
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getOptionsDef()
     {
@@ -60,13 +59,12 @@ class SendUserEmail extends AbstractEmailAction
         return $options;
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $context->getLogger()->debug("[SendUserEmail] Begin");
+        $context->getLogger()->debug('[SendUserEmail] Begin');
         $start_time = microtime(true);
 
         try {
@@ -112,28 +110,28 @@ class SendUserEmail extends AbstractEmailAction
 
         // If this is from a user reply, then mark the email as auto and handle disable auto setting
         if ($context->getEventPerformer() == 'user' && $ticket->getStateChangeRecorder()->hasNewReply()) {
-            $context->getLogger()->info("[SendUserEmail] Identified as an automatic email");
+            $context->getLogger()->info('[SendUserEmail] Identified as an automatic email');
             $build->setIsAuto();
 
             if ($context->getVars()->has('ticket_email')) {
                 /** @var \Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail $ticket_email */
                 $ticket_email = $context->getVars()->get('ticket_email');
                 if ($ticket_email->is_bounce) {
-                    $context->getLogger()->info("Skipping email because is_bounce = true");
+                    $context->getLogger()->info('Skipping email because is_bounce = true');
 
                     return;
                 }
             }
 
             if ($ticket->person->disable_autoresponses) {
-                $context->getLogger()->info("Skipping email because user is marked as an auto-responder");
+                $context->getLogger()->info('Skipping email because user is marked as an auto-responder');
 
                 return;
             }
 
-            foreach($ticket->getStateChangeRecorder()->getNewUserReplies() as $m) {
+            foreach ($ticket->getStateChangeRecorder()->getNewUserReplies() as $m) {
                 if ($m->person->disable_autoresponses) {
-                    $context->getLogger()->info(sprintf("Skipping email because user #%d %s on message #%d is an auto-responder", $m->person->id, $m->person->getDisplayContact(), $m->id));
+                    $context->getLogger()->info(sprintf('Skipping email because user #%d %s on message #%d is an auto-responder', $m->person->id, $m->person->getDisplayContact(), $m->id));
 
                     return;
                 }
@@ -147,30 +145,33 @@ class SendUserEmail extends AbstractEmailAction
             $this->recordEmailTicketLog($ticket_email, $ticket, $context);
         } catch (\Exception $e) {
             $context->getLogger()->error(
-                sprintf("Exception: [%s] %s", $e->getCode(), $e->getMessage()),
+                sprintf('Exception: [%s] %s', $e->getCode(), $e->getMessage()),
                 array('exception' => $e)
             );
 
             throw $e;
         }
 
-        $context->getLogger()->info(sprintf("[SendUserEmail] Sent message in %.3fs", microtime(true)-$start_time));
+        $context->getLogger()->info(sprintf('[SendUserEmail] Sent message in %.3fs', microtime(true) - $start_time));
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
     {
+        if (Ticket::STATUS_HIDDEN === $ticket['status'] && Ticket::HIDDEN_STATUS_TEMP === $ticket['hidden_status']) {
+            return true;
+        }
+
         if (!$this->getContainer()->getEmailAccountManager()->countOutgoingAccounts()) {
-            $context->getLogger()->debug("[SendUserEmail] no outgoing email accounts are defined");
+            $context->getLogger()->debug('[SendUserEmail] no outgoing email accounts are defined');
 
             return true;
         }
 
         if ($context->getVars()->get('mute_user_emails')) {
-            $context->getLogger()->debug("[SendUserEmail] mute_user_emails = true");
+            $context->getLogger()->debug('[SendUserEmail] mute_user_emails = true');
 
             return true;
         }

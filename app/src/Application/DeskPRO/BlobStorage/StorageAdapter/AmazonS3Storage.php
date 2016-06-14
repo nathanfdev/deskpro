@@ -1,39 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
 use Application\DeskPRO\BlobStorage\Blob;
+use Application\DeskPRO\BlobStorage\BlobStorageException;
 use Aws\S3\Enum\CannedAcl;
 use Aws\S3\S3Client;
 
@@ -79,17 +78,17 @@ class AmazonS3Storage extends AbstractStorageAdapter
         $this->retry_sleep     = $this->options->get('retry_sleep', 1);
 
         if (!$this->s3 || !($this->s3 instanceof S3Client)) {
-            throw new \InvalidArgumentException("s3_client must be an instance of Aws\\S3\\S3Client");
+            throw new \InvalidArgumentException('s3_client must be an instance of Aws\\S3\\S3Client');
         }
 
         if (!$this->bucket) {
-            throw new \InvalidArgumentException("bucket is a required option");
+            throw new \InvalidArgumentException('bucket is a required option');
         }
     }
 
-
     /**
-     * @param  Blob   $blob
+     * @param Blob $blob
+     *
      * @return string
      */
     public function makePathForBlob(Blob $blob)
@@ -104,26 +103,26 @@ class AmazonS3Storage extends AbstractStorageAdapter
             $path[] = md5(uniqid('', true));
         }
 
-        return implode('/', $path) . '-' . $blob->getFilenameSafe();
+        return implode('/', $path).'-'.$blob->getFilenameSafe();
     }
 
-
     /**
-     * Get the full path from a path string
+     * Get the full path from a path string.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return string
      */
     public function resolvePath($path)
     {
         $path = trim($path, '/\\');
 
-        return $this->base_path . DIRECTORY_SEPARATOR . $path;
+        return $this->base_path.DIRECTORY_SEPARATOR.$path;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     *
      * @return bool
      */
     public function checkBlobExists(Blob $blob)
@@ -134,9 +133,9 @@ class AmazonS3Storage extends AbstractStorageAdapter
         );
     }
 
-
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     *
      * @return bool
      */
     public function deleteBlob(Blob $blob)
@@ -145,16 +144,16 @@ class AmazonS3Storage extends AbstractStorageAdapter
 
         $this->s3->deleteObject(array(
             'Bucket' => $this->bucket,
-            'Key' => $path
+            'Key'    => $path,
         ));
 
         return true;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
      * @param $data
+     *
      * @return mixed
      */
     public function writeBlobString(Blob $blob, $data)
@@ -162,7 +161,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
         $path = $this->resolvePath($blob->getPath());
 
         $disposition = $blob->getMeta('content_disposition') ?: 'attachment';
-        $disposition .= '; filename="' . str_replace(array('\'', '"'), '-', $blob->getFilename()) . '"';
+        $disposition .= '; filename="'.str_replace(array('\'', '"'), '-', $blob->getFilename()).'"';
 
         $try = $this->attempts;
         while (--$try >= 0) {
@@ -178,7 +177,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
                 break;
             } catch (\Exception $e) {
                 if ($try == 0) {
-                    throw $e;
+                    throw new BlobStorageException('Failed to write blob', BlobStorageException::FAILED_RESOURCE_WRITE, $e);
                 }
                 if ($this->retry_sleep) {
                     sleep($this->retry_sleep);
@@ -187,18 +186,18 @@ class AmazonS3Storage extends AbstractStorageAdapter
         }
 
         if (!$this->file_url_domain) {
-            $blob->setMeta('file_url', 'https://'. $this->bucket . '.s3.amazonaws.com' . $path);
+            $blob->setMeta('file_url', 'https://'.$this->bucket.'.s3.amazonaws.com'.$path);
         } else {
-            $blob->setMeta('file_url', 'https://'. $this->file_url_domain . $path);
+            $blob->setMeta('file_url', 'https://'.$this->file_url_domain.$path);
         }
 
         return strlen($data);
     }
 
-
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param  resource                              $data
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param resource                              $data
+     *
      * @return int
      */
     public function writeBlobFromStream(Blob $blob, $fp_source)
@@ -206,10 +205,10 @@ class AmazonS3Storage extends AbstractStorageAdapter
         return $this->writeBlobString($blob, stream_get_contents($fp_source));
     }
 
-
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param  string                                $source_path
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param string                                $source_path
+     *
      * @return int
      */
     public function writeBlobFromFile(Blob $blob, $source_path)
@@ -217,11 +216,11 @@ class AmazonS3Storage extends AbstractStorageAdapter
         return $this->writeBlobString($blob, file_get_contents($source_path));
     }
 
-
     /**
-     * Loads the entire blob into a string
+     * Loads the entire blob into a string.
      *
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     *
      * @return string
      */
     public function readBlobString(Blob $blob)
@@ -237,7 +236,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
                 break;
             } catch (\Exception $e) {
                 if ($try == 0) {
-                    throw $e;
+                    throw new BlobStorageException('Failed to read blob', BlobStorageException::FAILED_RESOURCE_READ, $e);
                 }
                 if ($this->retry_sleep) {
                     sleep($this->retry_sleep);
@@ -249,8 +248,9 @@ class AmazonS3Storage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
      * @param $target_path
+     *
      * @return int
      */
     public function readBlobToFile(Blob $blob, $target_path)
@@ -259,8 +259,9 @@ class AmazonS3Storage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param  resource                              $data
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param resource                              $data
+     *
      * @return int
      */
     public function readBlobToStream(Blob $blob, $fp_target)
@@ -273,6 +274,5 @@ class AmazonS3Storage extends AbstractStorageAdapter
      */
     public function getFileUrlLink(Blob $blob)
     {
-
     }
 }

@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\FeedbackResults;
@@ -45,7 +42,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 /**
- * Handles ticket searches
+ * Handles ticket searches.
  */
 class FeedbackController extends AbstractController
 {
@@ -57,11 +54,11 @@ class FeedbackController extends AbstractController
     {
         $data = array();
 
-        $counts = array();
+        $counts                                 = array();
         $counts['feedback_awaiting_validation'] = $this->em->getRepository('DeskPRO:Feedback')->countAwaitingValidation();
         $counts['comments_awaiting_validation'] = $this->em->getRepository('DeskPRO:FeedbackComment')->countAwaitingValidation();
 
-        $status_counts = array();
+        $status_counts           = array();
         $status_counts['new']    = $this->em->getRepository('DeskPRO:Feedback')->countNew();
         $status_counts['active'] = $this->em->getRepository('DeskPRO:Feedback')->countActiveGrouped();
         $status_counts['closed'] = $this->em->getRepository('DeskPRO:Feedback')->countClosedGrouped();
@@ -73,7 +70,7 @@ class FeedbackController extends AbstractController
         $active_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
         $closed_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
-        $label_lister = new \Application\DeskPRO\Labels\LabelLister('feedback');
+        $label_lister       = new \Application\DeskPRO\Labels\LabelLister('feedback');
         $feedback_tag_index = $label_lister->getIndexList();
 
         $data['section_html'] = $this->renderView('AgentBundle:Feedback:window-section.html.twig', array(
@@ -83,7 +80,7 @@ class FeedbackController extends AbstractController
             'feedback_cats'      => $feedback_cats,
             'active_status_cats' => $active_status_cats,
             'closed_status_cats' => $closed_status_cats,
-            'feedback_tag_index' => $feedback_tag_index
+            'feedback_tag_index' => $feedback_tag_index,
         ));
 
         return $this->createJsonResponse($data);
@@ -113,35 +110,35 @@ class FeedbackController extends AbstractController
         #------------------------------
 
         $feedback_comments_raw = $feedback->comments;
-        $feedback_comments = array();
+        $feedback_comments     = array();
         foreach ($feedback_comments_raw as $c) {
             if ($c->status != 'temp') {
                 $feedback_comments[] = $c;
             }
         }
 
-        $feedback_revisions = $feedback->getRevisions();
+        $feedback_revisions  = $feedback->getRevisions();
         $sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($feedback);
 
-        $related_finder = new RelatedContentFinder($this->person, $feedback);
-        $related_content = $related_finder->getRelatedEntities();
+        $related_finder  = new RelatedContentFinder($this->person, $feedback);
+        $related_content = $related_finder->getRelatedEntities(true);
 
         $rated_searches = $this->em->getRepository('DeskPRO:SearchLog')->getRatedSearchesFor('feedback', $feedback['id'], 'counted');
 
         $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
 
         $content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($feedback, $this->person, $this->session->getVisitor());
-        $my_vote = $content_rating->getRating();
+        $my_vote        = $content_rating->getRating();
 
         $feedback_categories = $this->em->getRepository('DeskPRO:FeedbackCategory')->getInHierarchy();
         $active_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
         $closed_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
-        $category = $feedback->category;
+        $category      = $feedback->category;
         $category_path = $category->getTreeParents();
 
         $perms = array(
-            'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($feedback),
+            'can_edit'   => $this->person->PermissionsManager->PublishChecker->canEdit($feedback),
             'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($feedback),
         );
 
@@ -149,12 +146,12 @@ class FeedbackController extends AbstractController
             'feedback'           => $feedback,
             'feedback_comments'  => $feedback_comments,
             'feedback_revisions' => $feedback_revisions,
-            'state'          => $state,
+            'state'              => $state,
 
-            'category' => $category,
+            'category'      => $category,
             'category_path' => $category_path,
 
-            'custom_fields'  => $custom_fields,
+            'custom_fields' => $custom_fields,
 
             'my_vote' => $my_vote,
 
@@ -162,10 +159,10 @@ class FeedbackController extends AbstractController
             'related_content'     => $related_content,
             'sticky_search_words' => $sticky_search_words,
 
-            'feedback_categories'  => $feedback_categories,
-            'active_status_cats'   => $active_status_cats,
-            'closed_status_cats'   => $closed_status_cats,
-            'perms'                => $perms
+            'feedback_categories' => $feedback_categories,
+            'active_status_cats'  => $active_status_cats,
+            'closed_status_cats'  => $closed_status_cats,
+            'perms'               => $perms,
         ));
     }
 
@@ -176,7 +173,7 @@ class FeedbackController extends AbstractController
         $feedback_votes = $feedback->votes->toArray();
 
         return $this->render('AgentBundle:Feedback:view-who-voted.html.twig', array(
-            'feedback' => $feedback,
+            'feedback'       => $feedback,
             'feedback_votes' => $feedback_votes,
         ));
     }
@@ -197,9 +194,9 @@ class FeedbackController extends AbstractController
 
         switch ($this->in->getString('action')) {
             case 'title':
-                $value = $this->in->getString('title');
+                $value             = $this->in->getString('title');
                 $feedback['title'] = $value;
-                $ret = array('html' => htmlspecialchars($feedback['title']));
+                $ret               = array('html' => htmlspecialchars($feedback['title']));
                 break;
         }
 
@@ -209,9 +206,9 @@ class FeedbackController extends AbstractController
         });
 
         return $this->createJsonResponse(array(
-            'success' => true,
+            'success'     => true,
             'feedback_id' => $feedback['id'],
-            'html' => $ret
+            'html'        => $ret,
         ));
     }
 
@@ -223,9 +220,7 @@ class FeedbackController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-
-
-        $cat  = $this->em->find('DeskPRO:FeedbackCategory', $category_id);
+        $cat = $this->em->find('DeskPRO:FeedbackCategory', $category_id);
 
         $feedback->category = $cat;
 
@@ -235,7 +230,7 @@ class FeedbackController extends AbstractController
         });
 
         return $this->createJsonResponse(array(
-            'success' => true,
+            'success'     => true,
             'feedback_id' => $feedback['id'],
         ));
     }
@@ -259,7 +254,7 @@ class FeedbackController extends AbstractController
         });
 
         return $this->createJsonResponse(array(
-            'success' => true,
+            'success'     => true,
             'feedback_id' => $feedback['id'],
         ));
     }
@@ -278,7 +273,7 @@ class FeedbackController extends AbstractController
         $this->em->beginTransaction();
 
         try {
-            $field_manager = $this->container->getSystemService('feedback_fields_manager');
+            $field_manager      = $this->container->getSystemService('feedback_fields_manager');
             $post_custom_fields = $this->request->request->get('custom_fields', array());
             if (!empty($post_custom_fields)) {
                 $field_manager->saveFormToObject($post_custom_fields, $feedback);
@@ -294,7 +289,7 @@ class FeedbackController extends AbstractController
         $custom_fields = $field_manager->getDisplayArrayForObject($feedback);
 
         return $this->render('AgentBundle:Feedback:view-customfields-rendered-rows.html.twig', array(
-            'feedback' => $feedback,
+            'feedback'      => $feedback,
             'custom_fields' => $custom_fields,
         ));
     }
@@ -328,10 +323,10 @@ class FeedbackController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $comment = new FeedbackComment();
-        $comment->feedback = $feedback;
+        $comment              = new FeedbackComment();
+        $comment->feedback    = $feedback;
         $comment->is_reviewed = true;
-        $comment['content'] = $this->in->getString('content');
+        $comment['content']   = $this->in->getString('content');
 
         if ($this->in->getBool('agent_only')) {
             $comment['status'] = 'agent';
@@ -344,7 +339,7 @@ class FeedbackController extends AbstractController
         $commenting->newCommentNotify($comment);
 
         return $this->render('AgentBundle:Feedback:view-comment.html.twig', array(
-            'comment' => $comment
+            'comment' => $comment,
         ));
     }
 
@@ -392,13 +387,13 @@ class FeedbackController extends AbstractController
 
             case 'title':
                 $feedback['title'] = $this->in->getString('title');
-                $rev = ContentRevisionUtil::findOrCreate($feedback, 'title', $this->person);
-                $rev['title'] = $feedback['title'];
+                $rev               = ContentRevisionUtil::findOrCreate($feedback, 'title', $this->person);
+                $rev['title']      = $feedback['title'];
                 break;
 
             case 'slug':
                 $feedback['slug'] = Strings::slugifyTitle($this->in->getString('slug')) ?: 'view';
-                $data['slug'] = $feedback['slug'];
+                $data['slug']     = $feedback['slug'];
                 break;
 
             case 'add-related':
@@ -437,18 +432,20 @@ class FeedbackController extends AbstractController
                     : $this->in->getCleanValue('content', 'html');
 
                 $data['content_html'] = $this->renderView('AgentBundle:Feedback:view-content-tab.html.twig', array(
-                    'feedback' => $feedback
+                    'feedback' => $feedback,
                 ));
 
-                $rev = ContentRevisionUtil::findOrCreate($feedback, array('content'), $this->person);
+                $rev            = ContentRevisionUtil::findOrCreate($feedback, array('content'), $this->person);
                 $rev['content'] = $feedback['content'];
 
                 break;
 
             case 'category':
                 $cat = $this->em->find('DeskPRO:FeedbackCategory', $this->in->getUint('category_id'));
-                $feedback['category'] = $cat;
-                $data['category_id'] = $cat['id'];
+                if ($cat) {
+                    $feedback['category'] = $cat;
+                    $data['category_id']  = $cat['id'];
+                }
                 break;
 
             case 'vote':
@@ -462,7 +459,7 @@ class FeedbackController extends AbstractController
             case 'clear-vote':
 
                 $content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($feedback, $this->person, $this->session->getVisitor());
-                $vote = $content_rating->getRating();
+                $vote           = $content_rating->getRating();
 
                 if ($vote) {
                     $feedback->removeRating($vote);
@@ -506,17 +503,17 @@ class FeedbackController extends AbstractController
         }
 
         return $this->render('AgentBundle:Feedback:merge-overlay.html.twig', array(
-            'feedback'          => $feedback,
-            'other_feedback'    => $other_feedback,
+            'feedback'       => $feedback,
+            'other_feedback' => $other_feedback,
         ));
     }
 
     /**
-     * Merge a ticket interface
+     * Merge a ticket interface.
      */
     public function mergeAction($feedback_id, $other_feedback_id)
     {
-        $feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
+        $feedback       = $this->em->find('DeskPRO:Feedback', $feedback_id);
         $other_feedback = $this->em->find('DeskPRO:Feedback', $other_feedback_id);
 
         if (!$feedback || !$other_feedback) {
@@ -545,8 +542,8 @@ class FeedbackController extends AbstractController
 
         return $this->createJsonResponse(array(
             'success' => true,
-            'id' => $feedback['id'],
-            'old_id' => $old_feedback_id
+            'id'      => $feedback['id'],
+            'old_id'  => $old_feedback_id,
         ));
     }
 
@@ -555,7 +552,7 @@ class FeedbackController extends AbstractController
     ############################################################################
 
     /**
-     * Any general search. For example, status, category or label
+     * Any general search. For example, status, category or label.
      *
      * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
      */
@@ -570,11 +567,11 @@ class FeedbackController extends AbstractController
         );
     }
 
-
     /**
-     * A shortcut to run a filter on a category
+     * A shortcut to run a filter on a category.
      *
      * @param  $category_id
+     *
      * @return
      */
     public function categoryListAction($category_id)
@@ -582,16 +579,16 @@ class FeedbackController extends AbstractController
         $top_result_helper = FeedbackResults::newFromRequest($this, array(
             'specific_terms' => array(
                 'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
-                'status'   => array('type' => 'status', 'op' => 'not', 'status' => 'hidden')
-            )
+                'status'   => array('type' => 'status', 'op' => 'not', 'status' => 'hidden'),
+            ),
         ));
 
         if ($this->in->getString('subgroup')) {
             $result_helper = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
                     'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
-                    'status' => array('type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')),
-                )
+                    'status'   => array('type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')),
+                ),
             ));
         } else {
             $result_helper = $top_result_helper;
@@ -605,18 +602,18 @@ class FeedbackController extends AbstractController
         $grouped = $grouping->getDisplayArray();
 
         if (!$cat->parent) {
-            $grouped_key = $cat->getId();
+            $grouped_key  = $cat->getId();
             $grouped_info = array();
-            $t = 0;
+            $t            = 0;
             if (isset($grouped['items'][$grouped_key])) {
                 $grouped_info = Arrays::mergeAssoc($grouped_info, array($grouped_key => $grouped['items'][$grouped_key]));
-                $t = $grouped['items'][$grouped_key]['total'];
+                $t            = $grouped['items'][$grouped_key]['total'];
             }
 
             $grouped_info[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
         } else {
             $grouped_key = $cat->getId();
-            $t = 0;
+            $t           = 0;
             foreach ($cat->children as $c) {
                 $k = $c['id'];
                 if (isset($grouped['items'][$k])) {
@@ -632,22 +629,22 @@ class FeedbackController extends AbstractController
             $result_helper,
             null,
             array(
-                'list_type' => 'category',
-                'category_id' => $category_id,
-                'page_title' => $cat->getFullTitle(),
-                'grouped' => $grouped,
+                'list_type'    => 'category',
+                'category_id'  => $category_id,
+                'page_title'   => $cat->getFullTitle(),
+                'grouped'      => $grouped,
                 'grouped_info' => $grouped_info,
-                'grouped_key' => $grouped_key,
-                'subgroup' => $this->in->getString('subgroup'),
+                'grouped_key'  => $grouped_key,
+                'subgroup'     => $this->in->getString('subgroup'),
             )
         );
     }
 
-
     /**
-     * A shortcut to run a filter on a label
+     * A shortcut to run a filter on a label.
      *
      * @param  $category_id
+     *
      * @return
      */
     public function labelListAction($label)
@@ -656,7 +653,7 @@ class FeedbackController extends AbstractController
             'specific_terms' => array(
                 array('type' => 'label', 'op' => 'is', 'label' => $label),
                 array('type' => 'status', 'op' => 'not', 'status' => 'hidden'),
-                array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
+                array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
             ),
         ));
 
@@ -664,18 +661,18 @@ class FeedbackController extends AbstractController
             $result_helper,
             null,
             array(
-                'list_type' => 'label',
-                'label' => $label,
-                'page_title' => $label
+                'list_type'  => 'label',
+                'label'      => $label,
+                'page_title' => $label,
             )
         );
     }
 
-
     /**
-     * A shortcut to run a filter on a status
+     * A shortcut to run a filter on a status.
      *
      * @param  $category_id
+     *
      * @return
      */
     public function statusListAction($status)
@@ -684,29 +681,29 @@ class FeedbackController extends AbstractController
         // or an integer which will be treated as a status category (Active > Planned for example)
 
         if (strpos($status, '.') !== false) {
-            list ($status, $v_status) = explode('.', $status);
-            $top_result_helper = FeedbackResults::newFromRequest($this, array(
+            list($status, $v_status) = explode('.', $status);
+            $top_result_helper       = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
-                    'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
-                    'v_status' => array('type' => 'hidden_status', 'op' => 'is', 'hidden_status' => $v_status)
-                )
+                    'status'   => array('type' => 'status', 'op' => 'is', 'status' => $status),
+                    'v_status' => array('type' => 'hidden_status', 'op' => 'is', 'hidden_status' => $v_status),
+                ),
             ));
         } else {
             $top_result_helper = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
-                    'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
-                    'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
-                )
+                    'status'   => array('type' => 'status', 'op' => 'is', 'status' => $status),
+                    'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
+                ),
             ));
         }
 
         if ($this->in->getString('subgroup')) {
             $result_helper = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
-                    'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
+                    'status'   => array('type' => 'status', 'op' => 'is', 'status' => $status),
                     'category' => array('type' => 'category', 'op' => 'is', 'category' => $this->in->getString('subgroup')),
-                    'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
-                )
+                    'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
+                ),
             ));
         } else {
             $result_helper = $top_result_helper;
@@ -722,20 +719,20 @@ class FeedbackController extends AbstractController
             null,
             array(
                 'list_type' => 'status',
-                'status' => $status,
-                'grouped' => $grouped,
-                'subgroup' => $this->in->getString('subgroup'),
+                'status'    => $status,
+                'grouped'   => $grouped,
+                'subgroup'  => $this->in->getString('subgroup'),
             )
         );
     }
 
-
     /**
-     * This takes a result helper and just handles rendering it
+     * This takes a result helper and just handles rendering it.
      *
      * @param  $result_helper
-     * @param  string                                              $template
-     * @param  array                                               $template_vars
+     * @param string $template
+     * @param array  $template_vars
+     *
      * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
      */
     public function renderList($result_helper, $template = null, array $template_vars = array())
@@ -747,8 +744,12 @@ class FeedbackController extends AbstractController
         $result_cache = $result_helper->getResultCache();
 
         $page = $this->in->getUint('p');
-        if (!$page) $page = $this->in->getUint('page');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = $this->in->getUint('page');
+        }
+        if (!$page) {
+            $page = 1;
+        }
 
         $feedback = $result_helper->getFeedbackForPage($page);
 
@@ -757,7 +758,7 @@ class FeedbackController extends AbstractController
         }
 
         // Options for the filter form
-        $feedback_cats          = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
+        $feedback_cats      = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
         $active_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
         $closed_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
@@ -780,18 +781,18 @@ class FeedbackController extends AbstractController
         $display = $feedback_collection->getDisplayArray();
 
         return $this->render($template, array_merge(array(
-            'display'      => $display,
-            'cache'        => $result_cache,
-            'cache_id'     => $result_cache['id'],
-            'result_ids'   => $result_cache['results'],
-            'feedback'        => $feedback,
-            'num_results'  => $result_cache['num_results'],
-            'per_page'     => 50,
-            'criteria'     => $result_cache['criteria'],
+            'display'        => $display,
+            'cache'          => $result_cache,
+            'cache_id'       => $result_cache['id'],
+            'result_ids'     => $result_cache['results'],
+            'feedback'       => $feedback,
+            'num_results'    => $result_cache['num_results'],
+            'per_page'       => 50,
+            'criteria'       => $result_cache['criteria'],
             'user_cat_field' => $user_cat_field,
-            'cur_page' => $page,
+            'cur_page'       => $page,
 
-            'feedback_cats'          => $feedback_cats,
+            'feedback_cats'      => $feedback_cats,
             'active_status_cats' => $active_status_cats,
             'closed_status_cats' => $closed_status_cats,
 
@@ -824,7 +825,7 @@ class FeedbackController extends AbstractController
         $this->em->commit();
 
         return $this->createJsonResponse(array(
-            'success' => 1
+            'success' => 1,
         ));
     }
 
@@ -848,17 +849,17 @@ class FeedbackController extends AbstractController
 
     public function newFeedbackAction()
     {
-        $feedback_categories    = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
-        $active_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-        $closed_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+        $feedback_categories = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
+        $active_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
+        $closed_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
         $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newfeedback', $this->person->id);
 
         return $this->render('AgentBundle:Feedback:newfeedback.html.twig', array(
-            'feedback_categories'    => $feedback_categories,
-            'active_status_cats' => $active_status_cats,
-            'closed_status_cats' => $closed_status_cats,
-            'state'              => $state
+            'feedback_categories' => $feedback_categories,
+            'active_status_cats'  => $active_status_cats,
+            'closed_status_cats'  => $closed_status_cats,
+            'state'               => $state,
         ));
     }
 
@@ -867,7 +868,7 @@ class FeedbackController extends AbstractController
         $newfeedback = new \Application\AgentBundle\Form\Model\NewFeedback($this->person);
 
         $formType = new \Application\AgentBundle\Form\Type\NewFeedback();
-        $form = $this->get('form.factory')->create($formType, $newfeedback);
+        $form     = $this->get('form.factory')->create($formType, $newfeedback);
 
         if ($this->get('request')->getMethod() == 'POST') {
             $form->handleRequest($this->get('request'));
@@ -876,8 +877,8 @@ class FeedbackController extends AbstractController
             $validator = new \Application\AgentBundle\Validator\NewFeedbackValidator();
             if (!$validator->isValid($newfeedback)) {
                 return $this->createJsonResponse(array(
-                    'error' => true,
-                    'error_codes' => $validator->getErrorGroups()
+                    'error'       => true,
+                    'error_codes' => $validator->getErrorGroups(),
                 ));
             }
             $newfeedback->save();
@@ -887,8 +888,8 @@ class FeedbackController extends AbstractController
             $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newfeedback', $this->person->id);
 
             return $this->createJsonResponse(array(
-                'success' => true,
-                'feedback_id' => $feedback['id']
+                'success'     => true,
+                'feedback_id' => $feedback['id'],
             ));
         } else {
             return $this->createJsonResponse(array(

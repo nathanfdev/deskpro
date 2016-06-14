@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @category Util
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Util
+ */
 namespace Orb\Util;
 
 /**
@@ -41,12 +40,12 @@ namespace Orb\Util;
  */
 class Web
 {
-    const HTTP_STATUS_OK = 200;
+    const HTTP_STATUS_OK          = 200;
     const HTTP_STATUS_BAD_REQUEST = 400;
-    const HTTP_STATUS_NOT_FOUND = 404;
-    const HTTP_STATUS_FORBIDDEN = 403;
-    const HTTP_STATUS_MOVED_PERM = 301;
-    const HTTP_STATUS_SERVER_ERR = 500;
+    const HTTP_STATUS_NOT_FOUND   = 404;
+    const HTTP_STATUS_FORBIDDEN   = 403;
+    const HTTP_STATUS_MOVED_PERM  = 301;
+    const HTTP_STATUS_SERVER_ERR  = 500;
 
     /**
      * Redirect to a given URL and then halt the script. Will send the location
@@ -66,7 +65,7 @@ class Web
 
         // Standard header
         } else {
-            header('Location: ' . Strings::getFirstLine($url));
+            header('Location: '.Strings::getFirstLine($url));
         }
 
         exit;
@@ -75,12 +74,15 @@ class Web
     /**
      * Send an HTTP status code.
      *
-     * @param  int  $type One of the HTTP_STATUS_* constants.
+     * @param int $type One of the HTTP_STATUS_* constants.
+     *
      * @return bool True if sent, false if it couldnt be sent
      */
     public static function sendHttpStatus($type)
     {
-        if (headers_sent()) return false;
+        if (headers_sent()) {
+            return false;
+        }
 
         switch ($type) {
             case self::HTTP_STATUS_OK: header('HTTP/1.1 200 OK'); break;
@@ -98,10 +100,11 @@ class Web
     /**
      * Get some default headers for serving an attachment.
      *
-     * @param  string $filename  The filename
-     * @param  bool   $is_inline Should the file be served inline
-     * @param  string $mimetype  The mimetype
-     * @param  int    $filesize  The filesize
+     * @param string $filename  The filename
+     * @param bool   $is_inline Should the file be served inline
+     * @param string $mimetype  The mimetype
+     * @param int    $filesize  The filesize
+     *
      * @return array
      */
     public function getAttachmentHeaders($filename, $is_inline = false, $mimetype = null, $filesize = null)
@@ -112,7 +115,7 @@ class Web
             $filename = 'file';
         }
 
-        $headers['Content-Disposition'] = 'inline; filename="' . str_replace('"', '\\"', $filename) . '"';
+        $headers['Content-Disposition'] = 'inline; filename="'.str_replace('"', '\\"', $filename).'"';
 
         if ($mimetype !== null) {
             $headers['Content-Type'] = $mimetype;
@@ -151,7 +154,7 @@ class Web
 
                     if (!$expire) {
                         $expire = null;
-                        throw new \Exception('Unknown expire format: ' . $expire);
+                        throw new \Exception('Unknown expire format: '.$expire);
                     }
                 }
             }
@@ -202,13 +205,13 @@ class Web
 
         if ($content_type) {
             if (strpos($content_type, ';')) {
-                list($content_type,) = explode(';', $content_type, 2);
+                list($content_type) = explode(';', $content_type, 2);
             }
 
             return strtolower(trim($content_type));
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -242,16 +245,15 @@ class Web
         $alt_ip = null;
 
         if ($alt_ip === null) {
-
             if (isset($_SERVER['HTTP_CLIENT_IP'])) {
                 $alt_ip = $_SERVER['HTTP_CLIENT_IP'];
             }
 
-            if (!$alt_ip AND isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            if (!$alt_ip and isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 $ip_arr = array();
 
                 if (preg_match_all('#\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}#s', $_SERVER['HTTP_X_FORWARDED_FOR'], $ip_arr)) {
-                    foreach($ip_arr[0] AS $ip) {
+                    foreach ($ip_arr[0] as $ip) {
                         if (!preg_match("#^(10|172\.16|192\.168)\.#", $ip)) {
                             $alt_ip = $ip;
                             break;
@@ -302,27 +304,25 @@ class Web
         // The URL
         if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI']) {
             $script_path = $_SERVER['REQUEST_URI'];
-        } else	{
+        } else {
             if (isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO']) {
                 $script_path = $_SERVER['PATH_INFO'];
-
             } elseif (isset($_SERVER['REDIRECT_URL']) && $_SERVER['REDIRECT_URL']) {
                 $script_path = $_SERVER['REDIRECT_URL'];
-
             } elseif (isset($_SERVER['PHP_SELF']) && $_SERVER['PHP_SELF']) {
                 $script_path = $_SERVER['PHP_SELF'];
             }
 
             if (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING']) {
-                $script_path .= '?' . $_SERVER['QUERY_STRING'];
+                $script_path .= '?'.$_SERVER['QUERY_STRING'];
             }
         }
 
         $quest_pos = strpos($script_path, '?');
 
         if ($quest_pos !== false) {
-            $script = urldecode(substr($script_path, 0, $quest_pos));
-            $script_path = $script . substr($script_path, $quest_pos);
+            $script      = urldecode(substr($script_path, 0, $quest_pos));
+            $script_path = $script.substr($script_path, $quest_pos);
         } else {
             $script_path = urldecode($script_path);
         }
@@ -343,13 +343,14 @@ class Web
     /**
      * Look up a users country based off of their IP address. Returns null if no country could be found.
      *
-     * @param  string $ip The IP address. Use null if you want to use the current users IP address.
+     * @param string $ip The IP address. Use null if you want to use the current users IP address.
+     *
      * @return string
      */
     public static function getCountryFromIp($ip = null)
     {
         if (!$ip) {
-            $ip = Web::getUserIp();
+            $ip = self::getUserIp();
         }
 
         $country = null;
@@ -358,7 +359,7 @@ class Web
         }
 
         if (!$country) {
-            return null;
+            return;
         }
 
         return strtoupper($country);
@@ -367,7 +368,8 @@ class Web
     /**
      * Checks a URL to see if it exists (that it returns a 200 OK, not a 404 etc).
      *
-     * @param  string $url The URL to check
+     * @param string $url The URL to check
+     *
      * @return bool
      */
     public static function urlExists($url)
@@ -385,14 +387,14 @@ class Web
         if (empty($url_parts['query'])) {
             $url_parts['query'] = '';
         } else {
-            $url_parts['query'] = '?' . $url_parts['query'];
+            $url_parts['query'] = '?'.$url_parts['query'];
         }
 
         if (empty($url_parts['port'])) {
             $url_parts['port'] = '80';
         }
 
-        $errno = $errstr = null;
+        $errno  = $errstr  = null;
         $socket = @fsockopen(
             $url_parts['host'],
             $url_parts['port'],
@@ -422,7 +424,8 @@ class Web
      * Get the filesize of a file at a URL. Note: Requires remote file server to return
      * proper Content-Length header.
      *
-     * @param  string   $url
+     * @param string $url
+     *
      * @return bool|int Filesize or false on failure
      */
     public static function getUrlFileSize($url)
@@ -443,17 +446,17 @@ class Web
 
         if ($full_result) {
             $full_result = Strings::standardEol($full_result);
-            $parts = explode("\n\n", $full_result);
+            $parts       = explode("\n\n", $full_result);
 
             foreach ($parts as $res) {
                 $matches = null;
-                if (preg_match("#^HTTP/1\\.\\d (\\d+)#", $res, $matches)) {
-                    $status = (int)$matches[1];
+                if (preg_match('#^HTTP/1\\.\\d (\\d+)#', $res, $matches)) {
+                    $status = (int) $matches[1];
 
                     if ($status == 200 || ($status > 300 && $status <= 308)) {
                         $matches = null;
-                        if (preg_match("#Content-Length: (\\d+)#", $res, $matches)) {
-                            $content_length = (int)$matches[1];
+                        if (preg_match('#Content-Length: (\\d+)#', $res, $matches)) {
+                            $content_length = (int) $matches[1];
 
                             return $content_length;
                         }
@@ -483,17 +486,17 @@ class Web
 
         if ($full_result) {
             $full_result = Strings::standardEol($full_result);
-            $parts = explode("\n\n", $full_result);
+            $parts       = explode("\n\n", $full_result);
 
             foreach ($parts as $res) {
                 $matches = null;
-                if (preg_match("#^HTTP/1\\.\\d (\\d+)#", $res, $matches)) {
-                    $status = (int)$matches[1];
+                if (preg_match('#^HTTP/1\\.\\d (\\d+)#', $res, $matches)) {
+                    $status = (int) $matches[1];
 
                     if ($status == 200 || ($status > 300 && $status <= 308)) {
                         $matches = null;
 
-                        if (preg_match("#filename\\s*=\\s*(.*?)$#", $res, $matches)) {
+                        if (preg_match('#filename\\s*=\\s*(.*?)$#', $res, $matches)) {
                             $file_name = trim($matches[1], '"\'');
                             $file_name = trim($file_name);
 
@@ -510,9 +513,10 @@ class Web
     }
 
     /**
-     * Check if a useragent is a known bot
+     * Check if a useragent is a known bot.
      *
-     * @param  string $useragent The user agent to check or null to use the current request
+     * @param string $useragent The user agent to check or null to use the current request
+     *
      * @return bool
      */
     public static function isBotUseragent($useragent = null)
@@ -536,7 +540,7 @@ class Web
             'AltaVista',
             'Ask Jeeves/Teoma', 'Teoma',
             'Gigabot',
-            'bingbot'
+            'bingbot',
         );
 
         foreach ($bot_strings as $bot) {

@@ -1,35 +1,33 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Organizations
+ * DeskPRO.
  */
 namespace Application\DeskPRO\Organizations;
 
@@ -85,15 +83,13 @@ class OrgResultsDisplay
      */
     public function __construct(array $orgs)
     {
-        $this->orgs = $orgs;
+        $this->orgs       = $orgs;
         $this->orgs_count = count($orgs);
-        $this->org_ids = Arrays::flattenToIndex($this->orgs, 'id');
-
+        $this->org_ids    = Arrays::flattenToIndex($this->orgs, 'id');
 
         $this->em = App::getOrm();
         $this->db = $this->em->getConnection();
     }
-
 
     /**
      * @return int
@@ -103,7 +99,6 @@ class OrgResultsDisplay
         return $this->orgs_count;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\Organization[]
      */
@@ -112,13 +107,14 @@ class OrgResultsDisplay
         return $this->orgs;
     }
 
-
     /**
      * @return array
      */
     public function getAllLabels()
     {
-        if ($this->all_labels !== null) return $this->all_labels;
+        if ($this->all_labels !== null) {
+            return $this->all_labels;
+        }
 
         if (!$this->orgs_count) {
             $this->all_labels = array();
@@ -137,11 +133,11 @@ class OrgResultsDisplay
         return $this->all_labels;
     }
 
-
     /**
-     * Get an array of labels applied to an org
+     * Get an array of labels applied to an org.
      *
-     * @param  \Application\DeskPRO\Entity\Organization $org
+     * @param \Application\DeskPRO\Entity\Organization $org
+     *
      * @return array
      */
     public function getOrgLabels(Organization $org)
@@ -151,11 +147,11 @@ class OrgResultsDisplay
         return empty($this->all_labels[$org->id]) ? array() : $this->all_labels[$org->id];
     }
 
-
     /**
-     * Check if an org has labels
+     * Check if an org has labels.
      *
-     * @param  \Application\DeskPRO\Entity\Organization $org
+     * @param \Application\DeskPRO\Entity\Organization $org
+     *
      * @return bool
      */
     public function hasOrgLabels(Organization $org)
@@ -165,13 +161,14 @@ class OrgResultsDisplay
         return !empty($this->all_labels[$org->id]);
     }
 
-
     /**
      * @return array
      */
     public function getAllOrgMemberCounts()
     {
-        if ($this->org_member_counts !== null) return $this->org_member_counts;
+        if ($this->org_member_counts !== null) {
+            return $this->org_member_counts;
+        }
 
         $this->org_member_counts = $this->db->fetchAllKeyValue('
             SELECT organization_id, COUNT(*)
@@ -183,11 +180,11 @@ class OrgResultsDisplay
         return $this->org_member_counts;
     }
 
-
     /**
      * Get the number of tickets submitted by a user.
      *
-     * @param  \Application\DeskPRO\Entity\Organization $org
+     * @param \Application\DeskPRO\Entity\Organization $org
+     *
      * @return int
      */
     public function getOrgMemberCount(Organization $org)
@@ -206,14 +203,16 @@ class OrgResultsDisplay
 
     public function getAllFieldsData()
     {
-        if ($this->all_fields_data !== null) return $this->all_fields_data;
-        $data = $this->em->createQuery("
+        if ($this->all_fields_data !== null) {
+            return $this->all_fields_data;
+        }
+        $data = $this->em->createQuery('
             SELECT d, def, root_def
             FROM DeskPRO:CustomDataOrganization AS d
             LEFT JOIN d.field def
             LEFT JOIN d.root_field root_def
             WHERE d.organization IN (?0)
-        ")->execute(array(array_values($this->org_ids)));
+        ')->execute(array(array_values($this->org_ids)));
 
         $this->all_fields_data = array();
         foreach ($data as $d) {

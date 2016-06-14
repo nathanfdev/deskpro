@@ -87,7 +87,7 @@ angular.module('ui.datetime', ["ui.bootstrap"])
 				].reduce(createAttrConcat, '') +
 					createFuncAttr("dateDisabled", "date: date, mode: mode") +
 					createRequiredAttr("datepickerPopup", "dateFormat") +
-					"/>\n" +
+					" is-open=\"opened\" ng-click=\"opened=true\" ng-focus=\"opened=true\" />\n" +
 					"</div>\n" +
 					"<div class=\"datetimepicker-wrapper col-lg-6\" style='display: inline-block;vertical-align: middle;float:none;' ng-model=\"time\" ng-change=\"time_change()\" style=\"display:inline-block\">\n" +
 					"<timepicker " + [

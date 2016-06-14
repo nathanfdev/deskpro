@@ -233,7 +233,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				options.dataType = 'json';
 
-				DeskPRO_Window.getMessageChanneler().poller.pause();
+        // passing true to cancel the current poll if it is active
+        // or else we might end up with a weird case where the current
+        // request comes back before the poll request, and order might matter (eg count refreshes)
+				DeskPRO_Window.getMessageChanneler().poller.pause(true);
 				return $.ajax(options);
 			},
 
@@ -1221,7 +1224,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 
-
 		/***************** scrolling handle on drag ******************/
 		var drag = function(){
 			var d = {
@@ -1349,10 +1351,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.ngModule.dpInjector = window.AppPlatform.getNgInjector();
 
 		// injector required at init stage, as AppPlatform initiated after all $scope vars filled
-		window.AppPlatform.getNgInjector().invoke(['$rootScope', '$q', '$timeout', function($rootScope, $q, $timeout) {
+		window.AppPlatform.getNgInjector().invoke(['$rootScope', '$q', '$timeout', '$http', function($rootScope, $q, $timeout, $http) {
 			self.$scope = $rootScope;
 			self.$q = $q;
 			self.$timeout = $timeout;
+			self.$http = $http;
 
 			self.$scope.$safeApply = function(fn) {
 				var phase = this.$root.$$phase;
@@ -1430,6 +1433,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var firstTabId = null;
 		var activateSettings = null;
 		var startRestoreHash = this.startRestoreHash || '';
+		var tabsToOpen = [];
+		var openTabsLimit = 20;
 
 		DeskPRO_Window.TabBar.options.activateNew = false;
 
@@ -1520,10 +1525,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.loadingListFragment = hash;
 				this.loadListPane(url, { url_fragment: hash });
 			} else {
-				this.loadingPageFragment = hash;
-				this.loadPage(url, { url_fragment: hash, noToggle: true, ignore_perm_error: startRestoreHash.replace(/\.o/, '').indexOf(hash.replace(/\.o/, '')) != -1 });
+				tabsToOpen.push({hash: hash, url: url});
 			}
 		}, this);
+
+		tabsToOpen = tabsToOpen.slice(-openTabsLimit);
+		for (var i = 0; i < tabsToOpen.length; i++) {
+			var hash = tabsToOpen[i].hash,
+					url = tabsToOpen[i].url;
+			this.loadingPageFragment = hash;
+			this.loadPage(url, { url_fragment: hash, noToggle: true, ignore_perm_error: startRestoreHash.replace(/\.o/, '').indexOf(hash.replace(/\.o/, '')) != -1 });
+		}
 
 		this.cancelHashLoad++;
 		if (activateTabId) {
@@ -2835,8 +2847,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
+		if (xhr && xhr.status && xhr.status == '503') {
+			return window.location.reload();
+		}
+
 		if (DPC_IS_CLOUD) {
-			if (xhr && xhr.status && (xhr.status == '503' || xhr.status == '500')) {
+			if (xhr && xhr.status && xhr.status == '500') {
 				this.showAlert($('<div>We detected a problem while trying to load the page you requested. Please try again.</div>'));
 				if (DpErrorLog) {
 					DpErrorLog.logError('AJAX Error ' + xhr.status + ' on ' + ajaxOptions.url);
@@ -3048,15 +3064,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	_initRoutes: function() {
 		// Set ourselves up as the first route listener
-		this.addPageRouteLoader('listpane', (function(routeData) {
+		var cb = function(routeData) {
 			this.loadRoute(routeData);
-		}).bind(this));
-		this.addPageRouteLoader('page', this.loadRoute.bind(this));
-		this.addPageRouteLoader('article', this.loadRoute.bind(this));
-		this.addPageRouteLoader('download', this.loadRoute.bind(this));
-		this.addPageRouteLoader('news', this.loadRoute.bind(this));
-		this.addPageRouteLoader('feedback', this.loadRoute.bind(this));
-		this.addPageRouteLoader('org', this.loadRoute.bind(this));
+		};
+		this.addPageRouteLoader('listpane', cb.bind(this));
+		this.addPageRouteLoader('page', cb.bind(this));
+		this.addPageRouteLoader('article', cb.bind(this));
+		this.addPageRouteLoader('download', cb.bind(this));
+		this.addPageRouteLoader('news', cb.bind(this));
+		this.addPageRouteLoader('feedback', cb.bind(this));
+		this.addPageRouteLoader('org', cb.bind(this));
+
+    var loaded = {};
 		this.addPageRouteLoader('ticket', (function(routeData) {
 
 			routeData.forTypename = 'ticket';
@@ -3068,7 +3087,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 			var ticketId = m[1];
 
+      if (loaded[ticketId]) return;
+
 			routeData.tabLoad = function() {
+        loaded[ticketId] = setTimeout(function(){ delete loaded[ticketId] }, 400);
 				DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.opened', { ticketId: ticketId });
 			};
 			routeData.tabUnload = function() {
@@ -3441,9 +3463,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				var showFn = function() {
 					var pos = me.offset();
+					var left = pos.left;
+					var winW = $(window).width();
+					var w = target.width();
+					if (left + w + 15 > winW) {
+						left = winW-w-30;
+					}
 					target.css({
-						left: pos.left,
-						top: pos.top + 15
+						left: left,
+						top: pos.top + 20
 					});
 					target.show();
 				};
@@ -4388,6 +4416,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 				case 38: // up
 				case 40: // down
 					// these don't hide as that messes up the keydown handler
+					if (!obj.agentNotifyList.is(':visible')) {
+						return;
+					}
 					e.stopImmediatePropagation();
 					e.preventDefault();
 					return;

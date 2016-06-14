@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -59,7 +57,8 @@ class ProcessEmailCommand extends ContainerAwareCommand
         $this->addOption('error-string', null, InputOption::VALUE_OPTIONAL,  'A special string to output in case of error (e.g., use as a trigger for external tool). Note that this command will return 1 on an error, so you can use that instead.');
         $this->addOption('enable-retries', null, InputOption::VALUE_NONE, 'If processing the message fails, enable retry scheduling instead of setting to "error".');
         $this->addOption('insert-only', null, InputOption::VALUE_NONE, 'Save the source with an inserted status (do not process right now)');
-        $this->setHelp("Example usage with dp:gen-rand-email:\n\tphp cmd.php dp:gen-rand-email --from-email=\"user@example.com\" --to-email=\"gateway@example.com\" | php cmd.php dp:process-email --file");
+        $this->addOption('expect-pending', null, InputOption::VALUE_NONE, 'When used with --source, this ensures that the source is either "inserted" or "retry" states.');
+        $this->setHelp("Example usage with dp:gen-rand-email:\n\tphp cmd.php dp:gen-rand-email --from=\"user@example.com\" --to=\"gateway@example.com\" | php cmd.php dp:process-email --file");
     }
 
     /**
@@ -76,6 +75,8 @@ class ProcessEmailCommand extends ContainerAwareCommand
         $error_string   = $input->getOption('error-string');
         $insert_only    = $input->getOption('insert-only');
 
+        $expect_pending = $input->getOption('expect-pending');
+
         if ($input->hasOption('to') && $input->getOption('to')) {
             $input->setOption('account', $input->getOption('to'));
         }
@@ -88,7 +89,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
             $source = $this->getContainer()->getEm()->find('DeskPRO:EmailSource', $input->getOption('source'));
 
             if (!$source) {
-                $output->writeln("<error>Could not find source</error>");
+                $output->writeln('<error>Could not find source</error>');
 
                 return 1;
             }
@@ -100,13 +101,25 @@ class ProcessEmailCommand extends ContainerAwareCommand
             if (!$account) {
                 $account = $this->findEmailAccountFrom($reader);
             }
-        } else {
 
+            if ($expect_pending) {
+                if ($source->status !== EmailSource::STATUS_INSERTED && $source->status !== EmailSource::STATUS_RETRY) {
+                    $output->writeln(sprintf('<error>Status is %s (expected inserted or retry)</error>', $source->status));
+
+                    return 1;
+                }
+            }
+
+            // Mark as processing early
+            $source->status = EmailSource::STATUS_PROCESSING;
+            $this->getContainer()->getEm()->persist($source);
+            $this->getContainer()->getEm()->flush();
+        } else {
             if ($input->getOption('file')) {
                 if (file_exists($input->getOption('file'))) {
                     $raw_source = file_get_contents($input->getOption('file'));
                 } else {
-                    $output->writeln("<error>File path does not exist: " . $input->getOption('file') . "</error>");
+                    $output->writeln('<error>File path does not exist: '.$input->getOption('file').'</error>');
 
                     return 1;
                 }
@@ -119,22 +132,22 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
             $raw_source = trim($raw_source);
             if (!$raw_source) {
-                $output->writeln("<error>No email source file provided</error>");
+                $output->writeln('<error>No email source file provided</error>');
 
                 return 1;
             }
 
             $raw_source = Strings::standardEol($raw_source);
 
-            $header_end = strpos($raw_source, "\n\n");
+            $header_end = strpos($raw_source, "\r\n\r\n");
             if ($header_end === false) {
                 // Means an empty body (eg message with only subject)
                 // But we trimmed above so the \n\n sep would be trimmed off
-                $raw_source .= "\n\n";
-                $header_end = strpos($raw_source, "\n\n");
+                $raw_source .= "\r\n\r\n";
+                $header_end = strpos($raw_source, "\r\n\r\n");
             }
 
-            $raw_headers = trim(substr($raw_source,0, $header_end));
+            $raw_headers = trim(substr($raw_source, 0, $header_end));
 
             $reader = new EzcReader();
             $reader->setRawSource($raw_source);
@@ -143,8 +156,8 @@ class ProcessEmailCommand extends ContainerAwareCommand
             $source = new EmailSource();
             $source->fromArray(array(
                 'email_account' => $account,
-                'headers' => $raw_headers,
-                'status' => 'inserted',
+                'headers'       => $raw_headers,
+                'status'        => 'inserted',
             ));
 
             // Rough matching, just for info purposes when browsing a list
@@ -154,7 +167,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
             $source->object_type    = 'ticket';
 
             $t = microtime(true);
-            $output->writeln("<info>Saving blob...</info>");
+            $output->writeln('<info>Saving blob...</info>');
 
             $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
                 $raw_source,
@@ -171,7 +184,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
             App::getOrm()->persist($source);
             App::getOrm()->flush();
 
-            $output->writeln(sprintf("<info>Saved email source #" . $source->getId() . " (took %.5s)</info>", microtime(true) - $t));
+            $output->writeln(sprintf('<info>Saved email source #'.$source->getId().' (took %.5s)</info>', microtime(true) - $t));
         }
 
         #----------------------------------------
@@ -181,9 +194,9 @@ class ProcessEmailCommand extends ContainerAwareCommand
         $account_id = $input->getOption('account');
 
         if (!$source->email_account && !$account_id) {
-            $output->writeln("<error>Could not find account for email. Specify an account using --account</error>");
+            $output->writeln('<error>Could not find account for email. Specify an account using --account</error>');
 
-            $source->status = 'error';
+            $source->status     = 'error';
             $source->error_code = 'invalid_address';
             App::getOrm()->persist($source);
             App::getOrm()->flush();
@@ -195,7 +208,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
             $account_manager = App::$container->getEmailAccountManager();
 
             if (ctype_digit($account_id)) {
-                if ($account_manager->hasAcccount($account_id)) {
+                if (!$account_manager->hasAcccount($account_id)) {
                     $output->writeln("<error>No account with ID $account_id</error>");
 
                     return 1;
@@ -208,7 +221,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
                 if (!$account) {
                     $output->writeln("<error>No account with address $account_id</error>");
 
-                    $source->status = 'error';
+                    $source->status     = 'error';
                     $source->error_code = 'invalid_address';
                     App::getOrm()->persist($source);
                     App::getOrm()->flush();
@@ -217,11 +230,10 @@ class ProcessEmailCommand extends ContainerAwareCommand
                 }
             }
 
-
             if ($input->getOption('account-force') && !$account->is_enabled) {
                 $output->writeln("<error>Account $account_id is disabled (use --account-force if you want to use it anyway)</error>");
 
-                $source->status = 'error';
+                $source->status     = 'error';
                 $source->error_code = 'invalid_address';
                 App::getOrm()->persist($source);
                 App::getOrm()->flush();
@@ -272,12 +284,21 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
                 return 1;
             }
+        } else {
+            global $DP_CONFIG;
+            if (!empty($DP_CONFIG['adv_email_process'])) {
+                /** @var \Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface $proc */
+                $proc = App::getContainer()->get('in_email.proc_queue');
+                $proc->enqueueNewEmail($source);
+            }
         }
+
+        return 0;
     }
 
-
     /**
-     * @param  AbstractReader                                $reader
+     * @param AbstractReader $reader
+     *
      * @return \Application\DeskPRO\Entity\EmailAccount|null
      */
     private function findEmailAccountFrom(AbstractReader $reader)
@@ -291,6 +312,6 @@ class ProcessEmailCommand extends ContainerAwareCommand
             }
         }
 
-        return null;
+        return;
     }
 }

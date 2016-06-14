@@ -23,16 +23,40 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @$timeout(
         =>
           for stylesheet in document.styleSheets
-            continue if !stylesheet.href? || -1 == stylesheet.href.indexOf 'icons-style.css'
+            continue if !stylesheet or (!stylesheet.href? || -1 == stylesheet.href.indexOf 'icons-style.css')
+
+            rules = stylesheet.cssRules || stylesheet.rules || [];
+            continue if !rules || !rules.length;
 
             current = null
             category = null
             path = null
-            for rule in stylesheet.rules
 
+            for rule in rules
               if rule instanceof CSSFontFaceRule
-                current = rule.style['font-family']
-                path = rule.style['content'].substr(1, rule.style['content'].length - 2)
+                if rule.style.getPropertyValue
+                  current = rule.style.getPropertyValue('font-family')
+                  content = rule.style.getPropertyValue('src')
+                else
+                  current = rule.style['font-family']
+                  content = rule.style['src']
+
+                if !content then content = ''
+                re = content.match(/url\((.*?)\)/)
+
+                if not current or not content or not re
+                  current = null
+                  content = null
+                  continue
+
+                path = re[1]
+                path = path.substr(path.indexOf('vendor/'))
+                path = path.substr(0, path.lastIndexOf('/'))
+                path = 'ASSET_DIR/' + path
+
+                current = current.replace(/^['"\-]+/, '');
+                current = current.replace(/['"\-]+$/, '');
+
                 category = current.charAt(9).toUpperCase() + current.slice(10)
                 @categories[category] = []
                 continue
@@ -42,6 +66,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
               iconClass = rule.selectorText.substr(1, rule.selectorText.length - 9)
               iconImage = path + '/png/' + iconClass.substr(current.length + 1) + '.png'
               imageId   = 'dp_file:icons:' + iconImage
+
               @categories[category].push
                 class: iconClass
                 image: iconImage

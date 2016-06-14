@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\People\AgentNotifPrefs;
 
 use Application\DeskPRO\Entity\Person;
@@ -77,11 +76,13 @@ class PrefsLoader
         $filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
         $filters = Arrays::keyFromData($filters, 'id');
 
-        $sys_filters = array();
+        $sys_filters    = array();
         $custom_filters = array();
         foreach ($filters as $f) {
             if ($f->sys_name) {
-                if (strpos($f->sys_name, '_w_hold') !== false || strpos($f->sys_name, 'archive_') === 0) continue;
+                if (strpos($f->sys_name, '_w_hold') !== false || strpos($f->sys_name, 'archive_') === 0) {
+                    continue;
+                }
                 $sys_filters[] = $f;
             } else {
                 $custom_filters[] = $f;
@@ -92,17 +93,19 @@ class PrefsLoader
         # Load filter subscriptions
         #------------------------------
 
-        $filter_subs = $this->db->fetchAll("
+        $filter_subs = $this->db->fetchAll('
             SELECT *
             FROM ticket_filter_subscriptions
             WHERE person_id = ?
-        ", array($this->person->id));
+        ', array($this->person->id));
 
         foreach ($filter_subs as $info) {
-            if (!isset($filters[$info['filter_id']])) continue;
+            if (!isset($filters[$info['filter_id']])) {
+                continue;
+            }
 
             $filter = $filters[$info['filter_id']];
-            $subs = array('email' => array(), 'alert' => array());
+            $subs   = array('email' => array(), 'alert' => array());
 
             foreach ($info as $k => $v) {
                 if ($v && preg_match('#(email|alert)_(.*?)$#', $k, $m)) {
@@ -131,12 +134,12 @@ class PrefsLoader
         $user_prefs = new OptionsArray($user_prefs);
 
         $prefs->setFilterNotifyPrefs('email', array(
-            'override_all'     => (bool)$user_prefs->get('agent_notify_override.all.email'),
-            'override_forward' => (bool)$user_prefs->get('agent_notify_override.forward.email'),
+            'override_all'     => (bool) $user_prefs->get('agent_notify_override.all.email'),
+            'override_forward' => (bool) $user_prefs->get('agent_notify_override.forward.email'),
         ));
         $prefs->setFilterNotifyPrefs('alert', array(
-            'override_all'     => (bool)$user_prefs->get('agent_notify_override.all.alert'),
-            'override_forward' => (bool)$user_prefs->get('agent_notify_override.forward.alert'),
+            'override_all'     => (bool) $user_prefs->get('agent_notify_override.all.alert'),
+            'override_forward' => (bool) $user_prefs->get('agent_notify_override.forward.alert'),
         ));
 
         #------------------------------
@@ -183,10 +186,10 @@ class PrefsLoader
         return $prefs;
     }
 
-
     /**
-     * @param  array $filter_subs
-     * @param  array $other_subs
+     * @param array $filter_subs
+     * @param array $other_subs
+     *
      * @return Prefs
      */
     public function getPrefsFromArray(array $filter_subs = array(), array $other_subs = array())
@@ -226,7 +229,6 @@ class PrefsLoader
         #------------------------------
 
         if ($other_subs) {
-
             foreach ($other_subs as $info) {
                 $app_name    = !empty($info['type']) ? $info['type'] : null;
                 $email_types = !empty($info['email']) ? $info['email'] : array();

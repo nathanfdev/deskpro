@@ -1,8 +1,35 @@
 <?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace Codeception\Module;
 
-use Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader as DataFixturesLoader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
+use Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader as DataFixturesLoader;
 
 class DpControlHelper extends \Codeception\Module
 {
@@ -66,7 +93,8 @@ class DpControlHelper extends \Codeception\Module
      * Loads fixtures into the current database.
      * Note that this will mark the database to be reset.
      *
-     * @param  array                     $f...
+     * @param array $f...
+     *
      * @throws \InvalidArgumentException
      */
     public function loadFixtures($f)
@@ -91,8 +119,8 @@ class DpControlHelper extends \Codeception\Module
 
         $paths = array();
         foreach ($fixtures as $f) {
-            $f = str_replace('\\', '/', $f);
-            $paths[] = DP_ROOT.'/testing/data/DpFixtures/' . $f;
+            $f       = str_replace('\\', '/', $f);
+            $paths[] = DP_ROOT.'/testing/data/DpFixtures/'.$f;
         }
 
         $loader = new DataFixturesLoader(\DpTestEnv::getContainer());
@@ -100,7 +128,7 @@ class DpControlHelper extends \Codeception\Module
             if (is_dir($path)) {
                 $loader->loadFromDirectory($path);
             } elseif (is_file($path.'.php')) {
-                require_once($path.'.php');
+                require_once $path.'.php';
                 $class = str_replace(DP_ROOT.'/testing/data/', '', $path);
                 $class = str_replace('/', '\\', $class);
                 $loader->addFixture(new $class());
@@ -114,7 +142,7 @@ class DpControlHelper extends \Codeception\Module
         }
 
         $executor = new ORMExecutor(\DpTestEnv::getContainer()->getEm(), null);
-        $me = $this;
+        $me       = $this;
         $executor->setLogger(function ($message) use ($me) {
             $me->_dp_debugSection('loadFixtures', $message);
         });
@@ -128,9 +156,9 @@ class DpControlHelper extends \Codeception\Module
 
     public function indexElasticsearch()
     {
-        $indexManager = $this->getSymfonyContainer()->get('fos_elastica.index_manager');
+        $indexManager     = $this->getSymfonyContainer()->get('fos_elastica.index_manager');
         $providerRegistry = $this->getSymfonyContainer()->get('fos_elastica.provider_registry');
-        $resetter = $this->getSymfonyContainer()->get('fos_elastica.resetter');
+        $resetter         = $this->getSymfonyContainer()->get('fos_elastica.resetter');
 
         $index = 'deskpro';
 

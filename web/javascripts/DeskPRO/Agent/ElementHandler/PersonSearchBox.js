@@ -122,7 +122,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 			} else {
 				updateCaller();
 			}
-		}).on('change', function() { updateCaller(); });
+		});
 
 		// Stop bubbling so it doesnt reach the document and close itself
 		this.termInput.on('click', function(ev) { ev.stopPropagation(); });
@@ -301,7 +301,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 					this.resultsList.append(row);
 				}, this);
 
-				if (data.length) {
+				if (data.length && this.el.find('input.select-user:first').is(':visible')) {
 					this.open();
 				}
 

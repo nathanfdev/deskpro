@@ -1,39 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Tickets\Util as TicketUtil;
 use Doctrine\ORM\EntityManager;
 
 class Purger implements PersonContextInterface
@@ -54,7 +53,7 @@ class Purger implements PersonContextInterface
     protected $person;
 
     /**
-     * Who is performing the delete
+     * Who is performing the delete.
      *
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -67,9 +66,7 @@ class Purger implements PersonContextInterface
         $this->db     = $em->getConnection();
     }
 
-
     /**
-     * @return void
      */
     public function purge()
     {
@@ -85,11 +82,8 @@ class Purger implements PersonContextInterface
         }
     }
 
-
     /**
-     * Purge all the tickets belonging to a user
-     *
-     * @return void
+     * Purge all the tickets belonging to a user.
      */
     public function purgeTickets()
     {
@@ -101,22 +95,30 @@ class Purger implements PersonContextInterface
         // when the original account is deleted but the ticket remains
         // (e.g., the ticket would stay if it was reset to a new user)
 
-        $orig_author_line = "Originally written by: " . htmlspecialchars($this->person->getDisplayContact()) . "<br/><br/><br/>\n\n\n";
+        $orig_author_line = 'Originally written by: '.htmlspecialchars($this->person->getDisplayContact())."<br/><br/><br/>\n\n\n";
 
-        $this->db->executeUpdate("
+        $this->db->executeUpdate('
             UPDATE tickets_messages
                 JOIN tickets ON (tickets.id = tickets_messages.ticket_id)
             SET tickets_messages.person_id = tickets.person_id, tickets_messages.message = CONCAT(?, tickets_messages.message)
             WHERE tickets.person_id != ? AND tickets_messages.person_id = ?
-        ", array($orig_author_line, $this->person->id, $this->person->id));
+        ', array($orig_author_line, $this->person->id, $this->person->id));
 
         #------------------------------
         # Fetch ticket IDs
         #------------------------------
 
-        $ticket_ids = $this->db->fetchAllCol("
+        $ticket_ids = $this->db->fetchAllCol('
             SELECT id FROM tickets WHERE person_id = ?
-        ", array($this->person->getId()));
+        ', array($this->person->getId()));
+
+        #------------------------------
+        # Attachments
+        #------------------------------
+
+        foreach ($ticket_ids as $ticket_id) {
+            TicketUtil::deleteTicketAttachments($ticket_id, $this->db);
+        }
 
         #------------------------------
         # Insert delete logs
@@ -128,7 +130,7 @@ class Purger implements PersonContextInterface
         }
 
         $date_str   = date('Y-m-d H:i:s');
-        $reason_str =  'User was deleted';
+        $reason_str = 'User was deleted';
 
         $inserts = array();
 
@@ -148,7 +150,7 @@ class Purger implements PersonContextInterface
     }
 
     /**
-     * Set the context (who is making these edits)
+     * Set the context (who is making these edits).
      *
      * @param Person $person
      */

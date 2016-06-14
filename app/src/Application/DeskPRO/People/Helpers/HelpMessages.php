@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
@@ -53,7 +52,7 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
 
     public function __construct(Entity\Person $person)
     {
-        $this->person = $person;
+        $this->person    = $person;
         $this->pref_name = 'ui.dismissed-help-messages';
     }
 
@@ -64,13 +63,15 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
 
     protected function _initPref()
     {
-        if ($this->pref !== null) return;
+        if ($this->pref !== null) {
+            return;
+        }
 
         $this->pref = $this->person->getPref($this->pref_name);
         if (!$this->pref) {
-            $this->pref = $this->person->addPreference($this->pref_name);
+            $this->pref          = $this->person->addPreference($this->pref_name);
             $this->pref['value'] = array();
-            $person = $this->person;
+            $person              = $this->person;
 
             App::getOrm()->transactional(function ($em) use ($person) {
                 $em->persist($person);
@@ -87,8 +88,8 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
     public function getShortCallableNames()
     {
         return array(
-            'getHelpMessages' => '_getThis',
-            'shouldShowMessage' => 'shouldShowMessage'
+            'getHelpMessages'   => '_getThis',
+            'shouldShowMessage' => 'shouldShowMessage',
         );
     }
 
@@ -110,7 +111,7 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
     {
         $this->_initPref();
 
-        return (in_array(self::ALL, $this->pref['value']) OR in_array($id, $this->pref['value']));
+        return (in_array(self::ALL, $this->pref['value']) or in_array($id, $this->pref['value']));
     }
 
     public function dismiss($id)
@@ -121,7 +122,7 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
 
         $this->_initPref();
 
-        $val = $this->pref['value'];
+        $val   = $this->pref['value'];
         $val[] = $id;
 
         $this->pref['value'] = $val;

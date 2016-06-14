@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace deskpro_ticket_hostnames\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestContext;
@@ -40,7 +39,7 @@ use Application\DeskPRO\App\Native\RequestHandler\AgentRequestHandlerInterface;
 class AgentRequestHandler implements AgentRequestHandlerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function handleAgentRequest(AgentRequestContext $context)
     {
@@ -56,7 +55,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
     private function refreshHostname(AgentRequestContext $context)
     {
         $ticket = $context->getContainer()->getTicketManager()->getTicket($context->getIn()->getUint('ticket_id'));
-        $ip = $context->getIn()->getString('ip');
+        $ip     = $context->getIn()->getString('ip');
 
         if (!$ticket || !$ip) {
             throw $context->createNotFoundException();
@@ -76,17 +75,18 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         }
 
         $db->update('tickets_messages', array(
-            'hostname' => $hostname
+            'hostname' => $hostname,
         ), array(
-            'ticket_id' => $ticket->id,
-            'ip_address' => $ip
+            'ticket_id'  => $ticket->id,
+            'ip_address' => $ip,
         ));
 
         return $context->createJsonResponse(array('hostname' => $hostname));
     }
 
     /**
-     * @param  AgentRequestContext                        $context
+     * @param AgentRequestContext $context
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     private function getHostnames(AgentRequestContext $context)
@@ -139,13 +139,13 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
                 if ($info['person_name']) {
                     $name = $info['person_name'];
                 } else {
-                    $name = trim($info['person_fname'] . ' ' . $info['person_lname']);
+                    $name = trim($info['person_fname'].' '.$info['person_lname']);
                 }
                 $user_list[$info['person_id']] = array(
                     'id'    => $info['person_id'],
                     'name'  => $name ?: $info['person_email'],
                     'email' => $info['person_email'],
-                    'recs'  => array()
+                    'recs'  => array(),
                 );
             }
 
@@ -170,7 +170,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
 
         $data = array(
             'ticket_id' => $ticket->id,
-            'user_list' => array_values($user_list)
+            'user_list' => array_values($user_list),
         );
 
         return $context->createJsonResponse($data);

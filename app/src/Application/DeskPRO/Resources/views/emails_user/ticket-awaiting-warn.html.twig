@@ -1,0 +1,7 @@
+<dp:subject>{{ phrase('user.email_subjects.remind_unresolved_subject', {subject: ticket.subject}) }}</dp:subject>
+
+{{ phrase('user.emails.greeting') }}
+
+<br /><br />
+
+{{ phrase('user.emails.remind_unresolved', {helpdesk_name: app.setting('core.deskpro_name'), resolve_url: url_full('user_tickets_resolve', {'ticket_ref': ticket.ref})})|raw }}

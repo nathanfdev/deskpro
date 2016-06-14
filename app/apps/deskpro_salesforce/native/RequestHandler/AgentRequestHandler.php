@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace deskpro_salesforce\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestContext;
@@ -42,7 +41,7 @@ use DeskPRO\Kernel\KernelErrorHandler;
 class AgentRequestHandler implements AgentRequestHandlerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function handleAgentRequest(AgentRequestContext $context)
     {
@@ -54,11 +53,13 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
     }
 
     /**
-     * @param  AgentRequestContext                        $context
+     * @param AgentRequestContext $context
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     private function callApiAction(AgentRequestContext $context)
     {
+        libxml_disable_entity_loader(false);
         $user     = $context->getAppSetting('api_user');
         $password = $context->getAppSetting('api_password');
         $token    = $context->getAppSetting('api_security_token');
@@ -76,9 +77,9 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
                 error_reporting($error & ~E_WARNING);
 
                 $old = libxml_disable_entity_loader(false);
-                require_once(DP_ROOT . '/vendor-src/salesforce/SforcePartnerClient.php');
+                require_once DP_ROOT.'/vendor-src/salesforce/SforcePartnerClient.php';
                 $sforce = new \SforcePartnerClient();
-                $sforce->createConnection(DP_ROOT . '/vendor-src/salesforce/partner.wsdl.xml');
+                $sforce->createConnection(DP_ROOT.'/vendor-src/salesforce/partner.wsdl.xml');
                 libxml_disable_entity_loader($old);
 
                 error_reporting($error);
@@ -87,10 +88,10 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
             }
 
             try {
-                $sforce->login($user, $password . $token);
+                $sforce->login($user, $password.$token);
             } catch (\SoapFault $e) {
                 if ($e->getMessage()) {
-                    return $context->createJsonResponse(array('error' => 'Salesforce error: ' . $e->getMessage()));
+                    return $context->createJsonResponse(array('error' => 'Salesforce error: '.$e->getMessage()));
                 }
 
                 return $context->createJsonResponse(array('error' => 'Invalid Salesforce API user, password, or token.'));
@@ -104,7 +105,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
                 // If its an invalid field error, someone could have changed fields within
                 // sf so one is now invlaid. so force a refresh of the cache then try again
                 if ($e->getMessage() == 'INVALID_FIELD') {
-                    $fields = $this->getFields($context, $sforce, true);
+                    $fields  = $this->getFields($context, $sforce, true);
                     $matches = $this->lookupUsers($email, $fields, $context, $sforce);
                 } else {
                     throw $e;
@@ -113,16 +114,16 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         }
 
         return $context->createJsonResponse(array(
-            'matches' => $matches
+            'matches' => $matches,
         ));
     }
 
-
     /**
-     * @param  string               $email
-     * @param  array                $fields
-     * @param  AgentRequestContext  $context
-     * @param  \SforcePartnerClient $sforce
+     * @param string               $email
+     * @param array                $fields
+     * @param AgentRequestContext  $context
+     * @param \SforcePartnerClient $sforce
+     *
      * @return array
      */
     private function lookupUsers($email, $fields, AgentRequestContext $context, \SforcePartnerClient $sforce)
@@ -135,29 +136,29 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
             $response = $sforce->query("
                 SELECT $fields_list
                 FROM Contact
-                WHERE Email = '" . addslashes($email) . "'
+                WHERE Email = '".addslashes($email)."'
             ");
         } catch (\Exception $e) {
             $response = null;
-            KernelErrorHandler::logException($e, false, 'salesforce_' . $e->getMessage());
+            KernelErrorHandler::logException($e, false, 'salesforce_'.$e->getMessage());
         }
 
         if ($response) {
-            foreach ($response->records AS $record) {
+            foreach ($response->records as $record) {
                 if (@$record->fields->Title && @$record->fields->Department) {
-                    $departmentTitle = @$record->fields->Department . ', ' . @$record->fields->Title;
+                    $departmentTitle = @$record->fields->Department.', '.@$record->fields->Title;
                 } else {
-                    $departmentTitle = @$record->fields->Department . @$record->fields->Title;
+                    $departmentTitle = @$record->fields->Department.@$record->fields->Title;
                 }
 
                 $matches[] = array(
-                    'id' => $record->Id,
-                    'name' => @$record->fields->FirstName . ' ' . @$record->fields->LastName,
-                    'email' => @$record->fields->Email,
-                    'title' => @$record->fields->Title,
-                    'department' => @$record->fields->Department,
+                    'id'              => $record->Id,
+                    'name'            => @$record->fields->FirstName.' '.@$record->fields->LastName,
+                    'email'           => @$record->fields->Email,
+                    'title'           => @$record->fields->Title,
+                    'department'      => @$record->fields->Department,
                     'departmentTitle' => @$departmentTitle,
-                    'profile' => 'https://na8.salesforce.com/' . $record->Id
+                    'profile'         => 'https://na8.salesforce.com/'.$record->Id,
                 );
             }
         }
@@ -165,19 +166,19 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         return $matches;
     }
 
-
     /**
-     * @param  AgentRequestContext  $context
-     * @param  \SforcePartnerClient $sforce
-     * @param  bool                 $force_reset
+     * @param AgentRequestContext  $context
+     * @param \SforcePartnerClient $sforce
+     * @param bool                 $force_reset
+     *
      * @return array
      */
     private function getFields(AgentRequestContext $context, \SforcePartnerClient $sforce, $force_reset = false)
     {
-        $data_id = 'apps.' . $context->getApp()->id . '.fields';
+        $data_id = 'apps.'.$context->getApp()->id.'.fields';
 
         $data = $context->getEm()->getRepository('DeskPRO:DataStore')->getByName($data_id);
-        if ($force_reset || !$data || $data->getData('ts_created') < time()-28800) {
+        if ($force_reset || !$data || $data->getData('ts_created') < time() - 28800) {
             $data = null;
         }
 
@@ -211,7 +212,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
 
             $context->getDb()->delete('datastore', array('name' => $data_id));
 
-            $data = new DataStore();
+            $data       = new DataStore();
             $data->name = $data_id;
             $data->setData('fields', $fields);
             $data->setData('ts_created', time());

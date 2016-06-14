@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -40,6 +37,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Searcher\NewsSearch;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * @SWG\Resource(
@@ -94,15 +92,15 @@ class NewsController extends AbstractController
     public function searchAction()
     {
         $search_map = array(
-            'category_id' => NewsSearch::TERM_CATEGORY,
+            'category_id'          => NewsSearch::TERM_CATEGORY,
             'category_id_specific' => NewsSearch::TERM_CATEGORY_SPECIFIC,
-            'label' => NewsSearch::TERM_LABEL,
-            'status' => NewsSearch::TERM_STATUS
+            'label'                => NewsSearch::TERM_LABEL,
+            'status'               => NewsSearch::TERM_STATUS,
         );
 
         $terms = array();
 
-        foreach ($search_map AS $input => $search_key) {
+        foreach ($search_map as $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ($value) {
                 $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
@@ -110,15 +108,15 @@ class NewsController extends AbstractController
         }
 
         $date_created_start = $this->in->getUint('date_created_start');
-        $date_created_end = $this->in->getUint('date_created_end');
+        $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
             $terms[] = array('type' => NewsSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start,
-                'date2' => $date_created_end
+                'date1'             => $date_created_start,
+                'date2'             => $date_created_end,
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => NewsSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start
+                'date1'             => $date_created_start,
             ));
         }
 
@@ -135,21 +133,23 @@ class NewsController extends AbstractController
         $result_cache = $this->getApiSearchResult('news', $terms, $extra, $this->in->getUint('cache_id'), new NewsSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
         $ids = $result_cache->results;
 
         $page_ids = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
-        $news = App::getEntityRepository('DeskPRO:News')->getByIds($page_ids, true);
+        $news     = App::getEntityRepository('DeskPRO:News')->getByIds($page_ids, true);
 
         return $this->createApiResponse(array(
-            'page' => $page,
+            'page'     => $page,
             'per_page' => $per_page,
-            'total' => count($ids),
+            'total'    => count($ids),
             'cache_id' => $result_cache->id,
-            'news' => $this->getApiData($news)
+            'news'     => $this->getApiData($news),
         ));
     }
 
@@ -175,7 +175,7 @@ class NewsController extends AbstractController
     public function newNewsAction()
     {
         $errors = array();
-        $news = new News();
+        $news   = new News();
 
         $title = $this->in->getString('title');
         if ($title) {
@@ -199,9 +199,9 @@ class NewsController extends AbstractController
 
         $date = $this->in->getUint('date');
         if ($date) {
-            $news->date_created = new \DateTime('@' . $date);
+            $news->date_created = new \DateTime('@'.$date);
             if ($status == 'published') {
-                $news->date_published = new \DateTime('@' . $date);
+                $news->date_published = new \DateTime('@'.$date);
             }
         }
 
@@ -326,7 +326,7 @@ class NewsController extends AbstractController
         if ($title) {
             $news->title = $title;
 
-            $rev = ContentRevisionUtil::findOrCreate($news, 'title', $this->person);
+            $rev        = ContentRevisionUtil::findOrCreate($news, 'title', $this->person);
             $rev->title = $news->title;
 
             $revs['title'] = $rev;
@@ -339,14 +339,14 @@ class NewsController extends AbstractController
 
         $date = $this->in->getUint('date_published');
         if ($date && $news->status == 'published') {
-            $news->date_published = new \DateTime('@' . $date);
+            $news->date_published = new \DateTime('@'.$date);
         }
 
         $content = $this->in->getString('content');
         if ($content && $content != $news->content) {
             $news->content = $this->in->getHtml('content');
 
-            $rev = ContentRevisionUtil::findOrCreate($news, array('content'), $this->person);
+            $rev          = ContentRevisionUtil::findOrCreate($news, array('content'), $this->person);
             $rev->content = $news->content;
 
             $revs['content'] = $rev;
@@ -360,7 +360,7 @@ class NewsController extends AbstractController
             }
         }
 
-        foreach ($revs AS $rev) {
+        foreach ($revs as $rev) {
             $this->em->persist($rev);
         }
         $this->em->persist($news);
@@ -422,7 +422,7 @@ class NewsController extends AbstractController
      */
     public function getNewsCommentsAction($news_id)
     {
-        $news = $this->_getNewsOr404($news_id);
+        $news     = $this->_getNewsOr404($news_id);
         $comments = $this->em->getRepository('DeskPRO:NewsComment')->getComments($news);
 
         return $this->createApiResponse(array('comments' => $this->getApiData($comments)));
@@ -485,20 +485,20 @@ class NewsController extends AbstractController
         }
 
         $person_id = $this->in->getUint('person_id');
-        $person = null;
+        $person    = null;
         if ($person_id) {
             $person = $this->em->getRepository('DeskPRO:Person')->find($person_id);
         }
 
         $status = $this->in->getString('status');
 
-        $comment = new NewsComment();
-        $comment->news = $news;
-        $comment->person = $person ?: $this->person;
-        $comment['content'] = $content;
-        $comment['status'] = $status ?: 'visible';
-        $comment['is_reviewed'] = ($comment['status'] == 'visible' && !$person);
-        $comment['date_created']  = new \DateTime();
+        $comment                 = new NewsComment();
+        $comment->news           = $news;
+        $comment->person         = $person ?: $this->person;
+        $comment['content']      = $content;
+        $comment['status']       = $status ?: 'visible';
+        $comment['is_reviewed']  = ($comment['status'] == 'visible' && !$person);
+        $comment['date_created'] = new \DateTime();
 
         $this->em->persist($comment);
         $this->em->flush();
@@ -539,7 +539,7 @@ class NewsController extends AbstractController
      */
     public function getNewsCommentAction($news_id, $comment_id)
     {
-        $news = $this->_getNewsOr404($news_id);
+        $news    = $this->_getNewsOr404($news_id);
         $comment = $this->em->getRepository('DeskPRO:NewsComment')->find($comment_id);
         if (!$comment || $comment->news->id != $news->id) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -590,16 +590,16 @@ class NewsController extends AbstractController
      */
     public function postNewsCommentAction($news_id, $comment_id)
     {
-        $news = $this->_getNewsOr404($news_id);
+        $news    = $this->_getNewsOr404($news_id);
         $comment = $this->em->getRepository('DeskPRO:NewsComment')->find($comment_id);
         if (!$comment || $comment->news->id != $news->id) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
         $approved = false;
-        $status = $this->in->getString('status');
+        $status   = $this->in->getString('status');
         if ($status) {
-            $approved = ($status == 'visible' && $comment->status != 'visible');
+            $approved        = ($status == 'visible' && $comment->status != 'visible');
             $comment->status = $status;
         }
 
@@ -647,7 +647,7 @@ class NewsController extends AbstractController
      */
     public function deleteNewsCommentAction($news_id, $comment_id)
     {
-        $news = $this->_getNewsOr404($news_id);
+        $news    = $this->_getNewsOr404($news_id);
         $comment = $this->em->getRepository('DeskPRO:NewsComment')->find($comment_id);
         if (!$comment || $comment->news->id != $news->id) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -718,7 +718,7 @@ class NewsController extends AbstractController
      */
     public function postNewsLabelsAction($news_id)
     {
-        $news = $this->_getNewsOr404($news_id, 'edit');
+        $news  = $this->_getNewsOr404($news_id, 'edit');
         $label = $this->in->getString('label');
 
         if ($label === '') {
@@ -823,10 +823,10 @@ class NewsController extends AbstractController
      */
     public function getValidatingCommentsAction()
     {
-        $comments = $this->em->getRepository('DeskPRO:NewsComment')->getValidatingComments();
+        $comments   = $this->em->getRepository('DeskPRO:NewsComment')->getValidatingComments();
         $entity_key = 'news';
-        $output = array();
-        foreach ($comments AS $key => $value) {
+        $output     = array();
+        foreach ($comments as $key => $value) {
             $output[$key] = $value->toApiData(false, true);
             if ($value->$entity_key) {
                 $output[$key][$entity_key] = $value->$entity_key->toApiData(false, false);
@@ -901,13 +901,13 @@ class NewsController extends AbstractController
             $this->em->persist($category);
             $this->em->flush();
 
-            foreach ($usergroup_ids AS $usergroup_id) {
+            foreach ($usergroup_ids as $usergroup_id) {
                 if (!$usergroup_id) {
                     continue;
                 }
                 App::getDb()->insert('news_category2usergroup', array(
                     'category_id'  => $category->getId(),
-                    'usergroup_id' => $usergroup_id
+                    'usergroup_id' => $usergroup_id,
                 ));
             }
 
@@ -1006,7 +1006,6 @@ class NewsController extends AbstractController
             $category->title = $title;
         }
 
-
         if ($this->in->checkIsset('parent_id')) {
             $parent_id = $this->in->getUint('parent_id');
             if ($parent_id) {
@@ -1084,7 +1083,7 @@ class NewsController extends AbstractController
         $category = $this->_getCategoryOr404($category_id);
 
         $terms = array(
-            array('type' => NewsSearch::TERM_CATEGORY_SPECIFIC, 'op' => 'contains', 'options' => array($category->id))
+            array('type' => NewsSearch::TERM_CATEGORY_SPECIFIC, 'op' => 'contains', 'options' => array($category->id)),
         );
 
         $order_by = $this->in->getString('order');
@@ -1100,21 +1099,23 @@ class NewsController extends AbstractController
         $result_cache = $this->getApiSearchResult('news', $terms, $extra, $this->in->getUint('cache_id'), new NewsSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
         $ids = $result_cache->results;
 
         $page_ids = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
-        $news = App::getEntityRepository('DeskPRO:News')->getByIds($page_ids, true);
+        $news     = App::getEntityRepository('DeskPRO:News')->getByIds($page_ids, true);
 
         return $this->createApiResponse(array(
-            'page' => $page,
+            'page'     => $page,
             'per_page' => $per_page,
-            'total' => count($ids),
+            'total'    => count($ids),
             'cache_id' => $result_cache->id,
-            'news' => $this->getApiData($news)
+            'news'     => $this->getApiData($news),
         ));
     }
 
@@ -1182,7 +1183,7 @@ class NewsController extends AbstractController
         }
 
         $exists = false;
-        foreach ($category->usergroups AS $group) {
+        foreach ($category->usergroups as $group) {
             if ($group->id == $group_id) {
                 $exists = true;
                 break;
@@ -1191,8 +1192,8 @@ class NewsController extends AbstractController
 
         if (!$exists) {
             $this->db->insert('news_category2usergroup', array(
-                'category_id' => $category->id,
-                'usergroup_id' => $group_id
+                'category_id'  => $category->id,
+                'usergroup_id' => $group_id,
             ));
         }
 
@@ -1233,7 +1234,7 @@ class NewsController extends AbstractController
         $category = $this->_getCategoryOr404($category_id);
 
         $exists = false;
-        foreach ($category->usergroups AS $group) {
+        foreach ($category->usergroups as $group) {
             if ($group->id == $group_id) {
                 $exists = true;
                 break;
@@ -1273,7 +1274,7 @@ class NewsController extends AbstractController
     {
         $category = $this->_getCategoryOr404($category_id);
 
-        foreach ($category->usergroups AS $key => $group) {
+        foreach ($category->usergroups as $key => $group) {
             if ($group->id == $group_id) {
                 $category->usergroups->remove($key);
                 $this->em->persist($category);
@@ -1286,9 +1287,11 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @return \Application\DeskPRO\Entity\News
+     * @param int $id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return \Application\DeskPRO\Entity\News
      */
     protected function _getNewsOr404($id, $check_perm = false)
     {
@@ -1300,11 +1303,11 @@ class NewsController extends AbstractController
 
         if ($check_perm) {
             if ($check_perm == 'edit' && !$this->person->PermissionsManager->PublishChecker->canEdit($news)) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+                throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
             }
 
             if ($check_perm == 'delete' && !$this->person->PermissionsManager->PublishChecker->canDelete($news)) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+                throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
             }
         }
 
@@ -1312,9 +1315,11 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @return \Application\DeskPRO\Entity\NewsCategory
+     * @param int $id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return \Application\DeskPRO\Entity\NewsCategory
      */
     protected function _getCategoryOr404($id)
     {

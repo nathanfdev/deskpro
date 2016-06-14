@@ -1,61 +1,61 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @category Auth
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Auth
+ */
 namespace Orb\Auth\Adapter;
 
 use Orb\Auth\StateHandler\StateHandlerInterface;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
 
-
 /**
  * A shell abstract adapter useful for all types that follow the two(or more)-step process of redirecting
  * the user offsite and back.
  */
-abstract class AbstractCallbackAdatper implements AdapterInterface, SessionStateInterface, CallbackInterface, Loggable
+abstract class AbstractCallbackAdatper extends PluginAdapter implements SessionStateInterface, CallbackInterface, Loggable
 {
-    const DISLPAY_CONTEXT_PAGE = 'page';
+    const DISLPAY_CONTEXT_PAGE  = 'page';
     const DISLPAY_CONTEXT_POPUP = 'popup';
 
     /**
-     * If in callback context, then an array of callback data
+     * If in callback context, then an array of callback data.
+     *
      * @var array
      */
     protected $callback_data = null;
 
     /**
-     * State handler to store session data
+     * State handler to store session data.
+     *
      * @var \Orb\Auth\StateHandler\StateHandlerInterface;
      */
     protected $state;
@@ -66,7 +66,8 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
     protected $logger;
 
     /**
-     * The callback URL
+     * The callback URL.
+     *
      * @var string
      */
     protected $callback_url = null;
@@ -79,18 +80,15 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
     /**
      * Switches the adapter to the callback context using form data $data.
      *
-     * @param  array $data Form data or other callback data
-     * @return void
+     * @param array $data Form data or other callback data
      */
     public function setCallbackContext(array $data)
     {
         $this->callback_data = $data;
     }
 
-
-
     /**
-     * Set the URL the user is returned to
+     * Set the URL the user is returned to.
      *
      * @param string $url
      */
@@ -99,12 +97,11 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
         $this->callback_url = $url;
     }
 
-
-
     /**
-     * Get the callback URL
+     * Get the callback URL.
      *
      * @throws \RuntimeException
+     *
      * @return string
      */
     public function getCallbackUrl()
@@ -116,8 +113,6 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
         return $this->callback_url;
     }
 
-
-
     /**
      * Are we currently in callback mode?
      *
@@ -128,29 +123,27 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
         return $this->callback_data !== null;
     }
 
-
-
     /**
      * Authenticate a user.
      *
      * @return \Orb\Auth\Result
      */
-    public function authenticate()
+    public function doAuthenticate()
     {
         if ($this->logger) {
-            $this->logger->log("START ".get_class($this)."::authenticate", Logger::DEBUG);
+            $this->logger->log('START '.get_class($this).'::authenticate', Logger::DEBUG);
         }
 
         if ($this->isCallbackMode()) {
             if ($this->logger) {
-                $this->logger->log("Entering Callback Mode: " . get_class($this) . "::authenticateCallback", Logger::DEBUG);
+                $this->logger->log('Entering Callback Mode: '.get_class($this).'::authenticateCallback', Logger::DEBUG);
             }
 
             return $this->authenticateCallback($this->callback_data, $this->getStateHandler());
         } else {
             if ($this->logger) {
                 $this->logger->log(
-                    "Entering Initialize Mode: " . get_class($this) . "::authenticateInitialize", Logger::DEBUG
+                    'Entering Initialize Mode: '.get_class($this).'::authenticateInitialize', Logger::DEBUG
                 );
             }
 
@@ -158,40 +151,35 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
         }
     }
 
-
     /**
      * Process the callback and return a final result.
      *
      *
-     * @param  array                 $callback_data
-     * @param  StateHandlerInterface $state
+     * @param array                 $callback_data
+     * @param StateHandlerInterface $state
+     *
      * @return \Orb\Auth\Result
      */
     abstract protected function authenticateCallback(array $callback_data, StateHandlerInterface $state);
 
-
     /**
      * Initialize the auth process by setting state, and returning a redirect result.
      *
-     * @param  StateHandlerInterface $state
+     * @param StateHandlerInterface $state
+     *
      * @return \Orb\Auth\Result
      */
     abstract protected function authenticateInitialize(StateHandlerInterface $state);
 
-
-
     /**
      * Set the state handler.
      *
-     * @param  \Orb\Auth\StateHandler\StateHandlerInterface $state The state handler
-     * @return void
+     * @param \Orb\Auth\StateHandler\StateHandlerInterface $state The state handler
      */
     public function setStateHandler(StateHandlerInterface $state)
     {
         $this->state = $state;
     }
-
-
 
     /**
      * Get the state handler.
@@ -208,7 +196,7 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
     }
 
     /**
-     * Set the logger
+     * Set the logger.
      *
      * @param \Orb\Log\Logger $logger
      */

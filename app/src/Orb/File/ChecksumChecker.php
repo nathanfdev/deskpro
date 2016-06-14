@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @category File
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category File
+ */
 namespace Orb\File;
 
 use Symfony\Component\Finder\Finder;
@@ -58,7 +57,6 @@ class ChecksumChecker
      */
     protected $file_list = null;
 
-
     public function __construct($base_dir)
     {
         $this->base_dir = $base_dir;
@@ -68,7 +66,6 @@ class ChecksumChecker
         $this->finder->in($this->base_dir);
         $this->finder->ignoreVCS(true);
     }
-
 
     /**
      * Instead of recursively scanning and finding files, you can optionally
@@ -81,9 +78,8 @@ class ChecksumChecker
         $this->file_list = $files;
     }
 
-
     /**
-     * Ignore a filename
+     * Ignore a filename.
      *
      * @param string $file
      */
@@ -92,9 +88,8 @@ class ChecksumChecker
         $this->finder->notName($file);
     }
 
-
     /**
-     * Ignore a directory
+     * Ignore a directory.
      *
      * @param string $dir
      */
@@ -103,9 +98,8 @@ class ChecksumChecker
         $this->finder->exclude($dir);
     }
 
-
     /**
-     * Go through and load checks
+     * Go through and load checks.
      *
      * @param callback $progress_callback
      */
@@ -115,12 +109,12 @@ class ChecksumChecker
 
         $count = 0;
         foreach ($this->getIterator() as $file) {
-            $count++;
+            ++$count;
             $path = str_replace($this->base_dir, '', $file->getRealPath());
 
             $file_contents = $this->normalizeFileString(file_get_contents($file->getRealPath()));
 
-            $hash = md5($file_contents);
+            $hash                   = md5($file_contents);
             $this->checksums[$path] = $hash;
 
             if ($progress_callback) {
@@ -129,9 +123,9 @@ class ChecksumChecker
         }
     }
 
-
     /**
-     * @param  string $file_contents
+     * @param string $file_contents
+     *
      * @return string
      */
     protected function normalizeFileString($file_contents)
@@ -151,7 +145,6 @@ class ChecksumChecker
         return $file_contents;
     }
 
-
     /**
      * @return int
      */
@@ -160,9 +153,8 @@ class ChecksumChecker
         return count($this->checksums);
     }
 
-
     /**
-     * Get an array of filename => checksum for all found files
+     * Get an array of filename => checksum for all found files.
      *
      * @return array
      */
@@ -175,9 +167,8 @@ class ChecksumChecker
         return $this->checksums;
     }
 
-
     /**
-     * Get an array of files
+     * Get an array of files.
      *
      * @return array
      */
@@ -186,9 +177,8 @@ class ChecksumChecker
         return array_keys($this->checksums);
     }
 
-
     /**
-     * Compare newly generated checksums (generated right now) with those in an array
+     * Compare newly generated checksums (generated right now) with those in an array.
      *
      * @param array $with_checksums
      */
@@ -197,9 +187,9 @@ class ChecksumChecker
         $this->getChecksums();
 
         $results = array(
-            'added' => array(),
+            'added'   => array(),
             'removed' => array(),
-            'changed' => array()
+            'changed' => array(),
         );
 
         foreach ($this->checksums as $path => $checksum) {
@@ -215,11 +205,11 @@ class ChecksumChecker
         return $results;
     }
 
-
     /**
-     * Same as compare() except it fetches checksums from a file
+     * Same as compare() except it fetches checksums from a file.
      *
      * @param $file
+     *
      * @throws \InvalidArgumentException
      */
     public function compareWithDump($file)
@@ -231,19 +221,18 @@ class ChecksumChecker
         $checksums = require $file;
 
         if (!is_array($checksums)) {
-            throw new \InvalidArgumentException("Dump file did not return checksum array");
+            throw new \InvalidArgumentException('Dump file did not return checksum array');
         }
 
         return $this->compare($checksums);
     }
-
 
     /**
      * @param $file
      */
     public function dumpToFile($file)
     {
-        $php = '<?php return ' . var_export($this->getChecksums(), true) . ";\n";
+        $php = '<?php return '.var_export($this->getChecksums(), true).";\n";
         file_put_contents($file, $php);
     }
 
@@ -255,7 +244,7 @@ class ChecksumChecker
         if ($this->file_list) {
             $array = array();
             foreach ($this->file_list as $f) {
-                $array[] = new \SplFileInfo($this->base_dir . $f);
+                $array[] = new \SplFileInfo($this->base_dir.$f);
             }
 
             return new \ArrayIterator($array);

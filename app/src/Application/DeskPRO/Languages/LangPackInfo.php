@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Languages;
 
 class LangPackInfo
@@ -49,13 +47,12 @@ class LangPackInfo
     {
         $this->langs_dir = DP_ROOT.'/languages';
 
-        $this->manifest = include($this->langs_dir . '/manifest.php');
+        $this->manifest = include $this->langs_dir.'/manifest.php';
 
         if (dp_get_config('debug.lang_manifest')) {
             $this->manifest = array_merge($this->manifest, dp_get_config('debug.lang_manifest'));
         }
     }
-
 
     /**
      * @return string
@@ -65,7 +62,6 @@ class LangPackInfo
         return $this->langs_dir;
     }
 
-
     /**
      * @return array
      */
@@ -74,16 +70,15 @@ class LangPackInfo
         return array_keys($this->manifest);
     }
 
-
     /**
-     * @param  string $id
+     * @param string $id
+     *
      * @return bool
      */
     public function hasLang($id)
     {
         return isset($this->manifest[$id]);
     }
-
 
     /**
      * Fetches info about a language.
@@ -98,9 +93,11 @@ class LangPackInfo
      * - has_agent: Is the pack considered agent interface complete?
      * - has_admin: Is the pack considered admin interface complete?
      *
-     * @param  string                    $id
-     * @param  string|null               $key
+     * @param string      $id
+     * @param string|null $key
+     *
      * @throws \InvalidArgumentException
+     *
      * @return mixed
      */
     public function getLangInfo($id, $key = null)
@@ -113,7 +110,7 @@ class LangPackInfo
 
         if ($key) {
             if (!isset($info[$key])) {
-                return null;
+                return;
             }
 
             return $info[$key];
@@ -122,9 +119,8 @@ class LangPackInfo
         return $info;
     }
 
-
     /**
-     * Get lang titles as id=>title
+     * Get lang titles as id=>title.
      *
      * @return array
      */
@@ -133,12 +129,12 @@ class LangPackInfo
         $ret = array();
 
         if ($local) {
-            foreach ($this->manifest as $id => $info){
-                $lang_file = $this->langs_dir . "/$id/user/lang.php";
+            foreach ($this->manifest as $id => $info) {
+                $lang_file = $this->langs_dir."/$id/user/lang.php";
 
                 $lang = array();
                 if (is_file($lang_file)) {
-                    $lang = require($lang_file);
+                    $lang = require $lang_file;
                 }
 
                 if (isset($lang['user.lang.lang_title'])) {
@@ -156,7 +152,6 @@ class LangPackInfo
         return $ret;
     }
 
-
     /**
      * @return array
      */
@@ -165,11 +160,12 @@ class LangPackInfo
         return array('user', 'agent');
     }
 
-
     /**
-     * @param  string                    $section
-     * @return array
+     * @param string $section
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return array
      */
     public function getDefaultCategories($section)
     {
@@ -182,9 +178,9 @@ class LangPackInfo
         throw new \InvalidArgumentException("Invalid section $section");
     }
 
-
     /**
-     * @param  string                               $id
+     * @param string $id
+     *
      * @return \Application\DeskPRO\Entity\Language
      */
     public function newLanguageEntity($id)
@@ -193,7 +189,7 @@ class LangPackInfo
             throw new \InvalidArgumentException();
         }
 
-        $lang = new \Application\DeskPRO\Entity\Language();
+        $lang                = new \Application\DeskPRO\Entity\Language();
         $lang->sys_name      = $this->getLangInfo($id, 'id');
         $lang->title         = $this->getLangInfo($id, 'title');
         $lang->lang_code     = $this->getLangInfo($id, 'lang_code');
@@ -203,12 +199,12 @@ class LangPackInfo
         $lang->has_user      = $this->getLangInfo($id, 'has_user');
         $lang->has_agent     = $this->getLangInfo($id, 'has_agent');
         $lang->has_admin     = $this->getLangInfo($id, 'has_admin');
-        $lang->base_filepath = '%DP_ROOT%/languages/' . $id;
+        $lang->base_filepath = '%DP_ROOT%/languages/'.$id;
 
         // Get the title from the lang itself
-        $title_file = DP_ROOT . '/languages/' . $id . '/user/lang.php';
+        $title_file = DP_ROOT.'/languages/'.$id.'/user/lang.php';
         if (file_exists($title_file)) {
-            $tmp = require($title_file);
+            $tmp = require $title_file;
             if (isset($tmp['user.lang.lang_title'])) {
                 $lang->title = $tmp['user.lang.lang_title'];
             }

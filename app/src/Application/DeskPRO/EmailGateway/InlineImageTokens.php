@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
@@ -55,9 +53,8 @@ class InlineImageTokens
         $this->reader = $reader;
     }
 
-
     /**
-     * Adds tokens to $body where inline tags
+     * Adds tokens to $body where inline tags.
      *
      * @param string $body
      */
@@ -89,7 +86,7 @@ class InlineImageTokens
                 }
 
                 $token = $this->generateToken();
-                $body = str_replace($match[0], $token, $body);
+                $body  = str_replace($match[0], $token, $body);
 
                 if (!isset($this->tokens[$cid])) {
                     $this->tokens[$cid] = array();
@@ -118,7 +115,7 @@ class InlineImageTokens
                 }
 
                 $token = $this->generateToken();
-                $body = str_replace($match[0], $token, $body);
+                $body  = str_replace($match[0], $token, $body);
 
                 if (!isset($this->tokens[$cid])) {
                     $this->tokens[$cid] = array();
@@ -131,9 +128,8 @@ class InlineImageTokens
         return $body;
     }
 
-
     /**
-     * Check if a content ID has a corresponding token
+     * Check if a content ID has a corresponding token.
      *
      * @param string $cid
      */
@@ -142,11 +138,11 @@ class InlineImageTokens
         return isset($this->tokens[$cid]);
     }
 
-
     /**
-     * Get the token for a content id
+     * Get the token for a content id.
      *
-     * @param  string      $cid
+     * @param string $cid
+     *
      * @return string|null
      */
     public function getToken($cid, $first = true)
@@ -158,7 +154,6 @@ class InlineImageTokens
         }
     }
 
-
     /**
      * @return array
      */
@@ -167,13 +162,13 @@ class InlineImageTokens
         return $this->tokens;
     }
 
-
     /**
      * Replace a content ID with something in body.
      *
-     * @param  string $cid
-     * @param  string $replacement
-     * @param  string $body
+     * @param string $cid
+     * @param string $replacement
+     * @param string $body
+     *
      * @return string
      */
     public function replaceToken($cid, $replacement, $body)
@@ -190,9 +185,8 @@ class InlineImageTokens
         return $body;
     }
 
-
     /**
-     * Count how many tokens were read
+     * Count how many tokens were read.
      *
      * @return int
      */
@@ -201,9 +195,8 @@ class InlineImageTokens
         return count($this->tokens);
     }
 
-
     /**
-     * Get the CID's we were able to read
+     * Get the CID's we were able to read.
      *
      * @return array
      */
@@ -217,6 +210,6 @@ class InlineImageTokens
      */
     public function generateToken()
     {
-        return '__dp_' . mt_rand(1000,9999) . '_a' . count($this->tokens) . '_' . \Orb\Util\Util::requestUniqueId() . '__';
+        return '__dp_'.mt_rand(1000, 9999).'_a'.count($this->tokens).'_'.\Orb\Util\Util::requestUniqueId().'__';
     }
 }

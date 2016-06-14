@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\EmailBundle\SourceMapper\PendingQueuer;
 
 use Predis;
@@ -49,13 +46,37 @@ class RedisPendingQueuer implements PendingQueuerInterface
     private $key;
 
     /**
-     * @param Predis\Client $client
-     * @param string $key
+     * @var array
      */
-    function __construct(Predis\Client $client, $key)
+    private $data_items = array();
+
+    /**
+     * @param Predis\Client $client
+     * @param string        $key
+     */
+    public function __construct(Predis\Client $client, $key)
     {
         $this->client = $client;
-        $this->key = $key;
+        $this->key    = $key;
+
+        $me = $this;
+        register_shutdown_function(function () use ($me) {
+            try {
+                $me->pushAll();
+            } catch (\Exception $e) {
+                error_log($e->getMessage());
+            }
+        });
+    }
+
+    /**
+     * Pushes all pendning rows to the server.
+     */
+    public function pushAll()
+    {
+        foreach ($this->data_items as $d) {
+            $this->client->rpush($this->key, array(json_encode($d)));
+        }
     }
 
     /**
@@ -64,13 +85,13 @@ class RedisPendingQueuer implements PendingQueuerInterface
     public function queueMessageSource(array $source)
     {
         $data = array(
-            'id' => $source['id']
+            'id' => $source['id'],
         );
 
         if (defined('DPC_IS_CLOUD')) {
             $data['dpc_site_id'] = DPC_SITE_ID;
         }
 
-        $this->client->rpush($this->key, array(json_encode($data)));
+        $this->data_items[] = $data;
     }
 }

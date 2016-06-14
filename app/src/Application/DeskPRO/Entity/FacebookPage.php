@@ -1,43 +1,40 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use \Doctrine\ORM\Mapping\ClassMetadata;
-use Orb\Util\Strings;
+use Orb\Util\DpStrings;
 
 /**
  * @property int $id
@@ -147,31 +144,27 @@ class FacebookPage extends DomainObject
      */
     protected $date_created;
 
-
     public function __construct()
     {
-        $this->date_created = new \DateTime();
-        $this->verify_token = Strings::random(8);
-        $this->import_wall_posts = false;
+        $this->date_created           = new \DateTime();
+        $this->verify_token           = DpStrings::random(8);
+        $this->import_wall_posts      = false;
         $this->disable_own_wall_posts = false;
         $this->import_direct_messages = false;
-        $this->is_enabled = false;
-        $this->is_connected = false;
-        $this->is_tested = false;
-        $this->user_token_expires = null;
-        $this->page_token_expires = null;
+        $this->is_enabled             = false;
+        $this->is_connected           = false;
+        $this->is_tested              = false;
+        $this->user_token_expires     = null;
+        $this->page_token_expires     = null;
     }
-
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
-        $data = parent::toApiData($primary, $deep, $visited);
+        $data        = parent::toApiData($primary, $deep, $visited);
         $data['app'] = $this->app->toApiData();
 
         return $data;
     }
-
-
 
     ############################################################################
     # Doctrine Metadata

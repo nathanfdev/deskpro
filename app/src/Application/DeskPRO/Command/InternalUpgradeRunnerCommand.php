@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Command;
 
 namespace Application\DeskPRO\Command;
@@ -54,9 +51,9 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
             $output->setVerbosity(2);
         }
 
-        $check = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.croncheck.dp-cron'));
+        $check = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name = ?', array('core.croncheck.dp-cron'));
         if ($check) {
-            $date = new \DateTime('@'.$check);
+            $date     = new \DateTime('@'.$check);
             $date_cut = new \DateTime('-15 minutes');
 
             if ($date_cut < $date) {
@@ -66,13 +63,13 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
             // Otherwise assume crashed and continue
         }
 
-        @file_put_contents(dp_get_tmp_dir() . '/auto-upgrade-started', time());
+        @file_put_contents(dp_get_tmp_dir().'/auto-upgrade-started', time());
 
-        if (file_exists(DP_WEB_ROOT . '/auto-update-status.php')) {
-            @unlink(DP_WEB_ROOT . '/auto-update-status.php');
+        if (file_exists(DP_WEB_ROOT.'/auto-update-status.php')) {
+            @unlink(DP_WEB_ROOT.'/auto-update-status.php');
         }
         $write_status = function ($code, $message = '') {
-            $fp = @fopen(DP_WEB_ROOT . '/auto-update-status.php', 'a');
+            $fp = @fopen(DP_WEB_ROOT.'/auto-update-status.php', 'a');
             if (!$fp) {
                 return false;
             }
@@ -85,12 +82,12 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
             // Wont ever happen, but best be sure
             $message = str_replace('<?', '< ?', $message);
 
-            if (!@fwrite($fp, "STATUS(" . $code . ")@$time#$message\n")) {
+            if (!@fwrite($fp, 'STATUS('.$code.")@$time#$message\n")) {
                 return false;
             }
             @fclose($fp);
 
-            @file_put_contents(DP_WEB_ROOT . '/auto-update-is-running.trigger', 'This file indicates that the system is performing an upgrade. Helpdesk requests will be disabled until the upgrade finishes.');
+            @file_put_contents(DP_WEB_ROOT.'/auto-update-is-running.trigger', 'This file indicates that the system is performing an upgrade. Helpdesk requests will be disabled until the upgrade finishes.');
 
             return true;
         };
@@ -112,24 +109,24 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 
         if (!$write_status('runner_start')) {
             $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', 1);
-            $output->write('<error>Could not write upgrade status file to root dir: ' . DP_WEB_ROOT . '</error>');
-            @unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
-            @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
+            $output->write('<error>Could not write upgrade status file to root dir: '.DP_WEB_ROOT.'</error>');
+            @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
+            @unlink(dp_get_tmp_dir().'/auto-upgrade-started');
 
             return 1;
         }
 
-        @chmod(DP_WEB_ROOT . '/auto-update-status.php', 0777);
+        @chmod(DP_WEB_ROOT.'/auto-update-status.php', 0777);
 
         $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', 1);
 
         if (!dp_get_php_path(true)) {
             $write_status('error_php_path');
-            $write_status("error_unknown_binary", array('php'));
-            $write_status("error_basic_checks_fail");
+            $write_status('error_unknown_binary', array('php'));
+            $write_status('error_basic_checks_fail');
             $output->write('<error>Could not find path to PHP</error>');
-            @unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
-            @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
+            @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
+            @unlink(dp_get_tmp_dir().'/auto-upgrade-started');
 
             return 1;
         }
@@ -140,7 +137,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 
         if (dp_is_php_path_guessed()) {
             $cmd = sprintf(
-                "%s %s",
+                '%s %s',
                 dp_get_php_path(),
                 escapeshellarg(DP_ROOT.'/bin/phpinfo.php')
             );
@@ -152,7 +149,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
             $fail = true;
             if ($out) {
                 $check_phpinfo = implode("\n", $out);
-                $fail = !\Orb\Util\Env::isSamePhpInfo(
+                $fail          = !\Orb\Util\Env::isSamePhpInfo(
                     \Orb\Util\Env::getPhpInfo(),
                     $check_phpinfo
                 );
@@ -160,11 +157,11 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 
             if ($fail) {
                 $write_status('error_php_path');
-                $write_status("error_unknown_binary", array('php'));
-                $write_status("error_basic_checks_fail");
+                $write_status('error_unknown_binary', array('php'));
+                $write_status('error_basic_checks_fail');
                 $output->write('<error>Could not find path to PHP (Detected PHP appears different than running PHP)</error>');
-                @unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
-                @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
+                @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
+                @unlink(dp_get_tmp_dir().'/auto-upgrade-started');
 
                 return 1;
             }
@@ -175,7 +172,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
         #-------------------------
 
         $cmd = sprintf(
-            "%s %s",
+            '%s %s',
             dp_get_php_path(),
             escapeshellarg(DP_ROOT.'/bin/check-req.php')
         );
@@ -184,21 +181,23 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
         $out = null;
         exec($cmd, $out, $ret);
 
-        if (!$out) $out = array();
+        if (!$out) {
+            $out = array();
+        }
 
         $out = implode("\n", $out);
 
         if ($ret || strpos($out, 'OKAY') === false) {
-            $write_status("error_php_binary_failcheck");
-            $write_status("error_basic_checks_fail", str_replace("\n", ' ', trim($out)));
-            $output->write('<error>PHP sub-command binary fails server checks: ' . $out . '</error>');
+            $write_status('error_php_binary_failcheck');
+            $write_status('error_basic_checks_fail', str_replace("\n", ' ', trim($out)));
+            $output->write('<error>PHP sub-command binary fails server checks: '.$out.'</error>');
             $output->write('<error>Check your config.php file to make sure $DP_CONFIG[\'php_path\'] is set to the correct PHP path.</error>');
 
             // Failed before we could actually do anything, dont keep helpdesk offline
             $this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', time());
             $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
-            @unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
-            @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
+            @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
+            @unlink(dp_get_tmp_dir().'/auto-upgrade-started');
 
             return 1;
         }
@@ -208,7 +207,7 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
         #-------------------------
 
         $cmd = sprintf(
-            "%s %s --auto --quiet --write-status-file %s",
+            '%s %s --auto --quiet --write-status-file %s',
             dp_get_php_path(),
             escapeshellarg(DP_ROOT.'/bin/upgrade-util.php'),
             $skip_seg
@@ -242,8 +241,8 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
         $this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', time());
         $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
 
-        @unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
-        @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
+        @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
+        @unlink(dp_get_tmp_dir().'/auto-upgrade-started');
 
         return $ret;
     }

@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Log\ErrorLog;
 
 class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
@@ -81,7 +78,6 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         $this->path = $path;
     }
 
-
     /**
      * @param \DateTimeZone $tz
      */
@@ -90,9 +86,8 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         $this->timezone = $tz;
     }
 
-
     /**
-     * Filter the items to read
+     * Filter the items to read.
      *
      * The filter must accept two parameters:
      * - string $mode Either 'parsed' (array) or 'raw' (string)
@@ -106,9 +101,8 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         $this->filter = $filter;
     }
 
-
     /**
-     * This sets a filter so reading only finds a specific log entry
+     * This sets a filter so reading only finds a specific log entry.
      *
      * @param string $id
      */
@@ -123,18 +117,16 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         return $filter;
     }
 
-
     /**
-     * Saves the raw log in the data array so it can be displayed
+     * Saves the raw log in the data array so it can be displayed.
      */
     public function enableRawLog()
     {
         $this->store_raw = true;
     }
 
-
     /**
-     * Only keeps track of a count, no data is parsed
+     * Only keeps track of a count, no data is parsed.
      */
     public function enableCountMode()
     {
@@ -142,7 +134,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
     }
 
     /**
-     * Loads the log file and does the parsing
+     * Loads the log file and does the parsing.
      */
     protected function _initItems()
     {
@@ -157,7 +149,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
             return;
         }
 
-        $last_id = null;
+        $last_id   = null;
         $log_lines = array();
 
         while (($l = fgets($fp)) !== false) {
@@ -181,7 +173,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
             }
 
             $log_lines[] = $txt;
-            $last_id = $id;
+            $last_id     = $id;
         }
 
         if ($log_lines && isset($last_id)) {
@@ -191,17 +183,15 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         fclose($fp);
     }
 
-
     /**
-     * Handles lines of a single log entry and parses data out of it
+     * Handles lines of a single log entry and parses data out of it.
      *
-     * @param  string $id
-     * @param  array  $log_lines
-     * @return void
+     * @param string $id
+     * @param array  $log_lines
      */
     protected function _initItem($id, array $log_lines)
     {
-        $this->count++;
+        ++$this->count;
         if ($this->count_mode) {
             return;
         }
@@ -236,7 +226,6 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         $this->items[$id] = $item;
     }
 
-
     /**
      * @return array
      */
@@ -247,7 +236,6 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         return $this->items;
     }
 
-
     /**
      * @return array
      */
@@ -257,7 +245,6 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 
         return array_keys($this->items);
     }
-
 
     /**#@+ ArrayAccess Interface **/
     public function offsetExists($offset)
@@ -285,7 +272,6 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
     }
     /**#@-*/
 
-
     /**
      * This will not parse the entire file, but just open it up and try to quickly
      * count the number of logged errors.
@@ -303,14 +289,14 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         }
 
         $this->quick_count = 0;
-        $fp = @fopen($this->path, 'r');
+        $fp                = @fopen($this->path, 'r');
         if (!$fp) {
             return 0;
         }
 
         while (($l = @fgets($fp, 1024)) != false) {
             if (strpos($l, '<DP_LOG.BEGIN:') !== false) {
-                $this->quick_count++;
+                ++$this->quick_count;
             }
         }
         @fclose($fp);
@@ -341,7 +327,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         $this->_initItems();
         $key = key($this->items);
         if (!$key) {
-            return null;
+            return;
         }
 
         return $this[$key];

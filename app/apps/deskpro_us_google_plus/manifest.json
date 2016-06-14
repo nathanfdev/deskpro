@@ -2,7 +2,7 @@
 	"package_name": "deskpro_us_google_plus",
 	"is_native": true,
 	"title": "Google+ Sign-In",
-	"description": "Allows users/agents to log in using Google accounts. This is the recommended Google authentication app.",
+	"description": "Allows users/agents to log in using Google accounts.",
 	"tags": ["usersources"],
 	"api_version": 1,
 	"version": 1,
@@ -57,6 +57,22 @@
 				"options_variable": "permission_groups",
 				"is_required": true
 			}
+		},
+		{
+		  "name": "auto_user_permission_group",
+		  "usersource_display": "user",
+		  "type": "dynamic_choice",
+		  "options_variable": "permission_groups_user",
+		  "label": "Grant Usergroup",
+		  "description": "Add this usergroup to users who login with this usersource",
+		  "is_required": false
+		},
+		{
+		  "name": "raw_info_filter",
+		  "type": "text",
+		  "label": "Filter",
+		  "description": "You can filter based on info provided by the usersource. <a href='https://support.deskpro.com/kb/articles/477' target='_blank'>Learn about this feature</a>",
+		  "is_required": false
 		}
 	]
 }

@@ -251,15 +251,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			loginForm.on('submit', function(ev) {
 				ev.preventDefault();
 
-				var postData = [];
-				postData.push({
-					name: 'email',
-					value: loginForm.find('input[name="email"]').val()
-				});
-				postData.push({
-					name: 'password',
-					value: loginForm.find('input[name="password"]').val()
-				});
+				var postData = loginForm.find('input, select, textarea').serializeArray();
 
 				loginForm.find('.login-loading').show();
 				loginForm.find('.submit-btn').hide();
@@ -460,6 +452,9 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		});
 
 		this._initFields();
+		$('#dp_chat_messages_pane').on('click', 'img', function(){
+      window.open($(this).attr('src'));
+		});
 	},
 
 	startChat: function() {
@@ -468,11 +463,41 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		} else {
 			this.hasEmailAddress = false;
 		}
-		var data = $('#dp_chat_start').find('input, select, textarea').serializeArray();
-		this.sendMessage('', data, { starting: true });
+		var formData = $('#dp_chat_start').find('input, select, textarea').serializeArray();
+		$('#fields_container .error').remove();
+		$.ajax({
+			cache: false,
+			url: BASE_URL + 'chat/validate-fields/' + this.sessionCode + '?__sid=' + this.sessionCode,
+			context: this,
+			type: 'POST',
+			data: formData,
+			dataType: 'json',
+			success: function(data) {
+				var any = false, fieldRow;
 
-		this.startFindingAgent();
-		$('#dp_chat_start').hide();
+				if (data) {
+					for (var i in data) {
+						if (data.hasOwnProperty(i)) {
+							try {
+								fieldRow = $('#fields_container > div.chat_' + i + ' > div:first');
+								if (fieldRow[0]) {
+									fieldRow.append('<span class="error" style="color: red;">' + data[i] + '</span>');
+									any = true;
+								}
+							} catch (e) {
+							}
+						}
+					}
+				}
+
+				if (!any) {
+					this.sendMessage('', formData, { starting: true });
+					this.startFindingAgent();
+					return $('#dp_chat_start').hide();
+				}
+			}
+		});
+
 	},
 
 	startFindingAgent: function() {
@@ -626,7 +651,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 
 		var a_p = "am";
 		var curr_hour = d.getHours();
-		if (d.getHours() > 12) {
+		if (d.getHours() >= 12) {
 			a_p = "pm";
 		}
 		if (curr_hour == 0) {
@@ -699,10 +724,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		}
 
 		var row = $(tpl);
-		row.find('a').on('click', function(ev) {
-			ev.preventDefault();
-			window.open($(this).attr('href'));
-		});
+		row.find('a').attr('target', '_blank');
 		row.find('.time').text(time);
 
 		row.appendTo($('#dp_chat_messages_pane'));
@@ -739,6 +761,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		}
 
 		console.log('DpChat:handleIncomingMessage: %o', data);
+    DeskPRO_Window.playLibrarySound('pop');
 
 		this.addMessageRow(data);
 

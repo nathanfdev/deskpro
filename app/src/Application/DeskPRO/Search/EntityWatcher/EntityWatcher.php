@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Search
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Search
+ */
 namespace Application\DeskPRO\Search\EntityWatcher;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -41,21 +40,21 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 {
     /** @var array */
     public static $watched_entities = array(
-        'Application\\DeskPRO\\Entity\\Article' => 1,
-        'Application\\DeskPRO\\Entity\\LabelArticle' => 1,
-        'Application\\DeskPRO\\Entity\\Download' => 1,
-        'Application\\DeskPRO\\Entity\\LabelDownload' => 1,
-        'Application\\DeskPRO\\Entity\\Feedback' => 1,
-        'Application\\DeskPRO\\Entity\\LabelFeedback' => 1,
-        'Application\\DeskPRO\\Entity\\News' => 1,
-        'Application\\DeskPRO\\Entity\\LabelNews' => 1,
-        'Application\\DeskPRO\\Entity\\Ticket' => 1,
-        'Application\\DeskPRO\\Entity\\TicketMessage' => 1,
-        'Application\\DeskPRO\\Entity\\Person' => 1,
-        'Application\\DeskPRO\\Entity\\PersonEmail' => 1,
-        'Application\\DeskPRO\\Entity\\Organization' => 1,
+        'Application\\DeskPRO\\Entity\\Article'          => 1,
+        'Application\\DeskPRO\\Entity\\LabelArticle'     => 1,
+        'Application\\DeskPRO\\Entity\\Download'         => 1,
+        'Application\\DeskPRO\\Entity\\LabelDownload'    => 1,
+        'Application\\DeskPRO\\Entity\\Feedback'         => 1,
+        'Application\\DeskPRO\\Entity\\LabelFeedback'    => 1,
+        'Application\\DeskPRO\\Entity\\News'             => 1,
+        'Application\\DeskPRO\\Entity\\LabelNews'        => 1,
+        'Application\\DeskPRO\\Entity\\Ticket'           => 1,
+        'Application\\DeskPRO\\Entity\\TicketMessage'    => 1,
+        'Application\\DeskPRO\\Entity\\Person'           => 1,
+        'Application\\DeskPRO\\Entity\\PersonEmail'      => 1,
+        'Application\\DeskPRO\\Entity\\Organization'     => 1,
         'Application\\DeskPRO\\Entity\\ChatConversation' => 1,
-        'Application\\DeskPRO\\Entity\\ChatMessage' => 1,
+        'Application\\DeskPRO\\Entity\\ChatMessage'      => 1,
     );
 
     /**
@@ -84,24 +83,25 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
         \DpShutdown::add(array($this, 'flushUpdatesQuiet'));
     }
 
-
     /**
-     * Flushes updates and eats errors
+     * Flushes updates and eats errors.
      */
     public function flushUpdatesQuiet()
     {
         try {
             $this->flushUpdates();
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
     }
 
-
     /**
-     * Flushes all updates
+     * Flushes all updates.
      */
     public function flushUpdates()
     {
-        if ($this->is_running) return;
+        if ($this->is_running) {
+            return;
+        }
         $this->is_running = true;
 
         $updates = array_map(function ($v) { return $v['ent']; }, $this->updates['updates']);
@@ -118,58 +118,64 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
         $this->is_running = false;
     }
 
-
     /**
      * @param OnFlushEventArgs $eventArgs
      */
     public function onFlush(OnFlushEventArgs $eventArgs)
     {
-        if ($this->is_running) return;
+        if ($this->is_running) {
+            return;
+        }
         $this->is_running = true;
 
         $update = array();
         $delete = array();
 
-        $em = $eventArgs->getEntityManager();
+        $em  = $eventArgs->getEntityManager();
         $uow = $em->getUnitOfWork();
 
         foreach ($uow->getScheduledEntityInsertions() as $ent) {
             if (self::isWatchedEntity($ent)) {
-                $ent = $this->replaceEntity($ent);
+                $ent      = $this->replaceEntity($ent);
                 $update[] = $ent;
             }
         }
         foreach ($uow->getScheduledEntityUpdates() as $ent) {
             if (self::isWatchedEntity($ent)) {
-                $ent = $this->replaceEntity($ent);
+                $ent      = $this->replaceEntity($ent);
                 $update[] = $ent;
             }
         }
         foreach ($uow->getScheduledEntityDeletions() as $ent) {
             if (self::isWatchedEntity($ent)) {
-                $ent = $this->replaceEntity($ent);
-                $delete[] = $ent;
+                $class = get_class($ent);
+                $class = substr($class, strrpos($class, '\\') + 1);
+                $ent   = $this->replaceEntity($ent);
+                if (0 === strpos($class, 'Label')) {
+                    $update[] = $ent;
+                } else {
+                    $delete[] = $ent;
+                }
             }
         }
 
-        if ($update || $delete) {
-            foreach ($update as $ent) {
-                $name = self::getEntityClassName($ent);
-                $id = $ent->getId();
-                $this->updates['updates']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
-            }
-            foreach ($delete as $ent) {
-                $name = self::getEntityClassName($ent);
-                $id = $ent->getId();
-                $this->updates['deletes']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
-            }
+        foreach ($update as $ent) {
+            $name                                  = self::getEntityClassName($ent);
+            $id                                    = $ent->getId();
+            $this->updates['updates']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
+        }
+        foreach ($delete as $ent) {
+            $name                                  = self::getEntityClassName($ent);
+            $id                                    = $ent->getId();
+            $this->updates['deletes']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
         }
 
         $this->is_running = false;
     }
 
     /**
-     * @param  object $ent
+     * @param object $ent
+     *
      * @return object
      */
     private function replaceEntity($ent)
@@ -199,14 +205,15 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
     public function getSubscribedEvents()
     {
         return array(
-            \Doctrine\ORM\Events::onFlush
+            \Doctrine\ORM\Events::onFlush,
         );
     }
 
     /**
-     * Check if an entity is watched
+     * Check if an entity is watched.
      *
      * @param $entity
+     *
      * @return bool
      */
     public static function isWatchedEntity($entity)
@@ -217,7 +224,8 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
     }
 
     /**
-     * @param  object $entity
+     * @param object $entity
+     *
      * @return string
      */
     public static function getEntityClassName($entity)

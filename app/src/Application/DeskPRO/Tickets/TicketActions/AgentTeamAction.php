@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -40,7 +37,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
 
 /**
- * Sets agent
+ * Sets agent.
  */
 class AgentTeamAction extends AbstractAction implements PersonContextInterface, PermissionableAction
 {
@@ -54,12 +51,10 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
         $this->agent_team_id = $agent_team;
     }
 
-
     public function setPersonContext(Person $person)
     {
         $this->person_context = $person;
     }
-
 
     public function checkPermission(Ticket $ticket, Person $person)
     {
@@ -74,24 +69,29 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
         return true;
     }
 
-
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
     public function apply(Ticket $ticket)
     {
         $agent_team_id = $this->agent_team_id;
+        $person        = null;
 
-        if ($agent_team_id == -1) {
-            // Invalid context
-            if (!$this->person_context OR !$this->person_context['is_agent']) {
+        if ($agent_team_id < 0) {
+            if ($agent_team_id == -1) {
+                $person = $this->person_context;
+            } elseif (-2 === $agent_team_id) {
+                $person = $ticket->person;
+            }
+
+            if (!$person || !$person['is_agent']) {
                 return;
             }
 
-            $this->person_context->loadHelper('AgentTeam');
-            $agent_team_id = $this->person_context->getHelper('AgentTeam')->getPrimaryTeamId();
+            $person->loadHelper('AgentTeam');
+            $agent_team_id = $person->getHelper('AgentTeam')->getPrimaryTeamId();
 
             // Invalid agent team (eg. agent has no teams)
             if (!$agent_team_id) {
@@ -102,9 +102,8 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
         $ticket['agent_team_id'] = $agent_team_id;
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -114,7 +113,7 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
 
         if ($agent_team_id == -1) {
             // Invalid context
-            if (!$this->person_context OR !$this->person_context['is_agent']) {
+            if (!$this->person_context or !$this->person_context['is_agent']) {
                 return array();
             }
 
@@ -132,13 +131,12 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
         }
 
         return array(
-            array('action' => 'agent_team', 'agent_team_id' => $agent_team_id)
+            array('action' => 'agent_team', 'agent_team_id' => $agent_team_id),
         );
     }
 
-
     /**
-     * Get the agent team id
+     * Get the agent team id.
      *
      * @return int
      */
@@ -147,16 +145,15 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
         return $this->agent_team_id;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
     {
         return $other_action;
     }
-
 
     /**
      * @return string
@@ -174,7 +171,7 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
                 }
             }
 
-            return '<span class="with-agent-team" data-agent-team-id="' . $this->agent_team_id . '">' . $tr->phrase('agent.tickets.assign_current_team_action') . '</span>';
+            return '<span class="with-agent-team" data-agent-team-id="'.$this->agent_team_id.'">'.$tr->phrase('agent.tickets.assign_current_team_action').'</span>';
         } elseif ($this->agent_team_id == 0) {
             return $tr->phrase('agent.tickets.unassign_team');
         } else {
@@ -182,9 +179,11 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
             if ($name !== null && $as_html) {
                 $name = htmlspecialchars($name);
             }
-            if ($name === null) $name = "<error>Unknown #{$this->agent_team_id}</error>";
+            if ($name === null) {
+                $name = "<error>Unknown #{$this->agent_team_id}</error>";
+            }
 
-            return '<span class="with-agent-team" data-agent-team-id="' . $this->agent_team_id . '">' . $tr->phrase('agent.tickets.assign_team_action', array('name' => $name)) . '</span>';
+            return '<span class="with-agent-team" data-agent-team-id="'.$this->agent_team_id.'">'.$tr->phrase('agent.tickets.assign_team_action', array('name' => $name)).'</span>';
         }
     }
 }

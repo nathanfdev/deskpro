@@ -1,54 +1,51 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * A Twitter Account contains twitter username and accesstoken
- *
+ * A Twitter Account contains twitter username and accesstoken.
  */
 class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 {
     const DEFAULT_LIMIT = 50;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $id;
 
@@ -89,7 +86,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
-     * )
+     *                                                   )
      */
     protected $persons;
 
@@ -99,27 +96,26 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
     protected $_cache = array();
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
-        $this->friends = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->friends   = new \Doctrine\Common\Collections\ArrayCollection();
         $this->followers = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->searches = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->persons = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->searches  = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->persons   = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
      * @return TwitterAccount
      */
-
     public static function createTwitterAccount()
     {
         return new self();
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getUserId()
     {
@@ -131,7 +127,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param integer $id
+     * @param int $id
      */
     public function setUserId($id)
     {
@@ -145,7 +141,8 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Retrieve a list of Twitter users this account follows.
      *
-     * @param  Boolean $cache (optional)
+     * @param Boolean $cache (optional)
+     *
      * @return array
      */
     public function getFriendIds($cache = true)
@@ -154,12 +151,12 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
             return $this->_cache['friend_ids'];
         }
 
-        $this->_cache['friend_ids'] = App::getDb()->fetchAllCol("
+        $this->_cache['friend_ids'] = App::getDb()->fetchAllCol('
             SELECT user_id
             FROM twitter_accounts_friends
             WHERE account_id = ?
             ORDER BY id DESC
-        ", array($this['id']));
+        ', array($this['id']));
 
         if (!is_array($this->_cache['friend_ids'])) {
             $this->_cache['friend_ids'] = array($this->_cache['friend_ids']);
@@ -171,7 +168,8 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Retrieve a list of Twitter users following this account.
      *
-     * @param  Boolean $cache (optional)
+     * @param Boolean $cache (optional)
+     *
      * @return array
      */
     public function getFollowerIds($cache = true)
@@ -180,12 +178,12 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
             return $this->_cache['follower_ids'];
         }
 
-        $this->_cache['follower_ids'] = App::getDb()->fetchAllCol("
+        $this->_cache['follower_ids'] = App::getDb()->fetchAllCol('
             SELECT user_id
             FROM twitter_accounts_followers
             WHERE account_id = ?
             ORDER BY id DESC
-        ", array($this['id']));
+        ', array($this['id']));
 
         if (!is_array($this->_cache['follower_ids'])) {
             $this->_cache['follower_ids'] = array($this->_cache['follower_ids']);
@@ -197,7 +195,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Retrieve a list of associated Person ids.
      *
-     * @param boolean $cache
+     * @param bool $cache
      *
      * @return array
      */
@@ -207,11 +205,11 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
             return $this->_cache['person_ids'];
         }
 
-        $this->_cache['person_ids'] = App::getDb()->fetchAllCol("
+        $this->_cache['person_ids'] = App::getDb()->fetchAllCol('
             SELECT person_id
             FROM twitter_accounts_person
             WHERE account_id = ?
-        ", array($this['id']));
+        ', array($this['id']));
 
         if (!is_array($this->_cache['person_ids'])) {
             $this->_cache['person_ids'] = array($this->_cache['person_ids']);
@@ -233,17 +231,17 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 
     public function getNewFollowers($page = 1, $limit = self::DEFAULT_LIMIT)
     {
-        $page = max(1, intval($page));
+        $page   = max(1, intval($page));
         $offset = ($page - 1) * $limit;
 
-        $query = App::getOrm()->createQuery("
+        $query = App::getOrm()->createQuery('
             SELECT f, u
             FROM DeskPRO:TwitterAccountFollower f
             INNER JOIN f.user u
             WHERE f.account = :account_id
                 AND f.is_archived = false
             ORDER BY f.follow_order DESC
-        ");
+        ');
 
         $followers = $query
             ->setMaxResults($limit)
@@ -260,13 +258,13 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
             return $this->_cache['count_new_followers'];
         }
 
-        $query = App::getOrm()->createQuery("
+        $query = App::getOrm()->createQuery('
             SELECT COUNT(f.id)
             FROM DeskPRO:TwitterAccountFollower f
             WHERE f.account = :account_id
                 AND f.is_archived = false
             ORDER BY f.follow_order DESC
-        ");
+        ');
 
         $this->_cache['count_new_followers'] = $query
             ->setParameters(array('account_id' => $this->getId()))
@@ -277,16 +275,16 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 
     public function getFollowers($page = 1, $limit = self::DEFAULT_LIMIT)
     {
-        $page = max(1, intval($page));
+        $page   = max(1, intval($page));
         $offset = ($page - 1) * $limit;
 
-        $query = App::getOrm()->createQuery("
+        $query = App::getOrm()->createQuery('
             SELECT f, u
             FROM DeskPRO:TwitterAccountFollower f
             INNER JOIN f.user u
             WHERE f.account = :account_id
             ORDER BY f.follow_order DESC
-        ");
+        ');
 
         $followers = $query
             ->setMaxResults($limit)
@@ -303,11 +301,11 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
             return $this->_cache['count_followers'];
         }
 
-        $query = App::getOrm()->createQuery("
+        $query = App::getOrm()->createQuery('
             SELECT COUNT(f.id)
             FROM DeskPRO:TwitterAccountFollower f
             WHERE f.account = :account_id
-        ");
+        ');
 
         $this->_cache['count_followers'] = $query
             ->setParameters(array('account_id' => $this->getId()))
@@ -322,11 +320,11 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
             return $this->_cache['count_following'];
         }
 
-        $query = App::getOrm()->createQuery("
+        $query = App::getOrm()->createQuery('
             SELECT COUNT(f.id)
             FROM DeskPRO:TwitterAccountFriend f
             WHERE f.account = :account_id
-        ");
+        ');
 
         $this->_cache['count_following'] = $query
             ->setParameters(array('account_id' => $this->getId()))
@@ -337,15 +335,15 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 
     public function getFollowing($page = 1, $limit = self::DEFAULT_LIMIT)
     {
-        $page = max(1, intval($page));
+        $page   = max(1, intval($page));
         $offset = ($page - 1) * $limit;
 
-        $query = App::getOrm()->createQuery("
+        $query = App::getOrm()->createQuery('
             SELECT f, u
             FROM DeskPRO:TwitterAccountFriend f
             INNER JOIN f.user u
             WHERE f.account = :account_id
-        ");
+        ');
 
         $followers = $query
             ->setMaxResults($limit)
@@ -386,8 +384,6 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
         return false;
     }
 
-
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -397,7 +393,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccount';
-        $metadata->setPrimaryTable(array('name' => 'twitter_accounts',));
+        $metadata->setPrimaryTable(array('name' => 'twitter_accounts'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
@@ -420,7 +416,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
                  'nullable'   => false,
                  'columnName' => 'oauth_token',
                  'dpApi'      => false,
-                 'dpqlAccess' => false
+                 'dpqlAccess' => false,
             )
         );
         $metadata->mapField(
@@ -433,7 +429,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
                  'nullable'   => false,
                  'columnName' => 'oauth_token_secret',
                  'dpApi'      => false,
-                 'dpqlAccess' => false
+                 'dpqlAccess' => false,
             )
         );
         $metadata->mapField(
@@ -491,9 +487,9 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
                  'fieldName'    => 'persons',
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
                  'joinTable'    => array(
-                     'name'               => 'twitter_accounts_person',
-                     'schema'             => null,
-                     'joinColumns'        => array(
+                     'name'        => 'twitter_accounts_person',
+                     'schema'      => null,
+                     'joinColumns' => array(
                          0 => array(
                              'name'                 => 'account_id',
                              'referencedColumnName' => 'id',

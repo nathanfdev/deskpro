@@ -1,46 +1,46 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
- * A general data store
+ * A general data store.
  */
 class DataStore extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -50,29 +50,30 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
     protected $id = null;
 
     /**
-     * A string name to uniquely identify the record
+     * A string name to uniquely identify the record.
      *
      * @var string
      */
     protected $name = null;
 
     /**
-     * The authcode to possibly verify with
+     * The authcode to possibly verify with.
      *
      * @var string
      */
     protected $auth;
 
     /**
-     * Data
+     * Data.
      *
      * @var array
      */
     protected $data = array();
 
     /**
-     * @param  string                              $type
-     * @param  array                               $data
+     * @param string $type
+     * @param array  $data
+     *
      * @return \Application\DeskPRO\Entity\TmpData
      */
     public static function create($type, array $data = array())
@@ -89,7 +90,7 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
 
     public function __construct()
     {
-        $this->auth = Strings::random(15, Strings::CHARS_KEY);
+        $this->auth = DpStrings::random(15, Strings::CHARS_KEY);
     }
 
     /**
@@ -101,7 +102,7 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get the type
+     * Get the type.
      *
      * @return string
      */
@@ -110,9 +111,8 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
         return $this->getData('_type');
     }
 
-
     /**
-     * Set the type
+     * Set the type.
      *
      * @param string $type
      */
@@ -121,9 +121,8 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
         $this->setData('_type', $type);
     }
 
-
     /**
-     * Get some data from the extra array
+     * Get some data from the extra array.
      */
     public function getData($key = null, $default = null)
     {
@@ -134,13 +133,11 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
         return (isset($this->data[$key]) ? $this->data[$key] : $default);
     }
 
-
     /**
      * Set some data on the extra array.
      *
      * @param  $key
      * @param  $value
-     * @return void
      */
     public function setData($key, $value)
     {
@@ -154,36 +151,35 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
         $this->_onPropertyChanged('data', $old, $this->data);
     }
 
-
     /**
      * @return string
      */
     public function getCode()
     {
-        return Util::baseEncode($this->id, Util::LETTERS_ALPHABET) . '-' . $this->auth;
+        return Util::baseEncode($this->id, Util::LETTERS_ALPHABET).'-'.$this->auth;
     }
 
-
     /**
-     * Splits a code into its id and auth
+     * Splits a code into its id and auth.
      *
      * @param  $code
+     *
      * @return array
      */
     public static function getPartsFromCode($code)
     {
         $parts = explode('-', $code, 2);
-        if (count($parts) != 2) return null;
+        if (count($parts) != 2) {
+            return;
+        }
 
         $parts[0] = Util::baseDecode($parts[0], Util::LETTERS_ALPHABET);
 
         return array(
-            'id' => $parts[0],
+            'id'   => $parts[0],
             'auth' => $parts[1],
         );
     }
-
-
 
     ############################################################################
     # Doctrine Metadata
@@ -194,16 +190,16 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DataStore';
         $metadata->setPrimaryTable(array(
-            'name' => 'datastore',
+            'name'    => 'datastore',
             'indexes' => array(
-                'name_idx' => array('columns' => array('name'))
-            )
+                'name_idx' => array('columns' => array('name')),
+            ),
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'name', ));
-        $metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
-        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
+        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array('fieldName' => 'name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'name'));
+        $metadata->mapField(array('fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth'));
+        $metadata->mapField(array('fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

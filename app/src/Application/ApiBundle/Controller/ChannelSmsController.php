@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
@@ -42,13 +39,13 @@ use Application\DeskPRO\Entity\SmsAccount;
 use Application\DeskPRO\Sms\SmsProviderFactory;
 use Orb\Sms\SmsMessage;
 use Orb\Sms\SmsSender;
-use Orb\Util\Strings;
+use Orb\Util\DpStrings;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ChannelSmsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -58,7 +55,6 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 
         return $multi;
     }
-
 
     ####################################################################################################################
     # list sms accounts
@@ -72,7 +68,6 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 
         return $this->createApiResponse(array('sms_accounts' => $data));
     }
-
 
     ####################################################################################################################
     # get sms account
@@ -91,7 +86,6 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
         return $this->createApiResponse($data);
     }
 
-
     ####################################################################################################################
     # save sms account
     ####################################################################################################################
@@ -108,8 +102,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
             $account = new SmsAccount();
         }
 
-
-        /**
+        /*
          * If anything needs to be done with the data here in the future, a Form should be made
          * on an EditSmsAccount object
          */
@@ -131,17 +124,16 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
         if ($id) {
             return $this->createApiSuccessResponse(
                 array(
-                    'account' => $serializedAccount
+                    'account' => $serializedAccount,
                 ));
         } else {
             return $this->createApiCreateResponse(
                 array(
-                    'account' => $serializedAccount
+                    'account' => $serializedAccount,
                 ), $this->generateUrl('api_channel_sms_account_get', array('id' => $account->id))
             );
         }
     }
-
 
     ####################################################################################################################
     # connect to a provider and return provider specific info
@@ -150,7 +142,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
     public function connectProviderAction()
     {
         $accountData = $this->in->getValue('account');
-        $id = $this->in->getValue('account.id');
+        $id          = $this->in->getValue('account.id');
 
         $account = null;
         if ($id) {
@@ -164,7 +156,6 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
         } catch (\InvalidArgumentException $e) {
             return $this->createApiErrorResponse('sms.connection_error', 'Invalid SMS account type');
         }
-
 
         try {
             $data = $provider->getIncomingNumbers();
@@ -191,9 +182,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
                 'sms.connection_error', 'Could not connect. Please check your credentials'
             );
         }
-
     }
-
 
     public function setupAndTestTwilioAction()
     {
@@ -211,15 +200,15 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
             $this->createApiErrorResponse('invalid', 'no sms account found');
         }
 
-        $account->is_tested = false;
+        $account->is_tested  = false;
         $account->is_enabled = false;
-        $account->test_code = Strings::random(8);
+        $account->test_code  = DpStrings::random(8);
 
         $this->saveSmsAccount($account);
 
         // setup twilio endpoint
         $twilio_endpoint = $this->generateUrl('api_channel_incoming_sms_twilio', array(), UrlGeneratorInterface::ABSOLUTE_URL);
-        $provider = SmsProviderFactory::create($account->type, $account->params);
+        $provider        = SmsProviderFactory::create($account->type, $account->params);
         $provider->setUrlForNumber($twilio_endpoint, $account->phone_number->number);
 
         // send a text
@@ -228,7 +217,6 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 
         return $this->createApiSuccessResponse();
     }
-
 
     ####################################################################################################################
     # delete sms accounts
@@ -248,7 +236,6 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 
         return $this->createApiSuccessResponse();
     }
-
 
     /**
      * @return \Doctrine\ORM\EntityRepository

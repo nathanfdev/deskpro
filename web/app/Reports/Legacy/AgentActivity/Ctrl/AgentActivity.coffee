@@ -16,11 +16,10 @@ define [
     ###
     init: ->
       @html = ''
-      @date = new Date()
       @all_agents = []
       @agent_teams = []
       @filter = {}
-      @filter.date = moment(@date).format("YYYY-MM-DD")
+      @filter.date = new Date()
       @filter.agent_or_team = 'all'
 
 
@@ -28,14 +27,18 @@ define [
     # Just doing all the necessary AJAX calls here
     ###
     initialLoad: ->
-      return @loadResults()
+      date = moment(@filter.date).format("YYYY-MM-DD")
+      @Api.sendGet("/reports/agent-activity/#{@filter.agent_or_team}/${date}").then (res) =>
+        @html = @$sce.trustAsHtml(res.data.html)
+        @all_agents = res.data.all_agents
+        @agent_teams = res.data.agent_teams
 
 
     ###
     # This method updates current parameters that are used for sending request to API
     ###
     updateFilter: ->
-      @filter.date = moment(@date).format("YYYY-MM-DD")
+      @filter.date = new Date() if !@filter.date
       @loadResults()
 
 
@@ -43,17 +46,12 @@ define [
     # Loading the results of sending request to API
     ###
     loadResults: ->
-      @startSpinner('loading_results')
-
-      promise = @Api.sendGet("/reports/agent-activity/" + @filter.agent_or_team + "/" + @filter.date).then((res) =>
+      @startSpinner 'loading_results'
+      date = moment(@filter.date).format("YYYY-MM-DD")
+      @Api.sendGet("/reports/agent-activity/#{@filter.agent_or_team}/#{date}").then (res) =>
         @html = @$sce.trustAsHtml(res.data.html)
-        @all_agents = res.data.all_agents
-        @agent_teams = res.data.agent_teams
+        @stopSpinner 'loading_results', true
 
-        @stopSpinner('loading_results', true)
-      )
-
-      return promise
 
 
   Reports_AgentActivity_Ctrl_AgentActivity.EXPORT_CTRL()

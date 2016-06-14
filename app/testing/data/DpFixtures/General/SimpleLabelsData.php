@@ -1,4 +1,31 @@
 <?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace DpFixtures\General;
 
 use Application\DeskPRO\Entity\ChatConversation;
@@ -15,9 +42,9 @@ class SimpleLabelsData extends AbstractFixture
 {
     public function load(ObjectManager $manager)
     {
-        $feedback = new Feedback();
+        $feedback        = new Feedback();
         $feedback->title = 'x';
-        $feedback->slug = 'x';
+        $feedback->slug  = 'x';
         $manager->persist($feedback);
         $manager->flush();
 
@@ -25,43 +52,43 @@ class SimpleLabelsData extends AbstractFixture
         $manager->persist($chat);
         $manager->flush();
 
-        $ticket = new Ticket();
+        $ticket                           = new Ticket();
         $ticket->__dp_auto_ticket_process = false;
-        $ticket->ticket_hash = 'x';
-        $ticket->subject = 'x';
+        $ticket->ticket_hash              = 'x';
+        $ticket->subject                  = 'x';
         $manager->persist($ticket);
         $manager->flush();
 
-        $labels = array();
-        $label1             = new LabelFeedback();
-        $label1->label      = 'feedback_label1';
-        $label1->feedback   = $feedback;
+        $labels           = array();
+        $label1           = new LabelFeedback();
+        $label1->label    = 'feedback_label1';
+        $label1->feedback = $feedback;
         $manager->persist($label1);
-        $labels[]           = $label1;
+        $labels[] = $label1;
 
-        $label2             = new LabelFeedback();
-        $label2->label      = 'feedback_label2';
-        $label2->feedback   = $feedback;
+        $label2           = new LabelFeedback();
+        $label2->label    = 'feedback_label2';
+        $label2->feedback = $feedback;
         $manager->persist($label2);
-        $labels[]           = $label2;
+        $labels[] = $label2;
 
-        $label3             = new LabelChatConversation();
-        $label3->label      = 'chat_label1';
-        $label3->chat       = $chat;
+        $label3        = new LabelChatConversation();
+        $label3->label = 'chat_label1';
+        $label3->chat  = $chat;
         $manager->persist($label3);
-        $labels[]           = $label3;
+        $labels[] = $label3;
 
-        $label4             = new LabelTicket();
-        $label4->label      = 'tickets_label1';
-        $label4->ticket     = $ticket;
+        $label4         = new LabelTicket();
+        $label4->label  = 'tickets_label1';
+        $label4->ticket = $ticket;
         $manager->persist($label4);
-        $labels[]           = $label4;
+        $labels[] = $label4;
 
         foreach ($labels as $label) {
             $def = new LabelDef(array(
                 'label_type' => substr($label['label'], 0, strpos($label1['label'], '_')),
-                'label' => $label['label'],
-                'color' => '#cccccc',
+                'label'      => $label['label'],
+                'color'      => '#cccccc',
             ));
             $manager->persist($def);
         }

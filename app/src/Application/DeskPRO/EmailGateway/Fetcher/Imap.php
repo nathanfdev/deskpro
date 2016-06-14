@@ -1,42 +1,42 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
 use Application\DeskPRO\EmailGateway\Storage;
 
 /**
- * Fetches mail from a imap server
+ * Fetches mail from a imap server.
  */
 class Imap extends AbstractFetcher
 {
@@ -61,34 +61,35 @@ class Imap extends AbstractFetcher
     private $mode = self::MODE_READ;
 
     /**
-     * The IMAP Storage
+     * The IMAP Storage.
      *
      * @var \Application\DeskPRO\EmailGateway\Storage\Imap
      */
     protected $storage;
 
     /**
-     * Messages retrieved in the current fetch
+     * Messages retrieved in the current fetch.
      *
      * @var Array An array of message ids
      */
     private $message_uids;
 
     /**
-     * Mailbox name to move messages after processing
+     * Mailbox name to move messages after processing.
+     *
      * @var String Mailbox name
      */
     private $archive_mailbox;
 
     /**
-     * Mailbox name to read messages from
+     * Mailbox name to read messages from.
+     *
      * @var String Mailbox name
      */
     private $read_mailbox;
 
-
     /**
-     * Initiates the connection
+     * Initiates the connection.
      *
      * @return \Zend\Mail\Storage\Pop3
      */
@@ -96,10 +97,12 @@ class Imap extends AbstractFetcher
     {
         $options = array();
 
-        switch ($this->account->incoming_account->getType()) {
+        $incoming_account = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
+
+        switch ($incoming_account->getType()) {
             case 'imap':
                 /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ImapConfig $imap_config */
-                $imap_config = $this->account->incoming_account;
+                $imap_config = $incoming_account;
 
                 $options['host']         = $imap_config->host;
                 $options['port']         = $imap_config->port;
@@ -109,7 +112,7 @@ class Imap extends AbstractFetcher
                 $options['read_mailbox'] = $imap_config->read_mailbox;
 
                 if ($imap_config->secure_mode) {
-                    $options['secure'] = $imap_config->secure_mode;
+                    $options['secure']        = $imap_config->secure_mode;
                     $options['no_validation'] = $imap_config->no_validation;
                 }
 
@@ -121,7 +124,7 @@ class Imap extends AbstractFetcher
 
             case 'gmail':
                 /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $gmail_config */
-                $gmail_config = $this->account->incoming_account;
+                $gmail_config = $incoming_account;
 
                 $options['host']     = 'imap.gmail.com';
                 $options['port']     = 993;
@@ -133,7 +136,7 @@ class Imap extends AbstractFetcher
 
             case 'office365':
                 /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365Config $config */
-                $config = $this->account->incoming_account;
+                $config = $incoming_account;
 
                 $options['host']     = 'outlook.office365.com';
                 $options['port']     = 993;
@@ -144,10 +147,10 @@ class Imap extends AbstractFetcher
                 break;
 
             default:
-                throw new \InvalidArgumentException("Unknown account type: " . $this->account->incoming_account->getType());
+                throw new \InvalidArgumentException('Unknown account type: '.$incoming_account->getType());
         }
 
-        $this->mode = $options['mode'];
+        $this->mode            = $options['mode'];
         $this->archive_mailbox = !empty($options['archive_mailbox']) ? $options['archive_mailbox'] : 'DP_Archive';
         $this->read_mailbox    = !empty($options['read_mailbox']) ? $options['read_mailbox'] : null;
 
@@ -158,7 +161,7 @@ class Imap extends AbstractFetcher
         $this->storage = new Storage\Imap($options);
 
         if ($this->archive_mailbox === $this->storage->getMailbox()) {
-            throw new \Exception("The current mailbox is reserved for processed emails, it can not be used as the primary mailbox");
+            throw new \Exception('The current mailbox is reserved for processed emails, it can not be used as the primary mailbox');
         }
 
         if ($this->mode === self::MODE_ARCHIVE) {
@@ -176,15 +179,14 @@ class Imap extends AbstractFetcher
             $this->message_uids = $this->storage->getAllMessageUids();
         }
 
-        $this->logger->log("Read IDs: " . implode(', ', $this->message_uids), 'debug');
+        $this->logger->log('Read IDs: '.implode(', ', $this->message_uids), 'debug');
 
         return $this->storage;
     }
 
-
     /**
      * Gets the next message
-     * Iterates over the fetched IDs and retrieves the next message in list
+     * Iterates over the fetched IDs and retrieves the next message in list.
      *
      * @return int
      */
@@ -195,9 +197,9 @@ class Imap extends AbstractFetcher
         return array_shift($this->message_uids);
     }
 
-
     /**
      * {@inheritdoc}
+     *
      * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      */
     public function _readNext()
@@ -209,22 +211,22 @@ class Imap extends AbstractFetcher
         $message_uid = $this->getNextMessageUid();
 
         if ($message_uid === null) {
-            return null;
+            return;
         }
 
-        $raw_message = new RawMessage();
+        $raw_message       = new RawMessage();
         $raw_message->id   = $message_uid;
         $raw_message->uid  = $message_uid;
         $raw_message->size = $this->storage->getMessageSize($message_uid) ?: 0;
 
-        $this->logger->log(sprintf("Message UID: %s", $raw_message->uid), 'debug');
-        $this->logger->log(sprintf("Message size: %s bytes", $raw_message->size), 'debug');
+        $this->logger->log(sprintf('Message UID: %s', $raw_message->uid), 'debug');
+        $this->logger->log(sprintf('Message size: %s bytes', $raw_message->size), 'debug');
 
         if ($this->max_size && $raw_message->size && $raw_message->size > $this->max_size) {
             // If we are here, it means that message is larger than the max size
             // So, we won't store the whole message, only the headers.
-            $raw_message->content = $this->storage->getRawHeaders($message_uid) . "\n\n";
-            $this->logger->log("Message too big, only fetching headers", 'debug');
+            $raw_message->content = $this->storage->getRawHeaders($message_uid)."\n\n";
+            $this->logger->log('Message too big, only fetching headers', 'debug');
         } else {
             // Otherwise store the whole message
             $raw_message->content = $this->storage->getRawMessage($message_uid);
@@ -233,14 +235,14 @@ class Imap extends AbstractFetcher
         $headers = null;
 
         $EOL = "\n";
-        if (strpos($raw_message->content, $EOL . $EOL)) {
-            list($headers, ) = explode($EOL . $EOL, $raw_message->content, 2);
+        if (strpos($raw_message->content, $EOL.$EOL)) {
+            list($headers) = explode($EOL.$EOL, $raw_message->content, 2);
         } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers, ) = explode("\r\n\r\n", $raw_message->content, 2);
+            list($headers) = explode("\r\n\r\n", $raw_message->content, 2);
         } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers, ) = explode("\n\n", $raw_message->content, 2);
+            list($headers) = explode("\n\n", $raw_message->content, 2);
         } else {
-            @list($headers, ) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
         }
 
         $raw_message->headers = $headers;
@@ -250,7 +252,7 @@ class Imap extends AbstractFetcher
 
     /**
      * Processes the message after reading it.
-     * Moves it to the DP_Mailbox folder marking it "read"
+     * Moves it to the DP_Mailbox folder marking it "read".
      *
      * @param int $id ID of the message
      */
@@ -274,7 +276,7 @@ class Imap extends AbstractFetcher
                 break;
 
             default:
-                throw new \InvalidArgumentException("Unvalid mode: " . $this->mode);
+                throw new \InvalidArgumentException('Unvalid mode: '.$this->mode);
         }
     }
 }

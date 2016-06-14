@@ -67,7 +67,7 @@
 					you can confirm that the paths are correct and you might be able to see error output.
 				</p>
 				<p>
-					When you're ready to cotninue, click the button below to try again.
+					When you're ready to continue, click the button below to try again.
 				</p>
 			</div>
 		</section>
@@ -81,7 +81,7 @@
 					<li ng-repeat="code in boot_errors.error_codes" ng-switch="code">
 						<span ng-switch-when="php_version">
 							The PHP version used to execute the scheduled task is outdated. Your web server and your command-line
-							versions of PHP are different. You need to upgrade your command-line version of PHP to at least 5.3.2.
+							versions of PHP are different. You need to upgrade your command-line version of PHP to at least 5.3.9.
 						</span>
 						<span ng-switch-when="pdo_ext">
 							PHP does not have the <a href="http://php.net/manual/en/pdo.installation.php">pdo and pdo_mysql</a> extension enabled.

@@ -16,6 +16,8 @@
   "angularBootstrapDatetime":        ["angular"],
   "angularUiDatetime":               ["angular"],
   "angularOcLazyLoad":               ["angular"],
+  "angularScrollGlue":               ["angular"],
+  "bootstrapDatetime":               ["jquery", "moment"],
   "ngClip":                          ["angular"],
   "ngFileUpload":                    ["angular"],
   "ngContextMenu":                   ["angular"],

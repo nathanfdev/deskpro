@@ -26,14 +26,14 @@ define ['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketA
       }
 
       @form_model = new EditTicketAccountModel(@account, [], {})
-      @form_model.form.incoming_account_type = ''
-      @form_model.form.outgoing_account_type = 'smtp'
+      @form_model.form.incoming_type = ''
+      @form_model.form.outgoing_type = 'php_mail'
       @$scope.form = @form_model.form
 
     ###
-      # Saves the current form
-      #
-      # @return {promise}
+    # Saves the current form
+    #
+    # @return {promise}
     ###
     saveAndContinue: ->
       @$scope.email_is_error = null

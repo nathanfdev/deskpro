@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
@@ -41,13 +39,12 @@ use Application\DeskPRO\TwitterAccounts\TwitterAccountEdit;
 class TwitterAccountsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
         return new AdminManagePermission();
     }
-
 
     ####################################################################################################################
     # list
@@ -55,13 +52,13 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 
     public function listAction()
     {
-        /**
-         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
+        /*
+         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts
          */
         $twitter_accounts = $this->container->getSystemService('twitter_accounts');
 
         return $this->createApiResponse(array(
-            'twitter_accounts' => $twitter_accounts->getAllWithUserAsArray()
+            'twitter_accounts' => $twitter_accounts->getAllWithUserAsArray(),
         ));
     }
 
@@ -71,8 +68,8 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 
     public function getAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
+        /*
+         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts
          */
         $twitter_accounts = $this->container->getSystemService('twitter_accounts');
         $twitter_account  = $twitter_accounts->getWithUserById($id);
@@ -85,7 +82,7 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
         $returnedData['all_agents'] = $twitter_accounts->getAllAgents();
 
         return $this->createApiResponse(array(
-            'twitter_account' => $returnedData
+            'twitter_account' => $returnedData,
         ));
     }
 
@@ -95,8 +92,8 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 
     public function saveAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
+        /*
+         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts
          */
         $twitter_accounts = $this->container->getSystemService('twitter_accounts');
 
@@ -134,8 +131,8 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 
     public function removeAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
+        /*
+         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts
          */
         $twitter_accounts = $this->container->getSystemService('twitter_accounts');
         $twitter_account  = $twitter_accounts->getById($id);
@@ -152,7 +149,7 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
             $this->em->remove($twitter_account);
             $this->em->flush();
             $this->db->commit();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;
         }

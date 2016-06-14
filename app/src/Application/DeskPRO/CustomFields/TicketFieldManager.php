@@ -1,42 +1,39 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Orb\Util\Strings;
-use Zend\Loader\Exception\InvalidArgumentException;
 
 class TicketFieldManager extends FieldManager
 {
@@ -51,7 +48,7 @@ class TicketFieldManager extends FieldManager
     }
 
     /**
-     * Get a collection of all top-level (parent) fields
+     * Get a collection of all top-level (parent) fields.
      *
      * @return array
      */
@@ -59,10 +56,9 @@ class TicketFieldManager extends FieldManager
     {
         if ($this->fields === null) {
             $this->fields = array();
-            $all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
+            $all_fields   = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
 
             foreach ($all_fields as $f) {
-
                 $this->all_fields[$f->getId()] = $f;
 
                 if (!$f->getParentId()) {
@@ -94,7 +90,6 @@ class TicketFieldManager extends FieldManager
         return $this->fields;
     }
 
-
     /**
      * Get an array of all defined fields (by doing a query).
      *
@@ -116,7 +111,7 @@ class TicketFieldManager extends FieldManager
         $old_value = null;
 
         if (isset($all_display_data[$field_def->id])) {
-            $handler = $all_display_data[$field_def->id]['handler'];
+            $handler   = $all_display_data[$field_def->id]['handler'];
             $old_value = $handler->renderText($all_display_data[$field_def->id]['value']);
 
             if ($old_value) {
@@ -129,8 +124,8 @@ class TicketFieldManager extends FieldManager
         $new_value = null;
         if ($return) {
             $all_display_data = $this->getDisplayArrayForObject($ticket);
-            $handler = $all_display_data[$field_def->id]['handler'];
-            $new_value = $handler->renderText($all_display_data[$field_def->id]['value']);
+            $handler          = $all_display_data[$field_def->id]['handler'];
+            $new_value        = $handler->renderText($all_display_data[$field_def->id]['value']);
             if ($new_value) {
                 $new_value = trim(str_replace(array("\n", "\r\n"), ' ', strip_tags($new_value)));
             }
@@ -147,92 +142,81 @@ class TicketFieldManager extends FieldManager
         return $new_value;
     }
 
-
     /**
      * @return bool
      */
     public function isProductEnabled()
     {
-        return (bool)$this->settings->get('core.use_product');
+        return (bool) $this->settings->get('core.use_product');
     }
-
 
     /**
      * @return bool
      */
     public function isPriorityEnabled()
     {
-        return (bool)$this->settings->get('core.use_ticket_priority');
+        return (bool) $this->settings->get('core.use_ticket_priority');
     }
-
 
     /**
      * @return bool
      */
     public function isWorkflowEnabled()
     {
-        return (bool)$this->settings->get('core.use_ticket_workflow');
+        return (bool) $this->settings->get('core.use_ticket_workflow');
     }
-
 
     /**
      * @return bool
      */
     public function isCategoryEnabled()
     {
-        return (bool)$this->settings->get('core.use_ticket_category');
+        return (bool) $this->settings->get('core.use_ticket_category');
     }
-
 
     /**
      * @param $enabled bool
      */
     public function setIsProductEnabled($enabled = true)
     {
-        $this->settings->setSetting('core.use_product', intval((bool)$enabled));
+        $this->settings->setSetting('core.use_product', intval((bool) $enabled));
     }
-
 
     /**
      * @param $enabled bool
      */
     public function setIsPriorityEnabled($enabled = true)
     {
-        $this->settings->setSetting('core.use_ticket_priority', intval((bool)$enabled));
+        $this->settings->setSetting('core.use_ticket_priority', intval((bool) $enabled));
     }
-
 
     /**
      * @param $enabled bool
      */
     public function setIsWorkflowEnabled($enabled = true)
     {
-        $this->settings->setSetting('core.use_ticket_workflow', intval((bool)$enabled));
+        $this->settings->setSetting('core.use_ticket_workflow', intval((bool) $enabled));
     }
-
 
     /**
      * @param $enabled bool
      */
     public function setIsCategoryEnabled($enabled = true)
     {
-        $this->settings->setSetting('core.use_ticket_category', intval((bool)$enabled));
+        $this->settings->setSetting('core.use_ticket_category', intval((bool) $enabled));
     }
 
-
     /**
-     * @param  string                                          $id
-     * @param  bool                                            $enabled
-     * @throws \Zend\Loader\Exception\InvalidArgumentException
+     * @param string $id
+     * @param bool   $enabled
      */
     public function setFieldEnabledById($id, $enabled = true)
     {
         if ($custom_field_id = Strings::extractRegexMatch('#^field_(\d+)$#', $id)) {
-            $field = $this->em->find('DeskPRO:CustomDefTicket', $custom_field_id);
+            $field             = $this->em->find('DeskPRO:CustomDefTicket', $custom_field_id);
             $field->is_enabled = $enabled;
             $this->em->persist($field);
             $this->em->flush($field);
-
         } else {
             switch ($id) {
                 case 'product':  $this->setIsProductEnabled($enabled); break;
@@ -240,7 +224,7 @@ class TicketFieldManager extends FieldManager
                 case 'priority': $this->setIsPriorityEnabled($enabled); break;
                 case 'category': $this->setIsCategoryEnabled($enabled); break;
                 default:
-                    throw new InvalidArgumentException("Invalid \$id");
+                    throw new \Exception('Invalid $id');
             }
         }
     }

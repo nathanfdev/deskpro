@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Tickets\Slas;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -39,6 +36,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\People\PersonContextInterface;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
 class SlaClientMessageSender implements PersonContextInterface
@@ -60,7 +58,6 @@ class SlaClientMessageSender implements PersonContextInterface
      */
     private $queue = array();
 
-
     /**
      * @param Connection $db
      */
@@ -69,7 +66,6 @@ class SlaClientMessageSender implements PersonContextInterface
         $this->db = $db;
     }
 
-
     /**
      * @param Person $person
      */
@@ -77,7 +73,6 @@ class SlaClientMessageSender implements PersonContextInterface
     {
         $this->person = $person;
     }
-
 
     /**
      * @param Ticket    $ticket         The ticket
@@ -88,10 +83,10 @@ class SlaClientMessageSender implements PersonContextInterface
     public function sendMessage(Ticket $ticket, TicketSla $ticket_sla, $orig_status, $orig_completed)
     {
         $this->queue[] = array(
-            'channel'       => self::CHANNEL,
-            'auth'          => Strings::random(15, Strings::CHARS_KEY),
-            'date_created'  => date('Y-m-d H:i:s'),
-            'data'          => serialize(array(
+            'channel'      => self::CHANNEL,
+            'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
+            'date_created' => date('Y-m-d H:i:s'),
+            'data'         => serialize(array(
                 'ticket_id'             => $ticket->id,
                 'ticket_agent_id'       => $ticket->agent ? $ticket->agent->id : null,
                 'ticket_Agent_team_id'  => $ticket->agent_team ? $ticket->agent_team->id : null,
@@ -103,11 +98,10 @@ class SlaClientMessageSender implements PersonContextInterface
                 'is_completed'          => $ticket_sla->is_completed,
                 'original_is_completed' => $orig_completed,
                 'removed'               => $ticket->hasSla($ticket_sla->sla) ? true : false,
-                'via_person'            => $this->person ? $this->person->id : null
-            ))
+                'via_person'            => $this->person ? $this->person->id : null,
+            )),
         );
     }
-
 
     /**
      * Send all messages.
@@ -120,7 +114,7 @@ class SlaClientMessageSender implements PersonContextInterface
             return 0;
         }
 
-        $q = $this->queue;
+        $q           = $this->queue;
         $this->queue = array();
 
         $this->db->batchInsert('client_messages', $q);

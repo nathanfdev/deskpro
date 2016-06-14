@@ -4,6 +4,7 @@ define [
   'Admin/CustomFields/Chat/DataService/ChatFields',
   'Admin/CustomFields/User/DataService/UserFields',
   'Admin/CustomFields/Org/DataService/OrgFields',
+  'Admin/CustomFields/Billing/DataService/BillingFields',
   'Admin/CustomFields/DataService/CustomFields',
   'Admin/TicketFilters/DataService/TicketFilters',
   'Admin/TicketDeps/DataService/TicketDeps',
@@ -14,6 +15,7 @@ define [
   'Admin/TicketTriggers/DataService/TriggersNew',
   'Admin/TicketTriggers/DataService/TriggersReply',
   'Admin/TicketTriggers/DataService/TriggersUpdate',
+  'Admin/TicketProblems/DataService/Problems'
   'Admin/TwitterAccounts/DataService/TwitterAccounts',
   'Admin/ApiKeys/DataService/ApiKeys',
   'Admin/Banning/DataService/Bans',
@@ -31,6 +33,7 @@ define [
   DataService_ChatFields,
   DataService_UserFields,
   DataService_OrgFields,
+  DataService_BillingFields,
   DataService_CustomFields,
   DataService_TicketFilters,
   DataService_TicketDeps,
@@ -41,6 +44,7 @@ define [
   DataService_TriggersNew,
   DataService_TriggersReply,
   DataService_TriggersUpdate,
+  DataService_Problems
   DataService_TwitterAccounts,
   DataService_ApiKeys,
   DataService_Bans,

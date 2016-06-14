@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
@@ -46,7 +44,7 @@ use Orb\Util\Strings;
 abstract class AbstractFetcher
 {
     /**
-     * \Application\DeskPRO\EmailAccount
+     * \Application\DeskPRO\EmailAccount.
      */
     protected $account;
 
@@ -61,7 +59,8 @@ abstract class AbstractFetcher
     protected $logger;
 
     /**
-     * The max size in byes to read
+     * The max size in byes to read.
+     *
      * @var int
      */
     protected $max_size = 0;
@@ -73,46 +72,53 @@ abstract class AbstractFetcher
     public function __construct(EmailAccount $account, $max_size = 0)
     {
         $this->account = $account;
-        $this->logger = new Logger();
+        $this->logger  = new Logger();
         $this->setMaxSize($max_size);
         $this->init();
     }
 
-    protected function init() {}
+    protected function init()
+    {
+    }
 
     public function __destruct()
     {
         if ($this->storage) {
-            try { $this->storage->close(); } catch (\Exception $e) {}
+            try {
+                $this->storage->close();
+            } catch (\Exception $e) {
+            }
         }
     }
 
     /**
-     * Closes the connection
+     * Closes the connection.
      */
     protected function _closeConnection()
     {
         if ($this->storage) {
             try {
                 $this->storage->close();
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
     }
 
     /**
-     * Set the max size to read
+     * Set the max size to read.
      *
      * @param int $max_size The max size in bytes
      */
     public function setMaxSize($max_size)
     {
-        $this->max_size = (int)$max_size;
-        if ($this->max_size < 0) $this->max_size = 0;
+        $this->max_size = (int) $max_size;
+        if ($this->max_size < 0) {
+            $this->max_size = 0;
+        }
     }
 
-
     /**
-     * Get the max size
+     * Get the max size.
      *
      * @return int
      */
@@ -121,9 +127,9 @@ abstract class AbstractFetcher
         return $this->max_size;
     }
 
-
     /**
-     * @param  bool  $reconnect
+     * @param bool $reconnect
+     *
      * @return mixed
      */
     public function getStorage($reconnect = false)
@@ -140,15 +146,12 @@ abstract class AbstractFetcher
         return $this->storage;
     }
 
-
     /**
      * Closes the fetcher.
      */
     public function close()
     {
-
     }
-
 
     /**
      * @param Logger $logger
@@ -159,7 +162,8 @@ abstract class AbstractFetcher
     }
 
     /**
-     * Initiates the connection
+     * Initiates the connection.
+     *
      * @return \Zend\Mail\Storage\AbstractStorage
      */
     abstract protected function _initConnection();
@@ -188,24 +192,29 @@ abstract class AbstractFetcher
      *
      * Returns null if there are no more messages.
      *
-     * @param  string                                  $object_type
-     * @return \Application\DeskPRO\Entity\EmailSource
+     * @param string $object_type
+     *
      * @throws \Exception
+     *
+     * @return \Application\DeskPRO\Entity\EmailSource
      */
     public function readNext($object_type = 'ticket')
     {
         try {
             $raw_message = $this->_readNext();
         } catch (\Exception $e) {
-            $this->logger->log(sprintf("_readNext exception: %s", $e->getMessage()), 'debug');
+            $this->logger->log(sprintf('_readNext exception: %s', $e->getMessage()), 'debug');
             if ($this->storage) {
-                try { $this->storage->close(); } catch (\Exception $e) {}
+                try {
+                    $this->storage->close();
+                } catch (\Exception $e) {
+                }
             }
             throw $e;
         }
 
         if (!$raw_message) {
-            return null;
+            return;
         }
 
         // Protection against nulls
@@ -226,8 +235,8 @@ abstract class AbstractFetcher
             $source = new EmailSource();
             $source->fromArray(array(
                 'email_account' => $this->account,
-                'headers' => $raw_message->headers,
-                'status' => 'inserted'
+                'headers'       => $raw_message->headers,
+                'status'        => 'inserted',
             ));
 
             // Rough matching, just for info purposes when browsing a list
@@ -239,12 +248,12 @@ abstract class AbstractFetcher
             if ($raw_message->uid) {
                 $source->uid = $raw_message->uid;
 
-                App::getDb()->executeUpdate("
+                App::getDb()->executeUpdate('
                     INSERT IGNORE INTO email_uids
                     SET id = ?, email_account_id = ?, date_created = ?
-                ", array($raw_message->uid, $this->account->getId(), date('Y-m-d H:i:s')));
+                ', array($raw_message->uid, $this->account->getId(), date('Y-m-d H:i:s')));
 
-                $this->logger->log(sprintf("Saved UID: %s", $raw_message->uid), 'debug');
+                $this->logger->log(sprintf('Saved UID: %s', $raw_message->uid), 'debug');
             }
 
             if ($raw_message->too_big) {
@@ -256,11 +265,11 @@ abstract class AbstractFetcher
                 // Unset the content now, its not used from here on out
                 $raw_message->content = '';
 
-                $source->status = 'error';
-                $source->error_code = EmailSource::ERR_MESSAGE_TOO_BIG;
+                $source->status      = 'error';
+                $source->error_code  = EmailSource::ERR_MESSAGE_TOO_BIG;
                 $source->source_info = array(
-                    'size' => $raw_message->size,
-                    'max_size' => $this->max_size
+                    'size'     => $raw_message->size,
+                    'max_size' => $this->max_size,
                 );
             } else {
                 $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
@@ -277,19 +286,21 @@ abstract class AbstractFetcher
 
             App::getOrm()->commit();
 
-            $this->logger->log(sprintf("Committed message source: %s", $source->getId()), 'debug');
+            $this->logger->log(sprintf('Committed message source: %s', $source->getId()), 'debug');
 
             #------------------------------
             # Delete message on the server
             #------------------------------
 
             $this->_doneRead($raw_message->id);
-
         } catch (\Exception $e) {
-            $this->logger->log(sprintf("Save source error: %s", $e->getMessage()), 'debug');
+            $this->logger->log(sprintf('Save source error: %s', $e->getMessage()), 'debug');
             App::getOrm()->rollback();
             if ($this->storage) {
-                try { $this->storage->close(); } catch (\Exception $e) {}
+                try {
+                    $this->storage->close();
+                } catch (\Exception $e) {
+                }
             }
             throw $e;
         }

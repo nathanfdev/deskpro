@@ -30,7 +30,7 @@ define ->
       restrict: 'E',
       template: """
         <div class="dp-time-unit">
-          <input type="text" ng-model="time_num" class="form-control time_num" />
+          <input type="text" ng-model="time_num" class="form-control time_num" style="vertical-align: middle;" />
           <select
             ng-model="time_unit"
             ui-select2

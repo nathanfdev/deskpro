@@ -1,43 +1,39 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\InstallBundle\Upgrade\Build;
-
-use Application\DeskPRO\Entity\EmailAccount;
 
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount;
+use Application\DeskPRO\Entity\EmailAccount;
 use Orb\Util\Arrays;
 use Orb\Util\OptionsArray;
 
@@ -48,15 +44,18 @@ class Build1400056713 extends AbstractBuild
         $db = $this->container->getDb();
         $em = $this->container->getEm();
 
+        // table modified by later script
+        $this->execMutateSql('ALTER TABLE email_accounts ADD is_read_active TINYINT(1) NOT NULL', true);
+
         // Reset table
-        $db->exec("DELETE FROM email_accounts");
-        $db->exec("ALTER TABLE email_accounts AUTO_INCREMENT = 1");
+        $db->exec('DELETE FROM email_accounts');
+        $db->exec('ALTER TABLE email_accounts AUTO_INCREMENT = 1');
 
-        $this->out("Upgrading email accounts...");
+        $this->out('Upgrading email accounts...');
 
-        $gateways      = $db->fetchAllKeyed("SELECT * FROM email_gateways");
-        $gateway_addrs = $db->fetchAllGrouped("SELECT * FROM email_gateway_addresses ORDER BY run_order ASC, id ASC", array(), 'email_gateway_id');
-        $transports    = $db->fetchAllKeyed("SELECT * FROM email_transports");
+        $gateways      = $db->fetchAllKeyed('SELECT * FROM email_gateways');
+        $gateway_addrs = $db->fetchAllGrouped('SELECT * FROM email_gateway_addresses ORDER BY run_order ASC, id ASC', array(), 'email_gateway_id');
+        $transports    = $db->fetchAllKeyed('SELECT * FROM email_transports');
 
         // Save gateway address mapping needed when importing triggers
         $map = array();
@@ -103,9 +102,9 @@ class Build1400056713 extends AbstractBuild
         if ($default_tr) {
             $default_tr_address = $this->container->getSetting('core.default_from_email');
 
-            $tr_account = new EmailAccount(EmailAccount::TYPE_OUT);
-            $tr_account->address = $default_tr_address;
-            $tr_account->is_enabled = true;
+            $tr_account                   = new EmailAccount(EmailAccount::TYPE_OUT);
+            $tr_account->address          = $default_tr_address;
+            $tr_account->is_enabled       = true;
             $tr_account->outgoing_account = $this->_getTransportConfig($default_tr);
 
             // Cloud must mark the incoming settings as noop
@@ -132,16 +131,18 @@ class Build1400056713 extends AbstractBuild
             // Update to a high ID that wont collide when we update again below
             $db->executeUpdate('UPDATE email_accounts SET id = ? WHERE id = ?', array($tmp_id, $account->id));
             $id_map[$tmp_id] = $want_id;
-            $tmp_id++;
+            ++$tmp_id;
         }
 
         foreach ($id_map as $tmp_id => $want_id) {
             $db->executeUpdate('UPDATE email_accounts SET id = ? WHERE id = ?', array($want_id, $tmp_id));
         }
 
-        $max_id = $db->fetchColumn("SELECT id FROM email_accounts ORDER BY id DESC LIMIT 1");
-        if (!$max_id) $max_id = 0;
-        $max_id++;
+        $max_id = $db->fetchColumn('SELECT id FROM email_accounts ORDER BY id DESC LIMIT 1');
+        if (!$max_id) {
+            $max_id = 0;
+        }
+        ++$max_id;
         $db->exec("ALTER TABLE email_accounts AUTO_INCREMENT = $max_id");
 
         // Then insert default account with whatever autoinc id is next,
@@ -152,11 +153,11 @@ class Build1400056713 extends AbstractBuild
         }
     }
 
-
     /**
-     * @param  array        $gateway
-     * @param  array        $tr
-     * @param  array        $addrs
+     * @param array $gateway
+     * @param array $tr
+     * @param array $addrs
+     *
      * @return EmailAccount
      */
     private function _convertGatewayAccount(array $gateway, array $tr = null, array $addrs)
@@ -173,7 +174,7 @@ class Build1400056713 extends AbstractBuild
 
         switch ($gateway['connection_type']) {
             case 'pop3':
-                $pop3_config = new IncomingAccount\Pop3Config();
+                $pop3_config           = new IncomingAccount\Pop3Config();
                 $pop3_config->host     = $conn_opts->get('host', 'localhost');
                 $pop3_config->port     = $conn_opts->get('port', 995);
                 $pop3_config->user     = $conn_opts->get('username');
@@ -189,7 +190,7 @@ class Build1400056713 extends AbstractBuild
                 break;
 
             case 'gmail':
-                $gmail_config = new IncomingAccount\GmailConfig();
+                $gmail_config           = new IncomingAccount\GmailConfig();
                 $gmail_config->user     = $conn_opts->get('username');
                 $gmail_config->password = $conn_opts->get('password');
 
@@ -198,7 +199,7 @@ class Build1400056713 extends AbstractBuild
 
             // directory was the type used by cloud accounts
             case 'directory':
-                $null_config = new IncomingAccount\NoopConfig();
+                $null_config               = new IncomingAccount\NoopConfig();
                 $account->incoming_account = $null_config;
                 break;
 
@@ -219,8 +220,8 @@ class Build1400056713 extends AbstractBuild
             $account->date_read_start = \DateTime::createFromFormat('Y-m-d H:i:s', $gateway['start_date_limit']);
         }
 
-        $dates = array($account->date_created, $account->date_last_incoming, $account->date_read_start);
-        $dates = Arrays::removeFalsey($dates);
+        $dates                 = array($account->date_created, $account->date_last_incoming, $account->date_read_start);
+        $dates                 = Arrays::removeFalsey($dates);
         $account->date_created = min($dates);
 
         $account->address = $addrs[0]['match_pattern'];
@@ -233,16 +234,17 @@ class Build1400056713 extends AbstractBuild
             $account->setOption('custom_email_address', $account->other_addresses[0]);
         }
 
-        $account->is_enabled = (bool)$gateway['is_enabled'];
+        $account->is_enabled = (bool) $gateway['is_enabled'];
 
         return $account;
     }
 
-
     /**
-     * @param  array                                                                                $tr
-     * @return OutgoingAccount\GmailConfig|OutgoingAccount\PhpMailConfig|OutgoingAccount\SmtpConfig
+     * @param array $tr
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return OutgoingAccount\GmailConfig|OutgoingAccount\PhpMailConfig|OutgoingAccount\SmtpConfig
      */
     private function _getTransportConfig(array $tr = null)
     {
@@ -267,7 +269,7 @@ class Build1400056713 extends AbstractBuild
                 return $mail_config;
 
             case 'smtp':
-                $smtp_config = new OutgoingAccount\SmtpConfig();
+                $smtp_config           = new OutgoingAccount\SmtpConfig();
                 $smtp_config->host     = $conn_opts->get('host', 'localhost');
                 $smtp_config->port     = $conn_opts->get('port', 25);
                 $smtp_config->user     = $conn_opts->get('username');
@@ -282,7 +284,7 @@ class Build1400056713 extends AbstractBuild
                 return $smtp_config;
 
             case 'gmail':
-                $gmail_config = new OutgoingAccount\GmailConfig();
+                $gmail_config           = new OutgoingAccount\GmailConfig();
                 $gmail_config->user     = $conn_opts->get('username');
                 $gmail_config->password = $conn_opts->get('password');
 

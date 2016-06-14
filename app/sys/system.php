@@ -1,47 +1,44 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
+ * DeskPRO.
+ */
 namespace DeskPRO\Kernel;
 
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Kernel as BaseKernel;
+use Application\DeskPRO\App;
 use Orb\Util\Arrays;
 use Orb\Util\Env;
-
-use Application\DeskPRO\App;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 
 require_once DP_ROOT.'/sys/DpShutdown.php';
 require_once DP_ROOT.'/sys/Kernel/KernelErrorHandler.php';
@@ -58,7 +55,7 @@ abstract class AbstractKernel extends BaseKernel
         $path = $request->getPathInfo();
 
         if (!deskpro_install_check_pdo_mysql()) {
-            $response = new RedirectResponse($request->getBasePath() . '/index.php/install/');
+            $response = new RedirectResponse($request->getBasePath().'/index.php/install/');
 
             return $response;
         }
@@ -71,7 +68,7 @@ abstract class AbstractKernel extends BaseKernel
                 // This will show an error page if already installed, so the redirect to install wont happen
                 deskpro_handle_boot_db_exception($e);
 
-                $response = new RedirectResponse($request->getBasePath() . '/index.php/install/');
+                $response = new RedirectResponse($request->getBasePath().'/index.php/install/');
 
                 return $response;
             } else {
@@ -83,7 +80,7 @@ abstract class AbstractKernel extends BaseKernel
         }
 
         if (!App::getSetting('core.install_build') && strpos($request->getRequestUri(), '/index.php/install/') === false) {
-            $response = new RedirectResponse($request->getBasePath() . '/index.php/install/');
+            $response = new RedirectResponse($request->getBasePath().'/index.php/install/');
 
             return $response;
         }
@@ -114,7 +111,7 @@ abstract class AbstractKernel extends BaseKernel
                             Files build: $file_build
                         </div>
                     </div>
-                ", "DeskPRO Upgrade");
+                ", 'DeskPRO Upgrade');
                 exit;
 
             // Standard offline mode for users
@@ -145,18 +142,18 @@ abstract class AbstractKernel extends BaseKernel
         }
 
         if ((defined('DP_INTERFACE') && DP_INTERFACE == 'user') && $this->isHelpdeskOffline()) {
-            $cache_dir = dp_get_tmp_dir() . '/page-cache';
-            $base = substr(preg_replace('#[^a-z0-9_-]#i', '_', $request->getRequestUri()), 0, 35);
-            $scheme_host = $request->getScheme().'://'.$request->getHttpHost();
-            $cache_base_filename = $base . '-' . md5($scheme_host . $request->getRequestUri()) . '.cache';
+            $cache_dir           = dp_get_tmp_dir().'/page-cache';
+            $base                = substr(preg_replace('#[^a-z0-9_-]#i', '_', $request->getRequestUri()), 0, 35);
+            $scheme_host         = $request->getScheme().'://'.$request->getHttpHost();
+            $cache_base_filename = $base.'-'.md5($scheme_host.$request->getRequestUri()).'.cache';
             try {
-                $language = App::getLanguage();
+                $language    = App::getLanguage();
                 $language_id = $language->id;
             } catch (\Exception $e) {
                 $language_id = 1;
             }
-            $cache_filename = $language_id . '-' . $cache_base_filename;
-            $cache_file = $cache_dir . '/' . $cache_filename;
+            $cache_filename = $language_id.'-'.$cache_base_filename;
+            $cache_file     = $cache_dir.'/'.$cache_filename;
 
             if (file_exists($cache_file)) {
                 // helpdesk is offline - always serve this instead
@@ -166,7 +163,7 @@ abstract class AbstractKernel extends BaseKernel
                         $output['content'] = gzuncompress($output['content']);
                     }
 
-                    $message = HelpdeskOfflineMessage::getOfflineMessage();
+                    $message           = HelpdeskOfflineMessage::getOfflineMessage();
                     $output['content'] = KernelBooter::prepareCachedOutputForOffline($output['content'], $message);
 
                     return new Response($output['content'], 200, $output['headers']);
@@ -176,15 +173,15 @@ abstract class AbstractKernel extends BaseKernel
 
         // Make sure we arent banned ip
         if (!preg_match('#^/admin/?#', $path)) {
-            $ip = dp_get_user_ip_address();
-            $ip_long = sprintf("%u", ip2long($ip));
+            $ip      = dp_get_user_ip_address();
+            $ip_long = sprintf('%u', ip2long($ip));
 
-            $banned = App::getDb()->fetchColumn("
+            $banned = App::getDb()->fetchColumn('
                 SELECT banned_ip
                 FROM ban_ips
                 WHERE banned_ip = ? OR (ip_start <= ? AND ip_end >= ?)
                 LIMIT 1
-            ", array($ip, $ip_long, $ip_long));
+            ', array($ip, $ip_long, $ip_long));
 
             if ($banned) {
                 $response = new Response();
@@ -216,7 +213,7 @@ abstract class AbstractKernel extends BaseKernel
                 } else {
                     $loc .= '&';
                 }
-                $loc .= 'parent_url=' . urlencode($_GET['parent_url']);
+                $loc .= 'parent_url='.urlencode($_GET['parent_url']);
                 $res->headers->set('Location', $loc);
             }
 
@@ -266,10 +263,9 @@ abstract class AbstractKernel extends BaseKernel
             // 2) /admin/start             Initial config
             $is_installed = App::getSetting('core.setup_initial');
             if (!License::getLicense()->hasLicense() || !$is_installed) {
-                $response = new RedirectResponse($request->getBaseUrl() . '/admin/start');
+                $response = new RedirectResponse($request->getBaseUrl().'/admin/start');
 
                 return $response;
-
             } else {
 
                 #------------------------------
@@ -279,7 +275,7 @@ abstract class AbstractKernel extends BaseKernel
                 if (License::getLicense()->getMaxAgents()) {
                     // The main interface frame is a good place to stick this check
                     if (DP_INTERFACE == 'agent' && preg_match('#^/agent(/|\?)?#', $path)) {
-                        $count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1 AND is_deleted = 0");
+                        $count = App::getDb()->fetchColumn('SELECT COUNT(*) FROM people WHERE is_agent = 1 AND is_deleted = 0');
                         if ($count > License::getLicense()->getMaxAgents()) {
                             $response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('agents', $request->getBaseUrl()));
 
@@ -372,14 +368,14 @@ abstract class AbstractKernel extends BaseKernel
 
             if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
                 $website_url = isset($GLOBALS['DP_WEBSITE_URL']) ? $GLOBALS['DP_WEBSITE_URL'] : '';
-                $content = str_replace('<!-- DP_WEBSITE_URL_FIELD -->', '<input type="hidden" class="dp_website_url" name="dp_website_url" value="' . htmlspecialchars($website_url) . '" />', $content);
+                $content     = str_replace('<!-- DP_WEBSITE_URL_FIELD -->', '<input type="hidden" class="dp_website_url" name="dp_website_url" value="'.htmlspecialchars($website_url).'" />', $content);
             }
 
             $response->setContent($content);
         }
 
         if ((defined('DP_INTERFACE') && DP_INTERFACE == 'user') && $is_page_load && isset($GLOBALS['DP_RENDERED_TEMPLATES']['UserBundle::layout.html.twig'])) {
-            if (!License::getLicense()->hasUserCopyrightHtml($response->getContent())) {
+            if (!($response instanceof RedirectResponse) && !License::getLicense()->hasUserCopyrightHtml($response->getContent())) {
                 // Dont show lic error when serving exception page in debug mode
                 if (!(strpos($response->getContent(), 'sf-exceptionreset') && $this->isDebug())) {
                     $response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('copyright', $request->getBaseUrl()));
@@ -441,6 +437,7 @@ final class License
      * When non-null, then it means there was a problem with the license (ie bad format).
      * The License class goes into unlicensed mode in these cases, but if there was
      * a license code but it was just invalid, then you can always check this.
+     *
      * @var string
      */
     private $error_code = null;
@@ -455,10 +452,12 @@ final class License
      */
     private $user_copyright_done = false;
 
-
     /**
      * @static
+     *
      * @return string
+     *
+     * @deprecated Use getSecureLicServer
      */
     public static function getLicServer()
     {
@@ -468,7 +467,6 @@ final class License
 
         return DP_MA_SERVER;
     }
-
 
     /**
      * @return string
@@ -482,9 +480,9 @@ final class License
         return DP_MA_SERVER_SECURE;
     }
 
-
     /**
      * @static
+     *
      * @return string
      */
     public static function getSupportUrl()
@@ -496,15 +494,17 @@ final class License
         return DP_SUPPORT_URL;
     }
 
-
     /**
      * @static
+     *
      * @param $license_code
+     *
      * @return \DeskPRO\Kernel\License
      */
     public static function create($license_code, $install_key = '')
     {
         self::getLicServer();
+        self::getSecureLicServer();
 
         $inst = new self($license_code, $install_key);
 
@@ -516,9 +516,9 @@ final class License
         return $inst;
     }
 
-
     /**
      * @static
+     *
      * @return \DeskPRO\Kernel\License
      */
     public static function getLicense()
@@ -530,7 +530,9 @@ final class License
                 $license_code = DP_LIC_STR;
             } else {
                 $license_code = App::getSetting('core.license');
-                if (!$license_code) $license_code = null;
+                if (!$license_code) {
+                    $license_code = null;
+                }
             }
 
             if (defined('DP_INSTALL_KEY')) {
@@ -543,30 +545,33 @@ final class License
             try {
                 $licopt = App::getSetting('core.licenseopt');
                 if ($licopt) {
-                    $license_code .= '#' . $licopt;
+                    $license_code .= '#'.$licopt;
                 }
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
 
             self::create($license_code, $install_key);
 
             if (!self::$inst->isXlic() && isset(self::$sysdata['xlic'][self::$inst->getLicenseId()])) {
                 try {
-                    if ($licopt) $licopt .= ',';
-                    $licopt .= self::$inst->getLicenseId() . ':' . 'XLIC=' . (time() - 3600);
+                    if ($licopt) {
+                        $licopt .= ',';
+                    }
+                    $licopt .= self::$inst->getLicenseId().':'.'XLIC='.(time() - 3600);
                     App::getDb()->replace('settings', array(
                         'name'  => 'core.licenseopt',
-                        'value' => $licopt
+                        'value' => $licopt,
                     ), array('name' => 'core.licenseopt'));
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
         }
 
         return self::$inst;
     }
 
-
     /**
-     * $license_code is a combined string in the form of:
+     * $license_code is a combined string in the form of:.
      *
      *     <license id><license salt><encrypted license code>
      *
@@ -587,54 +592,54 @@ final class License
 
         if ($license_code && strlen($license_code) < 300) {
             $this->error_code = 'invalid_license_code_1';
-            $this->data = array('no_license' => true);
+            $this->data       = array('no_license' => true);
 
             $fn = function () use ($license_code, $install_key) {
                 $__license_code = $license_code;
                 $__install_key  = $install_key;
                 $__fail_message = 'invalid_license_code_1';
-                include dirname(__FILE__) . '/Resources/system-fail-func.php';
+                include dirname(__FILE__).'/Resources/system-fail-func.php';
             };
             $fn();
 
             return;
         }
 
-        $license_code = trim($license_code);
+        $license_code   = trim($license_code);
         $this->raw_code = $license_code;
 
-        $this->install_key  = $install_key;
+        $this->install_key = $install_key;
         if (preg_match('#@([A-Z0-9\-_]+)$#', $license_code, $m)) {
             $this->install_key = $m[1];
-            $license_code = str_replace($m[0], '', $license_code);
+            $license_code      = str_replace($m[0], '', $license_code);
         }
 
         $opts = null;
         if (strpos($license_code, '#') !== false) {
-            $parts = explode('#', $license_code, 2);
+            $parts        = explode('#', $license_code, 2);
             $license_code = $parts[0];
 
             $opts = explode(',', $parts[1]);
         }
 
-        $license_code = str_replace(array("\n", "\r", " ", "\t"), "", $license_code);
+        $license_code = str_replace(array("\n", "\r", ' ', "\t"), '', $license_code);
         $license_code = base64_decode($license_code);
 
         $this->license_id   = substr($license_code, 0, 14);
         $this->license_id   = rtrim($this->license_id, '-');
         $this->license_salt = substr($license_code, 14, 20);
-        $enc  = substr($license_code, 34);
-        $enc = strrev($enc);
+        $enc                = substr($license_code, 34);
+        $enc                = strrev($enc);
 
-        $key  = sha1($this->license_id . $this->license_salt . $this->install_key . '5hIT4WRxHRDP70afPyBwph3wMeAGOVK69zIL62zcS') . '7ucrx3ghJwt7m3MNwvhXcddAskF0tLTMpIU3GMK6X';
-        $key .= sha1($this->license_id . $this->license_salt . $this->install_key . 'aPRfHzg1EHDXtQdXYOlRGrvKJmP7G0UPo4SmLIqt4') . 'djqhyJa40ucOWDGhQ3taSppI8D5Gpyeoc9BlcIlYv';
-        $key  = $key . strrev($key);
+        $key = sha1($this->license_id.$this->license_salt.$this->install_key.'5hIT4WRxHRDP70afPyBwph3wMeAGOVK69zIL62zcS').'7ucrx3ghJwt7m3MNwvhXcddAskF0tLTMpIU3GMK6X';
+        $key .= sha1($this->license_id.$this->license_salt.$this->install_key.'aPRfHzg1EHDXtQdXYOlRGrvKJmP7G0UPo4SmLIqt4').'djqhyJa40ucOWDGhQ3taSppI8D5Gpyeoc9BlcIlYv';
+        $key = $key.strrev($key);
 
         $enc = $this->xorString($enc, $key);
 
-        $enc = base64_decode($enc);
+        $enc  = base64_decode($enc);
         $data = @unserialize($enc);
-$data = array(1);
+
         $this->data = $data;
 
         if ($opts) {
@@ -647,7 +652,7 @@ $data = array(1);
                     continue;
                 }
 
-                $opt = substr($opt, $lid_p+1);
+                $opt = substr($opt, $lid_p + 1);
                 if (strpos($opt, '=') === false) {
                     $opt .= '=';
                 }
@@ -658,7 +663,7 @@ $data = array(1);
                         $this->options['xlic'] = $val;
                         break;
                     case 'MANAGED':
-                        $this->options['managed'] = (bool)$val;
+                        $this->options['managed'] = (bool) $val;
                         break;
                 }
             }
@@ -666,13 +671,13 @@ $data = array(1);
 
         if (!$data) {
             $this->error_code = 'invalid_license_code_2';
-            $this->data = array('no_license' => true);
+            $this->data       = array('no_license' => true);
 
             $fn = function () use ($license_code, $install_key) {
                 $__license_code = $license_code;
                 $__install_key  = $install_key;
                 $__fail_message = 'invalid_license_code_2';
-                include dirname(__FILE__) . '/Resources/system-fail-func.php';
+                include dirname(__FILE__).'/Resources/system-fail-func.php';
             };
             $fn();
 
@@ -682,10 +687,10 @@ $data = array(1);
         if ($this->isCloud()) {
             $this->data['agents'] = \DPC_AGENTS;
             if (defined('DPC_DEMO_EXPIRE') && \DPC_DEMO_EXPIRE) {
-                $this->data['demo'] = true;
+                $this->data['demo']   = true;
                 $this->data['expire'] = \DPC_DEMO_EXPIRE;
             } else {
-                $this->data['demo'] = false;
+                $this->data['demo']   = false;
                 $this->data['expire'] = null;
             }
 
@@ -697,7 +702,7 @@ $data = array(1);
         if (!empty($this->data['lic_flags'])) {
             $this->data['lic_flags'] = explode(',', $this->data['lic_flags']);
             foreach ($this->data['lic_flags'] as $flag) {
-                $flag = trim($flag);
+                $flag                 = trim($flag);
                 $this->options[$flag] = true;
             }
         }
@@ -727,6 +732,18 @@ $data = array(1);
         return isset($this->options['managed']);
     }
 
+    /**
+     * @return bool
+     */
+    public function getIsUnlimited()
+    {
+        if (isset(self::$sysdata['unl_lic'][$this->license_id])) {
+            return true;
+        }
+
+        return isset($this->options['is_unlimited']);
+    }
+
     public function getLicenseCode()
     {
         return $this->raw_code;
@@ -754,11 +771,7 @@ $data = array(1);
 
     public function getMaxAgents()
     {
-        if (!isset($this->data['agents']) || !$this->data['agents']) {
-            return 0;
-        }
-
-        if (!$this->isCloud() && $this->data['agents'] >= 100) {
+        if (!isset($this->data['agents']) || !$this->data['agents'] || $this->getIsUnlimited()) {
             return 0;
         }
 
@@ -771,25 +784,24 @@ $data = array(1);
 
         if ($d === null) {
             if (isset($this->data['expire'])) {
-                $d = $this->data['expire'] ? new \DateTime('@' . $this->data['expire']) : -1;
+                $d = $this->data['expire'] ? new \DateTime('@'.$this->data['expire']) : -1;
 
                 // License has been x'd
                 if (isset($this->options['xlic'])) {
-                    $d2 = new \DateTime('@' . $this->options['xlic']);
+                    $d2 = new \DateTime('@'.$this->options['xlic']);
                     $d2->modify('+1 day');
 
                     if ($d2 < $d) {
                         $d = $d2;
                     }
                 }
-
             } else {
                 $d = -1;
             }
         }
 
         if ($d === -1) {
-            return null;
+            return;
         }
 
         return $d;
@@ -804,7 +816,7 @@ $data = array(1);
     {
         $d = $this->getExpireDate();
         if (!$d) {
-            return null;
+            return;
         }
 
         switch ($unit) {
@@ -834,7 +846,6 @@ $data = array(1);
 
         $now = new \DateTime();
         if ($now > $date) {
-
             $diff = $now->diff($date);
             $days = max(1, $diff->d);
 
@@ -885,7 +896,8 @@ $data = array(1);
         if (class_exists('Application\\DeskPRO\\App')) {
             try {
                 $powered_by_deskpro = \Application\DeskPRO\App::getTranslator()->phrase('user.general.helpdesk_by', array('deskpro' => 'DeskPRO'));
-            } catch (\Exception $e) { }
+            } catch (\Exception $e) {
+            }
         }
 
         if (!$powered_by_deskpro || strpos($powered_by_deskpro, 'DeskPRO') === false) {
@@ -895,7 +907,7 @@ $data = array(1);
         $html = <<<STR
 <!-- DeskPRO Copyright -->
 <div class="dp-copy">
-    <a href="http://www.deskpro.com/">$powered_by_deskpro</a>
+    <a href="https://www.deskpro.com/">$powered_by_deskpro</a>
 </div>
 <!-- DeskPRO Copyright -->
 STR;
@@ -922,12 +934,14 @@ STR;
 
     private function xorString($string, $key)
     {
-        $string_len  = strlen($string);
-        $key_len     = strlen($key);
-        $new_string  = array();
+        $string_len = strlen($string);
+        $key_len    = strlen($key);
+        $new_string = array();
 
         for ($i = 0, $j = 0; $i < $string_len; $i++, $j++) {
-            if ($j >= $key_len) $j = 0;
+            if ($j >= $key_len) {
+                $j = 0;
+            }
 
             $new_string[] = chr(ord($string[$i]) ^ ord($key[$j]));
         }
@@ -941,6 +955,31 @@ STR;
         'xlic' => array(
             'KDQP-8287-VSWH' => true,
             'JPPJ-8339-DIFJ' => true,
-        )
+        ),
+
+        'unl_lic' => array(
+            'QVMO-3549-CFYS' => true,
+            'WGYX-1723-WXBX' => true,
+            'EGTW-8743-ASJQ' => true,
+            'JFZU-5462-AWJF' => true,
+            'DWRF-0120-XVYB' => true,
+            'UJMN-6712-TOPN' => true,
+            'ZJWJ-0784-FWAU' => true,
+            'BRDI-8207-QQYC' => true,
+            'ZIGH-0841-BYTN' => true,
+            'URTJ-5584-BIPR' => true,
+            'CJHK-0609-VGZA' => true,
+            'SQYZ-2993-XAXY' => true,
+            'RMUK-9748-FFWM' => true,
+            'SBNB-3949-DUHF' => true,
+            'PXCA-5940-XBRC' => true,
+            'FIDS-7156-DVXK' => true,
+            'RSYT-6143-WGNM' => true,
+            'OIGW-1146-WQCU' => true,
+            'RQXZ-2692-SZZC' => true,
+            'PDJK-9034-ZKOX' => true,
+            'QDYP-7460-HSZQ' => true,
+            'TWMJ-4993-TOVP' => true,
+        ),
     );
 }

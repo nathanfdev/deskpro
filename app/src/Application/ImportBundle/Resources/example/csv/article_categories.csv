@@ -1,0 +1,4 @@
+title;is_agent;is_book
+Category 1 > Sub Category 1;true;true
+Category 1 > Sub Category 1 > Sub Category 2 > Sub Category 3;;
+Category 1;true;false

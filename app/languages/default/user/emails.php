@@ -1,4 +1,32 @@
-<?php return array(
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
     'user.emails.auto-close'                  => 'Your ticket "{{ticket.subject}}" will be closed automatically because you have not updated it lately. If you do not want your ticket to be closed, you can add a new reply so our agents can help you further.',
     'user.emails.chat_transcript'             => 'Thank you for chatting with us. Here is your chat transcript.',
     'user.emails.comment_approved'            => 'Your comment has been published.',
@@ -37,6 +65,8 @@
     'user.emails.reject_resolved'             => 'Your reply was not accepted because your ticket has already been marked as resolved. Our agents will not read or reply to this message.',
     'user.emails.reject_resolved-new'         => 'If you would like to create a brand new ticket you can send a new email to <a href="mailto:{{email_to}}">{{email_to}}</a> or you can submit our online form at:<br /><a href="{{link}}">{{link}}</a>',
     'user.emails.reject_resolved-newemail'    => 'If you would like to create a brand new ticket you can send a new email to <a href="mailto:{{email_to}}">{{email_to}}</a>',
+    'user.emails.remind_unresolved'           => 'This is a follow-up message to remind you that you still have an open ticket with {{ helpdesk_name }}.<br />If you don\'t need any further help with this issue, please click the link below to let us know:<br /><a href="{{ resolve_url }}">{{ resolve_url }}</a><br />If you still need help, simply reply to this email.',
+    'user.emails.remind_unresolved_final'     => 'We haven\'t heard from you recently about this ticket.<br />If you still need help, simply reply to this email.<br />If you don\'t need any further help with this issue, please click the link below to let us know:<br /><a href="{{ resolve_url }}">{{ resolve_url }}</a>',
     'user.emails.ticket_access_ticket_online' => 'View and manage this ticket online:',
     'user.emails.ticket_cc-new'               => 'You have been included in a ticket started by {{name}}.',
     'user.emails.ticket_flood'                => 'You recently sent an email to our helpdesk. Our automated system has detected that you have sent many messages in rapid succession that were most likely automated.<br /><br />To protect against an auto-responder loop our helpdesk will not send any more automatic notification emails to you.',
@@ -45,6 +75,7 @@
     'user.emails.ticket_rate-negative'        => 'No',
     'user.emails.ticket_rate-neutral'         => 'It was OK',
     'user.emails.ticket_rate-positive'        => 'Yes',
+    'user.emails.ticket_rate-request'         => 'How would you rate the support you received on your ticket "{{ticket.subject}}"?',
     'user.emails.ticket_rate-question'        => 'Was this message helpful?',
     'user.emails.ticket_received'             => 'Your ticket has been received. One of our agents will reply to you shortly.',
     'user.emails.ticket_reply-confirm'        => 'Thank you for your reply. One of our agents will reply to you shortly.',
@@ -52,5 +83,5 @@
     'user.emails.tickets_ommitted'            => '1 message has been omitted|{{count}} messages have been omitted',
     'user.emails.view_full_history_online'    => 'View full ticket online',
     'user.emails.ratelimit_explain'           => 'You have sent {{num_messagess}} messages within {{time_limit}}. To prevent abuse, we have temporarily banned your email address for {{time_lock}}. After {{date_lock_end}}, this temporary ban will be automatically deactivated and you will be able to send emails again.',
-    'user.emails.ratelimit_submit-online'     => 'If this is a mistake and you need to contact us immediately, you can bypass this email filter and submit a ticket online:'
+    'user.emails.ratelimit_submit-online'     => 'If this is a mistake and you need to contact us immediately, you can bypass this email filter and submit a ticket online:',
 );

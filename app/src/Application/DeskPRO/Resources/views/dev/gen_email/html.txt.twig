@@ -1,0 +1,64 @@
+Date: {{ "now"|date('r') }}
+From: {{ from_line }}
+To: {{ to_email }}
+Message-ID: <{{ uid }}@test-message>
+Subject: {{ subject }}
+Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="50c634de_3222e7cd_af2f"
+{% if is_bounce %}X-Is-Bounce: 1
+{% endif %}
+
+--50c634de_3222e7cd_af2f
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+{{ message|strip_html }}
+
+{% if as_reply %}
+  {% if as_agent %}
+    === {{ phrase('agent.emails.reply_above_line') }} [https://www.deskpro.com/go/reply] ===
+    {% if app.getSetting('core_tickets.email_reply_as_note') %}
+    --- Your reply will be added as a private agent note
+    {% else %}
+    --- Your reply will be sent to the user {{ person.getDisplayContact }} and
+    --- 2 CC'd users: Mary Berry <mary@example.com>, Paul Hollywood <paul@example.com>
+    {% endif %}
+
+
+  {% endif %}
+  (#{{ access_code }})
+{% endif %}
+
+
+--50c634de_3222e7cd_af2f
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+{{ message }}
+
+{% if as_reply %}
+  <br/><br/>
+  {% if as_agent %}
+    === <a class="DP_TOP_MARK dp_marker_link {{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}" id="DP_TOP_MARK {{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}" name="DP_TOP_MARK {{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}" style="color:#000;text-decoration:none;font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0;padding:0;cursor:default;display:inline;">&nbsp;</a>{{ phrase('agent.emails.reply_above_line') }} [<a href="https://www.deskpro.com/go/reply">{{ phrase('agent.chrome.link_help') }}</a>] ===<br />
+    {% if app.getSetting('core_tickets.email_reply_as_note') %}
+    --- Your reply will be added as a private agent note<br />
+    {% else %}
+    --- Your reply will be sent to the user {{ person.getDisplayContact }} and<br />
+    --- 2 CC'd users: Mary Berry <mary@example.com>, Paul Hollywood <paul@example.com><br /><br />
+    {% endif %}
+  {% else %}
+    <a class="DP_TOP_MARK dp_marker_link" id="DP_TOP_MARK" name="DP_TOP_MARK" style="color:#000;text-decoration:none;font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0;padding:0;cursor:default;display:inline;">&nbsp;</a>
+  {% endif %}
+
+  <span class="dp-replycode" style="color:#000;text-decoration:none;font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0;padding:0;cursor:default;display:inline;">(#{{ access_code}})</span>
+
+  {% if as_agent %}
+    <!--DP_TOP_MARK--><a class="DP_TOP_MARK dp_marker_link {{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}" id="DP_TOP_MARK {{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}" name="DP_TOP_MARK {{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}" style="color:#000;text-decoration:none;font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0;padding:0;cursor:default;display:inline;">&nbsp;</a>
+  {% else %}
+    <!--DP_BOTTOM_MARK--><a class="DP_BOTTOM_MARK dp_marker_link" id="DP_BOTTOM_MARK" name="DP_BOTTOM_MARK" style="color:#000;text-decoration:none;font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0;padding:0;cursor:default;display:inline;">&nbsp;</a>
+  {% endif %}
+{% endif %}
+
+--50c634de_3222e7cd_af2f--

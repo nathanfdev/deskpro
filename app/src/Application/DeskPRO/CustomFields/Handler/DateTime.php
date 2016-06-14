@@ -1,73 +1,44 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Form
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
-
+use Application\DeskPRO\Form\Type\CriteriaFilterField\DateTimeType;
 
 /**
- * Handles the datetime field
+ * Handles the datetime field.
  */
-class DateTime extends HandlerAbstract
+class DateTime extends Date
 {
-    public function renderHtml($data = null, array $template_vars = array())
-    {
-        if ($data === null) return '';
-
-        if (!ctype_digit($data['value'])) {
-            $data['value'] = time();
-        }
-
-        $data['value'] = new \DateTime('@' . $data['value']);
-
-        return parent::renderText($data, $template_vars);
-    }
-
-    public function renderText($data = null, array $template_vars = array())
-    {
-        if ($data === null) return '';
-
-        if (!ctype_digit($data['value'])) {
-            $data['value'] = time();
-        }
-
-        $data['value'] = new \DateTime('@' . $data['value']);
-
-        return  parent::renderText($data, $template_vars);
-    }
-
     public function getDataFromForm(array $form_data)
     {
         $name = $this->getFormFieldName();
@@ -81,7 +52,7 @@ class DateTime extends HandlerAbstract
             return array();
         }
 
-        $date = \DateTime::createFromFormat('Y-m-d H:i', $value, App::getCurrentPerson()->getDateTimezone());
+        $date = \DateTime::createFromFormat($this->getFormat(), $value, App::getCurrentPerson()->getDateTimezone());
         if (!$date) {
             return array();
         }
@@ -89,38 +60,13 @@ class DateTime extends HandlerAbstract
         $date = \Orb\Util\Dates::convertToUtcDateTime($date);
 
         return array(
-            array($this->field_def['id'], 'value', $date->getTimestamp())
+            array($this->field_def['id'], 'value', $date->getTimestamp()),
         );
     }
 
-    public function getFormField($data = null)
+    protected function getFormat()
     {
-        $setData = null;
-        if ($data AND !empty($data['value'])) {
-            try {
-                if (ctype_digit($data['value'])) {
-                    $date = new \DateTime('@' . $data['value']);
-                    if ($date) {
-                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-                        $setData = $date->format('Y-m-d H:i');
-                    }
-                } else {
-                    $date = \DateTime::createFromFormat('Y-m-d H:i', $data['value']);
-                    if ($date) {
-                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-                        $setData = $date->format('Y-m-d H:i');
-                    }
-                }
-            } catch (\Exception $e) {
-                $setData = null;
-            }
-        }
-
-        $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'text', $setData, array(
-            'required' => false
-        ));
-
-        return $field;
+        return 'Y-m-d H:i';
     }
 
     public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
@@ -128,12 +74,12 @@ class DateTime extends HandlerAbstract
         $data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
 
         if ($data && !is_scalar($data)) {
-            return $this->makeErrorArray(array('invalid_input'));
+            return $this->makeErrorArray(array('date_invalid'));
         }
 
         // Timestamp value
         if (strlen($data) == 10 && ctype_digit($data)) {
-            $data = date('Y-m-d H:i', $data);
+            $data = date($this->getFormat(), $data);
         }
 
         #------------------------------
@@ -147,7 +93,7 @@ class DateTime extends HandlerAbstract
 
         $options = array();
         foreach (array('required') as $k) {
-            $options[$k] = $this->field_def->getOption($opt_prefix . $k);
+            $options[$k] = $this->field_def->getOption($opt_prefix.$k);
         }
 
         if ($options['required']) {
@@ -157,9 +103,9 @@ class DateTime extends HandlerAbstract
         }
 
         if ($data) {
-            $date = \DateTime::createFromFormat('Y-m-d H:i', $data, App::getCurrentPerson()->getDateTimezone());
+            $date = \DateTime::createFromFormat($this->getFormat(), $data, App::getCurrentPerson()->getDateTimezone());
             if (!$date) {
-                return $this->makeErrorArray(array('invalid_input'));
+                return $this->makeErrorArray(array('date_invalid'));
             }
         } else {
             return array();
@@ -183,7 +129,7 @@ class DateTime extends HandlerAbstract
         // Days of week
         if ($valid_dow = $this->field_def->getOption('date_valid_dow')) {
             if (!in_array($dow, $valid_dow)) {
-                return $this->makeErrorArray(array('invalid_date_dow'));
+                return $this->makeErrorArray(array('date_invalid_dow'));
             }
         }
 
@@ -194,18 +140,18 @@ class DateTime extends HandlerAbstract
 
             if ($d1) {
                 $d1 = \DateTime::createFromFormat('Y-m-d', $d1, $admin_tz);
-                $d1->setTime(0,0,0);
+                $d1->setTime(0, 0, 0);
 
                 if ($date_admin < $d1) {
-                    return $this->makeErrorArray(array('invalid_date_range'));
+                    return $this->makeErrorArray(array('date_invalid_range'));
                 }
             }
             if ($d2) {
                 $d2 = \DateTime::createFromFormat('Y-m-d', $d2, $admin_tz);
-                $d2->setTime(23,59,59);
+                $d2->setTime(23, 59, 59);
 
                 if ($date_admin > $d2) {
-                    return $this->makeErrorArray(array('invalid_date_range'));
+                    return $this->makeErrorArray(array('date_invalid_range'));
                 }
             }
 
@@ -218,55 +164,53 @@ class DateTime extends HandlerAbstract
                 $now = new \DateTime('now', $admin_tz);
             }
 
-            $days1 = $this->field_def->getOption('date_valid_range1');
-            $days2 = $this->field_def->getOption('date_valid_range2');
+            $days1 = (int) $this->field_def->getOption('date_valid_range1');
+            $days2 = (int) $this->field_def->getOption('date_valid_range2');
 
-            if ($days1) {
-                $d1 = clone $now;
-                $d1->modify("{$days1} days");
-                $d1->setTime(0,0,0);
+            $d1 = clone $now;
+            $d1->modify("-{$days1} days");
+            $d1->setTime(0, 0, 0);
 
-                // Go back if we hit on a unselectable date
-                if ($valid_dow) {
-                    $x = 0;
-                    while ($x++ < 5000) {
-                        $check_dow = intval($d1->format('N')) - 1;
-                        if (in_array($check_dow, $valid_dow)) {
-                            break;
-                        }
+            $d2 = clone $now;
+            $d2->modify("+{$days2} days");
+            $d2->setTime(23, 59, 59);
 
-                        $d1->modify('-1 day');
-                    }
-                }
-
-                if ($date_admin < $d1) {
-                    return $this->makeErrorArray(array('invalid_date_range'));
-                }
-            }
-            if ($days2) {
-                $d2 = clone $now;
-                $d2->modify("{$days1} days");
-                $d2->setTime(23,59,59);
-
-                // Go back if we hit on a unselectable date
-                if ($valid_dow) {
-                    $x = 0;
-                    while ($x++ < 5000) {
-                        $check_dow = intval($d2->format('N')) - 1;
-                        if (in_array($check_dow, $valid_dow)) {
-                            break;
-                        }
-
-                        $d2->modify(\DateInterval::createFromDateString('1 day'));
-                    }
-                }
-
-                if ($date_admin > $d2) {
-                    return $this->makeErrorArray(array('invalid_date_range'));
-                }
+            if ($date_admin < $d1 || $date_admin > $d2) {
+                return $this->makeErrorArray(array('date_invalid_range'));
             }
         }
 
         return array();
+    }
+
+    public function getSearchCriteriaForm($data = null)
+    {
+        $setData = null;
+        if ($data and !empty($data['value'])) {
+            try {
+                if (ctype_digit($data['value'])) {
+                    $date = new \DateTime('@'.$data['value']);
+                    if ($date) {
+                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                        $setData = $date->format('Y-m-d');
+                    }
+                } else {
+                    $date = \DateTime::createFromFormat('Y-m-d', $data['value']);
+                    if ($date) {
+                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                        $setData = $date->format('Y-m-d');
+                    }
+                }
+            } catch (\Exception $e) {
+                $setData = null;
+            }
+        }
+
+        return App::getFormFactory()->createNamedBuilder(
+            $this->getFormFieldName(),
+            new DateTimeType(),
+            $setData,
+            array('required' => false)
+        )->getForm();
     }
 }

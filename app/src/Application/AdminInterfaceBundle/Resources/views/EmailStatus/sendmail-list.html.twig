@@ -60,10 +60,16 @@
 									<option value="between">Between</option>
 								</select>
 										<span ng-if="ListCtrl.filter_date_mode == 'after' || ListCtrl.filter_date_mode == 'between'">
-											<input type="text" class="form-control" style="width: 140px; display: inline-block;" datepicker-popup="dd MMMM yyyy" ng-model="ListCtrl.filter_date1" datepicker-options="{'show-weeks': false}" />
+											<input type="text" class="form-control" style="width: 140px; display: inline-block;"
+											       ng-model="ListCtrl.filter_date1"
+											       dp-datetime-popup="DD MMMM YYYY"
+													/>
 										</span>
 										<span ng-if="ListCtrl.filter_date_mode == 'before' || ListCtrl.filter_date_mode == 'between'">
-											<input type="text" class="form-control" style="width: 140px; display: inline-block;" datepicker-popup="dd MMMM yyyy" ng-model="ListCtrl.filter_date2" datepicker-options="{'show-weeks': false}" />
+											<input type="text" class="form-control" style="width: 140px; display: inline-block;"
+											       ng-model="ListCtrl.filter_date2"
+											       dp-datetime-popup="DD MMMM YYYY"
+													/>
 										</span>
 							</td>
 						</tr>
@@ -109,7 +115,7 @@
 						<th>From</th>
 						<th>To</th>
 						<th>Subject</th>
-						<th>Status</th>
+						<th>Status <span ng-if="tracking_enabled">(total/pending/complete/errors)</span></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -129,7 +135,11 @@
 						</td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_to') }}</td>
 						<td>{{ ng_var('result.header_subject') }}</td>
-						<td>{{ ng_var('result.status') }}</td>
+						<td ng-if="!tracking_enabled">
+							{{ ng_var('result.status') }}
+							<span ng-if="result.status == 'error' && result.error_code">({{ ng_var('result.error_code') }})</span>
+						</td>
+						<td ng-if="tracking_enabled">{{ ng_var('result.num_targets') }}/{{ ng_var('result.num_pending') }}/{{ ng_var('result.num_complete') }}/{{ ng_var('result.num_error') }}</td>
 					</tr>
 				</tbody>
 			</table>

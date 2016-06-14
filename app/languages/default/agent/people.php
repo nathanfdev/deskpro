@@ -1,4 +1,32 @@
-<?php return array(
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
     'agent.people.act_reg'                                  => 'Registered an account',
     'agent.people.act_replied_ticket'                       => 'Replied to a ticket:',
     'agent.people.act_submitted_ticket'                     => 'Submitted a ticket:',
@@ -17,6 +45,7 @@
     'agent.people.and_came_from'                            => 'and came from',
     'agent.people.anonymous_user'                           => 'Anonymous User {{id}}',
     'agent.people.confirm_remove_email'                     => 'Are you sure you want to remove this email address?',
+    'agent.people.confirm_remove_phone'                     => 'Are you sure you want to remove this phone number?',
     'agent.people.contact_info'                             => 'Contact Information',
     'agent.people.contact_info_for_x'                       => 'Contact Information For {{name}}',
     'agent.people.count_members'                            => '{{count}} member|{{count}} members',
@@ -53,6 +82,7 @@
     'agent.people.other_user_content_being_deleted'         => 'The users other associated content will be deleted too:',
     'agent.people.person_ban_confirm'                       => 'Are you sure you want to ban this user?',
     'agent.people.person_delete_confirm'                    => 'Are you sure you want to delete this user?',
+    'agent.people.person_reset_password_confirm'            => 'This will send a reset password link to the person.',
     'agent.people.phone_country_placeholder'                => 'Country',
     'agent.people.phone_number_placeholder'                 => 'Phone Number',
     'agent.people.primary_email'                            => 'primary',
@@ -81,11 +111,11 @@
     'agent.people.user_is_autoresponder'                    => 'User is an auto-responder. Auto-replies will not be sent.',
     'agent.people.user_landed_on_page'                      => 'User landed on page',
     'agent.people.user_not_autoresponder'                   => 'User is not an auto-responder',
-    'agent.people.user_will_be_perm_deleted'                => 'The user will be permanantly deleted.',
-    'agent.people.user_will_be_perm_deleted_banned'         => 'The user will be permanantly deleted and their email address banned.',
+    'agent.people.user_will_be_perm_deleted'                => 'The user will be permanently deleted.',
+    'agent.people.user_will_be_perm_deleted_banned'         => 'The user will be permanently deleted and their email address banned.',
     'agent.people.view_profile'                             => 'View Profile',
     'agent.people.warn_email_address'                       => 'The email address {{email}} matches this profile. But	because the user has not logged in to the helpdesk, we cannot verify their identity. Be careful not to release any sensitive information.',
     'agent.people.website'                                  => 'Website',
     'agent.people.website_url_placeholder'                  => 'Website URL',
-        'agent.people.upload_vcard'                             => 'Upload vCard'
+        'agent.people.upload_vcard'                         => 'Upload vCard',
 );

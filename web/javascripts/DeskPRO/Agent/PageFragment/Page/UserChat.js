@@ -25,6 +25,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		this.chatStatus  = this.meta.status;
 		this.chatEndedBy = this.meta.ended_by;
+    this.paste_promises = [];
+    this.paste_deferreds = {};
 
 		var messageTextarea = this.getEl('replybox_txt');
 
@@ -124,17 +126,40 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		// Editor
 		//------------------------------
 
-		var textarea = this.getEl('replybox_txt'), isWysiwyg = false;
+		var textarea = this.getEl('replybox_txt')
+      , isWysiwyg = false
+      , inline = this.getEl('is_html_reply')
+      ;
 
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
 			isWysiwyg = true;
-
 			DeskPRO_Window.initRteAgentReply(textarea, {
 				defaultIsHtml: true,
 				minHeight: 65,
 				maxHeight: 40,
-				inlineHiddenPosition: this.getEl('is_html_reply'),
+				inlineHiddenPosition: inline,
 				convertLinks: false, // we'll do it ourselves
+        imageBeforeUploadCallback: function(api, pasteId) {
+          if (!pasteId) return;
+          var d = $.Deferred();
+          self.paste_deferreds[pasteId] = d;
+          self.paste_promises.push(d.promise());
+        },
+        imageUploadCallback: function(api, json, pasteId){
+          if (inline) {
+            inline.after($('<input type="hidden" name="blob_inline_ids[]" />').val(json.blob_id));
+          }
+          if (pasteId) {
+            self.paste_deferreds[pasteId].resolve(pasteId, json);
+            delete self.paste_deferreds[pasteId];
+          }
+        },
+        imageUploadError: function(api, pasteId){
+          if (pasteId) {
+            self.paste_deferreds[pasteId].reject(pasteId);
+            delete self.paste_deferreds[pasteId];
+          }
+        },
 				callback: function(obj) {
 					obj.addBtnFirst('dp_attach', 'Click here to attach a file. You may also drag a file from your computer desktop into this reply area to upload attachments faster.', function(){});
 					obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function(){});
@@ -208,10 +233,13 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 					combo = combo.replace(/%/g, '');
 					if (window.DESKPRO_CHAT_SNIPPET_SHORTCODES && window.DESKPRO_CHAT_SNIPPET_SHORTCODES[combo]) {
 						ev.preventDefault();
+						var arr = window.DESKPRO_CHAT_SNIPPET_SHORTCODES[combo];
+						if ('[object Array]' !== Object.prototype.toString.call(arr)) {
+							arr = [arr];
+						}
+						for (var i = 0; i < arr.length; i++) {
 
-						for (var i = 0; i < window.DESKPRO_CHAT_SNIPPET_SHORTCODES[combo].length; i++) {
-
-							var snippetId = window.DESKPRO_CHAT_SNIPPET_SHORTCODES[combo][i];
+							var snippetId = arr[i];
 
 							var focus = api.getFocus(),
 								focusNode = $(focus[0]),
@@ -795,7 +823,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		var a_p = "am";
 		var curr_hour = d.getHours();
-		if (d.getHours() > 12) {
+		if (d.getHours() >= 12) {
 			a_p = "pm";
 		}
 		if (curr_hour == 0) {
@@ -836,7 +864,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		if (is_html) {
 			var titleMsg = 'New chat message';
-			$('.prop-msg', row).html(msg);
 		} else {
 			var titleMsg = msg;
 			var isTruncated = false;
@@ -853,9 +880,11 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			if (isTruncated) {
 				msg += ' <div class="truncated-wrap"><div class="truncated-btn">&bull; &bull; &bull;</div><textarea class="orig-message" style="display:none;">' + Orb.escapeHtml(origMsg) + '</textarea></div>';
 			}
-
-			$('.prop-msg', row).html(msg);
 		}
+		$('.prop-msg', row).html(msg);
+		$('.prop-msg', row).html(msg).find('a').each(function(){
+			$(this).attr('target', '_blank');
+		});
 
 
 		$('time', row).attr('datetime', (new Date()).toString());
@@ -891,20 +920,48 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 	},
 
 	sendMessage: function(msg, success) {
-		DeskPRO_Window.util.ajaxWithClientMessages({
-			type: 'POST',
-			url: BASE_URL + 'agent/chat/send-message/' + this.meta.conversation_id,
-			data: {
-				content: msg,
-				is_html: DeskPRO_Window.canUseAgentReplyRte()
-			},
-			execSuccessBefore: true,
-			success: function(data) {
-				if (success && data.message_id) {
-					success(data.message_id);
-				}
-			}
-		});
+    var self = this
+      , promises = this.paste_promises
+      , promise
+      , msg = $('<dp>' + msg + '</dp>')
+      , doSend = function(){
+          msg = msg.html();
+          promises.length = 0;
+          DeskPRO_Window.util.ajaxWithClientMessages({
+            type: 'POST',
+            url: BASE_URL + 'agent/chat/send-message/' + self.meta.conversation_id,
+            data: {
+              content: msg,
+              is_html: DeskPRO_Window.canUseAgentReplyRte()
+            },
+            execSuccessBefore: true,
+            success: function(data) {
+              if (success && data.message_id) {
+                success(data.message_id);
+              }
+            }
+          });
+        }
+      , handle = function (pasteId, json) {
+          var img = msg.find('img[data-paste-id=' + pasteId + ']')
+            ;
+
+          json
+            ? img.removeAttr('data-paste-id').attr('src', json.filelink)
+            : img.remove();
+
+          promise = promises.shift();
+          promise
+            ? $.when(promise).then(handle, handle)
+            : doSend();
+        };
+
+    promise = promises.shift();
+    if (promise) {
+      $.when(promise).then(handle, handle)
+    } else {
+      doSend();
+    }
 	},
 
 	sendInvite: function(agent_id) {

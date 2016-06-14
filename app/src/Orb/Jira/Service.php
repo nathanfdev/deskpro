@@ -1,5 +1,31 @@
 <?php
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace Orb\Jira;
 
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
@@ -10,7 +36,7 @@ use Guzzle\Http\Exception\BadResponseException;
 
 /**
  * JIRA Web Service Wrapper<br/>
- * Handles the communication to and from JIRA's REST API
+ * Handles the communication to and from JIRA's REST API.
  *
  * @author Abhinav Kumar <work@abhinavkumar.in>
  */
@@ -18,28 +44,28 @@ class Service
 {
     /**
      * An HTTP REST client for making<br/>
-     * REST API calls to the JIRA service
+     * REST API calls to the JIRA service.
      *
      * @var Client An HTTP Rest Client
      */
     protected $_client;
 
     /**
-     * An array of errors
+     * An array of errors.
      *
      * @var array errors
      */
-    protected $_errors	= array();
+    protected $_errors = array();
 
     /**
      * Switches the debug mode<br/>
      * On: Will throw an exception as and when it's caught<br/>
      * Off: Will catch all the errors/exceptions and store<br/>
-     * it in $this->_errors array
+     * it in $this->_errors array.
      *
      * @var bool Debug Mode
      */
-    protected $_debug	= false;
+    protected $_debug = false;
 
     /** @var EntityManager */
     protected $_em;
@@ -48,14 +74,14 @@ class Service
     protected $_regEnabled = false;
 
     /**
-     * The default constructor
+     * The default constructor.
      *
      * @param type $params
      */
     public function __construct($baseUrl, $params = array(), $em = null)
     {
         if (!isset($params['username']) || !isset($params['password'])) {
-            throw new \Exception("You must supply your JIRA credentials to connect to JIRA");
+            throw new \Exception('You must supply your JIRA credentials to connect to JIRA');
         }
 
         $this->_client = new Client();
@@ -76,7 +102,7 @@ class Service
     }
 
     /**
-     * Gets the base URL
+     * Gets the base URL.
      *
      * @return String The base URL
      */
@@ -86,7 +112,7 @@ class Service
     }
 
     /**
-     * Gets all the errors occured in the current instance
+     * Gets all the errors occured in the current instance.
      *
      * @return array An array of errors
      */
@@ -98,11 +124,13 @@ class Service
     /**
      * Adds a new error<br/>
      * Based on the debug mode it either throws the exception<br/>
-     * or stores the error in the $this->_errors array
+     * or stores the error in the $this->_errors array.
      *
-     * @param  String        $error The Error Message
+     * @param String $error The Error Message
+     *
+     * @throws \Exception if the debug mode is off
+     *
      * @return \JIRA\Service
-     * @throws \Exception    if the debug mode is off
      */
     public function addError($error, $code = 0)
     {
@@ -116,7 +144,7 @@ class Service
     }
 
     /**
-     * Resets the current errors
+     * Resets the current errors.
      *
      * @return \JIRA\Service
      */
@@ -128,9 +156,10 @@ class Service
     }
 
     /**
-     * Sends an HTTP request
+     * Sends an HTTP request.
      *
-     * @param  \Guzzle\Http\Message\Request $request
+     * @param \Guzzle\Http\Message\Request $request
+     *
      * @return array|string|int|bool|float
      */
     protected function _send(\Guzzle\Http\Message\Request $request, $raw = false)
@@ -149,7 +178,6 @@ class Service
 
                 return $response;
             }
-
         } catch (\Exception $e) {
             if ($e instanceof BadResponseException) {
                 $this->addError($e->getMessage(), $e->getResponse()->getStatusCode());
@@ -162,17 +190,18 @@ class Service
     }
 
     /**
-     * Performs an HTTP GET request
+     * Performs an HTTP GET request.
      *
-     * @param  String                      $uri    the URI to GET
-     * @param  array                       $params request parameters
+     * @param String $uri    the URI to GET
+     * @param array  $params request parameters
+     *
      * @return array|string|int|bool|float
      */
     public function get($uri, array $headers = array(), $params = array())
     {
         $defaultParams = array(
             'timeout'         => 20,
-            'connect_timeout' => 1.5
+            'connect_timeout' => 1.5,
         );
 
         $params = array_merge($defaultParams, $params);
@@ -183,12 +212,13 @@ class Service
     }
 
     /**
-     * Performs an HTTP POST request
+     * Performs an HTTP POST request.
      *
-     * @param  type                        $uri         the URI to POST to
-     * @param  array                       $headers     additional headers to pass
-     * @param  String                      $body        request body
-     * @param  String                      $contentType content-type to encode the body
+     * @param type   $uri         the URI to POST to
+     * @param array  $headers     additional headers to pass
+     * @param String $body        request body
+     * @param String $contentType content-type to encode the body
+     *
      * @return array|string|int|bool|float
      */
     public function post($uri, $headers, $body, $contentType = null)
@@ -205,12 +235,13 @@ class Service
     }
 
     /**
-     * Performs an HTTP PUT request
+     * Performs an HTTP PUT request.
      *
-     * @param  String                      $uri         the URI to PUT to
-     * @param  array                       $headers     additional headers to pass
-     * @param  String                      $body        request body
-     * @param  String                      $contentType content-type to encode the body
+     * @param String $uri         the URI to PUT to
+     * @param array  $headers     additional headers to pass
+     * @param String $body        request body
+     * @param String $contentType content-type to encode the body
+     *
      * @return array|string|int|bool|float
      */
     public function put($uri, $headers, $body, $contentType = null)
@@ -227,16 +258,17 @@ class Service
     }
 
     /**
-     * Performs a POST with content-type: JSON
+     * Performs a POST with content-type: JSON.
      *
-     * @param  String                      $uri  the URI to POST to
-     * @param  String|array                $body pre encoded request body
+     * @param String       $uri  the URI to POST to
+     * @param String|array $body pre encoded request body
+     *
      * @return array|string|int|bool|float
      */
     public function postJson($uri, $body)
     {
         $header = array(
-            'Content-Type'	=> 'application/json'
+            'Content-Type' => 'application/json',
         );
 
         $contentType = 'application/json';
@@ -251,16 +283,17 @@ class Service
     }
 
     /**
-     * Performs a PUT with content-type: JSON
+     * Performs a PUT with content-type: JSON.
      *
-     * @param  String                      $uri  the URI to PUT to
-     * @param  String|array                $body The request body
+     * @param String       $uri  the URI to PUT to
+     * @param String|array $body The request body
+     *
      * @return array|string|int|bool|float
      */
     public function putJson($uri, $body)
     {
         $header = array(
-            'Content-Type'	=> 'application/json'
+            'Content-Type' => 'application/json',
         );
 
         $contentType = 'application/json';
@@ -272,13 +305,13 @@ class Service
         }
 
         return $this->put($uri, $header, $encodedBody, $contentType);
-
     }
 
     /**
-     * Performs an HTTP DELETE request
+     * Performs an HTTP DELETE request.
      *
-     * @param  String                      $uri the URI to DELETE
+     * @param String $uri the URI to DELETE
+     *
      * @return array|string|int|bool|float
      */
     public function delete($uri)
@@ -289,17 +322,18 @@ class Service
     }
 
     /**
-     * Finds an Entity
+     * Finds an Entity.
      *
-     * @param  String                      $entity Entity class name
-     * @param  int                         $id     id of the entity to find
-     * @return boolean|\JIRA\Entity\Entity The object if found and "FALSE" otherwise
+     * @param String $entity Entity class name
+     * @param int    $id     id of the entity to find
+     *
+     * @return bool|\JIRA\Entity\Entity The object if found and "FALSE" otherwise
      */
     public function find($entity, $id)
     {
-        $repositoryClass	= $this->getRepositoryClass($entity);
+        $repositoryClass = $this->getRepositoryClass($entity);
 
-        $repository			= $this->getRepository($repositoryClass);
+        $repository = $this->getRepository($repositoryClass);
 
         if (method_exists($repository, 'find')) {
             return $repository->find($id);
@@ -310,11 +344,12 @@ class Service
 
     /**
      * The magical __call method<br/>
-     * Maps the "findBy__EntityName" calls
+     * Maps the "findBy__EntityName" calls.
      *
-     * @param  String                      $name      the name of the function called
-     * @param  mixed                       $arguments additional arguments passed
-     * @return boolean|\JIRA\Entity\Entity The object if found and "FALSE" otherwise
+     * @param String $name      the name of the function called
+     * @param mixed  $arguments additional arguments passed
+     *
+     * @return bool|\JIRA\Entity\Entity The object if found and "FALSE" otherwise
      */
     public function __call($name, $arguments)
     {
@@ -323,15 +358,16 @@ class Service
         if ($doMagic) {
             $entity = substr($name, strlen('find'));
 
-            return $this->find('JIRA\Entity\\' . $entity, $arguments[0]);
+            return $this->find('JIRA\Entity\\'.$entity, $arguments[0]);
         }
     }
 
     /**
-     * Gets the repository class of an entity
+     * Gets the repository class of an entity.
      *
-     * @param  String|\JIRA\Entity\Entity $entity An Entity object or class name
-     * @return string|boolean             The repository class name if found and "FALSE" otherwise
+     * @param String|\JIRA\Entity\Entity $entity An Entity object or class name
+     *
+     * @return string|bool The repository class name if found and "FALSE" otherwise
      */
     public function getRepositoryClass($entity)
     {
@@ -347,21 +383,22 @@ class Service
             $entityClassName = $entityClassNameParts[count($entityClassNameParts) - 1];
         }
 
-        $repositoryClassName = __NAMESPACE__ . '\\Entity\\Repository\\' . $entityClassName . 'Repository';
+        $repositoryClassName = __NAMESPACE__.'\\Entity\\Repository\\'.$entityClassName.'Repository';
 
         if (class_exists($repositoryClassName)) {
             return $repositoryClassName;
         } else {
-            $this->addError('class ' . $repositoryClassName . ' could not be found');
+            $this->addError('class '.$repositoryClassName.' could not be found');
         }
 
         return false;
     }
 
     /**
-     * Gets the Entity Repository
+     * Gets the Entity Repository.
      *
-     * @param  String|\JIRA\Entity\Entity         $entity An Entity object or class name
+     * @param String|\JIRA\Entity\Entity $entity An Entity object or class name
+     *
      * @return \JIRA\Entity\Repository\Repository | bool if found and "FALSE" otherwise
      */
     public function getRepository($entity)
@@ -376,13 +413,14 @@ class Service
             return new $entityClass($this);
         }
 
-        $this->addError('Invalid Class: ' . $entityClass);
+        $this->addError('Invalid Class: '.$entityClass);
     }
 
     /**
-     * Persists an Entity to the JIRA REST Service
+     * Persists an Entity to the JIRA REST Service.
      *
-     * @param  \JIRA\Entity\Entity $entity The entity to persist
+     * @param \JIRA\Entity\Entity $entity The entity to persist
+     *
      * @return \JIRA\Entity\Entity | boolean The persisted entity on success and "FALSE" otherwise
      */
     public function persist(\Orb\Jira\Entity $entity)
@@ -397,10 +435,11 @@ class Service
     }
 
     /**
-     * Removes and Entity from the JIRA REST Service
+     * Removes and Entity from the JIRA REST Service.
      *
-     * @param  \JIRA\Entity\Entity $entity The entity to persist
-     * @return boolean             "TRUE" on success and "FALSE" otherwise
+     * @param \JIRA\Entity\Entity $entity The entity to persist
+     *
+     * @return bool "TRUE" on success and "FALSE" otherwise
      */
     public function remove(\Orb\Jira\Entity $entity)
     {
@@ -418,24 +457,24 @@ class Service
         // todo this may cause "Operation timed out after 1xxx milliseconds" without any handling
         return $this->get('rest/api/latest/issue/createmeta', array(), array(
             'timeout'         => 5,
-            'connect_timeout' => 4
+            'connect_timeout' => 4,
         ));
     }
 
     public function lookupAssignees($projectKey)
     {
-        $request = $this->_client->get('rest/api/latest/user/assignable/search?project=' . $projectKey);
+        $request = $this->_client->get('rest/api/latest/user/assignable/search?project='.$projectKey);
 
         return $this->_send($request);
     }
 
     public function lookupIssueType($projectKey)
     {
-        $request = $this->_client->get('rest/api/latest/issue/createmeta?projectKeys=' . $projectKey);
+        $request = $this->_client->get('rest/api/latest/issue/createmeta?projectKeys='.$projectKey);
 
         $response = $this->_send($request);
 
-        foreach($response[$response['expand']][0]['issuetypes'] as $index => $issuetype) {
+        foreach ($response[$response['expand']][0]['issuetypes'] as $index => $issuetype) {
             if ($issuetype['subtask']) {
                 unset($response[$response['expand']][0]['issuetypes'][$index]);
             }
@@ -446,13 +485,13 @@ class Service
 
     public function lookupPriorities($projectKey)
     {
-        $request = $this->_client->get('rest/api/latest/priority?project=' . $projectKey);
+        $request = $this->_client->get('rest/api/latest/priority?project='.$projectKey);
 
         return $this->_send($request);
     }
 
     /**
-     * Fetches all the comments on all associated JIRA issues
+     * Fetches all the comments on all associated JIRA issues.
      */
     public function fetchAllComment($limit = 0)
     {
@@ -472,7 +511,7 @@ class Service
     }
 
     /**
-     * Fetches comments on given JIRA issue
+     * Fetches comments on given JIRA issue.
      *
      * @param type $issue_id JIRA issue ID
      */
@@ -481,7 +520,7 @@ class Service
         $jiraIssueRepository = $this->_em->getRepository('Application\DeskPRO\Entity\JiraIssue');
 
         $jiraIssues = $jiraIssueRepository->findBy(
-            array('issue' => $issue_id
+            array('issue' => $issue_id,
         ));
 
         if (!$jiraIssues) {
@@ -490,7 +529,7 @@ class Service
 
         try {
             //Reaching this point means there are DeskPRO tickets associated to this issue_id
-            $issue	= $this->findIssue($issue_id);
+            $issue = $this->findIssue($issue_id);
         } catch (\Exception $e) {
             if (404 === $e->getCode()) {
                 foreach ($jiraIssues as $issue) {
@@ -505,7 +544,7 @@ class Service
             return;
         }
 
-        $jiraRepository	= $this->getRepository('\Orb\Jira\Entity\Repository\IssueRepository');
+        $jiraRepository = $this->getRepository('\Orb\Jira\Entity\Repository\IssueRepository');
 
         $comments = $jiraRepository->getComments($issue);
 
@@ -524,38 +563,37 @@ class Service
                     }
                 }
 
-                $ticketNote						= new \Application\DeskPRO\Entity\TicketMessage();
+                $ticketNote = new \Application\DeskPRO\Entity\TicketMessage();
 
-                $ticketNote['ticket']			= $ticket;
+                $ticketNote['ticket'] = $ticket;
 
-                $ticketNote['ip_address']		= '10.20.30.40';
+                $ticketNote['ip_address'] = '10.20.30.40';
 
-                $ticketNote['creation_system']	= 'app.jira';
+                $ticketNote['creation_system'] = 'app.jira';
 
-                $jiraUserEmail					= $comment['author']['emailAddress'];
+                $jiraUserEmail = $comment['author']['emailAddress'];
 
-                /**
+                /*
                  * Comment author mapping
                  * We're trying to find a matching user in DeskPRO
                  * If none found we set it to current user
                  */
                 $matchedEmail = $this->_em->getRepository('Application\DeskPRO\Entity\PersonEmail')->findOneBy(array(
-                    'email'	=> $jiraUserEmail
+                    'email' => $jiraUserEmail,
                 ));
 
                 if ($matchedEmail) {
                     $commentAuthor = $matchedEmail->person;
                 } else {
-
                     if (!$this->_regEnabled) {
                         // todo?
                         continue;
                     }
 
                     $person_processor = new PersonFromEmailProcessor();
-                    $eml = new EmailAddress();
-                    $eml->email = $jiraUserEmail;
-                    $person = $person_processor->createPerson($eml, true);
+                    $eml              = new EmailAddress();
+                    $eml->email       = $jiraUserEmail;
+                    $person           = $person_processor->createPerson($eml, true);
 
                     if (!$person) {
                         // todo?
@@ -563,16 +601,16 @@ class Service
                     }
                 }
 
-                $ticketNote['person']			= $commentAuthor;
+                $ticketNote['person'] = $commentAuthor;
 
-                $ticketNote->message			= $comment['body'] . '<br/><br/>' .
-                        ' by <a target="_blank" href="' . $this->getBaseUrl() . 'secure/ViewProfile.jspa?name=' . $comment['author']['name'] . '">' . $comment['author']['displayName'] . '</a><br/>' .
-                        ' in <a target="_blank" href="' . $this->getBaseUrl() . 'browse/' . $issue->getKey() . '">' . $issue->getKey() . '</a><br/>' .
+                $ticketNote->message = $comment['body'].'<br/><br/>'.
+                        ' by <a target="_blank" href="'.$this->getBaseUrl().'secure/ViewProfile.jspa?name='.$comment['author']['name'].'">'.$comment['author']['displayName'].'</a><br/>'.
+                        ' in <a target="_blank" href="'.$this->getBaseUrl().'browse/'.$issue->getKey().'">'.$issue->getKey().'</a><br/>'.
                         ' - JIRA';
 
-                $ticketNote['is_agent_note']	= true;
+                $ticketNote['is_agent_note'] = true;
 
-                $ticketNote['date_created']		= new \DateTime($comment['updated']);
+                $ticketNote['date_created'] = new \DateTime($comment['updated']);
 
                 $ticket->addMessage($ticketNote);
 
@@ -581,8 +619,8 @@ class Service
 
                 $jiraIssueComment = new \Application\DeskPRO\Entity\JiraIssueComment();
 
-                $jiraIssueComment->jiraId			= $comment['id'];
-                $jiraIssueComment->ticketMessage	= $ticketNote;
+                $jiraIssueComment->jiraId        = $comment['id'];
+                $jiraIssueComment->ticketMessage = $ticketNote;
 
                 $jiraIssue->addComment($jiraIssueComment);
 

@@ -1,48 +1,44 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\AgentBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ResultCache;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Orb\Util\Arrays;
 
 /**
- * Handles ticket searches
+ * Handles ticket searches.
  */
 class TicketResults
 {
@@ -81,10 +77,10 @@ class TicketResults
      */
     protected $grouping_summary;
 
-
     /**
      * @param $controller
-     * @param  TicketFilter  $filter
+     * @param TicketFilter $filter
+     *
      * @return TicketResults
      */
     public static function newFromFilter($controller, TicketFilter $filter)
@@ -99,7 +95,7 @@ class TicketResults
         }
 
         // Or if the user has their own
-        $group_by = $controller->getPerson()->getPref('agent.ui.ticket-filter-group-by.' . $filter['id']);
+        $group_by = $controller->getPerson()->getPref('agent.ui.ticket-filter-group-by.'.$filter['id']);
         if ($group_by) {
             $helper->setGroupField($group_by);
         }
@@ -111,7 +107,8 @@ class TicketResults
 
     /**
      * @param $controller
-     * @param  ResultCache   $result_cache
+     * @param ResultCache $result_cache
+     *
      * @return TicketResults
      */
     public static function newFromResultCache($controller, ResultCache $result_cache)
@@ -134,15 +131,14 @@ class TicketResults
         return $helper;
     }
 
-
     public function __construct($controller)
     {
         $this->controller = $controller;
     }
 
-
     /**
-     * Set ticket IDs for the search results
+     * Set ticket IDs for the search results.
+     *
      * @param array $ticket_ids
      */
     public function setTicketIds(array $ticket_ids)
@@ -150,9 +146,8 @@ class TicketResults
         $this->ticket_ids = $ticket_ids;
     }
 
-
     /**
-     * Get ticket IDs
+     * Get ticket IDs.
      *
      * @return array
      */
@@ -161,9 +156,8 @@ class TicketResults
         return $this->ticket_ids;
     }
 
-
     /**
-     * Get total number of matches
+     * Get total number of matches.
      *
      * @return int
      */
@@ -172,16 +166,19 @@ class TicketResults
         return count($this->getTicketIds());
     }
 
-
     /**
-     * Get ticket IDs that match the current group
+     * Get ticket IDs that match the current group.
      *
      * @return array
      */
     public function getGroupTicketIds($field_id)
     {
-        if ($this->grouped_ticket_ids !== null) return $this->grouped_ticket_ids;
-        if ($this->group_field === null) return array();
+        if ($this->grouped_ticket_ids !== null) {
+            return $this->grouped_ticket_ids;
+        }
+        if ($this->group_field === null) {
+            return array();
+        }
 
         $searcher = new TicketSearch();
         $searcher->setPerson($this->controller->getPerson());
@@ -201,10 +198,10 @@ class TicketResults
         return $this->grouped_ticket_ids;
     }
 
-
     /**
      * @param $page
-     * @param  int   $per_page
+     * @param int $per_page
+     *
      * @return array
      */
     public function getTicketsForPage($page, $per_page = 50)
@@ -212,10 +209,10 @@ class TicketResults
         return $this->_getPageFromTicketIds($this->getTicketIds(), $page, $per_page);
     }
 
-
     /**
      * @param $cursor_start
-     * @param  int   $per_page
+     * @param int $per_page
+     *
      * @return mixed
      */
     public function getTicketsForCursorPage($cursor_start, $per_page = 50)
@@ -223,11 +220,11 @@ class TicketResults
         return $this->_getCursorPageFromTicketIds($this->getTicketIds(), $cursor_start, $per_page);
     }
 
-
     /**
      * @param $field_id
      * @param $page
-     * @param  int   $per_page
+     * @param int $per_page
+     *
      * @return array
      */
     public function getGroupedTicketsForPage($field_id, $page, $per_page = 50)
@@ -235,11 +232,11 @@ class TicketResults
         return $this->_getPageFromTicketIds($this->getGroupTicketIds($field_id), $page, $per_page);
     }
 
-
     /**
      * @param $field_id
      * @param $page
-     * @param  int   $per_page
+     * @param int $per_page
+     *
      * @return array
      */
     public function getGroupedTicketsForCursorPage($field_id, $page, $per_page = 50)
@@ -247,17 +244,17 @@ class TicketResults
         return $this->_getCursorPageFromTicketIds($this->getGroupTicketIds($field_id), $page, $per_page);
     }
 
-
     /**
-     * @param  array $ticket_ids
+     * @param array $ticket_ids
      * @param $page
      * @param $per_page
+     *
      * @return array
      */
     protected function _getPageFromTicketIds(array $ticket_ids, $page, $per_page)
     {
         $page_ticket_ids = Arrays::getPageChunk($ticket_ids, $page, $per_page);
-        $tickets_raw = App::getEntityRepository('DeskPRO:Ticket')->getTicketsResultsFromIds($page_ticket_ids);
+        $tickets_raw     = App::getEntityRepository('DeskPRO:Ticket')->getTicketsResultsFromIds($page_ticket_ids);
 
         // - We'll get a page of results, but that actual page isn't going to be
         // sorted the way we want, because MySQL was just sent a list of ID's.
@@ -273,15 +270,16 @@ class TicketResults
     }
 
     /**
-     * @param  array $ticket_ids
+     * @param array $ticket_ids
      * @param $cursor_start
      * @param $per_page
+     *
      * @return array
      */
     protected function _getCursorPageFromTicketIds(array $ticket_ids, $cursor_start, $per_page)
     {
         $page_ticket_ids = array_slice($ticket_ids, $cursor_start, $per_page);
-        $tickets_raw = App::getEntityRepository('DeskPRO:Ticket')->getTicketsResultsFromIds($page_ticket_ids);
+        $tickets_raw     = App::getEntityRepository('DeskPRO:Ticket')->getTicketsResultsFromIds($page_ticket_ids);
 
         // - We'll get a page of results, but that actual page isn't going to be
         // sorted the way we want, because MySQL was just sent a list of ID's.
@@ -296,9 +294,8 @@ class TicketResults
         return $tickets;
     }
 
-
     /**
-     * Set the grouping field
+     * Set the grouping field.
      *
      * @param string $field
      */
@@ -307,9 +304,8 @@ class TicketResults
         $this->group_field = $field;
     }
 
-
     /**
-     * Get the grouping field
+     * Get the grouping field.
      *
      * @return null|string
      */
@@ -317,8 +313,6 @@ class TicketResults
     {
         return $this->group_field;
     }
-
-
 
     /**
      * Set the order by that will be used for sub-grouping. Tickets area
@@ -331,16 +325,19 @@ class TicketResults
         $this->order_by = $order_by;
     }
 
-
     /**
-     * Get counts and titles for the grouping options
+     * Get counts and titles for the grouping options.
      *
      * @return array
      */
     public function getGroupDisplayInfo()
     {
-        if ($this->group_display_info !== null) return $this->group_display_info;
-        if ($this->group_field === null) return null;
+        if ($this->group_display_info !== null) {
+            return $this->group_display_info;
+        }
+        if ($this->group_field === null) {
+            return;
+        }
 
         $grouper = new \Application\DeskPRO\Tickets\GroupingCounter();
         $grouper->setGrouping($this->group_field);
@@ -354,9 +351,8 @@ class TicketResults
         return $this->group_display_info;
     }
 
-
     /**
-     * Get the grouping field phrase
+     * Get the grouping field phrase.
      *
      * @return string
      */
@@ -370,7 +366,8 @@ class TicketResults
     }
 
     /**
-     * Do we have enough info to run grouping? aka if we havea group_field set
+     * Do we have enough info to run grouping? aka if we havea group_field set.
+     *
      * @return bool
      */
     public function isGroupable()

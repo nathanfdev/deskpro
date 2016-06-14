@@ -38,7 +38,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
         'layouts': '/ticket_layouts/fields/category'
       }).then( (res) =>
         @cats           = res.data.info.categories
-        @default_id     = res.data.info.default_id + ""
+        @default_id     = res.data.info.default_id
         @agent_required = res.data.info.agent_required
         @user_required  = res.data.info.user_required
         @enabled        = res.data.info.enabled
@@ -76,5 +76,30 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
         @stopSpinner('saving', true)
         @applyErrorResponseToView(info)
       )
+
+    showConvert: (type) ->
+      self = @
+      @$modal.open({
+        templateUrl: @getTemplatePath('TicketFields/convert-modal.html'),
+        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+          $scope.type = 'Category'
+          $scope.plural_type = 'categories'
+          $scope.dismiss = -> $modalInstance.dismiss()
+
+          $scope.doConvert = ->
+            $scope.is_loading = true
+            self.Api.sendPost('/ticket_fields/convert/categories').then(
+              (res) ->
+                $scope.is_loading = false
+                $scope.dismiss()
+                if res.data?.field?.id?
+                  ds = self.DataService.get 'TicketFields'
+                  ds.mergeDataModel res.data.field
+                  self.$state.go 'tickets.fields.edit', {id: res.data.field.id}
+              ->
+                $scope.is_loading = false
+            )
+        ]
+      });
 
   Admin_TicketFields_Ctrl_EditCategories.EXPORT_CTRL()

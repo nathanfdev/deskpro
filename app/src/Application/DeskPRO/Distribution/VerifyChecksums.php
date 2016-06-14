@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @category File
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category File
+ */
 namespace Application\DeskPRO\Distribution;
 
 class VerifyChecksums
@@ -49,8 +48,8 @@ class VerifyChecksums
         } else {
             $standard_hashes = require DP_ROOT.'/sys/Resources/distro-checksums.php';
         }
-        $this->count_all = count($standard_hashes);
-        $standard_hashes = array_chunk($standard_hashes, $chunk_size, true);
+        $this->count_all       = count($standard_hashes);
+        $standard_hashes       = array_chunk($standard_hashes, $chunk_size, true);
         $this->standard_hashes = $standard_hashes;
     }
 
@@ -63,15 +62,15 @@ class VerifyChecksums
     public function compareChunk($chunk = 0)
     {
         $standard_chunk_hashes = $this->getStandardChunk($chunk);
-        $chunk_files = array_keys($standard_chunk_hashes);
-        $chunk_hashes = array();
+        $chunk_files           = array_keys($standard_chunk_hashes);
+        $chunk_hashes          = array();
 
         $uproot = realpath(DP_ROOT.'/../');
 
         foreach ($chunk_files as $f) {
             $filepath = $uproot.$f;
             if (file_exists($filepath)) {
-                $file_contents = $this->normalizeFileString(file_get_contents($filepath));
+                $file_contents    = $this->normalizeFileString(file_get_contents($filepath));
                 $chunk_hashes[$f] = md5($file_contents);
             } else {
                 $chunk_hashes[$f] = null;
@@ -79,10 +78,10 @@ class VerifyChecksums
         }
 
         $results = array(
-            'added' => array(),
+            'added'   => array(),
             'removed' => array(),
             'changed' => array(),
-            'okay' => array()
+            'okay'    => array(),
         );
 
         foreach ($chunk_hashes as $path => $checksum) {
@@ -101,7 +100,8 @@ class VerifyChecksums
     }
 
     /**
-     * @param  string $file_contents
+     * @param string $file_contents
+     *
      * @return string
      */
     protected function normalizeFileString($file_contents)
@@ -122,10 +122,11 @@ class VerifyChecksums
     }
 
     /**
-     * Get a chunk
+     * Get a chunk.
      *
-     * @param  int   $chunk
-     * @param  int   $chunk_size
+     * @param int $chunk
+     * @param int $chunk_size
+     *
      * @return array
      */
     public function getStandardChunk($chunk)
@@ -138,7 +139,8 @@ class VerifyChecksums
     }
 
     /**
-     * Count how many chunks there are
+     * Count how many chunks there are.
+     *
      * @return int
      */
     public function countChunks()

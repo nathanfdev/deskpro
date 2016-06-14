@@ -1,18 +1,26 @@
 <!doctype html>
 <html>
 <head>
-	<title>Verified</title>
+    <title>Verified</title>
 </head>
 <body>
 <h1>Failed</h1>
+<p>The system failed to authenticate you. Please refer to the below log for more information.</p>
+<textarea name="log" style="width: 700px; height: 1400px;">{{ log }}</textarea>
+<p>You can now close this window. <a id="close" href="#">Close window</a>.</p>
 <script type="text/javascript">
-	parent.window.USERSOURCE_TEST_SCOPE.$apply(function () {
-		parent.window.USERSOURCE_TEST_SCOPE.is_verified = false;
-		parent.window.USERSOURCE_TEST_SCOPE.is_error = true;
-		parent.window.USERSOURCE_TEST_SCOPE.loading = false;
-		parent.window.USERSOURCE_TEST_SCOPE.log = '{{ log|escape('js') }}';
-		parent.window.USERSOURCE_TEST_SCOPE.person = null;
+	document.getElementById('close').addEventListener('click', function(e) {
+		e.preventDefault();
+		window.close();
 	});
+    window.opener.USERSOURCE_TEST_SCOPE.$apply(function () {
+        window.opener.USERSOURCE_TEST_SCOPE.is_verified = false;
+        window.opener.USERSOURCE_TEST_SCOPE.is_error = true;
+        window.opener.USERSOURCE_TEST_SCOPE.loading = false;
+        window.opener.USERSOURCE_TEST_SCOPE.log = '{{ log|escape('js') }}';
+        window.opener.USERSOURCE_TEST_SCOPE.person = null;
+        window.opener.USERSOURCE_TEST_SCOPE.display_errors = '{{ display_errors|escape('js') }}';
+    });
 </script>
 </body>
 </html>

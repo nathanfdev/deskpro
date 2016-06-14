@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Tickets\Escalations;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -62,11 +61,10 @@ class EscalationTicketMatcher
 
     public function __construct(EntityManager $em, Connection $db)
     {
-        $this->em = $em;
-        $this->db = $db;
+        $this->em     = $em;
+        $this->db     = $db;
         $this->logger = new NullLogger();
     }
-
 
     /**
      * @param Logger $logger
@@ -76,43 +74,47 @@ class EscalationTicketMatcher
         $this->logger = $logger;
     }
 
-
     /**
-     * @param  TicketEscalation                     $esc
-     * @param  int                                  $limit
+     * @param TicketEscalation $esc
+     * @param int              $limit
+     *
      * @return \Application\DeskPRO\Entity\Ticket[]
      */
     public function getMatches(TicketEscalation $esc, $limit = 100)
     {
-        $this->logger->debug(sprintf("[EscalationTicketMatcher] Getting matches for %d %s -- limit(%d)", $esc->id, $esc->title, $limit));
+        $this->logger->debug(sprintf('[EscalationTicketMatcher] Getting matches for %d %s -- limit(%d)', $esc->id, $esc->title, $limit));
 
         $ms_start = microtime(true);
 
         $searcher = $this->_getSearcherForEscalation($esc);
         $searcher->setLimit($limit);
 
-        $this->logger->debug(sprintf("[EscalationTicketMatcher] --> SQL: %s", $searcher->getSql()));
+        $this->logger->debug(sprintf('[EscalationTicketMatcher] --> SQL: %s', $searcher->getSql()));
         $ticket_ids = $searcher->getMatches();
-        $tickets = array();
+        $tickets    = array();
         if ($ticket_ids) {
             $tickets = $this->em->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids);
         }
-        $this->logger->debug(sprintf("[EscalationTicketMatcher] --> Number of results: %d", count($tickets)));
-        $this->logger->debug(sprintf("[EscalationTicketMatcher] --> Took %.4fs", microtime(true) - $ms_start));
+        $this->logger->debug(sprintf('[EscalationTicketMatcher] --> Number of results: %d', count($tickets)));
+        $this->logger->debug(sprintf('[EscalationTicketMatcher] --> Took %.4fs', microtime(true) - $ms_start));
 
         return $tickets;
     }
 
-
     /**
-     * @param  TicketEscalation          $esc
-     * @return TicketSearch
+     * @param TicketEscalation $esc
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return TicketSearch
      */
     private function _getSearcherForEscalation(TicketEscalation $esc)
     {
         $searcher = new TicketSearch();
         $searcher->addTerm('escalation_eliminator', 'is', array('escalation' => $esc));
+
+        // set this efficient order to make sure th default (status/urgency) isnt used
+        $searcher->setOrderBy('ticket.date_created');
 
         $user_searcher = new PersonSearch();
         $org_searcher  = new OrganizationSearch();
@@ -142,7 +144,7 @@ class EscalationTicketMatcher
                         $user_searcher->addAnyTerm($term['type'], $term['op'], $term['options']);
                         $has_user_terms = true;
                     } elseif (strpos($term['type'], 'org_') === 0) {
-                        $org_searcher->addTerm($term['type'], $term['op'], $term['options']);
+                        $org_searcher->addAnyTerm($term['type'], $term['op'], $term['options']);
                         $has_org_terms = true;
                     } else {
                         $searcher->addAnyTerm($term['type'], $term['op'], $term['options']);
@@ -158,13 +160,13 @@ class EscalationTicketMatcher
             $searcher->setOrganizationSearch($org_searcher);
         }
 
-        $searcher->addRawWhere("tickets.date_created >= '" . $esc->date_created->format('Y-m-d H:i:s') . "'");
+        $searcher->addRawWhere("tickets.date_created >= '".$esc->date_created->format('Y-m-d H:i:s')."'");
 
         $time_secs = $esc->event_trigger_time;
         switch ($esc->event_trigger) {
             case TicketEscalation::EVENT_TYPE_TIME_OPEN:
                 $searcher->addRawWhere('tickets.status IN (\'awaiting_user\', \'awaiting_agent\')');
-                $date_cut = new \DateTime('-' . $time_secs . ' seconds');
+                $date_cut = new \DateTime('-'.$time_secs.' seconds');
                 $searcher->addTerm('date_created', 'lte', array('date1' => $date_cut));
 
                 break;
@@ -173,7 +175,7 @@ class EscalationTicketMatcher
                 $searcher->addTerm('status', 'is', array('awaiting_agent'));
                 $searcher->addRawWhere('tickets.date_user_waiting IS NOT NULL');
 
-                $date_cut = new \DateTime('-' . $time_secs . ' seconds');
+                $date_cut = new \DateTime('-'.$time_secs.' seconds');
                 $searcher->addTerm('user_waiting', 'lte', array('date1' => $date_cut));
 
                 break;
@@ -188,7 +190,7 @@ class EscalationTicketMatcher
                 $searcher->addTerm('status', 'is', array('awaiting_user'));
                 $searcher->addRawWhere('tickets.date_agent_waiting IS NOT NULL');
 
-                $date_cut = new \DateTime('-' . $time_secs . ' seconds');
+                $date_cut = new \DateTime('-'.$time_secs.' seconds');
                 $searcher->addTerm('agent_waiting', 'lte', array('date1' => $date_cut));
 
                 break;
@@ -197,13 +199,13 @@ class EscalationTicketMatcher
                 $searcher->addTerm('status', 'is', array('resolved'));
                 $searcher->addRawWhere('tickets.date_resolved IS NOT NULL');
 
-                $date_cut = new \DateTime('-' . $time_secs . ' seconds');
+                $date_cut = new \DateTime('-'.$time_secs.' seconds');
                 $searcher->addTerm('date_resolved', 'lte', array('date1' => $date_cut));
 
                 break;
 
             default:
-                throw new \InvalidArgumentException("Invalid escalation event: " . $esc->event_trigger);
+                throw new \InvalidArgumentException('Invalid escalation event: '.$esc->event_trigger);
         }
 
         return $searcher;

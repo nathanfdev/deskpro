@@ -1,45 +1,44 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Kernel;
 
+use Application\DeskPRO\App;
+use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
-
-use Application\DeskPRO\App;
 
 class InstallKernel extends BaseKernel
 {
@@ -51,8 +50,8 @@ class InstallKernel extends BaseKernel
     {
         parent::__construct($environment, $debug);
 
-        $name = explode("\\", get_class($this));
-        $name = array_pop($name);
+        $name       = explode('\\', get_class($this));
+        $name       = array_pop($name);
         $this->name = $name;
 
         if (!defined('DP_DEBUG')) {
@@ -67,21 +66,28 @@ class InstallKernel extends BaseKernel
         set_exception_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleException');
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function boot()
     {
         parent::boot();
 
         $this->container->kernel = $this;
-        App::$container = $this->container;
+        App::$container          = $this->container;
     }
 
+    public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+    {
+        $response = parent::handle($request, $type, $catch);
+
+        $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
+
+        return $response;
+    }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function registerBundles()
     {
@@ -99,43 +105,42 @@ class InstallKernel extends BaseKernel
         return $bundles;
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
     {
         // Make sure the cache dirs exist
-        $env_dir = realpath($this->getCacheDir() . '/../');
+        $env_dir = realpath($this->getCacheDir().'/../');
         if (!is_dir($this->getCacheDir())) {
             mkdir($this->getCacheDir(), 0777, true);
         }
-        if (!file_exists($env_dir . '/doctrine-proxies')) {
-            mkdir($env_dir . '/doctrine-proxies', 0777, true);
+        if (!file_exists($env_dir.'/doctrine-proxies')) {
+            mkdir($env_dir.'/doctrine-proxies', 0777, true);
         }
-        if (!file_exists($env_dir . '/twig-compiled')) {
-            @mkdir($env_dir . '/twig-compiled', 0777, true);
+        if (!file_exists($env_dir.'/twig-compiled')) {
+            @mkdir($env_dir.'/twig-compiled', 0777, true);
         }
 
         @chmod($this->getCacheDir(), 0777);
-        @chmod($env_dir . '/doctrine-proxies', 0777);
-        @chmod($env_dir . '/twig-compiled', 0777);
+        @chmod($env_dir.'/doctrine-proxies', 0777);
+        @chmod($env_dir.'/twig-compiled', 0777);
 
         // Clear the dql cache when the container is regenerated as well
-        $dql_cache = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'dql.cache';
+        $dql_cache = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'dql.cache';
         if (file_exists($dql_cache)) {
             @unlink($dql_cache);
         }
 
         // cache the container
-        $dumper = new PhpDumper($container);
+        $dumper  = new PhpDumper($container);
         $content = $dumper->dump(array('class' => $class, 'base_class' => $baseClass));
         if (!$this->debug) {
             $content = self::stripComments($content);
         }
 
         // Re-write absolute paths to use DP_ROOT instead
-        $content = str_replace("'" . DP_ROOT, 'DP_ROOT.\'', $content);
+        $content = str_replace("'".DP_ROOT, 'DP_ROOT.\'', $content);
         // Correct double slash paths
         $content = str_replace('prod//', 'prod/', $content);
         // Empty logs dir that isn't used (we get it from conf)
@@ -145,19 +150,21 @@ class InstallKernel extends BaseKernel
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function initializeContainer()
     {
         $v = libxml_disable_entity_loader(false);
 
+        $GLOBALS['DP_CONTAINER_IS_BUILDING'] = true;
         parent::initializeContainer();
+        unset($GLOBALS['DP_CONTAINER_IS_BUILDING']);
 
         libxml_disable_entity_loader($v);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getRootDir()
     {
@@ -165,7 +172,7 @@ class InstallKernel extends BaseKernel
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getCacheDir()
     {
@@ -183,12 +190,12 @@ class InstallKernel extends BaseKernel
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getLogDir()
     {
         if (!function_exists('dp_get_log_dir')) {
-            require_once DP_ROOT . '/sys/load_config.php';
+            require_once DP_ROOT.'/sys/load_config.php';
         }
 
         return dp_get_log_dir();
@@ -199,7 +206,7 @@ class InstallKernel extends BaseKernel
      */
     protected function getKernelParameters()
     {
-        $params = parent::getKernelParameters();
+        $params            = parent::getKernelParameters();
         $params['DP_ROOT'] = DP_ROOT;
 
         return $params;
@@ -219,21 +226,20 @@ class InstallKernel extends BaseKernel
     public function registerBundleDirs()
     {
         return array(
-            'Application'        => DP_ROOT.'/src/Application',
-            'Bundle'             => DP_ROOT.'/src/Bundle',
+            'Application' => DP_ROOT.'/src/Application',
+            'Bundle'      => DP_ROOT.'/src/Bundle',
         );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function loadClassCache($name = 'classes', $extension = '.php')
     {
-
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setClassCache(array $classes)
     {

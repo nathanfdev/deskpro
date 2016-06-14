@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -46,54 +45,46 @@ use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
- * Departments
+ * Departments.
  *
  * @property string title
  * @property string $user_title
- * @property boolean $is_tickets_enabled
- * @property boolean $is_chat_enabled
+ * @property bool $is_tickets_enabled
+ * @property bool $is_chat_enabled
  * @property int $display_order
  * @property Department $parent
  * @property Department $children
- *
  */
 class Department extends DomainObject implements HasPhraseName
 {
     /**
      * @var int
-     *
      */
-
     protected $id;
 
     /**
      * @var Department
      */
-
     protected $parent = null;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-
     protected $children = null;
 
     /**
      * @var string
      */
-
     protected $title;
 
     /**
      * @var string
      */
-
     protected $user_title = '';
 
     /**
      * @var bool
      */
-
     protected $is_tickets_enabled = true;
 
     /**
@@ -123,7 +114,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return Department
      */
-
     public static function createTicketDepartment()
     {
         $dep                     = new self();
@@ -136,7 +126,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return Department
      */
-
     public static function createChatDepartment()
     {
         $dep                     = new self();
@@ -149,7 +138,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      *
      */
-
     public function __construct()
     {
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
@@ -158,7 +146,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return int
      */
-
     public function getId()
     {
         return $this->id;
@@ -169,12 +156,10 @@ class Department extends DomainObject implements HasPhraseName
      *
      * @return bool
      */
-
     public function isType($type)
     {
         if ($type == 'tickets' && $this->is_tickets_enabled) {
             return true;
-
         } elseif ($type == 'chat' && $this->is_chat_enabled) {
             return true;
         }
@@ -185,7 +170,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return string
      */
-
     public function getRealUserTitle()
     {
         return $this->user_title;
@@ -194,7 +178,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return string
      */
-
     public function getUserTitle()
     {
         if ($this->user_title) {
@@ -207,11 +190,9 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @param $title
      */
-
     public function setUserTitle($title)
     {
         if (!$title) {
-
             $title = '';
         }
 
@@ -228,7 +209,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return Department|null
      */
-
     public function getParent()
     {
         return $this->parent;
@@ -237,7 +217,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return int
      */
-
     public function getParentId()
     {
         if ($this->parent) {
@@ -250,15 +229,11 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @param $id
      */
-
     public function setParentId($id)
     {
         if ($id) {
-
             $this->parent = App::getEntityRepository('DeskPRO:Department')->find($id);
-
         } else {
-
             $this->parent = null;
         }
     }
@@ -266,7 +241,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return string
      */
-
     public function getTitle()
     {
         return $this->title;
@@ -278,7 +252,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return string
      */
-
     public function getRealTitle()
     {
         return $this->title;
@@ -287,12 +260,10 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @param $title
      */
-
     public function setRealTitle($title)
     {
         $this->title = $title;
     }
-
 
     /**
      * Get the 'full' name of this department by prepending the parents name to it.
@@ -301,16 +272,17 @@ class Department extends DomainObject implements HasPhraseName
      *
      * @return string
      */
-
     public function getFullTitle($sep = null)
     {
-        if ($sep === null) $sep = ' > ';
+        if ($sep === null) {
+            $sep = ' > ';
+        }
 
         if (!$this->parent) {
             return $this->getTitle();
         }
 
-        return $this->parent->getTitle() . $sep . $this->getTitle();
+        return $this->parent->getTitle().$sep.$this->getTitle();
     }
 
     /**
@@ -318,23 +290,24 @@ class Department extends DomainObject implements HasPhraseName
      *
      * @return string
      */
-
     public function getFullUserTitle($sep = null)
     {
-        if ($sep === null) $sep = ' > ';
+        if ($sep === null) {
+            $sep = ' > ';
+        }
 
         if (!$this->parent) {
             return $this->getUserTitle();
         }
 
-        return $this->parent->getUserTitle() . $sep . $this->getUserTitle();
+        return $this->parent->getUserTitle().$sep.$this->getUserTitle();
     }
 
     /**
-     * Add a child department
+     * Add a child department.
+     *
      * @param Department $department
      */
-
     public function addChild(Department $department)
     {
         $department['parent'] = $this;
@@ -344,7 +317,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return array
      */
-
     public function getChildrenOrdered()
     {
         $children = $this->children->toArray();
@@ -361,13 +333,12 @@ class Department extends DomainObject implements HasPhraseName
     }
 
     /**
-     * Get all children down the entire tree
+     * Get all children down the entire tree.
      *
      * Note: Currently only two levels, so this is the same as getChildren()
      *
      * @return array
      */
-
     public function getAllChildren()
     {
         return $this->getChildren();
@@ -376,32 +347,31 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return \Doctrine\Common\Collections\ArrayCollection|null
      */
-
     public function getChildren()
     {
         return $this->children;
     }
 
     /**
-     * Return a unique ID that we can use to look up translations for this object
+     * Return a unique ID that we can use to look up translations for this object.
      *
-     * @param  string    $property  If supplied, the property on the object we want to translate.
-     * @param  Translate $translate
+     * @param string    $property  If supplied, the property on the object we want to translate.
+     * @param Translate $translate
+     *
      * @return string
      */
-
     public function getPhraseName($property = null, Translate $translate)
     {
         if (!$property) {
             $property = 'title';
         }
 
-        $phrase_name = 'obj_department.' . $this->id . '_' . $property;
+        $phrase_name = 'obj_department.'.$this->id.'_'.$property;
 
         if ($property == 'user') {
             return array(
-                'obj_department.' . $this->id . '_user',
-                'obj_department.' . $this->id . '_title',
+                'obj_department.'.$this->id.'_user',
+                'obj_department.'.$this->id.'_title',
             );
         }
 
@@ -409,13 +379,13 @@ class Department extends DomainObject implements HasPhraseName
     }
 
     /**
-     * Get the default value phrase for the object
+     * Get the default value phrase for the object.
      *
-     * @param  string    $property  If supplied, the property on the object we want to translate.
-     * @param  Translate $translate
+     * @param string    $property  If supplied, the property on the object we want to translate.
+     * @param Translate $translate
+     *
      * @return string
      */
-
     public function getPhraseDefault($property = null, Translate $translate)
     {
         if ($property == 'full') {
@@ -432,7 +402,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return string
      */
-
     public function __toString()
     {
         return $this->getFullTitle();
@@ -444,7 +413,9 @@ class Department extends DomainObject implements HasPhraseName
 
     public function _validateParent(ExecutionContextInterface $context)
     {
-        if (!$this->parent) return;
+        if (!$this->parent) {
+            return;
+        }
 
         if ($this->parent == $this) {
             $context->addViolationAt('parent', '[ParentNotSelf] Parent cannot be set to self');
@@ -455,20 +426,20 @@ class Department extends DomainObject implements HasPhraseName
     {
         $metadata->addPropertyConstraint('title', new NotBlank());
         $metadata->addConstraint(new Callback(array(
-            'methods' => array('_validateParent')
+            'methods' => array('_validateParent'),
         )));
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
-        $data = parent::toApiData($primary, $deep, $visited);
+        $data               = parent::toApiData($primary, $deep, $visited);
         $data['user_title'] = $this->getRealUserTitle();
 
         if ($this->parent) {
-            $data['title_full']       = $this->parent->title . ' > ' . $this->title;
+            $data['title_full']       = $this->parent->title.' > '.$this->title;
             $data['parent_id']        = $this->parent->getId();
             $data['parent_ids']       = array($this->parent->getId());
             $data['title_parts']      = array($this->parent->title, $this->title);
@@ -493,10 +464,12 @@ class Department extends DomainObject implements HasPhraseName
 
     public function getAvatarUrl($size = 50)
     {
-        if (!$this->hasAvatar()) return null;
+        if (!$this->hasAvatar()) {
+            return;
+        }
+
         return $this->avatar->getThumbnailUrl($size);
     }
-
 
     ############################################################################
     # Doctrine Metadata
@@ -507,7 +480,7 @@ class Department extends DomainObject implements HasPhraseName
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Department';
-        $metadata->setPrimaryTable(array('name' => 'departments',));
+        $metadata->setPrimaryTable(array('name' => 'departments'));
 
         $metadata->mapField(
             array(
@@ -579,6 +552,7 @@ class Department extends DomainObject implements HasPhraseName
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
                  'mappedBy'     => null,
                  'inversedBy'   => 'children',
+                 'fetch'        => ClassMetadataInfo::FETCH_EAGER,
                  'joinColumns'  => array(
                      0 => array(
                          'name'                 => 'parent_id',
@@ -595,26 +569,27 @@ class Department extends DomainObject implements HasPhraseName
                  'fieldName'    => 'children',
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
                  'mappedBy'     => 'parent',
-                 'orderBy'      => array('display_order' => 'ASC',),
-                 'indexBy'      => 'id'
+                 'orderBy'      => array('display_order' => 'ASC'),
+                 'indexBy'      => 'id',
             )
         );
 
         $metadata->mapManyToOne(array(
-            'fieldName' => 'avatar',
+            'fieldName'    => 'avatar',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
-            'mappedBy' => NULL,
-            'inversedBy' => NULL,
-            'joinColumns' => array(
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'fetch'        => ClassMetadataInfo::FETCH_EAGER,
+            'joinColumns'  => array(
                 0 => array(
-                    'name' => 'avatar_blob_id',
+                    'name'                 => 'avatar_blob_id',
                     'referencedColumnName' => 'id',
-                    'nullable' => true,
-                    'onDelete' => 'cascade',
-                    'columnDefinition' => NULL,
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
                 ),
             ),
-            'dpApi' => true
+            'dpApi' => true,
         ));
     }
 }

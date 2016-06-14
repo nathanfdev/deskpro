@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
@@ -40,163 +38,146 @@ use Application\DeskPRO\UserRules\UserRuleEdit;
 
 class UserRulesController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		return new AdminManagePermission();
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new AdminManagePermission();
+    }
 
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
+    public function listAction()
+    {
+        /*
+         * @var \Application\DeskPRO\UserRules\UserRules
+         */
+        $user_rules = $this->container->getSystemService('user_rules');
 
-	public function listAction()
-	{
-		/**
-		 * @var \Application\DeskPRO\UserRules\UserRules $user_rules
-		 */
+        return $this->createApiResponse(
+            array(
+                 'user_rules' => $user_rules->getAllAsArray(),
+            )
+        );
+    }
 
-		$user_rules = $this->container->getSystemService('user_rules');
+    ###################################################################################################################
+    # get
+    ####################################################################################################################
 
-		return $this->createApiResponse(
-			array(
-				 'user_rules' => $user_rules->getAllAsArray(),
-			)
-		);
-	}
+    public function getAction($id)
+    {
+        /*
+         * @var \Application\DeskPRO\UserRules\UserRules
+         */
+        $user_rules = $this->container->getSystemService('user_rules');
+        $user_rule  = $user_rules->getWithUsergroup($id);
 
-	###################################################################################################################
-	# get
-	####################################################################################################################
+        if (!$user_rule) {
+            throw $this->createNotFoundException();
+        }
 
-	public function getAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\UserRules\UserRules $user_rules
-		 */
+        return $this->createApiResponse(
+            array(
+                 'user_rule' => $user_rule,
+            )
+        );
+    }
 
-		$user_rules = $this->container->getSystemService('user_rules');
-		$user_rule  = $user_rules->getWithUsergroup($id);
+    ####################################################################################################################
+    # save
+    ####################################################################################################################
 
-		if (!$user_rule) {
+    public function saveAction($id)
+    {
+        /*
+         * @var \Application\DeskPRO\UserRules\UserRules
+         */
+        $user_rules = $this->container->getSystemService('user_rules');
 
-			throw $this->createNotFoundException();
-		}
+        if ($id) {
+            $user_rule = $user_rules->getById($id);
 
-		return $this->createApiResponse(
-			array(
-				 'user_rule' => $user_rule
-			)
-		);
-	}
+            if (!$user_rule) {
+                throw $this->createNotFoundException();
+            }
+        } else {
+            $user_rule = $user_rules->createNew();
+        }
 
-	####################################################################################################################
-	# save
-	####################################################################################################################
+        $postData = $this->in->getAll('post');
 
-	public function saveAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\UserRules\UserRules $user_rules
-		 */
+        $user_rule_edit = new UserRuleEdit($user_rule);
 
-		$user_rules = $this->container->getSystemService('user_rules');
+        $form = $this->createForm(new UserRuleType(), $user_rule_edit, array('cascade_validation' => true));
+        $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'user_rule'), true);
 
-		if ($id) {
+        if ($form->isValid()) {
+            $user_rule_edit->save($this->em);
+        } else {
+            throw ValidationException::create($this->getFormValidationErrorsString($form));
+        }
 
-			$user_rule = $user_rules->getById($id);
+        return $this->createApiResponse(
+            array(
+                 'success' => true,
+                 'id'      => $user_rule->id,
+            )
+        );
+    }
 
-			if (!$user_rule) {
+    ####################################################################################################################
+    # remove
+    ####################################################################################################################
 
-				throw $this->createNotFoundException();
-			}
-		} else {
+    public function removeAction($id)
+    {
+        /*
+         * @var \Application\DeskPRO\UserRules\UserRules
+         */
+        $user_rules = $this->container->getSystemService('user_rules');
+        $user_rule  = $user_rules->getById($id);
 
-			$user_rule = $user_rules->createNew();
-		}
+        if (!$user_rule) {
+            throw $this->createNotFoundException();
+        }
 
-		$postData = $this->in->getAll('post');
+        $old_id = $user_rule->id;
 
-		$user_rule_edit = new UserRuleEdit($user_rule);
+        $this->db->beginTransaction();
 
-		$form = $this->createForm(new UserRuleType(), $user_rule_edit, array('cascade_validation' => true));
-		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'user_rule'), true);
+        try {
+            $this->em->remove($user_rule);
+            $this->em->flush();
 
-		if ($form->isValid()) {
+            $this->db->commit();
+        } catch (\Exception $e) {
+            $this->db->rollback();
+            throw $e;
+        }
 
-			$user_rule_edit->save($this->em);
+        return $this->createSuccessResponse(array('old_id' => $old_id));
+    }
 
-		} else {
+    ####################################################################################################################
+    # apply
+    ####################################################################################################################
 
-			throw ValidationException::create($this->getFormValidationErrorsString($form));
-		}
+    public function applyAction($id, $page_id)
+    {
+        /*
+         * @var \Application\DeskPRO\UserRules\UserRules
+         */
+        $user_rules = $this->container->getSystemService('user_rules');
+        $user_rule  = $user_rules->getById($id);
 
-		return $this->createApiResponse(
-			array(
-				 'success' => true,
-				 'id'      => $user_rule->id,
-			)
-		);
-	}
+        if (!$user_rule) {
+            throw $this->createNotFoundException();
+        }
 
-	####################################################################################################################
-	# remove
-	####################################################################################################################
-
-	public function removeAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\UserRules\UserRules $user_rules
-		 */
-
-		$user_rules = $this->container->getSystemService('user_rules');
-		$user_rule  = $user_rules->getById($id);
-
-		if (!$user_rule) {
-
-			throw $this->createNotFoundException();
-		}
-
-		$old_id = $user_rule->id;
-
-		$this->db->beginTransaction();
-
-		try {
-
-			$this->em->remove($user_rule);
-			$this->em->flush();
-
-			$this->db->commit();
-
-		} catch(\Exception $e) {
-
-			$this->db->rollback();
-			throw $e;
-		}
-
-		return $this->createSuccessResponse(array('old_id' => $old_id));
-	}
-
-	####################################################################################################################
-	# apply
-	####################################################################################################################
-
-	public function applyAction($id, $page_id)
-	{
-		/**
-		 * @var \Application\DeskPRO\UserRules\UserRules $user_rules
-		 */
-
-		$user_rules = $this->container->getSystemService('user_rules');
-		$user_rule  = $user_rules->getById($id);
-
-		if (!$user_rule) {
-			throw $this->createNotFoundException();
-		}
-
-		return $this->createApiResponse($user_rules->applyRuleToUsers($user_rule, $page_id));
-	}
+        return $this->createApiResponse($user_rules->applyRuleToUsers($user_rule, $page_id));
+    }
 }

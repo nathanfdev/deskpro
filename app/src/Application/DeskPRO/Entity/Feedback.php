@@ -1,54 +1,55 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 
 /**
- * Feedback (feedback)
+ * Feedback (feedback).
+ *
  * @SWG\Model
  */
 class Feedback extends ContentAbstract implements HighlightableModelInterface
 {
-    const STATUS_NEW      = 'new';
-    const STATUS_ACTIVE   = 'active';
-    const STATUS_CLOSED   = 'closed';
-    const STATUS_HIDDEN   = 'hidden';
+    const STATUS_NEW    = 'new';
+    const STATUS_ACTIVE = 'active';
+    const STATUS_CLOSED = 'closed';
+    const STATUS_HIDDEN = 'hidden';
 
     /**
      * @var \Application\DeskPRO\Entity\FeedbackStatusCategory
@@ -118,7 +119,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     protected $_is_new = false;
 
     /**
-     * The search result highlights
+     * The search result highlights.
      *
      * @var array
      */
@@ -130,13 +131,13 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
         $this->_is_new = true;
 
-        $this->comments    = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->comments    = new ArrayCollection();
+        $this->custom_data = new ArrayCollection();
+        $this->attachments = new ArrayCollection();
     }
 
     /**
-     * Set the validating status
+     * Set the validating status.
      *
      * @param string $validating
      */
@@ -149,11 +150,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         }
     }
 
-
     /**
      * Find an existing data record for a field id.
      *
-     * @param  int                $field_id
+     * @param int $field_id
+     *
      * @return CustomDataFeedback
      */
     public function getCustomDataForField($field_id)
@@ -168,9 +169,8 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
             }
         }
 
-        return null;
+        return;
     }
-
 
     /**
      * @param CustomDataFeedback $data
@@ -182,6 +182,18 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
     }
 
+    /**
+     * Reset custom data
+     * todo add onPropertyChanged() if change tracking is needed.
+     *
+     * @return $this
+     */
+    public function resetCustomData()
+    {
+        $this->custom_data->clear();
+
+        return $this;
+    }
 
     /**
      * @param $rating
@@ -192,11 +204,12 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->recalculatePopularity();
     }
 
-
     public function recalculatePopularity()
     {
         $days = (time() - $this->date_created->getTimestamp()) / 86400;
-        if (!$days) $days = 1;
+        if (!$days) {
+            $days = 1;
+        }
 
         $pop = ceil($this->total_rating / sqrt($days));
 
@@ -205,7 +218,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
     public function recalculateVoteStats(array $votes)
     {
-        $this->num_ratings = count($votes);
+        $this->num_ratings  = count($votes);
         $this->total_rating = 0;
         foreach ($votes as $v) {
             $this->total_rating += $v->getRating();
@@ -218,9 +231,29 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return $this->category['id'];
     }
 
+    /**
+     * Set a category.
+     *
+     * @param FeedbackCategory $category
+     *
+     * @return $this
+     */
+    public function setCategory(FeedbackCategory $category = null)
+    {
+        if ($category) {
+            $this->setModelField('category', $category);
+        } else {
+            $this->setModelField('category', null);
+        }
+
+        return $this;
+    }
+
     public function setCategoryId($id)
     {
         $this->setModelField('category', App::getEntityRepository('DeskPRO:FeedbackCategory')->find($id));
+
+        return $this;
     }
 
     public function getLink($absolute = true)
@@ -255,7 +288,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
         switch ($status) {
             case self::STATUS_NEW:
-                $this['hidden_status'] = null;
+                $this['hidden_status']   = null;
                 $this['status_category'] = null;
                 break;
 
@@ -277,9 +310,9 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     public function setStatusCode($status_code)
     {
         if (strpos($status_code, '.') !== false) {
-            list ($status, $sub_status) = explode('.', $status_code, 2);
+            list($status, $sub_status) = explode('.', $status_code, 2);
         } else {
-            $status = $status_code;
+            $status     = $status_code;
             $sub_status = null;
         }
 
@@ -300,7 +333,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 break;
 
             case self::STATUS_HIDDEN:
-                $this['status'] = $status;
+                $this['status']        = $status;
                 $this['hidden_status'] = $sub_status;
                 break;
         }
@@ -308,14 +341,14 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
     public function getStatusCode()
     {
-        if ($this->status == self::STATUS_ACTIVE OR $this->status == self::STATUS_CLOSED) {
-            if($this->status_category) {
-                return $this->status . '.' . $this->status_category->id;
+        if ($this->status == self::STATUS_ACTIVE or $this->status == self::STATUS_CLOSED) {
+            if ($this->status_category) {
+                return $this->status.'.'.$this->status_category->id;
             } else {
                 return $this->status;
             }
         } elseif ($this->status == self::STATUS_HIDDEN) {
-            return $this->status . '.' . $this->hidden_status;
+            return $this->status.'.'.$this->hidden_status;
         } else {
             return $this->status;
         }
@@ -335,7 +368,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         if ($cat) {
             $path[] = $cat;
             while ($cat['parent']) {
-                $cat = $cat['parent'];
+                $cat    = $cat['parent'];
                 $path[] = $cat;
             }
         }
@@ -343,13 +376,42 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return $path;
     }
 
+    /**
+     * Reset labels.
+     *
+     * @return $this
+     */
+    public function resetLabels()
+    {
+        foreach ($this->labels as $data) {
+            $this->labels->removeElement($data);
+        }
 
-    public function addLabel($label)
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $this;
+    }
+
+    /**
+     * @param LabelFeedback $label
+     *
+     * @return $this
+     */
+    public function addLabel(LabelFeedback $label)
     {
         $label['feedback'] = $this;
         $this->labels->add($label);
+
+        return $this;
     }
 
+    /**
+     * @return \Application\DeskPRO\Entity\LabelFeedback[]
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
 
     /**
      * @return \Application\DeskPRO\Labels\LabelManager
@@ -363,9 +425,8 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return $this->_label_manager;
     }
 
-
     /**
-     * Add an attachment
+     * Add an attachment.
      *
      * @param FeedbackAttachment $attach
      */
@@ -381,15 +442,12 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $cache->invalidateRegex('/_feedback(-|_)/');
     }
 
-
-
-
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);
         if ($deep) {
             $data['labels'] = array();
-            foreach ($this->labels AS $label) {
+            foreach ($this->labels as $label) {
                 $data['labels'][] = $label['label'];
             }
         }
@@ -410,9 +468,10 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * Get Elasticsearch highlight data
+     * Get Elasticsearch highlight data.
      *
-     * @param  null       $field
+     * @param null $field
+     *
      * @return array|null
      */
     public function getElasticHighlights($field = null)
@@ -423,8 +482,38 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
             if (isset($this->_search_highlights[$field])) {
                 return $this->_search_highlights[$field];
             } else {
-                return null;
+                return;
             }
+        }
+    }
+
+    /**
+     * @param $field
+     */
+    public function removeCustomDataForField($field)
+    {
+        $parent_id = null;
+        $field_id  = $field['id'];
+        if ($field->parent) {
+            $parent_id = $field->parent['id'];
+        }
+
+        $change = false;
+        foreach ($this->custom_data as $data) {
+            if ($data['field_id'] == $field_id or $data['field_id'] == $parent_id) {
+                $change = true;
+                $this->custom_data->removeElement($data);
+
+                if ($parent_id) {
+                    $this->getStateChangeRecorder()->record("custom_data.$parent_id", $data, null, true);
+                } else {
+                    $this->getStateChangeRecorder()->record("custom_data.$field_id", $data, null, true);
+                }
+            }
+        }
+
+        if ($change) {
+            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
         }
     }
 
@@ -437,37 +526,37 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Feedback';
         $metadata->setPrimaryTable(array(
-            'name' => 'feedback',
+            'name'    => 'feedback',
             'indexes' => array(
-                'date_published_idx' => array('columns' => array( 0 => 'date_published' )),
-                'status_idx' => array('columns' => array('status')),
+                'date_published_idx' => array('columns' => array(0 => 'date_published')),
+                'status_idx'         => array('columns' => array('status')),
             ),
         ));
         $metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'hidden_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'hidden_status', ));
-        $metadata->mapField(array( 'fieldName' => 'validating', 'type' => 'string', 'length' => 35, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'validating', ));
-        $metadata->mapField(array( 'fieldName' => 'popularity', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'popularity', ));
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'slug', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'slug', ));
-        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-        $metadata->mapField(array( 'fieldName' => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content', ));
-        $metadata->mapField(array( 'fieldName' => 'view_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'view_count', ));
-        $metadata->mapField(array( 'fieldName' => 'total_rating', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'total_rating', ));
-        $metadata->mapField(array( 'fieldName' => 'num_comments', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_comments', ));
-        $metadata->mapField(array( 'fieldName' => 'num_ratings', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_ratings', ));
-        $metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-        $metadata->mapField(array( 'fieldName' => 'date_published', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_published', ));
+        $metadata->mapField(array('fieldName' => 'hidden_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'hidden_status'));
+        $metadata->mapField(array('fieldName' => 'validating', 'type' => 'string', 'length' => 35, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'validating'));
+        $metadata->mapField(array('fieldName' => 'popularity', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'popularity'));
+        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array('fieldName' => 'slug', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'slug'));
+        $metadata->mapField(array('fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
+        $metadata->mapField(array('fieldName' => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content'));
+        $metadata->mapField(array('fieldName' => 'view_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'view_count'));
+        $metadata->mapField(array('fieldName' => 'total_rating', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'total_rating'));
+        $metadata->mapField(array('fieldName' => 'num_comments', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_comments'));
+        $metadata->mapField(array('fieldName' => 'num_ratings', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_ratings'));
+        $metadata->mapField(array('fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status'));
+        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        $metadata->mapField(array('fieldName' => 'date_published', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_published'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'status_category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackStatusCategory', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'status_category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', ), ), 'dpApi' => true ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'revisions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackRevision', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'feedback',  ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'comments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackComment', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'feedback',  ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelFeedback', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'feedback', 'orphanRemoval' => true, ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataFeedback', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'feedback', 'orphanRemoval' => true, 'dpApi' => true ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackAttachment', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'feedback', 'dpApi' => true, 'dpApiDeep' => true, 'dpApiPrimary' => true ));
+        $metadata->mapManyToOne(array('fieldName' => 'status_category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackStatusCategory', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'status_category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true));
+        $metadata->mapManyToOne(array('fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'category_id', 'referencedColumnName' => 'id')), 'dpApi' => true));
+        $metadata->mapOneToMany(array('fieldName' => 'revisions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackRevision', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback'));
+        $metadata->mapOneToMany(array('fieldName' => 'comments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackComment', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback'));
+        $metadata->mapOneToMany(array('fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelFeedback', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback', 'orphanRemoval' => true));
+        $metadata->mapOneToMany(array('fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataFeedback', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback', 'orphanRemoval' => true, 'dpApi' => true));
+        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true));
+        $metadata->mapManyToOne(array('fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'dpApi' => true));
+        $metadata->mapOneToMany(array('fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackAttachment', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback', 'dpApi' => true, 'dpApiDeep' => true, 'dpApiPrimary' => true));
     }
 }

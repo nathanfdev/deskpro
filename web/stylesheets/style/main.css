@@ -3702,3 +3702,7 @@ html input[disabled] {
   text-transform: none;
 }
 /* IE 9 fixes */
+
+.intl-tel-input input {
+  padding-left: 48px;
+}

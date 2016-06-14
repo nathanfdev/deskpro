@@ -1188,6 +1188,9 @@ class ExchangeWebServices
      */
     protected function initializeSoapClient()
     {
+        // DESKPRO EDIT: Temporarily re-enable entity loader
+        $v = libxml_disable_entity_loader(false);
+
         $this->soap = new NTLMSoapClient_Exchange(
             dirname(__FILE__).'/wsdl/services.wsdl',
             array(
@@ -1198,6 +1201,8 @@ class ExchangeWebServices
                 'impersonation' => $this->impersonation,
             )
         );
+
+        libxml_disable_entity_loader($v);
 
         return $this->soap;
     }

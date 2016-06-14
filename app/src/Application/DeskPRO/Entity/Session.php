@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -41,12 +40,12 @@ use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
- * Active user sessions
+ * Active user sessions.
  */
 class Session extends \Application\DeskPRO\Domain\DomainObject
 {
     const STATUS_AVAILABLE = 'available';
-    const STATUS_AWAY = 'away';
+    const STATUS_AWAY      = 'away';
 
     /**
      * The unique ID.
@@ -56,14 +55,14 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
     protected $id;
 
     /**
-     * The authcode for the session to verify an id
+     * The authcode for the session to verify an id.
      *
      * @var string
      */
     protected $auth;
 
     /**
-     * The Interface the session is for
+     * The Interface the session is for.
      *
      * @var string
      */
@@ -80,14 +79,14 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
     protected $visitor = null;
 
     /**
-     * The users user agent string
+     * The users user agent string.
      *
      * @var string
      */
     protected $user_agent = null;
 
     /**
-     * The users IP address
+     * The users IP address.
      *
      * @var string
      */
@@ -114,13 +113,15 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
     protected $is_helpdesk = false;
 
     /**
-     * (Agents) Status (available or away)
+     * (Agents) Status (available or away).
+     *
      * @var string
      */
     protected $active_status = 'available';
 
     /**
-     * (Agents) Wehn status is available, if they are available for chat
+     * (Agents) Wehn status is available, if they are available for chat.
+     *
      * @var bool
      */
     protected $is_chat_available = true;
@@ -154,7 +155,6 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
         $this->_is_new = true;
     }
 
-
     /**
      * @return bool
      */
@@ -171,8 +171,6 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
-
-
     /**
      * Gets the session ID for this session. It's an encoded ID and an authcode.
      *
@@ -182,7 +180,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
     {
         $id_enc = Util::baseEncode($this->id, Util::BASE36_ALPHABET);
 
-        return $id_enc . '-' . $this->auth;
+        return $id_enc.'-'.$this->auth;
     }
 
     /**
@@ -230,8 +228,9 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
      *
      * Most notably used as the "proxy key"
      *
-     * @param  string $secret  Another component to add to the hash
-     * @param  bool   $not_vis True for do not use visitor secret. Default is to use visitor if it exists.
+     * @param string $secret  Another component to add to the hash
+     * @param bool   $not_vis True for do not use visitor secret. Default is to use visitor if it exists.
+     *
      * @return string
      */
     public function getSessionSecret($name = '', $not_vis = false)
@@ -240,14 +239,15 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
             return $this->visitor->getVisitorSecret($name);
         }
 
-        return md5($this->id . $this->auth . App::getAppSecret() . $name);
+        return md5($this->id.$this->auth.App::getAppSecret().$name);
     }
 
     /**
-     * Generate a security token based off of this session
+     * Generate a security token based off of this session.
      *
      * @param $name
-     * @param  int    $timeout
+     * @param int $timeout
+     *
      * @return string
      */
     public function generateSecurityToken($name = '', $timeout = 43200)
@@ -260,9 +260,10 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Check a security token to see if its valid
+     * Check a security token to see if its valid.
      *
      * @param $name
+     *
      * @return bool
      */
     public function checkSecurityToken($name = '', $token)
@@ -281,9 +282,11 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 
     public static function getIdFromCode($sess_code)
     {
-        if (!is_string($sess_code) || !strpos($sess_code, '-')) return null;
+        if (!is_string($sess_code) || !strpos($sess_code, '-')) {
+            return;
+        }
 
-        list ($session_id, ) = explode('-', $sess_code, 2);
+        list($session_id) = explode('-', $sess_code, 2);
 
         $session_id = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
 
@@ -298,24 +301,24 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Session';
-        $metadata->setPrimaryTable(array( 'name' => 'sessions', 'indexes' => array( 'date_last_idx' => array( 'columns' => array( 0 => 'date_last', 1 => 'is_person', ), ), ), ));
+        $metadata->setPrimaryTable(array('name' => 'sessions', 'indexes' => array('date_last_idx' => array('columns' => array(0 => 'date_last', 1 => 'is_person')))));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
-        $metadata->mapField(array( 'fieldName' => 'interface', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'interface', ));
-        $metadata->mapField(array( 'fieldName' => 'user_agent', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'user_agent', ));
-        $metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'ip_address', ));
-        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
-        $metadata->mapField(array( 'fieldName' => 'is_person', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_person', ));
-        $metadata->mapField(array( 'fieldName' => 'is_bot', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_bot', ));
-        $metadata->mapField(array( 'fieldName' => 'is_helpdesk', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_helpdesk', ));
-        $metadata->mapField(array( 'fieldName' => 'active_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'active_status', ));
-        $metadata->mapField(array( 'fieldName' => 'is_chat_available', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_chat_available', ));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-        $metadata->mapField(array( 'fieldName' => 'date_last', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_last', ));
-        $metadata->mapField(array( 'fieldName' => 'date_last_page', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_last_page', ));
+        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array('fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth'));
+        $metadata->mapField(array('fieldName' => 'interface', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'interface'));
+        $metadata->mapField(array('fieldName' => 'user_agent', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'user_agent'));
+        $metadata->mapField(array('fieldName' => 'ip_address', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'ip_address'));
+        $metadata->mapField(array('fieldName' => 'data', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data'));
+        $metadata->mapField(array('fieldName' => 'is_person', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_person'));
+        $metadata->mapField(array('fieldName' => 'is_bot', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_bot'));
+        $metadata->mapField(array('fieldName' => 'is_helpdesk', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_helpdesk'));
+        $metadata->mapField(array('fieldName' => 'active_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'active_status'));
+        $metadata->mapField(array('fieldName' => 'is_chat_available', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_chat_available'));
+        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        $metadata->mapField(array('fieldName' => 'date_last', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_last'));
+        $metadata->mapField(array('fieldName' => 'date_last_page', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_last_page'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array('fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
     }
 }

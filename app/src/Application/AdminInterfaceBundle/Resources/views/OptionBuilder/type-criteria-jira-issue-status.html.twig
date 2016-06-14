@@ -3,7 +3,7 @@
 		<table class="display-table">
 			<tr>
 				<td class="nowrap" style="padding-right: 8px;"><label class="row-label">{{ ng_var('type_title') }}</label></td>
-				<td ng-show="rowOpts.rowEnabled" width="100%">
+				<td ng-show="rowOpts.rowEnabled" width="100%" class="row-options">
                     <select ui-select2="{dropdownAutoWidth:true}" ng-model="model.all" style="min-width: 50px;">
                         <option value="">Any</option>
                         <option value="1">All</option>

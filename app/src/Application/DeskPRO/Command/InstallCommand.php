@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Commands
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Commands
+ */
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -40,6 +39,7 @@ use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use Doctrine\DBAL\DBALException;
 use Monolog\Logger;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -50,18 +50,35 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     protected function configure()
     {
         $this->setName('dp:install');
-        $this->addOption('insert-initial', null, InputOption::VALUE_NONE, "Unused (exists for legacy)");
-        $this->addOption('admin-email', null, InputOption::VALUE_REQUIRED, "The initial admin email");
-        $this->addOption('admin-password', null, InputOption::VALUE_REQUIRED, "The initial admin password");
+        $this->addOption('insert-initial', null, InputOption::VALUE_NONE, 'Unused (exists for legacy)');
+        $this->addOption('admin-email', null, InputOption::VALUE_OPTIONAL, 'The initial admin email');
+        $this->addOption('admin-password', null, InputOption::VALUE_OPTIONAL, 'The initial admin password');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        try {
+            $ret = $this->doExecute($input, $output);
+            $this->sendInstallReport();
+
+            return $ret;
+        } catch (\Exception $e) {
+            $this->sendInstallReport($e);
+        }
+    }
+
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         if (!$this->ensureNotInstalled()) {
             exit;
         }
 
-        if (!$input->getOption('admin-email') || !$input->getOption('admin-password')) {
+        $is_user = true;
+        if (!$input->getOption('admin-email') && !$input->getOption('admin-password')) {
+            $input->setOption('admin-email', 'admin@example.com');
+            $input->setOption('admin-password', Strings::random());
+            $is_user = false;
+        } elseif (!$input->getOption('admin-email') || !$input->getOption('admin-password')) {
             echo "Please specify --admin-email and --admin-password\n";
 
             return 1;
@@ -70,7 +87,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         $this->createDatabase();
         $this->getLogger()->log('Install::createTables', 'debug');
 
-        $db = $this->getDb();
+        $db    = $this->getDb();
         $check = $db->fetchColumn("SHOW TABLES LIKE 'install_data'");
 
         if ($check != 'install_data') {
@@ -84,12 +101,12 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
                     ) ENGINE=InnoDB DEFAULT CHARSET=latin1
                 ");
             } catch (\Exception $e) {
-                $this->getLogger()->log('Failed to craete install_data: ' . $e->getCode() . ' ' . $e->getMessage(), 'err');
+                $this->getLogger()->log('Failed to craete install_data: '.$e->getCode().' '.$e->getMessage(), 'err');
 
                 return;
             }
 
-            $tableinfo = $db->fetchColumn("SHOW CREATE TABLE `install_data`", array(), 1);
+            $tableinfo = $db->fetchColumn('SHOW CREATE TABLE `install_data`', array(), 1);
             if (stripos($tableinfo, 'innodb') === false) {
                 $this->getLogger()->log('install_data is not innodb', 'err');
 
@@ -142,35 +159,43 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             }
         }
 
-        $agent = new \Application\DeskPRO\Entity\Person();
+        $agent             = new \Application\DeskPRO\Entity\Person();
         $agent->first_name = 'Admin';
-        $agent->last_name = 'Admin';
+        $agent->last_name  = 'Admin';
         $agent->setEmail($initial_email, true);
         $agent->setPassword($initial_password);
-        $agent->is_user = true;
-        $agent->is_confirmed = true;
+        $agent->is_user            = true;
+        $agent->is_confirmed       = true;
         $agent->is_agent_confirmed = true;
-        $agent->is_agent = true;
-        $agent->can_agent = true;
-        $agent->can_admin = true;
-        $agent->can_billing = true;
-        $agent->can_reports = true;
+        $agent->is_agent           = true;
+        $agent->can_agent          = true;
+        $agent->can_admin          = true;
+        $agent->can_billing        = true;
+        $agent->can_reports        = true;
 
         $this->getOrm()->persist($agent);
         $this->getOrm()->flush();
 
-        $this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
+        if (!$is_user) {
+            $label          = new Entity\LabelPerson();
+            $label['label'] = 'not_user';
+            $agent->addLabel($label);
+            $this->getOrm()->persist($label);
+            $this->getOrm()->flush();
+        }
+
+        $this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1, 'is_active' => 1));
 
         // Install data stuff
-        $AGENTGROUP_ALL = null; // should be defined by the time we finish processing data.php
+        $AGENTGROUP_ALL     = null; // should be defined by the time we finish processing data.php
         $USERGROUP_EVERYONE = null; // should be defined by the time we finish processing data.php
-        $AGENT = $agent; // can be used in data.php
-        $WEB_INSTALL = true;
-        $IMPORT_INSTALL = false;
+        $AGENT              = $agent; // can be used in data.php
+        $WEB_INSTALL        = true;
+        $IMPORT_INSTALL     = false;
 
         $install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
-        $em = $this->getOrm();
-        $translate = $this->getContainer()->get('deskpro.core.translate');
+        $em           = $this->getOrm();
+        $translate    = $this->getContainer()->get('deskpro.core.translate');
 
         foreach ($install_data as $php) {
             eval($php);
@@ -198,20 +223,20 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         if ($USERGROUP_EVERYONE) {
             $scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
             foreach ($scanner->getNames() as $p_name) {
-                $p = new \Application\DeskPRO\Entity\Permission();
+                $p            = new \Application\DeskPRO\Entity\Permission();
                 $p->usergroup = $USERGROUP_EVERYONE;
-                $p->name = $p_name;
-                $p->value = 1;
+                $p->name      = $p_name;
+                $p->value     = 1;
                 $this->getOrm()->persist($p);
             }
             $this->getOrm()->flush();
         }
 
-        $data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
+        $data_init             = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
         $data_init->admin_user = $agent;
         $data_init->run();
         App::getDb()->replace('settings', array(
-            'name' => 'core.done_data_initializer',
+            'name'  => 'core.done_data_initializer',
             'value' => 1,
         ));
 
@@ -233,37 +258,37 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         App::getDb()->replace('install_data', array(
             'build' => 'default',
-            'name' => 'install_build',
-            'data' => DP_BUILD_TIME
+            'name'  => 'install_build',
+            'data'  => DP_BUILD_TIME,
         ));
 
         App::getDb()->replace('settings', array(
-            'name' => 'core.deskpro_build',
+            'name'  => 'core.deskpro_build',
             'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
         ));
         App::getDb()->replace('settings', array(
-            'name' => 'core.deskpro_build_num',
+            'name'  => 'core.deskpro_build_num',
             'value' => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
         ));
         App::getDb()->replace('settings', array(
-            'name' => 'core.install_build',
+            'name'  => 'core.install_build',
             'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
         ));
 
         App::getDb()->replace('settings', array(
-            'name' => 'core.install_timestamp',
+            'name'  => 'core.install_timestamp',
             'value' => time(),
         ));
         App::getDb()->replace('settings', array(
-            'name' => 'core.install_key',
-            'value' => Strings::random(20, Strings::CHARS_KEY),
+            'name'  => 'core.install_key',
+            'value' => DpStrings::random(20, Strings::CHARS_KEY),
         ));
         App::getDb()->replace('settings', array(
-            'name' => 'core.deskpro_version',
+            'name'  => 'core.deskpro_version',
             'value' => date('YmdHis'),
         ));
         App::getDb()->replace('settings', array(
-            'name' => 'core.install_via_cmd',
+            'name'  => 'core.install_via_cmd',
             'value' => 1,
         ));
     }
@@ -295,11 +320,10 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         try {
             $this->getDb()->connect();
 
-            $installed = $this->getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.install_timestamp'));
+            $installed = $this->getDb()->fetchColumn('SELECT value FROM settings WHERE name = ?', array('core.install_timestamp'));
             if ($installed) {
                 return false;
             }
-
         } catch (\Exception $e) {
             return true;
         }
@@ -320,5 +344,56 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     public function getOrm()
     {
         return App::getOrm();
+    }
+
+    protected function sendInstallReport($exception = null)
+    {
+        if ($exception) {
+            $errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($exception);
+            unset($errinfo['exception']);
+        } else {
+            $errinfo = 0;
+        }
+
+        $install_time = 0;
+        try {
+            $install_time = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build='default' AND name='install_time'");
+        } catch (\Exception $e) {
+        }
+        if (!$install_time) {
+            $install_time = 0.0;
+        }
+
+        if (!defined('DP_BUILD_TIME')) {
+            if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
+                require_once DP_ROOT.'/sys/config/build-time.php';
+            }
+        }
+        if (!defined('DP_BUILD_NUM')) {
+            if (file_exists(DP_ROOT.'/sys/config/build-num.php')) {
+                require DP_ROOT.'/sys/config/build-num.php';
+            }
+        }
+
+        $data = array(
+            'source_type'   => 'install.web',
+            'log'           => @file_get_contents($this->getContainer()->getLogDir().'/install.log'),
+            'errinfo'       => $errinfo,
+            'install_token' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
+            'nostats'       => isset($_COOKIE['stats_opt_out']) && $_COOKIE['stats_opt_out'] ? 1 : 0,
+            'total_time'    => $install_time,
+            'build'         => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+            'build_num'     => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
+        );
+
+        if (!isset($_COOKIE['stats_opt_out']) || !$_COOKIE['stats_opt_out']) {
+            try {
+                $stats_fetcher = new \Application\InstallBundle\Data\ServerStats($this->getDb());
+                $data          = array_merge($data, $stats_fetcher->getStats());
+            } catch (\Exception $e) {
+            }
+        }
+
+        \Application\DeskPRO\Service\ErrorReporter::sendInstallReport($data);
     }
 }

@@ -1,5 +1,31 @@
 <?php
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 function deskpro_install_check_reqs()
 {
     $errors = array();
@@ -49,9 +75,9 @@ function deskpro_install_check_reqs()
         $errors['soap_check'] = 'recommended';
     }
 
-    $enabledApc = function_exists('apc_store') && (int) ini_get('apc.enabled');
+    $enabledApc      = function_exists('apc_store') && (int) ini_get('apc.enabled');
     $enabledWincache = extension_loaded('wincache') && (int) ini_get('wincache.ocenabled');
-    $enabledOpcache = (int) ini_get('opcache.enable') && extension_loaded('Zend OPcache');
+    $enabledOpcache  = (int) ini_get('opcache.enable') && extension_loaded('Zend OPcache');
 
     if (!($enabledApc || $enabledWincache || $enabledOpcache)) {
         $errors['apc_check'] = 'recommended';
@@ -85,17 +111,22 @@ function deskpro_install_check_reqs()
         $errors['ldap_check'] = 'recommended';
     }
 
+    $ldap_conn_limit = @ini_get('ldap.max_links');
+    if ($ldap_conn_limit != '-1' && (int) $ldap_conn_limit < 5) {
+        $errors['ldap_max_limit'] = 'recommended';
+    }
+
     return $errors;
 }
 
 function deskpro_install_check_version()
 {
-    return version_compare(phpversion(), '5.3.2', '>=');
+    return version_compare(phpversion(), '5.3.9', '>=');
 }
 
 function deskpro_install_check_pcre()
 {
-    $backtrack_limit = (int)(@ini_get('pcre.backtrack_limit'));
+    $backtrack_limit = (int) (@ini_get('pcre.backtrack_limit'));
 
     if ($backtrack_limit < 100000) {
         return false;
@@ -153,7 +184,50 @@ function deskpro_install_check_pdo_mysql()
 
 function deskpro_install_check_image_manip()
 {
-    if (class_exists('Imagick', false) || class_exists('Gmagick', false) || function_exists('gd_info')) {
+    if (function_exists('gd_info')) {
+        $inf = gd_info();
+        if (!@$inf['GIF Create Support']) {
+            return false;
+        }
+        if (!@$inf['JPEG Support']) {
+            return false;
+        }
+        if (!@$inf['PNG Support']) {
+            return false;
+        }
+
+        return true;
+    }
+
+    if (class_exists('Imagick', false)) {
+        $imagick        = new \Imagick();
+        $imagickFormats = $imagick->queryFormats();
+        if (!in_array('PNG', $imagickFormats)) {
+            return false;
+        }
+        if (!in_array('GIF', $imagickFormats)) {
+            return false;
+        }
+        if (!in_array('JPEG', $imagickFormats)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    if (class_exists('Gmagick', false)) {
+        $gmagick        = new \Gmagick();
+        $gmagickFormats = $gmagick->queryFormats();
+        if (!in_array('PNG', $gmagickFormats)) {
+            return false;
+        }
+        if (!in_array('GIF', $gmagickFormats)) {
+            return false;
+        }
+        if (!in_array('JPEG', $gmagickFormats)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -172,13 +246,13 @@ function deskpro_install_check_memory_limit()
 
 function deskpro_install_simple_data_submit($log)
 {
-    $install_token_file = dp_get_log_dir() . '/install_token.dat';
+    $install_token_file = dp_get_log_dir().'/install_token.dat';
     if (file_exists($install_token_file)) {
         $GLOBALS['dp_install_token'] = @file_get_contents($install_token_file);
     } elseif (isset($_COOKIE['dp_install_token'])) {
         $GLOBALS['dp_install_token'] = $_COOKIE['dp_install_token'];
     } else {
-        $GLOBALS['dp_install_token'] = sha1(uniqid('', true) . mt_rand(1000,99999));
+        $GLOBALS['dp_install_token'] = sha1(uniqid('', true).mt_rand(1000, 99999));
     }
 
     @file_put_contents($install_token_file, $GLOBALS['dp_install_token']);
@@ -186,28 +260,35 @@ function deskpro_install_simple_data_submit($log)
 
     if (!defined('DP_BUILD_TIME')) {
         if (file_exists(DP_ROOT.'/sys/config/build-time.php')) {
-            require_once(DP_ROOT.'/sys/config/build-time.php');
+            require_once DP_ROOT.'/sys/config/build-time.php';
         }
     }
 
     $url = 'http://';
-    if (isset($_SERVER['HOST'])) $url .= $_SERVER['HOST'];
-    elseif (isset($_SERVER['SERVER_NAME'])) $url .= $_SERVER['SERVER_NAME'];
-    elseif (isset($_SERVER['SERVER_ADDR'])) $url .= $_SERVER['SERVER_ADDR'];
-    if (isset($_SERVER['REQUEST_URI'])) $url .= $_SERVER['REQUEST_URI'];
-    elseif (isset($_SERVER['PHP_SELF'])) $url .= $_SERVER['PHP_SELF'];
+    if (isset($_SERVER['HOST'])) {
+        $url .= $_SERVER['HOST'];
+    } elseif (isset($_SERVER['SERVER_NAME'])) {
+        $url .= $_SERVER['SERVER_NAME'];
+    } elseif (isset($_SERVER['SERVER_ADDR'])) {
+        $url .= $_SERVER['SERVER_ADDR'];
+    }
+    if (isset($_SERVER['REQUEST_URI'])) {
+        $url .= $_SERVER['REQUEST_URI'];
+    } elseif (isset($_SERVER['PHP_SELF'])) {
+        $url .= $_SERVER['PHP_SELF'];
+    }
 
     $data = array(
-        'source_type' => 'install.web',
-        'log' => $log,
+        'source_type'   => 'install.web',
+        'log'           => $log,
         'install_token' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
-        'nostats' => 0,
-        'total_time' => 0,
-        'error_type' => 'php',
-        'error_info' => array(
+        'nostats'       => 0,
+        'total_time'    => 0,
+        'error_type'    => 'php',
+        'error_info'    => array(
             'exception_type' => 'Application\\InstallBundle\\Install\\ServerCheckException',
-            'summary' => 'Pre-boot check failures',
-            'errstr' => 'Pre-boot check failures',
+            'summary'        => 'Pre-boot check failures',
+            'errstr'         => 'Pre-boot check failures',
         ),
         'root'              => defined('DP_ROOT')                 ? DP_ROOT : '',
         'server_ip'         => isset($_SERVER['SERVER_ADDR'])     ? $_SERVER['SERVER_ADDR'] : '',
@@ -216,7 +297,7 @@ function deskpro_install_simple_data_submit($log)
         'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
         'client_request'    => isset($_REQUEST)                   ? implode(', ', array_keys($_REQUEST)) : '',
         'build'             => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0',
-        'url'               => $url
+        'url'               => $url,
     );
 
     $data['php_version'] = phpversion();
@@ -265,7 +346,7 @@ function deskpro_install_simple_data_submit($log)
             $data['php_has_pdo_mysql'] = 0;
         }
     } else {
-        $data['php_has_pdo'] = 0;
+        $data['php_has_pdo']       = 0;
         $data['php_has_pdo_mysql'] = 0;
     }
 
@@ -287,26 +368,25 @@ function deskpro_install_simple_data_submit($log)
         $data['php_has_tokenizer'] = 0;
     }
 
-    if (defined('DP_MA_SERVER')) {
-        $ma_server = DP_MA_SERVER;
+    if (defined('DP_MA_SERVER_SECURE')) {
+        $ma_server = DP_MA_SERVER_SECURE;
     } else {
-        $ma_server = 'http://www.deskpro.com/members';
+        $ma_server = 'https://www.deskpro.com/members';
     }
 
     $opts = array(
         'http' => array(
-            'timeout' => 10
-        )
+            'timeout' => 10,
+        ),
     );
 
-    $context  = stream_context_create($opts);
+    $context = stream_context_create($opts);
 
-    @file_get_contents($ma_server . '/api/data-submit/report-install.json?' . http_build_query($data, '', '&'), false, $context);
+    @file_get_contents($ma_server.'/api/data-submit/report-install.json?'.http_build_query($data, '', '&'), false, $context);
 }
 
 function deskpro_install_check_data_writable($data_dir = null)
 {
-
     $failed = false;
 
     // data directory
@@ -360,16 +440,15 @@ if (deskpro_install_check_version()) {
 
 function deskpro_install_basic_error($message, $title = 'DeskPRO Installation')
 {
-    $page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/preboot-error.html');
+    $page_html = file_get_contents(DP_ROOT.'/src/Application/DeskPRO/Resources/views/preboot-error.html');
     $page_html = str_replace('{{ TITLE }}', $title, $page_html);
     $page_html = str_replace('{{ MESSAGE }}', $message, $page_html);
 
     return $page_html;
 }
 
-
 /**
- * This is a copy of Orb\Util\Numbers::parseIniSize() because that class isn't included at the time preboot is called
+ * This is a copy of Orb\Util\Numbers::parseIniSize() because that class isn't included at the time preboot is called.
  */
 function deskpro_install_check_parseinisize($val)
 {
@@ -377,21 +456,21 @@ function deskpro_install_check_parseinisize($val)
         return $val;
     }
 
-    $val = trim($val);
-    $last = strtoupper($val[strlen($val)-1]);
+    $val  = trim($val);
+    $last = strtoupper($val[strlen($val) - 1]);
 
     // Already in bytes
     if (ctype_digit($last)) {
-        return (int)$val;
+        return (int) $val;
     }
 
-    $val = (int)$val;
+    $val = (int) $val;
 
     if ($last != 'G' && $last != 'M' && $last != 'K') {
         return 0;
     }
 
-    switch($last) {
+    switch ($last) {
         case 'G':
             $val *= 1024;
         case 'M':

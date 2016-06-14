@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\EmailBundle\Mail\RawMessage;
 
 use Orb\Util\Arrays;
@@ -49,7 +46,7 @@ use Zend\Mime\Decode;
 class Rfc2822Decoder implements RawMessageDecoderInterface
 {
     /**
-     * Decodes a raw RFC2822 message into parts:
+     * Decodes a raw RFC2822 message into parts:.
      *
      * - subject
      * - from
@@ -61,6 +58,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
      * - attachments[]
      *
      * @param resource $raw_fp
+     *
      * @return RawMessage
      */
     public function createRawMessage($raw_fp)
@@ -72,6 +70,12 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
         $message = new Part(array(
             'raw' => $raw,
         ));
+
+        $message->getHeaders()->getPluginClassLoader()->registerPlugin('bcc',      'Application\\EmailBundle\\Mail\\RawMessage\\Mail\\Header\\Bcc');
+        $message->getHeaders()->getPluginClassLoader()->registerPlugin('cc',       'Application\\EmailBundle\\Mail\\RawMessage\\Mail\\Header\\Cc');
+        $message->getHeaders()->getPluginClassLoader()->registerPlugin('from',     'Application\\EmailBundle\\Mail\\RawMessage\\Mail\\Header\\From');
+        $message->getHeaders()->getPluginClassLoader()->registerPlugin('reply-to', 'Application\\EmailBundle\\Mail\\RawMessage\\Mail\\Header\\ReplyTo');
+        $message->getHeaders()->getPluginClassLoader()->registerPlugin('to',       'Application\\EmailBundle\\Mail\\RawMessage\\Mail\\Header\\To');
 
         $data = array(
             'from'        => $this->_readAddresses($message, 'from', true),
@@ -95,6 +99,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
      * @param Part   $message
      * @param string $header_name The header to read from. E.g., 'to' or 'cc'
      * @param bool   $single      True when only one address should be returned
+     *
      * @return array
      */
     private function _readAddresses(Part $message, $header_name, $single = false)
@@ -109,10 +114,10 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
             return array();
         }
 
-        $list = array_values(Arrays::map(function($v) {
+        $list = array_values(Arrays::map(function ($v) {
             return array(
                 'name'  => trim($v->getName(), "\"'"),
-                'email' => $v->getEmail()
+                'email' => $v->getEmail(),
             );
         }, $header->getAddressList()));
 
@@ -128,6 +133,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
      * or to or cc etc).
      *
      * @param Part $message
+     *
      * @return array
      */
     private function _readHeaders(Part $message)
@@ -165,6 +171,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
      * Reads a subject from an email message.
      *
      * @param Part $message
+     *
      * @return string
      */
     private function _readSubject(Part $message)
@@ -186,6 +193,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
      * Reads a plain-text version of the email.
      *
      * @param Part $message
+     *
      * @return string
      */
     private function _readTextPart(Part $message)
@@ -197,6 +205,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
      * Reads a html-text version of the email.
      *
      * @param Part $message
+     *
      * @return string
      */
     private function _readHtmlPart(Part $message)
@@ -207,8 +216,9 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
     /**
      * Reads the body of a message.
      *
-     * @param Part $message
-     * @param string $body_type  'text/plain' or 'text/html'
+     * @param Part   $message
+     * @param string $body_type 'text/plain' or 'text/html'
+     *
      * @return string|null
      */
     private function _readBodyPart(Part $message, $body_type)
@@ -238,33 +248,34 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
                 return $this->_readBodyPart($try_multi, $body_type);
             }
         } else {
-            $type = $this->_getHeaderOrNull($message, 'Content-Type');
+            $type        = $this->_getHeaderOrNull($message, 'Content-Type');
             $disposition = $this->_getHeaderOrNull($message, 'Content-Disposition');
 
             // Ignore attachment parts
             if ($disposition && strtok($disposition->getFieldValue(), ';') != 'inline') {
-                return null;
+                return;
             }
 
             if ($is_plain) {
                 // missing content-type means we assume content-type of text-plain,
                 // so if its missing, its as good as being text/plain
                 if (!$type || (strtok($type->getFieldValue(), ';') == $body_type)) {
-                    return $message->getContent();
+                    return $this->decodeMessage($message);
                 }
             } else {
                 if ($type && (strtok($type->getFieldValue(), ';') == $body_type)) {
-                    return $message->getContent();
+                    return $this->decodeMessage($message);
                 }
             }
         }
 
-        return null;
+        return;
     }
 
     /**
      * @param Part $message
      * @param $header_name
+     *
      * @return array|\ArrayIterator|null|string|\Zend\Mail\Header\HeaderInterface
      */
     private function _getHeaderOrNull(Part $message, $header_name)
@@ -272,14 +283,15 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
         try {
             return $message->getHeader($header_name);
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
     /**
-     * Reads attachments from the email
+     * Reads attachments from the email.
      *
      * @param Part $message
+     *
      * @return string
      */
     private function _readAttachments(Part $message)
@@ -292,13 +304,13 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
                 $attachments = array_merge($attachments, $this->_readAttachments($sub_part));
             }
         } else {
-            $type = $this->_getHeaderOrNull($message, 'Content-Type');
-            $type_split = $type ? Decode::splitHeaderField($type->getFieldValue()) : null;
+            $type         = $this->_getHeaderOrNull($message, 'Content-Type');
+            $type_split   = $type ? Decode::splitHeaderField($type->getFieldValue()) : null;
             $content_type = $type_split ? $type_split[0] : 'application/octet-stream';
 
-            $disposition = $this->_getHeaderOrNull($message, 'Content-Disposition');
+            $disposition       = $this->_getHeaderOrNull($message, 'Content-Disposition');
             $disposition_split = $disposition ? Decode::splitHeaderField($disposition->getFieldValue()) : null;
-            $is_attach_disp = $disposition_split ? $disposition_split[0] == 'attachment' : false;
+            $is_attach_disp    = $disposition_split ? $disposition_split[0] == 'attachment' : false;
 
             $is_attach = false;
             if (!$type && !$is_attach_disp) {
@@ -319,26 +331,17 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
                     $filename = $disposition_split['filename'];
                 }
 
-                $enc = $this->_getHeaderOrNull($message, 'Content-Transfer-Encoding');
-                $enc_type = $enc ? Decode::splitHeaderField($enc->getFieldValue(), 0) : 'binary';
-
                 $content_id_header = $this->_getHeaderOrNull($message, 'Content-ID');
-                $content_id = $content_id_header ? Decode::splitHeaderField($content_id_header->getFieldValue(), 0) : null;
+                $content_id        = $content_id_header ? Decode::splitHeaderField($content_id_header->getFieldValue(), 0) : null;
 
-                $data = $message->getContent();
-                switch (strtolower($enc_type)) {
-                    case 'quoted-printable':
-                    case 'base64':
-                        $data = self::decodeString($data, $enc_type);
-                        break;
-                }
+                $data = $this->decodeMessage($message);
 
                 $a = array(
                     'filename' => $filename,
                     'cid'      => $content_id,
                     'bin_data' => $data,
                     'type'     => $content_type,
-                    'crc32'    => sprintf("%x", crc32($data))
+                    'crc32'    => sprintf('%x', crc32($data)),
                 );
 
                 $attachments[] = $a;
@@ -348,16 +351,33 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
         return $attachments;
     }
 
+    protected function decodeMessage(Part $message)
+    {
+        $enc      = $this->_getHeaderOrNull($message, 'Content-Transfer-Encoding');
+        $enc_type = $enc ? Decode::splitHeaderField($enc->getFieldValue(), 0) : 'binary';
+
+        $data = $message->getContent();
+        switch (strtolower($enc_type)) {
+            case 'quoted-printable':
+            case 'base64':
+                $data = self::decodeString($data, $enc_type);
+                break;
+        }
+
+        return $data;
+    }
+
     /**
      * @param string $string
      * @param string $enc_type The way the string is encoded: quoted-printable, base64, 7bit, 8bit
+     *
      * @return string
      */
     public static function decodeString($string, $enc_type)
     {
         switch (strtolower($enc_type)) {
             case 'quoted-printable':
-                $string = Decode::decodeQuotedPrintable($string);
+                $string = quoted_printable_decode($string);
                 break;
             case 'base64':
                 $string = base64_decode($string);

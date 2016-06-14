@@ -32,7 +32,7 @@
 			</span>
 
             <% if (ticket_display.locked_by_agent) { %>
-            <span class="agent-inline-icon pull-left">
+			<span class="tipped agent-inline-icon pull-left" title="Locked by <%- ticket_display.locked_by_agent.display_name + ' (' + ticket_display.date_locked + ')' %>">
                 <i class="icon-lock" style="font-size: 150%;"></i>
             </span>
             <% } %>
@@ -90,7 +90,7 @@
 			<% } %>
 			<% if (ticket_display.organization) { %>
 				<span class="org">
-					<% if (ticket_display.person.organization_position) { %><%= ticket_display.person.organization_position %>, <% } %><%- ticket_display.organization.name %>
+					<% if (ticket_display.person.organization_position) { %><%- ticket_display.person.organization_position %>, <% } %><%- ticket_display.organization.name %>
 				</span>
 			<% } %>
 		<div class="bound-fade"></div>
@@ -123,27 +123,27 @@
 
 					<% if (field == 'language') { %>
 						<span class="prop-title">{{ phrase('agent.general.language') }}:</span>
-						<span class="prop-val"><%= ticket_display.language.title %></span>
+						<span class="prop-val"><%- ticket_display.language.title %></span>
 					<% } %>
 
 					<% if (field == 'category') { %>
 						<span class="prop-title">{{ phrase('agent.general.category') }}:</span>
-						<span class="prop-val"><%= ticket_display.category.title %></span>
+						<span class="prop-val"><%- ticket_display.category.title %></span>
 					<% } %>
 
 					<% if (field == 'priority') { %>
 						<span class="prop-title">{{ phrase('agent.general.priority') }}:</span>
-						<span class="prop-val"><%= ticket_display.priority.title %></span>
+						<span class="prop-val"><%- ticket_display.priority.title %></span>
 					<% } %>
 
 					<% if (field == 'workflow') { %>
 						<span class="prop-title">{{ phrase('agent.general.workflow') }}:</span>
-						<span class="prop-val"><%= ticket_display.workflow.title %></span>
+						<span class="prop-val"><%- ticket_display.workflow.title %></span>
 					<% } %>
 
 					<% if (field == 'product') { %>
 						<span class="prop-title">{{ phrase('agent.general.product') }}:</span>
-						<span class="prop-val"><%= ticket_display.product.title %></span>
+						<span class="prop-val"><%- ticket_display.product.title %></span>
 					<% } %>
 
 					<% if (field == 'agent') { %>
@@ -179,10 +179,23 @@
 						</span>
 					<% } %>
 
+                    <% if (field == 'problems') { %>
+                    <span class="prop-title">{{ phrase('agent.problems.problem') }}:</span>
+						<span class="prop-val">
+							<% if (ticket_display.problems) { %>
+								<% for (var problemIdx = 0; problemIdx < ticket_display.problems.length; problemIdx++) { %>
+									<span class="listing-tag" dp-label
+                                          dp-label-string="<%- ticket_display.problems[problemIdx] %>"
+                                          dp-label-type="tickets"><%- ticket_display.problems[problemIdx] %></span>
+								<% } %>
+							<% } %>
+						</span>
+                    <% } %>
+
 					<% if (field == 'organization') { %>
 						<span class="prop-title">{{ phrase('agent.general.organization') }}:</span>
 						<span class="prop-val">
-							<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '<%= ticket_display.organization.id %>'}) }}" data-route-title="@text"><%- ticket_display.organization.name %></a>
+							<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '<%= ticket_display.organization.id %>'})|raw }}" data-route-title="@text"><%- ticket_display.organization.name %></a>
 						</span>
 					<% } %>
 

@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Form
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
@@ -56,7 +53,8 @@ abstract class HandlerAbstract
     protected $tpl = null;
 
     /**
-     * The form field definition
+     * The form field definition.
+     *
      * @var \Application\DeskPRO\Entity\CustomDefAbstract
      */
     protected $field_def;
@@ -74,7 +72,6 @@ abstract class HandlerAbstract
 
     public function init()
     {
-
     }
 
     /**
@@ -100,16 +97,14 @@ abstract class HandlerAbstract
             $sb = $b->getOption('parent_id') ? 1 : -1;
 
             if ($sa === $sb) {
-                if ($a->getOption('parent_id') && $b->getOption('parent_id') && isset($children[$a->getOption('parent_id')]) && isset($children[$b->getOption('parent_id')])) {
-                    $sa = $children[$a->getOption('parent_id')]->display_order + $a->display_order;
-                    $sb = $children[$b->getOption('parent_id')]->display_order + $b->display_order;
-                } else {
-                    $sa = $a->display_order;
-                    $sb = $b->display_order;
-                }
+                $sa = $a->display_order;
+                $sb = $b->display_order;
             };
 
-            if ($sa === $sb) return 0;
+            if ($sa === $sb) {
+                return 0;
+            }
+
             return $sa < $sb ? -1 : 1;
         });
 
@@ -118,9 +113,8 @@ abstract class HandlerAbstract
         return $this->field_children;
     }
 
-
     /**
-     * Get the templating engine
+     * Get the templating engine.
      *
      * @return \Symfony\Component\Templating\EngineInterface
      */
@@ -133,9 +127,8 @@ abstract class HandlerAbstract
         return $this->tpl;
     }
 
-
     /**
-     * Set the templating engine to use
+     * Set the templating engine to use.
      *
      * @param \Symfony\Component\Templating\EngineInterface $tpl
      */
@@ -144,7 +137,6 @@ abstract class HandlerAbstract
         $this->tpl = $tpl;
     }
 
-
     /**
      * Get the standard name/ID for this element in an HTML form.
      *
@@ -152,20 +144,20 @@ abstract class HandlerAbstract
      */
     public function getFormFieldName()
     {
-        return 'field_' . $this->field_def['id'];
+        return 'field_'.$this->field_def['id'];
     }
-
 
     /**
      * @param  $context
+     *
      * @return string
      */
     public function getRenderTemplateName($context = 'html')
     {
         $templating = $this->getTemplateEngine();
-        $tpl = null;
+        $tpl        = null;
         if ($this->field_def['has_display_template']) {
-            $tpl = 'DeskPRO:' . $this->field_def->getTableName() . ':rendered-field_' . $this->field_def['id'];
+            $tpl = 'DeskPRO:'.$this->field_def->getTableName().':rendered-field_'.$this->field_def['id'];
             if ($context == 'html') {
                 $tpl .= '.html.twig';
             } else {
@@ -186,14 +178,15 @@ abstract class HandlerAbstract
 
     /**
      * @param  $context
+     *
      * @return string
      */
     public function getFormTemplateName()
     {
         $templating = $this->getTemplateEngine();
-        $tpl = null;
+        $tpl        = null;
         if ($this->field_def['has_form_template']) {
-            $tpl = 'DeskPRO:' . $this->field_def->getTableName() . ':form-field_' . $this->field_def['id'] . '.html.twig';
+            $tpl = 'DeskPRO:'.$this->field_def->getTableName().':form-field_'.$this->field_def['id'].'.html.twig';
             if (!$templating->exists($tpl)) {
                 $tpl = null;
             }
@@ -205,7 +198,6 @@ abstract class HandlerAbstract
 
         return $tpl;
     }
-
 
     /**
      * Get the default template name (minus suffix that defines format).
@@ -224,8 +216,6 @@ abstract class HandlerAbstract
         return $tpl;
     }
 
-
-
     /**
      * Get the default template name (minus suffix that defines format).
      *
@@ -236,9 +226,8 @@ abstract class HandlerAbstract
         return 'DeskPRO:custom_fields:form-input.html.twig';
     }
 
-
     /**
-     * Get additional template vars to set
+     * Get additional template vars to set.
      *
      * @var array
      */
@@ -247,55 +236,56 @@ abstract class HandlerAbstract
         return array();
     }
 
-
-
     /**
      * Render the field to HTML for use in a web page.
      */
     public function renderHtml($data = null, array $template_vars = array())
     {
-        if ($data === null) $data = array();
+        if ($data === null) {
+            $data = array();
+        }
 
         $templating = $this->getTemplateEngine();
 
         $vars = array_merge($this->getRenderTemplateVars('html'), $template_vars, array(
-            'data'          => $data,
-            'field_def'     => $this->field_def,
-            'field_handler' => $this,
+            'data'               => $data,
+            'field_def'          => $this->field_def,
+            'field_handler'      => $this,
             'field_handler_name' => Util::getBaseClassname($this),
-            'field_type'    => $this->field_def->getTableName()
+            'field_type'         => $this->field_def->getTableName(),
         ));
 
         return $templating->render($this->getRenderTemplateName('html'), $vars);
     }
 
-
-
     /**
-     * Render the field
+     * Render the field.
      */
     public function renderText($data = null, array $template_vars = array())
     {
-        if ($data === null) $data = array();
+        if ($data === null) {
+            $data = array();
+        }
 
         $templating = $this->getTemplateEngine();
 
         $vars = array_merge($this->getRenderTemplateVars('text'), $template_vars, array(
-            'data'          => $data,
-            'field_def'     => $this->field_def,
-            'field_handler' => $this,
+            'data'               => $data,
+            'field_def'          => $this->field_def,
+            'field_handler'      => $this,
             'field_handler_name' => Util::getBaseClassname($this),
-            'field_type'    => $this->field_def->getTableName()
+            'field_type'         => $this->field_def->getTableName(),
         ));
 
         return $templating->render($this->getRenderTemplateName('text'), $vars);
     }
 
     /**
-     * Render the HTML form input
+     * Render the HTML form input.
      *
      * @param  $formView
-     * @param  array  $template_vars
+     * @param array $template_vars
+     *
      * @return string
      */
     public function renderFormHtml($formView, array $template_vars = array())
@@ -303,27 +293,25 @@ abstract class HandlerAbstract
         $templating = $this->getTemplateEngine();
 
         if (!empty($template_vars['field_group'])) {
-            $f = $this->getFormField();
+            $f           = $this->getFormField();
             $field_group = App::get('form.factory')->createNamedBuilder($template_vars['field_group'], 'form');
             $field_group->add($f);
-            $form = $field_group->getForm();
+            $form      = $field_group->getForm();
             $groupView = $form->createView();
-            $formView = $groupView[$this->getFormFieldName()];
+            $formView  = $groupView[$this->getFormFieldName()];
             $field_group->remove($f->getName());
         }
 
         $vars = array_merge($this->getRenderTemplateVars(), $template_vars, array(
-            'formView'      => $formView,
-            'field_def'     => $this->field_def,
-            'field_handler' => $this,
+            'formView'           => $formView,
+            'field_def'          => $this->field_def,
+            'field_handler'      => $this,
             'field_handler_name' => Util::getBaseClassname($this),
-            'field_type'    => $this->field_def->getTableName()
+            'field_type'         => $this->field_def->getTableName(),
         ));
 
         return $templating->render($this->getFormTemplateName(), $vars);
     }
-
-
 
     /**
      * Render a field in a given context. This is just a strategy for calling other renderX
@@ -332,8 +320,9 @@ abstract class HandlerAbstract
      * $data is a data structure `array(value=>..., children=>array(...))` as returned
      * from `Application\DeskPRO\CustomFields\Util::createDataHierarchy()`
      *
-     * @param  string $context
-     * @param  array  $data
+     * @param string $context
+     * @param array  $data
+     *
      * @return mixed
      */
     public function renderContext($context, $data)
@@ -354,16 +343,37 @@ abstract class HandlerAbstract
         return $this->$method($data);
     }
 
-
-
     /**
-     * Get the form field
+     * Get the form field.
      *
      * @return Symfony\Component\Form\Field
      */
-    abstract public function getFormField($data = null);
+    public function getFormField($data = null)
+    {
+        $required = defined('DP_INTERFACE') && (
+                ('user' === DP_INTERFACE && $this->field_def->getOption('required'))
+                ||
+                ('agent' === DP_INTERFACE && $this->field_def->getOption('agent_required'))
+            );
 
+        $options = array(
+            'required' => $required,
+            'attr'     => $this->field_def->getOption('attr', array()),
+        );
 
+        if ($class = $this->field_def->getOption('custom_css_classname')) {
+            $options['attr']['class'] = @$options['attr']['class'].' '.$class;
+        }
+
+        $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), $this->getWidgetName(), @$data['value'], $options);
+
+        return $field;
+    }
+
+    public function getWidgetName()
+    {
+        return 'text';
+    }
 
     /**
      * Get data from a posted form that we'll store in the database.
@@ -381,7 +391,8 @@ abstract class HandlerAbstract
      * This must return a standard array of error codes (see Orb\Validator\ValidatorInterface).
      * If an empty array is returned, then that means the field is valid.
      *
-     * @param  array $form_data
+     * @param array $form_data
+     *
      * @return array
      */
     public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
@@ -390,13 +401,14 @@ abstract class HandlerAbstract
     }
 
     /**
-     * @param  array $codes
+     * @param array $codes
+     *
      * @return array
      */
     public function makeErrorArray(array $codes)
     {
         foreach ($codes as &$c) {
-            $c = $this->getFormFieldName() . '.' . $c;
+            $c = $this->getFormFieldName().'.'.$c;
         }
 
         return $codes;
@@ -431,5 +443,10 @@ abstract class HandlerAbstract
     public function getSearchType()
     {
         return 'input';
+    }
+
+    public function getSearchCriteriaForm($data = null)
+    {
+        // todo
     }
 }

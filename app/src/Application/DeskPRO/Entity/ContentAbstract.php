@@ -1,67 +1,67 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
- * Basic properties on content
- *
+ * Basic properties on content.
  */
 abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
-    const STATUS_PUBLISHED   = 'published';
-    const STATUS_ARCHIVED    = 'archived';
-    const STATUS_HIDDEN      = 'hidden';
+    const STATUS_PUBLISHED = 'published';
+    const STATUS_ARCHIVED  = 'archived';
+    const STATUS_HIDDEN    = 'hidden';
 
-    const HIDDEN_STATUS_UNPUBLISHED   = 'unpublished';
-    const HIDDEN_STATUS_VALIDATING    = 'validating';
+    const HIDDEN_STATUS_UNPUBLISHED     = 'unpublished';
+    const HIDDEN_STATUS_VALIDATING      = 'validating';
     const HIDDEN_STATUS_USER_VALIDATING = 'user_validating';
-    const HIDDEN_STATUS_DELETED       = 'deleted';
-    const HIDDEN_STATUS_SPAM          = 'spam';
-    const HIDDEN_STATUS_DRAFT         = 'draft';
-    const HIDDEN_STATUS_TEMP          = 'temp';
+    const HIDDEN_STATUS_DELETED         = 'deleted';
+    const HIDDEN_STATUS_SPAM            = 'spam';
+    const HIDDEN_STATUS_DRAFT           = 'draft';
+    const HIDDEN_STATUS_TEMP            = 'temp';
 
     /**
      * @var int
      */
     protected $id = null;
 
-        /**
+    /**
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $person = null;
@@ -89,28 +89,28 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $content = '';
 
     /**
-     * View counts
+     * View counts.
      *
      * @var string
      */
     protected $view_count = 0;
 
     /**
-     * Total rating: This is a tally and must be updated when a rating is added
+     * Total rating: This is a tally and must be updated when a rating is added.
      *
      * @var string
      */
     protected $total_rating = 0;
 
     /**
-     * Number of user-visible comments: This is a count that must be updated when a comment is added
+     * Number of user-visible comments: This is a count that must be updated when a comment is added.
      *
      * @var int
      */
     protected $num_comments = 0;
 
     /**
-     * Total rating
+     * Total rating.
      *
      * @var string
      */
@@ -127,12 +127,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $hidden_status = null;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     protected $date_created;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     protected $date_published;
 
@@ -148,7 +148,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     //protected $labels;
 
     /**
-     * An array of authors,
+     * An array of authors,.
      */
     protected $_authors = null;
 
@@ -160,10 +160,10 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function __construct()
     {
         $this['date_created'] = new \DateTime();
-        $this->revisions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->labels = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->revisions      = new ArrayCollection();
+        $this->labels         = new ArrayCollection();
 
-        $this['status'] = self::STATUS_HIDDEN;
+        $this['status']        = self::STATUS_HIDDEN;
         $this['hidden_status'] = self::HIDDEN_STATUS_DRAFT;
     }
 
@@ -181,11 +181,59 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('title', $title);
 
         if (!$this->slug || $this->slug == Strings::slugifyTitle($old_title)) {
-            $this['slug']  = Strings::slugifyTitle($title);
+            $this['slug'] = Strings::slugifyTitle($title);
             if (!$this['slug']) {
                 $this['slug'] = 'view';
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @param string $slug
+     *
+     * @return $this
+     */
+    public function setSlug($slug)
+    {
+        if ($slug) {
+            $this->setModelField('slug', $slug);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson(Person $person)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Language $language
+     *
+     * @return $this
+     */
+    public function setLanguage(Language $language = null)
+    {
+        $this->setModelField('language', $language);
+
+        return $this;
     }
 
     public function getLanguage()
@@ -228,7 +276,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getStatusCode()
     {
         if ($this->hidden_status) {
-            return 'hidden.' . $this->hidden_status;
+            return 'hidden.'.$this->hidden_status;
         } else {
             return $this->status;
         }
@@ -238,7 +286,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         // Find attach replacements: ![attach:{$blob['authcode']}:{$blob['filename']}]
         $fn = function ($m) {
-            return App::getSetting('core.deskpro_url') . 'file.php/' . $m[1] . '/' . urlencode($m[2]);
+            return App::getSetting('core.deskpro_url').'file.php/'.$m[1].'/'.urlencode($m[2]);
         };
         $content = preg_replace_callback('#!\[attach:([0-9A-Z]+):(.*?)\]#', $fn, $content);
 
@@ -252,6 +300,8 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $this->setModelField('content', $content);
+
+        return $this;
     }
 
     public function getContentHtml()
@@ -274,10 +324,10 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
             return '';
         }
         $content = Strings::standardEol($this['content']);
-        $content = preg_replace("#<br\s*/?><p>#", "<p>", $content);
-        $content = preg_replace("#<p></p><br\s*/?>#", "<p>", $content);
-        $content = preg_replace("#</p><br\s*/?>#", "</p>", $content);
-        $content = preg_replace("#<br\s*/?></p>#", "</p>", $content);
+        $content = preg_replace("#<br\s*/?><p>#", '<p>', $content);
+        $content = preg_replace("#<p></p><br\s*/?>#", '<p>', $content);
+        $content = preg_replace("#</p><br\s*/?>#", '</p>', $content);
+        $content = preg_replace("#<br\s*/?></p>#", '</p>', $content);
         $content = preg_replace("#<br\s*/?>?#", "\n", $content);
         $content = preg_replace("#<p>\n?#", "\n", $content);
         $content = preg_replace("#\n?</p>#", "\n", $content);
@@ -286,7 +336,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $content = trim($content);
 
         $lines_raw = explode("\n", $content);
-        $lines = array();
+        $lines     = array();
         foreach ($lines_raw as $l) {
             $lines[] = trim($l);
         }
@@ -304,10 +354,10 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getSearchSummary($length = 100)
     {
         $content = $this->getContentPlain();
-        $content = str_replace(array("\r\n", "\n"), " ", $content);
+        $content = str_replace(array("\r\n", "\n"), ' ', $content);
 
         if (Strings::utf8_strlen($content) > $length) {
-            $content = Strings::utf8_substr($content, 0, $length) . '...';
+            $content = Strings::utf8_substr($content, 0, $length).'...';
         }
 
         return $content;
@@ -315,7 +365,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     public function getUrlSlug()
     {
-        return $this->id . '-' . $this->slug;
+        return $this->id.'-'.$this->slug;
     }
 
     abstract public function getLink();
@@ -323,7 +373,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     abstract public function getPermalink();
 
     /**
-     * Get an array of authors
+     * Get an array of authors.
      *
      * @return array
      */
@@ -339,7 +389,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
             $this->_authors[$this->person['id']] = $this->person;
         }
 
-        $ent = $this->getEntityName() . 'Revision';
+        $ent   = $this->getEntityName().'Revision';
         $field = strtolower(str_replace('DeskPRO:', '', $this->getEntityName()));
 
         $revs = App::getOrm()->createQuery("
@@ -374,12 +424,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $x = $this->num_ratings - abs($this->total_rating);
 
         if ($x % 2 == 1) {
-            $x++; // never happens with correct data, this just error corrects
+            ++$x; // never happens with correct data, this just error corrects
         }
 
         if ($this->total_rating >= 0) {
             $up   = ($x / 2) + $this->total_rating;
-            $down =  ($x / 2);
+            $down = ($x / 2);
         } else {
             $up   = ($x / 2);
             $down = ($x / 2) + abs($this->total_rating);
@@ -413,26 +463,26 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     public function addRating($rating)
     {
-        $this['num_ratings'] = $this->num_ratings + 1;
+        $this['num_ratings']  = $this->num_ratings + 1;
         $this['total_rating'] = $this->total_rating + $rating->rating;
         $rating->setContentObject($this);
     }
 
     public function removeRating($rating)
     {
-        $this['num_ratings']   = $this->num_ratings - 1;
+        $this['num_ratings']  = $this->num_ratings - 1;
         $this['total_rating'] = $this->total_rating - $rating->rating;
     }
 
     public function addComment($comment)
     {
-        $this->num_comments++;
+        ++$this->num_comments;
         $comment->setObject($this);
     }
 
     public function removeComment($comment)
     {
-        $this->num_comments--;
+        --$this->num_comments;
     }
 
     /**
@@ -441,13 +491,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getLabelManager()
     {
         if ($this->_label_manager === null) {
-            $name = Util::getBaseClassname($this);
-            $this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:Label' . $name);
+            $name                 = Util::getBaseClassname($this);
+            $this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:Label'.$name);
         }
 
         return $this->_label_manager;
     }
-
 
     /**
      * @return string
@@ -464,7 +513,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $name;
     }
 
-
     /**
      * @return string
      */
@@ -472,7 +520,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->title;
     }
-
 
     /**
      * @return string
@@ -490,12 +537,63 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('title', $title);
     }
 
-
     /**
      * @return string
      */
     public function setRealContent($content)
     {
         $this->setModelField('content', $content);
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @param DateTime $date_created
+     *
+     * @return $this
+     */
+    public function setDateCreated(DateTime $date_created)
+    {
+        $this->setModelField('date_created', $date_created);
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDatePublished()
+    {
+        return $this->date_published;
+    }
+
+    /**
+     * @param DateTime $date_published
+     *
+     * @return $this
+     */
+    public function setDatePublished(DateTime $date_published = null)
+    {
+        $this->setModelField('date_published', $date_published);
+
+        return $this;
+    }
+
+    /**
+     * @param int $view_count
+     *
+     * @return $this
+     */
+    public function setViewsCount($view_count)
+    {
+        $this->setModelField('view_count', $view_count);
+
+        return $this;
     }
 }

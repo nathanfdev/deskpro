@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Assetic;
 
 use Orb\Util\Strings;
@@ -53,7 +50,8 @@ class AsseticManager
     protected $build_subdir;
 
     /**
-     * The path where files are written to
+     * The path where files are written to.
+     *
      * @var string
      */
     protected $write_path;
@@ -74,7 +72,8 @@ class AsseticManager
     protected $filter_manager;
 
     /**
-     * Config (usually config.assets.php) that holds info about assets
+     * Config (usually config.assets.php) that holds info about assets.
+     *
      * @var array
      */
     protected $asset_config = null;
@@ -98,7 +97,8 @@ class AsseticManager
     protected $auto_update = false;
 
     /**
-     * Keeps track of which assets use others
+     * Keeps track of which assets use others.
+     *
      * @var array
      */
     protected $dep_map = array();
@@ -109,9 +109,9 @@ class AsseticManager
 
         $this->static_path  = $static_path;
         $this->build_subdir = $build_subdir;
-        $this->write_path   = $static_path . '/' . $this->build_subdir;
+        $this->write_path   = $static_path.'/'.$this->build_subdir;
 
-        $this->asset_manager = new \Assetic\AssetManager();
+        $this->asset_manager  = new \Assetic\AssetManager();
         $this->filter_manager = new \Assetic\FilterManager();
 
         $options = array();
@@ -120,7 +120,7 @@ class AsseticManager
             unset($asset_config['OPTIONS']);
         }
 
-        $options = new \Orb\Util\OptionsArray($options);
+        $options       = new \Orb\Util\OptionsArray($options);
         $this->options = $options;
 
         $this->asset_config = $asset_config;
@@ -138,9 +138,9 @@ class AsseticManager
         }
     }
 
-
     /**
-     * @param  string                           $name
+     * @param string $name
+     *
      * @return \Assetic\Factory\AssetCollection
      */
     public function getBuildAsset($name)
@@ -151,32 +151,30 @@ class AsseticManager
         $factory->setDebug($this->debug);
         $factory->setAssetManager($this->asset_manager);
 
-        $asset = $factory->createAsset(array('@' . $name));
+        $asset = $factory->createAsset(array('@'.$name));
 
         return $asset;
     }
 
-
     /**
-     * Write the bundle file to the filesystem
+     * Write the bundle file to the filesystem.
      *
      * @param $name
-     * @return void
      */
     public function writeBuildFile($name)
     {
-        $info = $this->getBundleConfig($name);
+        $info  = $this->getBundleConfig($name);
         $asset = $this->getBuildAsset($name);
 
-        $file = $this->write_path . '/' . $info['out'];
-        $dir = dirname($file);
+        $file = $this->write_path.'/'.$info['out'];
+        $dir  = dirname($file);
 
         if (!file_exists($dir)) {
             mkdir($dir, 0777, true);
         }
 
         if (!is_dir($dir)) {
-            throw \RuntimeException("Bad asset write path `$dir`");
+            throw new \RuntimeException("Bad asset write path `$dir`");
         }
 
         $content = $asset->dump();
@@ -184,15 +182,15 @@ class AsseticManager
         if (strpos($info['out'], '.css') !== false) {
             // Sprite refs are per file
             $sprite_id = preg_replace('#[^a-zA-Z0-9_\-]#', '', str_replace('.css', '', $info['out']));
-            $content = preg_replace('#sprite-ref: ([A-Za-z0-9_\-]+)#', 'sprite-ref: '. $sprite_id .'_$1', $content);
-            $content = preg_replace('#sprite: ([A-Za-z0-9_\-]+)#', 'sprite: '. $sprite_id .'_$1', $content);
-            $content = preg_replace('#sprite-image: url\(\'?(.*)/(.*?)\.png\'?\)#', 'sprite-image: url($1/'. $sprite_id .'_$2.png)', $content);
+            $content   = preg_replace('#sprite-ref: ([A-Za-z0-9_\-]+)#', 'sprite-ref: '.$sprite_id.'_$1', $content);
+            $content   = preg_replace('#sprite: ([A-Za-z0-9_\-]+)#', 'sprite: '.$sprite_id.'_$1', $content);
+            $content   = preg_replace('#sprite-image: url\(\'?(.*)/(.*?)\.png\'?\)#', 'sprite-image: url($1/'.$sprite_id.'_$2.png)', $content);
         }
 
         if (isset($info['post_filters'])) {
-            $ext = Strings::getExtension($file);
-            $hash = substr(sha1(time().rand(11111, 99999)), 0, 7);
-            $new_file = dirname($file) . '/' . $hash . '.' . $ext;
+            $ext      = Strings::getExtension($file);
+            $hash     = substr(sha1(time().rand(11111, 99999)), 0, 7);
+            $new_file = dirname($file).'/'.$hash.'.'.$ext;
 
             file_put_contents($new_file, $content);
 
@@ -224,10 +222,9 @@ class AsseticManager
     }
 
     /**
-     * Write a build file only if its stale
+     * Write a build file only if its stale.
      *
      * @param $name
-     * @return void
      */
     public function writeBuildFileIfStale($name)
     {
@@ -237,10 +234,9 @@ class AsseticManager
     }
 
     /**
-     * Templting helper used with fetching URLs
+     * Templting helper used with fetching URLs.
      *
      * @param $asset_helper
-     * @return void
      */
     public function setAssetHelper($asset_helper)
     {
@@ -248,9 +244,10 @@ class AsseticManager
     }
 
     /**
-     * Get the public path to an asset build file
+     * Get the public path to an asset build file.
      *
      * @param $name
+     *
      * @return string
      */
     public function getUrl($name)
@@ -261,13 +258,14 @@ class AsseticManager
 
         $info = $this->getBundleConfig($name);
 
-        return $this->asset_helper->getUrl($this->build_subdir . '/' . $info['out']);
+        return $this->asset_helper->getUrl($this->build_subdir.'/'.$info['out']);
     }
 
     /**
-     * Get an array of paths to all the raw files in a bundle
+     * Get an array of paths to all the raw files in a bundle.
      *
      * @param $name
+     *
      * @return string[]
      */
     public function getRawUrls($name)
@@ -302,12 +300,13 @@ class AsseticManager
      * Check to see if a build file is out of date.
      *
      * @param $name
+     *
      * @return bool
      */
     public function isBuildStale($name)
     {
-        $info = $this->getBundleConfig($name);
-        $build_file = $this->write_path . '/' . $info['out'];
+        $info       = $this->getBundleConfig($name);
+        $build_file = $this->write_path.'/'.$info['out'];
 
         if (!file_exists($build_file)) {
             return true;
@@ -322,23 +321,25 @@ class AsseticManager
     }
 
     /**
-     * Check if a build exists
+     * Check if a build exists.
      *
      * @param $name
+     *
      * @return bool
      */
     public function isBuildExist($name)
     {
-        $info = $this->getBundleConfig($name);
-        $build_file = $this->write_path . '/' . $info['out'];
+        $info       = $this->getBundleConfig($name);
+        $build_file = $this->write_path.'/'.$info['out'];
 
         return file_exists($build_file);
     }
 
     /**
-     * Gets an asset bundle, initializing it if needed
+     * Gets an asset bundle, initializing it if needed.
      *
-     * @param  string                         $name
+     * @param string $name
+     *
      * @return \Assetic\Asset\AssetCollection
      */
     public function getAssetBundle($name)
@@ -347,7 +348,7 @@ class AsseticManager
             return $this->asset_manager->get($name);
         }
 
-        $info = $this->getBundleConfig($name);
+        $info    = $this->getBundleConfig($name);
         $filters = array();
         if (isset($info['filters'])) {
             foreach ($info['filters']  as $f) {
@@ -358,7 +359,7 @@ class AsseticManager
         $coll = new \Assetic\Asset\AssetCollection(array(), $filters);
         if (isset($info['files'])) {
             foreach ($info['files'] as $f) {
-                $path = $this->static_path . '/' . $f;
+                $path = $this->static_path.'/'.$f;
                 $coll->add(new \Assetic\Asset\FileAsset($path));
             }
         }
@@ -377,7 +378,7 @@ class AsseticManager
     }
 
     /**
-     * Get all asset bundles
+     * Get all asset bundles.
      *
      * @return array
      */
@@ -392,7 +393,7 @@ class AsseticManager
     }
 
     /**
-     * Get an array of all defined asset names
+     * Get an array of all defined asset names.
      *
      * @return array
      */
@@ -402,9 +403,10 @@ class AsseticManager
     }
 
     /**
-     * Get bundle configuration
+     * Get bundle configuration.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return array
      */
     public function getBundleConfig($name)
@@ -415,8 +417,7 @@ class AsseticManager
     /**
      * Get a filter or initialize it if its not created yet.
      *
-     * @param  string $name
-     * @return void
+     * @param string $name
      */
     public function getFilter($name, array $options = array())
     {
@@ -452,24 +453,24 @@ class AsseticManager
             case 'css':
                 $filter = new \Assetic\Filter\CssMinFilter();
                 $filter->setFilters(array(
-                    "ImportImports"                 => false,
-                    "RemoveComments"                => true,
-                    "RemoveEmptyRulesets"           => true,
-                    "RemoveEmptyAtBlocks"           => true,
-                    "ConvertLevel3AtKeyframes"      => false,
-                    "ConvertLevel3Properties"       => false,
-                    "Variables"                     => false,
-                    "RemoveLastDelarationSemiColon" => true
+                    'ImportImports'                 => false,
+                    'RemoveComments'                => true,
+                    'RemoveEmptyRulesets'           => true,
+                    'RemoveEmptyAtBlocks'           => true,
+                    'ConvertLevel3AtKeyframes'      => false,
+                    'ConvertLevel3Properties'       => false,
+                    'Variables'                     => false,
+                    'RemoveLastDelarationSemiColon' => true,
                 ));
                 $filter->setPlugins(array(
-                    "Variables"                     => false,
-                    "ConvertFontWeight"             => false,
-                    "ConvertHslColors"              => false,
-                    "ConvertRgbColors"              => false,
-                    "ConvertNamedColors"            => true,
-                    "CompressColorValues"           => false,
-                    "CompressUnitValues"            => true,
-                    "CompressExpressionValues"      => true
+                    'Variables'                => false,
+                    'ConvertFontWeight'        => false,
+                    'ConvertHslColors'         => false,
+                    'ConvertRgbColors'         => false,
+                    'ConvertNamedColors'       => true,
+                    'CompressColorValues'      => false,
+                    'CompressUnitValues'       => true,
+                    'CompressExpressionValues' => true,
                 ));
                 break;
             case 'css_path':

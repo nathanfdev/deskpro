@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -39,28 +38,34 @@ use Application\DeskPRO\App;
 class ApiKey extends AbstractEntityRepository
 {
     /**
-     * Find an API key based off of a key string. A key string is: "id:code"
+     * Find an API key based off of a key string. A key string is: "id:code".
      *
-     * @param  string $key_string
+     * @param string $key_string
+     *
      * @return ApiKey
      */
-
     public function findByKeyString($key_string)
     {
-        if (strpos($key_string, ':') === false) return null;
+        if (strpos($key_string, ':') === false) {
+            return;
+        }
 
-        list ($id, $code) = explode(':', $key_string, 2);
+        list($id, $code) = explode(':', $key_string, 2);
 
         $apikey = $this->find($id);
-        if (!$apikey) return null;
-        if ($apikey['code'] != $code) return null;
+        if (!$apikey) {
+            return;
+        }
+        if ($apikey['code'] != $code) {
+            return;
+        }
+
         return $apikey;
     }
 
     /**
      * @return ApiKey[]
      */
-
     public function getAllApiKeys()
     {
         return $this->_em->createQuery('
@@ -76,14 +81,13 @@ class ApiKey extends AbstractEntityRepository
      *
      * @return array
      */
-
     public function getApiKeyTitles(array $ids = null)
     {
         $output = array();
-        foreach ($this->getAllApiKeys() AS $key) {
+        foreach ($this->getAllApiKeys() as $key) {
             if ($ids === null || in_array($key->id, $ids)) {
                 $output[$key->id] = ($key->person ? $key->person->display_name : 'Super User')
-                    . ($key->note ? " ($key->note)" : '');
+                    .($key->note ? " ($key->note)" : '');
             }
         }
 
@@ -93,7 +97,6 @@ class ApiKey extends AbstractEntityRepository
     /**
      * @return mixed
      */
-
     public function countApiKeys()
     {
         return App::getDb()->fetchColumn('
@@ -107,15 +110,14 @@ class ApiKey extends AbstractEntityRepository
      *
      * @return array
      */
-
     public function getRateLimitInfo(\Application\DeskPRO\Entity\ApiKey $api_key)
     {
         $rate_limit = App::getDb()->fetchAssoc(
-            "
+            '
                         SELECT *
                         FROM api_key_rate_limit
                         WHERE api_key_id = ?
-                    ",
+                    ',
             array($api_key->id)
         );
 
@@ -123,7 +125,7 @@ class ApiKey extends AbstractEntityRepository
             App::getDb()->delete(
                 'api_key_rate_limit',
                 array(
-                     'api_key_id' => $api_key->id
+                     'api_key_id' => $api_key->id,
                 )
             );
         }
@@ -134,7 +136,7 @@ class ApiKey extends AbstractEntityRepository
                 'api_key_id'    => $api_key->id,
                 'hits'          => 0,
                 'created_stamp' => time(),
-                'reset_stamp'   => time() + $interval
+                'reset_stamp'   => time() + $interval,
             );
         }
 
@@ -144,20 +146,19 @@ class ApiKey extends AbstractEntityRepository
     /**
      * @param \Application\DeskPRO\Entity\ApiKey $api_key
      */
-
     public function updateRateLimit(\Application\DeskPRO\Entity\ApiKey $api_key)
     {
-        $time = time();
+        $time     = time();
         $interval = (int) App::getSetting('core.api_rate_limit_interval');
 
         App::getDb()->executeUpdate(
-            "
+            '
                         INSERT INTO api_key_rate_limit
                             (api_key_id, hits, created_stamp, reset_stamp)
                         VALUES
                             (?, 1, ?, ?)
                         ON DUPLICATE KEY UPDATE hits = hits + 1
-                    ",
+                    ',
             array($api_key->id, $time, $time + $interval)
         );
     }

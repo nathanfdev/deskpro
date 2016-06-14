@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\DeskPRO\Form\Transformer\CustomFields;
 
@@ -36,9 +37,7 @@ use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 /**
- * Class ChoiceDataTransformer
- * @package Application\DeskPRO\Form\Transformer\CustomFields
- *
+ * Class ChoiceDataTransformer.
  */
 class ChoiceDataTransformer  implements DataTransformerInterface
 {
@@ -60,15 +59,17 @@ class ChoiceDataTransformer  implements DataTransformerInterface
     public function __construct(CustomDataPersister $persister, DomainObject $owner)
     {
         $this->persister = $persister;
-        $this->owner = $owner;
+        $this->owner     = $owner;
     }
 
     /**
-     * CustomFieldData to CustomFieldDefinition, CustomFieldData[] to CustomFieldDefinition[]
+     * CustomFieldData to CustomFieldDefinition, CustomFieldData[] to CustomFieldDefinition[].
      *
-     * @param  mixed                                                           $value
-     * @return array|mixed
+     * @param mixed $value
+     *
      * @throws \Symfony\Component\Form\Exception\TransformationFailedException
+     *
+     * @return array|mixed
      */
     public function transform($value)
     {
@@ -78,14 +79,12 @@ class ChoiceDataTransformer  implements DataTransformerInterface
             return array('value' => null);
         }
 
-
         // single choice
         if ($value instanceof CustomFieldData) {
             $this->previous[$value->definition['id']] = $value;
 
             return array('value' => $value->definition);
         }
-
 
         // multiple choices
         if (is_array($value)) {
@@ -98,16 +97,18 @@ class ChoiceDataTransformer  implements DataTransformerInterface
             return array('value' => $coll);
         }
 
-        throw new TransformationFailedException;
+        throw new TransformationFailedException();
     }
 
     /**
      * CustomFieldDefinition to CustomFieldData, CustomFieldDefinition[] to CustomFieldData[]
-     * persisting/removing entities with EntityManager (flush is required somewhere outside)
+     * persisting/removing entities with EntityManager (flush is required somewhere outside).
      *
-     * @param  mixed                                                           $value
-     * @return CustomFieldData|ArrayCollection|mixed|null
+     * @param mixed $value
+     *
      * @throws \Symfony\Component\Form\Exception\TransformationFailedException
+     *
+     * @return CustomFieldData|ArrayCollection|mixed|null
      */
     public function reverseTransform($value)
     {
@@ -115,9 +116,8 @@ class ChoiceDataTransformer  implements DataTransformerInterface
         if (!$value) {
             $this->persister->removeArray($this->previous);
 
-            return null;
+            return;
         }
-
 
         // single choice
         if ($value instanceof CustomFieldDefinition) {
@@ -139,7 +139,6 @@ class ChoiceDataTransformer  implements DataTransformerInterface
             return $data;
         }
 
-
         // multiple choices
         if ($value instanceof ArrayCollection || is_array($value)) {
             $ret = array();
@@ -159,20 +158,21 @@ class ChoiceDataTransformer  implements DataTransformerInterface
             return $ret;
         }
 
-        throw new TransformationFailedException;
+        throw new TransformationFailedException();
     }
 
     /**
-     * @param  CustomFieldDefinition $definition
+     * @param CustomFieldDefinition $definition
+     *
      * @return CustomFieldData
      */
     protected function createNewData(CustomFieldDefinition $definition)
     {
-        $data = new CustomFieldData();
-        $data['value'] = 1;
-        $data->definition = $definition;
+        $data                  = new CustomFieldData();
+        $data['value']         = 1;
+        $data->definition      = $definition;
         $data->root_definition = $definition->parent ?: $definition;
-        $data->owner = $this->owner;
+        $data->owner           = $this->owner;
         $this->persister->add($data);
 
         return $data;

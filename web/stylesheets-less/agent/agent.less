@@ -59,6 +59,7 @@ table.layout-table {
 	margin: 0;
 	padding: 0;
 	background: transparent;
+    table-layout: fixed;
 
 	> tbody > tr > td, > tr > td {
 		background: transparent;
@@ -2278,7 +2279,7 @@ ul.pane-tabs {
 			border-top: 1px solid darken(desaturate(@agent_source_bg_color, 6%), 10%);
 
 			&:first-child, &.first {
-				border-top: none;
+				border-top: none !important;
 			}
 		}
 
@@ -4320,6 +4321,10 @@ section.dp-overlay > header nav h3 {
 		box-shadow: none;
 	}
 
+	.dp-form .intl-tel-input input[type="text"] {
+	  padding-left: 48px;
+	}
+
 
 	.dp-form input[type="text"],
 	.dp-form input[type="password"],
@@ -5040,4 +5045,62 @@ em.downarrow {
             box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
         }
     }
+}
+
+.multilevel-select .multilevel-select-wrap {
+  display: block;
+  background: url(../../images/user/elbow-end.gif) no-repeat 0 0;
+  padding-left: 21px;
+  margin: 4px 0 0 3px;
+}
+
+.multilevel-select .multilevel-select-wrap.level-0 {
+  background: none;
+  padding-left: 0;
+}
+.multilevel-select .multilevel-select-wrap.level-2 {
+  margin-left: 22px;
+}
+.multilevel-select .multilevel-select-wrap.level-3 {
+  margin-left: 37px;
+}
+.multilevel-select .multilevel-select-wrap.level-4 {
+  margin-left: 58px;
+}
+.multilevel-select .multilevel-select-wrap.level-5 {
+  margin-left: 85px;
+}
+.multilevel-select .multilevel-select-wrap.level-6 {
+  margin-left: 118px;
+}
+.multilevel-select .multilevel-select-wrap.level-7 {
+  margin-left: 157px;
+}
+.multilevel-select .multilevel-select-wrap.level-8 {
+  margin-left: 202px;
+}
+.multilevel-select .multilevel-select-wrap.level-9 {
+  margin-left: 253px;
+}
+.multilevel-select .multilevel-select-wrap.level-10 {
+  margin-left: 310px;
+}
+.multilevel-select .multilevel-select-wrap.level-11 {
+  margin-left: 373px;
+}
+.multilevel-select .multilevel-select-wrap.level-12 {
+  margin-left: 442px;
+}
+.multilevel-select .multilevel-select-wrap.level-13 {
+  margin-left: 517px;
+}
+.multilevel-select .multilevel-select-wrap.level-14 {
+  margin-left: 598px;
+}
+.multilevel-select .multilevel-select-wrap.level-15 {
+  margin-left: 685px;
+}
+
+.intl-tel-input input {
+  padding-left: 48px;
 }

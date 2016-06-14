@@ -1,5 +1,16 @@
 {% if not baseId %}{% set baseId = el_uid() %}{% endif %}
-<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">
+
+{% if errors|length %}
+	<div class="errors-section">
+		{% for error in errors %}
+			<div class="error-message subject error-message-on">
+				{{ error }}
+			</div>
+		{% endfor %}
+	</div>
+{% endif %}
+
+<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table{% if errors|length %} error{% endif %}">
 	{# Custom fields#}
 	{% for f in custom_fields %}
 		<tbody class="chat_field_{{f.id}} custom-field item" data-field-type="chat_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}" style="display:none">

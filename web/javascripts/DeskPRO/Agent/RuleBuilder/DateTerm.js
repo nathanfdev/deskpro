@@ -229,7 +229,7 @@ DeskPRO.Agent.RuleBuilder.DateTerm = new Orb.Class({
 		}
 
 		if (!str1.length) str1 = '(click to set)';
-		if (!str2.length) str1 = '(click to set)';
+		if (!str2.length) str2 = '(click to set)';
 
 		if (this.opInput.val() == 'between') {
 			status = str1 + ' and ' + str2;

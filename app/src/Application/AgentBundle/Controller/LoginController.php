@@ -1,45 +1,40 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage UserBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 use Application\DeskPRO\Service\RateLimit;
-use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LoginController extends \Application\UserBundle\Controller\LoginController
 {
@@ -57,8 +52,11 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         $return = $this->request->getReturnParam();
 
         if ($this->loginViaToken()) {
-            if ($return) return $this->redirect($return);
-            else return $this->redirectRoute('agent');
+            if ($return) {
+                return $this->redirect($return);
+            } else {
+                return $this->redirectRoute('agent');
+            }
         }
 
         $has_logged_out = $this->in->checkIsset('o');
@@ -72,26 +70,54 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
         // Already logged in
         if (($this->session->getPerson() && $this->session->getPerson()->is_agent)) {
-            if ($return) return $this->redirect($return);
-
-            // fastfix of redirect loop (with wrong scheme)
-            $url = $this->generateUrl($this->route_prefix, array(), UrlGeneratorInterface::ABSOLUTE_URL);
-            if (!$this->request->isCorrectScheme()) {
-                $url = str_replace('http://', 'https://', $url);
+            if ($return) {
+                return $this->redirect($return);
             }
+
+            $url = App::getSetting('core.deskpro_url').($this->request->isIndexIncluded() ? 'index.php/' : '').'agent/';
+
             return $this->redirect($url);
+        }
+
+        /*
+         * If I am not already logged in
+         * If `core.setup_initial` is not set (this is how we know if you're going to /start)
+         * If there is only 1 user in the db
+         * And if that user has is_user=false
+         * auto-start a session for that user
+         */
+        if (!$this->settings->get('core.setup_initial')) {
+            $persons = $this->em->getRepository('DeskPRO:Person')->findBy(array(), array(), 2);
+
+            if (count($persons) === 1) {
+                /** @var Person $person */
+                $person = reset($persons);
+
+                if ($person->getLabelManager()->hasLabel('not_user')) {
+                    $this->session->invalidate();
+                    $this->session->set('auth_person_id', $person['id']);
+                    $this->session->set('dp_interface', DP_INTERFACE);
+                    $this->session->setFlash('is_from_login', 'yes');
+                    $this->session->save();
+                    App::setCurrentPerson($person);
+
+                    if ($return) {
+                        return $this->redirect($return);
+                    }
+                }
+            }
         }
 
         $has_done_reset = false;
 
         if ($code = $this->in->getString('reset_code')) {
             $code_data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code, 'reset-password');
-            $person = null;
+            $person    = null;
             if ($code_data) {
                 $person = $this->em->find('DeskPRO:Person', $code_data->getData('person_id', 0));
             }
 
-            if ($code_data AND $person) {
+            if ($code_data and $person) {
                 if ($this->in->getString('new_password')) {
                     $has_done_reset = true;
 
@@ -117,8 +143,8 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                     $this->db->delete('sessions', array('person_id' => $person->getId()));
                 } else {
                     return $this->render('AgentBundle:Login:reset-password.html.twig', array(
-                        'reset_code'    => $this->in->getString('reset_code'),
-                        'route_prefix'  => $this->route_prefix,
+                        'reset_code'   => $this->in->getString('reset_code'),
+                        'route_prefix' => $this->route_prefix,
                     ));
                 }
             } else {
@@ -148,15 +174,15 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         }
 
         return $this->render('AgentBundle:Login:index.html.twig', array(
-            'return'                   => $return,
-            'route_prefix'             => $this->route_prefix,
-            'logo_blob'                => $logo_blob,
-            'has_logged_out'           => $has_logged_out,
-            'has_done_reset'           => $has_done_reset,
-            'failed_login_name'        => $failed_login_name,
-            'browser_warnings'         => $browser_warnings,
-            'timeout'                  => $this->in->getBool('timeout'),
-            'captcha'                  => $captcha,
+            'return'            => $return,
+            'route_prefix'      => $this->route_prefix,
+            'logo_blob'         => $logo_blob,
+            'has_logged_out'    => $has_logged_out,
+            'has_done_reset'    => $has_done_reset,
+            'failed_login_name' => $failed_login_name,
+            'browser_warnings'  => $browser_warnings,
+            'timeout'           => $this->in->getBool('timeout'),
+            'captcha'           => $captcha,
         ));
     }
 
@@ -174,7 +200,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         $browser = $this->container->get('browser_sniffer');
 
         return $this->render('AgentBundle:Login:browser-requirements.html.twig', array(
-            'is_ie' => $browser->isBrowser(\Browser::BROWSER_IE)
+            'is_ie' => $browser->isBrowser(\Browser::BROWSER_IE),
         ));
     }
 
@@ -185,7 +211,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             throw $this->createNotFoundException();
         }
 
-        $admin = $this->container->getAgentData()->get($tmp->getData('admin_id'));
+        $admin  = $this->container->getAgentData()->get($tmp->getData('admin_id'));
         $person = $this->container->getAgentData()->get($tmp->getData('agent_id'));
 
         if (!$admin || !$admin->can_admin || !$person || !$person->is_agent) {
@@ -195,6 +221,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         $this->session->invalidate();
         $this->session->set('auth_person_id', $person->id);
         $this->session->set('dp_interface', DP_INTERFACE);
+        $this->session->set('auth_by', $this->auth_manager->getAuthBy());
         $this->session->save();
 
         \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dplogout')->send();
@@ -208,7 +235,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
             'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
             'note'         => "Admin login by Admin #{$admin->id} {$admin->display_name} <{$admin->email_address}>",
-            'date_created' => date('Y-m-d H:i:s')
+            'date_created' => date('Y-m-d H:i:s'),
         ));
 
         return $this->redirectRoute('agent');

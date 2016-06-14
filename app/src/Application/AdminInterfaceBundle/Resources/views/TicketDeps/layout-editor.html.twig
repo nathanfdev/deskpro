@@ -47,7 +47,6 @@
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_email" data-is-required="1"><span>Email</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_name"><span>Name</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_timezone"><span>Timezone</span></li>
-							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_language"><span>Language</span></li>
 							<li
 								ng-repeat="field in custom_user_fields"
 								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
@@ -70,12 +69,21 @@
 					</article>
 				</div>
 
-				<div class="group" ng-if="ticket_fields_per_org.length">
+				<div class="group" ng-if="ticket_fields_per_org.length || custom_org_fields.length">
 					<header>
 						<h3>{{ phrase('adm.custom_fields.org_fields') }} &middot; <a href="#/crm/org_fields"><i class="fa fa-cog" title="Manage Fields"></i></a></h3>
 					</header>
 					<article>
 						<ul>
+                            <li
+                                ng-repeat="field in custom_org_fields"
+                                ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+                                class="dp-layout-editor-layout-field layout-field"
+                                data-field-type="org_field"
+                                data-field-id="{{ ng_var('field.id') }}"
+                                >
+                                <span>{{ ng_var('field.title') }}</span>
+                            </li>
 							<li
 								ng-repeat="field in ticket_fields_per_org"
 								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
@@ -148,12 +156,21 @@
 					</article>
 				</div>
 
-                <div class="group" ng-if="ticket_fields_per_org.length">
+                <div class="group" ng-if="ticket_fields_per_org.length || custom_org_fields.length">
                     <header>
                         <h3>{{ phrase('adm.custom_fields.org_fields') }} &middot; <a href="#/crm/org_fields"><i class="fa fa-cog" title="Manage Fields"></i></a></h3>
                     </header>
                     <article>
                         <ul>
+                            <li
+                                ng-repeat="field in custom_org_fields"
+                                ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+                                class="dp-layout-editor-layout-field layout-field"
+                                data-field-type="org_field"
+                                data-field-id="{{ ng_var('field.id') }}"
+                                >
+                                <span>{{ ng_var('field.title') }}</span>
+                            </li>
                             <li
 								ng-repeat="field in ticket_fields_per_org"
 								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"

@@ -1,0 +1,2 @@
+name;importance;blob_path;file_name;content_type;date_created
+Some Organization;5;/deskpro/www/app/src/Application/ImportBundle/Resources/example/csv/organizations.csv;organizations.csv;csv;

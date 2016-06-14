@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Orb\Util\Strings;
@@ -41,7 +39,6 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
      * @var string
      */
     protected $ptac_code;
-
 
     /**
      * @var \Application\DeskPRO\Entity\Ticket
@@ -54,30 +51,40 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
     public function getPtacCode()
     {
         if ($this->ptac_code !== null) {
-            if ($this->ptac_code === false) return null;
+            if ($this->ptac_code === false) {
+                return;
+            }
+
             return $this->ptac_code;
         }
 
         $m = null;
-        if (preg_match('#PTAC\-([A-Z0-9]+)\.#', $this->reader->getRawHeaders(), $m)) {
+        if (preg_match('#(?:PTAC|TICKET)\-([A-Z0-9]+)\.#', $this->reader->getRawHeaders(), $m)) {
             $this->ptac_code = $m[1];
-            if ($this->logger) $this->logger->logDebug('Found PTAC: ' . $this->ptac_code);
+            if ($this->logger) {
+                $this->logger->logDebug('Found PTAC: '.$this->ptac_code);
+            }
         } else {
             $this->ptac_code = false;
-            if ($this->logger) $this->logger->logDebug('No PTAC found');
+            if ($this->logger) {
+                $this->logger->logDebug('No PTAC found');
+            }
         }
 
         // There might be emails as attachments that we should check out
         if (!$this->ptac_code) {
             foreach ($this->reader->getAttachments() as $k => $attach) {
                 if ($attach->mime_type == 'message/rfc822') {
-
-                    if ($this->logger) $this->logger->logDebug("Checking attach #$k {$attach->file_name} for PTAC");
+                    if ($this->logger) {
+                        $this->logger->logDebug("Checking attach #$k {$attach->file_name} for PTAC");
+                    }
 
                     $headers = array();
 
                     $fp = @fopen($attach->tmp_file, 'r');
-                    if (!$fp) continue;
+                    if (!$fp) {
+                        continue;
+                    }
 
                     $limit = 200;
                     while ($limit-- > 0 && !feof($fp)) {
@@ -92,13 +99,17 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
 
                     $headers = implode("\n", $headers);
 
-                    if (preg_match('#PTAC\-([A-Z0-9]+)\.#', $headers, $m)) {
+                    if (preg_match('#(?:PTAC|TICKET)\-([A-Z0-9]+)\.#', $headers, $m)) {
                         $this->ptac_code = $m[1];
-                        if ($this->logger) $this->logger->logDebug('Found PTAC: ' . $this->ptac_code);
+                        if ($this->logger) {
+                            $this->logger->logDebug('Found PTAC: '.$this->ptac_code);
+                        }
                         break; // break out of reading attaches
                     } else {
                         $this->ptac_code = false;
-                        if ($this->logger) $this->logger->logDebug('No PTAC found');
+                        if ($this->logger) {
+                            $this->logger->logDebug('No PTAC found');
+                        }
                     }
                 }
             }
@@ -107,16 +118,18 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
         return $this->ptac_code;
     }
 
-
     /**
-     * Try to guess the ticket this bounce belongs to
+     * Try to guess the ticket this bounce belongs to.
      *
      * @return \Application\DeskPRO\Entity\Ticket
      */
     public function getGuessedTicket()
     {
         if ($this->guessed_ticket !== null) {
-            if ($this->guessed_ticket === false) return null;
+            if ($this->guessed_ticket === false) {
+                return;
+            }
+
             return $this->guessed_ticket;
         }
 
@@ -131,12 +144,14 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
             }
         }
 
-        $guessed_emails = $this->getGuessedEmailAddresses();
+        $guessed_emails  = $this->getGuessedEmailAddresses();
         $found_ticket_id = null;
-        $body = $this->reader->getBodyText()->getBodyUtf8();
+        $body            = $this->reader->getBodyText()->getBodyUtf8();
 
         foreach ($guessed_emails as $email) {
-            if ($this->logger) $this->logger->logDebug(sprintf("Finding last subjects by %s", $email));
+            if ($this->logger) {
+                $this->logger->logDebug(sprintf('Finding last subjects by %s', $email));
+            }
 
             $ticket_subjects = $this->em->getConnection()->fetchAllKeyValue("
                 SELECT tickets.id, tickets.subject
@@ -149,7 +164,9 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
 
             if ($this->original_subject) {
                 foreach ($ticket_subjects as $tid => $subj) {
-                    if ($this->logger) $this->logger->logDebug(sprintf("Trying %d '%s' against original '%s'", $tid, $subj, $this->original_subject));
+                    if ($this->logger) {
+                        $this->logger->logDebug(sprintf("Trying %d '%s' against original '%s'", $tid, $subj, $this->original_subject));
+                    }
                     if (strpos($this->original_subject, $subj) !== false) {
                         $found_ticket_id = $tid;
                         break 2;
@@ -160,12 +177,18 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
                 $try_subject = $this->reader->getSubject()->getSubjectUtf8();
                 if (($pos = strrpos($try_subject, ':')) !== false) {
                     $try_subject = substr($try_subject, $pos);
-                    if ($this->logger) $this->logger->logDebug(sprintf("Tail subject match: %s", $try_subject));
+                    if ($this->logger) {
+                        $this->logger->logDebug(sprintf('Tail subject match: %s', $try_subject));
+                    }
                     if (strlen($try_subject) < 10) {
-                        if ($this->logger) $this->logger->logDebug("Tail subject match too short");
+                        if ($this->logger) {
+                            $this->logger->logDebug('Tail subject match too short');
+                        }
                     } else {
                         foreach ($ticket_subjects as $tid => $subj) {
-                            if ($this->logger) $this->logger->logDebug(sprintf("Trying %d '%s' against trail subject '%s'", $tid, $subj, $try_subject));
+                            if ($this->logger) {
+                                $this->logger->logDebug(sprintf("Trying %d '%s' against trail subject '%s'", $tid, $subj, $try_subject));
+                            }
                             if (Strings::endsWith($try_subject, $subj)) {
                                 $found_ticket_id = $tid;
                                 break 2;
@@ -177,7 +200,9 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
                 // Fall back on trying to find the subject in the body message
                 // Which can be common in "Undelivered" type messages
                 foreach ($ticket_subjects as $tid => $subj) {
-                    if ($this->logger) $this->logger->logDebug(sprintf("Trying %d '%s' against body", $tid, $subj));
+                    if ($this->logger) {
+                        $this->logger->logDebug(sprintf("Trying %d '%s' against body", $tid, $subj));
+                    }
                     if (strpos($body, $subj) !== false) {
                         $found_ticket_id = $tid;
                         break 2;

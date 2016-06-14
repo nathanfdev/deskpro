@@ -23,6 +23,10 @@ define [
       @$scope.$on 'icon.selected', (e, path) => @selectIcon path
 
       @initializeScopeWatching()
+      @all_perms =
+        user_full:    true
+        agent_full:   true
+
 
     ###
     #
@@ -50,6 +54,16 @@ define [
 
         @dep_parent_list = data.dep_parent_list
         @setAvatar @dep.avatar
+
+
+        for id, group of @form.usergroup_perms
+          if !group.full then @all_perms.user_full = false
+
+        for id, group of @form.agent_perms.groups
+          @all_perms.agent_full = false if !group.perms.full.locked && !group.perms.full.state
+
+        for id, agent of @form.agent_perms.agents
+          @all_perms.agent_full = false if !agent.perms.full.locked && !agent.perms.full.state
       )
 
       return promise
@@ -188,6 +202,20 @@ define [
         () =>
           @$scope.uploading = false
       )
+
+
+
+    changeAllPerms: (group) =>
+      _perm = @all_perms[group + '_full']
+      if 'user' == group
+        for id, group of @form.usergroup_perms
+          group.full = _perm
+      if 'agent' == group
+        for id, group of @form.agent_perms.groups
+          group.perms.full.state = _perm if !group.perms.full.locked && 'agent_all_perms' != group.model.sys_name && 'agent_all_safe_perms' != group.model.sys_name
+        for id, agent of @form.agent_perms.agents
+          agent.perms.full.state = _perm if !agent.perms.full.locked
+
 
 
   Admin_ChatDeps_Ctrl_Edit.EXPORT_CTRL()

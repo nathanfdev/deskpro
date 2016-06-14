@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Cloud\ApiBundle\Controller;
 
 use Application\ApiBundle\Controller\LicenseController as BaseLicenseController;
@@ -49,23 +46,23 @@ class LicenseController extends BaseLicenseController
     {
         $lic = License::getLicense();
 
-        $is_expired = false;
+        $is_expired     = false;
         $expire_in_days = 0;
 
         if ($lic->getExpireDate()) {
             $is_expired = $lic->getExpireDate()->format('U') < time();
             if (!$is_expired) {
                 $lic_expire_parts = Dates::secsToPartsArray($lic->getExpireDate()->format('U') - time());
-                $expire_in_days = $lic_expire_parts['days'];
+                $expire_in_days   = $lic_expire_parts['days'];
                 $expire_in_days += $lic_expire_parts['years'] * 365;
             }
         }
 
-        $current_agents = $this->db->fetchColumn("
+        $current_agents = $this->db->fetchColumn('
             SELECT COUNT(*)
             FROM people
             WHERE is_agent = 1 AND is_deleted = 0
-        ");
+        ');
 
         $max_agents = License::getLicense()->getMaxAgents();
 
@@ -81,7 +78,7 @@ class LicenseController extends BaseLicenseController
             'limits' => array(
                 'max_agents'    => $max_agents,
                 'count_agents'  => $current_agents,
-                'remain_agents' => 1 // override for cloud because we handle it automatically
+                'remain_agents' => 1, // override for cloud because we handle it automatically
             ),
         ));
     }
@@ -95,28 +92,39 @@ class LicenseController extends BaseLicenseController
         $tmpdata = new TmpData();
         $tmpdata->setType('dpc_billing_access');
         $tmpdata->setData('person_info', array(
-            'helpdesk_url'     => rtrim($this->container->getSetting('core.deskpro_url'), '/'),
-            'asset_url'        => str_replace('/index.php', '', rtrim($this->container->getSetting('core.deskpro_url'), '/')),
-            'person_id'        => $this->person->getId(),
-            'first_name'       => $this->person->first_name,
-            'last_name'        => $this->person->last_name,
-            'name'             => $this->person->getDisplayName(),
-            'email'            => $this->person->getPrimaryEmailAddress(),
-            'picture_url_24'   => $this->person->getPictureUrl(24),
-            'can_admin'        => $this->person->can_admin,
-            'can_agent'        => $this->person->can_agent,
-            'can_billing'      => $this->person->can_billing,
-            'can_reports'      => $this->person->can_reports,
-            'can_portal'       => $this->container->getSetting('user.portal_enabled'),
+            'helpdesk_url'   => rtrim($this->container->getSetting('core.deskpro_url'), '/'),
+            'asset_url'      => str_replace('/index.php', '', rtrim($this->container->getSetting('core.deskpro_url'), '/')),
+            'person_id'      => $this->person->getId(),
+            'first_name'     => $this->person->first_name,
+            'last_name'      => $this->person->last_name,
+            'name'           => $this->person->getDisplayName(),
+            'email'          => $this->person->getPrimaryEmailAddress(),
+            'picture_url_24' => $this->person->getPictureUrl(24),
+            'can_admin'      => $this->person->can_admin,
+            'can_agent'      => $this->person->can_agent,
+            'can_billing'    => $this->person->can_billing,
+            'can_reports'    => $this->person->can_reports,
+            'can_portal'     => $this->container->getSetting('user.portal_enabled'),
         ));
         $tmpdata->date_expire = new \DateTime('+15 minutes');
 
         $this->em->persist($tmpdata);
         $this->em->flush();
 
+        $code = $tmpdata->getCode();
+
+        $url = DP_MA_SERVER_SECURE.'/cloud/start/'.DPC_SITE_ID.'/'.$code;
+        if (defined('DP_CLOUD_LIC_URL')) {
+            $url = str_replace(
+                array('{SITE_ID}', '{SITE_AUTH}'),
+                array(DPC_SITE_ID, $code),
+                DP_CLOUD_LIC_URL
+            );
+        }
+
         return $this->createJsonResponse(array(
-            'code'   => $tmpdata->getCode(),
-            'ma_url' => DP_MA_SERVER . '/cloud/start/'.DPC_SITE_ID.'/'. $tmpdata->getCode()
+            'code'   => $code,
+            'ma_url' => $url,
         ));
     }
 }

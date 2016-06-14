@@ -99,7 +99,7 @@
 	</div>
 
 	<div class="group pull-right">
-		<a href="http://www.deskpro.com/" target="_blank" class="logo"></a>
+		<a href="https://www.deskpro.com/" target="_blank" class="logo"></a>
 	</div>
 </header>
 
@@ -139,7 +139,7 @@
             <li tooltip="{{ phrase('adm.general.tasks') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="tasks">
                 <a href="#/tasks"><i class="app-icon app-icon-tasks"></i></a>
             </li>
-			{% if not app.isCloud() %}
+			{% if not app.isCloud() and not app.getSetting('disable_server_section') %}
 				<li tooltip="{{ phrase('adm.general.apps_server') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="server">
 					<a href="#/server"><i class="app-icon app-icon-server"></i></a>
 				</li>
@@ -153,9 +153,11 @@
 			<li tooltip="Go to Reports Interface" tooltip-append-to-body="true" tooltip-placement="right" class="reports-ifce-btn">
 				<a href="/{{ path('user')|ltrim('/') }}reports/"><i class="app-icon app-icon-reports-ifce"></i></a>
 			</li>
-			<li ng-class="{'section-on': isBillingInterface}" tooltip="{{ ng_var("(isBillingInterface ? 'You are currently using the Billing Interface' : 'Go to Billing Interface')") }}" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
-				<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
-			</li>
+			{% if not app.getSetting('disable_admin_billing') %}
+				<li ng-class="{'section-on': isBillingInterface}" tooltip="{{ ng_var("(isBillingInterface ? 'You are currently using the Billing Interface' : 'Go to Billing Interface')") }}" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
+					<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
+				</li>
+			{% endif %}
 			<li ng-class="{'section-on': !isBillingInterface}" tooltip="{{ ng_var("(isBillingInterface ? 'Go to Admin Interface' : 'You are currently using the Admin Interface')") }}" tooltip-append-to-body="true" tooltip-placement="right">
 				<a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
 			</li>
@@ -173,9 +175,11 @@
 			<li tooltip="Go to Reports Interface" tooltip-append-to-body="true" tooltip-placement="right" class="reports-ifce-btn">
 				<a href="/{{ path('user')|ltrim('/') }}reports/"><i class="app-icon app-icon-reports-ifce"></i></a>
 			</li>
-			<li ng-show="!isBillingInterface" tooltip="Go to Billing Interface" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
-				<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
-			</li>
+			{% if not app.getSetting('disable_admin_billing') %}
+				<li ng-show="!isBillingInterface" tooltip="Go to Billing Interface" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
+					<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
+				</li>
+			{% endif %}
 			<li ng-show="isBillingInterface" tooltip="Go to Admin Interface" tooltip-append-to-body="true" tooltip-placement="right">
 				<a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
 			</li>
@@ -187,9 +191,11 @@
 			<li class="dotdotdot" ng-hide="miniAppStrip" ng-click="miniAppStrip = true">
 				<span>&middot; &middot; &middot;</span>
 			</li>
-			<li ng-show="isBillingInterface" tooltip="You are currently using the Billing Interface" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
-				<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
-			</li>
+			{% if not app.getSetting('disable_admin_billing') %}
+				<li ng-show="isBillingInterface" tooltip="You are currently using the Billing Interface" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
+					<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
+				</li>
+			{% endif %}
 			<li ng-show="!isBillingInterface" tooltip="You are currently using the Admin Interface" tooltip-append-to-body="true" tooltip-placement="right">
 				<a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
 			</li>
@@ -201,6 +207,9 @@
 {{ ng_tpl('AdminInterfaceBundle:Index:modal-network-error.html.twig') }}
 {{ ng_tpl('AdminInterfaceBundle:Index:modal-server-error.html.twig') }}
 {{ ng_tpl('AdminInterfaceBundle:Common:datepicker.html.twig', 'template/datepicker/datepicker.html') }}
+{{ ng_tpl('AdminInterfaceBundle:Common:daypicker.html.twig', 'template/datepicker/day.html') }}
+{{ ng_tpl('AdminInterfaceBundle:Common:monthpicker.html.twig', 'template/datepicker/month.html') }}
+{{ ng_tpl('AdminInterfaceBundle:Common:yearpicker.html.twig', 'template/datepicker/year.html') }}
 {{ ng_tpl('AdminInterfaceBundle:Common:datepicker-menu.html.twig', 'template/datepicker/popup.html') }}
 {{ ng_tpl('AdminInterfaceBundle:Common:timepicker.html.twig', 'template/timepicker/timepicker.html') }}
 
@@ -213,6 +222,11 @@
 <link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/admin-style.css') }}"/>
 <link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/icons-style.css') }}"/>
 <link rel="stylesheet" href="{{ asset('vendor/redactor/redactor.css') }}" type="text/css" />
+
+{% if is_first_load %}
+	<!-- to preload JS -->
+	<iframe src="{{ path('agent') }}" style="opacity: 0.01; width: 1px; height: 1px; border: none; padding: 0; margin: 0;" frameborder="0" width="1" height="1"></iframe>
+{% endif %}
 
 <!-- legacy: portal editor -->
 <link rel="stylesheet" href="{{ asset('vendor/colorpicker/css/colorpicker.css') }}" type="text/css" />
@@ -237,6 +251,9 @@ window.DPC_SITE_DOMAIN   = '{{ constant('DPC_SITE_DOMAIN') }}';
 {% endif %}
 window.DP_USE_RJS_BUILD  = {% if (not app.isDebug() or app.getSetting('core.dev_use_rjs_build') and not app.getSetting('core.disable_rjs_build')) %}true{% else %}false{% endif %};
 window.DP_BUILD_TIME     = {{ app.getBuildTime() }};
+{% if app.getSetting('custom_cloud_billing_authcode') %}
+window.DP_USES_CUSTOM_BILLING = true;
+{% endif %}
 
 {% if inhelp_states %}
 window.DP_INHELP_STATES = {{ inhelp_states|json_encode|raw }};
@@ -252,5 +269,8 @@ window.DP_REDIRECT_TO_LICENSE = {% if redirect_license %}true{% else %}false{% e
 </script>
 <script	type="text/javascript" data-main="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
 <script type="text/javascript">{{ rjs_apps_config|raw }}</script>
+
+{% include 'DeskPRO:Common:notify-login-script.html.twig' with {show:true} %}
+
 </body>
 </html>

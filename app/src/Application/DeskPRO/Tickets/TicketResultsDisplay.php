@@ -1,35 +1,33 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 namespace Application\DeskPRO\Tickets;
 
@@ -72,6 +70,11 @@ class TicketResultsDisplay implements PersonContextInterface
      * @var array
      */
     protected $all_labels;
+
+    /*
+     * @var array
+     */
+    protected $all_problems;
 
     /**
      * @var array
@@ -128,9 +131,9 @@ class TicketResultsDisplay implements PersonContextInterface
      */
     public function __construct(array $tickets)
     {
-        $this->tickets = $tickets;
+        $this->tickets      = $tickets;
         $this->ticket_count = count($tickets);
-        $this->ticket_ids = Arrays::flattenToIndex($this->tickets, 'id');
+        $this->ticket_ids   = Arrays::flattenToIndex($this->tickets, 'id');
 
         $this->em = App::getOrm();
         $this->db = $this->em->getConnection();
@@ -143,11 +146,10 @@ class TicketResultsDisplay implements PersonContextInterface
             }
         }
 
-        $this->dep_names = App::getDataService('Department')->getFullNames();
-        $this->people = App::getDataService('Person')->getPeopleResultsFromIds($people_ids);
+        $this->dep_names  = App::getDataService('Department')->getFullNames();
+        $this->people     = App::getDataService('Person')->getPeopleResultsFromIds($people_ids);
         $this->people_ids = $people_ids;
     }
-
 
     /**
      * @return int
@@ -157,7 +159,6 @@ class TicketResultsDisplay implements PersonContextInterface
         return $this->ticket_count;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\Ticket[]
      */
@@ -166,13 +167,14 @@ class TicketResultsDisplay implements PersonContextInterface
         return $this->tickets;
     }
 
-
     /**
      * @return array
      */
     public function getAllLabels()
     {
-        if ($this->all_labels !== null) return $this->all_labels;
+        if ($this->all_labels !== null) {
+            return $this->all_labels;
+        }
 
         if (!$this->ticket_count) {
             $this->all_labels = array();
@@ -191,20 +193,51 @@ class TicketResultsDisplay implements PersonContextInterface
         return $this->all_labels;
     }
 
+    public function getAllProblems()
+    {
+        if ($this->all_problems !== null) {
+            return $this->all_problems;
+        }
+
+        if (!$this->ticket_count) {
+            $this->all_problems = array();
+
+            return $this->all_problems;
+        }
+
+        $ticket_ids = implode(',', $this->ticket_ids);
+
+        $this->all_problems = $this->db->fetchAllGrouped(
+            "
+            SELECT pt.ticket_id, p.id, p.title
+            FROM problem2tickets pt
+            JOIN problems p ON p.id = pt.problem_id
+            WHERE pt.ticket_id IN ($ticket_ids)
+        ",
+            array(),
+            'ticket_id',
+            null,
+            'title'
+        );
+
+        return $this->all_problems;
+    }
 
     /**
      * @return array
      */
     public function getAllUserFieldData()
     {
-        if ($this->all_user_field_data !== null) return $this->all_user_field_data;
-        $data = $this->em->createQuery("
+        if ($this->all_user_field_data !== null) {
+            return $this->all_user_field_data;
+        }
+        $data = $this->em->createQuery('
             SELECT d, def, root_def
             FROM DeskPRO:CustomDataPerson AS d
             LEFT JOIN d.field def
             LEFT JOIN d.root_field root_def
             WHERE d.person IN (?0)
-        ")->execute(array(array_values($this->people_ids)));
+        ')->execute(array(array_values($this->people_ids)));
 
         $this->all_user_field_data = array();
         foreach ($data as $d) {
@@ -219,9 +252,9 @@ class TicketResultsDisplay implements PersonContextInterface
         return $this->all_user_field_data;
     }
 
-
     /**
-     * @param  Ticket $ticket
+     * @param Ticket $ticket
+     *
      * @return array
      */
     public function getUserFieldData(Person $person)
@@ -231,20 +264,21 @@ class TicketResultsDisplay implements PersonContextInterface
         return isset($this->all_user_field_data[$person->getId()]) ? $this->all_user_field_data[$person->getId()] : array();
     }
 
-
     /**
      * @return array
      */
     public function getAllTicketFieldData()
     {
-        if ($this->all_ticket_field_data !== null) return $this->all_ticket_field_data;
-        $data = $this->em->createQuery("
+        if ($this->all_ticket_field_data !== null) {
+            return $this->all_ticket_field_data;
+        }
+        $data = $this->em->createQuery('
             SELECT d, def, root_def
             FROM DeskPRO:CustomDataTicket AS d
             LEFT JOIN d.field def
             LEFT JOIN d.root_field root_def
             WHERE d.ticket IN (?0)
-        ")->execute(array(array_values($this->ticket_ids)));
+        ')->execute(array(array_values($this->ticket_ids)));
 
         $this->all_ticket_field_data = array();
         foreach ($data as $d) {
@@ -259,9 +293,9 @@ class TicketResultsDisplay implements PersonContextInterface
         return $this->all_ticket_field_data;
     }
 
-
     /**
-     * @param  Ticket $ticket
+     * @param Ticket $ticket
+     *
      * @return array
      */
     public function getTicketFieldData(Ticket $ticket)
@@ -271,11 +305,11 @@ class TicketResultsDisplay implements PersonContextInterface
         return isset($this->all_ticket_field_data[$ticket->id]) ? $this->all_ticket_field_data[$ticket->id] : array();
     }
 
-
     /**
-     * Get an array of labels applied to a ticket
+     * Get an array of labels applied to a ticket.
      *
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return array
      */
     public function getTicketLabels(Ticket $ticket)
@@ -285,11 +319,18 @@ class TicketResultsDisplay implements PersonContextInterface
         return empty($this->all_labels[$ticket->id]) ? array() : $this->all_labels[$ticket->id];
     }
 
+    public function getTicketProblems(Ticket $ticket)
+    {
+        $this->getAllProblems();
+
+        return empty($this->all_problems[$ticket->id]) ? array() : $this->all_problems[$ticket->id];
+    }
 
     /**
-     * Check if a ticket has labels
+     * Check if a ticket has labels.
      *
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return bool
      */
     public function hasTicketLabels(Ticket $ticket)
@@ -304,7 +345,9 @@ class TicketResultsDisplay implements PersonContextInterface
      */
     public function getAllTicketSlas()
     {
-        if ($this->all_ticket_slas !== null) return $this->all_ticket_slas;
+        if ($this->all_ticket_slas !== null) {
+            return $this->all_ticket_slas;
+        }
 
         if (!$this->ticket_count) {
             $this->all_ticket_slas = array();
@@ -325,11 +368,11 @@ class TicketResultsDisplay implements PersonContextInterface
         return $this->all_ticket_slas;
     }
 
-
     /**
-     * Get an array of labels applied to a ticket
+     * Get an array of labels applied to a ticket.
      *
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return array
      */
     public function getTicketSlas(Ticket $ticket)
@@ -340,9 +383,10 @@ class TicketResultsDisplay implements PersonContextInterface
     }
 
     /**
-     * Check if a ticket has an SLA
+     * Check if a ticket has an SLA.
      *
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return bool
      */
     public function hasTicketSlas(Ticket $ticket)
@@ -364,54 +408,54 @@ class TicketResultsDisplay implements PersonContextInterface
         }
 
         if ($ticket_sla['fail_date']) {
-            $time = new \DateTime($ticket_sla['fail_date'], new \DateTimeZone('UTC'));
+            $time    = new \DateTime($ticket_sla['fail_date'], new \DateTimeZone('UTC'));
             $times[] = $time->getTimestamp();
         }
 
         if (!$times) {
-            return null;
+            return;
         }
 
-        return new \DateTime('@' . min($times));
+        return new \DateTime('@'.min($times));
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return \Application\DeskPRO\Entity\Person
      */
     public function getPerson(Ticket $ticket)
     {
         if (!$ticket->person) {
-            return null;
+            return;
         }
 
         return $this->people[$ticket->person->getId()];
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return \Application\DeskPRO\Entity\Person
      */
     public function getAgent(Ticket $ticket)
     {
         if (!$ticket->agent) {
-            return null;
+            return;
         }
 
         return $this->people[$ticket->agent->getId()];
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return string
      */
     public function getDepartmentName(Ticket $ticket)
     {
         if (!$ticket->department) {
-            return null;
+            return;
         }
 
         if (!isset($this->dep_names[$ticket->department->getId()])) {
@@ -421,14 +465,16 @@ class TicketResultsDisplay implements PersonContextInterface
         return $this->dep_names[$ticket->department->getId()];
     }
 
-
     /**
-     * Gets array of previews for each ticket
+     * Gets array of previews for each ticket.
+     *
      * @return array
      */
     public function getAllTicketPreviews()
     {
-        if ($this->all_previews !== null) return $this->all_previews;
+        if ($this->all_previews !== null) {
+            return $this->all_previews;
+        }
 
         if (!$this->ticket_ids) {
             $this->all_previews = array();
@@ -436,7 +482,7 @@ class TicketResultsDisplay implements PersonContextInterface
             return $this->all_previews;
         }
 
-        $message_data = $this->db->fetchAllKeyed("
+        $message_data = $this->db->fetchAllKeyed('
             SELECT
                 tickets_messages.id, tickets_messages.ticket_id, tickets_messages.date_created, tickets_messages.message,
                 people.id AS person_id, people.name, people.first_name, people.last_name, people.is_agent,
@@ -445,11 +491,11 @@ class TicketResultsDisplay implements PersonContextInterface
             LEFT JOIN people ON (people.id = tickets_messages.person_id)
             WHERE tickets_messages.ticket_id IN (?)
             ORDER BY tickets_messages.id DESC
-        ", array($this->ticket_ids), 'id', array(Connection::PARAM_INT_ARRAY));
+        ', array($this->ticket_ids), 'id', array(Connection::PARAM_INT_ARRAY));
 
-        $extra_people = array();
+        $extra_people     = array();
         $extra_people_ids = array();
-        $agent_data = App::$container->getAgentData();
+        $agent_data       = App::$container->getAgentData();
         foreach ($message_data as $m) {
             if (!isset($this->people[$m['person_id']])) {
                 if ($agent_data->has($m['person_id'])) {
@@ -481,7 +527,7 @@ class TicketResultsDisplay implements PersonContextInterface
             $m['date_created'] = \DateTime::createFromFormat('Y-m-d H:i:s', $m['date_created']);
 
             if ($m['first_name'] && $m['last_name']) {
-                $m['display_name'] = $m['first_name'] . ' ' . $m['last_name'];
+                $m['display_name'] = $m['first_name'].' '.$m['last_name'];
             } elseif ($m['name']) {
                 $m['display_name'] = $m['name'];
             } elseif ($m['last_name']) {
@@ -534,9 +580,10 @@ class TicketResultsDisplay implements PersonContextInterface
     }
 
     /**
-     * Get an array of ticket message previews
+     * Get an array of ticket message previews.
      *
-     * @param  Ticket $ticket
+     * @param Ticket $ticket
+     *
      * @return array
      */
     public function getTicketPreview($ticket)
@@ -551,21 +598,21 @@ class TicketResultsDisplay implements PersonContextInterface
     }
 
     /**
-     * @param  mixed  $ticket
+     * @param mixed $ticket
+     *
      * @return string
      */
     public function getFlaggedColor($ticket)
     {
         if (!$this->person_context) {
-            return null;
+            return;
         }
 
         if ($this->person_flagged === null) {
-            $this->person_flagged = App::getDb()->fetchAllKeyValue("
+            $this->person_flagged = App::getDb()->fetchAllKeyValue('
                 SELECT ticket_id, color
                 FROM tickets_flagged
-                WHERE person_id = ? AND ticket_id IN (?)"
-            , array($this->person_context->getId(), $this->ticket_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+                WHERE person_id = ? AND ticket_id IN (?)', array($this->person_context->getId(), $this->ticket_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
         }
 
         $ticket_id = is_object($ticket) ? $ticket->getId() : $ticket;

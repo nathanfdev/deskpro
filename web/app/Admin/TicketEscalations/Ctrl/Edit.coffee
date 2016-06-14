@@ -6,7 +6,7 @@ define [
   class Admin_TicketEscalations_Ctrl_Edit extends Admin_Ctrl_Base
     @CTRL_ID   = 'Admin_TicketEscalations_Ctrl_Edit'
     @CTRL_AS   = 'EditCtrl'
-    @DEPS      = ['dpObTypesDefTicketFilter', 'dpObTypesDefTicketActions', '$stateParams']
+    @DEPS      = ['dpObTypesDefTicketFilter', 'dpObTypesDefTicketActions', '$stateParams', '$q']
 
     init: ->
       @escData = @DataService.get('TicketEscalations')
@@ -29,7 +29,7 @@ define [
       for opt in set
         @$scope.criteriaOptionTypes.push(opt)
 
-      set = @actionsTypeDef.getOptionsForTypes()
+      set = @actionsTypeDef.getOptionsForTypes([], {dynamicOptions: @customActions})
       @$scope.actionOptionTypes.length = 0
       for opt in set
         @$scope.actionOptionTypes.push(opt)
@@ -41,8 +41,10 @@ define [
 
       promise2 = @criteriaTypeDef.loadDataOptions()
       promise3 = @actionsTypeDef.loadDataOptions()
+      promise4 = @Api.sendDataGet({customActions: '/ticket_triggers/get-custom-actions'}).then (result) =>
+        @customActions = result.data.customActions.action_defs
 
-      promises = [promise, promise2, promise3]
+      promises = [promise, promise2, promise3, promise4]
 
       return @$q.all(promises).then(=>
         @$timeout(=>
@@ -70,6 +72,7 @@ define [
         )
 
         @skipDirtyState()
+        @$scope.$parent?.ListCtrl?.loadList()
         if is_new
           @$state.go('tickets.ticket_escalations.gocreate')
       )

@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\App\Native;
 
 use Application\DeskPRO\App\AppManager;
@@ -70,7 +69,6 @@ class NativeAppsSync
      */
     private $exception_handler = false;
 
-
     /**
      * @param DeskproContainer $container
      * @param AppManager       $manager
@@ -90,7 +88,6 @@ class NativeAppsSync
         $this->logger = $logger;
     }
 
-
     /**
      * Sets an exception handler to run on problems during sync or upgrades.
      */
@@ -99,9 +96,8 @@ class NativeAppsSync
         $this->exception_handler = $exception_handler;
     }
 
-
     /**
-     * Updates apps already installed
+     * Updates apps already installed.
      */
     public function runUpdates()
     {
@@ -112,9 +108,9 @@ class NativeAppsSync
         }
     }
 
-
     /**
-     * @param  AppPackage                                $package
+     * @param AppPackage $package
+     *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @throws \Doctrine\ORM\ORMException
@@ -137,16 +133,16 @@ class NativeAppsSync
                 throw $e;
             }
         }
-        $this->logger->debug("... done install");
+        $this->logger->debug('... done install');
 
         // Updates any apps
         foreach ($this->manager->getPackageApps($package) as $app) {
             $native_app = $this->manager->getNativeApp($app);
-            $class = $native_app->getConfig()->getInstallerHandlerClass();
+            $class      = $native_app->getConfig()->getInstallerHandlerClass();
             if ($class) {
                 $this->logger->debug("... running update for app #{$app->id}");
                 $context = new InstallerContext($this->container, $native_app);
-                $obj = new $class($package['settings_def']);
+                $obj     = new $class($package['settings_def']);
 
                 try {
                     $obj->updatePackage($context);
@@ -158,14 +154,13 @@ class NativeAppsSync
                         throw $e;
                     }
                 }
-                $this->logger->debug("... done");
+                $this->logger->debug('... done');
             }
         }
     }
 
-
     /**
-     * Syncs new apps from the filesystem
+     * Syncs new apps from the filesystem.
      */
     public function runSync()
     {
@@ -173,7 +168,6 @@ class NativeAppsSync
             $this->_syncAppsDir($path);
         }
     }
-
 
     /**
      * @param string $path
@@ -183,7 +177,8 @@ class NativeAppsSync
         $this->logger->debug("syncing apps dir: $path");
 
         if (!is_dir($path)) {
-            $this->logger->debug("(no dir)");
+            $this->logger->debug('(no dir)');
+
             return;
         }
 
@@ -211,7 +206,7 @@ class NativeAppsSync
                     throw $e;
                 }
             }
-            $this->logger->debug("... done");
+            $this->logger->debug('... done');
         }
     }
 }

@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Tickets
+ */
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -47,16 +46,17 @@ use Orb\Util\Strings;
 abstract class AbstractEmailAction extends AbstractContainerAwareAction implements ActionInterface, NoopableInterface
 {
     /**
-     * @param  Ticket                                   $ticket
-     * @param  ExecutorContextInterface                 $context
-     * @return \Application\DeskPRO\Entity\EmailAccount
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return \Application\DeskPRO\Entity\EmailAccount
      */
     protected function getFromEmailAccountOption(Ticket $ticket, ExecutorContextInterface $context)
     {
         $from_account = $this->getActionOption('from_account') ?: null;
         if ($from_account) {
-
             if (Numbers::isInteger($from_account)) {
                 $from_account_id = $from_account;
                 try {
@@ -70,12 +70,12 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             $context->getLogger()->debug("[AbstractEmailAction] Sending with email account: $from_account");
 
             if (!$from_account->is_enabled) {
-                $context->getLogger()->warn("[AbstractEmailAction] Email account is not enabled");
+                $context->getLogger()->warn('[AbstractEmailAction] Email account is not enabled');
                 throw new \InvalidArgumentException('account_disabled');
             }
 
             if (!$from_account->outgoing_account) {
-                $context->getLogger()->warn("[AbstractEmailAction] Email account is not an outgoing account");
+                $context->getLogger()->warn('[AbstractEmailAction] Email account is not an outgoing account');
                 throw new \InvalidArgumentException('account_not_outgoing');
             }
         }
@@ -83,40 +83,41 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         return $from_account;
     }
 
-
     /**
-     * @param  Ticket                    $ticket
-     * @param  ExecutorContextInterface  $context
-     * @param  bool                      $allow_blank
-     * @return string|null
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     * @param bool                     $allow_blank
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return string|null
      */
     protected function getEmailTemplateOption(Ticket $ticket, ExecutorContextInterface $context, $allow_blank = false)
     {
         $template = $this->getActionOption('template');
         if (!$template) {
             if ($allow_blank) {
-                return null;
+                return;
             }
 
-            $context->getLogger()->warn("[AbstractEmailAction] No template specified");
+            $context->getLogger()->warn('[AbstractEmailAction] No template specified');
             throw new \InvalidArgumentException('no_template_specified');
         }
 
         $context->getLogger()->debug("[AbstractEmailAction] Using template: $template");
         if (!$this->getContainer()->getTemplating()->exists($template)) {
-            $context->getLogger()->warn("[AbstractEmailAction] Template does not exist");
-            throw new \InvalidArgumentException('invalid_templte');
+            $context->getLogger()->warn('[AbstractEmailAction] Template does not exist');
+            throw new \InvalidArgumentException('invalid_template');
         }
 
         return $template;
     }
 
-
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @param  string                   $mode    'user' or 'agent'
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     * @param string                   $mode    'user' or 'agent'
+     *
      * @return array
      */
     protected function getStandardEmailVars(Ticket $ticket, ExecutorContextInterface $context, $mode)
@@ -135,13 +136,13 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         }
 
         $context->getLogger()->info("[AbstractEmailAction] Type: $type");
-        $context->getLogger()->info(sprintf("[AbstractEmailAction] Performer: %s", $context->getEventPerformer()));
+        $context->getLogger()->info(sprintf('[AbstractEmailAction] Performer: %s', $context->getEventPerformer()));
 
         #------------------------------
         # Set reply flags
         #------------------------------
 
-        $new_replies = $state->getNewReplies();
+        $new_replies        = $state->getNewReplies();
         $is_new_ticket      = $state->isNewTicket();
         $is_new_agent_reply = false;
         $is_new_agent_note  = false;
@@ -165,7 +166,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         // Agent mode - include ticket logs
         } else {
             $ticketlog_generator = new TicketLogGenerator($ticket, $context);
-            $ticket_logs = $ticketlog_generator->getLogEntries();
+            $ticket_logs         = $ticketlog_generator->getLogEntries();
         }
 
         #------------------------------
@@ -174,6 +175,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 
         $vars = array(
             'type'               => $type,
+            'user_mode'          => $mode,
             'performer_type'     => $context->getEventPerformer(),
             'is_new_ticket'      => $is_new_ticket,
             'is_new_agent_reply' => $is_new_agent_reply,
@@ -181,7 +183,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             'is_new_user_reply'  => $is_new_user_reply,
             'is_status_change'   => $state->hasChangedField('status'),
             'action_performer'   => $context->getPersonContext(),
-            'new_message'        => Arrays::getLastItem($new_replies),
+            'new_message'        => Arrays::getFirstItem($new_replies),
             'new_messages'       => $new_replies,
             'ticket_logs'        => $ticket_logs,
             'user_vars'          => $context->getUserVars(),
@@ -189,7 +191,6 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 
         return $vars;
     }
-
 
     /**
      * @param TicketEmail              $ticket_email
@@ -208,18 +209,19 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             $ticket_email->getSentWithCcs(),
             $ticket_email->getFromName(),
             $ticket_email->getFromEmailAccount()->getUseEmailAddress(),
-            $ticket_email->getTemplateName()
+            $ticket_email->getTemplateName(),
+            $ticket_email->getSendmailSourceId()
         );
 
         $state->recordChange($change);
     }
 
-
     /**
-     * @param  string                   $name
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @param  string                   $email_mode 'user' or 'agent'
+     * @param string                   $name
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     * @param string                   $email_mode 'user' or 'agent'
+     *
      * @return string
      */
     protected function renderFromName($name, Ticket $ticket, ExecutorContextInterface $context, $email_mode)
@@ -250,19 +252,19 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 
                     return trim(Strings::collapseWhitespace(Strings::removeLineBreaks($name)));
                 } catch (\Exception $e) {
-                    $context->getLogger()->warn('Invalid name pattern syntax: ' . $name . '. Exception: ' . $e->getMessage(), array('exception' => $e));
+                    $context->getLogger()->warn('Invalid name pattern syntax: '.$name.'. Exception: '.$e->getMessage(), array('exception' => $e));
 
                     return '';
                 }
         }
     }
 
-
     /**
-     * @param  string                   $string
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @param  array                    $extra_vars
+     * @param string                   $string
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     * @param array                    $extra_vars
+     *
      * @return string
      */
     protected function renderStringTemplate($string, Ticket $ticket, ExecutorContextInterface $context, array $extra_vars = null)
@@ -270,23 +272,29 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         /** @var TemplatingExtension $renderer */
         $renderer = $this->getContainer()->getTwig()->getExtension('deskpro_templating');
 
-        return $renderer->renderTicketTemplate($string, $ticket, $context, $extra_vars);
+        return $renderer->renderTicketTemplate($string, $ticket, $context, $extra_vars ?: array());
     }
 
-
     /**
-     * @param  array                    $raw_headers
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
+     * @param array                    $raw_headers
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @return array
      */
     protected function processHeaders(array $raw_headers, Ticket $ticket, ExecutorContextInterface $context)
     {
         $headers = array();
         foreach ($raw_headers as $h) {
+            if (empty($h['name'])) {
+                continue;
+            }
+            if (empty($h['value'])) {
+                $h['value'] = '';
+            }
             $headers[] = array(
                 'name'  => $this->renderStringTemplate($h['name'], $ticket, $context),
-                'value' => $this->renderStringTemplate($h['value'], $ticket, $context)
+                'value' => $this->renderStringTemplate($h['value'], $ticket, $context),
             );
         }
 

@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
@@ -49,7 +46,7 @@ use Orb\Util\Numbers;
 class UsergroupsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -59,7 +56,6 @@ class UsergroupsController extends AbstractController implements ProtectedContro
 
         return $multi;
     }
-
 
     ####################################################################################################################
     # list
@@ -72,12 +68,12 @@ class UsergroupsController extends AbstractController implements ProtectedContro
         if ($type == 'non_sys_user') {
             $data['groups'] = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
         } else {
-            $ugs = $this->em->createQuery("
+            $ugs = $this->em->createQuery('
                 SELECT ug
                 FROM DeskPRO:Usergroup ug
-                WHERE ug.is_agent_group = false AND ug.is_enabled = true
+                WHERE ug.is_agent_group = false
                 ORDER BY ug.title ASC
-            ")->execute();
+            ')->execute();
 
             $data['groups'] = $this->getApiData($ugs);
         }
@@ -105,12 +101,11 @@ class UsergroupsController extends AbstractController implements ProtectedContro
 
         $perms = new GroupsDbLoader(array($usergroup), $this->em);
 
-        $data = $usergroup->toApiData();
+        $data          = $usergroup->toApiData();
         $data['perms'] = $perms->getGroupPermissions($usergroup->id);
 
         return $this->createApiResponse(array('group' => $data));
     }
-
 
     ###################################################################################################################
     # delete
@@ -132,11 +127,10 @@ class UsergroupsController extends AbstractController implements ProtectedContro
         $this->em->remove($usergroup);
         $this->em->flush();
 
-        $this->db->executeUpdate("DELETE FROM permissions_cache");
+        $this->db->executeUpdate('DELETE FROM permissions_cache');
 
-        return $this->createApiDeleteResponse(array('old_group_id' => (int)$id));
+        return $this->createApiDeleteResponse(array('old_group_id' => (int) $id));
     }
-
 
     ####################################################################################################################
     # save
@@ -197,7 +191,7 @@ class UsergroupsController extends AbstractController implements ProtectedContro
         # Clear permission cache
         #------------------------------
 
-        $this->db->executeUpdate("DELETE FROM permissions_cache");
+        $this->db->executeUpdate('DELETE FROM permissions_cache');
 
         #------------------------------
         # Result

@@ -93,26 +93,28 @@ define [
       }
       postData.filter.terms = @filter_criteria
 
-      @sendFormSaveApiCall(method, url, postData).then( (res) =>
-        @Growl.success(@getRegisteredMessage('saved_filter'))
+      @sendFormSaveApiCall(method, url, postData).then(
+        (res) =>
+          @Growl.success(@getRegisteredMessage('saved_filter'))
 
-        @filter.title = @form.title
-        if res.data.filter_id
-          @filter.id = res.data.filter_id
+          @filter.title = @form.title
+          if res.data.filter_id
+            @filter.id = res.data.filter_id
 
-        @filter.is_global = @form.perm_type == 'global'
-        @filter.person = null
-        @filter.agent_team = null
+          @filter.is_global = @form.perm_type == 'global'
+          @filter.person = null
+          @filter.agent_team = null
 
-        if @form.perm_type == 'agent'
-          @filter.person = @agents.filter((x) => x.id == parseInt(@form.agent_id))[0]
-        if @form.perm_type == 'team'
-          @filter.agent_team = @teams.filter((x) => x.id == parseInt(@form.team_id))[0]
+          if @form.perm_type == 'agent'
+            @filter.person = @agents.filter((x) => x.id == parseInt(@form.agent_id))[0]
+          if @form.perm_type == 'team'
+            @filter.agent_team = @teams.filter((x) => x.id == parseInt(@form.team_id))[0]
 
-        @filterData.mergeDataModel(@filter)
+          @filterData.loadList(true).then =>
+            @$state.go('tickets.ticket_filters.gocreate') if !@filterId
 
-        if !@filterId
-          @$state.go('tickets.ticket_filters.gocreate')
+        (res) =>
+          @Growl.error res.data?.error_message if res.data?.error_message
       )
 
   Admin_TicketFilters_Ctrl_Edit.EXPORT_CTRL()

@@ -159,6 +159,13 @@
                         },
                         {
                             "paramType": "query",
+                            "name": "overwrite_person_name",
+                            "type": "boolean\t",
+                            "required": false,
+                            "description": "Set person_name even if the person already exists. This will overwrite a persons name with the one provided in person_name."
+                        },
+                        {
+                            "paramType": "query",
                             "name": "person_organization",
                             "type": "string",
                             "required": false,
@@ -412,6 +419,13 @@
                         },
                         {
                             "paramType": "query",
+                            "name": "is_hold",
+                            "type": "boolean",
+                            "required": false,
+                            "description": "If specified, requires the ticke to be on hold (1) or not on hold (0)"
+                        },
+                        {
+                            "paramType": "query",
                             "name": "sla_completed",
                             "type": "boolean",
                             "required": false,
@@ -579,6 +593,54 @@
             ]
         },
         {
+            "path": "/tickets/filters",
+            "description": "Get a map of filters.",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Get a map of filters",
+                    "nickname": "getFiltersAction",
+                    "type": "array",
+                    "notes": "Find all ticket filters (system and custom)"
+                }
+            ]
+        },
+        {
+            "path": "/tickets/filters/count",
+            "description": "Get array of filters and counts.",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Get array of filters and counts",
+                    "nickname": "getFilterCountsAction",
+                    "type": "array",
+                    "notes": ""
+                }
+            ]
+        },
+        {
+            "path": "/tickets/filters/{filter_id}",
+            "description": "Execute a filter and return results.",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": " Execute a filter and return results",
+                    "nickname": "getFilterAction",
+                    "type": "array",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "filter_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "Filter ID should be executed"
+                        }
+                    ],
+                    "notes": ""
+                }
+            ]
+        },
+        {
             "path": "/tickets/priorities",
             "operations": [
                 {
@@ -599,6 +661,18 @@
             ]
         },
         {
+            "path": "/tickets/quick-stats",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Returns all today created or resolved tickets and tickets awaiting their agent",
+                    "nickname": "getQuickStatsAction",
+                    "type": "array",
+                    "notes": ""
+                }
+            ]
+        },
+        {
             "path": "/tickets/slas",
             "operations": [
                 {
@@ -615,56 +689,6 @@
                     "method": "GET",
                     "summary": "Gets an SLA.",
                     "nickname": "getSlaAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "sla_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the SLA that needs to be searched."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "There is no SLA with ID"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "path": "/tickets/slas/{sla_id}/organizations",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Gets list of organizations that automatically apply this SLA.",
-                    "nickname": "getSlaOrganizationsAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "sla_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the SLA that needs to be searched."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "There is no SLA with ID"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "path": "/tickets/slas/{sla_id}/people",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Gets list of people that automatically apply this SLA.",
-                    "nickname": "getSlaPeopleAction",
                     "parameters": [
                         {
                             "paramType": "path",
@@ -708,6 +732,20 @@
                             "type": "integer",
                             "required": true,
                             "description": "ID of the Ticket that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "with_messages",
+                            "type": "boolean",
+                            "required": false,
+                            "description": "True to fetch message data with the ticket"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "with_loaded_linked_tickets",
+                            "type": "boolean",
+                            "required": false,
+                            "description": "True to load linked ticket data (otherwise, just the IDs are returned)"
                         }
                     ],
                     "responseMessages": [
@@ -989,6 +1027,45 @@
             ]
         },
         {
+            "path": "/tickets/{ticket_id}/link/{link_ticket_id}",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Links two tickets",
+                    "nickname": "linkTicketAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be linked with."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "link_ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be linked."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "is_parent",
+                            "type": "boolean",
+                            "required": false,
+                            "description": "Make the second the parent ticket"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "path": "/tickets/{ticket_id}/lock",
             "operations": [
                 {
@@ -1014,7 +1091,7 @@
             ]
         },
         {
-            "path": "/tickets/{ticket_id}/log",
+            "path": "/tickets/{ticket_id}/logs",
             "operations": [
                 {
                     "method": "GET",
@@ -1153,6 +1230,13 @@
                             "type": "boolean",
                             "required": false,
                             "description": "If true, suppresses user notification of the reply. Defaults to false."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "person_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Message author"
                         }
                     ],
                     "responseMessages": [

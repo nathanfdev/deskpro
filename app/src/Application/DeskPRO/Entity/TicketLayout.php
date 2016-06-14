@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -87,37 +86,33 @@ class TicketLayout extends DomainObject
         $this->date_updated = new \DateTime();
     }
 
-
     /**
      * @throws \RuntimeException
      */
     public function setDepartment(Department $dep = null)
     {
-        if ($this->id){
-            throw new \RuntimeException("You cannot change the department once it has been set.");
+        if ($this->id) {
+            throw new \RuntimeException('You cannot change the department once it has been set.');
         } else {
             $this->department = $dep;
         }
     }
 
-
     /**
-     * Enable the layout
+     * Enable the layout.
      */
     public function enable()
     {
         $this['is_enabled'] = true;
     }
 
-
     /**
-     * Disable the layout
+     * Disable the layout.
      */
     public function disable()
     {
         $this['is_enabled'] = true;
     }
-
 
     ############################################################################
     # Doctrine Metadata
@@ -125,12 +120,12 @@ class TicketLayout extends DomainObject
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
-        $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
-        $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+        $metadata->inheritanceType      = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+        $metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+        $metadata->generatorType        = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
         $metadata->setPrimaryTable(array(
-            'name' => 'ticket_layouts'
+            'name' => 'ticket_layouts',
         ));
 
         $metadata->mapField(array(
@@ -138,7 +133,7 @@ class TicketLayout extends DomainObject
             'fieldName'  => 'id',
             'type'       => 'integer',
             'nullable'   => false,
-            'id'         => true
+            'id'         => true,
         ));
         $metadata->mapField(array(
             'columnName' => 'is_enabled',
@@ -150,19 +145,19 @@ class TicketLayout extends DomainObject
             'columnName' => 'user_layout',
             'fieldName'  => 'user_layout',
             'type'       => 'dp_json_obj',
-            'nullable'   => false
+            'nullable'   => false,
         ));
         $metadata->mapField(array(
             'columnName' => 'agent_layout',
             'fieldName'  => 'agent_layout',
             'type'       => 'dp_json_obj',
-            'nullable'   => false
+            'nullable'   => false,
         ));
         $metadata->mapField(array(
             'columnName' => 'date_updated',
             'fieldName'  => 'date_updated',
             'type'       => 'datetime',
-            'nullable'   => false
+            'nullable'   => false,
         ));
 
         $metadata->mapManyToOne(array(
@@ -173,7 +168,7 @@ class TicketLayout extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-            ))
+            )),
         ));
     }
 }

@@ -13,11 +13,24 @@
 
 <div class="form-group">
 	<div class="col-lg-4">
+		<h3>Enable Auto Sync</h3>
+	</div>
+	<div class="col-lg-8">
+		<label>
+			<input type="checkbox" ng-model="setting_values.sync_enabled"/>
+			Enable Auto Sync
+		</label>
+		<span class="help-block">Routinely sync user information from this usersource to DeskPRO</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
 		<h3>Server</h3>
 	</div>
 	<div class="col-lg-8">
 		<input type="text" class="form-control" ng-model="setting_values.host" placeholder="Enter the server hostname here" style="width: 250px;" /> : <input type="text" class="form-control" ng-model="setting_values.port" placeholder="Port" style="width: 75px;" />
-		<span class="help-block">Enter the AD server and port.</span>
+		<span class="help-block">Enter the LDAP server and port.</span>
 		<p ng-show="errors.host" class="text-danger">Please enter your server hostname.</p>
 
 		<div style="margin: 8px 0 4px 0;">Connection Security</div>
@@ -43,13 +56,23 @@
 
 <div class="form-group">
 	<div class="col-lg-4">
+		<h3>Account Filter Format</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.account_filter" />
+		<span class="help-block">You can specify an account filter format here. You can leave this field blank to use the default account filter format, which is: (|(dn=%1$s)(mail=%1$s)(uid=%1$s))</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
 		<h3>Service Account</h3>
 	</div>
 	<div class="col-lg-8">
 		<input type="text" class="form-control" ng-model="setting_values.service_username" placeholder="Service Account DN" style="width: 35%;" />
 		<input type="password" class="form-control" ng-model="setting_values.service_password" placeholder="Service Account Password" style="width: 35%;" />
 		<span class="help-block">
-			The service account is the account used to initially bind to the AD directory. The service account must have sufficient
+			The service account is the account used to initially bind to the LDAP directory. The service account must have sufficient
 			permission to run filter queries against the directory. Make sure to specify the full DN for the account name. For example, <code>CN=DeskPRO,DC=example,DC=com</code>.
 		</span>
 		<p ng-show="errors.service_username || errors.service_password" class="text-danger">Please enter your service user.</p>
@@ -58,38 +81,76 @@
 
 <div class="form-group">
 	<div class="col-lg-4">
-		<h3>Filter</h3>
+		<h3>Enable LDAP Paging</h3>
 	</div>
 	<div class="col-lg-8">
-		<input type="text" class="form-control" ng-model="setting_values.account_filter" style="width: 50%;" placeholder="Enter a custom filter" />
-		<span class="help-block">Enter the filter to use to search for users. By default, DeskPRO will search input aginst the dn, mail and uid fields: <code>(|(dn=%s)(mail=%s)(uid=%s))</code></span>
+		<label>
+			<input type="checkbox" ng-model="setting_values.ldap_paging"/>
+			Enable LDAP Paging
+		</label>
+		<span class="help-block">By default, our sync system does not use LDAP Paging. If your LDAP server supports LDAP paging, you can enable it here.</span>
 	</div>
 </div>
 
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>LDAP Size Limit</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.ldap_per_page" style="width: 100px;" placeholder="0" />
+		<span class="help-block">LDAP servers typically set a limit on the number of entries that we can query for during a sync. For no limit, enter 0. If you are not sure, please check with your LDAP server administrator.</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Filter</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.raw_info_filter"/>
+		<span class="help-block">You can filter based on info provided by the usersource. <a href='https://support.deskpro.com/kb/articles/477' target='_blank'>Learn
+		about this
+		feature</a></span>
+	</div>
+</div>
 
 <div ng-if="Ctrl.usersourceType == 'agent'">
-
 	<div class="form-group">
 		<div class="col-lg-4">
 			<h3>Auto Agent</h3>
 		</div>
 		<div class="col-lg-8">
 			<label>
-				<input type="checkbox" ng-model="setting_values.auto_agent" />
+				<input type="checkbox" ng-model="setting_values.auto_agent"/>
 				Automatically create agents if they do not already exist
 			</label>
 
 			<div ng-show="setting_values.auto_agent">
-				Add new agents to this permission group
+				Add agents to this permission group
 				<select
-					ng-model="setting_values.auto_agent_permission_group"
-					ng-options="obj.value as obj.label for obj in Ctrl.permission_groups"
-					ng-required="true"
-					>
+						ng-model="setting_values.auto_agent_permission_group"
+						ng-options="obj.value as obj.label for obj in Ctrl.permission_groups"
+						ng-required="true"
+						>
 				</select>
 			</div>
 		</div>
 	</div>
+</div>
 
-
+<div ng-if="Ctrl.usersourceType == 'user'">
+	<div class="form-group">
+		<div class="col-lg-4">
+			<h3>Grant Usergroup</h3>
+		</div>
+		<div class="col-lg-8">
+			<select
+					ng-model="setting_values.auto_user_permission_group"
+					ng-options="obj.value as obj.label for obj in Ctrl.permission_groups_user"
+					ng-required="false"
+					>
+			</select>
+			<span class="help-block">Add this usergroup to users who login with this usersource.</span>
+		</div>
+	</div>
 </div>

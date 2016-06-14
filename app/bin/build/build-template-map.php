@@ -7,19 +7,19 @@ if (php_sapi_name() != 'cli') {
 }
 
 define('DP_BUILDING', true);
-define('DP_ROOT', realpath(__DIR__ . '/../../'));
-define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
-define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
+define('DP_ROOT', realpath(__DIR__.'/../../'));
+define('DP_WEB_ROOT', realpath(__DIR__.'/../../../'));
+define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
 
-require DP_ROOT . '/bin/build/inc.php';
+require DP_ROOT.'/bin/build/inc.php';
 require DP_ROOT.'/sys/system.php';
 
 $paths = array(
-    'AdminInterfaceBundle'       => DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/views',
-    'AgentBundle'                => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
-    'DeskPRO'                    => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
-    'ReportsInterfaceBundle'     => DP_ROOT.'/src/Application/ReportsInterfaceBundle/Resources/views',
-    'UserBundle'                 => DP_ROOT.'/src/Application/UserBundle/Resources/views',
+    'AdminInterfaceBundle'   => DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/views',
+    'AgentBundle'            => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
+    'DeskPRO'                => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
+    'ReportsInterfaceBundle' => DP_ROOT.'/src/Application/ReportsInterfaceBundle/Resources/views',
+    'UserBundle'             => DP_ROOT.'/src/Application/UserBundle/Resources/views',
 );
 
 $tpl_info = array();
@@ -34,16 +34,16 @@ foreach ($paths as $bundle => $dir) {
     $finder->files()->name('*.twig')->in($dir);
 
     foreach ($finder as $file) {
-        /** @var \Symfony\Component\Finder\SplFileinfo $file */
+        /* @var \Symfony\Component\Finder\SplFileinfo $file */
 
         $filepath = $file->getRealPath();
 
-        $tplname = str_replace($dir . '/', ':', $filepath);
+        $tplname = str_replace($dir.'/', ':', $filepath);
         $tplname = str_replace('/', ':', $tplname);
         if (substr_count($tplname, ':') < 2) {
-            $tplname = ':' . $tplname; // for layouts that are in top dir, MyBundle::layout
+            $tplname = ':'.$tplname; // for layouts that are in top dir, MyBundle::layout
         }
-        $tplname = $bundle . $tplname;
+        $tplname = $bundle.$tplname;
 
         if (!$bogus) {
             exec("git log --date=short -s -1 -- {$filepath}", $out);
@@ -65,11 +65,11 @@ foreach ($paths as $bundle => $dir) {
         }
 
         $tpl_info[$tplname] = array(
-            'path' => $path,
+            'path'         => $path,
             'last_updated' => $time,
         );
 
-        echo ".";
+        echo '.';
     }
 }
 
@@ -79,7 +79,7 @@ foreach ($tpl_info as $k => $info) {
     $php[] = "'$k' => array('path' => {$info['path']}, 'last_updated' => {$info['last_updated']}),\n";
 }
 
-$php[] = ");";
+$php[] = ');';
 $php[] = "\n";
 
 file_put_contents(DP_ROOT.'/sys/config/template-map.php', implode('', $php));

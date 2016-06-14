@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @category Auth
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Auth
+ */
 namespace Orb\Auth;
 
 /**
@@ -56,7 +55,7 @@ class Result
     const FAILURE = 0;
 
     /**
-     * Success
+     * Success.
      */
     const SUCCESS = 1;
 
@@ -77,10 +76,9 @@ class Result
      */
     const MSG_REDIRECT = 'redirect_url';
 
-
-
     /**
-     * Array of info (ie debug info etc) from the adapter
+     * Array of info (ie debug info etc) from the adapter.
+     *
      * @var array
      */
     protected $_messages = array();
@@ -93,12 +91,11 @@ class Result
     protected $_identity = null;
 
     /**
-     * Result code from the ogin attempt
+     * Result code from the ogin attempt.
+     *
      * @var int
      */
     protected $_code = 0;
-
-
 
     /**
      * If $code is Result::REQUIRES_REDIRECT then $messages should have an item called
@@ -110,12 +107,10 @@ class Result
      */
     public function __construct($code, \Orb\Auth\Identity $identity = null, array $messages = array())
     {
-        $this->_code = $code;
+        $this->_code     = $code;
         $this->_identity = $identity;
         $this->_messages = $messages;
     }
-
-
 
     /**
      * Was the login valid?
@@ -127,8 +122,6 @@ class Result
         return $this->_code == self::SUCCESS;
     }
 
-
-
     /**
      * Does the user need to be redirected to finish authentication?
      *
@@ -139,8 +132,6 @@ class Result
         return $this->_code == self::REQUIRES_REDIRECT;
     }
 
-
-
     /**
      * If the result says the user must be redirect, get the URL to redirect the user to.
      *
@@ -148,14 +139,12 @@ class Result
      */
     public function getRedirectUrl()
     {
-        if (!$this->isRedirectRequired() OR !isset($this->_messages['redirect_url'])) {
+        if (!$this->isRedirectRequired() or !isset($this->_messages['redirect_url'])) {
             throw new \UnexpectedValueException('The result does not specify redirection');
         }
 
         return $this->_messages['redirect_url'];
     }
-
-
 
     /**
      * Get the identity.
@@ -171,13 +160,12 @@ class Result
         return $this->_identity;
     }
 
-
-
     /**
      * An array of extra data returned from the adapters, such as error information.
      * Returns an array, or if a key is supplied, that one key or null if it doesn't exist.
      *
      * @array string $key A specific key to get, or null to get the whole array
+     *
      * @return mixed
      */
     public function getMessages($key = null)

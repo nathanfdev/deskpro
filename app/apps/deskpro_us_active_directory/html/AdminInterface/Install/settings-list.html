@@ -13,6 +13,19 @@
 
 <div class="form-group">
 	<div class="col-lg-4">
+		<h3>Enable Auto Sync</h3>
+	</div>
+	<div class="col-lg-8">
+		<label>
+			<input type="checkbox" ng-model="setting_values.sync_enabled"/>
+			Enable Auto Sync
+		</label>
+		<span class="help-block">Routinely sync user information from this usersource to DeskPRO</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
 		<h3>Server</h3>
 	</div>
 	<div class="col-lg-8">
@@ -36,7 +49,7 @@
 	</div>
 	<div class="col-lg-8">
 		<input type="text" class="form-control" ng-model="setting_values.base_dn" />
-		<span class="help-block">This is the base DN to search on. Only users who are "below" this node will be found.</span>
+		<span class="help-block">This is the base DN to search on e.g. <em>CN=Users,OU=group,DC=example,DC=com</em>. Only users who are "below" this node will be found.</span>
 		<p ng-show="errors.base_dn" class="text-danger">Please enter your base DN.</p>
 	</div>
 </div>
@@ -72,6 +85,41 @@
 	</div>
 </div>
 
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Disable LDAP Paging</h3>
+	</div>
+	<div class="col-lg-8">
+		<label>
+			<input type="checkbox" ng-model="setting_values.disable_ldap_paging"/>
+			Disable LDAP Paging
+		</label>
+		<span class="help-block">By default, our sync system uses LDAP Paging to retrieve results. Paging is recommended for Active Directory sync. Check this box if you want to disable paging.</span>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>LDAP Size Limit</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.ldap_per_page" style="width: 100px;" placeholder="1000" />
+		<span class="help-block">By default, Active Directory has a size limit of 1000. If your server has a smaller limit, please enter it here.</span>
+	</div>
+</div>
+
+<div class="form-group ng-scope">
+	<div class="col-lg-4">
+		<h3>Filter</h3>
+	</div>
+	<div class="col-lg-8">
+		<input type="text" class="form-control" ng-model="setting_values.raw_info_filter"/>
+		<span class="help-block">You can filter based on info provided by the usersource. <a
+				href='http://deskpro.com'>Learn about this
+			feature</a></span>
+	</div>
+</div>
+
 
 <div ng-if="Ctrl.usersourceType == 'agent'">
 
@@ -81,21 +129,40 @@
 		</div>
 		<div class="col-lg-8">
 			<label>
-				<input type="checkbox" ng-model="setting_values.auto_agent" />
+				<input type="checkbox" ng-model="setting_values.auto_agent"/>
 				Automatically create agents if they do not already exist
 			</label>
 
 			<div ng-show="setting_values.auto_agent">
-				Add new agents to this permission group
+				Add agents to this permission group
 				<select
-					ng-model="setting_values.auto_agent_permission_group"
-					ng-options="obj.value as obj.label for obj in Ctrl.permission_groups"
-					ng-required="true"
-					>
+						ng-model="setting_values.auto_agent_permission_group"
+						ng-options="obj.value as obj.label for obj in Ctrl.permission_groups"
+						ng-required="true"
+						>
 				</select>
 			</div>
 		</div>
 	</div>
 
+
+</div>
+
+<div ng-if="Ctrl.usersourceType == 'user'">
+
+	<div class="form-group">
+		<div class="col-lg-4">
+			<h3>Grant Usergroup</h3>
+		</div>
+		<div class="col-lg-8">
+			<select
+					ng-model="setting_values.auto_user_permission_group"
+					ng-options="obj.value as obj.label for obj in Ctrl.permission_groups_user"
+					ng-required="false"
+					>
+			</select>
+			<span class="help-block">Add this usergroup to users who login with this usersource.</span>
+		</div>
+	</div>
 
 </div>

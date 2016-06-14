@@ -1,48 +1,45 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Tickets\Slas;
 
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\ORM\StateChange\ChangeSimple;
-use Application\DeskPRO\Tickets\TicketManager;
-use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\TicketSla;
+use Application\DeskPRO\ORM\StateChange\ChangeSimple;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Doctrine\ORM\EntityManager;
 
 class SlaProcessor
 {
@@ -63,11 +60,10 @@ class SlaProcessor
 
     public function __construct(EntityManager $em, ActionApplicator $action_applicator, SlaClientMessageSender $cm_sender)
     {
-        $this->em = $em;
+        $this->em                = $em;
         $this->action_applicator = $action_applicator;
-        $this->cm_sender = $cm_sender;
+        $this->cm_sender         = $cm_sender;
     }
-
 
     /**
      * @param Ticket                   $ticket
@@ -128,7 +124,7 @@ class SlaProcessor
             }
 
             if (!$ticket_sla->is_completed) {
-                if ($ticket_sla->sla_status == 'ok' || $ticket_sla->sla_status == 'warning') {
+                if ($ticket_sla->sla_status == 'warning') {
                     if ($calc->isTicketSlaFailed($ticket, $ticket_sla)) {
                         $ticket->getStateChangeRecorder()->recordChange(new ChangeSimple(
                             'ticket_sla_status',
@@ -137,7 +133,7 @@ class SlaProcessor
                         ));
                         $context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- set failed', $ticket_sla->sla->id, $ticket_sla->sla->title));
                         $ticket_sla->sla_status = TicketSla::STATUS_FAIL;
-                        $do_triggers = true;
+                        $do_triggers            = true;
                     }
                 } elseif ($ticket_sla->sla_status == 'ok') {
                     if ($calc->isTicketSlaWarning($ticket, $ticket_sla)) {
@@ -148,7 +144,7 @@ class SlaProcessor
                         ));
                         $context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- set warning', $ticket_sla->sla->id, $ticket_sla->sla->title));
                         $ticket_sla->sla_status = TicketSla::STATUS_WARNING;
-                        $do_triggers = true;
+                        $do_triggers            = true;
                     }
                 }
             }
@@ -194,12 +190,12 @@ class SlaProcessor
         $this->cm_sender->sendQueue();
     }
 
-
     /**
      * Look up SLAs in the db that are past warning threshold and update them.
      *
-     * @param  callback $context_factory A factory that returns a new ExecutorContext
+     * @param callback      $context_factory A factory that returns a new ExecutorContext
      * @param TicketManager $tm
+     *
      * @return int
      */
     public function processAllFailed($context_factory, TicketManager $tm)
@@ -220,7 +216,6 @@ class SlaProcessor
             $current_status   = $ticket_sla->sla_status;
 
             if ($ticket_sla->sla->getCalculator()->isTicketSlaFailed($ticket_sla->ticket, $ticket_sla)) {
-
                 $ticket_sla->sla_status = TicketSla::STATUS_FAIL;
                 $this->em->persist($ticket_sla);
                 $this->em->flush($ticket_sla);
@@ -228,11 +223,11 @@ class SlaProcessor
                 $this->cm_sender->sendMessage($ticket_sla->ticket, $ticket_sla, $current_status, $current_complete);
                 $this->cm_sender->sendQueue();
 
-                $count++;
+                ++$count;
 
                 $context = $context_factory($ticket_sla->ticket, $ticket_sla->sla, $ticket_sla, 'fail');
                 if (!($context instanceof ExecutorContextInterface)) {
-                    throw new \InvalidArgumentException("context_factory did not return ExecutorContextInterface");
+                    throw new \InvalidArgumentException('context_factory did not return ExecutorContextInterface');
                 }
 
                 $ticket_sla->ticket->disableAutoTicketProcess();
@@ -244,12 +239,12 @@ class SlaProcessor
         return $count;
     }
 
-
     /**
      * Look up SLAs in the db that are past failing threshold and update them.
      *
-     * @param  callback $context_factory A factory that returns a new ExecutorContext
+     * @param callback      $context_factory A factory that returns a new ExecutorContext
      * @param TicketManager $tm
+     *
      * @return int
      */
     public function processAllWarning($context_factory, TicketManager $tm)
@@ -270,19 +265,18 @@ class SlaProcessor
             $current_status   = $ticket_sla->sla_status;
 
             if ($ticket_sla->sla->getCalculator()->isTicketSlaWarning($ticket_sla->ticket, $ticket_sla)) {
-
                 $ticket_sla->sla_status = TicketSla::STATUS_WARNING;
                 $this->em->persist($ticket_sla);
                 $this->em->flush($ticket_sla);
 
-                $count++;
+                ++$count;
 
                 $this->cm_sender->sendMessage($ticket_sla->ticket, $ticket_sla, $current_status, $current_complete);
                 $this->cm_sender->sendQueue();
 
                 $context = $context_factory($ticket_sla->ticket, $ticket_sla->sla, $ticket_sla, 'warning');
                 if (!($context instanceof ExecutorContextInterface)) {
-                    throw new \InvalidArgumentException("context_factory did not return ExecutorContextInterface");
+                    throw new \InvalidArgumentException('context_factory did not return ExecutorContextInterface');
                 }
 
                 $ticket_sla->ticket->disableAutoTicketProcess();
@@ -293,7 +287,6 @@ class SlaProcessor
 
         return $count;
     }
-
 
     /**
      * @param Ticket                   $ticket
@@ -318,11 +311,11 @@ class SlaProcessor
 
             $this->action_applicator->apply($actions, $ticket, $context);
         } catch (\Exception $e) {
-            $context->getLogger()->error(sprintf("[SlaProcessor] Exception: [%s] %s", $e->getCode(), $e->getMessage()), array('exception' => $e));
+            $context->getLogger()->error(sprintf('[SlaProcessor] Exception: [%s] %s', $e->getCode(), $e->getMessage()), array('exception' => $e));
             KernelErrorHandler::logException($e);
         }
 
-        $context->getLogger()->info(sprintf("[SlaProcessor] ----- FINISH SLA.$status #%s :: %.4fs -----", $sla->id, microtime(true)-$ts));
+        $context->getLogger()->info(sprintf("[SlaProcessor] ----- FINISH SLA.$status #%s :: %.4fs -----", $sla->id, microtime(true) - $ts));
         $state->clearCurrentChangeMetaData();
     }
 }

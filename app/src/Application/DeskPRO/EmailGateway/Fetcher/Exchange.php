@@ -1,42 +1,42 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
 use Application\DeskPRO\EmailGateway\Storage;
 
 /**
- * Fetches mail from an exchange server
+ * Fetches mail from an exchange server.
  */
 class Exchange extends AbstractFetcher
 {
@@ -66,40 +66,42 @@ class Exchange extends AbstractFetcher
     protected $storage;
 
     /**
-     * Messages retrieved in the current fetch
+     * Messages retrieved in the current fetch.
      *
      * @var Array An array of messages
      */
     protected $messages;
 
     /**
-     * Mailbox name to move messages after processing
+     * Mailbox name to move messages after processing.
+     *
      * @var String Mailbox name
      */
     private $archive_mailbox;
 
     /**
-     * Mailbox name to read messages from
+     * Mailbox name to read messages from.
+     *
      * @var String Mailbox name
      */
     private $read_mailbox;
 
     /**
-     * Max number of email IDs to fetch in one go
+     * Max number of email IDs to fetch in one go.
+     *
      * @var int
      */
     protected $fetch_limit = 100;
 
     /**
-     * Next Message index to read
+     * Next Message index to read.
      *
      * @var int
      */
     protected $next_index = 0;
 
-
     /**
-     * Initiates the connection
+     * Initiates the connection.
      *
      * @return \Zend\Mail\Storage\Pop3
      */
@@ -107,10 +109,12 @@ class Exchange extends AbstractFetcher
     {
         $options = array();
 
-        switch ($this->account->incoming_account->getType()) {
+        $incoming_account = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
+
+        switch ($incoming_account->getType()) {
             case 'exchange':
                 /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ExchangeConfig $exchange_config */
-                $exchange_config = $this->account->incoming_account;
+                $exchange_config = $incoming_account;
 
                 $options['host']         = $exchange_config->host;
                 $options['port']         = $exchange_config->port;
@@ -126,10 +130,10 @@ class Exchange extends AbstractFetcher
                 break;
 
             default:
-                throw new \InvalidArgumentException("Unknown account type: " . $this->account->incoming_account->getType());
+                throw new \InvalidArgumentException('Unknown account type: '.$incoming_account->getType());
         }
 
-        $this->mode = $options['mode'];
+        $this->mode            = $options['mode'];
         $this->archive_mailbox = !empty($options['archive_mailbox']) ? $options['archive_mailbox'] : 'DP_Archive';
         $this->read_mailbox    = !empty($options['read_mailbox']) ? $options['read_mailbox'] : null;
 
@@ -147,7 +151,7 @@ class Exchange extends AbstractFetcher
         }
 
         $unread_only = false;
-        $folder = null;
+        $folder      = null;
 
         if ($this->mode == self::MODE_READ) {
             $unread_only = true;
@@ -161,14 +165,13 @@ class Exchange extends AbstractFetcher
             $this->messages = array();
         }
 
-        $this->logger->log(sprintf("Read %d messages", count($this->messages)), 'debug');
+        $this->logger->log(sprintf('Read %d messages', count($this->messages)), 'debug');
 
         return $this->storage;
     }
 
-
     /**
-     * Gets the message storage
+     * Gets the message storage.
      *
      * @return \Application\DeskPRO\EmailGateway\Storage\Exchange
      */
@@ -177,10 +180,9 @@ class Exchange extends AbstractFetcher
         return $this->storage;
     }
 
-
     /**
      * Gets the next message
-     * Iterates over the fetched IDs and retrieves the next message in list
+     * Iterates over the fetched IDs and retrieves the next message in list.
      *
      * @return object
      */
@@ -189,9 +191,9 @@ class Exchange extends AbstractFetcher
         return $this->storage->getEmailParts($this->messages[$this->next_index]);
     }
 
-
     /**
      * {@inheritdoc}
+     *
      * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      */
     public function _readNext()
@@ -206,15 +208,15 @@ class Exchange extends AbstractFetcher
 
         $message_id = $this->messages[$this->next_index];
 
-        $this->next_index++;
+        ++$this->next_index;
 
         $message = $this->storage->getEmailProps($message_id);
 
         if (!$message) {
-            return null;
+            return;
         }
 
-        $raw_message = new RawMessage();
+        $raw_message       = new RawMessage();
         $raw_message->id   = $message_id;
         $raw_message->uid  = $message_id;
         $raw_message->size = $message->Size;
@@ -230,24 +232,24 @@ class Exchange extends AbstractFetcher
 
         $headers = null;
 
-        $this->logger->log(sprintf("Message size: %s bytes", $raw_message->size), 'debug');
+        $this->logger->log(sprintf('Message size: %s bytes', $raw_message->size), 'debug');
 
         if ($raw_message->uid) {
-            $this->logger->log(sprintf("Message UID: %s", $raw_message->uid), 'debug');
+            $this->logger->log(sprintf('Message UID: %s', $raw_message->uid), 'debug');
         }
 
         $EOL = "\n";
 
         // Reads and formats the Message header
         // To be compatible with the RawMessage
-        if (strpos($raw_message->content, $EOL . $EOL)) {
-            list($headers, ) = explode($EOL . $EOL, $raw_message->content, 2);
+        if (strpos($raw_message->content, $EOL.$EOL)) {
+            list($headers) = explode($EOL.$EOL, $raw_message->content, 2);
         } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers, ) = explode("\r\n\r\n", $raw_message->content, 2);
+            list($headers) = explode("\r\n\r\n", $raw_message->content, 2);
         } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers, ) = explode("\n\n", $raw_message->content, 2);
+            list($headers) = explode("\n\n", $raw_message->content, 2);
         } else {
-            @list($headers, ) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
         }
 
         $raw_message->headers = $headers;
@@ -257,7 +259,7 @@ class Exchange extends AbstractFetcher
 
     /**
      * Processes the message after reading it.
-     * Moves it to the DP_Mailbox folder marking it "read"
+     * Moves it to the DP_Mailbox folder marking it "read".
      *
      * @param int $id ID of the message
      */

@@ -44,7 +44,9 @@
 							</div>
 						</div>
 
-						{% include 'AdminInterfaceBundle:TicketAccounts:edit-in.html.twig' %}
+						{% if not app.getSetting('internal.disable_email_editing.incoming_details') %}
+							{% include 'AdminInterfaceBundle:TicketAccounts:edit-in.html.twig' %}
+						{% endif %}
 						{% include 'AdminInterfaceBundle:TicketAccounts:edit-out.html.twig' %}
 						{% include 'AdminInterfaceBundle:TicketAccounts:edit-actions.html.twig' %}
 

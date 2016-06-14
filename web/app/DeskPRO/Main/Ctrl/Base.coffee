@@ -165,7 +165,7 @@ define ['angular'], (angular) ->
       @_has_loaded = false
       ret = @initialLoad()
       me = @
-      if ret
+      if ret && ret.then?
         @$scope.state_loading = true
         @dpInterfaceTimer.startControllerLoad(@)
         ret.then( =>

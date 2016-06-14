@@ -10,6 +10,11 @@
 
 					<div class="panel-body" style="margin-bottom: 0; padding-bottom: 0;">
 						<div class="form-group">
+
+                            <div class="well text-warning">
+                                {{ phrase('adm.ticket_escalations.warning') }}
+                            </div>
+
 							<div class="col-lg-2">
 								<h3>{{ phrase('agent.general.title') }} *</h3>
 							</div>
@@ -17,9 +22,6 @@
 								<div class="inner-group" dp-error-class="form_props.title">
 									<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.title"
 										   style="width: 50%;" required autofocus/>
-									<span class="help-block">
-										{{ phrase('adm.ticket_filters.title_explain') }}
-									</span>
 								</div>
 							</div>
 						</div>
@@ -141,7 +143,7 @@
 					<div class="dp-delete-control" ng-if="EditCtrl.esc.id"
                          ng-hide="form_props.$attempted && form_props.$invalid">
 						<button class="btn btn-danger"
-                                ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.esc.id);">
+                                ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.esc);">
                             Delete
                         </button>
 					</div>

@@ -1,0 +1,34 @@
+services:
+
+  deskpro.import.formatter:
+    class: Application\ImportBundle\Generator\Exporter\Formatter\Formatter
+    factory_class: Application\ImportBundle\Generator\Exporter\Formatter\FormatterFactory
+    factory_method: create
+
+  deskpro.import.csv_reader_factory:
+    class: Application\ImportBundle\Reader\Csv\CsvReaderFactory
+
+  deskpro.import.json_reader_factory:
+    class: Application\ImportBundle\Reader\Json\JsonReaderFactory
+
+  deskpro.import.deskpro_reader_factory:
+    class: Application\ImportBundle\Reader\DeskPRO\DeskPROReaderFactory
+    arguments: [@service_container]
+
+  deskpro.import.osticket_reader_factory:
+    class: Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory
+
+  deskpro.import.zendesk_reader_factory:
+    class: Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory
+
+  deskpro.import:
+    class: Application\ImportBundle\Importer\Importer
+    factory_class: Application\ImportBundle\Importer\ImporterFactory
+    factory_method: create
+    arguments: [@service_container]
+
+  deskpro.import.batch_exporter:
+    class: Application\ImportBundle\Generator\Exporter\Batch
+    factory_class: Application\ImportBundle\Generator\Exporter\BatchFactory
+    factory_method: createExporter
+    arguments: [@deskpro.import.formatter]

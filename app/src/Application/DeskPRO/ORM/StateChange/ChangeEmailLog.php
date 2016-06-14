@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\ORM\StateChange;
 
 class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
@@ -76,6 +75,10 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
      */
     private $template;
 
+    /**
+     * @var int
+     */
+    private $sendmail_source_id;
 
     /**
      * @param string   $field_id
@@ -86,19 +89,20 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
      * @param string   $from_name
      * @param string   $from_email
      * @param string   $template
+     * @param int      $sendmail_source_id
      */
-    public function __construct($field_id, $user_mode, $to_name, $to_email, $cc_emails, $from_name, $from_email, $template)
+    public function __construct($field_id, $user_mode, $to_name, $to_email, $cc_emails, $from_name, $from_email, $template, $sendmail_source_id = null)
     {
-        $this->field_id   = $field_id;
-        $this->user_mode  = $user_mode;
-        $this->to_name    = $to_name;
-        $this->to_email   = $to_email;
-        $this->cc_emails  = $cc_emails ?: array();
-        $this->from_name  = $from_name;
-        $this->from_email = $from_email;
-        $this->template   = $template;
+        $this->field_id           = $field_id;
+        $this->user_mode          = $user_mode;
+        $this->to_name            = $to_name;
+        $this->to_email           = $to_email;
+        $this->cc_emails          = $cc_emails ?: array();
+        $this->from_name          = $from_name;
+        $this->from_email         = $from_email;
+        $this->template           = $template;
+        $this->sendmail_source_id = $sendmail_source_id;
     }
-
 
     /**
      * @return string
@@ -108,15 +112,13 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
         return $this->field_id;
     }
 
-
     /**
      * @return array
      */
     public function getOld()
     {
-        return null;
+        return;
     }
-
 
     /**
      * @return array
@@ -124,14 +126,16 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
     public function getNew()
     {
         return array(
-            'field_id'   => $this->field_id,
-            'user_mode'  => $this->user_mode,
-            'to_name'    => $this->to_name,
-            'to_email'   => $this->to_email,
-            'cc_emails'  => $this->cc_emails,
-            'from_name'  => $this->from_name,
-            'from_email' => $this->from_email,
-            'template'   => $this->template,
+            'field_id'           => $this->field_id,
+            'user_mode'          => $this->user_mode,
+            'to_name'            => $this->to_name,
+            'to_email'           => $this->to_email,
+            'cc_emails'          => $this->cc_emails,
+            'from_name'          => $this->from_name,
+            'from_email'         => $this->from_email,
+            'template'           => $this->template,
+            'sendmail_source_id' => $this->sendmail_source_id,
+            'id_after'           => $this->sendmail_source_id,
         );
     }
 
@@ -189,6 +193,14 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
     public function getCcEmails()
     {
         return $this->cc_emails;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSendmailSourceId()
+    {
+        return $this->sendmail_source_id;
     }
 
     /**

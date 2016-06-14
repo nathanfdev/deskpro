@@ -1,7 +1,5 @@
 {% extends 'AgentBundle::list-pane-layout.html.twig' %}
-{% block dp_declare %}
-	{{ set_tplvar('baseId', el_uid()) }}
-{% endblock %}
+{% set baseId = el_uid() %}
 
 {######################################################################################################################}
 {# METADATA #}
@@ -14,12 +12,10 @@
 	pageMeta.refreshUrl = '{{ path('agent_orgsearch_customfilter') }}?cache_id={{cache_id}}';
 	pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
 	pageMeta.fetchResultsUrl = '{{ path('agent_orgsearch_getpage') }}';
-
-	{% set baseId = el_uid() %}
-	pageMeta.baseId = '{{ tplvars.baseId }}';
+	pageMeta.baseId = '{{ baseId }}';
 
 	pageMeta.resultId = {{cache_id}};
-	pageMeta.perPage = 50;
+	pageMeta.perPage = {{ per_page }};
 	pageMeta.orgResultIds = {{ org_ids|json_encode|raw }};
 	pageMeta.url_fragment = '{{ url_fragment('agent_orgsearch_customfilter') }}';
 
@@ -41,46 +37,51 @@
 {# CONTENT #}
 {######################################################################################################################}
 
+{% block pane_content_header %}
+    {% include 'AgentBundle:OrganizationSearch:filter-display-options.html.twig' %}
+    {% include 'AgentBundle:OrganizationSearch:filter-control-bar.html.twig' %}
+{% endblock %}
+
 {% block pane_content %}
 
     <div ng-show="organizations.length">
-		{% include 'AgentBundle:OrganizationSearch:filter-display-options.html.twig' %}
-		{% include 'AgentBundle:OrganizationSearch:filter-control-bar.html.twig' %}
 
-		<section class="downloads-simple-list list-listing no-check"
-                ng-if="'list' === listType"
-                >
-			{% include 'AgentBundle:OrganizationSearch:filter-page.html.twig' %}
-		</section>
+		<section class="downloads-simple-list list-listing no-check">
 
-        <div class="table-result-list"
-                ng-if="'table' === listType"
-                >
-            <table cellspacing="0" width="100%">
+            <div ng-if="'list' === listType">
+                {% include 'AgentBundle:OrganizationSearch:filter-page.html.twig' %}
+            </div>
 
-                {% include 'AgentBundle:OrganizationSearch:filter-table-head.html.twig' %}
+            <div class="table-result-list"
+                 ng-if="'table' === listType"
+                    >
+                <table cellspacing="0" width="100%">
 
-                <tbody>
+                    {% include 'AgentBundle:OrganizationSearch:filter-table-head.html.twig' %}
+
+                    <tbody>
                     <tr
-                        ng-repeat="org in organizations"
-                        class="row-item org org-{{ ng_var('org.id')}} downloads-{{ ng_var('org.id')}}"
-                        data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': ng_var('org.id')})|raw }}"
-                        data-route-title="@selector(a.row-title)"
-                        data-route-openclass="open"
-                        >
+                            ng-repeat="org in organizations"
+                            class="row-item org org-{{ ng_var('org.id')}} downloads-{{ ng_var('org.id')}}"
+                            data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': ng_var('org.id')})|raw }}"
+                            data-route-title="@selector(a.row-title)"
+                            data-route-openclass="open"
+                            >
                         {% include 'AgentBundle:OrganizationSearch:filter-table-row.html.twig' %}
                     </tr>
-                </tbody>
+                    </tbody>
 
-            </table>
-        </div>
+                </table>
+            </div>
+
+		</section>
 
         {% include 'AgentBundle::list-pane-nav.html.twig' with {
             listName: 'organizations',
             page: page,
             perPage: per_page,
-            total: person_ids|length,
-            ids: person_ids,
+	        total: org_ids|length,
+	        ids: org_ids,
             displayFields: display_fields,
             url: path('agent_orgsearch_getpage')
         } only %}

@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage UserBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -41,7 +38,9 @@ use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\UserBundle\Form\NewTicketType;
 use Orb\Util\Arrays;
+use Symfony\Bridge\Doctrine\Form\ChoiceList\EntityChoiceList;
 use Symfony\Component\Form\Exception\OutOfBoundsException;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class NewTicketController extends AbstractController
@@ -51,7 +50,7 @@ class NewTicketController extends AbstractController
     ################################################################################
 
     /**
-     * Create a new ticket
+     * Create a new ticket.
      */
     public function newAction($format = 'normal', $for_department_id = 0)
     {
@@ -71,7 +70,7 @@ class NewTicketController extends AbstractController
             $website_url = $GLOBALS['DP_WEBSITE_URL'];
         }
 
-        $ticket = new Entity\Ticket();
+        $ticket    = new Entity\Ticket();
         $newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
             $interface,
             $this->person,
@@ -83,11 +82,11 @@ class NewTicketController extends AbstractController
         $hide_email_field = false;
         if ($this->in->getString('default_user_name')) {
             $newticket->person->name = $this->in->getString('default_user_name');
-            $hide_name_field = true;
+            $hide_name_field         = true;
         }
         if ($this->in->getString('default_user_email')) {
             $newticket->person->email = $this->in->getString('default_user_email');
-            $hide_email_field = true;
+            $hide_email_field         = true;
         }
 
         if ($website_url) {
@@ -121,11 +120,11 @@ class NewTicketController extends AbstractController
 
         if ($for_department_id) {
             $newticket->ticket->department_id = $for_department_id;
-            $set_dep_id = $newticket->ticket->department_id;
+            $set_dep_id                       = $newticket->ticket->department_id;
         }
 
-        $layouts = $this->container->getTicketLayoutManager()->getUserLayouts();
-        $ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $layouts->compileJsObj() . ";";
+        $layouts           = $this->container->getTicketLayoutManager()->getUserLayouts();
+        $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 
         if ($newticket->ticket->department_id) {
             $default_page = $layouts->getLayout($newticket->ticket->department_id);
@@ -147,10 +146,10 @@ class NewTicketController extends AbstractController
         $unique_items = $this->container->getTicketLayoutManager()->getUserLayoutItems();
 
         /** @var RateLimit $rateLimit */
-        $rateLimit = $this->get(RateLimit::KEY);
-        $captcha = null;
+        $rateLimit     = $this->get(RateLimit::KEY);
+        $captcha       = null;
         $force_captcha = false;
-        $isLimited = $rateLimit->isActionLimited(RateLimit::ACT_SUBMIT_TICKET);
+        $isLimited     = $rateLimit->isActionLimited(RateLimit::ACT_SUBMIT_TICKET);
 
         if ($isLimited || (isset($unique_items['captcha']) && empty($this->person->id))) {
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newticket'));
@@ -164,7 +163,7 @@ class NewTicketController extends AbstractController
             }
         }
 
-        $errors = array();
+        $errors       = array();
         $error_fields = array();
 
         $validator = new \Application\UserBundle\Validator\NewTicketValidator();
@@ -175,8 +174,10 @@ class NewTicketController extends AbstractController
         // Custom fields
         // We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
         // So dont remove it even though it looks like it's not used! :-)
-        $custom_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_ticket_fields', 'form');
-        $custom_user_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_user_fields', 'form');
+        $ff                      = $this->get('form.factory');
+        $custom_fields_form      = $ff->createNamedBuilder('newticket_custom_ticket_fields', 'form');
+        $custom_user_fields_form = $ff->createNamedBuilder('newticket_custom_user_fields', 'form');
+        $custom_org_fields_form  = $ff->createNamedBuilder('newticket_custom_org_fields', 'form');
 
         /** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
         $fm = $this->container->getSystemService('TicketFieldsManager');
@@ -184,31 +185,53 @@ class NewTicketController extends AbstractController
             if (empty($_REQUEST['newticket_custom_ticket_fields']) || !is_array($_REQUEST['newticket_custom_ticket_fields'])) {
                 $_REQUEST['newticket_custom_ticket_fields'] = array();
             }
-            $field_data = $fm->getStrucutredDataFromForm($_REQUEST['newticket_custom_ticket_fields'], 'Application\\DeskPRO\\Entity\\CustomDataTicket');
+            $field_data      = $fm->getStrucutredDataFromForm($_REQUEST['newticket_custom_ticket_fields'], 'Application\\DeskPRO\\Entity\\CustomDataTicket');
             $field_form_data = $fm->createFieldDataFromArray($field_data);
-            $custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, true);
+            $custom_fields   = $fm->getDisplayArray($field_form_data, $custom_fields_form, true);
         } else {
             $custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
         }
 
-        /** @var $fm \Application\DeskPRO\CustomFields\PersonFieldManager */
-        $ufm = $this->container->getSystemService('PersonFieldsManager');
+        $ufm = $this->container->getPersonFieldManager();
+        $ofm = $this->container->getOrgFieldManager();
         if (isset($_REQUEST['newticket_custom_ticket_fields'])) {
             if (empty($_REQUEST['newticket_custom_user_fields']) || !is_array($_REQUEST['newticket_custom_user_fields'])) {
                 $_REQUEST['newticket_custom_user_fields'] = array();
             }
-            $field_data = $ufm->getStrucutredDataFromForm($_REQUEST['newticket_custom_user_fields'], 'Application\\DeskPRO\\Entity\\CustomDataPerson');
-            $field_form_data = $ufm->createFieldDataFromArray($field_data);
-            $custom_user_fields = $ufm->getDisplayArray($field_form_data, $custom_user_fields_form, true);
+            if (empty($_REQUEST['newticket_custom_org_fields']) || !is_array($_REQUEST['newticket_custom_org_fields'])) {
+                $_REQUEST['newticket_custom_org_fields'] = array();
+            }
+            $field_data          = $ufm->getStrucutredDataFromForm($_REQUEST['newticket_custom_user_fields'], 'Application\\DeskPRO\\Entity\\CustomDataPerson');
+            $field_form_data     = $ufm->createFieldDataFromArray($field_data);
+            $org_field_data      = $ufm->getStrucutredDataFromForm($_REQUEST['newticket_custom_org_fields'], 'Application\\DeskPRO\\Entity\\CustomDataOrganization');
+            $org_field_form_data = $ufm->createFieldDataFromArray($org_field_data);
+            $custom_user_fields  = $ufm->getDisplayArray($field_form_data, $custom_user_fields_form, true);
+            $custom_org_fields   = $ofm->getDisplayArray($org_field_form_data, $custom_org_fields_form, true);
         } else {
             $custom_user_fields = $ufm->getDisplayArrayForObject($this->person, $custom_user_fields_form, true);
+            $custom_org_fields  = $this->person->organization
+                ? $ofm->getDisplayArrayForObject($this->person->organization, $custom_org_fields_form, true)
+                : array();
         }
 
         // specific user custom fields (but can be used for any sort of custom fields)
-        $manager = $this->container->getCustomFieldManager();
+        $manager                = $this->container->getCustomFieldManager();
         $new_custom_fields_form = $manager->createFormForOwner($ticket, $this->person);
         if ($org = $this->person->organization) {
-            $manager->merge($new_custom_fields_form, $manager->createFormForOwner($ticket, $org));
+            $orgForm = $manager->createFormForOwner($ticket, $org);
+            foreach ($orgForm->all() as $orgField) {
+                /** @var $orgField FormInterface */
+                if (!$orgField->has('value')) {
+                    continue;
+                }
+
+                /** @var EntityChoiceList $list */
+                $list = $orgField->get('value')->getConfig()->getOption('choice_list');
+                if (!$list->getChoices()) {
+                    $orgForm->remove($orgField->getName());
+                }
+            }
+            $manager->merge($new_custom_fields_form, $orgForm);
         }
 
         $captcha_html = '';
@@ -217,21 +240,22 @@ class NewTicketController extends AbstractController
         }
 
         if ($request->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
-
             if (!$this->consumeRequest('newticket')) {
                 return $this->redirectRoute('user');
             }
 
             $form->handleRequest($request);
 
-            $newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
+            $newticket->ticket->attach_ids        = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
             $newticket->ticket->attach_ids_authed = true;
-            $newticket->custom_ticket_fields = isset($_POST['newticket_custom_ticket_fields']) ? $_POST['newticket_custom_ticket_fields'] : array();
-            $newticket->custom_user_fields   = isset($_POST['newticket_custom_user_fields']) ? $_POST['newticket_custom_user_fields'] : array();
+            $newticket->custom_ticket_fields      = isset($_POST['newticket_custom_ticket_fields']) ? $_POST['newticket_custom_ticket_fields'] : array();
+            $newticket->custom_user_fields        = isset($_POST['newticket_custom_user_fields']) ? $_POST['newticket_custom_user_fields'] : array();
+            $newticket->custom_org_fields         = isset($_POST['newticket_custom_org_fields']) ? $_POST['newticket_custom_org_fields'] : array();
 
             if ($newticket->ticket->department_id) {
-                $layout_page = $layouts->getLayout($newticket->ticket->department_id);
-                $layout_page = LayoutDisplay::createFromLayout($layout_page, LayoutDisplay::NEW_TICKET);
+                $layout_page       = $layouts->getLayout($newticket->ticket->department_id);
+                $layout_page       = LayoutDisplay::createFromLayout($layout_page, LayoutDisplay::NEW_TICKET);
+                $newticket->layout = $layout_page;
             } else {
                 $layout_page = $default_page;
             }
@@ -251,11 +275,6 @@ class NewTicketController extends AbstractController
                     if (!$request->request->has($new_custom_fields_form->getName())) {
                         $request->request->set($new_custom_fields_form->getName(), array());
                     }
-                    $new_custom_fields_form->handleRequest($this->get('request'));
-                    if ($new_custom_fields_form->isValid()) {
-                        $manager->flush($new_custom_fields_form);
-                    }
-
                 } catch (DuplicateTicketException $e) {
                     // Double submit detected, just continue on
                     $ticket = $this->em->find('DeskPRO:Ticket', $e->ticket_id);
@@ -293,7 +312,6 @@ class NewTicketController extends AbstractController
 
                 // Require login means we need to ask the user to log in now
                 if ($newticket->require_login) {
-
                     $this->session->setFlash('new_ticket_login', 1);
                     $this->session->save();
 
@@ -301,7 +319,6 @@ class NewTicketController extends AbstractController
 
                 // New users are always sent back to home with flash message.
                 } elseif ($person->isNewPerson() || !$person->is_user) {
-
                     $go = 'front';
 
                 // Existing users are redirected to the ticket if they're using a validated email address.
@@ -335,7 +352,7 @@ class NewTicketController extends AbstractController
                     }
                 }
             } else {
-                $errors = $validator->getErrors(true);
+                $errors       = $validator->getErrors(true);
                 $error_fields = $validator->getErrorGroups(true);
             }
         } else {
@@ -344,40 +361,42 @@ class NewTicketController extends AbstractController
                 foreach ($newticketData as $name => $value) {
                     try {
                         $form->get($name)->setData($value);
-                    } catch (OutOfBoundsException $e) {}
+                    } catch (OutOfBoundsException $e) {
+                    }
                 }
             }
         }
 
-        $tpl = 'UserBundle:NewTicket:new-ticket.html.twig';
+        $tpl            = 'UserBundle:NewTicket:new-ticket.html.twig';
         $redirect_after = '';
         if ($format == 'iframe') {
-            $tpl = 'UserBundle:NewTicket:new-ticket-iframe.html.twig';
+            $tpl            = 'UserBundle:NewTicket:new-ticket-iframe.html.twig';
             $redirect_after = $this->in->getString('redirect_after');
         }
 
         return $this->render($tpl, array(
-            'set_dep_id'            => $set_dep_id,
-            'all_items'             => $unique_items,
+            'set_dep_id' => $set_dep_id,
+            'all_items'  => $unique_items,
 
-            'newticket'             => $newticket,
-            'newticket_formtype'    => $newticket_formtype,
-            'form'                  => $form->createView(),
-            'custom_fields'         => $custom_fields,
-            'custom_user_fields'    => $custom_user_fields,
-            'ticket_display_js'     => $ticket_display_js,
+            'newticket'          => $newticket,
+            'newticket_formtype' => $newticket_formtype,
+            'form'               => $form->createView(),
+            'custom_fields'      => $custom_fields,
+            'custom_user_fields' => $custom_user_fields,
+            'custom_org_fields'  => $custom_org_fields,
+            'ticket_display_js'  => $ticket_display_js,
 
-            'captcha_html'          => $captcha_html,
-            'errors'                => $errors,
-            'error_fields'          => $error_fields,
+            'captcha_html' => $captcha_html,
+            'errors'       => $errors,
+            'error_fields' => $error_fields,
 
-            'page_data_field_ids'   => $page_data_field_ids,
+            'page_data_field_ids' => $page_data_field_ids,
 
-            'redirect_after'        => $redirect_after,
-            'website_url'           => $website_url,
+            'redirect_after' => $redirect_after,
+            'website_url'    => $website_url,
 
-            'hide_name_field'       => $hide_name_field,
-            'hide_email_field'      => $hide_email_field,
+            'hide_name_field'  => $hide_name_field,
+            'hide_email_field' => $hide_email_field,
 
             'new_custom_fields' => $new_custom_fields_form->createView(),
             'force_captcha'     => $force_captcha,
@@ -385,12 +404,12 @@ class NewTicketController extends AbstractController
     }
 
     /**
-     * Saves a users form in the database incase they abandon the form
+     * Saves a users form in the database incase they abandon the form.
      */
     public function saveStatusAction()
     {
         return $this->createJsonResponse(array(
-            'preticket_status_id' => 0
+            'preticket_status_id' => 0,
         ));
     }
 
@@ -423,7 +442,7 @@ class NewTicketController extends AbstractController
             return $this->redirect($url);
         }
 
-        $preticket->is_solved    = true;
+        $preticket->is_solved   = true;
         $preticket->object_type = $content_type;
         $preticket->object_id   = $content_id;
 
@@ -464,12 +483,12 @@ class NewTicketController extends AbstractController
         }
 
         if ($this->in->getBool('add_unsolved')) {
-            $unsolved = $preticket->unsolved_content;
+            $unsolved   = $preticket->unsolved_content;
             $unsolved[] = array($content_type, $content_id);
 
             $preticket->unsolved_content = $unsolved;
         } else {
-            $preticket->is_solved    = true;
+            $preticket->is_solved   = true;
             $preticket->object_type = $content_type;
             $preticket->object_id   = $content_id;
         }
@@ -478,7 +497,8 @@ class NewTicketController extends AbstractController
         try {
             $save_rating = new \Application\DeskPRO\Publish\SaveRating($this->person);
             $save_rating->save($content_type, $content_id, 1);
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         $this->em->beginTransaction();
         $this->em->persist($preticket);
@@ -499,22 +519,24 @@ class NewTicketController extends AbstractController
         $ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
 
         // Must exist, and match the ref n the session (so theres no info leak)
-        if (!$ticket OR $ticket['ref'] != $this->session->get('submitted_ticket')) {
+        if (!$ticket or $ticket['ref'] != $this->session->get('submitted_ticket')) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
         return $this->render('UserBundle:NewTicket:thanks.html.twig', array(
-            'ticket' => $ticket
+            'ticket' => $ticket,
         ));
     }
 
     /**
      * Standard thanks page after a user submits a tikcet from an embedded iframe,
-     * and the webmaster didnt supply an after-redirection URL
+     * and the webmaster didnt supply an after-redirection URL.
      *
      * @param $ticket_ref
-     * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
      */
     public function simpleThanksAction()
     {

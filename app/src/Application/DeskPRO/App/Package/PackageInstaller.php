@@ -1,42 +1,42 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\App\Package;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\Blob;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Doctrine\ORM\EntityManager;
 use Imagine\Image\Box as ImageBox;
 use Imagine\Image\ImagineInterface;
@@ -61,17 +61,17 @@ class PackageInstaller
 
     public function __construct(EntityManager $em, DeskproBlobStorage $blob_storage, ImagineInterface $imagine)
     {
-        $this->em = $em;
+        $this->em           = $em;
         $this->blob_storage = $blob_storage;
-        $this->imagine = $imagine;
+        $this->imagine      = $imagine;
     }
-
 
     /**
      * Install or update a package.
      *
-     * @param  Package    $package The package to installl
-     * @param  AppPackage $def     Existing package record. It will be updated. Otherwise, a new AppPackage is created instead.
+     * @param Package    $package The package to installl
+     * @param AppPackage $def     Existing package record. It will be updated. Otherwise, a new AppPackage is created instead.
+     *
      * @return AppPackage
      */
     public function installPackage(Package $package, AppPackage $def = null)
@@ -86,9 +86,9 @@ class PackageInstaller
         # Get app icons
         #------------------------------
 
-        $sizes = array(16, 24, 32, 48, 64, 96, 128, 192, 256, 512);
+        $sizes      = array(16, 24, 32, 48, 64, 96, 128, 192, 256, 512);
         $have_sizes = array();
-        $largest = null;
+        $largest    = null;
 
         $has_icon_filechange = false;
 
@@ -98,7 +98,7 @@ class PackageInstaller
                 continue;
             }
 
-            $tag = "icons.app.$size";
+            $tag  = "icons.app.$size";
             $name = "app_$size.png";
 
             if ($this->isAssetBlobChanged($def, $name, $path)) {
@@ -113,10 +113,10 @@ class PackageInstaller
                 $has_icon_filechange = true;
             } else {
                 $asset = $def->getAsset($name);
-                $blob = $asset->blob;
+                $blob  = $asset->blob;
             }
 
-            $largest = array($path, $size, $blob);
+            $largest           = array($path, $size, $blob);
             $have_sizes[$size] = $blob;
         }
 
@@ -125,7 +125,7 @@ class PackageInstaller
             $path = DP_ROOT.'/src/Application/DeskPRO/App/Package/Resources/no-icon.png';
             $size = 256;
 
-            $tag = "icons.app.$size";
+            $tag  = "icons.app.$size";
             $name = "app_$size.png";
 
             if ($this->isAssetBlobChanged($def, $name, $path)) {
@@ -140,10 +140,10 @@ class PackageInstaller
                 $has_icon_filechange = true;
             } else {
                 $asset = $def->getAsset($name);
-                $blob = $asset->blob;
+                $blob  = $asset->blob;
             }
 
-            $largest = array($path, $size, $blob);
+            $largest           = array($path, $size, $blob);
             $have_sizes[$size] = $blob;
         }
 
@@ -154,7 +154,7 @@ class PackageInstaller
                 continue;
             }
 
-            $tag = "icons.app.$size";
+            $tag  = "icons.app.$size";
             $name = "app_$size.png";
 
             // If no main icon has changed, we only need to do the image
@@ -192,7 +192,7 @@ class PackageInstaller
 
         $path = $package->getReadmeFilePath();
         if ($path) {
-            $readme = file_get_contents($path);
+            $readme = SafeFile::fileGetContents($path, dirname($path));
 
             if ($this->isAssetBlobChanged($def, 'README', md5($readme), true)) {
                 $blob = $this->blob_storage->createBlobRecordFromString(
@@ -293,10 +293,11 @@ class PackageInstaller
     }
 
     /**
-     * @param  AppPackage $def
-     * @param  string     $name
-     * @param  string     $file    File path, or a string hash if $as_hash is used
-     * @param  bool       $as_hash
+     * @param AppPackage $def
+     * @param string     $name
+     * @param string     $file    File path, or a string hash if $as_hash is used
+     * @param bool       $as_hash
+     *
      * @return bool
      */
     private function isAssetBlobChanged(AppPackage $def, $name, $file, $as_hash = false)
@@ -323,11 +324,12 @@ class PackageInstaller
     }
 
     /**
-     * @param  Package                              $package
-     * @param  AppPackage                           $def
-     * @param  array                                $asset_info
+     * @param Package    $package
+     * @param AppPackage $def
+     * @param array      $asset_info
      * @param $tag
-     * @param  array                                $old_blobs
+     * @param array $old_blobs
+     *
      * @return \Application\DeskPRO\Entity\AppAsset
      */
     private function _addAssetFromInfo(Package $package, AppPackage $def, array $asset_info, $tag, array &$old_blobs)
@@ -337,14 +339,14 @@ class PackageInstaller
         if ($tag == 'html') {
             $content = file_get_contents($asset_info['real_path']);
             $content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function ($m) use ($package) {
-                $path = @realpath($package->getPath() . '/html/' . $m[1]);
+                $path = @realpath($package->getPath().'/html/'.$m[1]);
                 $path_std = str_replace('\\', '/', $path);
 
                 if (!$path || !is_file($path) || strpos($path_std, str_replace('\\', '/', $package->getPath())) !== 0) {
-                    return '<!-- Invalid include file: ' . $m[1] . ' -->';
+                    return '<!-- Invalid include file: '.$m[1].' -->';
                 }
 
-                $inc_content = @file_get_contents($path);
+                $inc_content = @SafeFile::fileGetContents($path, dirname($path));
 
                 return $inc_content;
             }, $content);
@@ -368,11 +370,12 @@ class PackageInstaller
     }
 
     /**
-     * @param  AppPackage                                $def
-     * @param  Blob                                      $blob
-     * @param  null                                      $tag
-     * @param  null                                      $filename
-     * @param  array                                     $old_blobs
+     * @param AppPackage $def
+     * @param Blob       $blob
+     * @param null       $tag
+     * @param null       $filename
+     * @param array      $old_blobs
+     *
      * @return \Application\DeskPRO\Entity\AppAsset|null
      */
     private function _addAssetBlob(AppPackage $def, Blob $blob, $tag = null, $filename = null, array &$old_blobs)
@@ -397,7 +400,7 @@ class PackageInstaller
         }
 
         $asset->name = $filename;
-        $asset->tag = $tag;
+        $asset->tag  = $tag;
 
         return $asset;
     }

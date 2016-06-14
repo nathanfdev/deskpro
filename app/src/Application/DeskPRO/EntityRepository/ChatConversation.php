@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -61,12 +60,12 @@ class ChatConversation extends AbstractEntityRepository
      */
     public function getOpenChatsForAgents()
     {
-        $counts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+        $counts = $this->getEntityManager()->getConnection()->fetchAllKeyValue('
             SELECT agent_id, COUNT(*) AS cnt
             FROM chat_conversations
             WHERE status = ? AND is_agent = 0
             GROUP BY agent_id
-        ", array('open'));
+        ', array('open'));
 
         return $counts;
     }
@@ -74,19 +73,19 @@ class ChatConversation extends AbstractEntityRepository
     public function getConversationsForAgent($agent)
     {
         if ($agent == null) {
-            $convos = $this->getEntityManager()->createQuery("
+            $convos = $this->getEntityManager()->createQuery('
                 SELECT c
                 FROM DeskPRO:ChatConversation c
                 WHERE c.status = ?1 AND c.agent IS NULL AND c.is_agent = false
                 ORDER BY c.id DESC
-            ")->setParameter(1, 'open')->execute();
+            ')->setParameter(1, 'open')->execute();
         } else {
-            $convos = $this->getEntityManager()->createQuery("
+            $convos = $this->getEntityManager()->createQuery('
                 SELECT c
                 FROM DeskPRO:ChatConversation c
                 WHERE c.status = ?1 AND c.agent = ?2
                 ORDER BY c.id DESC
-            ")->setParameter(1, 'open')->setParameter(2, $agent)->execute();
+            ')->setParameter(1, 'open')->setParameter(2, $agent)->execute();
         }
 
         return $convos;
@@ -129,16 +128,15 @@ class ChatConversation extends AbstractEntityRepository
         return $qb->getQuery()->execute($params);
     }
 
-
     public function getAgentList($agent)
     {
-        $agent_ids = App::getDb()->fetchAllCol("
+        $agent_ids = App::getDb()->fetchAllCol('
             SELECT people.id
             FROM chat_conversation_to_person convo
             JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
             JOIN people ON (people.id = convo2.person_id)
             WHERE convo.person_id = :aid AND people.is_agent = 1 AND people.id != :aid
-        ", array('aid' => $agent['id']));
+        ', array('aid' => $agent['id']));
 
         return $this->getEntityManager()->getRepository('DeskPRO:Person')->getPeopleFromIds($agent_ids);
     }
@@ -180,26 +178,26 @@ class ChatConversation extends AbstractEntityRepository
         $person1 = $participant_ids[0];
         $person2 = $participant_ids[1];
 
-        $sql = "
+        $sql = '
             SELECT convo.conversation_id
             FROM chat_conversation_to_person convo
             JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
             JOIN people ON (people.id = convo2.person_id)
             WHERE convo.person_id = ? AND convo2.person_id = ?
-        ";
+        ';
 
         $conversation_ids = $this->getEntityManager()->getConnection()->fetchAllCol($sql, array($person1, $person2));
 
         if (!$conversation_ids) {
-            return null;
+            return;
         }
 
-        $conversations = $this->getEntityManager()->createQuery("
+        $conversations = $this->getEntityManager()->createQuery('
             SELECT c
             FROM DeskPRO:ChatConversation c INDEX BY c.id
             WHERE c.id IN(?0)
             ORDER BY c.id DESC
-        ")->execute(array($conversation_ids));
+        ')->execute(array($conversation_ids));
 
         return $conversations;
     }
@@ -229,9 +227,8 @@ class ChatConversation extends AbstractEntityRepository
         return $this->getByIds($convo_ids, true);
     }
 
-
     /**
-     * Count how many chats there have been between a person, and someone else
+     * Count how many chats there have been between a person, and someone else.
      *
      * @param $person
      * @param $person_ids
@@ -240,7 +237,7 @@ class ChatConversation extends AbstractEntityRepository
     {
         $is_array = true;
         if (!is_array($person_ids)) {
-            $is_array = false;
+            $is_array   = false;
             $person_ids = array($person_ids);
         }
 
@@ -269,15 +266,13 @@ class ChatConversation extends AbstractEntityRepository
             ', array($agent['id']));
     }
 
-
     /**
      * This fetches the latest conversation where all $participants participated, and only
      * they participated. Usually this is used to find a private conversation between two people
      * (for agent chats see the ChatController).
      *
-     * @param  array $participant_ids
-     * @param  null  $date_limit
-     * @return void
+     * @param array $participant_ids
+     * @param null  $date_limit
      */
     public function getRecentForPeople(array $participant_ids, $date_limit = null)
     {
@@ -285,7 +280,7 @@ class ChatConversation extends AbstractEntityRepository
             throw new \InvalidArgumentException('$participant_ids should be an array of at least two people');
         }
 
-        if ($date_limit !== null AND !($date_limit instanceof \DateTime)) {
+        if ($date_limit !== null and !($date_limit instanceof \DateTime)) {
             $date_limit = new \DateTime($date_limit);
         }
         if ($date_limit) {
@@ -300,42 +295,41 @@ class ChatConversation extends AbstractEntityRepository
 
         $participant_ids = Arrays::removeFalsey($participant_ids);
         $participant_ids = array_unique($participant_ids);
-        $count = count($participant_ids);
+        $count           = count($participant_ids);
 
         if (!$count) {
-            return null;
+            return;
         }
 
         // todo fix query
-        $sql = "
+        $sql = '
             SELECT c.id
             FROM chat_conversations c
             INNER JOIN chat_conversation_to_person p ON (p.conversation_id = c.id)
-            " . ($date_limit ? "WHERE c.date_created > '$date_limit'" : '') . "
+            '.($date_limit ? "WHERE c.date_created > '$date_limit'" : '').'
             GROUP BY c.id
-            HAVING SUM(IF(p.person_id IN (" . implode(',', $participant_ids) . "), 1, 0)) = $count AND COUNT(*) = $count
+            HAVING SUM(IF(p.person_id IN ('.implode(',', $participant_ids)."), 1, 0)) = $count AND COUNT(*) = $count
             ORDER BY c.id DESC
             LIMIT 1
         ";
 
         $conversation_id = $this->getEntityManager()->getConnection()->fetchColumn($sql);
         if (!$conversation_id) {
-            return null;
+            return;
         }
 
         return $this->find($conversation_id);
     }
 
-
     public function getActiveChatForVisitor($visitor)
     {
         try {
-            $conversation = $this->getEntityManager()->createQuery("
+            $conversation = $this->getEntityManager()->createQuery('
                 SELECT c
                 FROM DeskPRO:ChatConversation c
                 WHERE c.visitor = ?1
                 ORDER BY c.id ASC
-            ")->setParameter(1, $visitor)->setMaxResults(1)->getSingleResult();
+            ')->setParameter(1, $visitor)->setMaxResults(1)->getSingleResult();
         } catch (\Exception $e) {
             $conversation = null;
         }
@@ -368,12 +362,12 @@ class ChatConversation extends AbstractEntityRepository
     public function getLatestChatForSession($session, $allow_timeout = false)
     {
         try {
-            $conversation = $this->getEntityManager()->createQuery("
+            $conversation = $this->getEntityManager()->createQuery('
                 SELECT c
                 FROM DeskPRO:ChatConversation c
                 WHERE c.session = ?1
                 ORDER BY c.id DESC
-            ")->setParameter(1, $session)->setMaxResults(1)->getSingleResult();
+            ')->setParameter(1, $session)->setMaxResults(1)->getSingleResult();
         } catch (\Exception $e) {
             $conversation = null;
         }
@@ -390,33 +384,33 @@ class ChatConversation extends AbstractEntityRepository
 
     public function getRecentForOrganization(OrganizationEntity $org)
     {
-        $chats = $this->getEntityManager()->createQuery("
+        $chats = $this->getEntityManager()->createQuery('
             SELECT c
             FROM DeskPRO:ChatConversation c
             LEFT JOIN c.person p
             WHERE p.organization = ?0 AND c.is_agent = false
             ORDER BY c.id DESC
-        ")->execute(array($org));
+        ')->execute(array($org));
 
         return $chats;
     }
 
     public function getCountForOrganization(OrganizationEntity $org)
     {
-        return $this->getEntityManager()->getConnection()->fetchColumn("
+        return $this->getEntityManager()->getConnection()->fetchColumn('
             SELECT COUNT(*)
             FROM chat_conversations
             LEFT JOIN people ON chat_conversations.person_id = people.id
             WHERE people.organization_id = ? AND chat_conversations.is_agent = 0
-        ", array($org->getId()));
+        ', array($org->getId()));
     }
 
     public function getCountForPerson(PersonEntity $person)
     {
-        return $this->getEntityManager()->getConnection()->fetchColumn("
+        return $this->getEntityManager()->getConnection()->fetchColumn('
             SELECT COUNT(*)
             FROM chat_conversations
             WHERE person_id = ? AND is_agent = 0
-        ", array($person->getId()));
+        ', array($person->getId()));
     }
 }

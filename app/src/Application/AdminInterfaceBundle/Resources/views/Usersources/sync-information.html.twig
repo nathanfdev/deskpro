@@ -1,0 +1,92 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<section class="dp-paneblock dp-editpane" ng-if="Ctrl.app">
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-fill indent">
+				<div class="panel-body">
+					<div class="form-group">
+						<div style="float: left;">
+							<img ng-src="{{ ng_var('Ctrl.pack.icon_48') }}" alt="Icon" />
+						</div>
+						<div style="float:right">
+							<button ng-if="Ctrl.pack.readme" class="btn btn-default" ng-click="Ctrl.showReadme();"><i class="fa fa-file-text-o"></i> View README</button>
+							<a class="btn btn-default" href="{{ ng_href('apps.apps.package', '{name: Ctrl.pack.name}') }}"><i class="fa fa-dropbox"></i> View App</a>
+						</div>
+						<div style="margin-left: 52px;">
+							<input type="text" class="form-control camo-input" ng-model="setting_values.dp_app.title" style="font-size: 22px; width: 75%; max-width: 350px; height: auto;" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+		<div ng-if="sync_log">
+			<article class="padd">
+				<h3>Last Sync</h3>
+				<table class="table table-condensed" ng-if="!sync_log.phase_2_show">
+					<thead>
+					<tr>
+						<th>Start Date</th>
+						<th>Status</th>
+						<th>Sync Time</th>
+						<th>Record Count</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>{{ ng_var('sync_log.date_start | amDateFormat:"MMM D, YYYY @ HH:mm"') }}</td>
+						<td>{{ ng_var('sync_log.status') }}
+							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="right"
+								  tooltip="{{ phrase('admin.usersources.sync_error_tooltip') }}"
+								  ng-show="sync_log.status == 'connection error'">
+								<i class="fa fa-question"></i></span>
+							<i class="spinner-flat" ng-if="sync_log.status == 'pending'"></i></td>
+						<td>{{ ng_var('sync_log.phase_1_time_readable') }}</td>
+						<td>{{ ng_var('sync_log.record_count') }}</td>
+					</tr>
+					</tbody>
+				</table>
+				<table class="table table-condensed" ng-if="sync_log.phase_2_show">
+					<thead>
+					<tr>
+						<th>Phase 1 Start Date</th>
+						<th>Status</th>
+						<th>Phase 1 Time</th>
+						<th>Phase 2 Start Date</th>
+						<th>Phase 2 Time</th>
+						<th>Record Count</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>{{ ng_var('sync_log.date_start | amDateFormat:"MMM D, YYYY @ HH:mm"') }}</td>
+						<td>
+							{{ ng_var('sync_log.status') }}
+							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="right"
+								  tooltip="{{ phrase('admin.usersources.sync_error_tooltip') }}"
+								  ng-show="sync_log.status == 'connection error'">
+								<i class="fa fa-question"></i></span>
+							<i class="spinner-flat" ng-if="sync_log.status == 'pending'"></i>
+						</td>
+						<td>{{ ng_var('sync_log.phase_1_time_readable') }} <i class="spinner-flat"
+																			  ng-if="sync_log.phase_1_time_readable == 'running now'"></i></td>
+						<td>{{ ng_var('sync_log.date_phase_2_start | amDateFormat:"MMM D, YYYY @ HH:mm"') }}</td>
+						<td>{{ ng_var('sync_log.phase_2_time_readable') }} <i class="spinner-flat"
+																			  ng-if="sync_log.phase_2_time_readable == 'running now'"></i></td>
+						<td>{{ ng_var('sync_log.record_count') }}</td>
+					</tr>
+					</tbody>
+				</table>
+			</article>
+		</div>
+		<div ng-if="!sync_log">
+			<article class="padd">
+				<div class="panel-help">
+					<p>
+						This usersource has not yet synced. After the next sync, you will see information about
+						the sync here.
+					</p>
+				</div>
+			</article>
+		</div>
+	</section>
+{% endblock %}

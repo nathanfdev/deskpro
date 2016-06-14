@@ -1,39 +1,35 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\AgentBundle\Controller;
-
 
 /**
  * The mediabrowser does everything via ajax.
@@ -51,7 +47,7 @@ class MediaBrowserController extends AbstractController
         $data = array();
 
         foreach ($files as $file) {
-            /** @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
+            /* @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
 
             $blob = $this->container->getBlobStorage()->createBlobRecordFromFile(
                 $file->getRealPath(),
@@ -61,9 +57,9 @@ class MediaBrowserController extends AbstractController
             $blob_id = $blob->getId();
 
             $data[] = array(
-                'blob_id' => $blob_id,
+                'blob_id'  => $blob_id,
                 'is_image' => $blob->isImage(),
-                'row_html' => $this->renderView('AgentBundle:MediaBrowser:file-row.html.twig', array('blob' => $blob))
+                'row_html' => $this->renderView('AgentBundle:MediaBrowser:file-row.html.twig', array('blob' => $blob)),
             );
         }
 
@@ -91,14 +87,14 @@ class MediaBrowserController extends AbstractController
 
         $im = new \Imagick();
         $im->readImageBlob($file, $blob['filename']);
-        $im->cropimage($this->in->getInt('w'),$this->in->getInt('h'),$this->in->getInt('x'),$this->in->getInt('y'));
+        $im->cropimage($this->in->getInt('w'), $this->in->getInt('h'), $this->in->getInt('x'), $this->in->getInt('y'));
 
         $new_blob = $this->container->getBlobStorage()->createBlobRecordFromString(
             $im->getImageBlob(),
             $blob['filename'],
             $blob['content_type']
         );
-        $new_blob_id = $blob->getId();
+        $new_blob_id               = $blob->getId();
         $new_blob['original_blob'] = $blob;
 
         $this->em->persist($new_blob);
@@ -126,7 +122,6 @@ class MediaBrowserController extends AbstractController
         ));
     }
 
-
     ############################################################################
     # get-recent
     ############################################################################
@@ -140,11 +135,10 @@ class MediaBrowserController extends AbstractController
         }
 
         return $this->renderView('AgentBundle:MediaBrowser:recent.html.twig', array(
-            'type' => $type,
+            'type'                => $type,
             'recent_blob_objects' => $recent_blob_objects,
         ));
     }
-
 
     ############################################################################
     # update-blob
@@ -155,7 +149,7 @@ class MediaBrowserController extends AbstractController
         /** @var $blob \Application\DeskPRO\Entity\Blob */
         $blob = $this->em->find('DeskPRO:Blob', $blob_id);
 
-        $blob['title'] = $this->in->getString('title');
+        $blob['title']           = $this->in->getString('title');
         $blob['is_media_upload'] = true;
         $blob->getLabelManager()->setLabelsArray($this->in->getCleanValueArray('labels', 'string', 'discard'));
 
@@ -173,17 +167,17 @@ class MediaBrowserController extends AbstractController
 
     public function libraryAction($page = 1)
     {
-        $types = $this->in->getCleanValueArray('types', 'string', 'discard');
+        $types  = $this->in->getCleanValueArray('types', 'string', 'discard');
         $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 
         $qp = new \Application\DeskPRO\ORM\QueryPartial();
-        $qp->setMaxResults(50)->setOrderBy('blob.id', 'DESC')->setFirstResult(($page-1) * 50);
+        $qp->setMaxResults(50)->setOrderBy('blob.id', 'DESC')->setFirstResult(($page - 1) * 50);
 
         $blob_objects = $this->em->getRepository('DeskPRO:BlobObjectAttach')->getLibraryResults($types, $labels, $qp);
 
         return $this->renderView('AgentBundle:MediaBrowser:library.html.twig', array(
-            'types' => $types,
-            'labels' => $labels,
+            'types'        => $types,
+            'labels'       => $labels,
             'blob_objects' => $blob_objects,
         ));
     }
@@ -198,10 +192,10 @@ class MediaBrowserController extends AbstractController
 
         /** @var $category \Application\DeskPRO\Entity\ArticleCategory */
         $category = $this->em->find('DeskPRO:ArticleCategory', $category_id);
-        $cat_ids = $category->getTreeIds(true);
+        $cat_ids  = $category->getTreeIds(true);
 
         $qp = new \Application\DeskPRO\ORM\QueryPartial();
-        $qp->setMaxResults(50)->setOrderBy('blob.id', 'DESC')->setFirstResult(($page-1) * 50);
+        $qp->setMaxResults(50)->setOrderBy('blob.id', 'DESC')->setFirstResult(($page - 1) * 50);
 
         $blob_objects = $this->em->getRepository('DeskPRO:BlobObjectAttach')->getKbLibraryResults($cat_ids, $labels, $qp);
 
@@ -209,8 +203,8 @@ class MediaBrowserController extends AbstractController
 
         return $this->renderView('AgentBundle:MediaBrowser:library.html.twig', array(
             'category_hierarchy' => $category_hierarchy,
-            'labels' => $labels,
-            'blob_objects' => $blob_objects,
+            'labels'             => $labels,
+            'blob_objects'       => $blob_objects,
         ));
     }
 }

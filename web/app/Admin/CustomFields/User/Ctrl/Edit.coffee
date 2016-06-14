@@ -20,4 +20,7 @@ define [
     getBaseRouteName: ->
       return "crm.user_fields"
 
+    type: ->
+      'people'
+
   Admin_CustomFields_User_Ctrl_Edit.EXPORT_CTRL()

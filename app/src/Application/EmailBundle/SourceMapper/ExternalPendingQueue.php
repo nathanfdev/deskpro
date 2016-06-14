@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\EmailBundle\SourceMapper;
 
 use Application\EmailBundle\Entity\SendmailSource;
@@ -50,17 +47,18 @@ class ExternalPendingQueue implements SourceMapperInterface
     private $queuer;
 
     /**
-     * @param SourceMapperInterface $source_mapper
+     * @param SourceMapperInterface  $source_mapper
      * @param PendingQueuerInterface $queuer
      */
     public function __construct(SourceMapperInterface $source_mapper, PendingQueuerInterface $queuer)
     {
         $this->source_mapper = $source_mapper;
-        $this->queuer = $queuer;
+        $this->queuer        = $queuer;
     }
 
     /**
      * @param $source_id
+     *
      * @return array|null
      */
     public function getSource($source_id)
@@ -69,9 +67,10 @@ class ExternalPendingQueue implements SourceMapperInterface
     }
 
     /**
-     * Get a resource for a source (the actual message data)
+     * Get a resource for a source (the actual message data).
      *
      * @param array $source
+     *
      * @return resource
      */
     public function getRowBlobHandle(array $source)
@@ -83,18 +82,21 @@ class ExternalPendingQueue implements SourceMapperInterface
      * @param \Swift_Mime_Message $message
      * @param $status
      * @param \DateTime $queue_date
+     *
      * @return array
      */
     public function createSourceForMessage(\Swift_Mime_Message $message, $status, \DateTime $queue_date = null)
     {
         $r = $this->source_mapper->createSourceForMessage($message, $status, $queue_date);
         $r = $this->enqueueMessage($r);
+
         return $r;
     }
 
     /**
      * @param array $source
-     * @param null $log_text
+     * @param null  $log_text
+     *
      * @return mixed
      */
     public function markSourceComplete(array $source, $log_text = null)
@@ -104,7 +106,8 @@ class ExternalPendingQueue implements SourceMapperInterface
 
     /**
      * @param array $source
-     * @param null $log_text
+     * @param null  $log_text
+     *
      * @return mixed
      */
     public function markSourceAborted(array $source, $log_text = null)
@@ -113,23 +116,25 @@ class ExternalPendingQueue implements SourceMapperInterface
     }
 
     /**
-     * @param array $source
-     * @param null $log_text
+     * @param array     $source
+     * @param null      $log_text
      * @param \DateTime $next_date
+     *
      * @return mixed
      */
     public function markSourceRetry(array $source, $log_text = null, \DateTime $next_date = null)
     {
         $r = $this->source_mapper->markSourceRetry($source, $log_text, $next_date);
-        $this->queuer->queueMessageSource($r);
+        $r = $this->enqueueMessage($r);
 
         return $r;
     }
 
     /**
-     * @param array $source
+     * @param array  $source
      * @param string $error_code
-     * @param null $log_text
+     * @param null   $log_text
+     *
      * @return mixed
      */
     public function markSourceError(array $source, $error_code, $log_text = null)
@@ -138,20 +143,22 @@ class ExternalPendingQueue implements SourceMapperInterface
     }
 
     /**
-     * @param array $source
+     * @param array     $source
      * @param \DateTime $next_date
+     *
      * @return mixed
      */
     public function setSourcePending(array $source, \DateTime $next_date = null)
     {
         $r = $this->source_mapper->setSourcePending($source, $next_date);
-        $this->queuer->queueMessageSource($r);
+        $r = $this->enqueueMessage($r);
 
         return $r;
     }
 
     /**
      * @param array $source
+     *
      * @return mixed
      */
     public function setSourceProcessing(array $source)
@@ -160,8 +167,9 @@ class ExternalPendingQueue implements SourceMapperInterface
     }
 
     /**
-     * @param array $source
+     * @param array  $source
      * @param string $log_text
+     *
      * @return array
      */
     public function setLogText(array $source, $log_text = '')
@@ -176,7 +184,7 @@ class ExternalPendingQueue implements SourceMapperInterface
                 $this->queuer->queueMessageSource($r);
             } catch (\Exception $e) {
                 $status['error_code'] = SendmailSource::ERR_ENQUEUE_FAILED;
-                $r = $this->source_mapper->markSourceRetry($r, "Failed to queue message: " . $e->getMessage());
+                $r                    = $this->source_mapper->markSourceRetry($r, 'Failed to queue message: '.$e->getMessage());
             }
         }
 

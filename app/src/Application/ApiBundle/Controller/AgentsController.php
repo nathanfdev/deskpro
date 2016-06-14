@@ -1,35 +1,33 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * DeskPRO.
  */
 
 namespace Application\ApiBundle\Controller;
@@ -39,8 +37,8 @@ use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
-use Application\DeskPRO\People\AgentNotifPrefs\Prefs as AgentNotifPrefs;
 use Application\DeskPRO\People\AgentNotifPrefs\Prefs;
+use Application\DeskPRO\People\AgentNotifPrefs\Prefs as AgentNotifPrefs;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoader;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsPersister;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsTable as AgentNotifPrefsTable;
@@ -50,6 +48,7 @@ use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPers
 use Application\DeskPRO\People\Agents\AgentDelete;
 use Application\DeskPRO\People\Agents\EditAgent;
 use Application\DeskPRO\People\Agents\Type\EditAgentType;
+use Application\DeskPRO\People\PermissionUtil;
 use DeskPRO\Kernel\License;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -57,10 +56,19 @@ use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+/**
+ * Operations about agents.
+ *
+ * @SWG\Resource(
+ * 	resourcePath="/agents",
+ * 	description="Operations about agents",
+ * 	basePath="/api"
+ * )
+ */
 class AgentsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -71,6 +79,42 @@ class AgentsController extends AbstractController implements ProtectedController
     # list-agents
     ####################################################################################################################
 
+    /**
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/agents",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get agents list",
+     * 		notes="You can use full or basic query param for display settings. Default is 'normal'",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="full",
+     *				description="Display full agents information right in list",
+     *				paramType="query",
+     *				required=false,
+     *				type="boolean",
+     *			),
+     *          @SWG\Parameter(
+     *				name="basic",
+     *				description="Display full agents information right in list",
+     *				paramType="query",
+     *				required=false,
+     *				type="boolean",
+     *			),
+     *          @SWG\Parameter(
+     *				name="with_perms",
+     *				description="Display agent permissions",
+     *				paramType="query",
+     *				required=false,
+     *				type="boolean",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function listAgentsAction()
     {
         $data = array('agents' => array());
@@ -100,12 +144,12 @@ class AgentsController extends AbstractController implements ProtectedController
                     $agent_data = $agent->toApiData();
             }
 
-            $agent_data['is_online_now'] = $this->container->getAgentData()->isAgentOnline($agent);
+            $agent_data['is_online_now']     = $this->container->getAgentData()->isAgentOnline($agent);
             $agent_data['is_available_chat'] = isset($online_agents_userchat[$agent->id]);
 
             if ($this->in->getBool('with_perms')) {
-                $perm_loader = new AgentPermsPersonDbLoader($agent, $this->em);
-                $agent_data['perms'] = $perm_loader->getEffectivePermissions()->toArray();
+                $perm_loader                  = new AgentPermsPersonDbLoader($agent, $this->em);
+                $agent_data['perms']          = $perm_loader->getEffectivePermissions()->toArray();
                 $agent_data['perm_overrides'] = $perm_loader->getOverridePermissions()->toArray();
             }
 
@@ -115,11 +159,23 @@ class AgentsController extends AbstractController implements ProtectedController
         return $this->createApiResponse($data);
     }
 
-
-    ####################################################################################################################
-    # list-deleted-agents
-    ####################################################################################################################
-
+    /**
+     * Return list of deleted agents.
+     *
+     * @return Response
+     *
+     * @todo we have deprecated method here
+     *
+     * @SWG\Api(
+     * 	path="/agents/deleted",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get deleted agents list",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     */
     public function listDeletedAgentsAction()
     {
         $deleted_agents = $this->em->getRepository('DeskPRO:Person')->getDeletedAgents();
@@ -133,11 +189,11 @@ class AgentsController extends AbstractController implements ProtectedController
         return $this->createApiResponse($data);
     }
 
-
-    ####################################################################################################################
-    # get-agent
-    ####################################################################################################################
-
+    /**
+     * @param $id
+     *
+     * @return array
+     */
     protected function getFullAgentData($id)
     {
         $agent = $this->container->getAgentData()->get($id);
@@ -146,7 +202,7 @@ class AgentsController extends AbstractController implements ProtectedController
             throw $this->createNotFoundException();
         }
 
-        $serializer = $this->getContainer()->getSystemService('serializer');
+        $serializer = $this->getContainer()->getSerializer();
         $agent_data = $serializer->serialize($agent);
 
         $agent_data['teams'] = array();
@@ -163,9 +219,9 @@ class AgentsController extends AbstractController implements ProtectedController
         $perm_loader = new AgentPermsPersonDbLoader($agent, $this->em);
 
         $data = array(
-            'agent' => $agent_data,
-            'perms' => $perm_loader->getEffectivePermissions()->toArray(),
-            'perm_overrides' => $perm_loader->getOverridePermissions()->toArray()
+            'agent'          => $agent_data,
+            'perms'          => $perm_loader->getEffectivePermissions()->toArray(),
+            'perm_overrides' => $perm_loader->getOverridePermissions()->toArray(),
         );
 
         if ($this->in->getBool('extended')) {
@@ -177,6 +233,30 @@ class AgentsController extends AbstractController implements ProtectedController
         return $data;
     }
 
+    /**
+     * @param $id
+     *
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/agents/{id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get agent by ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Agent ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function getAgentAction($id)
     {
         $data = $this->getFullAgentData($id);
@@ -184,10 +264,35 @@ class AgentsController extends AbstractController implements ProtectedController
         return $this->createApiResponse($data);
     }
 
-    ####################################################################################################################
-    # get-deleted-agent
-    ####################################################################################################################
-
+    /**
+     * @param $id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Response
+     *
+     *
+     * @SWG\Api(
+     * 	path="/agents/deleted/{id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get deleted agent by ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Agent ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function getDeletedAgentAction($id)
     {
         $agent = $this->em->find('DeskPRO:Person', $id);
@@ -196,7 +301,7 @@ class AgentsController extends AbstractController implements ProtectedController
             throw $this->createNotFoundException();
         }
 
-        $agent_data = $agent->toApiData();
+        $agent_data          = $agent->toApiData();
         $agent_data['teams'] = array();
 
         $agent->loadHelper('Agent');
@@ -211,31 +316,222 @@ class AgentsController extends AbstractController implements ProtectedController
         $perm_loader = new AgentPermsPersonDbLoader($agent, $this->em);
 
         return $this->createApiResponse(array(
-            'agent'           => $agent_data,
-            'perms'           => $perm_loader->getEffectivePermissions()->toArray(),
+            'agent' => $agent_data,
+            'perms' => $perm_loader->getEffectivePermissions()->toArray(),
         ));
     }
 
-
-    ####################################################################################################################
-    # save-agent
-    ####################################################################################################################
-
+    /**
+     * @param null|int $id
+     *
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/agents/{id}",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Update existing agent by ID",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Agent ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="quick_add",
+     *				description="Add 'all perms' group",
+     *				paramType="query",
+     *				required=true,
+     *				type="boolean",
+     *			),
+     *          @SWG\Parameter(
+     *				name="perm_overrides",
+     *				description="Save permission overrides",
+     *				paramType="query",
+     *				required=true,
+     *				type="boolean",
+     *			),
+     *          @SWG\Parameter(
+     *				name="dep_perm_overrides",
+     *				description="Save department permission overrides",
+     *				paramType="query",
+     *				required=true,
+     *				type="boolean",
+     *			),
+     *          @SWG\Parameter(
+     *				name="agent[emails]",
+     *				description="Agent data - emails",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="agent[primary_phone_number_text]",
+     *				description="Agent data - phone number",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="agent[email]",
+     *				description="Agent data - email",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="profile[signature_html]",
+     *				description="Agent signature",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="profile[timezone]",
+     *				description="Agent timezone",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="profile[unset_picture]",
+     *				description="Delete agent picture",
+     *				paramType="query",
+     *				required=false,
+     *				type="boolean",
+     *			),
+     *          @SWG\Parameter(
+     *				name="profile[set_picture_blob]",
+     *				description="Picture blob",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *      )
+     *  )
+     * )
+     *
+     * @SWG\Api(
+     * 	path="/agents",
+     * 	@SWG\Operation(
+     * 		method="PUT",
+     * 		summary="Create new agent",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="skip_email",
+     *				description="Do not send email to new user",
+     *				paramType="query",
+     *				required=true,
+     *				type="boolean",
+     *			),
+     *          @SWG\Parameter(
+     *				name="quick_add",
+     *				description="Add 'all perms' group",
+     *				paramType="query",
+     *				required=true,
+     *				type="boolean",
+     *			),
+     *          @SWG\Parameter(
+     *				name="perm_overrides",
+     *				description="Save permission overrides",
+     *				paramType="query",
+     *				required=true,
+     *				type="boolean",
+     *			),
+     *          @SWG\Parameter(
+     *				name="dep_perm_overrides",
+     *				description="Save department permission overrides",
+     *				paramType="query",
+     *				required=true,
+     *				type="boolean",
+     *			),
+     *          @SWG\Parameter(
+     *				name="agent[emails]",
+     *				description="Agent data - emails",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="agent[primary_phone_number_text]",
+     *				description="Agent data - phone number",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="agent[email]",
+     *				description="Agent data - email",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="profile[signature_html]",
+     *				description="Agent signature",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="profile[timezone]",
+     *				description="Agent timezone",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="profile[unset_picture]",
+     *				description="Delete agent picture",
+     *				paramType="query",
+     *				required=false,
+     *				type="boolean",
+     *			),
+     *          @SWG\Parameter(
+     *				name="profile[set_picture_blob]",
+     *				description="Picture blob",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function saveAgentAction($id = null)
     {
         $agent_postdata = $this->in->getArrayValue('agent');
 
-        $filter_subs = $this->in->getArrayValue('filter_subs');
-        $other_subs = $this->in->getArrayValue('other_subs');
-        $quick_add = $this->in->getBool('quick_add');
-        $perm_overrides = $this->in->getArrayValue('perm_overrides');
+        $filter_subs        = $this->in->getArrayValue('filter_subs');
+        $other_subs         = $this->in->getArrayValue('other_subs');
+        $quick_add          = $this->in->getBool('quick_add');
+        $perm_overrides     = $this->in->getArrayValue('perm_overrides');
         $dep_perm_overrides = $this->in->getArrayValue('dep_perm_overrides');
-        $profile = $this->in->getArrayValue('profile');
-        $skip_email = $this->in->getBool('skip_email');
+        $profile            = $this->in->getArrayValue('profile');
+        $skip_email         = $this->in->getBool('skip_email');
 
         return $this->saveAgent($id, $agent_postdata, $profile, $filter_subs, $other_subs, $quick_add, $perm_overrides, $dep_perm_overrides, $skip_email);
     }
 
+    /**
+     * @param null|int $id
+     * @param array    $agent_postdata
+     * @param array    $profile
+     * @param array    $filter_subs
+     * @param array    $other_subs
+     * @param bool     $quick_add
+     * @param array    $perm_overrides
+     * @param array    $dep_perm_overrides
+     * @param bool     $skip_email
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
     protected function saveAgent($id = null, $agent_postdata = array(), $profile = array(), $filter_subs = array(),
         $other_subs = array(), $quick_add = false, $perm_overrides = array(),
         $dep_perm_overrides = array(), $skip_email = false)
@@ -259,7 +555,7 @@ class AgentsController extends AbstractController implements ProtectedController
         $set_emails = array_unique($set_emails);
 
         $email_account_manager = $this->container->getEmailAccountManager();
-        $system_addresses = array_filter($set_emails, function ($e) use ($email_account_manager) {
+        $system_addresses      = array_filter($set_emails, function ($e) use ($email_account_manager) {
             return $email_account_manager->findAccountForEmailAddress($e);
         });
 
@@ -271,29 +567,42 @@ class AgentsController extends AbstractController implements ProtectedController
             );
         }
 
-        if (isset($agent_postdata['primary_phone_number_text'])) {
-            $phone_number = $agent_postdata['primary_phone_number_text'];
+        if (isset($agent_postdata['primary_phone']['number'])) {
+            $phone_number = $agent_postdata['primary_phone']['number'];
             if (!PhoneNumbers::looksEmpty($phone_number)) {
                 if (!PhoneNumbers::isValid($phone_number)) {
                     return $this->createApiErrorInfoResponse('invalid_phone_number',
                         'Invalid phone number format.',
-                        array( 'primary_phone_number_text' => $phone_number ));
+                        array('primary_phone' => $phone_number));
                 }
             }
         }
 
         $email_validator = $this->container->getSystemService('email_address_validator');
-        $set_emails = array_filter($set_emails, function ($e) use ($email_validator) {
+        $set_emails      = array_filter($set_emails, function ($e) use ($email_validator) {
             return $email_validator->isValidUserEmail($e);
         });
 
         $existPersons = $this->em->getRepository('DeskPRO:Person')->findByEmails($set_emails);
+        $agent        = reset($existPersons);
 
         // we have a dupe email error
-        if(count($existPersons) > 1) {
+        // not yet
+        $dupe =
+            count($existPersons) > 1
+            ||
+            ($id && $agent && $agent['id'] != $id) // update an agent (or user to agent)
+            ||
+            (!$id && $agent && $agent['is_agent']); // insert an agent
+
+        if ($dupe) {
             $error_info = array('existing' => array());
 
             foreach ($existPersons as $person) {
+                if ((int) $person['id'] === (int) $id) {
+                    continue;
+                }
+
                 $error_info['existing'][] = array(
                     'person_id'   => $person['id'],
                     'person_name' => $person['display_name'],
@@ -302,14 +611,13 @@ class AgentsController extends AbstractController implements ProtectedController
             }
 
             return $this->createApiErrorInfoResponse('dupe_email', 'One or more email addresses are already in use by other users', $error_info);
-
         }
 
         #-------------------------
         # Get agent
         #-------------------------
 
-        if (!$agent = reset($existPersons)) {
+        if (!$agent) {
             if ($id) {
                 if (!$agent = $this->container->getAgentData()->get($id)) {
                     throw $this->createNotFoundException();
@@ -320,13 +628,13 @@ class AgentsController extends AbstractController implements ProtectedController
                 // Check license
                 if (!defined('DPC_IS_CLOUD')) {
                     $max_agents = License::getLicense()->getMaxAgents();
-                    if ($max_agents && $max_agents < 100) {
+                    if ($max_agents) {
                         $active_agents = $this->em->getRepository('DeskPRO:Person')->getActiveAgentsCount();
 
                         if ($active_agents >= $max_agents) {
                             return $this->createApiErrorInfoResponse(
                                 'license_exceeded', 'You have used all available agent seats that your license allows', array(
-                                    'agent_seats' => $max_agents,
+                                    'agent_seats'    => $max_agents,
                                     'agents_created' => $active_agents,
                                 )
                             );
@@ -339,12 +647,14 @@ class AgentsController extends AbstractController implements ProtectedController
         // Promoting an existing user to an agent needs to call the preNewAgent callback
         if (!$agent['is_agent']) {
             $r = $this->preNewAgent(1);
-            if ($r) return $r;
+            if ($r) {
+                return $r;
+            }
         }
 
         // If the record isnt a user yet, then we need to set an initial password
         if (!$agent->is_user) {
-            $agent->setPassword(Strings::randomPronounceable(20, 4));
+            $agent->setPassword(Strings::randomPronounceable(20, 4), true);
         }
 
         $edit_agent = new EditAgent($agent);
@@ -377,7 +687,7 @@ class AgentsController extends AbstractController implements ProtectedController
 
         if ($filter_subs && $other_subs) {
             $notif_pref_loader = new AgentNotifPrefsLoader($agent, $this->em);
-            $notif_prefs = $notif_pref_loader->getPrefsFromArray(
+            $notif_prefs       = $notif_pref_loader->getPrefsFromArray(
                 $filter_subs,
                 $other_subs
             );
@@ -419,30 +729,34 @@ class AgentsController extends AbstractController implements ProtectedController
 
             $set_perms = array();
             foreach ($dep_perm_overrides['tickets'] as $did => $p) {
-                if (!($dep = $ticket_deps->getById($did))) continue;
+                if (!($dep = $ticket_deps->getById($did))) {
+                    continue;
+                }
                 if (count($dep->children)) {
                     continue;
                 }
 
                 if ($p['full']) {
-                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1);
+                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1, 'is_active' => 1);
                 } elseif ($p['assign']) {
-                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1);
+                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1, 'is_active' => 1);
                 }
             }
 
             foreach ($dep_perm_overrides['chat'] as $did => $p) {
-                if (!($dep = $chat_deps->getById($did))) continue;
+                if (!($dep = $chat_deps->getById($did))) {
+                    continue;
+                }
                 if (count($dep->children)) {
                     continue;
                 }
 
                 if ($p['full']) {
-                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'chat', 'name' => 'full', 'value' => 1);
+                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'chat', 'name' => 'full', 'value' => 1, 'is_active' => 1);
                 }
             }
 
-            $this->db->executeUpdate("DELETE FROM department_permissions WHERE person_id = ?", array($agent->id));
+            $this->db->executeUpdate('DELETE FROM department_permissions WHERE person_id = ?', array($agent->id));
             if ($set_perms) {
                 $this->db->batchInsert('department_permissions', $set_perms, true);
             }
@@ -469,7 +783,6 @@ class AgentsController extends AbstractController implements ProtectedController
             $this->_saveProfileData($agent, $data);
         }
 
-
         #-------------------------
         # Send welcome email
         #-------------------------
@@ -479,12 +792,14 @@ class AgentsController extends AbstractController implements ProtectedController
             $this->sendWelcomeEmail($agent);
         }
 
+        PermissionUtil::optimizePermissions($agent);
+
         #-------------------------
         # Return
         #-------------------------
 
         return $this->createApiCreateResponse(array(
-            'person_id' => $agent->id
+            'person_id' => $agent->id,
         ), $this->generateUrl('api_agents_get', array('id' => $agent->id), UrlGeneratorInterface::ABSOLUTE_URL));
     }
 
@@ -500,29 +815,79 @@ class AgentsController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @param  int           $num
+     * @param int $num
+     *
      * @return Response|null
      */
     protected function preNewAgent($num)
     {
-        $current_agents = $this->db->fetchColumn("
+        $current_agents = $this->db->fetchColumn('
             SELECT COUNT(*)
             FROM people
             WHERE is_agent = 1 AND is_deleted = 0
-        ");
+        ');
 
         $max_agents = License::getLicense()->getMaxAgents();
-        if ($max_agents && $current_agents+$num > $max_agents) {
+        if ($max_agents && $current_agents + $num > $max_agents) {
             return $this->createApiErrorResponse('license_agents_reached', "Your license allows $max_agents. You cannot create $num more agents until you upgrade your license.");
         }
 
-        return null;
+        return;
     }
 
-    ####################################################################################################################
-    # save-agent-profile
-    ####################################################################################################################
-
+    /**
+     * @param null| $id
+     *
+     * @todo really? No id and no new profile just exception?
+     *
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/agents/{id}/profile",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Update existing agent profile by ID",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Agent ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="profile[signature_html]",
+     *				description="Agent signature",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="profile[timezone]",
+     *				description="Agent timezone",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="profile[unset_picture]",
+     *				description="Delete agent picture",
+     *				paramType="query",
+     *				required=false,
+     *				type="boolean",
+     *			),
+     *          @SWG\Parameter(
+     *				name="profile[set_picture_blob]",
+     *				description="Picture blob",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function saveAgentProfileAction($id = null)
     {
         $agent = $this->container->getAgentData()->get($id);
@@ -574,24 +939,26 @@ class AgentsController extends AbstractController implements ProtectedController
         }
 
         if (isset($data['unset_picture']) && $data['unset_picture'] && $person->picture_blob) {
-            $old_blob = $person->picture_blob;
+            $old_blob             = $person->picture_blob;
             $person->picture_blob = null;
 
             try {
                 $this->container->getBlobStorage()->deleteBlobRecord($old_blob);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
 
             $this->em->persist($person);
         }
 
         if (isset($data['set_picture_blob'])) {
             if ($person->picture_blob) {
-                $old_blob = $person->picture_blob;
+                $old_blob             = $person->picture_blob;
                 $person->picture_blob = null;
 
                 try {
                     $this->container->getBlobStorage()->deleteBlobRecord($old_blob);
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
 
                 $this->em->persist($person);
             }
@@ -606,11 +973,28 @@ class AgentsController extends AbstractController implements ProtectedController
         $this->em->flush();
     }
 
-
-    ####################################################################################################################
-    # reset-password
-    ####################################################################################################################
-
+    /**
+     * @param $id
+     *
+     * @return Response
+     * @SWG\Api(
+     * 	path="/agents/{id}/reset-password",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Reset agent profile by ID",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Agent ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function resetPasswordAction($id)
     {
         $agent = $this->container->getAgentData()->get($id);
@@ -623,7 +1007,7 @@ class AgentsController extends AbstractController implements ProtectedController
         if ($password) {
             /** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
             $password_validator = $this->container->getSystemService('password_policy_validator');
-            $error = '';
+            $error              = '';
             if (!$password_validator->checkPassword($password, $agent, $error)) {
                 return $this->createApiErrorInfoResponse('invalid_password', 'Password does not adhere to agent password policy.', array('error_code' => $error));
             }
@@ -633,14 +1017,14 @@ class AgentsController extends AbstractController implements ProtectedController
         }
 
         if ($agent->password && $agent->password_scheme == 'bcrypt') {
-            $history = new PasswordHistory();
-            $history->person = $agent;
+            $history                  = new PasswordHistory();
+            $history->person          = $agent;
             $history->password_scheme = $agent->password_scheme;
-            $history->password = $agent->password;
+            $history->password        = $agent->password;
             $this->em->persist($history);
         }
 
-        $agent->setPassword($password);
+        $agent->setPassword($password, true);
         $this->em->persist($agent);
         $this->em->flush();
 
@@ -650,7 +1034,7 @@ class AgentsController extends AbstractController implements ProtectedController
         $did_email = false;
         if (!$this->in->getBool('skip_email')) {
             $did_email = $agent->getPrimaryEmailAddress();
-            $message = $this->container->getMailer()->createMessage();
+            $message   = $this->container->getMailer()->createMessage();
             $message->setToPerson($agent);
             $message->setTemplate('DeskPRO:emails_agent:password-reset-alert.html.twig', array(
                 'agent'        => $agent,
@@ -661,15 +1045,60 @@ class AgentsController extends AbstractController implements ProtectedController
         }
 
         return $this->createSuccessResponse(array(
-            'emailed' => $did_email
+            'emailed' => $did_email,
         ));
     }
 
-
-    ####################################################################################################################
-    # delete-agent
-    ####################################################################################################################
-
+    /**
+     * @param $id
+     * @param $mode
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Exception
+     *
+     * @return Response
+     *
+     *
+     * @SWG\Api(
+     * 	path="/agents/{id}/delete",
+     * 	@SWG\Operation(
+     * 		method="DELETE",
+     * 		summary="Delete agent and move it to deleted list",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Agent ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     
+     * @SWG\Api(
+     * 	path="/agents/{id}/delete/to-user",
+     * 	@SWG\Operation(
+     * 		method="DELETE",
+     * 		summary="Delete agent and move it to users list",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Agent ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function deleteAgentAction($id, $mode)
     {
         $agent = $this->em->find('DeskPRO:Person', $id);
@@ -700,11 +1129,38 @@ class AgentsController extends AbstractController implements ProtectedController
         return $this->createSuccessResponse();
     }
 
-
     ####################################################################################################################
     # undelete-agent
     ####################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Response
+     *
+     *
+     * @SWG\Api(
+     * 	path="/agents/deleted/{id}/undelete",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Undelete existing agent by ID",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Agent ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function undeleteAgentAction($id)
     {
         $agent = $this->em->find('DeskPRO:Person', $id);
@@ -715,7 +1171,7 @@ class AgentsController extends AbstractController implements ProtectedController
 
         $max_agents = License::getLicense()->getMaxAgents();
 
-        if ($max_agents && $max_agents < 100) {
+        if ($max_agents) {
             $active_agents = $this->em->getRepository('DeskPRO:Person')->getActiveAgentsCount();
 
             if ($active_agents >= $max_agents) {
@@ -735,11 +1191,33 @@ class AgentsController extends AbstractController implements ProtectedController
         return $this->createSuccessResponse(array('person_id' => $agent->id));
     }
 
-
     ####################################################################################################################
     # generate-login-token
     ####################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/agents/{id}/login-token",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Generate login token to agent with ID = id",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Agent ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function generateLoginTokenAction($id)
     {
         $agent = $this->container->getAgentData()->get($id);
@@ -750,7 +1228,7 @@ class AgentsController extends AbstractController implements ProtectedController
 
         $tmp = TmpData::create('admin_agent_login', array(
             'admin_id' => $this->person->getId(),
-            'agent_id' => $agent->id
+            'agent_id' => $agent->id,
         ), '+5 minutes');
         $this->em->persist($tmp);
         $this->em->flush();
@@ -762,11 +1240,32 @@ class AgentsController extends AbstractController implements ProtectedController
         ));
     }
 
-
-    ####################################################################################################################
-    # get-notify-prefs-tables
-    ####################################################################################################################
-
+    /**
+     * @param $id
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     *
+     *
+     * @SWG\Api(
+     * 	path="/agents/{id}/notify-prefs/get-tables",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get agent notification preferences",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Agent ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function getNotifyPrefsAction($id)
     {
         if ($id) {
@@ -776,23 +1275,25 @@ class AgentsController extends AbstractController implements ProtectedController
                 throw $this->createNotFoundException();
             }
 
-            $loader    = new AgentNotifPrefsLoader($agent, $this->em);
-            $prefs     = $loader->getPrefs();
-            $filters   = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($agent);
+            $loader  = new AgentNotifPrefsLoader($agent, $this->em);
+            $prefs   = $loader->getPrefs();
+            $filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($agent);
         } else {
-            $agent = null;
-            $prefs = new AgentNotifPrefs();
+            $agent   = null;
+            $prefs   = new AgentNotifPrefs();
             $filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
         }
 
         $table_gen = new AgentNotifPrefsTable($prefs, $this->container->getTranslator());
 
-        $sys_filters = array();
+        $sys_filters    = array();
         $custom_filters = array();
 
         foreach ($filters as $f) {
             if ($f->sys_name) {
-                if (strpos($f->sys_name, '_w_hold') !== false || strpos($f->sys_name, 'archive_') === 0) continue;
+                if (strpos($f->sys_name, '_w_hold') !== false || strpos($f->sys_name, 'archive_') === 0) {
+                    continue;
+                }
                 $sys_filters[] = $f;
             } else {
                 $custom_filters[] = $f;
@@ -836,16 +1337,16 @@ class AgentsController extends AbstractController implements ProtectedController
         }
 
         foreach (Prefs::$apps as $app => $bool) {
-            $method = 'build' . ucfirst($app) . 'Table';
+            $method = 'build'.ucfirst($app).'Table';
             if (!method_exists($table_gen, $method)) {
                 throw new \Exception('Wrong app name or table not exists');
             }
-            $tables[$app]     = $table_gen->$method();
+            $tables[$app] = $table_gen->$method();
         }
 
         return $this->createApiResponse(array(
-            'subs'         => $tables,
-            'sub_options'  => array(
+            'subs'        => $tables,
+            'sub_options' => array(
                 'email' => $prefs->getFilterNotifyPrefs('email'),
                 'alert' => $prefs->getFilterNotifyPrefs('alert'),
             ),
@@ -861,11 +1362,11 @@ class AgentsController extends AbstractController implements ProtectedController
             return $this->createApiResponse(array('okay' => true));
         }
 
-        $active_agents = $this->container->getDb()->fetchColumn("
+        $active_agents = $this->container->getDb()->fetchColumn('
             SELECT COUNT(*)
             FROM people
             WHERE is_agent = 1 AND is_deleted = 0
-        ");
+        ');
 
         $remain_agents = max(0, $max_agents - $active_agents);
 
@@ -876,7 +1377,7 @@ class AgentsController extends AbstractController implements ProtectedController
                 return $this->createApiErrorResponse('file_not_found', 'File not found');
             }
 
-            $csv_file = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
+            $csv_file = dp_get_tmp_dir().'/blob-'.$blob->getId().'.csv';
 
             if (!file_exists($csv_file) || !is_readable($csv_file)) {
                 file_put_contents($csv_file, $this->container->getBlobStorage()->copyBlobRecordToString($blob));
@@ -897,7 +1398,9 @@ class AgentsController extends AbstractController implements ProtectedController
                 $delimeter = 1 === count($row) ? substr($row[0], 13, 1) : ',';
 
                 while ($row = fgetcsv($fp, null, $delimeter)) {
-                    if (!$email = trim($row[0])) continue;
+                    if (!$email = trim($row[0])) {
+                        continue;
+                    }
                     $agent_emails[] = $email;
                 }
             }
@@ -906,6 +1409,11 @@ class AgentsController extends AbstractController implements ProtectedController
                 $agent_emails[] = $email;
             }
         }
+
+        $email_validator = $this->container->getSystemService('email_address_validator');
+        $agent_emails    = array_filter($agent_emails, function ($e) use ($email_validator) {
+            return $email_validator->isValidUserEmail($e);
+        });
 
         $agent_emails = Arrays::removeFalsey($agent_emails);
         $agent_emails = Arrays::func($agent_emails, 'strtolower');
@@ -928,8 +1436,8 @@ class AgentsController extends AbstractController implements ProtectedController
         $new_plan = Numbers::roundToMultiple($max_agents + $need_extra, 5, Numbers::ROUND_MULTIPLE_UP);
 
         return $this->createApiResponse(array(
-            'okay' => false,
-            'need_plan' => $new_plan
+            'okay'      => false,
+            'need_plan' => $new_plan,
         ));
     }
 
@@ -940,10 +1448,10 @@ class AgentsController extends AbstractController implements ProtectedController
         }
 
         $agents = $this->in->getArrayValue('agents');
-        $ret = array();
+        $ret    = array();
 
         foreach ($agents as $email => $agent) {
-            $response = $this->saveAgent(null, $agent);
+            $response          = $this->saveAgent(null, $agent);
             $ret[trim($email)] = $response instanceof JsonResponse ? $response->getData() : $response->getContent();
         }
 
@@ -951,8 +1459,10 @@ class AgentsController extends AbstractController implements ProtectedController
     }
 
     /**
-     * todo external mapper file-to-form
+     * todo external mapper file-to-form.
+     *
      * @param $blobId
+     *
      * @return Response
      */
     protected function bulkCreateAgentsFromFile($blobId)
@@ -961,7 +1471,7 @@ class AgentsController extends AbstractController implements ProtectedController
             return $this->createApiErrorResponse('file_not_found', 'File not found');
         }
 
-        $csv_file = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
+        $csv_file = dp_get_tmp_dir().'/blob-'.$blob->getId().'.csv';
 
         if (!file_exists($csv_file) || !is_readable($csv_file)) {
             file_put_contents($csv_file, $this->container->getBlobStorage()->copyBlobRecordToString($blob));
@@ -975,21 +1485,21 @@ class AgentsController extends AbstractController implements ProtectedController
             return $this->createApiErrorResponse('file_not_readable', 'Can\'t read file');
         }
 
-        $prefs = new AgentNotifPrefs();
-        $filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
+        $prefs             = new AgentNotifPrefs();
+        $filters           = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
         $defaultFilterSubs = array();
-        $defaultOtherSubs = array();
+        $defaultOtherSubs  = array();
         foreach ($filters as $filter) {
             $defaultFilterSubs[] = array(
                 'filter_id' => $filter['id'],
-                'email' => $prefs->getFilterNotifyTypes($filter, 'email'),
-                'alert' => $prefs->getFilterNotifyTypes($filter, 'alert'),
+                'email'     => $prefs->getFilterNotifyTypes($filter, 'email'),
+                'alert'     => $prefs->getFilterNotifyTypes($filter, 'alert'),
             );
         }
 
         foreach (AgentNotifPrefs::$apps as $app => $bool) {
             $defaultOtherSubs[] = array(
-                'type' => $app,
+                'type'  => $app,
                 'email' => array(),
                 'alert' => array(),
             );
@@ -1006,18 +1516,19 @@ class AgentsController extends AbstractController implements ProtectedController
 
         $ret = array();
         while ($row = fgetcsv($fp, null, $delimeter)) {
-
-            if (!$email = trim($row[0])) continue;
+            if (!$email = trim($row[0])) {
+                continue;
+            }
 
             $data = array(
-                'email' => $email,
-                'name' => $row[1],
+                'email'        => $email,
+                'name'         => $row[1],
                 'agent_groups' => array(),
-                'teams' => array(),
-                'zones' => array(),
+                'teams'        => array(),
+                'zones'        => array(),
             );
             $filterSubs = $otherSubs = array();
-            $profile = array(
+            $profile    = array(
                 'signature_html' => $row[7],
             );
 
@@ -1028,11 +1539,15 @@ class AgentsController extends AbstractController implements ProtectedController
                 $data['zones'][] = 'reports';
             }
             foreach (explode(',', $row[2]) as $group) {
-                if (!$group = (int) trim($group)) continue;
+                if (!$group = (int) trim($group)) {
+                    continue;
+                }
                 $data['agent_groups'][] = $group;
             }
             foreach (explode(',', $row[3]) as $team) {
-                if (!$team = (int) trim($team)) continue;
+                if (!$team = (int) trim($team)) {
+                    continue;
+                }
                 $data['teams'][] = $team;
             }
 
@@ -1044,10 +1559,10 @@ class AgentsController extends AbstractController implements ProtectedController
             // subscribe to default notifications
             if ('yes' === strtolower($row[6])) {
                 $filterSubs = $defaultFilterSubs;
-                $otherSubs = $defaultOtherSubs;
+                $otherSubs  = $defaultOtherSubs;
             }
 
-            $response = $this->saveAgent(null, $data, $profile, $filterSubs, $otherSubs);
+            $response    = $this->saveAgent(null, $data, $profile, $filterSubs, $otherSubs);
             $ret[$email] = $response instanceof JsonResponse ? $response->getData() : $response->getContent();
         }
 

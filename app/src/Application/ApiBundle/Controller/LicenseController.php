@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
@@ -41,17 +38,15 @@ use DeskPRO\Kernel\License;
 use Orb\Util\Dates;
 use Orb\Validator\StringEmail;
 
-
 class LicenseController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
         return new AdminManagePermission();
     }
-
 
     ####################################################################################################################
     # get-license
@@ -61,14 +56,14 @@ class LicenseController extends AbstractController implements ProtectedControlle
     {
         $lic = License::getLicense();
 
-        $is_expired = false;
+        $is_expired     = false;
         $expire_in_days = 0;
 
         if ($lic->getExpireDate()) {
             $is_expired = $lic->getExpireDate()->format('U') < time();
             if (!$is_expired) {
                 $lic_expire_parts = Dates::secsToPartsArray($lic->getExpireDate()->format('U') - time());
-                $expire_in_days = $lic_expire_parts['days'];
+                $expire_in_days   = $lic_expire_parts['days'];
                 $expire_in_days += $lic_expire_parts['years'] * 365;
             }
         }
@@ -84,36 +79,51 @@ class LicenseController extends AbstractController implements ProtectedControlle
             'licenseCode' => $lic->getLicenseCode(),
         );
 
-        $active_agents = $this->container->getDb()->fetchColumn("
+        $active_agents = $this->container->getDb()->fetchColumn('
             SELECT COUNT(*)
             FROM people
             WHERE is_agent = 1 AND is_deleted = 0
-        ");
+        ');
         $limits = array(
             'max_agents'    => $lic->getMaxAgents() ?: -1,
             'count_agents'  => $active_agents,
-            'remain_agents' => $lic->getMaxAgents() ? max(0, $lic->getMaxAgents() - $active_agents) : -1
+            'remain_agents' => $lic->getMaxAgents() ? max(0, $lic->getMaxAgents() - $active_agents) : -1,
         );
 
         $ma_token = TmpData::create(
             'ma_login', array(
-                'email_address' => $this->person->getPrimaryEmailAddress()
+                'email_address' => $this->person->getPrimaryEmailAddress(),
             ), '+1 hour'
         );
         $this->em->persist($ma_token);
         $this->em->flush($ma_token);
 
-        $ma_login_url = License::getLicServer() . '/login_check_license';
+        $ma_login_url = License::getSecureLicServer().'/login_check_license';
         if (strpos($ma_login_url, 'www.deskpro.com') && strpos($ma_login_url, 'https://') === 0) {
             $ma_login_url = str_replace('http://', 'https://', $ma_login_url);
         }
 
+        if ($custom_code = $this->settings->get('custom_cloud_billing_authcode')) {
+            $code                 = 'XX-'.$custom_code;
+            $custom_billing_frame = DP_MA_SERVER_SECURE.'/cloud/start/'.$this->settings->get('custom_cloud_billing_siteid').'/'.$code;
+            if (defined('DP_CLOUD_LIC_URL')) {
+                $custom_billing_frame = str_replace(
+                    array('{SITE_ID}', '{SITE_AUTH}'),
+                    array($this->settings->get('custom_cloud_billing_siteid'), $code),
+                    DP_CLOUD_LIC_URL
+                );
+            }
+        } else {
+            $custom_billing_frame = null;
+        }
+
         return $this->createApiResponse(array(
-            'license'          => $lic_info,
-            'limits'           => $limits,
-            'lic_set_callback' => License::getLicServer() . '/api/license/set-license.json',
-            'ma_token'         => $ma_token->toApiData(),
-            'ma_login_url'     => $ma_login_url,
+            'license'              => $lic_info,
+            'limits'               => $limits,
+            'lic_set_callback'     => License::getSecureLicServer().'/api/license/set-license.json',
+            'ma_token'             => $ma_token->toApiData(),
+            'ma_login_url'         => $ma_login_url,
+            'custom_billing_frame' => $custom_billing_frame,
         ));
     }
 
@@ -140,7 +150,7 @@ class LicenseController extends AbstractController implements ProtectedControlle
         }
 
         return $this->createApiResponse(array(
-            'success' => true
+            'success' => true,
         ));
     }
 
@@ -155,7 +165,7 @@ class LicenseController extends AbstractController implements ProtectedControlle
             $email_address = $this->person->getPrimaryEmailAddress();
         }
 
-        $install_data = array();
+        $install_data                          = array();
         $install_data['install_key']           = $this->settings->get('core.install_key');
         $install_data['install_token']         = $this->settings->get('core.install_token');
         $install_data['request_email_address'] = $this->person->getPrimaryEmailAddress();
@@ -186,11 +196,10 @@ FILE;
                 'filename'     => 'deskpro-keyfile.txt',
                 'filesize'     => strlen($file),
                 'content_type' => 'plain/text',
-                'data'         => $file
+                'data'         => $file,
             ));
         }
     }
-
 
     ####################################################################################################################
     # send-support-request
@@ -217,7 +226,6 @@ FILE;
         }
     }
 
-
     ####################################################################################################################
     # get-version-info
     ####################################################################################################################
@@ -228,7 +236,7 @@ FILE;
             'build'          => DP_BUILD_TIME,
             'build_name'     => defined('DP_BUILD_NUM') && DP_BUILD_NUM ? DP_BUILD_NUM : 'DEV',
             'build_num_base' => defined('DP_BUILD_NUM_BASE') ? DP_BUILD_NUM_BASE : 0,
-            'build_num_rev'  => defined('DP_BUILD_NUM_REV') ? DP_BUILD_NUM_REV : 0
+            'build_num_rev'  => defined('DP_BUILD_NUM_REV') ? DP_BUILD_NUM_REV : 0,
         ));
     }
 

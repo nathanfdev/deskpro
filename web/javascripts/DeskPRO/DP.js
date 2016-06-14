@@ -26,6 +26,10 @@ var DP = {
 	rteTextarea: function(field, options) {
 
 		options = options || {};
+		options.extended_valid_elements =
+			'iframe[align<bottom?left?middle?right?top|class|frameborder|height|id'
+			+'|longdesc|marginheight|marginwidth|name|scrolling<auto?no?yes|src|style'
+			+'|title|width|webkitallowfullscreen|mozallowfullscreen|allowfullscreen]';
 
 		if (!field) {
 			return;
@@ -44,7 +48,7 @@ var DP = {
 			skin_variant : "silver",
 
 			theme: 'advanced',
-			plugins : "fullscreen,table,wordcount",
+			plugins : "fullscreen,table,wordcount,media",
 			theme_advanced_buttons1: 'bold,italic,underline,|,justifyleft,justifycenter,justifyright,|,forecolor,backcolor,|,styleselect,fontselect,fontsizeselect',
 			theme_advanced_buttons2: 'bullist,numlist,|,outdent,indent,|,link,unlink,anchor,dp_media,image,|,hr,tablecontrols,|,pasteword,visualaid,code,removeformat,fullscreen',
 			theme_advanced_buttons3: '',
@@ -54,6 +58,8 @@ var DP = {
 			theme_advanced_statusbar_location: 'bottom',
 			theme_advanced_path: false,
 			relative_urls: false,
+      media_strict: false,
+      extended_valid_elements: "iframe[src|width|height|name|align], embed[width|height|name|flashvars|src|bgcolor|align|play|loop|quality|allowscriptaccess|type|pluginspage]",
 			width: '100%',
 			content_css: ASSETS_BASE_URL + '/stylesheets/user/content-editor.css',
 
@@ -130,10 +136,6 @@ var DP = {
 	},
 
 	select: function(el, options) {
-		if (el.data('select2')) {
-			return;
-		}
-
 		if (el.length && el.length > 1) {
 			el.each(function() {
 				DP.select($(this), options);
@@ -141,7 +143,11 @@ var DP = {
 			return;
 		}
 
-		var options = options || {};
+    if (el.data('select2') || el.data('no-select2')) {
+      return;
+    }
+
+		options = options || {};
 
 		if (el.data('style-type')) {
 			switch (el.data('style-type')) {
@@ -176,6 +182,9 @@ var DP = {
 						}
 					};
 					options.formatSelection = function(data) {
+						if (!data || typeof data.id == 'undefined') {
+							return '';
+						}
 						var opt = el.find('option[value="' + data.id + '"]');
 						if (!opt) {
 							return '';
@@ -210,6 +219,7 @@ var DP = {
 					break;
 			}
 		} else {
+
 			var withFullTitle = el.find('option[data-full-title]');
 			if (withFullTitle[0]) {
 				withFullTitle.each(function() {

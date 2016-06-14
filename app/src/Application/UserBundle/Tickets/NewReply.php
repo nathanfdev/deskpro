@@ -1,50 +1,48 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage UserBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\UserBundle\Tickets;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use Orb\Util\Strings;
 
 class NewReply extends \ArrayObject
 {
     /** @var array */
     protected static $prop_names = array(
-        'message' => 1, 'new_upload' => 1, 'attach_ids' => 1,
-        'attach_ids_authed' => 1
+        'message'           => 1, 'new_upload' => 1, 'attach_ids' => 1,
+        'attach_ids_authed' => 1,
     );
 
     /** @var string */
@@ -77,12 +75,12 @@ class NewReply extends \ArrayObject
     public function save()
     {
         $ticket_message = new TicketMessage();
-        $ticket_message->setMessageText($this->message);
-        $ticket_message->ticket = $this->ticket;
-        $ticket_message->person = $this->person;
+        $ticket_message->setMessageHtml(Strings::linkifyHtml(Strings::text2html($this->message)));
+        $ticket_message->ticket          = $this->ticket;
+        $ticket_message->person          = $this->person;
         $ticket_message->creation_system = TicketMessage::CREATED_WEB_PERSON_PORTAL;
-        $ticket_message->ip_address = dp_get_user_ip_address();
-        $ticket_message->visitor = App::getSession()->getVisitor();
+        $ticket_message->ip_address      = dp_get_user_ip_address();
+        $ticket_message->visitor         = App::getSession()->getVisitor();
 
         if ($this->new_upload) {
             $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
@@ -90,8 +88,8 @@ class NewReply extends \ArrayObject
                 $this->new_upload->getClientOriginalName(),
                 $this->new_upload->getClientMimeType()
             );
-            $attach = new \Application\DeskPRO\Entity\TicketAttachment();
-            $attach['blob'] = $blob;
+            $attach           = new \Application\DeskPRO\Entity\TicketAttachment();
+            $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
             $ticket_message->addAttachment($attach);
@@ -105,8 +103,8 @@ class NewReply extends \ArrayObject
                     $blob = App::findEntity('DeskPRO:Blob', $blob_id);
                 }
                 if ($blob) {
-                    $attach = new \Application\DeskPRO\Entity\TicketAttachment();
-                    $attach['blob'] = $blob;
+                    $attach           = new \Application\DeskPRO\Entity\TicketAttachment();
+                    $attach['blob']   = $blob;
                     $attach['person'] = $this->person;
 
                     $ticket_message->addAttachment($attach);
@@ -119,32 +117,32 @@ class NewReply extends \ArrayObject
         }
 
         if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
-            return null;
+            return;
         }
 
-            $this->ticket->addMessage($ticket_message);
+        $this->ticket->addMessage($ticket_message);
 
-            if ($dupe_message = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
-                $this->ticket_message = $dupe_message;
+        if ($dupe_message = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
+            $this->ticket_message = $dupe_message;
 
-                return;
-            }
+            return;
+        }
 
             // If status is pending, we'll switch it to open so agents will see it
             if ($this->ticket['status'] == Ticket::STATUS_AWAITING_USER || $this->ticket['status'] == Ticket::STATUS_RESOLVED) {
                 $this->ticket['status'] = Ticket::STATUS_AWAITING_AGENT;
             }
 
-            if ($this->person->id && !$this->ticket->hasParticipantPerson($this->person)) {
-                // someone like the org manager replying - need to make sure they're CC'd
+        if ($this->person->id && !$this->ticket->hasParticipantPerson($this->person)) {
+            // someone like the org manager replying - need to make sure they're CC'd
                 $this->ticket->addParticipantPerson($this->person);
-            }
+        }
 
-            App::getOrm()->beginTransaction();
-            App::getOrm()->persist($ticket_message);
-            App::getOrm()->persist($this->ticket);
-            App::getOrm()->flush();
-            App::getOrm()->commit();
+        App::getOrm()->beginTransaction();
+        App::getOrm()->persist($ticket_message);
+        App::getOrm()->persist($this->ticket);
+        App::getOrm()->flush();
+        App::getOrm()->commit();
     }
 
     public function getNewMessage()
@@ -152,8 +150,26 @@ class NewReply extends \ArrayObject
         return $this->ticket_message;
     }
 
-    public function offsetExists($offset) { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
-    public function offsetGet($offset) { if (isset(self::$prop_names[$offset])) return $this->$offset; }
-    public function offsetSet($offset, $value) { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
-    public function offsetUnset($offset) { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
+    public function offsetExists($offset)
+    {
+        return (isset(self::$prop_names[$offset]) && isset($this->$offset));
+    }
+    public function offsetGet($offset)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            return $this->$offset;
+        }
+    }
+    public function offsetSet($offset, $value)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            $this->$offset = $value;
+        }
+    }
+    public function offsetUnset($offset)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            $this->$offset = null;
+        }
+    }
 }

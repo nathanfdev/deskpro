@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\AgentBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
@@ -66,10 +63,11 @@ class ArticleResults
      * $options can have:
      * - default_terms: For when viewing the page that you havent submitted
      * - specific_terms: Always added to the search
-     * - default_order_by: The default order by for a page you havent submitted
+     * - default_order_by: The default order by for a page you havent submitted.
      *
      * @param  $controller
-     * @param  array                                                     $options
+     * @param array $options
+     *
      * @return \Application\AgentBundle\Controller\Helper\ArticleResults
      */
     public static function newFromRequest($controller, array $options = array())
@@ -96,14 +94,12 @@ class ArticleResults
                     array('type' => 'category_specific', 'op' => 'is', 'options' => array('category' => $options['category']['id'])),
                     array('type' => 'agent_list', 'op' => 'is', 'options' => 1),
                 );
-
             } elseif (isset($options['pending_translate'])) {
-
                 $terms = array(
-                    array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'published')),
-                    array('type' => 'pending_translate', 'op' => 'id', 'options' => array(
-                        'language_id' => isset($options['pending_translate_lang']) ? $options['pending_translate_lang'] : 0
-                    ))
+                    array('type'      => 'status', 'op' => 'is', 'options' => array('status' => 'published')),
+                    array('type'      => 'pending_translate', 'op' => 'id', 'options' => array(
+                        'language_id' => isset($options['pending_translate_lang']) ? $options['pending_translate_lang'] : 0,
+                    )),
                 );
 
             // "all" is published but no category term
@@ -114,7 +110,7 @@ class ArticleResults
 
             // Otherwise its a user filter with custom terms
             } else {
-                $form_terms = $controller->in->getCleanValueArray('terms', 'raw' , 'string');
+                $form_terms = $controller->in->getCleanValueArray('terms', 'raw', 'string');
                 $form_terms = Arrays::removeFalsey($form_terms);
 
                 $terms = $term_rules->readForm($form_terms);
@@ -137,11 +133,11 @@ class ArticleResults
 
             $results = $searcher->getMatches();
 
-            $result_cache = new ResultCache();
-            $result_cache['person'] = $controller->person;
-            $result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
-            $result_cache['extra'] = array('summary' => $searcher->getSummary());
-            $result_cache['results'] = $results;
+            $result_cache                = new ResultCache();
+            $result_cache['person']      = $controller->person;
+            $result_cache['criteria']    = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
+            $result_cache['extra']       = array('summary' => $searcher->getSummary());
+            $result_cache['results']     = $results;
             $result_cache['num_results'] = count($results);
 
             $controller->em->persist($result_cache);
@@ -162,7 +158,6 @@ class ArticleResults
         return $helper;
     }
 
-
     public function __construct($controller, ResultCache $result_cache = null)
     {
         $this->controller = $controller;
@@ -173,7 +168,6 @@ class ArticleResults
         }
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\ResultCache
      */
@@ -181,7 +175,6 @@ class ArticleResults
     {
         return $this->result_cache;
     }
-
 
     /**
      * @param array $article_ids
@@ -191,7 +184,6 @@ class ArticleResults
         $this->article_ids = $article_ids;
     }
 
-
     /**
      * @return array
      */
@@ -199,7 +191,6 @@ class ArticleResults
     {
         return $this->article_ids;
     }
-
 
     /**
      * @return array
@@ -214,11 +205,10 @@ class ArticleResults
         return $this->_getPageFromArticleIds($this->getArticleIds(), $page, $per_page);
     }
 
-
     protected function _getPageFromArticleIds(array $article_ids, $page, $per_page)
     {
         $page_article_ids = Arrays::getPageChunk($article_ids, $page, $per_page);
-        $articles_raw = App::getEntityRepository('DeskPRO:Article')->getByResultIds($page_article_ids);
+        $articles_raw     = App::getEntityRepository('DeskPRO:Article')->getByResultIds($page_article_ids);
 
         // - We'll get a page of results, but that actual page isn't going to be
         // sorted the way we want, because MySQL was just sent a list of ID's.

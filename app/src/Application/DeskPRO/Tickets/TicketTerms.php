@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -58,20 +56,20 @@ class TicketTerms
     const OP_IS_REGEX    = 'is_regex';
     const OP_NOT_REGEX   = 'not_regex';
 
-    const OP_CHANGED            = 'changed';
-    const OP_CHANGED_TO         = 'changed_to';
-    const OP_CHANGED_FROM       = 'changed_from';
-    const OP_NOT_CHANGED_TO     = 'not_changed_to';
-    const OP_NOT_CHANGED_FROM   = 'not_changed_from';
+    const OP_CHANGED          = 'changed';
+    const OP_CHANGED_TO       = 'changed_to';
+    const OP_CHANGED_FROM     = 'changed_from';
+    const OP_NOT_CHANGED_TO   = 'not_changed_to';
+    const OP_NOT_CHANGED_FROM = 'not_changed_from';
 
-    const OP_CHANGED_TO_GTE         = 'changed_to_gte';
-    const OP_CHANGED_TO_LTE         = 'changed_to_lte';
-    const OP_CHANGED_FROM_GTE       = 'changed_from_gte';
-    const OP_CHANGED_FROM_LTE       = 'changed_from_lte';
-    const OP_NOT_CHANGED_TO_GTE     = 'not_changed_to_gte';
-    const OP_NOT_CHANGED_TO_LTE     = 'not_changed_to_let';
-    const OP_NOT_CHANGED_FROM_GTE   = 'not_changed_from_gte';
-    const OP_NOT_CHANGED_FROM_LTE   = 'not_changed_from_lte';
+    const OP_CHANGED_TO_GTE       = 'changed_to_gte';
+    const OP_CHANGED_TO_LTE       = 'changed_to_lte';
+    const OP_CHANGED_FROM_GTE     = 'changed_from_gte';
+    const OP_CHANGED_FROM_LTE     = 'changed_from_lte';
+    const OP_NOT_CHANGED_TO_GTE   = 'not_changed_to_gte';
+    const OP_NOT_CHANGED_TO_LTE   = 'not_changed_to_let';
+    const OP_NOT_CHANGED_FROM_GTE = 'not_changed_from_gte';
+    const OP_NOT_CHANGED_FROM_LTE = 'not_changed_from_lte';
 
     /**
      * @var array
@@ -87,7 +85,6 @@ class TicketTerms
      * @var null
      */
     protected $tracker = null;
-
 
     /**
      * @param array $terms
@@ -109,11 +106,11 @@ class TicketTerms
         }
     }
 
-
     /**
-     * Check if there is a certain term in this collection
+     * Check if there is a certain term in this collection.
      *
-     * @param  string $type
+     * @param string $type
+     *
      * @return bool
      */
     public function hasTicketTerm($type)
@@ -121,10 +118,10 @@ class TicketTerms
         return isset($this->term_ids_map[$type]);
     }
 
-
     /**
-     * @param  string $type
-     * @param  bool   $first
+     * @param string $type
+     * @param bool   $first
+     *
      * @return array
      */
     public function getTicketTerm($type, $first = true)
@@ -140,7 +137,6 @@ class TicketTerms
         return Arrays::getFirstItem($this->term_ids_map[$type]);
     }
 
-
     /**
      * @param $tracker
      */
@@ -149,25 +145,26 @@ class TicketTerms
         $this->tracker = $tracker;
     }
 
-
     /**
      * Check a specific ticket against these terms to see if it matches.
      *
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return bool
      */
     public function doesTicketMatch(Entity\Ticket $ticket)
     {
         foreach ($this->terms as $info) {
-
             if (empty($info['type']) || empty($info['op']) || empty($info['options'])) {
                 continue;
             }
 
             $term = $info['type'];
-            if (!$term) continue;
+            if (!$term) {
+                continue;
+            }
 
-            $op = $info['op'];
+            $op     = $info['op'];
             $choice = $info['options'];
 
             if (strpos($op, 'changed') !== false) {
@@ -188,23 +185,24 @@ class TicketTerms
         return true;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return bool
      */
     public function doesTicketMatchAny(Entity\Ticket $ticket)
     {
         foreach ($this->terms as $info) {
-
             if (empty($info['type']) || empty($info['op']) || empty($info['options'])) {
                 continue;
             }
 
             $term = $info['type'];
-            if (!$term) continue;
+            if (!$term) {
+                continue;
+            }
 
-            $op = $info['op'];
+            $op     = $info['op'];
             $choice = $info['options'];
 
             if (strpos($op, 'changed') !== false) {
@@ -223,19 +221,20 @@ class TicketTerms
         return false;
     }
 
-
-
     /**
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
-     * @param  string                             $term
-     * @param  string                             $op
-     * @param  mixed                              $choice
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * @param string                             $term
+     * @param string                             $op
+     * @param mixed                              $choice
+     *
      * @return bool
      */
     public function testChangedTerm(Entity\Ticket $ticket, $term, $op, $choice)
     {
         $tracker = $this->tracker;
-        if (!$tracker) return false;
+        if (!$tracker) {
+            return false;
+        }
 
         if (!$tracker->isPropertyChanged($term)) {
             return false;
@@ -272,12 +271,12 @@ class TicketTerms
         return $pass;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
-     * @param  string                             $term
-     * @param  string                             $op
-     * @param  mixed                              $choice
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * @param string                             $term
+     * @param string                             $op
+     * @param mixed                              $choice
+     *
      * @return bool
      */
     public function testTerm(Entity\Ticket $ticket, $term, $op, $choice)
@@ -285,10 +284,10 @@ class TicketTerms
         $tracker = $this->tracker;
 
         // $term of people_field[12] becomes $term=people_field, $term_id=12 etc
-        $m = null;
+        $m       = null;
         $term_id = null;
         if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
-            $term = $m[1];
+            $term    = $m[1];
             $term_id = $m[2];
         }
 
@@ -298,7 +297,9 @@ class TicketTerms
         switch ($term) {
 
             case 'date_created':
-                if (!$this->_testDateMatch($ticket['date_created'], $op, $choice)) return false;
+                if (!$this->_testDateMatch($ticket['date_created'], $op, $choice)) {
+                    return false;
+                }
                 break;
 
             case 'is_new_user':
@@ -310,7 +311,7 @@ class TicketTerms
                 break;
 
             case 'creation_system':
-                $choice = (array)$choice;
+                $choice = (array) $choice;
                 $choice = array_pop($choice);
 
                 if (!$tracker->isNewTicket() && ($reply = $tracker->getNewReply())) {
@@ -320,10 +321,14 @@ class TicketTerms
                 }
 
                 if ($op == 'is') {
-                    if ($creation_system != $choice) return false;
+                    if ($creation_system != $choice) {
+                        return false;
+                    }
                 }
                 if ($op == 'not') {
-                    if ($creation_system == $choice) return false;
+                    if ($creation_system == $choice) {
+                        return false;
+                    }
                 }
                 break;
 
@@ -367,7 +372,7 @@ class TicketTerms
                     }
                 } else {
                     $agent_ids = $choice['agent_ids'];
-                    $any = false;
+                    $any       = false;
                     foreach ($agent_ids as $id) {
                         if ($person->getId() == $id) {
                             $any = true;
@@ -407,20 +412,28 @@ class TicketTerms
             case 'action_performer':
                 $is_agent = App::getCurrentPerson()->isAgent();
 
-                $choice = (array)$choice;
+                $choice = (array) $choice;
                 $choice = array_pop($choice);
 
                 if ($choice == 'agent') {
                     if ($is_agent) {
-                        if ($op != 'is') return false;
+                        if ($op != 'is') {
+                            return false;
+                        }
                     } else {
-                        if ($op != 'not') return false;
+                        if ($op != 'not') {
+                            return false;
+                        }
                     }
                 } else {
                     if ($is_agent) {
-                        if ($op	!= 'not') return false;
+                        if ($op    != 'not') {
+                            return false;
+                        }
                     } else {
-                        if ($op != 'is') return false;
+                        if ($op != 'is') {
+                            return false;
+                        }
                     }
                 }
                 break;
@@ -490,7 +503,7 @@ class TicketTerms
 
                 $check = strtolower($choice['email_address']);
 
-                $tos = $ticket->email_reader->getToAddresses();
+                $tos   = $ticket->email_reader->getToAddresses();
                 $match = false;
                 foreach ($tos as $to) {
                     $to = $to->getEmail();
@@ -514,7 +527,7 @@ class TicketTerms
 
                 $check = strtolower($choice['name']);
 
-                $tos = $ticket->email_reader->getToAddresses();
+                $tos   = $ticket->email_reader->getToAddresses();
                 $match = false;
                 foreach ($tos as $to) {
                     $to = $to->getName();
@@ -538,7 +551,7 @@ class TicketTerms
 
                 $check = strtolower($choice['email_address']);
 
-                $tos = $ticket->email_reader->getCcAddresses();
+                $tos   = $ticket->email_reader->getCcAddresses();
                 $match = false;
                 foreach ($tos as $to) {
                     $to = $to->getEmail();
@@ -562,7 +575,7 @@ class TicketTerms
 
                 $check = strtolower($choice['name']);
 
-                $tos = $ticket->email_reader->getCcAddresses();
+                $tos   = $ticket->email_reader->getCcAddresses();
                 $match = false;
                 foreach ($tos as $to) {
                     $to = $to->getName();
@@ -706,8 +719,8 @@ class TicketTerms
 
             case 'day_created':
 
-                $days = isset($choice['days']) ? (array)$choice['days'] : array();
-                $day = $ticket->person->getDateForTime('@' . $ticket->date_created->getTimestamp())->format('w');
+                $days = isset($choice['days']) ? (array) $choice['days'] : array();
+                $day  = $ticket->person->getDateForTime('@'.$ticket->date_created->getTimestamp())->format('w');
 
                 if (!in_array($day, $days)) {
                     return false;
@@ -722,8 +735,8 @@ class TicketTerms
                     $date_created->setTimezone(new \DateTimeZone($choice['timezone']));
                 }
 
-                $hour = (int)$date_created->format('H');
-                $min  = (int)$date_created->format('i');
+                $hour = (int) $date_created->format('H');
+                $min  = (int) $date_created->format('i');
 
                 $compare_hour = isset($choice['hour1']) ? $choice['hour1'] : -1;
                 $compare_min  = isset($choice['minute1']) ? $choice['minute1'] : -1;
@@ -748,8 +761,8 @@ class TicketTerms
 
             case 'current_day':
 
-                $days = isset($choice['days']) ? (array)$choice['days'] : array();
-                $day = $ticket->person->getDateForTime('@' . time())->format('w');
+                $days = isset($choice['days']) ? (array) $choice['days'] : array();
+                $day  = $ticket->person->getDateForTime('@'.time())->format('w');
 
                 if (!in_array($day, $days)) {
                     return false;
@@ -766,8 +779,8 @@ class TicketTerms
                     $date = \Orb\Util\Dates::convertToUtcDateTime($date);
                 }
 
-                $hour = (int)$date->format('H');
-                $min  = (int)$date->format('i');
+                $hour = (int) $date->format('H');
+                $min  = (int) $date->format('i');
 
                 $compare_hour = isset($choice['hour1']) ? $choice['hour1'] : -1;
                 $compare_min  = isset($choice['minute1']) ? $choice['minute1'] : -1;
@@ -789,19 +802,27 @@ class TicketTerms
                 break;
 
             case TicketSearch::TERM_DEPARTMENT:
-                if (count($choice) == 1) $choice = array_pop($choice);
+                if (count($choice) == 1) {
+                    $choice = array_pop($choice);
+                }
                 $choice = App::getDataService('Department')->getIdsInTree($choice, true);
 
-                if (!$this->_testChoiceMatch($ticket['department_id'], $op, $choice)) return false;
+                if (!$this->_testChoiceMatch($ticket['department_id'], $op, $choice)) {
+                    return false;
+                }
                 break;
 
             case TicketSearch::TERM_EMAIL_ACCOUNT:
-                if (count($choice) == 1) $choice = array_pop($choice);
+                if (count($choice) == 1) {
+                    $choice = array_pop($choice);
+                }
                 if ($choice && (!is_array($choice) || !in_array('0', $choice))) {
-                    $choice = (array)$choice;
+                    $choice = (array) $choice;
                     $choice = array_unique($choice, \SORT_NUMERIC);
                 }
-                if (!$this->_testChoiceMatch($ticket['email_account_id'], $op, $choice)) return false;
+                if (!$this->_testChoiceMatch($ticket['email_account_id'], $op, $choice)) {
+                    return false;
+                }
 
                 break;
 
@@ -810,26 +831,40 @@ class TicketTerms
                     $choice = $choice['status'];
                 }
 
-                if (!$this->_testChoiceMatch($ticket['status_code'], $op, $choice)) return false;
+                if (!$this->_testChoiceMatch($ticket['status_code'], $op, $choice)) {
+                    return false;
+                }
                 break;
 
             case TicketSearch::TERM_CATEGORY:
-                if (!$this->_testChoiceMatch($ticket['category_id'], $op, $choice)) return false;
+                if (!$this->_testChoiceMatch($ticket['category_id'], $op, $choice)) {
+                    return false;
+                }
                 break;
             case TicketSearch::TERM_PRODUCT:
-                if (!$this->_testChoiceMatch($ticket['product_id'], $op, $choice)) return false;
+                if (!$this->_testChoiceMatch($ticket['product_id'], $op, $choice)) {
+                    return false;
+                }
                 break;
             case TicketSearch::TERM_PRIORITY:
-                if (!$this->_testChoiceMatch($ticket['priority_id'], $op, $choice)) return false;
+                if (!$this->_testChoiceMatch($ticket['priority_id'], $op, $choice)) {
+                    return false;
+                }
                 break;
             case TicketSearch::TERM_WORKFLOW:
-                if (!$this->_testChoiceMatch($ticket['workflow_id'], $op, $choice)) return false;
+                if (!$this->_testChoiceMatch($ticket['workflow_id'], $op, $choice)) {
+                    return false;
+                }
                 break;
             case TicketSearch::TERM_ORGANIZATION:
-                if (!$this->_testChoiceMatch($ticket['organization_id'], $op, $choice)) return false;
+                if (!$this->_testChoiceMatch($ticket['organization_id'], $op, $choice)) {
+                    return false;
+                }
                 break;
             case TicketSearch::TERM_LANGUAGE:
-                if (!$this->_testChoiceMatch($ticket['language_id'], $op, $choice)) return false;
+                if (!$this->_testChoiceMatch($ticket['language_id'], $op, $choice)) {
+                    return false;
+                }
                 break;
             case TicketSearch::TERM_AGENT:
                 if (in_array(-1, $choice)) {
@@ -838,7 +873,9 @@ class TicketTerms
                         $choice[] = $person->id;
                     }
                 }
-                if (!$this->_testChoiceMatch($ticket['agent_id'], $op, $choice)) return false;
+                if (!$this->_testChoiceMatch($ticket['agent_id'], $op, $choice)) {
+                    return false;
+                }
                 break;
             case TicketSearch::TERM_AGENT_TEAM:
                 if (in_array(-1, $choice)) {
@@ -850,12 +887,17 @@ class TicketTerms
                         }
                     }
                 }
-                if (!$this->_testChoiceMatch($ticket['agent_team_id'], $op, $choice)) return false;
+                if (!$this->_testChoiceMatch($ticket['agent_team_id'], $op, $choice)) {
+                    return false;
+                }
                 break;
             case TicketSearch::TERM_LABEL:
 
-                if ($op == self::OP_IS) $op = self::OP_CONTAINS;
-                elseif ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
+                if ($op == self::OP_IS) {
+                    $op = self::OP_CONTAINS;
+                } elseif ($op == self::OP_NOT) {
+                    $op = self::OP_NOTCONTAINS;
+                }
 
                 if (is_array($choice) && isset($choice['label'])) {
                     $choice = $choice['label'];
@@ -874,7 +916,7 @@ class TicketTerms
                     }
                 }
 
-                if ($op == self::OP_CONTAINS AND !$any) {
+                if ($op == self::OP_CONTAINS and !$any) {
                     return false;
                 }
                 break;
@@ -885,31 +927,45 @@ class TicketTerms
 
                 switch ($op) {
                     case self::OP_BETWEEN:
-                        if (!\Orb\Util\Numbers::inRange($ticket['urgency'], $choice['min'], $choice['max'])) return false;
+                        if (!\Orb\Util\Numbers::inRange($ticket['urgency'], $choice['min'], $choice['max'])) {
+                            return false;
+                        }
                         break;
 
                     case self::OP_IS:
-                        if ($ticket['urgency'] != $choice['num']) return false;
+                        if ($ticket['urgency'] != $choice['num']) {
+                            return false;
+                        }
                         break;
 
                     case self::OP_NOT:
-                        if ($ticket['urgency'] == $choice['num']) return false;
+                        if ($ticket['urgency'] == $choice['num']) {
+                            return false;
+                        }
                         break;
 
                     case self::OP_LT:
-                        if (!($ticket['urgency'] < $choice['num'])) return false;
+                        if (!($ticket['urgency'] < $choice['num'])) {
+                            return false;
+                        }
                         break;
 
                     case self::OP_LTE:
-                        if (!($ticket['urgency'] <= $choice['num'])) return false;
+                        if (!($ticket['urgency'] <= $choice['num'])) {
+                            return false;
+                        }
                         break;
 
                     case self::OP_GT:
-                        if (!($ticket['urgency'] > $choice['num'])) return false;
+                        if (!($ticket['urgency'] > $choice['num'])) {
+                            return false;
+                        }
                         break;
 
                     case self::OP_GTE:
-                        if (!($ticket['urgency'] >= $choice['num'])) return false;
+                        if (!($ticket['urgency'] >= $choice['num'])) {
+                            return false;
+                        }
                         break;
                 }
                 break;
@@ -944,12 +1000,18 @@ class TicketTerms
                         }
                     }
 
-                    if ($op == self::OP_CONTAINS AND !$any) return false;
+                    if ($op == self::OP_CONTAINS and !$any) {
+                        return false;
+                    }
                 } else {
                     if (in_array($choice, $participant_ids)) {
-                        if ($op == self::OP_NOT) return false;
+                        if ($op == self::OP_NOT) {
+                            return false;
+                        }
                     } else {
-                        if ($op == self::OP_IS) return false;
+                        if ($op == self::OP_IS) {
+                            return false;
+                        }
                     }
                 }
                 break;
@@ -961,20 +1023,24 @@ class TicketTerms
                 }
                 break;
             case TicketSearch::TERM_SENT_TO_ADDRESS:
-                $choice = (array)$choice;
+                $choice = (array) $choice;
                 $choice = array_pop($choice);
 
                 $choice = strtolower($choice);
-                $has = $ticket->hasSentToAddress($choice);
+                $has    = $ticket->hasSentToAddress($choice);
 
                 switch ($op) {
                     case self::OP_IS:
                     case self::OP_CONTAINS:
-                        if (!$has) return false;
+                        if (!$has) {
+                            return false;
+                        }
                         break;
                     case self::OP_NOT:
                     case self::OP_NOTCONTAINS:
-                        if ($has) return false;
+                        if ($has) {
+                            return false;
+                        }
                         break;
                 }
                 break;
@@ -992,11 +1058,15 @@ class TicketTerms
                 switch ($op) {
                     case self::OP_LT:
                     case self::OP_LTE:
-                        if ($waiting_time > $choice_secs) return false;
+                        if ($waiting_time > $choice_secs) {
+                            return false;
+                        }
                         break;
                     case self::OP_GT:
                     case self::OP_GTE:
-                        if ($waiting_time < $choice_secs) return false;
+                        if ($waiting_time < $choice_secs) {
+                            return false;
+                        }
                         break;
                 }
 
@@ -1015,11 +1085,15 @@ class TicketTerms
                 switch ($op) {
                     case self::OP_LT:
                     case self::OP_LTE:
-                        if ($waiting_time > $choice_secs) return false;
+                        if ($waiting_time > $choice_secs) {
+                            return false;
+                        }
                         break;
                     case self::OP_GT:
                     case self::OP_GTE:
-                    if ($waiting_time < $choice_secs) return false;
+                    if ($waiting_time < $choice_secs) {
+                        return false;
+                    }
                         break;
                 }
 
@@ -1030,24 +1104,38 @@ class TicketTerms
 
                 if ($choice == 'set') {
                     if ($op == self::OP_IS) {
-                        if (!$ticket->date_feedback_rating) return false;
+                        if (!$ticket->date_feedback_rating) {
+                            return false;
+                        }
                     } else {
-                        if ($ticket->date_feedback_rating) return false;
+                        if ($ticket->date_feedback_rating) {
+                            return false;
+                        }
                     }
                 } else {
                     $match = false;
                     if ($choice == 'positive') {
-                        if ($ticket->feedback_rating == 1)  $match = true;
+                        if ($ticket->feedback_rating == 1) {
+                            $match = true;
+                        }
                     } elseif ($choice == 'negative') {
-                        if ($ticket->feedback_rating == -1) $match = true;
+                        if ($ticket->feedback_rating == -1) {
+                            $match = true;
+                        }
                     } else {
-                        if ($ticket->feedback_rating == 0)  $match = true;
+                        if ($ticket->feedback_rating == 0) {
+                            $match = true;
+                        }
                     }
 
                     if ($op == self::OP_IS) {
-                        if (!$match) return false;
+                        if (!$match) {
+                            return false;
+                        }
                     } else {
-                        if ($match) return false;
+                        if ($match) {
+                            return false;
+                        }
                     }
                 }
                 break;
@@ -1069,8 +1157,11 @@ class TicketTerms
             case TicketSearch::TERM_SLA:
                 $sla_id = $choice['sla_id'];
 
-                if ($op == self::OP_IS) $op = self::OP_CONTAINS;
-                elseif ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
+                if ($op == self::OP_IS) {
+                    $op = self::OP_CONTAINS;
+                } elseif ($op == self::OP_NOT) {
+                    $op = self::OP_NOTCONTAINS;
+                }
 
                 $any = false;
                 foreach ($ticket->ticket_slas as $ticket_sla) {
@@ -1082,17 +1173,20 @@ class TicketTerms
                     }
                 }
 
-                if ($op == self::OP_CONTAINS AND !$any) {
+                if ($op == self::OP_CONTAINS and !$any) {
                     return false;
                 }
                 break;
 
             case TicketSearch::TERM_SLA_STATUS:
                 $sla_status = $choice['sla_status'];
-                $sla_id = $choice['sla_id'];
+                $sla_id     = $choice['sla_id'];
 
-                if ($op == self::OP_IS) $op = self::OP_CONTAINS;
-                elseif ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
+                if ($op == self::OP_IS) {
+                    $op = self::OP_CONTAINS;
+                } elseif ($op == self::OP_NOT) {
+                    $op = self::OP_NOTCONTAINS;
+                }
 
                 $any = false;
                 foreach ($ticket->ticket_slas as $ticket_sla) {
@@ -1104,7 +1198,7 @@ class TicketTerms
                     }
                 }
 
-                if ($op == self::OP_CONTAINS AND !$any) {
+                if ($op == self::OP_CONTAINS and !$any) {
                     return false;
                 }
                 break;
@@ -1131,14 +1225,14 @@ class TicketTerms
                 break;
 
             case 'gateway_account':
-                $e = new \RuntimeException("not supported");
+                $e = new \RuntimeException('not supported');
                 KernelErrorHandler::logException($e, true, 'TicketTerms::gateway_account');
 
                 return false;
                 break;
 
             case 'gateway_address':
-                $e = new \RuntimeException("not supported");
+                $e = new \RuntimeException('not supported');
                 KernelErrorHandler::logException($e, true, 'TicketTerms::gateway_address');
 
                 return false;
@@ -1160,21 +1254,29 @@ class TicketTerms
                     $choice = array_pop($choice);
                 }
 
-                $name = $org ? strtolower($org->name) : '';
+                $name   = $org ? strtolower($org->name) : '';
                 $choice = strtolower($choice);
 
                 switch ($op) {
                     case self::OP_IS:
-                        if ($name != $choice) return false;
+                        if ($name != $choice) {
+                            return false;
+                        }
                         break;
                     case self::OP_NOT:
-                        if ($name == $choice) return false;
+                        if ($name == $choice) {
+                            return false;
+                        }
                         break;
                     case self::OP_CONTAINS:
-                        if (strpos($name, $choice) === false) return false;
+                        if (strpos($name, $choice) === false) {
+                            return false;
+                        }
                         break;
                     case self::OP_NOTCONTAINS:
-                        if (strpos($name, $choice) !== false) return false;
+                        if (strpos($name, $choice) !== false) {
+                            return false;
+                        }
                         break;
                 }
                 break;
@@ -1198,7 +1300,7 @@ class TicketTerms
                         }
                     }
 
-                    if ($op == self::OP_CONTAINS AND !$any) {
+                    if ($op == self::OP_CONTAINS and !$any) {
                         return false;
                     }
                 }
@@ -1216,9 +1318,15 @@ class TicketTerms
                         $choice = array_pop($choice);
                     }
 
-                    if ($term == OrganizationSearch::TERM_CONTACT_ADDRESS) $field = 'addresss';
-                    if ($term == OrganizationSearch::TERM_CONTACT_IM)      $field = 'instant_message';
-                    if ($term == OrganizationSearch::TERM_CONTACT_PHONE)   $field = 'phone';
+                    if ($term == OrganizationSearch::TERM_CONTACT_ADDRESS) {
+                        $field = 'addresss';
+                    }
+                    if ($term == OrganizationSearch::TERM_CONTACT_IM) {
+                        $field = 'instant_message';
+                    }
+                    if ($term == OrganizationSearch::TERM_CONTACT_PHONE) {
+                        $field = 'phone';
+                    }
 
                     $any = false;
                     foreach ($org->getContactData($field) as $cd) {
@@ -1230,7 +1338,7 @@ class TicketTerms
                         }
                     }
 
-                    if ($op == self::OP_CONTAINS AND !$any) {
+                    if ($op == self::OP_CONTAINS and !$any) {
                         return false;
                     }
                 }
@@ -1238,8 +1346,11 @@ class TicketTerms
 
             case OrganizationSearch::TERM_LABEL:
 
-                if ($op == self::OP_IS) $op = self::OP_CONTAINS;
-                elseif ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
+                if ($op == self::OP_IS) {
+                    $op = self::OP_CONTAINS;
+                } elseif ($op == self::OP_NOT) {
+                    $op = self::OP_NOTCONTAINS;
+                }
 
                 if (!$org) {
                     if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
@@ -1260,7 +1371,7 @@ class TicketTerms
                         }
                     }
 
-                    if ($op == self::OP_CONTAINS AND !$any) {
+                    if ($op == self::OP_CONTAINS and !$any) {
                         return false;
                     }
                 }
@@ -1286,7 +1397,7 @@ class TicketTerms
                     }
                 } else {
                     $managers = App::getEntityRepository('DeskPRO:Organization')->getManagers($org);
-                    $exists = count($managers) > 0;
+                    $exists   = count($managers) > 0;
 
                     if ($op == self::OP_IS && !$exists) {
                         return false;
@@ -1297,7 +1408,7 @@ class TicketTerms
                 break;
 
             default:
-                $e = new \InvalidArgumentException("(Non-critical notice) Unknown trigger criteria: " . $term);
+                $e = new \InvalidArgumentException('(Non-critical notice) Unknown trigger criteria: '.$term);
                 \DeskPRO\Kernel\KernelErrorHandler::logException($e, true, 'failed_term_'.$term);
 
                 return false;
@@ -1306,27 +1417,29 @@ class TicketTerms
         return true;
     }
 
-
     /**
-     * @param  string    $type    The custom field type: CustomDefTicket or CustomDefPerson
-     * @param  int       $term_id The field ID
-     * @param  string    $op      The test operation
-     * @param  mixed     $choice  The value to test against
-     * @param  mixed     $obj     The ticket or person object
+     * @param string $type    The custom field type: CustomDefTicket or CustomDefPerson
+     * @param int    $term_id The field ID
+     * @param string $op      The test operation
+     * @param mixed  $choice  The value to test against
+     * @param mixed  $obj     The ticket or person object
+     *
      * @return bool|null
      */
     protected function testCustomField($type, $term_id, $op, $choice, $obj)
     {
         $field = App::getEntityRepository('DeskPRO:'.$type)->find($term_id);
-        if (!$field) return null;
+        if (!$field) {
+            return;
+        }
 
         $search_type = $field->getHandler()->getSearchType();
 
-        if (!isset($choice['custom_fields']['field_' . $term_id])) {
-            return null;
+        if (!isset($choice['custom_fields']['field_'.$term_id])) {
+            return;
         }
 
-        $choice = $choice['custom_fields']['field_' . $term_id];
+        $choice = $choice['custom_fields']['field_'.$term_id];
 
         switch ($search_type) {
             case 'input':
@@ -1348,24 +1461,32 @@ class TicketTerms
 
                 switch ($op) {
                     case self::OP_IS:
-                        if ($set_value != $choice) return false;
+                        if ($set_value != $choice) {
+                            return false;
+                        }
                         break;
                     case self::OP_NOT:
-                        if ($set_value == $choice) return false;
+                        if ($set_value == $choice) {
+                            return false;
+                        }
                         break;
                     case self::OP_CONTAINS:
-                        if (strpos($set_value, $choice) === false) return false;
+                        if (strpos($set_value, $choice) === false) {
+                            return false;
+                        }
                         break;
                     case self::OP_NOTCONTAINS:
-                        if (strpos($set_value, $choice) !== false) return false;
+                        if (strpos($set_value, $choice) !== false) {
+                            return false;
+                        }
                         break;
                 }
                 break;
 
             case 'id':
                 $choices_in = array();
-                foreach ((array)$choice as $c) {
-                    $choices_in[] = (int)$c;
+                foreach ((array) $choice as $c) {
+                    $choices_in[] = (int) $c;
                 }
 
                 $has_choices = array();
@@ -1379,12 +1500,16 @@ class TicketTerms
                 switch ($op) {
                     case self::OP_CONTAINS:
                     case self::OP_IS:
-                        if (!$has_choices) return false;
+                        if (!$has_choices) {
+                            return false;
+                        }
                         break;
 
                     case self::OP_NOTCONTAINS:
                     case self::OP_NOT:
-                        if ($has_choices) return false;
+                        if ($has_choices) {
+                            return false;
+                        }
                         break;
                 }
                 break;
@@ -1393,11 +1518,11 @@ class TicketTerms
         return true;
     }
 
-
     /**
-     * @param  mixed  $value
-     * @param  string $op
-     * @param  mixed  $choice
+     * @param mixed  $value
+     * @param string $op
+     * @param mixed  $choice
+     *
      * @return bool
      */
     protected function _testChoiceMatch($value, $op, $choice)
@@ -1420,26 +1545,26 @@ class TicketTerms
     }
 
     /**
-     * @param  mixed  $value
-     * @param  string $op
-     * @param  mixed  $choice
-     * @param  bool   $suffix_only
-     * @param  bool   $force_like
+     * @param mixed  $value
+     * @param string $op
+     * @param mixed  $choice
+     * @param bool   $suffix_only
+     * @param bool   $force_like
+     *
      * @return bool
      */
     protected function _testStringMatch($value, $op, $choice, $suffix_only = false, $force_like = false)
     {
-        if (is_array($choice) AND count($choice) == 1) {
+        if (is_array($choice) and count($choice) == 1) {
             $choice = Arrays::getFirstItem($choice);
         }
 
-        if ($op == self::OP_IS_REGEX || $op	== self::OP_NOT_REGEX) {
-
+        if ($op == self::OP_IS_REGEX || $op    == self::OP_NOT_REGEX) {
             if (is_array($choice)) {
                 $choice = array_pop($choice);
             }
 
-            $regex = (string)$choice;
+            $regex = (string) $choice;
             if ($regex) {
                 $regex = Strings::getInputRegexPattern($regex);
             }
@@ -1454,9 +1579,8 @@ class TicketTerms
             } else {
                 return (!$found);
             }
-
-        } elseif (!$force_like AND ($op == self::OP_IS OR $op == self::OP_NOT)) {
-            $choices_in = (array)$choice;
+        } elseif (!$force_like and ($op == self::OP_IS or $op == self::OP_NOT)) {
+            $choices_in = (array) $choice;
 
             $found = false;
             foreach ($choices_in as $c) {
@@ -1471,10 +1595,8 @@ class TicketTerms
             } else {
                 return (!$found);
             }
-
         } else {
-
-            $choices_in = (array)$choice;
+            $choices_in = (array) $choice;
 
             $found = false;
             foreach ($choices_in as $c) {
@@ -1499,16 +1621,16 @@ class TicketTerms
         }
     }
 
-
     /**
-     * @param  string $value
-     * @param  string $op
-     * @param  string $choice
+     * @param string $value
+     * @param string $op
+     * @param string $choice
+     *
      * @return bool
      */
     protected function _testDateMatch($value, $op, $choice)
     {
-        $choice = (array)$choice;
+        $choice = (array) $choice;
 
         $date1 = null;
         if (isset($choice['date1'])) {
@@ -1541,13 +1663,17 @@ class TicketTerms
         }
 
         // There should always be at least one date
-        if ($date1 === null AND $date2 === null) {
+        if ($date1 === null and $date2 === null) {
             return false;
         }
 
         // Normalize operations
-        if ($op == self::OP_LT) $op = self::OP_LTE;
-        if ($op == self::OP_GT) $op = self::OP_GTE;
+        if ($op == self::OP_LT) {
+            $op = self::OP_LTE;
+        }
+        if ($op == self::OP_GT) {
+            $op = self::OP_GTE;
+        }
 
         // Between with only one date is invalid, so
         // we'll decide which op we really want to do
@@ -1559,12 +1685,16 @@ class TicketTerms
             }
         }
 
-        if (!$date1) $date1 = 0;
-        if (!$date2) $date2 = 0;
+        if (!$date1) {
+            $date1 = 0;
+        }
+        if (!$date2) {
+            $date2 = 0;
+        }
 
         if ($value instanceof \DateTime) {
             $value = $value->getTimestamp();
-        } elseif (is_string($value) AND !ctype_digit($value)) {
+        } elseif (is_string($value) and !ctype_digit($value)) {
             $value = strtotime($value);
         }
 
@@ -1580,7 +1710,7 @@ class TicketTerms
                 date('Y', $date2)
             );
 
-            return ($value >= $date1 AND $value <= $date2);
+            return ($value >= $date1 and $value <= $date2);
         } elseif ($op == self::OP_GTE) {
             $date = $date1 ? $date1 : $date2;
 
@@ -1597,7 +1727,8 @@ class TicketTerms
      * Note that this just generates the tests, so any implementation still has to wrap it in a function
      * body etc.
      *
-     * @param  string $mode 'all' or 'any'
+     * @param string $mode 'all' or 'any'
+     *
      * @return string
      */
     public function compileTermsToJavascript($mode = 'all')
@@ -1605,25 +1736,26 @@ class TicketTerms
         $js = array();
 
         if ($mode == 'all') {
-            $test_pass = '';
-            $test_fail = 'return false;';
+            $test_pass   = '';
+            $test_fail   = 'return false;';
             $test_bottom = 'return true;';
         } else {
-            $test_pass = 'return true;';
-            $test_fail = '';
+            $test_pass   = 'return true;';
+            $test_fail   = '';
             $test_bottom = 'return false;';
         }
 
-        $rb = \Application\DeskPRO\UI\RuleBuilder::newTermsBuilder();
+        $rb    = \Application\DeskPRO\UI\RuleBuilder::newTermsBuilder();
         $terms = $rb->readForm($this->terms);
 
         foreach ($terms as $info) {
-
             $term = $info['type'];
 
-            if (!$term) continue;
+            if (!$term) {
+                continue;
+            }
 
-            $op = $info['op'];
+            $op     = $info['op'];
             $choice = $info['options'];
 
             if (count($choice) == 1) {
@@ -1633,38 +1765,42 @@ class TicketTerms
             switch ($term) {
                 case TicketSearch::TERM_DEPARTMENT:
                     $ids = array();
-                    foreach ((array)$choice as $cond) {
+                    foreach ((array) $choice as $cond) {
                         $ids = array_merge($ids, App::getDataService('Department')->getIdsInTree($cond, true));
                     }
                     $ids = Arrays::castToType($ids, 'int');
-                    if (count($ids) == 1) $ids = $ids[0];
+                    if (count($ids) == 1) {
+                        $ids = $ids[0];
+                    }
 
-                    $js[] = $this->_compileJsChoiceTermCondition("ticket.getDepartmentId()", $op, $ids) . " { $test_pass } else { $test_fail } ";
+                    $js[] = $this->_compileJsChoiceTermCondition('ticket.getDepartmentId()', $op, $ids)." { $test_pass } else { $test_fail } ";
                     break;
                 case TicketSearch::TERM_CATEGORY:
                     $ids = array();
-                    foreach ((array)$choice as $cond) {
+                    foreach ((array) $choice as $cond) {
                         $ids = array_merge($ids, App::getEntityRepository('DeskPRO:TicketCategory')->getIdsInTree($cond, true));
                     }
                     $ids = Arrays::castToType($ids, 'int');
-                    if (count($ids) == 1) $ids = $ids[0];
+                    if (count($ids) == 1) {
+                        $ids = $ids[0];
+                    }
 
-                    $js[] = $this->_compileJsChoiceTermCondition("ticket.getCategoryId()", $op, $ids) . " { $test_pass } else { $test_fail } ";
+                    $js[] = $this->_compileJsChoiceTermCondition('ticket.getCategoryId()', $op, $ids)." { $test_pass } else { $test_fail } ";
                     break;
                 case TicketSearch::TERM_PRODUCT:
-                    $js[] = $this->_compileJsChoiceTermCondition("ticket.getProductId()", $op, $choice) . " { $test_pass } else { $test_fail } ";
+                    $js[] = $this->_compileJsChoiceTermCondition('ticket.getProductId()', $op, $choice)." { $test_pass } else { $test_fail } ";
                     break;
                 case TicketSearch::TERM_PRIORITY:
-                    $js[] = $this->_compileJsChoiceTermCondition("ticket.getPriorityVal()", $op, $choice) . " { $test_pass } else { $test_fail } ";
+                    $js[] = $this->_compileJsChoiceTermCondition('ticket.getPriorityVal()', $op, $choice)." { $test_pass } else { $test_fail } ";
                     break;
                 case TicketSearch::TERM_ORGANIZATION:
-                    $js[] = $this->_compileJsChoiceTermCondition("ticket.getOrganizationId()", $op, $choice) . " { $test_pass } else { $test_fail } ";
+                    $js[] = $this->_compileJsChoiceTermCondition('ticket.getOrganizationId()', $op, $choice)." { $test_pass } else { $test_fail } ";
                     break;
                 case TicketSearch::TERM_LANGUAGE:
-                    $js[] = $this->_compileJsChoiceTermCondition("ticket.getLanguageId()", $op, $choice) . " { $test_pass } else { $test_fail } ";
+                    $js[] = $this->_compileJsChoiceTermCondition('ticket.getLanguageId()', $op, $choice)." { $test_pass } else { $test_fail } ";
                     break;
                 case TicketSearch::TERM_AGENT:
-                    $js[] = $this->_compileJsChoiceTermCondition("ticket.getAgentId()", $op, $choice) . " { $test_pass } else { $test_fail } ";
+                    $js[] = $this->_compileJsChoiceTermCondition('ticket.getAgentId()', $op, $choice)." { $test_pass } else { $test_fail } ";
                     break;
             }
         }
@@ -1677,14 +1813,15 @@ class TicketTerms
     }
 
     /**
-     * @param  mixed  $value
-     * @param  string $op
-     * @param  string $choice
+     * @param mixed  $value
+     * @param string $op
+     * @param string $choice
+     *
      * @return string
      */
     protected function _compileJsChoiceTermCondition($value, $op, $choice)
     {
-        if (is_array($choice) AND count($choice) == 1) {
+        if (is_array($choice) and count($choice) == 1) {
             $choice = array_pop($choice);
         }
 
@@ -1699,11 +1836,11 @@ class TicketTerms
             } elseif ($op == self::OP_NOT) {
                 return "if ($choice.indexOf($value) === -1) ";
             } else {
-                return "if (0 /*invalid*/) ";
+                return 'if (0 /*invalid*/) ';
             }
         } else {
             if (Numbers::isInteger($choice)) {
-                $choice = (int)$choice;
+                $choice = (int) $choice;
             }
             $choice = json_encode($choice);
             if ($op == self::OP_IS) {
@@ -1731,15 +1868,16 @@ class TicketTerms
     {
         $descs = array();
         foreach ($this->terms as $info) {
-
             if (empty($info['type']) || empty($info['op']) || empty($info['options'])) {
                 continue;
             }
 
             $term = $info['type'];
-            if (!$term) continue;
+            if (!$term) {
+                continue;
+            }
 
-            $op = $info['op'];
+            $op     = $info['op'];
             $choice = $info['options'];
 
             if (strpos($op, 'changed') !== false) {
@@ -1761,11 +1899,12 @@ class TicketTerms
     }
 
     /**
-     * Compiles a term into an english phrase to describe the test
+     * Compiles a term into an english phrase to describe the test.
      *
-     * @param  string $term
-     * @param  string $op
-     * @param  mixed  $choice
+     * @param string $term
+     * @param string $op
+     * @param mixed  $choice
+     *
      * @return string
      */
     public function getTermDescription($term, $op, $choice, $as_html = false)

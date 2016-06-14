@@ -1,4 +1,32 @@
-<?php return array(
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
     'agent.login.account_locked_message'     => 'Due to multiple failed login attempts, your account has been locked for security. You will not be able to log in for {{ timeago }}',
     'agent.login.alert_fields_must_match'    => 'The two password fields do not match.',
     'agent.login.alert_too_short'            => 'Please enter a password of at least 4 characters.',
@@ -24,7 +52,7 @@
     'agent.login.opera'                      => 'Opera',
     'agent.login.password_was_reset'         => 'Your password has been reset successfully.',
     'agent.login.remember_me'                => 'Remember Me',
-    'agent.login.reset-password-info'        => 'Enter your email address to receieve instructions on how to reset your password:',
+    'agent.login.reset-password-info'        => 'Enter your email address to receive instructions on how to reset your password:',
     'agent.login.reset-password-sent'        => 'We have sent a message to your email address with instructions on how to reset your password.',
     'agent.login.sent_pw_reset_instructions' => 'We sent instructions on how to reset your password to the email address you provided.',
     'agent.login.session_timeout'            => 'Your session has timed out, you must log in again.',

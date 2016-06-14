@@ -13,7 +13,7 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
         scope.start_min      = 0
         scope.end_hour       = 18
         scope.end_min        = 0
-        scope.work_days      = [false, true, true, true, true, true, false]
+        scope.work_days      = [null, true, true, true, true, true, false, false] #0=null because valid idx is 1-7 for ISO-8601 days
         scope.hol_year       = (new Date()).getFullYear()
         scope.hol_year       = (new Date()).getFullYear()
         scope.hol_new_month  = 1
@@ -175,7 +175,7 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
             end_hour       : scope.end_hour || 18,
             end_min        : scope.end_min || 0,
             holidays       : scope.holidays || [],
-            work_days      : scope.work_days || [false, true, true, true, true, true, false]
+            work_days      : scope.work_days || [null, false, true, true, true, true, true, false]
           })
 
         scope.$watch('timezone',   -> updateViewValue())

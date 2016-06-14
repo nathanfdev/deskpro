@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -111,7 +108,7 @@ class AgentDataService
     public static function create(DeskproContainer $container, array $options = null)
     {
         $em = $container->getEm();
-        $o = new static($em);
+        $o  = new static($em);
 
         return $o;
     }
@@ -136,7 +133,7 @@ class AgentDataService
 
         $this->agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->getTeams();
         $this->agent_teams = Arrays::keyFromData($this->agent_teams, 'id');
-        $this->team_ids = array_keys($this->agent_teams);
+        $this->team_ids    = array_keys($this->agent_teams);
     }
 
     protected function preloadTeamMap()
@@ -149,24 +146,23 @@ class AgentDataService
         // needed to preload $this->ids
         $this->preload();
 
-        $this->team_to_agents = $this->db->fetchAllGrouped("
+        $this->team_to_agents = $this->db->fetchAllGrouped('
             SELECT team_id, person_id
             FROM agent_team_members
-        ", array(), 'team_id', null, 'person_id');
+        ', array(), 'team_id', null, 'person_id');
 
         $this->agent_to_teams = Arrays::reverseLookupArray($this->team_to_agents, true, true);
 
         if ($this->ids) {
-            $this->agent_to_groups = $this->db->fetchAllGrouped("
+            $this->agent_to_groups = $this->db->fetchAllGrouped('
                 SELECT person_id, usergroup_id
                 FROM person2usergroups
                 WHERE person_id IN (?)
-            ", array($this->ids), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
+            ', array($this->ids), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
         } else {
             $this->agent_to_groups = array();
         }
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\Person[]
@@ -178,7 +174,6 @@ class AgentDataService
         return $this->agents;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\AgentTeam[]
      */
@@ -189,9 +184,9 @@ class AgentDataService
         return $this->agent_teams;
     }
 
-
     /**
-     * @param  array    $for_ids
+     * @param array $for_ids
+     *
      * @return string[]
      */
     public function getNames(array $for_ids = null)
@@ -207,7 +202,6 @@ class AgentDataService
         return $ret;
     }
 
-
     /**
      * @return int[]
      */
@@ -217,7 +211,6 @@ class AgentDataService
 
         return $this->ids;
     }
-
 
     /**
      * @return int[]
@@ -229,9 +222,9 @@ class AgentDataService
         return $this->team_ids;
     }
 
-
     /**
-     * @param  int                                     $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\Person|null
      */
     public function get($id)
@@ -242,12 +235,12 @@ class AgentDataService
             return $this->agents[$id];
         }
 
-        return null;
+        return;
     }
 
-
     /**
-     * @param  int  $id
+     * @param int $id
+     *
      * @return bool
      */
     public function has($id)
@@ -257,11 +250,11 @@ class AgentDataService
         return isset($this->agents[$id]);
     }
 
-
     /**
-     * Get an array of agents by ids
+     * Get an array of agents by ids.
      *
-     * @param  array $ids
+     * @param array $ids
+     *
      * @return array
      */
     public function getByIds($ids)
@@ -271,7 +264,7 @@ class AgentDataService
         $agents = array();
 
         foreach ($ids as $id) {
-            $id = (int)$id;
+            $id = (int) $id;
             if (isset($this->agents[$id])) {
                 $agents[$id] = $this->agents[$id];
             }
@@ -280,13 +273,13 @@ class AgentDataService
         return $agents;
     }
 
-
     /**
      * Returns an array of valid agent IDs in $ids. Optionally
      * specify $invalid and all invalid IDs will be put into it.
      *
-     * @param  array $ids
-     * @param  null  $invalid_ids
+     * @param array $ids
+     * @param null  $invalid_ids
+     *
      * @return array
      */
     public function confirmAgentIds(array $ids, &$invalid_ids = null)
@@ -309,9 +302,9 @@ class AgentDataService
         return $valid_ids;
     }
 
-
     /**
-     * @param  string                             $email
+     * @param string $email
+     *
      * @return \Application\DeskPRO\Entity\Person
      */
     public function getByEmail($email)
@@ -322,9 +315,8 @@ class AgentDataService
             }
         }
 
-        return null;
+        return;
     }
-
 
     /**
      * Get an array of agents who are online now (have active sessions).
@@ -338,16 +330,15 @@ class AgentDataService
         }
         $cutoff = date('Y-m-d H:i:s', time() - $this->agent_timeout);
 
-        $this->online_agent_ids = $this->db->fetchAllKeyValue("
+        $this->online_agent_ids = $this->db->fetchAllKeyValue('
             SELECT DISTINCT s.person_id
             FROM sessions s
             INNER JOIN people p ON (s.person_id = p.id)
             WHERE p.is_agent = 1 AND p.is_deleted = 0 AND s.date_last > ?
-        ", array($cutoff), array(), 0, 0);
+        ', array($cutoff), array(), 0, 0);
 
         return $this->online_agent_ids;
     }
-
 
     /**
      * @return array
@@ -364,11 +355,11 @@ class AgentDataService
         return $agents;
     }
 
-
     /**
-     * Check if an agent is online
+     * Check if an agent is online.
      *
-     * @param  int|Person $id_or_agent
+     * @param int|Person $id_or_agent
+     *
      * @return bool
      */
     public function isAgentOnline($id_or_agent)
@@ -379,9 +370,8 @@ class AgentDataService
         return isset($this->online_agent_ids[$id]);
     }
 
-
     /**
-     * Count how many agents are currently online
+     * Count how many agents are currently online.
      *
      * @return int
      */
@@ -390,9 +380,9 @@ class AgentDataService
         return count($this->online_agent_ids);
     }
 
-
     /**
-     * @param  int                                        $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\AgentTeam|null
      */
     public function getTeam($id)
@@ -403,12 +393,12 @@ class AgentDataService
             return $this->agent_teams[$id];
         }
 
-        return null;
+        return;
     }
 
-
     /**
-     * @param  int  $id
+     * @param int $id
+     *
      * @return bool
      */
     public function hasTeam($id)
@@ -418,11 +408,11 @@ class AgentDataService
         return isset($this->agent_teams[$id]);
     }
 
-
     /**
-     * Get an array of agents by ids
+     * Get an array of agents by ids.
      *
-     * @param  array $ids
+     * @param array $ids
+     *
      * @return array
      */
     public function getTeamsByIds($ids)
@@ -432,7 +422,7 @@ class AgentDataService
         $teams = array();
 
         foreach ($ids as $id) {
-            $id = (int)$id;
+            $id = (int) $id;
             if (isset($this->agent_teams[$id])) {
                 $teams[$id] = $this->agent_teams[$id];
             }
@@ -441,22 +431,23 @@ class AgentDataService
         return $teams;
     }
 
-
     /**
-     * @param  int|\Application\DeskPRO\Entity\Person  $agent
-     * @return \Application\DeskPRO\Entity\AgentTeam[]
+     * @param int|\Application\DeskPRO\Entity\Person $agent
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return \Application\DeskPRO\Entity\AgentTeam[]
      */
     public function getTeamsForAgent($agent)
     {
         $this->preload();
         $this->preloadTeamMap();
 
-        $aid = is_object($agent) ? $agent->id : $agent;
+        $aid   = is_object($agent) ? $agent->id : $agent;
         $agent = $this->get($aid);
 
         if (!$agent) {
-            throw new \InvalidArgumentException;
+            throw new \InvalidArgumentException();
         }
 
         if (empty($this->agent_to_teams[$agent->id])) {
@@ -474,10 +465,10 @@ class AgentDataService
         return $teams;
     }
 
-
     /**
-     * @param  int|\Application\DeskPRO\Entity\Person    $agent
-     * @param  int|\Application\DeskPRO\Entity\AgentTeam $team
+     * @param int|\Application\DeskPRO\Entity\Person    $agent
+     * @param int|\Application\DeskPRO\Entity\AgentTeam $team
+     *
      * @return bool
      */
     public function isAgentMemberOfTeam($agent, $team)
@@ -486,7 +477,11 @@ class AgentDataService
             $agent_id = $agent->id;
         } else {
             try {
-                $agent_id = $this->get($agent)->id;
+                $agent = $this->get($agent);
+                if (!$agent) {
+                    return false;
+                }
+                $agent_id = $agent->id;
             } catch (\InvalidArgumentException $e) {
                 return false;
             }
@@ -496,32 +491,38 @@ class AgentDataService
             $team_id = $team->id;
         } else {
             try {
-                $team_id = $this->getTeam($team)->id;
+                $team = $this->getTeam($team);
+                if (!$team) {
+                    return false;
+                }
+                $team_id = $team->id;
             } catch (\InvalidArgumentException $e) {
                 return false;
             }
         }
 
         $this->preloadTeamMap();
+
         return isset($this->agent_to_teams[$agent_id][$team_id]);
     }
 
-
     /**
-     * @param  int|\Application\DeskPRO\Entity\Person  $agent
-     * @return \Application\DeskPRO\Entity\AgentTeam[]
+     * @param int|\Application\DeskPRO\Entity\Person $agent
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return \Application\DeskPRO\Entity\AgentTeam[]
      */
     public function getGroupIdsForAgent($agent)
     {
         $this->preload();
         $this->preloadTeamMap();
 
-        $aid = is_object($agent) ? $agent->id : $agent;
+        $aid   = is_object($agent) ? $agent->id : $agent;
         $agent = $this->get($aid);
 
         if (!$agent) {
-            throw new \InvalidArgumentException;
+            throw new \InvalidArgumentException();
         }
 
         if (empty($this->agent_to_groups[$agent->id])) {
@@ -531,22 +532,23 @@ class AgentDataService
         return $this->agent_to_groups[$agent->id];
     }
 
-
     /**
-     * @param  int|\Application\DeskPRO\Entity\AgentTeam $team
-     * @return \Application\DeskPRO\Entity\Person[]
+     * @param int|\Application\DeskPRO\Entity\AgentTeam $team
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return \Application\DeskPRO\Entity\Person[]
      */
     public function getAgentsForTeam($team)
     {
         $this->preload();
         $this->preloadTeamMap();
 
-        $tid = is_object($team) ? $team->id : $team;
+        $tid  = is_object($team) ? $team->id : $team;
         $team = $this->getTeam($tid);
 
         if (!$team) {
-            throw new \InvalidArgumentException;
+            throw new \InvalidArgumentException();
         }
 
         if (empty($this->team_to_agents[$team->id])) {
@@ -564,9 +566,8 @@ class AgentDataService
         return $agents;
     }
 
-
     /**
-     * Selects agents based on some kind of selector:
+     * Selects agents based on some kind of selector:.
      *
      * - ticket_agent:          The assigned agent
      * - ticket_team:           Agents of the assigned team
@@ -579,9 +580,10 @@ class AgentDataService
      * - agent:10               A specific agent
      * - team:12                Agents of a specific team
      *
-     * @param  string $selector       Keyword or agent id
-     * @param  Person $person_context Current person performer
-     * @param  Ticket $ticket_context Current ticket context
+     * @param string $selector       Keyword or agent id
+     * @param Person $person_context Current person performer
+     * @param Ticket $ticket_context Current ticket context
+     *
      * @return array
      */
     public function selectAgents($selector, Person $person_context = null, Ticket $ticket_context = null)
@@ -597,13 +599,13 @@ class AgentDataService
         }
 
         if (is_numeric($selector)) {
-            $selector = 'agent:' . $selector;
+            $selector = 'agent:'.$selector;
         }
 
         if (strpos($selector, ':')) {
-            list ($type, $option) = explode(':', $selector, 2);
+            list($type, $option) = explode(':', $selector, 2);
         } else {
-            $type = $selector;
+            $type   = $selector;
             $option = null;
         }
 
@@ -631,7 +633,6 @@ class AgentDataService
                     $return = $this->getAgentsForTeam($ticket_context->agent_team);
                 }
                 break;
-
 
             // Agent followers
             case 'ticket_followers':

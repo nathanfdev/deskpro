@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\ORM;
 
 use Application\DeskPRO\EntityRepository\Preloadable;
@@ -45,7 +42,7 @@ class UnitOfWork extends DoctrineUnitOfWork
     private $_persisters;
 
     /**
-     * Sets that have already been loaded in full
+     * Sets that have already been loaded in full.
      *
      * @var array
      */
@@ -58,58 +55,56 @@ class UnitOfWork extends DoctrineUnitOfWork
      * @var array
      */
     protected $enable_preload_set = array(
-        'Application\\DeskPRO\\Entity\\Department'                     => 1,
-        'Application\\DeskPRO\\Entity\\TicketCategory'                 => 1,
-        'Application\\DeskPRO\\Entity\\ArticleCategory'                => 1,
-        'Application\\DeskPRO\\Entity\\DownloadCategory'               => 1,
-        'Application\\DeskPRO\\Entity\\FeedbackCategory'               => 1,
-        'Application\\DeskPRO\\Entity\\NewsCategory'                   => 1,
-        'Application\\DeskPRO\\Entity\\Product'                        => 1,
-        'Application\\DeskPRO\\Entity\\CustomDefArticle'               => 1,
-        'Application\\DeskPRO\\Entity\\CustomDefFeedback'              => 1,
-        'Application\\DeskPRO\\Entity\\CustomDefOrganization'          => 1,
-        'Application\\DeskPRO\\Entity\\CustomDefPerson'                => 1,
-        'Application\\DeskPRO\\Entity\\CustomDefTicket'                => 1,
-        'Application\\DeskPRO\\Entity\\Languages'                      => 1,
-        'Application\\DeskPRO\\Entity\\AgentTeam'                      => 1,
+        'Application\\DeskPRO\\Entity\\Department'            => 1,
+        'Application\\DeskPRO\\Entity\\TicketCategory'        => 1,
+        'Application\\DeskPRO\\Entity\\ArticleCategory'       => 1,
+        'Application\\DeskPRO\\Entity\\DownloadCategory'      => 1,
+        'Application\\DeskPRO\\Entity\\FeedbackCategory'      => 1,
+        'Application\\DeskPRO\\Entity\\NewsCategory'          => 1,
+        'Application\\DeskPRO\\Entity\\Product'               => 1,
+        'Application\\DeskPRO\\Entity\\CustomDefArticle'      => 1,
+        'Application\\DeskPRO\\Entity\\CustomDefFeedback'     => 1,
+        'Application\\DeskPRO\\Entity\\CustomDefOrganization' => 1,
+        'Application\\DeskPRO\\Entity\\CustomDefPerson'       => 1,
+        'Application\\DeskPRO\\Entity\\CustomDefTicket'       => 1,
+        'Application\\DeskPRO\\Entity\\Languages'             => 1,
+        'Application\\DeskPRO\\Entity\\AgentTeam'             => 1,
     );
 
     /**
-     * Add a type of entity that sholud be pre-fetched
+     * Add a type of entity that sholud be pre-fetched.
      *
      * @param $entity_class
      */
     public function addPreloadedEntity($entityName)
     {
-        $class = $this->em->getClassMetadata($entityName);
+        $class     = $this->em->getClassMetadata($entityName);
         $classname = $class->getName();
 
         $this->enable_preload_set[$classname] = 1;
     }
 
-
     /**
-     * Marks a repository as prelaoded
+     * Marks a repository as prelaoded.
      *
      * @param $entityName
      */
     public function markAsPreloaded($entityName)
     {
-        $class = $this->em->getClassMetadata($entityName);
+        $class     = $this->em->getClassMetadata($entityName);
         $classname = $class->getName();
 
         $this->loaded_sets[$classname] = true;
     }
 
-
     /**
-     * Load the full set of a particular entity
+     * Load the full set of a particular entity.
      *
      * @param $entity_name
      */
     public function preloadEntitySet($entityName)
     {
-        $class = $this->em->getClassMetadata($entityName);
+        $class     = $this->em->getClassMetadata($entityName);
         $classname = $class->getName();
 
         if (isset($this->loaded_sets[$classname])) {
@@ -135,14 +130,15 @@ class UnitOfWork extends DoctrineUnitOfWork
     }
 
     /**
-     * Check if an entity is set to be preloaded
+     * Check if an entity is set to be preloaded.
      *
      * @param $entityName
+     *
      * @return bool
      */
     public function isAddedPreloadedEntity($entityName)
     {
-        $class = $this->em->getClassMetadata($entityName);
+        $class     = $this->em->getClassMetadata($entityName);
         $classname = $class->getName();
 
         return isset($this->enable_preload_set[$classname]);
@@ -150,7 +146,7 @@ class UnitOfWork extends DoctrineUnitOfWork
 
     public function getEntityPersister($entityName)
     {
-        $class = $this->em->getClassMetadata($entityName);
+        $class     = $this->em->getClassMetadata($entityName);
         $classname = $class->getName();
 
         if (isset($this->_persisters[$classname])) {
@@ -158,7 +154,7 @@ class UnitOfWork extends DoctrineUnitOfWork
         }
 
         if ($class->isInheritanceTypeNone()) {
-            $persister = new Persisters\LookupBasicEntityPersister($this->em, $class);
+            $persister                     = new Persisters\LookupBasicEntityPersister($this->em, $class);
             $this->_persisters[$classname] = $persister;
 
             return $persister;

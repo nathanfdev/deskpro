@@ -1,4 +1,32 @@
-<?php return array(
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
     'agent.general.24x7'                                    => '24x7',
     'agent.general.actions'                                 => 'Actions',
     'agent.general.activity_stream'                         => 'Activity Stream',
@@ -236,6 +264,7 @@
     'agent.general.edit_search_terms'                       => 'Edit search terms',
     'agent.general.email'                                   => 'Email',
     'agent.general.phone_number'                            => 'Phone Number',
+    'agent.general.email_account'                           => 'Email Account',
     'agent.general.email_address'                           => 'Email Address',
     'agent.general.email_agent_new_agent_reply'             => 'Email: Agent notification of new agent reply',
     'agent.general.email_agent_new_reply'                   => 'Email: Agent notification about new reply',
@@ -254,6 +283,7 @@
     'agent.general.enter_a_message'                         => 'Enter a message',
     'agent.general.enter_a_title'                           => 'Enter a title',
     'agent.general.enter_organization_name'                 => 'Enter an organization name...',
+    'agent.general.find_org'                                => 'Find an organization',
     'agent.general.find_or_create_org'                      => 'Find or create an organization',
     'agent.general.enter_search_terms'                      => 'Enter search terms',
     'agent.general.error'                                   => 'Error',
@@ -331,6 +361,7 @@
     'agent.general.hidden_unpublished'                      => 'Hidden: Unpublished',
     'agent.general.hidden_validating'                       => 'Hidden: Validating',
     'agent.general.hide'                                    => 'Hide',
+    'agent.general.hierarchy'                               => 'Hierarchy',
     'agent.general.host'                                    => 'Host',
     'agent.general.hostname'                                => 'Hostname',
     'agent.general.hour'                                    => 'Hour',
@@ -365,6 +396,8 @@
     'agent.general.is_not'                                  => 'is not',
     'agent.general.is_not_a_new_user'                       => 'Is not a new user',
     'agent.general.is_not_published'                        => 'Is Not Published',
+    'agent.general.is_not_set'                              => 'Is not set',
+    'agent.general.is_set'                                  => 'Is set',
     'agent.general.is_not_x'                                => 'is not {{field}}',
     'agent.general.is_published'                            => 'Is Published',
     'agent.general.is_x'                                    => 'is {{field}}',
@@ -757,8 +790,10 @@
     'agent.general.unassign'                                => 'Unassign',
     'agent.general.dp_updates'                              => 'DeskPRO Updates',
 
-    'agent.general.tabs_close_current'                      => 'Close this tab',
-    'agent.general.tabs_close_all'                          => 'Close all tabs',
-    'agent.general.tabs_close_others'                       => 'Close all other tabs',
-    'agent.general.tabs_reopen'                             => 'Reopen:',
+    'agent.general.tabs_close_current' => 'Close this tab',
+    'agent.general.tabs_close_all'     => 'Close all tabs',
+    'agent.general.tabs_close_others'  => 'Close all other tabs',
+    'agent.general.tabs_reopen'        => 'Reopen:',
+
+    'agent.general.reopen' => 'reopen',
 );

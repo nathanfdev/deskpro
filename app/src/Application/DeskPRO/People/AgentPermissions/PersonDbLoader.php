@@ -1,39 +1,39 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category People
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category People
+ */
 namespace Application\DeskPRO\People\AgentPermissions;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
@@ -61,20 +61,6 @@ class PersonDbLoader
     private $perms;
 
     /**
-     * @var array
-     */
-    private static $prefix_map = array(
-        'agent_tickets' => 'ticket',
-        'agent_people'  => 'people',
-        'agent_org'     => 'org',
-        'agent_chat'    => 'chat',
-        'agent_publish' => 'publish',
-        'agent_general' => 'general',
-        'agent_tasks'   => 'tasks',
-    );
-
-
-    /**
      * @param Person        $person
      * @param EntityManager $em
      */
@@ -82,9 +68,8 @@ class PersonDbLoader
     {
         $this->person = $person;
         $this->em     = $em;
-        $this->db     = $em->getConnection();
+        $this->db     = App::getDbRead('perms');
     }
-
 
     /**
      * @return array
@@ -95,7 +80,7 @@ class PersonDbLoader
             return $this->perms;
         }
 
-        $has_all_perms = false;
+        $has_all_perms      = false;
         $has_all_safe_perms = false;
 
         $agent_group_ids = array();
@@ -117,21 +102,21 @@ class PersonDbLoader
             $agent_group_ids[] = 0;
         }
 
-        $perm_recs = $this->db->fetchAll("
+        $perm_recs = $this->db->fetchAll('
             SELECT name, usergroup_id, person_id
             FROM permissions
-            WHERE (usergroup_id IN (?) OR person_id = ?)
-                AND value = 1
-        ", array($agent_group_ids, $this->person['id']), array(Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT));
+            WHERE (usergroup_id IN (?) OR (person_id = ?))
+                AND value = 1 AND is_active = 1
+        ', array($agent_group_ids, $this->person['id']), array(Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT));
 
         if ($has_all_perms || $has_all_safe_perms) {
             $names_loader = new PermissionNamesLoader();//TODO inject
 
             if ($has_all_perms) {
-                $add = $names_loader->getNames();
+                $add      = $names_loader->getNames();
                 $add_ugid = $has_all_perms;
             } else {
-                $add = $names_loader->getSafeNames();
+                $add      = $names_loader->getSafeNames();
                 $add_ugid = $has_all_safe_perms;
             }
 
@@ -139,7 +124,7 @@ class PersonDbLoader
                 $perm_recs[] = array(
                     'name'         => $n,
                     'usergroup_id' => $add_ugid,
-                    'person_id'    => null
+                    'person_id'    => null,
                 );
             }
         }
@@ -163,9 +148,8 @@ class PersonDbLoader
         return $this->perms;
     }
 
-
     /**
-     * Get effective permissions (group and overrides combined)
+     * Get effective permissions (group and overrides combined).
      *
      * @return AgentPermissions
      */
@@ -177,7 +161,7 @@ class PersonDbLoader
     }
 
     /**
-     * Get permissions defined just through overrides
+     * Get permissions defined just through overrides.
      *
      * @return AgentPermissions
      */
@@ -188,9 +172,8 @@ class PersonDbLoader
         return $this->createAgentPermissions($perms['person']);
     }
 
-
     /**
-     * Get just group permissions (no overrides)
+     * Get just group permissions (no overrides).
      *
      * @return AgentPermissions
      */
@@ -201,9 +184,9 @@ class PersonDbLoader
         return $this->createAgentPermissions($perms['group']);
     }
 
-
     /**
-     * @param  array            $perm_array
+     * @param array $perm_array
+     *
      * @return AgentPermissions
      */
     private function createAgentPermissions(array $perm_array)
@@ -211,15 +194,23 @@ class PersonDbLoader
         $agent_perms = new AgentPermissions();
 
         foreach ($perm_array as $k => $v) {
-            if (!$v) continue; // disabled
-            if (strpos($k, '.') === false) continue; // invalid
+            if (!$v) {
+                continue;
+            } // disabled
+            if (strpos($k, '.') === false) {
+                continue;
+            } // invalid
 
-            list ($type, $name) = explode('.', $k, 2);
-            if (!isset(self::$prefix_map[$type])) continue; // unknown type
+            list($type, $name) = explode('.', $k, 2);
+            if (!isset(AgentPermissions::$prefix_map[$type])) {
+                continue;
+            } // unknown type
 
-            $obj_name = self::$prefix_map[$type];
-            $obj = $agent_perms->$obj_name;
-            if (!isset($obj->$name)) continue; // invalid;
+            $obj_name = AgentPermissions::$prefix_map[$type];
+            $obj      = $agent_perms->$obj_name;
+            if (!isset($obj->$name)) {
+                continue;
+            } // invalid;
 
             $obj->$name = true;
         }

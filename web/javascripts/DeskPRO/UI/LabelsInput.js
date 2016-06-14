@@ -96,7 +96,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 			},
 			formatNoMatches: function() {
 				if (allowNew) {
-					return 'Press enter to create a new label.';
+					return options.placeholder || self.input.data('placeholder-new') || 'Press enter to create a new label.';
 				} else {
 					return 'You are not allowed to create new labels. Please use an existing label.'
 				}
@@ -113,6 +113,10 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 		return this.input.select2('val') || [];
 	},
 
+  setLabels: function (labels) {
+    labels = labels || [];
+    this.input.select2('val', labels);
+  },
 
 	/**
 	 * Get labels serialized as a form array suitable with jQuery.ajax

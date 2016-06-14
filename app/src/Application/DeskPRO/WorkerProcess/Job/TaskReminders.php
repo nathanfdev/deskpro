@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -39,7 +36,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Orb\Util\Dates;
 
 /**
- * Will send daily task due reminders
+ * Will send daily task due reminders.
  */
 class TaskReminders extends AbstractJob
 {
@@ -56,9 +53,9 @@ class TaskReminders extends AbstractJob
             $send_time = '09:00';
         }
 
-        list ($hour, $min) = explode(':', $send_time);
-        $hour = (int)$hour;
-        $min  = (int)$min;
+        list($hour, $min) = explode(':', $send_time);
+        $hour             = (int) $hour;
+        $min              = (int) $min;
 
         #------------------------------
         # Figure out which agents the current time is for
@@ -66,15 +63,15 @@ class TaskReminders extends AbstractJob
 
         $for_agents = array();
         foreach (App::getDataService('Agent')->getAgents() as $agent) {
-            /** @var $agent \Application\DeskPRO\Entity\Person */
+            /* @var $agent \Application\DeskPRO\Entity\Person */
 
-            $t = $agent->getDateTime();
-            $hour_now = (int)$t->format('G');
-            $min_now  = (int)$t->format('i');
+            $t        = $agent->getDateTime();
+            $hour_now = (int) $t->format('G');
+            $min_now  = (int) $t->format('i');
 
             if ($hour_now == $hour && $min_now >= $min) {
                 $this->getLogger()->logInfo(sprintf(
-                    "Running for agent %d %s (Local time %s is in range of %s)",
+                    'Running for agent %d %s (Local time %s is in range of %s)',
                     $agent->getId(),
                     $agent->getDisplayName(),
                     $t->format('H:i'),
@@ -89,11 +86,10 @@ class TaskReminders extends AbstractJob
         }
 
         $online_ids = App::getEntityRepository('DeskPRO:Session')->getAvailableAgentIds();
-        $emails = 0;
-        $alerts = 0;
+        $emails     = 0;
+        $alerts     = 0;
 
         foreach ($for_agents as $agent) {
-
             $agent->loadHelper('Agent');
             $team_ids = $agent->Agent->getTeamIds();
             if (!$team_ids) {
@@ -101,15 +97,15 @@ class TaskReminders extends AbstractJob
             }
 
             $today = $agent->getDateTime();
-            $today->setTime(0,0,0);
+            $today->setTime(0, 0, 0);
 
             $today_end = $agent->getDateTime();
             $today_end->setTime(23, 59, 59);
 
-            $today_utc = Dates::convertToUtcDateTime($today);
+            $today_utc     = Dates::convertToUtcDateTime($today);
             $today_end_utc = Dates::convertToUtcDateTime($today_end);
 
-            $task_ids = App::getDb()->fetchAllCol("
+            $task_ids = App::getDb()->fetchAllCol('
                 SELECT tasks.id
                 FROM tasks
                 LEFT JOIN task_reminder_logs ON (task_reminder_logs.task_id = tasks.id)
@@ -118,7 +114,7 @@ class TaskReminders extends AbstractJob
                     AND (tasks.assigned_agent_id = ? OR tasks.assigned_agent_team_id IN (?) OR (tasks.assigned_agent_id IS NULL AND tasks.person_id = ?))
                     AND tasks.date_due >= ? AND tasks.date_due <= ?
                     AND task_reminder_logs.id IS NULL
-            ",
+            ',
                 array($agent['id'], $team_ids, $agent['id'], $today_utc->format('Y-m-d H:i:s'), $today_end_utc->format('Y-m-d H:i:s')),
                 array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT, \PDO::PARAM_STR, \PDO::PARAM_STR));
 
@@ -131,44 +127,44 @@ class TaskReminders extends AbstractJob
             foreach ($tasks as $task) {
                 if (in_array($agent->id, $online_ids) && $agent->getPref('agent_notif.task_due.alert')) {
                     $tpl_line = App::getTemplating()->render('AgentBundle:Task:notify-row-reminder.html.twig', array(
-                        'task' => $task,
-                        'person' => $agent
+                        'task'   => $task,
+                        'person' => $agent,
                     ));
 
                     $cm = new \Application\DeskPRO\Entity\ClientMessage();
                     $cm->fromArray(array(
-                        'channel' => 'agent-notify.tasks',
-                        'data' => array('row' => $tpl_line),
+                        'channel'           => 'agent-notify.tasks',
+                        'data'              => array('row' => $tpl_line),
                         'for_person'        => $agent,
-                        'created_by_client' => 'sys'
+                        'created_by_client' => 'sys',
                     ));
                     App::getOrm()->persist($cm);
                     App::getOrm()->flush();
 
-                    $alerts++;
+                    ++$alerts;
                 }
 
                 $email_accounts = App::$container->getEmailAccountManager();
-                $out = $email_accounts->getDefaultOutAccountWithFallback();
-                $from_email = $out->getUseEmailAddress();
+                $out            = $email_accounts->getDefaultOutAccountWithFallback();
+                $from_email     = $out->getUseEmailAddress();
 
                 if ($from_email && $agent->getPref('agent_notif.task_due.email')) {
                     $message = App::getMailer()->createMessage();
                     $message->setTemplate('DeskPRO:emails_agent:task-due-reminder.html.twig', array(
-                        'task' => $task,
-                        'person' => $agent
+                        'task'   => $task,
+                        'person' => $agent,
                     ));
                     $message->setToPerson($agent);
                     $message->setFrom($from_email, App::getSetting('core.deskpro_name'));
                     App::getMailer()->send($message);
 
-                    $emails++;
+                    ++$emails;
                 }
 
                 App::getDb()->insert('task_reminder_logs', array(
                     'task_id'   => $task->getId(),
                     'person_id' => $agent->getId(),
-                    'date_sent' => date('Y-m-d H:i:s')
+                    'date_sent' => date('Y-m-d H:i:s'),
                 ));
             }
         }

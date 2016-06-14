@@ -52,7 +52,7 @@ define('DP_TECHNICAL_EMAIL', '');
 // do not edit the next line
 $DP_CONFIG = array('debug' => array(), 'cache' => array());
 
-# ~~~~~~~~~~~~~~~~~~~~  PATHS ~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~ PATHS ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ######################################################
 # Location of the Data Directory                     #
@@ -145,81 +145,7 @@ $DP_CONFIG['mysqldump_path'] = '';
 
 $DP_CONFIG['mysql_path'] = '';
 
-# ~~~~~~~~~~~~~~~~ DESKPRO IMPORT ~~~~~~~~~~~~~~~~~~~~
-
-######################################################
-# DeskPRO Import Settings                            #
-######################################################
-#                                                    #
-# Enter the database details of your current         #
-# DeskPRO v1, DeskPRO v2 or DeskPRO v3 database if   #
-# you wish to import their data when installing      #
-# DeskPRO v4.                                        #
-#                                                    #
-# If you are upgrading from one version of           #
-# DeskPRO v4 you should not do anything here. That   #
-# upgrade is controlled via the Admin interface.     #
-#                                                    #
-# The importer system will move your attachments to  #
-# the filesystem, storing the files in /data/files   #
-# It is recommended that you store files this way    #
-# however if you wish for files to remain stored in  #
-# the database you should change the line:           #
-#                                                    #
-# 'store_attachments_files' => true,                 #
-#           TO                                       #
-# 'store_attachments_files' => false;                #
-#                                                    #
-# You can change the location of the data directory  #
-# which contains the files directory by setting the  #
-# Data directory setting above.                      #
-#                                                    #
-# IMPORTANT:                                         #
-#                                                    #
-# Please ensure you read the README.txt file for     #
-# instructions on how to run an import. You need to  #
-# run import.php from the command line and not       #
-# install DeskPRO using the browser.                 #
-######################################################
-
-$DP_CONFIG['import'] = array(
-	/**
-	 * Settings for import from DeskPRO v3
-	 */
-	'db_host'     => 'localhost',
-	'db_user'     => 'root',
-	'db_password' => '',
-	'db_name'     => 'deskpro',
-
-	/**
-	 * If you are already storing attachments in the filesystem in v3,
-	 * you need to specify the storage path so v4 can read them.
-	 */
-	'existing_attachment_files' => '',
-
-	/**
-	 * Set to true to store attachments in the filesystem
-	 * or false to store them in the database (less efficient).
-	 */
-	'store_attachment_files' => true,
-
-	/**
-	 * Tickets that have been 'awaiting user' for this many
-	 * days will be automatically resolved. Set to 0 to disable this.
-	 */
-	'days_until_autoresolve' => 90,
-
-	/**
-	 * archive: 'auto' to enable if you have >250,000 tickets,
-	 *          true to explicitly enable,
-	 *          false to explicitly disable
-	 *
-	 * days_until_archive: Number of days a ticket must be closed for
-	 *                     before it is archived.
-	 */
-	'archive' => 'auto',
-	'days_until_archive' => 90,
-);
+# ~~~~~~~~~~~~~~~~~~~~ OPTIONS ~~~~~~~~~~~~~~~~~~~~~~~
 
 ######################################################
 # OPTIONAL: Trust proxy data                         #

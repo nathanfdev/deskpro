@@ -13,8 +13,10 @@
 		</p>
 
 		<p style="margin-bottom: 0;" ng-if="move_feedback_categories_list">
-			<select ui-select2 ng-model="selected.move_to_id" style="width: 240px">
-				<option value="{{ ng_var('category.id') }}" ng-repeat="category in move_feedback_categories_list">{{ ng_var('category.title') }}</option>
+			<select ui-select2 ng-model="model.move_to" style="width: 240px">
+				<option value="{{ ng_var('category.id') }}" ng-repeat="category in move_feedback_categories_list">
+                    {{ ng_var('category.title') }}
+                </option>
 			</select>
 		</p>
 	</div>

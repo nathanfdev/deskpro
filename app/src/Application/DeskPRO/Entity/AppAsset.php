@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -79,9 +78,8 @@ class AppAsset extends DomainObject
      */
     protected $metadata = null;
 
-
     /**
-     * Set metadata
+     * Set metadata.
      *
      * @param array $metadata
      */
@@ -94,9 +92,8 @@ class AppAsset extends DomainObject
         }
     }
 
-
     /**
-     * Get metadata
+     * Get metadata.
      *
      * @return array
      */
@@ -105,13 +102,12 @@ class AppAsset extends DomainObject
         return $this->metadata ? $this->metadata : array();
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
-        $data = array();
+        $data             = array();
         $data['id']       = $this->id;
         $data['name']     = $this->name;
         $data['tag']      = $this->tag;
@@ -121,6 +117,9 @@ class AppAsset extends DomainObject
         if ($this->package->native_name && $this->tag && in_array($this->tag, array('js', 'css', 'html', 'res'))) {
             $data['blob']['download_url'] = App::get('router')->generate('serve_blob_app_asset', array('app_name' => $this->package->name, 'type' => $this->tag, 'path' => $this->name), true);
             $data['blob']['relative_url'] = App::get('router')->generate('serve_blob_app_asset', array('app_name' => $this->package->name, 'type' => $this->tag, 'path' => $this->name), true);
+        } else {
+            $data['blob']['download_url'] = $this->blob->getDownloadUrl(true, false);
+            $data['blob']['relative_url'] = $this->blob->getDownloadUrl(false, false);
         }
 
         if ($primary) {
@@ -130,18 +129,17 @@ class AppAsset extends DomainObject
         return $data;
     }
 
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
-        $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
-        $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+        $metadata->inheritanceType      = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+        $metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+        $metadata->generatorType        = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->setPrimaryTable(array(
-            'name' => 'app_assets'
+            'name' => 'app_assets',
         ));
 
         $metadata->mapField(array(
@@ -185,7 +183,7 @@ class AppAsset extends DomainObject
                 'nullable'             => true,
                 'onDelete'             => 'CASCADE',
                 'fetch'                => 'EAGER',
-            ))
+            )),
         ));
 
         $metadata->mapOneToOne(array(
@@ -197,7 +195,7 @@ class AppAsset extends DomainObject
                 'nullable'             => true,
                 'onDelete'             => 'CASCADE',
                 'fetch'                => 'EAGER',
-            ))
+            )),
         ));
     }
 }

@@ -1,40 +1,37 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DpDbSets;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\ORM\EntityManager;
 use Orb\Util\Util;
 
 abstract class AbstractDbSet
@@ -72,13 +69,12 @@ abstract class AbstractDbSet
     public function __construct(DeskproContainer $container)
     {
         $this->container = $container;
-        $this->em = $container->getEm();
-        $this->db = $this->em->getConnection();
+        $this->em        = $container->getEm();
+        $this->db        = $this->em->getConnection();
     }
 
-
     /**
-     * Disables the cache
+     * Disables the cache.
      */
     public function enableCache($cache_dir, $mysql_bin_path = 'mysql', $mysqldump_bin_path = 'mysqldump')
     {
@@ -86,7 +82,6 @@ abstract class AbstractDbSet
         $this->mysql_bin_path     = $mysql_bin_path;
         $this->mysqldump_bin_path = $mysqldump_bin_path;
     }
-
 
     /**
      * @return \Application\DeskPRO\DBAL\Connection
@@ -96,7 +91,6 @@ abstract class AbstractDbSet
         return $this->db;
     }
 
-
     /**
      * @return \Application\DeskPRO\ORM\EntityManager
      */
@@ -105,7 +99,6 @@ abstract class AbstractDbSet
         return $this->em;
     }
 
-
     /**
      * @return DeskproContainer
      */
@@ -113,7 +106,6 @@ abstract class AbstractDbSet
     {
         return $this->container;
     }
-
 
     /**
      * @return int Number of tables dropped
@@ -130,9 +122,8 @@ abstract class AbstractDbSet
         return 1;
     }
 
-
     /**
-     * Get the cache name for this set
+     * Get the cache name for this set.
      *
      * @return string
      */
@@ -141,21 +132,19 @@ abstract class AbstractDbSet
         return Util::getBaseClassname($this);
     }
 
-
     /**
-     * Get the cache file path for this set
+     * Get the cache file path for this set.
      *
      * @return string
      */
     private function getCachePath()
     {
         if (!$this->cache_dir) {
-            throw new \RuntimeException("No cache directory is set");
+            throw new \RuntimeException('No cache directory is set');
         }
 
-        return $this->cache_dir . DIRECTORY_SEPARATOR . $this->getCacheName();
+        return $this->cache_dir.DIRECTORY_SEPARATOR.$this->getCacheName();
     }
-
 
     /**
      * @return bool
@@ -169,14 +158,13 @@ abstract class AbstractDbSet
         return false;
     }
 
-
     /**
-     * Dumps the database to the cache file
+     * Dumps the database to the cache file.
      */
     private function dumpToCache()
     {
         $cmd = sprintf(
-            "%s --opt -Q -h%s --port=%s -u%s -p%s %s > %s",
+            '%s --opt -Q -h%s --port=%s -u%s -p%s %s > %s',
             $this->mysqldump_bin_path,
             escapeshellarg(DP_DATABASE_HOST),
             escapeshellarg(3306),
@@ -192,14 +180,13 @@ abstract class AbstractDbSet
 
         if ($ret) {
             echo "Command Failed: $cmd\n";
-            echo implode("\n",$out);
+            echo implode("\n", $out);
             throw new \RuntimeException(print_r(array($cmd, $out), 1));
         }
     }
 
-
     /**
-     * Installs the set from the cached SQL
+     * Installs the set from the cached SQL.
      *
      * @return bool
      */
@@ -221,17 +208,16 @@ abstract class AbstractDbSet
 
         if ($ret) {
             echo "Command Failed: $cmd\n";
-            echo implode("\n",$out);
+            echo implode("\n", $out);
             throw new \RuntimeException(print_r(array($cmd, $out), 1));
         }
     }
-
 
     /**
      * Installs the db set:
      * - Clears the current database if its not empty
      * - Installs a fresh DeskPRO version
-     * - Applies the set that installs any additional data on the database
+     * - Applies the set that installs any additional data on the database.
      *
      * @param bool $force       True to force resetting the DB even if the set is already installed (e.g., resetting after every test)
      * @param bool $reset_after Reset the database after (eg next time it is used). Use this to reset the db after a destructive test.
@@ -265,6 +251,7 @@ abstract class AbstractDbSet
             } else {
                 $this->installDatabase();
                 $this->installSet();
+                $this->getContainer()->getSettingsHandler()->reloadSettings();
 
                 if ($this->cache_dir) {
                     $this->dumpToCache();
@@ -273,7 +260,7 @@ abstract class AbstractDbSet
 
             $this->getDb()->exec("
                 REPLACE INTO `settings` (`name`, `value`)
-                VALUES ('core.dp_testing_dbset', '" . $this->getCacheName() . "')
+                VALUES ('core.dp_testing_dbset', '".$this->getCacheName()."')
             ");
 
             if ($reset_after) {
@@ -285,7 +272,6 @@ abstract class AbstractDbSet
         }
     }
 
-
     /**
      * Installs a fresh DeskPRO database with the bare data to make it a functional install.
      *
@@ -295,22 +281,22 @@ abstract class AbstractDbSet
     {
         $base_schema_cache = null;
         if ($this->cache_dir) {
-            $base_schema_cache = $this->cache_dir . '/base_schema.php';
+            $base_schema_cache = $this->cache_dir.'/base_schema.php';
         }
 
         if ($base_schema_cache && file_exists($base_schema_cache)) {
-            $queries = require($base_schema_cache);
+            $queries = require $base_schema_cache;
         } else {
-            $gs = new \Application\InstallBundle\Data\GenerateSchema($this->getEm());
+            $gs      = new \Application\InstallBundle\Data\GenerateSchema($this->getEm());
             $queries = array(
                 'creates' => $gs->getCreates(),
-                'alters'  => $gs->getAlters()
+                'alters'  => $gs->getAlters(),
             );
 
             if ($base_schema_cache) {
                 file_put_contents(
                     $base_schema_cache,
-                    "<?php return " . var_export($queries, true) . ";\n"
+                    '<?php return '.var_export($queries, true).";\n"
                 );
             }
         }
@@ -329,18 +315,17 @@ abstract class AbstractDbSet
             ) ENGINE=InnoDB DEFAULT CHARSET=latin1
         ");
         foreach ($queries['creates'] as $q) {
-            $count++;
+            ++$count;
             $this->getDb()->exec($q);
         }
 
         foreach ($queries['alters'] as $q) {
-            $count++;
+            ++$count;
             $this->getDb()->exec($q);
         }
 
         return $count;
     }
-
 
     /**
      * @return string

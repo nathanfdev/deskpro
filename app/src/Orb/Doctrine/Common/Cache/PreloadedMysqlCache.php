@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @subpackage Doctrine
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ */
 namespace Orb\Doctrine\Common\Cache;
 
 use Doctrine\DBAL\Connection;
@@ -54,14 +51,14 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     protected $id_prefix = 'd.';
 
     /**
-     * Pre-loaded data
+     * Pre-loaded data.
      *
      * @var array
      */
     protected $loaded = array();
 
     /**
-     * Array of prefixes we've prelaoded
+     * Array of prefixes we've prelaoded.
      *
      * @var array
      */
@@ -74,7 +71,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 
     /**
      * True to catch and silently discard exceptions
-     * for fetch/save's
+     * for fetch/save's.
      *
      * @var bool
      */
@@ -88,22 +85,20 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         $this->db = $db;
     }
 
-
     /**
      * @param bool $on_or_off
      */
     public function setAutoUnserialize($on_or_off)
     {
-        $this->auto_unserialize = (bool)$on_or_off;
+        $this->auto_unserialize = (bool) $on_or_off;
     }
 
-
     /**
-     * Create the cache database table
+     * Create the cache database table.
      */
     public function initTable()
     {
-        $this->db->exec("
+        $this->db->exec('
             CREATE TABLE `cache` (
               `id` varbinary(255) NOT NULL,
               `data` longblob NOT NULL,
@@ -111,12 +106,11 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
               INDEX date_expire_idx (date_expire),
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-        ");
+        ');
     }
 
-
     /**
-     * Set the prefix used on all IDs
+     * Set the prefix used on all IDs.
      *
      * @param $prefix
      */
@@ -125,8 +119,8 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         if (func_num_args() == 1) {
             $this->id_prefix = $prefix;
         } else {
-            $args = func_get_args();
-            $args = Arrays::castToType($args, 'string');
+            $args            = func_get_args();
+            $args            = Arrays::castToType($args, 'string');
             $this->id_prefix = implode('.', $args);
         }
 
@@ -135,9 +129,8 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         }
     }
 
-
     /**
-     * Preload one or more keys
+     * Preload one or more keys.
      *
      * If exactly one array param, expected to be an array of keys.
      * Otherwise you can pass any number of key args
@@ -147,14 +140,14 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     public function preloadIds()
     {
         if (func_num_args() == 1) {
-            $keys = (array)func_get_arg(1);
+            $keys = (array) func_get_arg(1);
         } else {
             $keys = func_get_args();
         }
 
         foreach ($keys as &$k) {
             if (!array_key_exists($k, $this->loaded)) {
-                $k = $this->id_prefix . $k;
+                $k = $this->id_prefix.$k;
             } else {
                 $k = 0;
             }
@@ -166,7 +159,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
             return;
         }
 
-        $keys_in = "'" . implode("','", $keys) . "'";
+        $keys_in = "'".implode("','", $keys)."'";
 
         $date = date('Y-m-d H:i:s');
 
@@ -198,31 +191,32 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         }
     }
 
-
     /**
-     * Preload a number of items given a prefix
+     * Preload a number of items given a prefix.
      *
      * @param $prefix
      */
     public function preloadPrefix($add_prefix = null)
     {
-        if (!$add_prefix) $add_prefix = '';
-        $prefix = $this->id_prefix . $add_prefix;
+        if (!$add_prefix) {
+            $add_prefix = '';
+        }
+        $prefix = $this->id_prefix.$add_prefix;
 
         if (in_array($prefix, $this->loaded_prefixes)) {
             return;
         }
 
         $this->loaded_prefixes[] = $prefix;
-        $prefix_like = "$prefix%";
+        $prefix_like             = "$prefix%";
 
         $date = date('Y-m-d H:i:s');
         try {
-            $records = $this->db->fetchAll("
+            $records = $this->db->fetchAll('
                 SELECT id, data
                 FROM cache
                 WHERE id LIKE ? AND (date_expire IS NULL OR date_expire > ?)
-            ", array($prefix_like, $date));
+            ', array($prefix_like, $date));
         } catch (\Exception $e) {
             $records = array();
             if (!$this->silence_exceptions) {
@@ -235,22 +229,21 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         }
     }
 
-
     /**
-     * Delete all caches in the database with a key
+     * Delete all caches in the database with a key.
      *
      * @param $prefix
      */
     public function flushPrefix($prefix)
     {
-        $prefix = $this->id_prefix . $prefix;
+        $prefix      = $this->id_prefix.$prefix;
         $prefix_like = "$prefix%";
 
         try {
-            $this->db->fetchAll("
+            $this->db->fetchAll('
                 DELETE FROM cache
                 WHERE id LIKE ?
-            ", array($prefix_like));
+            ', array($prefix_like));
         } catch (\Exception $e) {
             if (!$this->silence_exceptions) {
                 throw $e;
@@ -264,16 +257,16 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         }
     }
 
-
     /**
      * Fetches an entry from the cache.
      *
-     * @param  string $id cache id The id of the cache entry to fetch.
+     * @param string $id cache id The id of the cache entry to fetch.
+     *
      * @return string The cached data or FALSE, if no cache entry exists for the given id.
      */
     public function fetch($id)
     {
-        $prefix_id = $this->id_prefix . $id;
+        $prefix_id = $this->id_prefix.$id;
 
         $is_loaded = false;
 
@@ -294,16 +287,15 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
             }
 
             $data = $this->loaded[$prefix_id];
-
         } else {
             $date = date('Y-m-d H:i:s');
 
             try {
-                $record = $this->db->fetchAssoc("
+                $record = $this->db->fetchAssoc('
                     SELECT data
                     FROM cache
                     WHERE id = ? AND (date_expire IS NULL OR date_expire > ?)
-                ", array($prefix_id, $date));
+                ', array($prefix_id, $date));
             } catch (\Exception $e) {
                 $record = null;
                 if (!$this->silence_exceptions) {
@@ -313,7 +305,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 
             if ($record) {
                 $this->loaded[$prefix_id] = $record['data'];
-                $data = $this->loaded[$prefix_id];
+                $data                     = $this->loaded[$prefix_id];
             } else {
                 $this->loaded[$prefix_id] = null;
 
@@ -328,16 +320,16 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         return $data;
     }
 
-
     /**
      * Test if an entry exists in the cache.
      *
-     * @param  string  $id cache id The cache id of the entry to check for.
-     * @return boolean TRUE if a cache entry exists for the given cache id, FALSE otherwise.
+     * @param string $id cache id The cache id of the entry to check for.
+     *
+     * @return bool TRUE if a cache entry exists for the given cache id, FALSE otherwise.
      */
     public function contains($id)
     {
-        $prefix_id = $this->id_prefix . $id;
+        $prefix_id = $this->id_prefix.$id;
 
         // If it exists in the array we know for sure if its set or not
         if (array_key_exists($prefix_id, $this->loaded)) {
@@ -361,24 +353,22 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         }
     }
 
-
-
-
     /**
      * Puts data into the cache.
      *
-     * @param  string  $id       The cache id.
-     * @param  string  $data     The cache entry/data.
-     * @param  int     $lifeTime The lifetime. If != 0, sets a specific lifetime for this cache entry (0 => infinite lifeTime).
-     * @return boolean TRUE if the entry was successfully stored in the cache, FALSE otherwise.
+     * @param string $id       The cache id.
+     * @param string $data     The cache entry/data.
+     * @param int    $lifeTime The lifetime. If != 0, sets a specific lifetime for this cache entry (0 => infinite lifeTime).
+     *
+     * @return bool TRUE if the entry was successfully stored in the cache, FALSE otherwise.
      */
     public function save($id, $data, $lifeTime = 0)
     {
-        $prefix_id = $this->id_prefix . $id;
+        $prefix_id = $this->id_prefix.$id;
 
         $date = null;
         if ($lifeTime) {
-            $date = date('Y-m-d H:i:s', time()+$lifeTime);
+            $date = date('Y-m-d H:i:s', time() + $lifeTime);
         }
 
         if (!is_scalar($data)) {
@@ -386,9 +376,9 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         }
 
         try {
-            $this->db->executeUpdate("
+            $this->db->executeUpdate('
                 REPLACE INTO cache SET id = ?, data = ?, date_expire = ?
-            ", array($prefix_id, $data, $date));
+            ', array($prefix_id, $data, $date));
         } catch (\Exception $e) {
             if (!$this->silence_exceptions) {
                 throw $e;
@@ -400,22 +390,22 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         return true;
     }
 
-
     /**
      * Deletes a cache entry.
      *
-     * @param  string  $id cache id
-     * @return boolean TRUE if the cache entry was successfully deleted, FALSE otherwise.
+     * @param string $id cache id
+     *
+     * @return bool TRUE if the cache entry was successfully deleted, FALSE otherwise.
      */
     public function delete($id)
     {
-        $prefix_id = $this->id_prefix . $id;
+        $prefix_id = $this->id_prefix.$id;
 
         try {
-            $this->db->executeUpdate("
+            $this->db->executeUpdate('
                 DELETE FROM cache
                 WHERE id = ?
-            ", array($prefix_id));
+            ', array($prefix_id));
         } catch (\Exception $e) {
             if (!$this->silence_exceptions) {
                 throw $e;
@@ -427,19 +417,18 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         return true;
     }
 
-
     /**
-     * Clear the cache
+     * Clear the cache.
      */
     public function flush()
     {
-        $prefix_like = $this->id_prefix . '%';
+        $prefix_like = $this->id_prefix.'%';
 
         try {
-            $this->db->executeUpdate("
+            $this->db->executeUpdate('
                 DELETE FROM cache
                 WHERE id LIKE ?
-            ", array($prefix_like));
+            ', array($prefix_like));
         } catch (\Exception $e) {
             if (!$this->silence_exceptions) {
                 throw $e;
@@ -452,10 +441,9 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     }
 
     /**
-     * @return null
      */
     public function getStats()
     {
-        return null;
+        return;
     }
 }

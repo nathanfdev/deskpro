@@ -18,7 +18,7 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 		//# Form validation / errors
 		//##############################################################################################################
 
-		['host', 'service_username', 'service_password', 'base_dn'].forEach(function(field) {
+		['host', 'base_dn'].forEach(function(field) {
 			$scope.$watch('setting_values.' + field, function() {
 				if (touched[field] || touched.always || $scope.errors[field]) {
 					updateFormErrors();

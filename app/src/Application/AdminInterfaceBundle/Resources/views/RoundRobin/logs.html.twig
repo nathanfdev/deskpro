@@ -1,0 +1,37 @@
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="dismiss()">&times;</button>
+        <h4 class="modal-title">{{ rr.title }} {{ phrase('adm.round_robins.logs_title' ) }}</h4>
+    </div>
+    <div class="modal-body">
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Ticket ID</th>
+                    <th>Ticket Subject</th>
+                    <th>Round Robin Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                <tr>
+                    <td>{{ entry.ticketId }}</td>
+                    <td>
+                        <a href="{{ path('agent') }}#app.tickets,t.o:{{ entry.ticketId }}" target="_blank">
+                            {{ entry.ticketSubject }}
+                        </a>
+                    </td>
+                    <td>
+                        {% for action in entry.actions %}
+                            {{ phrase(action.phrase, action.params) }}<br />
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="dismiss()">{{ phrase('agent.general.okay') }}</button>
+    </div>
+</div>

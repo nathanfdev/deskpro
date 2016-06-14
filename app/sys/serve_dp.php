@@ -1,41 +1,39 @@
 <?php
 
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
-
-
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Kernel;
 
-if (!defined('DP_ROOT')) exit('No access');
+if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 
 use Application\DeskPRO\Chat\UserChat\ChatAvailableCheck;
 use Orb\Util\Strings;
@@ -45,9 +43,9 @@ use Orb\Util\Web;
 require_once DP_ROOT.'/sys/serve_abstract.php';
 
 /**
- * A light-weight loader for website widgetss
+ * A light-weight loader for website widgetss.
  */
-class DpLoader extends LoaderAbstract
+class serve_dp extends serve_abstract
 {
     public function runAction()
     {
@@ -56,34 +54,28 @@ class DpLoader extends LoaderAbstract
 
             if (preg_match('#^/vis\.js#', $pathinfo)) {
                 $this->visitorPingAction();
-
             } elseif (preg_match('#^/chat/is-available\.js#', $pathinfo)) {
                 // Legacy
                 $_GET['chat'] = true;
                 $this->visitorPingAction();
-
             } elseif (preg_match('#^/request-session\.(json|js)#', $pathinfo)) {
                 $this->requestSessionAction();
-
             } elseif (preg_match('#^/session-ping\.json#', $pathinfo)) {
                 $this->sessionPingAction();
-
             } elseif (preg_match('#^/user-lang-(\d+)\.js#', $pathinfo, $match)) {
                 $this->userLanguageAction($match[1]);
-
             } elseif (preg_match('#^/agent-lang-(\d+)\.js#', $pathinfo, $match)) {
                 $this->agentLanguageAction($match[1]);
-
             } else {
-                header("HTTP/1.0 404 Not Found");
-                echo "Action not found. (1)";
+                header('HTTP/1.0 404 Not Found');
+                echo 'Action not found. (1)';
             }
         } catch (\Exception $exception) {
             if (isset($DP_CONFIG['debug']['dev'])) {
                 echo "\n\n[{$exception->getCode()}] {$exception->getMessage()}\n\n";
 
                 $backtrace = $exception->getTrace();
-                $trace = self::formatBacktrace($backtrace);
+                $trace     = self::formatBacktrace($backtrace);
                 echo $trace;
             }
 
@@ -100,10 +92,10 @@ class DpLoader extends LoaderAbstract
         if (Web::isBotUseragent()) {
             header('Content-Type: text/javascript; filename=vis.js');
             header('Content-Disposition: inline; filename=vis.js');
-            header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-            header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+            header('Last-Modified: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+            header('Expires: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
             header('Cache-Control: max-age=0,private');
-            echo "// Detected that you are a bot";
+            echo '// Detected that you are a bot';
 
             return;
         }
@@ -111,22 +103,22 @@ class DpLoader extends LoaderAbstract
         if (isset($_GET['notrack'])) {
             $js_out = $this->checkChatAvailable();
             header('Content-Type: text/javascript; filename=vis.js');
-            header('Content-Length: ' . strlen($js_out));
+            header('Content-Length: '.strlen($js_out));
             header('Content-Disposition: inline; filename=vis.js');
-            header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-            header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+            header('Last-Modified: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+            header('Expires: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
             header('Cache-Control: max-age=0,private');
             echo $js_out;
 
             return;
         }
 
-        $visitor_id   = null;
-        $visitor_code = null;
-        $visitor      = null;
-        $session_id   = null;
-        $session_auth = null;
-        $session_code = null;
+        $visitor_id        = null;
+        $visitor_code      = null;
+        $visitor           = null;
+        $session_id        = null;
+        $session_auth      = null;
+        $session_code      = null;
         $visitor_person_id = null;
 
         $session_code = isset($_COOKIE['dpsid']) ? $_COOKIE['dpsid'] : null;
@@ -144,21 +136,21 @@ class DpLoader extends LoaderAbstract
         }
 
         if ($session_code && strpos($session_code, '-')) {
-            list ($session_id, $session_auth) = explode('-', $session_code, 2);
+            list($session_id, $session_auth) = explode('-', $session_code, 2);
 
             $session_id = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
 
-            $q = $this->getPdo()->prepare("
+            $q = $this->getPdo()->prepare('
                 SELECT id, person_id
                 FROM sessions
                 WHERE id = ? AND auth = ?
-            ");
+            ');
             $q->execute(array($session_id, $session_auth));
 
             $r = $q->fetch(\PDO::FETCH_ASSOC);
             if ($r) {
                 $visitor_person_id = $r['person_id'];
-                $session_id = $r['id'];
+                $session_id        = $r['id'];
             } else {
                 $session_code = null;
             }
@@ -167,9 +159,9 @@ class DpLoader extends LoaderAbstract
         }
 
         if (isset($_REQUEST['vc'])) {
-            $visitor_code = (string)$_REQUEST['vc'];
+            $visitor_code = (string) $_REQUEST['vc'];
         } elseif (isset($_COOKIE['dpvc'])) {
-            $visitor_code = (string)$_COOKIE['dpvc'];
+            $visitor_code = (string) $_COOKIE['dpvc'];
         }
 
         if ($visitor_code && !strpos($visitor_code, '-')) {
@@ -181,6 +173,13 @@ class DpLoader extends LoaderAbstract
             $user_token = $_REQUEST['vut'];
         } elseif (isset($_COOKIE['dpvut'])) {
             $user_token = $_COOKIE['dpvut'];
+        }
+
+        if ($user_token) {
+            $user_token = preg_replace('#[^a-zA-Z0-9\-_\.]#', '', $user_token);
+            if (!$user_token) {
+                $user_token = null;
+            }
         }
 
         $user_ip = $_SERVER['REMOTE_ADDR'];
@@ -207,7 +206,7 @@ class DpLoader extends LoaderAbstract
         #-----------------------------------
 
         if ($session_id) {
-            $q = $this->getPdo()->prepare("
+            $q = $this->getPdo()->prepare('
                 SELECT
                     visitors.id, visitors.person_id, visitors.initial_track_id, visitors.visit_track_id, visitors.auth, visitors.user_token, visitors.chat_invite, visitors.page_count, visitors.date_last, visitors.hint_hidden,
                     visitor_tracks.date_created AS date_last_track
@@ -215,7 +214,7 @@ class DpLoader extends LoaderAbstract
                 LEFT JOIN sessions ON (sessions.visitor_id = visitors.id)
                 LEFT JOIN visitor_tracks ON (visitor_tracks.id = visitors.last_track_id)
                 WHERE sessions.id = ?
-            ");
+            ');
             $q->execute(array($session_id));
             $visitor = $q->fetch(\PDO::FETCH_ASSOC);
 
@@ -223,22 +222,22 @@ class DpLoader extends LoaderAbstract
                 $visitor = null;
             } else {
                 $visitor_id   = $visitor['id'];
-                $visitor_code = $visitor['id'] . '-' . $visitor['auth'];
+                $visitor_code = $visitor['id'].'-'.$visitor['auth'];
             }
         }
 
         if ($visitor_code && !$visitor) {
-            list ($visitor_id, $visitor_auth) = explode('-', $visitor_code, 2);
-            $visitor_id = (int)$visitor_id;
+            list($visitor_id, $visitor_auth) = explode('-', $visitor_code, 2);
+            $visitor_id                      = (int) $visitor_id;
 
-            $q = $this->getPdo()->prepare("
+            $q = $this->getPdo()->prepare('
                 SELECT
                     visitors.id, visitors.person_id, visitors.initial_track_id, visitors.visit_track_id, visitors.auth, visitors.user_token, visitors.chat_invite, visitors.page_count, visitors.date_last, visitors.hint_hidden,
                     visitor_tracks.date_created AS date_last_track
                 FROM visitors
                 LEFT JOIN visitor_tracks ON (visitor_tracks.id = visitors.last_track_id)
                 WHERE visitors.id = ?
-            ");
+            ');
             $q->execute(array($visitor_id));
             $visitor = $q->fetch(\PDO::FETCH_ASSOC);
 
@@ -255,7 +254,7 @@ class DpLoader extends LoaderAbstract
         #-----------------------------------
 
         if (!$visitor && $user_token) {
-            $q = $this->getPdo()->prepare("
+            $q = $this->getPdo()->prepare('
                 SELECT
                     visitors.id, visitors.person_id, visitors.initial_track_id, visitors.visit_track_id, visitors.auth, visitors.user_token, visitors.chat_invite, visitors.page_count, visitors.date_last, visitors.hint_hidden,
                     visitor_tracks.date_created AS date_last_track
@@ -264,10 +263,10 @@ class DpLoader extends LoaderAbstract
                 WHERE
                     visitors.user_token = ?
                     AND visitors.date_last > ?
-            ");
+            ');
             $q->execute(array(
                 $user_token,
-                date('Y-m-d H:i:s', time() - 600)
+                date('Y-m-d H:i:s', time() - 600),
             ));
             $visitor = $q->fetch(\PDO::FETCH_ASSOC);
 
@@ -288,14 +287,14 @@ class DpLoader extends LoaderAbstract
         $soft_visitor_id      = null;
 
         if (!$visitor) {
-            $is_new_visitor = true;
+            $is_new_visitor       = true;
             $is_new_visit_session = true;
 
             // If there have been multiple requests from the same ip
             // and those visitor counts arent increasing, it probably means
             // this is a bot or a user without cookies. So prevent the
             // track from being displayed to agents a bajillion times.
-            $q = $this->getPdo()->prepare("
+            $q = $this->getPdo()->prepare('
                 SELECT v.id
                 FROM visitors v
                 LEFT JOIN visitor_tracks AS vt ON (vt.id = v.last_track_id)
@@ -305,10 +304,10 @@ class DpLoader extends LoaderAbstract
                     AND v.hint_hidden = 0
                     AND vt.ip_address = ?
                 LIMIT 1
-            ");
+            ');
             $q->execute(array(
                 date('Y-m-d H:i:s', time() - 600),
-                $user_ip
+                $user_ip,
             ));
             $soft_visitor_id = $q->fetchColumn(0);
 
@@ -326,16 +325,16 @@ class DpLoader extends LoaderAbstract
                 'ip_address'       => $user_ip,
             );
 
-            $tmp = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            for ($i = 0; $i < 15; $i++) {
+            $tmp = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            for ($i = 0; $i < 15; ++$i) {
                 $t = mt_rand(0, 35);
                 $visitor['auth'] .= $tmp[$t];
             }
 
-            $q = $this->getPdo()->prepare("
+            $q = $this->getPdo()->prepare('
                 INSERT INTO visitors
                 SET auth = ?, page_count = 1, date_created = ?, date_last = ?, hint_hidden = ?, user_token = ?
-            ");
+            ');
             $q->execute(array(
                 $visitor['auth'],
                 $visitor['date_created'],
@@ -353,11 +352,11 @@ class DpLoader extends LoaderAbstract
             // with better information we have access to from Javascript
             if (!empty($_GET['v_tid'])) {
                 // Just need to verify its the correct visitor
-                $q = $this->getPdo()->prepare("
+                $q = $this->getPdo()->prepare('
                     SELECT id
                     FROM visitor_tracks
                     WHERE id = ? AND visitor_id = ?
-                ");
+                ');
                 $q->execute(array($_GET['v_tid'], $visitor['id']));
                 $update_track_id = $q->fetchColumn(0);
             }
@@ -386,16 +385,16 @@ class DpLoader extends LoaderAbstract
             $visitor_track['is_new_visit'] = $is_new_visit_session;
         }
         if (!empty($_REQUEST['url'])) {
-            $visitor_track['page_url'] = (string)$_REQUEST['url'];
+            $visitor_track['page_url'] = (string) $_REQUEST['url'];
         } elseif (!empty($_SERVER['HTTP_REFERER'])) {
-            $visitor_track['page_url'] = (string)$_SERVER['HTTP_REFERER'];
+            $visitor_track['page_url'] = (string) $_SERVER['HTTP_REFERER'];
         }
 
         if (!empty($_REQUEST['title'])) {
-            $visitor_track['page_title'] = (string)$_REQUEST['title'];
+            $visitor_track['page_title'] = (string) $_REQUEST['title'];
         }
         if (!empty($_REQUEST['rurl'])) {
-            $visitor_track['ref_page_url'] = (string)$_REQUEST['rurl'];
+            $visitor_track['ref_page_url'] = (string) $_REQUEST['rurl'];
         }
 
         $visitor_track['user_agent']   = $user_agent;
@@ -405,7 +404,6 @@ class DpLoader extends LoaderAbstract
         $visitor_track['date_created'] = date('Y-m-d H:i:s');
 
         if ($is_new_visit_session || 1) {
-
             if (dp_get_config('disable_geoip')) {
                 $geoip = new \Orb\GeoIp\GeoIpNull();
             } else {
@@ -419,12 +417,24 @@ class DpLoader extends LoaderAbstract
 
             $geo = $geoip->lookup($visitor_track['ip_address']);
 
-            if (!empty($geo['continent']))      $visitor_track['geo_continent'] = $geo['continent'];
-            if (!empty($geo['country']))        $visitor_track['geo_country']   = $geo['country'];
-            if (!empty($geo['region']))         $visitor_track['geo_region']    = $geo['region'];
-            if (!empty($geo['city']))           $visitor_track['geo_city']      = $geo['city'];
-            if (!empty($geo['longitude']))      $visitor_track['geo_long']      = $geo['longitude'];
-            if (!empty($geo['latitude']))       $visitor_track['geo_lat']       = $geo['latitude'];
+            if (!empty($geo['continent'])) {
+                $visitor_track['geo_continent'] = $geo['continent'];
+            }
+            if (!empty($geo['country'])) {
+                $visitor_track['geo_country'] = $geo['country'];
+            }
+            if (!empty($geo['region'])) {
+                $visitor_track['geo_region'] = $geo['region'];
+            }
+            if (!empty($geo['city'])) {
+                $visitor_track['geo_city'] = $geo['city'];
+            }
+            if (!empty($geo['longitude'])) {
+                $visitor_track['geo_long'] = $geo['longitude'];
+            }
+            if (!empty($geo['latitude'])) {
+                $visitor_track['geo_lat'] = $geo['latitude'];
+            }
         }
 
         $set_q = array();
@@ -469,14 +479,14 @@ class DpLoader extends LoaderAbstract
             $soft_track_id = $this->getPdo()->lastInsertId();
 
             // Also update the last time so it appears in the agent list
-            $this->getPdo()->prepare("
+            $this->getPdo()->prepare('
                 UPDATE visitors
                 SET date_last = ?, last_track_id_soft = ?
                 WHERE id = ?
-            ")->execute(array(
+            ')->execute(array(
                 date('Y-m-d H:i:s'),
                 $soft_track_id,
-                $soft_visitor_id
+                $soft_visitor_id,
             ));
         }
 
@@ -491,9 +501,9 @@ class DpLoader extends LoaderAbstract
         if (!$visitor['visit_track_id'] || $is_new_visit_session) {
             $visitor_update['visit_track_id'] = $visitor_track['id'];
         }
-        $visitor_update['last_track_id'] = $visitor_track['id'];
+        $visitor_update['last_track_id']      = $visitor_track['id'];
         $visitor_update['last_track_id_soft'] = null;
-        $visitor_update['date_last']     = date('Y-m-d H:i:s');
+        $visitor_update['date_last']          = date('Y-m-d H:i:s');
 
         if ($visitor_person_id) {
             $visitor_update['person_id'] = $visitor_person_id;
@@ -511,10 +521,10 @@ class DpLoader extends LoaderAbstract
             // are not actually theirs.
             // (theyre sending the cookie etc so the "guess" wouldnt be neccessary)
             if ($visitor['page_count'] < 4) {
-                $this->getPdo()->prepare("
+                $this->getPdo()->prepare('
                     DELETE FROM visitor_tracks
                     WHERE visitor_id = ? AND is_soft_track = 1
-                ")->execute(array($visitor_id));
+                ')->execute(array($visitor_id));
             }
         }
 
@@ -525,7 +535,7 @@ class DpLoader extends LoaderAbstract
             'user_agent',
             'ip_address',
             'geo_continent',
-            'geo_country'
+            'geo_country',
         ) as $field) {
             if (isset($visitor_track[$field])) {
                 $visitor_update[$field] = $visitor_track[$field];
@@ -574,16 +584,18 @@ class DpLoader extends LoaderAbstract
             setcookie('dpvut', $user_token, time() + 15552000, '/', null);
         }
         header('Content-Type: text/javascript; filename=vis.js');
-        header('Content-Length: ' . strlen($js_out));
+        header('Content-Length: '.strlen($js_out));
         header('Content-Disposition: inline; filename=vis.js');
-        header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-        header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        header('Last-Modified: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        header('Expires: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
         header('Cache-Control: max-age=0,private');
+        header('X-Content-Type-Options: nosniff');
         echo $js_out;
     }
 
     /**
-     * Check if chat is available / current chat is active
+     * Check if chat is available / current chat is active.
+     *
      * @return string JS string to return
      */
     public function checkChatAvailable(array $visitor = null)
@@ -599,27 +611,26 @@ class DpLoader extends LoaderAbstract
         if (isset($_GET['chat'])) {
             $GLOBALS['DP_DB_PDO'] = $this->getPdo();
             if (!class_exists('Application\\DeskPRO\\Chat\\UserChat\\ChatAvailableCheck')) {
-                require_once DP_ROOT . '/src/Application/DeskPRO/Chat/UserChat/ChatAvailableCheck.php';
+                require_once DP_ROOT.'/src/Application/DeskPRO/Chat/UserChat/ChatAvailableCheck.php';
             }
             $online_time = ChatAvailableCheck::getAvailableTime();
 
             // If departments were specified, we need to see if those specific
             // departments are online
             if ($online_time && !empty($_REQUEST['department_ids'])) {
-
                 $dep_ids = $_REQUEST['department_ids'];
                 $dep_ids = explode(',', $dep_ids);
-                $dep_ids = array_map(function ($v) { return (int)$v; }, $dep_ids);
+                $dep_ids = array_map(function ($v) { return (int) $v; }, $dep_ids);
                 if (!$dep_ids) {
                     $dep_ids = array(0);
                 }
 
-                $q = $this->getPdo()->prepare("
+                $q = $this->getPdo()->prepare('
                     SELECT DISTINCT(sessions.person_id)
                     FROM sessions
                     LEFT JOIN people ON (people.id = sessions.person_id)
                     WHERE sessions.date_last >= ? AND sessions.is_chat_available = 1 AND people.is_agent = 1
-                ");
+                ');
                 $q->execute(array(date('Y-m-d H:i:s', time() - 20)));
 
                 $agents_online_ids = array();
@@ -643,23 +654,23 @@ class DpLoader extends LoaderAbstract
                         $all_perm_groups[] = $gid;
                     }
                     if ($all_perm_groups) {
-                        $q = $this->getPdo()->prepare("
+                        $q = $this->getPdo()->prepare('
                             SELECT COUNT(*)
                             FROM person2usergroups
-                            WHERE person_id IN (" . implode(',', $agents_online_ids) . ") AND usergroup_id IN (" . implode(',', $all_perm_groups) . ")
+                            WHERE person_id IN ('.implode(',', $agents_online_ids).') AND usergroup_id IN ('.implode(',', $all_perm_groups).')
                             LIMIT 1
-                        ");
+                        ');
                         $q->execute();
                         $any_online = $q->fetchColumn();
                     }
 
                     if (!$any_online) {
-                        $q = $this->getPdo()->prepare("
+                        $q = $this->getPdo()->prepare('
                             SELECT COUNT(*)
                             FROM department_permissions
-                            WHERE person_id IN (" . implode(',', $agents_online_ids) . ") AND department_id IN (" . implode(',', $dep_ids) . ")
+                            WHERE person_id IN ('.implode(',', $agents_online_ids).') AND department_id IN ('.implode(',', $dep_ids).')
                             LIMIT 1
-                        ");
+                        ');
                         $q->execute();
                         $any_online = $q->fetchColumn();
                     }
@@ -667,14 +678,12 @@ class DpLoader extends LoaderAbstract
                     if (!$any_online) {
                         $online_time = 0;
                     }
-
                 } else {
                     $online_time = 0;
                 }
             }
 
             if ($online_time && $online_time > time() - 900) {
-
                 $session_id = isset($_GET['dpsid']) ? $_GET['dpsid'] : null;
                 if (!$session_id) {
                     $session_id = isset($_COOKIE['dpsid']) ? $_COOKIE['dpsid'] : null;
@@ -688,8 +697,8 @@ class DpLoader extends LoaderAbstract
                 if ($session_id && !$chat_id) {
                     // They have an active session but no indication if they have a chat
                     // open right now, so we need to look it up
-                    list ($sid, $sauth) = explode('-', $session_id, 2);
-                    $sid = Util::baseDecode($sid, Util::BASE36_ALPHABET);
+                    list($sid, $sauth) = explode('-', $session_id, 2);
+                    $sid               = Util::baseDecode($sid, Util::BASE36_ALPHABET);
 
                     $timeout_limit = date('Y-m-d H:i:s', time() - 1800);
 
@@ -710,7 +719,7 @@ class DpLoader extends LoaderAbstract
                     $q->execute(array(
                         $sid,
                         $sauth,
-                        $timeout_limit
+                        $timeout_limit,
                     ));
                     $chat_id = $q->fetchColumn(0);
                 }
@@ -727,8 +736,8 @@ class DpLoader extends LoaderAbstract
                         $sessionObj->start();
                     }
 
-                    $session_id = $sessionObj->getId();
-                    $session = $sessionObj->getEntity();
+                    $session_id   = $sessionObj->getId();
+                    $session      = $sessionObj->getEntity();
                     $chat_manager = $container->getSystemObject('user_chat_manager', array('session' => $session));
 
                     // True to allow fetching of chats w/ timeout
@@ -755,8 +764,8 @@ class DpLoader extends LoaderAbstract
                     }
                 } else {
                     $to_login_page = false;
-                    $convo = false;
-                    $session_id = null;
+                    $convo         = false;
+                    $session_id    = null;
                 }
 
                 if ($convo) {
@@ -774,24 +783,24 @@ class DpLoader extends LoaderAbstract
 
                     if ($visitor && !empty($visitor['id'])) {
                         // Connect the visitor to the session
-                        $this->getPdo()->prepare("UPDATE sessions SET visitor_id = ? WHERE id = ?")->execute(array(
+                        $this->getPdo()->prepare('UPDATE sessions SET visitor_id = ? WHERE id = ?')->execute(array(
                             $visitor['id'],
-                            $session_id
+                            $session_id,
                         ));
 
                         // Connect the chat as well
                         if ($convo) {
-                            $this->getPdo()->prepare("
+                            $this->getPdo()->prepare('
                                 UPDATE chat_conversations
                                 SET visitor_id = ? WHERE id = ?
-                            ")->execute(array(
+                            ')->execute(array(
                                 $visitor['id'],
-                                $convo->getId()
+                                $convo->getId(),
                             ));
                         }
                     }
                 } else {
-                    $js_out[] = "DpChatWidget.initWidget(null);";
+                    $js_out[] = 'DpChatWidget.initWidget(null);';
                 }
 
             // Chat unavailable
@@ -809,7 +818,7 @@ class DpLoader extends LoaderAbstract
 
     protected function sessionPingAction()
     {
-        $sids = array();
+        $sids       = array();
         $sids['u']  = !empty($_COOKIE['dpsid'])       ? $_COOKIE['dpsid']       : '';
         $sids['a']  = !empty($_COOKIE['dpsid-agent']) ? $_COOKIE['dpsid-agent'] : '';
         $sids['aa'] = !empty($_COOKIE['dpsid-admin']) ? $_COOKIE['dpsid-admin'] : '';
@@ -817,8 +826,8 @@ class DpLoader extends LoaderAbstract
         // i=u(user),a(agent),aa(admin)
         $interface = (!empty($_GET['i']) && is_scalar($_GET['i'])) ? $_GET['i'] : null;
 
-        $pdo = $this->getPdo();
-        $q = $pdo->prepare("UPDATE sessions SET date_last = ? WHERE id = ? AND auth = ?");
+        $pdo  = $this->getPdo();
+        $q    = $pdo->prepare('UPDATE sessions SET date_last = ? WHERE id = ? AND auth = ?');
         $date = date('Y-m-d H:i:s');
 
         $sessions = array();
@@ -827,39 +836,40 @@ class DpLoader extends LoaderAbstract
                 continue;
             }
 
-            list ($id, $auth) = explode('-', $sid, 2);
-            $id = Util::baseDecode($id, Util::BASE36_ALPHABET);
+            list($id, $auth) = explode('-', $sid, 2);
+            $id              = Util::baseDecode($id, Util::BASE36_ALPHABET);
 
             $sessions[$k] = array($id, $auth);
 
             $q->execute(array(
                 $date,
                 $id,
-                $auth
+                $auth,
             ));
         }
 
         $token = null;
         if ($interface && isset($sessions[$interface])) {
             $secret = $this->getSetting('core.app_secret', 'APP_SECRET');
-            $token = Util::generateStaticSecurityToken(md5(
-                $sessions[$interface][0] . // id
-                $sessions[$interface][1] . // auth
-                $secret .
+            $token  = Util::generateStaticSecurityToken(md5(
+                $sessions[$interface][0].// id
+                $sessions[$interface][1].// auth
+                $secret.
                 'request_token'
             ), 10800);
         }
 
         $content = json_encode(array(
-            'okay' => true,
-            'request_token' => $token
+            'okay'          => true,
+            'request_token' => $token,
         ));
-        header("Content-Type: application/json; filename=session-ping.json");
-        header('Content-Length: ' . strlen($content));
-        header("Content-Disposition: inline; filename=session-ping.json");
-        header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-        header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        header('Content-Type: application/json; filename=session-ping.json');
+        header('Content-Length: '.strlen($content));
+        header('Content-Disposition: inline; filename=session-ping.json');
+        header('Last-Modified: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        header('Expires: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
         header('Cache-Control: max-age=0,private');
+        header('X-Content-Type-Options: nosniff');
         echo $content;
     }
 
@@ -873,7 +883,7 @@ class DpLoader extends LoaderAbstract
 
         $sessionObj = $container->get('session');
         $session_id = $sessionObj->getId();
-        $session = $sessionObj->getEntity();
+        $session    = $sessionObj->getEntity();
 
         $callback_name = false;
         if (isset($_GET['callback'])) {
@@ -893,11 +903,12 @@ class DpLoader extends LoaderAbstract
         }
 
         header("Content-Type: $filetype; filename=$filename");
-        header('Content-Length: ' . strlen($content));
+        header('Content-Length: '.strlen($content));
         header("Content-Disposition: inline; filename=$filename");
-        header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-        header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        header('Last-Modified: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        header('Expires: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
         header('Cache-Control: max-age=0,private');
+        header('X-Content-Type-Options: nosniff');
         echo $content;
     }
 
@@ -908,9 +919,9 @@ class DpLoader extends LoaderAbstract
     public function agentLanguageAction($language_id)
     {
         $language_id = intval($language_id);
-        $no_cache = !empty($_GET['nocache']);
-        $js = false;
-        $cache_file = dp_get_tmp_dir() . '/agent-lang-' . $language_id . '.cache';
+        $no_cache    = !empty($_GET['nocache']);
+        $js          = false;
+        $cache_file  = dp_get_tmp_dir().'/agent-lang-'.$language_id.'.cache';
 
         if (!$no_cache) {
             if (file_exists($cache_file)) {
@@ -933,24 +944,24 @@ class DpLoader extends LoaderAbstract
         if (!$js) {
             $container = $this->bootFullSystem();
 
-            $tr = $container->getTranslator();
+            $tr   = $container->getTranslator();
             $lang = $container->getEm()->getRepository('DeskPRO:Language')->find($language_id);
             if ($lang && $lang->has_agent) {
                 $tr->setLanguage($lang);
             } else {
                 $language_id = 0;
-                $cache_file = dp_get_tmp_dir() . '/agent-lang-' . $language_id . '.cache';
+                $cache_file  = dp_get_tmp_dir().'/agent-lang-'.$language_id.'.cache';
             }
 
-            $js_phrases = array();
+            $js_phrases                              = array();
             $js_phrases['agent.general.add_a_label'] = $tr->getPhraseText('agent.general.add_a_label');
-            $js_phrases['agent.general.on']    = $tr->getPhraseText('agent.general.on');
-            $js_phrases['agent.general.off']   = $tr->getPhraseText('agent.general.off');
+            $js_phrases['agent.general.on']          = $tr->getPhraseText('agent.general.on');
+            $js_phrases['agent.general.off']         = $tr->getPhraseText('agent.general.off');
 
-            $js_phrases["agent.time.reltime_less_second"]    = $tr->getPhraseText("agent.time.reltime_less_second");
-            $js_phrases["agent.time.reltime_less_minute"]    = $tr->getPhraseText("agent.time.reltime_less_minute");
-            $js_phrases["agent.time.reltimeago_less_second"] = $tr->getPhraseText("agent.time.reltimeago_less_second");
-            $js_phrases["agent.time.reltimeago_less_minute"] = $tr->getPhraseText("agent.time.reltimeago_less_minute");
+            $js_phrases['agent.time.reltime_less_second']    = $tr->getPhraseText('agent.time.reltime_less_second');
+            $js_phrases['agent.time.reltime_less_minute']    = $tr->getPhraseText('agent.time.reltime_less_minute');
+            $js_phrases['agent.time.reltimeago_less_second'] = $tr->getPhraseText('agent.time.reltimeago_less_second');
+            $js_phrases['agent.time.reltimeago_less_minute'] = $tr->getPhraseText('agent.time.reltimeago_less_minute');
 
             foreach (array('reltime', 'reltimeago') as $pre) {
                 foreach (array('second', 'minute', 'hour', 'day', 'week', 'month', 'year') as $name) {
@@ -987,7 +998,6 @@ class DpLoader extends LoaderAbstract
                 'agent.userchat.message_ended',
             );
 
-
             foreach ($add_phrases as $k) {
                 $js_phrases[$k] = $tr->getPhraseText($k);
             }
@@ -999,13 +1009,13 @@ class DpLoader extends LoaderAbstract
                 unset($p);
             }
 
-            $js = "window.DESKPRO_LANG = " . json_encode($js_phrases) . ";";
+            $js = 'window.DESKPRO_LANG = '.json_encode($js_phrases).';';
             if (defined('DP_BUILD_TIME')) {
-                $js .= "\n/* DP_BUILD(" . DP_BUILD_TIME . ") */\n";
+                $js .= "\n/* DP_BUILD(".DP_BUILD_TIME.") */\n";
             }
 
             if (!$no_cache) {
-                $cache_slam_file = $cache_file . '.slam';
+                $cache_slam_file = $cache_file.'.slam';
                 if (!file_exists($cache_slam_file) || time() - filemtime($cache_slam_file) > 30) {
                     $slam_fp = @fopen($cache_slam_file, 'w');
                     if ($slam_fp && @flock($slam_fp, \LOCK_EX)) {
@@ -1022,19 +1032,20 @@ class DpLoader extends LoaderAbstract
         }
 
         header('Content-Type: application/javascript; charset=utf-8');
-        header('Content-Length: ' . strlen($js));
-        header('Content-Disposition: inline; filename=agent-lang-' . $language_id . '.js');
-        header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-        header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
+        header('Content-Length: '.strlen($js));
+        header('Content-Disposition: inline; filename=agent-lang-'.$language_id.'.js');
+        header('Last-Modified: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        header('Expires: '.date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
+        header('X-Content-Type-Options: nosniff');
         echo $js;
     }
 
     public function userLanguageAction($language_id)
     {
         $language_id = intval($language_id);
-        $no_cache = !empty($_GET['nocache']);
-        $js = false;
-        $cache_file = dp_get_tmp_dir() . '/user-lang-' . $language_id . '.cache';
+        $no_cache    = !empty($_GET['nocache']);
+        $js          = false;
+        $cache_file  = dp_get_tmp_dir().'/user-lang-'.$language_id.'.cache';
 
         if (!$no_cache) {
             if (file_exists($cache_file)) {
@@ -1057,19 +1068,19 @@ class DpLoader extends LoaderAbstract
         if (!$js) {
             $container = $this->bootFullSystem();
 
-            $tr = $container->getTranslator();
+            $tr   = $container->getTranslator();
             $lang = $container->getEm()->getRepository('DeskPRO:Language')->find($language_id);
             if ($lang) {
                 $tr->setLanguage($lang);
             } else {
                 $language_id = 0;
-                $cache_file = dp_get_tmp_dir() . '/user-lang-' . $language_id . '.cache';
+                $cache_file  = dp_get_tmp_dir().'/user-lang-'.$language_id.'.cache';
             }
 
             $js_phrases = array();
 
-            $js_phrases["user.time.time_less_second"] = $tr->phrase("user.time.time_less_second");
-            $js_phrases["user.time.time-ago_less_second"] = $tr->phrase("user.time.time_less_second");
+            $js_phrases['user.time.time_less_second']     = $tr->phrase('user.time.time_less_second');
+            $js_phrases['user.time.time-ago_less_second'] = $tr->phrase('user.time.time_less_second');
 
             foreach (array('time', 'time-ago') as $pre) {
                 foreach (array('second', 'minute', 'hour', 'day', 'week', 'month', 'year') as $name) {
@@ -1079,32 +1090,76 @@ class DpLoader extends LoaderAbstract
             }
 
             $add_phrases = array(
+                'user.chat.email',
+                'user.chat.ended-no-agent',
+                'user.chat.error',
+                'user.chat.form_chat_button-submit',
+                'user.chat.form_chat_send-file',
+                'user.chat.form_create_button-submit',
+                'user.chat.form_create_department',
+                'user.chat.form_create_title',
+                'user.chat.form_feedback_button-submit',
+                'user.chat.form_feedback_comments',
+                'user.chat.form_feedback_rate-satisfaction',
+                'user.chat.form_feedback_rate-satisfied',
+                'user.chat.form_feedback_rate-time',
+                'user.chat.form_feedback_rate-unsatisfied',
+                'user.chat.form_feedback_title',
+                'user.chat.form_feedback_transcript-email',
+                'user.chat.log-title',
+                'user.chat.log_chat-id',
+                'user.chat.log_created-date',
+                'user.chat.log_fields_agent',
+                'user.chat.log_fields_department',
+                'user.chat.log_message_author-you',
+                'user.chat.log_nav-view-chats',
+                'user.chat.log_no_department',
+                'user.chat.log_unassigned',
+                'user.chat.message_agent-timeout',
+                'user.chat.message_assigned',
+                'user.chat.message_chatting-with',
+                'user.chat.message_ended',
+                'user.chat.message_ended-by',
+                'user.chat.message_ended-by-user',
+                'user.chat.message_finding-agent',
+                'user.chat.message_long-wait',
+                'user.chat.message_set-department',
                 'user.chat.message_started',
-                'user.chat.transcript_sent',
+                'user.chat.message_unassigned',
+                'user.chat.message_uploading',
                 'user.chat.message_user-joined',
                 'user.chat.message_user-left',
                 'user.chat.message_user-returned',
-                'user.chat.message_set-department',
-                'user.chat.message_assigned',
-                'user.chat.message_unassigned',
-                'user.chat.message_agent-timeout',
                 'user.chat.message_user-timeout',
-                'user.chat.message_ended',
+                'user.chat.message_wait',
+                'user.chat.message_wait-timeout',
+                'user.chat.name',
+                'user.chat.submit-ticket-button',
+                'user.chat.submit-ticket-title',
+                'user.chat.transcript_sent',
+                'user.chat.window_cancel',
+                'user.chat.window_cancel-confirm',
+                'user.chat.window_close',
+                'user.chat.window_close_only',
+                'user.chat.window_end-chat',
+                'user.chat.window_offline-button',
                 'user.chat.window_open-new',
+                'user.chat.window_resume-button',
                 'user.chat.window_start-button',
+                'user.chat.window_upload-drag',
             );
 
             foreach ($add_phrases as $k) {
                 $js_phrases[$k] = $tr->getPhraseText($k);
             }
 
-            $js = "window.DESKPRO_LANG = " . json_encode($js_phrases) . ";";
+            $js = 'window.DESKPRO_LANG = '.json_encode($js_phrases).';';
             if (defined('DP_BUILD_TIME')) {
-                $js .= "\n/* DP_BUILD(" . DP_BUILD_TIME . ") */\n";
+                $js .= "\n/* DP_BUILD(".DP_BUILD_TIME.") */\n";
             }
 
             if (!$no_cache) {
-                $cache_slam_file = $cache_file . '.slam';
+                $cache_slam_file = $cache_file.'.slam';
                 if (!file_exists($cache_slam_file) || time() - filemtime($cache_slam_file) > 30) {
                     $slam_fp = @fopen($cache_slam_file, 'w');
                     if ($slam_fp && @flock($slam_fp, \LOCK_EX)) {
@@ -1121,13 +1176,14 @@ class DpLoader extends LoaderAbstract
         }
 
         header('Content-Type: application/javascript; charset=utf-8');
-        header('Content-Length: ' . strlen($js));
-        header('Content-Disposition: inline; filename=user-lang-' . $language_id . '.js');
-        header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-        header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
+        header('Content-Length: '.strlen($js));
+        header('Content-Disposition: inline; filename=user-lang-'.$language_id.'.js');
+        header('Last-Modified: '.date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        header('Expires: '.date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
+        header('X-Content-Type-Options: nosniff');
         echo $js;
     }
 }
 
-$dp_loader = new DpLoader();
+$dp_loader = new serve_dp();
 $dp_loader->run();

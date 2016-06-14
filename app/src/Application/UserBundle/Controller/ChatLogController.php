@@ -1,39 +1,35 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage UserBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\UserBundle\Controller;
-
 
 class ChatLogController extends AbstractController implements RequireUserInterface
 {
@@ -70,20 +66,20 @@ class ChatLogController extends AbstractController implements RequireUserInterfa
             throw $this->createNotFoundException();
         }
 
-        $convo_messages = $this->em->createQuery("
+        $convo_messages = $this->em->createQuery('
             SELECT m
             FROM DeskPRO:ChatMessage m
             WHERE m.conversation = ?0 AND m.is_user_hidden = false
             ORDER BY m.id ASC
-        ")->execute(array($convo));
+        ')->execute(array($convo));
 
         $field_manager = $this->container->getSystemService('chat_fields_manager');
         $custom_fields = $field_manager->getDisplayArrayForObject($convo);
 
         return $this->render('UserBundle:ChatLog:view.html.twig', array(
-            'convo'           => $convo,
-            'custom_fields'   => $custom_fields,
-            'convo_messages'  => $convo_messages,
+            'convo'          => $convo,
+            'custom_fields'  => $custom_fields,
+            'convo_messages' => $convo_messages,
         ));
     }
 }

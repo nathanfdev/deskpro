@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -73,14 +70,16 @@ class DepartmentDataService extends BaseRepositoryService
 
     public static function create(DeskproContainer $container, array $options = null)
     {
-        if (!$options) $options = array();
-        $options['entity'] = 'Application\\DeskPRO\\Entity\\Department';
+        if (!$options) {
+            $options = array();
+        }
+        $options['entity']     = 'Application\\DeskPRO\\Entity\\Department';
         $options['translator'] = $container->getTranslator();
         $options['default_id'] = $container->getSetting('core.default_ticket_dep');
         $options['container']  = $container;
 
         $em = $container->getEm();
-        $o = new static($em, $options);
+        $o  = new static($em, $options);
 
         return $o;
     }
@@ -113,11 +112,11 @@ class DepartmentDataService extends BaseRepositoryService
         }
         $this->has_init = true;
 
-        $this->cats = $this->em->createQuery("
+        $this->cats = $this->em->createQuery('
             SELECT d
             FROM DeskPRO:Department d INDEX BY d.id
             ORDER BY d.display_order ASC
-        ")->execute();
+        ')->execute();
         $this->em->getUnitOfWork()->markAsPreloaded('DeskPRO:Department');
 
         $cats = array();
@@ -129,9 +128,9 @@ class DepartmentDataService extends BaseRepositoryService
             $c->__dp_is_preloaded_repos = $this;
 
             $cats[$c->getId()] = array(
-                'id' => $c->getId(),
+                'id'        => $c->getId(),
                 'parent_id' => $c->parent ? $c->parent->getId() : 0,
-                'title' => $c->getTitle()
+                'title'     => $c->getTitle(),
             );
 
             if (!$c->parent) {
@@ -141,7 +140,7 @@ class DepartmentDataService extends BaseRepositoryService
         foreach ($this->cats as $c) {
             foreach ($c->children as $sc) {
                 $this->nodes_with_children[$c->getId()] = true;
-                $this->leaf_node_ids[] = $sc->getId();
+                $this->leaf_node_ids[]                  = $sc->getId();
             }
         }
 
@@ -198,7 +197,7 @@ class DepartmentDataService extends BaseRepositoryService
 
     public function getPersonDepartments(\Application\DeskPRO\Entity\Person $person_context, $app, array $allow_ids = array(), $permission = 'full')
     {
-        $key = md5($person_context->getId() . '.' . $app);
+        $key = md5($person_context->getId().'.'.$app);
 
         if (isset($this->filtered_nodes[$key])) {
             return $this->filtered_nodes[$key];
@@ -248,7 +247,9 @@ class DepartmentDataService extends BaseRepositoryService
         $agents_online_ids = $this->em->getRepository('DeskPRO:Session')->getAvailableAgentIds();
         foreach ($agents_online_ids as $aid) {
             $agent = $this->continer->getDataService('Agent')->get($aid);
-            if (!$agent) continue;
+            if (!$agent) {
+                continue;
+            }
 
             $agent->loadHelper('AgentPermissions');
 
@@ -264,7 +265,7 @@ class DepartmentDataService extends BaseRepositoryService
 
         // We only want these specific IDs
         if ($only_ids) {
-            $only_ids = Arrays::castToType($only_ids, 'int');
+            $only_ids       = Arrays::castToType($only_ids, 'int');
             $online_dep_ids = array_intersect($online_dep_ids, $only_ids);
         }
 
@@ -373,7 +374,6 @@ class DepartmentDataService extends BaseRepositoryService
     {
         $names = array();
         foreach ($this->getRootNodes() as $dep) {
-
             if (!$dep->isType($type)) {
                 continue;
             }
@@ -389,7 +389,7 @@ class DepartmentDataService extends BaseRepositoryService
                     continue;
                 }
 
-                $names[$subdep->getId()] = $dep->title . ' > ' . $subdep->title;
+                $names[$subdep->getId()] = $dep->title.' > '.$subdep->title;
             }
         }
 

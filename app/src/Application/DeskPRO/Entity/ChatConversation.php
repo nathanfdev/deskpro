@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -39,8 +38,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * A conversation between one or more people
- *
+ * A conversation between one or more people.
  */
 class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -86,42 +84,42 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     protected $agent = null;
 
     /**
-     * If this is a team chat, the team it is
+     * If this is a team chat, the team it is.
      *
      * @var \Application\DeskPRO\Entity\AgentTeam
      */
     protected $agent_team = null;
 
     /**
-     * If this is a user conversation, this is the user who started the chat
+     * If this is a user conversation, this is the user who started the chat.
      *
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $person = null;
 
     /**
-     * If this is a user convo, this is the users session
+     * If this is a user convo, this is the users session.
      *
      * @var \Application\DeskPRO\Entity\Session
      */
     protected $session = null;
 
     /**
-     * User chat: The users name, if they arent a person
+     * User chat: The users name, if they arent a person.
      *
      * @var string
      */
     protected $person_name = '';
 
     /**
-     * User chat: The users email, if they arent a person
+     * User chat: The users email, if they arent a person.
      *
      * @var string
      */
     protected $person_email = '';
 
     /**
-     * ...and this is the users visitor
+     * ...and this is the users visitor.
      *
      * @var \Application\DeskPRO\Entity\Visitor
      */
@@ -158,7 +156,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     protected $rating_comment = '';
 
     /**
-     * Is this an agent chat
+     * Is this an agent chat.
      *
      * @var bool
      */
@@ -178,7 +176,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     protected $date_created;
 
     /**
-     * Since when the user has started waiting (i.e., time the assignment was 0)
+     * Since when the user has started waiting (i.e., time the assignment was 0).
+     *
      * @var \DateTime
      */
     protected $date_user_waiting = null;
@@ -235,7 +234,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
     public function getChannelId($name = false)
     {
-        return 'chat_convo.' . $this->id . ($name ? '.' . $name : '');
+        return 'chat_convo.'.$this->id.($name ? '.'.$name : '');
     }
 
     public function __construct()
@@ -262,7 +261,9 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @static
-     * @param  \Application\DeskPRO\Entity\Session          $session
+     *
+     * @param \Application\DeskPRO\Entity\Session $session
+     *
      * @return \Application\DeskPRO\Entity\ChatConversation
      */
     public static function newForUserSession($session)
@@ -278,7 +279,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Setting the person copies their name and email address to the chat row for record keeping
+     * Setting the person copies their name and email address to the chat row for record keeping.
      *
      * @param Person $person
      */
@@ -300,14 +301,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Create a new message and then add it to this convo
+     * Create a new message and then add it to this convo.
      */
     public function addNewMessage($content, $author, $is_html = false)
     {
-        $chat_message = new ChatMessage();
+        $chat_message               = new ChatMessage();
         $chat_message->conversation = $this;
-        $chat_message->author = $author;
-        $chat_message['content'] = $content;
+        $chat_message->author       = $author;
+        $chat_message['content']    = $content;
 
         if ($is_html) {
             $chat_message['is_html'] = true;
@@ -317,13 +318,13 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Create a new message for a user based on their session
+     * Create a new message for a user based on their session.
      *
      * @return \Application\DeskPRO\Entity\ChatMessage
      */
     public function addNewMessageForSession($content, $session)
     {
-        $chat_message = new ChatMessage();
+        $chat_message               = new ChatMessage();
         $chat_message->conversation = $this;
 
         if ($session->person) {
@@ -336,15 +337,15 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Add a system message
+     * Add a system message.
      *
      * @return \Application\DeskPRO\Entity\ChatMessage
      */
     public function addSystemMessage($content, $is_user_hidden = false)
     {
-        $chat_message = new ChatMessage();
-        $chat_message->conversation = $this;
-        $chat_message['is_sys'] = true;
+        $chat_message                   = new ChatMessage();
+        $chat_message->conversation     = $this;
+        $chat_message['is_sys']         = true;
         $chat_message['is_user_hidden'] = $is_user_hidden;
 
         $chat_message['content'] = $content;
@@ -353,13 +354,13 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Add a message to this convo
+     * Add a message to this convo.
      *
      * @param
      */
     public function addMessage($message)
     {
-        if (!$this->date_first_agent_message AND $message->author AND $message->author['is_agent']) {
+        if (!$this->date_first_agent_message and $message->author and $message->author['is_agent']) {
             $this['date_first_agent_message'] = new \DateTime();
         }
 
@@ -373,13 +374,15 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get an array of only user participants
+     * Get an array of only user participants.
      *
      * @return array
      */
     public function getUserParticipants()
     {
-        if ($this->_user_participants !== null) return $this->_user_participants;
+        if ($this->_user_participants !== null) {
+            return $this->_user_participants;
+        }
 
         $this->_user_participants = array();
 
@@ -407,12 +410,11 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         return $ids;
     }
 
-
-
     /**
      * Check if a person ID or a person object is current a participant.
      *
      * @param  $person_or_id
+     *
      * @return bool
      */
     public function hasParticipant($person_or_id)
@@ -431,12 +433,11 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         return false;
     }
 
-
-
     /**
-     * Add a participant
+     * Add a participant.
      *
      * @param $person_or_id
+     *
      * @return Person
      */
     public function addParticipant($person_or_id, $suppress_sys_msg = false)
@@ -452,19 +453,18 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
         $this->participants->add($person);
 
-        if ($this->_user_participants !== null AND !$person['is_agent']) {
+        if ($this->_user_participants !== null and !$person['is_agent']) {
             $this->_user_participants[] = $person;
         }
 
         return $person;
     }
 
-
-
     /**
-     * Remove a participant
+     * Remove a participant.
      *
      * @param  $person_or_id
+     *
      * @return Person
      */
     public function removeParticipant($person_or_id, $suppress_sys_msg = false)
@@ -482,15 +482,13 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
             }
         }
 
-        return null;
+        return;
     }
-
 
     /**
      * Set the status (open or ended).
      *
      * @param  $status
-     * @return void
      */
     public function setStatus($status)
     {
@@ -505,7 +503,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
             if (!$this->date_ended) {
                 $this['date_ended'] = new \DateTime();
             }
-
         } else {
             if ($this->date_ended) {
                 $this['date_ended'] = null;
@@ -513,16 +510,16 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-
     /**
-     * Set the agent
+     * Set the agent.
      *
      * @param  $agent
-     * @return void
      */
     public function setAgent($agent = null)
     {
-        if (!$agent) $agent = null;
+        if (!$agent) {
+            $agent = null;
+        }
 
         $old_agent = $this->agent;
         if (($agent === null && $old_agent === null) || ($agent && $old_agent && $agent->getId() == $old_agent->getId())) {
@@ -532,7 +529,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         $this->_onPropertyChanged('agent', $old_agent, $agent);
 
         $this->agent = $agent;
-        if ($agent AND !$this->date_assigned) {
+        if ($agent and !$this->date_assigned) {
             $this['date_assigned'] = new \DateTime();
         }
 
@@ -587,7 +584,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
             return $this->subject;
         }
         if ($this->person_name && $this->person_email) {
-            return $this->person_name . ' <' . $this->person_email . '>';
+            return $this->person_name.' <'.$this->person_email.'>';
         }
         if ($this->person_name) {
             return $this->person_name;
@@ -596,7 +593,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
             return $this->person_email;
         }
 
-        return 'Chat ' . $this->id;
+        return 'Chat '.$this->id;
     }
 
     public function setRatingOverall($rating)
@@ -615,7 +612,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('rating_response_time', $rating);
     }
 
-
     /**
      * @param \DateTime $date
      */
@@ -630,7 +626,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-
     /**
      * Get a basic array of information. These are generally used in templates or with
      * client messages to render the message.
@@ -644,23 +639,23 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         $info['conversation_id'] = $this->id;
 
         if ($this->person) {
-            $info['author_id']     = $this->person->id;
-            $info['author_name']   = $this->person->display_name;
-            $info['author_email']  = $this->person->getPrimaryEmailAddress();
-            $info['author_type']   = $this->person->is_agent ? 'agent' : 'user';
+            $info['author_id']    = $this->person->id;
+            $info['author_name']  = $this->person->display_name;
+            $info['author_email'] = $this->person->getPrimaryEmailAddress();
+            $info['author_type']  = $this->person->is_agent ? 'agent' : 'user';
         } else {
-            $info['author_id']     = 0;
-            $info['author_name']   = $this->person_name ? $this->person_name : '';
-            $info['author_email']  = $this->person_email ? $this->person_email : '';
-            $info['author_type']   = 'user';
+            $info['author_id']    = 0;
+            $info['author_name']  = $this->person_name ? $this->person_name : '';
+            $info['author_email'] = $this->person_email ? $this->person_email : '';
+            $info['author_type']  = 'user';
         }
 
-        $info['subject_line']     = $this->getSubjectLine();
-        $info['agent_id']         = $this->agent ? $this->agent->id : 0;
-        $info['agent_name']       = $this->agent ? $this->agent->getDisplayName() : '';
-        $info['department_id']    = $this->department_id;
-        $info['department_name']  = $this->department ? $this->department->getFullTitle() : '';
-        $info['date_created']     = $this->date_created->getTimestamp();
+        $info['subject_line']    = $this->getSubjectLine();
+        $info['agent_id']        = $this->agent ? $this->agent->id : 0;
+        $info['agent_name']      = $this->agent ? $this->agent->getDisplayName() : '';
+        $info['department_id']   = $this->department_id;
+        $info['department_name'] = $this->department ? $this->department->getFullTitle() : '';
+        $info['date_created']    = $this->date_created->getTimestamp();
 
         if ($this->date_ended) {
             $info['date_ended'] = $this->date_ended->getTimestamp();
@@ -671,7 +666,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Add a label
+     * Add a label.
+     *
      * @param \Application\DeskPRO\Entity\LabelChatConversation $label
      */
     public function addLabel(LabelChatConversation $label)
@@ -679,7 +675,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         $label['chat'] = $this;
         $this->labels->add($label);
     }
-
 
     /**
      * @param bool $v
@@ -692,7 +687,6 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-
     /**
      * Gets the URL to a picture for the person. Note that this will always return
      * a path to an image, even if it's the default.
@@ -702,7 +696,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     public function getPersonPictureUrl($size = 80, $secure = null)
     {
         // Null means detect
-        if ($secure === null AND App::isWebRequest()) {
+        if ($secure === null and App::isWebRequest()) {
             $request = App::getRequest();
             if ($request->isSecure()) {
                 $secure = true;
@@ -718,14 +712,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
             if (App::getSetting('core.use_gravatar') && $this->person_email) {
                 $hash = md5(strtolower($this->person_email));
                 if ($secure) {
-                    $url = 'https://secure.gravatar.com/avatar/' . $hash . '?';
+                    $url = 'https://secure.gravatar.com/avatar/'.$hash.'?';
                 } else {
-                    $url = 'http://www.gravatar.com/avatar/' . $hash . '?';
+                    $url = 'http://www.gravatar.com/avatar/'.$hash.'?';
                 }
-                $url .= 's=' . $size . '&d=mm';
+                $url .= 's='.$size.'&d=mm';
             } else {
                 $url = App::get('router')->generate('serve_default_picture', array(
-                    's' => $size,
+                    's'        => $size,
                     'size-fit' => 1,
                 ), true);
             }
@@ -741,7 +735,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Find an existing data record for a field id.
      *
-     * @param  int           $field_id
+     * @param int $field_id
+     *
      * @return CustomDefChat
      */
     public function getCustomDataForField($field_id)
@@ -756,7 +751,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -765,14 +760,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     public function removeCustomDataForField($field)
     {
         $parent_id = null;
-        $field_id = $field['id'];
+        $field_id  = $field['id'];
         if ($field->parent) {
             $parent_id = $field->parent['id'];
         }
 
         $change = false;
         foreach ($this->custom_data as $data) {
-            if ($data['field_id'] == $field_id OR $data['field_id'] == $parent_id) {
+            if ($data['field_id'] == $field_id or $data['field_id'] == $parent_id) {
                 $change = true;
                 $this->custom_data->removeElement($data);
             }
@@ -784,7 +779,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Add a custom data item to this chat
+     * Add a custom data item to this chat.
      *
      * @param CustomDataChat $data
      */
@@ -799,6 +794,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
      * Check if this ticket has a custom field.
      *
      * @param $field_id
+     *
      * @return bool
      */
     public function hasCustomField($field_id)
@@ -810,7 +806,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         }
 
         foreach ($this->custom_data as $data) {
-            if ($data->field->parent AND $data->field->parent['id'] == $field_id) {
+            if ($data->field->parent and $data->field->parent['id'] == $field_id) {
                 return true;
             }
         }
@@ -823,7 +819,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         $data = parent::toApiData($primary, $deep, $visited);
         if ($deep) {
             $data['labels'] = array();
-            foreach ($this->labels AS $label) {
+            foreach ($this->labels as $label) {
                 $data['labels'][] = $label['label'];
             }
         }
@@ -841,41 +837,41 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ChatConversation';
         $metadata->setPrimaryTable(array(
-            'name' => 'chat_conversations',
+            'name'    => 'chat_conversations',
             'indexes' => array(
-                'status_idx' => array('columns' => array('status')),
-                'should_send_transcript_idx' => array('columns' => array('should_send_transcript'))
+                'status_idx'                 => array('columns' => array('status')),
+                'should_send_transcript_idx' => array('columns' => array('should_send_transcript')),
             ),
         ));
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'subject', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'subject', ));
-        $metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
-        $metadata->mapField(array( 'fieldName' => 'person_name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'person_name', ));
-        $metadata->mapField(array( 'fieldName' => 'person_email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'person_email', ));
-        $metadata->mapField(array( 'fieldName' => 'rating_response_time', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'rating_response_time', ));
-        $metadata->mapField(array( 'fieldName' => 'rating_overall', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'rating_overall', ));
-        $metadata->mapField(array( 'fieldName' => 'rating_comment', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'rating_comment', ));
-        $metadata->mapField(array( 'fieldName' => 'is_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent', ));
-        $metadata->mapField(array( 'fieldName' => 'is_window', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_window', ));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-        $metadata->mapField(array( 'fieldName' => 'date_user_waiting', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_user_waiting', ));
-        $metadata->mapField(array( 'fieldName' => 'date_assigned', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_assigned', ));
-        $metadata->mapField(array( 'fieldName' => 'date_first_agent_message', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_first_agent_message', ));
-        $metadata->mapField(array( 'fieldName' => 'date_ended', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_ended', ));
-        $metadata->mapField(array( 'fieldName' => 'should_send_transcript', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'should_send_transcript', ));
-        $metadata->mapField(array( 'fieldName' => 'date_transcript_sent', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_transcript_sent', ));
-        $metadata->mapField(array( 'fieldName' => 'total_to_ended', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'total_to_ended'));
-        $metadata->mapField(array( 'fieldName' => 'ended_by', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ended_by', ));
+        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array('fieldName' => 'subject', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'subject'));
+        $metadata->mapField(array('fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status'));
+        $metadata->mapField(array('fieldName' => 'person_name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'person_name'));
+        $metadata->mapField(array('fieldName' => 'person_email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'person_email'));
+        $metadata->mapField(array('fieldName' => 'rating_response_time', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'rating_response_time'));
+        $metadata->mapField(array('fieldName' => 'rating_overall', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'rating_overall'));
+        $metadata->mapField(array('fieldName' => 'rating_comment', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'rating_comment'));
+        $metadata->mapField(array('fieldName' => 'is_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent'));
+        $metadata->mapField(array('fieldName' => 'is_window', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_window'));
+        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        $metadata->mapField(array('fieldName' => 'date_user_waiting', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_user_waiting'));
+        $metadata->mapField(array('fieldName' => 'date_assigned', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_assigned'));
+        $metadata->mapField(array('fieldName' => 'date_first_agent_message', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_first_agent_message'));
+        $metadata->mapField(array('fieldName' => 'date_ended', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_ended'));
+        $metadata->mapField(array('fieldName' => 'should_send_transcript', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'should_send_transcript'));
+        $metadata->mapField(array('fieldName' => 'date_transcript_sent', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_transcript_sent'));
+        $metadata->mapField(array('fieldName' => 'total_to_ended', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'total_to_ended'));
+        $metadata->mapField(array('fieldName' => 'ended_by', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ended_by'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'agent_team', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_team_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'session', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Session', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'session_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapManyToMany(array( 'fieldName' => 'participants', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'joinTable' => array( 'name' => 'chat_conversation_to_person', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'conversation_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'indexBy' => 'id', 'dpApi' => true ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'messages', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatMessage', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'conversation',  ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataChat', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'conversation', 'orphanRemoval' => true,  'dpApi' => true ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelChatConversation', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'chat', 'orphanRemoval' => true, 'dpApi' => true ));
+        $metadata->mapManyToOne(array('fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true));
+        $metadata->mapManyToOne(array('fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'agent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true));
+        $metadata->mapManyToOne(array('fieldName' => 'agent_team', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'agent_team_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true));
+        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true));
+        $metadata->mapManyToOne(array('fieldName' => 'session', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Session', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'session_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array('fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToMany(array('fieldName' => 'participants', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array('name' => 'chat_conversation_to_person', 'schema' => null, 'joinColumns' => array(0 => array('name' => 'conversation_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'inverseJoinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))), 'indexBy' => 'id', 'dpApi' => true));
+        $metadata->mapOneToMany(array('fieldName' => 'messages', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatMessage', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'conversation'));
+        $metadata->mapOneToMany(array('fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataChat', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'conversation', 'orphanRemoval' => true,  'dpApi' => true));
+        $metadata->mapOneToMany(array('fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelChatConversation', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'chat', 'orphanRemoval' => true, 'dpApi' => true));
     }
 }

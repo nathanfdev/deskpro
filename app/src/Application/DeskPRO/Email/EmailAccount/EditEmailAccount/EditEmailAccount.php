@@ -1,40 +1,37 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount;
 
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\NoopConfig;
-use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\ExchangeConfig;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
@@ -136,11 +133,13 @@ class EditEmailAccount
         $this->outgoing_type   = $account->outgoing_account ? $account->outgoing_account->getType() : '';
     }
 
-
     /**
      * Applies form to the entities.
+     *
+     * @param bool $save_incoming True to save incoming account
+     * @param bool $save_outgoing True to save outgoing account
      */
-    public function apply()
+    public function apply($save_incoming = true, $save_outgoing = true)
     {
         $this->account->address      = strtolower($this->address);
         $this->account->is_enabled   = $this->is_enabled;
@@ -148,7 +147,7 @@ class EditEmailAccount
 
         if ($this->other_addresses) {
             $emails_arr = array();
-            $emails = explode(',', $this->other_addresses);
+            $emails     = explode(',', $this->other_addresses);
             foreach ($emails as $email) {
                 $email = trim(strtolower($email));
                 if (StringEmail::isValueValid($email)) {
@@ -161,22 +160,31 @@ class EditEmailAccount
             $this->account->other_addresses = null;
         }
 
-        $this->account->incoming_account = $this->getIncomingAccountConfig();
-        $this->account->outgoing_account = $this->getOutgoingAccountConfig();
+        if ($save_incoming) {
+            $this->account->incoming_account = $this->getIncomingAccountConfig();
+            if (!$this->account->incoming_account) {
+                $this->account->account_type = EmailAccount::TYPE_OUT;
+            }
+        }
+
+        if ($save_outgoing) {
+            $this->account->outgoing_account = $this->getOutgoingAccountConfig();
+        }
     }
 
     /**
-     * @param  EntityManager $em
-     * @param  array         $trigger_actions
+     * @param EntityManager $em
+     * @param array         $trigger_actions
+     *
      * @return TicketTrigger
      */
     public function saveTrigger(EntityManager $em, array $trigger_actions)
     {
-        $trigger = $em->createQuery("
+        $trigger = $em->createQuery('
             SELECT trigger
             FROM DeskPRO:TicketTrigger trigger
             WHERE trigger.email_account = ?0
-        ")->setParameters(array($this->account))->getOneOrNullResult();
+        ')->setParameters(array($this->account))->getOneOrNullResult();
 
         if (!$trigger_actions || $this->account->account_type != 'tickets') {
             if ($trigger) {
@@ -184,12 +192,12 @@ class EditEmailAccount
                 $em->flush();
             }
 
-            return null;
+            return;
         }
 
         if (!$trigger) {
-            $trigger = new TicketTrigger();
-            $trigger->is_enabled = (bool)$em->getConnection()->fetchColumn("SELECT id FROM ticket_triggers WHERE email_account_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?", array($trigger->event_trigger));
+            $trigger                = new TicketTrigger();
+            $trigger->is_enabled    = (bool) $em->getConnection()->fetchColumn('SELECT id FROM ticket_triggers WHERE email_account_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?', array($trigger->event_trigger));
             $trigger->email_account = $this->account;
             $trigger->event_trigger = 'newticket';
             $trigger->by_agent_mode = array('email');
@@ -199,16 +207,17 @@ class EditEmailAccount
         $actions = new TriggerActions();
         try {
             $actions->importFromArray(array('actions' => $trigger_actions));
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         $terms = new TriggerTerms();
         $terms->addTermFromArray(array(
             'type'    => 'CheckEmailAccount',
             'op'      => 'is',
-            'options' => array('email_account_ids' => array($this->account->id))
+            'options' => array('email_account_ids' => array($this->account->id)),
         ));
 
-        $trigger->title     = "New Ticket";
+        $trigger->title     = 'New Ticket';
         $trigger->run_order = -100;
         $trigger->actions   = $actions;
         $trigger->terms     = $terms;
@@ -226,28 +235,47 @@ class EditEmailAccount
     {
         switch ($this->incoming_type) {
             case 'pop3':
+                if (!$this->in_pop3_account->user) {
+                    return;
+                }
+
                 return $this->in_pop3_account;
 
             case 'imap':
+                if (!$this->in_imap_account->user) {
+                    return;
+                }
+
                 return $this->in_imap_account;
 
             case 'exchange':
+                if (!$this->in_exchange_account->user) {
+                    return;
+                }
+
                 return $this->in_exchange_account;
 
             case 'gmail':
+                if (!$this->in_gmail_account->user) {
+                    return;
+                }
+
                 return $this->in_gmail_account;
 
             case 'office365':
+                if (!$this->in_office365_account->user) {
+                    return;
+                }
+
                 return $this->in_office365_account;
 
             case 'noop':
                 return new NoopConfig();
 
             default:
-                return null;
+                return;
         }
     }
-
 
     /**
      * @return \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface
@@ -272,7 +300,7 @@ class EditEmailAccount
 
             default;
 
-                return null;
+                return;
         }
     }
 }

@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
@@ -71,7 +69,7 @@ class ObjectTranslatable
     protected $try_langs = null;
 
     /**
-     * Config:
+     * Config:.
      *
      * - with_lang_prop: When true, we consider the object itself defines default translation
      * data. For example, Article has $title and with_lang_prop as 'language'. Getting the 'title' property in $language therefore just results in
@@ -94,7 +92,6 @@ class ObjectTranslatable
         // because it is called during postLoad which causes problems in Doctrine
     }
 
-
     /**
      * Set the default languages to try (in order). These are used when $lang is null in the get prop methods.
      */
@@ -103,9 +100,8 @@ class ObjectTranslatable
         $this->try_langs = $try_langs;
     }
 
-
     /**
-     * Gets the try langs
+     * Gets the try langs.
      *
      * If no try langs have been set explicity with setTryLangs(), we will try langs based on the try langs
      * set by the ObjectLangRepository. If this object has a with_lang_prop, that will always be tried
@@ -128,7 +124,6 @@ class ObjectTranslatable
         return $try;
     }
 
-
     /**
      * @return \Application\DeskPRO\ORM\EntityManager
      */
@@ -136,7 +131,6 @@ class ObjectTranslatable
     {
         return App::getOrm();
     }
-
 
     /**
      * @return \Application\DeskPRO\Translate\ObjectLangRepository
@@ -146,10 +140,8 @@ class ObjectTranslatable
         return App::getSystemService('object_lang_repository');
     }
 
-
     /**
-     * @param  string $prop
-     * @return null
+     * @param string $prop
      */
     public function getObjectProp($prop, $lang = null)
     {
@@ -174,7 +166,7 @@ class ObjectTranslatable
             }
 
             if (!$this->entity->getId()) {
-                $prop = strtolower($prop);
+                $prop    = strtolower($prop);
                 $lang_id = $lang->getId();
 
                 return isset($this->unsaved[$lang_id][$prop]) ? $this->unsaved[$lang_id][$prop]->text : null;
@@ -186,14 +178,12 @@ class ObjectTranslatable
             }
         }
 
-        return null;
+        return;
     }
 
-
     /**
-     * @param  string $prop
-     * @param  string $value
-     * @return void
+     * @param string $prop
+     * @param string $value
      */
     public function setObjectProp($prop, $value, $lang = null)
     {
@@ -213,11 +203,11 @@ class ObjectTranslatable
             $method = "setReal$prop";
             $this->entity->$method($value);
 
-            return null;
+            return;
         }
 
         if (!$this->entity->getId()) {
-            $prop = strtolower($prop);
+            $prop    = strtolower($prop);
             $lang_id = $lang->getId();
 
             $rec = isset($this->unsaved[$lang_id][$prop]) ? $this->unsaved[$lang_id][$prop] : null;
@@ -236,7 +226,7 @@ class ObjectTranslatable
 
         $this->getObjLangRepos()->setRec($lang, $this->entity, $prop, $value);
 
-        return null;
+        return;
     }
 
     ####################################################################################################################
@@ -267,7 +257,7 @@ class ObjectTranslatable
         }
 
         if (!$lang || !($lang instanceof Language)) {
-            throw new \InvalidArgumentException("Invalid language");
+            throw new \InvalidArgumentException('Invalid language');
         }
 
         $this->lang = $lang;
@@ -301,7 +291,7 @@ class ObjectTranslatable
             return $object->_dp_object_translatable;
         }
 
-        $config = $object::loadObjectTranslatableMetadata();
+        $config                          = $object::loadObjectTranslatableMetadata();
         $object->_dp_object_translatable = new self($object, $config);
 
         foreach ($config['fields'] as $f) {
@@ -309,7 +299,7 @@ class ObjectTranslatable
             $object->addCustomCallable("get$fl", array($object->_dp_object_translatable, '_dynGetObjectProp'), array('property' => $f));
             $object->addCustomCallable("set$fl", array($object->_dp_object_translatable, '_dynSetObjectProp'), array('property' => $f));
         }
-        $object->addCustomCallable("setTranslateLanguage", array($object->_dp_object_translatable, '_dynSetLanguage'));
+        $object->addCustomCallable('setTranslateLanguage', array($object->_dp_object_translatable, '_dynSetLanguage'));
 
         return $object->_dp_object_translatable;
     }

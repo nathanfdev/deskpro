@@ -1,44 +1,43 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
-use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 /**
- * A job
+ * A job.
  *
  * @property $id
  * @property $type
@@ -47,7 +46,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  * @property $date_touch
  * @property $date_created
  * @property $date_last_try
- * @property $date_next_try
+ * @property \DateTime $date_next_try
  * @property $priority
  * @property $num_tries
  * @property $log_summary
@@ -61,20 +60,20 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  */
 class Job extends \Application\DeskPRO\Domain\DomainObject
 {
-    const STATUS_INSERTING = 'inserting';
-    const STATUS_WAITING = 'waiting';
-    const STATUS_RESERVED = 'reserved';
+    const STATUS_INSERTING  = 'inserting';
+    const STATUS_WAITING    = 'waiting';
+    const STATUS_RESERVED   = 'reserved';
     const STATUS_PROCESSING = 'processing';
-    const STATUS_COMPLETE = 'complete';
-    const STATUS_ERROR = 'error';
-    const STATUS_REJECTED = 'rejected';
-    const STATUS_DELEGATED = 'delegated';
-    const STATUS_ABORTED = 'aborted';
+    const STATUS_COMPLETE   = 'complete';
+    const STATUS_ERROR      = 'error';
+    const STATUS_REJECTED   = 'rejected';
+    const STATUS_DELEGATED  = 'delegated';
+    const STATUS_ABORTED    = 'aborted';
 
-    const STATUS_CODE_SUCCESS = 'success'; // completed successfully
-    const STATUS_CODE_RESCHEDULED = 'rescheduled'; // a job we depend on is not yet done, we will retry
-    const STATUS_CODE_RETRYING = 'retrying'; // failed but we are retrying
-    const STATUS_CODE_EXHAUSTED = 'exhausted'; // retried it a bunch of times, won't retry again
+    const STATUS_CODE_SUCCESS      = 'success'; // completed successfully
+    const STATUS_CODE_RESCHEDULED  = 'rescheduled'; // a job we depend on is not yet done, we will retry
+    const STATUS_CODE_RETRYING     = 'retrying'; // failed but we are retrying
+    const STATUS_CODE_EXHAUSTED    = 'exhausted'; // retried it a bunch of times, won't retry again
     const STATUS_CODE_INVALID_DATA = 'invalid_data'; // the job data (payload) was invalid in some way, or couldn't be processed
 
     /**
@@ -83,14 +82,14 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
     protected $id;
 
     /**
-     * The job type, used by the Job Router to find the right Job Processor
+     * The job type, used by the Job Router to find the right Job Processor.
      *
      * @var string
      */
     protected $type;
 
     /**
-     * The status of the job
+     * The status of the job.
      *
      * Should be one of the STATUS_* const's of this class:
      *
@@ -126,21 +125,21 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
     protected $date_touch;
 
     /**
-     * Date this job entered the "jobs" table
+     * Date this job entered the "jobs" table.
      *
      * @var \DateTime
      */
     protected $date_created;
 
     /**
-     * Last time we processed this job
+     * Last time we processed this job.
      *
      * @var \DateTime
      */
     protected $date_last_try;
 
     /**
-     * If this DateTime is in the future, it won't be selected for execution
+     * If this DateTime is in the future, it won't be selected for execution.
      *
      * @var \DateTime
      */
@@ -156,28 +155,28 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
     protected $priority;
 
     /**
-     * The number of times this job has been executed Job Processor (usually indicated failures if > 1)
+     * The number of times this job has been executed Job Processor (usually indicated failures if > 1).
      *
      * @var int
      */
     protected $num_tries;
 
     /**
-     * A human readable summary of the job's execution
+     * A human readable summary of the job's execution.
      *
      * @var string
      */
     protected $log_summary;
 
     /**
-     * A more verbose log
+     * A more verbose log.
      *
      * @var string
      */
     protected $log;
 
     /**
-     * An array of data, or payload, that the job processor needs to execute this job (stored in the db as json)
+     * An array of data, or payload, that the job processor needs to execute this job (stored in the db as json).
      *
      * This MUST always be an array, even if its an empty array
      *
@@ -186,7 +185,7 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
     protected $data;
 
     /**
-     * The last time this job was started
+     * The last time this job was started.
      *
      * @var \DateTime
      */
@@ -225,14 +224,14 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 
     public function __construct($type, array $data = array())
     {
-        $this->date_created = new \DateTime();
+        $this->date_created  = new \DateTime();
         $this->date_next_try = new \DateTime();
-        $this->has_warning = false;
-        $this->status = self::STATUS_INSERTING;
-        $this->priority = 0;
-        $this->num_tries = 0;
-        $this->type = $type;
-        $this->data = $data;
+        $this->has_warning   = false;
+        $this->status        = self::STATUS_INSERTING;
+        $this->priority      = 0;
+        $this->num_tries     = 0;
+        $this->type          = $type;
+        $this->data          = $data;
     }
 
     ############################################################################
@@ -241,7 +240,6 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-
         $builder = new ClassMetadataBuilder($metadata);
         $builder
             ->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\WorkerJob')
@@ -272,8 +270,8 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
     public function reschedule(\DateTime $retryDate)
     {
         $this->setModelField('date_next_try', $retryDate);
-        $this->setModelField('status', Job::STATUS_WAITING);
-        $this->setModelField('status_code', Job::STATUS_CODE_RESCHEDULED);
+        $this->setModelField('status', self::STATUS_WAITING);
+        $this->setModelField('status_code', self::STATUS_CODE_RESCHEDULED);
         $this->setModelField('worker_id', null);
         $this->setModelField('date_touch', new \DateTime());
     }
@@ -281,9 +279,16 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
     public function retry(\DateTime $retryDate)
     {
         $this->setModelField('date_next_try', $retryDate);
-        $this->setModelField('status', Job::STATUS_WAITING);
-        $this->setModelField('status_code', Job::STATUS_CODE_RETRYING);
+        $this->setModelField('status', self::STATUS_WAITING);
+        $this->setModelField('status_code', self::STATUS_CODE_RETRYING);
         $this->setModelField('worker_id', null);
+        $this->setModelField('date_touch', new \DateTime());
+    }
+
+    public function abort()
+    {
+        $this->setModelField('status', self::STATUS_ABORTED);
+        $this->setModelField('status_code', self::STATUS_CODE_EXHAUSTED);
         $this->setModelField('date_touch', new \DateTime());
     }
 }

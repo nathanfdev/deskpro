@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Search
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Search
+ */
 namespace Application\DeskPRO\Search;
 
 use Application\DeskPRO\Entity\Person;
@@ -44,18 +43,20 @@ use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
 /**
- * This finds sticky results for a search term
+ * This finds sticky results for a search term.
  */
 class StickyWordSearch implements PersonContextInterface
 {
     /**
-     * Entity manager
+     * Entity manager.
+     *
      * @var \Doctrine\ORM\EntityManager
      */
     public $em;
 
     /**
-     * Plain database connection for raw queries
+     * Plain database connection for raw queries.
+     *
      * @var \Application\DeskPRO\DBAL\Connection
      */
     public $db;
@@ -83,7 +84,7 @@ class StickyWordSearch implements PersonContextInterface
     {
         // Split query into words, quoted strings are grouped togehter
         $words = preg_split(
-            "/[\\s,]*\\\"([^\\\"]+)\\\"[\\s,]*|[\\s,]+/",
+            '/[\\s,]*\\"([^\\"]+)\\"[\\s,]*|[\\s,]+/',
             $query,
             0,
             PREG_SPLIT_DELIM_CAPTURE
@@ -102,6 +103,23 @@ class StickyWordSearch implements PersonContextInterface
         return $words;
     }
 
+    public function getStickyWords($type, $id, $limit = 5)
+    {
+        $ret = array();
+        $res = $this->db->executeQuery(sprintf('
+            SELECT word
+            FROM search_sticky_result
+            WHERE object_type = :type AND object_id = :id
+            LIMIT %d
+        ', $limit), array('type' => $type, 'id' => $id));
+
+        while ($word = $res->fetchColumn()) {
+            $ret[] = $word;
+        }
+
+        return $ret;
+    }
+
     public function getResults($query, $limit = 10)
     {
         $words = $this->getWordsFromQuery($query);
@@ -109,6 +127,8 @@ class StickyWordSearch implements PersonContextInterface
         if (!$words) {
             return array();
         }
+
+        array_unshift($words, $query);
 
         if (count($words) > 15) {
             $words = array_slice($words, 0, 15);
@@ -194,11 +214,11 @@ class StickyWordSearch implements PersonContextInterface
             }
             $k = "{$r['object_type']}-{$r['object_id']}";
             if (!isset($results_ranked[$k])) {
-                $results_ranked[$k] = $r;
+                $results_ranked[$k]          = $r;
                 $results_ranked[$k]['count'] = 0;
             }
 
-            $results_ranked[$k]['count']++;
+            ++$results_ranked[$k]['count'];
         }
 
         // If we have too many results, we have to trim them down
@@ -257,15 +277,15 @@ class StickyWordSearch implements PersonContextInterface
         // type => typename, object => entity
         $typed_results = array();
         foreach ($real_results as $r) {
-            $class = get_class($r);
+            $class       = get_class($r);
             $entity_name = $class::getEntityName();
-            $type = strtolower(str_replace('DeskPRO:', '', $entity_name));
+            $type        = strtolower(str_replace('DeskPRO:', '', $entity_name));
 
-            $key = $type . '.' . $r->getId();
+            $key = $type.'.'.$r->getId();
 
             $typed_results[$key] = array(
-                'type' => $type,
-                'object' => $r
+                'type'   => $type,
+                'object' => $r,
             );
         }
 

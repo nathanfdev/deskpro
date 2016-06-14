@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\Entity\Person;
@@ -47,7 +44,6 @@ class PersonFieldManager extends FieldManager
      *
      * @return array
      */
-
     public function getDefinedFields()
     {
         return array_values($this->em->getRepository('DeskPRO:CustomDefPerson')->getTopFields());
@@ -57,11 +53,9 @@ class PersonFieldManager extends FieldManager
      * @param string $id
      * @param bool   $enabled
      */
-
     public function setFieldEnabledById($id, $enabled = true)
     {
         if ($custom_field_id = Strings::extractRegexMatch('#^field_(\d+)$#', $id)) {
-
             $field             = $this->em->find('DeskPRO:CustomDefPerson', $custom_field_id);
             $field->is_enabled = $enabled;
 
@@ -70,7 +64,7 @@ class PersonFieldManager extends FieldManager
         }
     }
 
-    public function copyUsersourceData(Person $person, Identity $identity, Usersource $usersource)
+    public function copyUsersourceData(Person $person, $raw_data, Usersource $usersource)
     {
         $save_data = array();
 
@@ -84,7 +78,9 @@ class PersonFieldManager extends FieldManager
             }
 
             $field_name = $field->getOption('field_name');
-            $raw_data   = $identity->getRawData();
+            if ($raw_data instanceof Identity) {
+                $raw_data = $raw_data->getRawData();
+            }
 
             // Reads the value and does some common input error correction:
             // - Arrays are separated by a slash or a dot: telephonenumber.0 or telephonenumber/0
@@ -112,7 +108,7 @@ class PersonFieldManager extends FieldManager
                 $val = implode("\n\n", $val);
             }
 
-            $save_data['field_' . $field->getId()] = $val;
+            $save_data['field_'.$field->getId()] = $val;
         }
 
         if ($save_data) {

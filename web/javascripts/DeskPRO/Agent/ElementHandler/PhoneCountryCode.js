@@ -63,7 +63,7 @@ DeskPRO.Agent.ElementHandler.PhoneCountryCode = new Orb.Class({
 			delay: 0
 		})
 		.on('change', updateIcon)
-		.data( "autocomplete" )._renderItem = function(ul, item) {
+		.data( "ui-autocomplete" )._renderItem = function(ul, item) {
 			return $("<li></li>")
 				.addClass('ui-menu-item')
 				.data("item.autocomplete", item)

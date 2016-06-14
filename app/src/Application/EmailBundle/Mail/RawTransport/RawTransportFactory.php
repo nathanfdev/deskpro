@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\EmailBundle\Mail\RawTransport;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
@@ -56,12 +55,21 @@ class RawTransportFactory
     }
 
     /**
-     * @param  AccountConfigInterface    $config
-     * @return RawTransportInterface
+     * @param AccountConfigInterface $config
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return RawTransportInterface
      */
     public function createTransport(AccountConfigInterface $config)
     {
+        if (function_exists('deskpro_mail_transport_override')) {
+            $tr = deskpro_mail_transport_override($config, $this);
+            if ($tr) {
+                return $tr;
+            }
+        }
+
         switch ($config->getType()) {
             case 'smtp':     $tr = $this->createSmtpTransport($config); break;
             case 'gmail':    $tr = $this->createGmailTransport($config); break;
@@ -69,19 +77,20 @@ class RawTransportFactory
             case 'php_mail': $tr = $this->createPhpMailTransport($config); break;
             case 'exchange': $tr = $this->createExchangeTransport($config); break;
             default:
-                $this->logger->error("Unknown account type: %s", $config->getType());
+                $this->logger->error('Unknown account type: %s', $config->getType());
                 throw new \InvalidArgumentException("Unknown account type: {$config->getType()}");
         }
 
         return $tr;
     }
 
-
     /**
      * @param OutgoingAccount\SmtpConfig $config
+     * @param bool                       $disable_connect_log
+     *
      * @return RawSmtpTransport
      */
-    public function createSmtpTransport(OutgoingAccount\SmtpConfig $config)
+    public function createSmtpTransport(OutgoingAccount\SmtpConfig $config, $disable_connect_log = false)
     {
         $tr = \Swift_SmtpTransport::newInstance(
             $config->host ?: 'localhost',
@@ -97,16 +106,21 @@ class RawTransportFactory
         }
 
         $tr->setTimeout(120);
-        $tr->registerPlugin(new TransportLogger($this->logger));
+
+        $tr_logger = new TransportLogger($this->logger);
+        if ($disable_connect_log) {
+            $tr_logger->disableConnectionLog();
+        }
+        $tr->registerPlugin($tr_logger);
 
         $raw_tr = new RawSmtpTransport($tr);
 
         return $raw_tr;
     }
 
-
     /**
      * @param OutgoingAccount\GmailConfig $config
+     *
      * @return \Swift_SmtpTransport
      */
     public function createGmailTransport(OutgoingAccount\GmailConfig $config)
@@ -124,6 +138,7 @@ class RawTransportFactory
 
     /**
      * @param OutgoingAccount\Office365Config $config
+     *
      * @return \Swift_SmtpTransport
      */
     public function createOffice365Transport(OutgoingAccount\Office365Config $config)
@@ -134,11 +149,14 @@ class RawTransportFactory
         $tr->setTimeout(120);
         $tr->registerPlugin(new TransportLogger($this->logger));
 
-        return $tr;
+        $raw_tr = new RawSmtpTransport($tr);
+
+        return $raw_tr;
     }
 
     /**
      * @param OutgoingAccount\PhpMailConfig $conifg
+     *
      * @return \Swift_MailTransport
      */
     public function createPhpMailTransport(OutgoingAccount\PhpMailConfig $conifg)
@@ -154,11 +172,13 @@ class RawTransportFactory
 
     /**
      * @param OutgoingAccount\ExchangeConfig $config
+     *
      * @return RawExchangeTransport
      */
     public function createExchangeTransport(OutgoingAccount\ExchangeConfig $config)
     {
         $decoder = new Rfc2822Decoder();
+
         return new RawExchangeTransport($config, $decoder, $this->logger);
     }
 }

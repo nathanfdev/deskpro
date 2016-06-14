@@ -1,40 +1,37 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
+use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -44,179 +41,217 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
     protected function configure()
     {
         $this->setName('dp:gen-rand-email');
-        $this->addOption('from-email', null, InputOption::VALUE_REQUIRED);
-        $this->addOption('reply-to-email', null, InputOption::VALUE_REQUIRED);
-        $this->addOption('original-from-email', null, InputOption::VALUE_REQUIRED);
-        $this->addOption('to-email', null, InputOption::VALUE_REQUIRED);
-        $this->addOption('with-image', null, InputOption::VALUE_NONE);
-        $this->addOption('attach', null, InputOption::VALUE_REQUIRED);
-        $this->addOption('subject', null, InputOption::VALUE_REQUIRED);
-        $this->addOption('fwd-for', null, InputOption::VALUE_REQUIRED);
+        $this->addOption('from', null, InputOption::VALUE_REQUIRED, 'An email address to send from. Create a user first if you want to send a name as well.');
+        $this->addOption('to', null, InputOption::VALUE_REQUIRED, 'An email address or a ticket account ID. If none supplied, the first ticket account in the DB is chosen. Note: Does not NEED to be a ticket account, but generaly is.');
+        $this->addOption('tpl', null, InputOption::VALUE_REQUIRED, 'The template to use: text, html, fwd, fwd_with_reply');
+        $this->addOption('subject', null, InputOption::VALUE_REQUIRED, "A subject line. Defults to a generated one. Prefix with 'twig:' to pass the subject string throug twig.");
+        $this->addOption('message', null, InputOption::VALUE_REQUIRED, "A message. Defaults to a generated one. Prefix with 'twig:' to pass the string through twig.");
+        $this->addOption('message-file', null, InputOption::VALUE_REQUIRED, "A file containing a message. Prefix with 'twig:' to pass the file through twig.");
+        $this->addOption('ticket-reply', null, InputOption::VALUE_REQUIRED, 'Make this a reply to this ticket ID. If the --from is an agent, then it will be as an agent reply.');
+        $this->addOption('vars', null, InputOption::VALUE_REQUIRED, 'Extra vars to make available to the templates. Should be a JSON encoded string');
+        $this->addOption('is-bounce', null, InputOption::VALUE_NONE, 'Set is_bounce=true in vars');
+    }
+
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    public function getContainer()
+    {
+        return parent::getContainer();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $fwd_for = $input->getOption('fwd-for') ? $input->getOption('fwd-for') : false;
-        $subject = $input->getOption('subject') ?: 'Test Email - %TIME%';
+        #------------------------------
+        # From
+        #------------------------------
 
-        if ($subject == "EMPTY") {
-            $subject = "";
+        $from_opt   = $input->getOption('from');
+        $from_email = null;
+        $from_user  = null;
+        $from_name  = null;
+        $from_line  = null;
+        if ($from_opt) {
+            $from_email = $from_opt;
+            $from_user  = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($from_email);
+            if ($from_user) {
+                $from_name = $from_user->getDisplayName();
+            }
         }
 
-        $email_pre = "";
+        if (!$from_email) {
+            $output->writeln('<error>You must supply --from</error>');
 
-        $email_pre_html = "";
-        if ($email_pre) {
-            $email_pre_html = "<div>" . nl2br($email_pre) . "</div>";
+            return 1;
         }
 
-        $uid = uniqid('', true);
-
-        $from_lines = array();
-        if ($input->hasOption('from-email')) {
-            $from_lines[] = "From: " . $input->getOption('from-email');
-        }
-        if ($input->hasOption('reply-to-email')) {
-            $from_lines[] = "Reply-To: " . $input->getOption('reply-to-email');
-        }
-        if ($input->hasOption('original-from-email')) {
-            $from_lines[] = "X-Original-From: " . $input->getOption('original-from-email');
-        }
-
-        $from_lines = implode("\n", $from_lines);
-
-        $fwd_footer = '';
-        $fwd_footer_html = '';
-        if ($fwd_for) {
-            $fwd_footer = "\n\n----- Forwarded Message -----\nFrom: $fwd_for\nSubject: $subject\n\nOriginal message from the user\n\n";
-            $fwd_footer_html = "<div>" . nl2br($fwd_footer) . "</div>";
-            $subject = "FW: " . $subject;
-        }
-
-        if (!$input->getOption('with-image') && !$input->getOption('attach')) {
-            $source = <<<SRC
-Date: Mon, 10 Dec 2012 19:15:33 +0000
-$from_lines
-To: %TO_EMAIL%
-Message-ID: <$uid@test-message>
-Subject: $subject
-X-Mailer: sparrow 1.6.4 (build 1176)
-MIME-Version: 1.0
-Content-Type: multipart/alternative; boundary="50c634de_3222e7cd_af2f"
-
---50c634de_3222e7cd_af2f
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-$email_pre
-Test Subject - 2012-12-10 19:15:29
-$fwd_footer
-
--- Christopher
-
-
---50c634de_3222e7cd_af2f
-Content-Type: text/html; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-$email_pre_html
-<div>Test Message</div>
-%MSG_UID%
-$fwd_footer_html
-
---50c634de_3222e7cd_af2f--
-
-SRC;
+        if ($from_name) {
+            $from_line = $from_name.' <'.$from_email.'>';
         } else {
+            $from_line = $from_email;
+        }
 
-            if ($input->getOption('attach')) {
-                $file = file_get_contents($input->getOption('attach'));
-                $filename = basename(realpath($input->getOption('attach')));
+        #------------------------------
+        # To
+        #------------------------------
 
-                if (!$file) {
-                    echo "Invalid attach file\n";
+        $to_opt     = $input->getOption('to');
+        $to_account = null;
+        $to_email   = null;
+        if ($to_opt) {
+            if (ctype_digit($to_opt)) {
+                try {
+                    $to_acc = $this->getContainer()->getEmailAccountManager()->getAccount($to_opt);
+                } catch (\Exception $e) {
+                    $output->writeln("<error>No such ticket account: $to_opt</error>");
 
                     return 1;
                 }
-
-                $filetype = \Orb\Data\ContentTypes::getContentTypeFromFilename($filename);
-                if (!$filetype) {
-                    $filetype = 'application/octet-stream';
-                }
-
-                if ($filename == 'winmail.dat') {
-                    $filetype = 'application/ms-tnef';
-                }
-
             } else {
-                $file = file_get_contents(DP_ROOT.'/../web/images/admin/agent-screen.png');
-                $filename = 'agent-screen.png';
-                $filetype = 'image/png';
+                $to_acc = $this->getContainer()->getEmailAccountManager()->findAccountForEmailAddress($to_opt);
+            }
+        } else {
+            try {
+                $to_acc = $this->getContainer()->getEmailAccountManager()->getPrimaryTicketAccount();
+            } catch (\Exception $e) {
+                $output->writeln('<error>No --to option supplied and this database has no ticket account to use as a default. Try again with --to.</error>');
+
+                return 1;
+            }
+        }
+
+        if ($to_acc) {
+            $to_email = $to_acc->getUseEmailAddress();
+        } else {
+            $to_email = $to_opt;
+        }
+
+        #------------------------------
+        # As reply
+        #------------------------------
+
+        $ticket      = null;
+        $access_code = null;
+
+        $reply_opt = $input->getOption('ticket-reply');
+
+        if ($reply_opt) {
+            $ticket = $this->getContainer()->getEm()->find('DeskPRO:Ticket', $reply_opt);
+            if (!$ticket) {
+                $output->writeln("<error>--ticket-reply: No such ticket: $reply_opt</error>");
+
+                return 1;
             }
 
-            $file = base64_encode($file);
-
-            $source = <<<SRC
-Received: from [172.18.24.247] (iw-01.clients.vorboss.net. [194.8.255.114])
-        by mx.google.com with ESMTPS id t17sm17495468wiv.6.2012.12.11.10.40.53
-        (version=TLSv1/SSLv3 cipher=OTHER);
-        Tue, 11 Dec 2012 10:40:54 -0800 (PST)
-Date: Tue, 11 Dec 2012 18:40:52 +0000
-$from_lines
-To: %TO_EMAIL%
-Message-ID: <B5522AAC086547DFB50EDB640A75AE8E@deskpro.com>
-Subject: Test Email - %TIME%
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="50c77e34_725a06fb_dfd0"
-
---50c77e34_725a06fb_dfd0
-Content-Type: multipart/alternative; boundary="50c77e34_1d4ed43b_dfd0"
-
---50c77e34_1d4ed43b_dfd0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-$email_pre
-Test Message
-%MSG_UID%
-$fwd_footer
-
-
---50c77e34_1d4ed43b_dfd0
-Content-Type: text/html; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-$email_pre_html
-<div>Test Message</div>
-%MSG_UID%
-$fwd_footer_html
-
---50c77e34_1d4ed43b_dfd0--
-
---50c77e34_725a06fb_dfd0
-Content-Type: $filetype
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="$filename"
-
-$file
-
---50c77e34_725a06fb_dfd0--
-SRC;
-
+            if ($from_user && $from_user->is_agent) {
+                $tac = $ticket->findAccessCodeForPerson($from_user);
+                if (!$tac) {
+                    $tac = $ticket->addAccessCodeForPerson($from_user);
+                    $this->getContainer()->getEm()->persist($tac);
+                    $this->getContainer()->getEm()->flush();
+                }
+                $access_code = $tac->getAccessCode();
+            } else {
+                $access_code = $ticket->getAccessCode();
+            }
         }
-        $from_email = $input->getOption('from-email');
-        $to_email   = $input->getOption('to-email');
-        $time       = date('Y-m-d H:i:s');
 
-        $source = str_replace('%FROM_EMAIL%', $from_email, $source);
-        $source = str_replace('%TO_EMAIL%', $to_email, $source);
-        $source = str_replace('%TIME%', $time, $source);
-        $source = str_replace('%MSG_UID%', uniqid('eml-', true), $source);
+        #------------------------------
+        # Subject and message
+        #------------------------------
 
-        echo $source;
+        $subject = $input->getOption('subject');
+        if (!$subject) {
+            if ($ticket) {
+                $subject = 'RE: '.$ticket->subject;
+            } else {
+                $subject = sprintf('Test Message #%s -- %s -- %s', date('Hi'), date('Y-m-d'), date('s'));
+            }
+        }
+
+        if ($message_file = $input->getOption('message-file')) {
+            $is_twig = false;
+            if (substr($message_file, 0, 5) === 'twig:') {
+                $is_twig      = true;
+                $message_file = substr($message_file, 5);
+            }
+
+            $message = file_get_contents($message_file);
+            if (!$message) {
+                $output->writeln('<error>--message-file: No such file (or the file is empty)</error>');
+
+                return 1;
+            }
+
+            if ($is_twig) {
+                $message = 'twig:'.$message;
+            }
+        } else {
+            $message = $input->getOption('message') ?: sprintf('Test Message #%s -- %s -- %s', date('Hi'), date('Y-m-d'), date('s'));
+        }
+
+        #------------------------------
+        # Tpl
+        #------------------------------
+
+        $tpl = 'DeskPRO:dev:gen_email/'.($input->getOption('tpl') ?: 'html').'.txt.twig';
+
+        $vars = array(
+            'uid'      => uniqid('dp', true),
+            'ts'       => time(),
+            'rand'     => mt_rand(100000, 999999),
+            'rand_ref' => Strings::random(4, Strings::CHARS_ALPHA_IU).'-'.Strings::random(4, Strings::CHARS_ALPHA_IU).'-'.Strings::random(4, Strings::CHARS_ALPHA_IU),
+            'rand_str' => Strings::random(10, Strings::CHARS_ALPHA_IU),
+            'subject'  => $subject,
+            'message'  => $message,
+
+            'as_reply'    => $ticket,
+            'as_agent'    => $from_user && $from_user->is_agent,
+            'access_code' => $access_code,
+
+            'from_user'  => $from_user,
+            'from_email' => $from_email,
+            'from_name'  => $from_name,
+            'from_line'  => $from_line,
+
+            'to_email' => $to_email,
+            'to_acc'   => $to_acc,
+        );
+
+        $custom_vars = null;
+        if ($custom_vars = $input->getOption('vars')) {
+            $custom_vars = @json_decode($custom_vars, true);
+        }
+        if (!$custom_vars) {
+            $custom_vars = array();
+        }
+
+        if ($custom_vars) {
+            $vars = array_merge($vars, $custom_vars);
+        }
+
+        if ($input->getOption('is-bounce')) {
+            $vars['is_bounce'] = true;
+        }
+
+        $proc_keys   = array_keys($custom_vars);
+        $proc_keys[] = 'subject';
+        $proc_keys[] = 'message';
+
+        $twig = $this->getContainer()->getTwig();
+        foreach ($proc_keys as $k) {
+            if (substr($vars[$k], 0, 5) === 'twig:') {
+                $vars[$k] = $twig->renderStringTemplate(substr($vars[$k], 5), $vars);
+            }
+        }
+
+        #------------------------------
+        # Done
+        #------------------------------
+
+        echo trim($this->getContainer()->getTemplating()->render($tpl, $vars));
+        echo "\n";
+
+        return 0;
     }
 }

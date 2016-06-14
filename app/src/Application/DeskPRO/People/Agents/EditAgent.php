@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\People\Agents;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -75,11 +74,6 @@ class EditAgent
     public $emails;
 
     /**
-     * @var string
-     */
-    public $primary_phone_number_text;
-
-    /**
      * @var \Application\DeskPRO\Entity\AgentTeam[]
      */
     public $teams;
@@ -99,17 +93,15 @@ class EditAgent
      */
     public $notification_settings;
 
-
     /**
      * @param Person $person
      */
     public function __construct(Person $person)
     {
-        $this->agent = $person;
-        $this->name = $person->name;
+        $this->agent         = $person;
+        $this->name          = $person->name;
         $this->override_name = $person->override_display_name;
-        $this->primary_phone_number = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
-        $this->primary_phone_number_text = $person->getPrimaryPhoneNumberText();
+        $this->primary_phone = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
 
         $this->zones = array();
         if ($person->can_admin) {
@@ -138,18 +130,18 @@ class EditAgent
         $this->agent_groups = $person->usergroups->toArray();
 
         $this->notification_settings = array(
-            'no_allow_set_email' => (int) $person->getPref('agent_notif.no_allow_set_email'),
+            'no_allow_set_email'   => (int) $person->getPref('agent_notif.no_allow_set_email'),
             'no_allow_set_browser' => (int) $person->getPref('agent_notif.no_allow_set_browser'),
         );
 
         $this->primary_team = $person->primary_team;
     }
 
-
     /**
      * Saves the agent.
      *
-     * @param  EntityManager $em
+     * @param EntityManager $em
+     *
      * @return Person
      */
     public function save(EntityManager $em)
@@ -162,37 +154,36 @@ class EditAgent
         # General props
         #------------------------------
 
-        $agent->is_user               = true;
-        $agent->is_confirmed          = true;
-        $agent->is_agent              = true;
-        $agent->can_agent             = true;
+        $agent->is_user      = true;
+        $agent->is_confirmed = true;
+        $agent->is_agent     = true;
+        $agent->can_agent    = true;
 
         $agent->name                  = $this->name;
         $agent->override_display_name = $this->override_name ?: '';
 
-        if (!PhoneNumbers::looksEmpty($this->primary_phone_number_text)) {
-            $this->primary_phone_number->number = $this->primary_phone_number_text;
-            $agent->setPrimaryPhoneNumber($this->primary_phone_number);
+        if (!PhoneNumbers::looksEmpty($this->primary_phone['number'])) {
+            $agent->setPrimaryPhoneNumber($this->primary_phone);
         } else {
             $agent->setPrimaryPhoneNumber(null);
         }
 
-        $agent->can_admin             = in_array('admin', $this->zones);
-        $agent->can_reports           = in_array('reports', $this->zones);
+        $agent->can_admin   = in_array('admin', $this->zones);
+        $agent->can_reports = in_array('reports', $this->zones);
 
         #------------------------------
         # Teams
         #------------------------------
 
         foreach ($agent->teams as $team) {
-            /** @var $team AgentTeam */
+            /* @var $team AgentTeam */
             $team->removePerson($agent); // unidirectional
         }
 
         $found_primary = false;
 
         foreach ($this->teams as $team) {
-            /** @var $team AgentTeam */
+            /* @var $team AgentTeam */
             $agent->addTeam($team); // bidirectional
 
             if ($team === $this->primary_team) {
@@ -212,7 +203,7 @@ class EditAgent
         # Groups
         #------------------------------
 
-        $group_coll_helper = new CollectionHelper($agent, 'usergroups', null, function($item) {
+        $group_coll_helper = new CollectionHelper($agent, 'usergroups', null, function ($item) {
             return !$item->is_agent_group;
         });
         if ($this->agent_groups instanceof ArrayCollection) {
@@ -224,14 +215,14 @@ class EditAgent
         # Email addresses
         #------------------------------
 
-        $set_emails  = array_map(function ($x) { return strtolower($x); },        $this->emails);
+        $set_emails = array_map(function ($x) { return strtolower($x); },        $this->emails);
         $have_emails = array_map(function ($y) { return strtolower($y->email); }, $agent->emails->toArray());
 
         $add_emails = array_diff($set_emails, $have_emails);
         $del_emails = array_diff($have_emails, $set_emails);
 
         foreach ($add_emails as $email_address) {
-            $email = new PersonEmail();
+            $email               = new PersonEmail();
             $email->person       = $agent;
             $email->email        = $email_address;
             $email->is_validated = true;
@@ -276,7 +267,6 @@ class EditAgent
         $em->flush();
     }
 
-
     ############################################################################
     # Validation Metadata
     ############################################################################
@@ -290,20 +280,20 @@ class EditAgent
             'constraints' => array(
                 new Constraints\NotBlank(),
                 new Constraints\Email(),
-            )
+            ),
         )));
 
         $metadata->addPropertyConstraint('emails', new Constraints\Count(array('min' => 1, 'minMessage' => '[emails_count] At least one email address is required')));
 
         $metadata->addPropertyConstraint('teams', new Constraints\All(array(
             'constraints' => array(
-                new DeskproConstraints\AgentTeamConstraint()
-            )
+                new DeskproConstraints\AgentTeamConstraint(),
+            ),
         )));
         $metadata->addPropertyConstraint('agent_groups', new Constraints\All(array(
             'constraints' => array(
-                new DeskproConstraints\AgentGroupConstraint()
-            )
+                new DeskproConstraints\AgentGroupConstraint(),
+            ),
         )));
     }
 }

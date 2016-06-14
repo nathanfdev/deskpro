@@ -1,10 +1,28 @@
 define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 	return ['$scope', 'Api', '$q', '$modal', function($scope, Api, $q, $modal) {
 		$scope.enableCustomFooter();
+    $scope.drivers = {};
+    $scope.driver_warning = null;
 
 		if (window.DP_IS_CLOUD) {
 			$scope.is_cloud = true;
 		}
+
+    var warning_def = $q.defer();
+
+    Api.sendGet('/apps/packages/deskpro_us_db/get-drivers').then(function(res) {
+      $scope.drivers = res.data;
+      warning_def.resolve();
+    });
+
+    $scope.$watch('setting_values.db_type', function(val){
+      if (!val) return;
+      $scope.driver_warning = $scope.drivers[val];
+    });
+
+    warning_def.promise.then(function(){
+      $scope.driver_warning = $scope.drivers[$scope.setting_values.db_type];
+    });
 
 		//##############################################################################################################
 		//# Test modal

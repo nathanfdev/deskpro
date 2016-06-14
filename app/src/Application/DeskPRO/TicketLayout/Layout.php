@@ -1,39 +1,39 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\TicketLayout;
 
+use Application\DeskPRO\Entity\Ticket;
 use Orb\Types\JsonObjectSerializable;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -44,7 +44,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
      * @var LayoutField[]
      */
     private $fields = array();
-
 
     /**
      * @param array $fields
@@ -57,6 +56,24 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         }
     }
 
+    /**
+     * Create a new Layout by filtering fields through $fn. $fn must return true for a field to be added to the new layout.
+     *
+     * @param callable $fn
+     *
+     * @return Layout
+     */
+    public function filter($fn)
+    {
+        $layout = new self();
+        foreach ($this->fields as $f) {
+            if (call_user_func($fn, $f) === true) {
+                $layout->add($f);
+            }
+        }
+
+        return $layout;
+    }
 
     /**
      * @param LayoutField $field
@@ -75,11 +92,11 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
                 return $v->getId() == $before_field;
             });
             if ($pos !== null) {
-                $all_fields = $this->fields;
+                $all_fields   = $this->fields;
                 $this->fields = array();
                 foreach ($all_fields as $k => $v) {
                     if ($k == $before_field) {
-                        $did_add = true;
+                        $did_add           = true;
                         $this->fields[$id] = $field;
                     }
 
@@ -92,7 +109,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
             $this->fields[$id] = $field;
         }
     }
-
 
     /**
      * @param LayoutField $field
@@ -107,9 +123,9 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         Arrays::unshiftAssoc($this->fields, $id, $field);
     }
 
-
     /**
-     * @param  string $id
+     * @param string $id
+     *
      * @return bool
      */
     public function has($id)
@@ -117,20 +133,39 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         return isset($this->fields[$id]);
     }
 
+    /**
+     * @param string $id
+     * @param Ticket $ticket
+     *
+     * @return bool
+     */
+    public function hasActiveField($id, Ticket $ticket)
+    {
+        if (!isset($this->fields[$id])) {
+            return false;
+        }
+
+        $f = $this->fields[$id];
+        if ($f->getCriteria() && !$f->getCriteria()->isTicketMatch($ticket)) {
+            return false;
+        }
+
+        return true;
+    }
 
     /**
-     * @param  string      $id
+     * @param string $id
+     *
      * @return LayoutField
      */
     public function get($id)
     {
         if (!isset($this->fields[$id])) {
-            return new \InvalidArgumentException("Invalid field ID: $id");
+            throw new \InvalidArgumentException("Invalid field ID: $id");
         }
 
         return $this->fields[$id];
     }
-
 
     /**
      * @return int
@@ -140,7 +175,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         return count($this->fields);
     }
 
-
     /**
      * @return LayoutField[]
      */
@@ -148,7 +182,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
     {
         return $this->fields;
     }
-
 
     /**
      * @param string $id
@@ -158,7 +191,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         unset($this->fields[$id]);
     }
 
-
     /**
      * @return \ArrayIterator
      */
@@ -166,7 +198,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
     {
         return new \ArrayIterator($this->fields);
     }
-
 
     /**
      * @return string
@@ -187,17 +218,17 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
             $bit_js = "\t\t{\n";
             $bit_js .= "\t\t\tid:                    '{$field->getId()}',\n";
             $bit_js .= "\t\t\tfield_type:            '{$field->getFieldType()}',\n";
-            $bit_js .= "\t\t\tfield_id:              " . ($field->getFieldId() ? "'{$field->getFieldId()}'" : 'null') . ",\n";
-            $bit_js .= "\t\t\tisVisibleOnNew:        " . ($field->isVisibleOnNew() ? 'true' : 'false') . ",\n";
-            $bit_js .= "\t\t\tisVisibleOnView:       " . ($field->isVisibleOnView() ? 'true' : 'false') . ",\n";
-            $bit_js .= "\t\t\tisVisibleOnViewAlways: " . ($field->isVisibleOnViewAlways() ? 'true' : 'false') . ",\n";
-            $bit_js .= "\t\t\tisVisibleOnEdit:       " . ($field->isVisibleOnEdit() ? 'true' : 'false') . ",\n";
+            $bit_js .= "\t\t\tfield_id:              ".($field->getFieldId() ? "'{$field->getFieldId()}'" : 'null').",\n";
+            $bit_js .= "\t\t\tisVisibleOnNew:        ".($field->isVisibleOnNew() ? 'true' : 'false').",\n";
+            $bit_js .= "\t\t\tisVisibleOnView:       ".($field->isVisibleOnView() ? 'true' : 'false').",\n";
+            $bit_js .= "\t\t\tisVisibleOnViewAlways: ".($field->isVisibleOnViewAlways() ? 'true' : 'false').",\n";
+            $bit_js .= "\t\t\tisVisibleOnEdit:       ".($field->isVisibleOnEdit() ? 'true' : 'false').",\n";
             $bit_js .= "\t\t\tcheckFn:               $check_fn\n";
             $bit_js .= "\t\t}";
             $fields_js[] = $bit_js;
         }
 
-        $js .= implode(",\n", $fields_js) . "\n\t];\n\n";
+        $js .= implode(",\n", $fields_js)."\n\t];\n\n";
 
         $js .= "\treturn {\n";
         $js .= "\t\tgetMatchingFields: function (ticket) {\n";
@@ -210,11 +241,10 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         $js .= "\t\t}\n";
         $js .= "\t};\n";
 
-        $js .= "})()";
+        $js .= '})()';
 
         return $js;
     }
-
 
     /**
      * @return array
@@ -223,15 +253,14 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
     {
         $data = array();
 
-        $data['version']  = 1;
-        $data['fields'] = array();
+        $data['version'] = 1;
+        $data['fields']  = array();
         foreach ($this->fields as $f) {
             $data['fields'][] = $f->exportToArray();
         }
 
         return $data;
     }
-
 
     /**
      * @return string
@@ -240,7 +269,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
     {
         return json_encode($this->exportToArray());
     }
-
 
     /**
      * @param array $data
@@ -280,7 +308,8 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
     }
 
     /**
-     * @param  array  $data
+     * @param array $data
+     *
      * @return Layout
      */
     public static function unserializeJsonArray(array $data)
@@ -293,6 +322,7 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 
     /**
      * @param $type
+     *
      * @return array
      */
     public function getIdsOfFieldType($type)

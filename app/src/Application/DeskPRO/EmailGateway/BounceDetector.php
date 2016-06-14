@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
@@ -73,9 +71,8 @@ class BounceDetector
     public function __construct(AbstractReader $reader, EntityManager $em)
     {
         $this->reader = $reader;
-        $this->em = $em;
+        $this->em     = $em;
     }
-
 
     /**
      * @param \Orb\Log\Logger $logger
@@ -84,7 +81,6 @@ class BounceDetector
     {
         $this->logger = $logger;
     }
-
 
     /**
      * @return string[]
@@ -100,7 +96,6 @@ class BounceDetector
 
         return $this->patterns;
     }
-
 
     /**
      * @return bool
@@ -118,33 +113,54 @@ class BounceDetector
                 if (isset($m['subject'])) {
                     $this->original_subject = $m['subject'];
                 }
-                if ($this->logger) $this->logger->logDebug('Is bounced based on subject match: ' . $pattern);
+                if ($this->logger) {
+                    $this->logger->logDebug('Is bounced based on subject match: '.$pattern);
+                }
+
                 return true;
             }
         }
 
         $failed = $this->reader->getHeader('X-Failed-Recipients');
         if ($failed && $failed->getHeader()) {
-            if ($this->logger) $this->logger->logDebug('Is bounced based on X-Failed-Recipients');
+            if ($this->logger) {
+                $this->logger->logDebug('Is bounced based on X-Failed-Recipients');
+            }
+
             return true;
         }
 
-        $from = $this->reader->getFromAddress();
+        // A custom header, can be used to explicitly mark message as a bounce (e.g., for debug or custom rules in mail server)
+        $failed = $this->reader->getHeader('X-Is-Bounce');
+        if ($failed && $failed->getHeader()) {
+            if ($this->logger) {
+                $this->logger->logDebug('Is bounced based on X-Is-Bounce');
+            }
+
+            return true;
+        }
+
+        $from              = $this->reader->getFromAddress();
         $postmaster_config = new \Application\DeskPRO\Config\UserFileConfig('postmaster-emails');
         foreach ($postmaster_config as $pattern) {
             if (preg_match($pattern, $from->email)) {
-                if ($this->logger) $this->logger->logDebug('Is bounced based on postmaster pattern #$k $pattern matching from address ' . $from->email);
+                if ($this->logger) {
+                    $this->logger->logDebug('Is bounced based on postmaster pattern #$k $pattern matching from address '.$from->email);
+                }
+
                 return true;
             }
         }
 
-        if ($this->logger) $this->logger->logDebug('Not a bounce');
+        if ($this->logger) {
+            $this->logger->logDebug('Not a bounce');
+        }
+
         return false;
     }
 
-
     /**
-     * Try to find possible addresses to match on
+     * Try to find possible addresses to match on.
      *
      * @return string[]
      */
@@ -162,7 +178,9 @@ class BounceDetector
         if ($failed = $this->reader->getHeader('X-Failed-Recipients')) {
             foreach ($failed->getAllParts() as $email) {
                 $this->guessed_email_addresses[] = strtolower($email);
-                if ($this->logger) $this->logger->logDebug('Found email via X-Failed-Recipients: ' . $email);
+                if ($this->logger) {
+                    $this->logger->logDebug('Found email via X-Failed-Recipients: '.$email);
+                }
             }
         }
 
@@ -177,7 +195,9 @@ class BounceDetector
 
                 if ($email) {
                     $this->guessed_email_addresses[] = strtolower($email);
-                    if ($this->logger) $this->logger->logDebug('Found email via body: ' . $email);
+                    if ($this->logger) {
+                        $this->logger->logDebug('Found email via body: '.$email);
+                    }
                 }
             }
         }

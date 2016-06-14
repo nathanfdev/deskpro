@@ -9,12 +9,13 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @ma_token         = null
       @ma_login_url     = null
       @lic_set_callback = null
+      @$scope.form = { lic_code: '' }
 
-      @$scope.$watch('lic_code', (lic_code) =>
+      @$scope.$watch('form.lic_code', (lic_code) =>
         lic_code = lic_code || ''
         lic_code = lic_code.replace(/\s/g, '')
         lic_code = (lic_code.match(/(.{1,50})/g) || [lic_code]).join("\n")
-        @$scope.lic_code = lic_code
+        @$scope.form.lic_code = lic_code
       )
       old_title = window.document.title
       window.document.title = 'DeskPRO Billing Interface'
@@ -27,11 +28,12 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         'lic_info': '/dp_license'
       }).then( (res) =>
         @license          = res.data.lic_info.license
+        @license.countAgents = res.data.lic_info.limits.count_agents
         @ma_token         = res.data.lic_info.ma_token
         @ma_login_url     = res.data.lic_info.ma_login_url
         @lic_set_callback = res.data.lic_info.lic_set_callback
 
-        @$scope.lic_code = @license.licenseCode
+        @$scope.form.lic_code = @license.licenseCode
 
         @$scope.refreshing_lic = true
         @DpLicense.getNewLicenseKey().then( (res) =>
@@ -46,7 +48,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
               lic_code = res.license_code
               lic_code = lic_code.replace(/\s/g, '')
               lic_code = (lic_code.match(/(.{1,50})/g) || [lic_code]).join("\n")
-              @$scope.lic_code = lic_code
+              @$scope.form.lic_code = lic_code
               @license.licenseCode = lic_code
             , =>
               @$scope.refreshing_lic = false
@@ -54,6 +56,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         , =>
           @$scope.refreshing_lic = false
         )
+
+        if res.data.lic_info.custom_billing_frame
+          @$scope.custom_billing_frame = res.data.lic_info.custom_billing_frame
+          @$scope.iframe_loading = false
+          @$scope.iframe_code    = '<iframe src="' + @$scope.custom_billing_frame + '" frameborder="0"></iframe>'
       )
 
       return data_promise
@@ -70,7 +77,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
     saveLicenseCode: ->
       postData = {
-        license_code: @$scope.lic_code
+        license_code: @$scope.form.lic_code
       }
 
       @$scope.lic_error_code = false

@@ -1,41 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @subpackage Validator
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ */
 namespace Orb\Validator;
 
 /**
- * Validates a value
+ * Validates a value.
  */
 abstract class AbstractValidator implements ValidatorInterface
 {
@@ -49,14 +46,14 @@ abstract class AbstractValidator implements ValidatorInterface
     /**
      * Sometimes an error might have additional information, such as a position or
      * context where an error took place. This should be an array of errorcode=>info
-     * that could be used in some other system to report errors to a user
+     * that could be used in some other system to report errors to a user.
      *
      * @var array
      */
     protected $errors_info = array();
 
     /**
-     * Options for the validator
+     * Options for the validator.
      *
      * @var array
      */
@@ -70,10 +67,7 @@ abstract class AbstractValidator implements ValidatorInterface
 
     protected function init()
     {
-
     }
-
-
 
     /**
      * Check to see if a value is valid or not.
@@ -83,26 +77,23 @@ abstract class AbstractValidator implements ValidatorInterface
     public function isValid($value)
     {
         // Reset
-        $this->errors = array();
+        $this->errors      = array();
         $this->errors_info = array();
 
         return $this->checkIsValid($value);
     }
 
-
-
     /**
      * Check to see if a value is valid or not.
      *
-     * @param  mixed $value
+     * @param mixed $value
+     *
      * @return bool
      */
     public function __invoke($value)
     {
         return $this->isValid($value);
     }
-
-
 
     /**
      * Check $value to see if its valid.
@@ -111,16 +102,16 @@ abstract class AbstractValidator implements ValidatorInterface
      */
     abstract protected function checkIsValid($value);
 
-
-
     /**
-     * Get an array of error codes
+     * Get an array of error codes.
      *
      * @return array
      */
     public function getErrors($keyed = false)
     {
-        if (!$this->errors) return array();
+        if (!$this->errors) {
+            return array();
+        }
 
         if ($keyed) {
             return array_combine($this->errors, array_fill(0, count($this->errors), 1));
@@ -129,8 +120,6 @@ abstract class AbstractValidator implements ValidatorInterface
         return $this->errors;
     }
 
-
-
     /**
      * Get an array of errcode=>info. Null means no info available.
      *
@@ -138,7 +127,9 @@ abstract class AbstractValidator implements ValidatorInterface
      */
     public function getErrorsInfo()
     {
-        if (!$this->errors) return array();
+        if (!$this->errors) {
+            return array();
+        }
 
         $ret = array();
         foreach ($this->errors as $k) {
@@ -147,7 +138,6 @@ abstract class AbstractValidator implements ValidatorInterface
 
         return $ret;
     }
-
 
     /**
      * Using dot notation in error codes, we can sort errors into groups
@@ -161,7 +151,9 @@ abstract class AbstractValidator implements ValidatorInterface
      */
     public function getErrorGroups($keyed = false)
     {
-        if (!$this->errors) return array();
+        if (!$this->errors) {
+            return array();
+        }
 
         $groups = array();
 
@@ -188,7 +180,7 @@ abstract class AbstractValidator implements ValidatorInterface
     }
 
     /**
-     * Get a string of all errors and info that can help in debugging
+     * Get a string of all errors and info that can help in debugging.
      *
      * @return string
      */
@@ -198,7 +190,7 @@ abstract class AbstractValidator implements ValidatorInterface
         foreach ($this->errors as $k => $errcode) {
             $line = $errcode;
             if (!empty($this->errors_info[$k])) {
-                $line .= " :: " . $this->errors_info[$k];
+                $line .= ' :: '.$this->errors_info[$k];
             }
 
             $ret[] = $line;
@@ -226,7 +218,8 @@ abstract class AbstractValidator implements ValidatorInterface
     /**
      * Check if a certain error has occurred.
      *
-     * @param  string $code
+     * @param string $code
+     *
      * @return bool
      */
     public function hasError($code)
@@ -239,13 +232,14 @@ abstract class AbstractValidator implements ValidatorInterface
      * If nothing was set but the error exists, then $code is just
      * given back to you.
      *
-     * @param  string $code
+     * @param string $code
+     *
      * @return mixed
      */
     public function getErrorInfo($code)
     {
         if (!$this->hasError($code)) {
-            return null;
+            return;
         }
 
         if (isset($this->errors_info[$code])) {
@@ -256,7 +250,7 @@ abstract class AbstractValidator implements ValidatorInterface
     }
 
     /**
-     * Remove an error from the collection
+     * Remove an error from the collection.
      *
      * @param string $code
      */
@@ -267,8 +261,9 @@ abstract class AbstractValidator implements ValidatorInterface
     }
 
     /**
-     * @param  string $name
-     * @param  mixed  $default
+     * @param string $name
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getOption($name, $default = null)
@@ -277,7 +272,8 @@ abstract class AbstractValidator implements ValidatorInterface
     }
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function hasOption($name)

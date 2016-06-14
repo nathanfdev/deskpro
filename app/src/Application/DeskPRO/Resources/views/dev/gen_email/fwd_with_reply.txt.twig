@@ -1,0 +1,17 @@
+Date: {{ "now"|date('r') }}
+From: {{ from_line }}
+To: {{ to_email }}
+Message-ID: <{{ uid }}@test-message>
+Subject: FW: {{ subject }}
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+
+{% if replytext %}{{ replytext }}{% else %}This is some reply text -- {{ rand_str }}{% endif %}
+
+----- Original message -----
+From: {% if fwd_from_line %}{{ fwd_from_line }}{% elseif fwd_from %}<{{ fwd_from }}>{% else %}<user@example.com>{% endif %}
+To: {{ from_line }}
+Subject: {{ subject }}
+Date: {{ "-10 minutes"|date('r') }}
+
+{{ message }}

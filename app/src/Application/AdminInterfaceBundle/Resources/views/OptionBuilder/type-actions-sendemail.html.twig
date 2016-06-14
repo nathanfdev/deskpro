@@ -3,7 +3,7 @@
 		<table class="display-table">
 			<tr>
 				<td class="nowrap"><label class="row-label">Send Email</label></td>
-				<td ng-show="rowOpts.rowEnabled">
+				<td ng-show="rowOpts.rowEnabled" class="row-options">
 					<table class="display-table spaced">
                         <tr>
                             <td>Email Address to Send to (separate multiple with commas):</td>
@@ -26,8 +26,10 @@
 										{% endfor %}
 									</optgroup>
 									<optgroup label="Other User Emails">
-										<option value="DeskPRO:emails_user:ticket-rate.html.twig">Request user feedabck</option>
+										<option value="DeskPRO:emails_user:ticket-rate.html.twig">Send satisfaction survey</option>
 										<option value="DeskPRO:emails_user:ticket-new-validate-email.html.twig">New ticket requires validation (auto-response)</option>
+										<option value="DeskPRO:emails_user:ticket-awaiting-warn.html.twig">Warn about awaiting ticket</option>
+										<option value="DeskPRO:emails_user:ticket-awaiting-warn-final.html.twig">Final warn about awaiting ticket</option>
 									</optgroup>
 									<optgroup label="Custom Emails">
 										<option ng-repeat="tpl in custom_email_tpls" value="{{ ng_var('tpl.name') }}">{{ ng_var('tpl.title') }}</option>

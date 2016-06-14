@@ -177,7 +177,10 @@
 						</div>
 					{% endif %}
 					{% if has_done_reset %}<div class="successa>{{ phrase('agent.login.password_was_reset') }}</div>{% endif %}
-					{% if has_logged_out %}<div class="success">{{ phrase('agent.login.has_logged_out') }}</div>{% endif %}
+					{% if has_logged_out %}
+					  <div class="success">{{ phrase('agent.login.has_logged_out') }}</div>
+					  {% include 'DeskPRO:Common:notify-logout-script.html.twig' with { show:true } %}
+					{% endif %}
 
 					{% if failed_login_name == "1" %}{% set failed_login_name = "" %}{% endif %}
 

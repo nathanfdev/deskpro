@@ -234,8 +234,11 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 				icon = ASSETS_BASE_URL + '/' + icon;
 			}
 
-			var notification = new Notify(row.find('big').first().text() || 'DeskPRO', {
-				body: row.find('small').first().text(),
+			var title = $.trim(row.find('big').first().text().replace(/[\n]/g, ' ').replace(/\s+/g, ' ')).replace(/^#\d+\s*/, '');
+			var body = $.trim(row.find('small').first().text().replace(/[\n]/g, ' ').replace(/\s+/g, ' '));
+
+			var notification = new Notify(title || 'DeskPRO', {
+				body: body,
 				icon: icon,
 				notifyClick: function() {
 					window.focus();

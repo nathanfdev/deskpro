@@ -1,44 +1,42 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 
 /**
- * Basic ratings
- *
+ * Basic ratings.
  */
 abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -89,7 +87,7 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     public static function create($user_rating, $use_request = true)
     {
-        $rating = new static();
+        $rating         = new static();
         $rating->rating = $user_rating;
 
         if ($use_request && App::has('request')) {
@@ -140,14 +138,16 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
         $this->_onPropertyChanged('visitor', $this->visitor, $visitor);
         $this->visitor = $visitor;
 
-        if ($visitor === null) return;
+        if ($visitor === null) {
+            return;
+        }
 
         $this['ip_address'] = $visitor['ip_address'];
 
-        if (!$this->name AND $visitor['name']) {
+        if (!$this->name and $visitor['name']) {
             $this['name'] = $visitor['name'];
         }
-        if (!$this->email AND $visitor['email']) {
+        if (!$this->email and $visitor['email']) {
             $this['email'] = $visitor['email'];
         }
     }

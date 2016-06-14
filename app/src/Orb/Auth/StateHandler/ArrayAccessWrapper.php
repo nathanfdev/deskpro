@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @category Auth
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Auth
+ */
 namespace Orb\Auth\StateHandler;
 
 /**
@@ -47,19 +46,22 @@ namespace Orb\Auth\StateHandler;
 class ArrayAccessWrapper implements StateHandlerInterface
 {
     /**
-     * The array-like state object
+     * The array-like state object.
+     *
      * @var ArrayAccess
      */
     protected $_state_obj;
 
     /**
      * The method on the state object that we can call to clear state.
+     *
      * @var string
      */
     protected $_clear_state_method = null;
 
     /**
-     * A prefix to prefix all keys with
+     * A prefix to prefix all keys with.
+     *
      * @var string
      */
     protected $_prefix = '';
@@ -72,18 +74,15 @@ class ArrayAccessWrapper implements StateHandlerInterface
         $this->_state_obj = $state_obj;
     }
 
-
     /**
-     * Set the key prefix
+     * Set the key prefix.
      *
-     * @param  string $prefix
-     * @return void
+     * @param string $prefix
      */
     public function setPrefix($prefix)
     {
         $this->_prefix = $prefix;
     }
-
 
     /**
      * If the object has it's own clear method, then you can set it's method name
@@ -91,8 +90,7 @@ class ArrayAccessWrapper implements StateHandlerInterface
      *
      * Optionally $method can be a callback
      *
-     * @param  string $method The name of the method on the state object to call when clearing state
-     * @return void
+     * @param string $method The name of the method on the state object to call when clearing state
      */
     public function setClearStateMethod($method)
     {
@@ -102,18 +100,15 @@ class ArrayAccessWrapper implements StateHandlerInterface
             }
         } else {
             if (!is_callable($method)) {
-                throw new \InvalidArgumentException("The parameter passed is not a valid callback");
+                throw new \InvalidArgumentException('The parameter passed is not a valid callback');
             }
         }
 
         $this->_clear_state_method = $method;
     }
 
-
     /**
      * Clears all state data, or resets back into its initial state.
-     *
-     * @return void
      */
     public function clearState()
     {
@@ -142,21 +137,21 @@ class ArrayAccessWrapper implements StateHandlerInterface
 
     public function offsetUnset($offset)
     {
-        unset($this->_state_obj[$this->_prefix . $offset]);
+        unset($this->_state_obj[$this->_prefix.$offset]);
     }
 
     public function offsetSet($offset, $value)
     {
-        $this->_state_obj[$this->_prefix . $offset] = $value;
+        $this->_state_obj[$this->_prefix.$offset] = $value;
     }
 
     public function offsetGet($offset)
     {
-        return $this->_state_obj[$this->_prefix . $offset];
+        return $this->_state_obj[$this->_prefix.$offset];
     }
 
     public function offsetExists($offset)
     {
-        return isset($this->_state_obj[$this->_prefix . $offset]);
+        return isset($this->_state_obj[$this->_prefix.$offset]);
     }
 }

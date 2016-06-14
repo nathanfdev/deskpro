@@ -13,6 +13,7 @@ define ['require', 'Admin/Main/Ctrl/Base', 'Admin/Usersources/Helper/UsersourceT
       @$scope.enableCustomFooter = => @$scope.has_own_footer = true
       @presaveCallback = null
       @permission_groups = []
+      @permission_groups_user =[]
       return
 
     initialLoad: ->
@@ -20,13 +21,19 @@ define ['require', 'Admin/Main/Ctrl/Base', 'Admin/Usersources/Helper/UsersourceT
 
       @Api.sendDataGet({
         pack: '/apps/packages/' + @packageName,
-        agent_groups: '/agent_groups'
+        agent_groups: '/agent_groups',
+        user_groups: '/user_groups'
       }).then( (result) =>
         @pack = result.data.pack['package']
         @$scope.pack = @pack
 
         for val in result.data.agent_groups.groups
           @permission_groups.push({"value": val.id.toString(), "label": val.title})
+
+        @permission_groups_user = [{"value": 0, "label": ""}]
+        for val in result.data.user_groups.groups
+          continue if val.sys_name == 'everyone'
+          @permission_groups_user.push({"value": val.id.toString(), "label": val.title})
 
         form_template = @packageName + '/Install/install.html'
         installCtrl = null

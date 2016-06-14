@@ -1,46 +1,43 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage JobQueue
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\JobQueue\Processor;
 
-use Application\DeskPRO\JobQueue\JobProcessorInterface;
 use Application\DeskPRO\Entity\Job;
+use Application\DeskPRO\JobQueue\JobProcessorInterface;
 use Application\DeskPRO\JobQueue\JobQueueException;
 use Doctrine\DBAL\Connection;
+use Symfony\Component\OptionsResolver\Exception\ExceptionInterface as OptionsResolverException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\OptionsResolver\Exception\ExceptionInterface as OptionsResolverException;
 
 /**
  * Helper methods available to children, encouraged to extend this when creating a job processor (but not required to).
@@ -64,7 +61,6 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
     public function execute(array $job)
     {
         try {
-
             $this->touchJob($job);
 
             try {
@@ -80,44 +76,38 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 );
 
                 return;
-
             }
 
             if ($this->process($data, $job)) {
                 $this->runSuccessHandler($job);
             }
-
         } catch (\Exception $e) {
-
             $this->runExceptionHandler($job, $e);
-
         }
     }
 
     /**
      * Setup an options resolver that defines the data that your processor requires (and its defaults if necessary)
-     * See: http://symfony.com/doc/current/components/options_resolver.html
+     * See: http://symfony.com/doc/current/components/options_resolver.html.
      *
      * Note: if the job data (payload) causes this resolver to throw an exception, the job will be rejected automatically
      * for you
      *
-     * @param  OptionsResolverInterface $resolver
-     * @return null
+     * @param OptionsResolverInterface $resolver
      */
     abstract public function setDataOptions(OptionsResolverInterface $resolver);
 
     /**
-     * this is what needs to be implemented - this method will receive the payload and it needs to be dealt with
+     * this is what needs to be implemented - this method will receive the payload and it needs to be dealt with.
      *
-     * @param  array $data validated data (the payload)
-     * @param  array $job  the full job db row array
-     * @return bool  TRUE if successfully processed
+     * @param array $data validated data (the payload)
+     * @param array $job  the full job db row array
      */
     abstract public function process(array $data, array $job);
 
     /**
      * OVERRIDE this method to change how the processor handles uncaught exceptions.
-     * You might want to catch various types of exceptions here, or in your process() method
+     * You might want to catch various types of exceptions here, or in your process() method.
      *
      * @param array $job
      * @param       $e
@@ -133,7 +123,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
     }
 
     /**
-     * OVERRIDE this method to change how the processor handles itself after successfully processing
+     * OVERRIDE this method to change how the processor handles itself after successfully processing.
      *
      * @param array $job
      */
@@ -147,7 +137,8 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
      * So, if your processor defines JOB_TYPE as "test_job", then any job time we process a job with the "type" field
      * equal to "test_job", it will be processed by this.
      *
-     * @param  array  $job
+     * @param array $job
+     *
      * @return string
      */
     public function canHandle(array $job)
@@ -194,7 +185,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 'completed_status' => Job::STATUS_COMPLETE,
                 'status_code'      => $status_code,
                 'date_touch'       => new \DateTime(),
-                'job_id'           => $job['id']
+                'job_id'           => $job['id'],
             ),
             array(
                 'log_summary'      => 'string',
@@ -202,7 +193,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 'completed_status' => 'string',
                 'status_code'      => 'string',
                 'date_touch'       => 'datetime',
-                'job_id'           => 'integer'
+                'job_id'           => 'integer',
             )
         );
     }
@@ -234,7 +225,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 'completed_status' => Job::STATUS_REJECTED,
                 'status_code'      => $status_code,
                 'date_touch'       => new \DateTime(),
-                'job_id'           => $job['id']
+                'job_id'           => $job['id'],
             ),
             array(
                 'log_summary'      => 'string',
@@ -242,18 +233,19 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 'completed_status' => 'string',
                 'status_code'      => 'string',
                 'date_touch'       => 'datetime',
-                'job_id'           => 'integer'
+                'job_id'           => 'integer',
             )
         );
     }
 
     /**
-     * Mark the job as "error" status, using the exception to provide the detailed log
+     * Mark the job as "error" status, using the exception to provide the detailed log.
      *
-     * @param  array                        $job
-     * @param                               $status_code
-     * @param                               $log_summary
-     * @param  \Exception                   $e
+     * @param array      $job
+     * @param            $status_code
+     * @param            $log_summary
+     * @param \Exception $e
+     *
      * @throws \Doctrine\DBAL\DBALException
      */
     protected function markExceptionError(array $job, $status_code, $log_summary, \Exception $e)
@@ -272,18 +264,18 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
             array(
                 'log_summary'   => $log_summary,
                 'detailed_logs' => $this->formatExceptionIntoString($e),
-                'error_status'   => Job::STATUS_ERROR,
+                'error_status'  => Job::STATUS_ERROR,
                 'status_code'   => $status_code,
                 'date_touch'    => new \DateTime(),
-                'job_id'        => $job['id']
+                'job_id'        => $job['id'],
             ),
             array(
                 'log_summary'   => 'string',
                 'detailed_logs' => 'text',
-                'error_status'   => 'string',
+                'error_status'  => 'string',
                 'status_code'   => 'string',
                 'date_touch'    => 'datetime',
-                'job_id'        => 'integer'
+                'job_id'        => 'integer',
             )
         );
     }
@@ -291,9 +283,11 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
     /**
      * Do the SQL to handle the common retry logic. Make sure to set the job status /logs and such yourself, before this.
      *
-     * @param  array                        $job
-     * @param                               $date_string
+     * @param array $job
+     * @param       $date_string
+     *
      * @throws \Doctrine\DBAL\DBALException
+     *
      * @deprecated this will be deleted soon, inject the JobQueue and use JobQueue->retry(Job) instead
      */
     protected function scheduleRetryExisting(array $job, $date_string)
@@ -312,16 +306,16 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
             WHERE id = :job_id
             ',
             array(
-                'date_now' => new \DateTime(),
-                'date_retry' => $retry_date,
+                'date_now'       => new \DateTime(),
+                'date_retry'     => $retry_date,
                 'waiting_status' => Job::STATUS_WAITING,
-                'job_id'   => $job['id']
+                'job_id'         => $job['id'],
             ),
             array(
-                'date_now' => 'datetime',
-                'date_retry' => 'datetime',
+                'date_now'       => 'datetime',
+                'date_retry'     => 'datetime',
                 'waiting_status' => 'string',
-                'job_id'   => 'integer'
+                'job_id'         => 'integer',
             )
         );
     }
@@ -331,6 +325,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
      * so the JobSupervisor does not get upset.
      *
      * @param $job
+     *
      * @throws \Doctrine\DBAL\DBALException
      */
     public function touchJob(array $job)
@@ -343,11 +338,11 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
             ',
             array(
                 'date_now' => new \DateTime(),
-                'job_id' => $job['id']
+                'job_id'   => $job['id'],
             ),
             array(
                 'date_now' => 'datetime',
-                'job_id' => 'integer'
+                'job_id'   => 'integer',
             )
         );
     }
@@ -358,9 +353,10 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
     }
 
     /**
-     * Gets the array of data for the job
+     * Gets the array of data for the job.
      *
      * @param $job
+     *
      * @return array
      */
     protected function getData($job)
@@ -374,7 +370,8 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
     }
 
     /**
-     * @param  \Exception $e
+     * @param \Exception $e
+     *
      * @return string
      */
     protected function formatExceptionIntoString(\Exception $e)

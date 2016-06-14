@@ -1,41 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Dpql
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Dpql\Func;
 
-use Application\DeskPRO\Dpql\Exception as DpqlException;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Exception as DpqlException;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
@@ -50,34 +47,35 @@ abstract class AbstractFunc
      * @var array
      */
     protected static $_functionMap = array(
-        'ALIAS' => 'Alias',
-        'COUNT' => 'Count',
-        'COUNT_DISTINCT' => 'CountDistinct',
-        'CURDATE' => 'CurDate',
-        'CURTIME' => 'CurTime',
+        'ALIAS'             => 'Alias',
+        'COUNT'             => 'Count',
+        'COUNT_DISTINCT'    => 'CountDistinct',
+        'CURDATE'           => 'CurDate',
+        'CURTIME'           => 'CurTime',
         'DATE_OFFSET_GROUP' => 'DateOffsetGroup',
-        'DATE' => 'Date',
-        'DAYNAME' => 'DayName',
-        'DAYOFMONTH' => 'DayOfMonth',
-        'DAYOFWEEK' => 'DayOfWeek',
-        'FORMAT' => 'Format',
-        'HOUR' => 'Hour',
-        'LINK' => 'Link',
-        'MATRIX' => 'Matrix',
-        'MINUTE' => 'Minute',
-        'MONTH' => 'Month',
-        'MONTHNAME' => 'MonthName',
-        'NOW' => 'Now',
-        'PERCENT' => 'Percent',
-        'PRINT' => 'Printable',
-        'TIME_LENGTH' => 'TimeLength',
-        'STACK_GROUP' => 'StackGroup',
-        'TO_UTC' => 'ToUtc',
-        'TOTAL' => 'Total',
-        'UTC' => 'Utc',
-        'X' => 'X',
-        'Y' => 'Y',
-        'YEAR' => 'Year'
+        'DATE'              => 'Date',
+        'DAYNAME'           => 'DayName',
+        'DAYOFMONTH'        => 'DayOfMonth',
+        'DAYOFWEEK'         => 'DayOfWeek',
+        'FORMAT'            => 'Format',
+        'HOUR'              => 'Hour',
+        'LINK'              => 'Link',
+        'MATRIX'            => 'Matrix',
+        'MINUTE'            => 'Minute',
+        'MONTH'             => 'Month',
+        'MONTHNAME'         => 'MonthName',
+        'NOW'               => 'Now',
+        'OBJ_LANG'          => 'ObjLang',
+        'PERCENT'           => 'Percent',
+        'PRINT'             => 'Printable',
+        'TIME_LENGTH'       => 'TimeLength',
+        'STACK_GROUP'       => 'StackGroup',
+        'TO_UTC'            => 'ToUtc',
+        'TOTAL'             => 'Total',
+        'UTC'               => 'Utc',
+        'X'                 => 'X',
+        'Y'                 => 'Y',
+        'YEAR'              => 'Year',
     );
 
     /**
@@ -88,7 +86,7 @@ abstract class AbstractFunc
     protected $_name;
 
     /**
-     * List of arguments for function
+     * List of arguments for function.
      *
      * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
      */
@@ -119,7 +117,7 @@ abstract class AbstractFunc
      */
     protected function __construct($name, array $arguments = array())
     {
-        $this->_name = $name;
+        $this->_name      = $name;
         $this->_arguments = $arguments;
     }
 
@@ -135,7 +133,7 @@ abstract class AbstractFunc
     {
         $name = strtoupper($name);
         if (isset(self::$_functionMap[$name])) {
-            $map = __NAMESPACE__ . '\\' . self::$_functionMap[$name];
+            $map = __NAMESPACE__.'\\'.self::$_functionMap[$name];
 
             return new $map($name, $arguments);
         } else {
@@ -148,9 +146,9 @@ abstract class AbstractFunc
      *
      * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part
      *
-     * @return mixed
-     *
      * @throws \Application\DeskPRO\Dpql\Exception
+     *
+     * @return mixed
      */
     protected function _toLiteral(\Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part)
     {
@@ -159,7 +157,7 @@ abstract class AbstractFunc
         } elseif ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\Number) {
             return $part->number;
         } else {
-            throw new DpqlException('Only literal values may be used for ' . $this->_name . '() parameters.');
+            throw new DpqlException('Only literal values may be used for '.$this->_name.'() parameters.');
         }
     }
 }

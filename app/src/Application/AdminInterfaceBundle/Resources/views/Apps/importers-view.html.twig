@@ -1,0 +1,430 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+    <section class="dp-paneblock dp-editpane">
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-fill indent">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <div style="float: left;">
+                            <img ng-src="{{ ng_var('importer.icon') }}" alt="Icon" style="width: 50px;"/>
+                        </div>
+                        <div style="float:right">
+                            <span ng-if="busy || !done && importer.status && 'testing' !== importer.status">
+                                <i class="fa fa-spinner fa-4x fa-spin"></i>
+                            </span>
+                        </div>
+                        <div style="margin-left: 58px;">
+                            <h2>{{ ng_var('importer.title') }}</h2>
+                            <p>{{ ng_var('importer.description') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form" ng-if="!importer.status">
+            <div class="panel panel-fill indent">
+                <div class="panel-body">
+                    <div class="form-group" ng-if="'csv' === id">
+                        <p>
+                            The CSV importer reads data from specific CSV files that contain data in a specific format.
+                        </p>
+
+                        <p>
+                            <a href="https://manuals.deskpro.com/html/admin/importing-data/importing-csv.html"
+                               target="_blank" class="btn btn-default" style="margin-top: 10px;">Read more about
+                                supported CSV files and formats &rarr;</a>
+                        </p>
+                    </div>
+                    <div class="form-group" ng-if="'osticket' === id">
+                        <p>
+                            This importer reads data from an existing osTicket database.
+                        </p>
+
+                        <p>
+                            <a href="https://manuals.deskpro.com/html/admin/importing-data/importing-osticket.html"
+                               target="_blank" class="btn btn-default" style="margin-top: 10px;">Read more about
+                                importing from osTicket &rarr;</a>
+                        </p>
+                    </div>
+                    <div class="form-group" ng-if="'zendesk' === id">
+                        <p>
+                            This importer reads data from an existing Zendesk helpdesk.
+                        </p>
+
+                        <p>
+                            <a href="https://manuals.deskpro.com/html/admin/importing-data/importing-zendesk.html"
+                               target="_blank" class="btn btn-default" style="margin-top: 10px;">Read more about
+                                importing from Zendesk &rarr;</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-fill indent">
+                <div class="panel-body">
+
+                    <div ng-if="!importer.status">
+                        {# CSV #}
+                        <div ng-if="'csv' === id">
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    Files
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <ul class="list list-unstyled">
+                                        <li ng-repeat="blob in importer.config.blobs">
+                                            <i class="fa fa-times" style="cursor: pointer;"
+                                               ng-click="Ctrl.deleteBlob(blob)"></i>
+                                            {{ ng_var('blob.filename') }}
+                                        </li>
+                                        <li ng-show="!importer.config.blobs.length">
+                                            You must upload at least one CSV file.
+                                        </li>
+                                        <li ng-show="file_upload_error">
+                                            <span style="color: red">{{ ng_var('file_upload_error') }}</span>
+                                        </li>
+                                    </ul>
+
+                                    <a href="javascript:;" class="btn btn-default file-upload-wrapper">
+                                        <i class="fa fa-upload"></i>
+                                        <input type="file" ng-file-select="Ctrl.onFileSelect($files)"
+                                               accept=".zip,.csv"/>
+                                        Upload CSV File
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    Field Delimiter
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <select ng-model="importer.config.delimiter">
+                                        <option value="">;</option>
+                                        <option value=",">,</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    Value Enclosure
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <select ng-model="importer.config.enclosure">
+                                        <option value="">"</option>
+                                        <option value="'">'</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        {# Zendesk #}
+
+                        <div ng-if="'zendesk' === id">
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    Subdomain
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="text" ng-model="importer.config.subdomain" class="form-control"/>
+
+                                    <p class="help-block">Enter your Zendesk subdomain. For example, if your helpdesk is at <em>http://example.zendesk.com/</em> then you should enter <em>example</em> here.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    Admin Username
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="text" ng-model="importer.config.username" class="form-control"/>
+
+                                    <p class="help-block">Enter your Zendesk admin username.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    Admin Password
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="password" ng-model="importer.config.password" class="form-control"/>
+
+                                    <p class="help-block">Enter the password for the above admin account.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    API Token
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="text" ng-model="importer.config.token" class="form-control"/>
+
+                                    <p class="help-block">Enter your Zendesk API token (<a href="https://developer.zendesk.com/rest_api/docs/core/introduction#security-and-authentication" target="_blank">more info</a>).</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    Initial time
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="text" ng-model="importer.config.initial_time" class="form-control"
+                                           dp-datetime-popup="DD MMM YYYY"
+                                           max-date="{{ 'now'|date('Y-m-d') }}"/>
+
+                                    <p class="help-block">The initial date to begin the import from. Any data in your helpdesk from before this date will NOT be imported. To import your entire helpdesk, select a date from before your helpdesk was started (e.g., 01 Jan 2000).</p>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        {# OsTicket #}
+                        <div ng-if="'osticket' === id">
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    MySQL Database Host
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" ng-model="importer.config.host"/>
+
+                                    <p class="help-block">Enter the hostname or IP address of the osTicket database.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    MySQL Database Port
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" ng-model="importer.config.port"/>
+
+                                    <p class="help-block">Enter the port of the osTicket database.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    MySQL Database Name
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" ng-model="importer.config.db"/>
+
+                                    <p class="help-block">Enter the name of the database used for osTicket.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    MySQL Username
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" ng-model="importer.config.user"/>
+
+                                    <p class="help-block">Enter a MySQL user who can use the database.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    MySQL Password
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="password" class="form-control" ng-model="importer.config.password"/>
+
+                                    <p class="help-block">Enter the password for the above MySQL user.</p>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        {# DeskPRO #}
+                        <div ng-if="'deskpro' === id">
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    MySQL Database Host
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" ng-model="importer.config.host"/>
+
+                                    <p class="help-block">Enter the hostname or IP address of the DeskPRO database.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    MySQL Database Port
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" ng-model="importer.config.port"/>
+
+                                    <p class="help-block">Enter the port of the DeskPRO database.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    MySQL Database Name
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" ng-model="importer.config.db"/>
+
+                                    <p class="help-block">Enter the name of the database used for DeskPRO.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    MySQL Username
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" ng-model="importer.config.user"/>
+
+                                    <p class="help-block">Enter a MySQL user who can use the database.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    MySQL Password
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="password" class="form-control" ng-model="importer.config.password"/>
+
+                                    <p class="help-block">Enter the password for the above MySQL user.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-3">
+                                    Start ticket ID
+                                </label>
+
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" ng-model="importer.config.start_ticket_id"/>
+
+                                    <p class="help-block">Start ticket ID</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div ng-if="'testing' === importer.status && !busy">
+                        <div ng-if="test_error" class="text-danger">
+                            {{ ng_var('test_error_message') }}
+                        </div>
+                        <div ng-if="!test_error">
+                            <p>
+                                Your configuration was checked and appears to be correct.
+                            </p>
+                            <p>
+                                When ready, you can click the button below to proceed with the import.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div ng-if="importer.status && 'testing' !== importer.status">
+
+                        <div ng-if="!done && importer.progress_start">
+                            Import process was started <span am-time-ago="importer.progress_start"></span>.
+                        </div>
+
+                        <div ng-if="importer.progress_max">
+                            <div style="width: 200px; height: 20px; border: 1px solid #ccc; position: relative;">
+                                <div style="height: 18px; background: #ccc; position: absolute; top: 0; left: 0;
+                                        width: {{ ng_var('100 * importer.progress_step / importer.progress_max') }}%">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            Current status: {{ ng_var('importer.status') }}
+                        </div>
+
+                        <div ng-if="'pending' === importer.status">
+                            <p style="margin-top: 7px;">
+                                Your import job has been queued. It may take a minute before it begins.
+                            </p>
+                        </div>
+
+                        <br/>
+
+                        <textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;" scroll-glue>{{ ng_var('importer.log') }}</textarea>
+                        <div ng-show="log_download_url && done" style="margin-top: 2px;">
+                          <a class="btn btn-default btn-xs" ng-href="{{ ng_var('log_download_url') }}" target="_blank"><i class="fa fa-download" style="margin: 0;"></i> Download Log</a>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </article>
+
+        <footer ng-hide="busy">
+            <div class="dp-content">
+                <div class="dp-btn-controls">
+
+                    <button class="btn btn-primary"
+                            ng-click="Ctrl.importTest()"
+                            ng-disabled="!ready"
+                            ng-if="!importer.status"
+                            >
+                        Next
+                    </button>
+
+                    <button class="btn btn-default"
+                            ng-click="Ctrl.importReset()"
+                            ng-if="'testing' === importer.status"
+                            >
+                        Back
+                    </button>
+
+                    <button class="btn btn-primary"
+                            ng-click="Ctrl.importStart()"
+                            ng-if="'testing' === importer.status && !test_error"
+                            >
+                        Start Import &rarr;
+                    </button>
+
+                    <button class="btn btn-primary"
+                            ng-click="Ctrl.importReset()"
+                            ng-if="done"
+                            >
+                        New Import
+                    </button>
+
+                </div>
+            </div>
+        </footer>
+    </section>
+
+    <div dp-register-message="saved_settings">Settings were saved successfully</div>
+{% endblock %}

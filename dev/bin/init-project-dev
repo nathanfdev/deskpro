@@ -1,0 +1,47 @@
+#!/bin/bash
+
+DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
+
+echo ">> Cleaning"
+rm -rf $DIR_ROOT/app/vendor
+rm -rf $DIR_ROOT/web/app-build
+rm -rf $DIR_ROOT/web/loader-build
+rm -rf $DIR_ROOT/web/bower_components
+rm -rf $DIR_ROOT/web/node_modules
+echo ".. done"
+echo
+
+echo ">> Cleaning caches"
+rm -rf $DIR_ROOT/app/sys/cache/*
+git checkout $DIR_ROOT/app/sys/cache
+rm -rf $DIR_ROOT/data/tmp/*
+git checkout $DIR_ROOT/data/tmp/index.html
+echo ".. done"
+echo
+
+echo ">> Resetting permissions"
+chmod -R 0777 $DIR_ROOT/app/sys/cache
+chmod -R 0777 $DIR_ROOT/data/index.html
+echo ".. done"
+echo
+
+echo ">> Installing vendors with composer"
+cd $DIR_ROOT/app
+composer install --ignore-platform-reqs -o
+echo ".. done"
+echo
+
+echo ">> Hacking vendors"
+$DIR_ROOT/app/bin/hack-vendors.sh
+echo ".. done"
+
+echo ">> Installing web dependencies"
+cd $DIR_ROOT/web
+npm install --save --save-dev
+bower install --config.interactive=false --allow-root --save-dev
+echo ".. done"
+
+echo ">> Building web assets"
+gulp
+echo ".. done"
+echo

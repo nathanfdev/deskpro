@@ -1,40 +1,40 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category DependencyInjection
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category DependencyInjection
+ */
 namespace Application\DeskPRO\DependencyInjection;
 
 use Application\DeskPRO\App\AgentAppPermissions;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -79,7 +79,7 @@ class DeskproContainer extends Container
 
     public function __construct(ParameterBagInterface $parameterBag = null)
     {
-        require_once DP_ROOT . '/sys/load_config.php';
+        require_once DP_ROOT.'/sys/load_config.php';
 
         $GLOBALS['DP_CONTAINER'] = $this;
         parent::__construct($parameterBag);
@@ -109,6 +109,7 @@ class DeskproContainer extends Container
      * if a certain service has been created already, and you'd use has() to see if a service can be used.
      *
      * @param $id
+     *
      * @return bool
      */
     public function isServiceInitialized($id)
@@ -116,12 +117,14 @@ class DeskproContainer extends Container
         return isset($this->services[$id]);
     }
 
-
     /**
      * This returns a reference to a system service.
      *
+     *
+     * @param string $id
+     *
      * @throws \InvalidArgumentException
-     * @param  string                    $id
+     *
      * @return mixed
      */
     public function getSystemService($id)
@@ -133,13 +136,13 @@ class DeskproContainer extends Container
             return $this->system_services[$id];
         }
 
-        $classname = 'Application\\DeskPRO\\DependencyInjection\\SystemServices\\' . $this->camelize($id) . 'Service';
-        $options = null;
+        $classname = 'Application\\DeskPRO\\DependencyInjection\\SystemServices\\'.$this->camelize($id).'Service';
+        $options   = null;
 
         if (!class_exists($classname)) {
             if ($ent = \Orb\Util\Strings::extractRegexMatch('#^(.*?)Data$#', $id, 1)) {
                 $classname = 'Application\\DeskPRO\\DependencyInjection\\SystemServices\\BaseRepositoryService';
-                $options = array('entity' => 'DeskPRO:' . ucfirst($ent));
+                $options   = array('entity' => 'DeskPRO:'.ucfirst($ent));
             } else {
                 throw new \InvalidArgumentException("Invalid service `$id`, tried class `$classname`");
             }
@@ -156,7 +159,6 @@ class DeskproContainer extends Container
         return $obj;
     }
 
-
     /**
      * Unsets a system service so next time it's requested, it will be re-created.
      *
@@ -170,32 +172,36 @@ class DeskproContainer extends Container
     }
 
     /**
-     * @param  string                                                                        $id
+     * @param string $id
+     *
      * @return \Application\DeskPRO\DependencyInjection\SystemServices\BaseRepositoryService
      */
     public function getDataService($id)
     {
-        return $this->getSystemService($id . 'Data');
+        return $this->getSystemService($id.'Data');
     }
 
     /**
      * This calls a system factory and returns a new instance of some kind of object.
      *
+     *
+     * @param string $id
+     * @param array  $options
+     *
      * @throws \InvalidArgumentException
-     * @param  string                    $id
-     * @param  array                     $options
+     *
      * @return mixed
      */
     public function getSystemObject($id, array $options = array())
     {
-        $classname = 'Application\\DeskPRO\\DependencyInjection\\SystemServices\\' . $this->camelize($id) . 'Factory';
+        $classname = 'Application\\DeskPRO\\DependencyInjection\\SystemServices\\'.$this->camelize($id).'Factory';
 
         if (!class_exists($classname)) {
             throw new \InvalidArgumentException("Invalid factory `$id`");
         }
 
         $options = new \Orb\Util\CheckedOptionsArray($options);
-        $obj = $classname::create($this, $options);
+        $obj     = $classname::create($this, $options);
 
         return $obj;
     }
@@ -277,8 +283,9 @@ class DeskproContainer extends Container
      * If the config value is an array of arrays, then it's expected that there are multiple
      * databases to choose from and one is selected at random.
      *
-     * @param  string                               $type
-     * @param  array                                $context = null
+     * @param string $type
+     * @param array  $context = null
+     *
      * @return \Application\DeskPRO\DBAL\Connection
      */
     public function getDbRead($type = 'default', array $context = null)
@@ -299,17 +306,12 @@ class DeskproContainer extends Container
         // Get an appropriate connection
         $parts = explode('.', $type);
         do {
-            $config_key = 'db_read_' . implode('_', $parts);
+            $config_key = 'db_read_'.implode('_', $parts);
             $config_key = rtrim($config_key, '_');
 
-            $type_key = implode('.', $parts);
-            if (!$type_key) {
-                $type_key = 'default';
-            }
-
-            if (isset($this->db_read_conns[$type_key])) {
+            if (isset($this->db_read_conns[$config_key])) {
                 // Assign to the speciifc type so next time we can return earlier
-                $this->db_read_conns[$type] = $this->db_read_conns[$type_key];
+                $this->db_read_conns[$type] = $this->db_read_conns[$config_key];
 
                 return $this->db_read_conns[$type];
             }
@@ -319,36 +321,54 @@ class DeskproContainer extends Container
             if ($read_configs) {
                 $read = null;
 
-                // Single config
+                // Single config, cast to array
                 if (isset($read_configs['host']) || isset($read_configs['dbname'])) {
-                    $read = $read_configs;
-
-                // Multiple config, choose one at random
-                } else {
-                    $read = $read_configs[array_rand($read_configs)];
+                    $read_configs = array($read_configs);
                 }
 
-                if ($read && !empty($read['host']) && !empty($read['dbname'])) {
-                    $db = $this->get('doctrine.dbal.connection_factory')->createConnection(array(
-                        'driver'        => 'pdo_mysql',
-                        'host'          => $read['host'],
-                        'user'          => $read['user'],
-                        'password'      => $read['password'],
-                        'dbname'        => $read['dbname']
-                    ));
-                    $this->db_read_conns[$type] = $db;
+                shuffle($read_configs);
 
-                    return $db;
+                $has_multiple = count($read_configs) > 1;
+
+                // try each read until we have one that works, or they all fail
+                while ($read = array_pop($read_configs)) {
+                    if ($read && !empty($read['host']) && !empty($read['dbname'])) {
+                        try {
+                            $db = $this->get('doctrine.dbal.connection_factory')->createConnection(array(
+                                'driver'   => 'pdo_mysql',
+                                'host'     => $read['host'],
+                                'user'     => $read['user'],
+                                'password' => $read['password'],
+                                'dbname'   => $read['dbname'],
+
+                                // We only want to do the normal retry attempt if there's only one
+                                // reader, because otherwise if there are multiple,
+                                // it'll be faster/more successful to just try the next
+                                'dp_do_retry' => !$has_multiple,
+                            ));
+
+                            $db->connect();
+
+                            $this->db_read_conns[$type]       = $db;
+                            $this->db_read_conns[$config_key] = $db;
+
+                            return $db;
+                        } catch (\Exception $e) {
+                            // Error connecting, log but ignore and try another
+                            $ex = new \RuntimeException("Failed to connect to read database: {$read['user']}@{$read['host']}/{$read['dbname']}", 0, $e);
+                            KernelErrorHandler::logException($ex);
+                        }
+                    }
                 }
             }
         } while (array_pop($parts));
 
         // No read config, return default connection
-        $this->db_read_conns[$type] = $this->getDb();
+        $this->db_read_conns[$type]       = $this->getDb();
+        $this->db_read_conns[$config_key] = $this->getDb();
 
         return $this->db_read_conns[$type];
     }
-
 
     /**
      * @deprecated Use getEm instead.
@@ -357,8 +377,6 @@ class DeskproContainer extends Container
     {
         return $this->get('doctrine.orm.entity_manager');
     }
-
-
 
     /**
      * Get the entity manager.
@@ -370,10 +388,8 @@ class DeskproContainer extends Container
         return $this->get('doctrine.orm.entity_manager');
     }
 
-
-
     /**
-     * Get the DeskPRO serializer
+     * Get the DeskPRO serializer.
      *
      * @return \Application\DeskPRO\Serializer\SerializerRegistry
      */
@@ -382,12 +398,11 @@ class DeskproContainer extends Container
         return $this->getSystemService('serializer');
     }
 
-
-
     /**
-     * Get the request
+     * Get the request.
      *
      * @deprecated Should inject the request into the current controller action
+     *
      * @return \Symfony\Component\HttpFoundation\Request
      */
     public function getRequest()
@@ -395,9 +410,8 @@ class DeskproContainer extends Container
         return $this->get('request');
     }
 
-
     /**
-     * Get the response
+     * Get the response.
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -406,9 +420,8 @@ class DeskproContainer extends Container
         return $this->get('response');
     }
 
-
     /**
-     * Get the session
+     * Get the session.
      *
      * @return \Application\DeskPRO\HttpFoundation\Session
      */
@@ -417,9 +430,8 @@ class DeskproContainer extends Container
         return $this->get('session');
     }
 
-
     /**
-     * Get the mailer
+     * Get the mailer.
      *
      * @return \Application\EmailBundle\SwiftMailer\Mailer
      */
@@ -428,9 +440,8 @@ class DeskproContainer extends Container
         return $this->get('mailer');
     }
 
-
     /**
-     * Get the translator
+     * Get the translator.
      *
      * @return \Application\DeskPRO\Translate\Translate
      */
@@ -439,9 +450,8 @@ class DeskproContainer extends Container
         return $this->get('deskpro.core.translate');
     }
 
-
     /**
-     * Get the templating service
+     * Get the templating service.
      *
      * @return \Application\DeskPRO\Templating\Engine
      */
@@ -450,9 +460,8 @@ class DeskproContainer extends Container
         return $this->get('templating');
     }
 
-
     /**
-     * Get the twig service
+     * Get the twig service.
      *
      * @return \Application\DeskPRO\Twig\Environment
      */
@@ -461,9 +470,8 @@ class DeskproContainer extends Container
         return $this->get('twig');
     }
 
-
     /**
-     * Get the router
+     * Get the router.
      *
      * @return \Application\DeskPRO\Routing\Router
      */
@@ -471,7 +479,6 @@ class DeskproContainer extends Container
     {
         return $this->get('router');
     }
-
 
     /**
      * @return \Symfony\Component\Validator\Validator
@@ -481,9 +488,8 @@ class DeskproContainer extends Container
         return $this->get('validator');
     }
 
-
     /**
-     * Get the app event dispatcher
+     * Get the app event dispatcher.
      *
      * @return \Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher
      */
@@ -492,9 +498,8 @@ class DeskproContainer extends Container
         return $this->get('event_dispatcher');
     }
 
-
     /**
-     * Get the form factory
+     * Get the form factory.
      *
      * @return \Symfony\Component\Form\FormFactory
      */
@@ -503,9 +508,8 @@ class DeskproContainer extends Container
         return $this->get('form.factory');
     }
 
-
     /**
-     * Get the searcher
+     * Get the searcher.
      *
      * @return \Application\DeskPRO\NewSearch\SearchEngine\SearchEngine
      */
@@ -514,9 +518,8 @@ class DeskproContainer extends Container
         return $this->getSystemService('SearchEngine');
     }
 
-
     /**
-     * Get the context factory
+     * Get the context factory.
      *
      * @return \Application\DeskPRO\NewSearch\SearchEngine\SearchContextFactory
      */
@@ -524,7 +527,6 @@ class DeskproContainer extends Container
     {
         return $this->getSystemService('SearchContextFactory');
     }
-
 
     /**
      * @return \Imagine\Image\ImagineInterface
@@ -534,9 +536,20 @@ class DeskproContainer extends Container
         return $this->getSystemService('imagine');
     }
 
+    public function getUsersourceLogger()
+    {
+        static $logger = null;
+
+        if ($logger === null) {
+            $logger = new \Orb\Log\Logger();
+            $logger->addWriter(new \Orb\Log\Writer\Stream($this->getLogDir().'/usersource_log.log'));
+        }
+
+        return $logger;
+    }
 
     /**
-     * Get the person activity logger
+     * Get the person activity logger.
      *
      * @return \Application\DeskPRO\People\ActivityLogger\ActivityLogger
      */
@@ -545,9 +558,8 @@ class DeskproContainer extends Container
         return $this->get('deskpro.person_activity_logger');
     }
 
-
     /**
-     * Get the reference generator
+     * Get the reference generator.
      *
      * @return \Application\DeskPRO\RefGenerator\RefGeneratorInterface
      */
@@ -555,7 +567,6 @@ class DeskproContainer extends Container
     {
         return $this->getSystemService('RefGenerator');
     }
-
 
     /**
      * @return \Application\DeskPRO\Email\EmailAccount\EmailAccountManager
@@ -565,21 +576,20 @@ class DeskproContainer extends Container
         return $this->get('email.email_account_manager');
     }
 
-
     /**
-     * Get the queuer
+     * Get the queuer.
      *
-     * @param  string                           $name
+     * @param string $name
+     *
      * @return \Application\DeskPRO\Queue\Queue
      */
     public function getQueue($name)
     {
         $adapter = new \Application\DeskPRO\Queue\Adapter\QueueItemEntity(array('em' => $this->getEm(), 'name' => $name));
-        $queue = new \Application\DeskPRO\Queue\Queue($adapter, array('name' => $name));
+        $queue   = new \Application\DeskPRO\Queue\Queue($adapter, array('name' => $name));
 
         return $queue;
     }
-
 
     /**
      * @return \Application\DeskPRO\Attachments\AcceptAttachment
@@ -589,7 +599,6 @@ class DeskproContainer extends Container
         return $this->getSystemService('attachment_accepter');
     }
 
-
     /**
      * @return \Application\DeskPRO\BlobStorage\DeskproBlobStorage
      */
@@ -597,7 +606,6 @@ class DeskproContainer extends Container
     {
         return $this->get('deskpro.blob_storage');
     }
-
 
     /**
      * @return \Application\DeskPRO\AgentAlert\AlertSender
@@ -607,7 +615,6 @@ class DeskproContainer extends Container
         return $this->getSystemService('agent_alert_sender');
     }
 
-
     /**
      * @return \Application\DeskPRO\Tickets\TicketManager
      */
@@ -615,7 +622,6 @@ class DeskproContainer extends Container
     {
         return $this->getSystemService('ticket_manager');
     }
-
 
     /**
      * @return \Application\DeskPRO\TicketLayout\TicketLayoutManager
@@ -625,7 +631,6 @@ class DeskproContainer extends Container
         return $this->getSystemService('ticket_layout_manager');
     }
 
-
     /**
      * @return \Application\DeskPRO\CustomFields\TicketFieldManager
      */
@@ -633,7 +638,6 @@ class DeskproContainer extends Container
     {
         return $this->getSystemService('ticket_fields_manager');
     }
-
 
     /**
      * @return \Application\DeskPRO\Departments\TicketDepartments
@@ -643,7 +647,6 @@ class DeskproContainer extends Container
         return $this->getSystemService('ticket_departments');
     }
 
-
     /**
      * @return \Application\DeskPRO\Departments\ChatDepartments
      */
@@ -651,7 +654,6 @@ class DeskproContainer extends Container
     {
         return $this->getSystemService('chat_departments');
     }
-
 
     /**
      * @return \Application\DeskPRO\Tickets\TicketCategories
@@ -661,7 +663,6 @@ class DeskproContainer extends Container
         return $this->getSystemService('ticket_categories');
     }
 
-
     /**
      * @return \Application\DeskPRO\Tickets\TicketPriorities
      */
@@ -669,7 +670,6 @@ class DeskproContainer extends Container
     {
         return $this->getSystemService('ticket_priorities');
     }
-
 
     /**
      * @return \Application\DeskPRO\Tickets\TicketWorkflows
@@ -679,7 +679,6 @@ class DeskproContainer extends Container
         return $this->getSystemService('ticket_workflows');
     }
 
-
     /**
      * @return \Application\DeskPRO\Tickets\Filters\FilterChangeDetector
      */
@@ -687,7 +686,6 @@ class DeskproContainer extends Container
     {
         return $this->getSystemService('ticket_filter_change_detector');
     }
-
 
     /**
      * @return \Application\DeskPRO\Products\Products
@@ -697,7 +695,6 @@ class DeskproContainer extends Container
         return $this->getSystemService('products');
     }
 
-
     /**
      * @return \Application\DeskPRO\People\AgentGroups
      */
@@ -706,7 +703,6 @@ class DeskproContainer extends Container
         return $this->get('deskpro.people.agent_groups');
     }
 
-
     /**
      * @return \Application\DeskPRO\People\UserGroups
      */
@@ -714,7 +710,6 @@ class DeskproContainer extends Container
     {
         return $this->get('deskpro.people.user_groups');
     }
-
 
     /**
      * @return \Application\DeskPRO\CustomFields\PersonFieldManager
@@ -725,13 +720,20 @@ class DeskproContainer extends Container
     }
 
     /**
+     * @return \Application\DeskPRO\CustomFields\BillingFieldManager
+     */
+    public function getBillingFieldManager()
+    {
+        return $this->getSystemService('billing_fields_manager');
+    }
+
+    /**
      * @return \Application\DeskPRO\CustomFields\EntityFieldManager
      */
     public function getEntityFieldManager()
     {
         return $this->getSystemService('entity_fields_manager');
     }
-
 
     /**
      * @return \Application\DeskPRO\CustomFields\FieldManager
@@ -741,12 +743,12 @@ class DeskproContainer extends Container
         return $this->getSystemService('org_fields_manager');
     }
 
-
     /**
      * Get the value of a setting.
      *
-     * @param  string $name    The name of the setting to get
-     * @param  mixed  $default
+     * @param string $name    The name of the setting to get
+     * @param mixed  $default
+     *
      * @return string
      */
     public function getSetting($name, $default = null)
@@ -756,9 +758,8 @@ class DeskproContainer extends Container
         return $settings->get($name, $default);
     }
 
-
     /**
-     * Get the settings object
+     * Get the settings object.
      *
      * @return \Application\DeskPRO\Settings\Settings
      */
@@ -769,7 +770,6 @@ class DeskproContainer extends Container
         return $settings;
     }
 
-
     /**
      * @return \Application\DeskPRO\Monolog\LoggerManager
      */
@@ -778,12 +778,12 @@ class DeskproContainer extends Container
         return $this->getSystemService('logger_manager');
     }
 
-
     /**
-     * Get a value from the main system configuration
+     * Get a value from the main system configuration.
      *
-     * @param  string $name
-     * @param  mixed  $default
+     * @param string $name
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getSysConfig($name, $default = null)
@@ -797,7 +797,6 @@ class DeskproContainer extends Container
         return $value;
     }
 
-
     /**
      * @return \Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService
      */
@@ -805,7 +804,6 @@ class DeskproContainer extends Container
     {
         return $this->getDataService('Agent');
     }
-
 
     /**
      * @return \Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService
@@ -815,7 +813,6 @@ class DeskproContainer extends Container
         return $this->getDataService('Language');
     }
 
-
     /**
      * @return \Application\DeskPRO\Translate\ObjectLangRepository
      */
@@ -824,7 +821,6 @@ class DeskproContainer extends Container
         return $this->getSystemService('object_lang_repository');
     }
 
-
     /**
      * @return \Orb\GeoIp\AbstractGeoIp
      */
@@ -832,7 +828,6 @@ class DeskproContainer extends Container
     {
         return $this->getSystemService('geo_ip');
     }
-
 
     /**
      * Get the path to PHP executable used on the CLI.
@@ -846,7 +841,6 @@ class DeskproContainer extends Container
         return dp_get_php_path();
     }
 
-
     /**
      * Get the path to mysqldump executable used on the CLI.
      *
@@ -858,7 +852,6 @@ class DeskproContainer extends Container
     {
         return dp_get_mysqldump_path();
     }
-
 
     /**
      * Gets the path to the 'mysql' binary.
@@ -872,7 +865,6 @@ class DeskproContainer extends Container
         return dp_get_mysql_path();
     }
 
-
     /**
      * @return string
      */
@@ -880,7 +872,6 @@ class DeskproContainer extends Container
     {
         return dp_get_log_dir();
     }
-
 
     /**
      * @return string
@@ -890,7 +881,6 @@ class DeskproContainer extends Container
         return dp_get_blob_dir();
     }
 
-
     /**
      * @return string
      */
@@ -899,32 +889,31 @@ class DeskproContainer extends Container
         return dp_get_backup_dir();
     }
 
-
     /**
-     * Checks a static security token
+     * Checks a static security token.
      *
-     * @param  string $name
-     * @param  string $token
+     * @param string $name
+     * @param string $token
+     *
      * @return bool
      */
     public function checkStaticSecurityToken($name, $token)
     {
-        return Util::checkStaticSecurityToken($token, md5($this->getSetting('core.app_secret', 'secret') . $name));
+        return Util::checkStaticSecurityToken($token, md5($this->getSetting('core.app_secret', 'secret').$name));
     }
 
-
     /**
-     * Generate static security token
+     * Generate static security token.
      *
-     * @param  string $name
-     * @param  int    $timeout
+     * @param string $name
+     * @param int    $timeout
+     *
      * @return string
      */
     public function generateStaticSecurityToken($name, $timeout = 18000)
     {
-        return Util::generateStaticSecurityToken(md5($this->getSetting('core.app_secret', 'secret') . $name), $timeout);
+        return Util::generateStaticSecurityToken(md5($this->getSetting('core.app_secret', 'secret').$name), $timeout);
     }
-
 
     /**
      * @return \Application\DeskPRO\App\AppManager
@@ -948,9 +937,7 @@ class DeskproContainer extends Container
 
     public function getAppManagerFiltered()
     {
-
     }
-
 
     /**
      * @return \Application\DeskPRO\Tickets\Actions\ActionDef\TicketActionDefManager

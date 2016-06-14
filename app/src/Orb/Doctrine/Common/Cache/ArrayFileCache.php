@@ -1,39 +1,35 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @subpackage Doctrine
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ */
 namespace Orb\Doctrine\Common\Cache;
-
 
 /**
  * The array file cache is a cache that writes k=>v to a file on the filesystem.
@@ -47,9 +43,9 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
     protected $version_id = null;
 
     /**
-     * Data is array(key => array(time => timestamp, data => data, deleted => true, updated => true)
+     * Data is array(key => array(time => timestamp, data => data, deleted => true, updated => true).
      *
-     * @var array $data
+     * @var array
      */
     protected $data = null;
 
@@ -66,7 +62,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
     protected $cache_file;
 
     /**
-     * Automatically write after each update
+     * Automatically write after each update.
      *
      * @var bool
      */
@@ -125,9 +121,8 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         $this->filter = $fn;
     }
 
-
     /**
-     * Maximum number of entries to add
+     * Maximum number of entries to add.
      *
      * @param $limit
      */
@@ -136,25 +131,24 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         $this->limit = $limit;
     }
 
-
     /**
-     * Dont load anything new and dont commit
+     * Dont load anything new and dont commit.
      */
     public function disable()
     {
-        $this->disabled	 = true;
+        $this->disabled = true;
     }
 
     /**
-     * Disable caching and updating
+     * Disable caching and updating.
      */
     public function enable()
     {
-        $this->disabled	 = false;
+        $this->disabled = false;
     }
 
     /**
-     * Register a shutdown function to save the cache on exit if there are changes
+     * Register a shutdown function to save the cache on exit if there are changes.
      *
      * @return mixed
      */
@@ -170,9 +164,8 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         register_shutdown_function(array($this, 'commitIfDirty'), true);
     }
 
-
     /**
-     * Reload all data
+     * Reload all data.
      */
     public function reloadData()
     {
@@ -225,13 +218,14 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         }
     }
 
-
     /**
      * {@inheritdoc}
      */
     protected function doFetch($id)
     {
-        if ($this->data === null) $this->reloadData();
+        if ($this->data === null) {
+            $this->reloadData();
+        }
 
         if (isset($this->data[$id]) && !isset($this->data[$id]['deleted']) && (!$this->data[$id]['die'] || $this->data[$id]['die'] < time())) {
             if (isset($this->data[$id]['serialized'])) {
@@ -255,7 +249,9 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
      */
     protected function doContains($id)
     {
-        if ($this->data === null) $this->reloadData();
+        if ($this->data === null) {
+            $this->reloadData();
+        }
 
         if (isset($this->data[$id]) && !isset($this->data[$id]['deleted']) && (!$this->data['die'] || $this->data['die'] < time())) {
             return true;
@@ -274,7 +270,9 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
                 return true;
             }
         }
-        if ($this->data === null) $this->reloadData();
+        if ($this->data === null) {
+            $this->reloadData();
+        }
 
         if ($this->limit && count($this->data) >= $this->limit) {
             return true;
@@ -282,19 +280,19 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 
         if (is_scalar($data)) {
             $this->data[$id] = array(
-                'time' => time(),
-                'die' => ($lifeTime ? time() + $lifeTime : 0),
-                'data' => $data,
-                'updated' => true
+                'time'    => time(),
+                'die'     => ($lifeTime ? time() + $lifeTime : 0),
+                'data'    => $data,
+                'updated' => true,
             );
         } else {
             $this->data[$id] = array(
-                'time' => time(),
-                'die' => ($lifeTime ? time() + $lifeTime : 0),
-                'data' => serialize($data),
-                'data_u' => $data,
+                'time'       => time(),
+                'die'        => ($lifeTime ? time() + $lifeTime : 0),
+                'data'       => serialize($data),
+                'data_u'     => $data,
                 'serialized' => true,
-                'updated' => true
+                'updated'    => true,
             );
         }
 
@@ -312,13 +310,15 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
      */
     protected function doDelete($id)
     {
-        if ($this->data === null) $this->reloadData();
+        if ($this->data === null) {
+            $this->reloadData();
+        }
 
         $this->data[$id] = array(
-            'time' => time(),
-            'die' => 0,
-            'data' => 0,
-            'deleted' => true
+            'time'    => time(),
+            'die'     => 0,
+            'data'    => 0,
+            'deleted' => true,
         );
 
         $this->dirty = true;
@@ -331,7 +331,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
     }
 
     /**
-     * Save the current cache to disk
+     * Save the current cache to disk.
      *
      * @return int
      */
@@ -361,7 +361,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         $this->data = $result;
 
         $contents = serialize($result);
-        $size = strlen($contents);
+        $size     = strlen($contents);
 
         $this->dirty = false;
 
@@ -371,7 +371,6 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         }
 
         if (file_put_contents($this->cache_file, $contents, \LOCK_EX) != $size) {
-
             if ($changed_umask !== null) {
                 umask($changed_umask);
             }
@@ -390,9 +389,8 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         $this->releaseSlam();
     }
 
-
     /**
-     * Commit if there have been changes to the cache
+     * Commit if there have been changes to the cache.
      */
     public function commitIfDirty($quiet = false)
     {
@@ -407,7 +405,6 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         }
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -416,7 +413,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         $this->dirty = false;
 
         $this->data = array();
-        $php = "<?php return array(); ";
+        $php        = '<?php return array(); ';
 
         return file_put_contents($this->cache_file, $php);
     }
@@ -426,22 +423,20 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
      */
     protected function doGetStats()
     {
-        return null;
+        return;
     }
-
 
     /**
      * @return bool
      */
     public function hasSlam()
     {
-        if (file_exists($this->cache_file . '.slam') && (@filemtime($this->cache_file . '.slam') ?: 0) < time() - $this->slam_timeout) {
+        if (file_exists($this->cache_file.'.slam') && (@filemtime($this->cache_file.'.slam') ?: 0) < time() - $this->slam_timeout) {
             return true;
         }
 
         return false;
     }
-
 
     /**
      * @return resource
@@ -456,7 +451,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
             return $this->slam_fp;
         }
 
-        $this->slam_fp = @fopen($this->cache_file . '.slam', 'w');
+        $this->slam_fp = @fopen($this->cache_file.'.slam', 'w');
         if (!$this->slam_fp) {
             $this->slam_fp = null;
 
@@ -474,16 +469,14 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         return $this->slam_fp;
     }
 
-
     /**
-     * @return void
      */
     public function releaseSlam()
     {
         if ($this->slam_fp) {
             @flock($this->slam_fp, \LOCK_UN);
             @fclose($this->slam_fp);
-            @unlink($this->cache_file . '.slam');
+            @unlink($this->cache_file.'.slam');
             $this->slam_fp = null;
         }
     }

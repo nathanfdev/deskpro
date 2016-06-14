@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Tickets
+ */
 namespace Application\DeskPRO\People\PermissionLoader;
 
 use Application\DeskPRO\App;
@@ -45,6 +44,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
     /**
      * An array of categories allowed for real, that we get by computing
      * inheritance.
+     *
      * @var array
      */
     protected $allowed_cats = array('tickets' => array(), 'chat' => array());
@@ -57,7 +57,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
     public function getSubkey()
     {
         if ($this->person && $this->person->is_agent) {
-            return 'person-' . $this->person->id;
+            return 'person-'.$this->person->id;
         }
     }
 
@@ -71,9 +71,8 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
         $in = implode(',', $this->getUsergroupIds());
 
         if (DP_INTERFACE == 'agent' || ($this->person->is_agent && DP_INTERFACE != 'user')) {
-
             $agent_groups = App::$container->getAgentGroups();
-            $allow_all = false;
+            $allow_all    = false;
             foreach ($this->usergroup_ids as $ugid) {
                 if ($agent_groups->groupExists($ugid)) {
                     $g = $agent_groups->getGroup($ugid);
@@ -92,13 +91,12 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
                             'department_id' => $d->id,
                             'app'           => $d->is_tickets_enabled ? 'tickets' : 'chat',
                             'name'          => 'full',
-                            'value'         => 1
+                            'value'         => 1,
                         );
                     }
                 }
-
             } else {
-                $agent_ugs = App::getDataService('Usergroup')->getAgentUsergroups();
+                $agent_ugs     = App::getDataService('Usergroup')->getAgentUsergroups();
                 $has_agent_ugs = array();
 
                 foreach ($this->usergroup_ids as $ugid) {
@@ -122,18 +120,17 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 
         $parent_with_allowed_child = array(
             'tickets' => array(),
-            'chat'    => array()
+            'chat'    => array(),
         );
 
         foreach ($res as $d) {
-
             if (!empty($d['person_id'])) {
                 $this->with_overrides = true;
             }
 
             $dep = App::getDataService('Department')->get($d['department_id']);
 
-            $check = 'is_' . $d['app'] . '_enabled';
+            $check = 'is_'.$d['app'].'_enabled';
             if (!isset($dep[$check]) || !$dep[$check]) {
                 continue;
             }
@@ -176,7 +173,6 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
         return !empty($this->allowed_cats[$app][$id][$permission]);
     }
 
-
     /**
      * Get an array of all allowed categories.
      *
@@ -187,7 +183,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
         $this->_init();
 
         $ids = array();
-        foreach ($this->allowed_cats[$app] AS $id => $perms) {
+        foreach ($this->allowed_cats[$app] as $id => $perms) {
             if (!empty($perms[$permission]) || !empty($perms['full'])) {
                 $ids[$id] = $id;
             }
@@ -196,10 +192,10 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
         return $ids;
     }
 
-
     /**
-     * @param  string $app
-     * @param  string $permission
+     * @param string $app
+     * @param string $permission
+     *
      * @return int[]
      */
     public function getAllowedIds($app, $permission = 'full')
@@ -221,9 +217,8 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
         return $ids;
     }
 
-
     /**
-     * Get an array of data we'll serialize
+     * Get an array of data we'll serialize.
      *
      * @return array
      */
@@ -232,17 +227,17 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
         $this->_init();
 
         return array(
-            'allowed_cats'    => $this->allowed_cats,
+            'allowed_cats' => $this->allowed_cats,
         );
     }
 
     /**
-     * Initialize this object with an array of saved data
+     * Initialize this object with an array of saved data.
      *
      * @param array $data
      */
     protected function unserializeData(array $data)
     {
-        $this->allowed_cats     = $data['allowed_cats'];
+        $this->allowed_cats = $data['allowed_cats'];
     }
 }

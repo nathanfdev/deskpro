@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage EmailGateway
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Storage;
 
 use Fetch\Server;
@@ -43,10 +40,11 @@ class Imap extends Server
      */
     public function __construct($options = array())
     {
+        $options['password'] = (string) @$options['password'];
+        $options['port']     = $options['port'] ?: 143;
+
         if (!isset($options['host']) ||
-            !isset($options['port']) ||
-            !isset($options['user']) ||
-            !isset($options['password'])) {
+            !isset($options['user'])) {
             throw new \Exception('Insufficient Parameters');
         }
 
@@ -69,7 +67,6 @@ class Imap extends Server
         $this->setAuthentication($options['user'], $options['password']);
     }
 
-
     /**
      * @return array an array of IDs
      */
@@ -84,9 +81,8 @@ class Imap extends Server
         return $result;
     }
 
-
     /**
-     * Searches the server for matching emails and retrieves only the IDs
+     * Searches the server for matching emails and retrieves only the IDs.
      *
      * @return array an array of matching IDs
      */
@@ -101,18 +97,18 @@ class Imap extends Server
         return $result;
     }
 
-
     /**
-     * Gets a raw RFC2822 compatible message
+     * Gets a raw RFC2822 compatible message.
      *
-     * @param  int    $uid Unique message id
+     * @param int $uid Unique message id
+     *
      * @return string Raw message
      */
     public function getRawMessage($uid)
     {
         $raw_body = imap_fetchbody($this->getImapStream(), $uid, '', FT_UID);
 
-        if($raw_body === false){
+        if ($raw_body === false) {
             throw new \Exception(sprintf('Failed to retrieve raw body for message'));
         }
 
@@ -120,14 +116,15 @@ class Imap extends Server
     }
 
     /**
-     * @param  int      $uid
+     * @param int $uid
+     *
      * @return null|int
      */
     public function getMessageSize($uid)
     {
         $results = imap_fetch_overview($this->imapStream, $uid, FT_UID);
         if (!$results) {
-            return null;
+            return;
         }
 
         $message_overview = array_shift($results);
@@ -136,10 +133,11 @@ class Imap extends Server
     }
 
     /**
-     * Creates a mailbox if it doesnt exist
+     * Creates a mailbox if it doesnt exist.
      *
-     * @param  string $mailbox
-     * @return bool   True if it was created, false otherwise
+     * @param string $mailbox
+     *
+     * @return bool True if it was created, false otherwise
      */
     public function ensureMailboxExists($mailbox)
     {
@@ -172,7 +170,8 @@ class Imap extends Server
     }
 
     /**
-     * @param  int    $uid
+     * @param int $uid
+     *
      * @return string
      */
     public function getRawHeaders($uid)
@@ -185,11 +184,11 @@ class Imap extends Server
      */
     public function clearCaches()
     {
-        return imap_gc($this->imapStream, IMAP_GC_ELT|IMAP_GC_ENV|IMAP_GC_TEXTS);
+        return imap_gc($this->imapStream, IMAP_GC_ELT | IMAP_GC_ENV | IMAP_GC_TEXTS);
     }
 
     /**
-     * Close the connection
+     * Close the connection.
      */
     public function close()
     {

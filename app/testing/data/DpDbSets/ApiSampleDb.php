@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DpDbSets;
 
 use Application\DeskPRO\Entity\ApiKey;
@@ -50,36 +48,36 @@ class ApiSampleDb extends AbstractDbSet
         # Insert a default admin
         #------------------------------
 
-        $agent = new Person();
+        $agent             = new Person();
         $agent->first_name = 'Admin';
-        $agent->last_name = 'Admin';
-        $email = $agent->setEmail('admin@example.com', true);
+        $agent->last_name  = 'Admin';
+        $email             = $agent->setEmail('admin@example.com', true);
         $agent->setPassword('pass');
-        $agent->is_user = true;
-        $agent->is_confirmed = true;
+        $agent->is_user            = true;
+        $agent->is_confirmed       = true;
         $agent->is_agent_confirmed = true;
-        $agent->is_agent = true;
-        $agent->can_agent = true;
-        $agent->can_admin = true;
-        $agent->can_billing = true;
-        $agent->can_reports = true;
+        $agent->is_agent           = true;
+        $agent->can_agent          = true;
+        $agent->can_admin          = true;
+        $agent->can_billing        = true;
+        $agent->can_reports        = true;
 
         $this->getEm()->persist($agent);
         $this->getEm()->persist($email);
 
-        $anotherAgent = new Person();
+        $anotherAgent             = new Person();
         $anotherAgent->first_name = 'Another';
-        $anotherAgent->last_name = 'Agent';
-        $anotherEmail = $anotherAgent->setEmail('anotheruser@example.com', true);
+        $anotherAgent->last_name  = 'Agent';
+        $anotherEmail             = $anotherAgent->setEmail('anotheruser@example.com', true);
         $agent->setPassword('pass');
-        $anotherAgent->is_user = true;
-        $anotherAgent->is_confirmed = true;
+        $anotherAgent->is_user            = true;
+        $anotherAgent->is_confirmed       = true;
         $anotherAgent->is_agent_confirmed = true;
-        $anotherAgent->is_agent = true;
-        $anotherAgent->can_agent = false;
-        $anotherAgent->can_admin = false;
-        $anotherAgent->can_billing = false;
-        $anotherAgent->can_reports = false;
+        $anotherAgent->is_agent           = true;
+        $anotherAgent->can_agent          = false;
+        $anotherAgent->can_admin          = false;
+        $anotherAgent->can_billing        = false;
+        $anotherAgent->can_reports        = false;
 
         $this->getEm()->persist($agent);
         $this->getEm()->persist($email);
@@ -94,43 +92,42 @@ class ApiSampleDb extends AbstractDbSet
         # Create an API key used in tests
         #------------------------------
 
-        $api_key = new ApiKey();
+        $api_key         = new ApiKey();
         $api_key->person = $agent;
-        $api_key->code = str_repeat('X', 25);
+        $api_key->code   = str_repeat('X', 25);
         $this->getEm()->persist($api_key);
         $this->getEm()->flush();
 
-        $api_key = new ApiKey();
+        $api_key         = new ApiKey();
         $api_key->person = $anotherAgent;
-        $api_key->code = str_repeat('Y', 25);
+        $api_key->code   = str_repeat('Y', 25);
         $this->getEm()->persist($api_key);
         $this->getEm()->flush();
 
-
-        $everyone_ug = new Usergroup();
-        $everyone_ug['title'] = 'Everyone';
-        $everyone_ug['note'] = '';
+        $everyone_ug             = new Usergroup();
+        $everyone_ug['title']    = 'Everyone';
+        $everyone_ug['note']     = '';
         $everyone_ug['sys_name'] = 'everyone';
         $this->getEm()->persist($everyone_ug);
         $this->getEm()->flush();
 
-        $g = new Usergroup();
-        $g['title'] = 'Registered';
-        $g['note'] = '';
+        $g             = new Usergroup();
+        $g['title']    = 'Registered';
+        $g['note']     = '';
         $g['sys_name'] = 'registered';
         $this->getEm()->persist($g);
         $this->getEm()->flush();
 
-        $agent_group = new Usergroup();
-        $agent_group['title'] = 'All Permissions';
-        $agent_group['note'] = '';
+        $agent_group                   = new Usergroup();
+        $agent_group['title']          = 'All Permissions';
+        $agent_group['note']           = '';
         $agent_group['is_agent_group'] = true;
         $this->getEm()->persist($agent_group);
         $this->getEm()->flush();
 
-        $limitedAgentGroup = new Usergroup();
-        $limitedAgentGroup['title'] = 'No Permissions';
-        $limitedAgentGroup['note'] = '';
+        $limitedAgentGroup                   = new Usergroup();
+        $limitedAgentGroup['title']          = 'No Permissions';
+        $limitedAgentGroup['note']           = '';
         $limitedAgentGroup['is_agent_group'] = true;
         $this->getEm()->persist($limitedAgentGroup);
         $this->getEm()->flush();
@@ -367,10 +364,10 @@ class ApiSampleDb extends AbstractDbSet
         $ticket->subject         = 'Test';
         $ticket->status          = Ticket::STATUS_AWAITING_AGENT;
 
-        $message = new TicketMessage();
+        $message          = new TicketMessage();
         $message->person  = $agent;
         $message->ticket  = $ticket;
-        $message->message = "Test Ticket";
+        $message->message = 'Test Ticket';
         $ticket->addMessage($message);
 
         $ticket->recomputeHash();
@@ -378,6 +375,8 @@ class ApiSampleDb extends AbstractDbSet
         $this->getEm()->persist($ticket);
         $this->getEm()->persist($message);
         $this->getEm()->flush();
+
+        $this->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
 
         #------------------------------
         # Settings

@@ -56,8 +56,8 @@ define [
 
       if @form.isSuperUser
         @form.flags.push 'super'
-      if @form.isAdminManage
-        @form.flags.push 'admin_manage'
+        if @form.isAdminManage
+          @form.flags.push 'admin_manage'
 
       @startSpinner 'saving'
       @service.keys.set(@form).then(

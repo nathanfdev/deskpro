@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Cutter\PatternCutter;
 
 class HtmlPattern
@@ -46,7 +44,7 @@ class HtmlPattern
     protected $tokens;
 
     /**
-     * Example pattern: div p ?a b span #from:#i /span /b span #.*# br /br b #sent:#i /b #.*# br /br b #to:#i /b #.*# br /br /span /p /div
+     * Example pattern: div p ?a b span #from:#i /span /b span #.*# br /br b #sent:#i /b #.*# br /br b #to:#i /b #.*# br /br /span /p /div.
      *
      * @param $pattern
      */
@@ -54,7 +52,6 @@ class HtmlPattern
     {
         $this->pattern = $pattern;
     }
-
 
     /**
      * @return string
@@ -64,9 +61,8 @@ class HtmlPattern
         return $this->pattern;
     }
 
-
     /**
-     * Get tokens for the pattern
+     * Get tokens for the pattern.
      *
      * @return array
      */
@@ -79,11 +75,10 @@ class HtmlPattern
         $pattern = " {$this->pattern} ";
         $pattern = str_replace('\\#', '__dp_esc_hash__', $pattern);
 
-        $segments = preg_split('/ (#(?:.*?)#(?:[imsxADUu]*)) /', $pattern, NULL, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
+        $segments = preg_split('/ (#(?:.*?)#(?:[imsxADUu]*)) /', $pattern, null, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
 
         $depth = 0;
         foreach ($segments as $segment) {
-
             $segment = str_replace('__dp_esc_hash__', '\\#', $segment);
             $segment = trim($segment);
 
@@ -98,7 +93,7 @@ class HtmlPattern
                 $segment = " $segment ";
 
                 // Split up tags into groups of tags, optional tags and closing tags
-                $tag_segments = preg_split('/ (\??\\/?(?:[a-zA-Z:]+)) /', $segment, NULL, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
+                $tag_segments = preg_split('/ (\??\\/?(?:[a-zA-Z:]+)) /', $segment, null, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
 
                 foreach ($tag_segments as $tag) {
                     $tag = trim($tag);

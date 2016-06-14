@@ -1,4 +1,32 @@
-<?php return array(
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
     'agent.emails.account_rec_dm_by'                    => '{{account}} received a direct message by {{user}}',
     'agent.emails.account_rec_retweet_by'               => '{{account}} was retweeted by {{user}}',
     'agent.emails.account_rec_tweet_by'                 => '{{account}} received a tweet by {{user}}',
@@ -16,6 +44,7 @@
     'agent.emails.error_missing_marker_explain'         => 'This reply marker is required for proper processing of your replies. Please re-send your reply, but this time leave the reply line marker in tact.',
     'agent.emails.error_reply_to_ticket_missing_marker' => 'Your email reply to ticket #{{ticket_id}} was missing a marker line that looks like this:',
     'agent.emails.error_unknown_email'                  => 'Your message was not accepted because you are sending from an unknown email address. Please send messages from the email address you have set in your agent profile on the helpdesk.',
+    'agent.emails.error_no_reply_perm'                  => 'Your message was not accepted because you do not have permission to reply to the ticket. Your reply has NOT been saved and no other emails or notifications have been sent.',
     'agent.emails.first_seen'                           => 'First Seen',
     'agent.emails.fwd_error_more_info'                  => 'For more information about this error, you can refer to the DeskPRO support site:<br/><a href="http://support.deskpro.com/kb/articles/106">http://support.deskpro.com/kb/articles/106</a>',
     'agent.emails.fwd_not_processed'                    => 'Because of this error, your email has been discarded. No new ticket was created and no notifications or any other action has been peformed. If you need to start a new ticket for a user, please use the agent web interface at <a href="{{url}}">{{url}}</a>',
@@ -26,7 +55,7 @@
     'agent.emails.invalid_fwd_try_attach'               => 'If your email client supports forwarding the original email as an attachment instead, you can try that instead of forwarding the message in-line. This method of forwarding tickets works better with DeskPRO.',
     'agent.emails.login_url'                            => 'Login URL',
     'agent.emails.new_agent_reply_ticket_subject'       => '[#{{ticket.id}} AGENT REPLY] Re: {{ticket.subject}}',
-    'agent.emails.new_chat_message_from'                => 'New chat message from {{name}}',
+    'agent.emails.new_chat_message_from'                => 'New IM message from {{name}}',
     'agent.emails.new_mention_ticket_subject'           => '[#{{ticket.id}} MENTIONED] Re: {{ticket.subject}}',
     'agent.emails.new_note_ticket_subject'              => '[#{{ticket.id}} NOTE] Re: {{ticket.subject}}',
     'agent.emails.new_user_reply_ticket_subject'        => '[#{{ticket.id}} USER REPLY] Re: {{ticket.subject}}',
@@ -94,4 +123,7 @@
     'agent.emails.newagent-help'                        => 'If you need any help or have questions, please check out the DeskPRO support site at <a href="https://support.deskpro.com/">https://support.deskpro.com/</a> or contact us directly at <a href="mailto:support@deskpro.com">support@deskpro.com</a>.',
     'agent.emails.newagent-welcome-to-deskpro'          => 'Welcome to DeskPRO!',
     'agent.emails.message-is-note'                      => 'The following message is an internal agent note.',
+    'agent.emails.reply_is_as_note'                     => 'Your reply will be added as a private agent note',
+    'agent.emails.reply_sent_to_user'                   => 'Your reply will be sent to the user {{user}}',
+    'agent.emails.reply_sent_to_ccs'                    => 'and {{count}} CC\'d user:|and {{count}} CC\'d users:',
 );

@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\Collection\LazyCollection;
@@ -43,7 +41,6 @@ class TicketPriorities extends LazyCollection
      */
     private $default_id;
 
-
     /**
      * @return array
      */
@@ -54,7 +51,6 @@ class TicketPriorities extends LazyCollection
 
         return $recs;
     }
-
 
     /**
      * This sets the 'default' preference.
@@ -81,11 +77,15 @@ class TicketPriorities extends LazyCollection
      */
     public function getDefaultPriority()
     {
-        if (!$this->default_id || !$this->getById($this->default_id)) {
+        if ($this->default_id && !$this->getById($this->default_id)) {
             foreach ($this->getAll() as $dep) {
                 $this->default_id = $dep->getId();
                 break;
             }
+        }
+
+        if (!$this->default_id) {
+            return;
         }
 
         return $this->getById($this->default_id);
@@ -95,7 +95,8 @@ class TicketPriorities extends LazyCollection
     // implementing these just for better auto-complete in the IDE (due to @return) :-)
 
     /**
-     * @param  int                                          $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\TicketWorkflow[]
      */
     public function getById($id)
@@ -104,8 +105,9 @@ class TicketPriorities extends LazyCollection
     }
 
     /**
-     * @param  array                                        $ids
-     * @param  bool                                         $keyed
+     * @param array $ids
+     * @param bool  $keyed
+     *
      * @return \Application\DeskPRO\Entity\TicketWorkflow[]
      */
     public function getByIds(array $ids, $keyed = false)
@@ -119,5 +121,16 @@ class TicketPriorities extends LazyCollection
     public function getAll()
     {
         return parent::getAll();
+    }
+
+    public function getFlatArray()
+    {
+        $flat = array();
+
+        foreach ($this->getAll() as $obj) {
+            $flat[] = array('object' => $obj, 'depth' => 0);
+        }
+
+        return $flat;
     }
 }

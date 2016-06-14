@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Publish\Feedback;
 
 use Application\DeskPRO\App;
@@ -51,7 +48,7 @@ class GroupingCounter
     protected $ids = null;
 
     /**
-     * Set specific IDs we want to group
+     * Set specific IDs we want to group.
      *
      * @param array $ids
      */
@@ -61,7 +58,7 @@ class GroupingCounter
     }
 
     /**
-     * Get an array of counts suitable for looping in a template etc
+     * Get an array of counts suitable for looping in a template etc.
      *
      * @return array
      */
@@ -72,9 +69,9 @@ class GroupingCounter
         #------------------------------
 
         $display_elements = $this->getDisplayElementsArray();
-        $titles1 = $display_elements['titles1'];
-        $titles2 = $display_elements['titles2'];
-        $counts  = $display_elements['counts'];
+        $titles1          = $display_elements['titles1'];
+        $titles2          = $display_elements['titles2'];
+        $counts           = $display_elements['counts'];
 
         Arrays::unshiftAssoc($titles1, -1, 'TOTAL');
         if ($titles2) {
@@ -87,30 +84,31 @@ class GroupingCounter
         $group2_has = array();
 
         foreach ($titles1 as $field1_id => $field1_title) {
-
-            if (!isset($counts[$field1_id])) continue;
+            if (!isset($counts[$field1_id])) {
+                continue;
+            }
 
             $countinfo = $counts[$field1_id];
 
             $group1_has[] = $field1_id;
 
-            $row = array();
-            $row['id'] = $field1_id;
+            $row          = array();
+            $row['id']    = $field1_id;
             $row['title'] = $field1_title;
             $row['total'] = $countinfo['total'];
 
             if (!empty($countinfo['sub'])) {
-
                 $row['sub'] = array();
                 foreach ($titles2 as $field2_id => $field2_title) {
-
-                    if (!isset($countinfo['sub'][$field2_id])) continue;
+                    if (!isset($countinfo['sub'][$field2_id])) {
+                        continue;
+                    }
                     $countinfo2 = $countinfo['sub'][$field2_id];
 
                     $group2_has[] = $field2_id;
 
-                    $row2 = array();
-                    $row2['id'] = $field2_id;
+                    $row2          = array();
+                    $row2['id']    = $field2_id;
                     $row2['title'] = $field2_title;
                     $row2['total'] = !empty($countinfo2['total']) ? $countinfo2['total'] : 0;
 
@@ -130,7 +128,7 @@ class GroupingCounter
 
         $status_hierarchy = function () {
             $titles = array(
-                'new' => array('title' => 'New'),
+                'new'    => array('title' => 'New'),
                 'active' => array('title' => 'Active', 'children' => array()),
                 'closed' => array('title' => 'Closed', 'children' => array()),
                 'hidden' => array('title' => 'Hidden'),
@@ -140,12 +138,12 @@ class GroupingCounter
             $closed_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
             foreach ($active_status_cats as $cat) {
-                $titles['active.' . $cat['id']] = array('title' => $cat['title']);
-                $titles['active']['children']['active.' . $cat['id']] = array('title' => $cat['title']);
+                $titles['active.'.$cat['id']]                       = array('title' => $cat['title']);
+                $titles['active']['children']['active.'.$cat['id']] = array('title' => $cat['title']);
             }
             foreach ($closed_status_cats as $cat) {
-                $titles['closed.' . $cat['id']] = array('title' => $cat['title']);
-                $titles['closed']['children']['closed.' . $cat['id']] = array('title' => $cat['title']);
+                $titles['closed.'.$cat['id']]                       = array('title' => $cat['title']);
+                $titles['closed']['children']['closed.'.$cat['id']] = array('title' => $cat['title']);
             }
         };
 
@@ -184,14 +182,14 @@ class GroupingCounter
         }
 
         return array(
-            'items' => $items,
+            'items'            => $items,
             'group1_structure' => $group1_structure,
             'group2_structure' => $group2_structure,
         );
     }
 
     /**
-     * Sort a display array so that the biggest counts are first
+     * Sort a display array so that the biggest counts are first.
      *
      * @param array $display_array
      */
@@ -209,11 +207,8 @@ class GroupingCounter
         return ($a['total'] < $b['total']) ? -1 : 1;
     }
 
-
-
-
     /**
-     * Get the raw counts
+     * Get the raw counts.
      *
      * @return array
      */
@@ -223,18 +218,18 @@ class GroupingCounter
 
         $grouping1 = $this->grouping1;
         $grouping2 = $this->grouping2;
-        $db = App::getDb();
+        $db        = App::getDb();
 
         if ($grouping1 == 'status') {
             $grouping1 = "IF(feedback.status_category_id, CONCAT(feedback.status, '.', feedback.status_category_id), feedback.status)";
         } else {
-            $grouping1 = $db->quoteIdentifier('feedback.' . $grouping1);
+            $grouping1 = $db->quoteIdentifier('feedback.'.$grouping1);
         }
 
         if ($grouping2 == 'status') {
             $grouping2 = "IF(feedback.status_category_id, CONCAT(feedback.status, '.', feedback.status_category_id), feedback.status)";
         } else {
-            $grouping2 = $db->quoteIdentifier('feedback.' . $grouping2);
+            $grouping2 = $db->quoteIdentifier('feedback.'.$grouping2);
         }
 
         $select_fields[] = "COALESCE($grouping1, 0) AS field1";
@@ -246,15 +241,15 @@ class GroupingCounter
 
         $where = "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status != 'validating')";
         if (is_array($this->ids)) {
-            if(empty($this->ids)) {
+            if (empty($this->ids)) {
                 return array();
             }
 
-            $where = "WHERE feedback.id IN(" . implode(',', $this->ids) . ")";
+            $where = 'WHERE feedback.id IN('.implode(',', $this->ids).')';
         }
 
-        $sql = "
-            SELECT " . implode(', ', $select_fields) . "
+        $sql = '
+            SELECT '.implode(', ', $select_fields)."
             FROM feedback
             $where
             $group_by WITH ROLLUP
@@ -264,8 +259,6 @@ class GroupingCounter
 
         return $counts;
     }
-
-
 
     /**
      * Get information about strucutred counts and titles.
@@ -296,7 +289,7 @@ class GroupingCounter
                 $ids1[] = $count['field1'];
             }
 
-            if ($this->grouping2 AND $count['field2'] !== null) {
+            if ($this->grouping2 and $count['field2'] !== null) {
                 $ids2[] = $count['field2'];
             }
 
@@ -305,8 +298,12 @@ class GroupingCounter
             #------------------------------
 
             // Set ROLLUP's (totals) to -1
-            if ($count['field1'] === null) $count['field1'] = -1;
-            if ($this->grouping2 AND $count['field2'] === null) $count['field2'] = -1;
+            if ($count['field1'] === null) {
+                $count['field1'] = -1;
+            }
+            if ($this->grouping2 and $count['field2'] === null) {
+                $count['field2'] = -1;
+            }
 
             // Init array keys
             if (!isset($counts_structured[$count['field1']])) {
@@ -341,19 +338,18 @@ class GroupingCounter
         return array(
             'titles1' => $titles1,
             'titles2' => $titles2,
-            'counts'  => $counts_structured
+            'counts'  => $counts_structured,
         );
     }
-
-
 
     /**
      * Get a string of id=>title for a particular field, given IDs.
      * Sometimes $ids is not needed (ie departments can all be fetched),
      * other times it's important (ie dont want every company name in the entire db).
      *
-     * @param  string $field
-     * @param  array  $ids
+     * @param string $field
+     * @param array  $ids
+     *
      * @return array
      */
     public function getFieldTitles($field, array $ids = null)
@@ -368,7 +364,7 @@ class GroupingCounter
             case 'status':
 
                 $titles = array(
-                    'new' => 'New',
+                    'new'    => 'New',
                     'active' => 'Active',
                     'closed' => 'Closed',
                     'hidden' => 'Hidden',
@@ -378,11 +374,11 @@ class GroupingCounter
                 $closed_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
                 foreach ($active_status_cats as $cat) {
-                    $titles['active.' . $cat['id']] = 'Active > ' . $cat['title'];
+                    $titles['active.'.$cat['id']] = 'Active > '.$cat['title'];
                 }
                     foreach ($closed_status_cats as $cat) {
-                    $titles['closed.' . $cat['id']] = 'Closed > ' . $cat['title'];
-                }
+                        $titles['closed.'.$cat['id']] = 'Closed > '.$cat['title'];
+                    }
 
                 return $titles;
 

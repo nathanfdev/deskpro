@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Usersource;
 
 use Application\DeskPRO\App;
@@ -75,22 +72,21 @@ class UsersourceAuthAdapterFactory
      */
     private $request;
 
-
     public function __construct(DeskproContainer $container, RouterInterface $router, Request $request, Session $session, $interface)
     {
         $this->container = $container;
-        $this->router = $router;
-        $this->session = $session;
+        $this->router    = $router;
+        $this->session   = $session;
         $this->interface = $interface;
-        $this->request = $request;
+        $this->request   = $request;
     }
 
-
     /**
-     * Logic around preparing an auth adapter for use
+     * Logic around preparing an auth adapter for use.
      *
-     * @param  Usersource                         $usersource
-     * @param  null                               $displayContext
+     * @param Usersource $usersource
+     * @param null       $displayContext
+     *
      * @return \Orb\Auth\Adapter\AdapterInterface
      */
     public function getAuthAdapter(Usersource $usersource, $displayContext = null, $useInterface = null)
@@ -117,22 +113,22 @@ class UsersourceAuthAdapterFactory
 
             if ($adapter instanceof SamlAdapterInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
                 $url = $this->router->generate(
-                    $route_type . '_login_authenticate', array('usersource_id' => $usersource['id'], 'context' => SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND),
+                    $route_type.'_login_authenticate', array('usersource_id' => $usersource['id'], 'context' => SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND),
                     RouterInterface::ABSOLUTE_URL
                 );
             } elseif ($adapter instanceof SamlAdapterInterface && $displayContext == SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND) {
                 $url = $this->router->generate(
-                    $route_type . '_login_usersource_sso', array('usersource_id' => $usersource['id']),
+                    $route_type.'_login_usersource_sso', array('usersource_id' => $usersource['id']),
                     RouterInterface::ABSOLUTE_URL
                 );
             } elseif ($adapter instanceof SsoCapableInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
                 $url = $this->router->generate(
-                    $route_type . '_login_usersource_sso', array('usersource_id' => $usersource['id']),
+                    $route_type.'_login_usersource_sso', array('usersource_id' => $usersource['id']),
                     RouterInterface::ABSOLUTE_URL
                 );
             } else {
                 $url = $this->router->generate(
-                    $route_type . '_login_callback', array('usersource_id' => $usersource['id']),
+                    $route_type.'_login_callback', array('usersource_id' => $usersource['id']),
                     RouterInterface::ABSOLUTE_URL
                 );
             }
@@ -174,19 +170,10 @@ class UsersourceAuthAdapterFactory
         return $adapter;
     }
 
-
     protected function _getAdapterLogger()
     {
-        static $logger = null;
-
-        if ($logger === null) {
-            $logger = new \Orb\Log\Logger();
-            $logger->addWriter(new \Orb\Log\Writer\Stream($this->container->getLogDir() . '/usersource_log.log'));
-        }
-
-        return $logger;
+        return App::$container->getUsersourceLogger();
     }
-
 
     private function isAgentInterface($useInterface = null)
     {

@@ -1,43 +1,41 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
 
 /**
  * @property int       $id
@@ -55,20 +53,19 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class EmailAccount extends DomainObject
 {
     /**
-     * This is an outgoing account only (no incoming reading ability)
+     * This is an outgoing account only (no incoming reading ability).
      */
-    const TYPE_OUT      = 'outgoing';
+    const TYPE_OUT = 'outgoing';
 
     /**
-     * This is a ticket gateway account
+     * This is a ticket gateway account.
      */
-    const TYPE_TICKETS  = 'tickets';
+    const TYPE_TICKETS = 'tickets';
 
     /**
-     * This is an article gateway account
+     * This is an article gateway account.
      */
     const TYPE_ARTICLES = 'artices';
-
 
     /**
      * @var int
@@ -107,6 +104,7 @@ class EmailAccount extends DomainObject
 
     /**
      * Misc options or flags that can be used by whatever uses this account.
+     *
      * @var array
      */
     protected $options;
@@ -126,6 +124,10 @@ class EmailAccount extends DomainObject
      */
     protected $date_last_incoming;
 
+    /**
+     * @var bool
+     */
+    protected $is_read_active = false;
 
     /**
      * @param string $account_type
@@ -133,13 +135,13 @@ class EmailAccount extends DomainObject
     public function __construct($account_type)
     {
         $this->setAccountType($account_type);
-        $this->date_created = new \DateTime();
+        $this->date_created    = new \DateTime();
         $this->date_read_start = new \DateTime();
     }
 
-
     /**
-     * @param  string                    $account_type
+     * @param string $account_type
+     *
      * @throws \InvalidArgumentException
      */
     public function setAccountType($account_type)
@@ -147,7 +149,7 @@ class EmailAccount extends DomainObject
         if (!in_array($account_type, array(
             self::TYPE_OUT,
             self::TYPE_TICKETS,
-            self::TYPE_ARTICLES
+            self::TYPE_ARTICLES,
         ))) {
             throw new \InvalidArgumentException();
         }
@@ -155,19 +157,17 @@ class EmailAccount extends DomainObject
         $this->setModelField('account_type', $account_type);
     }
 
-
     /**
      * @return null|string
      */
     public function getIncomingAccountType()
     {
         if (!$this->incoming_account) {
-            return null;
+            return;
         }
 
         return $this->incoming_account->getType();
     }
-
 
     /**
      * @return null|string
@@ -175,15 +175,14 @@ class EmailAccount extends DomainObject
     public function getOutgoingAccountType()
     {
         if (!$this->outgoing_account) {
-            return null;
+            return;
         }
 
         return $this->outgoing_account->getType();
     }
 
-
     /**
-     * Get an array of all of the addresses for this account
+     * Get an array of all of the addresses for this account.
      *
      * @return array
      */
@@ -195,9 +194,9 @@ class EmailAccount extends DomainObject
         return $addrs;
     }
 
-
     /**
-     * @param  string $address
+     * @param string $address
+     *
      * @return bool
      */
     public function hasAddress($address)
@@ -219,21 +218,21 @@ class EmailAccount extends DomainObject
         return false;
     }
 
-
     /**
      * Given an address, see if it matches in this account and return the matched address.
      *
      * At the moment this method only handles exact matches, but theres a possibility it could be extended
      * to allow for patterns.
      *
-     * @param  string      $address
+     * @param string $address
+     *
      * @return null|string
      */
     public function getEmailAddressMatch($address)
     {
         $address = strtolower($address);
 
-        if ($this->address == $address) {
+        if ($this->getUseEmailAddress() == $address) {
             return $address;
         }
 
@@ -243,14 +242,13 @@ class EmailAccount extends DomainObject
             }
         }
 
-        return null;
+        return;
     }
-
 
     /**
      * Gets the real address to use for this account.
      * E.g., this account might have many addresses and aliases, this is the one to use
-     * by default for outgoing messages.s
+     * by default for outgoing messages.s.
      *
      * @return string
      */
@@ -263,10 +261,10 @@ class EmailAccount extends DomainObject
         return $this->address;
     }
 
-
     /**
-     * @param  string $name
-     * @param  mixed  $default
+     * @param string $name
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getOption($name, $default = null)
@@ -277,7 +275,6 @@ class EmailAccount extends DomainObject
 
         return $this->options[$name];
     }
-
 
     /**
      * @param string $name
@@ -306,7 +303,6 @@ class EmailAccount extends DomainObject
         $this->setModelField('options', $new);
     }
 
-
     /**
      * @param string $options
      */
@@ -318,7 +314,6 @@ class EmailAccount extends DomainObject
 
         $this->setModelField('options', $options);
     }
-
 
     ############################################################################
     # Export
@@ -339,9 +334,8 @@ class EmailAccount extends DomainObject
 
     public function __toString()
     {
-        return sprintf("<EmailAccount:%d> %s", $this->id, implode(', ', $this->getAllAddresses()));
+        return sprintf('<EmailAccount:%d> %s', $this->id, implode(', ', $this->getAllAddresses()));
     }
-
 
     ############################################################################
     # Doctrine Metadata
@@ -355,7 +349,7 @@ class EmailAccount extends DomainObject
         $metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\EmailAccount';
 
         $metadata->setPrimaryTable(array(
-            'name' => 'email_accounts'
+            'name' => 'email_accounts',
         ));
 
         $metadata->mapField(array(
@@ -363,26 +357,26 @@ class EmailAccount extends DomainObject
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
-            'nullable'   => false
+            'nullable'   => false,
         ));
         $metadata->mapField(array(
             'columnName' => 'account_type',
             'fieldName'  => 'account_type',
             'type'       => 'string',
             'length'     => 255,
-            'nullable'   => false
+            'nullable'   => false,
         ));
         $metadata->mapField(array(
             'columnName' => 'incoming_account',
             'fieldName'  => 'incoming_account',
             'type'       => 'dp_json_obj',
-            'nullable'   => true
+            'nullable'   => true,
         ));
         $metadata->mapField(array(
             'columnName' => 'outgoing_account',
             'fieldName'  => 'outgoing_account',
             'type'       => 'dp_json_obj',
-            'nullable'   => true
+            'nullable'   => true,
         ));
         $metadata->mapField(array(
             'columnName' => 'is_enabled',
@@ -395,37 +389,43 @@ class EmailAccount extends DomainObject
             'fieldName'  => 'address',
             'type'       => 'string',
             'length'     => 255,
-            'nullable'   => false
+            'nullable'   => false,
         ));
         $metadata->mapField(array(
             'columnName' => 'other_addresses',
             'fieldName'  => 'other_addresses',
             'type'       => 'simple_array',
-            'nullable'   => true
+            'nullable'   => true,
         ));
         $metadata->mapField(array(
             'columnName' => 'options',
             'fieldName'  => 'options',
             'type'       => 'json_array',
-            'nullable'   => true
+            'nullable'   => true,
         ));
         $metadata->mapField(array(
             'columnName' => 'date_created',
             'fieldName'  => 'date_created',
             'type'       => 'datetime',
-            'nullable'   => false
+            'nullable'   => false,
         ));
         $metadata->mapField(array(
             'columnName' => 'date_read_start',
             'fieldName'  => 'date_read_start',
             'type'       => 'datetime',
-            'nullable'   => true
+            'nullable'   => true,
         ));
         $metadata->mapField(array(
             'columnName' => 'date_last_incoming',
             'fieldName'  => 'date_last_incoming',
             'type'       => 'datetime',
-            'nullable'   => true
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'is_read_active',
+            'fieldName'  => 'is_read_active',
+            'type'       => 'boolean',
+            'nullable'   => false,
         ));
     }
 }

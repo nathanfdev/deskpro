@@ -38,11 +38,11 @@ define [
     Module.service('FeedbackStatusesData', ['em', 'Api', '$q', (em, Api, $q) ->
       return new Admin_FeedbackStatuses_DataService_FeedbackStatuses(em, Api, $q)
     ])
-  
+
     Module.service('FeedbackTypesData', ['em', 'Api', '$q', (em, Api, $q) ->
       return new Admin_FeedbackTypes_DataService_FeedbackTypes(em, Api, $q)
     ])
-  
+
     Module.service('FeedbackCategoriesData', ['em', 'Api', '$q', (em, Api, $q) ->
       return new Admin_FeedbackCategories_DataService_FeedbackCategories(em, Api, $q)
     ])
@@ -54,23 +54,23 @@ define [
     Module.service('FacebookPagesData', ['em', 'Api', '$q', (em, Api, $q) ->
       return new Admin_ChannelFacebook_DataService_FacebookPages(em, Api, $q)
     ])
-  
+
     Module.service('TicketAccountsData', ['em', 'Api', '$q', (em, Api, $q) ->
       return new Admin_TicketAccounts_DataService_TicketAccounts(em, Api, $q)
     ])
-  
+
     Module.factory('dpObTypesDefTicketCriteria', [ '$q', 'Api', 'dpTemplateManager', ($q, Api, dpTemplateManager) ->
       return new Admin_OptionBuilder_TypesDef_TicketCriteria($q, Api, dpTemplateManager)
     ])
-  
+
     Module.factory('dpObTypesDefTicketActions', [ '$q', 'Api', 'dpTemplateManager', ($q, Api, dpTemplateManager) ->
       return new Admin_OptionBuilder_TypesDef_TicketActions($q, Api, dpTemplateManager)
     ])
-  
+
     Module.factory('dpObTypesDefTicketFilter', [ '$q', 'Api', 'dpTemplateManager', ($q, Api, dpTemplateManager) ->
       return new Admin_OptionBuilder_TypesDef_TicketFilter($q, Api, dpTemplateManager)
     ])
-  
+
     Module.factory('DataService', [ '$injector', ($injector) ->
       return new Admin_Main_Service_DataServiceManager($injector)
     ])

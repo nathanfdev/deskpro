@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\EmailBundle\Entity;
 
 use Doctrine\Common\NotifyPropertyChanged;
@@ -45,19 +44,19 @@ class SendmailSource implements NotifyPropertyChanged
      * Inserted: record is created only. Usually this is so we have an ID
      * in the database. But no automated processes should touch this record.
      */
-    const STATUS_INSERTED   = 'inserted';
+    const STATUS_INSERTED = 'inserted';
 
     /**
      * pending: The email is ready to be sent. The queue process should send
      * pending messages.
      */
-    const STATUS_PENDING    = 'pending';
+    const STATUS_PENDING = 'pending';
 
     /**
      * retry: The email is set to retry. This means the email was already sent
      * or has already failed, but the email is being retried now.
      */
-    const STATUS_RETRY      = 'retry';
+    const STATUS_RETRY = 'retry';
 
     /**
      * processing: The email is currently processing. This means the record
@@ -68,27 +67,26 @@ class SendmailSource implements NotifyPropertyChanged
     /**
      * complete: The email has been sent successfully.
      */
-    const STATUS_COMPLETE   = 'complete';
+    const STATUS_COMPLETE = 'complete';
 
     /**
      * error: The email failed to send.
      */
-    const STATUS_ERROR      = 'error';
+    const STATUS_ERROR = 'error';
 
     /**
      * aborted: The email was cancelled.
      */
-    const STATUS_ABORTED    = 'aborted';
+    const STATUS_ABORTED = 'aborted';
 
     /**
      * Indicates a problem while queueing an email with an external service.
-     * (Used when ExternalPendingQueue is used in source mapper)
+     * (Used when ExternalPendingQueue is used in source mapper).
      */
     const ERR_ENQUEUE_FAILED = 'enqueue_failed';
 
     /**
      * @var int
-     *
      */
     protected $id = null;
 
@@ -123,7 +121,7 @@ class SendmailSource implements NotifyPropertyChanged
     protected $context_info = null;
 
     /**
-     * Just the headers portion of the email
+     * Just the headers portion of the email.
      *
      * @var string
      */
@@ -170,6 +168,11 @@ class SendmailSource implements NotifyPropertyChanged
     protected $status = 'inserted';
 
     /**
+     * @var string
+     */
+    protected $options = null;
+
+    /**
      * @var \DateTime
      */
     protected $date_status = null;
@@ -203,14 +206,44 @@ class SendmailSource implements NotifyPropertyChanged
 
     /**
      * How many times the email has been processed.
+     *
      * @var int
      */
     protected $exec_count = 0;
+
+    /**
+     * @var int
+     */
+    protected $num_targets;
+
+    /**
+     * @var int
+     */
+    protected $num_pending;
+
+    /**
+     * @var int
+     */
+    protected $num_complete;
+
+    /**
+     * @var int
+     */
+    protected $num_error;
+
+    /**
+     * @var SendmailSourceStatus[]
+     */
+    protected $statuses;
 
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
         $this->setModelField('date_status', new \DateTime());
+        $this->num_targets  = 0;
+        $this->num_pending  = 0;
+        $this->num_complete = 0;
+        $this->num_error    = 0;
     }
 
     /**
@@ -402,7 +435,9 @@ class SendmailSource implements NotifyPropertyChanged
      */
     public function setToEmails(array $to_emails = null)
     {
-        if (empty($to_emails)) $to_emails = null;
+        if (empty($to_emails)) {
+            $to_emails = null;
+        }
         $this->to_emails = $to_emails;
     }
 
@@ -419,7 +454,9 @@ class SendmailSource implements NotifyPropertyChanged
      */
     public function setCcEmails($cc_emails)
     {
-        if (empty($cc_emails)) $cc_emails = null;
+        if (empty($cc_emails)) {
+            $cc_emails = null;
+        }
         $this->cc_emails = $cc_emails;
     }
 
@@ -436,7 +473,9 @@ class SendmailSource implements NotifyPropertyChanged
      */
     public function setBccEmails($bcc_emails)
     {
-        if (empty($bcc_emails)) $bcc_emails = null;
+        if (empty($bcc_emails)) {
+            $bcc_emails = null;
+        }
         $this->bcc_emails = $bcc_emails;
     }
 
@@ -580,25 +619,88 @@ class SendmailSource implements NotifyPropertyChanged
         $this->setModelField('exec_count', $exec_count);
     }
 
+    /**
+     * @return array
+     */
+    public function getAllOptions()
+    {
+        return $this->options ?: array();
+    }
+
+    /**
+     * @param array $options
+     */
+    public function setAllOptions(array $options = null)
+    {
+        $this->setModelField('options', $options ?: null);
+    }
+
+    /**
+     * @param string $k
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getOption($k, $default = null)
+    {
+        return ($this->options && isset($this->options[$k])) ? $this->options[$k] : $default;
+    }
+
+    /**
+     * @return SendmailSourceStatus[]
+     */
+    public function getStatuses()
+    {
+        return $this->statuses;
+    }
+
+    /**
+     * @param string $k
+     * @param mixed  $v
+     */
+    public function setOption($k, $v = null)
+    {
+        $options = $this->options ?: array();
+
+        if ($v === null) {
+            if (isset($options[$k])) {
+                unset($options[$k]);
+            }
+        } else {
+            $options[$k] = $v;
+        }
+
+        if ($options) {
+            $this->setModelField('options', $options);
+        } else {
+            $this->setModelField('options', null);
+        }
+    }
+
     public function toArray()
     {
         $data = array();
 
-        $data['id'] = $this->id;
-        $data['ref'] = $this->ref;
-        $data['header_to'] = $this->header_to;
-        $data['header_from'] = $this->header_from;
+        $data['id']             = $this->id;
+        $data['ref']            = $this->ref;
+        $data['header_to']      = $this->header_to;
+        $data['header_from']    = $this->header_from;
         $data['header_subject'] = $this->header_subject;
-        $data['status'] = $this->status;
-        $data['error_code'] = $this->error_code;
-        $data['exec_count'] = $this->exec_count;
+        $data['status']         = $this->status;
+        $data['error_code']     = $this->error_code;
+        $data['exec_count']     = $this->exec_count;
+        $data['options']        = $this->options;
+        $data['num_targets']    = $this->num_targets;
+        $data['num_pending']    = $this->num_pending;
+        $data['num_error']      = $this->num_error;
+        $data['num_complete']   = $this->num_complete;
 
         foreach (array('date_created', 'date_status', 'date_sent', 'date_next_attempt') as $date_field) {
             if ($this->$date_field) {
-                $data[$date_field] = $this->$date_field->format('Y-m-d H:i:s');
+                $data[$date_field]        = $this->$date_field->format('Y-m-d H:i:s');
                 $data["{$date_field}_ts"] = $this->$date_field->getTimestamp();
             } else {
-                $data[$date_field] = null;
+                $data[$date_field]        = null;
                 $data["{$date_field}_ts"] = null;
             }
         }
@@ -612,6 +714,13 @@ class SendmailSource implements NotifyPropertyChanged
             );
         } else {
             $data['email_account'] = null;
+        }
+
+        if ($this->getBlob()) {
+            $data['raw_download_url'] = $this->getBlob()->getDownloadUrl(true);
+        }
+        if ($this->getLogBlob()) {
+            $data['log_download_url'] = $this->getLogBlob()->getDownloadUrl(true);
         }
 
         return $data;
@@ -686,7 +795,20 @@ class SendmailSource implements NotifyPropertyChanged
             }
         }
 
+        if ($this->options) {
+            $data['options'] = json_encode($this->options);
+        } else {
+            $data['options'] = null;
+        }
+
         return $data;
+    }
+
+    public function initTargetsCount()
+    {
+        $count = count($this->getToEmails()) + count($this->getCcEmails()) + count($this->getBccEmails());
+        $this->setModelField('num_targets', $count);
+        $this->setModelField('num_pending', $count);
     }
 
     ############################################################################
@@ -699,15 +821,18 @@ class SendmailSource implements NotifyPropertyChanged
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\EmailBundle\EntityRepository\SendmailSourceRepository';
+
+        $metadata->addLifecycleCallback('initTargetsCount', 'prePersist');
+
         $metadata->setPrimaryTable(array(
-            'name' => 'sendmail_sources',
+            'name'    => 'sendmail_sources',
             'indexes' => array(
                 'status_idx'       => array('columns' => array('status')),
                 'date_created_idx' => array('columns' => array('date_created')),
             ),
             'uniqueConstraints' => array(
-                'ref_idx' => array('columns' => array('ref'))
-            )
+                'ref_idx' => array('columns' => array('ref')),
+            ),
         ));
 
         $metadata->mapField(array(
@@ -799,6 +924,12 @@ class SendmailSource implements NotifyPropertyChanged
             'nullable'   => false,
         ));
         $metadata->mapField(array(
+            'columnName' => 'options',
+            'fieldName'  => 'options',
+            'type'       => 'json_array',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
             'fieldName'  => 'date_status',
             'columnName' => 'date_status',
             'type'       => 'datetime',
@@ -835,6 +966,26 @@ class SendmailSource implements NotifyPropertyChanged
             'type'       => 'integer',
             'nullable'   => false,
         ));
+        $metadata->mapField(array(
+            'columnName' => 'num_targets',
+            'fieldName'  => 'num_targets',
+            'type'       => 'integer',
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'num_pending',
+            'fieldName'  => 'num_pending',
+            'type'       => 'integer',
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'num_error',
+            'fieldName'  => 'num_error',
+            'type'       => 'integer',
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'num_complete',
+            'fieldName'  => 'num_complete',
+            'type'       => 'integer',
+        ));
 
         $metadata->mapManyToOne(array(
             'fieldName'    => 'blob',
@@ -857,7 +1008,7 @@ class SendmailSource implements NotifyPropertyChanged
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-            ))
+            )),
         ));
         $metadata->mapManyToOne(array(
             'fieldName'    => 'log_blob',
@@ -869,13 +1020,27 @@ class SendmailSource implements NotifyPropertyChanged
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'set null',
-            ))
+            )),
+        ));
+        $metadata->mapOneToMany(array(
+            'fieldName'    => 'statuses',
+            'targetEntity' => 'Application\EmailBundle\Entity\SendmailSourceStatus',
+            'mappedBy'     => 'source',
         ));
     }
 
-    public function __getPropValue__($k)     { return $this->$k; }
-    public function __setPropValue__($k, $v) { $this->$k = $v; }
-    public function __hasRunLoad__()         { return true; }
+    public function __getPropValue__($k)
+    {
+        return $this->$k;
+    }
+    public function __setPropValue__($k, $v)
+    {
+        $this->$k = $v;
+    }
+    public function __hasRunLoad__()
+    {
+        return true;
+    }
 
     /** @var PropertyChangedListener[] */
     private $_listeners = array();

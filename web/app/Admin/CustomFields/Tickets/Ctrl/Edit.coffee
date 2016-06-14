@@ -1,16 +1,14 @@
 define [
   'Admin/CustomFields/Base/Ctrl/Edit',
-], (
-  Admin_CustomFields_Base_Ctrl_Edit
-) ->
+], (Admin_CustomFields_Base_Ctrl_Edit) ->
   class Admin_CustomFields_Tickets_Ctrl_Edit extends Admin_CustomFields_Base_Ctrl_Edit
     @CTRL_ID = 'Admin_CustomFields_Tickets_Ctrl_Edit'
     @CTRL_AS = 'EditCtrl'
-    @DEPS    = []
+    @DEPS = []
 
     initialLoadExtra: ->
-      return @Api.sendGet('/ticket_layouts/fields/ticket_field_' + (@field_id || '__undefined__')).success( (data) =>
-        @user_layouts  = data.user_layouts
+      return @Api.sendGet('/ticket_layouts/fields/ticket_field_' + (@field_id || '__undefined__')).success((data) =>
+        @user_layouts = data.user_layouts
         @agent_layouts = data.agent_layouts
 
         if !@field_id
@@ -22,7 +20,7 @@ define [
 
     postSave: ->
       postData = {
-        enable_user_layouts: [],
+        enable_user_layouts:  [],
         enable_agent_layouts: []
       }
 
@@ -42,5 +40,8 @@ define [
 
     getBaseRouteName: ->
       return "tickets.fields"
+
+    type: ->
+      'tickets'
 
   Admin_CustomFields_Tickets_Ctrl_Edit.EXPORT_CTRL()

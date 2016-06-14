@@ -1,0 +1,37 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_title %}
+    <h4 class="modal-title">Convert field</h4>
+{% endblock %}
+{% block modal_body %}
+    <ul>
+        <li>
+            A new custom field called "{{ ng_var('type') }}" will be created
+        </li>
+        <li>
+            All of the {{ ng_var('plural_type') }} you have defined will be copied to the new custom field
+        </li>
+        <li>
+            All tickets with selections for the {{ ng_var('type') }} field will retain their value on the new custom field
+        </li>
+        <li>
+            All ticket layouts that have the {{ ng_var('type') }} field will be replaced with the new custom field
+        </li>
+        <li>
+            All filters that use the {{ ng_var('type') }} field will be replaced with the new custom field
+        </li>
+        <li>
+            All triggers that use the {{ ng_var('type') }} field will be replaced with the new custom field
+        </li>
+        <li>
+            After all data has been moved over to the new custom field, this {{ ng_var('type') }} field will be disabled.
+        </li>
+    </ul>
+{% endblock %}
+{% block modal_footer %}
+    <div ng-hide="is_loading">
+        <button class="btn btn-primary" ng-click="doConvert()">Confirm</button>
+    </div>
+    <div ng-show="is_loading">
+        <i class="spinner-flat"></i>
+    </div>
+{% endblock %}

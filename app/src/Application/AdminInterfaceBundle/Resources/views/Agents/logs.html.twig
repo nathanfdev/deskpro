@@ -91,7 +91,7 @@
 							<input type="text" class="invisible-copytext" value="{{ ng_var('log.user_agent') }}" style="width: 200px" />
 						</td>
 						<td style="white-space: nowrap" nowrap width="1">
-							{{ ng_var('log.date_created') }}
+                            {{ ng_var('log.date_created | amDateFormat:"MMM D, YYYY @ HH:mm"') }}
 						</td>
 					</tr>
 				</tbody>

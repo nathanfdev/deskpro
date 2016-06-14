@@ -1,5 +1,9 @@
-<?php if (!defined('DP_ROOT')) exit('No access'); ?>
-<?php if (!isset($run_context)) $run_context = 'install'; ?>
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+} ?>
+<?php if (!isset($run_context)) {
+    $run_context = 'install';
+} ?>
 <style type="text/css">
     .kb-read-more {
         font-size: 11px;
@@ -36,11 +40,11 @@
         <?php else: $failed = true; ?>
         <span class="label important" style="float:right">FAIL</span>
         <?php endif ?>
-        Check that the <a href="http://php.net/">PHP</a> version is &gt;= 5.3.2
+        Check that the <a href="http://php.net/">PHP</a> version is &gt;= 5.3.9
         <?php if ($failed): ?>
         <div class="alert-message block-message error">
             <a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_php_version') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
-            DeskPRO requires PHP 5.3.2. You have <?php echo phpversion() ?>.
+            DeskPRO requires PHP 5.3.9. You have <?php echo phpversion() ?>.
         </div>
         <?php endif ?>
     </td>
@@ -158,16 +162,34 @@
 <tr>
     <td>
         <?php $failed = false ?>
+        <?php if (!isset($errors['zlib_ext']) && !isset($errors['zlib_ext'])): ?>
+            <span class="label success" style="float:right">OK</span>
+        <?php else: $failed = true; $failed_phpini = true; ?>
+            <span class="label important" style="float:right">FAIL</span>
+        <?php endif ?>
+        Check that the <a href="http://php.net/manual/en/book.zlib.php">zlib</a> extension is installed
+        <?php if ($failed): ?>
+            <div class="alert-message block-message error">
+                <a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_zlib_ext') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
+                DeskPRO requires the zlib extension to be installed and enabled.
+            </div>
+        <?php endif ?>
+    </td>
+</tr>
+
+<tr>
+    <td>
+        <?php $failed = false ?>
         <?php if (!isset($errors['json_ext'])): ?>
         <span class="label success" style="float:right">OK</span>
         <?php else: $failed = true; $failed_phpini = true; ?>
         <span class="label important" style="float:right">FAIL</span>
         <?php endif ?>
-        Check that the <a href="http://php.net/manual/en/json.installation.php">json_encode extension</a> is installed
+        Check that the <a href="http://php.net/manual/en/json.installation.php">JSON extension</a> is installed
         <?php if ($failed): ?>
         <div class="alert-message block-message error">
             <a href="<?php echo \Application\DeskPRO\App::get('deskpro.service_urls')->get('dp.kb.install.error_json_ext') ?>" class="kb-read-more" target="_blank">Read more about fixing this error</a>
-            DeskPRO requires the json_encode extension.
+            DeskPRO requires the JSON extension.
         </div>
         <?php endif ?>
     </td>
@@ -319,6 +341,25 @@
     </td>
 </tr>
 
+
+<tr>
+    <td>
+        <?php $failed = false ?>
+        <?php if (!isset($errors['ldap_max_limit'])): ?>
+        <span class="label success" style="float:right">OK</span>
+        <?php else: $failed = true; $failed_phpini = true; ?>
+        <span class="label warning" style="float:right">WARNING</span>
+        <?php endif ?>
+        Check that PHP's <a href="http://php.net/manual/en/ldap.configuration.php#ini.ldap.max_links">ldap.max_links</a> setting is not too low
+        <?php if ($failed): ?>
+        <div class="alert-message block-message error">
+            We have detected the <code><a href="http://php.net/manual/en/ldap.configuration.php#ini.ldap.max_links">ldap.max_link</a></code> directive in your php.ini file<?php if ($ini_path): ?> (<code><?php echo $ini_path ?></code>)<?php endif ?> contains a value that is too low.
+            If you plan on using the LDAP features of DeskPRO, we recommend a setting of 5 or higher (or, "-1" for unlimited).
+        </div>
+        <?php endif ?>
+    </td>
+</tr>
+
 <tr>
     <td>
         <?php $failed = false ?>
@@ -334,19 +375,19 @@
             The data directory <?php if (isset($data_dir)): ?>(<?php echo $data_dir ?>)<?php endif ?> and all sub-directories must be writable.
             <br/>
             <?php foreach (array('', 'backups', 'debug', 'files', 'logs', 'tmp') as $dir) {
-                $path = dp_get_data_dir() . DIRECTORY_SEPARATOR . $dir;
+    $path = dp_get_data_dir().DIRECTORY_SEPARATOR.$dir;
 
-                if (!is_dir($path)) {
-                    @mkdir($path, 0777, true);
-                    @chmod($path, 0777);
-                }
+    if (!is_dir($path)) {
+        @mkdir($path, 0777, true);
+        @chmod($path, 0777);
+    }
 
-                if (!is_dir($path)) {
-                    echo "&bull; $path does not exist<br/>";
-                } elseif (!is_writable($path)) {
-                    echo "&bull; $path is not writable<br/>";
-                }
-            } ?>
+    if (!is_dir($path)) {
+        echo "&bull; $path does not exist<br/>";
+    } elseif (!is_writable($path)) {
+        echo "&bull; $path is not writable<br/>";
+    }
+} ?>
         </div>
             <?php if (strpos(strtoupper(PHP_OS), 'WIN') === 0): ?>
             <?php else: ?>

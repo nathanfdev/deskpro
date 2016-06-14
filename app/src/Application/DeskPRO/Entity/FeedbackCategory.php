@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Validator\HasValidationMetadataInterface;
@@ -42,8 +41,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
- * Feedback categories
- *
+ * Feedback categories.
  */
 class FeedbackCategory extends CategoryAbstract implements HasValidationMetadataInterface
 {
@@ -58,7 +56,6 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-
     protected $usergroups;
 
     public function __construct()
@@ -69,7 +66,6 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
     /**
      * @return FeedbackCategory
      */
-
     public static function createFeedbackCategory()
     {
         $category = new self();
@@ -80,7 +76,6 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
     /**
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
-
     public function getUserGroups()
     {
         return $this->usergroups;
@@ -89,11 +84,9 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
     /**
      * @param \Application\DeskPRO\Entity\Usergroup $usergroup
      */
-
     public function addUsergroup(Usergroup $usergroup)
     {
         if (!$this->usergroups->contains($usergroup)) {
-
             $this->usergroups->add($usergroup);
         }
     }
@@ -101,7 +94,6 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
     /**
      * @param \Application\DeskPRO\Entity\Usergroup $usergroup
      */
-
     public function removeUsergroup(Usergroup $usergroup)
     {
         $this->usergroups->removeElement($usergroup);
@@ -124,7 +116,7 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackCategory';
-        $metadata->setPrimaryTable(array('name' => 'feedback_categories',));
+        $metadata->setPrimaryTable(array('name' => 'feedback_categories'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
@@ -189,7 +181,7 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
                      0 => array(
                          'name'                 => 'parent_id',
                          'referencedColumnName' => 'id',
-                         'onDelete'             => 'set null'
+                         'onDelete'             => 'set null',
                      ),
                  ),
             )
@@ -199,18 +191,18 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
                  'fieldName'    => 'children',
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
                  'mappedBy'     => 'parent',
-                 'orderBy'      => array('display_order' => 'ASC',),
+                 'orderBy'      => array('display_order' => 'ASC'),
             )
         );
         $metadata->mapManyToMany(
             array(
                  'fieldName'    => 'usergroups',
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
-                 'cascade'      => array('persist', 'merge', 'remove'),
+                 'cascade'      => array('persist', 'merge'),
                  'joinTable'    => array(
-                     'name'               => 'feedback_category2usergroup',
-                     'schema'             => null,
-                     'joinColumns'        => array(
+                     'name'        => 'feedback_category2usergroup',
+                     'schema'      => null,
+                     'joinColumns' => array(
                          0 => array(
                              'name'                 => 'category_id',
                              'referencedColumnName' => 'id',

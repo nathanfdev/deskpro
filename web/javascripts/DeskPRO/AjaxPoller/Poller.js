@@ -43,7 +43,18 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 	},
 
 
-	pause: function() {
+  /**
+   * Pause the poller.
+   *
+   * @param {Boolean} cancelCurrent When pausing the poller, you might also want to abort the current request if one
+   *                                is being loaded.
+   */
+	pause: function(cancelCurrent) {
+    if (cancelCurrent && this.currentAjax && this.currentAjax.readystate != 4) {
+      this.currentAjax.abort();
+      this.currentAjax = null;
+    }
+
 		this.isPaused = true;
 	},
 
@@ -205,7 +216,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 			}
 		}
 
-		$.ajax({
+    this.currentAjax = $.ajax({
 			cache: false,
 			type: type,
 			url: this.options.ajaxUrl,
@@ -214,9 +225,11 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 			dataType: 'json',
 			dpIsPolling: true,
 			success: function (data) {
+        this.currentAjax = null;
 				this._handleAjaxSuccess(data, sent_info);
 			},
 			error: function(xhr, textStatus, errorThrown) {
+        this.currentAjax = null;
 				this._handleAjaxError(sent_info, xhr, textStatus, errorThrown);
 			}
 		});

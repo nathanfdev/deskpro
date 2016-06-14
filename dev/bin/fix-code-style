@@ -1,0 +1,39 @@
+#!/usr/bin/env php
+<?php
+define('PHP_CS_FIXER', realpath(__DIR__ . '/../../app/vendor/bin/php-cs-fixer'));
+define('PHP_CS_CONFIG_GIT', realpath(__DIR__ . '/../.php_cs_git'));
+define('PHP_CS_CONFIG_FULL', realpath(__DIR__ . '/../.php_cs'));
+
+// parse args
+$dry_run = false;
+$full_run = false;
+if (isset($argv[1])) {
+    if ($argv[1] === 'dry-run') {
+        $dry_run = true;
+    } elseif ($argv[1] === 'full') {
+        $full_run = true;
+        if (isset($argv[2]) && $argv[2] === 'dry-run') {
+            $dry_run = true;
+        }
+    }
+}
+
+$outputs = null;
+$return_status = null;
+$config_file = ($full_run ? PHP_CS_CONFIG_FULL : PHP_CS_CONFIG_GIT);
+
+$cmd = PHP_CS_FIXER . ' --verbose --config-file="' . $config_file . '" fix';
+
+// are we running in verbose mode?
+if ($dry_run) {
+    $cmd .= ' --dry-run';
+}
+
+echo 'Attempting to fix code changed since git HEAD' . PHP_EOL;
+echo "Executing: $cmd" . PHP_EOL;
+system($cmd, $return_status);
+if (0 !== $return_status) {
+    //echo implode(PHP_EOL, $outputs), PHP_EOL;
+    exit($return_status);
+}
+echo PHP_EOL.PHP_EOL.'Well done. No code style changes necessary.' . PHP_EOL;

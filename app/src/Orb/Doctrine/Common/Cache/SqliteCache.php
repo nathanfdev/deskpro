@@ -1,39 +1,35 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @subpackage Doctrine
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ */
 namespace Orb\Doctrine\Common\Cache;
-
 
 /**
  * The SQLite cache driver stores cache info in an sqlite db, either in the
@@ -47,6 +43,7 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
 {
     /**
      * An array of saved connections. Allows us to reuse connections.
+     *
      * @var Doctrine\DBAL\Connection[]
      */
     protected static $named_connections = array();
@@ -57,13 +54,15 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
     protected $_dbfile;
 
     /**
-     * The cache name, aka the table in the database
+     * The cache name, aka the table in the database.
+     *
      * @var string
      */
     protected $_cache_name = 'doctrine_cache';
 
     /**
-     * Connection name which might have been created before
+     * Connection name which might have been created before.
+     *
      * @var string
      */
     protected $_connection_name = null;
@@ -74,14 +73,15 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
     protected $_db;
 
     /**
-     * No expiry mode
+     * No expiry mode.
      *
      * @var bool
      */
     protected $_no_expire = false;
 
     /**
-     * Fetch a full list of IDs the first time an ID containment check is made
+     * Fetch a full list of IDs the first time an ID containment check is made.
+     *
      * @var bool
      */
     protected $_cached_ids_mode = false;
@@ -125,13 +125,13 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
      */
     public function __construct($filepath, $cache_name = 'doctrine_cache', $connection_name = null)
     {
-        $this->_dbfile = $filepath;
-        $this->_cache_name = $cache_name;
+        $this->_dbfile          = $filepath;
+        $this->_cache_name      = $cache_name;
         $this->_connection_name = $connection_name;
     }
 
     /**
-     * Get the database connection
+     * Get the database connection.
      *
      * @return \Doctrine\DBAL\Connection
      */
@@ -148,7 +148,7 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
         }
         if (!$this->_db) {
             $params = array(
-                'driver' => 'pdo_sqlite'
+                'driver' => 'pdo_sqlite',
             );
 
             if ($this->_dbfile == 'MEMORY') {
@@ -172,7 +172,7 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
                 $this->_db->exec("CREATE TABLE {$this->_cache_name} (id TEXT PRIMARY KEY, data BLOB)");
             }
         } else {
-            if (!$this->_no_expire && mt_rand(1,10) <= 3) {
+            if (!$this->_no_expire && mt_rand(1, 10) <= 3) {
                 $this->_db->executeUpdate("DELETE FROM {$this->_cache_name} WHERE expire < ? AND expire != 0", array(time()));
             }
         }
@@ -195,7 +195,7 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
         }
 
         if ($this->_cached_ids_mode) {
-            $this->_cached_ids = array_combine($keys, array_fill(0,count($keys), true));
+            $this->_cached_ids = array_combine($keys, array_fill(0, count($keys), true));
         }
 
         return $keys;
@@ -204,10 +204,10 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
     protected function doFetch($id)
     {
         if ($this->_no_expire) {
-            $sql = "SELECT data FROM {$this->_cache_name} WHERE id = ?";
+            $sql    = "SELECT data FROM {$this->_cache_name} WHERE id = ?";
             $params = array($id);
         } else {
-            $sql = "SELECT data FROM {$this->_cache_name} WHERE id = ? AND (expire = 0 OR expire > ?)";
+            $sql    = "SELECT data FROM {$this->_cache_name} WHERE id = ? AND (expire = 0 OR expire > ?)";
             $params = array($id, time());
         }
 
@@ -229,7 +229,7 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
 
         $exists = $this->getDbConnection()->fetchColumn("SELECT id FROM {$this->_cache_name} WHERE id = ? AND (expire = 0 OR expire > ?)", array($id, time()));
 
-        return (bool)$exists;
+        return (bool) $exists;
     }
 
     protected function doSave($id, $data, $lifeTime = 0)
@@ -268,6 +268,6 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
 
     protected function doGetStats()
     {
-        return null;
+        return;
     }
 }

@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @category Auth
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Auth
+ */
 namespace Orb\Auth\Adapter;
 
 use Application\DeskPRO\Log\Logger;
@@ -41,7 +40,7 @@ use Orb\Util\Arrays;
 
 /**
  * Requirements:
- * - Facebook SDK: https://github.com/facebook/php-sdk
+ * - Facebook SDK: https://github.com/facebook/php-sdk.
  */
 class Facebook extends AbstractCallbackAdatper implements DisplayContextInterface
 {
@@ -53,7 +52,8 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
     protected $display = 'page';
 
     /**
-     * The facebook object
+     * The facebook object.
+     *
      * @var Facebook
      */
     protected $fb;
@@ -64,15 +64,15 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
      */
     public function __construct($app_id, $app_secret)
     {
-        $this->app_id = $app_id;
+        $this->app_id     = $app_id;
         $this->app_secret = $app_secret;
     }
 
-
     /**
-     * Sets the display context: page or popup
+     * Sets the display context: page or popup.
      *
      * @param $context
+     *
      * @throws \InvalidArgumentException
      */
     public function setDisplayContext($context)
@@ -85,7 +85,6 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
         $this->display = $context;
     }
 
-
     /**
      * Initialize the auth process by setting state, and returning a redirect result.
      *
@@ -96,7 +95,7 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
         $this->fb = new \Facebook(
             array(
                 'appId'  => $this->app_id,
-                'secret' => $this->app_secret
+                'secret' => $this->app_secret,
             ),
             $state
         );
@@ -119,10 +118,9 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 
         // Already a user
         if ($me) {
-
             if ($this->logger) {
                 $this->logger->log(
-                    "No need to redirect, user is already logged in: \n" . trim(
+                    "No need to redirect, user is already logged in: \n".trim(
                         Arrays::implodeTemplate($me, "{KEY}: {VAL}\n")
                     ),
                     Logger::DEBUG
@@ -134,8 +132,9 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 
         $redirect_url = $this->fb->getLoginUrl(array(
             'redirect_uri' => $this->getCallbackUrl(),
-            'display' => $this->display,
-            'req_perms' => 'user_about_me,user_birthday,user_website,email',
+            'display'      => $this->display,
+            'req_perms'    => 'public_profile,email',
+            'scope'        => 'public_profile,email',
         ));
 
         if ($this->logger) {
@@ -148,8 +147,6 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
         return new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
     }
 
-
-
     /**
      * Process the callback and return a final result.
      *
@@ -160,7 +157,7 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
         $this->fb = new \Facebook(
             array(
                 'appId'  => $this->app_id,
-                'secret' => $this->app_secret
+                'secret' => $this->app_secret,
             ),
             $state
         );
@@ -169,13 +166,13 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 
         $time_start = microtime(true);
         if ($this->logger) {
-            $this->logger->log("START Facebook::authenticateCallback", Logger::DEBUG);
+            $this->logger->log('START Facebook::authenticateCallback', Logger::DEBUG);
         }
 
         $me = false;
         if ($session) {
             try {
-                $me = $this->fb->api('/me');
+                $me = $this->fb->api('/me?fields=name,email,id');
             } catch (\FacebookApiException $e) {
                 if ($this->logger) {
                     $this->logger->log(
@@ -187,7 +184,7 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 
         if (!$me) {
             if ($this->logger) {
-                $this->logger->log("No active FB session found. Failing.", Logger::DEBUG);
+                $this->logger->log('No active FB session found. Failing.', Logger::DEBUG);
             }
 
             return new Result(Result::FAILURE, null, array('error_code' => 'failed_session', 'error_message' => 'No active FB session'));
@@ -195,25 +192,24 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 
         if ($this->logger) {
             $this->logger->log(
-                "Facebook Success: \n" . trim(Arrays::implodeTemplate($me, "{KEY}: {VAL}\n")),
+                "Facebook Success: \n".trim(Arrays::implodeTemplate($me, "{KEY}: {VAL}\n")),
                 Logger::DEBUG
             );
         }
 
         if ($this->logger) {
             $this->logger->log(
-                sprintf("END Facebook::authenticateCallback (took %.4fs)", microtime(true) - $time_start), Logger::DEBUG
+                sprintf('END Facebook::authenticateCallback (took %.4fs)', microtime(true) - $time_start), Logger::DEBUG
             );
         }
 
         return $this->_meToResult($me);
     }
 
-
     protected function _meToResult($me)
     {
         $identity = new \Orb\Auth\Identity($me['id'], $me);
-        $identity->setFriendlyIdentity($identity['link']);
+        $identity->setFriendlyIdentity($identity['id']);
         $result = new Result(Result::SUCCESS, $identity);
 
         return $result;

@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace deskpro_salesforce\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
@@ -40,7 +39,7 @@ use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterf
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function handleApiPackageRequest(ApiPackageRequestContext $context)
     {
@@ -54,9 +53,9 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         }
     }
 
-
     /**
-     * @param  ApiPackageRequestContext                   $context
+     * @param ApiPackageRequestContext $context
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function checkRequirementsAction(ApiPackageRequestContext $context)
@@ -64,89 +63,92 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         return $context->createJsonResponse(array('soap_support' => class_exists('\SoapClient')));
     }
 
-
     /**
-     * @param  ApiPackageRequestContext                   $context
+     * @param ApiPackageRequestContext $context
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function testSettingsAction(ApiPackageRequestContext $context)
     {
+        libxml_disable_entity_loader(false);
+
         $user     = $context->getIn()->getString('api_user');
         $password = $context->getIn()->getString('api_password');
         $token    = $context->getIn()->getString('api_security_token');
 
-        $error = false;
+        $error  = false;
         $client = null;
 
-        $log = array();
+        $log   = array();
         $log[] = "user: $user";
         $log[] = "password: $password";
         $log[] = "token: $token";
 
-        $tests = array();
+        $tests   = array();
         $tests[] = function () use (&$log) {
-            $log[] = "Verifying SoapClient is available...";
+            $log[] = 'Verifying SoapClient is available...';
             if (!class_exists('\SoapClient')) {
-                $log[] = "SOAP support is not enabled in PHP";
+                $log[] = 'SOAP support is not enabled in PHP';
 
-                return array('missing_soap', "SOAP support is not enabled in PHP");
+                return array('missing_soap', 'SOAP support is not enabled in PHP');
             }
-            $log[] = "SoapClient is ok";
+            $log[] = 'SoapClient is ok';
 
-            return null;
+            return;
         };
 
         $tests[] = function () use (&$log) {
-            $log[] = "Verifying curl is available...";
+            $log[] = 'Verifying curl is available...';
             if (!function_exists('curl_init')) {
-                $log[] = "curl is not enabled in PHP";
+                $log[] = 'curl is not enabled in PHP';
 
-                return array('missing_soap', "curl support is not enabled in PHP");
+                return array('missing_soap', 'curl support is not enabled in PHP');
             }
-            $log[] = "curl is ok";
+            $log[] = 'curl is ok';
 
-            return null;
+            return;
         };
 
         $get_client = function ($url) use (&$log, $user, $password, $token) {
-            require_once(DP_ROOT . '/vendor-src/salesforce/SforcePartnerClient.php');
+            require_once DP_ROOT.'/vendor-src/salesforce/SforcePartnerClient.php';
 
             try {
                 $sforce = new \SforcePartnerClient();
-                $sforce->createConnection(DP_ROOT . '/vendor-src/salesforce/partner.wsdl.xml');
+                $sforce->createConnection(DP_ROOT.'/vendor-src/salesforce/partner.wsdl.xml');
             } catch (\Exception $e) {
-                $log[] = "Failed to create partner client";
+                $log[] = 'Failed to create partner client';
+                $log[] = $e->getMessage();
 
-                return null;
+                return;
             }
 
             try {
-                $sforce->login($user, $password . $token);
+                $sforce->login($user, $password.$token);
             } catch (\Exception $e) {
-                $log[] = "Failed to log in: Invalid API user, password or token, or network connection failed";
+                $log[] = 'Failed to log in: Invalid API user, password or token, or network connection failed';
                 if ($e->getMessage()) {
                     $log[] = "(Exception: {$e->getCode()} {$e->getMessage()}";
                 }
 
-                return null;
+                return;
             }
 
             return $sforce;
         };
 
         $tests[] = function () use (&$log, &$client, $get_client) {
-            $log[] = "Connecting to Salesforce service...";
+            $log[] = 'Connecting to Salesforce service...';
             $error = error_reporting();
             error_reporting($error & ~E_WARNING);
             $client = $get_client();
             error_reporting($error);
 
             if ($client) {
-                $log[] = "Successfully connected to SOAP service";
+                $log[] = 'Successfully connected to SOAP service';
             } else {
-                $log[] = "Failed";
+                $log[] = 'Failed';
 
-                return array('failed_connection', "Invalid URL or the service refused the connection");
+                return array('failed_connection', 'Invalid URL or the service refused the connection');
             }
         };
 
@@ -160,7 +162,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $result_data = array(
             'log'        => implode("\n", $log),
             'error'      => $error ? $error[1] : false,
-            'error_code' => $error ? $error[0] : false
+            'error_code' => $error ? $error[0] : false,
         );
 
         return $context->createJsonResponse($result_data);

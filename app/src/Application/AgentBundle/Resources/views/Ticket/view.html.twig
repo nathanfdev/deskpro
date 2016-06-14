@@ -13,6 +13,7 @@ pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete
 pageMeta.labelsSaveUrl                = '{{ path('agent_ticket_ajax_labels_save', {'ticket_id': ticket.id}) }}';
 pageMeta.getMacroUrl                  = '{{ path('agent_ticket_ajax_get_macro', {'ticket_id': ticket.id }) }}?macro_id=$macro_id';
 pageMeta.saveActionsUrl               = '{{ path('agent_ticket_ajax_save_actions', {'ticket_id': ticket.id }) }}';
+pageMeta.getDataholdersUrl = '{{ path('agent_ticket_ajax_get_dataholders', {'ticket_id': ticket.id }) }}';
 pageMeta.deleteTicketUrl              = '{{ path('agent_ticketsearch_ajax_delete_tickets') }}';
 pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 pageMeta.getMessageQuoteUrl           = '{{ path('agent_ticket_message_ajax_getquote', {'ticket_id': ticket.id, 'message_id': '000'})|replace({'000': '{message_id}'}) }}';
@@ -32,7 +33,7 @@ pageMeta.ticket = {{ ticket_api|json_encode|raw }};
 pageMeta.api_data = {{ ticket.toApiData()|json_encode|raw }};
 
 pageMeta.ticket_perms = {{ ticket_perms|json_encode|raw }};
-{% if ticket.isLocked(app.user) %}
+{% if ticket.hasLock() %}
 	pageMeta.isLocked = true;
 {% else %}
 	pageMeta.isLocked = false;
@@ -50,7 +51,6 @@ pageMeta.isDeleted = {% if ticket.hidden_status == 'deleted' %}true{% else %}fal
 pageMeta.isArchived = {% if ticket.status == 'archived' %}true{% else %}false{% endif %};
 pageMeta.isSpam = {% if ticket.hidden_status == 'spam' %}true{% else %}false{% endif %};
 pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.enable_timelog') and app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
-pageMeta.agents_with_perm = {{ agents_with_perm|json_encode|raw }};
 
 pageMeta.agentMap = {{ agent_map|json_encode|raw }};
 pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'true' : 'false' }};
@@ -66,11 +66,11 @@ pageMeta.lang = {{ {
 	<span class="pin-btn"><i class="fa fa-lock"></i><i class="fa fa-chevron-right"></i></span>
 </div>
 <div class="layout-sidebar-sizer" id="{{ baseId }}_layout_sidebar_sizer"></div>
-<div class="layout-content page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}" id="{{ baseId }}_layout_content">
+<div class="layout-content page-ticket {% if ticket.hasLock() %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}" id="{{ baseId }}_layout_content">
 <div class="dp-page-content">
 
-{% set locked_self = (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id) %}
-{% if ticket.is_locked %}<div class="locked-overlay" id="{{baseId}}_locked_overlay"></div>{% endif %}
+{% set locked_self = ticket.hasLock() and not ticket.isLocked(app.user) %}
+<div class="locked-overlay" id="{{baseId}}_locked_overlay"{% if not ticket.isLocked() %} style="display: none;"{% endif %}></div>
 
 <form class="value-form" id="{{ baseId }}_value_form" style="display:none">
 	<input type="hidden" name="department_id" class="department_id" value="{{ticket.department.id|default(0)}}" />
@@ -94,23 +94,25 @@ pageMeta.lang = {{ {
 	<div id="{{ baseId }}_layout_sidebar_icons" class="layout-sidebar-icons"><ul></ul></div>
 	{{ dp_app_loc(baseId, 'header.top') }}
 
-	<div id="{{baseId}}_locked_message" {% if not ticket.locked_by_agent %}style="display: none"{% endif %} {% if locked_self %}data-locked-self="1"{% endif %}>
+	<div id="{{baseId}}_locked_message" {% if not ticket.hasLock() %}style="display: none"{% endif %} data-locked-self="{% if locked_self %}1{% else %}0{% endif %}">
 		<div class="locked-message">
 			<button class="dp-btn" id="{{baseId}}_unlock_ticket2" style="float:right">{{ phrase('agent.tickets.unlock') }}</button>
 			<div style="margin-right: 100px;">
 				<div id="{{baseId}}_locked_message_self" {% if not locked_self %}style="display: none"{% endif %}>
-					{% if locked_self and app.getSetting('core_tickets.lock_on_view') %}
-						{{ phrase('agent.tickets.you_have_auto_lock') }}
-					{% else %}
-						{{ phrase('agent.tickets.you_have_locked') }}
-					{% endif %}
-					{% if app.getSetting('core_tickets.unlock_on_close') %}<div class="auto-unlock-message">{{ phrase('agent.tickets.lock_auto_release') }}</div>{% endif %}
+                    {% if app.getSetting('core_tickets.lock_on_view') %}
+                        {{ phrase('agent.tickets.you_have_auto_lock') }}
+                    {% else %}
+                        {{ phrase('agent.tickets.you_have_locked') }}
+                    {% endif %}
+					{% if app.getSetting('core_tickets.unlock_on_close') %}
+                        <div class="auto-unlock-message">
+                            {{ phrase('agent.tickets.lock_auto_release') }}
+                        </div>
+                    {% endif %}
 				</div>
-				{% if ticket.locked_by_agent and not locked_self %}
-					<div id="{{baseId}}_locked_message_other">
-						{{ phrase('agent.tickets.agent_has_lock', {agent: ticket.locked_by_agent.display_name}) }}
-					</div>
-				{% endif %}
+				<div id="{{baseId}}_locked_message_other"{% if locked_self %} style="display:none;"{% endif %}>
+					{{ phrase('agent.tickets.agent_has_lock', {agent: '<span>' ~ ticket.locked_by_agent.display_name ~ '</span>'}, true) }}
+				</div>
 			</div>
 		</div>
 	</div>
@@ -330,7 +332,7 @@ pageMeta.lang = {{ {
 <div class="profile-box-container dp-simpletab-container">
 	<header id="{{baseId}}_properties_header">
 		{% if ticket_perms.modify_fields %}
-			<div class="controls {% if ticket.isLocked(app.user) %}hide-locked{% endif %}" id="{{baseId}}_field_edit_controls">
+			<div class="controls {% if ticket.hasLock() and not locked_self %}hide-locked{% endif %}" id="{{baseId}}_field_edit_controls">
 				<div class="is-not-loading">
 					<span class="edit-gear" id="{{baseId}}_field_edit_start"></span>
 					<button class="cancel" id="{{baseId}}_field_edit_cancel" style="display: none">{{ phrase('agent.general.cancel') }}</button>
@@ -374,7 +376,7 @@ pageMeta.lang = {{ {
 			</ul>
 		</div>
 		<article id="{{baseId}}_fields_display_main_wrap" class="headerbox" style="position: relative;">
-			{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
+			<div class="lock-overlay"{% if not ticket.isLocked(app.user) %} style="display: none;"{% endif %}></div>
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="padding-right: 5px;">
 						<label class="field-label-title" style="white-space: nowrap">
                         {{ phrase('agent.general.agent') }}
@@ -444,8 +446,11 @@ pageMeta.lang = {{ {
 
 						{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
 						<optgroup label="{{ phrase('agent.general.your_teams') }}">
-							{% for team in app.user.getAgent().getTeams() %}
+                            {% set teams = app.user.getAgent().getTeams() %}
+                            {% for team in agent_teams %}
+                                {% if team in teams %}
 								<option value="{{ team.id }}" data-icon="{{ team.getAvatarUrl(20) }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+                                {% endif %}
 							{% endfor %}
 						</optgroup>
 						{% endif %}
@@ -515,18 +520,6 @@ pageMeta.lang = {{ {
 							</tr>
 						</tbody>
 					{% endif %}
-					{% if ticket.linked_chat and app.getSetting('core.apps_chat') and app.user.hasPerm('agent_chat.use') %}
-						<tbody>
-							<tr>
-								<th>
-									{{ phrase('agent.general.linked_chat') }}
-								</th>
-								<td>
-									<a data-route="page:{{ path('agent_userchat_view', { conversation_id: ticket.linked_chat.id }) }}">{{ ticket.linked_chat.getSubjectLine() }}</a>
-								</td>
-							</tr>
-						</tbody>
-					{% endif %}
 				</table>
 			</div>
 		</article>
@@ -544,7 +537,7 @@ pageMeta.lang = {{ {
 			</article>
 		{% endif %}
 		{% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
-			<article id="{{baseId}}_billing_wrap">
+			<article id="{{baseId}}_billing_wrap" style="overflow-x: auto;">
 				{% include 'AgentBundle:Ticket:view-billing.html.twig' %}
 			</article>
 		{% endif %}
@@ -632,7 +625,7 @@ pageMeta.lang = {{ {
 	{% if ticket_perms.reply or ticket_perms.modify_notes %}
 		{{ dp_app_loc(baseId, 'replybox.before') }}
 		<div style="position:relative;" class="ticket_reverse_order">
-			{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
+			<div class="lock-overlay"{% if not ticket.isLocked(app.user) %} style="display: none;"{% endif %}></div>
 			<div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
 				{% include 'AgentBundle:Ticket:replybox.html.twig' %}
 			</div>
@@ -709,7 +702,7 @@ pageMeta.lang = {{ {
 				</td>
 			</tr></tbody>
 			{% endif %}
-			{% if ticket.real_total_user_waiting and ticket.real_total_user_waiting > 0 %}
+			{% if ticket.real_total_user_waiting %}
 			<tbody><tr>
 				<th>{{ phrase('agent.tickets.total_user_waiting_time') }}:</th>
 				<td>
@@ -820,7 +813,7 @@ pageMeta.lang = {{ {
 	{% if ticket_perms.reply or ticket_perms.modify_notes %}
 	{{ dp_app_loc(baseId, 'replybox.before') }}
 	<div style="position:relative;">
-		{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
+		<div class="lock-overlay"{% if not ticket.isLocked(app.user) %} style="display: none;"{% endif %}></div>
 		<div id="{{baseId}}_replybox_wrap" class="replybox-wrap">
 			{% include 'AgentBundle:Ticket:replybox.html.twig' %}
 		</div>
@@ -895,12 +888,45 @@ pageMeta.lang = {{ {
 	{% if app.user.can_admin %}<li data-option-id="debug" data-url="{{ path('agent_ticket_download_debug_report', {ticket_id: '00000', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.tickets.debug_file_download') }}</li>{% endif %}
 	{#<li data-option-id="split">{{ phrase('agent.tickets.split_from_here') }}</li>#}
 </ul>
-<ul class="ticket-macros-menu" style="display:none" {% if baseId %}id="{{baseId}}_macros_menu"{% endif %}>
-	{% for macro in macros %}
-		<li class="res-ticketmacro-{{ macro.id }}" data-macro-id="{{macro.id}}"><span class="macro-title">{{macro.title}}</span></li>
-	{% endfor %}
-	<li class="open-settings-trigger" style="background-color: #E4E4E4; border-top: 1px solid #C1C1C1;"><i class="icon-cog"></i> {{ phrase('agent.general.manage_macros') }}</li>
-</ul>
+<div class="dp-menu replybox" id="{{ baseId }}_macros_menu" style="min-width: 225px;">
+	<section>
+		<div class="dp-menu-area small">
+			<input type="text" class="label-input macro-filter" placeholder="Filter" />
+			<ul class="macro-list">
+				{% import _self as metpl %}
+				{% macro macroRow(item, ticket) %}
+					{% import _self as metpl %}
+					{% if item.type == 'item' %}
+						{% set macro = item.item %}
+						<li class="res-ticketmacro-{{ macro.id }}" data-type="macro:{{ macro.id }}" data-macro-id="{{ macro.id }}" data-label="{{ phrase('agent.tickets.send_newticket_and_apply_x', {name: macro.title}) }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: ticket.id|default(0), macro_id: macro.id, macro_reply_context: 1 }) }}">
+							<div class="on-icon"><i class="icon-ok"></i></div>
+							<span class="macro-title">{{ item.title }}</span>
+						</li>
+					{% else %}
+						<li class="coll">
+							<span class="macro-title"><i class="fa fa-caret-right" style="float:right; position:relative;top:4px;"></i>{{ item.title }}</span>
+							<div class="dp-menu replybox sub-menu" style="min-width: 225px;">
+								<section>
+									<div class="dp-menu-area small">
+										<input type="text" class="label-input macro-filter" placeholder="{{ phrase('agent.tickets.reply_and_apply_macro') }}" />
+										<ul class="macro-list">
+											{% for sub_item in item.items %}
+												{{ metpl.macroRow(sub_item, ticket) }}
+											{% endfor %}
+										</ul>
+									</div>
+								</section>
+							</div>
+						</li>
+					{% endif %}
+				{% endmacro %}
+				{% for item in app.user.getHelper('Agent').getMacrosStructured() %}
+					{{ metpl.macroRow(item, ticket) }}
+				{% endfor %}
+			</ul>
+		</div>
+	</section>
+</div>
 
 <div class="delete-ticket-overlay overlay" style="display:none">
 	<div class="overlay-title">
@@ -929,6 +955,48 @@ pageMeta.lang = {{ {
 		</div>
 	</div>
 </div>
+
+    {% if app.getSetting('core.problems.enabled') and app.user.hasPerm('agent_problems.close') %}
+        <div class="close-problem-overlay overlay" style="display:none">
+            <div class="overlay-title">
+                <h4>{{ phrase('agent.problems.close_problem') }}</h4>
+            </div>
+
+            <div class="overlay-content">
+                {{ phrase('agent.problems.close_problem_prompt') }}
+            </div>
+
+            <div class="overlay-footer">
+                <div class="loading-off">
+                    <button class="save-trigger clean-white">{{ phrase('agent.problems.close_problem') }}</button>
+                </div>
+                <div class="loading-on" style="display:none">
+                    <span>{{ phrase('agent.general.saving') }}... <span class="flat-spinner"></span></span>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+	{% if app.getSetting('core.problems.enabled') and app.user.hasPerm('agent_problems.reopen') %}
+	<div class="reopen-problem-overlay overlay" style="display:none">
+		<div class="overlay-title">
+			<h4>{{ phrase('agent.problems.reopen_problem') }}</h4>
+		</div>
+
+		<div class="overlay-content">
+			{{ phrase('agent.problems.reopen_problem_prompt') }}
+		</div>
+
+		<div class="overlay-footer">
+			<div class="loading-off">
+				<button class="save-trigger clean-white">{{ phrase('agent.problems.reopen_problem') }}</button>
+			</div>
+			<div class="loading-on" style="display:none">
+				<span>{{ phrase('agent.general.saving') }}... <span class="flat-spinner"></span></span>
+			</div>
+		</div>
+	</div>
+	{% endif %}
 
 <div class="delete-message-overlay overlay" style="display:none">
 	<div class="overlay-title">

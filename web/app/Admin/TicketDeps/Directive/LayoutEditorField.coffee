@@ -1,20 +1,23 @@
 define ['DeskPRO/Util/Util'], (Util) ->
   class LayoutEditorField
-    constructor: (@scope, @element, @attrs, @ngModel, @$modal, @dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout, TicketFieldsPerPerson, TicketFieldsPerOrg) ->
+    constructor: (@scope, @element, @attrs, @ngModel, @$modal, @dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout, TicketFieldsPerPerson, TicketFieldsPerOrg, OrgFields) ->
 
       @scope.ticketFieldTitleFilter = (f) =>
         @scope.field.field_type == 'ticket_field' and (f.id+'') == (@scope.field.field_id+'')
       @scope.userFieldTitleFilter = (f) =>
         @scope.field.field_type == 'user_field' and (f.id+'') == (@scope.field.field_id+'')
+      @scope.orgFieldTitleFilter = (f) =>
+        @scope.field.field_type == 'org_field' and (f.id+'') == (@scope.field.field_id+'')
       @scope.CustomFieldTitleFilter = (f) =>
         @scope.field.field_type == 'custom_field' and (f.id+'') == (@scope.field.field_id+'')
 
-      $q.all([TicketFields.loadList(), UserFields.loadList(), TicketFieldsPerPerson.all(), TicketFieldsPerOrg.all()])
+      $q.all([TicketFields.loadList(), UserFields.loadList(), TicketFieldsPerPerson.all(), TicketFieldsPerOrg.all(), OrgFields.loadList()])
       .then (results) =>
-        @scope.custom_ticket_fields   = results[0]
-        @scope.custom_user_fields     = results[1]
+        @scope.custom_ticket_fields     = results[0]
+        @scope.custom_user_fields       = results[1]
         @scope.ticket_fields_per_person = results[2]
-        @scope.ticket_fields_per_org  = results[3]
+        @scope.ticket_fields_per_org    = results[3]
+        @scope.custom_org_fields        = results[4]
 
         $timeout(=>
           @_initEvents()
@@ -119,10 +122,11 @@ define ['DeskPRO/Util/Util'], (Util) ->
     directive.replace     = true
     directive.templateUrl = "TicketDeps/layout-editor-field.html"
 
-    TicketFields = DataService.get('TicketFields')
-    UserFields   = DataService.get('UserFields')
+    TicketFields          = DataService.get('TicketFields')
+    UserFields            = DataService.get('UserFields')
+    OrgFields             = DataService.get('OrgFields')
     TicketFieldsPerPerson = DataService.get 'CustomFields', 'ticket', 'person'
-    TicketFieldsPerOrg = DataService.get 'CustomFields', 'ticket', 'organization'
+    TicketFieldsPerOrg    = DataService.get 'CustomFields', 'ticket', 'organization'
 
     directive.link = (scope, element, attrs, ngModel) ->
       if not scope.field.options                 then scope.field.options = {}
@@ -143,6 +147,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
         $timeout,
         TicketFieldsPerPerson
         TicketFieldsPerOrg
+        OrgFields
       )
 
     return directive

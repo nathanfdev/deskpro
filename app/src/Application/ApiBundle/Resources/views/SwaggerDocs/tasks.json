@@ -4,52 +4,6 @@
     "resourcePath": "/tasks",
     "apis": [
         {
-            "path": "/task/{task_id}",
-            "operations": [
-                {
-                    "method": "POST",
-                    "summary": "Updates a Task.",
-                    "nickname": "postTaskAction",
-                    "parameters": [
-                        {
-                            "paramType": "query",
-                            "name": "task_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "ID of the task that needs to be updated"
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "assigned_agent_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Updated ID of agent assigned to the task."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "assigned_agent_team_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Updated ID of agent team assigned to the task."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "completed",
-                            "type": "boolean",
-                            "required": false,
-                            "description": "Sets the completed state for the task."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Task definition not found"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
             "path": "/tasks",
             "operations": [
                 {
@@ -248,6 +202,47 @@
                         }
                     ],
                     "notes": "Information about the task by task ID."
+                },
+                {
+                    "method": "POST",
+                    "summary": "Updates a Task.",
+                    "nickname": "postTaskAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "task_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "ID of the task that needs to be updated"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "assigned_agent_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Updated ID of agent assigned to the task."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "assigned_agent_team_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Updated ID of agent team assigned to the task."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "completed",
+                            "type": "boolean",
+                            "required": false,
+                            "description": "Sets the completed state for the task."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Task definition not found"
+                        }
+                    ]
                 },
                 {
                     "method": "DELETE",

@@ -1,46 +1,47 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Controller
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Controller
+ */
 namespace Application\DeskPRO\HttpKernel\Controller;
+
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\Util;
+use Orb\Util\Arrays;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
- * The base controller
+ * The base controller.
  */
 abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Controller
 {
@@ -50,19 +51,22 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
     protected $container;
 
     /**
-     * The request
+     * The request.
+     *
      * @var \Application\DeskPRO\HttpFoundation\Request
      */
     public $request;
 
     /**
-     * The response
+     * The response.
+     *
      * @var \Symfony\Component\HttpFoundation\Response
      */
     public $response;
 
     /**
-     * Event dispatcher
+     * Event dispatcher.
+     *
      * @var \Symfony\Component\EventDispatcher\EventDispatcher
      */
     protected $event_dispatcher;
@@ -72,16 +76,14 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      */
     public $request_type = HttpKernelInterface::MASTER_REQUEST;
 
-
     public function __construct(ContainerInterface $container)
     {
         $this->setContainer($container);
-        $this->request           = $this->get('request');
-        $this->response          = $this->get('response');
-        $this->event_dispatcher  = $this->get('event_dispatcher');
+        $this->request          = $this->get('request');
+        $this->response         = $this->get('response');
+        $this->event_dispatcher = $this->get('event_dispatcher');
         $this->init();
     }
-
 
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
@@ -91,16 +93,12 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
         return $this->container;
     }
 
-
     /**
-     * An empty callback function
+     * An empty callback function.
      */
     protected function init()
     {
-
     }
-
-
 
     public function DeskPRO_onControllerPreAction($event)
     {
@@ -121,10 +119,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      */
     public function preAction($action, $arguments = null)
     {
-
     }
-
-
 
     public function DeskPRO_onControllerPostAction($event)
     {
@@ -134,17 +129,17 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
         }
     }
 
-
     /**
-     * @param  \Exception                                 $e
+     * @param \Exception $e
+     *
      * @throws \Exception
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function handleActionException(\Exception $e)
     {
         throw $e;
     }
-
 
     /**
      * Called by the HttpKernel after an action has been executed.
@@ -157,17 +152,15 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      */
     public function postAction($response)
     {
-
     }
-
-
 
     /**
      * Redirect to a named route.
      *
-     * @param  string   $route
-     * @param  array    $parameters
-     * @param  int      $status
+     * @param string $route
+     * @param array  $parameters
+     * @param int    $status
+     *
      * @return Response
      */
     public function redirectRoute($route, array $parameters = array(), $status = 302)
@@ -177,13 +170,12 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
         return $this->redirect($url, $status);
     }
 
-
-
     /**
-     * Create a regular html response
+     * Create a regular html response.
      *
-     * @param  string   $content
-     * @param  int      $status_code
+     * @param string $content
+     * @param int    $status_code
+     *
      * @return Response
      */
     public function createResponse($content, $status_code = 200)
@@ -197,48 +189,62 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
         return $response;
     }
 
-
-
     /**
      * Create a JSON response.
      *
-     * @param  string   $content
-     * @param  int      $status_code
+     * @param string $content
+     * @param int    $status_code
+     *
      * @return Response
      */
     public function createJsonResponse($content, $status_code = 200)
     {
-//		$response = $this->container->get('response');
-        $response = new \Application\ApiBundle\HttpFoundation\JsonResponse();
-
-        // Because IE will sometimes prompt to download json when using iframe transport for ajax if we dont do this
-        if ($this->request->isXmlHttpRequest() || isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
-            $response->headers->set('Content-Type', 'application/json');
-        } else {
+        if (isset($_GET['dp_as_text'])) {
+            // Hack to render json as 'text'
+            $response = new \Symfony\Component\HttpFoundation\Response();
             $response->headers->set('Content-Type', 'text/plain');
+            $response->setStatusCode($status_code);
+
+            if (!is_array($content)) {
+                $content = json_decode($content, true);
+            }
+
+            $content = Arrays::implodeTemplate($content, "{KEY} = {VAL}\n");
+
+            $response->setContent($content);
+
+            return $response;
+        } else {
+            $response = new \Application\ApiBundle\HttpFoundation\JsonResponse();
+
+            // Because IE will sometimes prompt to download json when using iframe transport for ajax if we dont do this
+            if ($this->request->isXmlHttpRequest() || isset($_SERVER['HTTP_ACCEPT']) && (strpos(
+                        $_SERVER['HTTP_ACCEPT'],
+                        'application/json'
+                    ) !== false)
+            ) {
+                $response->headers->set('Content-Type', 'application/json');
+            } else {
+                $response->headers->set('Content-Type', 'text/plain');
+            }
+
+            $response->setStatusCode($status_code);
+
+            $response->setContent($content);
+
+            return $response;
         }
-
-        $response->setStatusCode($status_code);
-
-//		if (is_array($content)) {
-//			$content = Util::jsonEncode($content);
-//		}
-
-        $response->setContent($content);
-
-        return $response;
     }
-
-
 
     /**
      * Create a JSONP response.
      *
      * Remember that personal data (e.g., account info) should never be exposed via jsonp.
      *
-     * @param  string   $content
-     * @param  int      $status_code
-     * @param  string   $callback_name
+     * @param string $content
+     * @param int    $status_code
+     * @param string $callback_name
+     *
      * @return Response
      */
     public function createJsonpResponse($content, $status_code = 200, $callback_name = null)
@@ -271,14 +277,13 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
         return $response;
     }
 
-
-
     /**
      * Render a template and create a JSON response with it.
      *
-     * @param  string   $view
-     * @param  array    $parameters
-     * @param  Response $response
+     * @param string   $view
+     * @param array    $parameters
+     * @param Response $response
+     *
      * @return Response
      */
     public function renderJson($view, array $parameters = array(), Response $response = null)

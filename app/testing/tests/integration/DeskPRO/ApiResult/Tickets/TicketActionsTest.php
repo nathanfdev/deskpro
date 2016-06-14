@@ -1,10 +1,36 @@
 <?php
 
-namespace DpUnitTests\DeskPRO\ApiResult\Tickets;
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
-use DpUnitTests\DeskPRO\ApiResult\AbstractApiResultTest;
+namespace DpIntegrationTests\DeskPRO\ApiResult\Tickets;
 
-require_once __DIR__ . '/../AbstractApiResultTest.php';
+use DpIntegrationTests\DeskPRO\ApiResult\AbstractApiResultTest;
+
+require_once __DIR__.'/../AbstractApiResultTest.php';
 
 class TicketActionsTest extends AbstractApiResultTest
 {
@@ -129,7 +155,7 @@ class TicketActionsTest extends AbstractApiResultTest
 
     protected function _getExpectedTicketMessage()
     {
-        return require 'Data'. DIRECTORY_SEPARATOR . 'ExpectedTicketMessage.php';
+        return require 'Data'.DIRECTORY_SEPARATOR.'ExpectedTicketMessage.php';
     }
 
     protected function assertMessagesAreEqual($retrievedTicketMessageArray, $expectedTicketMessage)
@@ -150,7 +176,7 @@ class TicketActionsTest extends AbstractApiResultTest
             $this->assertIsValidTimestamp($retrievedTicketMessageArray['person'][$field], "person.$field");
         }
 
-        foreach($this->_getIgnoreKeys('person') as $key) {
+        foreach ($this->_getIgnoreKeys('person') as $key) {
             $this->assertArrayHasKey($key, $retrievedTicketMessageArray['person']);
             unset($retrievedTicketMessageArray['person'][$key]);
             unset($expectedTicketMessage['person'][$key]);
@@ -162,6 +188,6 @@ class TicketActionsTest extends AbstractApiResultTest
             unset($expectedTicketMessage[$key]);
         }
 
-        return $this->assertEquals($retrievedTicketMessageArray, $expectedTicketMessage);
+        return $this->assertApiArrayEqual($retrievedTicketMessageArray, $expectedTicketMessage);
     }
 }

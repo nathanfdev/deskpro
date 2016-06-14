@@ -22,6 +22,8 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 
 		this.page.addEvent('destroy', this.destroy, this);
 
+		this.phone_numbers = new DeskPRO.UI.PhoneNumberInputs();
+
 		this.initEditorOverlay();
 
 		var displayEl = $(self.options.displayEl || '.contact-list-wrapper', self.wrapper);
@@ -50,6 +52,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 	initEditorOverlay: function() {
 
 		var self = this;
+
 		if (this.contactOverlay) {
 			this.contactOverlay.destroy();
 			this.contactOverlay = null;
@@ -126,22 +129,18 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 		var checkFields = function(rowTypeEl) {
 			var row = $('li', rowTypeEl).last();
 
-			var show = false;
-			if (row.is('.new')) {
-				var fields = $('input, textarea, select', row);
-				fields.each(function() {
-					if ($(this).val()) {
-						show = true;
-					}
-				});
-			} else {
-				show = false;
-			}
+			var show = row.length > 0;
 
 			if (show) {
 				$('.with-some', rowTypeEl).show();
+				$('.with-none', rowTypeEl).hide();
 			} else {
 				$('.with-some', rowTypeEl).hide();
+				$('.with-none', rowTypeEl).show();
+			}
+
+			if (rowTypeEl.hasClass('email') && $('li', rowTypeEl).length === 1) {
+				$('.remove', rowTypeEl).hide();
 			}
 		};
 
@@ -167,7 +166,8 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 					rowTypeEl.removeClass('with-values');
 				}
 			});
-		};
+		}
+
 		contactEditor.on('click', '.remove', function(ev) {
 			var rowTypeEl = $(this).closest('.row-type');
 			var row = $(this).closest('li');
@@ -184,12 +184,16 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 		contactEditor.on('click', '.add-trigger', function(ev) {
 			var rowTypeEl = $(this).closest('.row-type');
 
-			var tpl = DeskPRO_Window.util.getPlainTpl($('.tpl-new-row', rowTypeEl));
+			var tpl = DeskPRO_Window.util.getPlainTpl($('.tpl-new-row', rowTypeEl)),
+					index = $('ul', rowTypeEl).children().length;
 			tpl = tpl.replace(/%id%/g, Orb.uuid());
+			// symfony form support
+			tpl = tpl.replace(/__name__/g, index);
 
 			var el = $(tpl);
 			el.addClass('new');
 			el.appendTo($('ul', rowTypeEl));
+			self.phone_numbers.renderPhoneInputs();
 
 			DeskPRO_Window.initInterfaceServices(el);
 
@@ -197,10 +201,13 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 				checkFields(rowTypeEl);
 			});
 
-			$('.with-some', rowTypeEl).hide();
+			$('.with-none', rowTypeEl).hide();
+			$('.with-some', rowTypeEl).show();
 
 			rowTypeEl.addClass('with-values');
 		});
+
+		this.phone_numbers.renderPhoneInputs();
 	},
 
 	destroy: function() {

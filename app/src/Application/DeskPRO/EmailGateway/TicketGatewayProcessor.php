@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
@@ -84,10 +83,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
      */
     protected $created_object_info = null;
 
-
     /**
-     * @return \Application\DeskPRO\Entity\Ticket|\Application\DeskPRO\Entity\TicketMessage|null
      * @throws \Exception
+     *
+     * @return \Application\DeskPRO\Entity\Ticket|\Application\DeskPRO\Entity\TicketMessage|null
      */
     public function run()
     {
@@ -95,10 +94,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         # Run detectors to see if its a reply
         #-------------------------
 
-        $ticket = null;
-        $person = null;
-        $tac_person = null;
-        $is_bounce  = false;
+        $ticket       = null;
+        $person       = null;
+        $tac_person   = null;
+        $is_bounce    = false;
         $is_dp3_reply = false;
 
         $can_add_new_person = false;
@@ -109,8 +108,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         if ($bounce_detector->isBounced()) {
             $is_bounce = true;
 
-            $this->logMessage("Is bounced");
-            $ticket	= $bounce_detector->getGuessedTicket();
+            $this->logMessage('Is bounced');
+            $ticket             = $bounce_detector->getGuessedTicket();
             $can_add_new_person = true;
         }
 
@@ -121,14 +120,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             }
 
             $ticket = $ticket_detect->findExistingTicket($this->reader);
-            $this->logMessage("[TicketGatewayProcessor] Ticket Detector -- Ticket: " . ($ticket ? $ticket->id : 'none'));
+            $this->logMessage('[TicketGatewayProcessor] Ticket Detector -- Ticket: '.($ticket ? $ticket->id : 'none'));
 
             $tac_person = $ticket_detect->findTacPerson($this->reader);
-            $this->logMessage("[TicketGatewayProcessor] Ticket Detector -- TAC Person: " . ($tac_person ? $tac_person->id . ' ' . $tac_person->getDisplayContact() : 'none'));
+            $this->logMessage('[TicketGatewayProcessor] Ticket Detector -- TAC Person: '.($tac_person ? $tac_person->id.' '.$tac_person->getDisplayContact() : 'none'));
 
             if ($ticket) {
                 $person = $ticket_detect->findExistingPerson($ticket, $this->reader);
-                $this->logMessage("[TicketGatewayProcessor] Ticket Detector -- Person: " . ($person ? $person->id . ' ' . $person->getDisplayContact() : 'none'));
+                $this->logMessage('[TicketGatewayProcessor] Ticket Detector -- Person: '.($person ? $person->id.' '.$person->getDisplayContact() : 'none'));
 
                 $can_add_new_person = $ticket_detect->canAddUnknownPerson($ticket, $this->reader);
 
@@ -148,30 +147,34 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             // Need to look up the From sender manually because we dont know which ticket dector was used above,
             // and the way they find existing people is an implementation detail we dont know here
             $exist_person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($this->reader->getFromAddress()->email);
+
             if (($exist_person && $tac_person !== $exist_person) || !$exist_person) {
-                $this->logMessage('Agent email with TAC from unknown email address');
-                $this->error      = 'auth_invalid';
-                $this->error_type = 'rejected';
+                $this->logMessage('Agent email with TAC from unknown email address. Re-running ticket detectors without code detector.');
 
-                if (!$this->reader->isFromRobot()) {
-                    $message = App::getMailer()->createMessage();
-                    $message->setTemplate('DeskPRO:emails_agent:error-unknown-from.html.twig', array(
-                        'ticket' => $ticket,
-                        'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-                        'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                    ));
-                    $message->setTo($this->reader->getFromAddress()->getEmail());
+                $ticket             = null;
+                $person             = null;
+                $tac_person         = null;
+                $is_dp3_reply       = false;
+                $can_add_new_person = false;
 
-                    $lang = $person ? $person->getLanguage() : $tac_person->getLanguage();
-
-                    App::$container->getTranslator()->setTemporaryLanguage($lang, function () use ($message) {
-                        $message->prepare();
-                    });
-
-                    App::getMailer()->send($message);
+                // Invalid or mis-matching auth-code, we will re-run the detectors without TAC matching
+                $ticket_detect = $this->createTicketDetector(false);
+                if ($is_bounce) {
+                    $ticket_detect->enableBouncedMode();
                 }
 
-                return null;
+                $ticket = $ticket_detect->findExistingTicket($this->reader);
+                $this->logMessage('[TicketGatewayProcessor] [RERUN] Ticket Detector -- Ticket: '.($ticket ? $ticket->id : 'none'));
+
+                $tac_person = $ticket_detect->findTacPerson($this->reader);
+                $this->logMessage('[TicketGatewayProcessor] [RERUN] Ticket Detector -- TAC Person: '.($tac_person ? $tac_person->id.' '.$tac_person->getDisplayContact() : 'none'));
+
+                if ($ticket) {
+                    $person = $ticket_detect->findExistingPerson($ticket, $this->reader);
+                    $this->logMessage('[TicketGatewayProcessor] [RERUN] Ticket Detector -- Person: '.($person ? $person->id.' '.$person->getDisplayContact() : 'none'));
+
+                    $can_add_new_person = $ticket_detect->canAddUnknownPerson($ticket, $this->reader);
+                }
             }
         }
 
@@ -203,7 +206,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                     'num_messagess' => $rate_limit,
                     'time_limit'    => Dates::secsToReadable($rate_time),
                     'time_lock'     => Dates::secsToReadable($rate_locktime),
-                    'date_lock_end' => date($this->container->getSetting('core.date_time'), time() + $rate_locktime)
+                    'date_lock_end' => date($this->container->getSetting('core.date_time'), time() + $rate_locktime),
                 ));
                 $message->setTo($this->reader->getFromAddress()->getEmail());
 
@@ -223,7 +226,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 $this->logMessage('Rate limited, message is rejected');
                 $this->error      = 'rate_limit';
                 $this->error_type = 'rejected';
-                return null;
+
+                return;
             }
         }
 
@@ -231,7 +235,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         # Check if we should create a new user on the ticket
         #-------------------------
 
-        if ($ticket AND !$person AND $can_add_new_person) {
+        if ($ticket and !$person and $can_add_new_person) {
             $this->logMessage(sprintf('[TicketGatewayProcessor] Could not find user on ticket, adding user with email %s', $this->reader->getFromAddress()->getEmail()));
 
             $person_processor = new PersonFromEmailProcessor();
@@ -243,10 +247,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             if (!$person) {
                 $this->logMessage('[TicketGatewayProcessor] No existing person found, will try and create it');
                 $person = $person_processor->createPerson($this->reader->getFromAddress());
-                $this->logMessage('[TicketGatewayProcessor] Person ID is ' . $person->id);
+                $this->logMessage('[TicketGatewayProcessor] Person ID is '.$person->id);
             }
 
-            if ($person && !$person->is_agent) {
+            if ($person && !$person->is_agent && !$is_bounce) {
                 $ticket->addParticipantPerson($person);
             }
         }
@@ -257,10 +261,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         if ($person && $person->is_agent && $is_bounce) {
             $this->logMessage('[TicketGatewayProcessor] Is an agent message and is detected as bounced. Rejecting message.');
-            $this->error = 'agent_bounce';
+            $this->error      = 'agent_bounce';
             $this->error_type = 'rejected';
 
-            return null;
+            return;
         }
 
         #-------------------------
@@ -269,10 +273,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         if ($person && ($person->is_disabled || $person->is_deleted)) {
             $this->logMessage('[TicketGatewayProcessor] User is disabeld, rejecting message');
-            $this->error = 'from_disabled_user';
+            $this->error      = 'from_disabled_user';
             $this->error_type = 'rejected';
 
-            return null;
+            return;
         }
 
         #-------------------------
@@ -282,11 +286,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         if ($person && (!$person->is_agent && $person->is_disabled)) {
             // user is disabled so can't create/reply to tickets
 
-            if (!$this->reader->isFromRobot()) {
+            if (!$this->reader->isFromRobot() && !$is_bounce) {
                 $message = App::getMailer()->createMessage();
                 $message->setTemplate('DeskPRO:emails_user:account-disabled.html.twig', array(
                     'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-                    'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                    'ticket'  => array('subject' => $this->reader->getSubject()->getSubjectUtf8()),
+                    'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
                 ));
                 $message->setTo($this->reader->getFromAddress()->getEmail());
 
@@ -297,7 +302,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 $this->container->getMailer()->send($message);
             }
 
-            return null;
+            return;
         }
 
         #-------------------------
@@ -306,35 +311,33 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         $reply_as_new = false;
 
-        if ($ticket AND $person AND !$person->is_agent AND $ticket->status == 'resolved' AND !$person->hasPerm('tickets.reopen_resolved')) {
-
+        if ($ticket and $person and !$person->is_agent and $ticket->status == 'resolved' and !$person->hasPerm('tickets.reopen_resolved')) {
             $this->logMessage('[TicketGatewayProcessor] Ticket is resolved');
 
             if ($person->hasPerm('tickets.reopen_resolved_createnew')) {
                 $this->logMessage('[TicketGatewayProcessor] Has perm reopen_resolved_createnew so creating a new ticket');
-                $ticket = null;
+                $ticket       = null;
                 $reply_as_new = true;
-
             } else {
                 $this->logMessage('[TicketGatewayProcessor] Message is being rejected because ticket is resolved');
 
                 if ($this->account_email_address) {
                     $email_to = $this->account_email_address;
                 } else {
-                    $email_to = $this->account->address;
+                    $email_to = $this->account->getUseEmailAddress();
                 }
 
-                $from_address = $this->container->getMailer()->getEmailAccountForTicket($ticket)->address;
+                $from_address = $this->container->getEmailAccountManager()->getAccountForTicket($ticket)->getUseEmailAddress();
 
                 // user is disabled so can't create/reply to tickets
-                if (!$this->reader->isFromRobot()) {
+                if (!$this->reader->isFromRobot() && !$is_bounce) {
                     $message = $this->container->getMailer()->createMessage();
                     $message->setTemplate('DeskPRO:emails_user:new-reply-reject-resolved.html.twig', array(
-                        'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-                        'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                        'ticket' => $ticket,
-                        'person' => $person,
-                        'email_to' => $email_to
+                        'subject'  => $this->reader->getSubject()->getSubjectUtf8(),
+                        'name'     => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                        'ticket'   => $ticket,
+                        'person'   => $person,
+                        'email_to' => $email_to,
                     ));
                     $message->setTo($this->reader->getFromAddress()->getEmail());
                     $message->setFrom($from_address);
@@ -351,10 +354,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                     App::getMailer()->send($message);
                 }
 
-                $this->error = 'obj_closed';
+                $this->error      = 'obj_closed';
                 $this->error_type = 'rejected';
 
-                return null;
+                return;
             }
         }
 
@@ -376,7 +379,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         if ($check_person && $check_person->is_agent) {
             if ($email_body_html) {
-                $this->logMessage("Checking for agent reply codes in HTML body");
+                $this->logMessage('Checking for agent reply codes in HTML body');
                 $rc = new AgentReplyCodes($email_body_html, true);
                 $rc->setCleaner($this->container->getInputCleaner());
                 $rc->setLogger($this->logger);
@@ -385,14 +388,20 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 if ($reply_actions) {
                     $email_body_html = $rc->getNewBody();
                 }
-            } else {
-                $this->logMessage("Checking for agent reply codes in TEXT body");
-                $rc = new AgentReplyCodes($email_body_text, false);
-                $rc->setLogger($this->logger);
+            }
 
-                $reply_actions = $rc->getProperties();
+            $this->logMessage('Checking for agent reply codes in TEXT body');
+            $rc = new AgentReplyCodes($email_body_text, false);
+            $rc->setLogger($this->logger);
+
+            $txt_reply_actions = $rc->getProperties();
+            if ($txt_reply_actions) {
+                $email_body_text = $rc->getNewBody();
+
                 if ($reply_actions) {
-                    $email_body_text = $rc->getNewBody();
+                    $this->logMessage('TEXT body has codes, but we are using HTML email so they will be ignored');
+                } else {
+                    $reply_actions = $txt_reply_actions;
                 }
             }
         }
@@ -401,8 +410,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         # Unset ticket if its an agent fwd
         #-------------------------
 
-        if ($ticket AND App::getSetting('core_tickets.process_agent_fwd') AND $person['is_agent'] AND ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
-            $this->logMessage(sprintf("Found a ticket match #%d but this is an agent fwd so unsetting", $ticket->getId()));
+        if ($ticket and App::getSetting('core_tickets.process_agent_fwd') and $person['is_agent'] and ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
+            $this->logMessage(sprintf('Found a ticket match #%d but this is an agent fwd so unsetting', $ticket->getId()));
             $ticket = null;
         }
 
@@ -410,7 +419,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         # Create ticket email obj
         #-------------------------
 
-        $ticket_email = new TicketIncomingEmail($this);
+        $ticket_email                  = new TicketIncomingEmail($this);
         $ticket_email->reader          = $this->reader;
         $ticket_email->ticket          = $ticket;
         $ticket_email->person          = $person;
@@ -431,7 +440,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
     }
 
     /**
-     * @param  TicketIncomingEmail                            $ticket_email
+     * Create a publicly visible reply to a ticket from an email.
+     *
+     * @param TicketIncomingEmail $ticket_email
+     *
      * @return \Application\DeskPRO\Entity\TicketMessage|null
      */
     private function runReply(TicketIncomingEmail $ticket_email)
@@ -453,7 +465,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         if (!$person->disable_autoresponses) {
             if ($return_path = $this->reader->getHeader('Return-Path')) {
                 if ($return_path->getHeader() == '<>') {
-                    $this->logMessage("Null return path, disabling auto-responses for this user");
+                    $this->logMessage('Null return path, disabling auto-responses for this user');
                     $person->setDisableAutoresponses(
                         true,
                         'Client sent a null Return-Path'
@@ -508,10 +520,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         }
 
         if ($err = $reply_proc->getError()) {
-            $this->error = $err;
+            $this->error      = $err;
             $this->error_type = $reply_proc->getErrorType();
 
-            return null;
+            return;
         }
 
         if (NoValue::is($obj)) {
@@ -522,7 +534,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             $this->created_object_id   = $obj->id;
             $this->created_object_info = array(
                 'ticket_id'         => $obj->ticket->id,
-                'ticket_message_id' => $obj->id
+                'ticket_message_id' => $obj->id,
             );
         }
 
@@ -530,8 +542,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
     }
 
     /**
-     * @param  TicketIncomingEmail                     $ticket_email
-     * @param  bool                                    $reply_as_new
+     * @param TicketIncomingEmail $ticket_email
+     * @param bool                $reply_as_new
+     *
      * @return \Application\DeskPRO\Entity\Ticket|null
      */
     private function runNew(TicketIncomingEmail $ticket_email, $reply_as_new = false)
@@ -539,54 +552,54 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         $this->logMessage('[TicketGatewayProcessor] Creating new ticket');
 
         $person_processor = new PersonFromEmailProcessor();
-        $person = $person_processor->findPerson($this->reader->getFromAddress());
+        $person           = $person_processor->findPerson($this->reader->getFromAddress());
 
         if ($person) {
-            $this->logMessage('[TicketGatewayProcessor] Found existing person: ' . $person['id']);
+            $this->logMessage('[TicketGatewayProcessor] Found existing person: '.$person['id']);
             $person_processor->passPerson($this->reader->getFromAddress(), $person);
         } else {
             if ($this->container->getSetting('core.reg_enabled')) {
                 $person = $person_processor->createPerson($this->reader->getFromAddress());
-                $this->logMessage('[TicketGatewayProcessor] Created new contact: ' . $person['id']);
+                $this->logMessage('[TicketGatewayProcessor] Created new contact: '.$person['id']);
             }
         }
 
         // Still no person means reg is closed
         if (!$person) {
             $this->logMessage('[TicketGatewayProcessor] No user and closed registration');
-            $this->error = EmailSource::ERR_PERM_INSUFFICIENT;
+            $this->error      = EmailSource::ERR_PERM_INSUFFICIENT;
             $this->error_type = 'rejected';
 
             $account_manager = App::$container->getEmailAccountManager();
-            $user_email = $this->reader->getFromAddress()->getEmail();
+            $user_email      = $this->reader->getFromAddress()->getEmail();
 
             if (!$ticket_email->is_bounce && !$this->reader->isFromRobot() && !$account_manager->findAccountForEmailAddress($user_email)) {
                 $message = $this->container->getMailer()->createMessage();
                 $message->setTemplate('DeskPRO:emails_user:new-ticket-reg-closed.html.twig', array(
                     'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-                    'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                    'ticket'  => array('subject' => $this->reader->getSubject()->getSubjectUtf8()),
+                    'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
                 ));
                 $message->setTo($this->reader->getFromAddress()->getEmail());
                 $this->container->getMailer()->send($message);
             }
 
-            return null;
+            return;
         }
 
         if ($person) {
-            $this->logMessage('[TicketGatewayProcessor] Found existing person: ' . $person['id']);
+            $this->logMessage('[TicketGatewayProcessor] Found existing person: '.$person['id']);
             $person_processor->passPerson($this->reader->getFromAddress(), $person);
         } else {
             $this->logMessage('[TicketGatewayProcessor] Creating new contact');
-
         }
 
         if ($person && $person->is_agent && $ticket_email->is_bounce) {
             $this->logMessage('[TicketGatewayProcessor] Is an agent message and is detected as bounced. Rejecting message.');
-            $this->error = 'agent_bounce';
+            $this->error      = 'agent_bounce';
             $this->error_type = 'rejected';
 
-            return null;
+            return;
         }
 
         if ($this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()) {
@@ -600,7 +613,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         if (!$person->disable_autoresponses) {
             if ($return_path = $this->reader->getHeader('Return-Path')) {
                 if ($return_path->getHeader() == '<>') {
-                    $this->logMessage("Null return path, disabling auto-responses for this user");
+                    $this->logMessage('Null return path, disabling auto-responses for this user');
                     $person->setDisableAutoresponses(
                         true,
                         'Client sent a null Return-Path'
@@ -611,7 +624,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         App::setCurrentPerson($person);
 
-        if ($this->container->getSetting('core_tickets.process_agent_fwd') AND $person->is_agent AND ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
+        if ($this->container->getSetting('core_tickets.process_agent_fwd') and $person->is_agent and ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
             $this->logMessage('[TicketGatewayProcessor] runNewForwardedTicket');
 
             $fwd_proc = new ProcessAgentFwd($this->account, $person, $ticket_email);
@@ -620,17 +633,17 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             $created = $fwd_proc->run();
 
             if ($err = $fwd_proc->getError()) {
-                $this->error = $err;
+                $this->error      = $err;
                 $this->error_type = 'rejected';
 
-                return null;
+                return;
             }
 
             $this->created_object_type = 'ticket';
             $this->created_object_id   = $created['ticket']->id;
             $this->created_object_info = array(
                 'ticket_id'         => $created['ticket']->id,
-                'ticket_message_id' => $created['ticket_message']->id
+                'ticket_message_id' => $created['ticket_message']->id,
             );
 
             return $created['ticket'];
@@ -641,23 +654,23 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
             // todo injection
             $translator = App::$container->getTranslator();
-            $new_proc = new ProcessNew($this->account, $person, $ticket_email, $translator);
+            $new_proc   = new ProcessNew($this->account, $person, $ticket_email, $translator);
             $new_proc->setLogger($this->logger);
 
             $created = $new_proc->run();
 
             if ($err = $new_proc->getError()) {
-                $this->error = $err;
+                $this->error      = $err;
                 $this->error_type = $new_proc->getErrorType();
 
-                return null;
+                return;
             }
 
             $this->created_object_type = 'ticket';
             $this->created_object_id   = $created['ticket']->id;
             $this->created_object_info = array(
                 'ticket_id'         => $created['ticket']->id,
-                'ticket_message_id' => $created['ticket_message']->id
+                'ticket_message_id' => $created['ticket_message']->id,
             );
 
             return $created['ticket'];
@@ -665,14 +678,18 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
     }
 
     /**
+     * @param bool $with_code_check
+     *
      * @return CompositeDetector
      */
-    private function createTicketDetector()
+    private function createTicketDetector($with_code_check = true)
     {
         $ticket_detect = new CompositeDetector();
         $ticket_detect->setLogger($this->logger);
 
-        $ticket_detect->addDetector(new CodeTicketDetector());
+        if ($with_code_check) {
+            $ticket_detect->addDetector(new CodeTicketDetector());
+        }
 
         if ($this->container->getSetting('core.deskpro3importer')) {
             $ticket_detect->addDetector(new Dp3Detector());
@@ -683,6 +700,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         if ($this->container->getSetting('core_tickets.gateway_enable_subject_match')) {
             $m = new SubjectMatchDetector();
 
+            if ($this->account && $this->container->getSetting('core_tickets.enable_same_account_subject_matching')) {
+                $m->enableSameAccountSubjectMatching($this->account);
+            }
             if ($this->container->getSetting('core_tickets.enable_exact_subject_matching')) {
                 $m->enableExactSubjectMatching();
             }
@@ -694,7 +714,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getErrorCode()
     {
@@ -702,7 +722,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
     }
 
     /**
-     * 'error' or 'rejected'
+     * 'error' or 'rejected'.
+     *
      * @return string
      */
     public function getErrorType()
@@ -711,7 +732,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSourceInfo()
     {
@@ -739,7 +760,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
     {
         return $this->created_object_type;
     }
-
 
     /**
      * @return array|null

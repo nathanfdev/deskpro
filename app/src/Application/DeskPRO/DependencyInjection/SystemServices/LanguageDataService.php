@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -50,7 +47,8 @@ class LanguageDataService extends BaseRepositoryService
     protected $default_lang_id = 1;
 
     /**
-     * Loaded langs
+     * Loaded langs.
+     *
      * @var array
      */
     protected $languages = array();
@@ -62,19 +60,21 @@ class LanguageDataService extends BaseRepositoryService
 
     public static function create(DeskproContainer $container, array $options = null)
     {
-        if (!$options) $options = array();
-        $options['entity'] = 'Application\\DeskPRO\\Entity\\Language';
+        if (!$options) {
+            $options = array();
+        }
+        $options['entity']          = 'Application\\DeskPRO\\Entity\\Language';
         $options['default_lang_id'] = $container->getSetting('core.default_language_id');
 
         $em = $container->getEm();
-        $o = new static($em, $options);
+        $o  = new static($em, $options);
 
         return $o;
     }
 
     public function init()
     {
-        $this->default_lang_id = (int)$this->options->get('default_lang_id');
+        $this->default_lang_id = (int) $this->options->get('default_lang_id');
     }
 
     /**
@@ -100,9 +100,10 @@ class LanguageDataService extends BaseRepositoryService
     }
 
     /**
-     * Find a language by a lang code
+     * Find a language by a lang code.
      *
-     * @param  string                                    $code
+     * @param string $code
+     *
      * @return \Application\DeskPRO\Entity\Language|null
      */
     public function findLangCode($code)
@@ -114,11 +115,11 @@ class LanguageDataService extends BaseRepositoryService
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Get an array of lang codes
+     * Get an array of lang codes.
      *
      * @return string[]
      */
@@ -154,6 +155,7 @@ class LanguageDataService extends BaseRepositoryService
 
     /**
      * @param $id
+     *
      * @return \Application\DeskPRO\Entity\Language
      */
     public function get($id)
@@ -174,7 +176,8 @@ class LanguageDataService extends BaseRepositoryService
     }
 
     /**
-     * @param  int  $id
+     * @param int $id
+     *
      * @return bool
      */
     public function has($id)
@@ -185,7 +188,7 @@ class LanguageDataService extends BaseRepositoryService
     }
 
     /**
-     * Loads the required data
+     * Loads the required data.
      *
      * @return mixed
      */
@@ -196,20 +199,21 @@ class LanguageDataService extends BaseRepositoryService
         }
         $this->has_init = true;
 
-        $this->languages = $this->em->createQuery("
+        $this->languages = $this->em->createQuery('
             SELECT l
             FROM DeskPRO:Language l INDEX BY l.id
             ORDER BY l.title ASC
-        ")->execute();
+        ')->execute();
 
         $this->count = count($this->languages);
     }
 
     /**
-     * Get languages by ID
+     * Get languages by ID.
      *
-     * @param  array                                  $ids
-     * @param  bool                                   $keep_order
+     * @param array $ids
+     * @param bool  $keep_order
+     *
      * @return \Application\DeskPRO\Entity\Language[]
      */
     public function getByIds(array $ids, $keep_order = false)
@@ -241,9 +245,10 @@ class LanguageDataService extends BaseRepositoryService
     }
 
     /**
-     * Get names of langs
+     * Get names of langs.
      *
-     * @param  array|null $for_ids
+     * @param array|null $for_ids
+     *
      * @return string[]
      */
     public function getTitles(array $for_ids = null)

@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\InstallBundle\Upgrade;
 
 use Application\DeskPRO\App\Native\NativeAppsSync;
@@ -88,10 +85,9 @@ class Manager
     public function __construct(DeskproContainer $container, Logger $logger = null)
     {
         $this->container = $container;
-        $this->logger = $logger;
+        $this->logger    = $logger;
         $this->reset();
     }
-
 
     /**
      * @return int
@@ -100,7 +96,6 @@ class Manager
     {
         return $this->db_version;
     }
-
 
     /**
      * When build info might've changed outside of this request, this rebuilds internal structures.
@@ -111,10 +106,9 @@ class Manager
     }
 
     /**
-     * Runs the next build script
+     * Runs the next build script.
      *
-     * @param  int  $build_id
-     * @return void
+     * @param int $build_id
      */
     public function runBuild($build_id)
     {
@@ -125,7 +119,7 @@ class Manager
             $build->run();
         } catch (\Exception $e) {
             if ($this->logger) {
-                $this->logger->error(sprintf("EXCEPTION: %s [%s] %s", get_class($e), $e->getCode(), $e->getMessage()));
+                $this->logger->error(sprintf('EXCEPTION: %s [%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
                 $trace = KernelErrorHandler::formatBacktrace($e->getTrace());
                 $this->logger->debug($trace);
             }
@@ -135,15 +129,19 @@ class Manager
 
         if ($build->shouldRerun()) {
             $current_run = $build->getStatus('runcount', 0);
-            $next_run = $current_run+1;
-            if ($this->logger) $this->logger->debug(sprintf("runBuild(%d.%d)", $build_id, $next_run));
-            $build->saveStatus('runcount', $current_run+1);
+            $next_run    = $current_run + 1;
+            if ($this->logger) {
+                $this->logger->debug(sprintf('runBuild(%d.%d)', $build_id, $next_run));
+            }
+            $build->saveStatus('runcount', $current_run + 1);
         } else {
-            if ($this->logger) $this->logger->debug(sprintf("Set core.deskpro_build = %s", $build_id));
+            if ($this->logger) {
+                $this->logger->debug(sprintf('Set core.deskpro_build = %s', $build_id));
+            }
             $this->db_version = $build_id;
             $this->container->getDb()->update('settings', array('value' => $build_id), array('name' => 'core.deskpro_build'));
-            $this->container->getDb()->executeUpdate("DELETE FROM import_datastore WHERE typename LIKE ?", array(
-                'up.' . $build->getBuildId() . '.%'
+            $this->container->getDb()->executeUpdate('DELETE FROM import_datastore WHERE typename LIKE ?', array(
+                'up.'.$build->getBuildId().'.%',
             ));
         }
     }
@@ -153,61 +151,77 @@ class Manager
      */
     public function postUpgrade()
     {
-        if ($this->logger) $this->logger->debug("Post upgrade begin");
+        if ($this->logger) {
+            $this->logger->debug('Post upgrade begin');
+        }
 
         \Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
 
         // Clear old CSS blob so it's regenerated
-        $this->container->getDb()->executeUpdate("UPDATE styles SET css_blob_id = NULL, css_blob_rtl_id = NULL");
+        $this->container->getDb()->executeUpdate('UPDATE styles SET css_blob_id = NULL, css_blob_rtl_id = NULL');
 
         // Update lang titles and has_agent flags
         $langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
 
         foreach ($langpacks->getLangTitles(true) as $id => $title) {
-            if ($this->logger) $this->logger->debug(sprintf("lang(%s).title = %s", $title, $id));
+            if ($this->logger) {
+                $this->logger->debug(sprintf('lang(%s).title = %s', $title, $id));
+            }
             $this->container->getDb()->executeUpdate("UPDATE languages SET title = ? WHERE sys_name = ? AND title = ''", array($title, $id));
 
             $info = $langpacks->getLangInfo($id);
-            $this->container->getDb()->executeUpdate("UPDATE languages SET has_user = ?, has_agent = ?, has_admin = ? WHERE sys_name = ?", array($info['has_user'], $info['has_agent'], $info['has_admin'], $id));
+            $this->container->getDb()->executeUpdate('UPDATE languages SET has_user = ?, has_agent = ?, has_admin = ? WHERE sys_name = ?', array($info['has_user'], $info['has_agent'], $info['has_admin'], $id));
         }
 
         // Update flags if theyre blank
         $blank_flags = $this->container->getDb()->fetchAllCol("SELECT sys_name FROM languages WHERE flag_image = ''");
         foreach ($blank_flags as $sys_name) {
-            if (!$langpacks->hasLang($sys_name)) continue;
+            if (!$langpacks->hasLang($sys_name)) {
+                continue;
+            }
 
             $flag = $langpacks->getLangInfo($sys_name, 'flag_image');
             if ($flag) {
-                if ($this->logger) $this->logger->debug(sprintf("lang(%s).flag = %s", $flag, $sys_name));
-                $this->container->getDb()->executeUpdate("UPDATE languages SET flag_image = ? WHERE sys_name = ?", array($flag, $sys_name));
+                if ($this->logger) {
+                    $this->logger->debug(sprintf('lang(%s).flag = %s', $flag, $sys_name));
+                }
+                $this->container->getDb()->executeUpdate('UPDATE languages SET flag_image = ? WHERE sys_name = ?', array($flag, $sys_name));
             }
         }
 
         // Auto-install any new langs
         $auto_install = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.lang_auto_install'");
         if ($auto_install) {
-            if ($this->logger) $this->logger->debug("running lang auto-install");
+            if ($this->logger) {
+                $this->logger->debug('running lang auto-install');
+            }
             $this->container->getEm()->getRepository('DeskPRO:Language')->installAll($langpacks);
         }
 
-        if ($this->logger) $this->logger->debug("invalidate lang cache");
+        if ($this->logger) {
+            $this->logger->debug('invalidate lang cache');
+        }
         $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
         $cache->invalidateLanguageCache();
 
-        if ($this->logger) $this->logger->debug("invalidate lang js cache");
+        if ($this->logger) {
+            $this->logger->debug('invalidate lang js cache');
+        }
         $cache = new \Application\DeskPRO\CacheInvalidator\LanguageJsCache();
         $cache->invalidateAll();
 
         // need to restart the Twitter daemon (pid of 0 means to not run)
-        if (file_exists(dp_get_data_dir() . '/twitter.pid')) {
-            $twitter_pid = intval(file_get_contents(dp_get_data_dir() . '/twitter.pid'));
+        if (file_exists(dp_get_data_dir().'/twitter.pid')) {
+            $twitter_pid = intval(file_get_contents(dp_get_data_dir().'/twitter.pid'));
         } else {
             $twitter_pid = null;
         }
 
         if ($twitter_pid !== 0) {
-            if ($this->logger) $this->logger->debug("restart twitter pid $twitter_pid");
-            @unlink(dp_get_data_dir() . '/twitter.pid');
+            if ($this->logger) {
+                $this->logger->debug("restart twitter pid $twitter_pid");
+            }
+            @unlink(dp_get_data_dir().'/twitter.pid');
         }
 
         #------------------------------
@@ -233,12 +247,28 @@ class Manager
 
         // Dont fail the upgrade at this point
         // but log the error so we can know something went wrong with an app
-        $app_syncer->setExceptionHandler(function($e) { KernelErrorHandler::logException($e); });
+        $app_syncer->setExceptionHandler(function ($e) { KernelErrorHandler::logException($e); });
 
         $app_syncer->runUpdates();
         $app_syncer->runSync();
 
-        if ($this->logger) $this->logger->debug("Post upgrade done");
+        #------------------------------
+        # Clear error logs
+        #------------------------------
+
+        foreach (array('cli-phperr.log', 'server-phperr-web.log', 'error.log') as $l) {
+            $path = dp_get_log_dir().DIRECTORY_SEPARATOR.$l;
+            if (file_exists($path)) {
+                if ($this->logger) {
+                    $this->logger->debug('resetting '.$l);
+                }
+                @file_put_contents($path, '');
+            }
+        }
+
+        if ($this->logger) {
+            $this->logger->debug('Post upgrade done');
+        }
     }
 
     /**
@@ -250,21 +280,22 @@ class Manager
     {
         $next_id = $this->getNextBuildId();
 
-        return (bool)$next_id;
+        return (bool) $next_id;
     }
 
     /**
-     * Get the build class for a build ID
+     * Get the build class for a build ID.
      *
-     * @param  int    $build_id
+     * @param int $build_id
+     *
      * @return string
      */
     public function getBuildClass($build_id)
     {
-        $class = 'Application\\InstallBundle\\Upgrade\\Build\\Build' . $build_id;
+        $class = 'Application\\InstallBundle\\Upgrade\\Build\\Build'.$build_id;
 
         if (!class_exists($class, false)) {
-            $file = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/' . date('Y/m', $build_id) . '/Build' . $build_id . '.php';
+            $file = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/'.date('Y/m', $build_id).'/Build'.$build_id.'.php';
             require_once $file;
         }
 
@@ -291,7 +322,7 @@ class Manager
     }
 
     /**
-     * Get a list of all upgrade build script available
+     * Get a list of all upgrade build script available.
      *
      * @return array
      */
@@ -301,7 +332,7 @@ class Manager
             return $this->build_list;
         }
 
-        $manifest = require(DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php');
+        $manifest         = require DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
         $this->build_list = array_keys($manifest);
 
         array_unique($this->build_list, \SORT_NUMERIC);
@@ -311,7 +342,7 @@ class Manager
     }
 
     /**
-     * Gets the next build ID or 0 if the db is up to date
+     * Gets the next build ID or 0 if the db is up to date.
      *
      * @return int
      */
@@ -327,7 +358,7 @@ class Manager
     }
 
     /**
-     * Get the latest build id
+     * Get the latest build id.
      *
      * @return int
      */
@@ -337,9 +368,10 @@ class Manager
     }
 
     /**
-     * Formats a build ID
+     * Formats a build ID.
      *
-     * @param  int    $build_id
+     * @param int $build_id
+     *
      * @return string
      */
     public function formatBuildId($build_id)

@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Tickets
+ */
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Person;
@@ -52,7 +51,7 @@ use Orb\Util\CheckedOptionsArray;
 class SetSlaReset extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getOptionsDef()
     {
@@ -62,9 +61,8 @@ class SetSlaReset extends AbstractContainerAwareAction implements ActionInterfac
         return $options;
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
@@ -78,8 +76,8 @@ class SetSlaReset extends AbstractContainerAwareAction implements ActionInterfac
 
             $calc = $ticket_sla->sla->getCalculator();
 
-            $ticket_sla->warn_date = $calc->calculateWarnDate($ticket);
-            $ticket_sla->fail_date = $calc->calculateFailDate($ticket);
+            $ticket_sla->warn_date  = $calc->calculateWarnDate($ticket);
+            $ticket_sla->fail_date  = $calc->calculateFailDate($ticket);
             $ticket_sla->sla_status = TicketSla::STATUS_OK;
             if ($ticket_sla->sla_status == 'ok' || $ticket_sla->sla_status == 'warning') {
                 if ($calc->isTicketSlaFailed($ticket, $ticket_sla)) {
@@ -102,9 +100,8 @@ class SetSlaReset extends AbstractContainerAwareAction implements ActionInterfac
         }
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
@@ -112,11 +109,11 @@ class SetSlaReset extends AbstractContainerAwareAction implements ActionInterfac
             return array('slas');
         }
 
-        return null;
+        return;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {

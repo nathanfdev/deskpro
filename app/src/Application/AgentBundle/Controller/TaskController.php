@@ -1,43 +1,39 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-
-/**
- * DeskPRO AgentBubdle's Task Controller
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage AgentBundle
- * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO AgentBubdle's Task Controller.
+ *
+ * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
+ */
 namespace Application\AgentBundle\Controller;
 
 use Application\ApiBundle\Controller\TasksController;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\TaskComment;
 use Application\DeskPRO\Form\Type\TaskType;
@@ -47,18 +43,18 @@ use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Handles viewing and editing tasks
+ * Handles viewing and editing tasks.
  */
 class TaskController extends AbstractController
 {
     public function preAction($action, $arguments = null)
     {
         if (!$this->settings->get(TasksController::KEY_ENABLED, 0)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         if (!$this->person->hasPerm('agent_tasks.use')) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         parent::preAction($action, $arguments);
@@ -68,43 +64,43 @@ class TaskController extends AbstractController
     {
         /** @var \Application\DeskPRO\EntityRepository\Task $task_repository */
         $task_repository = $this->em->getRepository('DeskPRO:Task');
-        $person = $this->person;
+        $person          = $this->person;
 
         $all_tasks = array(
-            'total' => $task_repository->countPendingTasks($person),
-            'overdue' => $task_repository->countOverdueTasks($person),
-            'due_today' => $task_repository->countDueTodayTasks($person),
+            'total'      => $task_repository->countPendingTasks($person),
+            'overdue'    => $task_repository->countOverdueTasks($person),
+            'due_today'  => $task_repository->countDueTodayTasks($person),
             'due_future' => $task_repository->countDueFutureTasks($person),
         );
 
         $person_tasks = array(
-            'total' => $task_repository->countPendingTasksForPerson($person),
-            'overdue' => $task_repository->countOverdueTasksForPerson($person),
-            'due_today' => $task_repository->countDueTodayTasksForPerson($person),
+            'total'      => $task_repository->countPendingTasksForPerson($person),
+            'overdue'    => $task_repository->countOverdueTasksForPerson($person),
+            'due_today'  => $task_repository->countDueTodayTasksForPerson($person),
             'due_future' => $task_repository->countDueFutureTasksForPerson($person),
         );
 
         $teams_tasks = array(
-            'total' => $task_repository->countPendingTaksForPersonTeams($person),
-            'overdue' => $task_repository->countOverdueTasksForPersonTeams($person),
-            'due_today' => $task_repository->countDueTodayTasksForPersonTeams($person),
+            'total'      => $task_repository->countPendingTaksForPersonTeams($person),
+            'overdue'    => $task_repository->countOverdueTasksForPersonTeams($person),
+            'due_today'  => $task_repository->countDueTodayTasksForPersonTeams($person),
             'due_future' => $task_repository->countDueFutureTasksForPersonTeams($person),
         );
 
         $delegated_tasks = array(
-            'total' => $task_repository->countPendingDelegatedTasksForPerson($person),
-            'overdue' => $task_repository->countOverdueDelegatedTasksForPerson($person),
-            'due_today' => $task_repository->countDueTodayDelegatedTasksForPerson($person),
+            'total'      => $task_repository->countPendingDelegatedTasksForPerson($person),
+            'overdue'    => $task_repository->countOverdueDelegatedTasksForPerson($person),
+            'due_today'  => $task_repository->countDueTodayDelegatedTasksForPerson($person),
             'due_future' => $task_repository->countDueFutureDelegatedTasksForPerson($person),
         );
 
         $section_html = $this->renderView('AgentBundle:Task:window-section.html.twig', array(
             'counts' => array(
-                'all' => $all_tasks,
-                'person' => $person_tasks,
-                'teams' => $teams_tasks,
+                'all'       => $all_tasks,
+                'person'    => $person_tasks,
+                'teams'     => $teams_tasks,
                 'delegated' => $delegated_tasks,
-            )
+            ),
         ));
 
         return $this->createJsonResponse(array(
@@ -114,45 +110,46 @@ class TaskController extends AbstractController
 
     /**
      * Render the new task form.
+     *
      * @return html
      */
     public function newAction()
     {
-        $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+        $agents      = $this->em->getRepository('DeskPRO:Person')->getAgents();
         $agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
         return $this->render('AgentBundle:Task:newtask.html.twig', array(
-            'agents' => $agents,
+            'agents'      => $agents,
             'agent_teams' => $agent_teams,
         ));
     }
 
     /**
      * Create action for the new task. Which pass the data and the from to the _process method to save it in DB.
+     *
      * @return json formated data
      */
     public function createAction()
     {
         $all_task_data = $this->in->getCleanValueArray('newtask', 'raw', 'discard');
-        $tasks = array();
+        $tasks         = array();
 
         foreach ($all_task_data as $task_data) {
-
-            $task = new Task();
-            $form = $this->createForm(new TaskType(), $task);
+            $task                = new Task();
+            $form                = $this->createForm(new TaskType(), $task);
             $task_data['person'] = $this->person['id'];
 
             if (!empty($task_data['ticket_id'])) {
                 $task_data['ticket'] = $task_data['ticket_id'];
             }
 
-			if (!empty($task_data['date_due'])) {
-				if (!empty($task_data['time_due'])) {
-                $task_data['date_due'] .= ' ' . $task_data['time_due'];
-            } else {
-                $task_data['date_due'] .= ' 23:59:59';
+            if (!empty($task_data['date_due'])) {
+                if (!empty($task_data['time_due'])) {
+                    $task_data['date_due'] .= ' '.$task_data['time_due'];
+                } else {
+                    $task_data['date_due'] .= ' 23:59:59';
+                }
             }
-			}
 
             // remove extra
             $task_data = array_intersect_key($task_data, $form->all());
@@ -180,24 +177,25 @@ class TaskController extends AbstractController
                 $d = $d->format($this->container->getSetting('core.date_day'));
             }
             $task_data[] = array(
-                'id' => $t->getId(),
-                'title' => $t->title,
+                'id'       => $t->getId(),
+                'title'    => $t->title,
                 'date_due' => $d,
-                'row_html' => $this->renderView('AgentBundle:Task:task-list-row.html.twig', array('task' => $t, 'noShowLinked' => true))
+                'row_html' => $this->renderView('AgentBundle:Task:task-list-row.html.twig', array('task' => $t, 'noShowLinked' => true)),
             );
         }
 
         return $this->createJsonResponse(array(
             'success' => true,
-            'tasks' => $task_data,
+            'tasks'   => $task_data,
         ));
     }
 
     /**
-     * render the task list
+     * render the task list.
      *
-     * @param  string $search_type
-     * @param  string $search_category
+     * @param string $search_type
+     * @param string $search_category
+     *
      * @return string view of the task list
      */
     public function taskListAction($search_type = null, $search_category = null)
@@ -236,34 +234,34 @@ class TaskController extends AbstractController
                 break;
         }
 
-        $tasks           = $task_repos->$filter_method($this->person, $search_category, $per_page+1, $offset, 'incomplete');
-        $completed_tasks = $task_repos->$filter_method($this->person, $search_category, $per_page+1, $completed_offset, 'complete');
+        $tasks           = $task_repos->$filter_method($this->person, $search_category, $per_page + 1, $offset, 'incomplete');
+        $completed_tasks = $task_repos->$filter_method($this->person, $search_category, $per_page + 1, $completed_offset, 'complete');
 
-        if (count($tasks) == $per_page+1) {
+        if (count($tasks) == $per_page + 1) {
             array_pop($tasks);
             $has_next = true;
         }
-        if (count($completed_tasks) == $per_page+1) {
+        if (count($completed_tasks) == $per_page + 1) {
             array_pop($completed_tasks);
             $has_next_completed = true;
         }
 
-        $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+        $agents      = $this->em->getRepository('DeskPRO:Person')->getAgents();
         $agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
         $tasks_grouped = null;
-        $group_by = $this->in->getString('group_by');
+        $group_by      = $this->in->getString('group_by');
         if ($group_by == 'assigned') {
             $tasks_grouped = array();
             foreach ($tasks as $t) {
                 if ($t->assigned_agent) {
-                    $key = 'agent:' . $t->assigned_agent->id;
+                    $key   = 'agent:'.$t->assigned_agent->id;
                     $title = $t->assigned_agent->getDisplayName();
                 } elseif ($t->assigned_agent_team) {
-                    $key = 'agent_team:' . $t->assigned_agent_team->id;
+                    $key   = 'agent_team:'.$t->assigned_agent_team->id;
                     $title = $t->assigned_agent_team->getName();
                 } else {
-                    $key = 'agent:' . $t->person->id;
+                    $key   = 'agent:'.$t->person->id;
                     $title = $t->person->getDisplayName();
                 }
 
@@ -274,9 +272,9 @@ class TaskController extends AbstractController
                 $tasks_grouped[$key]['tasks'][] = $t;
             }
 
-            $key = 'agent:' . $this->person->id;
+            $key = 'agent:'.$this->person->id;
             if (isset($tasks_grouped[$key])) {
-                $tmp = $tasks_grouped[$key];
+                $tmp          = $tasks_grouped[$key];
                 $tmp['title'] = 'Me';
                 unset($tasks_grouped[$key]);
                 Arrays::unshiftAssoc($tasks_grouped, $key, $tmp);
@@ -284,7 +282,7 @@ class TaskController extends AbstractController
         } elseif ($group_by == 'creator') {
             $tasks_grouped = array();
             foreach ($tasks as $t) {
-                $key = 'agent:' . $t->person->id;
+                $key   = 'agent:'.$t->person->id;
                 $title = $t->person->getDisplayName();
 
                 if (!isset($tasks_grouped[$key])) {
@@ -295,7 +293,7 @@ class TaskController extends AbstractController
             }
 
             if (isset($tasks_grouped[$this->person->id])) {
-                $tmp = $tasks_grouped[$this->person->id];
+                $tmp          = $tasks_grouped[$this->person->id];
                 $tmp['title'] = 'Me';
                 unset($tasks_grouped[$this->person->id]);
                 Arrays::unshiftAssoc($tasks_grouped, $this->person->id, $tmp);
@@ -306,7 +304,7 @@ class TaskController extends AbstractController
             $now = $this->person->getDateTime();
 
             $today_start = clone $now;
-            $today_start->setTime(0,0,0);
+            $today_start->setTime(0, 0, 0);
             $today_start = Dates::convertToUtcDateTime($today_start);
 
             $today = clone $now;
@@ -317,7 +315,7 @@ class TaskController extends AbstractController
             $overdue = Dates::convertToUtcDateTime($overdue);
 
             $week = clone $now;
-            $week->modify("-" . $now->format('w') . ' days');
+            $week->modify('-'.$now->format('w').' days');
             $week->modify('+7 days');
             $week->setTime(23, 59, 59);
             $week = Dates::convertToUtcDateTime($week);
@@ -332,28 +330,28 @@ class TaskController extends AbstractController
             $tasks_grouped = array(
                 'overdue' => array(
                     'title' => 'Overdue',
-                    'tasks' => array()
+                    'tasks' => array(),
                 ),
                 'overdue_today' => array(
                     'title' => 'Today (Overdue)',
-                    'tasks' => array()
+                    'tasks' => array(),
                 ),
                 'today' => array(
                     'title' => 'Today',
-                    'tasks' => array()
+                    'tasks' => array(),
                 ),
                 'week' => array(
                     'title' => 'This Week',
-                    'tasks' => array()
+                    'tasks' => array(),
                 ),
                 'month' => array(
                     'title' => 'This Month',
-                    'tasks' => array()
+                    'tasks' => array(),
                 ),
                 'future' => array(
                     'title' => 'Future',
-                    'tasks' => array()
-                )
+                    'tasks' => array(),
+                ),
             );
 
             foreach ($tasks as $t) {
@@ -402,19 +400,20 @@ class TaskController extends AbstractController
             'has_next_completed' => $has_next_completed,
             'has_prev_completed' => $has_prev_completed,
 
-            'tasks_arr'          => $tasks_arr,
+            'tasks_arr' => $tasks_arr,
         ));
     }
 
     /**
      * Save labels for tasks.
      *
-     * @param  intiger $task_id
+     * @param intiger $task_id
+     *
      * @return json
      */
     public function ajaxSaveLabelsAction($task_id)
     {
-        $task = $this->getTaskOr404($task_id);
+        $task   = $this->getTaskOr404($task_id);
         $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
         $task->getLabelManager()->setLabelsArray($labels);
 
@@ -425,9 +424,10 @@ class TaskController extends AbstractController
     }
 
     /**
-     * Save the comment for tasks
+     * Save the comment for tasks.
      *
-     * @param  intiger $task_id
+     * @param intiger $task_id
+     *
      * @return comment list in li format
      */
     public function ajaxSaveCommentAction($task_id)
@@ -438,23 +438,23 @@ class TaskController extends AbstractController
 
         if (!$comment_txt || !$task) {
             return $this->createJsonResponse(array(
-                'error' => true,
-                'error_code' => 'no_message'
+                'error'      => true,
+                'error_code' => 'no_message',
             ));
         }
 
-        $comment = new TaskComment($this->person, $comment_txt);
-        $comment['person'] = $this->person;
-        $comment['task'] = $task;
+        $comment            = new TaskComment($this->person, $comment_txt);
+        $comment['person']  = $this->person;
+        $comment['task']    = $task;
         $comment['content'] = $comment_txt;
 
         $this->em->persist($comment);
         $this->em->flush();
 
         return $this->createJsonResponse(array(
-                'success' => true,
-                'task_id' => $task_id,
-                'comment_li_html' => $this->renderView('AgentBundle:Task:comment-li.html.twig', array('comment' => $comment))
+                'success'         => true,
+                'task_id'         => $task_id,
+                'comment_li_html' => $this->renderView('AgentBundle:Task:comment-li.html.twig', array('comment' => $comment)),
         ));
     }
 
@@ -514,9 +514,9 @@ class TaskController extends AbstractController
                 if ($task->date_due) {
                     $time_due = $this->in->getString('value');
                     if (!empty($time_due) && strpos($time_due, ':') !== 0) {
-                        list ($hour, $min) = explode(':', $time_due);
-                        $hour = (int)$hour;
-                        $min = (int)$min;
+                        list($hour, $min) = explode(':', $time_due);
+                        $hour             = (int) $hour;
+                        $min              = (int) $min;
                         if (Numbers::inRange($hour, 0, 23) && Numbers::inRange($min, 0, 59)) {
                             $date = clone $task->date_due;
                             $date->setTimezone($this->person->getDateTimezone());
@@ -552,11 +552,11 @@ class TaskController extends AbstractController
             case 'assigned':
                 $val = $this->in->getString('value');
 
-                $task->agent = null;
+                $task->agent      = null;
                 $task->agent_team = null;
 
                 if ($val) {
-                    list ($type, $id) = explode(':', $val);
+                    list($type, $id) = explode(':', $val);
                     if ($type == 'agent') {
                         $task->setAsignedAgentId($id);
                     } else {
@@ -585,9 +585,9 @@ class TaskController extends AbstractController
 
     public function printAssociativeTaskAction($assoc = null)
     {
-        if(method_exists($assoc, 'getDeal') && $assoc->getDeal()) {
+        if (method_exists($assoc, 'getDeal') && $assoc->getDeal()) {
             return $this->render('AgentBundle:Task:dealAssoc.html.twig', array('assoc' => $assoc));
-        } else if(method_exists($assoc, 'getTicket') && $assoc->getTicket() != null){
+        } elseif (method_exists($assoc, 'getTicket') && $assoc->getTicket() != null) {
             return $this->render('AgentBundle:Task:ticketAssoc.html.twig', array('assoc' => $assoc));
         }
     }
@@ -613,7 +613,7 @@ class TaskController extends AbstractController
         return $this->createJsonResponse(array('success' => true));
     }
 
-        /**
+    /**
      * @return \Application\DeskPRO\Entity\Task
      */
     protected function getTaskOr404($task_id)
@@ -626,21 +626,21 @@ class TaskController extends AbstractController
         return $task;
     }
 
-        public function iCalAction($id, $authcode, $filter)
-        {
-            $person = Person::getRepository()->find($id);
+    public function iCalAction($id, $authcode, $filter)
+    {
+        $person = Person::getRepository()->find($id);
 
-            if (!$person) {
-                throw $this->createNotFoundException("Invalid authcode");
-            }
+        if (!$person) {
+            throw $this->createNotFoundException('Invalid authcode');
+        }
 
-            $generatedAuthCode = sha1($person->secret_string . $person->password);
+        $generatedAuthCode = sha1($person->secret_string.$person->password);
 
-            if ($generatedAuthCode !== $authcode) {
-                throw $this->createNotFoundException("Invalid authcode");
-            }
+        if ($generatedAuthCode !== $authcode) {
+            throw $this->createNotFoundException('Invalid authcode');
+        }
 
-            switch ($filter) {
+        switch ($filter) {
                 case 'all':
                     $tasks = $this->em->getRepository('DeskPRO:Task')->filterAllPendingTasks($person);
                     break;
@@ -657,12 +657,12 @@ class TaskController extends AbstractController
                     break;
             }
 
-            $vCalendar = new \Eluceo\iCal\Component\Calendar('www.example.com');
+        $vCalendar = new \Eluceo\iCal\Component\Calendar('www.example.com');
 
-            foreach ($tasks as $task) {
-                $vEvent = new \Eluceo\iCal\Component\Event();
+        foreach ($tasks as $task) {
+            $vEvent = new \Eluceo\iCal\Component\Event();
 
-                $vEvent
+            $vEvent
                     ->setDtStart($task->date_due)
                     ->setDtEnd($task->date_due)
                     ->setNoTime(true)
@@ -670,14 +670,14 @@ class TaskController extends AbstractController
                     ->setSummary($task->title)
                 ;
 
-                $vCalendar->addEvent($vEvent);
-            }
-
-            $response = new \Symfony\Component\HttpFoundation\Response($vCalendar->render());
-
-            $response->headers->set('Content-Type', 'text/calendar; charset=utf-8');
-            $response->headers->set('Content-Disposition', 'attachment; filename="' . $filter . '.ics"');
-
-            return $response;
+            $vCalendar->addEvent($vEvent);
         }
+
+        $response = new \Symfony\Component\HttpFoundation\Response($vCalendar->render());
+
+        $response->headers->set('Content-Type', 'text/calendar; charset=utf-8');
+        $response->headers->set('Content-Disposition', 'attachment; filename="'.$filter.'.ics"');
+
+        return $response;
+    }
 }

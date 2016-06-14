@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\DeskPRO\NewSearch\SearchEngine\Mysql;
 
@@ -31,14 +32,17 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
-use Elastica\Query;
+use Application\DeskPRO\Search\Adapter\MysqlAdapter;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\OptionsArray;
+use Orb\Util\Strings;
 
 class UserSearch implements UserSearchInterface
 {
     const MAX_WORDS = 25;
+
+    const LIMIT = 20;
 
     /**
      * @var \Application\DeskPRO\DBAL\Connection
@@ -50,28 +54,27 @@ class UserSearch implements UserSearchInterface
      */
     private $transformer;
 
-
     /**
      * @param Connection              $db
      * @param MysqlResultsTransformer $transformer
      */
     public function __construct(Connection $db, MysqlResultsTransformer $transformer)
     {
-        $this->db = $db;
+        $this->db          = $db;
         $this->transformer = $transformer;
     }
 
-
     /**
-     * @param  SearchContextInterface $context
-     * @param  string                 $query
-     * @param  array                  $options
+     * @param SearchContextInterface $context
+     * @param string                 $query
+     * @param array                  $options
+     *
      * @return ResultSet
      */
     public function search(SearchContextInterface $context, $query, array $options = null)
     {
         $options      = new OptionsArray($options ?: array());
-        $per_page     = Numbers::bound($options->get('per_page', 50), 1, 100);
+        $per_page     = Numbers::bound($options->get('per_page', self::LIMIT), 1, self::LIMIT);
         $page         = max($options->get('page', 1), 1);
         $ignore_perms = $options->get('ignore_perms');
 
@@ -87,38 +90,65 @@ class UserSearch implements UserSearchInterface
         $limit_types_array = $limit_types;
 
         $context_params = $this->buildParams($context, $limit_types);
-        $types = $context_params['types'];
+        $types          = $context_params['types'];
 
         if (!$types) {
             return new ResultSet(array());
         }
 
-        $limit_types = "'" . implode('\',\'', $types) . "'";
+        $limit_types = "'".implode('\',\'', $types)."'";
 
-        $query_words = explode(' ', $query);
+        $query2 = Strings::decodeHtmlEntities($query);
+        $query2 = Strings::decodeUnicodeEntities($query2);
+        $query2 = Strings::utf8_accents_to_ascii($query2);
+
+        $query_words = Arrays::removeEmptyString(explode(' ', trim($query.' '.$query2)));
+
         if (!$query_words) {
             return new ResultSet();
         }
 
+        $query_words = array_unique($query_words);
+
         $params = array();
-        $likes = array();
+        $likes  = array();
         foreach ($query_words as $w) {
             if (strlen($w) <= 2) {
                 continue;
             }
 
-            $likes[] = "content_search.content LIKE ?";
-            $params[] = '%' . str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w) . '%';
+            $likes[]  = 'content_search.content LIKE ?';
+            $params[] = '%'.str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w).'%';
 
             if (count($likes) >= self::MAX_WORDS) {
                 break;
             }
         }
+
+        if (count($likes) < self::MAX_WORDS) {
+            $exist_labels = $this->db->fetchAllCol('
+                SELECT DISTINCT label
+                FROM label_defs
+                WHERE label IN (?)
+            ', array($query_words), array(Connection::PARAM_STR_ARRAY));
+            foreach ($exist_labels as $l) {
+                $l = MysqlAdapter::encodeLabel($l);
+                if ($l) {
+                    $likes[]  = 'content_search.content LIKE ?';
+                    $params[] = '%'.$l.'%';
+                }
+
+                if (count($likes) >= self::MAX_WORDS) {
+                    break;
+                }
+            }
+        }
+
         if ($likes) {
             $where = "
                 content_search.object_type IN ($limit_types)
-                AND (" . implode(' OR ', $likes) . ")
-            ";
+                AND (".implode(' OR ', $likes).')
+            ';
 
             if (!$ignore_perms) {
                 $perm_join  = $context_params['join'];
@@ -127,7 +157,7 @@ class UserSearch implements UserSearchInterface
                     $perm_where = '1';
                 }
             } else {
-                $perm_join = '';
+                $perm_join  = '';
                 $perm_where = '1';
             }
 
@@ -139,7 +169,7 @@ class UserSearch implements UserSearchInterface
                 LIMIT $per_page
             ";
 
-            $start = ($page - 1) * $per_page;
+            $start        = ($page - 1) * $per_page;
             $select_query = "
                 SELECT content_search.object_type, content_search.object_id
                 FROM content_search
@@ -149,11 +179,11 @@ class UserSearch implements UserSearchInterface
                 LIMIT $start, $per_page
             ";
 
-            $total = $this->db->fetchColumn($count_query, $params);
-            $results  = $this->db->fetchAll($select_query, $params);
+            $total   = $this->db->fetchColumn($count_query, $params);
+            $results = $this->db->fetchAll($select_query, $params);
         } else {
-            $total       = 0;
-            $results     = array();
+            $total   = 0;
+            $results = array();
         }
 
         if ($total === null) {
@@ -174,6 +204,33 @@ class UserSearch implements UserSearchInterface
         return new ResultSet($objects, $total);
     }
 
+    /**
+     * @param SearchContextInterface $context
+     * @param string                 $content
+     * @param array                  $options
+     *
+     * @return ResultSet
+     */
+    public function similarTo(SearchContextInterface $context, $content, array $options = null)
+    {
+        $content = $content ?: '';
+        $content = Strings::utf8_accents_to_ascii($content);
+        $content = strtolower($content);
+//        todo?
+//        $content = preg_replace('#[^a-zA-Z0-9]#', ' ', $content);
+        $content = preg_replace('#\s+#', ' ', $content);
+        $content = explode(' ', $content);
+        $content = array_filter($content, function ($s) { return isset($s[2]); });
+        $content = array_unique($content);
+        $content = implode(' ', $content);
+
+        if (!$content) {
+            return new ResultSet();
+        }
+
+        return $this->search($context, $content, $options);
+    }
+
     private function getTicketResults(SearchContextInterface $context, array $query_words)
     {
         $limit = 5;
@@ -182,12 +239,17 @@ class UserSearch implements UserSearchInterface
         $search_params = array();
 
         foreach ($query_words as $w) {
+            $search_places[] = 'tickets.id = '.(int) $w;
+
+            $search_places[] = 'tickets.ref = ?';
+            $search_params[] = $w;
+
             if (strlen($w) <= 2) {
                 continue;
             }
 
-            $search_places[] = "tickets_messages.message LIKE ?";
-            $search_params[] = '%' . str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w) . '%';
+            $search_places[] = 'tickets_messages.message LIKE ?';
+            $search_params[] = '%'.str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w).'%';
 
             if (count($search_params) >= self::MAX_WORDS) {
                 break;
@@ -204,20 +266,20 @@ class UserSearch implements UserSearchInterface
             $params = array(
                 $context->getPerson()->getId(),
                 $context->getPerson()->getId(),
-                $context->getPerson()->organization->getId()
+                $context->getPerson()->getId(),
+                $context->getPerson()->organization->getId(),
             );
 
             $params = array_merge($params, $search_params);
 
             $ticket_ids = $this->db->fetchAllCol("
-                SELECT tickets.id
+                SELECT DISTINCT(tickets.id)
                 FROM tickets
                 LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
                 LEFT JOIN tickets_messages ON (tickets_messages.ticket_id = tickets.id AND tickets_messages.is_agent_note = 0)
                 WHERE
-                    (tickets.person_id = ?
-                    OR tickets_participants.person_id = ?
-                    OR tickets.organization_id = ?)
+                    (tickets.person_id = ? OR tickets_participants.person_id = ? OR tickets.agent_id = ? OR tickets.organization_id = ?)
+                    AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
                     AND ($search_places)
                 ORDER BY tickets.date_status DESC, tickets.date_created DESC
                 LIMIT $limit
@@ -226,18 +288,19 @@ class UserSearch implements UserSearchInterface
             $params = array(
                 $context->getPerson()->getId(),
                 $context->getPerson()->getId(),
+                $context->getPerson()->getId(),
             );
 
             $params = array_merge($params, $search_params);
 
             $ticket_ids = $this->db->fetchAllCol("
-                SELECT tickets.id
+                SELECT DISTINCT(tickets.id)
                 FROM tickets
                 LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
                 LEFT JOIN tickets_messages ON (tickets_messages.ticket_id = tickets.id AND tickets_messages.is_agent_note = 0)
                 WHERE
-                    (tickets.person_id = ?
-                    OR tickets_participants.person_id = ?)
+                    (tickets.person_id = ? OR tickets_participants.person_id = ? OR tickets.agent_id = ?)
+                    AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
                     AND ($search_places)
                 ORDER BY tickets.date_status DESC, tickets.date_created DESC
                 LIMIT $limit
@@ -259,8 +322,9 @@ class UserSearch implements UserSearchInterface
     }
 
     /**
-     * @param  SearchContextInterface $context
-     * @param  array                  $limit_types
+     * @param SearchContextInterface $context
+     * @param array                  $limit_types
+     *
      * @return ResultSet
      */
     private function buildParams(SearchContextInterface $context, array $limit_types = null)
@@ -271,7 +335,7 @@ class UserSearch implements UserSearchInterface
 
         $x = 0;
         if ($context->getArticleCategoryIds() && ($limit_types === null || in_array('article', $limit_types))) {
-            $jn = '_cs' . $x++;
+            $jn      = '_cs'.$x++;
             $cat_ids = implode(',', $context->getArticleCategoryIds());
 
             $types[]  = 'article';
@@ -279,7 +343,7 @@ class UserSearch implements UserSearchInterface
             $wheres[] = "($jn.object_type = 'article' AND $jn.object_id IS NOT NULL)";
         }
         if ($context->getNewsCategoryIds() && ($limit_types === null || in_array('news', $limit_types))) {
-            $jn = '_cs' . $x++;
+            $jn      = '_cs'.$x++;
             $cat_ids = implode(',', $context->getNewsCategoryIds());
 
             $types[]  = 'news';
@@ -287,15 +351,15 @@ class UserSearch implements UserSearchInterface
             $wheres[] = "($jn.object_type = 'news' AND $jn.object_id IS NOT NULL)";
         }
         if ($context->getFeedbackCategoryIds() && ($limit_types === null || in_array('feedback', $limit_types))) {
-            $jn = '_cs' . $x++;
+            $jn      = '_cs'.$x++;
             $cat_ids = implode(',', $context->getFeedbackCategoryIds());
 
             $types[]  = 'feedback';
-            $joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'feedback' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($cat_ids))";;
+            $joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'feedback' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($cat_ids))";
             $wheres[] = "($jn.object_type AND $jn.object_id IS NOT NULL)";
         }
         if ($context->getDownloadCategoryIds() && ($limit_types === null || in_array('download', $limit_types))) {
-            $jn = '_cs' . $x++;
+            $jn      = '_cs'.$x++;
             $cat_ids = implode(',', $context->getDownloadCategoryIds());
 
             $types[]  = 'download';
@@ -306,7 +370,7 @@ class UserSearch implements UserSearchInterface
         return array(
             'types' => $types,
             'join'  => implode("\n", $joins),
-            'where' =>  "(" . implode(' OR ', $wheres) . ")"
+            'where' => '('.implode(' OR ', $wheres).')',
         );
     }
 }

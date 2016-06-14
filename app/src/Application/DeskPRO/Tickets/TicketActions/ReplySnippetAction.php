@@ -1,35 +1,33 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -38,6 +36,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Entity\TicketObjectUseLog;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 
@@ -59,10 +58,10 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
             return;
         }
 
-        $item = new ReplySnippetActionItem();
+        $item             = new ReplySnippetActionItem();
         $item->snippet_id = $snippet_id;
         $item->reply_pos  = $reply_pos;
-        $item->snippet = App::getOrm()->find('DeskPRO:TextSnippet', $snippet_id);
+        $item->snippet    = App::getOrm()->find('DeskPRO:TextSnippet', $snippet_id);
 
         if (!$item->snippet) {
             return;
@@ -73,7 +72,6 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         }
     }
 
-
     /**
      * @param ReplySnippetActionItem $item
      */
@@ -82,7 +80,6 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         $this->snippet_items[] = $item;
     }
 
-
     /**
      * @return ReplySnippetActionItem[]
      */
@@ -90,7 +87,6 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
     {
         return $this->snippet_items;
     }
-
 
     /**
      * @return string[]
@@ -108,7 +104,6 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         return $titles;
     }
 
-
     /**
      * @return int[]
      */
@@ -125,16 +120,13 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         return $ids;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Person $person
-     * @return void
+     * @param \Application\DeskPRO\Entity\Person $person
      */
     public function setPersonContext(Person $person)
     {
         $this->person_context = $person;
     }
-
 
     public function checkPermission(Ticket $ticket, Person $person)
     {
@@ -146,7 +138,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -161,13 +153,13 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
                 $this->person_context = $ticket->agent;
             } else {
                 // Try to find last agent to replied in tikcet
-                $agent_id = App::getDb()->fetchColumn("
+                $agent_id = App::getDb()->fetchColumn('
                     SELECT tickets_messages.person_id
                     FROM tickets_messages
                     LEFT JOIN people ON (people.id = tickets_messages.person_id)
                     WHERE tickets_messages.ticket_id = 1 AND people.is_agent = 1
                     ORDER BY tickets_messages.id DESC
-                ");
+                ');
 
                 if ($agent_id) {
                     $this->person_context = App::getDataService('Agent')->get($agent_id);
@@ -179,7 +171,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
             return;
         }
 
-        $message = new TicketMessage();
+        $message         = new TicketMessage();
         $message->person = $this->person_context;
 
         $snippet_text = array();
@@ -189,12 +181,17 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
                 'snippet',
                 array(
                     $ticket->language,
-                    $this->person_context->getRealLanguage()
+                    $this->person_context->getRealLanguage(),
                 )
             );
             $text = trim($text);
             if (!$text) {
                 continue;
+            }
+
+            if ($item->snippet && $this->person_context) {
+                $snippetLog = TicketObjectUseLog::createSnippetLog($ticket, $this->person_context, $item->snippet);
+                App::$container->getEm()->persist($snippetLog);
             }
 
             switch ($item->reply_pos) {
@@ -221,9 +218,8 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         $ticket->addMessage($message);
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -234,13 +230,13 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         }
 
         return array(
-            array('action' => 'reply_snippet')
+            array('action' => 'reply_snippet'),
         );
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
@@ -258,73 +254,72 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
     public function getDescription($as_html = true)
     {
         if (!$this->snippet_items) {
-            return "<error>No snippet</error>";
+            return '<error>No snippet</error>';
         }
 
         // Hack ot append the proper position
         // when being viewed from replybox
         // See TicketController::ajaxGetMacroAction
         if (isset($_GET['macro_reply_context'])) {
-            $ret = array();
+            $ret       = array();
             $reply_pos = null;
 
             foreach ($this->snippet_items as $item) {
-                if (!$reply_pos) {
-                    $reply_pos = $item->reply_pos;
-                }
+                $reply_pos    = $item->reply_pos;
+                $snippet_desc = '';
+
                 if ($item->reply_pos == 'overwrite') {
-                    $ret[] = "Reply with snippet: " . $item->snippet->title;
+                    $snippet_desc = 'Reply with snippet: '.$item->snippet->title;
                 } elseif ($item->reply_pos == 'append') {
-                    $ret[] = "Append snippet to reply: " . $item->snippet->title;
+                    $snippet_desc = 'Append snippet to reply: '.$item->snippet->title;
                 } else {
-                    $ret[] ="Prepend snippet to reply: " . $item->snippet->title;
+                    $snippet_desc = 'Prepend snippet to reply: '.$item->snippet->title;
                 }
-            }
 
-            $ret = implode(', ', $ret);
+                $html = '';
+                if (!empty($GLOBALS['DP_ACTIVE_TICKET'])) {
+                    $snippet_text = array();
 
-            $html = '';
-            if (!empty($GLOBALS['DP_ACTIVE_TICKET'])) {
-
-                $snippet_text = array();
-                foreach ($this->snippet_items as $item) {
                     $text = App::getTranslator()->objectChoosePhraseText(
                         $item->snippet,
                         'snippet',
                         array(
-                            $GLOBALS['DP_ACTIVE_TICKET']->language
+                            $GLOBALS['DP_ACTIVE_TICKET']->language,
                         )
                     );
-                    $text = trim($text);
-                    if (!$text) {
-                        continue;
-                    }
 
-                    switch ($item->reply_pos) {
-                        case 'append':
-                            $snippet_text[] = $text;
-                            break;
-                        case 'prepend':
-                            array_unshift($snippet_text, $text);
-                            break;
-                        case 'overwrite':
-                            $snippet_text = array($text);
-                            break;
+                    if ($text = trim($text)) {
+                        switch ($item->reply_pos) {
+                            case 'append':
+                                $snippet_text[] = $text;
+                                break;
+                            case 'prepend':
+                                array_unshift($snippet_text, $text);
+                                break;
+                            case 'overwrite':
+                                $snippet_text = array($text);
+                                break;
+                        }
+
+                        $snippet_text = implode("\n<br/><br/>\n", $snippet_text);
+                        $formatter    = new SnippetFormatter(App::getContainer()->get('twig'));
+                        $formatter->addVar('agent_signature', '');
+                        $html = $formatter->formatText($snippet_text, $GLOBALS['DP_ACTIVE_TICKET']);
                     }
                 }
 
-                $snippet_text = implode("\n<br/><br/>\n", $snippet_text);
-                $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
-                $formatter->addVar('agent_signature', '');
-                $html = $formatter->formatText($snippet_text, $GLOBALS['DP_ACTIVE_TICKET']);
+                $snippet_desc = '<span class="with-reply" data-reply-pos="'.$reply_pos.'">'.$snippet_desc;
+                $snippet_desc .= '<script type="text/x-deskpro-plain" class="reply-text">'.$html.'</script></span>';
+
+                $ret[] = $snippet_desc;
             }
 
-            $ret = '<span class="with-reply" data-reply-pos="' . $reply_pos . '">' . $ret . '<script type="text/x-deskpro-plain" class="reply-text">' . $html . '</script></span>';
+            $ret = implode(', ', $ret);
 
             return $ret;
         }
 
-        return "Reply with snippet: " . implode(', ', $this->getSnippetTitles());
+        return 'Reply with snippet: '.implode(', ', $this->getSnippetTitles());
     }
 }
 
@@ -341,7 +336,8 @@ class ReplySnippetActionItem
     public $snippet_id;
 
     /**
-     * Possible values: append, prepend, overwrite
+     * Possible values: append, prepend, overwrite.
+     *
      * @var string
      */
     public $reply_pos;

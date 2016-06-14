@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -40,32 +39,30 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Every person can have various data or preferences associated with their account.
  * These are just key value pairs basically.
- *
  */
 class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 {
-
     /**
      * @var Application\DeskPRO\Entity\Person
      */
     protected $person;
 
     /**
-     * The name of the pref
+     * The name of the pref.
      *
      * @var string
      */
     protected $name;
 
     /**
-     * String value
+     * String value.
      *
      * @var string
      */
     protected $value_str = null;
 
     /**
-     * Array value
+     * Array value.
      *
      * @var array
      */
@@ -75,8 +72,6 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
      * @var \DateTime
      */
     protected $date_expire = null;
-
-
 
     public function getValue()
     {
@@ -88,13 +83,13 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
         $old_val_str = $this->value_str;
         $old_val_arr = $this->value_array;
 
-        $this->value_str = null;
+        $this->value_str   = null;
         $this->value_array = null;
 
         if (is_array($val)) {
             $this->value_array = $val;
         } else {
-            $this->value_str = (string)$val;
+            $this->value_str = (string) $val;
         }
 
         $this->_onPropertyChanged('value_str', $old_val_str, $this->value_str);
@@ -102,7 +97,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      */
@@ -112,7 +107,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -122,7 +117,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set value_str
+     * Set value_str.
      *
      * @param text $valueStr
      */
@@ -132,7 +127,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get value_str
+     * Get value_str.
      *
      * @return text
      */
@@ -142,7 +137,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set value_array
+     * Set value_array.
      *
      * @param array $valueArray
      */
@@ -152,7 +147,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get value_array
+     * Get value_array.
      *
      * @return array
      */
@@ -162,7 +157,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set date_expire
+     * Set date_expire.
      *
      * @param datetime $dateExpire
      */
@@ -172,7 +167,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get date_expire
+     * Get date_expire.
      *
      * @return datetime
      */
@@ -182,7 +177,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set person
+     * Set person.
      *
      * @param Application\DeskPRO\Entity\Person $person
      */
@@ -192,7 +187,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get person
+     * Get person.
      *
      * @return Application\DeskPRO\Entity\Person
      */
@@ -200,8 +195,6 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->person;
     }
-
-
 
     ############################################################################
     # Doctrine Metadata
@@ -211,13 +204,13 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonPref';
-        $metadata->setPrimaryTable(array( 'name' => 'people_prefs', ));
+        $metadata->setPrimaryTable(array('name' => 'people_prefs'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'preferences', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'value_str', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value_str', ));
-        $metadata->mapField(array( 'fieldName' => 'value_array', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value_array', ));
-        $metadata->mapField(array( 'fieldName' => 'date_expire', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_expire', ));
+        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => 'preferences', 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapField(array('fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true));
+        $metadata->mapField(array('fieldName' => 'value_str', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value_str'));
+        $metadata->mapField(array('fieldName' => 'value_array', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value_array'));
+        $metadata->mapField(array('fieldName' => 'date_expire', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_expire'));
         $metadata->setIdentifier(array('person', 'name'));
     }
 }

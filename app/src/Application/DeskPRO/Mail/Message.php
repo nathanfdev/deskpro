@@ -1,46 +1,43 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Mail;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Html\Html2Text;
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 class Message extends \Orb\Mail\Message
@@ -85,7 +82,6 @@ class Message extends \Orb\Mail\Message
      */
     protected $embed_only = array();
 
-
     /**
      * Set a context about this message. The mailer might treat it differently.
      */
@@ -93,7 +89,6 @@ class Message extends \Orb\Mail\Message
     {
         $this->context_id = $context_id;
     }
-
 
     /**
      * @return string
@@ -109,7 +104,7 @@ class Message extends \Orb\Mail\Message
             if ($this->set_to) {
                 $this->template_vars['to_email']   = $this->set_to['email'];
                 $this->template_vars['to_name']    = !empty($this->set_to['name']) ? $this->set_to['name'] : $this->set_to['email'];
-                $this->template_vars['to_contact'] = !empty($this->set_to['name']) ? $this->set_to['name'] . ' <' . $this->set_to['email'] . '>' : $this->set_to['email'];
+                $this->template_vars['to_contact'] = !empty($this->set_to['name']) ? $this->set_to['name'].' <'.$this->set_to['email'].'>' : $this->set_to['email'];
 
                 $skip_check = array(
                     // Agent email sent to an unknown email address for agent ticket replies
@@ -162,7 +157,7 @@ class Message extends \Orb\Mail\Message
                 $this->set_to_person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->template_vars['to_email']);
             }
 
-            $this->template_vars['to_person'] = $this->set_to_person;
+            $this->template_vars['to_person']       = $this->set_to_person;
             $this->template_vars['person_timezone'] = $this->set_to_person ? $this->set_to_person->getDateTimezone() : App::getContainer()->getSettingsHandler()->getDefaultTimezone();
 
             $this->template_vars['site_url']    = App::getSetting('core.site_url');
@@ -171,7 +166,7 @@ class Message extends \Orb\Mail\Message
 
             $content = $this->template_engine->render($this->template, $this->template_vars);
             if (strpos($content, '___DP___SUBJECT___SEP___') !== false) {
-                list ($subject, $body) = explode('___DP___SUBJECT___SEP___', $content, 2);
+                list($subject, $body) = explode('___DP___SUBJECT___SEP___', $content, 2);
 
                 // Try to clean up subject from whitespace
                 $subject = \Orb\Util\Strings::removeEmptyLines($subject);
@@ -185,7 +180,7 @@ class Message extends \Orb\Mail\Message
                 $body = trim($body);
             } else {
                 $subject = '';
-                $body = $content;
+                $body    = $content;
             }
 
             if ($subject) {
@@ -219,27 +214,55 @@ class Message extends \Orb\Mail\Message
             $body = $this->replaceEmbeds($body);
             $this->setBody($body, 'text/html');
 
-            // This is a slow process and can crash on complex documents so
-            // prevent running on really long messages
-            if (strlen($body) < 512000) {
-                try {
+            if (
+                !$this->set_to_person
+                || ($this->set_to_person && !$this->set_to_person->is_agent)
+                || ($this->set_to_person && $this->set_to_person->is_agent && $this->set_to_person->getPref('agent.enable_plaintext_email'))
+            ) {
+                $plaintext = $body;
+                $plaintext = str_replace('<!--DP_NEWMSG_AS_NOTE-->', '[DP_NEWMSG_AS_NOTE]', $plaintext);
+                $plaintext = str_replace('<!--DP_NEWMSG_AS_REPLY-->', '[DP_NEWMSG_AS_REPLY]', $plaintext);
+
+                $start_pos = strpos($plaintext, '<!--DP_PREVIEW_TEXT_BEGIN-->');
+                $end_pos   = strpos($plaintext, '<!--DP_PREVIEW_TEXT_END-->');
+                if ($start_pos && $end_pos) {
+                    $end_pos_len = strlen('<!--DP_PREVIEW_TEXT_END-->');
+                    $plaintext   = Strings::cut($plaintext, $start_pos, $end_pos + $end_pos_len);
+                }
+
+                // This is a slow process and can crash on complex documents so
+                // prevent running on really long messages
+                if (strlen($body) < 512000) {
                     try {
-                        $plaintext = Html2Text::convertHtml($body);
+                        try {
+                            $h2t = new Html2Text();
+                            $h2t->addElementProcessor('a', function ($node) {
+                                $classname = $node->getAttribute('class');
+                                if (strpos($classname, 'dp-reply-help-link') === false) {
+                                    return;
+                                }
+
+                                return 'https://deskpro.com/go/reply';
+                            });
+                            $plaintext = $h2t->convert($plaintext);
+                        } catch (\Exception $e) {
+                            $plaintext = null;
+                        }
+                        if ($plaintext) {
+                            $this->addPart($plaintext, 'text/plain');
+                        }
                     } catch (\Exception $e) {
-                        $plaintext = null;
                     }
+
+                // fallback on just simple strip tags
+                } else {
+                    $plaintext = str_replace("\n", '', $plaintext);
+                    $plaintext = str_replace(array('<br/>', '<br />', '<p>', '</p>', '<div>'), "\n", $plaintext);
+                    $plaintext = preg_replace('#<a[^>]+dp-reply-help-link[^>]+>[^<]+</a>#', 'https://deskpro.com/go/reply', $plaintext);
+                    $plaintext = Strings::stripTags($plaintext);
                     if ($plaintext) {
                         $this->addPart($plaintext, 'text/plain');
                     }
-                } catch (\Exception $e) {}
-
-            // fallback on just simple strip tags
-            } else {
-                $plaintext = str_replace("\n", '', $body);
-                $plaintext = str_replace(array('<br/>', '<br />', '<p>', '</p>', '<div>'), "\n", $plaintext);
-                $plaintext = strip_tags($plaintext);
-                if ($plaintext) {
-                    $this->addPart($plaintext, 'text/plain');
                 }
             }
         } else {
@@ -279,7 +302,7 @@ class Message extends \Orb\Mail\Message
             ));
         }
         $this->attach_blobs = null;
-        $this->embed_only = true;
+        $this->embed_only   = true;
 
         $this->getHeaders()->addTextHeader('X-DeskPRO-Build', defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 1);
     }
@@ -296,13 +319,13 @@ class Message extends \Orb\Mail\Message
         $self = $this;
 
         $embed_map = array();
-        foreach ($this->attach_blobs AS $src => $blob) {
+        foreach ($this->attach_blobs as $src => $blob) {
             if (is_int($src)) {
                 continue;
             }
 
-            $regex = '#(<img[^>]+src=")' . preg_quote($src, '#') . '(\?s=\d+)?("[^>]*>)#i';
-            $body = preg_replace_callback($regex, function ($match) use ($self, &$embed_map, $src, $blob) {
+            $regex = '#(<img[^>]+src=")'.preg_quote($src, '#').'(\?s=\d+)?("[^>]*>)#i';
+            $body  = preg_replace_callback($regex, function ($match) use ($self, &$embed_map, $src, $blob) {
                 if (!isset($embed_map[$src])) {
                     // in case the src is referenced twice
                     $embed_map[$src] = $self->embed(\Swift_Image::newInstance(
@@ -312,11 +335,14 @@ class Message extends \Orb\Mail\Message
                     ));
                 }
 
-                return $match[1] . $embed_map[$src] . $match[3];
+                return $match[1].$embed_map[$src].$match[3];
             }, $body);
+
+            // Remove links to inline attachments as well
+            $body = preg_replace('#<a[^>]+dp-embed-blob-a-'.preg_quote($blob->getAuthId(), '#').'[^>]*>(<img[^>]+>)</a>#', '$1', $body);
         }
 
-        foreach ($embed_map AS $src => $null) {
+        foreach ($embed_map as $src => $null) {
             // already embedded, don't need to attach again
             unset($self->attach_blobs[$src]);
         }
@@ -347,7 +373,7 @@ class Message extends \Orb\Mail\Message
     }
 
     /**
-     * Brings in a blob that will be embedded
+     * Brings in a blob that will be embedded.
      *
      * @param string                           $src  The image src attribute that will be replaced
      * @param \Application\DeskPRO\Entity\Blob $blob
@@ -366,20 +392,19 @@ class Message extends \Orb\Mail\Message
     }
 
     /**
-     * Set the template we'll use to fetch the subject and body from
+     * Set the template we'll use to fetch the subject and body from.
      *
      * @param $name
      * @param array $vars
      */
     public function setTemplate($name, array $vars = array())
     {
-        $this->template = $name;
+        $this->template      = $name;
         $this->template_vars = $vars;
     }
 
-
     /**
-     * A shortcut to set to and name
+     * A shortcut to set to and name.
      *
      * @param Person $person
      */
@@ -389,10 +414,10 @@ class Message extends \Orb\Mail\Message
         $this->set_to_person = $person;
     }
 
-
     /**
-     * @param  array                          $addresses
-     * @param  null                           $name
+     * @param array $addresses
+     * @param null  $name
+     *
      * @return \Swift_Mime_SimpleMessage|void
      */
     public function setTo($addresses, $name = null)
@@ -400,8 +425,8 @@ class Message extends \Orb\Mail\Message
         if (is_array($addresses)) {
             reset($addresses);
             $this->set_to = array(
-                'email'  => \Orb\Util\Arrays::getFirstKey($addresses),
-                'name' =>\Orb\Util\Arrays::getFirstItem($addresses),
+                'email' => \Orb\Util\Arrays::getFirstKey($addresses),
+                'name'  => \Orb\Util\Arrays::getFirstItem($addresses),
             );
         } else {
             $this->set_to = array(
@@ -415,10 +440,12 @@ class Message extends \Orb\Mail\Message
 
     /**
      * @static
-     * @param  null                              $subject
-     * @param  null                              $body
-     * @param  null                              $contentType
-     * @param  null                              $charset
+     *
+     * @param null $subject
+     * @param null $body
+     * @param null $contentType
+     * @param null $charset
+     *
      * @return \Application\DeskPRO\Mail\Message
      */
     public static function newInstance($subject = null, $body = null, $contentType = null, $charset = null)
@@ -426,10 +453,10 @@ class Message extends \Orb\Mail\Message
         return new static($subject, $body, $contentType, $charset);
     }
 
-
     /**
-     * @return string
      * @throws \Exception
+     *
+     * @return string
      */
     public function __toString()
     {

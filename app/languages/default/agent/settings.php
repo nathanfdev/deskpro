@@ -1,4 +1,32 @@
-<?php return array(
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
     'agent.settings.add_additional_emails'            => 'Add Additional Emails',
     'agent.settings.add_another_email'                => 'Add another email',
     'agent.settings.additional_emails'                => 'Additional Emails',
@@ -36,7 +64,7 @@
     'agent.settings.no_slas'                          => 'Your administrator has not defined any SLAs.',
     'agent.settings.no_slas_admin'                    => 'You have no created any SLAs yet. You can define new SLAs from Admin Interface > Tickets > SLAs.',
     'agent.settings.notif_all_actions'                => 'All Actions',
-    'agent.settings.notif_chat_message'               => 'Someone sends me a chat message while I am offline',
+    'agent.settings.notif_chat_message'               => 'An agent sends me an IM message while I am offline',
     'agent.settings.notif_contact_admin'              => 'Please contact the administrator to update your email notification preferences.',
     'agent.settings.notif_forwards'                   => 'Forwards',
     'agent.settings.notif_group_all'                  => 'All Tickets',

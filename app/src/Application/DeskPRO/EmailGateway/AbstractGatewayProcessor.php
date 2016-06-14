@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
@@ -76,13 +74,14 @@ abstract class AbstractGatewayProcessor
     protected $options = array();
 
     /**
-     * Indexed by blob id
+     * Indexed by blob id.
+     *
      * @var \Application\DeskPRO\Entity\Blob[]
      */
     protected $processed_blobs = null;
 
     /**
-     * Same as processed_blobs except indexed by Content-ID
+     * Same as processed_blobs except indexed by Content-ID.
      *
      * @var \Application\DeskPRO\Entity\Blob[]
      */
@@ -100,10 +99,10 @@ abstract class AbstractGatewayProcessor
 
     public function __construct(Entity\EmailAccount $account, AbstractReader $reader, array $options = array())
     {
-        $this->container    = App::getContainer();
-        $this->account      = $account;
-        $this->reader       = $reader;
-        $this->options      = $options;
+        $this->container = App::getContainer();
+        $this->account   = $account;
+        $this->reader    = $reader;
+        $this->options   = $options;
 
         if (isset($options['event_dispatcher'])) {
             $this->event_dispatcher = $options['event_dispatcher'];
@@ -124,8 +123,8 @@ abstract class AbstractGatewayProcessor
             $this->logger = $options['logger'];
         }
 
-        if($this->account_email_address) {
-            $this->logMessage(sprintf("Matched address %s", $this->account_email_address));
+        if ($this->account_email_address) {
+            $this->logMessage(sprintf('Matched address %s', $this->account_email_address));
         } else {
             $this->logMessage(sprintf('Warning: Could not get matched address for gateway %d', $account->id));
         }
@@ -133,7 +132,7 @@ abstract class AbstractGatewayProcessor
         $to_addresses = array_map(function ($e) { return $e->email; }, $reader->getReceivedAddresses());
         $this->sent_to = implode(',', $to_addresses);
 
-        $this->logMessage('sent_to: ' . $this->sent_to);
+        $this->logMessage('sent_to: '.$this->sent_to);
 
         $this->init();
     }
@@ -146,11 +145,10 @@ abstract class AbstractGatewayProcessor
     }
 
     /**
-     * Empty hook method for init
+     * Empty hook method for init.
      */
     protected function init()
     {
-
     }
 
     abstract public function run();
@@ -162,18 +160,19 @@ abstract class AbstractGatewayProcessor
      */
     protected function processBlobs()
     {
-        if ($this->processed_blobs !== null) return $this->processed_blobs;
+        if ($this->processed_blobs !== null) {
+            return $this->processed_blobs;
+        }
         $this->processed_blobs = array();
 
         foreach ($this->reader->getAttachments() as $attach) {
-
             $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
                 $attach->getFileContents(),
                 $attach->getFileName(),
                 $attach->getMimeType()
             );
 
-            $this->logMessage(sprintf("Processed blob %s (%d)", $blob->filename, $blob->id));
+            $this->logMessage(sprintf('Processed blob %s (%d)', $blob->filename, $blob->id));
             $this->processed_blobs[$blob->id] = $blob;
 
             if ($attach->getContentId()) {
@@ -235,8 +234,9 @@ abstract class AbstractGatewayProcessor
     /**
      * Get an option. This accepts dot notation for deep array keys.
      *
-     * @param  string $name    The option to fetch
-     * @param  mixed  $default The default value if the option is not set
+     * @param string $name    The option to fetch
+     * @param mixed  $default The default value if the option is not set
+     *
      * @return mixed
      */
     public function getOption($name, $default = null)
@@ -265,7 +265,7 @@ abstract class AbstractGatewayProcessor
      */
     public function getErrorCode()
     {
-        return null;
+        return;
     }
 
     /**

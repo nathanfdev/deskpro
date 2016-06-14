@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
@@ -83,53 +82,53 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     {
         return array(
             'getAgent' => '_getThis',
-            'agent' => '_getThis',
+            'agent'    => '_getThis',
 
-            'teams' => 'getTeams',
+            'teams'    => 'getTeams',
             'getTeams' => 'getTeams',
 
-            'team' => 'getTeam',
+            'team'    => 'getTeam',
             'getTeam' => 'getTeam',
 
-            'isSingleTeam' => 'isSingleTeam',
+            'isSingleTeam'    => 'isSingleTeam',
             'getIsSingleTeam' => 'isSingleTeam',
-            'countTeams' => 'countTeams',
-            'getCountTeams' => 'countTeams',
-            'hasTeams' => 'hasTeams',
-            'getHasTeams' => 'hasTeams',
+            'countTeams'      => 'countTeams',
+            'getCountTeams'   => 'countTeams',
+            'hasTeams'        => 'hasTeams',
+            'getHasTeams'     => 'hasTeams',
 
-            'getSignature' => 'getSignature',
-            'getSignatureHtml' => 'getSignatureHtml',
-            'getTweetSignature' => 'getTweetSignature'
+            'getSignature'      => 'getSignature',
+            'getSignatureHtml'  => 'getSignatureHtml',
+            'getTweetSignature' => 'getTweetSignature',
         );
     }
 
-
-
     /**
-     * Get the permissions helper
+     * Get the permissions helper.
      *
      * @return \Application\DeskPRO\People\Helpers\AgentPermissions
      */
     public function getPermissions()
     {
-        if ($this->_permissions !== null) return $this->_permissions;
+        if ($this->_permissions !== null) {
+            return $this->_permissions;
+        }
 
         $this->_permissions = new AgentPermissions($this->person);
 
         return $this->_permissions;
     }
 
-
-
     /**
-     * Get a collection of teams the user is part of
+     * Get a collection of teams the user is part of.
      *
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function getTeams()
     {
-        if ($this->_agent_teams !== null) return $this->_agent_teams;
+        if ($this->_agent_teams !== null) {
+            return $this->_agent_teams;
+        }
 
         try {
             $this->_agent_teams = App::$container->getAgentData()->getTeamsForAgent($this->person);
@@ -140,7 +139,6 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         return $this->_agent_teams;
     }
 
-
     /**
      * Get an array of team IDs the user is part of.
      *
@@ -148,7 +146,9 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
      */
     public function getTeamIds()
     {
-        if ($this->_agent_team_ids !== null) return $this->_agent_team_ids;
+        if ($this->_agent_team_ids !== null) {
+            return $this->_agent_team_ids;
+        }
 
         $this->_agent_team_ids = array();
         foreach ($this->getTeams() as $team) {
@@ -158,9 +158,8 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         return $this->_agent_team_ids;
     }
 
-
     /**
-     * Count how many teams the user belongs to
+     * Count how many teams the user belongs to.
      *
      * @return int
      */
@@ -168,7 +167,6 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     {
         return count($this->getTeams());
     }
-
 
     /**
      * Does the user belong to exactly 1 team?
@@ -184,7 +182,6 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         return false;
     }
 
-
     /**
      * Does this user belong to at least one team?
      *
@@ -195,10 +192,9 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         return ($this->countTeams() > 0);
     }
 
-
     /**
      * Get the persons team. If a person has more than one team ID, then this
-     * will return the first
+     * will return the first.
      *
      * @return int
      */
@@ -214,11 +210,11 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         return $t;
     }
 
-
     /**
-     * Check if the user is part of a specific team
+     * Check if the user is part of a specific team.
      *
      * @param $team_id
+     *
      * @return bool
      */
     public function isTeamMember($team_id)
@@ -231,24 +227,21 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         return false;
     }
 
-
     /**
      * Add the user to a team.
      *
-     * @param  \Application\DeskPRO\Entity\AgentTeam $team
-     * @return void
+     * @param \Application\DeskPRO\Entity\AgentTeam $team
      */
     public function addToTeam(Entity\AgentTeam $team)
     {
         return $team->addPerson($this);
     }
 
-
-
     /**
-     * Check if the user is allowed to use a particular department
+     * Check if the user is allowed to use a particular department.
      *
-     * @param  int|Department $dep
+     * @param int|Department $dep
+     *
      * @return bool
      */
     public function isDepartmentAllowed($dep)
@@ -260,18 +253,18 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         return in_array($dep, $this->getAllowedDepartments());
     }
 
-
-
     /**
-     * Get an array of departments the user isn't allowed to see
+     * Get an array of departments the user isn't allowed to see.
      *
      * @return array
      */
     public function getDisallowedDepartmentIds()
     {
-        if ($this->_dep_disallowed_ids !== null) return $this->_dep_disallowed_ids;
+        if ($this->_dep_disallowed_ids !== null) {
+            return $this->_dep_disallowed_ids;
+        }
 
-        $all_ids = App::getDataService('Department')->getIds();
+        $all_ids     = App::getDataService('Department')->getIds();
         $allowed_ids = $this->getAllowedDepartments();
 
         $disallowed_ids = array_diff($all_ids, $allowed_ids);
@@ -282,13 +275,15 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     }
 
     /**
-     * Get an array of departments the user is allowed to see
+     * Get an array of departments the user is allowed to see.
      *
      * @return array
      */
     public function getAllowedDepartmentIds()
     {
-        if ($this->_dep_allowed_ids !== null) return $this->_dep_allowed_ids;
+        if ($this->_dep_allowed_ids !== null) {
+            return $this->_dep_allowed_ids;
+        }
 
         $this->_dep_allowed_ids = array();
         foreach ($this->_access['departments'] as $dep) {
@@ -299,7 +294,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     }
 
     /**
-     * Gets the agent's text signature
+     * Gets the agent's text signature.
      *
      * @return string
      */
@@ -319,7 +314,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     }
 
     /**
-     * Gets the agent's HTML signature
+     * Gets the agent's HTML signature.
      *
      * @return string
      */
@@ -329,7 +324,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         if (!$sig_html) {
             $sig = $this->person->getPref('agent.ticket_signature');
             if ($sig) {
-                $sig_html = '<p class="dp-signature-start">' . nl2br(htmlspecialchars(trim($sig))) . '</p>';
+                $sig_html = '<p class="dp-signature-start">'.nl2br(htmlspecialchars(trim($sig))).'</p>';
             }
         }
 
@@ -359,10 +354,10 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
                                   ->getSnippetsForAgent('tickets', $this->person);
 
             $snippets_flat = array();
-            $cats_flat = array();
+            $cats_flat     = array();
             foreach ($this->_snippets as $group) {
                 $snippets_flat = array_merge($snippets_flat, $group['snippets']);
-                $cats_flat[] = $group['category'];
+                $cats_flat[]   = $group['category'];
             }
             foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
                 App::getContainer()->getObjectLangRepository()->preloadObjectCollection($lang, $snippets_flat);
@@ -409,7 +404,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     }
 
     /**
-     * @return array
+     * @return \Application\DeskPRO\Entity\TicketMacro[]
      */
     public function getMacros()
     {
@@ -423,13 +418,66 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     }
 
     /**
-     * Gets the agent's Tweet signature
+     * Returns a structured array of macros for use in a menu.
+     *
+     * Example: TOP.
+     *
+     * @return array
+     */
+    public function getMacrosStructured()
+    {
+        $macros = $this->getMacros();
+
+        $struct = array(
+            'items'     => array(),
+            'sub_menus' => array(),
+        );
+
+        foreach ($macros as $m) {
+            $parts = $m->getTitleParts();
+            array_pop($parts);
+
+            $last = &$struct;
+            foreach ($parts as $p) {
+                if (!isset($last['sub_menus'][$p])) {
+                    $last['sub_menus'][$p] = array('items' => array(), 'sub_menus' => array());
+                }
+                $last = &$last['sub_menus'][$p];
+            }
+
+            $last['items'][] = $m;
+        }
+
+        $fn = function ($col) use (&$fn) {
+            $items = array();
+
+            foreach ($col['items'] as $itm) {
+                $p       = $itm->getTitleParts();
+                $items[] = array('type' => 'item', 'title' => array_pop($p), 'item' => $itm);
+            }
+            foreach ($col['sub_menus'] as $title => $sub) {
+                $sub_items = $fn($sub);
+                $items[]   = array('type' => 'collection', 'title' => $title, 'items' => $sub_items);
+            }
+
+            usort($items, function ($a, $b) {
+                return strcmp($a['title'], $b['title']);
+            });
+
+            return $items;
+        };
+
+        return $fn($struct);
+    }
+
+    /**
+     * Gets the agent's Tweet signature.
      *
      * @return string
      */
     public function getTweetSignature()
     {
-        return (string)$this->person->getPref('agent.tweet_signature');
+        return (string) $this->person->getPref('agent.tweet_signature');
     }
 
     public function getPrimaryTeam()

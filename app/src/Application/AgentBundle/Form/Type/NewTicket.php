@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\AgentBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -61,7 +58,7 @@ class NewTicket extends AbstractType
 
         $builder->add('subject', 'text');
         $builder->add('notify_template', 'hidden');
-        $builder->add('message', 'textarea');
+        $builder->add('message', 'textarea', array('filter_clean' => false));
         $builder->add('is_html_reply', 'hidden');
 
         $builder->add('department_id', 'text');
@@ -79,27 +76,26 @@ class NewTicket extends AbstractType
         $builder->add('billing_hours', 'hidden', array('required' => false));
         $builder->add('billing_minutes', 'hidden', array('required' => false));
         $builder->add('billing_seconds', 'hidden', array('required' => false));
-        $builder->add('billing_comment', 'hidden', array('required' => false));
 
         $builder->add('add_cc_person', 'collection', array(
-            'type' => 'hidden',
-            'required' => false,
-            'allow_add' => true,
-            'allow_delete' => true
+            'type'         => 'hidden',
+            'required'     => false,
+            'allow_add'    => true,
+            'allow_delete' => true,
         ));
 
         $builder->add('add_cc_newperson', 'collection', array(
-            'type' => 'hidden',
-            'required' => false,
-            'allow_add' => true,
-            'allow_delete' => true
+            'type'         => 'hidden',
+            'required'     => false,
+            'allow_add'    => true,
+            'allow_delete' => true,
         ));
 
         $builder->add('attach', 'collection', array(
-            'type' => 'hidden',
-            'required' => false,
-            'allow_add' => true,
-            'allow_delete' => true
+            'type'         => 'hidden',
+            'required'     => false,
+            'allow_add'    => true,
+            'allow_delete' => true,
         ));
     }
 

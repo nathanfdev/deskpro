@@ -2,6 +2,7 @@
 	class="content-message message message-{{message.id}} {% if not message.is_agent_note %}public-message{% endif %} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}agent-message{% else %}user-message{% endif %} {% if ticket_message_attachments[message.id] %}with-attach{% endif %} {% if all_feedback[message.id] %}with-feedback{% endif %}"
 	data-message-id="{{message.id}}"
 >
+	{% if message.is_agent_note %}<div class="note-tag" title="Agent note: This message will NOT appear to end-users."><i>Note</i></div>{% endif %}
 	<div class="avatar"><img
 			src="{{ message.person.getPictureUrl(40) }}"
 			alt=""
@@ -117,6 +118,24 @@
 							</td>
 						</tr>
 					{% endif %}
+					{% if message.email_source %}
+						<tr>
+							<th>{{ phrase('agent.general.to') }}:</th>
+							<td>
+								{{ message.email_source.header_to }}
+							</td>
+						</tr>
+						{% if message.email_source.parsed_headers.cc %}
+						<tr>
+							<th>{{ phrase('agent.general.ccs') }}:</th>
+							<td style="overflow: hidden;">
+								{% for email in message.email_source.parsed_headers.cc|split(',') %}
+									<span title="{{ email|trim }}">{{ email|trim }}</span><br />
+								{% endfor %}
+							</td>
+						</tr>
+						{% endif %}
+					{% endif %}
 					{% if message.ip_address %}
 						<tr>
 							<th>{{ phrase('agent.general.ip_address') }}:</th>
@@ -161,7 +180,7 @@
 								{{ phrase('agent.tickets.long_message_clipped') }} <a class="clean-white" href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, _rt: security_token('request_token', 10800)}) }}" target="_blank">{{ phrase('agent.tickets.view_entire_in_new_win') }} &rarr;</a>
 							</div>
 						{% else %}
-							{{message.message_html|safe_link_urls_html }}
+							{{message.message_html|raw}}
 							{% if message.message_full %}<div class="message-toggle-btn"><em class="tipped" title="{{ phrase('agent.tickets.view_full_quoted_message') }}">&bull; &bull; &bull;</em></div>{% endif %}
 						{% endif %}
 					</div>

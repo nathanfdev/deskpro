@@ -1,13 +1,41 @@
 <?php
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace Application\DeskPRO\NewSearch\Manager;
 
+use Application\DeskPRO\EntityRepository\Ticket;
+use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Validator\StringEmail;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
 /**
- * Elasticsearch Search Manager
+ * Elasticsearch Search Manager.
  */
 class Elasticsearch extends ContainerAware implements SearchManagerInterface
 {
@@ -19,7 +47,7 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
     protected $person;
 
     /**
-     * Objects to search
+     * Objects to search.
      *
      * @var array
      */
@@ -35,16 +63,16 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
     );
 
     /**
-     * Permission requirement
+     * Permission requirement.
      *
      * @var array
      */
     protected $requiresPermission = array(
-        'ticket'
+        'ticket',
     );
 
     /**
-     * Search results
+     * Search results.
      *
      * @var array
      */
@@ -65,7 +93,6 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
         $repositoryManager = $this->container->get('fos_elastica.manager');
 
         foreach ($this->objects as $object => $model) {
-
             if ($limit_types !== null && !in_array($object, $limit_types)) {
                 continue;
             }
@@ -75,16 +102,27 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
             }
 
             $repository = $repositoryManager->getRepository($model);
-            $ent_repos = $this->container->getEm()->getRepository($model);
+            $ent_repos  = $this->container->getEm()->getRepository($model);
 
             if ($this->requiresPermission($object)) {
                 $repository->setPersonContext($this->person);
             }
 
             if ($model == 'DeskPRO:Ticket' && preg_match('#^[0-9A-Z\-_\.]+$#', $q)) {
-                $result = $ent_repos->findTicketRef($q);
-                if ($result) {
-                    $this->handleResult($object, $result);
+                /** @var Ticket $ent_repos */
+                if ($ticket = $ent_repos->findTicketRef(strtoupper($q))) {
+                    if ($this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+                        $this->handleResult($object, $ticket);
+                    }
+                } elseif (strlen($q) >= 3) {
+                    $tickets = $ent_repos->searchTicketRef($q);
+                    $results = array();
+                    foreach ($tickets as $ticket) {
+                        if ($this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+                            $results[] = $ticket;
+                        }
+                    }
+                    $this->handleResult($object, $results);
                 }
             }
 
@@ -114,16 +152,16 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
             }
 
             $result = $repository->find($q, null, array(
-                'sort_type' => $sort
+                'sort_type' => $sort,
             ));
             if ($result) {
                 $this->handleResult($object, $result);
             }
         }
 
-        foreach ($this->results as &$group) {
-            $group = array_unique($group);
-        }
+        $this->results = array_map(function ($group) {
+            return Arrays::uniqueObjectArray($group);
+        }, $this->results);
 
         return array($this->results, $result_meta, $people_top);
     }

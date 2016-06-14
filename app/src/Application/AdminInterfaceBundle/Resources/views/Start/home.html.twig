@@ -9,11 +9,91 @@
 					DeskPRO has been installed successfully. But before you can start using your helpdesk you need to initialize a few options first.
 				</p>
 			</section>
-			<section class="card-section">
+
+            <section class="card-section" ng-if="not_user">
+                <h3>Admin Account</h3>
+
+                <div class="form">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group"
+                                     ng-class="{'has-warning': has_submit && form.firstname.$invalid}">
+                                    <label for="form_firstname">First Name</label>
+                                    <input type="text" id="form_firstname" name="firstname" ng-model="opt.first_name"
+                                           class="form-control" required/>
+
+                                    <p class="help-block" ng-show="has_submit && form.firstname.$error.required">Please
+                                        enter your First Name.</p>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group"
+                                     ng-class="{'has-warning': has_submit && form.lastname.$invalid}">
+                                    <label for="form_lastname">Last Name</label>
+                                    <input type="text" id="form_lastname" name="lastname" ng-model="opt.last_name"
+                                           class="form-control" required/>
+
+                                    <p class="help-block" ng-show="has_submit && form.lastname.$error.required">Please
+                                        enter your Last Name.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group" ng-class="{'has-warning': has_submit && form.email.$invalid}">
+                                    <label for="form_email">Email Address</label>
+                                    <input type="email" id="form_email" name="email" ng-model="opt.email"
+                                           class="form-control" required/>
+
+                                    <p class="help-block" ng-show="has_submit && form.email.$error.required">Please
+                                        enter your Email Address.</p>
+
+                                    <p class="help-block" ng-show="has_submit && form.email.$error.email">Please enter
+                                        valid Email Address.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group"
+                                     ng-class="{'has-warning': has_submit && form.password.$invalid}">
+                                    <label for="form_password">Password</label>
+                                    <input type="password" id="form_password" name="password"
+                                           ng-model="opt.password.first" class="form-control" required/>
+
+                                    <p class="help-block" ng-show="has_submit && form.password.$error.required">Please
+                                        enter a password.</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group"
+                                     ng-class="{'has-warning': has_submit && form.password2.$invalid}">
+                                    <label for="form_password2">Repeat Password</label>
+                                    <input type="password" id="form_password2" name="password2"
+                                           ng-model="opt.password.second" class="form-control" required/>
+
+                                    <p class="help-block" ng-show="has_submit && form.password2.$error.required">Please
+                                        repeat a password.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-if="error_message">
+                            <p class="alert alert-danger">
+                                {{ ng_var('error_message') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card-section">
 				<h3>Your helpdesk</h3>
 				<p>
 					Enter the main URL to the helpdesk here and give your helpdesk a name. The name will be used as link text when
-					a link to the helpdesk is displayed to users (for examlpe, in email footers).
+					a link to the helpdesk is displayed to users (for example, in email footers).
 				</p>
 				<div class="form">
 					<div class="container-fluid">
@@ -44,7 +124,8 @@
 						You can get your license key from your <a href="https://www.deskpro.com/members/" target="_blank">DeskPRO Members Area</a>.
 						Don't have a license? <button type="button" class="btn btn-info" style="height: auto; padding: 4px 8px 3px 11px;" ng-click="Card.showRequestDemo()">Get a demo license now <i class="fa fa-ticket"></i></button>
 					</p>
-					<textarea ng-model="opt.license" name="license" class="form-control" style="height: 100px;" placeholder="Paste your license code here" required></textarea>
+                    <textarea ng-model="opt.license_code" name="license" class="form-control" style="height: 100px;"
+                              placeholder="Paste your license code here" required></textarea>
 					<p class="help-block" ng-show="has_submit && form.license.$error.required">Please enter your license code.</p>
 					<p class="text-danger" ng-show="lic_error">
 						The license code you entered is invalid. Make sure you copy and paste the code exactly as you got it.

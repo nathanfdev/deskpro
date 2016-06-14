@@ -19,7 +19,10 @@
 					</tr>
 				</thead>
 				<tbody ng-if="EditCtrl.phrases.length">
-					<tr ng-repeat="phrase in EditCtrl.phrases" ng-class="{'phrase-custom': phrase.set && phrase.set != phrase.lang_default }">
+                <tr ng-repeat="phrase in EditCtrl.phrases"
+                    ng-class="{'phrase-custom': phrase.set && phrase.set != phrase.lang_default }"
+                    ng-if="'user.general.helpdesk_by' !== phrase.id"
+                        >
 						<td class="phrase-id">
 							<span>{{ ng_var('phrase.id') }}</span>
 							<button type="button" class="btn btn-default btn-xs ng-hide" ng-show="phrase.set && phrase.set != phrase.lang_default" ng-click="phrase.set = phrase.lang_default">

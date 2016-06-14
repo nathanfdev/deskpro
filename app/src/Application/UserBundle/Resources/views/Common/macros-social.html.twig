@@ -1,5 +1,8 @@
 {##
  # The block used to add the social share widget under content pages
+ #
+ # note: these buttons are powered by sharethis widget (http://www.sharethis.com/account/)
+ # app/src/Application/UserBundle/Resources/views/layout.html.twig:364
  ##}
 
 {% macro social_block(page_url, page_title) %}
@@ -20,7 +23,8 @@
 					&nbsp;
 				{% endif %}
 				{% if app.getSetting('core.show_share_gplus') %}
-					<span class='st_plusone_hcount' displayText='Google +1' st_url="{{ page_url }}" st_title="{{ page_title }}"></span>
+                    <span class='st_googleplus_hcount' displayText='Google +1' st_url="{{ page_url }}"
+                          st_title="{{ page_title }}"></span>
 				{% endif %}
 			</td>
 		</tr></table>

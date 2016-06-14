@@ -614,6 +614,9 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		$('.feedback-editor-wrap', this.getEl('content_ed')).hide();
 		$('.feedback-content-wrap', this.getEl('content_ed')).show();
 		this.updateUi();
+		$('.feedback-content-wrap a').each(function(){
+			$(this).attr('target', '_blank');
+		});
 	},
 
 	_initMediaBrowser: function() {

@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage UserBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -55,18 +52,18 @@ class WidgetController extends AbstractController
         if (strpos($this->getRequest()->getRequestUri(), '/chat') !== false) {
             // The login page also has code for no perm if theres already a user sess
             return $this->render('UserBundle:Chat:chat-login.html.twig', array(
-                'parent_url' => $this->in->getString('parent_url')
+                'parent_url' => $this->in->getString('parent_url'),
             ));
         }
 
         if ($this->person->getId()) {
             return $this->render('UserBundle:Widget:overlay-perm-error.html.twig', array(
-                'parent_url' => $this->in->getString('parent_url')
+                'parent_url' => $this->in->getString('parent_url'),
             ));
         }
 
         return $this->render('UserBundle:Widget:overlay-login.html.twig', array(
-            'parent_url' => $this->in->getString('parent_url')
+            'parent_url' => $this->in->getString('parent_url'),
         ));
     }
 
@@ -83,7 +80,6 @@ class WidgetController extends AbstractController
 
             $this->db->beginTransaction();
             try {
-
                 if (!$this->person->isGuest()) {
                     $this->em->persist($this->person);
                 }
@@ -103,7 +99,6 @@ class WidgetController extends AbstractController
             $cookie->send();
         }
 
-
         #------------------------------
         # New ticket form
         #------------------------------
@@ -115,7 +110,7 @@ class WidgetController extends AbstractController
         $newticket->setPersonContext($this->person);
 
         $newticket_formtype = new NewTicketType($this->person);
-        $ticketform = $this->get('form.factory')->create($newticket_formtype, $newticket);
+        $ticketform         = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
         $departments = $this->em->getRepository('DeskPRO:Department')->findAll();
 
@@ -133,7 +128,6 @@ class WidgetController extends AbstractController
         $feedback_categories = $structure->getFeedbackRootCategories();
 
         $show_feedback = $this->container->getSetting('user.portal_tab_feedback') && $this->person->hasPerm('feedback.use');
-
 
         #------------------------------
         # Fetch latest content
@@ -177,24 +171,24 @@ class WidgetController extends AbstractController
             $website_url = $GLOBALS['DP_WEBSITE_URL'];
         }
 
-        $cf_man = $this->container->getSystemService('FeedbackFieldsManager');
+        $cf_man                = $this->container->getSystemService('FeedbackFieldsManager');
         $newfeedback_cat_field = $cf_man->getSystemField('cat');
 
         if (!$newfeedback_cat_field || !$cf_man->getFieldChildren($newfeedback_cat_field)) {
             $newfeedback_cat_field = null;
         } else {
-            $custom_fields = $cf_man->getDisplayArray();
+            $custom_fields         = $cf_man->getDisplayArray();
             $newfeedback_cat_field = $custom_fields[$newfeedback_cat_field->getId()];
         }
 
         $vars = array(
-            'parent_url'            => $this->in->getString('parent_url'),
-            'departments'           => $departments,
+            'parent_url'  => $this->in->getString('parent_url'),
+            'departments' => $departments,
 
-            'newticket'             => $newticket,
-            'newticket_formtype'    => $newticket_formtype,
-            'ticket_options'        => $newticket_formtype->getTicketOptions(),
-            'ticketform'            => $ticketform->createView(),
+            'newticket'          => $newticket,
+            'newticket_formtype' => $newticket_formtype,
+            'ticket_options'     => $newticket_formtype->getTicketOptions(),
+            'ticketform'         => $ticketform->createView(),
 
             'show_feedback'         => $show_feedback,
             'newfeedback'           => $newfeedback,
@@ -203,13 +197,12 @@ class WidgetController extends AbstractController
             'newfeedback_cat_field' => $newfeedback_cat_field,
             'chat_active'           => $chat_active,
 
-            'newest_content'        => $latest_content->getResults(),
-            'website_url'           => $website_url,
+            'newest_content' => $latest_content->getResults(),
+            'website_url'    => $website_url,
         );
 
         return $this->render('UserBundle:Widget:overlay.html.twig', $vars);
     }
-
 
     ################################################################################
     # new-ticket
@@ -245,11 +238,11 @@ class WidgetController extends AbstractController
         }
 
         $newticket_formtype = new NewTicketType($person_context);
-        $form = $this->get('form.factory')->create($newticket_formtype, $newticket);
+        $form               = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
         $form->handleRequest($this->get('request'));
 
-        $newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
+        $newticket->ticket->attach_ids        = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
         $newticket->ticket->attach_ids_authed = true;
 
         $validator = new \Application\UserBundle\Validator\NewTicketValidator();
@@ -271,14 +264,14 @@ class WidgetController extends AbstractController
 
             return $this->createJsonResponse(array(
                 'ticket_id' => $ticket->id,
-                'email' => $ticket->person->getPrimaryEmailAddress()
+                'email'     => $ticket->person->getPrimaryEmailAddress(),
             ));
         } else {
             $error_fields = $validator->getErrorGroups(true);
 
             return $this->createJsonResponse(array(
                 'is_error' => true,
-                'errors' => $error_fields
+                'errors'   => $error_fields,
             ));
         }
     }
@@ -294,28 +287,27 @@ class WidgetController extends AbstractController
         $newfeedback->enableWidgetMode();
 
         $newfeedback->custom_fields = $this->in->getRaw('feedback_custom_fields');
-        $form = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
+        $form                       = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
 
         $form->handleRequest($this->get('request'));
 
         $validator = new \Application\UserBundle\Validator\NewFeedbackValidator();
 
         if ($validator->isValid($newfeedback)) {
+            $hash = md5($newfeedback->title.$newfeedback->content.$newfeedback->category_id);
 
-            $hash = md5($newfeedback->title . $newfeedback->content . $newfeedback->category_id);
-
-            $dupe = false;
+            $dupe              = false;
             $person_from_email = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($newfeedback->person_email);
             if ($person_from_email) {
-                $datecut = new \DateTime('-20 minutes');
-                $exist_feedback = $this->container->getEm()->createQuery("
+                $datecut        = new \DateTime('-20 minutes');
+                $exist_feedback = $this->container->getEm()->createQuery('
                     SELECT f
                     FROM DeskPRO:Feedback f
                     WHERE f.person = ?0 AND f.date_created > ?1
-                ")->setMaxResults(10)->setParameters(array($person_from_email, $datecut))->execute();
+                ')->setMaxResults(10)->setParameters(array($person_from_email, $datecut))->execute();
 
                 foreach ($exist_feedback as $f) {
-                    $hash_check = md5($f->title . $f->content . $f->category->getId());
+                    $hash_check = md5($f->title.$f->content.$f->category->getId());
                     if ($hash == $hash_check) {
                         $dupe = $f->getId();
                     }
@@ -323,7 +315,7 @@ class WidgetController extends AbstractController
             }
 
             if (!$dupe) {
-                $feedback = $newfeedback->save();
+                $feedback    = $newfeedback->save();
                 $feedback_id = $feedback->getId();
 
                 $notify_send = new \Application\DeskPRO\Notifications\NewFeedbackNotification($feedback);
@@ -335,14 +327,14 @@ class WidgetController extends AbstractController
             $GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
             return $this->createJsonResponse(array(
-                'feedback_id' => $feedback_id
+                'feedback_id' => $feedback_id,
             ));
         } else {
             $error_fields = $validator->getErrorGroups(true);
 
             return $this->createJsonResponse(array(
                 'is_error' => true,
-                'errors' => $error_fields
+                'errors'   => $error_fields,
             ));
         }
     }
@@ -354,7 +346,7 @@ class WidgetController extends AbstractController
     public function chatAction()
     {
         $sessionObj = $this->get('session');
-        $session = $sessionObj->getEntity();
+        $session    = $sessionObj->getEntity();
 
         if (!$sessionObj->getPerson()->hasPerm('chat.use')) {
             return $this->renderLoginOrPermissionError();
@@ -370,7 +362,7 @@ class WidgetController extends AbstractController
         }
 
         $chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $session));
-        $convo = $chat_manager->getChat();
+        $convo        = $chat_manager->getChat();
 
         if ($convo && $convo->status == 'ended') {
             $convo = null;
@@ -378,12 +370,12 @@ class WidgetController extends AbstractController
 
         $convo_messages = false;
         if ($convo) {
-            $convo_messages_obj = $this->em->createQuery("
+            $convo_messages_obj = $this->em->createQuery('
                 SELECT m
                 FROM DeskPRO:ChatMessage m
                 WHERE m.conversation = ?1 AND m.is_user_hidden = false
                 ORDER BY m.id ASC
-            ")->setParameter(1, $convo)->execute();
+            ')->setParameter(1, $convo)->execute();
 
             if ($convo_messages_obj) {
                 $convo_messages = array();
@@ -411,18 +403,18 @@ class WidgetController extends AbstractController
         $chat_display = new \Application\DeskPRO\PageDisplay\Page\ChatPageZoneCollection('create');
         $chat_display->setPersonContext($this->person);
         $chat_display->addPagesFromDb();
-        $chat_display_js = "window.DESKPRO_CHAT_DISPLAY = " . $chat_display->compileJs() . ";";
+        $chat_display_js = 'window.DESKPRO_CHAT_DISPLAY = '.$chat_display->compileJs().';';
 
         $default_page = $chat_display->getDepartmentPage(0);
 
         if ($default_page) {
-            $default_page_data = $default_page->getPageDisplay('default')->data;
+            $default_page_data   = $default_page->getPageDisplay('default')->data;
             $page_data_field_ids = array();
             foreach ($default_page->getPageDisplay('default')->data as $info) {
                 $page_data_field_ids[] = $info['id'];
             }
         } else {
-            $default_page_data = array();
+            $default_page_data   = array();
             $page_data_field_ids = array();
         }
 
@@ -435,34 +427,34 @@ class WidgetController extends AbstractController
 
         $custom_fields_form = $this->get('form.factory')->createNamedBuilder('chat_fields', 'form');
 
-        /** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
+        /** @var $fm \Application\DeskPRO\CustomFields\ChatFieldManager */
         $fm = $this->container->getSystemService('ChatFieldsManager');
         if (isset($_POST['newchat']['custom_chat_fields'])) {
             $field_data = $fm->getStrucutredDataFromForm($_POST['newchat']['custom_chat_fields'], 'Application\\DeskPRO\\Entity\\CustomDataChat');
 
             $field_form_data = $fm->createFieldDataFromArray($field_data);
-            $custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
+            $custom_fields   = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
         } else {
             $custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
         }
 
         $vars = array(
-            'custom_fields'          => $custom_fields,
-            'chat_display_js'        => $chat_display_js,
-            'all_items'              => $unique_items,
-            'default_page_data'      => $default_page_data,
-            'page_data_field_ids'    => $page_data_field_ids,
+            'custom_fields'       => $custom_fields,
+            'chat_display_js'     => $chat_display_js,
+            'all_items'           => $unique_items,
+            'default_page_data'   => $default_page_data,
+            'page_data_field_ids' => $page_data_field_ids,
 
-            'parent_url'             => $this->in->getString('parent_url'),
-            'session_code'           => $session->getSessionCode(),
-            'convo'                  => $convo,
-            'convo_messages'         => $convo_messages,
-            'departments'            => $departments,
-            'initial_name'           => $this->in->getString('name'),
-            'initial_email'          => $this->in->getString('email'),
-            'initial_department_id'  => $this->in->getUint('department_id'),
-            'auto_start'             => $this->in->getBool('auto_start'),
-            'is_window_mode'         => $is_window
+            'parent_url'            => $this->in->getString('parent_url'),
+            'session_code'          => $session->getSessionCode(),
+            'convo'                 => $convo,
+            'convo_messages'        => $convo_messages,
+            'departments'           => $departments,
+            'initial_name'          => $this->in->getString('name'),
+            'initial_email'         => $this->in->getString('email'),
+            'initial_department_id' => $this->in->getUint('department_id'),
+            'auto_start'            => $this->in->getBool('auto_start'),
+            'is_window_mode'        => $is_window,
         );
 
         if ($convo) {

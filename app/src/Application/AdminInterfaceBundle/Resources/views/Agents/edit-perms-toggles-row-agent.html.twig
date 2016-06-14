@@ -1,0 +1,46 @@
+{% macro perm_row(typename, permname, opts) %}
+    {% set row_id = 'perm_' ~ typename ~ '_' ~ permname %}
+
+    <tr
+            class="{% if opts.first %}first-of-type{% endif %} {% if opts.toggleName %}nested{% endif %}"
+            {% if opts.toggleName %}
+                {% set toggleNameId = 'perm_' ~ opts.toggleName|replace({'.':'_'}) %}
+                ng-show="{{ toggleNameId }}_toggler"
+            {% endif %}
+            >
+        <td width="100%">
+            <span class="title">
+                {% if has_phrase('adm.agents.perm_' ~ typename ~ '_' ~ permname) %}
+                    {{ phrase('adm.agents.perm_' ~ typename ~ '_' ~ permname) }}
+                {% else %}
+                    {{ phrase('adm.agents.perm_' ~ typename ~ '_' ~ permname|replace({'_own': '', '_followed': '', '_unassigned': '', '_others': ''})) }}
+                {% endif %}
+            </span>
+
+            {% if opts.showToggler %}
+                <span class="toggle-wrap" ng-click="{{ row_id }}_toggler = !{{ row_id }}_toggler">
+                <span ng-show="!{{ row_id }}_toggler">expand <i class="fa fa-caret-down"></i></span>
+                <span ng-show="{{ row_id }}_toggler">collapse <i class="fa fa-caret-up"></i></span>
+            </span>
+            {% endif %}
+        </td>
+        <td>
+            <input
+                    dp-slider-switch
+                    ng-model="EditCtrl.perm_form.{{ typename }}.{{ permname }}"
+                    ng-change="{% if 'use' == permname %}EditCtrl.changeUse('{{ typename }}'){% else %}EditCtrl.updateHasPermOverridesStatus(){% endif %}"
+                    is-on="{% if opts.toggleName %}EditCtrl.perm_form.{{ opts.toggleName }} || EditCtrl.ugEffectivePerms.{{ opts.toggleName }} || {% endif %}EditCtrl.ugEffectivePerms.{{ typename }}.{{ permname }}"
+                    is-locked="{% if opts.toggleName %}EditCtrl.perm_form.{{ opts.toggleName }} || {% endif %}EditCtrl.ugEffectivePerms.{{ typename }}.{{ permname }}"
+                    {% if opts.toggleName %}
+                        locked-tip-e="(EditCtrl.perm_form.{{ opts.toggleName }} || EditCtrl.ugEffectivePerms.{{ opts.toggleName }} || EditCtrl.ugEffectivePerms.{{ typename }}.{{ permname }}) && 'This permission is locked because you have enabled the parent permission' || 'This permission is locked because this agent is part of a usergroup with this perimssion'"
+                    {% else %}
+                        locked-tip="This permission is locked because this agent is part of a usergroup with this permission"
+
+                        {% if opts.showToggler %}
+                            is-some="EditCtrl.hasSomePerms('{{ typename }}', '{{ permname }}')"
+                        {% endif %}
+                    {% endif %}
+                    />
+        </td>
+    </tr>
+{% endmacro %}

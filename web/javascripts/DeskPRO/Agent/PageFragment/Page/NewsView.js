@@ -92,6 +92,12 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		this.ownObject(this.whoVotedOverlay);
 	},
 
+	replaceLinks: function() {
+		$('.news-content-wrap a', this.wrapper).each(function(){
+			$(this).attr('target', '_blank');
+		});
+	},
+
 	destroyPage: function() {
 		// Workaround for tinymce bug to do with remove()
 		// We'll manually remove the node ourselves
@@ -289,22 +295,32 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 		var endDate = $('.auto-unpublish .end-date.opt', optWrap);
 		var dateInput = $('.auto-unpublish .end-date-input', optWrap);
-		dateInput.datepicker({
-			dateFormat: 'M d, yy',
-			onSelect: function(dateText, inst) {
-
-				var timestamp = dateInput.datepicker('getDate').getTime() / 1000;
-
-				endDate.data('val', timestamp);
-				endDate.text(dateText);
-
-				self.updateAutoUnPubOptions();
-			}
+		dateInput.each(function() {
+			$(this).datetimepicker({
+				format: 'D MMM, YY',
+				widgetParent: $(this).prev('div'),
+				widgetPositioning: { vertical: 'bottom' },
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
 		});
 
 		endDate.on('click', function() {
-			$('.auto-unpublish .end-date-input', optWrap).datepicker('show');
+			dateInput.data('DateTimePicker').show();
 		});
+
+    dateInput.on('dp.change', function(e){
+      endDate.data('val', e.date.unix());
+      endDate.text(e.date.format('D MMM, YY'));
+      self.updateAutoUnPubOptions();
+    });
 	},
 
 	removeAutoUnPubOptions: function() {
@@ -374,22 +390,32 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 		var pubDate = $('.auto-publish .pub-date.opt', optWrap);
 		var dateInput = $('.auto-publish .pub-date-input', optWrap);
-		dateInput.datepicker({
-			dateFormat: 'M d, yy',
-			onSelect: function(dateText, inst) {
-
-				var timestamp = dateInput.datepicker('getDate').getTime() / 1000;
-
-				pubDate.data('val', timestamp);
-				pubDate.text(dateText);
-
-				self.updateAutoPubOptions();
-			}
+		dateInput.each(function() {
+			$(this).datetimepicker({
+				format: 'D MMM, YY',
+				widgetParent: $(this).prev('div'),
+				widgetPositioning: { vertical: 'bottom' },
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
 		});
 
-		pubDate.on('click', function() {
-			$('.auto-publish .pub-date-input', optWrap).datepicker('show');
-		});
+    pubDate.on('click', function() {
+      dateInput.data('DateTimePicker').show();
+    });
+
+    dateInput.on('dp.change', function(e){
+      pubDate.data('val', e.date.unix());
+      pubDate.text(e.date.format('D MMM, YY'));
+      self.updateAutoPubOptions();
+    });
 	},
 
 	removeAutoPubOptions: function() {
@@ -647,6 +673,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		$('.news-editor-wrap', this.getEl('content_ed')).hide();
 		$('.news-content-wrap', this.getEl('content_ed')).show();
 		this.updateUi();
+		this.replaceLinks();
 	},
 
 	_initMediaBrowser: function() {

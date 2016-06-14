@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage HttpKernel
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\HttpKernel;
 
 use Application\DeskPRO\HttpKernel\Event\PrePostEvent;
@@ -74,7 +71,6 @@ class HttpKernel extends BaseHttpKernel
      */
     protected $requestStack;
 
-
     /**
      * @param EventDispatcherInterface    $dispatcher
      * @param ContainerInterface          $container
@@ -93,14 +89,15 @@ class HttpKernel extends BaseHttpKernel
         }
     }
 
-
     /**
-     * @param  Request    $request
-     * @param  int        $type
-     * @param  bool       $catch
+     * @param Request $request
+     * @param int     $type
+     * @param bool    $catch
+     *
+     * @throws \Exception
+     * @throws \Exception
+     *
      * @return Response
-     * @throws \Exception
-     * @throws \Exception
      */
     public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
@@ -133,9 +130,8 @@ class HttpKernel extends BaseHttpKernel
         }
     }
 
-
     /**
-     * [Copied from BaseHttpKernel]
+     * [Copied from BaseHttpKernel].
      *
      * @param Request  $request
      * @param Response $response
@@ -145,15 +141,16 @@ class HttpKernel extends BaseHttpKernel
         $this->dispatcher->dispatch(KernelEvents::TERMINATE, new PostResponseEvent($this, $request, $response));
     }
 
-
     /**
-     * Custom DeskPRO code. Same as BaseHttpKernel except we run pre/post methods, and also add in handling for newrelic
+     * Custom DeskPRO code. Same as BaseHttpKernel except we run pre/post methods, and also add in handling for newrelic.
      *
-     * @param  Request                                                       $request
-     * @param  int                                                           $type
-     * @return Response
+     * @param Request $request
+     * @param int     $type
+     *
      * @throws \LogicException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return Response
      */
     private function handleRaw(Request $request, $type = self::MASTER_REQUEST)
     {
@@ -177,17 +174,17 @@ class HttpKernel extends BaseHttpKernel
         $controller = $event->getController();
 
         if (isset($controller[0]) && $controller[0]) {
-            dp_pagelog_set('page_id', get_class($controller[0]) . '::' . $controller[1]);
+            dp_pagelog_set('page_id', get_class($controller[0]).'::'.$controller[1]);
         }
 
         // controller arguments
         $arguments = $this->resolver->getArguments($request, $controller);
 
-        if (isset($controller[0]) AND $controller[0] instanceof \Application\DeskPRO\HttpKernel\Controller\Controller) {
+        if (isset($controller[0]) and $controller[0] instanceof \Application\DeskPRO\HttpKernel\Controller\Controller) {
             //==BEGIN:MONITORING==
             if (extension_loaded('newrelic')) {
                 $ctrl_name = preg_replace('#^Application\\\\(.*?)(?:Bundle)?\\\\Controller\\\\(.*?)Controller$#', '$1:$2', get_class($controller[0]));
-                $ctrl_name .= ':' . preg_replace('#Action$#', '', $controller[1]);
+                $ctrl_name .= ':'.preg_replace('#Action$#', '', $controller[1]);
                 newrelic_name_transaction($ctrl_name);
 
                 $args_str = array();
@@ -201,12 +198,15 @@ class HttpKernel extends BaseHttpKernel
                     } elseif (is_array($a)) {
                         $single_array = true;
                         foreach ($a as $suba) {
-                            if (!is_scalar($suba)) { $single_array = false; break; }
+                            if (!is_scalar($suba)) {
+                                $single_array = false;
+                                break;
+                            }
                         }
                         if ($single_array) {
-                            $args_str[] = '[' . implode(', ', $a) . ']';
+                            $args_str[] = '['.implode(', ', $a).']';
                         } else {
-                            $args_str[] = '[array:' . count($a) . ']';
+                            $args_str[] = '[array:'.count($a).']';
                         }
                     } elseif (is_object($a)) {
                         $args_str[] = get_class($a);
@@ -221,10 +221,10 @@ class HttpKernel extends BaseHttpKernel
             // Run pre event
             $event = new PrePostEvent(array(
                 'request_type' => $type,
-                'request' => $request,
-                'controller' => $controller[0],
-                'action' => $controller[1],
-                'arguments' => $arguments
+                'request'      => $request,
+                'controller'   => $controller[0],
+                'action'       => $controller[1],
+                'arguments'    => $arguments,
             ));
             $controller[0]->DeskPRO_onControllerPreAction($event);
             $response = null;
@@ -253,11 +253,11 @@ class HttpKernel extends BaseHttpKernel
             // Run post event
             $event = new PrePostEvent(array(
                 'request_type' => $type,
-                'request' => $request,
-                'controller' => $controller[0],
-                'action' => $controller[1],
-                'arguments' => $arguments,
-                'response' => $response
+                'request'      => $request,
+                'controller'   => $controller[0],
+                'action'       => $controller[1],
+                'arguments'    => $arguments,
+                'response'     => $response,
             ));
 
             $controller[0]->DeskPRO_onControllerPostAction($event);
@@ -296,13 +296,13 @@ class HttpKernel extends BaseHttpKernel
         return $this->filterResponse($response, $request, $type);
     }
 
-
     /**
-     * [Copied from BaseHttpKernel]
+     * [Copied from BaseHttpKernel].
      *
-     * @param  Response $response
-     * @param  Request  $request
-     * @param  int      $type
+     * @param Response $response
+     * @param Request  $request
+     * @param int      $type
+     *
      * @return Response
      */
     private function filterResponse(Response $response, Request $request, $type)
@@ -316,9 +316,8 @@ class HttpKernel extends BaseHttpKernel
         return $event->getResponse();
     }
 
-
     /**
-     * [Copied from BaseHttpKernel]
+     * [Copied from BaseHttpKernel].
      *
      * @param Request $request
      * @param int     $type
@@ -329,16 +328,17 @@ class HttpKernel extends BaseHttpKernel
         $this->requestStack->pop();
     }
 
-
     /**
-     * [Copied from BaseHttpKernel]
+     * [Copied from BaseHttpKernel].
      *
-     * @param  \Exception                $e
-     * @param  Request                   $request
-     * @param  int                       $type
-     * @return Response
+     * @param \Exception $e
+     * @param Request    $request
+     * @param int        $type
+     *
      * @throws \Exception
      * @throws \InvalidArgumentException
+     *
+     * @return Response
      */
     private function handleException(\Exception $e, $request, $type)
     {
@@ -379,11 +379,11 @@ class HttpKernel extends BaseHttpKernel
         }
     }
 
-
     /**
-     * [Copied from BaseHttpKernel]
+     * [Copied from BaseHttpKernel].
      *
      * @param $var
+     *
      * @return string
      */
     private function varToString($var)
@@ -398,7 +398,7 @@ class HttpKernel extends BaseHttpKernel
                 $a[] = sprintf('%s => %s', $k, $this->varToString($v));
             }
 
-            return sprintf("Array(%s)", implode(', ', $a));
+            return sprintf('Array(%s)', implode(', ', $a));
         }
 
         if (is_resource($var)) {

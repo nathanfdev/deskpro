@@ -1,0 +1,6 @@
+ticket_id;field_name;value
+144;Text field;My text value
+144;Textarea field;My multi-line\n value
+145;Multiple-select box field;Choice 1 > Choice 2
+145;Multiple-select box field;Choice 4 > Choice 5
+145;Hidden field;some value

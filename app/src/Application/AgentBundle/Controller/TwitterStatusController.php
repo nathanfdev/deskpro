@@ -1,38 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -41,7 +37,7 @@ use Application\DeskPRO\Entity\TwitterAccountStatus;
 use Application\DeskPRO\Entity\TwitterAccountStatusNote;
 
 /**
- * Handles creating/editing of Twitter Accounts
+ * Handles creating/editing of Twitter Accounts.
  */
 class TwitterStatusController extends AbstractController
 {
@@ -54,7 +50,7 @@ class TwitterStatusController extends AbstractController
 
     public function listUnassignedAction($account_id, $group, $group_value)
     {
-        $account = $this->_getAccountOr404($account_id);
+        $account    = $this->_getAccountOr404($account_id);
         $conditions = array('assigned' => false);
 
         return $this->_renderList('agent_twitter_unassigned_list', $account, 'inbox', $group, $group_value, $conditions);
@@ -64,7 +60,7 @@ class TwitterStatusController extends AbstractController
     {
         $this->person->loadHelper('AgentTeam');
 
-        $account = $this->_getAccountOr404($account_id);
+        $account    = $this->_getAccountOr404($account_id);
         $conditions = array('agent_team' => $this->person->getAgentTeamIds());
 
         return $this->_renderList('agent_twitter_team_list', $account, 'all', $group, $group_value, $conditions);
@@ -72,7 +68,7 @@ class TwitterStatusController extends AbstractController
 
     public function listMineAction($account_id, $group, $group_value)
     {
-        $account = $this->_getAccountOr404($account_id);
+        $account    = $this->_getAccountOr404($account_id);
         $conditions = array('agent' => $this->person->id);
 
         return $this->_renderList('agent_twitter_mine_list', $account, 'all', $group, $group_value, $conditions);
@@ -104,7 +100,6 @@ class TwitterStatusController extends AbstractController
             case 'type': return array('type' => $group_value);
             default: return array();
         }
-
     }
 
     protected function _adjustPage($count, $page = null, $per_page = null)
@@ -140,21 +135,23 @@ class TwitterStatusController extends AbstractController
     protected function _renderList($route, TwitterAccount $account, $type, $group = null, $group_value = null, array $conditions = array())
     {
         $sort_by_date = 'desc';
-        $conditions = array_merge(array(
+        $conditions   = array_merge(array(
             'include_archived' => $this->in->getBool('include.archived'),
-            'include_self' => $this->in->getBool('include.account'),
-            'type' => $type
+            'include_self'     => $this->in->getBool('include.account'),
+            'type'             => $type,
         ), $this->_getGroupConditions($group, $group_value), $conditions);
 
         $page = $this->in->getUint('page');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
         $per_page = TwitterAccount::DEFAULT_LIMIT;
 
         /** @var $statusRepository \Application\DeskPRO\EntityRepository\TwitterAccountStatus */
         $statusRepository = $this->em->getRepository('DeskPRO:TwitterAccountStatus');
 
         $total_count = $statusRepository->countTimelineForAccount($account, $conditions);
-        $page = $this->_adjustPage($total_count, $page, $per_page);
+        $page        = $this->_adjustPage($total_count, $page, $per_page);
 
         $statuses = $statusRepository->getTimelineForAccount($account, $conditions, $sort_by_date, $page);
 
@@ -162,16 +159,16 @@ class TwitterStatusController extends AbstractController
 
         $parameters = array(
             'twitter_list_route' => $route,
-            'group' => $group,
-            'group_value' => $group_value,
-            'account' => $account,
-            'statuses' => $statuses,
-            'person' => $this->getPerson(),
-            'sort_by_date' => $sort_by_date,
-            'total_count' => $total_count,
-            'per_page' => $per_page,
-            'page' => $page,
-            'showing_to' => min($total_count, $page * $per_page)
+            'group'              => $group,
+            'group_value'        => $group_value,
+            'account'            => $account,
+            'statuses'           => $statuses,
+            'person'             => $this->getPerson(),
+            'sort_by_date'       => $sort_by_date,
+            'total_count'        => $total_count,
+            'per_page'           => $per_page,
+            'page'               => $page,
+            'showing_to'         => min($total_count, $page * $per_page),
         );
 
         if ($this->in->getBool('last')) {
@@ -190,9 +187,11 @@ class TwitterStatusController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @return \Application\DeskPRO\Entity\TwitterAccountStatus
+     * @param int $id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return \Application\DeskPRO\Entity\TwitterAccountStatus
      */
     protected function _getAccountStatusOr404($id, $check_perm = '')
     {
@@ -215,9 +214,9 @@ class TwitterStatusController extends AbstractController
 
             $status = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getByTwitterStatusAndAccount($twitter_status->id, $account);
             if (!$status) {
-                $status = new TwitterAccountStatus();
-                $status->status = $twitter_status;
-                $status->account = $account;
+                $status              = new TwitterAccountStatus();
+                $status->status      = $twitter_status;
+                $status->account     = $account;
                 $status->status_type = null; // this ensures it only appears where requested
 
                 App::getOrm()->persist($status);
@@ -242,10 +241,12 @@ class TwitterStatusController extends AbstractController
     /**
      * Check account security.
      *
-     * @param  integer                                                          $id The account id.
-     * @return \Application\DeskPRO\Entity\TwitterAccount
+     * @param int $id The account id.
+     *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return \Application\DeskPRO\Entity\TwitterAccount
      */
     protected function _getAccountOr404($id)
     {
@@ -263,29 +264,29 @@ class TwitterStatusController extends AbstractController
         $account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'));
 
         $parents = array();
-        $status = $account_status->status->in_reply_to_status;
-        $i = 0;
+        $status  = $account_status->status->in_reply_to_status;
+        $i       = 0;
         while ($status && $i < 10) {
             $parents[] = $status;
-            $status = $status->in_reply_to_status;
-            $i++;
+            $status    = $status->in_reply_to_status;
+            ++$i;
         }
 
         return $this->render('AgentBundle:TwitterStatus:status-overlay.html.twig', array(
             'account_status' => $account_status,
-            'parents' => array_reverse($parents)
+            'parents'        => array_reverse($parents),
         ));
     }
 
     public function ajaxMassSaveAction()
     {
         $account_status_ids = $this->in->getCleanValueArray('result_ids', 'int', 'discard');
-        $account_statuses = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getByIds($account_status_ids);
-        $action = $this->in->getString('action');
+        $account_statuses   = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getByIds($account_status_ids);
+        $action             = $this->in->getString('action');
 
         $twitter_service = new \Application\DeskPRO\Service\Twitter();
 
-        foreach ($account_statuses AS $account_status) {
+        foreach ($account_statuses as $account_status) {
             /** @var $account_status TwitterAccountStatus */
             if (!$account_status->account->hasPerson($this->person)) {
                 continue;
@@ -305,22 +306,22 @@ class TwitterStatusController extends AbstractController
                     break;
 
                 case 'reply':
-                    $text = $this->in->getString('text');
-                    $type = $this->in->getValue('type');
+                    $text  = $this->in->getString('text');
+                    $type  = $this->in->getValue('type');
                     $split = $this->in->getBool('split');
                     if (strlen($text)) {
                         if ($type == 'public' && strpos($text, '@'.$account_status->status->user->screen_name) === false) {
-                            $text = '@' . $account_status->status->user->screen_name . ' ' . $text;
+                            $text = '@'.$account_status->status->user->screen_name.' '.$text;
                         }
 
                         $twitter_service = new \Application\DeskPRO\Service\Twitter();
-                        $response = $twitter_service->sendAccountMessage($type, $text, $split, $account_status->account, $account_status);
+                        $response        = $twitter_service->sendAccountMessage($type, $text, $split, $account_status->account, $account_status);
 
                         if ($response['new_account_statuses']) {
-                            foreach ($response['new_account_statuses'] AS $new_account_status) {
+                            foreach ($response['new_account_statuses'] as $new_account_status) {
                                 $reply_html = $this->renderView('AgentBundle:TwitterStatus:reply-li.html.twig', array(
                                     'account_status' => $account_status,
-                                    'reply' => $new_account_status
+                                    'reply'          => $new_account_status,
                                 ));
                                 $html[] = $reply_html;
 
@@ -365,7 +366,7 @@ class TwitterStatusController extends AbstractController
         $this->em->flush();
 
         return $this->createJsonResponse(array(
-            'success' => true
+            'success' => true,
         ));
     }
 
@@ -375,7 +376,7 @@ class TwitterStatusController extends AbstractController
     public function ajaxSaveNoteAction()
     {
         $error = null;
-        $html = null;
+        $html  = null;
 
         $account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'), 'note');
 
@@ -384,7 +385,7 @@ class TwitterStatusController extends AbstractController
 
         $notify_agent_ids = array();
         preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $this->in->getString('text'), $matches, PREG_SET_ORDER);
-        foreach ($matches AS $match) {
+        foreach ($matches as $match) {
             $notify_agent_ids[] = $match[1];
         }
 
@@ -392,10 +393,10 @@ class TwitterStatusController extends AbstractController
         $text = str_replace('&nbsp;', ' ', $text);
         $text = html_entity_decode($text);
 
-        $note = new TwitterAccountStatusNote();
+        $note                   = new TwitterAccountStatusNote();
         $note['account_status'] = $account_status;
-        $note['person'] = $this->person;
-        $note['text'] = $text;
+        $note['person']         = $this->person;
+        $note['text']           = $text;
 
         $em = App::getOrm();
         $em->persist($note);
@@ -405,7 +406,7 @@ class TwitterStatusController extends AbstractController
 
         $html = $this->renderView('AgentBundle:TwitterStatus:note-li.html.twig', array(
             'account_status' => $account_status,
-            'note' => $note
+            'note'           => $note,
         ));
 
         $this->_insertUpdatedTweetClientMessage($account_status,
@@ -413,25 +414,25 @@ class TwitterStatusController extends AbstractController
         );
 
         if ($notify_agent_ids) {
-            $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+            $agents     = $this->em->getRepository('DeskPRO:Person')->getAgents();
             $agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
 
             $notify_agent_ids = array_unique($notify_agent_ids);
-            foreach ($notify_agent_ids AS $k => $agent_id) {
+            foreach ($notify_agent_ids as $k => $agent_id) {
                 if ($agent_id == $this->person->id || !isset($agents[$agent_id])) {
                     unset($notify_agent_ids[$k]);
                 }
             }
             if ($notify_agent_ids) {
-                $notify_text = $this->person->getDisplayName() . " alerted you in a note for {{tw-$account_status->id}}: " . $account_status->status->getClippedText(70);
+                $notify_text = $this->person->getDisplayName()." alerted you in a note for {{tw-$account_status->id}}: ".$account_status->status->getClippedText(70);
                 $agent_chat->sendAgentMessage($notify_text, $notify_agent_ids);
             }
         }
 
         return $this->createJsonResponse(array(
             'success' => $success,
-            'error' => $error,
-            'html' => $html
+            'error'   => $error,
+            'html'    => $html,
         ));
     }
 
@@ -441,20 +442,20 @@ class TwitterStatusController extends AbstractController
     public function ajaxSaveRetweetAction()
     {
         $account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'), 'retweet');
-        $account = $account_status->account;
+        $account        = $account_status->account;
 
-        $success = true;
-        $error = null;
-        $retweet = false;
-        $html = array();
+        $success  = true;
+        $error    = null;
+        $retweet  = false;
+        $html     = array();
         $archived = false;
 
         if ($this->in->getBool('retweet')) {
             if (!$account_status->retweeted) {
                 $twitter_service = new \Application\DeskPRO\Service\Twitter();
-                $output = $twitter_service->sendRetweet($account, $account_status);
-                $success = $output['success'];
-                $error = $output['error'];
+                $output          = $twitter_service->sendRetweet($account, $account_status);
+                $success         = $output['success'];
+                $error           = $output['error'];
                 if (!$error) {
                     $retweet = true;
                 }
@@ -464,15 +465,15 @@ class TwitterStatusController extends AbstractController
             $text = $this->in->getString('text');
             if (strlen($text)) {
                 $twitter_service = new \Application\DeskPRO\Service\Twitter();
-                $output = $twitter_service->sendAccountMessage('public', $text, true, $account, $account_status);
-                $success = $output['success'];
-                $error = $output['error'];
+                $output          = $twitter_service->sendAccountMessage('public', $text, true, $account, $account_status);
+                $success         = $output['success'];
+                $error           = $output['error'];
 
                 if ($output['new_account_statuses']) {
-                    foreach ($output['new_account_statuses'] AS $new_account_status) {
+                    foreach ($output['new_account_statuses'] as $new_account_status) {
                         $reply_html[] = $this->renderView('AgentBundle:TwitterStatus:reply-li.html.twig', array(
                             'account_status' => $account_status,
-                            'reply' => $new_account_status
+                            'reply'          => $new_account_status,
                         ));
                         $html[] = $reply_html;
 
@@ -488,11 +489,11 @@ class TwitterStatusController extends AbstractController
         }
 
         return $this->createJsonResponse(array(
-            'success' => $success,
-            'error' => $error,
-            'retweet' => $retweet,
-            'html' => $html,
-            'archived' => $archived
+            'success'  => $success,
+            'error'    => $error,
+            'retweet'  => $retweet,
+            'html'     => $html,
+            'archived' => $archived,
         ));
     }
 
@@ -502,13 +503,13 @@ class TwitterStatusController extends AbstractController
     public function ajaxSaveUnretweetAction()
     {
         $account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'), 'retweet');
-        $account = $account_status->account;
+        $account        = $account_status->account;
 
         $twitter_service = new \Application\DeskPRO\Service\Twitter();
-        $output = $twitter_service->unsendRetweet($account, $account_status);
+        $output          = $twitter_service->unsendRetweet($account, $account_status);
 
         $success = $output['success'];
-        $error = $output['error'];
+        $error   = $output['error'];
 
         return $this->createJsonResponse(array('success' => $success, 'error' => $error));
     }
@@ -519,31 +520,31 @@ class TwitterStatusController extends AbstractController
     public function ajaxSaveReplyAction()
     {
         $success = false;
-        $error = null;
-        $html = array();
+        $error   = null;
+        $html    = array();
 
         $account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'));
-        $account = $account_status->account;
+        $account        = $account_status->account;
 
-        $text = $this->in->getString('text');
-        $type = $this->in->getValue('type');
-        $split = $this->in->getBool('split');
+        $text     = $this->in->getString('text');
+        $type     = $this->in->getValue('type');
+        $split    = $this->in->getBool('split');
         $archived = false;
         if (strlen($text)) {
             if ($type == 'public' && strpos($text, '@'.$account_status->status->user->screen_name) === false) {
-                $text = '@' . $account_status->status->user->screen_name . ' ' . $text;
+                $text = '@'.$account_status->status->user->screen_name.' '.$text;
             }
 
             $twitter_service = new \Application\DeskPRO\Service\Twitter();
-            $response = $twitter_service->sendAccountMessage($type, $text, $split, $account, $account_status);
+            $response        = $twitter_service->sendAccountMessage($type, $text, $split, $account, $account_status);
 
             $success = $response['success'];
-            $error = $response['error'];
+            $error   = $response['error'];
             if ($response['new_account_statuses']) {
-                foreach ($response['new_account_statuses'] AS $new_account_status) {
+                foreach ($response['new_account_statuses'] as $new_account_status) {
                     $reply_html = $this->renderView('AgentBundle:TwitterStatus:reply-li.html.twig', array(
                         'account_status' => $account_status,
-                        'reply' => $new_account_status
+                        'reply'          => $new_account_status,
                     ));
                     $html[] = $reply_html;
 
@@ -560,10 +561,10 @@ class TwitterStatusController extends AbstractController
         }
 
         return $this->createJsonResponse(array(
-            'success' => $success,
-            'html' => $html,
-            'error' => $error,
-            'archived' => $archived
+            'success'  => $success,
+            'html'     => $html,
+            'error'    => $error,
+            'archived' => $archived,
         ));
     }
 
@@ -592,10 +593,10 @@ class TwitterStatusController extends AbstractController
         $account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'), 'delete');
 
         $twitter_service = new \Application\DeskPRO\Service\Twitter();
-        $output = $twitter_service->deleteStatus($account_status->account, $account_status);
+        $output          = $twitter_service->deleteStatus($account_status->account, $account_status);
 
         $success = $output['success'];
-        $error = $output['error'];
+        $error   = $output['error'];
 
         return $this->createJsonResponse(array('success' => $success, 'error' => $error));
     }
@@ -622,13 +623,13 @@ class TwitterStatusController extends AbstractController
             }
 
             return $this->createJsonResponse(array(
-                'success' => true,
-                'error' => null,
-                'parsed_text' => $account_status->status->long->getParsedText())
+                'success'     => true,
+                'error'       => null,
+                'parsed_text' => $account_status->status->long->getParsedText(), )
             );
         } else {
             return $this->render('AgentBundle:TwitterStatus:edit-overlay.html.twig', array(
-                'long' => $account_status->status->long
+                'long' => $account_status->status->long,
             ));
         }
     }
@@ -636,13 +637,13 @@ class TwitterStatusController extends AbstractController
     public function ajaxSaveFavoriteAction()
     {
         $account_status = $this->_getAccountStatusOr404($this->in->getValue('account_status_id'), 'favorite');
-        $account = $account_status->account;
+        $account        = $account_status->account;
 
         $twitter_service = new \Application\DeskPRO\Service\Twitter();
-        $output = $twitter_service->setFavorite($account, $account_status, $this->in->getBool('favorite'));
+        $output          = $twitter_service->setFavorite($account, $account_status, $this->in->getBool('favorite'));
 
         $success = $output['success'];
-        $error = $output['error'];
+        $error   = $output['error'];
 
         return $this->createJsonResponse(array('success' => $success, 'error' => $error));
     }
@@ -687,15 +688,15 @@ class TwitterStatusController extends AbstractController
 
     protected function _updateStatusAssignment(TwitterAccountStatus $account_status, $assign, $flush = true)
     {
-        $old_agent_id = 0;
+        $old_agent_id      = 0;
         $old_agent_team_id = 0;
 
         if ($account_status->agent) {
-            $old_assign = 'agent:' . $account_status->agent->id;
-            $old_agent_id = $account_status->agent->id;;
+            $old_assign   = 'agent:'.$account_status->agent->id;
+            $old_agent_id = $account_status->agent->id;
         } elseif ($account_status->agent_team) {
-            $old_assign = 'agent_team:' . $account_status->agent_team->id;
-            $old_agent_team_id = $account_status->agent_team->id;;
+            $old_assign        = 'agent_team:'.$account_status->agent_team->id;
+            $old_agent_team_id = $account_status->agent_team->id;
         } else {
             $old_assign = '';
         }
@@ -708,7 +709,7 @@ class TwitterStatusController extends AbstractController
                 $account_status->setAgentTeamId($id);
             }
         } else {
-            $account_status->agent = null;
+            $account_status->agent      = null;
             $account_status->agent_team = null;
         }
 
@@ -718,9 +719,9 @@ class TwitterStatusController extends AbstractController
         }
 
         if ($account_status->agent) {
-            $new_assignment = 'agent:' . $account_status->agent->getId();
+            $new_assignment = 'agent:'.$account_status->agent->getId();
         } elseif ($account_status->agent_team) {
-            $new_assignment = 'agent_team:' . $account_status->agent_team->getId();
+            $new_assignment = 'agent_team:'.$account_status->agent_team->getId();
         } else {
             $new_assignment = '';
         }
@@ -728,14 +729,14 @@ class TwitterStatusController extends AbstractController
         if ($new_assignment != $old_assign) {
             $this->_insertUpdatedTweetClientMessage($account_status,
                 array(
-                    'change_assignment' => $new_assignment,
+                    'change_assignment'  => $new_assignment,
                     'assignment_picture' => ($account_status->agent
                         ? $account_status->agent->getPictureUrl(16)
                         : $this->generateUrl('serve_default_picture', array('s' => 16, 'size-fit' => 1), true)
                     ),
-                    'old_assignment' => $old_assign,
-                    'old_agent_id' => $old_agent_id,
-                    'old_agent_team_id' => $old_agent_team_id
+                    'old_assignment'    => $old_assign,
+                    'old_agent_id'      => $old_agent_id,
+                    'old_agent_team_id' => $old_agent_team_id,
                 )
             );
 

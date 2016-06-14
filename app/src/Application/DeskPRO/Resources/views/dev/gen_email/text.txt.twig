@@ -1,0 +1,25 @@
+Date: {{ "now"|date('r') }}
+From: {{ from_line }}
+To: {{ to_email }}
+Message-ID: <{{ uid }}@test-message>
+Subject: {{ subject }}
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+{% if is_bounce %}X-Is-Bounce: 1
+{% endif %}
+
+{{ message }}
+
+{% if as_reply %}
+  {%- if as_agent %}
+    === {{ phrase('agent.emails.reply_above_line') }} [https://www.deskpro.com/go/reply] ===
+    {% if app.getSetting('core_tickets.email_reply_as_note') %}
+    --- Your reply will be added as a private agent note
+    {% else %}
+    --- Your reply will be sent to the user {{ person.getDisplayContact }}
+    {% endif %}
+
+
+  {% endif %}
+  (#{{ access_code }})
+{% endif %}

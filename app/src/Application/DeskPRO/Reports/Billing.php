@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\App;
@@ -58,9 +56,9 @@ class Billing
         $this->in         = App::getContainer()->getIn();
     }
 
-
     /**
-     * @param  string      $id
+     * @param string $id
+     *
      * @return bool|string
      */
     public function getRenderedResult($id)
@@ -80,9 +78,9 @@ class Billing
         return $results;
     }
 
-
     /**
      * @param $id
+     *
      * @return bool
      */
     public function getById($id)
@@ -96,12 +94,12 @@ class Billing
         return $reports[$id];
     }
 
-
     /**
-     * @param              $query
-     * @param              $renderer
-     * @param  bool        $error
-     * @param  array       $params
+     * @param       $query
+     * @param       $renderer
+     * @param bool  $error
+     * @param array $params
+     *
      * @return bool|string
      */
     public function renderQuery($query, $renderer, &$error = false, array $params = array())
@@ -112,16 +110,16 @@ class Billing
             $statement = $compiler->compile($query, $params);
 
             return $statement->getRenderer($renderer)->render();
-        } catch(DpqlException $e) {
+        } catch (DpqlException $e) {
             $error = $e->getMessage();
 
             return false;
         }
     }
 
-
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return array
      */
     public function getParamsInput($name = 'params')
@@ -136,7 +134,7 @@ class Billing
             ksort($params);
         } elseif ($params) {
             $newParams = array();
-            foreach (explode(',', $params) AS $k => $v) {
+            foreach (explode(',', $params) as $k => $v) {
                 $newParams[$k + 1] = $v;
             }
             $params = $newParams;
@@ -147,7 +145,6 @@ class Billing
         return $params;
     }
 
-
     /**
      * @return array
      */
@@ -155,18 +152,29 @@ class Billing
     {
         $currency = addslashes(App::getSetting('core_tickets.billing_currency'));
 
+        $fields      = App::getContainer()->getBillingFieldManager()->getFields();
+        $select_bits = array();
+        foreach ($fields as $f) {
+            $select_bits[] = 'ticket_charges.custom_data['.$f->getId().'] AS \''.addslashes($f->getTitle()).'\'';
+        }
+
+        $select_bits = implode(', ', $select_bits);
+        if ($select_bits) {
+            $select_bits = $select_bits.', ';
+        }
+
         $output = array(
-            'list-charges-date'                      => array(
+            'list-charges-date' => array(
                 'title' => 'List of charges <1:date group, default: today>',
                 'query' => "
                         DISPLAY TABLE
-                        SELECT TOTAL(TIME_LENGTH(ticket_charges.charge_time)) AS 'Time', TOTAL(FORMAT(ticket_charges.amount, 'number', 2)) AS 'Amount ($currency)', ticket_charges.agent, ticket_charges.date_created, ticket_charges.comment, ticket_charges.ticket
+                        SELECT TOTAL(TIME_LENGTH(ticket_charges.charge_time)) AS 'Time', TOTAL(FORMAT(ticket_charges.amount, 'number', 2)) AS 'Amount ($currency)', $select_bits ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP%
                         ORDER BY ticket_charges.date_created
-                    "
+                    ",
             ),
-            'total-charges-per-day-date'             => array(
+            'total-charges-per-day-date' => array(
                 'title' => 'Total [charges] per day <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
@@ -174,9 +182,9 @@ class Billing
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP%
                         GROUP BY DATE(ticket_charges.date_created) AS 'Date'
-                    "
+                    ",
             ),
-            'total-amount-charges-per-day-date'      => array(
+            'total-amount-charges-per-day-date' => array(
                 'title' => 'Total [amount charges] per day <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -184,9 +192,9 @@ class Billing
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.amount > 0
                         GROUP BY DATE(ticket_charges.date_created) AS 'Date'
-                    "
+                    ",
             ),
-            'total-time-charges-per-day-date'        => array(
+            'total-time-charges-per-day-date' => array(
                 'title' => 'Total [time charges] per day <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -194,9 +202,9 @@ class Billing
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.charge_time > 0
                         GROUP BY DATE(ticket_charges.date_created) AS 'Date'
-                    "
+                    ",
             ),
-            'total-charges-person-date'              => array(
+            'total-charges-person-date' => array(
                 'title' => 'Total [charges] per person <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
@@ -204,9 +212,9 @@ class Billing
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP%
                         GROUP BY ticket_charges.person
-                    "
+                    ",
             ),
-            'total-amount-charges-person-date'       => array(
+            'total-amount-charges-person-date' => array(
                 'title' => 'Total [amount charges] per person <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -214,9 +222,9 @@ class Billing
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.amount > 0
                         GROUP BY ticket_charges.person
-                    "
+                    ",
             ),
-            'total-time-charges-person-date'         => array(
+            'total-time-charges-person-date' => array(
                 'title' => 'Total [time charges] per person <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -224,20 +232,20 @@ class Billing
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.charge_time > 0
                         GROUP BY ticket_charges.person
-                    "
+                    ",
             ),
-            'list-charges-person-date'               => array(
+            'list-charges-person-date' => array(
                 'title' => 'List of charges per person <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
-                        SELECT TOTAL(TIME_LENGTH(ticket_charges.charge_time)) AS 'Time', TOTAL(FORMAT(ticket_charges.amount, 'number', 2)) AS 'Amount ($currency)', ticket_charges.agent, ticket_charges.date_created, ticket_charges.comment, ticket_charges.ticket
+                        SELECT TOTAL(TIME_LENGTH(ticket_charges.charge_time)) AS 'Time', TOTAL(FORMAT(ticket_charges.amount, 'number', 2)) AS 'Amount ($currency)', $select_bits ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP%
                         SPLIT BY ticket_charges.person
                         ORDER BY ticket_charges.date_created
-                    "
+                    ",
             ),
-            'total-charges-organization-date'        => array(
+            'total-charges-organization-date' => array(
                 'title' => 'Total [charges] per organization <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
@@ -245,7 +253,7 @@ class Billing
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.organization_id <> NULL
                         GROUP BY ticket_charges.organization
-                    "
+                    ",
             ),
             'total-amount-charges-organization-date' => array(
                 'title' => 'Total [amount charges] per organization <1:date group, default: this_month>',
@@ -255,9 +263,9 @@ class Billing
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.organization_id <> NULL AND ticket_charges.amount > 0
                         GROUP BY ticket_charges.organization
-                    "
+                    ",
             ),
-            'total-time-charges-organization-date'   => array(
+            'total-time-charges-organization-date' => array(
                 'title' => 'Total [time charges] per organization <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -265,20 +273,20 @@ class Billing
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.organization_id <> NULL AND ticket_charges.charge_time > 0
                         GROUP BY ticket_charges.organization
-                    "
+                    ",
             ),
-            'list-charges-organization-date'         => array(
+            'list-charges-organization-date' => array(
                 'title' => 'List of charges per organization <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
-                        SELECT TOTAL(TIME_LENGTH(ticket_charges.charge_time)) AS 'Time', TOTAL(FORMAT(ticket_charges.amount, 'number', 2)) AS 'Amount ($currency)', ticket_charges.agent, ticket_charges.date_created, ticket_charges.comment, ticket_charges.ticket
+                        SELECT TOTAL(TIME_LENGTH(ticket_charges.charge_time)) AS 'Time', TOTAL(FORMAT(ticket_charges.amount, 'number', 2)) AS 'Amount ($currency)', $select_bits ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.organization_id <> NULL
                         SPLIT BY ticket_charges.organization
                         ORDER BY ticket_charges.date_created
-                    "
+                    ",
             ),
-            'total-charges-agent-date'               => array(
+            'total-charges-agent-date' => array(
                 'title' => 'Total [charges] per agent <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
@@ -286,9 +294,9 @@ class Billing
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP%
                         GROUP BY ticket_charges.agent
-                    "
+                    ",
             ),
-            'total-amount-charges-agent-date'        => array(
+            'total-amount-charges-agent-date' => array(
                 'title' => 'Total [amount charges] per agent <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -296,9 +304,9 @@ class Billing
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.amount > 0
                         GROUP BY ticket_charges.agent
-                    "
+                    ",
             ),
-            'total-time-charges-agent-date'          => array(
+            'total-time-charges-agent-date' => array(
                 'title' => 'Total [time charges] per agent <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE, BAR
@@ -306,24 +314,24 @@ class Billing
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP% AND ticket_charges.charge_time > 0
                         GROUP BY ticket_charges.agent
-                    "
+                    ",
             ),
-            'list-charges-agent-date'                => array(
+            'list-charges-agent-date' => array(
                 'title' => 'List of charges per agent <1:date group, default: this_month>',
                 'query' => "
                         DISPLAY TABLE
-                        SELECT TOTAL(TIME_LENGTH(ticket_charges.charge_time)) AS 'Time', TOTAL(FORMAT(ticket_charges.amount, 'number', 2)) AS 'Amount ($currency)', ticket_charges.date_created, ticket_charges.comment, ticket_charges.ticket
+                        SELECT TOTAL(TIME_LENGTH(ticket_charges.charge_time)) AS 'Time', TOTAL(FORMAT(ticket_charges.amount, 'number', 2)) AS 'Amount ($currency)', $select_bits ticket_charges.date_created, ticket_charges.ticket
                         FROM ticket_charges
                         WHERE ticket_charges.date_created = %1:DATE_GROUP%
                         SPLIT BY ticket_charges.agent
                         ORDER BY ticket_charges.date_created
-                    "
+                    ",
             ),
         );
 
         $tempReport = new ReportWidget();
 
-        foreach ($output AS $id => &$report) {
+        foreach ($output as $id => &$report) {
             $report['id'] = $id;
 
             $tempReport->title           = $report['title'];

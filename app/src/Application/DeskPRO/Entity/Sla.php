@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -48,7 +47,7 @@ use Orb\Util\WorkHoursSet;
 use Orb\Util\WorkHoursSetAll;
 
 /**
- * Entity for an SLA record
+ * Entity for an SLA record.
  *
  * @property int $id
  * @property string $title
@@ -78,7 +77,6 @@ class Sla extends DomainObject
      * The unique ID.
      *
      * @var int
-     *
      */
     protected $id = null;
 
@@ -88,7 +86,7 @@ class Sla extends DomainObject
     protected $title = '';
 
     /**
-     * Type of SLA - first_response, resolution, waiting_time
+     * Type of SLA - first_response, resolution, waiting_time.
      *
      * @var string
      */
@@ -96,7 +94,7 @@ class Sla extends DomainObject
 
     /**
      * Whether active all the time (all) or during work hours only (work_hours)
-     * or use the default ticket-wide settings (default)
+     * or use the default ticket-wide settings (default).
      *
      * @var string
      */
@@ -105,41 +103,41 @@ class Sla extends DomainObject
     /**
      * When the work day starts. This is stored as the number of seconds after 00:00:00.
      *
-     * @var integer
+     * @var int
      */
     protected $work_start;
 
     /**
      * When the work day ends. This is stored as the number of seconds after 00:00:00.
      *
-     * @var integer
+     * @var int
      */
     protected $work_end;
 
     /**
      * Array of work days, stored with keys corresponding to day numbers. Values are true.
-     * 0 = Sunday, 6 = Saturday (same as PHP, easy to convert to MySQL which is 1 = Sunday, 7 = Saturday)
+     * 0 = Sunday, 6 = Saturday (same as PHP, easy to convert to MySQL which is 1 = Sunday, 7 = Saturday).
      *
      * @var array
      */
     protected $work_days = array();
 
     /**
-     * Timezone for work hours/days to be considered in
+     * Timezone for work hours/days to be considered in.
      *
      * @var string
      */
     protected $work_timezone;
 
     /**
-     * List of work holidays
+     * List of work holidays.
      *
      * @var array
      */
     protected $work_holidays = array();
 
     /**
-     * Controls how the SLA is applied to tickets: all, auto, manual
+     * Controls how the SLA is applied to tickets: all, auto, manual.
      *
      * @var string
      */
@@ -200,17 +198,17 @@ class Sla extends DomainObject
         $this->fail_actions = new TriggerActions();
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function propertyChangedCallback($prop, $old, $new)
     {
         $this->_calc = null;
     }
 
-
     /**
+     * Set work days (ISO-8601, 1=monday, 7=sunday).
+     *
      * @param array $days
      * @param bool  $raw
      */
@@ -226,21 +224,20 @@ class Sla extends DomainObject
 
             $this->work_days = $days;
         }
+
         $this->_onPropertyChanged('work_days', $old, $this->work_days);
     }
 
-
     /**
-     * Resets holidays
+     * Resets holidays.
      */
     public function resetHolidays()
     {
         $this->setModelField('work_holidays', array());
     }
 
-
     /**
-     * Removes a single holiday by index
+     * Removes a single holiday by index.
      *
      * @param $key
      */
@@ -251,14 +248,14 @@ class Sla extends DomainObject
         $this->_onPropertyChanged('work_holidays', $old, $this->work_holidays);
     }
 
-
     /**
-     * Adds a holiday
+     * Adds a holiday.
      *
      * @param $name
      * @param $day
      * @param $month
-     * @param  null       $year
+     * @param null $year
+     *
      * @return int|string
      */
     public function addHoliday($name, $day, $month, $year = null)
@@ -274,17 +271,17 @@ class Sla extends DomainObject
         if (!$this->work_holidays) {
             $this->work_holidays = array();
         }
-        foreach ($this->work_holidays AS $k => $existing) {
+        foreach ($this->work_holidays as $k => $existing) {
             if ($existing['day'] == $day && $existing['month'] == $month && $existing['year'] === $year) {
                 return $k;
             }
         }
 
         $this->work_holidays[] = array(
-            'name' => $name,
-            'day' => intval($day),
+            'name'  => $name,
+            'day'   => intval($day),
             'month' => intval($month),
-            'year' => $year
+            'year'  => $year,
         );
 
         $this->_onPropertyChanged('work_holidays', $old, $this->work_holidays);
@@ -292,9 +289,8 @@ class Sla extends DomainObject
         return count($this->work_holidays) - 1;
     }
 
-
     /**
-     * Gets an array of holidays, sorted by date
+     * Gets an array of holidays, sorted by date.
      *
      * @return array
      */
@@ -320,7 +316,6 @@ class Sla extends DomainObject
 
         return $holidays;
     }
-
 
     /**
      * @return \Orb\Util\WorkHoursSet
@@ -350,8 +345,8 @@ class Sla extends DomainObject
                 $work_hours = new OptionsArray($work_hours);
 
                 return new WorkHoursSet(
-                    $work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_minute', 0) * 60,
-                    $work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_minute', 0) * 60,
+                    $work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_min', 0) * 60,
+                    $work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_min', 0) * 60,
                     $work_hours->get('work_days', array(1, 2, 3, 4, 5)),
                     $work_hours->get('timezone', 'UTC'),
                     $work_hours->get('holidays', array())
@@ -362,13 +357,14 @@ class Sla extends DomainObject
         }
     }
 
-
     /**
      * @return SlaCalculator
      */
     public function getCalculator()
     {
-        if ($this->_calc !== null) return $this->_calc;
+        if ($this->_calc !== null) {
+            return $this->_calc;
+        }
 
         $this->_calc = new SlaCalculator(
             $this->sla_type,
@@ -380,16 +376,15 @@ class Sla extends DomainObject
         return $this->_calc;
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
-        $data = parent::toApiData($primary, $deep, $visited);
-        $data['apply_terms']   = $this->apply_terms->exportToArray();
-        $data['warn_actions']  = $this->warn_actions->exportToArray();
-        $data['fail_actions']  = $this->fail_actions->exportToArray();
+        $data                 = parent::toApiData($primary, $deep, $visited);
+        $data['apply_terms']  = $this->apply_terms->exportToArray();
+        $data['warn_actions'] = $this->warn_actions->exportToArray();
+        $data['fail_actions'] = $this->fail_actions->exportToArray();
 
         return $data;
     }
@@ -406,7 +401,7 @@ class Sla extends DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Sla';
 
         $metadata->setPrimaryTable(array(
-            'name' => 'slas'
+            'name' => 'slas',
         ));
         $metadata->mapField(array(
             'columnName' => 'id',

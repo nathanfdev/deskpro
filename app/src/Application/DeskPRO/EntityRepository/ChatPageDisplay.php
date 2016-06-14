@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -46,17 +45,17 @@ class ChatPageDisplay extends AbstractEntityRepository
                 $department_context = $department_context['id'];
             }
 
-            return $this->getEntityManager()->createQuery("
+            return $this->getEntityManager()->createQuery('
                 SELECT d
                 FROM DeskPRO:ChatPageDisplay d
                 WHERE d.zone = :zone AND d.department = :department
-            ")->setParameters(array('zone' => $zone, 'department' => $department_context))->execute();
+            ')->setParameters(array('zone' => $zone, 'department' => $department_context))->execute();
         } else {
-            return $this->getEntityManager()->createQuery("
+            return $this->getEntityManager()->createQuery('
                 SELECT d
                 FROM DeskPRO:ChatPageDisplay d
                 WHERE d.zone = :zone
-            ")->setParameters(array('zone' => $zone))->execute();
+            ')->setParameters(array('zone' => $zone))->execute();
         }
     }
 
@@ -67,7 +66,7 @@ class ChatPageDisplay extends AbstractEntityRepository
 
             return $d;
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
@@ -99,7 +98,7 @@ class ChatPageDisplay extends AbstractEntityRepository
         // then we're auto-generating a 'create' form for everything there is in the system (oh, lawdy!)
         if ($page_data === null) {
             $is_resolved = true;
-            $page_data = $this->generateFullSectionData($zone);
+            $page_data   = $this->generateFullSectionData($zone);
         }
 
         return $page_data;
@@ -116,27 +115,27 @@ class ChatPageDisplay extends AbstractEntityRepository
 
         if ($zone == 'create') {
             $page_data[] = array(
-                'id' => 'person_name',
-                'field_type' => 'person_name'
+                'id'         => 'person_name',
+                'field_type' => 'person_name',
             );
             $page_data[] = array(
-                'id' => 'person_email',
-                'field_type' => 'person_email'
+                'id'         => 'person_email',
+                'field_type' => 'person_email',
             );
         }
 
         $page_data[] = array(
-            'id' => 'chat_department',
-            'field_type' => 'chat_department'
+            'id'         => 'chat_department',
+            'field_type' => 'chat_department',
         );
 
         // Custom fields
         $fields = App::getSystemService('chat_fields_manager')->getFields();
         foreach ($fields as $f) {
             $page_data[] = array(
-                'id' => 'chat_field['.$f->getId().']',
+                'id'         => 'chat_field['.$f->getId().']',
                 'field_type' => 'chat_field',
-                'field_id' => $f->getId()
+                'field_id'   => $f->getId(),
             );
         }
 
@@ -146,24 +145,24 @@ class ChatPageDisplay extends AbstractEntityRepository
     public function getSectionData($department, $zone, $section = 'default')
     {
         if ($department === null) {
-            $data = App::getDb()->fetchColumn("
+            $data = App::getDb()->fetchColumn('
                 SELECT data
                 FROM chat_page_display
                 WHERE department_id IS NULL AND zone = ? AND section = ?
-            ", array($zone, $section));
+            ', array($zone, $section));
         } else {
             if (is_array($department) || is_object($department)) {
                 $department = $department['id'];
             }
-            $data = App::getDb()->fetchColumn("
+            $data = App::getDb()->fetchColumn('
                 SELECT data
                 FROM chat_page_display
                 WHERE department_id = ? AND zone = ? AND section = ?
-            ", array($department, $zone, $section));
+            ', array($department, $zone, $section));
         }
 
         if (!$data) {
-            return null;
+            return;
         }
 
         if ($data) {
@@ -182,13 +181,14 @@ class ChatPageDisplay extends AbstractEntityRepository
         $d = null;
         try {
             $d = $this->findOneBy(array('department' => $department ? $department['id'] : null, 'zone' => $zone, 'section' => $section));
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         if (!$d) {
-            $d = new ChatPageDisplayEntity();
+            $d             = new ChatPageDisplayEntity();
             $d->department = $department;
-            $d['zone'] = $zone;
-            $d['section'] = $section;
+            $d['zone']     = $zone;
+            $d['section']  = $section;
         }
 
         return $d;

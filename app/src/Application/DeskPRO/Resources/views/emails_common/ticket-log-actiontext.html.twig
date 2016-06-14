@@ -6,8 +6,9 @@
 		{%- elseif status == 'fail' -%}{{ phrase('agent.general.failed') }}{%- endif -%}
 	{%- endmacro -%}
 	{% if log.action_type == 'free' %}
-		{% if log.details.message_html %}
-			{{ log.details.message_html }}
+		{% set _html = log.details.getMessageHtml(false) %}
+		{% if _html %}
+			{{ _html }}
 		{% else %}
 			{{ log.details.message }}
 		{% endif %}
@@ -174,7 +175,7 @@
 		<span style="{{ layout.actiontext_style('old-val') }}">{{log.details.old_language_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span style="{{ layout.actiontext_style('new-val') }}">{{log.details.new_language_title|default(phrase('agent.general.none'))}}</span>
 	{% elseif log.action_type == 'changed_organization' %}
 		<span style="{{ layout.actiontext_style('type') }}">{{ phrase('agent.general.organization') }}</span> {{ phrase('agent.tickets.changed_from') }}
-		<span style="{{ layout.actiontext_style('old-val') }}">{{log.details.old_org_name|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span style="{{ layout.actiontext_style('new-val') }}">{{log.details.new_org_name|default(phrase('agent.general.none'))}}</span>
+		<span style="{{ layout.actiontext_style('old-val') }}">{{log.details.old_organization_name|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span style="{{ layout.actiontext_style('new-val') }}">{{log.details.new_organization_name|default(phrase('agent.general.none'))}}</span>
 	{% elseif log.action_type == 'changed_subject' %}
 		{% if log.details.old_subject %}
 			{{ phrase('agent.tickets.subject_changed_from') }} <span style="{{ layout.actiontext_style('old-val') }}">{{ log.details.old_subject }}</span> {{ phrase('agent.tickets.changed_to') }} <span style="{{ layout.actiontext_style('new-val') }}">{{ log.details.new_subject }}</span>
@@ -228,6 +229,11 @@
 				</div>
 			</div>
 		{% endif %}
+	{% elseif log.action_type == 'message_note_status' %}
+		Message #{{ log.details.message_id }}
+		{% if log.details.is_agent_note %}was converted into a note
+		{% else %}was converted into a reply
+		{% endif %}
 	{% elseif log.action_type == 'changed_priority' %}
 		<span style="{{ layout.actiontext_style('type') }}">{{ phrase('agent.general.priority') }}</span> {{ phrase('agent.tickets.changed_from') }}
 		<span style="{{ layout.actiontext_style('old-val') }}">{{log.details.old_priority_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span style="{{ layout.actiontext_style('new-val') }}">{{log.details.new_priority_title|default(phrase('agent.general.none'))}}</span>
@@ -265,7 +271,7 @@
 		{% if log.details.is_hold %}{{ phrase('agent.tickets.ticket_put_on_hold') }}{% else %}{{ phrase('agent.tickets.ticket_removed_from_hold') }}{% endif %}
 	{% elseif log.action_type == 'changed_custom_field' %}
 		<span style="{{ layout.actiontext_style('type') }}">{{ log.details.field_name }}</span> {{ phrase('agent.tickets.changed_from') }}
-		<span style="{{ layout.actiontext_style('old-val') }}">{{ log.details.value_before|default('(no value)')|raw }}</span> {{ phrase('agent.tickets.changed_to') }} <span style="{{ layout.actiontext_style('new-val') }}">{{ log.details.value_after|default('(no value)')|raw }}</span>
+		<span style="{{ layout.actiontext_style('old-val') }}">{{ log.details.value_before|default('(no value)') }}</span> {{ phrase('agent.tickets.changed_to') }} <span style="{{ layout.actiontext_style('new-val') }}">{{ log.details.value_after|default('(no value)') }}</span>
 	{% elseif log.action_type == 'changed_slas' %}
 		{% if log.details.added %}
 			<div>
@@ -283,12 +289,16 @@
 				{% endfor %}
 			</div>
 		{% endif %}
+	{% elseif log.action_type == 'changed_sla_status' %}
+		SLA <span class="new-val" title="Sla #{{ log.details.sla_id }}">{{ log.details.sla_title }}</span>
+		status changed from <span style="{{ layout.actiontext_style('old-val') }}">{{ log.details.old_status }}</span>
+		to <span style="{{ layout.actiontext_style('new-val') }}">{{ log.details.new_status }}</span>
 	{% elseif log.action_type == 'ticket_sla_added' %}
 		{{ phrase('agent.tickets.log_sla_added') }}: <span style="{{ layout.actiontext_style('new-val') }}">{{ log.details.title }}</span>
 		{% if log.details.sla_status != 'ok' or log.details.is_completed %}
 			({% if log.details.sla_status != 'ok' %}{{ _self.get_sla_status(log.details.sla_status) }}{% endif %}{% if log.details.sla_status != 'ok' and log.details.is_completed %}, {% endif %}{% if log.details.is_completed %}{{ phrase('agent.general.requirements_complete') }}{% endif %})
 		{% endif %}
-	{% elseif log.action_type == 'ticket_sla_removed' %}
+	{% elseif log.action_type == 'ticket_sla_removed' %}m
 		{{ phrase('agent.tickets.log_sla_removed') }}: <span style="{{ layout.actiontext_style('new-val') }}">{{ log.details.title }}</span>
 		{% if log.details.sla_status != 'ok' or log.details.is_completed %}
 			({% if log.details.sla_status != 'ok' %}{{ _self.get_sla_status(log.details.sla_status) }}{% endif %}{% if log.details.sla_status != 'ok' and log.details.is_completed %}, {% endif %}{% if log.details.is_completed %}{{ phrase('agent.general.requirements_complete') }}{% endif %})
@@ -448,6 +458,20 @@
 		</ul>
 	{% elseif log.action_type == 'feedback_rating' %}
 		User set feedback rating to {{ log.details.rating }}
+	{% elseif log.action_type == 'deleted_attachments' %}
+		<span class="new-val expand" data-set=".set-detail">
+			Deleted {{ log.details.deleted|length }} attachment{% if log.details.deleted|length > 1 %}s{% endif %}:
+		</span>
+
+		<div class="expand-set set-detail" style="display: none">
+			<ul>
+				{% for del in log.details.deleted %}
+					<li>
+						{{ del.filename }} ({{ del.filesize }}) from message #{{ del.message }}
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
 	{% elseif not hide_unknow%}
 		Unknown action type: {{ log.action_type }}
 	{% endif %}

@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category EmailGateway
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category EmailGateway
+ */
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
@@ -77,20 +76,19 @@ class ProcessAgentFwd extends ProcessAbstract
      */
     public function __construct(EmailAccount $account, Person $person, TicketIncomingEmail $ticket_email)
     {
-        $this->account       = $account;
-        $this->person        = $person;
-        $this->ticket_email  = $ticket_email;
-        $this->reader        = $ticket_email->reader;
-        $this->cleaner       = App::get('deskpro.core.input_cleaner');
+        $this->account      = $account;
+        $this->person       = $person;
+        $this->ticket_email = $ticket_email;
+        $this->reader       = $ticket_email->reader;
+        $this->cleaner      = App::get('deskpro.core.input_cleaner');
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function run()
     {
-        $this->logMessage('[TicketGatewayProcessor] Forwarded ticket by ' . $this->person->getId() . ' ' . $this->person->getDisplayContact());
+        $this->logMessage('[TicketGatewayProcessor] Forwarded ticket by '.$this->person->getId().' '.$this->person->getDisplayContact());
 
         $executor_context = $this->getTicketManager()->createAgentExecutorContext(
             $this->person,
@@ -105,18 +103,27 @@ class ProcessAgentFwd extends ProcessAbstract
         # Read in email props and create cutter
         #------------------------------
 
-        $email_info = array();
+        $email_info            = array();
         $email_info['subject'] = $this->reader->getSubject()->subject;
         if ($email_info['body'] = $this->ticket_email->email_body_text) {
             $email_info['body_is_html'] = false;
+            $from_html                  = false;
         } else {
-            $email_info['body'] = $this->ticket_email->email_body_html;
+            $email_info['body']         = $this->ticket_email->email_body_html;
             $email_info['body_is_html'] = false;
-            $email_info['body'] = Strings::html2Text($email_info['body']);
+            $email_info['body']         = Strings::html2Text($email_info['body']);
+            $from_html                  = true;
         }
 
-        $cutter = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+        $cutter     = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
         $fwd_cutter = new ForwardCutter($email_info['body'], $email_info['body_is_html'], $cutter);
+
+        // Cutter failed on text part,
+        // try again on HTML we manually convert to text (sometimes works!)
+        if (!$fwd_cutter->isValid() && !$from_html) {
+            $email_info['body'] = \Orb\Util\Strings::html2Text($this->ticket_email->email_body_html);
+            $fwd_cutter         = new \Application\DeskPRO\EmailGateway\Cutter\ForwardCutter($email_info['body'], $email_info['body_is_html'], $cutter);
+        }
 
         if (!$fwd_cutter->isValid()) {
             $this->logMessage('[TicketGatewayProcessor] Invalid forward');
@@ -144,7 +151,7 @@ class ProcessAgentFwd extends ProcessAbstract
             $message->setTemplate('DeskPRO:emails_agent:error-invalid-forward.html.twig', array(
                 'subject' => $this->reader->getSubject()->getSubjectUtf8(),
                 'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                'error'   => $this->error
+                'error'   => $this->error,
             ));
             $message->setTo($this->reader->getFromAddress()->getEmail());
             $message->attach(\Swift_Attachment::newInstance(
@@ -159,7 +166,7 @@ class ProcessAgentFwd extends ProcessAbstract
 
             App::getMailer()->send($message);
 
-            return null;
+            return;
         }
 
         $email_info['subject'] = ForwardCutter::cutSubjectForwardPrefix($email_info['subject']);
@@ -174,7 +181,7 @@ class ProcessAgentFwd extends ProcessAbstract
         # Find person
         #------------------------------
 
-        $person_processor = new PersonFromEmailProcessor();
+        $person_processor  = new PersonFromEmailProcessor();
         $person_email_item = $fwd_cutter->getUserEmailItem();
 
         $user = $person_processor->findPerson($person_email_item);
@@ -193,17 +200,17 @@ class ProcessAgentFwd extends ProcessAbstract
             $subject = App::$container->getTranslator()->phrase('user.tickets.no_subject');
         }
 
-        $ticket = $this->getTicketManager()->createTicket();
-        $ticket->subject       = $subject;
-        $ticket->person        = $user;
-        $ticket->status        = 'awaiting_agent';
-        $ticket->email_account = $this->account;
+        $ticket                  = $this->getTicketManager()->createTicket();
+        $ticket->subject         = $subject;
+        $ticket->person          = $user;
+        $ticket->status          = 'awaiting_agent';
+        $ticket->email_account   = $this->account;
         $ticket->creation_system = 'gateway.agent';
 
-        $ticket_message = new TicketMessage($this->reader->getId());
-        $ticket_message->person = $user;
+        $ticket_message                  = new TicketMessage($this->reader->getId());
+        $ticket_message->person          = $user;
         $ticket_message->creation_system = 'gateway.agent';
-        $ticket_message->withNewSubject = $ticket->subject;
+        $ticket_message->withNewSubject  = $ticket->subject;
 
         $body = $fwd_cutter->getForwardedMessage();
         $body = $this->cleanBodyText($body);
@@ -219,20 +226,39 @@ class ProcessAgentFwd extends ProcessAbstract
         $agent_ticket_message = null;
         if ($agent_reply) {
             $this->logMessage('[TicketGatewayProcessor] Adding agent reply');
-            $agent_reply = nl2br(htmlspecialchars($agent_reply, \ENT_QUOTES, 'UTF-8'));
+            $agent_reply = Strings::text2html($agent_reply, 'plaintext-email');
 
             $agent_ticket_message = new TicketMessage($this->reader->getId());
             $agent_ticket_message->date_created->modify('+1 second');
             $agent_ticket_message->person = $this->person;
             $agent_ticket_message->setMessageHtml($agent_reply);
             $agent_ticket_message->creation_system = 'gateway.agent';
+
+            if (isset($this->ticket_email->reply_actions['is_reply'])) {
+                $this->logMessage('is_reply flag is set');
+                $agent_ticket_message->is_agent_note = false;
+            } elseif (isset($this->ticket_email->reply_actions['is_note'])) {
+                $this->logMessage('is_note flag is set');
+                $agent_ticket_message->is_agent_note = true;
+            } elseif (App::getSetting('core_tickets.email_fwd_reply_as_note')) {
+                $this->logMessage('email_fwd_reply_as_note is enabled');
+                $agent_ticket_message->is_agent_note = true;
+            } else {
+                $this->logMessage('email_fwd_reply_as_note is NOT enabled');
+                $agent_ticket_message->is_agent_note = false;
+            }
+
             $ticket->addMessage($agent_ticket_message);
-            $ticket->setStatus('awaiting_user');
+            if ($agent_ticket_message->is_agent_note) {
+                $ticket->setStatus('awaiting_agent');
+            } else {
+                $ticket->setStatus('awaiting_user');
+            }
         }
 
         foreach ($this->processBlobs() as $blob) {
-            $attach = new TicketAttachment();
-            $attach['blob'] = $blob;
+            $attach           = new TicketAttachment();
+            $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
             if (isset($this->inline_blobs[$blob->id])) {
@@ -250,28 +276,28 @@ class ProcessAgentFwd extends ProcessAbstract
         }
 
         if ($id = $ticket_message['email_message_id']) {
-            $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: Checking for dupe message by id: ' . $id);
+            $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: Checking for dupe message by id: '.$id);
 
             if (App::getOrm()->getRepository('DeskPRO:TicketMessage')->getDupeByMessageID($id)) {
-                /** @var $old TicketMessage */
+                /* @var $old TicketMessage */
                 $this->setError('duplicate_message');
-                $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: duplicate message ' . $id);
-                return null;
+                $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: duplicate message '.$id);
+
+                return;
             }
         }
 
-
-        $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: Checking for dupe message: ' . $ticket_message->getMessageHash());
+        $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: Checking for dupe message: '.$ticket_message->getMessageHash());
         if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, null, 10800, $this->getLogger())) {
             $this->setError('duplicate_message');
-            $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: duplicate message ' . $dupe_message->getId());
+            $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: duplicate message '.$dupe_message->getId());
 
             $message = App::getMailer()->createMessage();
             $message->setSuppressAutoreplies(true);
             $message->setTemplate('DeskPRO:emails_agent:error-dupe-forward.html.twig', array(
-                'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-                'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                'error'   => $this->error,
+                'subject'       => $this->reader->getSubject()->getSubjectUtf8(),
+                'name'          => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                'error'         => $this->error,
                 'old_ticket_id' => $dupe_message->ticket->id,
             ));
             $message->setTo($this->reader->getFromAddress()->getEmail());
@@ -287,16 +313,16 @@ class ProcessAgentFwd extends ProcessAbstract
 
             App::getMailer()->send($message);
 
-            return null;
+            return;
         }
 
         $tracker_extras = array(
-            'fwd_via_agent' => $this->person
+            'fwd_via_agent' => $this->person,
         );
-        if ($this->person->getPref("agent_notify_override.forward.email")) {
+        if ($this->person->getPref('agent_notify_override.forward.email')) {
             $tracker_extras['force_notify_email'] = array($this->person->id);
         }
-        if ($this->person->getPref("agent_notify_override.forward.alert")) {
+        if ($this->person->getPref('agent_notify_override.forward.alert')) {
             $tracker_extras['force_notify_alert'] = array($this->person->id);
         }
         $fwd_info = $fwd_cutter->getData();
@@ -305,14 +331,14 @@ class ProcessAgentFwd extends ProcessAbstract
         }
 
         // Handle CC's
-        $fwd_data = $fwd_cutter->getData();
+        $fwd_data  = $fwd_cutter->getData();
         $cc_emails = $this->reader->getDeliveredAddresses();
 
         if ($fwd_data['fwd_cc_addresses']) {
             foreach ($fwd_data['fwd_cc_addresses'] as $e) {
-                $e_a = new EmailAddress();
+                $e_a        = new EmailAddress();
                 $e_a->email = $e['email'];
-                $e_a->name = $e['name'];
+                $e_a->name  = $e['name'];
 
                 $cc_emails[] = $e_a;
             }
@@ -323,8 +349,8 @@ class ProcessAgentFwd extends ProcessAbstract
         #------------------------------
 
         if ($this->ticket_email->reply_actions) {
-            $reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
-            $reply_actions_context = new ReplyActionsContext();
+            $reply_actions_apply           = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
+            $reply_actions_context         = new ReplyActionsContext();
             $reply_actions_context->ticket = $ticket;
             if ($agent_ticket_message) {
                 $reply_actions_context->message = $agent_ticket_message;
@@ -346,7 +372,7 @@ class ProcessAgentFwd extends ProcessAbstract
             }
 
             $this->getTicketManager()->saveTicket($ticket, $executor_context);
-            $this->logMessage('[TicketGatewayProcessor] Created ticket ' . $ticket['id']);
+            $this->logMessage('[TicketGatewayProcessor] Created ticket '.$ticket['id']);
 
             App::getDb()->commit();
         } catch (\Exception $e) {
@@ -362,9 +388,11 @@ class ProcessAgentFwd extends ProcessAbstract
     }
 
     /**
-     * @param  Attachment $has_eml_attach
-     * @return Ticket
+     * @param Attachment $has_eml_attach
+     *
      * @throws \Exception
+     *
+     * @return Ticket
      */
     private function runNewForwardedEmailAsAttachTicket(Attachment $has_eml_attach)
     {
@@ -378,11 +406,11 @@ class ProcessAgentFwd extends ProcessAbstract
         $executor_context->getVars()->set('ticket_email', $this->ticket_email);
 
         $user_raw_source = $has_eml_attach->getFileContents();
-        $user_reader = new EzcReader();
+        $user_reader     = new EzcReader();
         $user_reader->setRawSource($user_raw_source);
         $user_reader->setProperty('email_source', $user_raw_source);
 
-        $this->logMessage('[TicketGatewayProcessor] Forwarded attached ticket by ' . $this->person->getId() . ' ' . $this->person->getDisplayContact());
+        $this->logMessage('[TicketGatewayProcessor] Forwarded attached ticket by '.$this->person->getId().' '.$this->person->getDisplayContact());
 
         if ($this->reader->getBodyHtml() && $this->reader->getBodyHtml()->body_utf8) {
             $this->logMessage('[TicketGatewayProcessor] (Agent) Reading html');
@@ -393,12 +421,11 @@ class ProcessAgentFwd extends ProcessAbstract
             $agent_reply = $this->cleaner->clean($agent_reply, 'html_email');
             $agent_reply = Strings::trimHtmlAdvanced($agent_reply);
             $agent_reply = $this->cleaner->clean($agent_reply, 'html_email_postclean');
-
         } else {
             $this->logMessage('[TicketGatewayProcessor] (Agent) Reading text');
             $agent_reply = trim($this->reader->getBodyText()->body_utf8);
             if ($agent_reply) {
-                $agent_reply = nl2br(@htmlspecialchars($agent_reply, \ENT_QUOTES, 'UTF-8'));
+                $agent_reply = Strings::text2html($agent_reply, 'plaintext-email');
             }
         }
 
@@ -435,7 +462,7 @@ class ProcessAgentFwd extends ProcessAbstract
             $message->setTemplate('DeskPRO:emails_agent:error-invalid-forward.html.twig', array(
                 'subject' => $this->reader->getSubject()->getSubjectUtf8(),
                 'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                'error'   => $this->error
+                'error'   => $this->error,
             ));
             $message->setTo($this->reader->getFromAddress()->getEmail());
             $message->attach(\Swift_Attachment::newInstance(
@@ -450,7 +477,7 @@ class ProcessAgentFwd extends ProcessAbstract
 
             App::getMailer()->send($message);
 
-            return null;
+            return;
         }
 
         #------------------------------
@@ -475,17 +502,17 @@ class ProcessAgentFwd extends ProcessAbstract
             $subject = App::$container->getTranslator()->phrase('user.tickets.no_subject');
         }
 
-        $ticket = $this->getTicketManager()->createTicket();
-        $ticket->subject       = $subject;
-        $ticket->person        = $user;
-        $ticket->status        = 'awaiting_agent';
-        $ticket->email_account = $this->account;
+        $ticket                  = $this->getTicketManager()->createTicket();
+        $ticket->subject         = $subject;
+        $ticket->person          = $user;
+        $ticket->status          = 'awaiting_agent';
+        $ticket->email_account   = $this->account;
         $ticket->creation_system = 'gateway.agent';
 
-        $ticket_message = new TicketMessage($user_reader->getId());
-        $ticket_message->person = $user;
+        $ticket_message                  = new TicketMessage($user_reader->getId());
+        $ticket_message->person          = $user;
         $ticket_message->creation_system = 'gateway.agent';
-        $ticket_message->withNewSubject = $ticket->subject;
+        $ticket_message->withNewSubject  = $ticket->subject;
 
         if ($user_reader->getBodyHtml() && $user_reader->getBodyHtml()->body_utf8) {
             $this->logMessage('[TicketGatewayProcessor] (User) Reading html');
@@ -498,7 +525,7 @@ class ProcessAgentFwd extends ProcessAbstract
             $body = $this->cleaner->clean($body, 'html_email_postclean');
         } else {
             $this->logMessage('[TicketGatewayProcessor] (User) Reading text');
-            $body = nl2br(@htmlspecialchars(trim($user_reader->getBodyText()->body_utf8), \ENT_QUOTES, 'UTF-8'));
+            $body = Strings::text2html($user_reader->getBodyText()->body_utf8, 'plaintext-email');
         }
         $ticket_message->setMessageHtml($body);
 
@@ -518,11 +545,30 @@ class ProcessAgentFwd extends ProcessAbstract
             $agent_ticket_message->person = $this->person;
             $agent_ticket_message->setMessageHtml($agent_reply);
             $agent_ticket_message->creation_system = 'gateway.agent';
+
+            if (isset($this->ticket_email->reply_actions['is_reply'])) {
+                $this->logMessage('is_reply flag is set');
+                $agent_ticket_message->is_agent_note = false;
+            } elseif (isset($this->ticket_email->reply_actions['is_note'])) {
+                $this->logMessage('is_note flag is set');
+                $agent_ticket_message->is_agent_note = true;
+            } elseif (App::getSetting('core_tickets.email_fwd_reply_as_note')) {
+                $this->logMessage('email_fwd_reply_as_note is enabled');
+                $agent_ticket_message->is_agent_note = true;
+            } else {
+                $this->logMessage('email_fwd_reply_as_note is NOT enabled');
+                $agent_ticket_message->is_agent_note = false;
+            }
+
             $ticket->addMessage($agent_ticket_message);
-            $ticket->setStatus('awaiting_user');
+            if ($agent_ticket_message->is_agent_note) {
+                $ticket->setStatus('awaiting_agent');
+            } else {
+                $ticket->setStatus('awaiting_user');
+            }
         }
 
-        $processed_blobs = array();
+        $processed_blobs     = array();
         $processed_blobs_cid = array();
         foreach ($user_reader->getAttachments() as $attach) {
             $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
@@ -539,8 +585,8 @@ class ProcessAgentFwd extends ProcessAbstract
         }
 
         foreach ($processed_blobs as $blob) {
-            $attach = new TicketAttachment();
-            $attach['blob'] = $blob;
+            $attach           = new TicketAttachment();
+            $attach['blob']   = $blob;
             $attach['person'] = $ticket->person;
 
             if (isset($this->inline_blobs[$blob->id])) {
@@ -553,8 +599,8 @@ class ProcessAgentFwd extends ProcessAbstract
         }
 
         foreach ($this->processBlobs($has_eml_attach) as $blob) {
-            $attach = new TicketAttachment();
-            $attach['blob'] = $blob;
+            $attach           = new TicketAttachment();
+            $attach['blob']   = $blob;
             $attach['person'] = $agent_ticket_message ? $agent_ticket_message->person : $ticket->person;
 
             if (isset($this->inline_blobs[$blob->id])) {
@@ -571,17 +617,17 @@ class ProcessAgentFwd extends ProcessAbstract
             App::getOrm()->persist($blob);
         }
 
-        $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) runNewForwardedEmailAsAttachTicket :: Checking for dupe message: ' . $ticket_message->getMessageHash());
+        $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) runNewForwardedEmailAsAttachTicket :: Checking for dupe message: '.$ticket_message->getMessageHash());
         if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, null, 10800, $this->getLogger())) {
             $this->setError('duplicate_message');
-            $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) runNewForwardedEmailAsAttachTicket :: duplicate message ' . $dupe_message->getId());
+            $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) runNewForwardedEmailAsAttachTicket :: duplicate message '.$dupe_message->getId());
 
             $message = App::getMailer()->createMessage();
             $message->setSuppressAutoreplies(true);
             $message->setTemplate('DeskPRO:emails_agent:error-dupe-forward.html.twig', array(
-                'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-                'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                'error'   => $this->error,
+                'subject'       => $this->reader->getSubject()->getSubjectUtf8(),
+                'name'          => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                'error'         => $this->error,
                 'old_ticket_id' => $dupe_message->ticket->id,
             ));
             $message->setTo($this->reader->getFromAddress()->getEmail());
@@ -597,7 +643,7 @@ class ProcessAgentFwd extends ProcessAbstract
 
             App::getMailer()->send($message);
 
-            return null;
+            return;
         }
 
         #------------------------------
@@ -605,8 +651,8 @@ class ProcessAgentFwd extends ProcessAbstract
         #------------------------------
 
         if ($this->ticket_email->reply_actions) {
-            $reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
-            $reply_actions_context = new ReplyActionsContext();
+            $reply_actions_apply           = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
+            $reply_actions_context         = new ReplyActionsContext();
             $reply_actions_context->ticket = $ticket;
             if ($agent_ticket_message) {
                 $reply_actions_context->message = $agent_ticket_message;
@@ -624,7 +670,7 @@ class ProcessAgentFwd extends ProcessAbstract
 
         try {
             $this->getTicketManager()->saveTicket($ticket, $executor_context);
-            $this->logMessage('[TicketGatewayProcessor] Created ticket ' . $ticket['id']);
+            $this->logMessage('[TicketGatewayProcessor] Created ticket '.$ticket['id']);
 
             App::getDb()->commit();
         } catch (\Exception $e) {
@@ -637,12 +683,13 @@ class ProcessAgentFwd extends ProcessAbstract
             'ticket'               => $ticket,
             'ticket_message'       => $ticket_message,
             'agent_ticket_message' => $agent_ticket_message,
-            'user_ticket_message'  => $ticket_message
+            'user_ticket_message'  => $ticket_message,
         );
     }
 
     /**
-     * @param  string $text
+     * @param string $text
+     *
      * @return string
      */
     private function cleanBodyText($text)

@@ -1,52 +1,47 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Kernel;
 
-use Doctrine\DBAL\DBALException;
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
-
 use Application\DeskPRO\App;
+use Doctrine\DBAL\DBALException;
 
 class KernelErrorHandler
 {
-    public static $is_logging = false;
+    public static $is_logging            = false;
     public static $is_handling_exception = false;
-    public static $wrote_log_file = false;
-    public static $wrote_php_log = false;
-    protected static $caught_errors = array();
-    protected static $process_log = array();
-
+    public static $wrote_log_file        = false;
+    public static $wrote_php_log         = false;
+    protected static $caught_errors      = array();
+    protected static $process_log        = array();
 
     /**
      * Add a log line that'll be saved with an error. This is used with things like the gateway, where
@@ -69,13 +64,12 @@ class KernelErrorHandler
     }
 
     /**
-     * Handle an error. Typically used as the error handler with set_error_handler()
+     * Handle an error. Typically used as the error handler with set_error_handler().
      *
-     * @param  int    $errno
-     * @param  string $errstr
-     * @param  string $errfile
-     * @param  string $errline
-     * @return void
+     * @param int    $errno
+     * @param string $errstr
+     * @param string $errfile
+     * @param string $errline
      */
     public static function handleError($errno, $errstr, $errfile, $errline)
     {
@@ -111,12 +105,11 @@ class KernelErrorHandler
             throw $pdo_e;
         }
 
-
         self::logErrorInfo($errinfo);
 
         if ($errinfo['display']) {
             $display_errors = @ini_get('display_errors');
-            if (isset($GLOBALS['DP_IS_IN_CLI']) || $display_errors == "1" || strtolower($display_errors) == "on" || strtolower($display_errors) == "true" || strtolower($display_errors) == "yes") {
+            if (isset($GLOBALS['DP_IS_IN_CLI']) || $display_errors == '1' || strtolower($display_errors) == 'on' || strtolower($display_errors) == 'true' || strtolower($display_errors) == 'yes') {
                 // Prevent outputting of APC warnings
                 // These are logged and a warning about APC is displayed to the admin,
                 // but until that is fixed these warnings themselves can cause issues (e.g., cause JSON results to become invalid)
@@ -126,17 +119,22 @@ class KernelErrorHandler
             }
 
             if (isset($GLOBALS['DP_IS_IN_CLI'])) {
-                if (self::$wrote_log_file) echo "\n(Refer to " . self::$wrote_log_file . " for details)\n";
-                if (self::$wrote_php_log) echo "\n(Refer to the PHP erorr log for details)\n";
+                if (self::$wrote_log_file) {
+                    echo "\n(Refer to ".self::$wrote_log_file." for details)\n";
+                }
+                if (self::$wrote_php_log) {
+                    echo "\n(Refer to the PHP error log for details)\n";
+                }
             }
         }
 
         try {
             if (!empty($GLOBALS['DP_ERR_LOGGER'])) {
                 $logger = $GLOBALS['DP_ERR_LOGGER'];
-                $logger->log($errinfo['summary'] . "\n" . $errinfo['trace'], 'ERR', array('errinfo' => $errinfo));
+                $logger->log($errinfo['summary']."\n".$errinfo['trace'], 'ERR', array('errinfo' => $errinfo));
             }
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         if ($errinfo['die']) {
             self::tryCleanup();
@@ -144,12 +142,10 @@ class KernelErrorHandler
         }
     }
 
-
     /**
      * Handle logging of an exception.
      *
-     * @param  \Exception $exception
-     * @return void
+     * @param \Exception $exception
      */
     public static function handleException(\Exception $exception, $exit = true)
     {
@@ -159,6 +155,9 @@ class KernelErrorHandler
 
         // Dont log 404's
         if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            return;
+        }
+        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException) {
             return;
         }
         if ($exception instanceof \Symfony\Component\Routing\Exception\MethodNotAllowedException) {
@@ -171,7 +170,7 @@ class KernelErrorHandler
             return;
         }
 
-        $GLOBALS['DP_LAST_ERROR'] = array('type' => 'exception', 'exception' => get_class($exception), 'message' => $exception->getMessage(), 'file' => $exception->getFile(), 'line' => $exception->getFile());
+        $GLOBALS['DP_LAST_ERROR'] = array('type' => 'exception', 'exception' => get_class($exception), 'message' => substr($exception->getMessage(), 0, 500), 'file' => $exception->getFile(), 'line' => $exception->getFile());
 
         self::$is_handling_exception = true;
 
@@ -182,25 +181,32 @@ class KernelErrorHandler
             echo $errinfo['summary'];
 
             if (isset($GLOBALS['DP_IS_IN_CLI'])) {
-                if (self::$wrote_log_file) echo "\n(Refer to " . self::$wrote_log_file . " for details)\n";
-                else echo "\n(Refer to the PHP erorr log for details)\n";
+                if (self::$wrote_log_file) {
+                    echo "\n(Refer to ".self::$wrote_log_file." for details)\n";
+                } else {
+                    echo "\n(Refer to the PHP error log for details)\n";
+                }
             }
         }
 
         try {
             if (!empty($GLOBALS['DP_ERR_LOGGER'])) {
                 $logger = $GLOBALS['DP_ERR_LOGGER'];
-                $logger->log($errinfo['summary'] . "\n" . $errinfo['trace'], 'ERR', array('errinfo' => $errinfo));
+                $logger->log($errinfo['summary']."\n".$errinfo['trace'], 'ERR', array('errinfo' => $errinfo));
             }
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         if ($errinfo['die'] && $exit) {
-
             self::tryCleanup();
 
-            $code = (int)$errinfo['exception']->getCode();
-            if ($code > 255) $code = 255;
-            if ($code == 0) $code = 1;
+            $code = (int) $errinfo['exception']->getCode();
+            if ($code > 255) {
+                $code = 255;
+            }
+            if ($code == 0) {
+                $code = 1;
+            }
             exit($code);
         }
 
@@ -217,15 +223,17 @@ class KernelErrorHandler
         static $got_unique_ids = array();
 
         if ($unique_id && defined('DP_BUILD_TIME') && !defined('DP_BUILDING')) {
-            if (isset($got_unique_ids[$unique_id])) return;
+            if (isset($got_unique_ids[$unique_id])) {
+                return;
+            }
             $got_unique_ids[$unique_id] = true;
 
             try {
-                $got = App::getDb()->fetchColumn("
+                $got = App::getDb()->fetchColumn('
                     SELECT data
                     FROM install_data
                     WHERE build = ? AND name = ?
-                ", array(DP_BUILD_TIME, 'err_' . $unique_id));
+                ', array(DP_BUILD_TIME, 'err_'.$unique_id));
                 if ($got) {
                     return;
                 }
@@ -233,9 +241,10 @@ class KernelErrorHandler
                 App::getDb()->replace('install_data', array(
                     'data'  => '1',
                     'build' => DP_BUILD_TIME,
-                    'name'  => 'err_' . $unique_id
+                    'name'  => 'err_'.$unique_id,
                 ));
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         $einfo = self::getExceptionInfo($exception);
@@ -256,13 +265,13 @@ class KernelErrorHandler
                 if ($db->isTransactionActive()) {
                     $db->rollback();
                 }
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
     }
 
     /**
      * @static
-     *
      */
     public static function genSessionName()
     {
@@ -270,19 +279,19 @@ class KernelErrorHandler
 
         list($time, $ms) = explode(' ', microtime());
 
-        return self::_encodeNum($time) . self::_encodeNum($ms) . self::_encodeNum(++$counter);
+        return self::_encodeNum($time).self::_encodeNum($ms).self::_encodeNum(++$counter);
     }
 
     protected static function _encodeNum($num)
     {
         $alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-        $arr = array();
+        $arr  = array();
         $base = strlen($alphabet);
 
         while ($num) {
-            $rem = $num % $base;
-            $num = (int)($num / $base);
+            $rem   = $num % $base;
+            $num   = (int) ($num / $base);
             $arr[] = $alphabet[$rem];
         }
 
@@ -294,13 +303,18 @@ class KernelErrorHandler
     /**
      * Takes care of logging an error. $errinfo is an info array from getExceptionInfo or getErrorInfo.
      *
-     * @param  array $errinfo
-     * @return void
+     * @param array $errinfo
      */
     public static function logErrorInfo(array $errinfo)
     {
-        if (self::$is_logging) return;
+        if (self::$is_logging) {
+            return;
+        }
         self::$is_logging = true;
+
+        if (!empty($GLOBALS['DP_CONTAINER_IS_BUILDING'])) {
+            return;
+        }
 
         if (!class_exists('Application\DeskPRO\App')) {
             return;
@@ -315,7 +329,8 @@ class KernelErrorHandler
                 if (App::getContainer() && App::getContainer()->getSettingsHandler()) {
                     App::getContainer()->getSettingsHandler()->setSetting($errinfo['set_setting'], 1);
                 }
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         self::logToFile($errinfo);
@@ -357,19 +372,20 @@ class KernelErrorHandler
 
         $str = array();
         if ($errinfo['type'] == 'exception') {
-            $e = $errinfo['exception'];
-            $line = sprintf("DeskPRO Exception: %s:%s (%s line %s): %s", $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $e->getMessage());
-            $str[] = sprintf("Exception: %s %s\n", $e->getCode(), $e->getMessage());
-            $str[] = sprintf("\tType: %s\n", $errinfo['exception_type']);
-            $str[] = sprintf("\tDate: %s (Running time to error: %s)\n", date('Y-m-d H:i:s'), $errinfo['time_to_error']);
-            $str[] = sprintf("\tBuild: %s\n", defined('DP_BUILD_NUM') ? DP_BUILD_NUM : defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0');
+            $e       = $errinfo['exception'];
+            $message = substr($e->getMessage(), 0, 1000);
+            $line    = sprintf('DeskPRO Exception: %s:%s (%s line %s): %s', $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $message);
+            $str[]   = sprintf("Exception: %s %s\n", $e->getCode(), $message);
+            $str[]   = sprintf("\tType: %s\n", $errinfo['exception_type']);
+            $str[]   = sprintf("\tDate: %s (Running time to error: %s)\n", date('Y-m-d H:i:s'), $errinfo['time_to_error']);
+            $str[]   = sprintf("\tBuild: %s\n", defined('DP_BUILD_NUM') ? DP_BUILD_NUM : defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0');
             if (!empty($errinfo['url'])) {
                 $str[] = sprintf("\tURL: %s\n", $errinfo['url']);
                 $str[] = sprintf("\tUserAgent: %s\n", $errinfo['client_user_agent']);
             }
             $str[] = sprintf("\t-> [#00] %s:%d\n", $errinfo['errfile'], $errinfo['errline']);
         } else {
-            $line = sprintf("DeskPRO Error: %s (%s line %s): %s", $errinfo['errname'], $errinfo['errfile'], $errinfo['errline'], $errinfo['errstr']);
+            $line  = sprintf('DeskPRO Error: %s (%s line %s): %s', $errinfo['errname'], $errinfo['errfile'], $errinfo['errline'], $errinfo['errstr']);
             $str[] = sprintf("Error: %s\n", $errinfo['errstr']);
             $str[] = sprintf("\tType: %s\n", $errinfo['errname']);
             $str[] = sprintf("\tDate: %s (Running time to error: %s)\n", date('Y-m-d H:i:s'), $errinfo['time_to_error']);
@@ -404,7 +420,7 @@ class KernelErrorHandler
         $str .= "\n";
 
         // Prefix each line for easier parsing
-        $str = preg_replace('#^#m', "<DP_LOG:{$errinfo['session_name']}> ", $str);
+        $str  = preg_replace('#^#m', "<DP_LOG:{$errinfo['session_name']}> ", $str);
         $line = preg_replace('#^#m', "<DP_LOG:{$errinfo['session_name']}> ", $line);
 
         // First line of the log in the logfile must be DP_LOG.BEGIN, as that is used for the
@@ -416,16 +432,15 @@ class KernelErrorHandler
 
         // Always write error line to standard error log
         if (defined('DPC_IS_CLOUD') && defined('DPC_SITE_DOMAIN')) {
-            $line = "[" . DPC_SITE_DOMAIN . "] " . $line;
+            $line = '['.DPC_SITE_DOMAIN.'] '.$line;
         }
         @error_log($line, 0);
 
-        if (function_exists('dp_get_log_dir') && dp_get_log_dir() && ($fh = @fopen(dp_get_log_dir() . '/error.log', 'a')) !== false) {
-
+        if (function_exists('dp_get_log_dir') && dp_get_log_dir() && ($fh = @fopen(dp_get_log_dir().'/error.log', 'a')) !== false) {
             $written = @fwrite($fh, $str);
 
             if ($written) {
-                self::$wrote_log_file = dp_get_log_dir() . '/error.log';
+                self::$wrote_log_file = dp_get_log_dir().'/error.log';
 
                 // Max 30MB
                 $stat = @fstat($fh);
@@ -435,7 +450,7 @@ class KernelErrorHandler
             }
 
             @fclose($fh);
-            @chmod(dp_get_log_dir() . '/error.log', 0777);
+            @chmod(dp_get_log_dir().'/error.log', 0777);
         }
 
         $throttle_id = 'email_error';
@@ -451,9 +466,8 @@ class KernelErrorHandler
             && function_exists('dp_should_throttle_action')
             && !dp_should_throttle_action($throttle_id, 300)
         ) {
-
             if (isset($errinfo['exception']) && ($errinfo['exception'] instanceof \PDOException || $errinfo['exception'] instanceof DBALException)) {
-                $line = "There has been a MySQL error: " . $errinfo['exception']->getMessage();
+                $line = 'There has been a MySQL error: '.substr($errinfo['exception']->getMessage(), 0, 500);
             }
 
             $fallback_send = true;
@@ -479,8 +493,8 @@ class KernelErrorHandler
                     $message->setBody($email_str, 'text/html');
 
                     if (isset($errinfo['attach_logs']) && $errinfo['attach_logs']) {
-                        if (is_file(dp_get_log_dir() . '/error.log')) {
-                            $file = @file_get_contents(dp_get_log_dir() . '/error.log');
+                        if (is_file(dp_get_log_dir().'/error.log')) {
+                            $file = @file_get_contents(dp_get_log_dir().'/error.log');
                             if (isset($file[3670016])) {
                                 $file = substr($file, -3670016);
                             }
@@ -488,7 +502,7 @@ class KernelErrorHandler
                             $filetype = 'text/plain';
 
                             if (function_exists('gzencode')) {
-                                $file = gzencode($file);
+                                $file     = gzencode($file);
                                 $filename = 'error.log.gz';
                                 $filetype = 'application/gzip';
                             }
@@ -500,8 +514,8 @@ class KernelErrorHandler
                             ));
                         }
 
-                        if (is_file(dp_get_log_dir() . '/cli-phperr.log')) {
-                            $file = @file_get_contents(dp_get_log_dir() . '/cli-phperr.log');
+                        if (is_file(dp_get_log_dir().'/cli-phperr.log')) {
+                            $file = @file_get_contents(dp_get_log_dir().'/cli-phperr.log');
                             if (isset($file[3670016])) {
                                 $file = substr($file, -3670016);
                             }
@@ -509,7 +523,7 @@ class KernelErrorHandler
                             $filetype = 'text/plain';
 
                             if (function_exists('gzencode')) {
-                                $file = gzencode($file);
+                                $file     = gzencode($file);
                                 $filename = 'cli-phperr.log.gz';
                                 $filetype = 'application/gzip';
                             }
@@ -522,10 +536,11 @@ class KernelErrorHandler
                         }
                     }
 
-                    if (App::getMailer()->sendNow($message)) {
+                    if (App::getMailer()->send($message)) {
                         $fallback_send = false;
                     }
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
 
             if ($fallback_send) {
@@ -537,67 +552,69 @@ class KernelErrorHandler
     /**
      * Gets a standard error info array from an exception.
      *
-     * @param  \Exception $exception
+     * @param \Exception $exception
+     *
      * @return array
      */
     public static function getExceptionInfo(\Exception $exception)
     {
         $errno   = $exception->getCode();
-        $errstr  = self::stripPathPrefix($exception->getMessage());
+        $errstr  = substr(self::stripPathPrefix($exception->getMessage()), 0, 500);
         $errfile = self::stripPathPrefix($exception->getFile());
         $errline = $exception->getLine();
 
         $errfile_hash     = self::getFilehash($exception->getFile());
         $errfile_modified = self::isFileModified($exception->getFile(), $errfile_hash);
 
-        $backtrace = $exception->getTrace();
-        $trace = self::formatBacktrace($backtrace);
+        $backtrace    = $exception->getTrace();
+        $trace        = self::formatBacktrace($backtrace);
         $context_data = '';
 
         if (isset($exception->_dp_query)) {
-            $errstr .= ' -- Query: ' . substr($exception->_dp_query, 0, 2000);
+            $errstr .= ' -- Query: '.substr($exception->_dp_query, 0, 2000);
 
-            $context_data .= 'Query: ' . substr($exception->_dp_query, 0, 2000);
+            $context_data .= 'Query: '.substr($exception->_dp_query, 0, 2000);
 
             if (!empty($exception->_dp_query_params)) {
-                $context_data .= "\n\n" . self::varToString($exception->_dp_query_params);
+                $context_data .= "\n\n".self::varToString($exception->_dp_query_params);
             }
 
             try {
                 if (class_exists('Application\\DeskPRO\\App', false)) {
-                    $status = App::getDb()->fetchAssoc("SHOW ENGINE INNODB STATUS");
+                    $status = App::getDb()->fetchAssoc('SHOW ENGINE INNODB STATUS');
                     if (!empty($status['Status'])) {
                         $status = $status['Status'];
                         $context_data .= "\n\nINNODB STATUS: $status";
                     }
                 }
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         if (!$context_data && isset($exception->_dp_context_data)) {
             $context_data = $exception->_dp_context_data;
         }
 
-        $type = get_class($exception);
+        $type    = get_class($exception);
         $summary = "[EXCEPTION] $type:$errno $errstr ($errfile:$errline)";
 
         $display = true;
-        if (!(error_reporting() & E_ERROR)) {
+        if (!(error_reporting() & E_ERROR) && empty($GLOBALS['DP_CONTAINER_IS_BUILDING'])) {
             $display = false;
         }
 
         $prev = $exception->getPrevious();
         if ($prev) {
             $previnfo = self::getExceptionInfo($prev);
-            $summary .= ", " . $previnfo['summary'];
-            $trace .= "\n\n(Alt Exception)\n{$previnfo['summary']}\n" . $previnfo['trace'];
+            $summary .= ', '.$previnfo['summary'];
+            $trace .= "\n\n(Alt Exception)\n{$previnfo['summary']}\n".$previnfo['trace'];
         }
 
         $last_e = null;
         if (isset($GLOBALS['DP_LAST_ERROR'])) {
-            $last_e = sprintf("[%d] %s (%s line %d)", $GLOBALS['DP_LAST_ERROR']['type'], $GLOBALS['DP_LAST_ERROR']['message'], $GLOBALS['DP_LAST_ERROR']['file'], $GLOBALS['DP_LAST_ERROR']['line']);
+            $last_e = sprintf('[%d] %s (%s line %d)', $GLOBALS['DP_LAST_ERROR']['type'], $GLOBALS['DP_LAST_ERROR']['message'], $GLOBALS['DP_LAST_ERROR']['file'], $GLOBALS['DP_LAST_ERROR']['line']);
         } elseif ($last_e_info = @error_get_last()) {
-            $last_e = sprintf("[%d] %s (%s line %d)", $last_e_info['type'], $last_e_info['message'], $last_e_info['file'], $last_e_info['line']);
+            $last_e = sprintf('[%d] %s (%s line %d)', $last_e_info['type'], $last_e_info['message'], $last_e_info['file'], $last_e_info['line']);
         }
 
         $errinfo = array(
@@ -622,7 +639,7 @@ class KernelErrorHandler
             'process_log'       => implode("\n", self::$process_log),
             'context_data'      => $context_data,
             'error_time'        => microtime(true),
-            'time_to_error'     => defined('DP_START_TIME') ? sprintf("%0.4f", microtime(true) - DP_START_TIME) : 0,
+            'time_to_error'     => defined('DP_START_TIME') ? sprintf('%0.4f', microtime(true) - DP_START_TIME) : 0,
             'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
         );
 
@@ -634,11 +651,12 @@ class KernelErrorHandler
             if (class_exists('Application\\DeskPRO\\App') && App::$container) {
                 try {
                     $url = App::getRequest()->getUri();
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
         }
         if (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
-            $url = 'Command: ' . implode(' ', $_SERVER['argv']);
+            $url = 'Command: '.implode(' ', $_SERVER['argv']);
         }
         $errinfo['url'] = $url;
 
@@ -650,7 +668,8 @@ class KernelErrorHandler
     }
 
     /**
-     * @param  \Exception $exception
+     * @param \Exception $exception
+     *
      * @return bool
      */
     public static function isNoReportException(\Exception $exception)
@@ -762,6 +781,14 @@ class KernelErrorHandler
             if (strpos($exception->getMessage(), 'Can\'t connect to MySQL server on') !== false) {
                 return true;
             }
+
+            if (strpos($exception->getMessage(), 'Can\'t connect to local MySQL server') !== false) {
+                return true;
+            }
+
+            if (strpos($exception->getMessage(), 'No such file or directory') !== false) {
+                return true;
+            }
         }
 
         if ($exception instanceof \InvalidArgumentException && preg_match('#Command ".*?" is not defined#', $exception->getMessage())) {
@@ -785,16 +812,33 @@ class KernelErrorHandler
             return true;
         }
 
+        if ($exception instanceof \Elastica\Exception\Connection\HttpException) {
+            return true;
+        }
+
+        if ($exception instanceof \Application\DeskPRO\JIRA\ApiGeneralException) {
+            return true;
+        }
+
+        // Calling cmd.php with bad args
+        if ($exception instanceof \RuntimeException && strpos($exception->getMessage(), 'Too many arguments') !== false) {
+            return true;
+        }
+        if ($exception instanceof \InvalidArgumentException && strpos($exception->getMessage(), 'is ambiguous') !== false) {
+            return true;
+        }
+
         return false;
     }
 
     /**
      * Gets a standard error info array from an error.
      *
-     * @param  int    $errno
-     * @param  string $errstr
-     * @param  string $errfile
-     * @param  string $errline
+     * @param int    $errno
+     * @param string $errstr
+     * @param string $errfile
+     * @param string $errline
+     *
      * @return array
      */
     public static function getErrorInfo($errno, $errstr, $errfile, $errline)
@@ -804,48 +848,48 @@ class KernelErrorHandler
         $die = false;
         switch ($errno) {
             case E_ERROR:
-                $die = true;
-                $pri = 'ERR';
-                $errname = "E_ERROR";
+                $die     = true;
+                $pri     = 'ERR';
+                $errname = 'E_ERROR';
                 break;
 
             case E_WARNING:
             case E_USER_WARNING:
-                $pri = 'WARN';
-                $errname = "E_WARNING";
+                $pri     = 'WARN';
+                $errname = 'E_WARNING';
                 break;
 
             case E_NOTICE:
             case E_USER_NOTICE:
-                $pri = 'NOTICE';
-                $errname = "E_NOTICE";
+                $pri     = 'NOTICE';
+                $errname = 'E_NOTICE';
                 break;
 
             case E_STRICT:
-                $pri = 'STRICT';
-                $errname = "E_STRICT";
+                $pri     = 'STRICT';
+                $errname = 'E_STRICT';
                 break;
 
             case E_RECOVERABLE_ERROR:
-                $pri = 'ERR';
-                $errname = "E_RECOVERABLE_ERROR";
+                $pri     = 'ERR';
+                $errname = 'E_RECOVERABLE_ERROR';
                 break;
 
             case E_DEPRECATED:
             case E_USER_DEPRECATED:
-                $pri = 'NOTICE';
-                $errname = "E_DEPRECATED";
+                $pri     = 'NOTICE';
+                $errname = 'E_DEPRECATED';
                 break;
 
             default:
-                $pri = 'ERR';
+                $pri     = 'ERR';
                 $errname = 'UNKNOWN';
         }
 
         $context_data = '';
-        $set_setting = '';
+        $set_setting  = '';
 
-        $display = true;
+        $display       = true;
         $no_send_error = false;
         if (!(error_reporting() & $errno)) {
             $display = false;
@@ -853,9 +897,9 @@ class KernelErrorHandler
 
         // Dont output apc warnings (but still log them)
         if ($display && strpos($errstr, 'Unable to allocate memory for pool') !== false) {
-            $display = false;
+            $display       = false;
             $no_send_error = true;
-            $set_setting = 'core.error_unable_allocate_memory';
+            $set_setting   = 'core.error_unable_allocate_memory';
         }
 
         $errfile_hash     = self::getFilehash($errfile);
@@ -865,7 +909,7 @@ class KernelErrorHandler
         $errfile = self::stripPathPrefix($errfile);
 
         $backtrace = debug_backtrace();
-        $trace = self::formatBacktrace($backtrace);
+        $trace     = self::formatBacktrace($backtrace);
 
         // Dont send in general perm errors or things to do with the fs storage
         if ((strpos($errstr, 'failed to open stream: Permission denied') !== false || strpos($errstr, 'failed to open stream: No such file or directory') !== false) && strpos($trace, 'FileDescriptor') !== false) {
@@ -891,7 +935,7 @@ class KernelErrorHandler
             $no_send_error = true;
         }
 
-        // Log but dont report erorrs about writing chat available trigger
+        // Log but dont report errors about writing chat available trigger
         if (strpos($errstr, 'chat_is_available.trigger') !== false) {
             $no_send_error = true;
         }
@@ -914,7 +958,17 @@ class KernelErrorHandler
         }
 
         if (strpos($errstr, 'Kerberos error') !== false) {
-            return;
+            return; // completely ignore
+        }
+
+        // imap
+        if (
+            strpos($errstr, 'Can not authenticate to IMAP server') !== false
+            || strpos($errstr, 'imap_gc()') !== false
+            || strpos($errstr, 'imap_open()') !== false
+            || strpos($errstr, 'Unknown: LOGIN failed') !== false
+        ) {
+            $no_send_error = true;
         }
 
         // Socket/network errors
@@ -925,6 +979,9 @@ class KernelErrorHandler
             || strpos($errstr, 'SSL operation failed') !== false
             || strpos($errstr, 'errno=32 Broken pipe')
             || strpos($errstr, 'SSL: An established connection was aborted') !== false
+            || strpos($errstr, 'SSL: An existing connection was forcibly closed by the remote host') !== false
+            || strpos($errstr, 'Couldn\'t open stream') !== false
+            || strpos($errstr, 'Can\'t connect to') !== false
             || strpos($errstr, 'fsockopen()') !== false
         ) {
             $no_send_error = true;
@@ -940,41 +997,42 @@ class KernelErrorHandler
             if (class_exists('Application\\DeskPRO\\App')) {
                 try {
                     $url = App::getRequest()->getUri();
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
         }
         if (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
-            $url = 'Command: ' . implode(' ', $_SERVER['argv']);
+            $url = 'Command: '.implode(' ', $_SERVER['argv']);
         }
 
         $last_e = null;
         if (isset($GLOBALS['DP_LAST_ERROR'])) {
-            $last_e = sprintf("[%d] %s (%s line %d)", $GLOBALS['DP_LAST_ERROR']['type'], $GLOBALS['DP_LAST_ERROR']['message'], $GLOBALS['DP_LAST_ERROR']['file'], $GLOBALS['DP_LAST_ERROR']['line']);
+            $last_e = sprintf('[%d] %s (%s line %d)', $GLOBALS['DP_LAST_ERROR']['type'], $GLOBALS['DP_LAST_ERROR']['message'], $GLOBALS['DP_LAST_ERROR']['file'], $GLOBALS['DP_LAST_ERROR']['line']);
         } elseif ($last_e_info = @error_get_last()) {
-            $last_e = sprintf("[%d] %s (%s line %d)", $last_e_info['type'], $last_e_info['message'], $last_e_info['file'], $last_e_info['line']);
+            $last_e = sprintf('[%d] %s (%s line %d)', $last_e_info['type'], $last_e_info['message'], $last_e_info['file'], $last_e_info['line']);
         }
 
         return array(
-            'type'               => 'error',
-            'session_name'       => self::genSessionName(),
-            'die'                => $die,
-            'pri'                => $pri,
-            'trace'              => $trace,
-            'summary'            => $summary,
-            'errstr'             => $errstr,
-            'errname'            => $errname,
-            'errno'              => $errno,
-            'errfile'            => $errfile,
-            'errfile_hash'       => $errfile_hash,
-            'errfile_modified'   => $errfile_modified,
-            'errline'            => $errline,
-            'last_error'         => $last_e,
-            'display'            => $display,
-            'build'              => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
-            'process_log'        => implode("\n", self::$process_log),
-            'context_data'       => $context_data,
+            'type'              => 'error',
+            'session_name'      => self::genSessionName(),
+            'die'               => $die,
+            'pri'               => $pri,
+            'trace'             => $trace,
+            'summary'           => $summary,
+            'errstr'            => $errstr,
+            'errname'           => $errname,
+            'errno'             => $errno,
+            'errfile'           => $errfile,
+            'errfile_hash'      => $errfile_hash,
+            'errfile_modified'  => $errfile_modified,
+            'errline'           => $errline,
+            'last_error'        => $last_e,
+            'display'           => $display,
+            'build'             => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+            'process_log'       => implode("\n", self::$process_log),
+            'context_data'      => $context_data,
             'error_time'        => microtime(true),
-            'time_to_error'     => defined('DP_START_TIME') ? sprintf("%0.4f", microtime(true) - DP_START_TIME) : 0,
+            'time_to_error'     => defined('DP_START_TIME') ? sprintf('%0.4f', microtime(true) - DP_START_TIME) : 0,
             'no_send_error'     => $no_send_error,
             'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
             'set_setting'       => $set_setting,
@@ -985,22 +1043,22 @@ class KernelErrorHandler
     /**
      * Strips the full path prefix from $content. This makes all paths relative to the root of DeskRPO install.
      *
-     * @param  string $content
+     * @param string $content
+     *
      * @return string
      */
     public static function stripPathPrefix($content)
     {
         $content = str_replace('\\', '/', $content);
 
-        $prefix = str_replace('\\', '/', DP_ROOT) . '/';
+        $prefix  = str_replace('\\', '/', DP_ROOT).'/';
         $content = str_replace($prefix, '/app/', $content);
 
-        $prefix = str_replace('\\', '/', DP_WEB_ROOT) . '/';
+        $prefix  = str_replace('\\', '/', DP_WEB_ROOT).'/';
         $content = str_replace($prefix, '/', $content);
 
         return $content;
     }
-
 
     /**
      * Set this as a shutdown function to try and record fatal errors (e.g., memory).
@@ -1019,7 +1077,6 @@ class KernelErrorHandler
             && in_array($error['type'], $handle_types)
             && !self::isErrorCaught($error['type'], $error['message'], $error['file'], $error['line'])
         ) {
-
             self::recordErrorAsCaught($error['type'], $error['message'], $error['file'], $error['line']);
 
             $errname = 'SHUTDOWN_ERR';
@@ -1030,7 +1087,7 @@ class KernelErrorHandler
             $errline = $error['line'];
 
             $backtrace = debug_backtrace();
-            $trace = self::formatBacktrace($backtrace);
+            $trace     = self::formatBacktrace($backtrace);
 
             $summary = "[$errname:$errno] $errstr ($errfile:$errline)";
 
@@ -1041,30 +1098,30 @@ class KernelErrorHandler
                 $url = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
             }
             if (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
-                $url = 'Command: ' . implode(' ', $_SERVER['argv']);
+                $url = 'Command: '.implode(' ', $_SERVER['argv']);
             }
 
             $errinfo = array(
-                'type'               => 'error',
-                'session_name'       => self::genSessionName(),
-                'die'                => false,
-                'pri'                => 'ERR',
-                'trace'              => $trace,
-                'summary'            => $summary,
-                'errstr'             => $errstr,
-                'errname'            => $errname,
-                'errno'              => $errno,
-                'errfile'            => $errfile,
-                'errfile_hash'       => '',
-                'errfile_modified'   => false,
-                'errline'            => $errline,
-                'last_error'         => null,
-                'display'            => false,
-                'build'              => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
-                'process_log'        => '',
-                'context_data'       => '',
+                'type'              => 'error',
+                'session_name'      => self::genSessionName(),
+                'die'               => false,
+                'pri'               => 'ERR',
+                'trace'             => $trace,
+                'summary'           => $summary,
+                'errstr'            => $errstr,
+                'errname'           => $errname,
+                'errno'             => $errno,
+                'errfile'           => $errfile,
+                'errfile_hash'      => '',
+                'errfile_modified'  => false,
+                'errline'           => $errline,
+                'last_error'        => null,
+                'display'           => false,
+                'build'             => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+                'process_log'       => '',
+                'context_data'      => '',
                 'error_time'        => microtime(true),
-                'time_to_error'     => defined('DP_START_TIME') ? sprintf("%0.4f", microtime(true) - DP_START_TIME) : 0,
+                'time_to_error'     => defined('DP_START_TIME') ? sprintf('%0.4f', microtime(true) - DP_START_TIME) : 0,
                 'no_send_error'     => true,
                 'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
                 'set_setting'       => null,
@@ -1086,14 +1143,15 @@ class KernelErrorHandler
 
     protected static function hashErrorInfoForKey($errno, $errstr, $errfile, $errline)
     {
-        return md5($errno . $errstr . $errfile . $errline);
+        return md5($errno.$errstr.$errfile.$errline);
     }
 
     /**
      * Formats a backtrace.
      *
-     * @param array  $backtrace
-     * @param bool   $no_vars    Dont include vars in the backtrace
+     * @param array $backtrace
+     * @param bool  $no_vars   Dont include vars in the backtrace
+     *
      * @return string
      */
     public static function formatBacktrace(array $backtrace, $no_vars = false)
@@ -1102,10 +1160,10 @@ class KernelErrorHandler
 
         $longest_filename = 0;
 
-        foreach($backtrace as &$v) {
+        foreach ($backtrace as &$v) {
             if (!empty($v['file'])) {
-                $v['orig_file'] = $v['file'];
-                $v['file'] = self::stripPathPrefix($v['file']);
+                $v['orig_file']   = $v['file'];
+                $v['file']        = self::stripPathPrefix($v['file']);
                 $longest_filename = max($longest_filename, strlen(self::stripPathPrefix($v['file'])));
             }
         }
@@ -1116,25 +1174,28 @@ class KernelErrorHandler
         $prev_line = null;
 
         $x = 0;
-        foreach($backtrace as $k=>$v){
-
+        foreach ($backtrace as $k => $v) {
             if (!empty($v['object'])) {
-                if (strpos(get_class($v['object']), 'KernelErrorHandler')) continue;
+                if (strpos(get_class($v['object']), 'KernelErrorHandler')) {
+                    continue;
+                }
             }
             if (!empty($v['class'])) {
-                if (strpos($v['class'], 'KernelErrorHandler')) continue;
+                if (strpos($v['class'], 'KernelErrorHandler')) {
+                    continue;
+                }
             }
 
-            $x++;
+            ++$x;
 
-            $prefix = sprintf("[#%02d] ", $x);
+            $prefix   = sprintf('[#%02d] ', $x);
             $pre_line = '';
-            $line = '';
+            $line     = '';
 
             if (!empty($v['file'])) {
                 $prefix .= "{$v['file']}:{$v['line']} ";
             } else {
-                $prefix .= "<callback> ";
+                $prefix .= '<callback> ';
             }
 
             $show_vars_string = null;
@@ -1145,7 +1206,7 @@ class KernelErrorHandler
                     try {
                         $tpl = @$v['object']->getTemplateName();
                         if ($tpl) {
-                            $line .= '<' . @$v['object']->getTemplateName() . '>';
+                            $line .= '<'.@$v['object']->getTemplateName().'>';
 
                             if ($prev_line && method_exists($v['object'], 'getDebugInfo')) {
                                 $debug_info = @$v['object']->getDebugInfo();
@@ -1160,7 +1221,8 @@ class KernelErrorHandler
                                 }
                             }
                         }
-                    } catch (\Exception $e) {}
+                    } catch (\Exception $e) {
+                    }
                 } elseif ($v['object'] instanceof \Application\DeskPRO\Templating\Engine || $v['object'] instanceof \Symfony\Bundle\TwigBundle\Debug\TimedTwigEngine) {
                     if ($v['function'] == 'render') {
                         $show_vars_string = '<template_context>';
@@ -1168,9 +1230,9 @@ class KernelErrorHandler
                 } elseif ($v['function'] == 'renderView') {
                     $show_vars_string = '<template_context>';
                 }
-                $line .= get_class($v['object']) . "::";
+                $line .= get_class($v['object']).'::';
             } elseif (isset($v['class'])) {
-                $line .= $v['class'] . "::";
+                $line .= $v['class'].'::';
             }
 
             $line .= "{$v['function']}(";
@@ -1189,13 +1251,13 @@ class KernelErrorHandler
                 }
             }
 
-            $line .= ")";
+            $line .= ')';
 
             if ($pre_line) {
                 $trace .= $pre_line."\n";
             }
 
-            $trace .= sprintf("%-{$longest_filename}s", $prefix) . "\t---\t" . trim($line) . "\n";
+            $trace .= sprintf("%-{$longest_filename}s", $prefix)."\t---\t".trim($line)."\n";
 
             $prev_line = null;
             if (isset($v['line'])) {
@@ -1218,8 +1280,9 @@ class KernelErrorHandler
      * Used with formatBacktrace to format an array (usually parameters) to a string, being sure not to recurse
      * too deep.
      *
-     * @param  mixed  $var
-     * @param  int    $_depth
+     * @param mixed $var
+     * @param int   $_depth
+     *
      * @return string
      */
     public static function varToString($var, $_depth = 0)
@@ -1228,11 +1291,11 @@ class KernelErrorHandler
             return sprintf('<%s>', get_class($var));
         }
         if (is_array($var)) {
-            $a = array();
-            $len = count($var);
+            $a        = array();
+            $len      = count($var);
             $is_array = true;
 
-            for ($i = 0; $i < $len; $i++) {
+            for ($i = 0; $i < $len; ++$i) {
                 if (!array_key_exists($i, $var)) {
                     $is_array = false;
                     break;
@@ -1240,50 +1303,54 @@ class KernelErrorHandler
             }
 
             foreach ($var as $k => $v) {
+                if ($k === 'pass' || $k === 'password' || $k === 'passphrase') {
+                    $v = '***';
+                }
                 if ($_depth > 8) {
                     if ($is_array) {
-                        $a[] = '(string)';
+                        $a[] = '(array)';
                     } else {
                         $a[] = sprintf('%s => %s', $k, '(string)');
                     }
                 } else {
                     if ($is_array) {
-                        $a[] = self::varToString($v, $_depth+1);
+                        $a[] = self::varToString($v, $_depth + 1);
                     } else {
                         if (!is_numeric($k)) {
                             $k = "'$k'";
                         }
-                        $a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth+1));
+                        $a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth + 1));
                     }
                 }
             }
             if ($_depth == 0) {
                 return implode(', ', $a);
             } else {
-                return sprintf("array(%s)", implode(', ', $a));
+                return sprintf('array(%s)', implode(', ', $a));
             }
         }
         if (is_resource($var)) {
             return '[resource]';
         }
-        $str = (string)$var;
+        $str = (string) $var;
         if (strlen($str) > 1000) {
-            $str = substr($str, 0, 1000) . "...(clipped)";
+            $str = substr($str, 0, 1000).'...(clipped)';
         }
 
         return str_replace("\n", '', var_export(self::stripPathPrefix($str), true));
     }
 
     /**
-     * Gets a filehash
+     * Gets a filehash.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return string
      */
     public static function getFilehash($path)
     {
         if (!is_file($path)) {
-            return null;
+            return;
         }
 
         $file_contents = @file_get_contents($path);
@@ -1309,12 +1376,12 @@ class KernelErrorHandler
             $hash = self::getFilehash($path);
         }
 
-        if (!is_file(DP_ROOT . 'app/sys/Resources/distro-checksums.php')) {
+        if (!is_file(DP_ROOT.'app/sys/Resources/distro-checksums.php')) {
             return true;
         }
 
-        $checksums = require(DP_ROOT . 'app/sys/Resources/distro-checksums.php');
-        $key = str_replace(DP_ROOT, '', $path);
+        $checksums = require DP_ROOT.'app/sys/Resources/distro-checksums.php';
+        $key       = str_replace(DP_ROOT, '', $path);
 
         if (!isset($checksums[$key]) || $hash != $checksums[$key]) {
             return false;

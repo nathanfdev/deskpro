@@ -49,12 +49,12 @@ define(['cutstring'], function (cutstring) {
             if (val instanceof Array) {
               var ret = [];
               val.each(function (item) {
-                var sub = types[schema.items] ? types[schema.items](item) : item;
+                var sub = types[schema.items] ? types[schema.items](item) : types.string(item);
                 ret.push(sub);
               });
               return ret.join(', ');
             } else {
-              return types[schema.items] ? types[schema.items](val) : val;
+              return types[schema.items] ? types[schema.items](val) : types.string(item);
             }
           },
           datetime: function (val) {
@@ -133,7 +133,7 @@ define(['cutstring'], function (cutstring) {
 
         var query = meta.projects.length > 3 ? ('?project_id=' + projectId) : '';
 
-        $http.get('/agent/jira/createmeta' + query)
+        $http.get(window.DP_BASE_URL + 'agent/jira/createmeta' + query)
           .success(function (data, status, headers, config) {
               if (!data.projects) return d.resolve(null);
               data.projects.each(function(project){
@@ -149,7 +149,7 @@ define(['cutstring'], function (cutstring) {
       }
     };
 
-    $http.get('/agent/jira/meta')
+    $http.get(window.DP_BASE_URL + 'agent/jira/meta')
       .success(function (data, status, headers, config) {
 
         if (!data) {

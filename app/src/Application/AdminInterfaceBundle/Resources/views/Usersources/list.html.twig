@@ -31,6 +31,7 @@
 
 						<div class="pull-right">
 							<em class="tag tag-warn" ng-show="source.usersource.is_sso">SSO</em>
+							<em class="tag tag-warn" ng-show="source.usersource.sync_enabled">Sync</em>
 							<em class="tag tag-warn" ng-show="!source.usersource.is_enabled">Disabled</em>
 						</div>
 					</a>
@@ -39,6 +40,55 @@
 			<div class="dp-add-control">
 				<a class="btn btn-default" ng-href="{{ ng_href_var('ListCtrl.new_url') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
 			</div>
+		</article>
+	</section>
+	<section class="dp-paneblock dp-listpane" ng-show="ListCtrl.show_sync_section">
+		<header>
+			<h3>Sync</h3>
+		</header>
+		<article>
+			<div class="dp-add-control" ng-show="!ListCtrl.sync_status.running_now">
+				<p>
+					<strong>Next Sync:</strong> {{ ng_var('ListCtrl.sync_next_text') }}
+					<button ng-click="ListCtrl.startSync()" class="btn btn-default btn-xs navbar-right" style="margin-right: 10px;">
+						Start Sync
+					</button>
+				</p>
+			</div>
+			<div class="dp-add-control" ng-show="ListCtrl.sync_status.running_now">
+				<div class="alert alert-warning" style="margin-right: 10px;">
+
+						<i class="spinner-flat"></i>
+					The sync is currently running.
+					<button ng-click="ListCtrl.stopSync()" class="btn btn-default btn-xs navbar-right" style="margin-right: 10px;">
+						Stop Syncing
+					</button>
+				</div>
+			</div>
+			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions">
+				<li ng-repeat="source in ListCtrl.usersources"
+					ng-if="source.usersource.sync_enabled"
+					dp-state-mark="{{ ng_var('ListCtrl.sync_url') }}.{{ ng_var('source.app.id') }}"
+					data-id="{{ ng_var('source.usersource.id') }}">
+					<a ng-href="{{ ng_href_var('ListCtrl.sync_url', '{id: source.app.id }') }}">
+						<aside style="display: inline-block">
+							<img ng-if="source.app" ng-src="{{ ng_var('source.app.package.icon_16') }}"
+								alt="{{ ng_var('source.usersource.title') }}" style="vertical-align: inherit;" />
+							<img ng-if="!source.app" ng-src="{{ asset_full('/images/dp-logo-16.png') }}"
+								alt="{{ ng_var('source.usersource.title') }}" style="vertical-align: inherit;" />
+						</aside>
+
+						<h4 style="line-height: normal; display: inline-block;">
+							<span class="title-text">{{ ng_var('source.usersource.title') }}</span>
+						</h4>
+
+						<div class="pull-right">
+							{#<em class="tag tag-warn" ng-show="source.usersource.is_sso">SSO</em>#}
+							{#<em class="tag tag-warn" ng-show="!source.usersource.is_enabled">Disabled</em>#}
+						</div>
+					</a>
+				</li>
+			</ul>
 		</article>
 	</section>
 {% endblock %}
@@ -88,10 +138,12 @@
 
 				<ul>
 
-				<li><i class="fa fa-globe"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#authentication-and-sso" target="_blank">Authentication and SSO</a> 	</li>
+				<li><i class="fa fa-globe"></i> <a href="https://manuals.deskpro.com/html/admin/authentication/authentication.html" target="_blank">Authentication and SSO</a></li>
 				
 				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/344" target="_blank">How do I debug setting up an authentication app?</a> 		</li>
 				</ul>
         	</section>
 	</article>
+	<div dp-register-message="usersource_sync_starting">{{ phrase('admin.usersources.sync_starting') }}</div>
+	<div dp-register-message="usersource_sync_stopping">{{ phrase('admin.usersources.sync_stopping') }}</div>
 {% endblock %}

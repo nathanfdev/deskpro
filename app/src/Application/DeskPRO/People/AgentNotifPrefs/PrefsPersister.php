@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\People\AgentNotifPrefs;
 
 use Application\DeskPRO\Entity\Person;
@@ -63,9 +62,9 @@ class PrefsPersister
         $this->db     = $em->getConnection();
     }
 
-
     /**
-     * @param  Prefs      $prefs
+     * @param Prefs $prefs
+     *
      * @throws \Exception
      */
     public function savePrefs(Prefs $prefs)
@@ -73,17 +72,16 @@ class PrefsPersister
         $filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
         $filters = Arrays::keyFromData($filters, 'id');
 
-
         #------------------------------
         # Create sub records
         #------------------------------
 
         $filter_subs = array();
 
-        $person = $this->person;
+        $person     = $this->person;
         $fn_get_sub = function ($filter_id) use (&$filter_subs, $person, $filters) {
             if (!isset($filter_subs[$filter_id])) {
-                $filter_subs[$filter_id] = new TicketFilterSubscription();
+                $filter_subs[$filter_id]         = new TicketFilterSubscription();
                 $filter_subs[$filter_id]->filter = $filters[$filter_id];
                 $filter_subs[$filter_id]->person = $person;
             }
@@ -95,16 +93,20 @@ class PrefsPersister
             $sub = $fn_get_sub($filter_id);
 
             foreach ($subs as $name => $v) {
-                if (!$v) continue;
-                $sub->{'email_' . $name} = true;
+                if (!$v) {
+                    continue;
+                }
+                $sub->{'email_'.$name} = true;
             }
         }
         foreach ($prefs->getFilterSubs('alert') as $filter_id => $subs) {
             $sub = $fn_get_sub($filter_id);
 
             foreach ($subs as $name => $v) {
-                if (!$v) continue;
-                $sub->{'alert_' . $name} = true;
+                if (!$v) {
+                    continue;
+                }
+                $sub->{'alert_'.$name} = true;
             }
         }
 
@@ -121,12 +123,14 @@ class PrefsPersister
              'feedback',
              'publish',
              'crm',
-             'account'
+             'account',
         ) as $app_name) {
             foreach (array('email', 'alert') as $type) {
                 $subs = $prefs->getAppSubs($type, $app_name);
                 foreach ($subs as $name => $v) {
-                    if (!$v) continue;
+                    if (!$v) {
+                        continue;
+                    }
                     $pref_records[] = array(
                         'person_id' => $this->person->id,
                         'name'      => "agent_notif.{$name}.$type",
@@ -181,7 +185,6 @@ class PrefsPersister
             }
 
             $this->db->commit();
-
         } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;

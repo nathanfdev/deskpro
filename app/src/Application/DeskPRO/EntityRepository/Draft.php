@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -85,7 +84,7 @@ class Draft extends AbstractEntityRepository
         ')->execute(array($content_type, $content_id, new \DateTime("-$update_offset seconds")));
 
         $output = array();
-        foreach ($drafts AS $draft) {
+        foreach ($drafts as $draft) {
             $output[$draft->content_id][$draft->person->getId()] = $draft;
         }
 
@@ -98,7 +97,7 @@ class Draft extends AbstractEntityRepository
 
     /**
      * @param string                             $content_type
-     * @param integer                            $content_id
+     * @param int                                $content_id
      * @param string                             $message
      * @param string                             $message_html
      * @param array                              $extras
@@ -119,38 +118,38 @@ class Draft extends AbstractEntityRepository
 
         $draft->date_created = new \DateTime();
         $draft->content_type = $content_type;
-        $draft->content_id = $content_id;
-        $draft->message = $message;
+        $draft->content_id   = $content_id;
+        $draft->message      = $message;
         $draft->message_html = $message_html;
-        $draft->extras = $extras;
-        $draft->person = $person;
+        $draft->extras       = $extras;
+        $draft->person       = $person;
 
         try {
             if ($draft->id) {
-                $this->getEntityManager()->getConnection()->executeUpdate("
+                $this->getEntityManager()->getConnection()->executeUpdate('
                     DELETE FROM drafts
                     WHERE content_type = ? AND content_id = ? AND person_id =? AND id != ?
-                ", array(
+                ', array(
                     $content_type,
                     $content_id,
                     $person->getId(),
-                    $draft->id
+                    $draft->id,
                 ));
             } else {
-                $this->getEntityManager()->getConnection()->executeUpdate("
+                $this->getEntityManager()->getConnection()->executeUpdate('
                     DELETE FROM drafts
                     WHERE content_type = ? AND content_id = ? AND person_id =?
-                ", array(
+                ', array(
                     $content_type,
                     $content_id,
-                    $person->getId()
+                    $person->getId(),
                 ));
             }
 
             $this->getEntityManager()->persist($draft);
             $this->getEntityManager()->flush($draft);
         } catch (\PDOException $e) {
-            return null;
+            return;
         }
 
         return $draft;
@@ -169,14 +168,14 @@ class Draft extends AbstractEntityRepository
 
             if ($content_type == 'ticket') {
                 App::getDb()->insert('client_messages', array(
-                    'channel' => 'agent.ticket-draft-updated',
-                    'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+                    'channel'      => 'agent.ticket-draft-updated',
+                    'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
                     'date_created' => date('Y-m-d H:i:s'),
-                    'data' => serialize(array(
-                        'ticket_id'      => $content_id,
-                        'draft_html'     => false,
-                        'via_person'     => $person->getId()
-                    ))
+                    'data'         => serialize(array(
+                        'ticket_id'  => $content_id,
+                        'draft_html' => false,
+                        'via_person' => $person->getId(),
+                    )),
                 ));
             }
         }
@@ -186,7 +185,7 @@ class Draft extends AbstractEntityRepository
     {
         App::getDb()->delete('drafts', array(
             'content_type' => $content_type,
-            'content_id' => $content_id
+            'content_id'   => $content_id,
         ));
     }
 }

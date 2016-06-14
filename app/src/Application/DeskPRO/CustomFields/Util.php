@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
@@ -43,7 +41,7 @@ class Util
 {
     /**
      * Standard form field naming has the key as field_X. So this is the same as
-     * createDataHierarchy except the key is the standard form name
+     * createDataHierarchy except the key is the standard form name.
      *
      * @return array
      */
@@ -51,13 +49,11 @@ class Util
     {
         $data = $this->createDataHierarchy($field_datas, $field_defs);
         $data = Arrays::walkKeys($data, function (&$k) {
-            $k = 'field_' . $k;
+            $k = 'field_'.$k;
         });
 
         return $data;
     }
-
-
 
     /**
      * This converts a collection of data items into an array structure
@@ -72,6 +68,7 @@ class Util
      *
      * @param $field_datas
      * @param $field_defs
+     *
      * @return array
      */
     public function createDataHierarchy($field_datas, $field_defs)
@@ -103,31 +100,30 @@ class Util
         return $structure;
     }
 
-
-
     /**
      * Use this to get a structured "data array" used with form handlers render(). This essentially emulates
      * created all the data records, and then returns the structured array. So if you need the correct array format,
      * but dont need to store the values in a real data table (eg macros), then you can use this method.
      *
      * @param  $field_id
-     * @param  array $form_data
+     * @param array $form_data
      * @param  $entity_def
      * @param  $entity_data
+     *
      * @return array
      */
     public function getRenderableDataArrayFromForm(array $form_data, $field_id, $entity_def, $entity_data)
     {
         $field_defs = App::getEntityRepository($entity_def)->getFields();
-        $field = App::getEntityRepository($entity_def)->find($field_id);
+        $field      = App::getEntityRepository($entity_def)->find($field_id);
 
         $action_custm_datas = array();
 
         $data_classname = App::getEntityRepository($entity_data)->getEntityName();
 
         foreach ($field->getHandler()->getDataFromForm($form_data) as $info) {
-            $custom_data = new $data_classname();
-            $custom_data['field'] = $field;
+            $custom_data           = new $data_classname();
+            $custom_data['field']  = $field;
             $custom_data[$info[1]] = $info[2];
 
             $action_custm_datas[] = $custom_data;

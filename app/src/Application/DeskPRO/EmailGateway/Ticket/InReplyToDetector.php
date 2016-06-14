@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\App;
@@ -50,9 +48,9 @@ class InReplyToDetector implements TicketDetectorInterface
      */
     protected $_found_person = null;
 
-
     /**
-     * @param  AbstractReader $reader
+     * @param AbstractReader $reader
+     *
      * @return Ticket|null
      */
     public function findExistingTicket(AbstractReader $reader)
@@ -94,10 +92,11 @@ class InReplyToDetector implements TicketDetectorInterface
 
         $matches = null;
         if (preg_match_all('#(?<!P)TAC\-([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
-
             foreach ($matches as $m) {
                 $tac = App::getEntityRepository('DeskPRO:TicketAccessCode')->findByAccessCode($m[1]);
-                if (!$tac) continue;
+                if (!$tac) {
+                    continue;
+                }
 
                 $ticket = $tac->ticket;
                 if (!$ticket->isArchived()) {
@@ -105,7 +104,6 @@ class InReplyToDetector implements TicketDetectorInterface
 
                     return $ticket;
                 }
-
             }
         }
 
@@ -114,13 +112,11 @@ class InReplyToDetector implements TicketDetectorInterface
         #------------------------------
 
         $matches = null;
-        if (preg_match_all('#PTAC\-([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
-
+        if (preg_match_all('#(?:PTAC|TICKET)\-([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $m) {
                 $ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);
 
                 if ($ticket && !$ticket->isArchived()) {
-
                     $this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
 
                     return $ticket;
@@ -128,12 +124,13 @@ class InReplyToDetector implements TicketDetectorInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * @param  Ticket                                                                               $ticket
-     * @param  AbstractReader                                                                       $reader
+     * @param Ticket         $ticket
+     * @param AbstractReader $reader
+     *
      * @return \Application\DeskPRO\Entity\Person|\Application\DeskPRO\Entity\TicketAccessCode|null
      */
     public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
@@ -142,15 +139,16 @@ class InReplyToDetector implements TicketDetectorInterface
             return $this->_found_person;
         }
 
-        return null;
+        return;
     }
 
     /**
      * Add unknown users, the reply code in the address is the PTAC
-     * so basically a passowrd
+     * so basically a passowrd.
      *
-     * @param  Ticket         $ticket
-     * @param  AbstractReader $reader
+     * @param Ticket         $ticket
+     * @param AbstractReader $reader
+     *
      * @return bool
      */
     public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)

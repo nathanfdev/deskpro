@@ -1,38 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Util
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO;
+
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
@@ -43,21 +41,26 @@ use Orb\Util\Strings;
  */
 class Util
 {
-    final private function __construct() { /* This class is never instantiated */ }
+    final private function __construct()
+    { /* This class is never instantiated */
+    }
 
     /**
-     * Create a new object
+     * Create a new object.
      *
-     * @param  string $classname_spec The classname, static factory method, or array callback
-     * @param  array  $options        Options to pass to the factory or constructor
+     * @param string $classname_spec The classname, static factory method, or array callback
+     * @param array  $options        Options to pass to the factory or constructor
+     *
      * @return object
      */
     public static function simpleObjectFactory($classname_spec, array $options = null)
     {
-        if ($options === null) $options = array();
+        if ($options === null) {
+            $options = array();
+        }
 
         // A static factory like SomeClass::getSomeObject(options)
-        if (is_array($classname_spec) OR strpos($classname_spec, '::')) {
+        if (is_array($classname_spec) or strpos($classname_spec, '::')) {
             $obj = call_user_func($classname_spec, $options);
         } else {
             $obj = new $classname_spec($options);
@@ -66,12 +69,12 @@ class Util
         return $obj;
     }
 
-
     /**
      * Fixes quirky handling of UTF8 errors in native json_encode.
-     * See http://stackoverflow.com/q/4663743/18802
+     * See http://stackoverflow.com/q/4663743/18802.
      *
-     * @param  mixed  $data
+     * @param mixed $data
+     *
      * @return string
      */
     public static function jsonEncode($data)
@@ -91,42 +94,42 @@ class Util
         }
 
         if (defined('JSON_PRETTY_PRINT')) {
-            return @json_encode($data, JSON_HEX_QUOT|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_PRETTY_PRINT);
+            return @json_encode($data, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_PRETTY_PRINT);
         } else {
-            return @json_encode($data, JSON_HEX_QUOT|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS);
+            return @json_encode($data, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS);
         }
     }
-
 
     /**
      * Tries to build an array of person data using an arbitrary array.
      * This is used in the default usersource handlers and scraper handlers.
      *
-     * @param  array $misc_data
+     * @param array $misc_data
+     *
      * @return array
      */
     public function getPersonData(array $misc_data)
     {
         $person_data = array(
             'standard_fields' => array(),
-            'emails' => array(),
-            'fields' => array()
+            'emails'          => array(),
+            'fields'          => array(),
         );
 
         $keymap = array(
-            'full_name' => 'name',
-            'name' => 'name',
-            'fullname' => 'name',
-            'nickname' => 'name',
-            'nick_name' => 'name',
-            'username' => 'name',
-            'user_name' => 'name',
+            'full_name'   => 'name',
+            'name'        => 'name',
+            'fullname'    => 'name',
+            'nickname'    => 'name',
+            'nick_name'   => 'name',
+            'username'    => 'name',
+            'user_name'   => 'name',
             'screen_name' => 'name',
-            'screenname' => 'name',
-            'first_name' => 'first_name',
-            'firstname' => 'first_name',
-            'last_name' => 'last_name',
-            'lastname' => 'last_name',
+            'screenname'  => 'name',
+            'first_name'  => 'first_name',
+            'firstname'   => 'first_name',
+            'last_name'   => 'last_name',
+            'lastname'    => 'last_name',
         );
 
         foreach ($keymap as $findkey => $personkey) {
@@ -138,7 +141,7 @@ class Util
         $emailkeymap = array(
             'email', 'emails', 'email_address', 'emailaddress',
             'email_addresses', 'emailaddresses',
-            'mail'
+            'mail',
         );
 
         $scraper_emails = array();
@@ -154,8 +157,7 @@ class Util
     }
 
     /**
-     * @param  array $ordered_ids
-     * @return void
+     * @param array $ordered_ids
      */
     public static function updateDisplayOrders(array $ordered_ids, $table)
     {
@@ -172,17 +174,17 @@ class Util
         App::getDb()->commit();
     }
 
-    public static function getPrintableTimeLength($length, $max_unit = null)
+    public static function getPrintableTimeLength($length, $max_unit = null, $as_html = false)
     {
         if ($length < 1) {
-            return '';
+            return '0 seconds';
         }
 
         $max_unit_list = array(
             'seconds' => 1,
             'minutes' => 2,
-            'hours' => 3,
-            'days' => 4
+            'hours'   => 3,
+            'days'    => 4,
         );
         $max_unit_val = $max_unit && isset($max_unit_list[$max_unit]) ? $max_unit_list[$max_unit] : end($max_unit_list);
 
@@ -212,24 +214,41 @@ class Util
         // TODO: translation
         $parts = array();
         if ($days && count($parts) <= 1) {
-            $parts[] = ($days > 1 ? "$days days" : '1 day');
+            $parts['days'] = ($days > 1 ? "$days days" : '1 day');
         }
         if ($hours && count($parts) <= 1) {
-            $parts[] = ($hours > 1 ? "$hours hours" : '1 hour');
+            $parts['hours'] = ($hours > 1 ? "$hours hours" : '1 hour');
         }
         if ($minutes && count($parts) <= 1) {
-            $parts[] = ($minutes > 1 ? "$minutes minutes" : '1 minute');
+            $parts['minutes'] = ($minutes > 1 ? "$minutes minutes" : '1 minute');
         }
         if ($seconds && count($parts) <= 1) {
-            $parts[] = ($seconds > 1 ? "$seconds seconds" : '1 second');
+            $parts['seconds'] = ($seconds > 1 ? "$seconds seconds" : '1 second');
         }
 
-        return implode(', ', $parts);
+        if ($as_html) {
+            $last    = count($parts) - 1;
+            $current = 0;
+            $html    = '';
+            foreach ($parts as $type => $v) {
+                $html .= '<span class="timelen-display-'.$type.'">';
+                $html .= $v;
+                $html .= '</span>';
+                if ($last != $current) {
+                    $html .= '<span class="timelen-sep-'.$type.'">, </span>';
+                }
+                ++$current;
+            }
+
+            return $html;
+        } else {
+            return implode(', ', $parts);
+        }
     }
 
-
     /**
-     * @param  string $format PHP date format
+     * @param string $format PHP date format
+     *
      * @return string The momentjs format
      */
     public static function momentJsDateFormat($format)
@@ -249,7 +268,7 @@ class Util
             'e' => 'zz', 'O' => 'ZZ', 'P' => 'Z',
             'c' => 'YYYY-MM-DDTHH:mm:ss.SSSZZ', 'r' => 'ddd, D MMM YYYY HH:mm:ss ZZ',
             'U' => 'X',
-            '^' => 'DD' // custom for jS below
+            '^' => 'DD', // custom for jS below
         );
 
         // There is no separate ordinal symbol with momentjs like with PHP
@@ -260,22 +279,22 @@ class Util
         $new_format = array();
         $escaping   = false;
 
-        for($i = 0; $i < $format_len; $i++) {
+        for ($i = 0; $i < $format_len; ++$i) {
             $char = $format[$i];
-            if($char === '\\') {
-                $i++;
-                if($escaping) {
+            if ($char === '\\') {
+                ++$i;
+                if ($escaping) {
                     $new_format[] = $format[$i];
                 } else {
-                    $new_format[] = '\'' . $format[$i];
+                    $new_format[] = '\''.$format[$i];
                 }
                 $escaping = true;
             } else {
-                if($escaping) {
+                if ($escaping) {
                     $new_format[] = "'";
-                    $escaping = false;
+                    $escaping     = false;
                 }
-                if(isset($php_sym[$char])) {
+                if (isset($php_sym[$char])) {
                     $new_format[] = $php_sym[$char];
                 } else {
                     $new_format[] = $char;
@@ -287,7 +306,8 @@ class Util
     }
 
     /**
-     * @param  string|array $labels
+     * @param string|array $labels
+     *
      * @return array
      */
     public static function labelsArrayFromString($labels)
@@ -298,11 +318,11 @@ class Util
 
         $labels = array_map(function ($v) {
             if (!is_scalar($v)) {
-                return null;
+                return;
             }
             $v = trim($v);
-            if ($v === "") {
-                return null;
+            if ($v === '') {
+                return;
             }
 
             $v = strtolower($v);

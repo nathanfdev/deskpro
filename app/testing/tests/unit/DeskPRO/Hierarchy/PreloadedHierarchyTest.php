@@ -1,4 +1,31 @@
 <?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace DpUnitTests\DeskPRO\Hierarchy;
 
 use Application\DeskPRO\Hierarchy\PreloadedHierarchy;
@@ -17,7 +44,7 @@ class PreloadedHierarchyTest extends \DpUnitTestCase
 
     public function runBefore()
     {
-        $cats = array();
+        $cats    = array();
         $cats[1] = new TestCategory(1, null, 'CatA');
         $cats[2] = new TestCategory(2, null, 'CatB');
         $cats[3] = new TestCategory(3, $cats[2], 'CatB - Sub1');
@@ -28,7 +55,7 @@ class PreloadedHierarchyTest extends \DpUnitTestCase
         $cats[8] = new TestCategory(8, null, 'CatC');
         $cats[9] = new TestCategory(9, null, 'CatD');
 
-        $this->cats = $cats;
+        $this->cats      = $cats;
         $this->hierarchy = new PreloadedHierarchy($cats);
     }
 
@@ -43,11 +70,11 @@ class PreloadedHierarchyTest extends \DpUnitTestCase
 
     public function testChildage()
     {
-        $child_ids = $this->hierarchy->getChildrenIds(2);
+        $child_ids        = $this->hierarchy->getChildrenIds(2);
         $expect_child_ids = array(3,4,5);
         $this->assertEquals($expect_child_ids, $child_ids);
 
-        $child_ids = $this->hierarchy->getChildrenIds(1);
+        $child_ids        = $this->hierarchy->getChildrenIds(1);
         $expect_child_ids = array();
         $this->assertEquals($expect_child_ids, $child_ids);
 
@@ -67,13 +94,13 @@ class PreloadedHierarchyTest extends \DpUnitTestCase
         $parent = $this->hierarchy->getParent(7);
         $this->assertEquals($this->cats[5], $parent);
 
-        $path_ids = $this->hierarchy->getParentPathIds(7);
+        $path_ids        = $this->hierarchy->getParentPathIds(7);
         $expect_path_ids = array(5, 2);
 
         $this->assertEquals($expect_path_ids, $path_ids);
 
-        $path = $this->hierarchy->getParentPath(7);
-        $expect_path= array($this->cats[5], $this->cats[2]);
+        $path        = $this->hierarchy->getParentPath(7);
+        $expect_path = array($this->cats[5], $this->cats[2]);
         $this->assertEquals($expect_path, $path);
 
         $this->assertFalse($this->hierarchy->isRoot(7));
@@ -86,24 +113,24 @@ class PreloadedHierarchyTest extends \DpUnitTestCase
         $roots = $this->hierarchy->getRoots();
 
         $expect_roots = array();
-        foreach (array(1,2,8,9) as $id) {
+        foreach (array(1, 2, 8, 9) as $id) {
             $expect_roots[] = $this->cats[$id];
         }
 
         $this->assertEquals($expect_roots, $roots);
 
-        $root_ids = $this->hierarchy->getRootIds();
+        $root_ids        = $this->hierarchy->getRootIds();
         $expect_root_ids = array(1,2,8,9);
         $this->assertEquals($expect_root_ids, $root_ids);
     }
 
     public function testGetAll()
     {
-        $all = $this->hierarchy->getAll();
+        $all        = $this->hierarchy->getAll();
         $expect_all = array_values($this->cats);
         $this->assertEquals($expect_all, $all);
 
-        $all_ids = $this->hierarchy->getAllIds();
+        $all_ids        = $this->hierarchy->getAllIds();
         $expect_all_ids = array_keys($this->cats);
         $this->assertEquals($all_ids, $expect_all_ids);
     }
@@ -115,15 +142,15 @@ class PreloadedHierarchyTest extends \DpUnitTestCase
         $expect_flat_array = array();
         foreach ($this->cats as $cat) {
             $depth = 0;
-            if (in_array($cat->id, array(3,4,5))) {
+            if (in_array($cat->id, array(3, 4, 5))) {
                 $depth = 1;
-            } elseif (in_array($cat->id, array(6,7))) {
+            } elseif (in_array($cat->id, array(6, 7))) {
                 $depth = 2;
             }
 
             $expect_flat_array[] = array(
                 'object' => $cat,
-                'depth'  => $depth
+                'depth'  => $depth,
             );
         }
 
@@ -139,9 +166,9 @@ class TestCategory
 
     public function __construct($id, $parent, $title)
     {
-        $this->id = $id;
+        $this->id     = $id;
         $this->parent = $parent;
-        $this->title = $title;
+        $this->title  = $title;
     }
 
     public function getId()

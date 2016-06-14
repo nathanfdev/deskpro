@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Search
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Search
+ */
 namespace Application\DeskPRO\Search\Adapter;
 
 use Application\DeskPRO\App;
@@ -40,7 +39,7 @@ use Application\DeskPRO\Search\Searcher\Mysql\ContentSearcher;
 use Orb\Util\Strings;
 
 /**
- * Search adapter
+ * Search adapter.
  */
 class MysqlAdapter extends AbstractAdapter
 {
@@ -57,38 +56,33 @@ class MysqlAdapter extends AbstractAdapter
         $this->addContentTypeMap('Application\\DeskPRO\\Entity\\News', 'news');
     }
 
-
     /**
-     * Delete the specified docs from the index
+     * Delete the specified docs from the index.
      *
      * @param  $documents
-     * @return void
      */
     public function deleteDocumentsFromIndex(array $documents)
     {
         foreach ($documents as $doc) {
             App::getDb()->delete('content_search', array(
                 'object_type' => $doc->getContentTypeName(),
-                'object_id'   => $doc->getId()
+                'object_id'   => $doc->getId(),
             ));
             App::getDb()->delete('content_search_attribute', array(
                 'object_type' => $doc->getContentTypeName(),
-                'object_id'   => $doc->getId()
+                'object_id'   => $doc->getId(),
             ));
         }
     }
 
-
     /**
-     * Update the search index with the specified docs
+     * Update the search index with the specified docs.
      *
      * @param  $documents
-     * @return void
      */
     public function updateDocumentsInIndex(array $documents)
     {
         foreach ($documents as $doc) {
-
             if ($doc->isMarkedRemove()) {
                 $this->deleteDocumentsFromIndex(array($doc));
                 continue;
@@ -96,32 +90,32 @@ class MysqlAdapter extends AbstractAdapter
 
             $data = $doc->getData();
 
-            App::getDb()->executeUpdate("
+            App::getDb()->executeUpdate('
                 REPLACE INTO content_search
                 SET object_type = ?, object_id = ?, content = ?
-            ", array($doc->getContentTypeName(), $doc->getId(), $data['content']));
+            ', array($doc->getContentTypeName(), $doc->getId(), $data['content']));
 
             unset($data['content']);
 
             foreach ($data as $k => $v) {
-                App::getDb()->executeUpdate("
+                App::getDb()->executeUpdate('
                     DELETE FROM content_search_attribute WHERE object_type = ? AND object_id = ?
-                ", array($doc->getContentTypeName(), $doc->getId()));
-                App::getDb()->executeUpdate("
+                ', array($doc->getContentTypeName(), $doc->getId()));
+                App::getDb()->executeUpdate('
                     REPLACE INTO content_search_attribute
                     SET object_type = ?, object_id = ?, attribute_id = ?, content = ?
-                ", array($doc->getContentTypeName(), $doc->getId(), $k, $v));
+                ', array($doc->getContentTypeName(), $doc->getId(), $k, $v));
             }
         }
     }
-
 
     /**
      * Create a new instance of a contenttype object.
      *
      * Factory method.
      *
-     * @param  string                                                       $type_name
+     * @param string $type_name
+     *
      * @return \Application\DeskPRO\Search\ContentType\ContentTypeInterface
      */
     protected function createContentType($type_name)
@@ -132,12 +126,11 @@ class MysqlAdapter extends AbstractAdapter
         $type_name = str_replace('_', '-', $type_name);
         $type_name = ucfirst(Strings::dashToCamelCase($type_name));
 
-        $classname = 'Application\\DeskPRO\\Search\\ContentType\\Mysql\\' . $type_name;
-        $obj = new $classname();
+        $classname = 'Application\\DeskPRO\\Search\\ContentType\\Mysql\\'.$type_name;
+        $obj       = new $classname();
 
         return $obj;
     }
-
 
     /**
      * Get a content searcher.
@@ -154,7 +147,6 @@ class MysqlAdapter extends AbstractAdapter
         return $searcher;
     }
 
-
     /**
      * Get the combined agent searcher.
      *
@@ -170,7 +162,6 @@ class MysqlAdapter extends AbstractAdapter
         return $searcher;
     }
 
-
     /**
      * Delete all objects from the index of a particular content type.
      *
@@ -178,11 +169,10 @@ class MysqlAdapter extends AbstractAdapter
      */
     public function deleteContentTypeFromIndex($type_name)
     {
-        App::getDb()->executeUpdate("
+        App::getDb()->executeUpdate('
             DELETE FROM content_search WHERE object_type = ?
-        ", array($type_name));
+        ', array($type_name));
     }
-
 
     /**
      * Labels are added to the fulltext index and then fetched with a fulltext match
@@ -194,22 +184,24 @@ class MysqlAdapter extends AbstractAdapter
      * we "encode" them as these hashes, so we can search for "+lbl1232984rf" specifically.
      *
      * @param  $label
+     *
      * @return string
      */
     public static function encodeLabel($label)
     {
-        $label = "lbl" . md5(strtolower(trim($label)));
+        $label = 'lbl'.md5(strtolower(trim($label)));
 
         return $label;
     }
 
     /**
      * @param  $label
+     *
      * @return string
      */
     public static function encodeProperty($k, $v)
     {
-        $label = md5(strtolower($k . $v));
+        $label = md5(strtolower($k.$v));
 
         return $label;
     }

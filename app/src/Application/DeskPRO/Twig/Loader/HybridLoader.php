@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Twig
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Twig
+ */
 namespace Application\DeskPRO\Twig\Loader;
 
 use Application\DeskPRO\App;
@@ -67,15 +66,17 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
     protected function _initStyle()
     {
         // Already done
-        if ($this->style !== null) return;
+        if ($this->style !== null) {
+            return;
+        }
 
         if (!defined('DP_BUILDING')) {
-            $this->style = App::getSystemService('style');
-            $this->style_template_info = App::getDb()->fetchAllKeyed("
+            $this->style               = App::getSystemService('style');
+            $this->style_template_info = App::getDb()->fetchAllKeyed('
                 SELECT id, name, UNIX_TIMESTAMP(date_updated) AS date_updated
                 FROM templates
                 WHERE style_id = ?
-            ", array($this->style['id']), 'name');
+            ', array($this->style['id']), 'name');
         } else {
             $this->style = new \Application\DeskPRO\Entity\Style();
         }
@@ -88,12 +89,25 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 
     public function dbHasTemplate($name)
     {
-        if (isset($this->crashed_custom_templates[(string)$name])) {
+        if (isset($this->crashed_custom_templates[(string) $name])) {
             return false;
         }
 
         $this->_initStyle();
-        if (isset($this->style_template_info[(string)$name])) {
+        if (isset($this->style_template_info[(string) $name])) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function exists($name)
+    {
+        if (parent::exists($name)) {
+            return true;
+        }
+
+        if ($this->dbHasTemplate($name)) {
             return true;
         }
 
@@ -104,7 +118,7 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
     {
         $this->_initStyle();
 
-        $str_name = (string)$name;
+        $str_name = (string) $name;
 
         // DB templates are always "fresh" because theyre compiled
         // as soon as they're saved
@@ -119,26 +133,26 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
     {
         $this->_initStyle();
 
-        return md5((string)$name);
+        return md5((string) $name);
     }
 
     public function getSource($name)
     {
         $this->_initStyle();
 
-        $str_name = (string)$name;
+        $str_name = (string) $name;
         if (!isset($this->crashed_custom_templates[$str_name]) && isset($this->style_template_info[$str_name])) {
-            return App::getDb()->fetchColumn("
+            return App::getDb()->fetchColumn('
                 SELECT template_code
                 FROM templates
                 WHERE id = ?
-            ", array($this->style_template_info[$name]['id']));
+            ', array($this->style_template_info[$name]['id']));
         }
 
         $source = file_get_contents($this->findTemplate($name));
 
         if (strpos($name, 'DeskPRO:emails_') !== false) {
-            $proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
+            $proc   = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
             $source = $proc->process($source, $str_name);
         }
 
@@ -149,7 +163,7 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
     {
         $this->_initStyle();
 
-        $logicalName = (string)$template;
+        $logicalName = (string) $template;
 
         if (!isset($this->crashed_custom_templates[$logicalName]) && isset($this->style_template_info[$logicalName])) {
             return false;
@@ -157,15 +171,16 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 
         if (strpos($logicalName, 'Apps:') === 0) {
             if (class_exists('Application\\DeskPRO\\App', false)) {
-
                 $logicalName = preg_replace('#^Apps:#', '', $logicalName);
 
                 try {
                     $manager = App::getContainer()->getAppManager();
                     $package = null;
                     foreach ($manager->getAllPackages() as $p) {
-                        if (!$p->native_name) continue;
-                        if (preg_match('#^' . preg_quote($p->native_name) . ':#', $logicalName)) {
+                        if (!$p->native_name) {
+                            continue;
+                        }
+                        if (preg_match('#^'.preg_quote($p->native_name).':#', $logicalName)) {
                             $package = $p;
                             break;
                         }
@@ -174,11 +189,12 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
                     if ($package) {
                         $path_name = preg_replace('#^.*?:(.*?)$#', '$2', $logicalName);
                         $path_name = str_replace(':', '/', $path_name);
-                        $path = DP_ROOT.'/apps/' . $package->native_name . '/native/Resources/views/'.$path_name;
+                        $path      = DP_ROOT.'/apps/'.$package->native_name.'/native/Resources/views/'.$path_name;
 
                         return $path;
                     }
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
         }
 

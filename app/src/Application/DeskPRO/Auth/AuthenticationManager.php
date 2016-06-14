@@ -1,39 +1,35 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Auth;
-
 
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Settings\Settings;
@@ -53,8 +49,6 @@ use Orb\Auth\Result;
  * interface we are on.
  *
  * Note: Not to be confused with the Symfony Security Component's AuthenticationManager. Quite different.
- *
- * @package Application\DeskPRO\Auth
  */
 class AuthenticationManager
 {
@@ -71,7 +65,7 @@ class AuthenticationManager
     private $usersourceManager;
 
     /**
-     * The usersources relevant for this request
+     * The usersources relevant for this request.
      *
      * @var \Application\DeskPRO\Usersource\UsersourceCollection collection of usersources for this interface
      */
@@ -83,7 +77,7 @@ class AuthenticationManager
     private $authSettings;
 
     /**
-     * The interface settings relevant for this request
+     * The interface settings relevant for this request.
      *
      * @var \Application\DeskPRO\Auth\AuthInterfaceSettings
      */
@@ -98,6 +92,11 @@ class AuthenticationManager
      * @var \Application\DeskPRO\Settings\Settings
      */
     private $appSettings;
+
+    /**
+     * @var string
+     */
+    private $authBy;
 
     /**
      * @param UsersourceManager            $usersourceManager    system service
@@ -117,16 +116,17 @@ class AuthenticationManager
         $this->authSettings       = $authSettings;
         $this->authAdapterFactory = $auth_adapter_factory;
         $this->interface          = $interface;
-        $this->appSettings = $appSettings;
+        $this->appSettings        = $appSettings;
 
         $this->usersourcesForInterface = $this->usersourceManager->getAll()->forInterface($interface);
-        $this->settings = $interface === 'user' ? $authSettings->getUserInterfaceSettings() : $authSettings->getAgentInterfaceSettings();
+        $this->settings                = $interface === 'user' ? $authSettings->getUserInterfaceSettings() : $authSettings->getAgentInterfaceSettings();
     }
 
     /**
-     * Tells us if we can use this usersource to log the user in
+     * Tells us if we can use this usersource to log the user in.
      *
-     * @param  Usersource $usersource
+     * @param Usersource $usersource
+     *
      * @return bool
      */
     public function isUsableUsersource(Usersource $usersource)
@@ -147,7 +147,7 @@ class AuthenticationManager
     }
 
     /**
-     * Settings relevant to THIS request (interface aware)
+     * Settings relevant to THIS request (interface aware).
      *
      * @return AuthInterfaceSettings
      */
@@ -165,7 +165,7 @@ class AuthenticationManager
     }
 
     /**
-     * All usersources for this interface
+     * All usersources for this interface.
      *
      * @return \Application\DeskPRO\Usersource\UsersourceCollection
      */
@@ -189,6 +189,7 @@ class AuthenticationManager
      *
      * @param $identifier
      * @param $password
+     *
      * @return Result
      */
     public function authenticateFormLogin($identifier, $password)
@@ -205,7 +206,7 @@ class AuthenticationManager
                 $adapter->setFormData(
                     array(
                         'username' => $identifier,
-                        'password' => $password
+                        'password' => $password,
                     )
                 );
 
@@ -222,8 +223,9 @@ class AuthenticationManager
                     $login_processor = new LoginProcessor($us, $result->getIdentity());
                     $person          = $login_processor->getPerson();
 
-                    $identity = new Identity($person->id, array('person' => $person));
-                    $result   = new Result(Result::SUCCESS, $identity);
+                    $identity     = new Identity($person->id, array('person' => $person));
+                    $result       = new Result(Result::SUCCESS, $identity);
+                    $this->authBy = $us->source_type;
 
                     return $result;
                 }
@@ -252,7 +254,7 @@ class AuthenticationManager
     }
 
     /**
-     * Usersources that have an icon to display to login
+     * Usersources that have an icon to display to login.
      *
      * @return \Application\DeskPRO\Usersource\UsersourceCollection
      */
@@ -272,7 +274,7 @@ class AuthenticationManager
     }
 
     /**
-     * Usersources that have a button to display to login
+     * Usersources that have a button to display to login.
      *
      * @return \Application\DeskPRO\Usersource\UsersourceCollection
      */
@@ -303,7 +305,7 @@ class AuthenticationManager
     }
 
     /**
-     * Has at least one usersource that can redirect to "lost password"
+     * Has at least one usersource that can redirect to "lost password".
      *
      * @return bool
      */
@@ -312,23 +314,23 @@ class AuthenticationManager
         return $this->isDeskPROEnabled();
     }
 
-	public function isDeskPROEnabled($interface = null)
+    public function isDeskPROEnabled($interface = null)
     {
-		if (null === $interface) { // if we have a usersource that doesn't have an app (which always means the DeskPRO usersource)
+        if (null === $interface) { // if we have a usersource that doesn't have an app (which always means the DeskPRO usersource)
         foreach ($this->usersourcesForInterface as $usersource) {
             if ($usersource->app === null) {
                 return true;
             }
         }
 
-        return false;
+            return false;
+        }
+
+        // clone the auth manager except make it for the specific interface, not the default
+        $authManager = $this->cloneForInterface($interface);
+
+        return $authManager->isDeskPROEnabled();
     }
-
-		// clone the auth manager except make it for the specific interface, not the default
-		$authManager = $this->cloneForInterface($interface);
-
-		return $authManager->isDeskPROEnabled();
-	}
 
     /*********************************************
     #------------------------------
@@ -341,6 +343,7 @@ class AuthenticationManager
      * Is there anything on the website to show the user when it comes to auth? (login sidebar, registration, reg page, etc)
      * For example, if redirect SSO is enabled, then this would be false. If for some reason only background SSO was
      * set, and no usersource displayed anything, then this is also false.
+     *
      * @return bool
      */
     public function isAuthVisible()
@@ -357,7 +360,7 @@ class AuthenticationManager
                         UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN,
                         UsersourceInfo::CAPABILITY_FORM_LOGIN,
                         UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN,
-                        UsersourceInfo::CAPABILITY_NEW_COMMENT_TAB
+                        UsersourceInfo::CAPABILITY_NEW_COMMENT_TAB,
                     )
 
                 )
@@ -379,11 +382,12 @@ class AuthenticationManager
 
     /**
      * @param $interface
+     *
      * @return AuthenticationManager
      */
     public function cloneForInterface($interface)
     {
-        return new AuthenticationManager(
+        return new self(
             $this->authSettings, $this->usersourceManager, $this->authAdapterFactory, $this->appSettings, $interface
         );
     }
@@ -401,5 +405,10 @@ class AuthenticationManager
     public function getInterface()
     {
         return $this->interface;
+    }
+
+    public function getAuthBy()
+    {
+        return $this->authBy;
     }
 }

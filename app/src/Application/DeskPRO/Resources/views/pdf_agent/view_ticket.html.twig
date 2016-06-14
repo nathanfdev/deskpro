@@ -136,6 +136,16 @@
             </td>
         </tr>
     {% endif %}
+
+    {% for f in custom_fields if layout.has('ticket_' ~ f.name) %}
+        <tr>
+            <th>{{ f.title }}:</th>
+            <td>
+                {{ render_custom_field(f) }}
+            </td>
+        </tr>
+    {% endfor %}
+
 </table>
 
 {{ ticket_messages_block|raw }}

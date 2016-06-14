@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
@@ -47,7 +44,7 @@ use Application\DeskPRO\Settings\SettingHandler\TicketDepartment as TicketDepart
 class TicketDepsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -58,7 +55,6 @@ class TicketDepsController extends AbstractController implements ProtectedContro
         return $multi;
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -68,9 +64,9 @@ class TicketDepsController extends AbstractController implements ProtectedContro
         $data = array();
 
         $ticket_deps = $this->container->getSystemService('ticket_departments');
-        $flat_array = $ticket_deps->getFlatArray();
+        $flat_array  = $ticket_deps->getFlatArray();
 
-        $ag = $this->container->getAgentGroups();
+        $ag         = $this->container->getAgentGroups();
         $with_perms = $this->in->getBool('with_perms');
 
         if ($with_perms) {
@@ -92,21 +88,21 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 
                 if ($p['usergroup_id']) {
                     if ($ug->getAgentGroup($p['usergroup_id'])) {
-                        $perms[$p['department_id']]['agentgroups'][] = array('id' => (int)$p['usergroup_id'], 'name' => $p['name']);
+                        $perms[$p['department_id']]['agentgroups'][] = array('id' => (int) $p['usergroup_id'], 'name' => $p['name']);
                     } else {
-                        $perms[$p['department_id']]['usergroups'][] = array('id' => (int)$p['usergroup_id'], 'name' => $p['name']);
+                        $perms[$p['department_id']]['usergroups'][] = array('id' => (int) $p['usergroup_id'], 'name' => $p['name']);
                     }
                 } else {
-                    $perms[$p['department_id']]['users'][] = array('id' => (int)$p['person_id'], 'name' => $p['name']);
+                    $perms[$p['department_id']]['users'][] = array('id' => (int) $p['person_id'], 'name' => $p['name']);
                 }
             }
         }
 
-        $deps_with_layout = $this->db->fetchAllCol("
+        $deps_with_layout = $this->db->fetchAllCol('
             SELECT department_id
             FROM ticket_layouts
             WHERE department_id IS NOT NULL
-        ");
+        ');
 
         if ($deps_with_layout) {
             $deps_with_layout = array_fill_keys($deps_with_layout, true);
@@ -114,7 +110,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 
         $deps = array();
         foreach ($flat_array as $row) {
-            $r = $row['object']->toApiData(true, false);
+            $r          = $row['object']->toApiData(true, false);
             $r['depth'] = $row['depth'];
 
             if ($with_perms) {
@@ -145,7 +141,6 @@ class TicketDepsController extends AbstractController implements ProtectedContro
         return $this->createApiResponse($data);
     }
 
-
     ####################################################################################################################
     # get
     ####################################################################################################################
@@ -158,39 +153,39 @@ class TicketDepsController extends AbstractController implements ProtectedContro
             throw $this->createNotFoundException();
         }
 
-        $data = array();
+        $data               = array();
         $data['department'] = $this->getApiData($dep);
 
-        $perms = $this->db->fetchAll("SELECT usergroup_id, person_id, name FROM department_permissions WHERE department_id = ?", array($dep->id));
+        $perms = $this->db->fetchAll('SELECT usergroup_id, person_id, name FROM department_permissions WHERE department_id = ?', array($dep->id));
 
         $data['permissions'] = array(
             'usergroups'  => array(),
             'agentgroups' => array(),
-            'agents'      => array()
+            'agents'      => array(),
         );
 
         foreach ($perms as $perm) {
             if ($perm['usergroup_id']) {
                 if ($this->container->getDataService('Usergroup')->get($perm['usergroup_id'])->is_agent_group) {
                     $data['permissions']['agentgroups'][] = array(
-                        'usergroup_id' => (int)$perm['usergroup_id'],
+                        'usergroup_id' => (int) $perm['usergroup_id'],
                         'perm_name'    => $perm['name'],
                     );
                 } else {
                     $data['permissions']['usergroups'][] = array(
-                        'usergroup_id' => (int)$perm['usergroup_id'],
+                        'usergroup_id' => (int) $perm['usergroup_id'],
                         'perm_name'    => $perm['name'],
                     );
                 }
             } elseif ($perm['person_id']) {
                 $data['permissions']['agents'][] = array(
-                    'agent_id'  => (int)$perm['person_id'],
-                    'perm_name' => $perm['name']
+                    'agent_id'  => (int) $perm['person_id'],
+                    'perm_name' => $perm['name'],
                 );
             }
         }
 
-        $ag = $this->container->getAgentGroups();
+        $ag                                   = $this->container->getAgentGroups();
         $data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_perms')->id, 'perm_name' => 'full');
         $data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'perm_name' => 'full');
 
@@ -206,7 +201,6 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 
         return $this->createApiResponse($data);
     }
-
 
     ####################################################################################################################
     # save
@@ -230,7 +224,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
             new TicketDepartmentType(),
             $dep_edit,
             array(
-                'cascade_validation' => true
+                'cascade_validation' => true,
             )
         );
 
@@ -238,7 +232,6 @@ class TicketDepsController extends AbstractController implements ProtectedContro
         $form->submit($data, true);
 
         if ($form->isValid() || 1) {
-
             if ($avatar_blob_id = $this->in->getUInt('department.avatar')) {
                 $blob = $this->em->find('DeskPRO:Blob', $avatar_blob_id);
                 if ($blob && $blob->isImage()) {
@@ -273,7 +266,6 @@ class TicketDepsController extends AbstractController implements ProtectedContro
         }
     }
 
-
     ####################################################################################################################
     # remove
     ####################################################################################################################
@@ -281,7 +273,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
     public function removeAction($id)
     {
         $editor = $this->_getDepartmentEditor();
-        $dep = $this->container->getSystemService('ticket_departments')->getById($id);
+        $dep    = $this->container->getSystemService('ticket_departments')->getById($id);
 
         if (!$dep) {
             throw $this->createNotFoundException();
@@ -289,14 +281,13 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 
         $move_to = $this->container->getSystemService('ticket_departments')->getById($this->in->getUint('move_to'));
         if (!$move_to) {
-            throw ValidationException::create("department.remove.move_tickets", "You must select a department to move existing tickets into");
+            throw ValidationException::create('department.remove.move_tickets', 'You must select a department to move existing tickets into');
         }
 
         $old_id = $editor->removeDepartment($dep, $move_to);
 
         return $this->createApiResponse(array('old_id' => $old_id, 'success' => true));
     }
-
 
     ####################################################################################################################
     # save-display-order
@@ -312,7 +303,6 @@ class TicketDepsController extends AbstractController implements ProtectedContro
         return $this->createSuccessResponse();
     }
 
-
     ####################################################################################################################
     # get-settings
     ####################################################################################################################
@@ -323,7 +313,6 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 
         return $this->createApiResponse($settings);
     }
-
 
     ####################################################################################################################
     # save-settings
@@ -341,8 +330,10 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 
     /**
      * @param $id
-     * @return TicketDepartmentEditor
+     *
      * @throws
+     *
+     * @return TicketDepartmentEditor
      */
     private function _getDepartmentEditor()
     {

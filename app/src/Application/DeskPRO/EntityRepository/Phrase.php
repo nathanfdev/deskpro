@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -40,36 +39,36 @@ class Phrase extends AbstractEntityRepository
 {
     public function getPhraseForLanguage($phrase_name, $language = null)
     {
-        if ($language === null OR $language === 0) {
-            return $this->getEntityManager()->createQuery("
+        if ($language === null or $language === 0) {
+            return $this->getEntityManager()->createQuery('
                 SELECT p
                 FROM DeskPRO:Phrase p
                 WHERE p.language IS NULL AND p.name = ?1
-            ")->setParameters(array(1=>$phrase_name))->setMaxResults(1)->getOneOrNullResult();
+            ')->setParameters(array(1 => $phrase_name))->setMaxResults(1)->getOneOrNullResult();
         } else {
-            return $this->getEntityManager()->createQuery("
+            return $this->getEntityManager()->createQuery('
                 SELECT p
                 FROM DeskPRO:Phrase p
                 WHERE p.language = ?1 AND p.name = ?2
-            ")->setParameters(array(1=>$language, 2=>$phrase_name))->setMaxResults(1)->getOneOrNullResult();
+            ')->setParameters(array(1 => $language, 2 => $phrase_name))->setMaxResults(1)->getOneOrNullResult();
         }
     }
 
     public function getCustomPhraseNamesInLanguage($language)
     {
-        $names = App::getDb()->fetchColumn("
+        $names = App::getDb()->fetchColumn('
             SELECT name
             FROM phrases
             WHERE language_id = ? AND phrase IS NOT NULL
-        ", array($language['id']));
+        ', array($language['id']));
 
         return $names;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Language $language
-     * @param  string                               $group
+     * @param \Application\DeskPRO\Entity\Language $language
+     * @param string                               $group
+     *
      * @return array
      */
     public function getPhrasesInGroup($language, $group)
@@ -83,20 +82,19 @@ class Phrase extends AbstractEntityRepository
         $phrases = $this->getEntityManager()->getConnection()->fetchAllKeyValue('
             SELECT name, COALESCE(phrase, original_phrase) AS phrase
             FROM phrases
-            WHERE language_id = ? AND groupname = ?
-        ', array($language['id'], $group));
+            WHERE language_id = ? AND groupname LIKE ?
+        ', array($language['id'], $group.'%'));
 
         return $phrases;
     }
 
-
     public function getLanguagePhrasesInGroup($language, $group)
     {
-        return $this->_em->createQuery("
+        return $this->_em->createQuery('
             SELECT p
             FROM DeskPRO:Phrase p INDEX BY p.name
             WHERE p.language = ?0 AND p.groupname = ?1
-        ")->setParameters(array($language, $group))->execute();
+        ')->setParameters(array($language, $group))->execute();
     }
 
     public function getCustomPhrases($language)

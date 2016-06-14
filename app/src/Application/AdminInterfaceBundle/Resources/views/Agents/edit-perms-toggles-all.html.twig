@@ -1,0 +1,246 @@
+{% import 'AdminInterfaceBundle:Agents:edit-perms-toggles-row-' ~ (groups ? 'group' : 'agent') ~ '.html.twig' as macro %}
+
+<nav class="dp-tabletabs">
+    <ul>
+        <li class="active" dp-tab-btn="main.perms.tickets"><a href="#"><i
+                        class="fa fa-envelope"></i> {{ phrase('adm.agents.perm_title_tickets') }}</a></li>
+        <li dp-tab-btn="main.perms.people"><a href="#"><i
+                        class="fa fa-user"></i> {{ phrase('adm.agents.perm_title_people') }}</a></li>
+        <li dp-tab-btn="main.perms.chat"><a href="#"><i
+                        class="fa fa-comment"></i> {{ phrase('adm.agents.perm_title_chat') }}</a></li>
+        <li dp-tab-btn="main.perms.publish"><a href="#"><i
+                        class="fa fa-book"></i> {{ phrase('adm.agents.perm_title_publish') }}</a></li>
+        <li dp-tab-btn="main.perms.profile"><a href="#"><i
+                        class="fa fa-pencil"></i> {{ phrase('adm.agents.perm_title_profile') }}</a></li>
+        {% if app.getSetting('core.apps_tasks') %}
+            <li dp-tab-btn="main.perms.tasks"><a href="#"><i
+                            class="fa fa-calendar-o"></i> {{ phrase('adm.agents.perm_title_tasks') }}</a></li>
+        {% endif %}
+        {% if app.getSetting('core.problems.enabled') %}
+            <li dp-tab-btn="main.perms.problems"><a href="#"><i
+                            class="fa fa-bullhorn"></i> {{ phrase('adm.agents.perm_title_problems') }}</a></li>
+        {% endif %}
+    </ul>
+
+    {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.tickets', type: 'perms', section: 'ticket'} %}
+    {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.people', type: 'perms', section: 'people'} %}
+    {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.chat', type: 'perms', section: 'chat'} %}
+    {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.publish', type: 'perms', section: 'publish'} %}
+    {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.profile', type: 'perms', section: 'general'} %}
+    {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.tasks', type: 'perms', section: 'tasks'} %}
+    {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.problems', type: 'perms', section: 'problems'} %}
+</nav>
+
+{# TICKET PERMISSIONS #}
+<table class="table table-hover agent-perms-table" dp-tab-body="main.perms.tickets">
+    <tbody>
+    {{ macro.perm_row('ticket', 'use') }}
+    {{ macro.perm_row('ticket', 'create') }}
+    {{ macro.perm_row('ticket', 'reply_mass') }}
+    {{ macro.perm_row('ticket', 'modify_set_archived') }}
+    {{ macro.perm_row('ticket', 'create_labels') }}
+    </tbody>
+    <tbody>
+    {{ macro.perm_row('ticket', 'reply_own',                     {first: true}) }}
+    {{ macro.perm_row('ticket', 'modify_own',                    {showToggler: true}) }}
+    {{ macro.perm_row('ticket', 'modify_department_own',         {toggleName: 'ticket.modify_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_fields_own',             {toggleName: 'ticket.modify_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_assign_agent_own',       {toggleName: 'ticket.modify_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_assign_team_own',        {toggleName: 'ticket.modify_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_assign_self_own',        {toggleName: 'ticket.modify_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_cc_own',                 {toggleName: 'ticket.modify_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_merge_own',              {toggleName: 'ticket.modify_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_labels_own',             {toggleName: 'ticket.modify_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_slas_own',               {toggleName: 'ticket.modify_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_notes_own',              {toggleName: 'ticket.modify_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_hold_own',           {toggleName: 'ticket.modify_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_awaiting_user_own',  {toggleName: 'ticket.modify_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_awaiting_agent_own', {toggleName: 'ticket.modify_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_resolved_own',       {toggleName: 'ticket.modify_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_unresolved_own',     {toggleName: 'ticket.modify_own'}) }}
+    {% if app.getSetting('core.problems.enabled') %}
+        {{ macro.perm_row('ticket', 'associate_problem_own',        {toggleName: 'ticket.modify_own'}) }}
+        {{ macro.perm_row('ticket', 'disassociate_problem_own',     {toggleName: 'ticket.modify_own'}) }}
+    {% endif %}
+    {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
+        {{ macro.perm_row('ticket', 'modify_billing_own', {toggleName: 'ticket.modify_own'}) }}
+    {% endif %}
+    {{ macro.perm_row('ticket', 'modify_messages_own') }}
+    {{ macro.perm_row('ticket', 'delete_own', {destructive: true}) }}
+    </tbody>
+    <tbody>
+    {{ macro.perm_row('ticket', 'reply_to_followed',                  {first: true}) }}
+    {{ macro.perm_row('ticket', 'modify_followed',                    {showToggler: true}) }}
+    {{ macro.perm_row('ticket', 'modify_department_followed',         {toggleName: 'ticket.modify_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_fields_followed',             {toggleName: 'ticket.modify_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_assign_agent_followed',       {toggleName: 'ticket.modify_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_assign_team_followed',        {toggleName: 'ticket.modify_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_assign_self_followed',        {toggleName: 'ticket.modify_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_cc_followed',                 {toggleName: 'ticket.modify_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_merge_followed',              {toggleName: 'ticket.modify_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_labels_followed',             {toggleName: 'ticket.modify_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_slas_followed',               {toggleName: 'ticket.modify_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_notes_followed',              {toggleName: 'ticket.modify_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_hold_followed',           {toggleName: 'ticket.modify_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_awaiting_user_followed',  {toggleName: 'ticket.modify_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_awaiting_agent_followed', {toggleName: 'ticket.modify_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_resolved_followed',       {toggleName: 'ticket.modify_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_unresolved_followed',     {toggleName: 'ticket.modify_followed'}) }}
+    {% if app.getSetting('core.problems.enabled') %}
+        {{ macro.perm_row('ticket', 'associate_problem_followed',        {toggleName: 'ticket.modify_followed'}) }}
+        {{ macro.perm_row('ticket', 'disassociate_problem_followed',     {toggleName: 'ticket.modify_followed'}) }}
+    {% endif %}
+    {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
+        {{ macro.perm_row('ticket', 'modify_billing_followed', {toggleName: 'ticket.modify_followed'}) }}
+    {% endif %}
+    {{ macro.perm_row('ticket', 'modify_messages_followed') }}
+    {{ macro.perm_row('ticket', 'delete_followed', {destructive: true}) }}
+    </tbody>
+    <tbody>
+    {{ macro.perm_row('ticket', 'view_unassigned',                       {first: true}) }}
+    {{ macro.perm_row('ticket', 'reply_unassigned') }}
+    {{ macro.perm_row('ticket', 'modify_unassigned',                     {showToggler: true}) }}
+    {{ macro.perm_row('ticket', 'modify_department_unassigned',          {toggleName: 'ticket.modify_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_fields_unassigned',              {toggleName: 'ticket.modify_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_assign_agent_unassigned',        {toggleName: 'ticket.modify_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_assign_team_unassigned',         {toggleName: 'ticket.modify_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_assign_self_unassigned',         {toggleName: 'ticket.modify_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_cc_unassigned',                  {toggleName: 'ticket.modify_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_merge_unassigned',               {toggleName: 'ticket.modify_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_labels_unassigned',              {toggleName: 'ticket.modify_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_slas_unassigned',                {toggleName: 'ticket.modify_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_notes_unassigned',               {toggleName: 'ticket.modify_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_hold_unassigned',            {toggleName: 'ticket.modify_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_awaiting_user_unassigned',   {toggleName: 'ticket.modify_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_awaiting_agent_unassigned',  {toggleName: 'ticket.modify_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_resolved_unassigned',        {toggleName: 'ticket.modify_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_unresolved_unassigned',      {toggleName: 'ticket.modify_unassigned'}) }}
+    {% if app.getSetting('core.problems.enabled') %}
+        {{ macro.perm_row('ticket', 'associate_problem_unassigned',        {toggleName: 'ticket.modify_unassigned'}) }}
+        {{ macro.perm_row('ticket', 'disassociate_problem_unassigned',     {toggleName: 'ticket.modify_unassigned'}) }}
+    {% endif %}
+    {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
+        {{ macro.perm_row('ticket', 'modify_billing_unassigned', {toggleName: 'ticket.modify_unassigned'}) }}
+    {% endif %}
+    {{ macro.perm_row('ticket', 'modify_messages_unassigned') }}
+    {{ macro.perm_row('ticket', 'delete_unassigned', {destructive: true}) }}
+    </tbody>
+    <tbody>
+    {{ macro.perm_row('ticket', 'view_others',                      {first: true}) }}
+    {{ macro.perm_row('ticket', 'reply_others') }}
+    {{ macro.perm_row('ticket', 'modify_others',                    {showToggler: true}) }}
+    {{ macro.perm_row('ticket', 'modify_department_others',         {toggleName: 'ticket.modify_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_fields_others',             {toggleName: 'ticket.modify_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_assign_agent_others',       {toggleName: 'ticket.modify_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_assign_team_others',        {toggleName: 'ticket.modify_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_assign_self_others',        {toggleName: 'ticket.modify_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_cc_others',                 {toggleName: 'ticket.modify_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_merge_others',              {toggleName: 'ticket.modify_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_labels_others',             {toggleName: 'ticket.modify_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_slas_others',               {toggleName: 'ticket.modify_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_notes_others',              {toggleName: 'ticket.modify_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_hold_others',           {toggleName: 'ticket.modify_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_awaiting_user_others',  {toggleName: 'ticket.modify_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_awaiting_agent_others', {toggleName: 'ticket.modify_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_resolved_others',       {toggleName: 'ticket.modify_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_set_unresolved_others',     {toggleName: 'ticket.modify_others'}) }}
+    {% if app.getSetting('core.problems.enabled') %}
+        {{ macro.perm_row('ticket', 'associate_problem_others',        {toggleName: 'ticket.modify_others'}) }}
+        {{ macro.perm_row('ticket', 'disassociate_problem_others',     {toggleName: 'ticket.modify_others'}) }}
+    {% endif %}
+    {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
+        {{ macro.perm_row('ticket', 'modify_billing_others', {toggleName: 'ticket.modify_others'}) }}
+    {% endif %}
+    {{ macro.perm_row('ticket', 'modify_messages_others') }}
+    {{ macro.perm_row('ticket', 'delete_others', {destructive: true}) }}
+    </tbody>
+</table>
+{# /TICKET PERMISSIONS #}
+
+    {# PEOPLE PERMISSIONS #}
+<table class="table table-hover" dp-tab-body="main.perms.people">
+    <tbody>
+    {{ macro.perm_row('people', 'use') }}
+    {{ macro.perm_row('people', 'create') }}
+    {{ macro.perm_row('people', 'edit') }}
+    {{ macro.perm_row('people', 'validate') }}
+    {{ macro.perm_row('people', 'manage_emails') }}
+    {{ macro.perm_row('people', 'reset_password') }}
+    {{ macro.perm_row('people', 'create_labels') }}
+    {{ macro.perm_row('people', 'notes') }}
+    {{ macro.perm_row('people', 'delete', {destructive: true}) }}
+    {{ macro.perm_row('people', 'disable') }}
+    {{ macro.perm_row('people', 'login_as') }}
+    {{ macro.perm_row('people', 'merge') }}
+    </tbody>
+    <tbody>
+    {{ macro.perm_row('org', 'create', {first: true}) }}
+    {{ macro.perm_row('org', 'edit') }}
+    {{ macro.perm_row('org', 'notes') }}
+    {{ macro.perm_row('org', 'create_labels') }}
+    {{ macro.perm_row('org', 'delete', {destructive: true}) }}
+    </tbody>
+</table>
+{# /PEOPLE PERMISSIONS #}
+
+    {# CHAT PERMISSIONS #}
+    {% if app.getSetting('core.apps_chat') %}
+        <table class="table table-hover" dp-tab-body="main.perms.chat">
+            <tbody>
+            {{ macro.perm_row('chat', 'use') }}
+            {{ macro.perm_row('chat', 'view_transcripts') }}
+            {{ macro.perm_row('chat', 'view_unassigned') }}
+            {{ macro.perm_row('chat', 'view_others') }}
+            {{ macro.perm_row('chat', 'create_labels') }}
+            {{ macro.perm_row('chat', 'delete', {destructive: true}) }}
+            </tbody>
+        </table>
+    {% endif %}
+    {# /CHAT PERMISSIONS #}
+
+    {# PUBLISH PERMISSIONS #}
+<table class="table table-hover" dp-tab-body="main.perms.publish">
+    <tbody>
+    {{ macro.perm_row('publish', 'create') }}
+    {{ macro.perm_row('publish', 'delete', {destructive: true}) }}
+    {{ macro.perm_row('publish', 'edit') }}
+    {{ macro.perm_row('publish', 'can_insert_html') }}
+    {{ macro.perm_row('publish', 'validate') }}
+    </tbody>
+    <tbody>
+    {{ macro.perm_row('publish', 'articles_create_labels') }}
+    {{ macro.perm_row('publish', 'downloads_create_labels') }}
+    {{ macro.perm_row('publish', 'news_create_labels') }}
+    {{ macro.perm_row('publish', 'feedback_create_labels') }}
+    </tbody>
+</table>
+{# /PUBLISH PERMISSIONS #}
+
+    {# GENERAL PERMISSIONS #}
+<table class="table table-hover" dp-tab-body="main.perms.profile">
+    <tbody>
+    {{ macro.perm_row('general', 'picture') }}
+    {{ macro.perm_row('general', 'signature') }}
+    </tbody>
+</table>
+{# /GENERAL PERMISSIONS #}
+
+    {# TASKS PERMISSIONS #}
+<table class="table table-hover" dp-tab-body="main.perms.tasks">
+    <tbody>
+    {{ macro.perm_row('tasks', 'use') }}
+    </tbody>
+</table>
+{# /TASKS PERMISSIONS #}
+
+
+    {# PROBLEMS PERMISSIONS #}
+<table class="table table-hover" dp-tab-body="main.perms.problems">
+    <tbody>
+    {{ macro.perm_row('problems', 'view') }}
+    {{ macro.perm_row('problems', 'create') }}
+    {{ macro.perm_row('problems', 'close') }}
+    {{ macro.perm_row('problems', 'reopen') }}
+    </tbody>
+</table>
+{# /PROBLEMS PERMISSIONS #}

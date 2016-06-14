@@ -4,6 +4,10 @@
 			<tr>
 				<td width="80" class="nowrap" style="padding-right: 8px;"><label>{{ ng_var('type_title') }}</label></td>
 				<td>
+                    <select ui-select2="{dropdownAutoWidth:true}" ng-model="model.op" style="min-width: 50px;">
+                        <option value="is">is</option>
+                        <option value="not">is not</option>
+                    </select>
 					<select ui-select2 ng-model="model.value" style="min-width: 140px" multiple="multiple">
 						<option value="awaiting_agent">Awaiting Agent</option>
 						<option value="awaiting_user">Awaiting User</option>

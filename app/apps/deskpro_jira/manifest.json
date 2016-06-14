@@ -49,6 +49,27 @@
       "description": "Copy this key to your JIRA Application Link if you want to use default JIRA Application Link Private Key.",
       "default": "-----BEGIN CERTIFICATE-----\nMIICxTCCAi6gAwIBAgIJAJw9+a1S8dAqMA0GCSqGSIb3DQEBBQUAMEwxCzAJBgNV\nBAYTAlVTMQswCQYDVQQIEwJDQTEWMBQGA1UEBxMNTW91bnRhaW4gVmlldzEYMBYG\nA1UEAxMPd3d3LmV4YW1wbGUuY29tMB4XDTE0MTAyOTE5MDcyM1oXDTE1MTAyOTE5\nMDcyM1owTDELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3Vu\ndGFpbiBWaWV3MRgwFgYDVQQDEw93d3cuZXhhbXBsZS5jb20wgZ8wDQYJKoZIhvcN\nAQEBBQADgY0AMIGJAoGBALrLMcIfPcVEd8+Vex+0cFXAimqwYzBJbffywhIJQdQi\nTUIo5/tNlfjGKVT9dLyuxTH6FLSuGEvkMrAT1Y17ohyi3QaNlhr/dfjcflfK0dK8\nSAQqypnfqzJc0KWutHuGzSOsKii8zMbZ5HOKWAG02gyqCn0rE9YPN/LNnha0KcqV\nAgMBAAGjga4wgaswHQYDVR0OBBYEFNb+MNAN24VEyrZX1mOVe7hN2YLFMHwGA1Ud\nIwR1MHOAFNb+MNAN24VEyrZX1mOVe7hN2YLFoVCkTjBMMQswCQYDVQQGEwJVUzEL\nMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxGDAWBgNVBAMTD3d3\ndy5leGFtcGxlLmNvbYIJAJw9+a1S8dAqMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcN\nAQEFBQADgYEAWN0qMBDqssXnO7mUTUekyZf799L9ksIAC81phy5nmkeSrZbFJI+w\nqjQQM1yTz0RiHNvP1hLtV5KkPRDb07y9UCYJRfqymdch1Vt/9g2tWiiI97GasNYF\nC40w3fCzhYtwwe0duWWpHBDQ7Pn6yBNTBru3zCo2tmYsbM4fo5A/czE=\n-----END CERTIFICATE-----",
       "native_only": true
+    },
+    {
+      "name": "ssl_authority",
+      "type": "choice",
+      "label": "SSL Certificate Verification",
+      "native_only": true,
+      "default_value": "default",
+      "options": [
+        {
+          "label": "Bundled library",
+          "value": "default"
+        },
+        {
+          "label": "System library",
+          "value": "system"
+        },
+        {
+          "label": "Disabled",
+          "value": "disabled"
+        }
+      ]
     }
   ]
 }

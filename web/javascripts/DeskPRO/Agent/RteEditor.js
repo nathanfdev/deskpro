@@ -17,44 +17,7 @@ DeskPRO.Agent.RteEditor = {
 		// must be done before initializing
 		var dropZone = textarea.siblings('.drop-file-zone');
 
-		if (window.DP_AGENT_RTE_BUTTONS) {
-			var b = window.DP_AGENT_RTE_BUTTONS;
-			var buttons = [];
-			if (b.html) buttons.push('html');
-
-			if ((b.bold || b.italic || b.underline || b.strike) && buttons.length) buttons.push('|');
-			if (b.bold) buttons.push('bold');
-			if (b.italic) buttons.push('italic');
-			if (b.underline) buttons.push('underline');
-			if (b.strike) buttons.push('deleted');
-
-			if (b.color) {
-				if (buttons.length) buttons.push('|');
-				buttons.push('fontcolor');
-			}
-
-			if (b.alignment) {
-				if (buttons.length) buttons.push('|');
-				buttons.push('alignment');
-			}
-
-			if (b.list) {
-				if (buttons.length) buttons.push('|');
-				buttons.push('unorderedlist');
-				buttons.push('orderedlist');
-				buttons.push('outdent');
-				buttons.push('indent');
-			}
-
-			if ((b.image || b.link || b.table || b.hr) && buttons.length) buttons.push('|');
-			if (b.image) buttons.push('image');
-			if (b.link) buttons.push('link');
-			if (b.table) buttons.push('table');
-			if (b.hr) buttons.push('horizontalrule');
-
-		} else {
-			var buttons = ['html', '|', 'bold', 'italic', 'underline', '|',  'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'image', 'link', '|', 'alignment'];
-		}
+    var buttons = ['bold', 'italic', 'underline', '|', 'formatting', 'fontcolor', '|', 'alignment', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'image', 'link', 'horizontalrule', '|', 'html'];
 
 		var defaultOptions = {
 			direction: textarea.attr('dir') || 'ltr',
@@ -76,7 +39,26 @@ DeskPRO.Agent.RteEditor = {
 			},
 			imageUploadErrorCallback: function(obj, json) {
 				alert(json.error);
-			}
+			},
+      execCommandCallback: function(api, cmd) {
+        api.$editor.find('blockquote').attr('style', null).addClass('dp-bq');
+        api.$editor.find('pre').attr('style', null).addClass('dp-pre');
+        api.$editor.find('font').each(function(x, n) {
+          n = $(n);
+          var el = $('<span/>').html(n.html());
+
+          if (n.attr('style')) {
+            el.attr('style', n.attr('style'));
+          }
+          if (n.attr('color')) {
+            el.attr('color', n.attr('color'));
+            el.css('color', n.attr('color'));
+          }
+
+          $(this).replaceWith(el);
+        });
+				api.$editor.find('table').addClass('dp_message_table');
+      }
 		};
 
 		if (options.autosaveContent && options.autosaveContentId) {
@@ -359,11 +341,12 @@ DeskPRO.Agent.RteEditor = {
 
 					var img = textarea.getEditor().find('img[data-paste-id=' + pasteId + ']');
 					if (json.error) {
-						img.remove();
-					} else {
+            img.remove();
+            api.opts.imageUploadError && api.opts.imageUploadError(pasteId);
+          } else {
 						img.data('paste-id', '').attr('src', json.filelink);
 						if (typeof api.opts.imageUploadCallback === 'function') {
-							api.opts.imageUploadCallback(api, json);
+							api.opts.imageUploadCallback(api, json, pasteId);
 						}
 					}
 
@@ -425,6 +408,8 @@ DeskPRO.Agent.RteEditor = {
 
 							var pasteImageId = pasteImageCounter++;
 
+              api.opts.imageBeforeUploadCallback && api.opts.imageBeforeUploadCallback(api, pasteImageId);
+
 							if (sendImage(pasteImageId, RegExp.$1, blob)) {
 								textarea.insertHtml('<img src="' + source + '" data-paste-id="' + pasteImageId + '">');
 								hasImage = true;
@@ -485,8 +470,18 @@ DeskPRO.Agent.RteEditor = {
 				html = html.replace(/<p([^>]*)>(\s*|<br\s*\/?>|&nbsp;)<\/p>/gi, '<br/>');
 				html = html.replace(/(<p[^>]*) data-redactor="1"/g, '$1');
 				html = html.replace(/<\/p>\s*<p>/g, '<\/p><p>');
-				html = html.replace(/^<p>/, '');
-				html = html.replace(/<\/p>$/, '');
+
+        html = html.replace(/<span[^>]*>(\t+)<\/span>/g, function(m) {
+          var s = '';
+          for (var i = 0; i < m[1].length; i++) {
+            s += '__DP_INDENT_PLACE__';
+          }
+          return s;
+        });
+
+        html = html.replace(/&nbsp;/g, function(m) {
+          return '__DP_SPACE_PLACE__';
+        });
 
 				this.pasteCleanUp(html);
 
@@ -494,6 +489,141 @@ DeskPRO.Agent.RteEditor = {
 			}, this), 1);
 
 		}, textarea.data('redactor')));
+
+    var origSyncCode = api.syncCode;
+
+    api.syncCode = $.proxy(function(html) {
+      var copy = $('<div/>').html(this.$editor.html());
+      var didChange, counter = 0;
+
+      // This unwraps breaks that appear within other elements,
+      // which can lead to multiple newlines appearing in the result
+      // Before: Foo<i><br/></i>Bar
+      // After:  Foo<br/>Bar
+      do {
+        didChange = false;
+        copy.find('br').each(function () {
+          var me = $(this);
+          var parent = me.parent();
+
+          // Only count text nodes
+          if (!parent.is('span, em, strong, i, b, font, a')) {
+            return;
+          }
+
+          // has text node (Node.TEXT_NODE), ignore
+          if (parent.contents().filter(function () {
+              return this.nodeType === 3;
+            }).length) {
+            return;
+          }
+
+          // has other nodes
+          if (parent.find('> *').not('br').length) {
+            return;
+          }
+
+          var brHtml = [];
+          for (var x = 0, len = parent.find('> br').length; x < len; x++) {
+            brHtml.push('<br/>');
+          }
+
+          // Otherwise we are just wrapping a br
+          parent.replaceWith($(brHtml.join('')));
+          didChange = true;
+        });
+
+      } while (didChange && counter++ < 40); //counter as safety
+
+      this.$el.val(copy.html());
+    }, api);
+
+    var origPasteCleanup = api.pasteClean;
+    api.pasteCleanUp = $.proxy(function(html) {
+      var parent = this.getParentNode();
+
+      // clean up pre
+      if ($(parent).get(0).tagName === 'PRE')
+      {
+        html = this.cleanupPre(html);
+        this.pasteCleanUpInsert(html);
+        return true;
+      }
+
+      // remove comments and php tags
+      html = html.replace(/<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi, '');
+
+      // remove nbsp
+      html = html.replace(/(&nbsp;){2,}/gi, '&nbsp;');
+      html = html.replace(/__DP_INDENT_PLACE__/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+      html = html.replace(/__DP_SPACE_PLACE__/g, '&nbsp;');
+
+      // remove google docs marker
+      html = html.replace(/<b\sid="internal-source-marker(.*?)">([\w\W]*?)<\/b>/gi, "$2");
+
+      // strip tags
+      html = this.stripTags(html);
+
+      // prevert
+      html = html.replace(/<td><\/td>/gi, '[td]');
+      html = html.replace(/<td>&nbsp;<\/td>/gi, '[td]');
+      html = html.replace(/<td><br><\/td>/gi, '[td]');
+      html = html.replace(/<a(.*?)href="(.*?)"(.*?)>([\w\W]*?)<\/a>/gi, '[a href="$2"]$4[/a]');
+      html = html.replace(/<iframe(.*?)>([\w\W]*?)<\/iframe>/gi, '[iframe$1]$2[/iframe]');
+      html = html.replace(/<video(.*?)>([\w\W]*?)<\/video>/gi, '[video$1]$2[/video]');
+      html = html.replace(/<audio(.*?)>([\w\W]*?)<\/audio>/gi, '[audio$1]$2[/audio]');
+      html = html.replace(/<embed(.*?)>([\w\W]*?)<\/embed>/gi, '[embed$1]$2[/embed]');
+      html = html.replace(/<object(.*?)>([\w\W]*?)<\/object>/gi, '[object$1]$2[/object]');
+      html = html.replace(/<param(.*?)>/gi, '[param$1]');
+      html = html.replace(/<img(.*?)style="(.*?)"(.*?)>/gi, '[img$1$3]');
+
+      // remove attributes
+      html = html.replace(/<(\w+)([\w\W]*?)>/gi, '<$1>');
+
+      // remove empty
+      html = html.replace(/<[^\/>][^>]*>(\s*|\t*|\n*|&nbsp;|<br>)<\/[^>]+>/gi, '');
+      html = html.replace(/<[^\/>][^>]*>(\s*|\t*|\n*|&nbsp;|<br>)<\/[^>]+>/gi, '');
+
+      // revert
+      html = html.replace(/\[td\]/gi, '<td>&nbsp;</td>');
+      html = html.replace(/\[a href="(.*?)"\]([\w\W]*?)\[\/a\]/gi, '<a href="$1">$2</a>');
+      html = html.replace(/\[iframe(.*?)\]([\w\W]*?)\[\/iframe\]/gi, '<iframe$1>$2</iframe>');
+      html = html.replace(/\[video(.*?)\]([\w\W]*?)\[\/video\]/gi, '<video$1>$2</video>');
+      html = html.replace(/\[audio(.*?)\]([\w\W]*?)\[\/audio\]/gi, '<audio$1>$2</audio>');
+      html = html.replace(/\[embed(.*?)\]([\w\W]*?)\[\/embed\]/gi, '<embed$1>$2</embed>');
+      html = html.replace(/\[object(.*?)\]([\w\W]*?)\[\/object\]/gi, '<object$1>$2</object>');
+      html = html.replace(/\[param(.*?)\]/gi, '<param$1>');
+      html = html.replace(/\[img(.*?)\]/gi, '<img$1>');
+
+
+      // convert div to p
+      if (this.opts.convertDivs)
+      {
+        html = html.replace(/<div(.*?)>([\w\W]*?)<\/div>/gi, '<p>$2</p>');
+      }
+
+      // remove span
+      html = html.replace(/<span>([\w\W]*?)<\/span>/gi, '$1');
+
+      html = html.replace(/\n{3,}/gi, '\n');
+
+      // remove dirty p
+      html = html.replace(/<p><p>/gi, '<p>');
+      html = html.replace(/<\/p><\/p>/gi, '</p>');
+
+      // FF fix
+      if (this.browser('mozilla'))
+      {
+        html = html.replace(/<br>$/gi, '');
+      }
+
+      this.pasteCleanUpInsert(html);
+    }, api);
+
+		api.syncCode = $.proxy(function(){
+			this.$el.val(this.$editor.html());
+			this.$editor.trigger('synced');
+		}, api);
 
 		return textarea;
 	}

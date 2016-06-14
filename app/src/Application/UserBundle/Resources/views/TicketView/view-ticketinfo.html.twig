@@ -55,30 +55,42 @@
 					<td>{{ ticket.priority.title }}</td>
 				</tr>
 			{% else %}
-				{% for f in custom_fields %}
-					{% if item.getFieldType() == 'ticket_field' and item.getFieldId() == f.id and not (f.field_def.isFormField() and not ticket.hasCustomField(f.id)) %}
-						{% if ticket.hasCustomField(f.field_def.id) %}
-							<tr>
-								<th>{{f.title}}</th>
-								<td>
-									{{ render_custom_field(f) }}
-								</td>
-							</tr>
-						{% endif %}
+
+                {% if 'ticket_field' == item.getFieldType() and custom_fields[item.getFieldId()] %}
+				    {% set f = custom_fields[item.getFieldId()] %}
+					{% if f.field_def.isFormField() and ticket.hasCustomField(f.id) %}
+                        <tr>
+                            <th>{{f.title}}</th>
+                            <td>
+                                {{ render_custom_field(f) }}
+                            </td>
+                        </tr>
 					{% endif %}
-				{% endfor %}
-				{% for f in custom_user_fields %}
-					{% if item.getFieldType() == 'user_field' and item.getFieldId() == f.id and not (f.field_def.isFormField() and not ticket.person.hasCustomField(f.id)) %}
-						{% if ticket.person.hasCustomField(f.field_def.id) %}
-							<tr>
-								<th>{{f.title}}</th>
-								<td>
-									{{ render_custom_field(f) }}
-								</td>
-							</tr>
-						{% endif %}
-					{% endif %}
-				{% endfor %}
+				{% endif %}
+
+                {% if 'user_field' == item.getFieldType() and custom_user_fields[item.getFieldId()] %}
+                    {% set f = custom_user_fields[item.getFieldId()] %}
+                    {% if ticket.person.hasCustomField(f.field_def.id) %}
+                    <tr>
+                        <th>{{f.title}}</th>
+                        <td>
+                            {{ render_custom_field(f) }}
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% endif %}
+
+                {% if 'org_field' == item.getFieldType() and custom_user_fields[item.getFieldId()] and ticket.person.organization %}
+                    {% set f = custom_org_fields[item.getFieldId()] %}
+                    {% if ticket.person.organization.hasCustomField(f.field_def.id) %}
+                        <tr>
+                            <th>{{f.title}}</th>
+                            <td>
+                                {{ render_custom_field(f) }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
 
 			{% endif %}
 		{% endfor %}

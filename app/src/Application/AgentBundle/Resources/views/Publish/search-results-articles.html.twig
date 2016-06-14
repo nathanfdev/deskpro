@@ -27,6 +27,8 @@
 
 {% block pane_content %}
 
+	{% if results|length %}
+
 	<section class="kb-simple-list list-listing">
 		<section class="search-reuslts page-set" data-page="{{ page }}">
 			{% for article in results %}
@@ -98,4 +100,14 @@
 			</footer>
 		{% endif %}
 	</section>
+
+	{% else %}
+
+		<section class="list-listing no-results">
+			<article class="row-item no-results">
+				<p style="padding: 15px;">{{ phrase('agent.general.there_are_no_results') }}</p>
+			</article>
+		</section>
+
+	{% endif %}
 {% endblock pane_content %}

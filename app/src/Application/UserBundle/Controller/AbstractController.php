@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
+ * DeskPRO.
+ */
 namespace Application\UserBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\CarryAdminSession;
@@ -43,6 +41,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 {
     /**
      * The currently logged in person.
+     *
      * @var \Application\DeskPRO\Entity\Person
      */
     public $person;
@@ -56,7 +55,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         $tpl_globals = $this->container->get('templating.globals');
         if (!$tpl_globals->getVariable('usersources')) {
-             $tpl_globals->setVariable('usersources', $this->em->getRepository('DeskPRO:Usersource')->getAllUsersources());
+            $tpl_globals->setVariable('usersources', $this->em->getRepository('DeskPRO:Usersource')->getAllUsersources());
         }
 
         if ($this->in->getString('q')) {
@@ -71,7 +70,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * Check if the global request token check is required for the request
+     * Check if the global request token check is required for the request.
      */
     public function requireRequestToken($action, $arguments = null)
     {
@@ -91,7 +90,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
             return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
-                'ip' => dp_get_user_ip_address()
+                'ip' => dp_get_user_ip_address(),
             ));
         }
 
@@ -126,7 +125,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         if ($this->in->getBool('admin_portal_controls')) {
             if ($this->person->id && !$this->person->can_admin) {
-                $this->person = new \Application\DeskPRO\People\PersonGuest();;
+                $this->person = new \Application\DeskPRO\People\PersonGuest();
             }
 
             $cas = new CarryAdminSession($this);
@@ -137,11 +136,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         }
 
         $this->person->loadHelper('FeedbackVotes', array(
-            'visitor' => $this->session->getVisitor()
+            'visitor' => $this->session->getVisitor(),
         ));
         $this->person->loadHelper('HelpdeskUser', array(
             'session' => $this->session,
-            'visitor' => $this->session->getVisitor()
+            'visitor' => $this->session->getVisitor(),
         ));
 
         if ($this instanceof RequireUserInterface) {
@@ -169,7 +168,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         $tpl_globals = $this->container->get('templating.globals');
         if ($this->in->getBool('admin_portal_controls') && $this->person->can_admin) {
             $tpl_globals->setVariable('admin_portal_controls', true);
-            $tpl_globals->setVariable('custom_templates', $this->db->fetchAllKeyValue("SELECT name,id FROM templates"));
+            $tpl_globals->setVariable('custom_templates', $this->db->fetchAllKeyValue('SELECT name,id FROM templates'));
         }
 
         if ($this->person && $this->person->id && !($this instanceof ProfileController)) {
@@ -182,12 +181,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         if (
             !($this instanceof LoginController || $this instanceof MainController || $this instanceof ProfileController || $this instanceof PortalController)
-            AND !($this instanceof TicketsController && preg_match('#^feedback#', $action))
-            AND !$this->person->HelpdeskUser->canDoAnything()
-            AND !$tpl_globals->getVariable('admin_portal_controls')
-            AND $this->request_type == HttpKernelInterface::MASTER_REQUEST
+            and !($this instanceof TicketsController && preg_match('#^feedback#', $action))
+            and !$this->person->HelpdeskUser->canDoAnything()
+            and !$tpl_globals->getVariable('admin_portal_controls')
+            and $this->request_type == HttpKernelInterface::MASTER_REQUEST
         ) {
-
             if ($this instanceof PortalController) {
                 return $this->redirectRoute('user_profile');
             }
@@ -220,7 +218,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
                 'news',
                 'feedback',
                 'downloads',
-                'newticket'
+                'newticket',
             ));
 
             $val = array_unique($val);
@@ -277,8 +275,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
             if ($this->request->isXmlHttpRequest()) {
                 $data = array(
-                    'error' => 'invalid_request_token',
-                    'redirect_login' => $this->generateUrl('agent_login')
+                    'error'          => 'invalid_request_token',
+                    'redirect_login' => $this->generateUrl('agent_login'),
                 );
 
                 return $this->createJsonResponse($data, 403);
@@ -287,7 +285,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             }
         }
     }
-
 
     /**
      * Method called after getting session. Meant to be used in controllers as a top-level check to see if they
@@ -299,7 +296,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     {
         return true;
     }
-
 
     /**
      * Renders the login form if the user isn't logged in, or a standard permission error if they are already logged in.
@@ -323,17 +319,18 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     /**
      * Render a standard error message.
      *
-     * @param  string   $error_message
-     * @param  string   $error_title
+     * @param string $error_message
+     * @param string $error_title
+     *
      * @return Response
      */
     public function renderStandardError($error_message = '', $error_title = '', $code = 200, array $vars = array())
     {
-        if ($error_message AND $error_message[0] == '@') {
+        if ($error_message and $error_message[0] == '@') {
             $error_message = App::getTranslator()->getPhraseText(substr($error_message, 1));
         }
 
-        if ($error_title AND $error_title[0] == '@') {
+        if ($error_title and $error_title[0] == '@') {
             $error_title = App::getTranslator()->getPhraseText(substr($error_title, 1));
         }
 
@@ -341,10 +338,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * @param  string                                     $error_message
-     * @param  string                                     $error_title
-     * @param  int                                        $code
-     * @param  array                                      $vars
+     * @param string $error_message
+     * @param string $error_title
+     * @param int    $code
+     * @param array  $vars
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function standardErrorResponse($error_message = '', $error_title = '', $code = 200, array $vars = array())
@@ -359,7 +357,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         $vars = array_merge($vars, array(
             'error_message' => $error_message,
-            'error_title'   => $error_title
+            'error_title'   => $error_title,
         ));
 
         $res = $this->render($tpl, $vars);

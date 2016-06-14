@@ -1,12 +1,40 @@
-<?php return array(
-    'agent.prefs.inbox_created_title'                     => 'New Ticket',
-    'agent.prefs.inbox_newleave_title'                    => 'Assignment',
-    'agent.prefs.inbox_new_title'                         => 'Assigned',
-    'agent.prefs.inbox_leave_title'                       => 'Unassigned',
-    'agent.prefs.inbox_user_activity_title'               => 'User Message',
-    'agent.prefs.inbox_agent_activity_title'              => 'Agent Message',
-    'agent.prefs.inbox_agent_note_title'                  => 'Agent Note',
-    'agent.prefs.inbox_property_change_title'             => 'Property Change',
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
+    'agent.prefs.inbox_created_title'         => 'New Ticket',
+    'agent.prefs.inbox_newleave_title'        => 'Assignment',
+    'agent.prefs.inbox_new_title'             => 'Assigned',
+    'agent.prefs.inbox_leave_title'           => 'Unassigned',
+    'agent.prefs.inbox_user_activity_title'   => 'User Message',
+    'agent.prefs.inbox_agent_activity_title'  => 'Agent Message',
+    'agent.prefs.inbox_agent_note_title'      => 'Agent Note',
+    'agent.prefs.inbox_property_change_title' => 'Property Change',
 
     'agent.prefs.inbox_agent_email_created'               => 'Email me when a new ticket is created and assigned to me',
     'agent.prefs.inbox_agent_email_new'                   => 'Email me when a ticket is assigned to me',
@@ -144,48 +172,48 @@
     'agent.prefs.name_inbox_all_alert_agent_note'              => 'Alert {{name}} when an agent adds a note to any ticket',
     'agent.prefs.name_inbox_all_alert_property_change'         => 'Alert {{name}} of any change to any ticket',
 
-    'agent.prefs.filter_created_title'                    => 'New Ticket',
-    'agent.prefs.filter_new_title'                        => 'Filter Match',
-    'agent.prefs.filter_user_activity_title'              => 'User Message',
-    'agent.prefs.filter_agent_activity_title'             => 'Agent Message',
-    'agent.prefs.filter_agent_note_title'                 => 'Agent Note',
-    'agent.prefs.filter_property_change_title'            => 'Property Change',
+    'agent.prefs.filter_created_title'         => 'New Ticket',
+    'agent.prefs.filter_new_title'             => 'Filter Match',
+    'agent.prefs.filter_user_activity_title'   => 'User Message',
+    'agent.prefs.filter_agent_activity_title'  => 'Agent Message',
+    'agent.prefs.filter_agent_note_title'      => 'Agent Note',
+    'agent.prefs.filter_property_change_title' => 'Property Change',
 
-    'agent.prefs.filter_email_created_desc'               => 'Email me when a new ticket is created that matches this filter',
-    'agent.prefs.filter_email_new_desc'                   => 'Email me when a change to a ticket causes it to match this filter',
-    'agent.prefs.filter_email_user_activity_desc'         => 'Email me when a user replies to a ticket that matches this filter',
-    'agent.prefs.filter_email_agent_activity_desc'        => 'Email me when an agent replies to a ticket that matches this filter',
-    'agent.prefs.filter_email_agent_note_desc'            => 'Email me when an agent adds a note to a ticket that matches this filter',
-    'agent.prefs.filter_email_property_change_desc'       => 'Email me when any change is made to a ticket that matches this filter',
+    'agent.prefs.filter_email_created_desc'         => 'Email me when a new ticket is created that matches this filter',
+    'agent.prefs.filter_email_new_desc'             => 'Email me when a change to a ticket causes it to match this filter',
+    'agent.prefs.filter_email_user_activity_desc'   => 'Email me when a user replies to a ticket that matches this filter',
+    'agent.prefs.filter_email_agent_activity_desc'  => 'Email me when an agent replies to a ticket that matches this filter',
+    'agent.prefs.filter_email_agent_note_desc'      => 'Email me when an agent adds a note to a ticket that matches this filter',
+    'agent.prefs.filter_email_property_change_desc' => 'Email me when any change is made to a ticket that matches this filter',
 
-    'agent.prefs.filter_alert_created_desc'               => 'Alert me when a new ticket is created that matches this filter',
-    'agent.prefs.filter_alert_new_desc'                   => 'Alert me when a change to a ticket causes it to match this filter',
-    'agent.prefs.filter_alert_user_activity_desc'         => 'Alert me when a user replies to a ticket that matches this filter',
-    'agent.prefs.filter_alert_agent_activity_desc'        => 'Alert me when an agent replies to a ticket that matches this filter',
-    'agent.prefs.filter_alert_agent_note_desc'            => 'Alert me when an agent adds a note to a ticket that matches this filter',
-    'agent.prefs.filter_alert_property_change_desc'       => 'Alert me when any change is made to a ticket that matches this filter',
+    'agent.prefs.filter_alert_created_desc'         => 'Alert me when a new ticket is created that matches this filter',
+    'agent.prefs.filter_alert_new_desc'             => 'Alert me when a change to a ticket causes it to match this filter',
+    'agent.prefs.filter_alert_user_activity_desc'   => 'Alert me when a user replies to a ticket that matches this filter',
+    'agent.prefs.filter_alert_agent_activity_desc'  => 'Alert me when an agent replies to a ticket that matches this filter',
+    'agent.prefs.filter_alert_agent_note_desc'      => 'Alert me when an agent adds a note to a ticket that matches this filter',
+    'agent.prefs.filter_alert_property_change_desc' => 'Alert me when any change is made to a ticket that matches this filter',
 
-    'agent.prefs.apps_email_title'                        => 'Email',
-    'agent.prefs.apps_alert_title'                        => 'Alert',
+    'agent.prefs.apps_email_title' => 'Email',
+    'agent.prefs.apps_alert_title' => 'Alert',
 
-    'agent.prefs.apps_chat_message'             => 'Someone sends me a chat message while I am offline',
-    'agent.prefs.apps_task_assign_self'         => 'A task is assigned to me',
-    'agent.prefs.apps_task_assign_team'         => 'A task is assigned to my team',
-    'agent.prefs.apps_task_complete'            => 'A task I delegated is completed',
-    'agent.prefs.apps_task_due'                 => 'A task assigned to me is due today',
-    'agent.prefs.apps_tweet_assign_self'        => 'A tweet is assigned to me',
-    'agent.prefs.apps_tweet_assign_team'        => 'A tweet is assigned to my team',
-    'agent.prefs.apps_tweet_reply'              => 'Someone responds to a tweet I wrote',
-    'agent.prefs.apps_tweet_new_dm'             => 'One of my Twitter accounts receives a direct message',
-    'agent.prefs.apps_tweet_new_reply'          => 'One of my Twitter accounts receives a reply',
-    'agent.prefs.apps_tweet_new_mention'        => 'One of my Twitter accounts is mentioned in a tweet',
-    'agent.prefs.apps_tweet_new_retweet'        => 'One of my Twitter accounts is retweeted',
-    'agent.prefs.apps_new_feedback'             => 'New feedback submission',
-    'agent.prefs.apps_new_feedback_validate'    => 'New feedback is submitted that requires validation',
-    'agent.prefs.apps_new_comment'              => 'A new comment is submitted',
-    'agent.prefs.apps_new_comment_validate'     => 'A new comment is submitted that requires validation',
-    'agent.prefs.apps_new_user'                 => 'A new user registered',
-    'agent.prefs.apps_new_user_validate'        => 'A new user registered and requires validation',
-    'agent.prefs.apps_login_attempt'            => 'Whenever my account is used to log in',
-    'agent.prefs.apps_login_attempt_fail'       => 'Whenever my account is used to log in and the credentials are incorrect',
+    'agent.prefs.apps_chat_message'          => 'An agent sends me an IM message while I am offline',
+    'agent.prefs.apps_task_assign_self'      => 'A task is assigned to me',
+    'agent.prefs.apps_task_assign_team'      => 'A task is assigned to my team',
+    'agent.prefs.apps_task_complete'         => 'A task I delegated is completed',
+    'agent.prefs.apps_task_due'              => 'A task assigned to me is due today',
+    'agent.prefs.apps_tweet_assign_self'     => 'A tweet is assigned to me',
+    'agent.prefs.apps_tweet_assign_team'     => 'A tweet is assigned to my team',
+    'agent.prefs.apps_tweet_reply'           => 'Someone responds to a tweet I wrote',
+    'agent.prefs.apps_tweet_new_dm'          => 'One of my Twitter accounts receives a direct message',
+    'agent.prefs.apps_tweet_new_reply'       => 'One of my Twitter accounts receives a reply',
+    'agent.prefs.apps_tweet_new_mention'     => 'One of my Twitter accounts is mentioned in a tweet',
+    'agent.prefs.apps_tweet_new_retweet'     => 'One of my Twitter accounts is retweeted',
+    'agent.prefs.apps_new_feedback'          => 'New feedback submission',
+    'agent.prefs.apps_new_feedback_validate' => 'New feedback is submitted that requires validation',
+    'agent.prefs.apps_new_comment'           => 'A new comment is submitted',
+    'agent.prefs.apps_new_comment_validate'  => 'A new comment is submitted that requires validation',
+    'agent.prefs.apps_new_user'              => 'A new user registered',
+    'agent.prefs.apps_new_user_validate'     => 'A new user registered and requires validation',
+    'agent.prefs.apps_login_attempt'         => 'Whenever my account is used to log in',
+    'agent.prefs.apps_login_attempt_fail'    => 'Whenever my account is used to log in and the credentials are incorrect',
 );

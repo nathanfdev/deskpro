@@ -1,0 +1,98 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+    <form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Ctrl.save()">
+        <section class="dp-paneblock dp-listpane">
+            <header>
+                <h3>Reset Demo</h3>
+            </header>
+
+            {##################################################################################################}
+
+            <article class="form-horizontal dp-form">
+                <div class="panel panel-innertable">
+                    {#<div class="panel-heading">#}
+                        {#<h3>#}
+                            {#<span>Header</span>#}
+                        {#</h3>#}
+                    {#</div>#}
+                        <div class="panel-help inhelp-body">
+                    <p>
+                        Use these functions to remove test data from your  helpdesk. All data you select will be permanently deleted.
+                    </p>
+                        </div>
+                    <div class="form-group">
+                        <div class="col-lg-12">
+
+                            {% set tp = 'adm.settings.reset_demo_titles_' %}
+                            {% set dp = 'adm.settings.reset_demo_descriptions_' %}
+                            {% for id in [
+                                'users',
+                                'agents',
+                                'tickets',
+                                'organizations',
+                                'triggers',
+                                'filters',
+                                'templates',
+                                'escalations',
+                                'fields',
+                                'departments',
+                                'perms',
+                                'kb',
+                                'news',
+                                'downloads',
+                                'feedback',
+                                'labels',
+                                'snippets',
+                                'apps'
+                            ] %}
+                            <div class="inner-group" dp-error-class="form_props.{{ id }}">
+                                <label style="position: relative;">
+                                    <i class="fa fa-check text-success"
+                                       ng-if="'complete' == status.{{ id }}"
+                                       style="position: absolute; left: -17px; top: 10px;"
+                                            ></i>
+                                    <i class="fa fa-spinner fa-spin"
+                                       ng-if="'waiting' == status.{{ id }}"
+                                       style="position: absolute; left: -17px; top: 10px;"
+                                            ></i>
+                                    <i class="fa fa-times-circle text-danger"
+                                       ng-if="'error' == status.{{ id }}"
+                                       style="position: absolute; left: -17px; top: 10px;"
+                                            ></i>
+
+                                    <input type="checkbox" name="{{ id }}" ng-model="form.{{ id }}"
+                                           ng-disabled="'waiting' === status.{{ id }}"
+                                            />
+                                    <h4 style="min-width: 300px;">
+                                        {{ phrase(tp ~ id) }}
+                                    </h4>
+                                </label>
+                                <span class="help-block">
+							        {{ phrase(dp ~ id) }}
+						        </span>
+                            </div>
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            {##################################################################################################}
+
+            <footer>
+                <div class="dp-content">
+                    <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+                        <div dp-hide-spinning="saving">
+                            <button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.reset') }}</button>
+                        </div>
+                        <div dp-show-spinning="saving">
+                            <i class="spinner-flat"></i>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </form>
+    <div dp-register-message="saved_settings">Settings saved successfully.</div>
+{% endblock %}

@@ -1,4 +1,6 @@
-<?php if (!defined('DP_ROOT')) exit('No access'); ?>
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+} ?>
 <html>
 <head>
 <script type="text/javascript">

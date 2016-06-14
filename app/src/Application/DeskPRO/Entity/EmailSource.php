@@ -1,34 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +39,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Raw email sources
+ * Raw email sources.
  */
 class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -50,7 +50,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     const STATUS_ERROR      = 'error';
     const STATUS_REJECTED   = 'rejected';
 
-    const OBJ_TYPE_TICKET = 'ticket';
+    const OBJ_TYPE_TICKET         = 'ticket';
     const OBJ_TYPE_TICKET_MESSAGE = 'ticketmessage';
 
     const ERR_SERVER_ERROR      = 'server_error';
@@ -84,7 +84,6 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var int
-     *
      */
     protected $id = null;
 
@@ -134,7 +133,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     protected $from_email = '';
 
     /**
-     * Just the headers portion of the email
+     * Just the headers portion of the email.
      *
      * @var string
      */
@@ -156,11 +155,16 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     protected $header_subject = '';
 
     /**
+     * @var array
+     */
+    protected $parsed_headers = array();
+
+    /**
      * The current status of the message:
      * - inserted: Only inserted
      * - processing: Currently processing
      * - complete: Fully processed
-     * - error: Tried to process but there was some kind of error (see error_code)
+     * - error: Tried to process but there was some kind of error (see error_code).
      *
      * @var string
      */
@@ -198,6 +202,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * How many times the email has been processed.
+     *
      * @var int
      */
     protected $exec_count = 0;
@@ -228,22 +233,23 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
-
     /**
-     * Get the full raw source of the email
+     * Get the full raw source of the email.
      *
      * @deprecated
+     *
      * @return string
      */
     public function getRawSource()
     {
-        if ($this->_raw !== null) return $this->_raw;
+        if ($this->_raw !== null) {
+            return $this->_raw;
+        }
 
         $this->_raw = App::getContainer()->getBlobStorage()->copyBlobRecordToString($this->blob);
 
         return $this->_raw;
     }
-
 
     /**
      * @return string
@@ -261,15 +267,13 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-
     /**
-     * Clears local cache of raw source
+     * Clears local cache of raw source.
      */
     public function clearRawSource()
     {
         $this->_raw = null;
     }
-
 
     /**
      * @return string
@@ -311,7 +315,6 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         return $this->error_code;
     }
 
-
     /**
      * @param array $info
      */
@@ -324,7 +327,6 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-
     /**
      * @return array
      */
@@ -332,7 +334,6 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->object_info ? $this->object_info : array();
     }
-
 
     /**
      * @param string $status
@@ -342,7 +343,6 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('status', $status);
         $this->setModelField('date_status', new \DateTime());
     }
-
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
@@ -356,6 +356,32 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         return $data;
     }
 
+    public function getParsedHeaders()
+    {
+        if ($this->parsed_headers || !strlen($this->headers)) {
+            return $this->parsed_headers;
+        }
+
+        $headers = $this->headers;
+        if (false !== $pos = strpos($this->headers, "\r\n\r\n")) {
+            $headers = substr($this->headers, 0, $pos);
+        }
+
+        $current = null;
+        $headers = explode("\n", $headers);
+        foreach ($headers as $str) {
+            if (preg_match('/^[A-Za-z]/', $str[0])) {
+                $parts                         = explode(':', $str);
+                $header                        = strtolower($parts[0]);
+                $this->parsed_headers[$header] = trim($parts[1]);
+                $current                       = $header;
+            } elseif ($current) {
+                $this->parsed_headers[$current] .= substr($str, 1);
+            }
+        }
+
+        return $this->parsed_headers;
+    }
 
     ############################################################################
     # Doctrine Metadata
@@ -366,36 +392,36 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\EmailSource';
         $metadata->setPrimaryTable(array(
-            'name' => 'email_sources',
+            'name'    => 'email_sources',
             'indexes' => array(
                 'date_created' => array('columns' => array('date_created')),
                 'object_idx'   => array('columns' => array('object_type', 'object_id')),
                 'status_idx'   => array('columns' => array('status')),
                 'from_idx'     => array('columns' => array('from_email')),
-            )
+            ),
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'uid', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'uid' ));
-        $metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', ));
-        $metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', ));
+        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array('fieldName' => 'uid', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'uid'));
+        $metadata->mapField(array('fieldName' => 'object_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type'));
+        $metadata->mapField(array('fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id'));
         $metadata->mapField(array(
             'columnName' => 'object_info',
             'fieldName'  => 'object_info',
             'type'       => 'json_array',
             'nullable'   => true,
         ));
-        $metadata->mapField(array( 'fieldName' => 'from_email', 'type' => 'string', 'length' => 500, 'columnName' => 'from_email', ));
-        $metadata->mapField(array( 'fieldName' => 'headers', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'headers', ));
-        $metadata->mapField(array( 'fieldName' => 'header_to', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_to', ));
-        $metadata->mapField(array( 'fieldName' => 'header_from', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_from', ));
-        $metadata->mapField(array( 'fieldName' => 'header_subject', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_subject', ));
-        $metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
-        $metadata->mapField(array( 'fieldName' => 'exec_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'exec_count' ));
-        $metadata->mapField(array( 'fieldName' => 'error_code', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'error_code', ));
-        $metadata->mapField(array( 'fieldName' => 'source_info', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'source_info', ));
-        $metadata->mapField(array( 'fieldName' => 'date_status', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_status', ));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+        $metadata->mapField(array('fieldName' => 'from_email', 'type' => 'string', 'length' => 500, 'columnName' => 'from_email'));
+        $metadata->mapField(array('fieldName' => 'headers', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'headers'));
+        $metadata->mapField(array('fieldName' => 'header_to', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_to'));
+        $metadata->mapField(array('fieldName' => 'header_from', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_from'));
+        $metadata->mapField(array('fieldName' => 'header_subject', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_subject'));
+        $metadata->mapField(array('fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status'));
+        $metadata->mapField(array('fieldName' => 'exec_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'exec_count'));
+        $metadata->mapField(array('fieldName' => 'error_code', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'error_code'));
+        $metadata->mapField(array('fieldName' => 'source_info', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'source_info'));
+        $metadata->mapField(array('fieldName' => 'date_status', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_status'));
+        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(array(
             'fieldName'    => 'blob',
@@ -418,7 +444,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-            ))
+            )),
         ));
         $metadata->mapManyToOne(array(
             'fieldName'    => 'log_blob',
@@ -430,7 +456,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'set null',
-            ))
+            )),
         ));
     }
 }

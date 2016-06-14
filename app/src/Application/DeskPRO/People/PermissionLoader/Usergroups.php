@@ -1,43 +1,42 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Tickets
+ */
 namespace Application\DeskPRO\People\PermissionLoader;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity;
 
 /**
  * Loads general usergroup permissions likes flags and the like.
@@ -69,27 +68,27 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
      */
     protected $with_overrides = false;
 
-
     /**
      * @param Person $person
      */
     public function setPersonContext(Person $person)
     {
-        $this->person = $person;
+        $this->person    = $person;
         $this->person_id = $person->id;
     }
 
     public function getSubkey()
     {
         if ($this->person && $this->person->is_agent) {
-            return 'person-' . $this->person->id;
+            return 'person-'.$this->person->id;
         }
     }
 
     /**
-     * Get a permission value
+     * Get a permission value.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return mixed
      */
     public function getPermission($name)
@@ -132,9 +131,8 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
         return $val;
     }
 
-
     /**
-     * Get an array of all effective permissions
+     * Get an array of all effective permissions.
      *
      * @return array
      */
@@ -150,7 +148,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
                         $overrides = App::getSystemService('PermissionsLoader')->getAgentOverridePermissions($this->person_id);
                         if ($overrides) {
                             $this->with_overrides = true;
-                            $perms = array_merge($perms, array(-1 => $overrides));
+                            $perms                = array_merge($perms, array(-1 => $overrides));
                         }
                     }
                 } else {
@@ -169,17 +167,11 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 
         if ($this->dynamic_perms === null) {
             $this->dynamic_perms = array();
-            $agent_groups = App::$container->getAgentGroups();
+            $agent_groups        = App::$container->getAgentGroups();
             foreach ($this->usergroup_ids as $ugid) {
                 if ($agent_groups->groupExists($ugid)) {
                     $g = $agent_groups->getGroup($ugid);
-                    if ($g->sys_name == 'agent_all_perms' || $g->sys_name == 'agent_all_safe_perms') {
-                        $loader = App::$container->getSystemService('AgentPermissionNamesLoader');
-                        if ($g->sys_name == 'agent_all_perms') {
-                            $set_perms = $loader->getNames();
-                        } else {
-                            $set_perms = $loader->getSafeNames();
-                        }
+                    if ($set_perms = self::loadDynamicPerms($g)) {
                         foreach ($set_perms as $n) {
                             $this->dynamic_perms[$n] = true;
                         }
@@ -191,9 +183,8 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
         return $this->perms;
     }
 
-
     /**
-     * Get an array of data we'll serialize
+     * Get an array of data we'll serialize.
      *
      * @return array
      */
@@ -203,12 +194,44 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
     }
 
     /**
-     * Initialize this object with an array of saved data
+     * Initialize this object with an array of saved data.
      *
      * @param array $data
      */
     protected function unserializeData(array $data)
     {
         $this->perms = $data['perms'];
+    }
+
+    /**
+     * @param Entity\Usergroup $g
+     *
+     * @return null|array
+     */
+    protected static function loadDynamicPerms(Entity\Usergroup $g)
+    {
+        static $set_perms_by_group = array();
+
+        if (!$g->sys_name) {
+            return;
+        }
+
+        if (isset($set_perms_by_group[$g->sys_name])) {
+            return $set_perms_by_group[$g->sys_name];
+        }
+
+        $set_perms = array();
+        if ($g->sys_name == 'agent_all_perms' || $g->sys_name == 'agent_all_safe_perms') {
+            $loader = App::$container->getSystemService('AgentPermissionNamesLoader');
+            if ($g->sys_name == 'agent_all_perms') {
+                $set_perms = $loader->getNames();
+            } else {
+                $set_perms = $loader->getSafeNames();
+            }
+        }
+
+        $set_perms_by_group[$g->sys_name] = $set_perms;
+
+        return $set_perms_by_group[$g->sys_name];
     }
 }

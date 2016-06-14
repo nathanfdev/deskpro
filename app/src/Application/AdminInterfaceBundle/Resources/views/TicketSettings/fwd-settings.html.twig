@@ -35,6 +35,12 @@
 					<div class="inner-group" ng-show="settings.process_agent_fwd">
 						<div class="col-lg-12">
 							<label>
+								<input type="checkbox" ng-model="settings.email_fwd_reply_as_note" />
+								<h4>Treat any text above a forwarded email as a note (visible to agents only) instead of a reply to the user</h4>
+							</label>
+						</div>
+						<div class="col-lg-12">
+							<label>
 								<input type="checkbox" ng-model="use_agent_fwd_subject_regex" />
 								<h4>Use a custom Subject regular expression for detecting forwarded emails</h4>
 							</label>

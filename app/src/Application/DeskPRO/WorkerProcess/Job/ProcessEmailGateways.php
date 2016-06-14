@@ -1,51 +1,54 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
- * Goes through each gateway and processes email
+ * Goes through each gateway and processes email.
  */
 class ProcessEmailGateways extends AbstractJob
 {
-    const DEFAULT_INTERVAL = 60;
+    const DEFAULT_INTERVAL = 1;
 
     public function run()
     {
+        // Using adv_email_collect (daemon)
+        global $DP_CONFIG;
+        if (!empty($DP_CONFIG['adv_email_collect'])) {
+            return;
+        }
+
         @ini_set('memory_limit', DP_MAX_MEMSIZE);
 
         #------------------------------
@@ -107,7 +110,7 @@ class ProcessEmailGateways extends AbstractJob
         }
 
         if ($this->options->get('run_source_id')) {
-            $sid = $this->options->get('run_source_id');
+            $sid    = $this->options->get('run_source_id');
             $source = App::getOrm()->find('DeskPRO:EmailSource', $sid);
             if (!$source) {
                 $this->getLogger()->log("No source with ID $sid", 'NOTICE');
@@ -116,7 +119,6 @@ class ProcessEmailGateways extends AbstractJob
             }
 
             $runner->executeSource($source);
-
         } elseif ($this->options->get('run_account_id')) {
             $gid = $this->options->get('run_account_id');
             $this->getLogger()->log("Running specific account: $gid", 'DEBUG');
@@ -129,11 +131,10 @@ class ProcessEmailGateways extends AbstractJob
             }
 
             $runner->setAccounts(array($account));
-            $runner->execute(180);
-
+            $runner->execute(300);
         } else {
             $runner->loadAccountsFromDb(false);
-            $runner->execute(180);
+            $runner->execute(300);
         }
 
         // The PHP time limit would've been set above while processing messages,

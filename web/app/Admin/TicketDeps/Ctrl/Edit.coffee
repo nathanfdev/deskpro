@@ -23,6 +23,11 @@ define [
 
       @depId = parseInt(@$stateParams.id)
       @depData = @DataService.get('TicketDeps')
+      @all_perms =
+        user_full:    true
+        agent_assign: true
+        agent_full:   true
+
       @$scope.$watch('EditCtrl.form.parent_id', (newVal) =>
         newVal = parseInt(newVal)
         if not newVal
@@ -78,6 +83,17 @@ define [
           code_all = @$templateCache.get(tpl).replace(/%DEPID%/g, 0)
           @$scope['code_' + name] = code
           @$scope['code_all_' + name] = code_all
+
+        for id, group of @form.usergroup_perms
+          if !group.full then @all_perms.user_full = false
+
+        for group in @form.agent_perms.groups
+          @all_perms.agent_assign = false if !group.perms.assign.locked && !group.perms.assign.state
+          @all_perms.agent_full = false if !group.perms.full.locked && !group.perms.full.state
+
+        for agent in @form.agent_perms.agents
+          @all_perms.agent_assign = false if !agent.perms.assign.locked && !agent.perms.assign.state
+          @all_perms.agent_full = false if !agent.perms.full.locked && !agent.perms.full.state
       )
 
       get = {
@@ -274,5 +290,21 @@ define [
         () =>
           @$scope.uploading = false
       )
+
+
+
+    changeAllPerms: (group, perm) =>
+      _perm = @all_perms[group + '_' + perm]
+      if 'user' == group
+        for id, group of @form.usergroup_perms
+          group.full = _perm
+      if 'agent' == group
+        for id, group of @form.agent_perms.groups
+          group.perms[perm].state = _perm if !group.perms[perm].locked && 'agent_all_perms' != group.model.sys_name && 'agent_all_safe_perms' != group.model.sys_name
+        for id, agent of @form.agent_perms.agents
+          agent.perms[perm].state = _perm if !agent.perms[perm].locked
+
+
+
 
   Admin_TicketDeps_Ctrl_Edit.EXPORT_CTRL()

@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage UserBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -57,7 +54,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * Main index shows initial category listing
+     * Main index shows initial category listing.
      */
     public function filterAction($status = 'open', $slug = 'all-categories', $order_by = 'popular', $just_form = false)
     {
@@ -97,7 +94,7 @@ class FeedbackController extends AbstractController
 
         if ($slug && $slug != 'all-categories') {
             $category_id = $this->container->getRouter()->getIdFromSlug($slug);
-            $category = null;
+            $category    = null;
 
             if ($category_id && $structure->hasFeedbackCategory($category_id)) {
                 $category = $structure->getFeedbackCategory($category_id);
@@ -107,6 +104,7 @@ class FeedbackController extends AbstractController
                 if ($this->db->count('feedback_categories', array('id' => $category_id))) {
                     return $this->renderLoginOrPermissionError();
                 }
+
                 return $this->renderStandardError('@user.error.not-found-title', '@user.error.not-found', 404);
             }
 
@@ -116,26 +114,15 @@ class FeedbackController extends AbstractController
             }
 
             $category_path = $category->getTreeParents();
-
         } else {
-            $category = null;
+            $category      = null;
             $category_path = array();
         }
 
-        /** @var RateLimit $rateLimit */
-        $rateLimit = $this->get(RateLimit::KEY);
-        $captcha = null;
-        $captcha_html = '';
-        $isActionLimited = $rateLimit->isActionLimited(RateLimit::ACT_SUBMIT_FEEDBACK);
-        if ($isActionLimited || ($this->container->getSetting('user.publish_captcha') && ($this->container->getSetting('user.always_show_captcha') || !$this->person->getId()))) {
-            $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newfeedback'));
-            $captcha_html = $captcha->getHtml();
-        }
-
-        $feedback_cats  = $structure->getFeedbackRootCategories();
+        $feedback_cats      = $structure->getFeedbackRootCategories();
         $active_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
         $closed_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
-        $status_subcats = Arrays::mergeAssoc($active_status_cats, $closed_status_cats);
+        $status_subcats     = Arrays::mergeAssoc($active_status_cats, $closed_status_cats);
 
         $searcher = new \Application\DeskPRO\Searcher\FeedbackSearch();
         $searcher->setPersonContext($this->person);
@@ -155,7 +142,7 @@ class FeedbackController extends AbstractController
         $status_cat = null;
         if (strpos($status, '.') !== false) {
             list($parent_status, $sub_status_id) = explode('.', $status, 2);
-            $status_cat = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->find($sub_status_id);
+            $status_cat                          = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->find($sub_status_id);
         }
 
         $searcher->setOrderByCode($search_options['order_by']);
@@ -164,24 +151,24 @@ class FeedbackController extends AbstractController
             $searcher->addTerm('category', 'is', $category['id']);
         }
 
-        $total = $searcher->getCount();
+        $total    = $searcher->getCount();
         $pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
-        $limit = array(
-            'offset' => ($pageinfo['curpage']-1) * $per_page,
-            'max' => $per_page
+        $limit    = array(
+            'offset' => ($pageinfo['curpage'] - 1) * $per_page,
+            'max'    => $per_page,
         );
 
         $feedback_ids = array();
-        $feedback = array();
+        $feedback     = array();
 
         if (!$just_form) {
             $feedback_ids = $searcher->getMatches($limit);
-            $feedback = $this->em->getRepository('DeskPRO:Feedback')->getByResultIds($feedback_ids);
+            $feedback     = $this->em->getRepository('DeskPRO:Feedback')->getByResultIds($feedback_ids);
         }
 
         $category_counts = $structure->getFeedbackCategoryCounts($this->person);
         $status_counts   = $structure->getFeedbackStatusCounts($category, $this->person);
-        $has_voted_ids = $this->person->FeedbackVotes->getVotesOnFeedbackCollection($feedback_ids);
+        $has_voted_ids   = $this->person->FeedbackVotes->getVotesOnFeedbackCollection($feedback_ids);
 
         $comment_counts = array();
         if ($feedback) {
@@ -204,34 +191,46 @@ class FeedbackController extends AbstractController
             $newfeedback->category_id = $category->getId();
         }
 
-        if($this->person) {
+        if ($this->person) {
             $newfeedback->person_name = $this->person->name;
         }
 
         $form = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
 
-        $cf_man = $this->container->getSystemService('FeedbackFieldsManager');
+        $cf_man                = $this->container->getSystemService('FeedbackFieldsManager');
         $newfeedback_cat_field = $cf_man->getSystemField('cat');
 
         if (!$newfeedback_cat_field || !$cf_man->getFieldChildren($newfeedback_cat_field)) {
             $newfeedback_cat_field = null;
         } else {
-            $custom_fields = $cf_man->getDisplayArray();
+            $custom_fields         = $cf_man->getDisplayArray();
             $newfeedback_cat_field = $custom_fields[$newfeedback_cat_field->getId()];
         }
 
         #------------------------------
         # New feedback submitted
         #------------------------------
+        /** @var RateLimit $rateLimit */
+        $rateLimit    = $this->get(RateLimit::KEY);
+        $captcha      = null;
+        $captcha_html = '';
 
-        $errors = $error_fields = null;
+        $errors       = $error_fields       = null;
         $is_submitted = false;
         if ($this->in->getBool('process_new') && $this->person->hasPerm('feedback.submit') && ($this->person->id || !$this->settings->get('core.interact_require_login'))) {
-
             $this->ensureStandardRequestToken();
 
+            $isActionLimited = $rateLimit->isActionLimited(RateLimit::ACT_SUBMIT_FEEDBACK);
+            if ($isActionLimited || ($this->container->getSetting(
+                        'user.publish_captcha'
+                    ) && ($this->container->getSetting('user.always_show_captcha') || !$this->person->getId()))
+            ) {
+                $captcha      = $this->container->getSystemObject('form_captcha', array('type' => 'user_newfeedback'));
+                $captcha_html = $captcha->getHtml();
+            }
+
             $is_submitted = true;
-            $validator = new \Application\UserBundle\Validator\NewFeedbackValidator();
+            $validator    = new \Application\UserBundle\Validator\NewFeedbackValidator();
 
             if ($captcha) {
                 $validator->setCaptcha($captcha);
@@ -244,7 +243,7 @@ class FeedbackController extends AbstractController
             // This allows sites that user usersources to edit the template to remove the 'name' field
             if (!$newfeedback->person_name && $newfeedback->person_email) {
                 $person_processor = new PersonFromEmailProcessor();
-                $person = $person_processor->findPersonByEmailAddress($newfeedback->person_email);
+                $person           = $person_processor->findPersonByEmailAddress($newfeedback->person_email);
                 if ($person) {
                     $newfeedback->person_name = $person->getDisplayName();
                 }
@@ -264,7 +263,7 @@ class FeedbackController extends AbstractController
                 $notify_send = new \Application\DeskPRO\Notifications\NewFeedbackNotification($feedback);
                 $notify_send->send();
 
-                $submitted_feedback = App::getSession()->get('submitted_feedback') ?: array();
+                $submitted_feedback   = App::getSession()->get('submitted_feedback') ?: array();
                 $submitted_feedback[] = $feedback->getId();
                 App::getSession()->set('submitted_feedback', $submitted_feedback);
                 App::getSession()->save();
@@ -279,35 +278,35 @@ class FeedbackController extends AbstractController
                     return $this->redirectRoute('user_feedback_view', array('slug' => $feedback->getUrlSlug()));
                 }
             } else {
-                $errors = $validator->getErrors(true);
+                $errors       = $validator->getErrors(true);
                 $error_fields = $validator->getErrorGroups(true);
             }
         }
 
         $feedback_collection = new FeedbackCollection($feedback, $this->container->getEm(), $cf_man);
-        $display = $feedback_collection->getDisplayArray();
+        $display             = $feedback_collection->getDisplayArray();
 
         return $this->render('UserBundle:Feedback:filter.html.twig', array(
-            'display'               => $display,
-            'feedback_cats'         => $feedback_cats,
-            'active_status_cats'    => $active_status_cats,
-            'closed_status_cats'    => $closed_status_cats,
-            'status_subcats'        => $status_subcats,
-            'sub_status_id'         => $sub_status_id,
-            'category'              => $category,
-            'cat_id'                => 0,
-            'category_path'         => $category_path,
-            'category_counts'       => $category_counts,
-            'status_counts'         => $status_counts,
-            'status'                => $status,
-            'parent_status'         => $parent_status,
-            'feedback'              => $feedback,
-            'comment_counts'        => $comment_counts,
-            'pageinfo'              => $pageinfo,
-            'num_results'           => $total,
-            'search_options'        => $search_options,
-            'has_voted_ids'         => $has_voted_ids,
-            'status_cat'            => $status_cat,
+            'display'            => $display,
+            'feedback_cats'      => $feedback_cats,
+            'active_status_cats' => $active_status_cats,
+            'closed_status_cats' => $closed_status_cats,
+            'status_subcats'     => $status_subcats,
+            'sub_status_id'      => $sub_status_id,
+            'category'           => $category,
+            'cat_id'             => 0,
+            'category_path'      => $category_path,
+            'category_counts'    => $category_counts,
+            'status_counts'      => $status_counts,
+            'status'             => $status,
+            'parent_status'      => $parent_status,
+            'feedback'           => $feedback,
+            'comment_counts'     => $comment_counts,
+            'pageinfo'           => $pageinfo,
+            'num_results'        => $total,
+            'search_options'     => $search_options,
+            'has_voted_ids'      => $has_voted_ids,
+            'status_cat'         => $status_cat,
 
             'just_form'             => $just_form,
             'is_submitted'          => $is_submitted,
@@ -321,7 +320,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * View an feedback
+     * View an feedback.
      *
      * @param  $feedback_id
      */
@@ -366,8 +365,8 @@ class FeedbackController extends AbstractController
 
         if ($this->request->isXmlHttpRequest()) {
             return $this->createJsonResponse(array(
-                'success' => true,
-                'voted' => $this->in->getInt('rating'),
+                'success'      => true,
+                'voted'        => $this->in->getInt('rating'),
                 'total_rating' => $feedback->total_rating,
             ));
         }
@@ -395,7 +394,7 @@ class FeedbackController extends AbstractController
         if (!$this->person->hasPerm('feedback.no_submit_validate')) {
             $feedback->setStatusCode('hidden.validating');
         } else {
-            $feedback['status'] = Entity\Feedback::STATUS_NEW;
+            $feedback['status']     = Entity\Feedback::STATUS_NEW;
             $feedback['validating'] = null;
         }
 
@@ -417,9 +416,9 @@ class FeedbackController extends AbstractController
         App::getTranslator()->setTemporaryLanguage($person->getLanguage(), function ($tr, $lang) use ($feedback, $person) {
 
             $vars = array(
-                'feedback' => $feedback,
-                'person' => $person,
-                'email' => $person->primary_email,
+                'feedback'   => $feedback,
+                'person'     => $person,
+                'email'      => $person->primary_email,
                 'validating' => $feedback['validating'],
             );
 
@@ -433,10 +432,8 @@ class FeedbackController extends AbstractController
         return $this->redirectRoute('user_feedback_view', array('slug' => $feedback->getUrlSlug()));
     }
 
-
-
     /**
-     * View an feedback
+     * View an feedback.
      *
      * @param  $feedback_id
      */
@@ -449,6 +446,10 @@ class FeedbackController extends AbstractController
 
         // Perm check
         if (!$this->person->PermissionsManager->UserPublishChecker->canViewFeedback($feedback, App::getSession())) {
+            if ($feedback->status === 'hidden') {
+                throw $this->createNotFoundException();
+            }
+
             return $this->renderLoginOrPermissionError();
         }
 
@@ -464,12 +465,12 @@ class FeedbackController extends AbstractController
     {
         $categories = $this->em->getRepository('DeskPRO:FeedbackCategory')->getRootNodes();
 
-        $category = $feedback->category;
+        $category      = $feedback->category;
         $category_path = $category->getTreeParents();
 
-        $has_voted_this   = $this->person->FeedbackVotes->getVotesOnFeedback($feedback);
+        $has_voted_this = $this->person->FeedbackVotes->getVotesOnFeedback($feedback);
 
-        $comments = null;
+        $comments        = null;
         $comments_widget = null;
         $comments_helper = Comments::create($feedback);
         if ($comments_helper) {
@@ -479,11 +480,11 @@ class FeedbackController extends AbstractController
         }
 
         if ($this->container->getSetting('core.facebook_like')) {
-            $like_helper = FacebookLike::create($feedback);
+            $like_helper   = FacebookLike::create($feedback);
             $facebook_like = $like_helper->getHtml();
         }
 
-        $related_finder = new RelatedContentFinder($this->person, $feedback);
+        $related_finder  = new RelatedContentFinder($this->person, $feedback);
         $related_content = $related_finder->getRelatedEntities();
 
         $tpl = 'UserBundle:Feedback:view.html.twig';
@@ -501,25 +502,25 @@ class FeedbackController extends AbstractController
         $display = $feedback_collection->getDisplayArrayForFeedback($feedback);
 
         return $this->render($tpl, array(
-            'display'           => $display,
-            'has_voted_this'    => $has_voted_this,
+            'display'        => $display,
+            'has_voted_this' => $has_voted_this,
 
-            'feedback'          => $feedback,
-            'category_path'     => $category_path,
-            'category'          => $category,
-            'categories'        => $categories,
+            'feedback'      => $feedback,
+            'category_path' => $category_path,
+            'category'      => $category,
+            'categories'    => $categories,
 
-            'comments'          => $comments,
-            'comments_widget'   => $comments_widget,
+            'comments'        => $comments,
+            'comments_widget' => $comments_widget,
 
-            'facebook_like'     => isset($facebook_like) ? $facebook_like : null,
+            'facebook_like' => isset($facebook_like) ? $facebook_like : null,
 
-            'related_content'   => $related_content
+            'related_content' => $related_content,
         ));
     }
 
     /**
-     * Submit a new comment
+     * Submit a new comment.
      *
      * @param  $article_id
      */
@@ -546,8 +547,8 @@ class FeedbackController extends AbstractController
         );
 
         $newcomment_formtype = new NewCommentFormType($this->person);
-        $form = $this->get('form.factory')->create($newcomment_formtype, $new_comment);
-        $validator = new \Application\UserBundle\Validator\NewCommentValidator();
+        $form                = $this->get('form.factory')->create($newcomment_formtype, $new_comment);
+        $validator           = new \Application\UserBundle\Validator\NewCommentValidator();
         $validator->setPersonContext($this->person);
 
         /** @var RateLimit $rateLimit */
@@ -558,7 +559,6 @@ class FeedbackController extends AbstractController
         }
 
         if ($this->get('request')->getMethod() == 'POST') {
-
             $trap_fail = false;
             if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
                 $trap_fail = true;
@@ -589,7 +589,7 @@ class FeedbackController extends AbstractController
                 if ($new_comment->require_login) {
                     return $this->redirectRoute('user_newcomment_finishlogin', array(
                         'comment_type' => 'feedback',
-                        'comment_id' => $comment->id,
+                        'comment_id'   => $comment->id,
                     ));
                 }
             }

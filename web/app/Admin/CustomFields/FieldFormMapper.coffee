@@ -41,29 +41,29 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           agent_validation_resolve: false
         },
         date: {
-          default_mode:              '0',
-          default_value:             '',
-          valid_weekdays:            [true, true, true, true, true, true, true],
-          valid_dates_mode:          '0',
-          valid_date_range_start:    '',
-          valid_date_range_end:      '',
-          valid_date_relrange_start: '',
-          valid_date_relrange_end:   '',
-          user_validation:           '0',
-          agent_validation:          '0',
+          default_mode:              if fieldModel?.default_value then 'date' else '0'
+          default_value:             if fieldModel?.default_value then moment.utc(fieldModel.default_value, 'YYYY-MM-DD HH:mm:ss').toDate() else new Date()
+          valid_weekdays:            [true, true, true, true, true, true, true]
+          valid_dates_mode:          '0'
+          valid_date_date1:          ''
+          valid_date_date2:          ''
+          valid_date_range1:         ''
+          valid_date_range2:         ''
+          user_validation:           '0'
+          agent_validation:          '0'
           agent_validation_resolve:  false
         },
         datetime: {
-          default_mode:              '0',
-          default_value:              new Date,
-          valid_weekdays:            [true, true, true, true, true, true, true],
-          valid_dates_mode:          '0',
-          valid_date_range_start:    '',
-          valid_date_range_end:      '',
-          valid_date_relrange_start: '',
-          valid_date_relrange_end:   '',
-          user_validation:           '0',
-          agent_validation:          '0',
+          default_mode:              if fieldModel?.default_value then 'date' else '0'
+          default_value:             if fieldModel?.default_value then moment.utc(fieldModel.default_value, 'YYYY-MM-DD HH:mm:ss').toDate() else new Date()
+          valid_weekdays:            [true, true, true, true, true, true, true]
+          valid_dates_mode:          '0'
+          valid_date_date1:          ''
+          valid_date_date2:          ''
+          valid_date_range1:         ''
+          valid_date_range2:         ''
+          user_validation:           '0'
+          agent_validation:          '0'
           agent_validation_resolve:  false
         },
         display: {
@@ -161,11 +161,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
               formTypeOpts.default_value = true
 
           when "date", "datetime"
-            if not Util.isBlank(fieldModel.default_value)
-              formTypeOpts.default_mode = 'date'
-              formTypeOpts.default_value = moment.utc(fieldModel.default_value, 'YYYY-MM-DD HH:mm:ss').toDate()
-
-            if not Util.isBlank(fieldModel.options.date_valid_dow)
+            if fieldModel.options?.date_valid_dow?
               formTypeOpts.valid_weekdays = [false, false, false, false, false, false, false]
               for day in fieldModel.options.date_valid_dow
                 formTypeOpts.valid_weekdays[day] = true
@@ -173,15 +169,11 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
             if fieldModel.options.date_valid_type?
               if fieldModel.options.date_valid_type == "date"
                 formTypeOpts.valid_dates_mode = 'date'
-                if not Util.isBlank(fieldModel.options.date_valid_date1)
-                  formTypeOpts.date_valid_date1 = moment(fieldModel.options.date_valid_date1, 'YYYY-MM-DD').toDate()
-                if not Util.isBlank(fieldModel.options.date_valid_date2)
-                  formTypeOpts.date_valid_date2 = moment(fieldModel.options.date_valid_date2, 'YYYY-MM-DD').toDate()
+                formTypeOpts.date_valid_date1 = moment(fieldModel.options.date_valid_date1, 'YYYY-MM-DD').toDate() if fieldModel.options.date_valid_date1?
+                formTypeOpts.date_valid_date2 = moment(fieldModel.options.date_valid_date2, 'YYYY-MM-DD').toDate() if fieldModel.options.date_valid_date2?
               if fieldModel.options.date_valid_type == "range"
-                if not Util.isBlank(fieldModel.options.date_valid_date1)
-                  formTypeOpts.date_valid_reldate1 = fieldModel.options.date_valid_date1
-                if not Util.isBlank(fieldModel.options.date_valid_date2)
-                  formTypeOpts.date_valid_reldate2 = fieldModel.options.date_valid_date2
+                formTypeOpts.date_valid_range1 = fieldModel.options.date_valid_range1 if fieldModel.options.date_valid_range1?
+                formTypeOpts.date_valid_range2 = fieldModel.options.date_valid_range2 if fieldModel.options.date_valid_range2?
 
             if fieldModel.options.required
               formTypeOpts.user_validation = 'required'
@@ -247,7 +239,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
             postData.max_length = formTypeOpts.max_length
           else if formTypeOpts.user_validation == 'regex'
             postData.validation_type = 'regex'
-            postData.regex = formTypeOpts.validation_regex
+            postData.regex = formTypeOpts.regex
 
           if formTypeOpts.agent_validation == 'required'
             postData.agent_validation_type = 'required'
@@ -290,6 +282,8 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 
           if formTypeOpts.default_mode == 'date'
             postData.default_value = moment(formTypeOpts.default_value).utc().format(format)
+          else
+            postData.default_value = null
 
           postData.date_valid_dow = []
           for x, day in formTypeOpts.valid_weekdays
@@ -297,12 +291,13 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
               postData.date_valid_dow.push(day)
 
           if formTypeOpts.user_validation == 'required'
-            postData.validation_type = 'required'
+            postData.required = true
           if formTypeOpts.agent_validation == 'required'
-            postData.agent_validation_type = 'required'
+            postData.agent_required = true
+
+          postData.date_valid_type = formTypeOpts.valid_dates_mode
 
           if formTypeOpts.valid_dates_mode == 'date'
-            postData.date_valid_type = 'date'
             postData.date_valid_date1 = ''
             postData.date_valid_date2 = ''
 
@@ -311,14 +306,8 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
             if not Util.isBlank(formTypeOpts.date_valid_date2)
               postData.date_valid_date2 = moment(formTypeOpts.date_valid_date2).format('YYYY-MM-DD')
           else if formTypeOpts.valid_dates_mode == 'range'
-            postData.date_valid_type = 'range'
-            postData.date_valid_range1 = ''
-            postData.date_valid_range2 = ''
-
-            if not Util.isBlank(formTypeOpts.date_valid_reldate1)
-              postData.date_valid_range1 = formTypeOpts.date_valid_reldate1
-            if not Util.isBlank(formTypeOpts.date_valid_reldate2)
-              postData.date_valid_range2 = formTypeOpts.date_valid_reldate2
+            postData.date_valid_range1 = formTypeOpts.date_valid_range1
+            postData.date_valid_range2 = formTypeOpts.date_valid_range2
 
         when "display"
           postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Display'

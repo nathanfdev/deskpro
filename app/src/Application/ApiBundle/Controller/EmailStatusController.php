@@ -1,35 +1,33 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * DeskPRO.
  */
 
 namespace Application\ApiBundle\Controller;
@@ -40,13 +38,14 @@ use Application\DeskPRO\Email\EmailSource\FinderFilter as EmailSourceFinderFilte
 use Application\DeskPRO\Email\SendmailSource\Finder as SendmailSourceFinder;
 use Application\DeskPRO\Email\SendmailSource\FinderFilter as SendmailSourceFinderFilter;
 use Application\DeskPRO\EmailGateway\Runner;
+use deskpro_sendgrid\InstallerHandler;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Strings;
 
 class EmailStatusController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -63,41 +62,41 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         # Filter options
         #------------------------------
 
-        $filter = new EmailSourceFinderFilter();
+        $filter       = new EmailSourceFinderFilter();
         $filter_input = $this->in->getArrayValue('filter');
-        $form = $this->createFormBuilder($filter)
+        $form         = $this->createFormBuilder($filter)
             ->add('page', 'text')
             ->add('statuses', 'choice', array(
                 'choices'  => array_combine($filter->getValidStatuses(), $filter->getValidStatuses()),
                 'required' => false,
-                'multiple' => true
+                'multiple' => true,
             ))
             ->add('date_start', 'date', array(
                 'view_timezone' => $this->person->getTimezone(),
-                'widget' => 'single_text',
-                'input' => 'datetime',
-                'required' => false
+                'widget'        => 'single_text',
+                'input'         => 'datetime',
+                'required'      => false,
             ))
             ->add('date_end', 'date', array(
                 'view_timezone' => $this->person->getTimezone(),
-                'widget' => 'single_text',
-                'input' => 'datetime',
-                'required' => false
+                'widget'        => 'single_text',
+                'input'         => 'datetime',
+                'required'      => false,
             ))
             ->add('subject', 'text', array(
-                'required' => false
+                'required' => false,
             ))
             ->add('account', 'text', array(
-                'required' => false
+                'required' => false,
             ))
             ->add('to', 'text', array(
-                'required' => false
+                'required' => false,
             ))
             ->add('from', 'text', array(
-                'required' => false
+                'required' => false,
             ))
             ->add('error_code', 'text', array(
-                'required' => false
+                'required' => false,
             ))
             ->getForm();
 
@@ -112,10 +111,9 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             'page'          => $filter->getPage(),
             'num_pages'     => $info['num_pages'],
             'count'         => $info['count'],
-            'email_sources' => $this->getApiData($results)
+            'email_sources' => $this->getApiData($results),
         ));
     }
-
 
     ####################################################################################################################
     # get-email-sources-stats
@@ -123,15 +121,14 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
     public function sourcesStatsAction()
     {
-        $status_counts  = $this->db->fetchAllKeyValue("SELECT status, COUNT(*) FROM email_sources GROUP BY status");
-        $account_counts = $this->db->fetchAllKeyValue("SELECT email_account_id, COUNT(*) FROM email_sources GROUP BY email_account_id");
+        $status_counts  = $this->db->fetchAllKeyValue('SELECT status, COUNT(*) FROM email_sources GROUP BY status');
+        $account_counts = $this->db->fetchAllKeyValue('SELECT email_account_id, COUNT(*) FROM email_sources GROUP BY email_account_id');
 
         return $this->createJsonResponse(array(
             'by_status'  => $status_counts,
-            'by_account' => $account_counts
+            'by_account' => $account_counts,
         ));
     }
-
 
     ####################################################################################################################
     # list-sendmail
@@ -143,38 +140,38 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         # Filter options
         #------------------------------
 
-        $filter = new SendmailSourceFinderFilter();
+        $filter       = new SendmailSourceFinderFilter();
         $filter_input = $this->in->getArrayValue('filter');
-        $form = $this->createFormBuilder($filter)
+        $form         = $this->createFormBuilder($filter)
             ->add('page', 'text')
             ->add('statuses', 'choice', array(
                 'choices'  => array_combine($filter->getValidStatuses(), $filter->getValidStatuses()),
                 'required' => false,
-                'multiple' => true
+                'multiple' => true,
             ))
             ->add('date_start', 'date', array(
                 'view_timezone' => $this->person->getTimezone(),
-                'widget' => 'single_text',
-                'input' => 'datetime',
-                'required' => false
+                'widget'        => 'single_text',
+                'input'         => 'datetime',
+                'required'      => false,
             ))
             ->add('date_end', 'date', array(
                 'view_timezone' => $this->person->getTimezone(),
-                'widget' => 'single_text',
-                'input' => 'datetime',
-                'required' => false
+                'widget'        => 'single_text',
+                'input'         => 'datetime',
+                'required'      => false,
             ))
             ->add('subject', 'text', array(
-                'required' => false
+                'required' => false,
             ))
             ->add('to', 'text', array(
-                'required' => false
+                'required' => false,
             ))
             ->add('from', 'text', array(
-                'required' => false
+                'required' => false,
             ))
             ->add('error_code', 'text', array(
-                'required' => false
+                'required' => false,
             ))
             ->getForm();
 
@@ -191,10 +188,11 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         }
 
         return $this->createApiResponse(array(
-            'page'           => $filter->getPage(),
-            'num_pages'      => $info['num_pages'],
-            'count'          => $info['count'],
-            'sendmail_queue' => $data
+            'page'             => $filter->getPage(),
+            'num_pages'        => $info['num_pages'],
+            'count'            => $info['count'],
+            'sendmail_queue'   => $data,
+            'tracking_enabled' => (bool) $this->container->getSetting(InstallerHandler::NAME.'.enabled'),
         ));
     }
 
@@ -211,7 +209,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
         $info = array();
 
-        $info['source'] = $this->getApiData($source);
+        $info['source']     = $this->getApiData($source);
         $info['source_log'] = null;
 
         if ($source->log_blob) {
@@ -265,12 +263,12 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
         $reader->setRawSource($this->container->getBlobStorage()->copyBlobRecordToString($source->blob));
 
-        $info = "";
+        $info = '';
 
         if ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
-            $info .= str_repeat("#", 72);
+            $info .= str_repeat('#', 72);
             $info .= "\n# EMAIL HTML BODY\n";
-            $info .= str_repeat("#", 72);
+            $info .= str_repeat('#', 72);
             $info .= "\n\n";
             $info .= $t;
             $info .= "\n\n\n\n\n";
@@ -278,15 +276,15 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         unset($t);
 
         if ($reader->getBodyText() && ($t = trim($reader->getBodyText()->getBodyUtf8()))) {
-            $info .= str_repeat("#", 72);
+            $info .= str_repeat('#', 72);
             $info .= "\n# EMAIL TEXT BODY\n";
-            $info .= str_repeat("#", 72);
+            $info .= str_repeat('#', 72);
             $info .= "\n\n";
             $info .= $t;
-        } else if ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
-            $info .= str_repeat("#", 72);
+        } elseif ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
+            $info .= str_repeat('#', 72);
             $info .= "\n# EMAIL TEXT BODY (generated based on html)\n";
-            $info .= str_repeat("#", 72);
+            $info .= str_repeat('#', 72);
             $info .= "\n\n";
             $info .= Strings::stripTags($t);
         }
@@ -323,14 +321,14 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
         if ($reader->getBodyText() && ($t = trim($reader->getBodyText()->getBodyUtf8()))) {
             $text = $t;
-        } else if ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
+        } elseif ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
             $text = Strings::stripTags($t);
         }
         unset($t);
 
         return $this->createApiResponse(array(
             'text' => $text,
-            'html' => $html
+            'html' => $html,
         ));
     }
 
@@ -348,13 +346,15 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         if ($source->blob) {
             try {
                 $this->container->getBlobStorage()->deleteBlobRecord($source->blob);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         if ($source->log_blob) {
             try {
                 $this->container->getBlobStorage()->deleteBlobRecord($source->log_blob);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         $this->em->remove($source);
@@ -374,14 +374,14 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             throw $this->createNotFoundException();
         }
 
-        $source['status'] = 'inserted';
+        $source['status']     = 'inserted';
         $source['error_code'] = null;
 
         $runner = new Runner();
         $runner->executeSource($source);
 
         return $this->createApiResponse(array(
-            'status' => $source->status
+            'status' => $source->status,
         ));
     }
 
@@ -415,7 +415,96 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             $info['sendmail_raw'] = null;
         }
 
+        if ($this->container->getSetting(InstallerHandler::NAME.'.enabled')) {
+            foreach ($sendmail->getStatuses() as $status) {
+                $info['statuses'][] = $status->toArray();
+            }
+        }
+
         return $this->createApiResponse($info);
+    }
+
+    ####################################################################################################################
+    # get-sendmail-summary
+    ####################################################################################################################
+
+    public function getSendmailSummaryAction($id)
+    {
+        $source = $this->em->find('EmailBundle:SendmailSource', $id);
+        if (!$source) {
+            throw $this->createNotFoundException();
+        }
+
+        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        $reader->setRawSource($this->container->getBlobStorage()->copyBlobRecordToString($source->getBlob()));
+
+        $info = '';
+
+        if ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
+            $info .= str_repeat('#', 72);
+            $info .= "\n# EMAIL HTML BODY\n";
+            $info .= str_repeat('#', 72);
+            $info .= "\n\n";
+            $info .= $t;
+            $info .= "\n\n\n\n\n";
+        }
+        unset($t);
+
+        if ($reader->getBodyText() && ($t = trim($reader->getBodyText()->getBodyUtf8()))) {
+            $info .= str_repeat('#', 72);
+            $info .= "\n# EMAIL TEXT BODY\n";
+            $info .= str_repeat('#', 72);
+            $info .= "\n\n";
+            $info .= $t;
+        } elseif ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
+            $info .= str_repeat('#', 72);
+            $info .= "\n# EMAIL TEXT BODY (generated based on html)\n";
+            $info .= str_repeat('#', 72);
+            $info .= "\n\n";
+            $info .= Strings::stripTags($t);
+        }
+        unset($t);
+
+        return $this->createApiResponse(array('summary' => trim($info)));
+    }
+
+    ####################################################################################################################
+    # get-sendmail-rendered
+    ####################################################################################################################
+
+    public function getSendmailRenderedAction($id)
+    {
+        $source = $this->em->find('EmailBundle:SendmailSource', $id);
+        if (!$source) {
+            throw $this->createNotFoundException();
+        }
+
+        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        $reader->setRawSource($this->container->getBlobStorage()->copyBlobRecordToString($source->getBlob()));
+
+        $text = null;
+        $html = null;
+
+        if ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
+            $html = $t;
+            $html = $this->cleaner->clean($html, 'html_email_preclean');
+            $html = $this->cleaner->clean($html, 'html_email_basicclean');
+            $html = $this->cleaner->clean($html, 'html_email');
+            $html = $this->cleaner->clean($html, 'html_email_postclean');
+        }
+        unset($t);
+
+        if ($reader->getBodyText() && ($t = trim($reader->getBodyText()->getBodyUtf8()))) {
+            $text = $t;
+        } elseif ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
+            $text = Strings::stripTags($t);
+        }
+        unset($t);
+
+        return $this->createApiResponse(array(
+            'text' => $text,
+            'html' => $html,
+        ));
     }
 
     ####################################################################################################################
@@ -424,15 +513,16 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
     public function deleteSendmailAction($id)
     {
-        $sendmail = $this->em->find('DeskPRO:SendmailQueue', $id);
+        $sendmail = $this->em->find('EmailBundle:SendmailSource', $id);
         if (!$sendmail) {
             throw $this->createNotFoundException();
         }
 
-        if ($sendmail->blob) {
+        if ($sendmail->getBlob()) {
             try {
-                $this->container->getBlobStorage()->deleteBlobRecord($sendmail->blob);
-            } catch (\Exception $e) {}
+                $this->container->getBlobStorage()->deleteBlobRecord($sendmail->getBlob());
+            } catch (\Exception $e) {
+            }
         }
 
         $this->em->remove($sendmail);
@@ -447,11 +537,11 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
     public function resendSendmailAction($id)
     {
-        $sendmail = $this->db->fetchAssoc("
+        $sendmail = $this->db->fetchAssoc('
             SELECT *
             FROM sendmail_sources
             WHERE id = ?
-        ", array($id));
+        ', array($id));
         if (!$sendmail) {
             throw $this->createNotFoundException();
         }
@@ -459,10 +549,10 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         /** @var \Application\EmailBundle\SourceMapper\SourceMapperInterface $source_mapper */
         $source_mapper = $this->get('email.source_mapper');
 
-        $r = $source_mapper->markSourceRetry($sendmail, sprintf("[%s] Manually marked for retry by %s", date('Y-m-d H:i:s'), $this->person->getDisplayContact()));
+        $r = $source_mapper->markSourceRetry($sendmail, sprintf('[%s] Manually marked for retry by %s', date('Y-m-d H:i:s'), $this->person->getDisplayContact()));
 
         return $this->createApiResponse(array(
-            'date_next_attempt' => $r['date_next_attempt']
+            'date_next_attempt' => $r['date_next_attempt'],
         ));
     }
 
@@ -482,14 +572,14 @@ class EmailStatusController extends AbstractController implements ProtectedContr
                 /** @var \Application\EmailBundle\SourceMapper\SourceMapperInterface $source_mapper */
                 $source_mapper = $this->get('email.source_mapper');
 
-                $recs = $this->db->fetchAll("
+                $recs = $this->db->fetchAll('
                     SELECT *
                     FROM sendmail_sources
                     WHERE id IN (?)
-                ", array($ids), array(Connection::PARAM_INT_ARRAY));
+                ', array($ids), array(Connection::PARAM_INT_ARRAY));
 
                 foreach ($recs as $r) {
-                    $source_mapper->markSourceRetry($r, sprintf("[%s] Manually marked for retry by %s", date('Y-m-d H:i:s'), $this->person->getDisplayContact()));
+                    $source_mapper->markSourceRetry($r, sprintf('[%s] Manually marked for retry by %s', date('Y-m-d H:i:s'), $this->person->getDisplayContact()));
                 }
                 break;
 
@@ -504,18 +594,18 @@ class EmailStatusController extends AbstractController implements ProtectedContr
                 ", array($ids), array(Connection::PARAM_INT_ARRAY));
 
                 foreach ($recs as $r) {
-                    $source_mapper->markSourceAborted($r, sprintf("[%s] Manually aborted by %s", date('Y-m-d H:i:s'), $this->person->getDisplayContact()));
+                    $source_mapper->markSourceAborted($r, sprintf('[%s] Manually aborted by %s', date('Y-m-d H:i:s'), $this->person->getDisplayContact()));
                 }
                 break;
 
             case 'delete':
-                $bs = $this->container->getBlobStorage();
-                $recs = $this->db->fetchAll("
+                $bs   = $this->container->getBlobStorage();
+                $recs = $this->db->fetchAll('
                     SELECT sendmail_sources.id AS sendmail_sources_id, blobs.*
                     FROM sendmail_sources
                     LEFT JOIN blobs ON blobs.id = sendmail_sources.blob_id
-                    WHERE sendmail_sources.id IN (" . implode(',', $ids) . ")
-                ");
+                    WHERE sendmail_sources.id IN ('.implode(',', $ids).')
+                ');
 
                 foreach ($recs as $r) {
                     $this->db->delete('sendmail_sources', array('id' => $r['sendmail_sources_id']));
@@ -546,19 +636,20 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         switch ($action) {
             case 'reprocess':
                 $this->db->updateIn('email_sources', array(
-                    'status' => 'retry',
-                    'error_code' => null,
+                    'status'      => 'retry',
+                    'date_status' => date('Y-m-d H:i:s'),
+                    'error_code'  => null,
                 ), $ids);
                 break;
 
             case 'delete':
-                $bs = $this->container->getBlobStorage();
-                $recs = $this->db->fetchAll("
+                $bs   = $this->container->getBlobStorage();
+                $recs = $this->db->fetchAll('
                     SELECT email_sources.id AS email_sources_id, email_sources.log_blob_id AS email_sources_log_blob_id, blobs.*
                     FROM email_sources
                     LEFT JOIN blobs ON blobs.id = email_sources.blob_id
-                    WHERE email_sources.id IN (" . implode(',', $ids) . ")
-                ");
+                    WHERE email_sources.id IN ('.implode(',', $ids).')
+                ');
 
                 foreach ($recs as $r) {
                     if ($r['id']) {
@@ -566,7 +657,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
                     }
 
                     if ($r['email_sources_log_blob_id']) {
-                        $log_blob_row = $this->db->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($r['email_sources_log_blob_id']));
+                        $log_blob_row = $this->db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', array($r['email_sources_log_blob_id']));
                         if ($log_blob_row) {
                             $bs->deleteBlobRow($log_blob_row);
                         }

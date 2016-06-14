@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -55,17 +53,15 @@ class ReplyActionsApplicator implements Loggable
      */
     private $container;
 
-
     /**
      * @param array            $actions
      * @param DeskproContainer $container
      */
     public function __construct(array $actions, DeskproContainer $container)
     {
-        $this->actions = $actions;
+        $this->actions   = $actions;
         $this->container = $container;
     }
-
 
     /**
      * @param ReplyActionsContext $context
@@ -76,7 +72,6 @@ class ReplyActionsApplicator implements Loggable
             $this->applyAction($context, $id, $param);
         }
     }
-
 
     /**
      * @param ReplyActionsContext $context
@@ -103,12 +98,34 @@ class ReplyActionsApplicator implements Loggable
                 }
                 break;
 
+            case 'urgency':
+                if ($param) {
+                    $ticket->setUrgency($param);
+                }
+                break;
+
             case 'assign_agent':
                 $ticket->agent = $param ?: null;
                 break;
 
             case 'user':
                 $ticket->person = $param;
+                break;
+
+            case 'add_followers':
+                if ($param && is_array($param) && !empty($param)) {
+                    foreach ($param as $a) {
+                        $ticket->addParticipantPerson($a);
+                    }
+                }
+                break;
+
+            case 'remove_followers':
+                if ($param && is_array($param) && !empty($param)) {
+                    foreach ($param as $a) {
+                        $ticket->removeParticipantPerson($a);
+                    }
+                }
                 break;
 
             case 'assign_agent_team':
@@ -142,10 +159,10 @@ class ReplyActionsApplicator implements Loggable
                 break;
 
             case 'ticket_fields':
-                $fm = $this->container->getTicketFieldManager();
+                $fm                = $this->container->getTicketFieldManager();
                 $custom_field_data = array();
                 foreach ($param as $field_id => $field_value) {
-                    $custom_field_data["field_" . $field_id] = $field_value;
+                    $custom_field_data['field_'.$field_id] = $field_value;
                 }
 
                 if ($custom_field_data) {
@@ -155,12 +172,13 @@ class ReplyActionsApplicator implements Loggable
 
             default:
                 $e = new \InvalidArgumentException("Unknown reply action {$id}");
-                KernelErrorHandler::logException($e, true, 'reply_action_' . $id);
+                KernelErrorHandler::logException($e, true, 'reply_action_'.$id);
         }
     }
 
     /**
-     * Set the logger
+     * Set the logger.
+     *
      * @param \Orb\Log\Logger $logger
      */
     public function setLogger(Logger $logger)

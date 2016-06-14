@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
@@ -42,10 +39,19 @@ use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\DeskPRO\TicketLayout\LayoutFieldFilter;
 
+/**
+ * Simple ticket layouts CRUD.
+ *
+ * @SWG\Resource(
+ * 	resourcePath="/ticket_layout",
+ * 	description="Operations about Ticket layouts",
+ * 	basePath="/api"
+ * )
+ */
 class TicketLayoutsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -56,14 +62,47 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
         return $multi;
     }
 
-
     ####################################################################################################################
     # get
     ####################################################################################################################
 
+    /**
+     * @param int $dep_id
+     *
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_layouts/{dep_id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get ticket layout for given department",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="dep_id",
+     *				description="Ticket department ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     *
+     * @SWG\Api(
+     * 	path="/ticket_layouts/default",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get default ticket layout",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     */
     public function getAction($dep_id = 0)
     {
-        $is_default = false;
+        $is_default    = false;
         $ticket_layout = null;
 
         if ($dep_id) {
@@ -76,12 +115,12 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
         }
 
         if (!$ticket_layout) {
-            $is_default = true;
+            $is_default    = true;
             $ticket_layout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(array('department' => null));
         }
 
         if (!$ticket_layout) {
-            $is_default = true;
+            $is_default    = true;
             $ticket_layout = new TicketLayout(null);
         }
 
@@ -93,26 +132,38 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
         $filter->filterInvalid($ticket_layout->agent_layout);
 
         return $this->createApiResponse(array(
-            'layout'     => array(
+            'layout' => array(
                 'user'  => $ticket_layout->user_layout->exportToArray(),
                 'agent' => $ticket_layout->agent_layout->exportToArray(),
             ),
-            'is_default' => $is_default
+            'is_default' => $is_default,
         ));
     }
-
 
     ####################################################################################################################
     # stats
     ####################################################################################################################
 
+    /**
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_layouts/stats",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Show layout statistic by departments",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     */
     public function getLayoutStatsAction()
     {
-        $deps_with_layouts = $this->db->fetchAllCol("
+        $deps_with_layouts = $this->db->fetchAllCol('
             SELECT department_id
             FROM ticket_layouts
             WHERE department_id IS NOT NULL
-        ");
+        ');
         if ($deps_with_layouts) {
             $deps_with_layouts = array_fill_keys($deps_with_layouts, true);
         }
@@ -137,11 +188,84 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
         ));
     }
 
-
     ####################################################################################################################
     # save
     ####################################################################################################################
 
+    /**
+     * @param int $dep_id
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     *
+     *
+     * @SWG\Api(
+     * 	path="/ticket_layouts/{dep_id}",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Update existing department layout by department ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="dep_id",
+     *				description="Department ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="layout[user]",
+     *				description="Layout user",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="layout[agent]",
+     *				description="Layout agent",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *      )
+     *  )
+     * )
+     
+     * @SWG\Api(
+     * 	path="/ticket_layouts/default",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Update default ticket layout",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="dep_id",
+     *				description="Department ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="layout[user]",
+     *				description="Layout user",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="layout[agent]",
+     *				description="Layout agent",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function saveAction($dep_id = 0)
     {
         if ($dep_id) {
@@ -152,7 +276,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 
             $layout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(array('department' => $dep));
         } else {
-            $dep = null;
+            $dep    = null;
             $layout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(array('department' => null));
         }
 
@@ -170,7 +294,10 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
             $a_o = isset($a['display_order']) ? $a['display_order'] : 0;
             $b_o = isset($b['display_order']) ? $b['display_order'] : 0;
 
-            if ($a_o == $b_o) return 0;
+            if ($a_o == $b_o) {
+                return 0;
+            }
+
             return $a_o < $b_o ? -1 : 1;
         };
 
@@ -196,19 +323,45 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 
         // Sanity check
         if ($layout->department) {
-            $this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id = ? AND id != ?", array($layout->department->id, $layout->id));
+            $this->db->executeUpdate('DELETE FROM ticket_layouts WHERE department_id = ? AND id != ?', array($layout->department->id, $layout->id));
         } else {
-            $this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id IS NULL AND id != ?", array($layout->id));
+            $this->db->executeUpdate('DELETE FROM ticket_layouts WHERE department_id IS NULL AND id != ?', array($layout->id));
         }
 
         return $this->createSuccessResponse();
     }
 
-
     ####################################################################################################################
     # delete
     ####################################################################################################################
 
+    /**
+     * @param $dep_id
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     *
+     *
+     * @SWG\Api(
+     * 	path="/ticket_layouts/{dep_id}",
+     * 	@SWG\Operation(
+     * 		method="DELETE",
+     * 		summary="Delete department ticket layout by department ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="dep_id",
+     *				description="department ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function deleteAction($dep_id)
     {
         $dep = $this->container->getSystemService('ticket_departments')->getById($dep_id);
@@ -216,16 +369,41 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
             throw $this->createNotFoundException();
         }
 
-        $this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id = ?", array($dep->id));
+        $this->db->executeUpdate('DELETE FROM ticket_layouts WHERE department_id = ?', array($dep->id));
 
         return $this->createSuccessResponse();
     }
-
 
     ####################################################################################################################
     # get-field-status
     ####################################################################################################################
 
+    /**
+     * Get field use statistic.
+     *
+     * @param $field_id
+     *
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_layouts/fields/{field_id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get field use statistic",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="field_id",
+     *				description="Field ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function getFieldStatusAction($field_id)
     {
         $dm = $this->getContainer()->getTicketDepartments();
@@ -238,24 +416,28 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
             $dep = null;
             if ($id) {
                 $dep = $dm->getById($id);
-                if (!$dep) continue;
+                if (!$dep) {
+                    continue;
+                }
                 $dep = $dep->toApiData();
             }
             $agent_status[$id] = array(
                 'department' => $dep,
-                'enabled' => $layout->has($field_id)
+                'enabled'    => $layout->has($field_id),
             );
         }
         foreach ($lm->getUserLayouts() as $id => $layout) {
             $dep = null;
             if ($id) {
                 $dep = $dm->getById($id);
-                if (!$dep) continue;
+                if (!$dep) {
+                    continue;
+                }
                 $dep = $dep->toApiData();
             }
             $user_status[$id] = array(
                 'department' => $dep,
-                'enabled' => $layout->has($field_id)
+                'enabled'    => $layout->has($field_id),
             );
         }
 
@@ -263,7 +445,10 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
             $ao = $a['department'] ? $a['department']['display_order'] : -1000;
             $bo = $b['department'] ? $b['department']['display_order'] : -1000;
 
-            if ($ao == $bo) return 0;
+            if ($ao == $bo) {
+                return 0;
+            }
+
             return $ao < $bo ? -1 : 1;
         };
         uasort($agent_status, $sort_fn);
@@ -271,7 +456,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 
         return $this->createApiResponse(array(
             'agent_layouts' => $agent_status,
-            'user_layouts'  => $user_status
+            'user_layouts'  => $user_status,
         ));
     }
 
@@ -279,6 +464,30 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
     # save-field-status
     ####################################################################################################################
 
+    /**
+     * @param $field_id
+     *
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_layouts/fields/{field_id}",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Save field status",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="field_id",
+     *				description="Field ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
     public function saveFieldStatusAction($field_id)
     {
         $enable_user_layouts  = $this->in->getArrayOfUInts('enable_user_layouts');
@@ -286,16 +495,16 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 
         $layout_records = $this->em->getRepository('DeskPRO:TicketLayout')->findAll();
 
-        $field_type = $field_id;
+        $field_type    = $field_id;
         $field_type_id = null;
 
         if (preg_match('#^(ticket_field)_(\d+)$#', $field_id, $m)) {
-            $field_type = $m[1];
+            $field_type    = $m[1];
             $field_type_id = $m[2];
         }
 
         foreach ($layout_records as $layout) {
-            /** @var $layout TicketLayout */
+            /* @var $layout TicketLayout */
             $dep_id = $layout->department ? $layout->department->id : 0;
 
             $user_layout  = clone $layout->user_layout;
@@ -315,10 +524,10 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
             } elseif (!$has_user && $want_user) {
                 $field = new LayoutField($field_type, $field_type_id);
                 $field->setOptionsFromArray(array(
-                    'on_editticket' => true,
-                    'on_viewticket' => true,
+                    'on_editticket'      => true,
+                    'on_viewticket'      => true,
                     'on_viewticket_mode' => 'value',
-                    'on_newticket' => true
+                    'on_newticket'       => true,
                 ));
                 $user_layout->add($field, 'message');
                 $change = true;
@@ -330,10 +539,10 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
             } elseif (!$has_agent && $want_agent) {
                 $field = new LayoutField($field_type, $field_type_id);
                 $field->setOptionsFromArray(array(
-                    'on_editticket' => true,
-                    'on_viewticket' => true,
+                    'on_editticket'      => true,
+                    'on_viewticket'      => true,
                     'on_viewticket_mode' => 'value',
-                    'on_newticket' => true
+                    'on_newticket'       => true,
                 ));
                 $agent_layout->add($field, 'message');
                 $change = true;

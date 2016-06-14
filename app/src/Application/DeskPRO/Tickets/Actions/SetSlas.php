@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Tickets
+ */
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Person;
@@ -49,7 +48,7 @@ use Orb\Util\CheckedOptionsArray;
 class SetSlas extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getOptionsDef()
     {
@@ -59,13 +58,12 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
         return $options;
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $em = $this->getContainer()->getEm();
+        $em          = $this->getContainer()->getEm();
         $ticket_slas = $this->getContainer()->getSystemService('ticket_slas');
 
         $cm_sender = new SlaClientMessageSender($this->getContainer()->getDb());
@@ -78,16 +76,16 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
             foreach ($add_sla_ids as $sla_id) {
                 $sla = $ticket_slas->getById($sla_id);
                 if (!$sla) {
-                    $context->getLogger()->debug(sprintf("[SetSlas] Skip add %d, does not exist", $sla_id));
+                    $context->getLogger()->debug(sprintf('[SetSlas] Skip add %d, does not exist', $sla_id));
                     continue;
                 }
 
                 if ($ticket->hasSla($sla)) {
-                    $context->getLogger()->debug(sprintf("[SetSlas] Skip add %d, already on ticket", $sla_id));
+                    $context->getLogger()->debug(sprintf('[SetSlas] Skip add %d, already on ticket', $sla_id));
                 } else {
                     $ticket_sla = $ticket->addSla($sla);
                     $em->persist($ticket_sla);
-                    $context->getLogger()->debug(sprintf("[SetSlas] Add %d", $sla_id));
+                    $context->getLogger()->debug(sprintf('[SetSlas] Add %d', $sla_id));
                     $cm_sender->sendMessage($ticket, $ticket_sla, $ticket_sla->sla_status, $ticket_sla->is_completed);
                 }
             }
@@ -98,24 +96,23 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
         #--------------------
 
         if ($remove_sla_ids = $this->getActionOption('remove_sla_ids')) {
-
             $removed_ids = $context->getVars()->get('removed_slas', array());
 
             foreach ($remove_sla_ids as $sla_id) {
                 $sla = $ticket_slas->getById($sla_id);
                 if (!$sla) {
-                    $context->getLogger()->debug(sprintf("[SetSlas] Skip remove %d, does not exist", $sla_id));
+                    $context->getLogger()->debug(sprintf('[SetSlas] Skip remove %d, does not exist', $sla_id));
                     continue;
                 }
 
                 $removed_ids[] = $sla->id;
 
                 if (!$ticket->hasSla($sla)) {
-                    $context->getLogger()->debug(sprintf("[SetSlas] Skip remove %d, not on ticket", $sla_id));
+                    $context->getLogger()->debug(sprintf('[SetSlas] Skip remove %d, not on ticket', $sla_id));
                 } else {
                     $ticket_sla = $ticket->removeSla($sla);
                     $em->remove($ticket_sla);
-                    $context->getLogger()->debug(sprintf("[SetSlas] Remove %d", $sla_id));
+                    $context->getLogger()->debug(sprintf('[SetSlas] Remove %d', $sla_id));
                     $cm_sender->sendMessage($ticket, $ticket_sla, $ticket_sla->sla_status, $ticket_sla->is_completed);
                 }
             }
@@ -127,9 +124,8 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
         $cm_sender->sendQueue();
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
@@ -137,11 +133,11 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
             return array('slas');
         }
 
-        return null;
+        return;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
@@ -150,3 +146,4 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
 }
 
 // xx bytes to prevent 4096 filesize (php bug)
+

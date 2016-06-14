@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
@@ -45,7 +42,7 @@ use Orb\Util\Arrays;
 class FeedbackStatusesController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -56,17 +53,15 @@ class FeedbackStatusesController extends AbstractController implements Protected
         return $multi;
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
 
     public function listAction()
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+        /*
+         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
-
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
 
         $active_statuses = $this->getApiData(Arrays::flatten($feedback_statuses->getActiveStatuses()));
@@ -77,7 +72,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
                  'statuses' => array(
                      'active_statuses' => $active_statuses,
                      'closed_statuses' => $closed_statuses,
-                 )
+                 ),
             )
         );
     }
@@ -88,10 +83,9 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
     public function getAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+        /*
+         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
-
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
         $feedback_status   = $feedback_statuses->getById($id);
 
@@ -108,33 +102,29 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
     public function saveAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+        /*
+         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
-
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
 
         if ($id) {
-
-            $feedback_status   = $feedback_statuses->getById($id);
+            $feedback_status = $feedback_statuses->getById($id);
 
             if (!$feedback_status) {
                 throw $this->createNotFoundException();
             }
         } else {
-
             $feedback_status = $feedback_statuses->createNew();
         }
 
         $feedback_status_edit = new FeedbackStatusEdit($feedback_status);
 
-        $postData      = $this->in->getAll('post');
+        $postData = $this->in->getAll('post');
 
         $form = $this->createForm(new FeedbackStatusType(), $feedback_status_edit, array('cascade_validation' => true));
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_status'), true);
 
         if ($form->isValid()) {
-
             $feedback_status_edit->save($this->em);
         } else {
             return $this->createApiValidationErrorResponse(
@@ -144,8 +134,8 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
         return $this->createApiResponse(
             array(
-                 'success'     => true,
-                 'id'          => $feedback_status->getId(),
+                 'success' => true,
+                 'id'      => $feedback_status->getId(),
             )
         );
     }
@@ -156,15 +146,13 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
     public function removeAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+        /*
+         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
-
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
         $feedback_status   = $feedback_statuses->getById($id);
 
         if (!$feedback_status) {
-
             throw $this->createNotFoundException();
         }
 
@@ -172,18 +160,16 @@ class FeedbackStatusesController extends AbstractController implements Protected
         $move_to_feedback_status = $feedback_statuses->getById($move_to);
 
         if (!$move_to_feedback_status) {
-
             throw ValidationException::create(
-                "feedback_status.remove.move_feedback_statuses",
-                "You must select a feedback status to move existing feedback into"
+                'feedback_status.remove.move_feedback_statuses',
+                'You must select a feedback status to move existing feedback into'
             );
         }
 
         if ($move_to_feedback_status->getId() == $feedback_status->getId()) {
-
             throw ValidationException::create(
-                "feedback_status.remove.move_feedback_statuses",
-                "You must choose a different feedback status"
+                'feedback_status.remove.move_feedback_statuses',
+                'You must choose a different feedback status'
             );
         }
 
@@ -192,9 +178,8 @@ class FeedbackStatusesController extends AbstractController implements Protected
         $this->db->beginTransaction();
 
         try {
-
             $this->db->executeUpdate(
-                "UPDATE feedback SET status_category_id = ? WHERE status_category_id = ?",
+                'UPDATE feedback SET status_category_id = ? WHERE status_category_id = ?',
                 array($move_to, $old_id)
             );
 
@@ -202,9 +187,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
             $this->em->flush();
 
             $this->db->commit();
-
-        } catch(\Exception $e) {
-
+        } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;
         }
@@ -220,10 +203,9 @@ class FeedbackStatusesController extends AbstractController implements Protected
     {
         $display_orders = $this->in->getArrayOfUInts('display_orders');
 
-        /**
-         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+        /*
+         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
-
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
         $feedback_statuses->updateDisplayOrders($display_orders);
 

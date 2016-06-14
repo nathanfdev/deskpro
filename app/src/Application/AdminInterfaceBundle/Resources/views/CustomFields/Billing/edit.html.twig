@@ -1,0 +1,606 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+    <form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
+        <section class="dp-paneblock dp-editpane">
+            <article class="form-horizontal dp-form">
+                <div class="panel panel-fill indent">
+                    <div class="panel-body" ng-show="EditCtrl.field_type == '0'">
+                        <div class="form-group">
+                            <div class="col-lg-12">
+                                <h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="text"/>
+                                        Single-line Text Box</label></h3>
+
+                                <p>
+                                    A text box is a single-line input box that the user types text into.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-lg-12">
+                                <h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="textarea"/>
+                                        Multi-line Text Box</label></h3>
+
+                                <p>
+                                    A textarea box is a multi-line input box that the user types text into.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-lg-12">
+                                <h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="choice"/>
+                                        Predefined Choices</label></h3>
+
+                                <p>
+                                    This is a set of predefined options presented as a drop-down select menu, radio
+                                    buttons or checkboxes.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-lg-12">
+                                <h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="toggle"/>
+                                        Toggle (On/Off)</label></h3>
+
+                                <p>
+                                    This field displays as a single checkbox.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-lg-12">
+                                <h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="date"/>
+                                        Date</label></h3>
+
+                                <p>
+                                    This date field lets you select a date using a calendar widget.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-lg-12">
+                                <h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="datetime"/>
+                                        Date/Time</label></h3>
+
+                                <p>
+                                    This date field lets you select a date and time using a calendar widget.
+                                </p>
+                            </div>
+                        </div>
+
+                        {% block extra_types_choose %}{% endblock %}
+                    </div>
+                    <div class="panel-body" ng-show="EditCtrl.field_type != 0">
+
+                        <div class="form-group with-border">
+                            <div class="col-lg-3">
+                                <h3>Field Type</h3>
+                            </div>
+                            <div class="col-lg-9">
+                                <div class="inner-group">
+                                    <p class="form-control-static" ng-switch="EditCtrl.field_type">
+                                        <span ng-switch-when="text">Single-line Text Box</span>
+                                        <span ng-switch-when="textarea">Multi-line Text Box</span>
+                                        <span ng-switch-when="choice">Predefined Choices</span>
+                                        <span ng-switch-when="toggle">Toggle (On/Off)</span>
+                                        <span ng-switch-when="date">Date</span>
+                                        <span ng-switch-when="datetime">Date/Time</span>
+                                        {% block extra_types_titleswitch %}{% endblock %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-lg-3">
+                                <h3>Enabled</h3>
+                            </div>
+                            <div class="col-lg-9">
+                                <label><input type="checkbox" ng-model="EditCtrl.form.is_enabled"/> Enable this
+                                    field</label>
+                            </div>
+                        </div>
+
+                        {% block topdefault_fields_pre %}
+                        {% endblock %}
+
+                        {% block topdefault_fields %}
+                            <div class="form-group">
+                                <div class="col-lg-3">
+                                    <h3>{{ phrase('agent.general.title') }} *</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="inner-group" dp-error-class="form_props.title">
+                                        <input type="text" class="form-control" name="title"
+                                               ng-model="EditCtrl.form.title" style="width: 50%;" required autofocus/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group with-border">
+                                <div class="col-lg-3">
+                                    <h3>{{ phrase('agent.general.description') }}</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="inner-group">
+                                        <textarea class="form-control" name="description"
+                                                  ng-model="EditCtrl.form.description"
+                                                  style="width: 50%; height: 80px;"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endblock %}
+
+                        {% block post_topdefault_fields %}{% endblock %}
+
+                        {###############################################################################################}
+                        {# Text Field #}
+
+                        <div ng-show="EditCtrl.field_type == 'text' || EditCtrl.field_type == 'textarea'">
+                            <div class="form-group">
+                                <div class="col-lg-3">
+                                    <h3>Default value</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="inner-group">
+                                        <input type="text" class="form-control"
+                                               ng-model="EditCtrl.form.text.default_value" style="width: 50%;"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group with-border">
+                                <div class="col-lg-3">
+                                    <h3>Agent Validation</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="inner-group">
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.text.agent_validation"
+                                                                                                  value="0"/> No agent
+                                            validation</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.text.agent_validation"
+                                                                                                  value="required"/>
+                                            Require the agent to provide a value</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.text.agent_validation"
+                                                                                                  value="regex"/> Match
+                                            regular expression</label>
+
+                                        <p ng-show="EditCtrl.form.text.agent_validation == 'required'">
+                                            Min characters: <input type="text" class="form-control"
+                                                                   ng-model="EditCtrl.form.text.agent_min_length"
+                                                                   style="width: 50px;"/>
+                                            Max characters: <input type="text" class="form-control"
+                                                                   ng-model="EditCtrl.form.text.agent_max_length"
+                                                                   style="width: 50px;"/>
+                                        </p>
+
+                                        <p ng-show="EditCtrl.form.text.agent_validation == 'regex'">
+                                            <input type="text" class="form-control"
+                                                   ng-model="EditCtrl.form.text.agent_regex" style="width: 50%;"
+                                                   placeholder="Enter pattern here"/>
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {###############################################################################################}
+                        {# Choice Field #}
+
+                        <div ng-show="EditCtrl.field_type == 'choice'">
+                            <div class="form-group">
+                                <div class="col-lg-3">
+                                    <h3>Display style</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <select ng-model="EditCtrl.form.choice.field_type" ui-select2 style="width: 250px;"
+                                            ng-change="EditCtrl.form.choice.default_value = null">
+                                        <option value="select">Select box (single selection)</option>
+                                        <option value="multi_select">Multiple-select box (multiple selection)</option>
+                                        <option value="radio">Radio buttons (single selection)</option>
+                                        <option value="checkbox">Checkboxes (multiple selection)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-lg-3">
+                                    <h3>Options</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <dp-category-builder ng-model="EditCtrl.form.choice.options"
+                                                         save-flat-array="EditCtrl.choice_default_value_options"
+                                                         field-type="EditCtrl.type()"></dp-category-builder>
+                                    <p style="margin-top: 4px;">
+                                        Default option: <select ng-model="EditCtrl.form.choice.default_value" ui-select2
+                                                                style="min-width: 200px;"
+                                                                ng-multiple="'multi_select' == EditCtrl.form.choice.field_type || 'checkbox' == EditCtrl.form.choice.field_type">
+                                            <option ng-if="'select' == EditCtrl.form.choice.field_type || 'radio' == EditCtrl.form.choice.field_type"
+                                                    value="0">No default option
+                                            </option>
+                                            <option value="{{ ng_var('c.id') }}"
+                                                    ng-repeat="c in EditCtrl.form.choice.options">{{ ng_var('c.title') }}</option>
+                                        </select>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group with-border">
+                                <div class="col-lg-3">
+                                    <h3>Agent Validation</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="inner-group">
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.choice.agent_validation"
+                                                                                                  value="0"/> No agent
+                                            validation</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.choice.agent_validation"
+                                                                                                  value="required"/>
+                                            Require the agent to provide a value</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {###############################################################################################}
+                        {# Choice Field #}
+
+                        <div ng-show="EditCtrl.field_type == 'toggle'">
+                            <div class="form-group">
+                                <div class="col-lg-3">
+                                    <h3>Checkbox Label</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" ng-model="EditCtrl.form.toggle.label_text"
+                                           style="width: 50%;"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-lg-3">
+                                    <h3>Default state</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <label>
+                                        <input type="checkbox" ng-model="EditCtrl.form.toggle.default_value"/>
+                                        Checked by default
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group with-border">
+                                <div class="col-lg-3">
+                                    <h3>Agent Validation</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="inner-group">
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.toggle.agent_validation"
+                                                                                                  value="0"/> No agent
+                                            validation</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.toggle.agent_validation"
+                                                                                                  value="required"/>
+                                            Require the agent to check the checkbox</label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {###############################################################################################}
+                        {# Date Field #}
+
+                        <div ng-show="EditCtrl.field_type == 'date'">
+                            <div class="form-group">
+                                <div class="col-lg-3">
+                                    <h3>Default value</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="inner-group">
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.date.default_mode"
+                                                                                                  value="0"/> Use date
+                                            at time of form submission</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.date.default_mode"
+                                                                                                  value="date"/>
+                                            Specific date</label>
+
+                                        <p ng-show="EditCtrl.form.date.default_mode == 'date'">
+                                            <input type="text" class="form-control"
+                                                   ng-model="EditCtrl.form.date.default_value"
+                                                   style="width: 50%;"
+                                                   dp-datetime-popup="DD MMMM YYYY"
+                                                    />
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-lg-3">
+                                    <h3>Valid week days</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="inner-group">
+                                        <label style="font-weight: normal;"><input type="checkbox"
+                                                                                   ng-model="EditCtrl.form.date.valid_weekdays[0]"/>
+                                            Monday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox"
+                                                                                   ng-model="EditCtrl.form.date.valid_weekdays[1]"/>
+                                            Tuesday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox"
+                                                                                   ng-model="EditCtrl.form.date.valid_weekdays[2]"/>
+                                            Wednesday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox"
+                                                                                   ng-model="EditCtrl.form.date.valid_weekdays[3]"/>
+                                            Thursday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox"
+                                                                                   ng-model="EditCtrl.form.date.valid_weekdays[4]"/>
+                                            Friday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox"
+                                                                                   ng-model="EditCtrl.form.date.valid_weekdays[5]"/>
+                                            Saturday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox"
+                                                                                   ng-model="EditCtrl.form.date.valid_weekdays[6]"/>
+                                            Sunday</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-lg-3">
+                                    <h3>Valid dates</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="inner-group">
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.date.valid_dates_mode"
+                                                                                                  value="0"/> Any date
+                                            is valid</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.date.valid_dates_mode"
+                                                                                                  value="date"/> Date
+                                            range</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.date.valid_dates_mode"
+                                                                                                  value="range"/> Days
+                                            before/after</label>
+
+                                        <p ng-show="EditCtrl.form.date.valid_dates_mode == 'date'">
+                                            Between
+                                            <input type="text" class="form-control"
+                                                   ng-model="EditCtrl.form.date.date_valid_date1"
+                                                   style="width: 150px;" placeholder="Start date"
+                                                   dp-datetime-popup="DD MMMM YYYY"
+                                                    />
+                                            and
+                                            <input type="text" class="form-control"
+                                                   ng-model="EditCtrl.form.date.date_valid_date2"
+                                                   style="width: 150px;"
+                                                   placeholder="Start end"
+                                                   dp-datetime-popup="DD MMMM YYYY"
+                                                    />
+                                        </p>
+
+                                        <p ng-show="EditCtrl.form.date.valid_dates_mode == 'range'">
+                                            Date selected must be between
+                                            <input type="text" class="form-control"
+                                                   ng-model="EditCtrl.form.date.date_valid_range1" style="width: 80px;"
+                                                   placeholder="Days before"/>
+                                            days before and
+                                            <input type="text" class="form-control"
+                                                   ng-model="EditCtrl.form.date.date_valid_range2" style="width: 80px;"
+                                                   placeholder="Days after"/>
+                                            days after the time of ticket creation
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group with-border">
+                                <div class="col-lg-3">
+                                    <h3>Agent Validation</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="inner-group">
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.date.agent_validation"
+                                                                                                  value="0"/> No agent
+                                            validation</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.date.agent_validation"
+                                                                                                  value="required"/>
+                                            Require the agent to provide a value</label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {###############################################################################################}
+                        {# Date/Time Field #}
+
+                        <div ng-show="EditCtrl.field_type == 'datetime'">
+                            <div class="form-group">
+                                <div class="col-lg-3">
+                                    <h3>Default value</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="inner-group">
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.datetime.default_mode"
+                                                                                                  value="0"/> Use date
+                                            and time at the point of form submission</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.datetime.default_mode"
+                                                                                                  value="date"/>
+                                            Specific date/time</label>
+                                        <input type="text" class="form-control" style="width: 50%;"
+                                               ng-model="EditCtrl.form.datetime.default_value"
+                                               ng-if="EditCtrl.form.datetime.default_mode == 'date'"
+                                               dp-datetime-popup="DD MMMM YYYY HH:mm"
+                                                />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-lg-3">
+                                    <h3>Valid week days</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="inner-group">
+                                        <label style="font-weight: normal;"><input type="checkbox"
+                                                                                   ng-model="EditCtrl.form.datetime.valid_weekdays[0]"/>
+                                            Monday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox"
+                                                                                   ng-model="EditCtrl.form.datetime.valid_weekdays[1]"/>
+                                            Tuesday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox"
+                                                                                   ng-model="EditCtrl.form.datetime.valid_weekdays[2]"/>
+                                            Wednesday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox"
+                                                                                   ng-model="EditCtrl.form.datetime.valid_weekdays[3]"/>
+                                            Thursday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox"
+                                                                                   ng-model="EditCtrl.form.datetime.valid_weekdays[4]"/>
+                                            Friday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox"
+                                                                                   ng-model="EditCtrl.form.datetime.valid_weekdays[5]"/>
+                                            Saturday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox"
+                                                                                   ng-model="EditCtrl.form.datetime.valid_weekdays[6]"/>
+                                            Sunday</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-lg-3">
+                                    <h3>Valid dates</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="inner-group">
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.datetime.valid_dates_mode"
+                                                                                                  value="0"/> Any date
+                                            is valid</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.datetime.valid_dates_mode"
+                                                                                                  value="date"/> Date
+                                            range</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.datetime.valid_dates_mode"
+                                                                                                  value="range"/> Days
+                                            before/after</label>
+
+                                        <p ng-show="EditCtrl.form.datetime.valid_dates_mode == 'date'">
+                                            Between
+                                            <input type="text" class="form-control"
+                                                   ng-model="EditCtrl.form.datetime.date_valid_date1"
+                                                   style="width: 150px;"
+                                                   placeholder="Start date"
+                                                   dp-datetime-popup="DD MMMM YYYY"
+                                                    />
+                                            and
+                                            <input type="text" class="form-control"
+                                                   ng-model="EditCtrl.form.datetime.date_valid_date2"
+                                                   style="width: 150px;"
+                                                   placeholder="End date"
+                                                   dp-datetime-popup="DD MMMM YYYY"
+                                                    />
+                                        </p>
+
+                                        <p ng-show="EditCtrl.form.datetime.valid_dates_mode == 'range'">
+                                            Date selected must be between
+                                            <input type="text" class="form-control"
+                                                   ng-model="EditCtrl.form.datetime.date_valid_range1"
+                                                   style="width: 80px;" placeholder="Days before"/>
+                                            days before and
+                                            <input type="text" class="form-control"
+                                                   ng-model="EditCtrl.form.datetime.date_valid_range2"
+                                                   style="width: 80px;" placeholder="Days after"/>
+                                            days after the time of ticket creation
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group with-border">
+                                <div class="col-lg-3">
+                                    <h3>Agent Validation</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="inner-group">
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.datetime.agent_validation"
+                                                                                                  value="0"/> No agent
+                                            validation</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio"
+                                                                                                  ng-model="EditCtrl.form.datetime.agent_validation"
+                                                                                                  value="required"/>
+                                            Require the agent to provide a value</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {###############################################################################################}
+                        {# bottom #}
+
+                        {% block pre_bottomdefault_fields %}{% endblock %}
+
+                    </div>
+                </div>
+            </article>
+            <footer ng-show="EditCtrl.field_type == '0'">
+                <div class="dp-btn-controls">
+                    <button class="btn btn-primary"
+                            ng-click="$event.preventDefault(); EditCtrl.field_type = EditCtrl.field_type_chooser;">
+                        Configure Field
+                        &nbsp;
+                        <i class="fa fa-arrow-circle-right"></i>
+                    </button>
+                </div>
+            </footer>
+            <footer ng-hide="EditCtrl.field_type == '0'">
+                <div class="dp-content">
+                    <div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+                        <p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+                        <ul>
+                            <li ng-show="form_props.title.$error.required">{{ phrase('adm.custom_fields.title_error') }}</li>
+                        </ul>
+                    </div>
+
+                    <div class="dp-delete-control" ng-if="EditCtrl.field.id"
+                         ng-hide="form_props.$attempted && form_props.$invalid">
+                        <button class="btn btn-danger" type="button" ng-click="EditCtrl.startDelete();">Delete</button>
+                    </div>
+
+                    <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+                        <div dp-hide-spinning="saving">
+                            <button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+                        </div>
+                        <div dp-show-spinning="saving">
+                            <i class="spinner-flat"></i>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </form>
+    {{ ng_tpl('AdminInterfaceBundle:CustomFields:Common/delete-modal.html.twig', 'CustomField/delete-modal.html') }}
+    <div dp-register-message="remove_choices">You have to remove all field choices first.</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="dismiss()">&times;</button>
+        <h4 class="modal-title">Delete Option</h4>
+    </div>
+    <div class="modal-body">
+        <p>
+            Are you sure you want to delete "{{ ng_var('name') }}"?
+        </p>
+
+        <div class="radio">
+            <label>
+                <input type="radio" name="mode" ng-model="mode" ng-value="0"/>
+                Delete this option and delete all data
+                <br/>
+                <span class="text-muted" ng-show="!mode">
+                    Remove the option and remove the option from all {{ ng_var('type') }}
+                    that are currently using the option
+                </span>
+            </label>
+        </div>
+
+        <div class="radio">
+            <label>
+                <input type="radio" name="mode" ng-model="mode" ng-value="1"/>
+                Delete this option and update {{ ng_var('type') }}
+                <br/>
+                <span class="text-muted" ng-show="mode">
+                    Remove the option and update any {{ ng_var('type') }} using it to:
+                    <select ng-model="update_to">
+                        <option ng-repeat="(id, title) in options" value="{{ ng_var('id') }}">
+                            {{ ng_var('title') }}
+                        </option>
+                    </select>
+                </span>
+            </label>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <i class="spinner-flat" ng-show="busy"></i>
+        <button ng-if="!busy" class="btn btn-success" ng-click="dismiss()"><i
+                    class="fa fa-undo"></i> {{ phrase('agent.general.cancel') }}</button>
+        <button ng-if="!busy" class="btn btn-danger" ng-click="confirm()"><i
+                    class="fa fa-trash-o"></i> {{ phrase('agent.general.delete') }}</button>
+    </div>
+</div>

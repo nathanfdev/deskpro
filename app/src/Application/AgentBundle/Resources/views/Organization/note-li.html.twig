@@ -7,6 +7,9 @@
 			<div class="message-meta">
 				<time class="timeago" title="{{note.date_created|date('c', 'UTC')}}">{{note.date_created|date('day')}}</time>
 				<h4>{{note.agent.name}}:</h4>
+                {% if app.user.hasPerm('agent_org.notes') %}
+                    <div class="delete" style="float: right;">Delete</div>
+                {% endif %}
 			</div>
 			<div class="message-text">
 				<p>

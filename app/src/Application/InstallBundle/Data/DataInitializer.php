@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage InstallBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\InstallBundle\Data;
 
 use Application\DeskPRO\App;
@@ -74,7 +71,7 @@ class DataInitializer
         }
 
         $this->admin_user = $this->container->getEm()
-                ->createQuery("SELECT p FROM DeskPRO:Person p WHERE p.is_agent = true AND p.can_admin = true ORDER BY p.id DESC")
+                ->createQuery('SELECT p FROM DeskPRO:Person p WHERE p.is_agent = true AND p.can_admin = true ORDER BY p.id DESC')
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
 
@@ -105,16 +102,22 @@ class DataInitializer
         $this->container->getDb()->insert('feedback_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
 
         // Initial agent has access to all deps
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'person_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'person_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 3, 'person_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 4, 'person_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'is_active' => 1, 'person_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'is_active' => 1, 'person_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 3, 'is_active' => 1, 'person_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 4, 'is_active' => 1, 'person_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
 
         // The everyone group has access to all deps too
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'usergroup_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'usergroup_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 3, 'usergroup_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 4, 'usergroup_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'is_active' => 1, 'usergroup_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'is_active' => 1, 'usergroup_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 3, 'is_active' => 1, 'usergroup_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 4, 'is_active' => 1, 'usergroup_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
+
+        // The registered group has access to all deps too
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'is_active' => 1, 'usergroup_id' => 2, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'is_active' => 1, 'usergroup_id' => 2, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 3, 'is_active' => 1, 'usergroup_id' => 2, 'app' => 'chat', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 4, 'is_active' => 1, 'usergroup_id' => 2, 'app' => 'chat', 'name' => 'full', 'value' => 1));
     }
 
     public function runSearchIndex()
@@ -130,9 +133,9 @@ class DataInitializer
         );
 
         foreach ($types as $t) {
-            list ($content_type, $table, $entity) = $t;
-            $all_ids = $this->container->getDb()->fetchAllCol("SELECT id FROM $table ORDER BY id ASC");
-            $batch = $this->container->getEm()->getRepository($entity)->getByIds($all_ids);
+            list($content_type, $table, $entity) = $t;
+            $all_ids                             = $this->container->getDb()->fetchAllCol("SELECT id FROM $table ORDER BY id ASC");
+            $batch                               = $this->container->getEm()->getRepository($entity)->getByIds($all_ids);
             if ($batch) {
                 $this->container->getSearchAdapter()->updateObjectsInIndex($batch);
             }
@@ -145,7 +148,7 @@ class DataInitializer
             return;
         }
 
-        $agent = \Application\DeskPRO\App::getOrm()->createQuery("SELECT p FROM DeskPRO:Person p WHERE p.can_admin = 1 ORDER BY p.id ASC")
+        $agent = \Application\DeskPRO\App::getOrm()->createQuery('SELECT p FROM DeskPRO:Person p WHERE p.can_admin = 1 ORDER BY p.id ASC')
             ->setMaxResults(1)
             ->getOneOrNullResult();
 
@@ -154,63 +157,63 @@ class DataInitializer
             return;
         }
 
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 5; ++$i) {
             $this->container->getDb()->insert('ticket_filter_subscriptions', array(
-                'filter_id' => $i,
-                'person_id' => $agent->id,
-                'email_created' => 1,
-                'email_new' => 1,
-                'email_user_activity' => 1,
-                'email_agent_activity' => 1,
-                'email_agent_note' => 1,
+                'filter_id'             => $i,
+                'person_id'             => $agent->id,
+                'email_created'         => 1,
+                'email_new'             => 1,
+                'email_user_activity'   => 1,
+                'email_agent_activity'  => 1,
+                'email_agent_note'      => 1,
                 'email_property_change' => 1,
-                'alert_created' => 1,
-                'alert_new' => 1,
-                'alert_user_activity' => 1,
-                'alert_agent_activity' => 1,
+                'alert_created'         => 1,
+                'alert_new'             => 1,
+                'alert_user_activity'   => 1,
+                'alert_agent_activity'  => 1,
                 'alert_property_change' => 1,
             ));
         }
 
-        $prefs = array();
-        $prefs['chat_message.email'] = 1;
-        $prefs['login_attempt_fail.email'] = 1;
-        $prefs['task_assign_self.email'] = 1;
-        $prefs['task_assign_self.alert'] = 1;
-        $prefs['task_assign_team.email'] = 1;
-        $prefs['task_assign_team.alert'] = 1;
-        $prefs['task_complete.email'] = 1;
-        $prefs['task_complete.alert'] = 1;
-        $prefs['task_due.email'] = 1;
-        $prefs['task_due.alert'] = 1;
-        $prefs['tweet_assign_self.email'] = 1;
-        $prefs['tweet_assign_self.alert'] = 1;
-        $prefs['tweet_assign_team.email'] = 1;
-        $prefs['tweet_assign_team.alert'] = 1;
-        $prefs['tweet_reply.email'] = 1;
-        $prefs['tweet_reply.alert'] = 1;
-        $prefs['tweet_new_dm.email'] = 1;
-        $prefs['tweet_new_dm.alert'] = 1;
-        $prefs['tweet_new_reply.email'] = 1;
-        $prefs['tweet_new_reply.alert'] = 1;
-        $prefs['tweet_new_mention.email'] = 1;
-        $prefs['tweet_new_mention.alert'] = 1;
-        $prefs['tweet_new_retweet.email'] = 1;
-        $prefs['tweet_new_retweet.alert'] = 1;
-        $prefs['new_feedback.email'] = 1;
-        $prefs['new_feedback.alert'] = 1;
+        $prefs                                = array();
+        $prefs['chat_message.email']          = 1;
+        $prefs['login_attempt_fail.email']    = 1;
+        $prefs['task_assign_self.email']      = 1;
+        $prefs['task_assign_self.alert']      = 1;
+        $prefs['task_assign_team.email']      = 1;
+        $prefs['task_assign_team.alert']      = 1;
+        $prefs['task_complete.email']         = 1;
+        $prefs['task_complete.alert']         = 1;
+        $prefs['task_due.email']              = 1;
+        $prefs['task_due.alert']              = 1;
+        $prefs['tweet_assign_self.email']     = 1;
+        $prefs['tweet_assign_self.alert']     = 1;
+        $prefs['tweet_assign_team.email']     = 1;
+        $prefs['tweet_assign_team.alert']     = 1;
+        $prefs['tweet_reply.email']           = 1;
+        $prefs['tweet_reply.alert']           = 1;
+        $prefs['tweet_new_dm.email']          = 1;
+        $prefs['tweet_new_dm.alert']          = 1;
+        $prefs['tweet_new_reply.email']       = 1;
+        $prefs['tweet_new_reply.alert']       = 1;
+        $prefs['tweet_new_mention.email']     = 1;
+        $prefs['tweet_new_mention.alert']     = 1;
+        $prefs['tweet_new_retweet.email']     = 1;
+        $prefs['tweet_new_retweet.alert']     = 1;
+        $prefs['new_feedback.email']          = 1;
+        $prefs['new_feedback.alert']          = 1;
         $prefs['new_feedback_validate.email'] = 1;
         $prefs['new_feedback_validate.alert'] = 1;
-        $prefs['new_comment.email'] = 1;
-        $prefs['new_comment.alert'] = 1;
-        $prefs['new_comment_validate.email'] = 1;
-        $prefs['new_comment_validate.alert'] = 1;
+        $prefs['new_comment.email']           = 1;
+        $prefs['new_comment.alert']           = 1;
+        $prefs['new_comment_validate.email']  = 1;
+        $prefs['new_comment_validate.alert']  = 1;
 
         foreach ($prefs as $p => $v) {
             $this->container->getDb()->insert('people_prefs', array(
-                'person_id' => $agent->id,
-                'name' => 'agent_notif.' . $p,
-                'value_str' => $v,
+                'person_id'   => $agent->id,
+                'name'        => 'agent_notif.'.$p,
+                'value_str'   => $v,
                 'value_array' => 'N;',
             ));
         }
@@ -218,7 +221,6 @@ class DataInitializer
 
     public function runInitDefaultSla()
     {
-
     }
 
     public function runInitInitialData()
@@ -235,8 +237,8 @@ class DataInitializer
         $user = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail('support@deskpro.com');
         if (!$user) {
             $user = Person::newContactPerson(array(
-                'name' => 'Christopher Padfield',
-                'email' => 'support@deskpro.com',
+                'name'         => 'Christopher Padfield',
+                'email'        => 'support@deskpro.com',
                 'is_confirmed' => true,
             ));
             $user->getPrimaryEmail()->is_validated = true;
@@ -258,7 +260,7 @@ class DataInitializer
 
         $agent_name = htmlspecialchars($for_agent->getDisplayName(), ENT_QUOTES, 'UTF-8');
 
-        $message = new TicketMessage();
+        $message          = new TicketMessage();
         $message->person  = $user;
         $message->ticket  = $ticket;
         $message->message = <<<STR

@@ -1,55 +1,52 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Auth
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Auth\Adapter;
 
 use Doctrine\ORM\EntityManager;
-use Orb\Auth\Adapter\AdapterInterface;
 use Orb\Auth\Adapter\FormLoginInterface;
+use Orb\Auth\Adapter\PluginAdapter;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
 
-
 /**
  * The Local adapter handles local logins using an email address or username and a password.
  */
-class Local implements AdapterInterface, FormLoginInterface, Loggable
+class Local extends PluginAdapter implements FormLoginInterface, Loggable
 {
     /**
-     * Entity manager
+     * Entity manager.
+     *
      * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
@@ -70,7 +67,7 @@ class Local implements AdapterInterface, FormLoginInterface, Loggable
     }
 
     /**
-     * Sets the data got from a form
+     * Sets the data got from a form.
      *
      * @param array $form_data
      */
@@ -91,7 +88,7 @@ class Local implements AdapterInterface, FormLoginInterface, Loggable
 
     public function setCredentials($email, $password)
     {
-        $this->email = $email;
+        $this->email    = $email;
         $this->password = $password;
     }
 
@@ -100,11 +97,11 @@ class Local implements AdapterInterface, FormLoginInterface, Loggable
      *
      * @return
      */
-    public function authenticate()
+    public function doAuthenticate()
     {
         $time_start = microtime(true);
         if ($this->logger) {
-            $this->logger->log("START Local::authenticate", Logger::DEBUG);
+            $this->logger->log('START Local::authenticate', Logger::DEBUG);
             $this->logger->log("Request: {$this->email}:{$this->password}", Logger::DEBUG);
         }
 
@@ -123,30 +120,30 @@ class Local implements AdapterInterface, FormLoginInterface, Loggable
         try {
             /** @var \Application\DeskPRO\Entity\Person $person */
             $person = $qb->getQuery()->getSingleResult();
-        } catch (\Doctrine\ORM\NoResultException $e) {}
+        } catch (\Doctrine\ORM\NoResultException $e) {
+        }
 
         if ($this->logger) {
-
             if ($person) {
-                $this->logger->log("Found user " . $person->getId(), Logger::DEBUG);
+                $this->logger->log('Found user '.$person->getId(), Logger::DEBUG);
             } else {
-                $this->logger->log("No user found", Logger::DEBUG);
+                $this->logger->log('No user found', Logger::DEBUG);
             }
 
             $this->logger->log(
-                sprintf("END Local::authenticate (took %.4fs)", microtime(true) - $time_start), Logger::DEBUG
+                sprintf('END Local::authenticate (took %.4fs)', microtime(true) - $time_start), Logger::DEBUG
             );
         }
 
-        if (!$person OR !$person->checkPassword($this->password)) {
+        if (!$person or !$person->checkPassword($this->password)) {
             return new Result(Result::FAILURE_INVALID_CREDS);
         }
 
         $identity = new Identity(
             $person['id'],
             array(
-                'email' => $person->primary_email->email,
-                'email_confirmed' => true
+                'email'           => $person->primary_email->email,
+                'email_confirmed' => true,
             )
         );
         $identity->setFriendlyIdentity($person->primary_email->email);
@@ -156,7 +153,7 @@ class Local implements AdapterInterface, FormLoginInterface, Loggable
     }
 
     /**
-     * Set the logger
+     * Set the logger.
      *
      * @param \Orb\Log\Logger $logger
      */

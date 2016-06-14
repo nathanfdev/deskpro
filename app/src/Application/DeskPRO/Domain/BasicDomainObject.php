@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
@@ -42,21 +41,23 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
+use Doctrine\ORM\PersistentCollection;
 
 /**
- * The basic entitiy class
+ * The basic entitiy class.
  */
 abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 {
-    const TOARRAY_NOOP = 1;
-    const TOARRAY_DEEP = 2;
+    const TOARRAY_NOOP            = 1;
+    const TOARRAY_DEEP            = 2;
     const TOARRAY_ONLY_PRIMATIVES = 4;
-    const TOARRAY_LOAD_UNLOADED = 8;
+    const TOARRAY_LOAD_UNLOADED   = 8;
 
     /**
-     * Array of listeners
+     * Array of listeners.
      *
      * @see addPropertyChangedListener
+     *
      * @var array
      */
     private $_listeners = array();
@@ -84,9 +85,9 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
      */
     public $__dp_is_preloaded_repos = null;
 
-
     /**
-     * Set values from an array
+     * Set values from an array.
+     *
      * @param array $values The values to set
      */
     public function fromArray(array $values)
@@ -96,12 +97,11 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         }
     }
 
-
-
     /**
-     * Get a simple array representation of this entity
+     * Get a simple array representation of this entity.
      *
-     * @param  bool  $mode
+     * @param bool $mode
+     *
      * @return array
      */
     public function toArray($mode = self::TOARRAY_NOOP)
@@ -111,7 +111,6 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         $only_real = true;
 
         foreach ($this->getKeys() as $name) {
-
             if ($only_real) {
                 if (!property_exists($this, $name)) {
                     continue;
@@ -122,24 +121,21 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 
             if (!($mode & self::TOARRAY_LOAD_UNLOADED)) {
                 // If a relation isn't loaded then dont access it, or else we'll lazy load it
-                if (!is_scalar($val) AND !is_array($val) AND is_null($val) AND ($val instanceof \DateTime) AND !\Application\DeskPRO\ORM\Util\Util::isCollectionInitialized($val)) {
+                if (!is_scalar($val) and !is_array($val) and is_null($val) and ($val instanceof \DateTime) and !\Application\DeskPRO\ORM\Util\Util::isCollectionInitialized($val)) {
                     continue;
                 }
             }
 
             if ($mode & self::TOARRAY_NOOP) {
-
                 $values[$name] = $val;
-
             } elseif ($mode & self::TOARRAY_ONLY_PRIMATIVES) {
-                if (is_scalar($val) OR is_array($val) OR is_null($val)) {
+                if (is_scalar($val) or is_array($val) or is_null($val)) {
                     $values[$name] = $val;
                 } elseif ($val instanceof \DateTime) {
                     $values[$name] = $val->format('Y-m-d H:i:s');
                 }
-
             } elseif ($mode & self::TOARRAY_DEEP) {
-                if (is_object($val) AND method_exists($val, 'toArray')) {
+                if (is_object($val) and method_exists($val, 'toArray')) {
                     // If its a DomainObject then we can pass on the mode
                     if ($this->$name instanceof DomainObject) {
                         $val = $val->toArray($mode);
@@ -155,8 +151,6 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         return $values;
     }
 
-
-
     /**
      * Get an array of keys that can be used on this object to access certain data.
      *
@@ -167,20 +161,20 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         return $this->getFieldKeys();
     }
 
-
-
     /**
      * Get an array of keys that correspond to real database fields.
      */
     public function getFieldKeys()
     {
-        $r = new \ReflectionObject($this);
+        $r     = new \ReflectionObject($this);
         $props = $r->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PROTECTED);
 
         $keys = array();
         foreach ($props as $prop) {
             // Skip _props because they arent entity properties
-            if ($prop->name[0] === '_') continue;
+            if ($prop->name[0] === '_') {
+                continue;
+            }
 
             $keys[] = $prop->name;
         }
@@ -188,38 +182,37 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         return $keys;
     }
 
-
-
     /**
      * Checks to see if a particular field on this object exists and is a real database field.
      * By convention, this is any protected property on the object whose name doesnt start with an underscore.
      *
-     * @param  string $field
+     * @param string $field
+     *
      * @return bool
      */
     public function propertyFieldExists($field)
     {
         // If it begins with an undercore, then by convention its not a field
-        if ($field[0] === '_') return false;
+        if ($field[0] === '_') {
+            return false;
+        }
 
         try {
-            $r = new \ReflectionObject($this);
+            $r    = new \ReflectionObject($this);
             $prop = $r->getProperty($field);
         } catch (\ReflectionException $e) {
             return false;
         }
 
-        if ($prop->isProtected() OR $prop->isPrivate()) {
+        if ($prop->isProtected() or $prop->isPrivate()) {
             return true;
         }
 
         return false;
     }
 
-
-
     /**
-     * Get a property of this entity. Same as using $entity[something]
+     * Get a property of this entity. Same as using $entity[something].
      *
      * @param string $name The property to get
      */
@@ -228,10 +221,8 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         return $this->offsetGet($name);
     }
 
-
-
     /**
-     * Set the value of a property. Same as using $entity[something]
+     * Set the value of a property. Same as using $entity[something].
      *
      * @param string $name  The property to set
      * @param mixed  $value The value to set
@@ -240,8 +231,6 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
     {
         $this->offsetSet($name, $value);
     }
-
-
 
     public function __get($name)
     {
@@ -263,8 +252,6 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         return $this->offsetUnset($name);
     }
 
-
-
     /**
      * Dynamically implement getX and setX methods.
      */
@@ -283,7 +270,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         }
 
         list(, $type, $prop) = $match;
-        $prop = strtolower($prop);
+        $prop                = strtolower($prop);
 
         // getX
         if ($type == 'is') {
@@ -306,7 +293,6 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         return isset($this->_custom_callables[$name]);
     }
 
-
     /**
      * Called when __call finds no suitable attribute to use.
      */
@@ -318,7 +304,6 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         throw new \BadMethodCallException("Method `$name` is undefined");
     }
 
-
     ############################################################################
     # ArrayAccess Implementation
     ############################################################################
@@ -328,22 +313,22 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         if (strpos($offset, 'is_') !== false) {
             $func = str_replace('_', '', $offset);
         } else {
-            $func = "get" . str_replace('_', '', $offset);
+            $func = 'get'.str_replace('_', '', $offset);
         }
         if (method_exists($this, $func)) {
             return true;
-        } elseif (property_exists($this, $offset) AND $offset[0] != '_') {
+        } elseif (property_exists($this, $offset) and $offset[0] != '_') {
             return true;
         } else {
             // Handle _id's
             if (substr($offset, -3) === '_id') {
-                $func = substr($func, 0, -3);
+                $func   = substr($func, 0, -3);
                 $offset = substr($offset, 0, -3);
             }
 
             if (method_exists($this, $func) || isset($this->_custom_callables['get'.strtolower($offset)])) {
                 return true;
-            } elseif (property_exists($this, $offset) AND $offset[0] != '_') {
+            } elseif (property_exists($this, $offset) and $offset[0] != '_') {
                 return true;
             }
 
@@ -353,11 +338,11 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 
     public function offsetSet($offset, $value)
     {
-        $func = "set" . str_replace('_', '', $offset);
+        $func = 'set'.str_replace('_', '', $offset);
         if (method_exists($this, $func) || isset($this->_custom_callables[strtolower($func)])) {
             $this->$func($value);
         } else {
-            $old_value = isset($this[$offset]) ? $this[$offset] : null;
+            $old_value     = isset($this[$offset]) ? $this[$offset] : null;
             $this->$offset = $value;
             $this->_onPropertyChanged($offset, $old_value, $value);
         }
@@ -368,17 +353,17 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         if (strpos($offset, 'is_') !== false) {
             $func = str_replace('_', '', $offset);
         } else {
-            $func = "get" . str_replace('_', '', $offset);
+            $func = 'get'.str_replace('_', '', $offset);
         }
         if (method_exists($this, $func) || isset($this->_custom_callables[strtolower($func)])) {
             return $this->$func();
-        } elseif (property_exists($this, $offset) AND $offset[0] != '_') {
+        } elseif (property_exists($this, $offset) and $offset[0] != '_') {
             return $this->$offset;
         } else {
 
             // Handle _id's
             if (substr($offset, -3) === '_id') {
-                $func = substr($func, 0, -3);
+                $func   = substr($func, 0, -3);
                 $offset = substr($offset, 0, -3);
             }
 
@@ -389,7 +374,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
                 } else {
                     return 0;
                 }
-            } elseif (property_exists($this, $offset) AND $offset[0] != '_') {
+            } elseif (property_exists($this, $offset) and $offset[0] != '_') {
                 $obj = $this->$offset;
                 if ($obj) {
                     return $obj['id'];
@@ -414,7 +399,9 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
      */
     public function addPropertyChangedListener(PropertyChangedListener $listener)
     {
-        if (empty($this->_listeners['property'])) $this->_listeners['property'] = array();
+        if (empty($this->_listeners['property'])) {
+            $this->_listeners['property'] = array();
+        }
 
         $this->_listeners['property'][] = $listener;
     }
@@ -424,7 +411,9 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
      */
     public function removePropertyChangedListener(PropertyChangedListener $listener)
     {
-        if (empty($this->_listeners['property'])) return;
+        if (empty($this->_listeners['property'])) {
+            return;
+        }
 
         foreach ($this->_listeners['property'] as $k => $l) {
             if ($l == $listener) {
@@ -448,7 +437,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         $uow = App::getOrm()->getUnitOfWork();
 
         if (!empty($this->_listeners['property'])) {
-            foreach ($this->_listeners['property'] AS $listener) {
+            foreach ($this->_listeners['property'] as $listener) {
                 if ($listener === $uow) {
                     return false;
                 }
@@ -487,7 +476,12 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
                     continue;
                 }
 
-                $new_coll = new ArrayCollection($val->toArray());
+                if ($val instanceof PersistentCollection) {
+                    $val->initialize();
+                    $new_coll = new ArrayCollection($val->getSnapshot());
+                } else {
+                    $new_coll = $val;
+                }
                 $this->_state_clone->__setPropValue__($prop, $new_coll);
             }
         }
@@ -501,11 +495,12 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
     public function resetStateChangeRecorder()
     {
         $this->_state_recorder = null;
-        $this->_state_clone = null;
+        $this->_state_clone    = null;
     }
 
     /**
      * Returns a clone of this entity which represents the state before changes were made to it.
+     *
      * @return object
      */
     public function getOriginalStateClone()
@@ -547,9 +542,20 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
         }
     }
 
-    protected function propertyChangedCallback($prop, $old, $new) {}
+    protected function propertyChangedCallback($prop, $old, $new)
+    {
+    }
 
-    public function __getPropValue__($k) { return $this->$k; }
-    public function __setPropValue__($k, $v) { $this->$k = $v; }
-    public function __hasRunLoad__() { return true; }
+    public function __getPropValue__($k)
+    {
+        return $this->$k;
+    }
+    public function __setPropValue__($k, $v)
+    {
+        $this->$k = $v;
+    }
+    public function __hasRunLoad__()
+    {
+        return true;
+    }
 }

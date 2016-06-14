@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Languages;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -57,7 +55,6 @@ class LanguageInstaller
         $this->em = $em;
     }
 
-
     /**
      * This will insert the lang pack into an existing language,
      * upgrading it instead of installing a brand new one.
@@ -69,19 +66,17 @@ class LanguageInstaller
         $this->upgrade_language = $language;
     }
 
-
     /**
      * Install a language pack from a pack file located at $pack_path.
      *
      * @param string $pack_path
      */
-    public function insatllFromPackFilePath($pack_path)
+    public function installFromPackFilePath($pack_path)
     {
         $pack_file = LanguagePackFile::newFromFile($pack_path);
 
         return $this->installPack($pack_file->getPack());
     }
-
 
     /**
      * Install a language pack from a pack file loaded into a string.
@@ -95,7 +90,6 @@ class LanguageInstaller
         return $this->installPack($pack_file->getPack());
     }
 
-
     /**
      * Install a language pack from an already loaded LanguagePackFile.
      *
@@ -106,23 +100,22 @@ class LanguageInstaller
         return $this->installPack($pack_file->getPack());
     }
 
-
     /**
-     * Install a new language pack
+     * Install a new language pack.
      *
-     * @param  \Application\DeskPRO\Languages\LanguagePack $pack
-     * @return \Application\DeskPRO\Entity\Language
+     * @param \Application\DeskPRO\Languages\LanguagePack $pack
+     *
      * @throws \Exception
+     *
+     * @return \Application\DeskPRO\Entity\Language
      */
     public function installPack(LanguagePack $pack)
     {
         $this->em->getConnection()->beginTransaction();
         try {
-
             if ($this->upgrade_language) {
-
-                $lang = $this->upgrade_language;
-                $lang->sys_name = $pack->sys_name;
+                $lang            = $this->upgrade_language;
+                $lang->sys_name  = $pack->sys_name;
                 $lang->lang_code = $pack->lang_code;
 
                 // Delete all phrases that arent customized
@@ -132,10 +125,10 @@ class LanguageInstaller
                 ", array($lang->getId()));
 
                 // Figure out obsolete phrases to delete
-                $custom_phrase_ids = $this->em->getConnection()->fetchAllCol("
+                $custom_phrase_ids = $this->em->getConnection()->fetchAllCol('
                     SELECT name FROM phrases
                     WHERE language_id = ?
-                ", array($lang->getId()));
+                ', array($lang->getId()));
 
                 $delete_ids = array();
 
@@ -146,15 +139,13 @@ class LanguageInstaller
                 }
 
                 if ($delete_ids) {
-
                     $this->em->getConnection()->executeUpdate('
                         DELETE FROM phrases
                         WHERE language_id = ? AND name IN (?)
                     ', array($lang->getId(), $delete_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
                 }
-
             } else {
-                $lang = new Language();
+                $lang            = new Language();
                 $lang->title     = $pack->title;
                 $lang->locale    = $pack->locale;
                 $lang->sys_name  = $pack->sys_name;
@@ -164,23 +155,22 @@ class LanguageInstaller
                 $this->em->flush();
             }
 
-            $lang_id = $lang->getId();
+            $lang_id    = $lang->getId();
             $created_at = date('Y-m-d H:i:s');
 
             $insert_phrases = array();
             foreach ($pack->phrases as $id => $phrase) {
-
                 $groupname = \Orb\Util\Strings::rexplode('.', $id);
                 $groupname = array_shift($groupname);
 
                 $insert_phrases[] = array(
-                    'language_id'       => $lang_id,
-                    'name'              => $id,
-                    'groupname'         => $groupname,
-                    'original_phrase'   => $phrase,
-                    'original_hash'     => sha1($phrase),
-                    'created_at'        => $created_at,
-                    'updated_at'        => $created_at,
+                    'language_id'     => $lang_id,
+                    'name'            => $id,
+                    'groupname'       => $groupname,
+                    'original_phrase' => $phrase,
+                    'original_hash'   => sha1($phrase),
+                    'created_at'      => $created_at,
+                    'updated_at'      => $created_at,
                 );
             }
 

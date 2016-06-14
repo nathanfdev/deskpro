@@ -1,4 +1,34 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -44,6 +74,12 @@ $container->setParameter('form.type_extension.csrf.enabled', false);
 # Services
 ############################################################################
 
+// dp.cache_clearer.cachedir
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\CacheClearer\\CacheDirClearer');
+$definition->addTag('kernel.cache_clearer');
+$container->setDefinition('dp.cache_clearer.cachedir', $definition);
+
 // templating.engine.jsonphp
 $definition = new Definition();
 $definition->setClass('Orb\\Templating\\Engine\\PhpVarJsonEngine');
@@ -60,7 +96,7 @@ $container->setDefinition('templating.engine.jsonphp', $definition);
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Twig\\Extension\\TemplatingExtension');
 $definition->setArguments(array(
-    new Reference('service_container')
+    new Reference('service_container'),
 ));
 $definition->addTag('twig.extension', array());
 $container->setDefinition('twig.helpers.deskpro_templating', $definition);
@@ -69,7 +105,7 @@ $container->setDefinition('twig.helpers.deskpro_templating', $definition);
 $definition = new Definition();
 $definition->setClass('Application\\UserBundle\\Twig\\Extension\\UserTemplatingExtension');
 $definition->setArguments(array(
-    new Reference('service_container')
+    new Reference('service_container'),
 ));
 $definition->addTag('twig.extension', array());
 $container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
@@ -78,7 +114,7 @@ $container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
 $definition = new Definition();
 $definition->setClass('Application\\UserBundle\\Twig\\Extension\\UserTemplatingExtension');
 $definition->setArguments(array(
-    new Reference('service_container')
+    new Reference('service_container'),
 ));
 $definition->addTag('twig.extension', array());
 $container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
@@ -88,7 +124,7 @@ $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\HttpFoundation\\SessionStorage\\SessionEntityStorage');
 $definition->setArguments(array(
     new Reference('doctrine.orm.entity_manager'),
-    '%session.storage.options%'
+    '%session.storage.options%',
 ));
 $container->setDefinition('session.storage', $definition);
 
@@ -104,7 +140,7 @@ $container->setDefinition('deskpro.mail_logger', $definition);
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\DBAL\\ConnectionFactory');
 $definition->setArguments(array(
-    '%doctrine.dbal.connection_factory.types%'
+    '%doctrine.dbal.connection_factory.types%',
 ));
 $definition->addMethodCall('setContainer', array(new Reference('service_container')));
 $container->setDefinition('doctrine.dbal.connection_factory', $definition);
@@ -133,7 +169,7 @@ $container->setDefinition('deskpro.interface_value', $definition);
 $definition = new Definition();
 $definition->setClass('Orb\\Doctrine\\Common\\Cache\\PreloadedMysqlCache');
 $definition->setArguments(array(
-    new Reference('database_connection')
+    new Reference('database_connection'),
 ));
 $definition->addMethodCall('setPrefix', array('dres', new Reference('deskpro.interface_value')));
 $container->setDefinition('default_result_cache', $definition);
@@ -141,7 +177,7 @@ $container->setDefinition('default_result_cache', $definition);
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\ORM\\ContainerAwareEntityListenerResolver');
 $definition->setArguments(array(
-    new Reference('service_container')
+    new Reference('service_container'),
 ));
 $container->setDefinition('dp.doctrine.entity_listener_resolver', $definition);
 
@@ -179,6 +215,7 @@ $container->setDefinition('deskpro.search_manager.doctrine', $definition);
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\TicketToElasticaTransformer');
 $container->setDefinition('deskpro.search.ticket_to_elastica_transformer', $definition);
+$definition->addMethodCall('setApacheTika', array(new Reference('deskpro.apache_tika.client_manager')));
 
 // deskpro.search.person_to_elastica_transformer
 $definition = new Definition();
@@ -223,10 +260,40 @@ $definition->setArguments(array(
     new Reference('fos_elastica.indexable'),
     '',
     array(),
-    new Reference('doctrine')
+    new Reference('doctrine'),
 ));
 $definition->setAbstract(true);
 $container->setDefinition('fos_elastica.provider.prototype.orm', $definition);
+
+// dp_enc
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Encryption\\DpEnc');
+$definition->setFactoryClass('Application\\DeskPRO\\Encryption\\StandardEncFactory');
+$definition->setFactoryMethod('create');
+$definition->setArguments(array(new Reference('service_container')));
+$container->setDefinition('dp_enc', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Encryption\\Form\\Type\\DpEncTextType');
+$definition->setArguments(array(new Reference('dp_enc')));
+$definition->addTag('form.type', array('alias' => 'dp_enc_text'));
+$container->setDefinition('dp_enc.form.type.dp_enc_text', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Encryption\\Form\\Type\\DpEncPasswordType');
+$definition->setArguments(array(new Reference('dp_enc')));
+$definition->addTag('form.type', array('alias' => 'dp_enc_password'));
+$container->setDefinition('dp_enc.form.type.dp_enc_password', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\EventListener\\HtmlTrackingListener');
+$definition->addTag('kernel.event_subscriber');
+$container->setDefinition('html_tracking.listener', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\EventListener\\SegmentTrackingListener');
+$definition->addTag('kernel.event_subscriber');
+$container->setDefinition('segment_tracking.listener', $definition);
 
 $definition = new Definition();
 $definition->setClass('Application\\ApiBundle\\Service\\DashboardPermissions');
@@ -258,7 +325,7 @@ foreach (array(
     'Application\\DeskPRO\\Validator\\Constraints\\AgentGroupValidator',
     'Application\\DeskPRO\\Validator\\Constraints\\AgentTeamValidator',
 ) as $class) {
-    $parts = explode('\\', $class);
+    $parts     = explode('\\', $class);
     $base_name = array_pop($parts);
 
     $alias = $class::getAlias();
@@ -266,9 +333,9 @@ foreach (array(
     $definition = new Definition();
     $definition->setClass($class);
     $definition->setFactoryService('deskpro.constraint_factory');
-    $definition->setFactoryMethod('get' . ucfirst($base_name));
+    $definition->setFactoryMethod('get'.ucfirst($base_name));
     $definition->addTag('validator.constraint_validator', array('alias' => $alias));
-    $container->setDefinition('validator.deskpro.' . strtolower($alias), $definition);
+    $container->setDefinition('validator.deskpro.'.strtolower($alias), $definition);
 }
 
 ############################################################################
@@ -276,17 +343,17 @@ foreach (array(
 ############################################################################
 
 $container->loadFromExtension('framework', array(
-    'secret' => 'mube224etsmhxky1gvwixc4b',
+    'secret'     => 'mube224etsmhxky1gvwixc4b',
     'templating' => array(
-        'engines' => array('twig', 'php', 'jsonphp'),
-        'assets_base_urls' => 'CONFIG_HTTP'
+        'engines'          => array('twig', 'php', 'jsonphp'),
+        'assets_base_urls' => 'CONFIG_HTTP',
     ),
     'validation' => array('enabled' => true, 'static_method' => array('loadValidatorMetadata'), 'api' => '2.4'),
-    'session' => array(),
-    'form' => array('enabled' => true),
-    'router' => array(
-        'resource' => DP_ROOT.'/sys/config/routing.php'
-    )
+    'session'    => array(),
+    'form'       => array('enabled' => true),
+    'router'     => array(
+        'resource' => DP_ROOT.'/sys/config/routing.php',
+    ),
 ));
 
 // Monolog default logging, turn off unless specifically enabled (eg in some _dev configs)
@@ -297,11 +364,11 @@ $container->loadFromExtension('monolog', array(
             'id'   => 'deskpro.logging.null_handler',
         ),
         'email_log_collector' => array(
-            'type' => 'service',
-            'id' => 'email.log_collector',
-            'channels' => array('dp.email.out.mailer', 'dp.email.out.transport', 'dp.email.out.queue', 'dp.email.out.raw_transport')
+            'type'     => 'service',
+            'id'       => 'email.log_collector',
+            'channels' => array('dp.email.out.mailer', 'dp.email.out.transport', 'dp.email.out.queue', 'dp.email.out.raw_transport'),
         ),
-    )
+    ),
 ));
 
 ############################################################################
@@ -311,9 +378,9 @@ $container->loadFromExtension('monolog', array(
 $container->loadFromExtension('twig', array(
     'form' => array(
         'resources' => array(
-            'DeskPRO:Form:form_div_layout.html.twig'
-        )
-    )
+            'DeskPRO:Form:form_div_layout.html.twig',
+        ),
+    ),
 ));
 
 ############################################################################
@@ -323,24 +390,24 @@ $container->loadFromExtension('twig', array(
 $container->loadFromExtension('doctrine', array(
     'orm' => array(
         'auto_generate_proxy_classes' => false,
-        'default_entity_manager' => 'default',
-        'entity_managers' => array(
+        'default_entity_manager'      => 'default',
+        'entity_managers'             => array(
             'default' => array(
                 'mappings' => array(
                     'DeskPRO'     => array('type' => 'staticphp'),
                     'EmailBundle' => array('type' => 'staticphp'),
                 ),
-                'class_metadata_factory_name' => 'Orb\\Doctrine\\ORM\\Mapping\\StaticClassMetadataFactory'
-            )
-        )
+                'class_metadata_factory_name' => 'Orb\\Doctrine\\ORM\\Mapping\\StaticClassMetadataFactory',
+            ),
+        ),
     ),
     'dbal' => array(
         'default_connection' => 'default',
-        'connections' => array(
+        'connections'        => array(
             'default' => array('host' => 'from_user_config.db', 'logging' => true),
-            'read' => array('host' => 'from_user_config.db_read', 'logging' => true)
-        )
-    )
+            'read'    => array('host' => 'from_user_config.db_read', 'logging' => true),
+        ),
+    ),
 ));
 
 ############################################################################
@@ -350,104 +417,104 @@ $container->loadFromExtension('doctrine', array(
 $container->loadFromExtension(
     'fos_elastica', array(
         'clients' => array(
-            'default' => array('host' => 'DEFAULT', 'port' => 9200)
+            'default' => array('host' => 'DEFAULT', 'port' => 9200),
         ),
 
         'indexes' => array(
             'deskpro' => array(
                 'settings' => array(
                     'analysis' => array(
-                        'filter'   => array(
-                            'ngram_filter_3'  => array(
+                        'filter' => array(
+                            'ngram_filter_3' => array(
                                 'type'        => 'nGram',
                                 'min_gram'    => 3,
                                 'max_gram'    => 20,
-                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
+                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol'),
                             ),
-                            'edge_ngram_filter_3'  => array(
+                            'edge_ngram_filter_3' => array(
                                 'type'        => 'edgeNGram',
                                 'min_gram'    => 3,
                                 'max_gram'    => 20,
-                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
+                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol'),
                             ),
-                            'edge_ngram_filter_4'  => array(
+                            'edge_ngram_filter_4' => array(
                                 'type'        => 'edgeNGram',
                                 'min_gram'    => 4,
                                 'max_gram'    => 20,
-                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
+                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol'),
                             ),
-                            'ngram_filter_5'  => array(
+                            'ngram_filter_5' => array(
                                 'type'        => 'nGram',
                                 'min_gram'    => 5,
                                 'max_gram'    => 20,
-                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
+                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol'),
                             ),
-                            'email_filter'    => array(
+                            'email_filter' => array(
                                 'type'              => 'pattern_capture',
                                 'preserve_original' => 1,
                                 'patterns'          => array(
-                                    "(\\w+)",
-                                    "(\\p{L}+)",
-                                    "(\\d+)",
-                                    "@(.+)"
-                                )
+                                    '(\\w+)',
+                                    '(\\p{L}+)',
+                                    '(\\d+)',
+                                    '@(.+)',
+                                ),
                             ),
                             'phone_filter_leading_zero' => array(
                                 'type'              => 'pattern_replace',
                                 'preserve_original' => 1,
                                 'pattern'           => '^(\\+\\d+)\\s+(\\d+)$',
-                                'replacement'       => '$1$2 $10$2 0$2 $2'
+                                'replacement'       => '$1$2 $10$2 0$2 $2',
                             ),
-                            'phone_filter'              => array(
+                            'phone_filter' => array(
                                 'type'              => 'pattern_capture',
                                 'preserve_original' => 0,
                                 'patterns'          => array(
-                                    "(\\+\\d+)",
-                                    "(\\d+)"
-                                )
+                                    '(\\+\\d+)',
+                                    '(\\d+)',
+                                ),
                             ),
                         ),
                         'analyzer' => array(
                             'title_content_analyzer' => array(
                                 'type'      => 'custom',
                                 'tokenizer' => 'standard',
-                                'filter'    => array('standard', 'stop', 'lowercase', 'asciifolding', 'edge_ngram_filter_4')
+                                'filter'    => array('standard', 'stop', 'lowercase', 'asciifolding', 'edge_ngram_filter_4'),
                             ),
                             'text_content_analyzer' => array(
                                 'type'      => 'custom',
                                 'tokenizer' => 'standard',
-                                'filter'    => array('standard', 'stop', 'lowercase', 'asciifolding')
+                                'filter'    => array('standard', 'stop', 'lowercase', 'asciifolding'),
                             ),
                             'name_analyzer' => array(
                                 'type'      => 'custom',
                                 'tokenizer' => 'whitespace',
-                                'filter'    => array('lowercase', 'asciifolding', 'edge_ngram_filter_3')
+                                'filter'    => array('lowercase', 'asciifolding', 'edge_ngram_filter_3'),
                             ),
                             'email_analyzer' => array(
                                 'type'      => 'custom',
                                 'tokenizer' => 'keyword',
-                                'filter'    => array('lowercase', 'email_filter', 'unique')
+                                'filter'    => array('lowercase', 'email_filter', 'unique'),
                             ),
-                            'phone_analyzer'      => array(
+                            'phone_analyzer' => array(
                                 'type'      => 'custom',
                                 'tokenizer' => 'keyword',
-                                'filter'    => array('phone_filter_leading_zero', 'phone_filter', 'ngram_filter_5')
-                            )
-                        )
-                    )
+                                'filter'    => array('phone_filter_leading_zero', 'phone_filter', 'ngram_filter_5'),
+                            ),
+                        ),
+                    ),
                 ),
 
-                'types'    => array(
-                    'article'           => array(
-                        'mappings'    => array(
+                'types' => array(
+                    'article' => array(
+                        'mappings' => array(
                             'title'        => array('analyzer' => 'title_content_analyzer'),
                             'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),
-                            'category_ids' => array('type' => 'integer'),
+                            'category_ids' => array('type'     => 'integer'),
                             'labels'       => array('analyzer' => 'title_content_analyzer'),
                             'sticky_words' => array(),
                             'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-                            'date_active'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss')
+                            'date_active'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
                         ),
                         'persistence' => array(
                             'driver'                        => 'orm',
@@ -455,12 +522,12 @@ $container->loadFromExtension(
                             'provider'                      => array(),
                             'finder'                        => array(),
                             'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.article_to_elastica_transformer'),
-                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\ArticleRepository'
-                        )
+                            'model_to_elastica_transformer' => array('service'        => 'deskpro.search.article_to_elastica_transformer'),
+                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\ArticleRepository',
+                        ),
                     ),
-                    'news'              => array(
-                        'mappings'    => array(
+                    'news' => array(
+                        'mappings' => array(
                             'title'        => array('analyzer' => 'title_content_analyzer'),
                             'labels'       => array('analyzer' => 'title_content_analyzer'),
                             'sticky_words' => array(),
@@ -476,12 +543,12 @@ $container->loadFromExtension(
                             'provider'                      => array(),
                             'finder'                        => array(),
                             'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.news_to_elastica_transformer'),
-                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\NewsRepository'
-                        )
+                            'model_to_elastica_transformer' => array('service'        => 'deskpro.search.news_to_elastica_transformer'),
+                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\NewsRepository',
+                        ),
                     ),
-                    'download'          => array(
-                        'mappings'    => array(
+                    'download' => array(
+                        'mappings' => array(
                             'title'        => array('analyzer' => 'title_content_analyzer'),
                             'labels'       => array('analyzer' => 'title_content_analyzer'),
                             'sticky_words' => array(),
@@ -497,12 +564,12 @@ $container->loadFromExtension(
                             'provider'                      => array(),
                             'finder'                        => array(),
                             'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.download_to_elastica_transformer'),
-                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\DownloadRepository'
-                        )
+                            'model_to_elastica_transformer' => array('service'        => 'deskpro.search.download_to_elastica_transformer'),
+                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\DownloadRepository',
+                        ),
                     ),
-                    'feedback'          => array(
-                        'mappings'    => array(
+                    'feedback' => array(
+                        'mappings' => array(
                             'title'        => array('analyzer' => 'title_content_analyzer'),
                             'labels'       => array('analyzer' => 'title_content_analyzer'),
                             'sticky_words' => array(),
@@ -518,12 +585,12 @@ $container->loadFromExtension(
                             'provider'                      => array(),
                             'finder'                        => array(),
                             'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.feedback_to_elastica_transformer'),
-                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\FeedbackRepository'
-                        )
+                            'model_to_elastica_transformer' => array('service'        => 'deskpro.search.feedback_to_elastica_transformer'),
+                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\FeedbackRepository',
+                        ),
                     ),
-                    'organization'      => array(
-                        'mappings'    => array(
+                    'organization' => array(
+                        'mappings' => array(
                             'name'          => array('type' => 'string', 'analyzer' => 'name_analyzer'),
                             'email_domains' => array('type' => 'string', 'analyzer' => 'email_analyzer'),
                             'labels'        => array('type' => 'string'),
@@ -536,12 +603,12 @@ $container->loadFromExtension(
                             'provider'                      => array(),
                             'finder'                        => array(),
                             'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.org_to_elastica_transformer'),
-                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\OrganizationRepository'
-                        )
+                            'model_to_elastica_transformer' => array('service'        => 'deskpro.search.org_to_elastica_transformer'),
+                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\OrganizationRepository',
+                        ),
                     ),
                     'chat_conversation' => array(
-                        'mappings'    => array(
+                        'mappings' => array(
                             'subject'       => array(),
                             'labels'        => array(),
                             'department_id' => array('type' => 'integer'),
@@ -557,12 +624,12 @@ $container->loadFromExtension(
                             'provider'                      => array(),
                             'finder'                        => array(),
                             'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.chat_conversation_to_elastica_transformer'),
-                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\ChatConversationRepository'
-                        )
+                            'model_to_elastica_transformer' => array('service'        => 'deskpro.search.chat_conversation_to_elastica_transformer'),
+                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\ChatConversationRepository',
+                        ),
                     ),
-                    'person'            => array(
-                        'mappings'    => array(
+                    'person' => array(
+                        'mappings' => array(
                             'name'          => array('type' => 'string', 'analyzer' => 'name_analyzer'),
                             'first_name'    => array('type' => 'string', 'analyzer' => 'name_analyzer'),
                             'last_name'     => array('type' => 'string', 'analyzer' => 'name_analyzer'),
@@ -578,12 +645,12 @@ $container->loadFromExtension(
                             'provider'                      => array(),
                             'finder'                        => array(),
                             'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.person_to_elastica_transformer'),
-                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\PersonRepository'
-                        )
+                            'model_to_elastica_transformer' => array('service'        => 'deskpro.search.person_to_elastica_transformer'),
+                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\PersonRepository',
+                        ),
                     ),
-                    'ticket'            => array(
-                        'mappings'    => array(
+                    'ticket' => array(
+                        'mappings' => array(
                             'subject'         => array(),
                             'ref'             => array(),
                             'department'      => array('type' => 'integer'),
@@ -596,6 +663,7 @@ $container->loadFromExtension(
                             'messages'        => array(),
                             'date_created'    => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
                             'date_active'     => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
+                            'attachment'      => array('type' => 'nested'),
                         ),
                         'persistence' => array(
                             'driver'                        => 'orm',
@@ -603,13 +671,13 @@ $container->loadFromExtension(
                             'provider'                      => array(),
                             'finder'                        => array(),
                             'elastica_to_model_transformer' => array('ignore_missing' => true),
-                            'model_to_elastica_transformer' => array('service' => 'deskpro.search.ticket_to_elastica_transformer'),
-                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\TicketRepository'
-                        )
+                            'model_to_elastica_transformer' => array('service'        => 'deskpro.search.ticket_to_elastica_transformer'),
+                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\TicketRepository',
+                        ),
                     ),
-                )
-            )
-        )
+                ),
+            ),
+        ),
     )
 );
 

@@ -24,7 +24,7 @@ define [
       form.apply_terms   = {}
 
       if model.active_time == 'custom'
-        days = [false, false, false, false, false, false]
+        days = [null, false, false, false, false, false, false, false]
         for day in model.work_days
           days[day] = true
 

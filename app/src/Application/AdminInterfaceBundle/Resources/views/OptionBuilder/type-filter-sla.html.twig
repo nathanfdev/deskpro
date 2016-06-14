@@ -1,0 +1,39 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+                <td class="nowrap"><label>SLA Status</label></td>
+                <td width="100%">
+                    <select
+                            ui-select2="{dropdownAutoWidth:true}"
+                            ng-model="model.op"
+                            style="min-width: 50px;"
+                            >
+                        <option ng-if="operators.indexOf('is') !== -1" value="is">is</option>
+                        <option ng-if="operators.indexOf('not') !== -1" value="not">is not</option>
+                    </select>
+                    <select
+                            ui-select2
+                            ng-model="model.sla_status"
+                            style="min-width: 140px"
+                            >
+                        <option value="ok">OK</option>
+                        <option value="warning">Warning</option>
+                        <option value="fail">Fail</option>
+                    </select>
+
+                    for SLA
+
+                    <select
+                            ui-select2
+                            ng-model="model.sla_id"
+                            style="min-width: 140px"
+                            >
+                        <option value="0">Any</option>
+                        <option value="{{ ng_var('opt.value') }}" ng-repeat="opt in options">{{ ng_var('opt.title') }}</option>
+                    </select>
+                </td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -46,8 +45,7 @@ use Orb\Util\Numbers;
  * @property string $name
  * @property Usergroup $usergroup
  * @property Person $person
- * @property boolean $value
- *
+ * @property bool $value
  */
 class Permission extends DomainObject
 {
@@ -56,15 +54,13 @@ class Permission extends DomainObject
      *
      * @var int
      */
-
     protected $id = null;
 
     /**
-     * The name of the permission
+     * The name of the permission.
      *
      * @var string
      */
-
     protected $name = null;
 
     /**
@@ -73,7 +69,6 @@ class Permission extends DomainObject
      *
      * @var \Application\DeskPRO\Entity\Usergroup
      */
-
     protected $usergroup;
 
     /**
@@ -82,21 +77,36 @@ class Permission extends DomainObject
      *
      * @var \Application\DeskPRO\Entity\Person
      */
-
     protected $person;
 
     /**
-     * Any numeric number (ex filesize, flag)
+     * Any numeric number (ex filesize, flag).
      *
      * @var bool
      */
-
     protected $value = null;
+
+    /**
+     * True means this permission record is active for normal use with the permission resolver.
+     *
+     * When a $person permission is used but the $person in question is also part
+     * of a usergroup, then this record might be superfluous: If the ug grants the perm,
+     * and this record grants the perm, then we have two records that both grant the perm.
+     *
+     * This isn't harmful usually but if you have many many agents defined and they all have
+     * these duplicative perms, then you end up with many thousands of extra rows, which are all
+     * fetched and processed with the permission resolver.
+     *
+     * So we turn these extra perms "off" so the resolver doesn't fetch them. That means if a
+     * hd with many agent uses groups instead of overrides, permission resolving is much much faster.
+     *
+     * @var bool
+     */
+    protected $is_active = true;
 
     /**
      * @return int
      */
-
     public function getId()
     {
         return $this->id;
@@ -104,13 +114,11 @@ class Permission extends DomainObject
 
     public function __toString()
     {
-        $str = '[' . $this->name . ':';
+        $str = '['.$this->name.':';
 
         if ($prop->value !== null) {
-
             $str .= $prop->data;
         } else {
-
             $str .= 'NULL';
         }
 
@@ -119,20 +127,18 @@ class Permission extends DomainObject
         return $str;
     }
 
-
     /**
      * Combine an array of permissions into a superduper array of effective permissions.
      *
-     * @param  \Application\DeskPRO\Entity\Permission[]|array $perms
+     * @param \Application\DeskPRO\Entity\Permission[]|array $perms
+     *
      * @return array
      */
-
     public static function getEffectivePermissions(array $perms)
     {
         $effective_perms = array();
 
         foreach ($perms as $perm) {
-
             if (is_array($perm)) {
                 $k = $perm['name'];
                 $v = $perm['value'];
@@ -142,21 +148,18 @@ class Permission extends DomainObject
             }
 
             if (!Numbers::isInteger($v)) {
-
-                $v = (int)$v;
+                $v = (int) $v;
             }
 
             // If it hasnt been set yet, or the one we have is "lower",
             // then take the new value.
             if (!isset($effective_perms[$k]) || (is_int($v) && $effective_perms[$k] < $v)) {
-
                 $effective_perms[$k] = $v;
             }
         }
 
         return $effective_perms;
     }
-
 
     ############################################################################
     # Doctrine Metadata
@@ -165,7 +168,12 @@ class Permission extends DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array('name' => 'permissions',));
+        $metadata->setPrimaryTable(array(
+            'name'    => 'permissions',
+            'indexes' => array(
+                'is_active_idx' => array('columns' => array('is_active')),
+            ),
+        ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
@@ -197,6 +205,17 @@ class Permission extends DomainObject
                  'scale'      => 0,
                  'nullable'   => true,
                  'columnName' => 'value',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_active',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'options'    => array('default' => '1'),
+                'columnName' => 'is_active',
             )
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

@@ -6,35 +6,28 @@
 	<div class="overlay-content">
 		{% block list_extra %}{% endblock %}
 
-		{############################################
+		{# ###########################################
 		 # Phone
-		 ############################################}
+		 ########################################### #}
 
-		<div class="row-type phone {% if contact_data.phone|length %}with-values{% endif %}">
+		<div class="row-type phone {% if contact_data.phone_numbers|length %}with-values{% endif %}">
 			<h4>{{ phrase('agent.general.phone') }}</h4>
 			<div class="contact-info">
 				<ul>
-					{% for contact in contact_data.phone %}
-						<li data-remove-name="remove_contact_data[]" data-remove-value="{{ contact.id }}">
+					{% for phone in contact_data.phone_numbers %}
+						<li data-confirm="{{ phrase('agent.people.confirm_remove_phone') }}">
 							<div class="controls">
 								<span class="remove">x</span>
 							</div>
 							<div class="input">
-								<select class="type" name="contact_data[{{ contact.id }}][type]">
-									{% for type,label in {'phone': 'Phone', 'mobile': 'Mobile', 'fax': 'Fax'} %}
-										<option value="{{ type }}" {% if contact.rec.field_3 == type %}selected="selected"{% endif %}>{{ label }}</option>
-									{% endfor %}
-								</select>
-								+<span data-element-handler="DeskPRO.Agent.ElementHandler.PhoneCountryCode" data-options-list="#phone_countrycode_menu">
-									<span class="icon-flag" style="display: none"></span>
-									<input type="text" size="4" class="country-code" name="contact_data[{{ contact.id }}][country_calling_code]" value="{{ contact.rec.field_1 }}" placeholder="{{ phrase('agent.people.phone_country_placeholder') }}" />
-								</span>
-								<input type="text" size="4" class="phone-number" name="contact_data[{{ contact.id }}][number]" value="{{ contact.rec.field_2 }}" placeholder="{{ phrase('agent.people.phone_number_placeholder') }}" />
+								{{ form_widget(phone.number, { attr: {  style: "width: 200px" } }) }}
+								{{ form_widget(phone.ext) }}
 							</div>
 							<div class="label">
-								<input type="text" size="10" name="contact_data[{{ contact.id }}][comment]" value="{{ contact.rec.comment }}" placeholder="{{ phrase('agent.general.add_a_label') }}" />
+								{{ form_widget(phone.label, { attr: { placeholder: 'Add a label' } }) }}
 							</div>
-						<br class="clear" /></li>
+							<br class="clear" />
+						</li>
 					{% endfor %}
 				</ul>
 				<a class="add-trigger">
@@ -48,27 +41,20 @@
 						<span class="remove">x</span>
 					</div>
 					<div class="input">
-						<select class="type" name="new_contact_data[phone][%id%][type]">
-							{% for type,label in {'phone': 'Phone', 'mobile': 'Mobile', 'fax': 'Fax'} %}
-								<option value="{{ type }}" {% if contaxt.rec.field_3 == type %}selected="selected"{% endif %}>{{ label }}</option>
-							{% endfor %}
-						</select>
-						+<span data-element-handler="DeskPRO.Agent.ElementHandler.PhoneCountryCode" data-options-list="#phone_countrycode_menu">
-							<span class="icon-flag" style="display: none"></span>
-							<input type="text" size="4" class="country-code" name="new_contact_data[phone][%id%][country_calling_code]" value="" placeholder="{{ phrase('agent.people.phone_country_placeholder') }}" />
-						</span>
-						<input type="text" size="4" class="phone-number" name="new_contact_data[phone][%id%][number]" placeholder="{{ phrase('agent.people.phone_number_placeholder') }}" />
+				{{ form_widget(contact_data.phone_numbers.vars.prototype.number) }}
+				{{ form_widget(contact_data.phone_numbers.vars.prototype.ext) }}
 					</div>
 					<div class="label">
-						<input type="text" size="8" name="new_contact_data[phone][%id%][comment]" value="" placeholder="{{ phrase('agent.general.add_a_label') }}" />
+				{{ form_widget(contact_data.phone_numbers.vars.prototype.label, { attr: { placeholder: 'Add a label' } }) }}
 					</div>
-				<br class="clear" /></li>
+					<br class="clear" />
+				</li>
 			</script>
 		</div>
 
-		{############################################
+		{# ###########################################
 		 # Website
-		 ############################################}
+		 ########################################### #}
 
 		 <div class="row-type website {% if contact_data.website|length %}with-values{% endif %}">
 			<h4>{{ phrase('agent.people.website') }}</h4>
@@ -108,9 +94,9 @@
 			</script>
 		</div>
 
-		{############################################
+		{# ###########################################
 		 # IM
-		 ############################################}
+		 ########################################### #}
 
 		 <div class="row-type im {% if contact_data.instant_message|length %}with-values{% endif %}">
 			<h4>{{ phrase('agent.people.im') }}</h4>
@@ -168,9 +154,9 @@
 			</script>
 		</div>
 
-		{############################################
+		{# ###########################################
 		 # Twitter
-		 ############################################}
+		 ########################################### #}
 
 		 <div class="row-type twitter {% if contact_data.twitter|length %}with-values{% endif %}">
 			<h4>{{ phrase('agent.general.twitter') }}</h4>
@@ -212,9 +198,9 @@
 			</script>
 		</div>
 
-		{############################################
+		{# ###########################################
 		 # LinkedIn
-		 ############################################}
+		 ########################################### #}
 
 		 <div class="row-type linkedin {% if contact_data.linked_in|length %}with-values{% endif %}">
 			<h4>{{ phrase('agent.general.linkedin') }}</h4>
@@ -254,9 +240,9 @@
 			</script>
 		</div>
 
-		{############################################
+		{# ###########################################
 		 # Facebook
-		 ############################################}
+		 ########################################### #}
 
 		 <div class="row-type facebook {% if contact_data.facebook|length %}with-values{% endif %}">
 			<h4>{{ phrase('agent.general.facebook') }}</h4>
@@ -296,9 +282,9 @@
 			</script>
 		</div>
 
-		{############################################
+		{# ###########################################
 		 # Address
-		 ############################################}
+		 ########################################### #}
 
 		 <div class="row-type address {% if contact_data.address|length %}with-values{% endif %}">
 			<h4>{{ phrase('agent.general.address') }}</h4>

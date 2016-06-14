@@ -4,15 +4,88 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
 	initScope: function() {
-		var self = this;
-		var $scope = this.$scope = DeskPRO_Window.$scope.$new();
-		this.$q = DeskPRO_Window.$q;
-		this.$timeout = DeskPRO_Window.$timeout;
+		var self = this
+			, $scope = this.$scope = DeskPRO_Window.$scope.$new()
+			, $q = this.$q = DeskPRO_Window.$q
+			, $timeout = this.$timeout = DeskPRO_Window.$timeout
+			, $http = this.$http = DeskPRO_Window.$http
+			;
 
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
 			self.wrapper.data('$ngControllerController', self);
 			$compile(self.wrapper.contents())(self.$scope);
 		}]);
+
+		$scope.children = [];
+		$scope.searchChildrenResults = [];
+		$scope.searchChildTitle = '';
+
+		self.meta.api_data.children.forEach(function(child){
+			$scope.children.push({id: child.id, name: child.name});
+		});
+
+		var errorHandler = function(res){
+			DeskPRO_Window.showAlert(res.data);
+		};
+
+		$scope.addChild = function(child){
+			var q = {
+				title: $scope.searchChildTitle,
+				child_id: child ? child.id : 0
+			};
+
+			$scope.searchChildTitle = '';
+			$scope.showCreateChild = false;
+			$scope.searchChildrenResults = [];
+
+			$http.post(self.meta.url_child_add, q).then(
+				function(res){
+					$scope.children.push(res.data);
+				},
+				errorHandler
+			);
+		};
+
+		$scope.removeChild = function(child){
+			var q = {child_id: child.id};
+			$http.post(self.meta.url_child_remove, q).then(
+				function(res){
+					$scope.children.splice($scope.children.indexOf(child, 1));
+				},
+				errorHandler
+			);
+		};
+
+		var updateResults = function(){
+			$scope.showCreateChild = false;
+			if ($scope.searchChildTitle) {
+
+				$http.get(self.meta.url_child_search + '?q=' + window.encodeURIComponent($scope.searchChildTitle)).then(
+					function(res){
+						$scope.searchChildrenResults = res.data.results || [];
+						$scope.root_id = res.data.root_id;
+
+						if (!$scope.searchChildrenResults.length) {
+							$scope.showCreateChild = true;
+						}
+					},
+					errorHandler
+				);
+
+			} else {
+				$scope.searchChildrenResults = [];
+			}
+		};
+
+		var updateCaller = new DeskPRO.TouchCaller({
+			timeout: 500,
+			callback: updateResults,
+			context: this
+		});
+
+		$scope.$watch('searchChildTitle', function(val){
+			val && val.length && updateCaller.touch(val);
+		});
 	},
 
 	initializeProperties: function() {
@@ -84,7 +157,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 		this.getEl('delete_btn').on('click', function() {
 			var url = $(this).data('delete-url');
-                        var el  = $('<div>Are you sure you want to delete this organization? <strong class="warning">The organization will be permanantly deleted</strong>.<br/><br/>Deleted Reason? <input type="text" value="" class="delete-reason" style="width: 200px;" />');
+                        var el  = $('<div>Are you sure you want to delete this organization? <strong class="warning">The organization will be permanently deleted</strong>.<br/><br/>Deleted Reason? <input type="text" value="" class="delete-reason" style="width: 200px;" />');
 			DeskPRO_Window.showConfirm(
 				el,
 				function() {
@@ -105,11 +178,11 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			loadUrl: BASE_URL + "agent/organizations/" + this.meta.org_id + "/change-picture-overlay",
 			saveUrl: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save'
 		});
-		this.uploadFile = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile(this,{ 
+		this.uploadFile = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile(this,{
 			el: self.getEl('files_box'),
 			deleteUrl: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save',
 		});
-		
+
 		this.ownObject(this.changePic);
 		this.ownObject(this.uploadFile);
 
@@ -330,6 +403,27 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 		$('.new-note textarea', this.getEl('notes_tab')).TextAreaExpander(40, 225);
 
+    var $notes = this.getEl('notes_tab'),
+        notesClickHandler = function(e){
+          var $el = $(e.target).closest('li.note');
+          if (!$el.length) return;
+          $notes.off('click', notesClickHandler);
+
+          $.ajax({
+            url: BASE_URL + 'agent/organizations/notes/' + $el.data('note-id'),
+            type: 'DELETE',
+            dataType: 'json',
+            success: function(data) {
+              $el.remove();
+              $notes.on('click', '.delete', notesClickHandler);
+            },
+            error: function() {
+              $notes.on('click', '.delete', notesClickHandler);
+            }
+          });
+        };
+    $notes.on('click', '.delete', notesClickHandler);
+
 		var summaryTxt = this.getEl('summary').TextAreaExpander(40, 225);
 
 		if (this.meta.perms.edit) {
@@ -353,29 +447,37 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			} else {
 				if (!fieldsForm.hasClass('dp-has-init')) {
 					fieldsForm.addClass('dp-has-init');
-					fieldsForm.find('.Date.customfield input').datepicker({
-						dateFormat: 'yy-mm-dd',
-						showButtonPanel: true,
-						beforeShow: function(input) {
-							setTimeout(function() {
-								var buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane");
-
-								buttonPane.find('button:first').remove();
-
-								var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">Clear</button>');
-								btn.unbind("click").bind("click", function () { $.datepicker._clearDate( input ); });
-								btn.appendTo( buttonPane );
-
-								$(input).datepicker("widget").css('z-index', 30001);
-							},1);
-						}
+					fieldsForm.find('.Date.customfield input').each(function() {
+						$(this).datetimepicker({
+							format: 'YYYY-MM-DD',
+							widgetParent: $(this).parent().css('position', 'relative'),
+							icons: {
+								up: 'fa fa-chevron-up',
+								down: 'fa fa-chevron-down',
+								previous: 'fa fa-chevron-left',
+								next: 'fa fa-chevron-right'
+							}
+						});
+						$(this).on('dp.change', function(){
+							$(this).trigger('change');
+						});
 					});
 
 					$('.DateTime.customfield input', fieldsForm).each(function(){
 						$(this).datetimepicker({
-							format: 'yyyy-mm-dd hh:ii',
-							container: $(this).parent().css('position', 'relative'),
-							autoclose: true
+							format: 'YYYY-MM-DD HH:mm',
+							widgetParent: $(this).parent().css('position', 'relative'),
+							icons: {
+								time: 'fa fa-clock-o',
+								date: 'fa fa-calendar-o',
+								up: 'fa fa-chevron-up',
+								down: 'fa fa-chevron-down',
+								previous: 'fa fa-chevron-left',
+								next: 'fa fa-chevron-right'
+							}
+						});
+						$(this).on('dp.change', function(){
+							$(this).trigger('change');
 						});
 					});
 				}
@@ -396,6 +498,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
 			$('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm).each(function(){
 			  var n = $(this).attr('name');
+        if (!n) return;
 			  if (n.indexOf('[]') !== -1 && formData[n]) n = n.replace(/\[\]/, '[' + Orb.uuid() + ']')
 			  formData[n] = $(this).val();
 			});

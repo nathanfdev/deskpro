@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Usersource;
 
 use Application\DeskPRO\Entity\Usersource;
@@ -39,7 +36,7 @@ use Application\DeskPRO\Entity\Usersource;
 /**
  * Used to filter results down to what you want
  * UsersourceManager returns instances of this offering you a flexible filtering API
- * Instead of doing direct queries for usersources, we can centralize and keep dynamic the logic of usersource selection
+ * Instead of doing direct queries for usersources, we can centralize and keep dynamic the logic of usersource selection.
  */
 class UsersourceCollection extends \ArrayObject
 {
@@ -62,16 +59,65 @@ class UsersourceCollection extends \ArrayObject
     }
 
     /**
-     * Limits to this ID only, still allowing other filters to fit your criteria
+     * Filter out any usersources that are not enabled.
      *
-     * @param  int                  $id id
+     * @return UsersourceCollection
+     */
+    public function mustBeEnabled()
+    {
+        $filtered = array_filter(
+            (array) $this, function (Usersource $us) {
+                return (bool) $us->is_enabled;
+            }
+        );
+
+        return new static($filtered);
+    }
+
+    /**
+     * Filter out any usersources that are not enabled.
+     *
+     * @return UsersourceCollection
+     */
+    public function mustHaveSyncEnabled()
+    {
+        $filtered = array_filter(
+            (array) $this, function (Usersource $us) {
+                return (bool) $us->isSyncEnabled();
+            }
+        );
+
+        return new static($filtered);
+    }
+
+    /**
+     * Limits to this ID only, still allowing other filters to fit your criteria.
+     *
+     * @param int $id id
+     *
      * @return UsersourceCollection
      */
     public function mustHaveId($id)
     {
         $filtered = array_filter(
-            (array)$this, function (Usersource $us) use ($id) {
+            (array) $this, function (Usersource $us) use ($id) {
                 return $us->id == $id;
+            }
+        );
+
+        return new static($filtered);
+    }
+
+    public function withAppId($app_id)
+    {
+        $filtered = array_filter(
+            (array) $this,
+            function (Usersource $us) use ($app_id) {
+                if ($app = $us->getApp()) {
+                    return $app->getId() == $app_id;
+                }
+
+                return false;
             }
         );
 
@@ -135,7 +181,8 @@ class UsersourceCollection extends \ArrayObject
     }
 
     /**
-     * @param  array|string         $capability a string with a single capability, or an array of strings
+     * @param array|string $capability a string with a single capability, or an array of strings
+     *
      * @return UsersourceCollection with usersources that have at least one of the passed capabilities
      */
     public function withCapability($capability)
@@ -143,7 +190,7 @@ class UsersourceCollection extends \ArrayObject
         $filtered = array_filter(
             (array) $this, function (Usersource $us) use ($capability) {
                 if (is_array($capability)) {
-                    foreach($capability as $cap) {
+                    foreach ($capability as $cap) {
                         if ($us->getAdapter()->isCapable($cap)) {
                             return true;
                         }
@@ -167,7 +214,7 @@ class UsersourceCollection extends \ArrayObject
         $type = strtolower($type);
 
         $filtered = array_filter(
-            (array)$this, function (Usersource $us) use ($type) {
+            (array) $this, function (Usersource $us) use ($type) {
                 return strtolower($us->source_type) == $type;
             }
         );
@@ -181,7 +228,7 @@ class UsersourceCollection extends \ArrayObject
     public function withBackgroundSso()
     {
         $filtered = array_filter(
-            (array)$this, function (Usersource $us) {
+            (array) $this, function (Usersource $us) {
                 return $us->is_sso_background;
             }
         );
@@ -195,7 +242,7 @@ class UsersourceCollection extends \ArrayObject
     public function withAutoSso()
     {
         $filtered = array_filter(
-            (array)$this, function (Usersource $us) {
+            (array) $this, function (Usersource $us) {
                 return $us->is_sso_auto;
             }
         );
@@ -229,7 +276,7 @@ class UsersourceCollection extends \ArrayObject
 
     public function contains(Usersource $usersource)
     {
-        $arr = (array)$this;
+        $arr = (array) $this;
         foreach ($arr as $us) {
             if ($us->id == $usersource->id) {
                 return true;

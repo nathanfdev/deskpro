@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -44,10 +41,9 @@ use Application\DeskPRO\Entity\Ticket;
 interface ActionInterface
 {
     /**
-     * Apply the action to the ticket
+     * Apply the action to the ticket.
      *
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
-     * @return void
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
     public function apply(Ticket $ticket);
 
@@ -60,20 +56,22 @@ interface ActionInterface
      * But if you were adding a value to a collection, then you could merge the two collections
      * together so the new action had new items from both actions.
      *
-     * @param  ActionInterface $action
+     * @param ActionInterface $action
+     *
      * @return ActionInterface
      */
     public function merge(ActionInterface $other_action);
 
     /**
-     * Get a text description of the action
+     * Get a text description of the action.
      *
      * @return string
      */
     public function getDescription($as_html = true);
 
     /**
-     * @param  array $metadata
+     * @param array $metadata
+     *
      * @return mixed
      */
     public function setMetaData(array $metadata);

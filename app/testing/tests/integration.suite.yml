@@ -1,6 +1,6 @@
 class_name: IntegrationGuy
 modules:
-    enabled: [DpControlHelper, CodeHelper]
+    enabled: [DpControlHelper, CodeHelper, Filesystem]
 coverage:
   enabled: true
   blacklist:

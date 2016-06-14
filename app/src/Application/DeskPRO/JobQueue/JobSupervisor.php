@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage JobQueue
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\JobQueue;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -61,7 +58,6 @@ class JobSupervisor
      */
     private $connection;
 
-
     /**
      * @param Connection $connection
      * @param array      $rules
@@ -69,9 +65,8 @@ class JobSupervisor
     public function __construct(Connection $connection, array $rules = array())
     {
         $this->connection = $connection;
-        $this->rules = $rules;
+        $this->rules      = $rules;
     }
-
 
     /**
      * Runs the supervisor instance, checking all of the registered rules, and reporting any violations that
@@ -81,30 +76,31 @@ class JobSupervisor
     {
         foreach ($this->rules as $rule) {
             try {
-
                 $rule->check();
-
             } catch (JobSupervisorException $e) {
-
                 if (!$rule->attemptToFix()) {
-                    $this->reportViolation($e);
+                    $this->reportUnresolvedViolation($e);
                 } else {
-                    // fixed, silently log the violation and that it was resolved by the rule
-                    KernelErrorHandler::logException($e);
+                    $this->reportFixedViolation($e);
                 }
-
             } catch (\Exception $e) {
                 // something terribly wrong happened because we shouldn't be here, we should probably do something now
                 // because this is a problem with the job supervising system! Probably DB query issues.
                 KernelErrorHandler::logException($e);
             }
         }
-
     }
 
-    public function reportViolation(JobSupervisorException $e)
+    public function reportUnresolvedViolation(JobSupervisorException $e)
     {
         KernelErrorHandler::logException($e);
+    }
+
+    public function reportFixedViolation(JobSupervisorException $e)
+    {
+        if ($e->canReport()) {
+            KernelErrorHandler::logException($e);
+        }
     }
 
     public function addRule(JobSupervisorRuleInterface $rule)

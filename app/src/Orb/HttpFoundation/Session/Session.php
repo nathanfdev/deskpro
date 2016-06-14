@@ -1,40 +1,37 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @subpackage HttpFoundation
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ */
 namespace Orb\HttpFoundation\Session;
 
-use \Symfony\Component\HttpFoundation\SessionStorage\SessionStorageInterface;
+use Symfony\Component\HttpFoundation\SessionStorage\SessionStorageInterface;
 
 /**
  *
@@ -48,6 +45,7 @@ class Session implements SessionInterface
 
     /**
      * Has the session been started yet?
+     *
      * @var bool
      */
     protected $has_started = false;
@@ -55,6 +53,7 @@ class Session implements SessionInterface
     /**
      * Created namespaces. Namespaces are always using this objects data directly,
      * but more efficient if we use the same namespace objects instead of creating new ones.
+     *
      * @var array
      */
     protected $namespaces = array();
@@ -62,16 +61,17 @@ class Session implements SessionInterface
     /**
      * The raw data we'll save to storage. This is public for efficiencies sake in
      * SessionNamespace -- you shouldn't use this yourself though.
+     *
      * @var array
      */
     public $data = array();
 
     /**
-     * Various metadata
+     * Various metadata.
+     *
      * @var array
      */
     public $metadata = array();
-
 
     /**
      * @param SessionStorageInterface $storage
@@ -81,12 +81,11 @@ class Session implements SessionInterface
         $this->storage = $storage;
     }
 
-
-
     /**
-     * Gets a session object who is sandboxed to a specific sub-key (namespace)
+     * Gets a session object who is sandboxed to a specific sub-key (namespace).
      *
-     * @param  string           $namespace The namespace to fetch
+     * @param string $namespace The namespace to fetch
+     *
      * @return SessionNamespace
      */
     public function createNamespace($namespace)
@@ -100,8 +99,6 @@ class Session implements SessionInterface
         return $this->namespaces[$namespace];
     }
 
-
-
     /**
      * Starts the session storage.
      */
@@ -112,7 +109,7 @@ class Session implements SessionInterface
         }
 
         $this->storage->start();
-        $this->data = $this->storage->read('orb_sess');
+        $this->data     = $this->storage->read('orb_sess');
         $this->metadata = array();
         if (isset($this->data['__metadata'])) {
             $this->metadata = $this->data['__metadata'];
@@ -121,13 +118,12 @@ class Session implements SessionInterface
         $this->has_started = true;
     }
 
-
-
     /**
      * Checks if a data item is defined.
      *
-     * @param  string  $name The data item name
-     * @return boolean
+     * @param string $name The data item name
+     *
+     * @return bool
      */
     public function has($name)
     {
@@ -136,13 +132,12 @@ class Session implements SessionInterface
         return isset($this->data[$name]);
     }
 
-
-
     /**
      * Returns a data item.
      *
-     * @param  string $name    The attribute name
-     * @param  mixed  $default The default value
+     * @param string $name    The attribute name
+     * @param mixed  $default The default value
+     *
      * @return mixed
      */
     public function get($name, $default = null)
@@ -151,8 +146,6 @@ class Session implements SessionInterface
 
         return isset($this->data[$name]) ? $this->data[$name] : $default;
     }
-
-
 
     /**
      * Sets a data item.
@@ -167,8 +160,6 @@ class Session implements SessionInterface
         $this->data[$name] = $value;
     }
 
-
-
     /**
      * Returns data.
      *
@@ -181,8 +172,6 @@ class Session implements SessionInterface
         return $this->data;
     }
 
-
-
     /**
      * Sets data.
      *
@@ -194,17 +183,13 @@ class Session implements SessionInterface
         $this->data = $data;
     }
 
-
-
     /**
-     * Clear all set data
+     * Clear all set data.
      */
     public function removeAllData()
     {
         $this->data = array();
     }
-
-
 
     /**
      * Removes a data item.
@@ -216,8 +201,6 @@ class Session implements SessionInterface
         $this->start();
         unset($this->data[$name]);
     }
-
-
 
     public function __destruct()
     {
@@ -234,7 +217,7 @@ class Session implements SessionInterface
 
     public function getIterator()
     {
-        return \ArrayIterator($this->data);
+        return new \ArrayIterator($this->data);
     }
 
     public function offsetUnset($offset)

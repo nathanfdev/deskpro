@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Cutter;
 
 use Application\DeskPRO\EmailGateway\Cutter\Def\QuoteDef;
@@ -64,7 +62,6 @@ class TextPatternCutter implements QuoteDef
      */
     protected $limit = 0;
 
-
     /**
      * @param array $translate_map
      */
@@ -72,7 +69,6 @@ class TextPatternCutter implements QuoteDef
     {
         $this->translate_map = $translate_map;
     }
-
 
     /**
      * Sets which email addresses must match in a matched pattern for the pattern to really match.
@@ -85,7 +81,6 @@ class TextPatternCutter implements QuoteDef
         $this->require_from = $require_from;
     }
 
-
     /**
      * How many quotes to remove (counts from bottom). 0 is unlimited.
      *
@@ -95,7 +90,6 @@ class TextPatternCutter implements QuoteDef
     {
         $this->limit = $limit;
     }
-
 
     /**
      * @return array
@@ -109,7 +103,6 @@ class TextPatternCutter implements QuoteDef
 
         return $this->translate_map;
     }
-
 
     /**
      * @param \Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter\TextPattern|string $pattern
@@ -128,11 +121,11 @@ class TextPatternCutter implements QuoteDef
                         $pattern = str_replace($f, $r, $pattern);
                     }
 
-                    $pattern = new TextPattern($pattern);
+                    $pattern          = new TextPattern($pattern);
                     $this->patterns[] = $pattern;
                 }
             } else {
-                $pattern = new TextPattern($pattern);
+                $pattern          = new TextPattern($pattern);
                 $this->patterns[] = $pattern;
             }
         } else {
@@ -140,9 +133,8 @@ class TextPatternCutter implements QuoteDef
         }
     }
 
-
     /**
-     * Add an array of patterns
+     * Add an array of patterns.
      *
      * @param array $patterns
      */
@@ -153,12 +145,12 @@ class TextPatternCutter implements QuoteDef
         }
     }
 
-
     /**
-     * Cut out the quote block
+     * Cut out the quote block.
      *
-     * @param  string $body
-     * @param  bool   $is_html
+     * @param string $body
+     * @param bool   $is_html
+     *
      * @return string
      */
     public function cutQuoteBlock($body, $is_html = false)
@@ -170,7 +162,6 @@ class TextPatternCutter implements QuoteDef
         foreach ($this->patterns as $pattern) {
             $matcher = new TextMatcher($body, $pattern);
             if ($matcher->isMatch()) {
-
                 if ($this->require_from) {
                     $do_add = false;
 
@@ -181,28 +172,30 @@ class TextPatternCutter implements QuoteDef
 
                     $test_text = strtolower($test_text);
 
-                    foreach ($this->require_from as $from) {
-                        $from = strtolower($from);
-                        if (strpos($test_text, $from) !== false) {
-                            $do_add = true;
-                            break;
+                    if (preg_match('#[^ ]@[^ ]\.[^ ]#', $test_text)) {
+                        foreach ($this->require_from as $from) {
+                            $from = strtolower($from);
+                            if (strpos($test_text, $from) !== false) {
+                                $do_add = true;
+                                break;
+                            }
                         }
+                    } else {
+                        $do_add = true;
                     }
-
                 } else {
                     $do_add = true;
                 }
 
                 if ($do_add) {
                     $this->matched_patterns[] = $pattern;
-                    $body = $matcher->getMarkedDocument();
+                    $body                     = $matcher->getMarkedDocument();
                 }
             }
         }
 
         // Limiting how many we are trimming from the end
         if ($this->limit) {
-
             $pos = strrpos($body, TextMatcher::CUT_MARK);
             if ($pos !== false) {
                 $body = trim(substr($body, 0, $pos));
@@ -222,6 +215,7 @@ class TextPatternCutter implements QuoteDef
 
     /**
      * @param $body
+     *
      * @return TextPatternCutter\TextPattern|null
      */
     public function findMatchingMatcher($body)
@@ -236,7 +230,7 @@ class TextPatternCutter implements QuoteDef
             }
         }
 
-        return null;
+        return;
     }
 
     /**

@@ -1,40 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category DependencyInjection
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category DependencyInjection
+ */
 namespace Application\DeskPRO\DependencyInjection;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Service\JIRA;
 use Application\DeskPRO\Service\RateLimit;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -44,7 +42,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
- * Registers basic core stuff
+ * Registers basic core stuff.
  */
 class CoreExtension extends Extension
 {
@@ -79,7 +77,7 @@ class CoreExtension extends Extension
         $container->setDefinition('deskpro.session_person', $definition);
 
         $definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\ActivityLogger', array(
-            new Reference('doctrine.orm.entity_manager')
+            new Reference('doctrine.orm.entity_manager'),
         ));
         $container->setDefinition('deskpro.person_activity_logger', $definition);
 
@@ -132,17 +130,17 @@ class CoreExtension extends Extension
     }
 
     /**
-     * Sets up the translater
+     * Sets up the translater.
      */
     protected function loadTranslation(ContainerBuilder $container)
     {
         $definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\SystemLoader', array(array(
-            DP_ROOT . '/languages'
+            DP_ROOT.'/languages',
         )));
         $container->setDefinition('deskpro.core.translate_loader_system', $definition);
 
         $definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\DbLoader', array(
-            new Reference('database_connection')
+            new Reference('database_connection'),
         ));
         $container->setDefinition('deskpro.core.translate_loader_db', $definition);
 
@@ -154,7 +152,7 @@ class CoreExtension extends Extension
         // Now create the translate object
         $definition = new Definition('Application\\DeskPRO\\Translate\\Translate', array(
             new Reference('deskpro.core.translate_loader'),
-            new Reference('event_dispatcher')
+            new Reference('event_dispatcher'),
         ));
         $definition->addMethodCall('setSession', array(new Reference('session')));
         $container->setDefinition('deskpro.core.translate', $definition);
@@ -168,9 +166,8 @@ class CoreExtension extends Extension
         $container->setDefinition('deskpro.orm.event_listener.activity_stream', $definition);
     }
 
-
     /**
-     * Sets up the input reader
+     * Sets up the input reader.
      */
     protected function loadInputReader(ContainerBuilder $container)
     {
@@ -212,51 +209,60 @@ class CoreExtension extends Extension
     }
 
     /**
-     * Sets up entity listeners
+     * Sets up entity listeners.
      */
     protected function loadEntityListeners(ContainerBuilder $container)
     {
         $container
-            ->register('dp.entity_lister.person_changelog',
+            ->register(
+                'dp.entity_listener.person_changelog',
                 'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener')
             ->addArgument(new Reference('service_container'))
             ->addTag('doctrine.entity_listener');
 
         $container
-            ->register('dp.entity_lister.person_contact_data_changelog',
+            ->register(
+                'dp.entity_listener.person_contact_data_changelog',
                 'Application\DeskPRO\Entity\EventListener\PersonContactDataChangeLogListener')
             ->addArgument(new Reference('service_container'))
             ->addTag('doctrine.entity_listener');
 
         $container
-            ->register('dp.entity_lister.person_custo_data_changelog',
+            ->register(
+                'dp.entity_listener.person_custom_data_changelog',
                 'Application\DeskPRO\Entity\EventListener\PersonCustomDataChangeLogListener')
+            ->addArgument(new Reference('service_container'))
+            ->addTag('doctrine.entity_listener');
+
+        $container
+            ->register(
+                'dp.entity_listener.problem',
+                'Application\DeskPRO\Entity\EventListener\ProblemListener'
+            )
             ->addArgument(new Reference('service_container'))
             ->addTag('doctrine.entity_listener');
     }
 
-
-
     /**
-     * Sets up the settings loader
+     * Sets up the settings loader.
      */
     protected function loadSettings(ContainerBuilder $container)
     {
         $definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
-            DP_ROOT . '/sys/config/settings.php',
-            new Reference('database_connection')
+            DP_ROOT.'/sys/config/settings.php',
+            new Reference('database_connection'),
         ));
         $container->setDefinition('deskpro.core.settings', $definition);
     }
 
     public function getXsdValidationBasePath()
     {
-        return null;
+        return;
     }
 
     public function getNamespace()
     {
-        return null;
+        return;
     }
 
     public function getAlias()

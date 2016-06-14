@@ -58,8 +58,10 @@
 {% spaceless %}
     <div {{ block('widget_container_attributes') }}>
     {% for child in form %}
-	    <label for="{{ child.vars.id }}">
-		    {{ form_widget(child) }} {{ child.vars.label }}
+        {# The DP_BASE_ID_ bit is a hack to get unique IDs used for ids/label-fors with expanded choices #}
+        {# See Application/DeskPRO/CustomFields/Handler/Choice.php - renderFormHtml() #}
+	    <label for="DP_BASE_ID_{{ child.vars.id }}">
+		    {{ form_widget(child, {id: 'DP_BASE_ID_' ~ child.vars.id}) }} {{ child.vars.label }}
 	    </label>
     {% endfor %}
     </div>
@@ -418,24 +420,40 @@
 {% block cf_contextual_choice_widget %}
 	{% spaceless %}
 		{{ form_widget(form.children.value) }}
+        <script type="text/javascript">
+            function add_another_{{ form.vars.id }}(){
+                var select = document.getElementById('{{ form.children.value.vars.id }}')
+                  , select2 = document.getElementById('s2id_{{ form.children.value.vars.id }}')
+                  , input = document.getElementById('{{ form.children.custom_choice.vars.id }}')
+                  , link = document.getElementById('link_add_another_{{ form.vars.id }}')
+                  ;
+                if (select) select.style.display = 'none';
+                if (select2) select2.style.display = 'none';
+                if (input) {
+                    input.style.display = 'inline-block';
+                    input.focus();
+                }
+                link.style.display = 'none';
+                return false;
+            };
+        </script>
 		{% if form.vars.allow_edit %}
-			<a href="#" onclick="
-					{# todo: should be done in clearer way #}
-					var select = document.getElementById('{{ form.children.value.vars.id }}'),
-						select2 = document.getElementById('s2id_{{ form.children.value.vars.id }}'),
-						input = document.getElementById('{{ form.children.custom_choice.vars.id }}');
-					if (select) select.style.display = 'none';
-					if (select2) select2.style.display = 'none';
-					if (input) {
-						input.style.display = 'inline-block';
-						input.focus();
-					}
-					this.style.display = 'none';
-					return false;
-					">
+			<a id="link_add_another_{{ form.vars.id }}" href="#" onclick="add_another_{{ form.vars.id }}()">
 				Add another
 			</a>
 			{{ form_widget(form.children.custom_choice) }}
 		{% endif %}
 	{% endspaceless %}
 {% endblock cf_contextual_choice_widget %}
+
+{% block criteria_filter_date_widget %}
+	{% spaceless %}
+		{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
+	{% endspaceless %}
+{% endblock criteria_filter_date_widget %}
+
+{% block criteria_filter_datetime_widget %}
+    {% spaceless %}
+        {% include 'DeskPRO:Common:rulebuilder-datetime-options.html.twig' %}
+    {% endspaceless %}
+{% endblock criteria_filter_datetime_widget %}

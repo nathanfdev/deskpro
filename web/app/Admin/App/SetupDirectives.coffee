@@ -38,6 +38,7 @@ define [
   'Admin/Main/Directive/DpWorkingHours',
   'Admin/Main/Directive/DpChange',
   'Admin/Main/Directive/DpPhoneNumber',
+  'Admin/Main/Directive/DpPhoneNumberNoExt',
   'Admin/Main/Directive/DpRedactor',
   'Admin/Main/Directive/DpDate',
   'Admin/Main/Directive/DpReadFile',
@@ -87,6 +88,7 @@ define [
   Admin_Main_Directive_DpWorkingHours,
   Admin_Main_Directive_DpChange,
   Admin_Main_Directive_DpPhoneNumber,
+  Admin_Main_Directive_DpPhoneNumberNoExt,
   Admin_Main_Directive_DpRedactor,
   Admin_Main_Directive_DpDate,
   Admin_Main_Directive_DpReadFile,
@@ -137,6 +139,7 @@ define [
     Module.directive('dpWorkingHours',                 Admin_Main_Directive_DpWorkingHours)
     Module.directive('dpChange',                       Admin_Main_Directive_DpChange)
     Module.directive('dpPhoneNumber',                  Admin_Main_Directive_DpPhoneNumber)
+    Module.directive('dpPhoneNumberNoExt',             Admin_Main_Directive_DpPhoneNumberNoExt)
     Module.directive('dpRedactor',                     Admin_Main_Directive_DpRedactor)
     Module.directive('dpDate',                         Admin_Main_Directive_DpDate)
     Module.directive('dpReadFile',                     Admin_Main_Directive_DpReadFile)

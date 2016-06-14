@@ -1,40 +1,40 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Sms
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Sms
+ */
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\AppInstance;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\SnippetFormatter;
@@ -44,7 +44,7 @@ use Orb\Util\Util;
 abstract class AbstractSmsAction extends AbstractContainerAwareAction implements ActionInterface, AppActionInterface
 {
     /**
-     * All children of this class need to construct their own provider from their config
+     * All children of this class need to construct their own provider from their config.
      *
      * @return \Orb\Sms\SmsProviderInterface
      */
@@ -63,7 +63,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
     protected $app;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
@@ -84,21 +84,21 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
         # Format and prepare text message
         ###########################################################################
         $action_message_template = $this->getActionOption('message');
-        $formatter = new SnippetFormatter($this->getContainer()->getTwig());
+        $formatter               = new SnippetFormatter($this->getContainer()->getTwig());
         $formatter->addVar('user_vars', $context->getUserVars());
         $message = $formatter->formatText($action_message_template, $ticket);
 
         ###########################################################################
         # Gather Raw Numbers
         ###########################################################################
-        $numbers = array();
+        $numbers   = array();
         $numbers[] = $this->getActionOption('to_number');
 
         ###########################################################################
         # Gather Agent IDs - from agent and team selections
         # TODO: This stuff should almost certainly be more DRY and abstract for other actions to use.
         ###########################################################################
-        $agents = array();
+        $agents    = array();
         $agent_ids = $this->getActionOption('agent_ids', array());
         foreach ($agent_ids as $aid) {
             if ($aid == 'assigned') {
@@ -116,7 +116,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
             }
         }
         $team_member_agents = array();
-        $team_ids = $this->getActionOption('agent_teams', array());
+        $team_ids           = $this->getActionOption('agent_teams', array());
         foreach ($team_ids as $tid) {
             if ($tid == 'assigned') {
                 if ($ticket->agent_team) {
@@ -134,8 +134,8 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
             }
         }
         $department_agent_ids = array();
-        $department_ids = $this->getActionOption('department_ids', array());
-        $personRepo = $this->getContainer()->getEm()->getRepository('DeskPRO:Person');
+        $department_ids       = $this->getActionOption('department_ids', array());
+        $personRepo           = $this->getContainer()->getEm()->getRepository('DeskPRO:Person');
         foreach ($department_ids as $did) {
             $department_agents = $personRepo->getAgentsInDepartment($did);
             foreach ($department_agents as $a) {
@@ -148,11 +148,12 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
         #############################################################################
         $agents = array_merge($agents, $team_member_agents, $department_agent_ids);
         $agents = array_unique($agents);
-        $repo = $this->getContainer()->getEm()->getRepository('DeskPRO:Person');
+        $repo   = $this->getContainer()->getEm()->getRepository('DeskPRO:Person');
         $agents = $repo->getPeopleResultsFromIds($agents);
         foreach ($agents as $agent) {
-            if ($agent->primary_phone_number) {
-                $numbers[] = $agent->primary_phone_number_text;
+            /** @var $agent Person */
+            if ($pn = $agent->getPrimaryPhoneNumber()) {
+                $numbers[] = $pn['number'];
             }
         }
         $numbers = array_unique($numbers);
@@ -164,7 +165,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
             $this->logSendingTo($number, $context);
             try {
                 $sms_message = new SmsMessage($message);
-                $result = $sms_sender->send($number, $sms_message);
+                $result      = $sms_sender->send($number, $sms_message);
 
                 if ($result) {
                     $this->recordSuccessfulTicketChange($ticket, $number);
@@ -239,7 +240,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
                 'app_title'     => $app->title,
                 'package_name'  => $app->package->name,
                 'package_title' => $app->package->title,
-                'message'       => $recordMsg
+                'message'       => $recordMsg,
             )
         );
     }
@@ -261,9 +262,9 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
             return $this->app;
         }
 
-        $this->app = false;
+        $this->app   = false;
         $app_manager = $this->getContainer()->getAppManager();
-        $app_id = $this->getMetaData()->get('app_id', 0);
+        $app_id      = $this->getMetaData()->get('app_id', 0);
 
         if ($app_manager->hasApp($app_id)) {
             $this->app = $app_manager->getApp($app_id);

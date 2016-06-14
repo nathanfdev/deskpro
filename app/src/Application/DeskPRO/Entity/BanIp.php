@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -39,7 +38,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Ban an IP addresses and ranges
+ * Ban an IP addresses and ranges.
  *
  * @property string $banned_ip
  * @property int $ip_start
@@ -48,33 +47,29 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class BanIp extends DomainObject
 {
     /**
-     * The banned IP address (human readable)
+     * The banned IP address (human readable).
      *
      * @var string
      */
-
     protected $banned_ip;
 
     /**
-     * Start of the IP range
+     * Start of the IP range.
      *
      * @var int
      */
-
     protected $ip_start;
 
     /**
-     * End of the IP range
+     * End of the IP range.
      *
      * @var int
      */
-
     protected $ip_end;
 
     /**
      * @return BanIp
      */
-
     public static function createBanIp()
     {
         return new self();
@@ -93,8 +88,7 @@ class BanIp extends DomainObject
 
         $parts = explode('.', $ip);
 
-        if (count($parts) < 1 OR count($parts) > 4) {
-
+        if (count($parts) < 1 or count($parts) > 4) {
             throw new \InvalidArgumentException('Invalid IP address: `'.$ip.'`');
         }
 
@@ -102,7 +96,6 @@ class BanIp extends DomainObject
         $end   = array();
 
         foreach ($parts as $part) {
-
             $start[] = $part;
             $end[]   = $part;
         }
@@ -111,23 +104,19 @@ class BanIp extends DomainObject
         // so we'll fill them in automatically
 
         while (count($start) < 4) {
-
             $start[] = 0;
             $end[]   = 255;
         }
 
         if (count($parts) < 4) {
-
-            $human = implode('.', $parts) . '.*';
-
+            $human = implode('.', $parts).'.*';
         } else {
-
             $human = implode('.', $parts);
         }
 
         $this->banned_ip = $human;
-        $this->ip_start  = sprintf("%u", ip2long(implode('.', $start)));
-        $this->ip_end    = sprintf("%u", ip2long(implode('.', $end)));
+        $this->ip_start  = sprintf('%u', ip2long(implode('.', $start)));
+        $this->ip_end    = sprintf('%u', ip2long(implode('.', $end)));
     }
 
     ############################################################################
@@ -138,7 +127,7 @@ class BanIp extends DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\BanIp';
-        $metadata->setPrimaryTable(array('name' => 'ban_ips',));
+        $metadata->setPrimaryTable(array('name' => 'ban_ips'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(

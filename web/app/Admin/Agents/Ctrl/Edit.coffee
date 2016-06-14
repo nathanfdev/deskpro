@@ -20,7 +20,7 @@ define [
       @form = {email_primary: '', emails_list: []}
       @hasPermOverrides = false
       @hasDepOverrides = false
-      @primary_phone_number_region = 'US'
+      @default_phone_number_region = 'US'
       @service =
         agents: @DataService.get 'Agents'
       @all_perms =
@@ -86,7 +86,9 @@ define [
           }
           @perm_form = null
 
-        @primary_phone_number_region = result.data.default_country.value
+        if result.data.default_country.value
+          @default_phone_number_region = result.data.default_country.value
+        @primary_phone_number_region = result.data.default_country.value || @default_phone_number_region
 
         @teams  = result.data.teams.agent_teams
         @groups = result.data.groups.groups
@@ -101,6 +103,9 @@ define [
         @agentFormModel = new EditAgentModel(@agent, @groups, @teams, @primary_phone_number_region)
         @form = @agentFormModel.form
 
+        if @form.primary_phone
+          @primary_phone_number_region = @form.primary_phone.region
+
         @$scope.$watch('EditCtrl.form.agent_groups', =>
           @updateEffectiveUgPerms()
           @updateAllPermsState()
@@ -110,34 +115,17 @@ define [
         # Departments
         #--------------------
 
-        @deps_perms = {
-          tickets: {},
-          chat: {}
-        }
-
-        for dep in @ticketDeps
-          assign = false
-          full = false
-
-          if @agentId and dep.permissions?.users
-            u = dep.permissions.users.filter((x) => x.id == @agentId)[0]
-            if u
-              if u.name == 'full' then full = true else assign = true
-
-          @deps_perms.tickets[dep.id] = { assign: assign, full: full }
-
-        for dep in @chatDeps
-          full = false
-          if @agentId and dep.permissions?.users
-            u = dep.permissions.users.filter((x) => x.id == @agentId)[0]
-            if u
-              full = true
-
-          @deps_perms.chat[dep.id] = { full: full }
-
+        @deps_perms = @parseDepPermOverrides(@agentId, @ticketDeps, @chatDeps)
         @$timeout(=> @updateHasPermOverridesStatus())
       )
       return promise
+
+
+
+    changeUse: (type) ->
+      return if !@perm_form[type]? || true == @perm_form[type].use
+      for perm of @perm_form[type]
+        @perm_form[type][perm] = false
 
 
 
@@ -169,6 +157,14 @@ define [
     updateAllPermsState: ->
       return if !@perm_form?
 
+      # check "use" state first
+      for section, perms of @perm_form
+        for perm of perms
+          if 'use' != perm && perms.use? && (perms[perm] || @ugEffectivePerms[section]?[perm])
+            perms.use = true
+            break
+
+      # and this one is for "toggle all"
       for section, perms of @perm_form
         enabled = true
         for perm of perms
@@ -194,13 +190,14 @@ define [
 
       # todo this map should be loaded from server
       @ugEffectivePerms = {
-        ticket: {},
-        people: {},
-        org: {},
-        chat: {},
-        publish: {},
-        general: {},
+        ticket: {}
+        people: {}
+        org: {}
+        chat: {}
+        publish: {}
+        general: {}
         tasks: {}
+        problems: {}
       }
 
       @ugEffectiveDepPerms = {
@@ -385,10 +382,10 @@ define [
 
       copySettings = (settings) =>
         promise = @Api.sendDataGet({
-          agent: "/agents/#{settings.agent_id}",
-          notif_prefs_table: "/agents/#{settings.agent_id}/notify-prefs/get-tables",
-          teams: "/agent_teams",
-          groups: "/agent_groups",
+          agent: "/agents/#{settings.agent_id}?extended=1"
+          notif_prefs_table: "/agents/#{settings.agent_id}/notify-prefs/get-tables"
+          teams: "/agent_teams"
+          groups: "/agent_groups"
         }).then( (result) =>
           agent  = result.data.agent.agent
           teams  = result.data.teams.agent_teams
@@ -405,12 +402,11 @@ define [
             @form.zones.reports = form.zones.reports || form.zones.admin
 
           if settings.teams
-            tids = []
+            tids = {}
             for team in form.teams
-              if team.value then tids.push(team.id)
-              tids.push(team.id)
+              tids[team.id] = team.value
             for team in @form.teams
-              team.value = team.id in tids
+              team.value = tids[team.id]
 
           if settings.groups
             gids = []
@@ -420,10 +416,8 @@ define [
               group.value = group.id in gids
 
           if settings.perms
-            for own type, perms of agent.perms
-              for own permName, value of perms
-                continue if not @perm_form[type]?[permName]?
-                @perm_form[type][permName] = value
+            @perm_form = angular.copy result.data.agent.perm_overrides
+            @deps_perms = @parseDepPermOverrides(agent.id, @ticketDeps, @chatDeps)
 
           if settings.ticket_notifs
             for n in ['sys_filters_email', 'sys_filters_alert', 'custom_filters_email', 'custom_filters_alert']
@@ -442,6 +436,7 @@ define [
                     val = notif_prefs.subs[n]?.rows[rkey]?.cols[subckey]?.value || false
                     @notif_prefs.subs[n].rows[rkey].cols[subckey].value = val
         )
+        @$timeout(=> @updateHasPermOverridesStatus())
         return promise
 
       #------------------------------
@@ -507,6 +502,8 @@ define [
       # Shows the copy settings modal
       ###
     showDelete: ->
+      isSelf = @isSelf()
+
       deleteAgent = (settings) =>
         if settings.method == 'user'
           target = "/agents/#{@agentId}/delete/to-user"
@@ -518,6 +515,7 @@ define [
           # todo
           @service.agents.get(@agentId).then (agent) =>
             @service.agents._removeModel agent
+          @$scope.$parent?.ListCtrl.deletedCount++
           @$state.go('agents.agents')
         )
 
@@ -533,9 +531,11 @@ define [
             method: 'user'
           }
 
+          $scope.isSelf = isSelf
+
           $scope.doDelete = (options) ->
             $scope.is_loading = true
-            deleteAgent(options).then(-> $modalInstance.dismiss())
+            deleteAgent(options).then -> $modalInstance.dismiss()
         ]
       })
 
@@ -653,12 +653,51 @@ define [
         if res?.data?.error_code == 'system_email_addresses'
           @email_sysaccount_error = res.data.error_info.emails.join(', ')
         if res?.data?.error_code == 'invalid_phone_number'
-          @invalid_phone_error = res.data.error_message + ': ' + res.data.error_info.primary_phone_number_text
+          @invalid_phone_error = res.data.error_message + ': ' + res.data.error_info?.primary_phone
+        if res?.data?.errors?.errors
+          res.data.errors.errors.map (error) =>
+            if 'agent.primary_phone.number' == error.prop
+              @invalid_phone_error = error.message
 
         @stopSpinner('saving', true)
         @applyErrorResponseToView(res)
       )
 
       return promise
+
+
+
+    isSelf: ->
+      window.DP_PERSON_ID == @agentId
+
+
+
+    parseDepPermOverrides: (agentId, ticketDeps, chatDeps) ->
+      overrides =
+        tickets: {}
+        chat: {}
+
+      for dep in ticketDeps
+        assign = false
+        full = false
+
+        if agentId and dep.permissions?.users
+          u = dep.permissions.users.filter((x) => x.id == agentId)[0]
+          if u
+            if u.name == 'full' then full = true else assign = true
+
+        overrides.tickets[dep.id] = { assign: assign, full: full }
+
+      for dep in chatDeps
+        full = false
+        if agentId and dep.permissions?.users
+          u = dep.permissions.users.filter((x) => x.id == agentId)[0]
+          if u
+            full = true
+
+        overrides.chat[dep.id] = { full: full }
+
+      overrides
+
 
   Admin_Agents_Ctrl_Edit.EXPORT_CTRL()

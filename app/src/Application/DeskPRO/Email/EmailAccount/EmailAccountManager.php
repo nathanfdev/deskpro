@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Email\EmailAccount;
 
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\FetcherStorageFactory;
@@ -39,10 +38,12 @@ use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Application\DeskPRO\Email\EmailAccount\Repository\EmailAccountRepository;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\TicketGatewayProcessor;
+use Application\DeskPRO\Encryption\DpEnc;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Exception\MissingConfigurationException;
 use Application\EmailBundle\Mail\RawTransport\RawTransportFactory;
+use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use Orb\Util\Arrays;
 
 class EmailAccountManager
@@ -67,19 +68,22 @@ class EmailAccountManager
     private $fetcher_storage_factory;
 
     /**
-     * Array of string=>EmailAccount[]
+     * Array of string=>EmailAccount[].
+     *
      * @var array
      */
     private $email_address_map;
 
     /**
-     * Array of transports keyed by email account
+     * Array of transports keyed by email account.
+     *
      * @var \Swift_Transport[]
      */
     private $loaded_transports = array();
 
     /**
-     * Array of fetcher storages keyed by email account
+     * Array of fetcher storages keyed by email account.
+     *
      * @var \Application\DeskPRO\EmailGateway\FetcherStorage\FetcherStorageInterface[]
      */
     private $loaded_fetcher_storages = array();
@@ -89,28 +93,34 @@ class EmailAccountManager
      */
     private $default_out_account = null;
 
+    /**
+     * @var DpEnc
+     */
+    private $enc;
 
     /**
      * @param EmailAccountRepository $repos
      * @param RawTransportFactory    $transport_factory
      * @param FetcherStorageFactory  $fetcher_storage_factory
      */
-    public function __construct(EmailAccountRepository $repos, RawTransportFactory $transport_factory, FetcherStorageFactory $fetcher_storage_factory)
+    public function __construct(EmailAccountRepository $repos, RawTransportFactory $transport_factory, FetcherStorageFactory $fetcher_storage_factory, DpEnc $enc)
     {
         $this->repos                   = $repos;
         $this->transport_factory       = $transport_factory;
         $this->fetcher_storage_factory = $fetcher_storage_factory;
+        $this->enc                     = $enc;
     }
-
 
     ####################################################################################################################
     # Working with EmailAccounts
     ####################################################################################################################
 
     /**
-     * @param  int                                           $id
-     * @return \Application\DeskPRO\Entity\EmailAccount|null
+     * @param int $id
+     *
      * @throws \OutOfBoundsException
+     *
+     * @return \Application\DeskPRO\Entity\EmailAccount|null
      */
     public function getAccount($id)
     {
@@ -122,11 +132,12 @@ class EmailAccountManager
         return $acc;
     }
 
-
     /**
      * @param $id
-     * @return \Application\DeskPRO\Entity\EmailAccount|null
+     *
      * @throws \OutOfBoundsException
+     *
+     * @return \Application\DeskPRO\Entity\EmailAccount|null
      */
     public function getActiveAccount($id)
     {
@@ -138,9 +149,9 @@ class EmailAccountManager
         throw new \OutOfBoundsException();
     }
 
-
     /**
-     * @param  int|string                                 $criteria Standard criteria filter
+     * @param int|string $criteria Standard criteria filter
+     *
      * @return \Application\DeskPRO\Entity\EmailAccount[]
      */
     public function getAllAccounts($criteria = 0)
@@ -152,9 +163,9 @@ class EmailAccountManager
         }
     }
 
-
     /**
-     * @param  int|string                                 $criteria Standard criteria filter
+     * @param int|string $criteria Standard criteria filter
+     *
      * @return \Application\DeskPRO\Entity\EmailAccount[]
      */
     public function getAllActiveAccounts($criteria = 0)
@@ -166,19 +177,19 @@ class EmailAccountManager
         }
     }
 
-
     /**
-     * @param  int  $id
+     * @param int $id
+     *
      * @return bool
      */
     public function hasAcccount($id)
     {
-        return $acc = $this->repos->getAccount($id) !== null;
+        return $this->repos->getAccount($id) !== null;
     }
 
-
     /**
-     * @param  string $id
+     * @param string $id
+     *
      * @return bool
      */
     public function hasActiveAccount($id)
@@ -192,12 +203,12 @@ class EmailAccountManager
         return $acc->is_enabled;
     }
 
-
     /**
-     * Find an email account for a given email address
+     * Find an email account for a given email address.
      *
-     * @param  string            $address  The address to search for
-     * @param  int|string        $criteria Criteria. Use constants, or a string of the constant names like 'is_enabled|with_transport'
+     * @param string     $address  The address to search for
+     * @param int|string $criteria Criteria. Use constants, or a string of the constant names like 'is_enabled|with_transport'
+     *
      * @return EmailAccount|null
      */
     public function findAccountForEmailAddress($address, $criteria = 0)
@@ -216,19 +227,32 @@ class EmailAccountManager
             });
         }
 
-        return null;
+        return;
     }
-
 
     /**
      * @param \Swift_Mime_Message $message
+     *
      * @return \Application\DeskPRO\Entity\EmailAccount
      */
     public function findAccountForSwiftmailerMessage(\Swift_Mime_Message $message)
     {
+        if ($message instanceof MessageOptionsInterface) {
+            if ($message->getMessageOptions()->has(MessageOptionsInterface::OPT_ACCOUNT_ID)) {
+                try {
+                    $acc = $this->getAccount($message->getMessageOptions()->get(MessageOptionsInterface::OPT_ACCOUNT_ID));
+                } catch (\Exception $e) {
+                }
+
+                if ($acc && $acc->is_enabled && $acc->outgoing_account) {
+                    return $acc;
+                }
+            }
+        }
+
         $from = $message->getFrom();
         foreach ($from as $email => $name) {
-            $acc = $this->findAccountForEmailAddress($email, EmailAccountManager::IS_ENABLED & EmailAccountManager::WITH_TRANSPORT);
+            $acc = $this->findAccountForEmailAddress($email, self::IS_ENABLED & self::WITH_TRANSPORT);
             if ($acc) {
                 return $acc;
             }
@@ -237,10 +261,10 @@ class EmailAccountManager
         return $this->getDefaultOutAccountWithFallback();
     }
 
-
     /**
-     * @param  array $accounts
-     * @param  int   $criteria
+     * @param array $accounts
+     * @param int   $criteria
+     *
      * @return array
      */
     public function filterAccountCollection(array $accounts, $criteria = 0)
@@ -254,21 +278,21 @@ class EmailAccountManager
         return array_filter($accounts, function ($a) use ($self, $criteria) { return $self->checkAccountCriteriaMatch($a, $criteria); });
     }
 
-
     /**
-     * @param  EmailAccount $account
+     * @param EmailAccount $account
      * @param $criteria
+     *
      * @return bool
      */
     public function checkAccountCriteriaMatch(EmailAccount $account, $criteria)
     {
         if ($criteria && is_string($criteria)) {
-            $parts = explode('|', $criteria);
+            $parts    = explode('|', $criteria);
             $criteria = 0;
             foreach ($parts as $p) {
-                $p = trim($p);
-                $p_name = 'Application\\DeskPRO\\Email\\EmailAccount\\EmailAccountManager::' . strtoupper($p);
-                $p_val = constant($p_name);
+                $p      = trim($p);
+                $p_name = 'Application\\DeskPRO\\Email\\EmailAccount\\EmailAccountManager::'.strtoupper($p);
+                $p_val  = constant($p_name);
                 if ($p_val) {
                     $criteria = $criteria | $p_val;
                 }
@@ -292,7 +316,6 @@ class EmailAccountManager
 
         return true;
     }
-
 
     /**
      * @return array
@@ -322,7 +345,6 @@ class EmailAccountManager
         return $map;
     }
 
-
     /**
      * "primary" just means the first account that has an outgoing.
      *
@@ -336,9 +358,8 @@ class EmailAccountManager
             }
         }
 
-        throw new MissingConfigurationException;
+        throw new MissingConfigurationException();
     }
-
 
     /**
      * Just like getPrimaryTicketAccount except will fallback on a non-ticket account.
@@ -354,23 +375,22 @@ class EmailAccountManager
         }
     }
 
-
     /**
      * @param Ticket $ticket
+     *
      * @return EmailAccount
      */
     public function getAccountForTicket(Ticket $ticket)
     {
-        if ($ticket->email_account) {
+        if ($ticket->email_account && $ticket->email_account->is_enabled && $ticket->email_account->outgoing_account) {
             return $ticket->email_account;
         }
 
         return $this->getPrimaryTicketAccountWithFallback();
     }
 
-
     /**
-     * Count how many outgoing email accounts are defined
+     * Count how many outgoing email accounts are defined.
      *
      * @return int
      */
@@ -379,15 +399,13 @@ class EmailAccountManager
         return count($this->getAllActiveAccounts('with_transport'));
     }
 
-
     ####################################################################################################################
     # Working with Transports
     ####################################################################################################################
 
 
     /**
-     * @param  EmailAccount $default
-     * @return null
+     * @param EmailAccount $default
      */
     public function setDefaultOutAccount(EmailAccount $default)
     {
@@ -397,7 +415,6 @@ class EmailAccountManager
 
         $this->default_out_account = $default;
     }
-
 
     /**
      * @return EmailAccount
@@ -414,9 +431,8 @@ class EmailAccountManager
             }
         }
 
-        throw new MissingConfigurationException;
+        throw new MissingConfigurationException();
     }
-
 
     /**
      * Just like getDefaultOutAccount except will create an anonymous mail() mailer when none exists.
@@ -431,20 +447,19 @@ class EmailAccountManager
             $acc = new EmailAccount('outgoing');
 
             if (!empty($_SERVER['HOST_NAME'])) {
-                $acc->address = 'deskpro@' . $_SERVER['HOST_NAME'];
+                $acc->address = 'deskpro@'.$_SERVER['HOST_NAME'];
             } elseif (@php_uname('n')) {
-                $acc->address = 'deskpro@' . php_uname('n');
+                $acc->address = 'deskpro@'.php_uname('n');
             } else {
                 $acc->address = 'deskpro@localhost';
             }
 
-            $acc->is_enabled = true;
+            $acc->is_enabled       = true;
             $acc->outgoing_account = new PhpMailConfig();
 
             return $acc;
         }
     }
-
 
     /**
      * @return RawTransportFactory
@@ -454,9 +469,9 @@ class EmailAccountManager
         return $this->transport_factory;
     }
 
-
     /**
-     * @param  int|EmailAccount $acc
+     * @param int|EmailAccount $acc
+     *
      * @return bool
      */
     public function accountHasTransport($acc)
@@ -466,11 +481,12 @@ class EmailAccountManager
         return $acc->outgoing_account !== null;
     }
 
-
     /**
-     * @param  int|EmailAccount      $acc
-     * @return \Swift_Transport
+     * @param int|EmailAccount $acc
+     *
      * @throws \OutOfBoundsException
+     *
+     * @return \Swift_Transport
      */
     public function getTransportForAccount($acc)
     {
@@ -485,17 +501,17 @@ class EmailAccountManager
             return $this->loaded_transports[$key];
         }
 
-        $tr = $this->transport_factory->createTransport($acc->outgoing_account);
+        $tr                            = $this->transport_factory->createTransport(EmailAccountUtil::decryptOutgoingAccount($acc->outgoing_account, $this->enc));
         $this->loaded_transports[$key] = $tr;
 
         return $tr;
     }
 
-
     /**
      * Stops/closes the transport.
      *
-     * @param  int|EmailAccount      $acc
+     * @param int|EmailAccount $acc
+     *
      * @throws \OutOfBoundsException
      */
     public function closeTransportForAccount($acc)
@@ -517,9 +533,8 @@ class EmailAccountManager
         $tr->stop();
     }
 
-
     /**
-     * Closes all loaded transports
+     * Closes all loaded transports.
      *
      * @param array $collect_exceptions Provide a variable to put exceptions into
      */
@@ -538,7 +553,6 @@ class EmailAccountManager
         $this->loaded_transports = array();
     }
 
-
     ####################################################################################################################
     # Working with Fetchers
     ####################################################################################################################
@@ -551,9 +565,9 @@ class EmailAccountManager
         return $this->fetcher_storage_factory;
     }
 
-
     /**
-     * @param  int|EmailAccount $acc
+     * @param int|EmailAccount $acc
+     *
      * @return bool
      */
     public function accountHasFetcherStorage($acc)
@@ -563,11 +577,12 @@ class EmailAccountManager
         return $acc->incoming_account !== null;
     }
 
-
     /**
-     * @param  int|EmailAccount                                                         $acc
-     * @return \Application\DeskPRO\EmailGateway\FetcherStorage\FetcherStorageInterface
+     * @param int|EmailAccount $acc
+     *
      * @throws \OutOfBoundsException
+     *
+     * @return \Application\DeskPRO\EmailGateway\FetcherStorage\FetcherStorageInterface
      */
     public function getFetcherStorageForAccount($acc)
     {
@@ -582,17 +597,17 @@ class EmailAccountManager
             return $this->loaded_fetcher_storages[$key];
         }
 
-        $fethcer = $this->fetcher_storage_factory->createFetcherStorage($acc->incoming_account);
+        $fethcer                             = $this->fetcher_storage_factory->createFetcherStorage(EmailAccountUtil::decryptIncomingAccount($acc->incoming_account, $this->enc));
         $this->loaded_fetcher_storages[$key] = $fethcer;
 
         return $fethcer;
     }
 
-
     /**
      * Stops/closes the fethcer.
      *
-     * @param  int|EmailAccount      $acc
+     * @param int|EmailAccount $acc
+     *
      * @throws \OutOfBoundsException
      */
     public function closeFetcherStorageForAccount($acc)
@@ -614,9 +629,8 @@ class EmailAccountManager
         $fetcher->closeStorage();
     }
 
-
     /**
-     * Closes all loaded fethcers
+     * Closes all loaded fethcers.
      *
      * @param array $collect_exceptions Provide a variable to put exceptions into
      */
@@ -635,21 +649,21 @@ class EmailAccountManager
         $this->loaded_fetcher_storages = array();
     }
 
-
     ####################################################################################################################
     # Working with processors
     ####################################################################################################################
 
     /**
-     * @param  EmailAccount                $account
-     * @param  AbstractReader              $reader
-     * @param  array                       $options
+     * @param EmailAccount   $account
+     * @param AbstractReader $reader
+     * @param array          $options
+     *
      * @return TicketGatewayProcessor|null
      */
     public function getEmailProcessor(EmailAccount $account, AbstractReader $reader, array $options = array())
     {
         if ($account->account_type != 'tickets') {
-            return null;
+            return;
         }
 
         $proc = new TicketGatewayProcessor($account, $reader, $options);
@@ -661,8 +675,10 @@ class EmailAccountManager
 
     /**
      * @param $acc
-     * @return EmailAccount|null
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return EmailAccount|null
      */
     private function verifyAccountParam($acc)
     {

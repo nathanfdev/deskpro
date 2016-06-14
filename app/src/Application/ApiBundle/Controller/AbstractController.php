@@ -1,35 +1,33 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * DeskPRO.
  */
 
 namespace Application\ApiBundle\Controller;
@@ -39,6 +37,8 @@ use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Validator\ViolationApiRenderer;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -54,7 +54,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     public $api_user;
 
     /**
-     * The API key making this request
+     * The API key making this request.
      *
      * @var \Application\DeskPRO\Entity\ApiKey|null
      */
@@ -66,37 +66,43 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     public $api_token;
 
     /**
-     * The user context (user making the request, or the one the API key says to use)
+     * The user context (user making the request, or the one the API key says to use).
+     *
      * @var \Application\DeskPRO\Entity\Person
      */
     public $person;
 
     /**
-     * Entity manager
+     * Entity manager.
+     *
      * @var \Doctrine\ORM\EntityManager
      */
     public $em;
 
     /**
-     * Plain database connection for raw queries
+     * Plain database connection for raw queries.
+     *
      * @var \Application\DeskPRO\DBAL\Connection
      */
     public $db;
 
     /**
-     * Input reader
+     * Input reader.
+     *
      * @var \Application\DeskPRO\Input\Reader
      */
     public $in;
 
     /**
-     * A generic value cleaner
+     * A generic value cleaner.
+     *
      * @var \Orb\Input\Cleaner\Cleaner
      */
     public $cleaner;
 
     /**
-     * Shared template vars
+     * Shared template vars.
+     *
      * @var \ArrayObject
      */
     public $tplvars;
@@ -107,7 +113,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     public $tpl;
 
     /**
-     * Fetch settings
+     * Fetch settings.
+     *
      * @var \Application\DeskPRO\Settings\Settings
      */
     public $settings;
@@ -116,8 +123,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      * @var null|array
      */
     public $rate_info = null;
-
-
 
     protected function init()
     {
@@ -128,7 +133,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         $this->settings = $this->get('deskpro.core.settings');
 
         /** @var \Application\ApiBundle\Request\RequestAuth $request_auth */
-        $request_auth = $this->get('deskpro.api.request_auth');
+        $request_auth   = $this->get('deskpro.api.request_auth');
         $this->api_user = $request_auth->getApiUser();
 
         $this->apikey    = $this->api_user->api_key;
@@ -149,8 +154,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         }
     }
 
-
-
     /**
      * Always require a valid API key.
      */
@@ -159,7 +162,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         if (!$this->apikey && !$this->api_token) {
             $response = $this->createApiErrorResponse('invalid_auth', 'Please provide a valid API key or token', 401);
             $response->headers->add(array(
-                'WWW-Authenticate' => 'Basic realm="API"'
+                'WWW-Authenticate' => 'Basic realm="API"',
             ));
 
             return $response;
@@ -192,22 +195,22 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
             // Ping the 'last' date of the session
             $this->container->getDb()->update('sessions', array(
-                'date_last' => date('Y-m-d H:i:s')
+                'date_last' => date('Y-m-d H:i:s'),
             ), array('id' => $this->api_user->session->id));
 
             // Increase lifetime of the session token
             $this->container->getDb()->update('api_token', array(
-                'date_expires' => date('Y-m-d H:i:s', strtotime("+1 hour"))
+                'date_expires' => date('Y-m-d H:i:s', strtotime('+1 hour')),
             ), array('id' => $this->api_token->id));
         }
 
         if ($this instanceof ProtectedControllerInterface) {
             $perm_strategy = $this->getPermissionStrategy();
-            $context_info = array(
+            $context_info  = array(
                 'controller' => $this,
                 'action'     => $action,
                 'arguments'  => $arguments,
-                'type'       => $action
+                'type'       => $action,
             );
             if (!$perm_strategy->userHasPermission($this->api_user, $context_info)) {
                 return $this->createApiErrorResponse('no_permission', 'You do not have permission to use this resource', 403);
@@ -227,55 +230,51 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     {
         if ($this->apikey) {
             $this->rate_info = $this->em->getRepository('DeskPRO:ApiKey')->getRateLimitInfo($this->apikey);
-        } else {
-            $this->rate_info = $this->em->getRepository('DeskPRO:ApiToken')->getRateLimitInfo($this->api_token);
         }
 
         if ($this->rate_info['hits'] >= App::getSetting('core.api_rate_limit')) {
             return $this->createApiErrorResponse('rate_limit_exceeded', 'Rate Limit Exceeded', 429);
         }
 
-        return null;
+        return;
     }
 
     protected function _updateRateLimit($action, $arguments = null)
     {
         if ($this->apikey) {
             $this->em->getRepository('DeskPRO:ApiKey')->updateRateLimit($this->apikey);
-        } else {
-            $this->em->getRepository('DeskPRO:ApiToken')->updateRateLimit($this->api_token);
         }
 
         if ($this->rate_info) {
-            $this->rate_info['hits']++;
+            ++$this->rate_info['hits'];
         }
     }
 
-
     /**
-     * Create an API error response
+     * Create an API error response.
      *
-     * @param  string   $error_code    The short error code
-     * @param  string   $error_message The error message
-     * @param  int      $status        The HTTP status to return
+     * @param string $error_code    The short error code
+     * @param string $error_message The error message
+     * @param int    $status        The HTTP status to return
+     *
      * @return Response
      */
     public function createApiErrorResponse($error_code, $error_message, $status = 400)
     {
         return $this->createApiResponse(array(
-            'error_code' => $error_code,
-            'error_message' => $error_message
+            'error_code'    => $error_code,
+            'error_message' => $error_message,
         ), $status);
     }
 
-
     /**
-     * Create an API error response
+     * Create an API error response.
      *
-     * @param  string   $error_code    The short error code
-     * @param  string   $error_message The error message
-     * @param  array    $data          Data to return
-     * @param  int      $status        The HTTP status to return
+     * @param string $error_code    The short error code
+     * @param string $error_message The error message
+     * @param array  $data          Data to return
+     * @param int    $status        The HTTP status to return
+     *
      * @return Response
      */
     public function createApiErrorInfoResponse($error_code, $error_message, array $error_info, $status = 400)
@@ -287,26 +286,26 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         ), $status);
     }
 
-
     /**
-     * @param  array    $errors
-     * @param  int      $status
+     * @param array $errors
+     * @param int   $status
+     *
      * @return Response
      */
     public function createApiMultipleErrorResponse(array $errors, $status = 400)
     {
         return $this->createApiResponse(array(
             'error_code' => 'multiple',
-            'errors' => $errors
+            'errors'     => $errors,
         ), $status);
     }
-
 
     /**
      * Create an API response.
      *
-     * @param  array    $data
-     * @param  int      $status
+     * @param array $data
+     * @param int   $status
+     *
      * @return Response
      */
     public function createApiResponse(array $data, $status = 200)
@@ -324,13 +323,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         return $response;
     }
 
-
-
     /**
-     * Creates an API success response
+     * Creates an API success response.
      *
-     * @param array   $extra
-     * @param integer $status
+     * @param array $extra
+     * @param int   $status
      *
      * @return Response
      */
@@ -339,12 +336,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         return $this->createApiResponse(array('success' => true) + $extra, $status);
     }
 
-
     /**
-     * Creates an API success response
+     * Creates an API success response.
      *
-     * @param  array    $extra
-     * @param  int      $status
+     * @param array $extra
+     * @param int   $status
+     *
      * @return Response
      */
     public function createApiSuccessResponse(array $extra = array(), $status = 200)
@@ -352,12 +349,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         return $this->createApiResponse(array('success' => true) + $extra, $status);
     }
 
-
     /**
-     * Create API response for after anew resource was created
+     * Create API response for after anew resource was created.
      *
-     * @param  array    $data
+     * @param array $data
      * @param $url
+     *
      * @return Response
      */
     public function createApiCreateResponse(array $data, $url)
@@ -368,12 +365,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         return $response;
     }
 
-
     /**
      * Creates an API response to return after a resource is deleted. Typically you should return the 'old id' in $extra.
      *
-     * @param  array    $extra
-     * @param  int      $status
+     * @param array $extra
+     * @param int   $status
+     *
      * @return Response
      */
     public function createApiDeleteResponse(array $extra = array(), $status = 200)
@@ -381,14 +378,14 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         return $this->createApiResponse(array('success' => true) + $extra, $status);
     }
 
-
-
     /**
-     * @param  ConstraintViolationList|ConstraintViolationList[] $errors A violation list, or an array of violation lists keyed by some prefix.
-     * @param  array                                             $extra  Any other extra data you want to return
-     * @param  int                                               $status The HTTP status code to return
-     * @return Response
+     * @param ConstraintViolationList|ConstraintViolationList[] $errors A violation list, or an array of violation lists keyed by some prefix.
+     * @param array                                             $extra  Any other extra data you want to return
+     * @param int                                               $status The HTTP status code to return
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return Response
      */
     public function createApiValidationErrorResponse($errors, array $extra = null, $status = 400)
     {
@@ -418,18 +415,19 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         return $this->createApiResponse($data, $status);
     }
 
-
     /**
-     * @param  Form                      $form   A form to fetch errors from
-     * @param  array                     $extra  Any other extra data you want to return
-     * @param  int                       $status The HTTP status code to return
-     * @return Response
+     * @param Form  $form   A form to fetch errors from
+     * @param array $extra  Any other extra data you want to return
+     * @param int   $status The HTTP status code to return
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return Response
      */
     public function createApiFormErrorResponse(Form $form, array $extra = null, $status = 400)
     {
         $renderer = new ViolationApiRenderer();
-        $info = $renderer->renderFormErrorList($form);
+        $info     = $renderer->renderFormErrorList($form);
 
         $data = array(
             'error_code'    => 'validation_error',
@@ -444,13 +442,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         return $this->createApiResponse($data, $status);
     }
 
-
-
     public function getApiData($input, $deep = true)
     {
         if (is_array($input) || $input instanceof \Traversable) {
             $output = array();
-            foreach ($input AS $key => $value) {
+            foreach ($input as $key => $value) {
                 if ($value instanceof \Application\DeskPRO\Domain\DomainObject) {
                     $output[$key] = $value->toApiData(false, $deep);
                 }
@@ -469,7 +465,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      *
      * @return bool
      */
-
     public function isEntityValid($entity)
     {
         return sizeof($this->get('validator')->validate($entity)) == 0;
@@ -480,16 +475,13 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      *
      * @return string
      */
-
     public function getFormValidationErrorsString($form)
     {
         $result = array();
         $errors = $this->get('validator')->validate($form);
 
         if (sizeof($errors) > 0) {
-
             foreach ($errors as $error) {
-
                 $result[] = $error->getMessage();
             }
         }
@@ -499,7 +491,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
     /**
      * If we have some form and data from request we get rid off unnecessary data
-     * in order not to have 'This form should not contain extra fields'
+     * in order not to have 'This form should not contain extra fields'.
      *
      * @param \Symfony\Component\Form\Form $form
      * @param array                        $requestData
@@ -507,41 +499,30 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      *
      * @return array
      */
-
     public function deleteExtraDataFromRequest(Form $form, array $requestData, $keys = null)
     {
         if (is_null($keys)) {
-
             $form_data   = $form->all();
             $requestData = array_intersect_key($requestData, $form_data);
 
             return $requestData;
-
         } else {
-
-            if(is_string($keys)) {
-
+            if (is_string($keys)) {
                 $form_data   = $form->get($keys)->all();
                 $requestData = array_intersect_key($requestData[$keys], $form_data);
 
                 return array($keys => $requestData);
-
             } else {
-
                 $result = array();
 
                 foreach ($keys as $key) {
-
                     $form_data = $form->get($key)->all();
 
                     // this is workaround for 'collection' type - corresponding form data will be empty array
 
                     if (is_array($form_data) && empty($form_data)) {
-
                         $result[$key] = $requestData[$key];
-
                     } else {
-
                         $resultData = array_intersect_key($requestData[$key], $form_data);
 
                         $result[$key] = $resultData;
@@ -572,7 +553,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         if (!$result_cache) {
             $searcher->setPerson($this->person);
-            foreach ($terms AS $term) {
+            foreach ($terms as $term) {
                 $searcher->addTerm($term['type'], $term['op'], $term['options']);
             }
             if (isset($extra['order_by'])) {
@@ -581,13 +562,13 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
             $results = $searcher->getMatches();
 
-            $result_cache = new \Application\DeskPRO\Entity\ResultCache();
-            $result_cache->person = $this->person;
-            $result_cache->results = $results;
+            $result_cache               = new \Application\DeskPRO\Entity\ResultCache();
+            $result_cache->person       = $this->person;
+            $result_cache->results      = $results;
             $result_cache->results_type = $type;
-            $result_cache->criteria = $terms;
-            $result_cache->num_results = count($results);
-            foreach ($extra AS $key => $value) {
+            $result_cache->criteria     = $terms;
+            $result_cache->num_results  = count($results);
+            foreach ($extra as $key => $value) {
                 $result_cache->setExtraData($key, $value);
             }
 
@@ -598,21 +579,14 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         return $result_cache;
     }
 
-
     public function getCustomFieldInput($input_name = 'field')
     {
-        $custom_fields = $this->request->request->get($input_name, array());
-        if (!is_array($custom_fields) || empty($custom_fields)) {
-            $custom_fields = $this->request->query->get($input_name, array());
-            if (!is_array($custom_fields) || empty($custom_fields)) {
-                return array();
-            }
-        }
+        $custom_fields = $this->in->getArrayValue($input_name) ?: array();
 
         $output = array();
-        foreach ($custom_fields AS $key => $value) {
-            if (is_int($key)) {
-                $output['field_' . $key] = $value;
+        foreach ($custom_fields as $key => $value) {
+            if (is_numeric($key)) {
+                $output['field_'.$key] = $value;
             } elseif (preg_match('/^field_\d+/', $key)) {
                 $output[$key] = $value;
             }
@@ -631,7 +605,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
                 $message->setTo($comment->getUserEmail());
             }
             $message->setTemplate('DeskPRO:emails_user:comment-approved.html.twig', array(
-                'comment' => $comment
+                'comment' => $comment,
             ));
             $this->container->getMailer()->send($message);
         }
@@ -653,14 +627,15 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
                 $message->setTo($comment->getUserEmail());
             }
             $message->setTemplate('DeskPRO:emails_user:comment-deleted.html.twig', array(
-                'comment' => $comment
+                'comment' => $comment,
             ));
             $this->container->getMailer()->send($message);
         }
     }
 
     /**
-     * @param  \Exception $e
+     * @param \Exception $e
+     *
      * @return Response
      */
     public function handleActionException(\Exception $e)
@@ -668,28 +643,34 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         if ($e instanceof ValidationException) {
             return $this->createApiResponse(
                 array(
-                    'error_code' => 'validation_error',
+                    'error_code'    => 'validation_error',
                     'error_message' => 'There was a validation error while processing your request.',
-                    'detail' => array(
+                    'detail'        => array(
                         'code'      => $e->getCode(),
                         'code_name' => $e->getCodeName(),
-                        'message'   => $e->getMessage()
-                    )
+                        'message'   => $e->getMessage(),
+                    ),
                 ),
                 400
             );
         } elseif ($e instanceof NotFoundHttpException) {
             return $this->createApiResponse(array(
-                'error_code' => 404,
+                'error_code'    => 404,
                 'error_message' => $e->getMessage() ?: 'Not Found',
             ), 404);
+        } elseif ($e instanceof AccessDeniedHttpException) {
+            return $this->createApiResponse(array(
+                'error_code'    => 403,
+                'error_message' => $e->getMessage() ?: 'Access Denied',
+            ), 403);
         } elseif ($e instanceof AccessDeniedException) {
             return $this->createApiResponse(array(
-                'error_code' => 403,
+                'error_code'    => 403,
                 'error_message' => $e->getMessage() ?: 'Access Denied',
-            ), 404);
+            ), 403);
         } else {
             KernelErrorHandler::logException($e);
+
             return $this->createApiResponse(array(
                 'error_code'     => 500,
                 'error_message'  => $e->getMessage(),
@@ -698,6 +679,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             ), 500);
         }
 
-        return null;
+        return;
     }
 }

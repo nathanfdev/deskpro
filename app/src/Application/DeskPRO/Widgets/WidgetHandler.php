@@ -1,33 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\DeskPRO\Widgets;
 
-/**
+/*
  * DeskPRO
  *
  * @package DeskPRO
@@ -54,7 +55,7 @@ class WidgetHandler implements \ArrayAccess
 
     public function __construct(Entity\Widget $widget, array $options = array())
     {
-        $this->widget = $widget;
+        $this->widget  = $widget;
         $this->options = $options;
 
         if ($this->widget['data']) {
@@ -74,28 +75,30 @@ class WidgetHandler implements \ArrayAccess
         $this->init();
     }
 
-    protected function init() { }
+    protected function init()
+    {
+    }
 
     /**
-     * Get the options to pass to the JS initiator
+     * Get the options to pass to the JS initiator.
      *
      * @return array
      */
     public function getJsInitObject($element_selector)
     {
         if (!$this->widget['js_widget_class']) {
-            return null;
+            return;
         }
 
         $info = array();
 
         // Info used when creating the JS object
-        $info['class']   = $this->widget['js_widget_class'];
-        $info['prefs']   = $this->getPrefsForCurrentPerson();
+        $info['class']           = $this->widget['js_widget_class'];
+        $info['prefs']           = $this->getPrefsForCurrentPerson();
         $info['wrapperSelector'] = $element_selector;
 
         // Options that are passed to the JS object
-        $info['options'] = array();
+        $info['options']            = array();
         $info['options']['id']      = $this->widget['id'];
         $info['options']['name_id'] = $this->widget['name_id'];
 
@@ -112,11 +115,11 @@ class WidgetHandler implements \ArrayAccess
     {
         $prefs = array();
 
-        $pref_prefix = 'widget.' . $this->widget['name_id'] . '.';
+        $pref_prefix = 'widget.'.$this->widget['name_id'].'.';
 
         // From person
         $person = App::getCurrentPerson();
-        if ($person AND $person['id']) {
+        if ($person and $person['id']) {
             $prefs = $person->loadPrefGroup($pref_prefix);
         }
 
@@ -125,7 +128,7 @@ class WidgetHandler implements \ArrayAccess
         if ($session) {
             foreach ($session->getAttributes() as $k => $v) {
                 if (strpos($k, $pref_prefix) === 0) {
-                    $k = str_replace($k, '', $k);
+                    $k         = str_replace($k, '', $k);
                     $prefs[$k] = $v;
                 }
             }
@@ -136,12 +139,10 @@ class WidgetHandler implements \ArrayAccess
 
     public function offsetUnset($offset)
     {
-
     }
 
     public function offsetSet($offset, $value)
     {
-
     }
 
     public function offsetGet($offset)

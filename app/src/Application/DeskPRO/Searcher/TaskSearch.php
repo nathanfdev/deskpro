@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -48,7 +46,6 @@ class TaskSearch extends SearcherAbstract
     const TERM_DATE_COMPLETED         = 'date_completed';
     const TERM_DATE_DUE               = 'date_due';
 
-
     /**
      * Run the search and return an array of matching ID's.
      *
@@ -64,16 +61,16 @@ class TaskSearch extends SearcherAbstract
     }
 
     /**
-     * Get the SQL query that'll fetch the results
+     * Get the SQL query that'll fetch the results.
+     *
      * @return string
      */
     public function getSql()
     {
-        $sql = "SELECT tasks.id FROM tasks ";
+        $sql = 'SELECT tasks.id FROM tasks ';
 
-        $parts = $this->getSqlParts();
+        $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
-
 
         #------------------------------
         # Add joins
@@ -81,14 +78,14 @@ class TaskSearch extends SearcherAbstract
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
-                $sql .= $j[1] . " ";
+                $sql .= $j[1].' ';
             } else {
                 $sql .= "LEFT JOIN $j ON $j.task_id = tasks.id ";
             }
         }
 
         if (is_array($order_by)) {
-            list ($order_join, $order_by) = $order_by;
+            list($order_join, $order_by) = $order_by;
 
             $sql .= " $order_join ";
         }
@@ -102,7 +99,7 @@ class TaskSearch extends SearcherAbstract
 
             $this->person->loadHelper('Agent');
             if ($this->person->Agent->getTeamIds()) {
-                $where = "((tasks.person_id = $person_id OR tasks.assigned_agent_id = $person_id OR tasks.assigned_agent_team_id IN (" . implode(',', $this->person->Agent->getTeamIds()) . ")) OR tasks.visibility = 1)";
+                $where = "((tasks.person_id = $person_id OR tasks.assigned_agent_id = $person_id OR tasks.assigned_agent_team_id IN (".implode(',', $this->person->Agent->getTeamIds()).')) OR tasks.visibility = 1)';
             } else {
                 $where = "((tasks.person_id = $person_id OR tasks.assigned_agent_id = $person_id) OR tasks.visibility = 1)";
             }
@@ -111,19 +108,17 @@ class TaskSearch extends SearcherAbstract
         }
 
         if ($parts['wheres']) {
-            $where .= ' AND ' . implode(" AND ", $parts['wheres']);
+            $where .= ' AND '.implode(' AND ', $parts['wheres']);
         }
 
         $sql .= "WHERE $where";
 
-        $sql .= " GROUP BY tasks.id ";
+        $sql .= ' GROUP BY tasks.id ';
         $sql .= $order_by;
-        $sql .= " LIMIT 1000";
+        $sql .= ' LIMIT 1000';
 
         return $sql;
     }
-
-
 
     /**
      * Get the ORDER BY clause based on order info set.
@@ -140,7 +135,7 @@ class TaskSearch extends SearcherAbstract
         list($type, $dir) = $this->order_by;
 
         $dir = strtoupper($dir);
-        if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
+        if ($dir != self::ORDER_ASC and $dir != self::ORDER_DESC) {
             $dir = self::ORDER_DESC;
         }
 
@@ -191,8 +186,6 @@ class TaskSearch extends SearcherAbstract
         return $order_by;
     }
 
-
-
     /**
      * Get the SQL parts we need in the query.
      *
@@ -205,10 +198,9 @@ class TaskSearch extends SearcherAbstract
         $tr = App::getTranslator();
 
         $wheres = array();
-        $joins = array();
+        $joins  = array();
 
         foreach ($this->terms as $info) {
-
             list($term, $op, $choice) = $info;
 
             $term_id = null;
@@ -220,42 +212,42 @@ class TaskSearch extends SearcherAbstract
 
             switch ($term) {
                 case self::TERM_ID:
-                    $wheres[] = $this->_rangeMatch("$org_table.id", $op, $choice, true);
+                    $wheres[]        = $this->_rangeMatch("$org_table.id", $op, $choice, true);
                     $this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
                     break;
 
                 case self::TERM_TITLE:
-                    $wheres[] = $this->_stringMatch("tasks.title", $op, $choice);
+                    $wheres[] = $this->_stringMatch('tasks.title', $op, $choice);
                     break;
 
                 case self::TERM_PERSON_ID:
-                    $wheres[] = $this->_rangeMatch("tasks.person_id", $op, $choice, true);
+                    $wheres[]        = $this->_rangeMatch('tasks.person_id', $op, $choice, true);
                     $this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.person_id'), $op, $choice);
                     break;
 
                 case self::TERM_ASSIGNED_AGENT_ID:
-                    $wheres[] = $this->_rangeMatch("tasks.assigned_agent_id", $op, $choice, true);
+                    $wheres[]        = $this->_rangeMatch('tasks.assigned_agent_id', $op, $choice, true);
                     $this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.assigned_agent_id'), $op, $choice);
                     break;
 
                 case self::TERM_ASSIGNED_AGENT_TEAM_ID:
-                    $wheres[] = $this->_rangeMatch("tasks.assigned_agent_team_id", $op, $choice, true);
+                    $wheres[]        = $this->_rangeMatch('tasks.assigned_agent_team_id', $op, $choice, true);
                     $this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.assigned_agent_id'), $op, $choice);
                     break;
 
                 case self::TERM_DATE_CREATED:
                     $this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_created'), $op, $choice);
-                    $wheres[] = $this->_dateMatch("tasks.date_created", $op, $choice);
+                    $wheres[]        = $this->_dateMatch('tasks.date_created', $op, $choice);
                     break;
 
                 case self::TERM_DATE_COMPLETED:
                     $this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_completed'), $op, $choice);
-                    $wheres[] = $this->_dateMatch("tasks.date_completed", $op, $choice);
+                    $wheres[]        = $this->_dateMatch('tasks.date_completed', $op, $choice);
                     break;
 
                 case self::TERM_DATE_DUE:
                     $this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_due'), $op, $choice);
-                    $wheres[] = $this->_dateMatch("tasks.date_due", $op, $choice);
+                    $wheres[]        = $this->_dateMatch('tasks.date_due', $op, $choice);
                     break;
 
                 case self::TERM_IS_COMPLETED:
@@ -269,7 +261,7 @@ class TaskSearch extends SearcherAbstract
                         $choice = 0;
                     }
 
-                    $wheres[] = $this->_choiceMatch("tasks.is_completed", $op, $choice, false);
+                    $wheres[] = $this->_choiceMatch('tasks.is_completed', $op, $choice, false);
                     break;
 
                 case self::TERM_VISIBILITY:
@@ -283,7 +275,7 @@ class TaskSearch extends SearcherAbstract
                         $choice = 0;
                     }
 
-                    $wheres[] = $this->_choiceMatch("tasks.visibility", $op, $choice, false);
+                    $wheres[] = $this->_choiceMatch('tasks.visibility', $op, $choice, false);
                     break;
             }
         }
@@ -291,9 +283,8 @@ class TaskSearch extends SearcherAbstract
         $joins = array_unique($joins);
 
         return array(
-            'joins' => $joins,
-            'wheres' => $wheres
+            'joins'  => $joins,
+            'wheres' => $wheres,
         );
     }
-
 }

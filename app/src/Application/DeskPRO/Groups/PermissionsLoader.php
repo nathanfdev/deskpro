@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Groups;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -52,7 +50,6 @@ class PermissionsLoader
      */
     private $agent_override_perms;
 
-
     /**
      * @param Connection $db
      */
@@ -60,7 +57,6 @@ class PermissionsLoader
     {
         $this->db = $db;
     }
-
 
     /**
      * @return array
@@ -71,18 +67,18 @@ class PermissionsLoader
             return $this->ug_perms;
         }
 
-        $this->ug_perms = $this->db->fetchAllGrouped("
+        $this->ug_perms = $this->db->fetchAllGrouped('
             SELECT usergroup_id, name, value
             FROM permissions
             WHERE person_id IS NULL
-        ", array(), 'usergroup_id');
+        ', array(), 'usergroup_id');
 
         return $this->ug_perms;
     }
 
-
     /**
-     * @param  array $ug_ids
+     * @param array $ug_ids
+     *
      * @return array
      */
     public function getUsergroupPermissions(array $ug_ids)
@@ -99,7 +95,6 @@ class PermissionsLoader
         return $ret;
     }
 
-
     /**
      * @return array
      */
@@ -109,17 +104,18 @@ class PermissionsLoader
             return $this->agent_override_perms;
         }
 
-        $this->agent_override_perms = $this->db->fetchAllGrouped("
+        $this->agent_override_perms = $this->db->fetchAllGrouped('
             SELECT person_id, name, value
             FROM permissions
-            WHERE person_id IS NOT NULL
-        ", array(), 'person_id');
+            WHERE person_id IS NOT NULL AND is_active = 1
+        ', array(), 'person_id');
 
         return $this->agent_override_perms;
     }
 
     /**
-     * @param  int   $agent_id
+     * @param int $agent_id
+     *
      * @return array
      */
     public function getAgentOverridePermissions($agent_id)

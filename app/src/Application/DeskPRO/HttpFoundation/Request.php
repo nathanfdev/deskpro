@@ -1,38 +1,37 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\HttpFoundation;
 
+use Orb\Util\Strings;
 
 class Request extends \Symfony\Component\HttpFoundation\Request
 {
@@ -46,7 +45,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     protected $info;
 
     /**
-     * When a client sends _partial in POST/GET data, they're requesting a partial result
+     * When a client sends _partial in POST/GET data, they're requesting a partial result.
      *
      * For example: more search results, or a page being put into an existing page etc. The actual
      * meaning of what "partial" is depends on the page.
@@ -62,17 +61,22 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 
         if ($this->query->has(self::PARTIAL_REQUEST_KEY)) {
             $val = $this->query->get(self::PARTIAL_REQUEST_KEY);
-            if (!$val) $val = 'partial';
+            if (!$val) {
+                $val = 'partial';
+            }
         } elseif ($this->request->has(self::PARTIAL_REQUEST_KEY)) {
             $val = $this->request->get(self::PARTIAL_REQUEST_KEY);
-            if (!$val) $val = 'partial';
+            if (!$val) {
+                $val = 'partial';
+            }
         }
 
         return $val;
     }
 
     /**
-     * returns bool only
+     * returns bool only.
+     *
      * @return bool
      */
     public function isPartial()
@@ -97,7 +101,9 @@ class Request extends \Symfony\Component\HttpFoundation\Request
      */
     public function getUrlLocale()
     {
-        if ($this->url_locale !== null) return $this->url_locale;
+        if ($this->url_locale !== null) {
+            return $this->url_locale;
+        }
 
         $this->url_locale = false;
 
@@ -109,7 +115,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
             '/agent',
             '/admin',
             '/dev',
-            '/api'
+            '/api',
         );
 
         $check_for_locale = true;
@@ -142,6 +148,14 @@ class Request extends \Symfony\Component\HttpFoundation\Request
      */
     protected function prepareBaseUrl()
     {
+        // Allow config to hard-code this. Sometimes symfony doesnt
+        // find the base path properly (particularly when DeskPRO in subdir on nginx).
+        // Many bugs filed about similar situations never seems to fix this, so easiest
+        // for us to just add a config var.
+        if (function_exists('dp_get_config') && $base_path = dp_get_config('url_base_path')) {
+            return $base_path;
+        }
+
         // Not Windows (which is case insensitive), then do the normal
         if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
             return parent::prepareBaseUrl();
@@ -217,6 +231,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 
     /**
      * @param null $correctHost
+     *
      * @return bool|null
      */
     public function isCorrectHost($correctHost = null)
@@ -226,7 +241,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
         }
 
         $host = $info['port']
-            ? $info['host'] . ':' . $info['port']
+            ? $info['host'].':'.$info['port']
             : $info['host'];
 
         return $this->getHttpHost() === $host;
@@ -234,6 +249,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 
     /**
      * @param null $correctHost
+     *
      * @return bool|null
      */
     public function isCorrectScheme($correctHost = null)
@@ -247,6 +263,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 
     /**
      * @param null $correctHost
+     *
      * @return array
      */
     public function getCorrectInfo($correctHost = null)
@@ -260,9 +277,9 @@ class Request extends \Symfony\Component\HttpFoundation\Request
                 return array();
             }
             $info['scheme'] = strtolower(@$info['scheme']);
-            $info['host'] = strtolower(@$info['host']);
-            $info['port'] = @$info['port'];
-            $this->info = $info;
+            $info['host']   = strtolower(@$info['host']);
+            $info['port']   = @$info['port'];
+            $this->info     = $info;
         }
 
         return $this->info;
@@ -273,17 +290,23 @@ class Request extends \Symfony\Component\HttpFoundation\Request
         if ('application/json' === $this->getContentType()) {
             if ($data = json_decode((string) $this->getContent(), 1)) {
                 if (!$return = @$data['return']) {
-                    return null;
+                    return;
                 }
             }
         }
 
-        if (!$return = (string) $this->get('return')) {
-            return null;
+        $return = $this->get('return');
+        if (!$return || !is_string($return)) {
+            return;
+        }
+
+        $return = Strings::removeInvisibleCharacters($return);
+        if (!$return) {
+            return;
         }
 
         if ('/' !== $return[0] || '//' === substr($return, 0, 2) || false !== strpos($return, '/validate-email/')) {
-            return null;
+            return;
         }
 
         return $return;

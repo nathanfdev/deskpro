@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
@@ -65,7 +63,6 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
      */
     private $logger;
 
-
     /**
      * @param TicketDetectorInterface $detector
      */
@@ -78,7 +75,7 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
     }
 
     /**
-     * Runs detectors against a reader
+     * Runs detectors against a reader.
      *
      * @param AbstractReader $reader
      */
@@ -95,11 +92,11 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
             if ($t) {
                 $this->matched_detectors[$reader_id] = $detector;
                 $this->matched_tickets[$reader_id]   = $t;
-                $this->getLogger()->logInfo(sprintf("[CompositeDetector] %s: Found Ticket #%d", Util::getBaseClassname($detector), $t->id));
+                $this->getLogger()->logInfo(sprintf('[CompositeDetector] %s: Found Ticket #%d', Util::getBaseClassname($detector), $t->id));
 
                 return;
             } else {
-                $this->getLogger()->logInfo(sprintf("[CompositeDetector] %s: No match", Util::getBaseClassname($detector)));
+                $this->getLogger()->logInfo(sprintf('[CompositeDetector] %s: No match', Util::getBaseClassname($detector)));
             }
         }
 
@@ -108,7 +105,7 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
     }
 
     /**
-     * Reset the saved detector state
+     * Reset the saved detector state.
      */
     public function reset()
     {
@@ -118,7 +115,8 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
     }
 
     /**
-     * @param  AbstractReader                                                        $reader
+     * @param AbstractReader $reader
+     *
      * @return \Application\DeskPRO\EmailGateway\Ticket\TicketDetectorInterface|null
      */
     public function getMatchedDetector(AbstractReader $reader)
@@ -129,14 +127,14 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
         }
 
         if ($this->matched_detectors[$reader_id] === false) {
-            return null;
+            return;
         }
 
         return $this->matched_detectors[$reader_id];
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function enableBouncedMode()
     {
@@ -144,7 +142,7 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findExistingTicket(AbstractReader $reader)
     {
@@ -152,28 +150,28 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
 
         $reader_id = spl_object_hash($reader);
         if ($this->matched_tickets[$reader_id] === false) {
-            return null;
+            return;
         }
 
         return $this->matched_tickets[$reader_id];
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
     {
         $detector = $this->getMatchedDetector($reader);
 
         if (!$detector) {
-            return null;
+            return;
         }
 
         return $detector->findExistingPerson($ticket, $reader);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
     {
@@ -186,20 +184,21 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findTacPerson(AbstractReader $reader)
     {
         $detector = $this->getMatchedDetector($reader);
         if (!$detector || !($detector instanceof TacPersonDetectorInterface)) {
-            return null;
+            return;
         }
 
         return $detector->findTacPerson($reader);
     }
 
     /**
-     * Set the logger
+     * Set the logger.
+     *
      * @param \Orb\Log\Logger $logger
      */
     public function setLogger(Logger $logger)

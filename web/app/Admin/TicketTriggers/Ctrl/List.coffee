@@ -13,6 +13,7 @@ define [
     init: ->
       @dep_triggers   = []
       @email_triggers = []
+      @satisfaction_triggers = []
       @all_triggers   = []
       @triggers       = []
 
@@ -64,6 +65,9 @@ define [
     initialLoad: ->
       promises = []
 
+      promises.push @Api.sendGet('/ticket_settings').then (res) =>
+        @$scope.$parent.settings = res.data.ticket_settings
+
       promises.push @dpTriggers.loadList(true).then( (list) =>
         window.all_triggers = list
         @all_triggers = list
@@ -75,12 +79,15 @@ define [
 
         @$scope.dep_order = 0
         @$scope.emailaccount_order = 0
+        @$scope.satisfation_order = 0
 
         for t in @all_triggers
           if not @$scope.dep_order and t.department
             @$scope.dep_order = t.run_order
           if not @$scope.emailaccount_order and t.email_account
             @$scope.emailaccount_order = t.run_order
+          if not @$scope.satisfaction_order and t.sys_name and t.sys_name.match /^default_update_satisfaction.+/
+            @$scope.satisfaction_order = t.run_order
       )
 
       if @eventType == 'newticket' or @eventType == 'update'
@@ -94,8 +101,14 @@ define [
           @accounts = @accounts.filter((x) -> x.account_type != 'outgoing')
         )
 
-      d = @$q.defer()
+      if @eventType == 'update'
+        @satisfactions = [
+          {id: 0, title: 'negative'}
+          {id: 1, title: 'neutral'}
+          {id: 2, title: 'positive'}
+        ]
 
+      d = @$q.defer()
 
       # run re-order stuff (from dpMoveListToPos)
       # while loading indicator is still spinning,
@@ -122,6 +135,7 @@ define [
 
       @$scope.email_trigger_ids = {}
       @$scope.department_trigger_ids = {}
+      @$scope.satisfaction_triggers = {}
 
       for tr in @all_triggers
         if tr.department
@@ -130,6 +144,8 @@ define [
         else if tr.email_account
           @email_triggers.push(tr)
           @$scope.email_trigger_ids[tr.email_account.id] = tr.id
+        else if tr.sys_name and tr.sys_name.match /^default_update_satisfaction.+/
+          @$scope.satisfaction_triggers[tr.sys_name.replace('default_update_satisfaction_', '')] = tr
         else
           @triggers.push(tr)
 

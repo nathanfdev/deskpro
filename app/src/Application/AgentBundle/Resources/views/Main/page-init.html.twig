@@ -104,6 +104,8 @@
 		$('pane_list_content').css('display', '');
 		$('pane_content').css('display', '');
 
+		window.DP_ENABLE_NEWTICKET_DRAFT = {% if app.getSetting('core_tickets.newticket_enable_drafts') %}true{% else %}false{% endif %};
+
 		window.DeskPRO_Window = new DeskPRO.Agent.Window({
 			messageChanneler: {
 				ajaxMessagesUrl: BASE_PATH + 'get_messages.php',
@@ -155,3 +157,5 @@
 		{% endfor %}
 	};
 </script>
+
+{% include 'DeskPRO:Common:notify-login-script.html.twig' with {show:true} %}

@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Routing\Generator;
 
 use Application\DeskPRO\App;
@@ -89,7 +87,7 @@ class UrlGenerator extends BaseUrlGenerator
         try {
             return parent::generate($name, $parameters, $absolute);
         } catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
-            return null;
+            return;
         }
     }
 
@@ -103,7 +101,7 @@ class UrlGenerator extends BaseUrlGenerator
             $deskpro_url .= '/index.php';
         }
 
-        return $deskpro_url . $url;
+        return $deskpro_url.$url;
     }
 
     /**
@@ -118,23 +116,23 @@ class UrlGenerator extends BaseUrlGenerator
     {
         $url = $this->generate($name, $parameters, $absolute);
 
-        $with_file = false;
+        $with_file   = false;
         $with_widget = false;
         if (strpos($url, '/file.php/') !== false) {
             $with_file = true;
-            $url = str_replace('/file.php/', '/index.php/', $url);
+            $url       = str_replace('/file.php/', '/index.php/', $url);
         } elseif (strpos($url, '/dp.php/') !== false) {
             $with_file = true;
-            $url = str_replace('/dp.php/', '/index.php/', $url);
+            $url       = str_replace('/dp.php/', '/index.php/', $url);
         }
 
-        $url = preg_replace('#^' . preg_quote($this->context->getBaseUrl(), '#') . '#', '', $url);
+        $url = preg_replace('#^'.preg_quote($this->context->getBaseUrl(), '#').'#', '', $url);
 
         if ($with_file) {
-            $url = '/file.php' . $url;
+            $url = '/file.php'.$url;
             $url = str_replace('/file.php/index.php/', '/file.php/', $url);
         } elseif ($with_widget) {
-            $url = '/dp.php' . $url;
+            $url = '/dp.php'.$url;
             $url = str_replace('/dp.php/index.php/', '/dp.php/', $url);
         }
 
@@ -153,12 +151,16 @@ class UrlGenerator extends BaseUrlGenerator
             $url = str_replace('/dp.php', '', $url);
         }
 
+        $url = str_replace('index.php//', 'index.php/', $url);
+
         return $url;
     }
 
     public function getObjectUrlGenerator()
     {
-        if ($this->object_url_generator !== null) return $this->object_url_generator;
+        if ($this->object_url_generator !== null) {
+            return $this->object_url_generator;
+        }
 
         $this->object_url_generator = new ObjectUrlGenerator($this);
 

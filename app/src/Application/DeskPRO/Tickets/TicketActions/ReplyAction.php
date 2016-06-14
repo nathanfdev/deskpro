@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -66,16 +63,13 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
         $this->person_id  = $person_id;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Person $person
-     * @return void
+     * @param \Application\DeskPRO\Entity\Person $person
      */
     public function setPersonContext(Person $person)
     {
         $this->person_context = $person;
     }
-
 
     public function checkPermission(Ticket $ticket, Person $person)
     {
@@ -87,7 +81,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -107,13 +101,13 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
                     $person = $ticket->agent;
                 } else {
                     // Try to find last agent to replied in tikcet
-                    $agent_id = App::getDb()->fetchColumn("
+                    $agent_id = App::getDb()->fetchColumn('
                         SELECT tickets_messages.person_id
                         FROM tickets_messages
                         LEFT JOIN people ON (people.id = tickets_messages.person_id)
                         WHERE tickets_messages.ticket_id = 1 AND people.is_agent = 1
                         ORDER BY tickets_messages.id DESC
-                    ");
+                    ');
 
                     if ($agent_id) {
                         $person = App::getDataService('Agent')->get($agent_id);
@@ -126,8 +120,8 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
             return;
         }
 
-        $message = new TicketMessage();
-        $message->person = $person;
+        $message               = new TicketMessage();
+        $message->person       = $person;
         $message->date_created = new \DateTime('+1 second');
 
         if ($this->is_html) {
@@ -135,7 +129,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
         } else {
             $reply_text = $this->reply_text;
 
-            $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+            $formatter  = new SnippetFormatter(App::getContainer()->get('twig'));
             $reply_text = $formatter->formatText($reply_text, $ticket);
 
             $message->setMessageHtml($reply_text);
@@ -147,8 +141,8 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
                 $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
 
                 if ($blob) {
-                    $attach = new TicketAttachment();
-                    $attach['blob'] = $blob;
+                    $attach           = new TicketAttachment();
+                    $attach['blob']   = $blob;
                     $attach['person'] = $this->person_context;
 
                     $message->addAttachment($attach);
@@ -158,22 +152,20 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
         }
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
     public function getApplyActions(Ticket $ticket)
     {
         return array(
-            array('action' => 'reply', 'reply_text' => $this->reply_text, 'attach_ids' => $this->attach_ids, 'is_html' => $this->is_html, 'person_id' => $this->person_id)
+            array('action' => 'reply', 'reply_text' => $this->reply_text, 'attach_ids' => $this->attach_ids, 'is_html' => $this->is_html, 'person_id' => $this->person_id),
         );
     }
 
-
     /**
-     * Get reply text
+     * Get reply text.
      *
      * @return int
      */
@@ -182,9 +174,8 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
         return $this->reply_text;
     }
 
-
     /**
-     * Get attach ids
+     * Get attach ids.
      *
      * @return array
      */
@@ -192,7 +183,6 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     {
         return $this->attach_ids;
     }
-
 
     /**
      * @return string
@@ -202,9 +192,9 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
         return $this->reply_pos;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
@@ -221,26 +211,28 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 
         if ($as_html) {
             $flat = str_replace(array("\r\n", "\n"), ' ', $this->reply_text);
-            if (strlen($flat) > 80) $flat = substr($flat, 0, 80) . '...';
+            if (strlen($flat) > 80) {
+                $flat = substr($flat, 0, 80).'...';
+            }
 
             $desc = '<span class="highlight-description">'.htmlspecialchars($flat).'</span>';
 
             if (isset($_GET['macro_reply_context'])) {
                 if ($this->reply_pos == 'overwrite') {
-                    $ret = "Set reply text";
+                    $ret = 'Set reply text';
                 } elseif ($this->reply_pos == 'append') {
-                    $ret = "Append reply text";
+                    $ret = 'Append reply text';
                 } else {
-                    $ret = "Prepend reply text";
+                    $ret = 'Prepend reply text';
                 }
 
                 if ($this->is_html) {
                     $html = $this->reply_text;
                 } else {
-                    $html = '<p>' . nl2br(htmlspecialchars(trim($this->reply_text), \ENT_QUOTES)) . '</p>';
+                    $html = '<p>'.nl2br(htmlspecialchars(trim($this->reply_text), \ENT_QUOTES)).'</p>';
                 }
 
-                $ret = '<span class="with-reply" data-reply-pos="' . $this->reply_pos . '">' . $ret . '<script type="text/x-deskpro-plain" class="reply-text">' . $html . '</script></span>';
+                $ret = '<span class="with-reply" data-reply-pos="'.$this->reply_pos.'">'.$ret.'<script type="text/x-deskpro-plain" class="reply-text">'.$html.'</script></span>';
 
                 return $ret;
             }

@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Tools
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Tools;
 
 ########################################################################################################################
@@ -47,11 +44,11 @@ if (php_sapi_name() != 'cli') {
 define('DP_START_DIR', getcwd());
 
 if (!defined('DP_ROOT')) {
-    define('DP_ROOT', realpath(dirname(__FILE__) . '/../'));
+    define('DP_ROOT', realpath(dirname(__FILE__).'/../'));
 }
 
 if (!defined('DP_WEB_ROOT')) {
-    define('DP_WEB_ROOT', realpath(dirname(__FILE__) . '/../../'));
+    define('DP_WEB_ROOT', realpath(dirname(__FILE__).'/../../'));
 }
 
 if (!defined('DP_CONFIG_FILE')) {
@@ -67,19 +64,18 @@ setlocale(LC_CTYPE, 'C');
 date_default_timezone_set('UTC');
 ini_set('default_charset', 'UTF-8');
 
-require_once DP_ROOT . '/src/Application/InstallBundle/Install/server_check_functions.php';
-require_once DP_ROOT . '/sys/load_config.php';
+require_once DP_ROOT.'/src/Application/InstallBundle/Install/server_check_functions.php';
+require_once DP_ROOT.'/sys/load_config.php';
 
-require_once DP_ROOT . '/vendor/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
-require_once DP_ROOT . '/src/Orb/Util/ClassLoader.php';
-require_once DP_ROOT . '/sys/autoload.php';
+require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+require_once DP_ROOT.'/src/Orb/Util/ClassLoader.php';
+require_once DP_ROOT.'/sys/autoload.php';
 require_once DP_ROOT.'/src/Application/DeskPRO/LowUtil/RemoteRequest.php';
 dp_load_config();
 
 // Handle initing various build counters
 // when in dev mode. THe build info is usually generated during build
 if (dp_get_config('debug.dev')) {
-
     if (isset($DP_CONFIG['db']['host']) && preg_match('#^(.*?):([0-9]+)$#', $DP_CONFIG['db']['host'], $m)) {
         $host = $m[1];
         $port = ";port={$m[2]};";
@@ -87,7 +83,7 @@ if (dp_get_config('debug.dev')) {
         $host = $DP_CONFIG['db']['host'];
         $port = '';
     }
-    $pdo = new \PDO("mysql:host={$host};dbname={$DP_CONFIG['db']['dbname']}$port", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+    $pdo     = new \PDO("mysql:host={$host};dbname={$DP_CONFIG['db']['dbname']}$port", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
     $version = $pdo->query("SELECT value FROM settings WHERE name = 'core.deskpro_build'")->fetch(\PDO::FETCH_NUM);
 
     if ($version) {
@@ -107,11 +103,11 @@ if (dp_get_config('debug.dev')) {
 }
 
 if (!@ini_get('error_log')) {
-    @ini_set('error_log', dp_get_log_dir() . '/server-phperr-cli.log');
+    @ini_set('error_log', dp_get_log_dir().'/server-phperr-cli.log');
 }
 
-if (!defined('DP_MA_SERVER')) {
-    define('DP_MA_SERVER', 'http://www.deskpro.com/members');
+if (!defined('DP_MA_SERVER_SECURE')) {
+    define('DP_MA_SERVER_SECURE', 'https://www.deskpro.com/members');
 }
 
 // Current build time
@@ -133,32 +129,32 @@ define('DP_UPGRADE_STARTTIME', microtime(true));
 
 $errors = array();
 
-if (!deskpro_install_check_version()) {
-    $errors[] = "The version of PHP you have is too old. DeskPRO requires PHP v5.3.2 or newer. You need to upgrade your version.";
+if (!deskpro_install_check_version() && !defined('DP_IGNORE_VERSION_CHECK')) {
+    $errors[] = 'The version of PHP you have is too old. DeskPRO requires PHP v5.3.9 or newer. You need to upgrade your version.';
 }
 
 if (!deskpro_install_check_pcre()) {
-    $errors[] = "PHP is configured with a `pcre.backtrack_limit` value that is too low. Edit your php.ini configuration and change it to at least 100000.";
+    $errors[] = 'PHP is configured with a `pcre.backtrack_limit` value that is too low. Edit your php.ini configuration and change it to at least 100000.';
 }
 
 if (!deskpro_install_check_safemode()) {
-    $errors[] = "PHP currently has <code>safe_mode</code> enabled. DeskPRO requires safe_mode to be set to \"Off\". You need to edit your PHP configuration to make this change.";
+    $errors[] = 'PHP currently has <code>safe_mode</code> enabled. DeskPRO requires safe_mode to be set to "Off". You need to edit your PHP configuration to make this change.';
 }
 
 if (deskpro_install_check_pdo()) {
     if (deskpro_install_check_pdo_mysql()) {
         // ok
     } else {
-        $errors[] = "PDO (http://php.net/manual/en/book.pdo.php) is installed, but the MySQL driver is not. You need to install pdo_mysql into your php.ini file.";
+        $errors[] = 'PDO (http://php.net/manual/en/book.pdo.php) is installed, but the MySQL driver is not. You need to install pdo_mysql into your php.ini file.';
     }
 } else {
-    $errors[] = "PDO (http://php.net/manual/en/book.pdo.php) is not installed. You need to install PDO into your php.ini file.";
+    $errors[] = 'PDO (http://php.net/manual/en/book.pdo.php) is not installed. You need to install PDO into your php.ini file.';
 }
 
 if ($errors) {
     echo "There are problems with your server or PHP configuration that prevents this tool from running:\n";
     foreach ($errors as $e) {
-        echo "- " . $e;
+        echo '- '.$e;
         echo "\n";
     }
     echo "\n";
@@ -185,12 +181,14 @@ class Upgrade
 
     /**
      * @var array
+     *
      * @see getLatestVersion()
      */
     protected $latest_version = null;
 
     /**
      * @var resource
+     *
      * @see log
      */
     protected $log_fh;
@@ -207,7 +205,8 @@ class Upgrade
 
     /**
      * 'files' to revert files
-     * 'db' to revert files and db
+     * 'db' to revert files and db.
+     *
      * @var string
      */
     protected $revert_checkpoint;
@@ -250,7 +249,7 @@ class Upgrade
         } elseif (in_array('--dev-test-log', $argv)) {
             $this->sendLog();
         } elseif (in_array('--dev-test-log-e', $argv)) {
-            $this->sendLog(new \Exception("Testing error"));
+            $this->sendLog(new \Exception('Testing error'));
         } else {
             $this->runAction_interactive();
         }
@@ -260,25 +259,26 @@ class Upgrade
     {
         try {
             if (!is_dir($this->getBackupDir()) || !is_writable($this->getBackupDir())) {
-                $this->outAndLog("Backup directory does not exist or is not writable: " . $this->getBackupDir());
+                $this->outAndLog('Backup directory does not exist or is not writable: '.$this->getBackupDir());
                 exit(1);
             }
 
             if (!is_dir($this->getLogDir()) || !is_writable($this->getLogDir())) {
-                $this->outAndLog("Log directory does not exist or is not writable: " . $this->getLogDir());
+                $this->outAndLog('Log directory does not exist or is not writable: '.$this->getLogDir());
                 exit(1);
             }
 
             if (!is_dir($this->getTmpDir()) || !is_writable($this->getTmpDir())) {
-                $this->outAndLog("Tmp directory does not exist or is not writable: " . $this->getTmpDir());
+                $this->outAndLog('Tmp directory does not exist or is not writable: '.$this->getTmpDir());
                 exit(1);
             }
-        } catch (\Exception $e) {} // to catch error about log
+        } catch (\Exception $e) {
+        } // to catch error about log
 
         try {
             $this->zip = new ZipStrategy($this);
         } catch (\Exception $e) {
-            $this->outAndLog("To use this tool, the zlib or Zip PHP extensions must be enabled.");
+            $this->outAndLog('To use this tool, the zlib or Zip PHP extensions must be enabled.');
             exit(1);
         }
 
@@ -286,19 +286,19 @@ class Upgrade
             // Empty the db first
             $pdo = $this->newDb();
         } catch (\Exception $e) {
-            $this->outAndLog("There was a problem connecting to the database: " . $e->getMessage());
+            $this->outAndLog('There was a problem connecting to the database: '.$e->getMessage());
             exit(1);
         }
 
         try {
-            $tables = $pdo->query("SHOW TABLES")->fetchColumn(0);
+            $tables = $pdo->query('SHOW TABLES')->fetchColumn(0);
             if (!$tables) {
-                $this->outAndLog("Your database appears to be empty. Did you mean to run the import.php command?");
+                $this->outAndLog('Your database appears to be empty. Did you mean to run the import.php command?');
                 exit(1);
             }
-        } catch (\Exception $e) { }
+        } catch (\Exception $e) {
+        }
     }
-
 
     /**
      * @param $string
@@ -311,7 +311,6 @@ class Upgrade
         }
     }
 
-
     /**
      * @param $string
      */
@@ -321,11 +320,11 @@ class Upgrade
         $this->log($string);
     }
 
-
     /**
-     * Log a message
+     * Log a message.
      *
      * @param $string
+     *
      * @throws \Exception
      */
     public function log($string)
@@ -334,20 +333,20 @@ class Upgrade
 
         if (!$has_opened) {
             // Reset log
-            @file_put_contents($this->getLogDir() . '/upgrade-util.log', '');
+            @file_put_contents($this->getLogDir().'/upgrade-util.log', '');
         }
         $has_opened = true;
 
         if (!$this->log_fh) {
-            $this->log_fh = fopen($this->getLogDir() . '/upgrade-util.log', 'a');
+            $this->log_fh = fopen($this->getLogDir().'/upgrade-util.log', 'a');
             if (!$this->log_fh) {
-                throw new \Exception("Could not open log file: " . $this->getLogDir() . '/upgrade-util.log');
+                throw new \Exception('Could not open log file: '.$this->getLogDir().'/upgrade-util.log');
             }
-            @chmod($this->getLogDir() . '/upgrade-util.log', 0777);
+            @chmod($this->getLogDir().'/upgrade-util.log', 0777);
 
             $this->registerCleanupParam('close_log_fh', $this->log_fh);
 
-            $this->log("(Command: " . implode(' ', $this->argv) . ")");
+            $this->log('(Command: '.implode(' ', $this->argv).')');
         }
 
         $string = trim($string);
@@ -355,7 +354,7 @@ class Upgrade
     }
 
     /**
-     * Log an exception
+     * Log an exception.
      *
      * @param \Exception $e
      */
@@ -372,16 +371,15 @@ class Upgrade
         }
     }
 
-
     ####################################################################################################################
     # help
     ####################################################################################################################
 
     public function runAction_help()
     {
-        $this->out("Usage: php upgrade-util.php <action>");
+        $this->out('Usage: php upgrade-util.php <action>');
         $this->out('');
-        $this->out("Possible actions:");
+        $this->out('Possible actions:');
 
         $this->out("\t--auto [--quiet]");
         $this->out("\t\tAutomatically checks for a newer version, and if one exists, will attempt to ");
@@ -439,7 +437,6 @@ class Upgrade
         $interactive = new UpgradeInteractive($this);
     }
 
-
     ####################################################################################################################
     # auto
     ####################################################################################################################
@@ -449,22 +446,21 @@ class Upgrade
         $time_start = microtime(true);
 
         $is_quiet        = in_array('--quiet', $this->argv);
-        $is_error_halt = true;
+        $is_error_halt   = true;
         $is_status_write = in_array('--write-status-file', $this->argv);
 
         $skip_file_backup = in_array('--skip-backup-file', $this->argv);
         $skip_db_backup   = in_array('--skip-backup-db', $this->argv);
 
         if ($is_status_write) {
-
-            if (file_exists(DP_WEB_ROOT . '/auto-update-status.php') && !unlink(DP_WEB_ROOT . '/auto-update-status.php')) {
-                $this->outAndLog("Could not delete previous auto-update-status.log file");
+            if (file_exists(DP_WEB_ROOT.'/auto-update-status.php') && !unlink(DP_WEB_ROOT.'/auto-update-status.php')) {
+                $this->outAndLog('Could not delete previous auto-update-status.log file');
                 exit(1);
             }
 
-            $that = $this;
+            $that         = $this;
             $write_status = function ($code, $message = '') use ($that) {
-                $fp = fopen(DP_WEB_ROOT . '/auto-update-status.php', 'a');
+                $fp   = fopen(DP_WEB_ROOT.'/auto-update-status.php', 'a');
                 $time = microtime(true);
 
                 if (is_array($message)) {
@@ -474,38 +470,37 @@ class Upgrade
                 // Wont ever happen, but best be sure
                 $message = str_replace('<?', '< ?', $message);
 
-                $status = "STATUS(" . $code . ")@$time#$message\n";
+                $status = 'STATUS('.$code.")@$time#$message\n";
 
                 fwrite($fp, $status);
                 fclose($fp);
 
                 $that->log($status);
 
-                @file_put_contents(DP_WEB_ROOT . '/auto-update-is-running.trigger', 'This file indicates that the system is performing an upgrade. Helpdesk requests will be disabled until the upgrade finishes.');
-                @file_put_contents(dp_get_tmp_dir() . '/auto-upgrade-started', time());
+                @file_put_contents(DP_WEB_ROOT.'/auto-update-is-running.trigger', 'This file indicates that the system is performing an upgrade. Helpdesk requests will be disabled until the upgrade finishes.');
+                @file_put_contents(dp_get_tmp_dir().'/auto-upgrade-started', time());
             };
 
-            if (!($fp = fopen(DP_WEB_ROOT . '/auto-update-status.php', 'w'))) {
-                $this->outAndLog("Could not write update status file");
+            if (!($fp = fopen(DP_WEB_ROOT.'/auto-update-status.php', 'w'))) {
+                $this->outAndLog('Could not write update status file');
                 exit(1);
             }
 
             fclose($fp);
-
         } else {
             $write_status = function ($code, $message = '') {
                 // null
             };
         }
 
-        $write_status("start");
-        @chmod(DP_WEB_ROOT . '/auto-update-status.php', 0777);
+        $write_status('start');
+        @chmod(DP_WEB_ROOT.'/auto-update-status.php', 0777);
 
         #----------------------------------------
         # Requirement Checks
         #----------------------------------------
 
-        $write_status("basic_checks_start");
+        $write_status('basic_checks_start');
 
         $checks_fail = false;
 
@@ -513,7 +508,7 @@ class Upgrade
         # Binary Paths
         #---
 
-        $php_path        = dp_get_php_path(true);
+        $php_path = dp_get_php_path(true);
         $this->log("php: $php_path\n");
 
         if (!$skip_db_backup) {
@@ -524,22 +519,34 @@ class Upgrade
         }
 
         if ($is_status_write) {
-            if ($php_path) $write_status('php_path_okay'); else $write_status('error_php_path');
+            if ($php_path) {
+                $write_status('php_path_okay');
+            } else {
+                $write_status('error_php_path');
+            }
 
             if (!$skip_db_backup) {
-                if ($mysql_dump_path) $write_status('mysqldump_path_okay'); else $write_status('error_mysqldump_path');
+                if ($mysql_dump_path) {
+                    $write_status('mysqldump_path_okay');
+                } else {
+                    $write_status('error_mysqldump_path');
+                }
             }
         }
 
         if (!$php_path || (!$skip_db_backup && !$mysql_dump_path)) {
             $unknown_binary_paths = array();
-            if (!$php_path)        $this->outAndLog("Cannot find path to `php` CLI");
-
-            if (!$skip_db_backup) {
-                if (!$mysql_dump_path) $this->outAndLog("Cannot find path to `mysqldump` binary");
+            if (!$php_path) {
+                $this->outAndLog('Cannot find path to `php` CLI');
             }
 
-            $write_status("error_unknown_binary", $unknown_binary_paths);
+            if (!$skip_db_backup) {
+                if (!$mysql_dump_path) {
+                    $this->outAndLog('Cannot find path to `mysqldump` binary');
+                }
+            }
+
+            $write_status('error_unknown_binary', $unknown_binary_paths);
             $checks_fail = true;
         }
 
@@ -551,7 +558,7 @@ class Upgrade
             if (!$skip_file_backup || !$skip_db_backup) {
                 if (!is_dir($this->getBackupDir()) || !is_writable($this->getBackupDir())) {
                     $write_status('error_backup_dir', $this->getBackupDir());
-                    $this->outAndLog("Backup directory does not exist or is not writable: " . $this->getBackupDir());
+                    $this->outAndLog('Backup directory does not exist or is not writable: '.$this->getBackupDir());
                     $checks_fail = true;
                 } else {
                     $write_status('backup_dir_okay');
@@ -560,7 +567,7 @@ class Upgrade
 
             if (!is_dir($this->getLogDir()) || !is_writable($this->getLogDir())) {
                 $write_status('error_log_dir', $this->getLogDir());
-                $this->outAndLog("Log directory does not exist or is not writable: " . $this->getLogDir());
+                $this->outAndLog('Log directory does not exist or is not writable: '.$this->getLogDir());
                 $checks_fail = true;
             } else {
                 $write_status('log_dir_okay');
@@ -568,19 +575,20 @@ class Upgrade
 
             if (!is_dir($this->getTmpDir()) || !is_writable($this->getTmpDir())) {
                 $write_status('error_tmp_dir', $this->getTmpDir());
-                $this->outAndLog("Tmp directory does not exist or is not writable: " . $this->getTmpDir());
+                $this->outAndLog('Tmp directory does not exist or is not writable: '.$this->getTmpDir());
                 $checks_fail = true;
             } else {
                 $write_status('tmp_dir_okay');
             }
-        } catch (\Exception $e) {} // to catch error about log
+        } catch (\Exception $e) {
+        } // to catch error about log
 
         try {
             $this->zip = new ZipStrategy($this);
             $write_status('zip_ext_okay');
         } catch (\Exception $e) {
             $write_status('error_zip_ext', \Orb\Util\Env::getPhpIniPath());
-            $this->outAndLog("To use this tool, the zlib or Zip PHP extensions must be enabled.");
+            $this->outAndLog('To use this tool, the zlib or Zip PHP extensions must be enabled.');
             $checks_fail = true;
         }
 
@@ -589,7 +597,7 @@ class Upgrade
             $write_status('remoterequester_okay', $req_strategy);
         } else {
             $write_status('error_remoterequester', \Orb\Util\Env::getPhpIniPath());
-            $this->outAndLog("CURL not enabled and allow_url_fopen disabled, there is no way to download files");
+            $this->outAndLog('CURL not enabled and allow_url_fopen disabled, there is no way to download files');
             $checks_fail = true;
         }
 
@@ -600,7 +608,7 @@ class Upgrade
             'exec',
             'passthru',
             'chdir',
-            'proc_open'
+            'proc_open',
         ) as $f) {
             if (\Orb\Util\Env::isFunctionDisabled($f)) {
                 $disabled_f[] = $f;
@@ -609,7 +617,7 @@ class Upgrade
 
         if ($disabled_f) {
             $write_status('error_disabled_functions', implode(', ', $disabled_f));
-            $this->outAndLog("These functions are disabled: " . implode($disabled_f));
+            $this->outAndLog('These functions are disabled: '.implode($disabled_f));
             $checks_fail = true;
         }
 
@@ -636,7 +644,6 @@ class Upgrade
             }
         }
         if ($write_fail) {
-
             $this->log("Failed write check on: $write_fail");
 
             $guess_user = 'unknown';
@@ -660,26 +667,26 @@ class Upgrade
             }
 
             $checks_fail = true;
-            $write_status("error_permissions", sprintf("User who is running the utility: %s, User who owns the files: %s", $guess_user, $owner_user));
-            $this->outAndLog("Found insufficient write permissions to DeskPRO files. Does this user own them or have permission to write?");
-            $this->outAndLog(sprintf("Current user: %s, File owner: %s", $guess_user, $owner_user));
+            $write_status('error_permissions', sprintf('User who is running the utility: %s, User who owns the files: %s', $guess_user, $owner_user));
+            $this->outAndLog('Found insufficient write permissions to DeskPRO files. Does this user own them or have permission to write?');
+            $this->outAndLog(sprintf('Current user: %s, File owner: %s', $guess_user, $owner_user));
         } else {
-            $write_status("permissions_okay");
+            $write_status('permissions_okay');
         }
 
         if ($checks_fail) {
-            $write_status("error_basic_checks_fail");
-            $this->outAndLog("Failed basic checks");
+            $write_status('error_basic_checks_fail');
+            $this->outAndLog('Failed basic checks');
 
-            @unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
-            @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
+            @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
+            @unlink(dp_get_tmp_dir().'/auto-upgrade-started');
 
-            $e = new \RuntimeException("Failed basic checks");
+            $e = new \RuntimeException('Failed basic checks');
             $this->sendLog($e);
             exit(10);
         }
 
-        $write_status("basic_checks_done");
+        $write_status('basic_checks_done');
 
         #----------------------------------------
         # Make sure we can comm with DeskPRO server
@@ -688,11 +695,11 @@ class Upgrade
         try {
             $this->getLatestVersion();
         } catch (ServiceCallException $e) {
-            @unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
-            @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
+            @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
+            @unlink(dp_get_tmp_dir().'/auto-upgrade-started');
 
-            $write_status("error_server_comm", $e->getMessage());
-            $this->outAndLog("Error communicating with server: " . $e->getMessage());
+            $write_status('error_server_comm', $e->getMessage());
+            $this->outAndLog('Error communicating with server: '.$e->getMessage());
             $this->sendLog($e);
             exit(13);
         }
@@ -702,13 +709,13 @@ class Upgrade
         #----------------------------------------
 
         if (!$this->isInstanceOutdated()) {
-            $write_status("done");
+            $write_status('done');
             if (!$is_quiet) {
-                $this->out("You are all up to date.");
+                $this->out('You are all up to date.');
             }
 
-            @unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
-            @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
+            @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
+            @unlink(dp_get_tmp_dir().'/auto-upgrade-started');
             exit(0);
         }
 
@@ -717,25 +724,31 @@ class Upgrade
         #----------------------------------------
 
         try {
-            $write_status("downloading_update_start");
-            if (!$is_quiet) $this->out("Downloading latest source ...");
+            $write_status('downloading_update_start');
+            if (!$is_quiet) {
+                $this->out('Downloading latest source ...');
+            }
             $new_source_zip = $this->downloadLatest();
-            if (!$is_quiet) $this->out("-> Done");
-            if (!$is_quiet) $this->out('-> Filesize: ' . filesize($new_source_zip));
-
-            $this->log('Downloaded ZIP filesize: ' . filesize($new_source_zip));
-
-            if (filesize($new_source_zip) < Upgrade::MIN_FILESIZE_CHECK) {
-                throw new \InvalidArgumentException("Downloaded zip is smaller than expected, it probably failed to fully download");
+            if (!$is_quiet) {
+                $this->out('-> Done');
+            }
+            if (!$is_quiet) {
+                $this->out('-> Filesize: '.filesize($new_source_zip));
             }
 
-            $write_status("downloading_update_done");
-        } catch (\Exception $e) {
-            @unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
-            @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
+            $this->log('Downloaded ZIP filesize: '.filesize($new_source_zip));
 
-            $write_status("error_downloading_update", $e->getMessage());
-            $this->out($e->getCode() . ' ' . $e->getMessage());
+            if (filesize($new_source_zip) < self::MIN_FILESIZE_CHECK) {
+                throw new \InvalidArgumentException('Downloaded zip is smaller than expected, it probably failed to fully download');
+            }
+
+            $write_status('downloading_update_done');
+        } catch (\Exception $e) {
+            @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
+            @unlink(dp_get_tmp_dir().'/auto-upgrade-started');
+
+            $write_status('error_downloading_update', $e->getMessage());
+            $this->out($e->getCode().' '.$e->getMessage());
             $this->logException($e);
             $this->sendLog($e);
             exit(20);
@@ -749,56 +762,64 @@ class Upgrade
         $fileutil = new FilesystemUtil();
 
         try {
-            $write_status("file_backup_start");
+            $write_status('file_backup_start');
             if (!$skip_file_backup) {
-                if (!$is_quiet) $this->out("Doing file backup ...");
+                if (!$is_quiet) {
+                    $this->out('Doing file backup ...');
+                }
                 $this->file_backup = $this->backupFiles(function ($status) use ($write_status) {
-                    $write_status('file_backup_' . $status);
+                    $write_status('file_backup_'.$status);
                 });
-                if (!$is_quiet) $this->out("-> Done");
+                if (!$is_quiet) {
+                    $this->out('-> Done');
+                }
             } else {
                 $this->log('file backup skipped');
             }
-            $write_status("file_backup_done");
+            $write_status('file_backup_done');
 
             if ($this->file_backup) {
-                $write_status("file_backup_loc", $this->file_backup . ' (' . Upgrade::getFilesizeDisplay(filesize($this->file_backup)) . ')');
+                $write_status('file_backup_loc', $this->file_backup.' ('.self::getFilesizeDisplay(filesize($this->file_backup)).')');
             }
-
         } catch (\Exception $e) {
-            $write_status("error_backup_files", $e->getMessage());
+            $write_status('error_backup_files', $e->getMessage());
             $fileutil->remove(DP_WEB_ROOT.'/auto-update-is-running.trigger');
-            $fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
-            $this->out($e->getCode() . ' ' . $e->getMessage());
+            $fileutil->remove(dp_get_tmp_dir().'/auto-upgrade-started');
+            $this->out($e->getCode().' '.$e->getMessage());
             $this->logException($e);
             $this->sendLog($e);
             exit(14);
         }
 
-        if (!$is_quiet) $this->out("Turning helpdesk off");
+        if (!$is_quiet) {
+            $this->out('Turning helpdesk off');
+        }
         $fileutil->touch(DP_WEB_ROOT.'/auto-update-is-running.trigger');
         $write_status('helpdesk_offline');
 
         try {
-            $write_status("database_backup_start");
+            $write_status('database_backup_start');
             if (!$skip_db_backup) {
-                if (!$is_quiet) $this->out("Doing database backup ... ");
+                if (!$is_quiet) {
+                    $this->out('Doing database backup ... ');
+                }
                 $this->db_backup = $this->backupDatabase(true);
-                if (!$is_quiet) $this->out("-> Done");
+                if (!$is_quiet) {
+                    $this->out('-> Done');
+                }
             } else {
                 $this->log('database backup skipped');
             }
-            $write_status("database_backup_end");
+            $write_status('database_backup_end');
 
             if ($this->db_backup) {
-                $write_status("database_backup_loc", $this->db_backup . ' (' . Upgrade::getFilesizeDisplay(filesize($this->db_backup)) . ')');
+                $write_status('database_backup_loc', $this->db_backup.' ('.self::getFilesizeDisplay(filesize($this->db_backup)).')');
             }
-
         } catch (\Exception $e) {
-            $write_status("error_backup_db", $e->getMessage());
+            $write_status('error_backup_db', $e->getMessage());
             $fileutil->remove(DP_WEB_ROOT.'/auto-update-is-running.trigger');
-            $fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
-            $this->out($e->getCode() . ' ' . $e->getMessage());
+            $fileutil->remove(dp_get_tmp_dir().'/auto-upgrade-started');
+            $this->out($e->getCode().' '.$e->getMessage());
             $this->logException($e);
             $this->sendLog($e);
             exit(15);
@@ -807,18 +828,22 @@ class Upgrade
         try {
             $this->revert_checkpoint = 'files';
 
-            $write_status("installing_files_start");
-            if (!$is_quiet) $this->out("Installing latest source files ...");
+            $write_status('installing_files_start');
+            if (!$is_quiet) {
+                $this->out('Installing latest source files ...');
+            }
             $failures = array();
             $this->installFilesFromZip($new_source_zip, false, $failures);
-            if (!$is_quiet) $this->out("-> Done");
+            if (!$is_quiet) {
+                $this->out('-> Done');
+            }
 
             if ($failures) {
-                $write_status("error_installing_files", sprintf("%d files failed to install due to file permissions", count($failures)));
-                $this->out(sprintf("%d files failed to install due to file permissions", count($failures)));
-                $this->outAndLog("Files: " . implode(', ', $failures));
+                $write_status('error_installing_files', sprintf('%d files failed to install due to file permissions', count($failures)));
+                $this->out(sprintf('%d files failed to install due to file permissions', count($failures)));
+                $this->outAndLog('Files: '.implode(', ', $failures));
 
-                $e = new \Exception(sprintf("%d files failed to install due to file permissions", count($failures)));
+                $e               = new \Exception(sprintf('%d files failed to install due to file permissions', count($failures)));
                 $e->_dp_failures = $failures;
 
                 $this->logException($e);
@@ -826,13 +851,13 @@ class Upgrade
                 exit(25);
             }
 
-            $write_status("installing_files_done");
+            $write_status('installing_files_done');
 
             // Remove downloaded zip
             @unlink($new_source_zip);
         } catch (\Exception $e) {
-            $write_status("error_installing_files", $e->getMessage());
-            $this->out($e->getCode() . ' ' . $e->getMessage());
+            $write_status('error_installing_files', $e->getMessage());
+            $this->out($e->getCode().' '.$e->getMessage());
             $this->logException($e);
             $this->sendLog($e);
             exit(25);
@@ -840,16 +865,18 @@ class Upgrade
 
         $this->revert_checkpoint = 'db';
 
-        if (!$is_quiet) $this->out("Performing database upgrades ...");
+        if (!$is_quiet) {
+            $this->out('Performing database upgrades ...');
+        }
 
-        $write_status("updating_db_start");
-        chdir(DP_ROOT . '/../');
+        $write_status('updating_db_start');
+        chdir(DP_ROOT.'/../');
         $cmd = "$php_path cmd.php dp:upgrade 2>&1";
         exec($cmd, $out, $ret);
-        $write_status("updating_db_end");
+        $write_status('updating_db_end');
 
         if ($ret) {
-            $write_status("error_updating_db");
+            $write_status('error_updating_db');
             $this->outAndLog("Upgrade returned erorr status $ret");
             if ($out) {
                 foreach ($out as $l) {
@@ -858,27 +885,31 @@ class Upgrade
             }
 
             if (!$is_error_halt) {
-                $write_status("reverting_files");
+                $write_status('reverting_files');
                 $fileutil->touch(DP_WEB_ROOT.'/auto-update-is-running.trigger');
             }
 
-            $e = new \RuntimeException("Error during upgrade");
+            $e = new \RuntimeException('Error during upgrade');
             $this->sendLog($e);
 
             exit(30);
         }
 
-        if (!$is_quiet) $this->out("-> Done");
+        if (!$is_quiet) {
+            $this->out('-> Done');
+        }
         $fileutil->remove(DP_WEB_ROOT.'/auto-update-is-running.trigger');
-        $fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
+        $fileutil->remove(dp_get_tmp_dir().'/auto-upgrade-started');
 
-        if (!$is_quiet) $this->out("Helpdesk turned on");
+        if (!$is_quiet) {
+            $this->out('Helpdesk turned on');
+        }
         $write_status('helpdesk_online');
 
-        $write_status("done");
+        $write_status('done');
 
         $this->revert_checkpoint = null;
-        $str = sprintf("Upgrade done in %.4f seconds", microtime(true) - $time_start);
+        $str                     = sprintf('Upgrade done in %.4f seconds', microtime(true) - $time_start);
 
         if ($is_quiet) {
             $this->log($str);
@@ -899,12 +930,12 @@ class Upgrade
             $this->installFilesFromZip($this->file_backup);
         }
 
-        if ($this->revert_checkpoint == 'db'){
+        if ($this->revert_checkpoint == 'db') {
             $this->restoreDbFromZip($this->db_backup);
         }
 
         unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
-        @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
+        @unlink(dp_get_tmp_dir().'/auto-upgrade-started');
 
         $this->revert_checkpoint = null;
     }
@@ -917,10 +948,10 @@ class Upgrade
     {
         $php_path = $this->getPhpBinaryPath();
         if (!$php_path) {
-            $this->outAndLog("Cannot find path to the `php` CLI");
+            $this->outAndLog('Cannot find path to the `php` CLI');
         }
 
-        chdir(DP_ROOT . '/../');
+        chdir(DP_ROOT.'/../');
         $cmd = dp_get_php_command('cmd.php', 'dp:upgrade');
         echo "> $cmd\n";
         passthru($cmd, $ret);
@@ -934,12 +965,12 @@ class Upgrade
 
     public function runAction_installLatestFiles()
     {
-        $zip_path = null;
+        $zip_path      = null;
         $zip_specified = false;
-        if (($key = array_search('--path', $this->argv)) !== false && isset($this->argv[$key+1])) {
-            $zip_path = @realpath($this->argv[$key+1]);
+        if (($key = array_search('--path', $this->argv)) !== false && isset($this->argv[$key + 1])) {
+            $zip_path = @realpath($this->argv[$key + 1]);
             if (!file_exists($zip_path)) {
-                $this->out("Invalid --path");
+                $this->out('Invalid --path');
                 exit(1);
             }
 
@@ -947,18 +978,18 @@ class Upgrade
         }
 
         if (!$zip_path) {
-            $this->out("Downloading latest source ... ");
+            $this->out('Downloading latest source ... ');
             $zip_path = $this->downloadLatest();
-            $this->out("-> Done");
+            $this->out('-> Done');
 
             $this->registerCleanupParam('unlink_zip_path', $zip_path);
         }
 
         $dry_run = in_array('--dry-run', $this->argv);
 
-        $this->out("Installing files ... ");
+        $this->out('Installing files ... ');
         $this->installFilesFromZip($zip_path, $dry_run);
-        $this->out("-> Done");
+        $this->out('-> Done');
 
         if (!$zip_specified) {
             unlink($zip_path);
@@ -992,7 +1023,7 @@ class Upgrade
         # Extract the zip into the dir
         #------------------------------
 
-        $e = false;
+        $e       = false;
         $tmp_dir = $this->zip->decompressZip($zip_path, null, $e);
 
         if (!$tmp_dir) {
@@ -1008,10 +1039,10 @@ class Upgrade
         $fileutil = new FilesystemUtil();
         if ($dry_run) {
             $fileutil->enableDryRun();
-            $this->log("installFilesFromZip: (dry run)");
+            $this->log('installFilesFromZip: (dry run)');
         }
 
-        $this->log("installFilesFromZip: Copying to " . DP_WEB_ROOT);
+        $this->log('installFilesFromZip: Copying to '.DP_WEB_ROOT);
 
         // Delete old cache dir
         $fileutil->remove(DP_ROOT.'/sys/cache/dev');
@@ -1021,7 +1052,7 @@ class Upgrade
 
         $exclude = null;
         if (file_exists(DP_ROOT.'/config.upgrade.php')) {
-            $up_conf = require(DP_ROOT.'/config.upgrade.php');
+            $up_conf = require DP_ROOT.'/config.upgrade.php';
             if (isset($up_conf['file_upgrade_exclude'])) {
                 $exclude = $up_conf['file_upgrade_exclude'];
             }
@@ -1033,7 +1064,7 @@ class Upgrade
             $fileutil->mirror($tmp_dir, DP_WEB_ROOT, null, array(
                 'override'        => true,
                 'copy_on_windows' => true,
-                'exclude'         => $exclude
+                'exclude'         => $exclude,
             ), $failures);
         } else {
             $fileutil->mirror($tmp_dir, DP_WEB_ROOT, null, array(
@@ -1042,18 +1073,28 @@ class Upgrade
             ), $failures);
         }
         if ($failures) {
-            $this->outAndLog("Failed to install these files:\n" . implode("\n", $failures));
+            $this->outAndLog("Failed to install these files:\n".implode("\n", $failures));
         }
 
         $failures = array();
         $fileutil->removeUnknownFiles(
-            $tmp_dir    . str_replace('/', DIRECTORY_SEPARATOR, '/app/src/Application/DeskPRO/Entity'),
-            DP_WEB_ROOT . str_replace('/', DIRECTORY_SEPARATOR, '/app/src/Application/DeskPRO/Entity'),
+            $tmp_dir.str_replace('/', DIRECTORY_SEPARATOR, '/app/src/Application/DeskPRO/Entity'),
+            DP_WEB_ROOT.str_replace('/', DIRECTORY_SEPARATOR, '/app/src/Application/DeskPRO/Entity'),
             array(),
             $failures
         );
         if ($failures) {
-            $this->outAndLog("Failed to delete these old files:\n" . implode("\n", $failures));
+            $this->outAndLog("Failed to delete these old files:\n".implode("\n", $failures));
+        }
+
+        $fileutil->removeUnknownFiles(
+            $tmp_dir.str_replace('/', DIRECTORY_SEPARATOR, '/web/bower_components/'),
+            DP_WEB_ROOT.str_replace('/', DIRECTORY_SEPARATOR, '/web/bower_components/'),
+            array(),
+            $failures
+        );
+        if ($failures) {
+            $this->outAndLog("Failed to delete these old files:\n".implode("\n", $failures));
         }
 
         $this->registerCleanupParam('unlink_scratch_dir', null);
@@ -1092,11 +1133,11 @@ class Upgrade
 
         $mysql_dump_path = $this->getMysqldumpBinaryPath();
         if (!$mysql_dump_path) {
-            throw new MysqlBackupException("Could not find path to `mysqldump` command", MysqlBackupException::NO_MYSQLDUMP);
+            throw new MysqlBackupException('Could not find path to `mysqldump` command', MysqlBackupException::NO_MYSQLDUMP);
         }
 
-        $f = date('Y-m-d-His') . '-database.sql';
-        $f_full = $this->getBackupDir() . DIRECTORY_SEPARATOR . $f;
+        $f      = date('Y-m-d-His').'-database.sql';
+        $f_full = $this->getBackupDir().DIRECTORY_SEPARATOR.$f;
 
         if (file_exists($f_full)) {
             if ($overwrite) {
@@ -1107,10 +1148,10 @@ class Upgrade
             }
         }
 
-        $pass = '';
+        $pass     = '';
         $log_pass = '';
         if ($DP_CONFIG['db']['password']) {
-            $pass = "--password=" . escapeshellarg($DP_CONFIG['db']['password']);
+            $pass     = '--password='.escapeshellarg($DP_CONFIG['db']['password']);
             $log_pass = '--password=...';
         }
 
@@ -1123,7 +1164,7 @@ class Upgrade
 
         if ($port) {
             $cmd = sprintf(
-                "%s --opt -Q -h%s --port=%s -u%s %s %s > %s",
+                '%s --opt -Q -h%s --port=%s -u%s %s %s > %s',
                 $mysql_dump_path,
                 escapeshellarg($host),
                 escapeshellarg($port),
@@ -1134,7 +1175,7 @@ class Upgrade
             );
 
             $log_cmd = sprintf(
-                "%s --opt -Q -h%s --port=%s -u%s %s %s > %s",
+                '%s --opt -Q -h%s --port=%s -u%s %s %s > %s',
                 $mysql_dump_path,
                 escapeshellarg($host),
                 escapeshellarg($port),
@@ -1145,7 +1186,7 @@ class Upgrade
             );
         } else {
             $cmd = sprintf(
-                "%s --opt -Q -h%s -u%s %s %s > %s",
+                '%s --opt -Q -h%s -u%s %s %s > %s',
                 $mysql_dump_path,
                 escapeshellarg($host),
                 escapeshellarg($DP_CONFIG['db']['user']),
@@ -1155,7 +1196,7 @@ class Upgrade
             );
 
             $log_cmd = sprintf(
-                "%s --opt -Q -h%s -u%s %s %s > %s",
+                '%s --opt -Q -h%s -u%s %s %s > %s',
                 $mysql_dump_path,
                 escapeshellarg($host),
                 escapeshellarg($DP_CONFIG['db']['user']),
@@ -1175,7 +1216,7 @@ class Upgrade
             $this->out("Backup error: Command exited with error status: $ret");
 
             foreach ($out as $l) {
-                $this->out("-> " . $l);
+                $this->out('-> '.$l);
             }
 
             throw new MysqlBackupException("Command exited with error status: $ret", MysqlBackupException::DUMP_ERROR);
@@ -1187,20 +1228,20 @@ class Upgrade
         $code = fread($fh, 256000);
 
         if (strpos($code, 'CREATE TABLE `worker_jobs`') === false) {
-            $this->log("Database dump seems invalid.");
-            throw new MysqlBackupException("Database dump seems invalid", MysqlBackupException::DUMP_ERROR);
+            $this->log('Database dump seems invalid.');
+            throw new MysqlBackupException('Database dump seems invalid', MysqlBackupException::DUMP_ERROR);
         }
         fclose($fh);
         unset($code);
 
-        $this->log(sprintf("backupDatabase: time(%.4f)   dump_size(%d)", microtime(true) - $time_start, filesize($f_full)));
+        $this->log(sprintf('backupDatabase: time(%.4f)   dump_size(%d)', microtime(true) - $time_start, filesize($f_full)));
         $f_full = $this->compressFile($f_full);
 
         if (!$f_full) {
             return false;
         }
 
-        $backup_path = $this->getBackupDir() . DIRECTORY_SEPARATOR . str_replace('.sql', '', $f) . '.zip';
+        $backup_path = $this->getBackupDir().DIRECTORY_SEPARATOR.str_replace('.sql', '', $f).'.zip';
         rename($f_full, $backup_path);
 
         return $backup_path;
@@ -1239,19 +1280,19 @@ class Upgrade
         if ($touch_trigger) {
             // We need to trigger this on the web too, we do that
             // by touching this trigger file that the web kernel uses
-            @touch(dp_get_tmp_dir() . '/apc-clear.trigger');
-            @chmod(dp_get_tmp_dir() . '/apc-clear.trigger', 0777);
+            @touch(dp_get_tmp_dir().'/apc-clear.trigger');
+            @chmod(dp_get_tmp_dir().'/apc-clear.trigger', 0777);
         }
 
         foreach (array('error.log', 'cli-phperr.log', 'server-phperr-cli.log', 'server-phperr-web.log') as $f) {
-            $path = dp_get_log_dir() . DIRECTORY_SEPARATOR . $f;
+            $path = dp_get_log_dir().DIRECTORY_SEPARATOR.$f;
             if (file_exists($path)) {
                 @copy($path, "$path.old");
                 @file_put_contents($path, '');
             }
         }
 
-        @unlink(dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'dql.cache');
+        @unlink(dp_get_tmp_dir().DIRECTORY_SEPARATOR.'dql.cache');
     }
 
     ####################################################################################################################
@@ -1263,26 +1304,26 @@ class Upgrade
         $fileutil = new FilesystemUtil();
 
         $zip_path = false;
-        if (($key = array_search('--path', $this->argv)) !== false && isset($this->argv[$key+1])) {
-            if ($fileutil->isAbsolutePath($this->argv[$key+1])) {
-                $zip_path = @realpath($this->argv[$key+1]);
+        if (($key = array_search('--path', $this->argv)) !== false && isset($this->argv[$key + 1])) {
+            if ($fileutil->isAbsolutePath($this->argv[$key + 1])) {
+                $zip_path = @realpath($this->argv[$key + 1]);
             } else {
-                $zip_path = $this->getBackupDir() . DIRECTORY_SEPARATOR . $this->argv[$key+1];
+                $zip_path = $this->getBackupDir().DIRECTORY_SEPARATOR.$this->argv[$key + 1];
             }
         }
 
         if (!$zip_path || !file_exists($zip_path)) {
-            $this->out("Invalid --path. File does not exist: " . $zip_path);
+            $this->out('Invalid --path. File does not exist: '.$zip_path);
             exit(1);
         }
 
-        $this->out("Restoreing datbase ... ");
+        $this->out('Restoreing datbase ... ');
         $this->restoreDbFromZip($zip_path);
-        $this->out("-> Done");
+        $this->out('-> Done');
     }
 
     /**
-     * Drops everything from the current database, then installs dump
+     * Drops everything from the current database, then installs dump.
      *
      * @param string $zip_path
      */
@@ -1294,7 +1335,7 @@ class Upgrade
 
         $mysql_path = $this->getMysqlBinaryPath();
         if (!$mysql_path) {
-            throw new MysqlBackupException("Could not find path to `mysql` command", MysqlRestoreException::NO_MYSQL);
+            throw new MysqlBackupException('Could not find path to `mysql` command', MysqlRestoreException::NO_MYSQL);
         }
 
         $time_start = microtime(true);
@@ -1303,7 +1344,7 @@ class Upgrade
         # Extract the zip into the dir
         #------------------------------
 
-        $e = false;
+        $e       = false;
         $tmp_dir = $this->zip->decompressZip($zip_path, null, $e);
 
         if (!$tmp_dir) {
@@ -1315,10 +1356,12 @@ class Upgrade
         $finder->in($tmp_dir)->files()->name('*.sql');
 
         $file = null;
-        foreach ($finder as $file) break;
+        foreach ($finder as $file) {
+            break;
+        }
 
         if ($file === null) {
-            throw new UpgradeFilesException("No sql file in the zip", MysqlRestoreException::EXTRACT_ERROR);
+            throw new UpgradeFilesException('No sql file in the zip', MysqlRestoreException::EXTRACT_ERROR);
         }
 
         /** @var $sql_filename \SplFileInfo */
@@ -1331,15 +1374,15 @@ class Upgrade
         global $DP_CONFIG;
 
         // Empty the db first
-        $pdo = $this->newDb();
-        $tables = $pdo->query("SHOW TABLES")->fetchAll(\PDO::FETCH_NUM);
+        $pdo    = $this->newDb();
+        $tables = $pdo->query('SHOW TABLES')->fetchAll(\PDO::FETCH_NUM);
 
-        $pdo->exec("SET foreign_key_checks = 0");
+        $pdo->exec('SET foreign_key_checks = 0');
         foreach ($tables as $t) {
             $t = $t[0];
             $pdo->exec("DROP TABLE `$t`");
         }
-        $pdo->exec("SET foreign_key_checks = 1");
+        $pdo->exec('SET foreign_key_checks = 1');
 
         #------------------------------
         # Restore dump
@@ -1347,7 +1390,7 @@ class Upgrade
 
         $pass = '';
         if ($DP_CONFIG['db']['password']) {
-            $pass = "--password=".escapeshellarg($DP_CONFIG['db']['password']);
+            $pass = '--password='.escapeshellarg($DP_CONFIG['db']['password']);
         }
         $cmd = sprintf(
             '%s -h%s -u%s %s %s < %s',
@@ -1361,10 +1404,10 @@ class Upgrade
 
         $ret = $this->execCommand($cmd, $tmp_dir);
         if ($ret) {
-            throw new UpgradeFilesException("Error importing database backup", MysqlRestoreException::RESTORE_ERROR);
+            throw new UpgradeFilesException('Error importing database backup', MysqlRestoreException::RESTORE_ERROR);
         }
 
-        $this->log(sprintf("backupDatabase: time(%.4f)", microtime(true) - $time_start));
+        $this->log(sprintf('backupDatabase: time(%.4f)', microtime(true) - $time_start));
     }
 
     ####################################################################################################################
@@ -1389,8 +1432,8 @@ class Upgrade
 
         $time_start = microtime(true);
 
-        $f = DIRECTORY_SEPARATOR . date('Y-m-d-His') . '-files';
-        $backup_dir = $this->getTmpDir() . $f;
+        $f          = DIRECTORY_SEPARATOR.date('Y-m-d-His').'-files';
+        $backup_dir = $this->getTmpDir().$f;
         if (is_dir($backup_dir)) {
             throw new FileBackupException("Backup directory already exists: $backup_dir", FileBackupException::FILE_EXISTS);
         }
@@ -1405,10 +1448,10 @@ class Upgrade
         $finder->in(DP_WEB_ROOT)->exclude(dp_get_data_dir())->files();
 
         $count_file = 0;
-        $count_dir = 0;
+        $count_dir  = 0;
         foreach ($finder as $file) {
-            $file_rel_dir = str_replace(DP_WEB_ROOT, '', dirname($file->getRealPath()));
-            $file_backup_dir = $backup_dir . $file_rel_dir;
+            $file_rel_dir    = str_replace(DP_WEB_ROOT, '', dirname($file->getRealPath()));
+            $file_backup_dir = $backup_dir.$file_rel_dir;
 
             // Ignore data dir
             if (strpos($file->getRealPath(), dp_get_data_dir()) === 0) {
@@ -1416,22 +1459,22 @@ class Upgrade
             }
 
             if (!is_dir($file_backup_dir)) {
-                $count_dir++;
+                ++$count_dir;
                 if (!mkdir($file_backup_dir, 0755, true)) {
                     throw new FileBackupException("Could not create backup directory: $backup_dir", FileBackupException::PERM_ERROR);
                 }
             }
 
-            if (!copy($file->getRealPath(), $file_backup_dir . DIRECTORY_SEPARATOR . $file->getFilename())) {
+            if (!copy($file->getRealPath(), $file_backup_dir.DIRECTORY_SEPARATOR.$file->getFilename())) {
                 throw new FileBackupException("Could not copy file to backup directory: {$file->getRealPath()} to {$file_backup_dir}{$file->getFilename()}", FileBackupException::PERM_ERROR);
             }
 
-            $count_file++;
+            ++$count_file;
         }
 
         $status_callback('copy_done');
 
-        $this->log(sprintf("backupFiles: time(%.4f)   file_count(%d)    dir_count(%d)", microtime(true) - $time_start, $count_file, $count_dir));
+        $this->log(sprintf('backupFiles: time(%.4f)   file_count(%d)    dir_count(%d)', microtime(true) - $time_start, $count_file, $count_dir));
 
         $status_callback('zip_start');
 
@@ -1445,7 +1488,7 @@ class Upgrade
 
         $status_callback('cleanup_start');
 
-        $backup_file = $this->getBackupDir() . DIRECTORY_SEPARATOR . $f . '.zip';
+        $backup_file = $this->getBackupDir().DIRECTORY_SEPARATOR.$f.'.zip';
         if (is_file($backup_file)) {
             unlink($backup_file);
         }
@@ -1456,7 +1499,6 @@ class Upgrade
         return $backup_file;
     }
 
-
     ####################################################################################################################
     # restore-files
     ####################################################################################################################
@@ -1466,26 +1508,25 @@ class Upgrade
         $fileutil = new FilesystemUtil();
 
         $zip_path = false;
-        if (($key = array_search('--path', $this->argv)) !== false && isset($this->argv[$key+1])) {
-            if ($fileutil->isAbsolutePath($this->argv[$key+1])) {
-                $zip_path = @realpath($this->argv[$key+1]);
+        if (($key = array_search('--path', $this->argv)) !== false && isset($this->argv[$key + 1])) {
+            if ($fileutil->isAbsolutePath($this->argv[$key + 1])) {
+                $zip_path = @realpath($this->argv[$key + 1]);
             } else {
-                $zip_path = $this->getBackupDir() . DIRECTORY_SEPARATOR . $this->argv[$key+1];
+                $zip_path = $this->getBackupDir().DIRECTORY_SEPARATOR.$this->argv[$key + 1];
             }
         }
 
         if (!$zip_path || !file_exists($zip_path)) {
-            $this->out("Invalid --path. File does not exist: " . $zip_path);
+            $this->out('Invalid --path. File does not exist: '.$zip_path);
             exit(1);
         }
 
         $dry_run = in_array('--dry-run', $this->argv);
 
-        $this->out("Restoreing files ... ");
+        $this->out('Restoreing files ... ');
         $this->installFilesFromZip($zip_path, $dry_run);
-        $this->out("-> Done");
+        $this->out('-> Done');
     }
-
 
     ####################################################################################################################
     # download-latest
@@ -1494,10 +1535,10 @@ class Upgrade
     public function runAction_downloadLatest()
     {
         $save_path = null;
-        if (($key = array_search('--path', $this->argv)) !== false || isset($this->argv[$key+1])) {
-            $save_path = @realpath($this->argv[$key+1]);
+        if (($key = array_search('--path', $this->argv)) !== false || isset($this->argv[$key + 1])) {
+            $save_path = @realpath($this->argv[$key + 1]);
             if (!$save_path) {
-                $this->out("Invalid --path");
+                $this->out('Invalid --path');
                 exit(1);
             }
         }
@@ -1510,18 +1551,18 @@ class Upgrade
         }
     }
 
-
     /**
      * Download the latest copy of DeskPRO into $save_path. If $save_path is not defined, then it will be put
      * into the backups directory.
      *
      * @param $save_path
+     *
      * @return string The path it was saved to
      */
     public function downloadLatest($save_path = null, $_attempt = 0)
     {
         $save_path_orig = $save_path;
-        $version_info = $this->getLatestVersion();
+        $version_info   = $this->getLatestVersion();
 
         $time_start = microtime(true);
 
@@ -1530,26 +1571,26 @@ class Upgrade
         }
 
         if (is_dir($save_path)) {
-            $save_path .= DIRECTORY_SEPARATOR . basename(dirname($version_info['download'])) . '-' . basename($version_info['download']);
+            $save_path .= DIRECTORY_SEPARATOR.basename(dirname($version_info['download'])).'-'.basename($version_info['download']);
         }
 
         $save_dir = dirname($save_path);
 
         if (!is_dir($save_dir) && !@mkdir($save_dir, 0777, true)) {
-            throw new DownloadException("Save directory does not exist: " . $save_dir, DownloadException::NO_DIR);
+            throw new DownloadException('Save directory does not exist: '.$save_dir, DownloadException::NO_DIR);
         }
 
         if (!is_writable($save_dir)) {
-            throw new DownloadException("Save directory is not writable: " . $save_dir, DownloadException::PERM_ERROR);
+            throw new DownloadException('Save directory is not writable: '.$save_dir, DownloadException::PERM_ERROR);
         }
 
         // It already exists, just return it
-        if (file_exists($save_path) && filesize($save_path) >= Upgrade::MIN_FILESIZE_CHECK) {
+        if (file_exists($save_path) && filesize($save_path) >= self::MIN_FILESIZE_CHECK) {
             return $save_path;
         }
 
-        $this->log("downloadLatest: Downloading from " . $version_info['download']);
-        $this->log("downloadLatest: Saving to " . $save_path);
+        $this->log('downloadLatest: Downloading from '.$version_info['download']);
+        $this->log('downloadLatest: Saving to '.$save_path);
 
         try {
             \DeskPRO_LowUtil_RemoteRequester::create()->download($version_info['download'], $save_path);
@@ -1559,21 +1600,21 @@ class Upgrade
             }
 
             if ($_attempt < 2) {
-                return $this->downloadLatest($save_path_orig, $_attempt+1);
+                return $this->downloadLatest($save_path_orig, $_attempt + 1);
             }
 
-            throw new DownloadException("Download failed: " . $e->getMessage());
+            throw new DownloadException('Download failed: '.$e->getMessage());
         }
 
-        $this->log(sprintf("downloadLatest: time(%.4f)  file_size(%d)", microtime(true) - $time_start, filesize($save_path)));
+        $this->log(sprintf('downloadLatest: time(%.4f)  file_size(%d)', microtime(true) - $time_start, filesize($save_path)));
 
-        if (filesize($save_path) < Upgrade::MIN_FILESIZE_CHECK) {
+        if (filesize($save_path) < self::MIN_FILESIZE_CHECK) {
             if (file_exists($save_path)) {
                 unlink($save_path);
             }
 
             if ($_attempt < 2) {
-                return $this->downloadLatest($save_path_orig, $_attempt+1);
+                return $this->downloadLatest($save_path_orig, $_attempt + 1);
             }
 
             $size = filesize($save_path);
@@ -1583,7 +1624,6 @@ class Upgrade
         return $save_path;
     }
 
-
     ####################################################################################################################
     # check-version
     ####################################################################################################################
@@ -1592,22 +1632,21 @@ class Upgrade
     {
         $version_info = $this->getLatestVersion();
 
-        $this->out(sprintf("Your build:      %s (built %s)", DP_BUILD_NUM, $this->formatBuild(DP_BUILD_TIME)));
-        $this->out(sprintf("Latest build:    %s (build %s)", $version_info['build_num'], $this->formatBuild($version_info['build'])));
-        $this->out(sprintf("                 %s", $version_info['download']));
+        $this->out(sprintf('Your build:      %s (built %s)', DP_BUILD_NUM, $this->formatBuild(DP_BUILD_TIME)));
+        $this->out(sprintf('Latest build:    %s (build %s)', $version_info['build_num'], $this->formatBuild($version_info['build'])));
+        $this->out(sprintf('                 %s', $version_info['download']));
         $this->out(str_repeat('-', 70));
 
-        $this->log(sprintf("runCheckVersion: current(%s)   latest(%s)", DP_BUILD_TIME, $version_info['build']));
+        $this->log(sprintf('runCheckVersion: current(%s)   latest(%s)', DP_BUILD_TIME, $version_info['build']));
 
         if ($this->isInstanceOutdated()) {
-            $this->out("Your instance is outdated. You should upgrade.");
+            $this->out('Your instance is outdated. You should upgrade.');
         } else {
-            $this->out("Your instance is up to date.");
+            $this->out('Your instance is up to date.');
         }
 
         echo "\n";
     }
-
 
     /**
      * Is the currently installed instance outdated?
@@ -1625,7 +1664,6 @@ class Upgrade
         return false;
     }
 
-
     /**
      * @return array
      */
@@ -1639,7 +1677,6 @@ class Upgrade
 
         return $this->latest_version;
     }
-
 
     ####################################################################################################################
 
@@ -1667,12 +1704,12 @@ class Upgrade
         $stats['php_version'] = phpversion();
 
         $info = array(
-            'root'              => defined('DP_ROOT')                 ? DP_ROOT : '',
-            'os'                => isset($stats['server_os'])         ? $stats['server_os'] : '',
-            'php_version'       => isset($stats['php_version'])       ? $stats['php_version'] : '',
-            'server_ip'         => isset($_SERVER['SERVER_ADDR'])     ? $_SERVER['SERVER_ADDR'] : '',
-            'build'             => DP_BUILD_TIME,
-            'total_time'        => microtime(true) - DP_UPGRADE_STARTTIME,
+            'root'        => defined('DP_ROOT')                 ? DP_ROOT : '',
+            'os'          => isset($stats['server_os'])         ? $stats['server_os'] : '',
+            'php_version' => isset($stats['php_version'])       ? $stats['php_version'] : '',
+            'server_ip'   => isset($_SERVER['SERVER_ADDR'])     ? $_SERVER['SERVER_ADDR'] : '',
+            'build'       => DP_BUILD_TIME,
+            'total_time'  => microtime(true) - DP_UPGRADE_STARTTIME,
         );
         $info['hostname'] = @gethostname();
 
@@ -1681,31 +1718,31 @@ class Upgrade
         }
 
         if ($e) {
-            $errinfo = self::getExceptionInfo($e);
+            $errinfo            = self::getExceptionInfo($e);
             $info['error_info'] = $errinfo;
         }
 
         try {
             $pdo = $this->newDb();
 
-            $q = $pdo->query("SELECT name, value FROM settings");
+            $q        = $pdo->query('SELECT name, value FROM settings');
             $settings = $q->fetchAll(\PDO::FETCH_KEY_PAIR);
 
-            $info['url'] = isset($settings['core.deskpro_url']) ? $settings['core.deskpro_url'] : '';
+            $info['url']   = isset($settings['core.deskpro_url']) ? $settings['core.deskpro_url'] : '';
             $info['build'] = isset($settings['core.deskpro_build']) ? $settings['core.deskpro_build'] : 0;
 
             $info['license_id'] = 0;
             if (isset($settings['core.license'])) {
-                $license_code = str_replace(array("\n", "\r", " ", "\t"), "", trim($settings['core.license']));
-                $license_code = @base64_decode($license_code);
+                $license_code       = str_replace(array("\n", "\r", ' ', "\t"), '', trim($settings['core.license']));
+                $license_code       = @base64_decode($license_code);
                 $info['license_id'] = substr($license_code, 0, 14);
                 $info['license_id'] = rtrim($info['license_id'], '-');
             }
+        } catch (\Exception $e) {
+        }
 
-        } catch (\Exception $e) {}
-
-        $info['util_log'] = @file_get_contents(dp_get_log_dir() . '/upgrade-util.log');
-        $info['log'] = @file_get_contents(dp_get_log_dir() . '/upgrade.log');
+        $info['util_log']  = @file_get_contents(dp_get_log_dir().'/upgrade-util.log');
+        $info['log']       = @file_get_contents(dp_get_log_dir().'/upgrade.log');
         $info['old_build'] = defined('DP_ORIG_BUILD_TIME') ? DP_ORIG_BUILD_TIME : '0';
         $info['new_build'] = defined('DP_NEW_BUILD_TIME') ? DP_NEW_BUILD_TIME : '0';
 
@@ -1714,11 +1751,12 @@ class Upgrade
             if ($url && !empty($url['url'])) {
                 $this->callService('/data-submit/report-upgrade.json', $info, $url['url']);
             }
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
     }
 
     /**
-     * Copy of KernelErrorHandler::getExceptionInfo
+     * Copy of KernelErrorHandler::getExceptionInfo.
      */
     public static function getExceptionInfo(\Exception $exception)
     {
@@ -1727,19 +1765,19 @@ class Upgrade
         $errfile = $exception->getFile();
         $errline = $exception->getLine();
 
-        $backtrace = $exception->getTrace();
-        $trace = self::formatBacktrace($backtrace);
+        $backtrace    = $exception->getTrace();
+        $trace        = self::formatBacktrace($backtrace);
         $context_data = '';
 
         if (isset($exception->_dp_query)) {
-            $errstr .= ' -- Query: ' . substr($exception->_dp_query, 0, 2000);
+            $errstr .= ' -- Query: '.substr($exception->_dp_query, 0, 2000);
 
             if (!empty($exception->_dp_query_params)) {
                 $context_data = self::varToString($exception->_dp_query_params);
             }
         }
 
-        $type = get_class($exception);
+        $type    = get_class($exception);
         $summary = "[EXCEPTION] $type:$errno $errstr ($errfile:$errline)";
 
         $display = true;
@@ -1750,8 +1788,8 @@ class Upgrade
         $prev = $exception->getPrevious();
         if ($prev) {
             $previnfo = self::getExceptionInfo($prev);
-            $summary .= ", " . $previnfo['summary'];
-            $trace .= "\n\n(Alt Exception)\n" . $previnfo['trace'];
+            $summary .= ', '.$previnfo['summary'];
+            $trace .= "\n\n(Alt Exception)\n".$previnfo['trace'];
         }
 
         $errinfo = array(
@@ -1771,23 +1809,22 @@ class Upgrade
             'display'        => $display,
             'build'          => defined('DP_ORIG_BUILD_TIME') ? DP_ORIG_BUILD_TIME : 0,
             'process_log'    => '',
-            'context_data'   => $context_data
+            'context_data'   => $context_data,
         );
 
         return $errinfo;
     }
 
     /**
-     * Copy of KernelErrorHandler::formatBacktrace
+     * Copy of KernelErrorHandler::formatBacktrace.
      */
     public static function formatBacktrace(array $backtrace)
     {
         $trace = '';
 
-        foreach($backtrace as $k=>$v){
-
+        foreach ($backtrace as $k => $v) {
             $prefix = "#$k ";
-            $line = '';
+            $line   = '';
 
             if (!empty($v['file'])) {
                 $v['file'] = $v['file'];
@@ -1795,9 +1832,9 @@ class Upgrade
             }
 
             if (isset($v['object'])) {
-                $line .= get_class($v['object']) . "::";
+                $line .= get_class($v['object']).'::';
             } elseif (isset($v['class'])) {
-                $line .= $v['class'] . "::";
+                $line .= $v['class'].'::';
             }
 
             $line .= "{$v['function']}(";
@@ -1806,9 +1843,9 @@ class Upgrade
                 $line .= self::varToString($v['args']);
             }
 
-            $line .= ")";
+            $line .= ')';
 
-            $trace .= $prefix . ' ' . trim($line) . "\n";
+            $trace .= $prefix.' '.trim($line)."\n";
         }
 
         $trace = preg_replace('#PDO::__construct(.*?)$#m', 'PDO::__construct(...)', $trace);
@@ -1816,9 +1853,8 @@ class Upgrade
         return trim($trace);
     }
 
-
     /**
-     * Copy of KernelErrorHandler::varToString
+     * Copy of KernelErrorHandler::varToString.
      */
     public static function varToString($var, $_depth = 0)
     {
@@ -1831,18 +1867,18 @@ class Upgrade
                 if ($_depth > 8) {
                     $a[] = sprintf('%s => %s', $k, '(string)');
                 } else {
-                    $a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth+1));
+                    $a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth + 1));
                 }
             }
 
-            return sprintf("[array](%s)", implode(', ', $a));
+            return sprintf('[array](%s)', implode(', ', $a));
         }
         if (is_resource($var)) {
             return '[resource]';
         }
-        $str = (string)$var;
+        $str = (string) $var;
         if (strlen($str) > 1000) {
-            $str = substr($str, 0, 1000) . "...(clipped)";
+            $str = substr($str, 0, 1000).'...(clipped)';
         }
 
         return str_replace("\n", '', var_export($str, true));
@@ -1877,7 +1913,7 @@ class Upgrade
             $fileutil->remove($path);
         }
 
-        $this->log(sprintf("compressFile: time(%.4f)   file_size(%d)", microtime(true) - $time_start, filesize($out_filepath)));
+        $this->log(sprintf('compressFile: time(%.4f)   file_size(%d)', microtime(true) - $time_start, filesize($out_filepath)));
 
         return $out_filepath;
     }
@@ -1885,16 +1921,17 @@ class Upgrade
     /**
      * Executes a $command in $dir, puts the output in $out, and returns the status of the command.
      *
-     * @param  string $command
-     * @param  string $dir
-     * @param  array  $out
+     * @param string $command
+     * @param string $dir
+     * @param array  $out
+     *
      * @return int
      */
     public function execCommand($command, $dir = null, &$out = null)
     {
         $command_log = $command;
         $command_log = preg_replace('#password=.*? #', 'password=xxx ', $command_log);
-        $this->log(sprintf("execCommand: dir(%s)  cmd(%s)", $dir, $command_log));
+        $this->log(sprintf('execCommand: dir(%s)  cmd(%s)', $dir, $command_log));
 
         if ($dir) {
             chdir($dir);
@@ -1904,7 +1941,7 @@ class Upgrade
         $ret = 0;
         exec($command, $out, $ret);
 
-        $this->log(sprintf("execCommand: -> result: %d", $ret));
+        $this->log(sprintf('execCommand: -> result: %d', $ret));
         if (strpos($command, '--help') === false) {
             foreach ($out as $l) {
                 $l = trim($l);
@@ -1913,7 +1950,7 @@ class Upgrade
                     global $DP_CONFIG;
                     $l = str_replace($DP_CONFIG['db']['password'], '***', $l);
 
-                    $this->log(sprintf("execCommand: -> %s", $l));
+                    $this->log(sprintf('execCommand: -> %s', $l));
                 }
             }
         }
@@ -1946,9 +1983,10 @@ class Upgrade
     }
 
     /**
-     * Formats a build as a time
+     * Formats a build as a time.
      *
      * @param $build
+     *
      * @return string
      */
     public function formatBuild($build)
@@ -1957,37 +1995,39 @@ class Upgrade
     }
 
     /**
-     * Call a DeskPRO service
+     * Call a DeskPRO service.
      *
-     * @param  string $endpoint
-     * @param  array  $post_data
+     * @param string $endpoint
+     * @param array  $post_data
+     *
      * @return array
      */
     public function callService($endpoint, array $post_data = array(), $url = null)
     {
         if ($url === null) {
-            $url = DP_MA_SERVER;
+            $url = DP_MA_SERVER_SECURE;
         }
 
-        $url = rtrim($url, '/') . '/api/' . ltrim($endpoint, '/');
+        $url = rtrim($url, '/').'/api/'.ltrim($endpoint, '/');
 
         return $this->fetchServiceResult($url, $post_data);
     }
 
     /**
-     * @param  string $url
-     * @param  array  $post_data
+     * @param string $url
+     * @param array  $post_data
+     *
      * @return array
      */
     public function fetchServiceResult($url, array $post_data = array())
     {
-        $this->log('Calling: ' . $url);
+        $this->log('Calling: '.$url);
         try {
             $result = \DeskPRO_LowUtil_RemoteRequester::create()->request($url, $post_data, 'POST');
         } catch (\Exception $e) {
-            throw new ServiceCallException("Failed contacting server: " . $e->getMessage(), ServiceCallException::NO_RESPONSE);
+            throw new ServiceCallException('Failed contacting server: '.$e->getMessage(), ServiceCallException::NO_RESPONSE);
         }
-        $this->log('-> ' . $result);
+        $this->log('-> '.$result);
 
         if (!$result) {
             throw new ServiceCallException("No response from server: $url $result", ServiceCallException::INVALID_RESPONSE);
@@ -2002,7 +2042,7 @@ class Upgrade
     }
 
     /**
-     * Register a cleanup param
+     * Register a cleanup param.
      *
      * @param string $name
      * @param string $value
@@ -2023,27 +2063,29 @@ class Upgrade
 
     /**
      * @static
-     * @param  int    $bytes
+     *
+     * @param int $bytes
+     *
      * @return string
      */
     public static function getFilesizeDisplay($bytes)
     {
-        if (!$bytes OR $bytes < 1) {
+        if (!$bytes or $bytes < 1) {
             return array('number' => 0, 'symbol' => 'B');
         }
 
         $all_symbols = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
-        $exp = floor(log($bytes)/log(1024));
-        $val = $bytes/pow(1024, floor($exp));
+        $exp         = floor(log($bytes) / log(1024));
+        $val         = $bytes / pow(1024, floor($exp));
 
         $sym = '';
         if (isset($all_symbols[$exp])) {
             $sym = $all_symbols[$exp];
         }
 
-        $parts=  array(
+        $parts = array(
             'number' => $val,
-            'symbol' => $sym
+            'symbol' => $sym,
         );
 
         return sprintf('%.2f %s', $parts['number'], $parts['symbol']);
@@ -2077,8 +2119,8 @@ class Upgrade
  */
 function Upgrade_Shutdown_Function()
 {
-    @unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
-    @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
+    @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
+    @unlink(dp_get_tmp_dir().'/auto-upgrade-started');
 
     global $UPGRADE_CLEANUP;
     if (!$UPGRADE_CLEANUP) {
@@ -2093,18 +2135,21 @@ function Upgrade_Shutdown_Function()
     if (isset($UPGRADE_CLEANUP['unlink_zip_path'])) {
         try {
             $fileutil->remove($UPGRADE_CLEANUP['unlink_zip_path']);
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
     }
     if (isset($UPGRADE_CLEANUP['unlink_scratch_dir'])) {
         try {
             $fileutil->remove($UPGRADE_CLEANUP['unlink_scratch_dir']);
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
     }
 
     try {
         $fileutil->remove(DP_WEB_ROOT.'/auto-update-is-running.trigger');
-        $fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
-    } catch (\Exception $e) {}
+        $fileutil->remove(dp_get_tmp_dir().'/auto-upgrade-started');
+    } catch (\Exception $e) {
+    }
 
     $UPGRADE_CLEANUP = null;
 }
@@ -2134,7 +2179,7 @@ class FilesystemUtil extends \Symfony\Component\Filesystem\Filesystem
         }
 
         if (null === $iterator) {
-            $flags = $copyOnWindows ? \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS : \FilesystemIterator::SKIP_DOTS;
+            $flags    = $copyOnWindows ? \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS : \FilesystemIterator::SKIP_DOTS;
             $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($originDir, $flags), \RecursiveIteratorIterator::SELF_FIRST);
         }
 
@@ -2147,8 +2192,7 @@ class FilesystemUtil extends \Symfony\Component\Filesystem\Filesystem
         }
 
         foreach ($iterator as $file) {
-
-            $file_rel_path = DIRECTORY_SEPARATOR . str_replace($originDir.DIRECTORY_SEPARATOR, '', $file->getPathname());
+            $file_rel_path = DIRECTORY_SEPARATOR.str_replace($originDir.DIRECTORY_SEPARATOR, '', $file->getPathname());
             if (!empty($options['exclude']) && in_array($file_rel_path, $options['exclude'])) {
                 continue;
             }
@@ -2185,7 +2229,7 @@ class FilesystemUtil extends \Symfony\Component\Filesystem\Filesystem
 
         $origin_iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($originDir, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::SELF_FIRST);
         foreach ($origin_iterator as $file) {
-            $file_rel_path = DIRECTORY_SEPARATOR . str_replace($originDir.DIRECTORY_SEPARATOR, '', $file->getPathname());
+            $file_rel_path = DIRECTORY_SEPARATOR.str_replace($originDir.DIRECTORY_SEPARATOR, '', $file->getPathname());
             if (!empty($options['exclude']) && in_array($file_rel_path, $options['exclude'])) {
                 continue;
             }
@@ -2194,7 +2238,7 @@ class FilesystemUtil extends \Symfony\Component\Filesystem\Filesystem
 
         $target_iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($targetDir, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::SELF_FIRST);
         foreach ($target_iterator as $file) {
-            $file_rel_path = DIRECTORY_SEPARATOR . str_replace($targetDir.DIRECTORY_SEPARATOR, '', $file->getPathname());
+            $file_rel_path = DIRECTORY_SEPARATOR.str_replace($targetDir.DIRECTORY_SEPARATOR, '', $file->getPathname());
             if (!empty($options['exclude']) && in_array($file_rel_path, $options['exclude'])) {
                 continue;
             }
@@ -2284,12 +2328,11 @@ class FilesystemUtil extends \Symfony\Component\Filesystem\Filesystem
             }
 
             if (is_dir($file) && !is_link($file)) {
-
                 $dir_arg = escapeshellarg($file);
                 if (dp_get_os() == 'win') {
-                    $cmd = 'RD /S /Q ' . $dir_arg;
+                    $cmd = 'RD /S /Q '.$dir_arg;
                 } else {
-                    $cmd = 'rm -rf ' . $dir_arg;
+                    $cmd = 'rm -rf '.$dir_arg;
                 }
 
                 $out = null;
@@ -2300,7 +2343,6 @@ class FilesystemUtil extends \Symfony\Component\Filesystem\Filesystem
                     $out = implode("\n", $out);
                     echo $out;
                 }
-
             } else {
                 unlink($file);
             }
@@ -2381,13 +2423,13 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
     /**
      * @var string
      */
-    protected $dl_distro = null;
-    protected $file_backup = null;
-    protected $db_backup = null;
+    protected $dl_distro         = null;
+    protected $file_backup       = null;
+    protected $db_backup         = null;
     protected $revert_checkpoint = null;
 
     protected $answer_backup_files = null;
-    protected $answer_backup_db = null;
+    protected $answer_backup_db    = null;
 
     public function askConfirmation($x, $prompt, $default = false)
     {
@@ -2452,12 +2494,12 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
             $decorated = false;
         }
         $this->outputFormatter = new \Symfony\Component\Console\Formatter\OutputFormatter($decorated, array(
-            'title' => new \Symfony\Component\Console\Formatter\OutputFormatterStyle('white', 'blue', array('bold')),
-            'note' => new \Symfony\Component\Console\Formatter\OutputFormatterStyle('yellow', null),
-            'prompt' => new \Symfony\Component\Console\Formatter\OutputFormatterStyle('cyan', 'black')
+            'title'  => new \Symfony\Component\Console\Formatter\OutputFormatterStyle('white', 'blue', array('bold')),
+            'note'   => new \Symfony\Component\Console\Formatter\OutputFormatterStyle('yellow', null),
+            'prompt' => new \Symfony\Component\Console\Formatter\OutputFormatterStyle('cyan', 'black'),
         ));
 
-        $this->dialogHelper    = new \Symfony\Component\Console\Helper\DialogHelper();
+        $this->dialogHelper = new \Symfony\Component\Console\Helper\DialogHelper();
 
         #------------------------------
         # Check requirements
@@ -2468,25 +2510,24 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
         $mysql_path      = dp_get_mysql_path(true);
 
         if (!$php_path || !$mysql_path || !$mysql_dump_path) {
+            $this->out('<error>Error: We could not find the path to an important utility</error>');
 
-            $this->out("<error>Error: We could not find the path to an important utility</error>");
-
-            $this->out("The upgrader could not locate the paths to the following utilitie(s):");
+            $this->out('The upgrader could not locate the paths to the following utilitie(s):');
             if (!$php_path) {
-                $this->upgrade->log("Cannot find path to the `php` CLI");
+                $this->upgrade->log('Cannot find path to the `php` CLI');
                 $this->out("\t- Could not find the path to php");
             }
             if (!$mysql_dump_path) {
-                $this->upgrade->log("Cannot find path to `mysqldump` binary");
+                $this->upgrade->log('Cannot find path to `mysqldump` binary');
                 $this->out("\t- Could not find the path to mysqldump");
             }
             if (!$mysql_path) {
-                $this->upgrade->log("Cannot find path to `mysql` binary");
+                $this->upgrade->log('Cannot find path to `mysql` binary');
                 $this->out("\t- Could not find the path to mysql");
             }
 
             $this->out();
-            $this->out("Edit your config.php file to learn more about locating these utilities and setting their paths.");
+            $this->out('Edit your config.php file to learn more about locating these utilities and setting their paths.');
 
             exit(10);
         }
@@ -2501,9 +2542,9 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
         }
 
         if ($fatal) {
-            $this->out("<error>Error: The PHP binary you are using does not meet the server requirements.</error>");
-            $this->out("The following server checks failed:");
-            $out = '- ' . implode("\n- ", $fatal);
+            $this->out('<error>Error: The PHP binary you are using does not meet the server requirements.</error>');
+            $this->out('The following server checks failed:');
+            $out = '- '.implode("\n- ", $fatal);
             $this->out($out);
             $this->out("\nUse a different PHP binary or correct the problem, and then try again.");
 
@@ -2512,7 +2553,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
         // Now check that the php in the php path also passes
         $cmd = sprintf(
-            "%s %s",
+            '%s %s',
             dp_get_php_path(),
             escapeshellarg(DP_ROOT.'/bin/check-req.php')
         );
@@ -2521,13 +2562,15 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
         $out = null;
         exec($cmd, $out, $ret);
 
-        if (!$out) $out = array();
+        if (!$out) {
+            $out = array();
+        }
 
         $out = implode("\n", $out);
 
         if ($ret || strpos($out, 'OKAY') === false) {
-            $this->out("<error>Error: We could not verify the path to your PHP binary</error>");
-            $this->out("You have configured DeskPRO to use the PHP binary at " . $php_path . " but it does not meet server requirements.\n\nSince you are running this command fine, that means you have a PHP binary that is suitable but you need to edit config.php and to correct the `php_path` value.\n");
+            $this->out('<error>Error: We could not verify the path to your PHP binary</error>');
+            $this->out('You have configured DeskPRO to use the PHP binary at '.$php_path." but it does not meet server requirements.\n\nSince you are running this command fine, that means you have a PHP binary that is suitable but you need to edit config.php and to correct the `php_path` value.\n");
             $this->out($out);
 
             exit(11);
@@ -2542,7 +2585,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
         $this->out(
             "<info>Welcome to the DeskPRO interactive upgrader.\n"
-            ."For help please visit: http://support.deskpro.com</info>"
+            .'For help please visit: http://support.deskpro.com</info>'
         );
 
         $this->out();
@@ -2552,26 +2595,26 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
         #------------------------------
 
         $continue_anyway = false;
-        $inipath = \Orb\Util\Env::getPhpIniPath();
+        $inipath         = \Orb\Util\Env::getPhpIniPath();
 
         $req_strategy = \DeskPRO_LowUtil_RemoteRequester::detectStrategy();
         if (!$req_strategy) {
             $this->out(
                 "<error>Your server is unable to make outbound connection to the DeskPRO servers to check for version status or to download updates.\n"
-                ."The upgrade utility requires one of the two: "
-                ."    - allow_url_fopen enabled in php.ini"
-                ."    - Or the cURL extension enabled"
+                .'The upgrade utility requires one of the two: '
+                .'    - allow_url_fopen enabled in php.ini'
+                .'    - Or the cURL extension enabled'
                 .($inipath ? "We have detected the path to php.ini you will need to edit: $inipath\n" : '')
                 ."\n"
-                ."If you require assistance, you can contact us at support@deskpro.com</error>"
+                .'If you require assistance, you can contact us at support@deskpro.com</error>'
             );
             $this->out();
 
             $this->out(
-                "<prompt>Would you like to continue? If you have manually updated DeskPRO files, or if you wish to"
-                ." check the version of your database, you can still run this tools.</prompt>"
+                '<prompt>Would you like to continue? If you have manually updated DeskPRO files, or if you wish to'
+                .' check the version of your database, you can still run this tools.</prompt>'
             );
-            $ret = $this->askConfirmation($this, "Continue? [y/N]> ", false);
+            $ret = $this->askConfirmation($this, 'Continue? [y/N]> ', false);
 
             if (!$ret) {
                 $this->out("\n");
@@ -2600,23 +2643,21 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
         #-----
 
         if (dp_get_config('debug.dev')) {
-
             $this->runAction_checkAndUpgrade();
 
         #-----
         # We have version info
         #-----
-
         } elseif ($version_info) {
-            $this->upgrade->log("(Interactive Upgrader)");
-            $this->out(sprintf("Your build:      %s (%s)", DP_BUILD_NUM, $this->upgrade->formatBuild(DP_BUILD_TIME)));
-            $this->out(sprintf("Latest build:    %s (%s)", $version_info['build_num'], $this->upgrade->formatBuild($version_info['build'])));
-            $this->upgrade->log(sprintf("runCheckVersion: current(%s)   latest(%s)", DP_BUILD_TIME, $version_info['build']));
+            $this->upgrade->log('(Interactive Upgrader)');
+            $this->out(sprintf('Your build:      %s (%s)', DP_BUILD_NUM, $this->upgrade->formatBuild(DP_BUILD_TIME)));
+            $this->out(sprintf('Latest build:    %s (%s)', $version_info['build_num'], $this->upgrade->formatBuild($version_info['build'])));
+            $this->upgrade->log(sprintf('runCheckVersion: current(%s)   latest(%s)', DP_BUILD_TIME, $version_info['build']));
 
             $this->out();
 
             if ($this->upgrade->isInstanceOutdated()) {
-                $this->out("<prompt>Your current instance is outdated. Would you like to download updates now?</prompt>");
+                $this->out('<prompt>Your current instance is outdated. Would you like to download updates now?</prompt>');
 
                 $ret = $this->askConfirmation($this, '[Y/n]> ', true);
 
@@ -2635,24 +2676,22 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
         // $continue_anyway is set when we didnt have a requester strategy,
         // so they might've already stated they want to continue anyway
-
         } elseif (!$continue_anyway) {
-
             $this->out(
                 "<error>We could not fetch version information from our web server. There are a number of possible causes:\n"
                 ."    - Your server is behind a firewall\n"
                 ."    - There is a network problem between your server and ours\n"
-                ."    - Our version server may be having difficulties. Check http://www.deskpro.com/status/\n"
+                ."    - Our version server may be having difficulties. Check http://status.deskpro.com/\n"
                 ."\n"
-                ."You can try again but if you continue to experience trouble, you can contact us at support@deskpro.com</error>"
+                .'You can try again but if you continue to experience trouble, you can contact us at support@deskpro.com</error>'
             );
             $this->out();
 
             $this->out(
-                "<prompt>Would you like to continue? If you have manually updated DeskPRO files, or if you wish to"
-                ." check the version of your database, you can still run this tools.</prompt>"
+                '<prompt>Would you like to continue? If you have manually updated DeskPRO files, or if you wish to'
+                .' check the version of your database, you can still run this tools.</prompt>'
             );
-            $ret = $this->askConfirmation($this, "Continue? [y/N]> ", false);
+            $ret = $this->askConfirmation($this, 'Continue? [y/N]> ', false);
 
             if (!$ret) {
                 $this->out("\n");
@@ -2664,7 +2703,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
     }
 
     /**
-     * Download and install updates
+     * Download and install updates.
      */
     public function runAction_downloadAndInstallChoice()
     {
@@ -2696,8 +2735,8 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
         if ($write_fail) {
             $this->upgrade->log("Failed write permission check on: $write_fail");
             $this->errorExit(
-                "This command requires permission to delete and write all files in the DeskPRO directory. We detected a permission error that would prevent the "
-                ."upgrade from completing successfully. Check to make sure this user has permission on all DeskPRO files, and then try again."
+                'This command requires permission to delete and write all files in the DeskPRO directory. We detected a permission error that would prevent the '
+                .'upgrade from completing successfully. Check to make sure this user has permission on all DeskPRO files, and then try again.'
             );
         }
 
@@ -2705,14 +2744,14 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
         # Download
         #------------------------------
 
-        $this->spinner("Downloading latest version ...");
+        $this->spinner('Downloading latest version ...');
 
         try {
             $this->dl_distro = $this->upgrade->downloadLatest();
         } catch (DownloadException $e) {
             $this->clearSpinner();
             $this->upgrade->outAndLog($e->getMessage());
-            $this->errorExit("There was a problem trying to download the latest version. Try again later.");
+            $this->errorExit('There was a problem trying to download the latest version. Try again later.');
         }
 
         $this->clearSpinner();
@@ -2722,29 +2761,29 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
         $this->out("<prompt>Before we install the updates, you should generate a back up first. You can back up both your files and your database.\n</prompt>");
 
-        $this->upgrade->log("(Gathering input)");
-        while(true) {
-            $this->out("Do you want to back up your current source files? ", false);
-            $this->answer_backup_files = $this->askConfirmation($this, "[Y/n]> ", true);
+        $this->upgrade->log('(Gathering input)');
+        while (true) {
+            $this->out('Do you want to back up your current source files? ', false);
+            $this->answer_backup_files = $this->askConfirmation($this, '[Y/n]> ', true);
 
-            $this->out("Do you want to back up your database? ", false);
-            $this->answer_backup_db = $this->askConfirmation($this, "[Y/n]> ", true);
+            $this->out('Do you want to back up your database? ', false);
+            $this->answer_backup_db = $this->askConfirmation($this, '[Y/n]> ', true);
 
             $this->out();
-            $this->out("<comment>Backup files: " . ($this->answer_backup_files ? "YES" : "NO") . "</comment>");
-            $this->out("<comment>Backup database: " . ($this->answer_backup_db ? "YES" : "NO") . "</comment>");
+            $this->out('<comment>Backup files: '.($this->answer_backup_files ? 'YES' : 'NO').'</comment>');
+            $this->out('<comment>Backup database: '.($this->answer_backup_db ? 'YES' : 'NO').'</comment>');
 
             $this->out();
             $this->out("<prompt>Are you ready to continue?\nAnswer 'n' to re-input backup options.</prompt>");
-            $this->out("Continue with the upgrade? ", false);
+            $this->out('Continue with the upgrade? ', false);
 
-            $ret = $this->askConfirmation($this, "[Y/n]> ", true);
+            $ret = $this->askConfirmation($this, '[Y/n]> ', true);
             if ($ret) {
                 break;
             }
             $this->out();
         }
-        $this->upgrade->log(sprintf("(Done gathering input: answer_backup_files=%d, answer_backup_db=%d)", $this->answer_backup_files, $this->answer_backup_db));
+        $this->upgrade->log(sprintf('(Done gathering input: answer_backup_files=%d, answer_backup_db=%d)', $this->answer_backup_files, $this->answer_backup_db));
 
         $fileutil = new FilesystemUtil();
         $fileutil->touch(DP_WEB_ROOT.'/auto-update-is-running.trigger');
@@ -2753,39 +2792,39 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
         # Backup files
         #------------------------------
 
-        $this->outHeader("Installing Updates");
+        $this->outHeader('Installing Updates');
         $this->out();
 
         if ($this->answer_backup_files) {
-            $this->out(sprintf("%-40s", "<info>[*] Backing up files ...</info>"), false);
+            $this->out(sprintf('%-40s', '<info>[*] Backing up files ...</info>'), false);
 
             try {
                 $this->file_backup = $this->upgrade->backupFiles();
             } catch (\Exception $e) {
                 $this->upgrade->outAndLog($e->getMessage());
-                $this->errorExit("There was a problem backing up your files.");
+                $this->errorExit('There was a problem backing up your files.');
             }
 
             $this->revert_checkpoint = 'files';
-            $this->out("<info>DONE</info>");
+            $this->out('<info>DONE</info>');
 
-            $this->out(sprintf("    File: %s :: %s", Upgrade::getFilesizeDisplay(filesize($this->file_backup)), $this->file_backup));
+            $this->out(sprintf('    File: %s :: %s', Upgrade::getFilesizeDisplay(filesize($this->file_backup)), $this->file_backup));
         }
 
         #------------------------------
         # Install files
         #------------------------------
 
-        $this->out(sprintf("%-55s", "<info>[*] Installing files ...</info>"), false);
+        $this->out(sprintf('%-55s', '<info>[*] Installing files ...</info>'), false);
 
         try {
             $this->upgrade->installFilesFromZip($this->dl_distro, false);
         } catch (\Exception $e) {
             $this->upgrade->outAndLog($e->getMessage());
-            $this->errorExit("There was a problem installing the new files.");
+            $this->errorExit('There was a problem installing the new files.');
         }
 
-        $this->out("<info>DONE</info>");
+        $this->out('<info>DONE</info>');
 
         // Remove downloaded zip
         @unlink($this->dl_distro);
@@ -2795,52 +2834,52 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
         #------------------------------
 
         if ($this->answer_backup_db) {
-            $this->out(sprintf("%-55s", "<info>[*] Backing up database ...</info>"), false);
+            $this->out(sprintf('%-55s', '<info>[*] Backing up database ...</info>'), false);
 
             try {
                 $this->db_backup = $this->upgrade->backupDatabase();
             } catch (\Exception $e) {
                 $this->upgrade->outAndLog($e->getMessage());
-                $this->errorExit("There was a problem backing up your database.");
+                $this->errorExit('There was a problem backing up your database.');
             }
 
-            $this->out(sprintf("    File: %s :: %s", Upgrade::getFilesizeDisplay(filesize($this->db_backup)), $this->db_backup));
+            $this->out(sprintf('    File: %s :: %s', Upgrade::getFilesizeDisplay(filesize($this->db_backup)), $this->db_backup));
 
             $this->revert_checkpoint = 'db';
-            $this->out("<info>DONE</info>");
+            $this->out('<info>DONE</info>');
         }
 
         #------------------------------
         # Run upgrader
         #------------------------------
 
-        $this->out(sprintf("%-55s", "<info>[*] Installing database updates</info>"));
+        $this->out(sprintf('%-55s', '<info>[*] Installing database updates</info>'));
 
         $php_path = $this->upgrade->getPhpBinaryPath();
 
-        chdir(DP_ROOT . '/../');
+        chdir(DP_ROOT.'/../');
         $cmd = "$php_path cmd.php dp:upgrade 2>&1";
         passthru($cmd, $ret);
 
         if ($ret) {
             $this->upgrade->outAndLog("Upgrade returned erorr status $ret");
-            $this->errorExit("There was a problem installing the database updates");
+            $this->errorExit('There was a problem installing the database updates');
         }
 
         $fileutil->remove(DP_WEB_ROOT.'/auto-update-is-running.trigger');
-        $fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
+        $fileutil->remove(dp_get_tmp_dir().'/auto-upgrade-started');
 
-        $this->outHeader("DONE");
+        $this->outHeader('DONE');
         $this->out();
 
-        $this->out("<info>DeskPRO has been upgraded successfully.</info>");
+        $this->out('<info>DeskPRO has been upgraded successfully.</info>');
         $this->out();
         $this->out('');
 
         if (extension_loaded('wincache')) {
-            $this->out("<error>RESTART REQUIRED</error>");
-            $this->out("Your server has WinCache installed. Due to a limitation of WinCache, updates to files are not always immediately recognised.");
-            $this->out("You must restart IIS (or your computer) to ensure the updates were fully installed.");
+            $this->out('<error>RESTART REQUIRED</error>');
+            $this->out('Your server has WinCache installed. Due to a limitation of WinCache, updates to files are not always immediately recognised.');
+            $this->out('You must restart IIS (or your computer) to ensure the updates were fully installed.');
         }
 
         $this->upgrade->postUpgrade();
@@ -2849,7 +2888,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
     }
 
     /**
-     * Running just the upgrade against currently file sources
+     * Running just the upgrade against currently file sources.
      */
     public function runAction_checkAndUpgrade()
     {
@@ -2866,25 +2905,25 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
             $host = $DP_CONFIG['db']['host'];
             $port = '';
         }
-        $pdo = new \PDO("mysql:host={$host};dbname={$DP_CONFIG['db']['dbname']}$port", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+        $pdo     = new \PDO("mysql:host={$host};dbname={$DP_CONFIG['db']['dbname']}$port", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
         $version = $pdo->query("SELECT value FROM settings WHERE name = 'core.deskpro_build'")->fetch(\PDO::FETCH_NUM);
 
         if (!$version) {
-            $this->errorExit("We could not find your currently installed version.");
+            $this->errorExit('We could not find your currently installed version.');
         }
 
         $version = $version[0];
 
         if (!dp_get_config('debug.dev')) {
-            $this->out(sprintf("File build time:      %s", $this->upgrade->formatBuild(DP_BUILD_TIME)));
-            $this->out(sprintf("Database build time:  %s", $this->upgrade->formatBuild($version)));
+            $this->out(sprintf('File build time:      %s', $this->upgrade->formatBuild(DP_BUILD_TIME)));
+            $this->out(sprintf('Database build time:  %s', $this->upgrade->formatBuild($version)));
 
             $this->out();
 
             if ($version >= DP_BUILD_TIME) {
-                $this->out("<info>Your database and source file builds correspond. No database upgrades need to be run.</info>");
+                $this->out('<info>Your database and source file builds correspond. No database upgrades need to be run.</info>');
                 $this->out();
-                $this->out("");
+                $this->out('');
                 exit(0);
             }
 
@@ -2892,30 +2931,30 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
             # Gather input
             #------------------------------
 
-            $this->out("<info>Your database is out of date. Would you like to perform an upgrade now?</info>");
-            $this->out("Upgrade now? ", false);
+            $this->out('<info>Your database is out of date. Would you like to perform an upgrade now?</info>');
+            $this->out('Upgrade now? ', false);
 
-            $ret = $this->askConfirmation($this, "[Y/n]> ", true);
+            $ret = $this->askConfirmation($this, '[Y/n]> ', true);
             if (!$ret) {
                 $this->out();
-                $this->out("");
+                $this->out('');
                 exit(0);
             }
 
-            $this->out("<prompt>Before we install the updates, you should generate back up first.</prompt>");
+            $this->out('<prompt>Before we install the updates, you should generate back up first.</prompt>');
 
-            while(true) {
-                $this->out("Do you want to back up your database? ", false);
-                $this->answer_backup_db = $this->askConfirmation($this, "[Y/n]> ", true);
+            while (true) {
+                $this->out('Do you want to back up your database? ', false);
+                $this->answer_backup_db = $this->askConfirmation($this, '[Y/n]> ', true);
 
                 $this->out();
-                $this->out("<comment>Backup database: " . ($this->answer_backup_db ? "YES" : "NO") . "</comment>");
+                $this->out('<comment>Backup database: '.($this->answer_backup_db ? 'YES' : 'NO').'</comment>');
 
                 $this->out();
                 $this->out("<prompt>Are you ready to continue? Answer 'n' to re-input backup options.</prompt>");
-                $this->out("Continue with the upgrade? ", false);
+                $this->out('Continue with the upgrade? ', false);
 
-                $ret = $this->askConfirmation($this, "[Y/n]> ", true);
+                $ret = $this->askConfirmation($this, '[Y/n]> ', true);
                 if ($ret) {
                     break;
                 }
@@ -2930,17 +2969,17 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
             #------------------------------
 
             if ($this->answer_backup_db) {
-                $this->out(sprintf("%-40s", "<info>[*] Backing up database ...</info>"), false);
+                $this->out(sprintf('%-40s', '<info>[*] Backing up database ...</info>'), false);
 
                 try {
                     $this->db_backup = $this->upgrade->backupDatabase();
                 } catch (\Exception $e) {
                     $this->upgrade->outAndLog($e->getMessage());
-                    $this->errorExit("There was a problem backing up your database.");
+                    $this->errorExit('There was a problem backing up your database.');
                 }
 
                 $this->revert_checkpoint = 'db';
-                $this->out("<info>DONE</info>");
+                $this->out('<info>DONE</info>');
             }
         }
 
@@ -2948,11 +2987,11 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
         # Run upgrader
         #------------------------------
 
-        $this->out(sprintf("%-40s", "<info>[*] Installing database updates</info>"));
+        $this->out(sprintf('%-40s', '<info>[*] Installing database updates</info>'));
 
         $php_path = $this->upgrade->getPhpBinaryPath();
 
-        chdir(DP_ROOT . '/../');
+        chdir(DP_ROOT.'/../');
         $cmd = "$php_path cmd.php dp:upgrade 2>&1";
         ob_start();
         passthru($cmd, $ret);
@@ -2961,13 +3000,13 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
         if ($ret) {
             $this->upgrade->outAndLog("Upgrade returned erorr status $ret");
             $this->upgrade->outAndLog("Upgrade output: $out");
-            $this->errorExit("There was a problem installing the database updates");
+            $this->errorExit('There was a problem installing the database updates');
         }
 
-        $this->outHeader("DONE");
+        $this->outHeader('DONE');
 
         $this->out('');
-        $this->out("<info>DeskPRO has been upgraded successfully.</info>");
+        $this->out('<info>DeskPRO has been upgraded successfully.</info>');
         $this->out('');
 
         $this->upgrade->postUpgrade();
@@ -3010,7 +3049,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
         $fileutil = new FilesystemUtil();
         $fileutil->remove(DP_WEB_ROOT.'/auto-update-is-running.trigger');
-        $fileutil->remove(dp_get_tmp_dir() . '/auto-upgrade-started');
+        $fileutil->remove(dp_get_tmp_dir().'/auto-upgrade-started');
 
         $e = new \Exception($message);
         $this->upgrade->sendLog($e);
@@ -3019,7 +3058,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
     }
 
     /**
-     * Infinite spinner
+     * Infinite spinner.
      */
     public function spinner($message = '')
     {
@@ -3027,38 +3066,38 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
         echo str_repeat(' ', 70);
         echo "\r";
 
-        echo "(";
+        echo '(';
         switch ($this->spinner_state) {
             case 0:
-                echo "-";
+                echo '-';
                 break;
 
             case 1:
-                echo "\\";
+                echo '\\';
                 break;
 
             case 2:
-                echo "|";
+                echo '|';
                 break;
 
             case 3:
-                echo "/";
+                echo '/';
                 break;
         }
 
-        $this->spinner_state++;
+        ++$this->spinner_state;
         if ($this->spinner_state > 3) {
             $this->spinner_state = 0;
         }
 
-        echo ")";
+        echo ')';
         if ($message) {
             echo " $message";
         }
     }
 
     /**
-     * Clear the spinner form the line
+     * Clear the spinner form the line.
      */
     public function clearSpinner()
     {
@@ -3098,18 +3137,18 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
     {
         $string = '';
         if ($big) {
-            $string .= str_repeat(' ', 72) . "\n";
+            $string .= str_repeat(' ', 72)."\n";
         }
 
-        $len = strlen($title);
-        $remain = 72-$len;
-        $left  = floor($remain/2);
-        $right = 72 - $len - $left;
+        $len    = strlen($title);
+        $remain = 72 - $len;
+        $left   = floor($remain / 2);
+        $right  = 72 - $len - $left;
 
-        $string .= str_repeat(' ', $left) . $title . str_repeat(' ', $right);
+        $string .= str_repeat(' ', $left).$title.str_repeat(' ', $right);
 
         if ($big) {
-            $string .= "\n" . str_repeat(' ', 72);
+            $string .= "\n".str_repeat(' ', 72);
         }
 
         $string = $this->outputFormatter->format("<title>$string</title>");
@@ -3125,7 +3164,9 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
         $note = wordwrap($note, 65, "\n", true);
 
         $lines = explode("\n", $note);
-        foreach ($lines as &$l) $l = '    > ' . $l;
+        foreach ($lines as &$l) {
+            $l = '    > '.$l;
+        }
         $note = implode("\n", $lines);
 
         $string = $this->outputFormatter->format("<note>$note</note>");
@@ -3145,7 +3186,6 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
     public function setVerbosity($level)
     {
-
     }
 
     public function getVerbosity()
@@ -3155,7 +3195,6 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
     public function setDecorated($decorated)
     {
-
     }
 
     public function isDecorated()
@@ -3165,7 +3204,6 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
 
     public function setFormatter(\Symfony\Component\Console\Formatter\OutputFormatterInterface $formatter)
     {
-
     }
 
     public function getFormatter()
@@ -3186,19 +3224,23 @@ class ZipStrategy implements DpZip
     {
         if ($force_strategy !== null) {
             switch ($force_strategy) {
-                case 'Zip_PHP':     $this->zip = new Zip_PHP($upgrade);     return;
-                case 'Zip_PclZip':  $this->zip = new Zip_PclZip($upgrade);  return;
+                case 'Zip_PHP':     $this->zip = new Zip_PHP($upgrade);
+
+return;
+                case 'Zip_PclZip':  $this->zip = new Zip_PclZip($upgrade);
+
+return;
             }
         }
 
         if (extension_loaded('Zip')) {
-            $upgrade->log("ZipStrategy: Zip_PHP");
+            $upgrade->log('ZipStrategy: Zip_PHP');
             $this->zip = new Zip_PHP();
         } elseif (extension_loaded('zlib')) {
-            $upgrade->log("ZipStrategy: Zip_PclZip");
+            $upgrade->log('ZipStrategy: Zip_PclZip');
             $this->zip = new Zip_PclZip();
         } else {
-            throw new ZipException("Zip and zlib extensions not installed, no way to zip");
+            throw new ZipException('Zip and zlib extensions not installed, no way to zip');
         }
     }
 
@@ -3220,15 +3262,17 @@ interface DpZip
      * If a directory, the ZIP should be created at the root. E.g., extracting
      * should extract into the cwd.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return string
      */
     public function compressFile($path);
 
     /**
-     * Decompress a zip file
+     * Decompress a zip file.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return string
      */
     public function decompressZip($path, $to = null);
@@ -3242,8 +3286,8 @@ class Zip_PHP implements DpZip
         $path = rtrim($path, '/');
 
         $filename     = basename($path);
-        $out_filename = $filename . '-' . time() . '-' . mt_rand(1000,9999) . '.zip';
-        $out_filepath = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $out_filename;
+        $out_filename = $filename.'-'.time().'-'.mt_rand(1000, 9999).'.zip';
+        $out_filepath = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$out_filename;
 
         $zip = new \ZipArchive();
         if ($zip->open($out_filepath, \ZipArchive::CREATE) !== true) {
@@ -3251,22 +3295,22 @@ class Zip_PHP implements DpZip
         }
 
         if (is_dir($path)) {
-            $basedir = "/dp_zip";
+            $basedir = '/dp_zip';
 
             $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
             foreach ($files as $file) {
                 $file = str_replace('\\', '/', realpath($file));
 
                 if (is_dir($file) === true) {
-                    $local = $basedir . str_replace($path. '/', '', '/' . $file . '/');
+                    $local = $basedir.str_replace($path.'/', '', '/'.$file.'/');
                     $zip->addEmptyDir($local);
                 } elseif (is_file($file) === true && realpath($file) != $out_filepath) {
-                    $local = $basedir . str_replace($path . '/', '', '/' . $file);
+                    $local = $basedir.str_replace($path.'/', '', '/'.$file);
                     $zip->addFile(realpath($file), $local);
                 }
             }
         } else {
-            $zip->addFile($path, '/dp/' . $filename);
+            $zip->addFile($path, '/dp/'.$filename);
         }
 
         if (!$zip->close()) {
@@ -3280,33 +3324,33 @@ class Zip_PHP implements DpZip
     {
         $zip = new \ZipArchive();
         if (!is_file($path)) {
-            $error = 'No file: ' . $path;
+            $error = 'No file: '.$path;
 
             return false;
         }
 
         if (($code = $zip->open($path)) !== true) {
-            $error = sprintf("[%s/%s] %s %s", $zip->status, $zip->statusSys, $code, $zip->getStatusString());
+            $error = sprintf('[%s/%s] %s %s', $zip->status, $zip->statusSys, $code, $zip->getStatusString());
 
             return false;
         }
 
-        $tmpdir = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . time() . '-' . mt_rand(1000,9999);
+        $tmpdir = dp_get_tmp_dir().DIRECTORY_SEPARATOR.time().'-'.mt_rand(1000, 9999);
         if (!mkdir($tmpdir)) {
-            $error = 'Unable to make tmpdir: ' . $tmpdir;
+            $error = 'Unable to make tmpdir: '.$tmpdir;
 
             return false;
         }
 
         if (!$zip->extractTo($tmpdir)) {
-            $error = sprintf("[%s/%s] %s", $zip->status, $zip->statusSys, $zip->getStatusString());
+            $error = sprintf('[%s/%s] %s', $zip->status, $zip->statusSys, $zip->getStatusString());
 
             return false;
         }
 
         $realpath = $tmpdir;
-        if (is_dir($tmpdir . '/dp_zip')) {
-            $realpath = $tmpdir . '/dp_zip';
+        if (is_dir($tmpdir.'/dp_zip')) {
+            $realpath = $tmpdir.'/dp_zip';
         }
 
         if ($to) {
@@ -3325,7 +3369,7 @@ class Zip_PclZip implements DpZip
 {
     public function __construct()
     {
-        require_once(DP_ROOT . '/vendor-src/pclzip/pclzip.lib.php');
+        require_once DP_ROOT.'/vendor-src/pclzip/pclzip.lib.php';
     }
 
     public function compressFile($path)
@@ -3333,8 +3377,8 @@ class Zip_PclZip implements DpZip
         $path = str_replace('\\', '/', $path);
 
         $filename     = basename($path);
-        $out_filename = $filename . '-' . time() . '-' . mt_rand(1000,9999) . '.zip';
-        $out_filepath = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $out_filename;
+        $out_filename = $filename.'-'.time().'-'.mt_rand(1000, 9999).'.zip';
+        $out_filepath = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$out_filename;
 
         $zip = new \PclZip($out_filepath);
         $zip->add(
@@ -3344,16 +3388,15 @@ class Zip_PclZip implements DpZip
         );
 
         return $out_filepath;
-
     }
 
     public function decompressZip($path, $to = null, &$error = null)
     {
         $zip = new \PclZip($path);
 
-        $tmpdir = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . time() . '-' . mt_rand(1000,9999);
+        $tmpdir = dp_get_tmp_dir().DIRECTORY_SEPARATOR.time().'-'.mt_rand(1000, 9999);
         if (!mkdir($tmpdir)) {
-            $error = 'Unable to make tmpdir: ' . $tmpdir;
+            $error = 'Unable to make tmpdir: '.$tmpdir;
 
             return false;
         }
@@ -3370,8 +3413,8 @@ class Zip_PclZip implements DpZip
 
         // Ones we make have dp_zip as the container folder
         $realpath = $tmpdir;
-        if (is_dir($tmpdir . '/dp_zip')) {
-            $realpath = $tmpdir . '/dp_zip';
+        if (is_dir($tmpdir.'/dp_zip')) {
+            $realpath = $tmpdir.'/dp_zip';
         }
 
         if ($to) {
@@ -3391,14 +3434,14 @@ class Zip_PclZip implements DpZip
 ########################################################################################################################
 
 /**
- * Exception thrown when trying to request a DeskPRO service
+ * Exception thrown when trying to request a DeskPRO service.
  */
 class ServiceCallException extends \Exception
 {
     /**
-     * An empty response from the server
+     * An empty response from the server.
      */
-    const NO_RESPONSE      = 100;
+    const NO_RESPONSE = 100;
 
     /**
      * An invalid response from the server (invalid JSON).
@@ -3407,106 +3450,106 @@ class ServiceCallException extends \Exception
 }
 
 /**
- * Exception thrown when trying to perform a MySQL backup
+ * Exception thrown when trying to perform a MySQL backup.
  */
 class MysqlBackupException extends \Exception
 {
     /**
-     * We dont know where mysqldump is
+     * We dont know where mysqldump is.
      */
     const NO_MYSQLDUMP = 100;
 
     /**
-     * The dump target file already exists
+     * The dump target file already exists.
      */
-    const FILE_EXISTS  = 200;
+    const FILE_EXISTS = 200;
 
     /**
-     * mysqldump exited with an error status
+     * mysqldump exited with an error status.
      */
-    const DUMP_ERROR   = 300;
+    const DUMP_ERROR = 300;
 }
 
 /**
- * Exception thrown when trying to perform a MySQL backup
+ * Exception thrown when trying to perform a MySQL backup.
  */
 class MysqlRestoreException extends \Exception
 {
     /**
-     * We dont know where mysql is
+     * We dont know where mysql is.
      */
     const NO_MYSQL = 100;
 
     /**
-     * The dump file doesnt exist
+     * The dump file doesnt exist.
      */
     const BAD_ZIP = 200;
 
     /**
-     * mysqldump exited with an error status
+     * mysqldump exited with an error status.
      */
-    const RESTORE_ERROR   = 300;
+    const RESTORE_ERROR = 300;
 
     /**
-     * There was a problem trying to extract the zip
+     * There was a problem trying to extract the zip.
      */
     const EXTRACT_ERROR = 400;
 }
 
 /**
- * Exception thrown when trying to perform a file backup
+ * Exception thrown when trying to perform a file backup.
  */
 class FileBackupException extends \Exception
 {
     /**
-     * The target backup dir exists
+     * The target backup dir exists.
      */
     const FILE_EXISTS = 100;
 
     /**
-     * There was an error to do with permissions
+     * There was an error to do with permissions.
      */
-    const PERM_ERROR  = 200;
+    const PERM_ERROR = 200;
 }
 
 /**
- * Exception thrown when trying to download latest distro
+ * Exception thrown when trying to download latest distro.
  */
 class DownloadException extends \Exception
 {
     /**
-     * The target file already exists
+     * The target file already exists.
      */
     const FILE_EXISTS = 100;
 
     /**
-     * The target directory to put the distro into doesnt exist
+     * The target directory to put the distro into doesnt exist.
      */
-    const NO_DIR      = 200;
+    const NO_DIR = 200;
 
     /**
-     * Couldnt write the distro to the target
+     * Couldnt write the distro to the target.
      */
-    const PERM_ERROR  = 300;
+    const PERM_ERROR = 300;
 
     /**
-     * The distro appears to be corrupted
+     * The distro appears to be corrupted.
      */
-    const BAD_FILE    = 400;
+    const BAD_FILE = 400;
 }
 
 /**
- * Exception thrown when trying to upgrade files on the filesystem from a zip
+ * Exception thrown when trying to upgrade files on the filesystem from a zip.
  */
 class UpgradeFilesException extends \Exception
 {
     /**
-     * The zip doesnt exist or appears to be invalid
+     * The zip doesnt exist or appears to be invalid.
      */
-    const BAD_ZIP       = 100;
+    const BAD_ZIP = 100;
 
     /**
-     * There was a problem trying to extract the zip
+     * There was a problem trying to extract the zip.
      */
     const EXTRACT_ERROR = 200;
 
@@ -3514,18 +3557,18 @@ class UpgradeFilesException extends \Exception
      * There was a probelm while trying to put the new files in place.
      * This is a bad error because it means there might be a half-upgraded filesystem.
      */
-    const COPY_ERROR    = 300;
+    const COPY_ERROR = 300;
 }
 
 /**
- * Exception thrown when trying to upgrade files on the filesystem from a zip
+ * Exception thrown when trying to upgrade files on the filesystem from a zip.
  */
 class ZipException extends \Exception
 {
     /**
-     * No way to create zips
+     * No way to create zips.
      */
-    const NO_STRATEGY       = 100;
+    const NO_STRATEGY = 100;
 }
 
 ########################################################################################################################

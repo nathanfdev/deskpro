@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Cutter;
 
 use Application\DeskPRO\App;
@@ -62,7 +60,6 @@ class ForwardCutter
      */
     protected $cutter;
 
-
     /**
      * @return string
      */
@@ -79,7 +76,7 @@ class ForwardCutter
         }
 
         if (!$regex) {
-            $regex = '#^(FW|FWD|VL|WG|FS|VB|RV|VS):#i';
+            $regex = '#^(FW|FWD|VL|WG|FS|VB|RV|VS|TR):#i';
         }
 
         return $regex;
@@ -88,20 +85,21 @@ class ForwardCutter
     /**
      * Check if a subject matches the pattern for a forwarded message.
      *
-     * @param  string $subject
+     * @param string $subject
+     *
      * @return bool
      */
     public static function subjectIsForward($subject)
     {
         // Prefixes for FW/FWD and in other langs too
-        return (bool)preg_match(self::getFwdSubjectRegex(), ltrim($subject));
+        return (bool) preg_match(self::getFwdSubjectRegex(), ltrim($subject));
     }
 
-
     /**
-     * Cut out the FWD prefix from subject
+     * Cut out the FWD prefix from subject.
      *
-     * @param  string $subject
+     * @param string $subject
+     *
      * @return string
      */
     public static function cutSubjectForwardPrefix($subject)
@@ -109,12 +107,11 @@ class ForwardCutter
         return trim(preg_replace(self::getFwdSubjectRegex(), '', trim($subject)));
     }
 
-
     public function __construct($body, $is_html, $cutter)
     {
-        $this->body = $body;
+        $this->body    = $body;
         $this->is_html = $is_html;
-        $this->cutter = $cutter;
+        $this->cutter  = $cutter;
 
         if ($this->cutter instanceof Def\ForwardDef) {
             $this->_process();
@@ -132,7 +129,6 @@ class ForwardCutter
         }
     }
 
-
     /**
      * @return array
      */
@@ -141,9 +137,8 @@ class ForwardCutter
         return $this->forward_info;
     }
 
-
     /**
-     * Check if the forwarded message was read correctly and has all required information
+     * Check if the forwarded message was read correctly and has all required information.
      *
      * @return bool
      */
@@ -151,7 +146,6 @@ class ForwardCutter
     {
         return $this->error_code === null;
     }
-
 
     /**
      * @return string
@@ -161,9 +155,8 @@ class ForwardCutter
         return $this->error_code;
     }
 
-
     /**
-     * Get the users message
+     * Get the users message.
      *
      * @return string
      */
@@ -172,9 +165,8 @@ class ForwardCutter
         return $this->forward_info['fwd_message_body'];
     }
 
-
     /**
-     * Get the reply above the forwarded message
+     * Get the reply above the forwarded message.
      *
      * @return string
      */
@@ -183,22 +175,20 @@ class ForwardCutter
         return $this->forward_info['message_body'];
     }
 
-
     /**
      * @return \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress
      */
     public function getUserEmailItem()
     {
-        $item = new \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress();
+        $item        = new \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress();
         $item->email = $this->forward_info['fwd_from_email'];
         $item->name  = $this->getUserName();
 
         return $item;
     }
 
-
     /**
-     * Get the user email address from the forwarded message
+     * Get the user email address from the forwarded message.
      *
      * @return string
      */
@@ -207,9 +197,8 @@ class ForwardCutter
         return $this->forward_info['fwd_from_email'];
     }
 
-
     /**
-     * Get the users name from the forwarded message (based on their name in From:)
+     * Get the users name from the forwarded message (based on their name in From:).
      *
      * @return string
      */
@@ -219,6 +208,6 @@ class ForwardCutter
             return $this->forward_info['fwd_from_name'];
         }
 
-        return null;
+        return;
     }
 }

@@ -47,7 +47,7 @@ if (!window.DP_NO_JS_SCROLL) {
 
 				// hardcoded update of list height
 				var $content = $('.list-pane-content'),
-						sh = $('.source-pane-content:visible').height(),
+						sh = $('#dp_center').height() - 65,
 						hh = 0,
 						$listing = $('.list-listing:visible', $content);
 

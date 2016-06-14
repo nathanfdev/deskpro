@@ -170,7 +170,9 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 	 * @param {jQuery} contentEl
 	 */
 	setSectionElement: function(el, contentEl) {
+
 		var self = this;
+
 		if (this.sectionEl) {
 			this.sectionEl.remove();
 		}
@@ -189,20 +191,16 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		}
 
 		if (!contentEl) {
-			contentEl = $('.source-pane-instance', el);
-			if (!contentEl[0]) {
-				contentEl = $('section.content', el);
-				if (!contentEl.length) {
-					var html = [];
-					html.push('<div class="source-pane-wrapper"></div>');
-					html = html.join('');
-
-					el = $(html);
-					this.sectionEl.append(el);
-					contentEl = el;
-				}
-			}
-		}
+      contentEl = $('.source-pane-instance', el);
+    }
+    if (!contentEl || !contentEl[0]) {
+      contentEl = $('section.content', el);
+    }
+    if (!contentEl || !contentEl[0]) {
+      el = $('<div class="source-pane-wrapper"></div>');
+      this.sectionEl.append(el);
+      contentEl = el;
+    }
 		this.contentEl = contentEl;
 
 		contentEl.on('click', '.pane-tabs li', function(ev) {
@@ -213,6 +211,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 
 			contentEl.find('.pane-content').hide().filter('.'+$(this).data('tab-id')).show().find('.dp-with-activate-listener').triggerHandler('dp_activated');
 		});
+
 	},
 
 

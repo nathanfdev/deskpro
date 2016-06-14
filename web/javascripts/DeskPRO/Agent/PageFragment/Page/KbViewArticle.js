@@ -140,6 +140,12 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this._initTrans();
 	},
 
+	replaceLinks: function() {
+		$('#dp_article_content a', this.wrapper).each(function(){
+			$(this).attr('target', '_blank');
+		});
+	},
+
 	handleUnloadRevisions: function(revision_id) {
 		if (!revision_id) {
 			return;
@@ -238,31 +244,24 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 
 		// Attachments
-		var list = $('.file-list', this.wrapper);
-
-		DeskPRO_Window.util.fileupload(this.wrapper, {
-			url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=article&object_id=' + this.meta.article_id,
-			page: this
-		});
-
-		list.on('click', '.delete', function(ev) {
+		this.wrapper.on('click', '.file-list .delete', function(ev) {
 			ev.preventDefault();
 			ev.stopImmediatePropagation();
 
-			var blob_id = $(this).data('blob-id');
+			var blob_id = $(this).data('blob-id'),
+					$em = $(this);
 			$.ajax({
 				url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
 				type: 'POST',
 				data: {action: 'remove-blob', blob_id: blob_id},
 				context: self,
-				dataType: 'json'
+				dataType: 'json',
+				success: function() {
+					$em.closest('li').remove();
+					var list = self.wrapper.find('.file-list');
+					!list.children().length && list.hide();
+				}
 			});
-
-			$(this).closest('li').remove();
-
-			if (!list.find('li')[0]) {
-				list.hide();
-			}
 		});
 	},
 
@@ -578,21 +577,31 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 		var endDate = $('.auto-unpublish .end-date.opt', optWrap);
 		var dateInput = $('.auto-unpublish .end-date-input', optWrap);
-		dateInput.datepicker({
-			dateFormat: 'M d, yy',
-			onSelect: function(dateText, inst) {
-
-				var timestamp = dateInput.datepicker('getDate').getTime() / 1000;
-
-				endDate.data('val', timestamp);
-				endDate.text(dateText);
-
-				self.updateAutoUnPubOptions();
-			}
+		dateInput.each(function() {
+			$(this).datetimepicker({
+				format: 'YYYY-MM-DD',
+				widgetParent: $(this).prev('div'),
+				widgetPositioning: { vertical: 'bottom' },
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
 		});
 
 		endDate.on('click', function() {
-			$('.auto-unpublish .end-date-input', optWrap).datepicker('show');
+			dateInput.data('DateTimePicker').show();
+		});
+
+		dateInput.on('dp.change', function(e){
+			endDate.data('val', e.date.unix());
+			endDate.text(e.date.format('D MMM, YY'));
+			self.updateAutoUnPubOptions();
 		});
 	},
 
@@ -662,21 +671,31 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 		var pubDate = $('.auto-publish .pub-date.opt', optWrap);
 		var dateInput = $('.auto-publish .pub-date-input', optWrap);
-		dateInput.datepicker({
-			dateFormat: 'M d, yy',
-			onSelect: function(dateText, inst) {
-
-				var timestamp = dateInput.datepicker('getDate').getTime() / 1000;
-
-				pubDate.data('val', timestamp);
-				pubDate.text(dateText);
-
-				self.updateAutoPubOptions();
-			}
+		dateInput.each(function() {
+			$(this).datetimepicker({
+				format: 'D MMM, YY',
+				widgetParent: $(this).prev('div'),
+				widgetPositioning: { vertical: 'bottom' },
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
 		});
 
 		pubDate.on('click', function() {
-			$('.auto-publish .pub-date-input', optWrap).datepicker('show');
+			dateInput.data('DateTimePicker').show();
+		});
+
+		dateInput.on('dp.change', function(e){
+			pubDate.data('val', e.date.unix());
+			pubDate.text(e.date.format('D MMM, YY'));
+			self.updateAutoUnPubOptions();
 		});
 	},
 
@@ -723,7 +742,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	//#################################################################
 
 	_initArticleArea: function() {
-
+		this.replaceLinks();
 	},
 
 	//#################################################################
@@ -747,8 +766,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 		var attachList = $('ul.attachment-list:first', this.wrapper);
 		if (attachList.length) {
-
-			this.getEl('attachtab').empty().append(attachList);
 
 			var imageEls = $('li.is-image a', attachList);
 
@@ -774,6 +791,11 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			listenOn: $('.article-editor-wrap:first', wrap)
 		});
 		this.ownObject(this.editStateSaver);
+
+		DeskPRO_Window.util.fileupload(this.getEl('content_ed').find('.article-editor'), {
+			url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=article&object_id=' + this.meta.article_id,
+			page: this
+		});
 
 		var wrap = this.wrapper;
 

@@ -123,25 +123,31 @@
 
 {% if 'org_field' not in no_show_fields %}
 {% if app.getOrgFieldManager().getFields() %}
-	{% set op_lang = {'is': phrase('agent.general.is'), 'not': phrase('agent.general.is_not'), 'contains': phrase('agent.general.contains'), 'notcontains': phrase('agent.general.does_not_contain'), 'gt': phrase('agent.general.is_greater_than'), 'lt': phrase('agent.general.is_less_than') } %}
+	{% set op_lang = {'is': phrase('agent.general.is'), 'not': phrase('agent.general.is_not'), 'contains': phrase('agent.general.contains'), 'notcontains': phrase('agent.general.does_not_contain'), 'gt': phrase('agent.general.is_greater_than'), 'lt': phrase('agent.general.is_less_than'), 'not_isset': phrase('agent.general.is_not_set'), 'isset': phrase('agent.general.is_set') } %}
 	{% for field in app.getOrgFieldManager().getDisplayArray() %}
 	{% if field.field_def.getFilterCapabilities(search_context) %}
-	<div class="builder-type" title="{{field.field_def.title}}" data-rule-group="Organization Fields" data-rule-type="org_field[{{field.field_def.id}}]">
+	<div class="builder-type" title="{{field.field_def.title}}" data-rule-group="Organization Fields" data-rule-type="org_field[{{field.field_def.id}}]" {{ field.formViewCriteria.vars.rule_handler|raw }}>
 		<div class="builder-op">
-			<select name="op">
-				{% if search_context == 'filter' %}
-					{% for op in field.field_def.getFilterCapabilities(search_context) %}
-						<option value="{{op}}">{{op_lang[op]}}</option>
-					{% endfor %}
+			<select name="op" class="op">
+				{% if 'date' == field.field_handler or 'datetime' == field.field_handler %}
+					<option value="lte">{{ phrase('agent.general.before') }}</option>
+					<option value="gte">{{ phrase('agent.general.after') }}</option>
+					<option value="between">{{ phrase('agent.general.between') }}</option>
 				{% else %}
-					{% for op in field.field_def.getSearchCapabilities(search_context) %}
-						<option value="{{op}}">{{op_lang[op]}}</option>
-					{% endfor %}
+					{% if search_context == 'filter' %}
+						{% for op in field.field_def.getFilterCapabilities(search_context) %}
+							<option value="{{op}}">{{op_lang[op]}}</option>
+						{% endfor %}
+					{% else %}
+						{% for op in field.field_def.getSearchCapabilities(search_context) %}
+							<option value="{{op}}">{{op_lang[op]}}</option>
+						{% endfor %}
+					{% endif %}
 				{% endif %}
 			</select>
 		</div>
 		<div class="builder-options">
-			{{ form_widget(field.formView) }}
+			{{ form_widget(field.formViewCriteria) }}
 		</div>
 	</div>
 	{% endif %}

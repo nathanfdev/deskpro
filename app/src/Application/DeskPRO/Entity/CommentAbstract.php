@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -39,19 +38,18 @@ use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
- * Base comments
- *
+ * Base comments.
  */
 abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
     const OBJ_PROP = '__abstract__';
 
-    const STATUS_VISIBLE    = 'visible';
-    const STATUS_VALIDATING = 'validating';
+    const STATUS_VISIBLE         = 'visible';
+    const STATUS_VALIDATING      = 'validating';
     const STATUS_USER_VALIDATING = 'user_validating';
-    const STATUS_TEMP       = 'temp';
-    const STATUS_DELETED    = 'deleted';
-    const STATUS_AGENT      = 'agent';
+    const STATUS_TEMP            = 'temp';
+    const STATUS_DELETED         = 'deleted';
+    const STATUS_AGENT           = 'agent';
 
     /**
      * The unique ID.
@@ -128,13 +126,15 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @static
-     * @param  Person                                      $person
-     * @param  bool                                        $use_request Use the current request to set visitor (and thus ip etc)
+     *
+     * @param Person $person
+     * @param bool   $use_request Use the current request to set visitor (and thus ip etc)
+     *
      * @return \Application\DeskPRO\Entity\CommentAbstract
      */
     public static function newForPerson(Person $person, $use_request = true)
     {
-        $comment = new static();
+        $comment         = new static();
         $comment->person = $person;
 
         if ($use_request) {
@@ -144,11 +144,13 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $comment;
     }
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this['date_created'] = new \DateTime();
     }
-
 
     /**
      * Get the email address for the person who made the comment, trying
@@ -167,12 +169,11 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-
     /**
      * Get the name for the person who made the comment, trying
      * the person record first if it exists.
      *
-     * @param $force_user If true, forces the user display name
+     * @param bool $force_user If true, forces the user display name
      *
      * @return string
      */
@@ -191,7 +192,6 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-
     /**
      * @return string
      */
@@ -202,17 +202,30 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         } else {
             $display = $this->getUserName();
             if ($this->getUserEmail()) {
-                $display .= ' <'. $this->getUserEmail() . '>';
+                $display .= ' <'.$this->getUserEmail().'>';
             }
 
             return $display;
         }
     }
 
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson(Person $person = null)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
 
     /**
      * Set the visitor of the person who made this comment. If the name
      * and email arent set they will be set to values of the visitor.
+     *
+     * @param Visitor $visitor
      *
      * @return string
      */
@@ -220,33 +233,50 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->setModelField('visitor', $visitor);
 
-        if ($visitor === null) return;
+        if ($visitor === null) {
+            return;
+        }
 
         $this['ip_address'] = $visitor['ip_address'];
 
-        if (!$this->name AND $visitor['name']) {
+        if (!$this->name and $visitor['name']) {
             $this['name'] = $visitor['name'];
         }
-        if (!$this->email AND $visitor['email']) {
+        if (!$this->email and $visitor['email']) {
             $this['email'] = $visitor['email'];
         }
     }
 
-
     /**
-     * Set the Status
+     * Set the Status.
      *
      * @param $new_status
+     *
+     * @return $this
      */
     public function setStatus($new_status)
     {
         // any time after its created and the status is set
         // to visible means someone has reviewed its
         if ($this->id && $new_status == 'visible') {
-            $this->setModelField('is_reviewed' , true);
+            $this->setModelField('is_reviewed', true);
         }
 
         $this->setModelField('status', $new_status);
+
+        return $this;
+    }
+
+    /**
+     * @param string $content
+     *
+     * @return $this
+     */
+    public function setContent($content)
+    {
+        $this->setModelField('content', $content);
+
+        return $this;
     }
 
     /**
@@ -257,12 +287,13 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return Strings::linkify(nl2br(htmlspecialchars($this->content, \ENT_NOQUOTES, 'UTF-8')));
     }
 
-
+    /**
+     * @return string
+     */
     public function getContentReal()
     {
         return $this->content;
     }
-
 
     /**
      * @return string
@@ -271,7 +302,6 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         return nl2br(htmlspecialchars($this->content));
     }
-
 
     /**
      * Strip all HTML from the content and convert breaks and paragraphs to linebreaks.
@@ -285,10 +315,10 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
             return '';
         }
         $content = Strings::standardEol($this->content);
-        $content = preg_replace("#<br\s*/?><p>#", "<p>", $content);
-        $content = preg_replace("#<p></p><br\s*/?>#", "<p>", $content);
-        $content = preg_replace("#</p><br\s*/?>#", "</p>", $content);
-        $content = preg_replace("#<br\s*/?></p>#", "</p>", $content);
+        $content = preg_replace("#<br\s*/?><p>#", '<p>', $content);
+        $content = preg_replace("#<p></p><br\s*/?>#", '<p>', $content);
+        $content = preg_replace("#</p><br\s*/?>#", '</p>', $content);
+        $content = preg_replace("#<br\s*/?></p>#", '</p>', $content);
         $content = preg_replace("#<br\s*/?>?#", "\n", $content);
         $content = preg_replace("#<p>\n?#", "\n", $content);
         $content = preg_replace("#\n?</p>#", "\n", $content);
@@ -296,7 +326,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $content = trim($content);
 
         $lines_raw = explode("\n", $content);
-        $lines = array();
+        $lines     = array();
         foreach ($lines_raw as $l) {
             $lines[] = trim($l);
         }
@@ -308,7 +338,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get the author ID
+     * Get the author ID.
      *
      * @return int
      */
@@ -335,18 +365,18 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set the content object
+     * Set the content object.
      *
      * @param mixed $obj
      */
     public function setObject($obj)
     {
-        $prop = static::OBJ_PROP;
+        $prop        = static::OBJ_PROP;
         $this[$prop] = $obj;
     }
 
     /**
-     * Get the base clasname of the object
+     * Get the base clasname of the object.
      *
      * @return string
      */
@@ -356,12 +386,26 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get the "content-type" of the object on this comment
+     * Get the "content-type" of the object on this comment.
      *
      * @return string
      */
     public function getObjectContentType()
     {
         return $this->getObject()->getTableName();
+    }
+
+    /**
+     * Set created at.
+     *
+     * @param \DateTime $date_created
+     *
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $date_created)
+    {
+        $this->setModelField('date_created', $date_created);
+
+        return $this;
     }
 }

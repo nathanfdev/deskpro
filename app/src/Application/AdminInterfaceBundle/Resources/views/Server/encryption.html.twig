@@ -1,0 +1,162 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+  <section class="dp-paneblock dp-listpane">
+    <header>
+      <h3>Encryption</h3>
+    </header>
+
+    <article class="form-horizontal dp-form">
+      <div class="panel panel-innertable">
+        <p>
+          DeskPRO always uses a secure <a href="https://en.wikipedia.org/wiki/Cryptographic_hash_function" target="_blank">one-way hashing algorithm</a> for storing user, agent and admin passwords.
+          DeskPRO stores the hash digest of a password and throws away the original password. The original simply is not stored anywhere, so it can never be read (by anyone, be it a sysadmin
+          or a malicious attacker).
+        </p>
+        <p>
+          However, there are still sensitive pieces of information that must be stored in the database where DeskPRO needs the original. For example, to connect to an email account,
+          DeskPRO needs to read the real password so it can log-in to your mail server. In situations like this, the system cannot use a hash algorithm because it needs to
+          keep the original.
+        </p>
+        <p>
+          For information like this, you may wish to store an encrypted version of the data in the database. That way, even if someone (a sysadmin or a malicious user) got
+          their hands on your database, they wouldn't be able to read the credentials for your account.
+        </p>
+        <p>
+          At the moment, the following pieces of information can be saved in encrypted form:
+        </p>
+        <ul>
+          <li>Email account passwords</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="form-horizontal dp-form" ng-if="!status.is_enabled">
+      <div class="panel panel-innertable">
+        <div class="panel-heading">
+          <h3>
+            <span>Enable Encryption</span>
+          </h3>
+        </div>
+        <div class="form-group" ng-if="!status.is_able">
+          <p>
+            Your server is not capable of DeskPRO's encryption features. The most common cause of this is a missing <a href="http://php.net/manual/en/book.openssl.php">OpenSSL extension</a>
+            or <a href="http://php.net/manual/en/book.mcrypt.php">mcrypt extension</a>
+            . Make sure that these are installed and enabeled.
+          </p>
+          <p>
+            Here is the raw error code returned from the server:
+          </p>
+          <p>
+            {{ ng_var('status.unable_error') }}
+          </p>
+        </div>
+        <div class="form-group" ng-if="status.is_able">
+          <div class="col-lg-12">
+            <div class="inner-group">
+              <p>
+                To enable encryption, click the button below. This will generate a new secure key in a file on your server (<var>data/encryption-key.bin</var>). This file must never be removed or lost. Losing your encryption key file
+                will result in data loss because DeskPRO won't be able to read the encrypted data anymore. Therefore, if you enable encryption, it is highly recommended you copy the file to a second, secure location.
+              </p>
+              <p>
+                <strong>Note:</strong> After you enable encryption, you will need direct access to the filesystem to disable it again.
+              </p>
+              <br/><br/>
+              <p>
+                <label>
+                  <input type="checkbox" ng-model="agree1"> I understand that if I lose the encryption key file (<var>data/encryption-key.bin</var>), that any encrypted data will be lost forever.
+                </label>
+                <br/>
+                <label>
+                  <input type="checkbox" ng-model="agree2"> I have prepared a secure method of backing up the key file.
+                </label>
+              </p>
+              <div dp-hide-spinning="saving">
+                <button class="btn btn-danger" ng-click="ServerEnc.enable()" ng-disabled="!agree1 || !agree2">Generate Key File &amp; Enable Encryption &rarr;</button>
+              </div>
+              <div dp-show-spinning="saving">
+                <i class="spinner-flat"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <div ng-if="status.is_enabled">
+      <article class="form-horizontal dp-form">
+        <div class="panel panel-innertable">
+          <div class="panel-heading">
+            <h3>
+              <span>Encryption ENABLED</span>
+            </h3>
+          </div>
+          <div class="form-group">
+            <div class="col-lg-12">
+              <div class="inner-group">
+                <p>
+                  Encryption is currently enabled.
+                </p>
+                <br/>
+                <br/>
+                <div ng-if="!status.can_disable">
+                  <p>
+                    To disable encryption, you need to manually create a file on the filesystem at: {{ ng_var('status.can_disable_file') }}
+                  </p>
+                  <p>
+                    The file just needs to exist, it can be blank or contain any value. This is a security precaution to ensure that you have sufficient access
+                    to disable encryption.
+                  </p>
+                  <br/><br/>
+                  <div dp-hide-spinning="saving">
+                    <button class="btn btn-danger" ng-click="ServerEnc.reloadStatus()">I have created the file &mdash; Refresh Status <i class="fa fa-refresh"></i></button>
+                  </div>
+                  <div dp-show-spinning="saving">
+                    <i class="spinner-flat"></i>
+                  </div>
+                </div>
+                <div ng-if="status.can_disable">
+                  <p>
+                    To disable encryption, click the button below.
+                  </p>
+                  <br/><br/>
+                  <p>
+                    <label>
+                      <input type="checkbox" ng-model="disable_agree"> I understand that disabling encryption will make potentially sensitive information stored in plain-text in the database.
+                    </label>
+                  </p>
+                  <div dp-hide-spinning="saving">
+                    <button class="btn btn-danger" ng-click="ServerEnc.disable()" ng-disabled="!disable_agree">Disable Encryption &rarr;</button>
+                  </div>
+                  <div dp-show-spinning="saving">
+                    <i class="spinner-flat"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <article class="form-horizontal dp-form" ng-if="error_info">
+      <div class="panel panel-innertable">
+        <div class="form-group">
+          <div class="col-lg-12">
+            <div class="inner-group">
+              <p>
+                Your changes could not be saved. The server responded with the following error when trying to change your encryption settings:
+              </p>
+              <p style="color: #900">
+                {{ ng_var('error_info.error_message') }} (code: {{ ng_var('error_info.error_code') }})
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+{% endblock %}

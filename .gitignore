@@ -1,6 +1,6 @@
 # IDE project files
-/.idea/*
-!/.idea/codeStyleSettings.xml
+.DS_Store
+/.idea
 /web/app/.idea/
 /nbproject/
 /catalog.xml
@@ -11,20 +11,28 @@
 *.komodoproject
 *.sublime*
 /running_tests.trigger
+*.swp
+.DS_Store
+.php_cs.cache
 
 # vendors and build files
 /app/vendor
 /app/node_modules
+/app/BUILD/vendor
 /web/node_modules
 /web/bower_components
 /web/app/node_modules
 /web/app/bower_components
 /web/app-build
 /web/loader-build
+app/BUILD/sys/config/template-map.php
+app/BUILD/tests/config/config.all.php
 
 # cache and log files
 npm-debug.log
 /app/sys/cache/*
+!/app/sys/cache/index.html
+app/sys/logs/*
 /app/sys/bootstrap.php
 /app/sys/compiled.php
 /app/sys/config/build-time.php
@@ -51,6 +59,9 @@ app/sys/Resources/agent-perm-names.php
 /data/log-analytics.sqlite
 /data/languages.cache
 /data/twitter.pid
+data/can-disable-encryption.txt
+data/encryption-key.bin
+data/encryption-key.bin.*
 /data/logs/*
 /data/logs/emails/*
 /data/debug/*
@@ -65,6 +76,8 @@ app/sys/Resources/agent-perm-names.php
 /data/files/*
 /data/manuals
 /data/emailstore
+/data/import/csv/export/*
+/data/importer.pid
 
 /web/build
 /web/app/build/*/build.js

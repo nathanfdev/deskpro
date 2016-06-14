@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -43,80 +42,81 @@ class Article extends AbstractEntityRepository
     public function getBySlug($slug)
     {
         $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
-        if (!$id) return null;
+        if (!$id) {
+            return;
+        }
+
         return $this->find($id);
     }
 
-
     /**
-     * Get articles waiting for validating
+     * Get articles waiting for validating.
      *
      * @return array
      */
     public function getValidatingArticle()
     {
-        $articles = $this->getEntityManager()->createQuery("
+        $articles = $this->getEntityManager()->createQuery('
             SELECT a
             FROM DeskPRO:Article a
             WHERE a.hidden_status = ?1
             ORDER BY a.id DESC
-        ")->setParameter(1, 'validating')->execute();
+        ')->setParameter(1, 'validating')->execute();
 
         return $articles;
     }
 
-
     /**
-     * Get drafts, optionally for a specific person
+     * Get drafts, optionally for a specific person.
      *
-     * @param  \Application\DeskPRO\Entity\Person $person
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return array
      */
     public function getDraftArticles(PersonEntity $person = null)
     {
         if ($person) {
-            $articles = $this->getEntityManager()->createQuery("
+            $articles = $this->getEntityManager()->createQuery('
                 SELECT a
                 FROM DeskPRO:Article a
                 WHERE a.hidden_status = ?1 AND a.person = ?2
                 ORDER BY a.id DESC
-            ")->setParameter(1, 'draft')
+            ')->setParameter(1, 'draft')
               ->setParameter(2, $person)
               ->execute();
         } else {
-            $articles = $this->getEntityManager()->createQuery("
+            $articles = $this->getEntityManager()->createQuery('
                 SELECT a
                 FROM DeskPRO:Article a
                 WHERE a.hidden_status = ?1
                 ORDER BY a.id DESC
-            ")->setParameter(1, 'draft')->execute();
+            ')->setParameter(1, 'draft')->execute();
         }
 
         return $articles;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Entity\Person|null $person
+     * @param \Application\DeskPRO\Entity\Person|null $person
+     *
      * @return int
      */
     public function getDraftArticlesCount(PersonEntity $person = null)
     {
         if ($person) {
-            return App::getDb()->fetchColumn("
+            return App::getDb()->fetchColumn('
                 SELECT COUNT(*)
                 FROM articles
                 WHERE hidden_status = ? AND person_id = ?
-            ", array('draft', $person['id']));
+            ', array('draft', $person['id']));
         } else {
-            return App::getDb()->fetchColumn("
+            return App::getDb()->fetchColumn('
                 SELECT COUNT(*)
                 FROM articles
                 WHERE hidden_status = ?
-            ", array('draft'));
+            ', array('draft'));
         }
     }
-
 
     /**
      * Get a collection of articles by ID. If $person_context
@@ -126,10 +126,11 @@ class Article extends AbstractEntityRepository
      */
     public function getByIdsWithContext(array $ids, PersonEntity $person_context = null)
     {
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
         if ($person_context) {
-
             $cat_ids = $person_context->getPermissionsManager()->ArticleCategories->getAllowedCategories();
             if (!$cat_ids) {
                 return array();
@@ -142,7 +143,6 @@ class Article extends AbstractEntityRepository
                 WHERE a.id IN (?0) AND cat.id IN (?1) AND a.status = 'published'
                 ORDER BY a.id DESC
             ")->execute(array($ids, $cat_ids));
-
         } else {
             $articles = $this->getEntityManager()->createQuery("
                 SELECT a
@@ -156,17 +156,18 @@ class Article extends AbstractEntityRepository
         return $articles;
     }
 
-
     public function getByResultIds(array $ids)
     {
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
-        $unsorted_articles = $this->getEntityManager()->createQuery("
+        $unsorted_articles = $this->getEntityManager()->createQuery('
             SELECT a
             FROM DeskPRO:Article a INDEX BY a.id
             WHERE a.id IN (?0)
             ORDER BY a.id DESC
-        ")->setFetchMode('DeskPRO:ArticleCategory', 'categories', 'EAGER')
+        ')->setFetchMode('DeskPRO:ArticleCategory', 'categories', 'EAGER')
           ->execute(array($ids));
 
         $articles = array();
@@ -180,13 +181,12 @@ class Article extends AbstractEntityRepository
         return $articles;
     }
 
-
-
     /**
      * Given an array of nodes (usually roots), get the top $num newest articles, and then
      * sort them into an array keyed by the node IDs.
      *
      * @param  $nodes
+     *
      * @return array
      */
     public function getNewestInNodes($nodes, $num = 5, PersonEntity $person_context = null)
@@ -204,17 +204,16 @@ class Article extends AbstractEntityRepository
         $done_articles = array(0);
 
         foreach ($nodes as $node) {
-
             $cat_ids = $node->getTreeIds(true);
 
-            $params = array();
+            $params            = array();
             $params['cat_ids'] = array_values($cat_ids);
 
             $perm_where = '';
             if ($person_context && !$person_context->is_agent) {
                 $dis_ids = $person_context->PermissionsManager->ArticleCategories->getDisallowedCategories();
                 if ($dis_ids) {
-                    $perm_where = ' AND cat.id NOT IN (:cat_not_ids) ';
+                    $perm_where            = ' AND cat.id NOT IN (:cat_not_ids) ';
                     $params['cat_not_ids'] = array_values($dis_ids);
                 }
             }
@@ -233,19 +232,17 @@ class Article extends AbstractEntityRepository
 
             if (count($articles)) {
                 $all_articles[$node['id']] = $articles;
-                $done_articles = array_merge($done_articles, array_keys($articles));
+                $done_articles             = array_merge($done_articles, array_keys($articles));
             }
         }
 
         return $all_articles;
     }
 
-
-
     public function getNewest($num = 10, $node = false)
     {
         if ($node) {
-            $cat_ids = $node->getTreeIds(true);
+            $cat_ids  = $node->getTreeIds(true);
             $articles = $this->getEntityManager()->createQuery("
                 SELECT a
                 FROM DeskPRO:Article a INDEX BY a.id
@@ -264,12 +261,11 @@ class Article extends AbstractEntityRepository
 
         return $articles;
     }
-
 
     public function getTopRated($num = 10, $node = false)
     {
         if ($node) {
-            $cat_ids = $node->getTreeIds(true);
+            $cat_ids  = $node->getTreeIds(true);
             $articles = $this->getEntityManager()->createQuery("
                 SELECT a
                 FROM DeskPRO:Article a INDEX BY a.id
@@ -289,19 +285,16 @@ class Article extends AbstractEntityRepository
         return $articles;
     }
 
-
-
     public function getInNode($node)
     {
-        return $this->getEntityManager()->createQuery("
+        return $this->getEntityManager()->createQuery('
             SELECT a
             FROM DeskPRO:Article a
             LEFT JOIN a.categories c
             WHERE c = ?1
             ORDER BY a.id DESC
-        ")->setParameter(1, $node)->execute();
+        ')->setParameter(1, $node)->execute();
     }
-
 
     public function getSectionCounts(PersonEntity $person_context = null)
     {
@@ -330,13 +323,13 @@ class Article extends AbstractEntityRepository
     {
         return array(
             'views' => array(
-                'conditions' => '%1$s.object_type = 1 AND %1$s.object_id = %2$s.id',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog'
+                'conditions'   => '%1$s.object_type = 1 AND %1$s.object_id = %2$s.id',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog',
             ),
             'ratings' => array(
-                'conditions' => '%1$s.object_type = \'article\' AND %1$s.object_id = %2$s.id',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Rating'
-            )
+                'conditions'   => '%1$s.object_type = \'article\' AND %1$s.object_id = %2$s.id',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Rating',
+            ),
         );
     }
 }

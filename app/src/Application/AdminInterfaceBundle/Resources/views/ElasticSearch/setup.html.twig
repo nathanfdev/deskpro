@@ -44,7 +44,35 @@
 						</label>
 						<input type="text" class="form-control" ng-model="settings.url" />
 						<span class="help-block">
-							Enter the URL to your Elasticsearch service. Here are a few examples: http://localhost/, https://search:9200/ or http://user:pass@host:9200/.
+							Enter the URL to your Elasticsearch service. Here are a few examples: http://localhost/, https://search:9200/, http://my-es-host:80/,   https://my-es-host:443/, http://user:pass@host:9200/.
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-innertable" style="margin-top: 0;"  ng-show="settings.enabled">
+				<div class="labels-group">
+					<label>
+						<input type="checkbox" ng-model="settings.tika_enabled" />
+						<h4>Enable Apache Tika</h4>
+					</label>
+				</div>
+				<div ng-show="settings.tika_enabled">
+					<div class="inner-group">
+						<label>
+							<h4>Apache Tika IP Address:</h4>
+						</label>
+						<input type="text" class="form-control" ng-model="settings.tika_ip" />
+						<span class="help-block">
+							Enter the IP address of your Apache Tika service.
+						</span>
+					</div>
+					<div class="inner-group">
+						<label>
+							<h4>Apache Tika port:</h4>
+						</label>
+						<input type="text" class="form-control" ng-model="settings.tika_port" />
+						<span class="help-block">
+							Enter the port of your Apache Tika service. By default 9998.
 						</span>
 					</div>
 				</div>
@@ -245,6 +273,11 @@
 							<td>Articles</td>
 							<td>{{ ng_var('info.num_article') }}</td>
 							<td>{{ ng_var('info.realnum_article') }}</td>
+						</tr>
+						<tr>
+							<td>News</td>
+							<td>{{ ng_var('info.num_news') }}</td>
+							<td>{{ ng_var('info.realnum_news') }}</td>
 						</tr>
 						<tr>
 							<td>Chat Conversations</td>

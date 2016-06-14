@@ -1,4 +1,32 @@
-<?php return array(
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
     'user.tickets.add_me_to_ticket'                    => 'Add me to the ticket',
     'user.tickets.assigned-agent'                      => 'Assigned Agent',
     'user.tickets.begin_with_department'               => 'Begin by choosing a department',
@@ -26,13 +54,13 @@
     'user.tickets.fields_department'                   => 'Department',
     'user.tickets.fields_priority'                     => 'Priority',
     'user.tickets.fields_product'                      => 'Product',
-    'user.tickets.flash_new_ticket_login'              => 'Your ticket has been submitted. Log in to view it now.',
+    'user.tickets.flash_new_ticket_login'              => 'You have to login to submit this ticket.',
     'user.tickets.flash_new_ticket_validating_email'   => 'Before your ticket will be read by our agents, you must confirm your email address. We sent an email confirmation to {{email}}.',
     'user.tickets.form_error_captcha'                  => 'Please enter the code',
     'user.tickets.form_error_captcha_invalid'          => 'The code you entered is incorrect.',
     'user.tickets.form_error_category'                 => 'Please choose a category',
     'user.tickets.form_error_department'               => 'Please choose a department',
-    'user.tickets.form_error_message'                  => 'Please enter at couple of words here (at least 10 characters)',
+    'user.tickets.form_error_message'                  => 'Please enter a couple of words here (at least 10 characters)',
     'user.tickets.form_error_priority'                 => 'Please choose a priority',
     'user.tickets.form_error_product'                  => 'Please choose a product',
     'user.tickets.form_error_subject'                  => 'Please enter a sentence to describe your question (at least 5 characters)',
@@ -42,7 +70,7 @@
     'user.tickets.i_still_want_to_email'               => 'I still want to submit my question',
     'user.tickets.join_explain'                        => 'You are about to become a participant on the ticket "{{subject}}" by {{name}}.<br /><br />You will be able to read and interact with the ticket, and you will be sent email notifications when the ticket is updated. Note that the action of adding yourself to the ticket will be logged, and your participation will be public to other ticket participants.',
     'user.tickets.join_ticket'                         => 'Join Ticket',
-    'user.tickets.label_cc_emails'                     => 'CC other people into this ticket',
+    'user.tickets.label_cc_emails'                     => 'CC other people into this ticket - separate multiple addresses with ;',
     'user.tickets.label_cced'                          => 'CCed',
     'user.tickets.label_remove_ccs'                    => 'Remove CCed people',
     'user.tickets.last_reply'                          => 'Last Reply',

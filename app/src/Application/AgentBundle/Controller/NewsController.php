@@ -1,42 +1,40 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\NewsResults;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use Doctrine\DBAL\Connection;
@@ -44,7 +42,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 /**
- * Handles listing and editing of news
+ * Handles listing and editing of news.
  */
 class NewsController extends AbstractController
 {
@@ -62,30 +60,30 @@ class NewsController extends AbstractController
 
         $news_comments = $this->em->getRepository('DeskPRO:NewsComment')->getComments($news);
 
-        $related_finder = new RelatedContentFinder($this->person, $news);
-        $related_content = $related_finder->getRelatedEntities();
+        $related_finder  = new RelatedContentFinder($this->person, $news);
+        $related_content = $related_finder->getRelatedEntities(true);
 
         $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editnews', $this->person->id);
 
         $sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($news);
-        $rated_searches = $this->em->getRepository('DeskPRO:SearchLog')->getRatedSearchesFor('news', $news['id'], 'counted');
+        $rated_searches      = $this->em->getRepository('DeskPRO:SearchLog')->getRatedSearchesFor('news', $news['id'], 'counted');
 
         $news_categories = $this->em->getRepository('DeskPRO:NewsCategory')->getInHierarchy();
 
         $perms = array(
-            'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($news),
+            'can_edit'   => $this->person->PermissionsManager->PublishChecker->canEdit($news),
             'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($news),
         );
 
         return $this->render('AgentBundle:News:view.html.twig', array(
-            'news'                 => $news,
-            'news_comments'        => $news_comments,
-            'news_categories'      => $news_categories,
-            'related_content'      => $related_content,
-            'state'                => $state,
-            'sticky_search_words'  => $sticky_search_words,
-            'rated_searches'       => $rated_searches,
-            'perms'                => $perms,
+            'news'                => $news,
+            'news_comments'       => $news_comments,
+            'news_categories'     => $news_categories,
+            'related_content'     => $related_content,
+            'state'               => $state,
+            'sticky_search_words' => $sticky_search_words,
+            'rated_searches'      => $rated_searches,
+            'perms'               => $perms,
         ));
     }
 
@@ -100,6 +98,7 @@ class NewsController extends AbstractController
 
     public function ajaxSaveLabelsAction($news_id)
     {
+        /** @var News $news */
         $news = $this->em->find('DeskPRO:News', $news_id);
 
         if (!$news) {
@@ -127,12 +126,12 @@ class NewsController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $comment = new NewsComment();
-        $comment->news = $news;
-        $comment->person = $this->person;
-        $comment['content'] = $this->in->getString('content');
-        $comment['status'] = 'visible';
-        $comment['date_created']  = new \DateTime();
+        $comment                 = new NewsComment();
+        $comment->news           = $news;
+        $comment->person         = $this->person;
+        $comment['content']      = $this->in->getString('content');
+        $comment['status']       = 'visible';
+        $comment['date_created'] = new \DateTime();
 
         if ($this->person->hasPerm('agent_publish.validate')) {
             $comment->is_reviewed = true;
@@ -142,14 +141,14 @@ class NewsController extends AbstractController
         $this->em->flush();
 
         return $this->render('AgentBundle:News:view-comment.html.twig', array(
-            'comment' => $comment
+            'comment' => $comment,
         ));
     }
 
     public function ajaxSaveAction($news_id)
     {
         $news = $this->em->find('DeskPRO:News', $news_id);
-        $rev = null;
+        $rev  = null;
 
         if (!$news) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -181,8 +180,8 @@ class NewsController extends AbstractController
 
             case 'title':
                 $news['title'] = $this->in->getString('title');
-                $rev = ContentRevisionUtil::findOrCreate($news, 'title', $this->person);
-                $rev['title'] = $news['title'];
+                $rev           = ContentRevisionUtil::findOrCreate($news, 'title', $this->person);
+                $rev['title']  = $news['title'];
                 break;
 
             case 'slug':
@@ -215,17 +214,17 @@ class NewsController extends AbstractController
                     : $this->in->getCleanValue('content', 'html');
 
                 $data['content_html'] = $this->renderView('AgentBundle:News:view-content-tab.html.twig', array(
-                    'news' => $news
+                    'news' => $news,
                 ));
 
-                $rev = ContentRevisionUtil::findOrCreate($news, 'content', $this->person);
+                $rev            = ContentRevisionUtil::findOrCreate($news, 'content', $this->person);
                 $rev['content'] = $news['content'];
 
                 break;
 
             case 'category':
-                $cat = $this->em->find('DeskPRO:NewsCategory', $this->in->getUint('category_id'));
-                $news['category'] = $cat;
+                $cat                 = $this->em->find('DeskPRO:NewsCategory', $this->in->getUint('category_id'));
+                $news['category']    = $cat;
                 $data['category_id'] = $cat['id'];
                 break;
 
@@ -238,20 +237,20 @@ class NewsController extends AbstractController
                 break;
 
             case 'auto-unpub':
-                $date = date_create('@' . $this->in->getUint('end_timestamp'));
+                $date   = date_create('@'.$this->in->getUint('end_timestamp'));
                 $action = $this->in->getString('end_action');
 
-                $news->date_end = $date;
+                $news->date_end   = $date;
                 $news->end_action = $action;
                 break;
 
             case 'remove-auto-unpub':
-                $news->date_end = null;
+                $news->date_end   = null;
                 $news->end_action = null;
                 break;
 
             case 'auto-pub':
-                $date = date_create('@' . $this->in->getUint('pub_timestamp'));
+                $date = date_create('@'.$this->in->getUint('pub_timestamp'));
 
                 $news->date_published = $date;
                 break;
@@ -298,7 +297,7 @@ class NewsController extends AbstractController
     ############################################################################
 
     /**
-     * View a list of feedback
+     * View a list of feedback.
      */
     public function listAction($category_id = 0)
     {
@@ -314,18 +313,20 @@ class NewsController extends AbstractController
 
         $result_helper = NewsResults::newFromRequest($this, array(
             'category' => $category,
-            'show_all' => $show_all
+            'show_all' => $show_all,
         ));
 
         $page = $this->in->getUint('p');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
-        $results = $result_helper->getNewsForPage($page);
+        $results      = $result_helper->getNewsForPage($page);
         $result_cache = $result_helper->getResultCache();
 
         $total_results = count($result_helper->getNewsIds());
-        $num_pages = ceil($total_results / 50);
-        $showing_to = min(($page) * 50, $total_results);
+        $num_pages     = ceil($total_results / 50);
+        $showing_to    = min(($page) * 50, $total_results);
 
         $display_fields = $this->person->getPref('agent.ui.news-filter-display-fields.0');
         if (!$display_fields) {
@@ -347,17 +348,17 @@ class NewsController extends AbstractController
             ', array(array_keys($results)), array(Connection::PARAM_INT_ARRAY));
         }
 
-        $cat_usergroups = array();
+        $cat_usergroups     = array();
         $cat_structure_data = array();
         if ($category) {
-            $cat_usergroups = $this->db->fetchAllCol("
+            $cat_usergroups = $this->db->fetchAllCol('
                 SELECT usergroup_id
                 FROM news_category2usergroup
                 WHERE category_id = ?
-            ", array($category->getId()));
+            ', array($category->getId()));
 
-            $cat_structure_data = $this->em->getRepository('DeskPRO:NewsCategory')->getInHierarchy();;
-            $cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id' , 'title', 'children'), true, true);
+            $cat_structure_data = $this->em->getRepository('DeskPRO:NewsCategory')->getInHierarchy();
+            $cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id', 'title', 'children'), true, true);
             $cat_structure_data = Arrays::multiRenameKey($cat_structure_data, 'title', 'label');
             $cat_structure_data = Arrays::assocToNumericArray($cat_structure_data, 'children');
         }
@@ -383,13 +384,13 @@ class NewsController extends AbstractController
 
     public function newNewsAction()
     {
-        $news_categories = $this->em->getRepository('DeskPRO:NewsCategory')->getFlatHierarchy();
+        $news_categories = $this->em->getRepository('DeskPRO:NewsCategory')->getInHierarchy();
 
         $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newnews', $this->person->id);
 
         return $this->render('AgentBundle:News:newnews.html.twig', array(
             'news_categories' => $news_categories,
-            'state' => $state
+            'state'           => $state,
         ));
     }
 
@@ -398,7 +399,7 @@ class NewsController extends AbstractController
         $newnews = new \Application\AgentBundle\Form\Model\NewNews($this->person);
 
         $formType = new \Application\AgentBundle\Form\Type\NewNews();
-        $form = $this->get('form.factory')->create($formType, $newnews);
+        $form     = $this->get('form.factory')->create($formType, $newnews);
 
         $this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newnews' AND person_id = ?", array($this->person->id));
 
@@ -409,8 +410,8 @@ class NewsController extends AbstractController
             $validator = new \Application\AgentBundle\Validator\NewNewsValidator();
             if (!$validator->isValid($newnews)) {
                 return $this->createJsonResponse(array(
-                    'error' => true,
-                    'error_codes' => $validator->getErrorGroups()
+                    'error'       => true,
+                    'error_codes' => $validator->getErrorGroups(),
                 ));
             }
             $newnews->save();
@@ -427,7 +428,7 @@ class NewsController extends AbstractController
 
             return $this->createJsonResponse(array(
                 'success' => true,
-                'news_id' => $news['id']
+                'news_id' => $news['id'],
             ));
         } else {
             return $this->createJsonResponse(array(

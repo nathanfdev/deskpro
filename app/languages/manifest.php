@@ -1,4 +1,32 @@
-<?php return array(
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
     'default' => array(
         'id'         => 'default',
         'lang_code'  => 'eng',
@@ -9,7 +37,7 @@
         'has_user'   => true,
         'has_agent'  => true,
         'has_admin'  => true,
-        'is_managed' => false
+        'is_managed' => false,
     ),
 
     'arabic' => array(
@@ -22,7 +50,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'danish' => array(
@@ -35,7 +63,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'dutch' => array(
@@ -46,9 +74,35 @@
         'flag_image' => 'nl.png',
         'is_rtl'     => false,
         'has_user'   => true,
+        'has_agent'  => true,
+        'has_admin'  => false,
+        'is_managed' => true,
+    ),
+
+    'english_gb' => array(
+        'id'         => 'english_gb',
+        'lang_code'  => 'eng',
+        'title'      => 'English (UK)',
+        'locale'     => 'en_GB',
+        'flag_image' => 'gb.png',
+        'is_rtl'     => false,
+        'has_user'   => true,
+        'has_agent'  => true,
+        'has_admin'  => true,
+        'is_managed' => true,
+    ),
+
+    'finnish' => array(
+        'id'         => 'finnish',
+        'lang_code'  => 'fin',
+        'title'      => 'Finnish',
+        'locale'     => 'fi',
+        'flag_image' => 'fi.png',
+        'is_rtl'     => false,
+        'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'french' => array(
@@ -61,7 +115,7 @@
         'has_user'   => true,
         'has_agent'  => true,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'german' => array(
@@ -72,9 +126,9 @@
         'flag_image' => 'de.png',
         'is_rtl'     => false,
         'has_user'   => true,
-        'has_agent'  => false,
+        'has_agent'  => true,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'hungarian' => array(
@@ -87,7 +141,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'italian' => array(
@@ -100,7 +154,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'japanese' => array(
@@ -113,7 +167,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'korean' => array(
@@ -126,7 +180,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'norwegian' => array(
@@ -139,7 +193,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'persian' => array(
@@ -152,7 +206,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'polish' => array(
@@ -163,9 +217,9 @@
         'flag_image' => 'pl.png',
         'is_rtl'     => false,
         'has_user'   => true,
-        'has_agent'  => false,
+        'has_agent'  => true,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'portuguese' => array(
@@ -178,7 +232,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'romanian' => array(
@@ -191,7 +245,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'russian' => array(
@@ -204,7 +258,7 @@
         'has_user'   => true,
         'has_agent'  => true,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'slovak' => array(
@@ -217,7 +271,7 @@
         'has_user'   => true,
         'has_agent'  => true,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'spanish' => array(
@@ -228,9 +282,9 @@
         'flag_image' => 'es.png',
         'is_rtl'     => false,
         'has_user'   => true,
-        'has_agent'  => false,
+        'has_agent'  => true,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'swedish' => array(
@@ -243,7 +297,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'turkish' => array(
@@ -256,7 +310,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     // ensure an appropriate flag_image has been specified when adding a language
@@ -270,19 +324,6 @@
         'title'      => 'Czech',
         'locale'     => 'cs',
         'flag_image' => 'cz.png',
-        'is_rtl'     => false,
-        'has_user'   => true,
-        'has_agent'  => false,
-        'has_admin'  => false,
-        'is_managed' => true
-    ),
-
-    'finnish' => array(
-        'id'         => 'finnish',
-        'lang_code'  => 'fin',
-        'title'      => 'Finnish',
-        'locale'     => 'fi',
-        'flag_image' => 'fi.png',
         'is_rtl'     => false,
         'has_user'   => true,
         'has_agent'  => false,

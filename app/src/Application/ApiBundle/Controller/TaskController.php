@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -40,12 +37,12 @@ use Application\DeskPRO\Searcher\TaskSearch;
 use Orb\Util\Numbers;
 
 /**
-* @SWG\Resource(
-* 	resourcePath="/tasks",
-* 	description="Operations about Tasks",
-* 	basePath="/api"
-* )
-*/
+ * @SWG\Resource(
+ * 	resourcePath="/tasks",
+ * 	description="Operations about Tasks",
+ * 	basePath="/api"
+ * )
+ */
 class TaskController extends AbstractController
 {
     /**
@@ -169,17 +166,17 @@ class TaskController extends AbstractController
     public function searchAction()
     {
         $search_map = array(
-            'assigned_agent_id' => TaskSearch::TERM_ASSIGNED_AGENT_ID,
+            'assigned_agent_id'      => TaskSearch::TERM_ASSIGNED_AGENT_ID,
             'assigned_agent_team_id' => TaskSearch::TERM_ASSIGNED_AGENT_TEAM_ID,
-            'is_completed' => TaskSearch::TERM_IS_COMPLETED,
-            'person_id' => TaskSearch::TERM_PERSON_ID,
-            'title' => TaskSearch::TERM_TITLE,
-            'visibility' => TaskSearch::TERM_VISIBILITY
+            'is_completed'           => TaskSearch::TERM_IS_COMPLETED,
+            'person_id'              => TaskSearch::TERM_PERSON_ID,
+            'title'                  => TaskSearch::TERM_TITLE,
+            'visibility'             => TaskSearch::TERM_VISIBILITY,
         );
 
         $terms = array();
 
-        foreach ($search_map AS $input => $search_key) {
+        foreach ($search_map as $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ((is_string($value) && strlen($value) > 0) || (!is_string($value) && $value)) {
                 $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
@@ -187,41 +184,41 @@ class TaskController extends AbstractController
         }
 
         $date_created_start = $this->in->getUint('date_created_start');
-        $date_created_end = $this->in->getUint('date_created_end');
+        $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start,
-                'date2' => $date_created_end
+                'date1'             => $date_created_start,
+                'date2'             => $date_created_end,
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start
+                'date1'             => $date_created_start,
             ));
         }
 
         $date_completed_start = $this->in->getUint('date_completed_start');
-        $date_completed_end = $this->in->getUint('date_completed_end');
+        $date_completed_end   = $this->in->getUint('date_completed_end');
         if ($date_completed_end) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_COMPLETED, 'op' => 'between', 'options' => array(
-                'date1' => $date_completed_start,
-                'date2' => $date_completed_end
+                'date1'             => $date_completed_start,
+                'date2'             => $date_completed_end,
             ));
         } elseif ($date_completed_start) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_COMPLETED, 'op' => 'between', 'options' => array(
-                'date1' => $date_completed_start
+                'date1'             => $date_completed_start,
             ));
         }
 
         $date_due_start = $this->in->getUint('date_due_start');
-        $date_due_end = $this->in->getUint('date_due_end');
+        $date_due_end   = $this->in->getUint('date_due_end');
         if ($date_due_end) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_DUE, 'op' => 'between', 'options' => array(
-                'date1' => $date_due_start,
-                'date2' => $date_due_end
+                'date1'             => $date_due_start,
+                'date2'             => $date_due_end,
             ));
         } elseif ($date_due_start) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_DUE, 'op' => 'between', 'options' => array(
-                'date1' => $date_due_start
+                'date1'             => $date_due_start,
             ));
         }
 
@@ -239,21 +236,23 @@ class TaskController extends AbstractController
         $result_cache = $this->getApiSearchResult('task', $terms, $extra, $this->in->getUint('cache_id'), new TaskSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
         $person_ids = $result_cache->results;
 
         $page_ids = \Orb\Util\Arrays::getPageChunk($person_ids, $page, $per_page);
-        $tasks = App::getEntityRepository('DeskPRO:Task')->getByIds($page_ids, true);
+        $tasks    = App::getEntityRepository('DeskPRO:Task')->getByIds($page_ids, true);
 
         return $this->createApiResponse(array(
-            'page' => $page,
+            'page'     => $page,
             'per_page' => $per_page,
-            'total' => count($person_ids),
+            'total'    => count($person_ids),
             'cache_id' => $result_cache->id,
-            'tasks' => $this->getApiData($tasks)
+            'tasks'    => $this->getApiData($tasks),
         ));
     }
 
@@ -319,7 +318,7 @@ class TaskController extends AbstractController
      */
     public function newTaskAction()
     {
-        $task = new Task();
+        $task   = new Task();
         $errors = array();
 
         $title = $this->in->getString('title');
@@ -327,14 +326,14 @@ class TaskController extends AbstractController
             $errors['title'] = array('required_field.title', 'title is empty or missing');
         }
 
-        $task->title = $title;
+        $task->title  = $title;
         $task->person = $this->person;
 
         $ticket_id = $this->in->getUint('ticket_id');
         if (!empty($ticket_id)) {
             $ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
             if ($ticket) {
-                $assoc = new \Application\DeskPRO\Entity\TaskAssociatedTicket();
+                $assoc         = new \Application\DeskPRO\Entity\TaskAssociatedTicket();
                 $assoc->ticket = $ticket;
                 $assoc->task   = $task;
 
@@ -348,7 +347,7 @@ class TaskController extends AbstractController
 
         $date_due = $this->in->getUint('date_due');
         if ($date_due) {
-            $task->date_due = new \DateTime('@' . $date_due);
+            $task->date_due = new \DateTime('@'.$date_due);
         }
 
         if ($this->in->checkIsset('assigned_agent_id')) {
@@ -428,7 +427,7 @@ class TaskController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/task/{task_id}",
+     * 	path="/tasks/{task_id}",
      * 	@SWG\Operation(
      * 		method="POST",
      * 		summary="Updates a Task.",
@@ -436,7 +435,7 @@ class TaskController extends AbstractController
      *			@SWG\Parameter(
      *				name="task_id",
      *				description="ID of the task that needs to be updated",
-     *				paramType="query",
+     *				paramType="path",
      *				required=false,
      *				type="integer"
      *			),
@@ -482,7 +481,7 @@ class TaskController extends AbstractController
         if ($this->in->checkIsset('date_due')) {
             $date_due = $this->in->getUint('date_due');
             if ($date_due) {
-                $task->date_due = new \DateTime('@' . $date_due);
+                $task->date_due = new \DateTime('@'.$date_due);
             } else {
                 $task->date_due = null;
             }
@@ -623,11 +622,11 @@ class TaskController extends AbstractController
         $task = $this->_getTaskOr404($task_id);
 
         $ticket_id = $this->in->getUint('ticket_id');
-        $assoc = false;
+        $assoc     = false;
         if (!empty($ticket_id)) {
             $ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
             if ($ticket) {
-                $assoc = new \Application\DeskPRO\Entity\TaskAssociatedTicket();
+                $assoc         = new \Application\DeskPRO\Entity\TaskAssociatedTicket();
                 $assoc->ticket = $ticket;
                 $assoc->task   = $task;
 
@@ -679,7 +678,7 @@ class TaskController extends AbstractController
         $task = $this->_getTaskOr404($task_id);
 
         $exists = false;
-        foreach ($task->task_associations AS $assoc) {
+        foreach ($task->task_associations as $assoc) {
             if ($assoc->id == $assoc_id) {
                 $exists = true;
                 break;
@@ -720,7 +719,7 @@ class TaskController extends AbstractController
         $task = $this->_getTaskOr404($task_id);
 
         $exists = false;
-        foreach ($task->task_associations AS $key => $assoc) {
+        foreach ($task->task_associations as $key => $assoc) {
             if ($assoc->id == $assoc_id) {
                 $task->task_associations->remove($key);
                 $this->em->persist($task);
@@ -793,9 +792,9 @@ class TaskController extends AbstractController
             return $this->createApiErrorResponse('required_field.comment', 'comment is missing or empty');
         }
 
-        $comment = new \Application\DeskPRO\Entity\TaskComment($this->person, $comment_txt);
-        $comment['person'] = $this->person;
-        $comment['task'] = $task;
+        $comment            = new \Application\DeskPRO\Entity\TaskComment($this->person, $comment_txt);
+        $comment['person']  = $this->person;
+        $comment['task']    = $task;
         $comment['content'] = $comment_txt;
 
         $this->em->persist($comment);
@@ -838,7 +837,7 @@ class TaskController extends AbstractController
         $task = $this->_getTaskOr404($task_id);
 
         $exists = false;
-        foreach ($task->comments AS $comment) {
+        foreach ($task->comments as $comment) {
             if ($comment->id == $comment_id) {
                 $exists = true;
                 break;
@@ -879,7 +878,7 @@ class TaskController extends AbstractController
         $task = $this->_getTaskOr404($task_id);
 
         $exists = false;
-        foreach ($task->comments AS $key => $comment) {
+        foreach ($task->comments as $key => $comment) {
             if ($comment->id == $comment_id) {
                 if ($comment->person->getId() != $this->person->getId()) {
                     throw $this->createNotFoundException();
@@ -949,7 +948,7 @@ class TaskController extends AbstractController
      */
     public function postTaskLabelsAction($task_id)
     {
-        $task = $this->_getTaskOr404($task_id);
+        $task  = $this->_getTaskOr404($task_id);
         $label = $this->in->getString('label');
 
         if ($label === '') {
@@ -1041,9 +1040,11 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @return \Application\DeskPRO\Entity\Task
+     * @param int $id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return \Application\DeskPRO\Entity\Task
      */
     protected function _getTaskOr404($id)
     {

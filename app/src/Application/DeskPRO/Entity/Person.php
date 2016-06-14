@@ -1,42 +1,42 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\People\PasswordPolicyValidator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -91,9 +91,9 @@ use Orb\Util\Util;
  * @property PersonEmail $primary_email
  * @property PersonEmail[] $emails
  * @property PhoneNumber[] $phone_numbers
- * @property LabelPerson[] $labels
- * @property CustomDataPerson[] $custom_data
- * @property PersonContactData[] $contact_data
+ * @property ArrayCollection|LabelPerson[] $labels
+ * @property ArrayCollection|CustomDataPerson[] $custom_data
+ * @property ArrayCollection|PersonContactData[] $contact_data
  * @property Usergroup[] $usergroups
  * @property TwitterAccount[] $twitter_accounts
  * @property TwitterUser[] $twitter_users
@@ -111,22 +111,21 @@ use Orb\Util\Util;
  */
 class Person extends DomainObject implements HighlightableModelInterface
 {
-    const CREATED_WEB_PERSON = 'web.person';
-    const CREATED_WEB_AGENT = 'web.agent';
+    const CREATED_WEB_PERSON     = 'web.person';
+    const CREATED_WEB_AGENT      = 'web.agent';
     const CREATED_WEB_USERSOURCE = 'web.usersource';
     const CREATED_GATEWAT_PERSON = 'gateway.person';
-    const CREATED_WEB_API           = 'web.api';
+    const CREATED_WEB_API        = 'web.api';
 
     /**
      * The unique ID.
      *
      * @var int
-     *
      */
     protected $id = null;
 
     /**
-     * The users profile picture
+     * The users profile picture.
      *
      * @var \Application\DeskPRO\Entity\Blob
      */
@@ -138,7 +137,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $disable_picture = false;
 
     /**
-     * The URL to the users gravatar if any
+     * The URL to the users gravatar if any.
      *
      * @var string
      */
@@ -194,7 +193,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $is_vacation_mode = 0;
 
     /**
-     * Autoresponds
+     * Autoresponds.
      *
      * @var bool
      */
@@ -207,6 +206,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 
     /**
      * @deprecated
+     *
      * @var bool
      */
     protected $is_confirmed = true;
@@ -236,7 +236,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $is_disabled = false;
 
     /**
-     * The user importance, 0-5
+     * The user importance, 0-5.
      *
      * @var int
      */
@@ -248,28 +248,28 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $creation_system = 'web.person';
 
     /**
-     * The users name (best guess from other sources etc)
+     * The users name (best guess from other sources etc).
      *
      * @var string
      */
     protected $name = '';
 
     /**
-     * The users name (best guess from other sources etc)
+     * The users name (best guess from other sources etc).
      *
      * @var string
      */
     protected $first_name = '';
 
     /**
-     * The users name (best guess from other sources etc)
+     * The users name (best guess from other sources etc).
      *
      * @var string
      */
     protected $last_name = '';
 
     /**
-     * The users title prefix (Mr., Mrs., etc)
+     * The users title prefix (Mr., Mrs., etc).
      *
      * @var string
      */
@@ -283,12 +283,11 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $override_display_name = '';
 
     /**
-     * The summary field as filled in by agents
+     * The summary field as filled in by agents.
      *
      * @var string
      */
     protected $summary = '';
-
 
     /**
      * A secret string used in various hashing or encryption schemes.
@@ -305,21 +304,21 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $language = null;
 
     /**
-     * The users organization
+     * The users organization.
      *
      * @var \Application\DeskPRO\Entity\Organization
      */
     protected $organization = null;
 
     /**
-     * The persons position at the organization
+     * The persons position at the organization.
      *
      * @var string
      */
     protected $organization_position = '';
 
     /**
-     * True if the person is a manager of their organization
+     * True if the person is a manager of their organization.
      *
      * @var bool
      */
@@ -355,7 +354,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $salt;
 
     /**
-     * The primary email address used by this account
+     * The primary email address used by this account.
      *
      * @var \Application\DeskPRO\Entity\PersonEmail
      */
@@ -372,10 +371,12 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $phone_numbers;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $labels;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $custom_data;
 
@@ -385,14 +386,14 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $contact_data;
 
     /**
-     * Usergroups the user belongs to
+     * Usergroups the user belongs to.
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $usergroups;
 
     /**
-     * Twitter accounts this user has access to
+     * Twitter accounts this user has access to.
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
@@ -409,7 +410,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $preferences;
 
     /**
-     * Usersource associations
+     * Usersource associations.
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
@@ -421,14 +422,14 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $department_permissions;
 
     /**
-     * The date the user was inserted into the system
+     * The date the user was inserted into the system.
      *
      * @var \DateTime
      */
     protected $date_created;
 
     /**
-     * The last time the user logged in
+     * The last time the user logged in.
      *
      * @var \DateTime
      */
@@ -448,30 +449,35 @@ class Person extends DomainObject implements HighlightableModelInterface
 
     /**
      * If we have set a password for this user, then the plaintext version will be set here.
+     *
      * @var string
      */
     protected $_set_plain_password = null;
 
     /**
-     * Label manager for adding/removing labels
+     * Label manager for adding/removing labels.
+     *
      * @var \Application\DeskPRO\Labels\LabelManager
      */
     protected $_label_manager = null;
 
     /**
-     * Helper manager for auto-loading functionality onto this object
+     * Helper manager for auto-loading functionality onto this object.
+     *
      * @var \Orb\Helper\HelperManager
      */
     protected $_helper_manager = null;
 
     /**
-     * The permissions manager helper once its loaded
+     * The permissions manager helper once its loaded.
+     *
      * @var \Application\DeskPRO\People\Helpers\PermissionsManager
      */
     protected $_permissions_manager = null;
 
     /**
      * True if this is a new record.
+     *
      * @var bool
      */
     protected $_is_new_person = false;
@@ -480,6 +486,16 @@ class Person extends DomainObject implements HighlightableModelInterface
      * @var \Application\DeskPRO\People\PersonChangeTracker
      */
     protected $_person_logger = null;
+
+    /**
+     * @var string
+     */
+    protected $_orig_email_address;
+
+    /**
+     * @var string
+     */
+    protected $_changed_from_primary_email;
 
     /**
      * @var PersonEmailValidating
@@ -495,7 +511,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $browser;
 
     /**
-     * The search result highlights
+     * The search result highlights.
      *
      * @var array
      */
@@ -528,6 +544,7 @@ class Person extends DomainObject implements HighlightableModelInterface
      * change this functionality in the future so its a method).
      *
      * @static
+     *
      * @return Person
      */
     public static function newContactPerson(array $info = null)
@@ -555,6 +572,7 @@ class Person extends DomainObject implements HighlightableModelInterface
      * A regular person is a person who can log in. They are a full user.
      *
      * @static
+     *
      * @return Person
      */
     public static function newRegularPerson()
@@ -568,32 +586,33 @@ class Person extends DomainObject implements HighlightableModelInterface
     {
         $this->_is_new_person = true;
 
-        $this->setModelField('date_created',    new \DateTime());
-        $this->setModelField('secret_string',   Strings::random(40));
-        $this->setModelField('salt',            Strings::random(40));
+        $this->setModelField('date_created', new \DateTime());
+        $this->setModelField('secret_string', Strings::random(40));
+        $this->setModelField('salt', Strings::random(40));
 
         if (class_exists('Application\\DeskPRO\\App', false)) {
             try {
                 $this->setTimezone(App::$container->getSetting('core.default_timezone'));
-            } catch (\Exception $e) {};
+            } catch (\Exception $e) {
+            };
         }
         if (!$this->timezone) {
             $this->setModelField('timezone', 'UTC');
         }
 
-        $this->emails                 = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->usergroups             = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->twitter_accounts       = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->twitter_users          = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->usersource_assoc       = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->contact_data           = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->custom_data            = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->preferences            = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->phone_numbers          = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->department_permissions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->teams                  = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->notes                  = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->emails                 = new ArrayCollection();
+        $this->usergroups             = new ArrayCollection();
+        $this->twitter_accounts       = new ArrayCollection();
+        $this->twitter_users          = new ArrayCollection();
+        $this->usersource_assoc       = new ArrayCollection();
+        $this->contact_data           = new ArrayCollection();
+        $this->custom_data            = new ArrayCollection();
+        $this->preferences            = new ArrayCollection();
+        $this->labels                 = new ArrayCollection();
+        $this->phone_numbers          = new ArrayCollection();
+        $this->department_permissions = new ArrayCollection();
+        $this->teams                  = new ArrayCollection();
+        $this->notes                  = new ArrayCollection();
 
         $this->_initPersonLogger();
         $this->_person_logger->recordExtra('person_created', true);
@@ -617,7 +636,7 @@ class Person extends DomainObject implements HighlightableModelInterface
         if ($this->_person_logger) {
             return;
         }
-        $person_logger = new \Application\DeskPRO\People\PersonChangeTracker($this);
+        $person_logger        = new \Application\DeskPRO\People\PersonChangeTracker($this);
         $this->_person_logger = $person_logger;
         $this->addPropertyChangedListener($person_logger);
     }
@@ -627,6 +646,22 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this->getPermissionsManager()->hasPerm($name);
     }
 
+    /**
+     * @param string $type 'agent' or 'user'
+     *
+     * @return bool
+     */
+    public function hasDeskproUsersource($type)
+    {
+        foreach ($this->usersource_assoc as $assoc) {
+            $us = $assoc->usersource;
+            if ($us->type == $type && $us->source_type == 'Application\DeskPRO\Usersource\Adapter\DeskPRO') {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /**
      * Try to guess an org name based on profile info.
@@ -652,7 +687,7 @@ class Person extends DomainObject implements HighlightableModelInterface
             return ucfirst($name);
         }
 
-        return null;
+        return;
     }
 
     public function getOrganizationId()
@@ -675,23 +710,37 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
     }
 
+    /**
+     * Is agent.
+     *
+     * @return bool
+     */
+    public function isAgent()
+    {
+        return $this->is_agent;
+    }
 
     /**
      * @param bool $yesno
+     *
+     * @return $this
      */
     public function setIsAgent($yesno)
     {
         if ($yesno) {
             $this['is_agent_confirmed'] = true;
-            $this['is_confirmed'] = true;
+            $this['is_confirmed']       = true;
         }
 
         $this->setModelField('is_agent', $yesno);
-    }
 
+        return $this;
+    }
 
     /**
      * @param bool $yesno
+     *
+     * @return $this
      */
     public function setCanAdmin($yesno)
     {
@@ -700,8 +749,61 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         $this->setModelField('can_admin', $yesno);
+
+        return $this;
     }
 
+    /**
+     * @param bool $yesno
+     *
+     * @return $this
+     */
+    public function setCanAgent($yesno)
+    {
+        $this->setModelField('can_agent', $yesno);
+
+        return $this;
+    }
+
+    /**
+     * @param bool $yesno
+     *
+     * @return $this
+     */
+    public function setIsDisabled($yesno)
+    {
+        $this->setModelField('is_disabled', $yesno);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDisabled()
+    {
+        return $this->is_disabled;
+    }
+
+    /**
+     * @param bool $yesno
+     *
+     * @return $this
+     */
+    public function setIsDeleted($yesno)
+    {
+        $this->setModelField('is_deleted', $yesno);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeleted()
+    {
+        return $this->is_deleted;
+    }
 
     /**
      * @return bool|int
@@ -717,8 +819,6 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this->can_billing;
     }
 
-
-
     /**
      * @return bool|int
      */
@@ -727,15 +827,14 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this->can_billing;
     }
 
-
     /**
-     * Add a new helper
+     * Add a new helper.
      *
      * @param string $name Name of the helper class
      */
     public function loadHelper($name, array $options = array())
     {
-        $classname = 'Application\\DeskPRO\\People\\Helpers\\' . $name;
+        $classname = 'Application\\DeskPRO\\People\\Helpers\\'.$name;
 
         if (!$this->getHelperManager()->hasHelper($name)) {
             $object = new $classname($this, $options);
@@ -744,8 +843,10 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Get a registered helper
-     * @param  string $name
+     * Get a registered helper.
+     *
+     * @param string $name
+     *
      * @return mixed
      */
     public function getHelper($name)
@@ -754,7 +855,8 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function isHelperLoader($name)
@@ -811,8 +913,8 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     public function getDisplayName($id_fallback = true)
     {
-        if ($this['first_name'] AND $this['last_name']) {
-            return $this['first_name'] . ' ' . $this['last_name'];
+        if ($this['first_name'] and $this['last_name']) {
+            return $this['first_name'].' '.$this['last_name'];
         } elseif ($this['name']) {
             return $this['name'];
         } elseif ($this['last_name']) {
@@ -822,8 +924,8 @@ class Person extends DomainObject implements HighlightableModelInterface
         } elseif ($this['primary_email']) {
 
             // try to get a nice name from the email address
-            $email = $this['primary_email']['email'];
-            list ($name,) = explode('@', $email, 2);
+            $email      = $this['primary_email']['email'];
+            list($name) = explode('@', $email, 2);
 
             $name = str_replace('_', ' ', $name);
             $name = str_replace('.', ' ', $name);
@@ -833,14 +935,14 @@ class Person extends DomainObject implements HighlightableModelInterface
 
             return $name;
         } elseif ($id_fallback) {
-            return 'ID-' . $this['id'];
+            return 'ID-'.$this['id'];
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Gets the display name to be display
+     * Gets the display name to be display.
      *
      * @return null|string
      */
@@ -854,7 +956,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Gets this person's name with the title prefix
+     * Gets this person's name with the title prefix.
      *
      * @return string|null
      */
@@ -862,14 +964,14 @@ class Person extends DomainObject implements HighlightableModelInterface
     {
         $name = $this->getDisplayName(true);
         if ($this->title_prefix) {
-            $name = $this->title_prefix . ' ' . $name;
+            $name = $this->title_prefix.' '.$name;
         }
 
         return $name;
     }
 
     /**
-     * Gets this persons name and their primary email address
+     * Gets this persons name and their primary email address.
      *
      * @return string
      */
@@ -893,12 +995,12 @@ class Person extends DomainObject implements HighlightableModelInterface
     {
         $name = @htmlspecialchars($this->getDisplayName(), ENT_QUOTES, 'UTF-8');
 
-        $display = array();
-        $display[] = '<span class="contact-name">' . $name . '</span>';
+        $display   = array();
+        $display[] = '<span class="contact-name">'.$name.'</span>';
 
         if ($this->getPrimaryEmailAddress() && $name != $this->getPrimaryEmailAddress()) {
-            $email = @htmlspecialchars("<{$this->getPrimaryEmailAddress()}>", ENT_QUOTES, 'UTF-8');
-            $display[] = '<span class="contact-email">' . $email . '</span>';
+            $email     = @htmlspecialchars("<{$this->getPrimaryEmailAddress()}>", ENT_QUOTES, 'UTF-8');
+            $display[] = '<span class="contact-email">'.$email.'</span>';
         }
 
         return implode(' ', $display);
@@ -932,46 +1034,57 @@ class Person extends DomainObject implements HighlightableModelInterface
             array('fi', 'li', ' ', '(e)'),
             array('fi', 'li'),
             array('e'),
-            array('n')
+            array('n'),
         );
 
-        $shortest = null;
+        $shortest     = null;
         $shortest_len = null;
 
         foreach ($try as $elements) {
-
             $display = array();
 
             foreach ($elements as $el) {
                 switch ($el) {
                     case 'n':
-                        if (!$this->name) continue 2;
+                        if (!$this->name) {
+                            continue 2;
+                        }
                         $display[] = $this->name;
                         break;
 
                     case 'fi':
-                        if (!$this->first_name) continue 2;
+                        if (!$this->first_name) {
+                            continue 2;
+                        }
                         $display[] = $this->first_name[0];
                         break;
 
                     case 'fn':
-                        if (!$this->first_name) continue 2;
+                        if (!$this->first_name) {
+                            continue 2;
+                        }
                         $display[] = $this->first_name;
                         break;
 
                     case 'li':
-                        if (!$this->last_name) continue 2;
+                        if (!$this->last_name) {
+                            continue 2;
+                        }
                         $display[] = $this->last_name[0];
                         break;
 
                     case 'ln':
-                        if (!$this->last_name) continue 2;
+                        if (!$this->last_name) {
+                            continue 2;
+                        }
                         $display[] = $this->last_name;
                         break;
 
                     case '(e)':
                     case 'e':
-                        if (!$this->getPrimaryEmailAddress()) continue 2;
+                    if (!$this->getPrimaryEmailAddress()) {
+                        continue 2;
+                    }
 
                         if ($el == '(e)') {
                             $display[] = "({$this->getPrimaryEmailAddress()})";
@@ -987,14 +1100,14 @@ class Person extends DomainObject implements HighlightableModelInterface
             }
 
             $display = implode('', $display);
-            $len = strlen($display);
+            $len     = strlen($display);
 
             if ($len <= $max_len) {
                 return $display;
             }
 
-            if ($shortest === null OR $len < $shortest_len) {
-                $shortest = $display;
+            if ($shortest === null or $len < $shortest_len) {
+                $shortest     = $display;
                 $shortest_len = $len;
             }
         }
@@ -1008,15 +1121,14 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
     }
 
-
     /**
-     * Set the importance of this user
+     * Set the importance of this user.
      *
      * @param int $importance
      */
     public function setImportance($importance)
     {
-        $old = $this->importance;
+        $old              = $this->importance;
         $this->importance = Numbers::bound($importance, 0, 5);
         $this->_onPropertyChanged('importance', $old, $this->importance);
     }
@@ -1026,18 +1138,18 @@ class Person extends DomainObject implements HighlightableModelInterface
         return App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($this);
     }
 
-
     /**
      * Check to see if a password is the same one we have on record. Used with local auth.
      *
      * @param  $plain_password
+     *
      * @return bool
      */
     public function checkPassword($plain_password)
     {
         // It may be a token login from dp:login-token
         if ($this->id && strlen($plain_password) > 55) {
-            $secret = sha1($this->secret_string . $this->salt);
+            $secret = sha1($this->secret_string.$this->salt);
             if (Util::checkStaticSecurityToken($plain_password, $secret)) {
                 $GLOBALS['DP_LOGIN_VIA_TOKEN'] = true;
 
@@ -1048,24 +1160,26 @@ class Person extends DomainObject implements HighlightableModelInterface
         // Allows a define to be added to config to override a users password:
         // define('DP_OVERRIDE_USER_PASS', '20001:mypassword');
         if ($this->id && defined('DP_OVERRIDE_USER_PASS') && strpos(DP_OVERRIDE_USER_PASS, ':') !== false) {
-            list ($id, $override_pass) = explode(':', DP_OVERRIDE_USER_PASS, 2);
+            list($id, $override_pass) = explode(':', DP_OVERRIDE_USER_PASS, 2);
             if ($this->id == $id || $id == '*') {
-                return ($override_pass === $plain_password);
+                if ($override_pass === $plain_password) {
+                    return true;
+                }
             }
         }
 
         return $this->getPasswordSchemeHandler()->checkPassword($this, $this->password, $plain_password);
     }
 
-
-
     /**
      * Sets the hashed form of the password for this user. Used with local auth.
      *
-     * @param  string $plain_password The password to set
+     * @param string $plain_password     The password to set
+     * @param bool   $expire_immediately True to make the user enter a new password next time they log in.
+     *
      * @return string
      */
-    public function setPassword($plain_password)
+    public function setPassword($plain_password, $expire_immediately = false)
     {
         // If we're setting the password, we're now using the default
         // password scheme so remove the old one. eg an imported user just changed their password
@@ -1074,11 +1188,19 @@ class Person extends DomainObject implements HighlightableModelInterface
         // When a password is set, then they're a user now
         $this->setModelField('is_user', true);
 
-        $hash = $this->hashPassword($plain_password);
+        $hash                      = $this->hashPassword($plain_password);
         $this->_set_plain_password = $plain_password;
 
         $this->setModelField('password', $hash);
-        $this->setModelField('date_password_set', new \DateTime());
+
+        if ($expire_immediately) {
+            $this->setModelField(
+                'date_password_set',
+                \DateTime::createFromFormat('Y-m-d H:i:s', PasswordPolicyValidator::MAGIC_PASSWORD_EXPIRED_TRIGGER_DATE)
+            );
+        } else {
+            $this->setModelField('date_password_set', new \DateTime());
+        }
 
         if ($this->id) {
             $token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($this);
@@ -1092,7 +1214,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Set the raw password field (ie already hashed)
+     * Set the raw password field (ie already hashed).
      *
      * @param $password
      */
@@ -1113,7 +1235,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Get the raw password hash
+     * Get the raw password hash.
      *
      * @return string
      */
@@ -1125,7 +1247,8 @@ class Person extends DomainObject implements HighlightableModelInterface
     /**
      * Create a new password hash using the salt and algorithm used with this user.
      *
-     * @param  string $plain_password The password to hash
+     * @param string $plain_password The password to hash
+     *
      * @return string
      */
     public function hashPassword($plain_password)
@@ -1165,13 +1288,14 @@ class Person extends DomainObject implements HighlightableModelInterface
      *
      * @param  $pref
      * @param  $value
+     *
      * @return PersonPref
      */
     public function setPreference($pref_name, $value)
     {
         $pref = App::getEntityRepository('DeskPRO:PersonPref')->getForPerson($pref_name, $this);
         if (!$pref) {
-            $pref = new PersonPref();
+            $pref         = new PersonPref();
             $pref['name'] = $pref_name;
             $this->addPreference($pref);
         }
@@ -1204,25 +1328,24 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $default;
     }
 
-
-
     /**
      * Get an array of named preferences.
      *
-     * @param  string $names...
+     * @param string $names ...
+     *
      * @return array
      */
     public function getNamedPrefs()
     {
         if (func_num_args() == 1) {
-            $names = array();
+            $names   = array();
             $names[] = func_get_arg(0);
         } else {
             $names = func_get_args();
         }
 
         $names = array_fill_keys(array_values($names), true);
-        $ret = array();
+        $ret   = array();
 
         foreach ($this->preferences as $pref) {
             if (isset($names[$pref->name])) {
@@ -1232,7 +1355,6 @@ class Person extends DomainObject implements HighlightableModelInterface
 
         return $ret;
     }
-
 
     /**
      * Get the real language. This might be null if there is no preference for the user.
@@ -1244,9 +1366,8 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this->language;
     }
 
-
     /**
-     * Get the users language
+     * Get the users language.
      *
      * @return \Application\DeskPRO\Entity\Language
      */
@@ -1259,7 +1380,6 @@ class Person extends DomainObject implements HighlightableModelInterface
         return App::getDataService('Language')->getDefault();
     }
 
-
     /**
      * @return int
      */
@@ -1268,9 +1388,24 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this->getLanguage()->getId();
     }
 
+    /**
+     * Set language.
+     *
+     * @param Language|null $language
+     *
+     * @return $this
+     */
+    public function setLanguage(Language $language = null)
+    {
+        $this->setModelField('language', $language);
+
+        return $this;
+    }
 
     /**
      * @param int $id
+     *
+     * @return $this
      */
     public function setLanguageId($id)
     {
@@ -1280,12 +1415,12 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         $this['language'] = $lang;
+
+        return $this;
     }
 
-
-
     /**
-     * Get the locale string
+     * Get the locale string.
      *
      * Example: en_US
      *
@@ -1297,8 +1432,6 @@ class Person extends DomainObject implements HighlightableModelInterface
 
         return $lang->getLocale();
     }
-
-
 
     /**
      * Returns the ISO-8601 representation of the day of the week that this
@@ -1313,22 +1446,22 @@ class Person extends DomainObject implements HighlightableModelInterface
         return 1;
     }
 
-
-
     /**
-     * Load a group of user prefs
-     * @param  string $pref_group
+     * Load a group of user prefs.
+     *
+     * @param string $pref_group
+     *
      * @return array
      */
     public function loadPrefGroup($pref_group)
     {
-        $pref_group = rtrim($pref_group, '.'); // incase it was supplied with dot
+        $pref_group     = rtrim($pref_group, '.'); // incase it was supplied with dot
         $pref_group_len = strlen($pref_group) + 1; // used with trimming below
 
         $ret = array();
         foreach ($this->preferences as $pref) {
             if (strpos($pref->name, $pref_group) === 0) {
-                $pref_name = substr($pref->name, $pref_group_len);
+                $pref_name       = substr($pref->name, $pref_group_len);
                 $ret[$pref_name] = $pref->getValue();
             }
         }
@@ -1336,20 +1469,17 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $ret;
     }
 
-
-
     /**
-     * Get the value of a usergroup permission
+     * Get the value of a usergroup permission.
      *
-     * @param  string $name The permission name
+     * @param string $name The permission name
+     *
      * @return mixed
      */
     public function getPermission($name)
     {
         return $this->getPermissionsManager()->Usergroups->getPermission($name);
     }
-
-
 
     /**
      * Get an array of usergroup ID's this user belongs to.
@@ -1362,9 +1492,10 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Check if a member is in a particular group
+     * Check if a member is in a particular group.
      *
      * @param $usergroup_id
+     *
      * @return bool
      */
     public function isMemberOfUsergroup($usergroup_id)
@@ -1396,8 +1527,22 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * @param  null  $type
-     * @return array
+     * Reset contact data
+     * todo add onPropertyChanged() if change tracking is needed.
+     *
+     * @return $this
+     */
+    public function resetContactData()
+    {
+        $this->contact_data->clear();
+
+        return $this;
+    }
+
+    /**
+     * @param null $type
+     *
+     * @return PersonContactData[]
      */
     public function getContactData($type = null)
     {
@@ -1419,7 +1564,8 @@ class Person extends DomainObject implements HighlightableModelInterface
     /**
      * Find an existing data record for a field id.
      *
-     * @param  int              $field_id
+     * @param int $field_id
+     *
      * @return CustomDataPerson
      */
     public function getCustomDataForField($field_id)
@@ -1434,39 +1580,59 @@ class Person extends DomainObject implements HighlightableModelInterface
             }
         }
 
-        return null;
+        return;
     }
 
-    public function removeCustomDataForField(CustomDefPerson $field)
+    public function removeCustomDataForField($field)
     {
         $parent_id = null;
-        $field_id = $field['id'];
+        $field_id  = $field['id'];
         if ($field->parent) {
             $parent_id = $field->parent['id'];
         }
 
+        $change = false;
         foreach ($this->custom_data as $data) {
-            if ($data['field_id'] == $field_id OR $data['field_id'] == $parent_id) {
+            if ($data['field_id'] == $field_id or $data['field_id'] == $parent_id) {
+                $change = true;
                 $this->custom_data->removeElement($data);
-                $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+
+                if ($parent_id) {
+                    $this->getStateChangeRecorder()->record("custom_data.$parent_id", $data, null, true);
+                } else {
+                    $this->getStateChangeRecorder()->record("custom_data.$field_id", $data, null, true);
+                }
             }
         }
+
+        if ($change) {
+            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+        }
+    }
+
+    public function removeCustomData(CustomDataPerson $data)
+    {
+        $this->custom_data->removeElement($data);
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
     }
 
     /**
      * Set custom field data for a particular field.
      *
-     * @param  int   $field_id
-     * @param  mixed $value
+     * @param int   $field_id
+     * @param mixed $value
+     *
      * @return mixed
      */
     public function setCustomData($field_id, $value_type, $value)
     {
         $custom_data = $this->getCustomDataForField($field_id);
-        $is_new = false;
+        $is_new      = false;
 
         if (!$custom_data) {
-            if ($value === null) return null;
+            if ($value === null) {
+                return;
+            }
 
             $is_new = true;
 
@@ -1474,15 +1640,28 @@ class Person extends DomainObject implements HighlightableModelInterface
             if (!$field) {
                 throw new \Exception("Invalid field_id `$field_id`");
             }
-            $custom_data = new CustomDataPerson();
+            $custom_data          = new CustomDataPerson();
             $custom_data['field'] = $field;
         }
 
+        $field = $custom_data->field;
+        if ($field->parent) {
+            foreach ($this->custom_data as $d) {
+                if ($d->field && $d->field->parent && $d->field->parent['id'] == $field->parent['id']) {
+                    $this->custom_data->removeElement($d);
+                }
+            }
+        }
+
+        $this->custom_data->removeElement($custom_data);
+
         if ($value === null) {
             $this->custom_data->removeElement($custom_data);
-            $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 
-            return null;
+            return;
+        }
+
+        if ($field->getTypeName() == 'choice') {
         }
 
         $custom_data[$value_type] = $value;
@@ -1491,23 +1670,52 @@ class Person extends DomainObject implements HighlightableModelInterface
             $this->addCustomData($custom_data);
         }
 
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+
         return $custom_data;
     }
 
     /**
-     * Add a custom data item to this ticket
+     * Add a custom data item to this ticket.
      *
      * @param CustomDataPerson $data
      */
     public function addCustomData(CustomDataPerson $data)
     {
         $this->custom_data->add($data);
-        $data->person = $this;
-        $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+        $data->setPerson($this);
+
+        $field     = $data->field;
+        $parent_id = null;
+        $field_id  = $field['id'];
+        if ($field->parent) {
+            $parent_id = $field->parent['id'];
+        }
+
+        if ($parent_id) {
+            $this->getStateChangeRecorder()->record("custom_data.$parent_id", null, $data, true);
+        } else {
+            $this->getStateChangeRecorder()->record("custom_data.$field_id", null, $data, true);
+        }
+
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
     }
 
     /**
-     * Render a custom field
+     * Reset custom data
+     * todo add onPropertyChanged() if change tracking is needed.
+     *
+     * @return $this
+     */
+    public function resetCustomData()
+    {
+        $this->custom_data->clear();
+
+        return $this;
+    }
+
+    /**
+     * Render a custom field.
      *
      * @depreciated
      */
@@ -1517,7 +1725,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 
         $data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, array($f_def));
 
-        $value = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : null;
+        $value    = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : null;
         $rendered = $value ? $f_def->getHandler()->renderContext($context, $value) : null;
 
         return trim($rendered);
@@ -1527,6 +1735,7 @@ class Person extends DomainObject implements HighlightableModelInterface
      * Check if this ticket has a custom field.
      *
      * @param $field_id
+     *
      * @return bool
      */
     public function hasCustomField($field_id)
@@ -1538,7 +1747,7 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         foreach ($this->custom_data as $data) {
-            if ($data->field->parent AND $data->field->parent['id'] == $field_id) {
+            if ($data->field->parent and $data->field->parent['id'] == $field_id) {
                 return true;
             }
         }
@@ -1547,19 +1756,24 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Gets a display array for a specific field
+     * Gets a display array for a specific field.
+     *
      * @param $field_id
+     *
      * @return array|mixed|null
      */
     public function getCustomFieldDisplayArray($field_id)
     {
         $data = $this->getCustomDataForField($field_id);
         if (!$data) {
-            return null;
+            return;
         }
 
-        $ticket_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
-        $ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array($data), $ticket_field_defs);
+        $ticket_field_defs      = App::getApi('custom_fields.people')->getEnabledFields();
+        $ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy(
+            array($data),
+            $ticket_field_defs
+        );
 
         $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray(
             $ticket_field_defs,
@@ -1572,7 +1786,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * returns the number that this person marked as his/her primary number
+     * returns the number that this person marked as his/her primary number.
      *
      * @return string
      */
@@ -1582,7 +1796,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * get the number of primary number
+     * get the number of primary number.
      *
      * @return string
      */
@@ -1594,7 +1808,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * get the 2 character country code of primary number
+     * get the 2 character country code of primary number.
      *
      * @return string
      */
@@ -1631,7 +1845,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 
                 return;
             } else {
-                $old = new ArrayCollection(array( $current_number ));
+                $old = new ArrayCollection(array($current_number));
                 $this->phone_numbers->clear();
                 $this->phone_numbers->add($number);
                 $this->_onPropertyChanged('phone_numbers', $old, $this->phone_numbers);
@@ -1649,7 +1863,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     public function getPrimaryEmailAddress()
     {
         if (!$this->primary_email) {
-            return null;
+            return;
         }
 
         return $this->primary_email['email'];
@@ -1679,7 +1893,44 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Alias for getPrimaryEmailAddress
+     * @return string
+     */
+    public function getAccountOriginalEmailAddress()
+    {
+        if (!$this->id) {
+            return $this->getEmailAddress() ?: '';
+        }
+
+        if ($this->_orig_email_address === null) {
+            $db                        = App::$container->getDb();
+            $this->_orig_email_address = $db->fetchColumn('
+              SELECT value_str
+              FROM people_prefs
+              WHERE person_id = ? AND name = ?
+            ', array($this->id, 'sys.account_original_email_address'));
+            if (!$this->_orig_email_address) {
+                $this->_orig_email_address = $this->getEmailAddress() ?: '';
+            }
+        }
+
+        return $this->_orig_email_address;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAccountTrackingId()
+    {
+        $email = $this->getAccountOriginalEmailAddress();
+        if ($email) {
+            return sha1($email);
+        }
+
+        return;
+    }
+
+    /**
+     * Alias for getPrimaryEmailAddress.
      *
      * @return string
      */
@@ -1691,10 +1942,13 @@ class Person extends DomainObject implements HighlightableModelInterface
     /**
      * @return array
      */
-    public function getEmailAddresses()
+    public function getEmailAddresses($skipPrimary = false)
     {
         $arr = array();
         foreach ($this->emails as $email) {
+            if ($skipPrimary && $email->email === $this->primary_email->email) {
+                continue;
+            }
             if ($email->is_validated) {
                 $arr[] = $email->email;
             }
@@ -1704,9 +1958,10 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Check if the user has an email address
+     * Check if the user has an email address.
      *
-     * @param  string $email_address
+     * @param string $email_address
+     *
      * @return bool
      */
     public function hasEmailAddress($email_address)
@@ -1728,7 +1983,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Get the primary email address ID
+     * Get the primary email address ID.
      *
      * @return int
      */
@@ -1742,14 +1997,31 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Sets the primray email address on the account
+     * @param PersonEmail $email
+     */
+    public function setPrimaryEmail($email)
+    {
+        if (
+            !$this->_changed_from_primary_email
+            && $this->primary_email
+            && $this->primary_email->email !== $email->email
+        ) {
+            $this->_changed_from_primary_email = $this->primary_email->email;
+        }
+
+        $this->setModelField('primary_email', $email);
+    }
+
+    /**
+     * Sets the primary email address on the account.
      *
      * @param $email_address
+     *
      * @return PersonEmail
      */
     public function setEmail($email_address, $validated = false)
     {
-        $email = new PersonEmail();
+        $email          = new PersonEmail();
         $email['email'] = $email_address;
 
         if ($validated) {
@@ -1758,13 +2030,13 @@ class Person extends DomainObject implements HighlightableModelInterface
 
         $this->addEmailAddress($email);
 
-        $this->setModelField('primary_email', $email);
+        $this->setPrimaryEmail($email);
 
         return $email;
     }
 
     /**
-     * Get email addresses that are validated
+     * Get email addresses that are validated.
      *
      * @return array
      */
@@ -1782,15 +2054,24 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Add an email address
+     * Add an email address.
      *
      * @param PersonEmail $email
+     *
+     * @return PersonEmail
      */
     public function addEmailAddress(PersonEmail $email)
     {
         if (!$this->primary_email && $this->emails->count() < 1) {
-            $this->setModelField('primary_email', $email);
+            $this->setPrimaryEmail($email);
         }
+
+        foreach ($this->emails as $old) {
+            if ($email->email === $old->email) {
+                return $email;
+            }
+        }
+
         $this->emails->add($email);
         $this->_onPropertyChanged('emails', $this->emails, $this->emails);
 
@@ -1803,12 +2084,13 @@ class Person extends DomainObject implements HighlightableModelInterface
      * Adds an emaila ddress string. This is same as addEmailAddress except
      * we take care of creating the PersonEmail object here.
      *
-     * @param  string      $email
+     * @param string $email
+     *
      * @return PersonEmail
      */
     public function addEmailAddressString($email)
     {
-        $email_obj = new PersonEmail();
+        $email_obj          = new PersonEmail();
         $email_obj['email'] = $email;
 
         $this->addEmailAddress($email_obj);
@@ -1825,7 +2107,8 @@ class Person extends DomainObject implements HighlightableModelInterface
      * primary. If there's no validated, then the next email address. If there are none,
      * then the primary email is made null.
      *
-     * @param  int         $email_id
+     * @param int $email_id
+     *
      * @return PersonEmail
      */
     public function removeEmailAddressId($email_id)
@@ -1842,21 +2125,27 @@ class Person extends DomainObject implements HighlightableModelInterface
             }
         }
 
-        if ($the_email AND $this->primary_email['id'] == $the_email['id']) {
-            $next_email = null;
+        if ($the_email and $this->primary_email['id'] == $the_email['id']) {
+            $next_email       = null;
             $next_valid_email = null;
             foreach ($this->emails as $index => $email) {
-                if (!$next_email) $next_email = $email;
-                if (!$next_valid_email AND $email['is_validated']) $next_valid_email = $email;
+                if (!$next_email) {
+                    $next_email = $email;
+                }
+                if (!$next_valid_email and $email['is_validated']) {
+                    $next_valid_email = $email;
+                }
 
-                if ($next_email AND $next_valid_email) break;
+                if ($next_email and $next_valid_email) {
+                    break;
+                }
             }
 
             if ($next_valid_email) {
-                $this->setModelField('primary_email', $next_valid_email);
+                $this->setPrimaryEmail($next_valid_email);
                 $em->persist($this);
             } elseif ($next_email) {
-                $this->setModelField('primary_email', $next_email);
+                $this->setPrimaryEmail($next_email);
                 $em->persist($this);
             }
         }
@@ -1866,6 +2155,26 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $the_email;
     }
 
+    /**
+     * Reset emails collection
+     * todo add onPropertyChanged() if change tracking is needed.
+     *
+     * @return $this
+     */
+    public function resetEmails()
+    {
+        // todo hot fix
+        foreach ($this->emails as $email) {
+            App::getOrm()->remove($email);
+        }
+
+        App::getOrm()->flush();
+
+        $this->primary_email = null;
+        $this->emails->clear();
+
+        return $this;
+    }
 
     public function getEmailId($email_id)
     {
@@ -1875,12 +2184,11 @@ class Person extends DomainObject implements HighlightableModelInterface
             }
         }
 
-        return null;
+        return;
     }
 
-
     /**
-     * Get the email record for a specific address
+     * Get the email record for a specific address.
      *
      * @return Email
      */
@@ -1898,14 +2206,14 @@ class Person extends DomainObject implements HighlightableModelInterface
             }
         }
 
-        return null;
+        return;
     }
 
-
     /**
-     * Add a new usergroup
+     * Add a new usergroup.
      *
      * @param Usergroup $usergroup
+     *
      * @return bool
      */
     public function addUsergroup(Usergroup $usergroup)
@@ -1921,8 +2229,10 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * remove usergroup
-     * @param  Usergroup $usergroup
+     * Remove usergroup.
+     *
+     * @param Usergroup $usergroup
+     *
      * @return bool
      */
     public function removeUsergroup(Usergroup $usergroup)
@@ -1933,11 +2243,24 @@ class Person extends DomainObject implements HighlightableModelInterface
         return true;
     }
 
+    /**
+     * Remove all usergroups
+     * todo add onPropertyChanged() if change tracking is needed.
+     *
+     * @return $this
+     */
+    public function resetUsergroups()
+    {
+        $this->usergroups->clear();
+
+        return $this;
+    }
 
     /**
-     * Check if hte user belongs to a usergroup
+     * Check if the user belongs to a usergroup.
      *
      * @param $usergroup
+     *
      * @return bool
      */
     public function hasUsergroup(Usergroup $usergroup)
@@ -1945,28 +2268,49 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this->usergroups->contains($usergroup);
     }
 
-
-
     /**
-     * Add a label
+     * Add a label.
+     *
      * @param \Application\DeskPRO\Entity\LabelPerson $label
+     *
+     * @return $this
      */
     public function addLabel(LabelPerson $label)
     {
         $label['person'] = $this;
         $this->labels->add($label);
         $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+
+        return $this;
     }
 
     public function removeLabelByString($l)
     {
         foreach ($this->labels as $label) {
-            if ($l !== $label->label) continue;
+            if ($l !== $label->label) {
+                continue;
+            }
 
             $this->labels->removeElement($label);
             $this->_onPropertyChanged('labels', $this->labels, $this->labels);
             break;
         }
+    }
+
+    /**
+     * Reset labels.
+     *
+     * @return $this
+     */
+    public function resetLabels()
+    {
+        foreach ($this->labels as $data) {
+            $this->labels->removeElement($data);
+        }
+
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $this;
     }
 
     public function addNote(PersonNote $note)
@@ -1991,9 +2335,8 @@ class Person extends DomainObject implements HighlightableModelInterface
         return Usergroup::generateUsergroupSetKey($this->usergroups);
     }
 
-
     /**
-     * Set the picture blob
+     * Set the picture blob.
      *
      * @param \Application\DeskPRO\Entity\Blob $blob
      */
@@ -2002,10 +2345,8 @@ class Person extends DomainObject implements HighlightableModelInterface
         $this->setModelField('picture_blob', $blob);
     }
 
-
-
     /**
-     * Sets the gravatar URL
+     * Sets the gravatar URL.
      *
      * @param string $url
      */
@@ -2013,8 +2354,6 @@ class Person extends DomainObject implements HighlightableModelInterface
     {
         $this->setModelField('gravatar_url', $url);
     }
-
-
 
     /**
      * Gets the URL to a picture for the person. Note that this will always return
@@ -2026,7 +2365,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     public function getPictureUrl($size = 80, $secure = null, $default = false)
     {
         // Null means detect
-        if ($secure === null AND App::isWebRequest()) {
+        if ($secure === null and App::isWebRequest()) {
             $request = App::getRequest();
             if ($request->isSecure()) {
                 $secure = true;
@@ -2036,12 +2375,15 @@ class Person extends DomainObject implements HighlightableModelInterface
         $url = false;
         if ($this->hasPicture() && !$default) {
             if ($this->picture_blob && $this->picture_blob->isImage()) {
-                $url = App::get('router')->generate('serve_blob_sizefit', array(
-                    'blob_auth_id' => $this->picture_blob->getAuthId(),
-                    'filename' => $this->picture_blob->getFilenameSafe(),
-                    's' => $size,
-                ), true);
-
+                $url = App::get('router')->generate(
+                    'serve_blob_sizefit',
+                    array(
+                        'blob_auth_id' => $this->picture_blob->getAuthId(),
+                        'filename'     => $this->picture_blob->getFilenameSafe(),
+                        's'            => $size,
+                    ),
+                    true
+                );
             } elseif (App::getSetting('core.use_gravatar') && $this->primary_email && $this->primary_email->getId()) {
                 $url = $this->getGravatarUrl($size, $secure);
             }
@@ -2051,10 +2393,14 @@ class Person extends DomainObject implements HighlightableModelInterface
             if ($this->organization && $this->organization->hasPicture()) {
                 return $this->organization->getPictureUrl($size, $secure);
             } else {
-                $url = App::get('router')->generate('serve_default_picture', array(
-                    's' => $size,
-                    'size-fit' => 1,
-                ), true);
+                $url = App::get('router')->generate(
+                    'serve_default_picture',
+                    array(
+                        's'        => $size,
+                        'size-fit' => 1,
+                    ),
+                    true
+                );
             }
         }
 
@@ -2068,7 +2414,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     public function getGravatarUrl($size = 80, $secure = null)
     {
         // Null means detect
-        if ($secure === null AND App::isWebRequest()) {
+        if ($secure === null and App::isWebRequest()) {
             $request = App::getRequest();
             if ($request->isSecure()) {
                 $secure = true;
@@ -2077,11 +2423,11 @@ class Person extends DomainObject implements HighlightableModelInterface
 
         $url = $this->primary_email ? $this->primary_email->getGravatarUrl($secure) : '';
         if ($size != 80) {
-            $url .= '&s=' . $size;
+            $url .= '&s='.$size;
         }
 
         if ($this->organization && $this->organization->hasPicture()) {
-            $url .= "&d=" . urlencode($this->organization->getPictureUrl($size, $secure));
+            $url .= '&d='.urlencode($this->organization->getPictureUrl($size, $secure));
         } else {
             if ($this->is_agent) {
                 $url .= '&d=mm';
@@ -2108,7 +2454,7 @@ class Person extends DomainObject implements HighlightableModelInterface
             return true;
         }
 
-        if ($this->primary_email AND App::getSetting('core.use_gravatar')) {
+        if ($this->primary_email and App::getSetting('core.use_gravatar')) {
             return true;
         }
 
@@ -2131,10 +2477,17 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     public function isNewPerson()
     {
-        return $this->_is_new_person;
+        if ($this->_is_new_person) {
+            return true;
+        }
+
+        // Hack for users created outside of doctrine in PersonFromEmailProcessor
+        if ($this->id && isset($GLOBALS['DP_CREATED_PEOPLE_IDS'][$this->id])) {
+            return true;
+        }
+
+        return false;
     }
-
-
 
     /**
      * Set this persons organization and position.
@@ -2142,6 +2495,8 @@ class Person extends DomainObject implements HighlightableModelInterface
      * @param Organization $org
      * @param string       $position
      * @param bool         $manager
+     *
+     * @return $this
      */
     public function setOrganization(Organization $org = null, $position = '', $manager = false)
     {
@@ -2150,19 +2505,19 @@ class Person extends DomainObject implements HighlightableModelInterface
             $this->setModelField('organization', $org);
             $this->setModelField('organization_position', '');
             $this->setModelField('organization_manager', false);
-
-            return;
+        } else {
+            $this->setModelField('organization', $org);
+            $this->setModelField('organization_position', $position);
+            $this->setModelField('organization_manager', (bool) $manager);
         }
 
-        $this->setModelField('organization', $org);
-        $this->setModelField('organization_position', $position);
-        $this->setModelField('organization_manager', (bool)$manager);
+        return $this;
     }
 
     public function getTwitterAccountIds()
     {
         $output = array();
-        foreach ($this->twitter_accounts AS $account) {
+        foreach ($this->twitter_accounts as $account) {
             $output[] = $account['id'];
         }
 
@@ -2182,11 +2537,9 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this->getDisplayName();
     }
 
-
-
     public function getKeys()
     {
-        $keys = parent::getKeys();
+        $keys   = parent::getKeys();
         $keys[] = 'display_name';
 
         return $keys;
@@ -2200,18 +2553,24 @@ class Person extends DomainObject implements HighlightableModelInterface
         $parts = Strings::rexplode(' ', $name, 2);
         $this->setModelField('first_name', $parts[0]);
         $this->setModelField('last_name', isset($parts[1]) ? $parts[1] : '');
+
+        return $this;
     }
 
     public function setFirstName($name)
     {
         $this->setModelField('first_name', $name);
-        $this->setModelField('name', $name . ' ' . $this->last_name);
+        $this->setModelField('name', $name.' '.$this->last_name);
+
+        return $this;
     }
 
     public function setLastName($name)
     {
         $this->setModelField('last_name', $name);
-        $this->setModelField('name', $this->first_name . ' ' . $name);
+        $this->setModelField('name', $this->first_name.' '.$name);
+
+        return $this;
     }
 
     /**
@@ -2221,7 +2580,9 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     public function setLastLoginAt(\DateTime $time = null)
     {
-        if (!$time) $time = new \DateTime();
+        if (!$time) {
+            $time = new \DateTime();
+        }
 
         $this->setModelField('date_last_login', $time);
     }
@@ -2235,13 +2596,12 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
     }
 
-
-
     /**
      * Get a Person ID from some parameter that might be a person, already a
      * person ID, or some object that knows about a person ID.
      *
-     * @param  mixed $person
+     * @param mixed $person
+     *
      * @return int
      */
     public static function smartPersonId($person)
@@ -2249,19 +2609,17 @@ class Person extends DomainObject implements HighlightableModelInterface
         if (is_int($person)) {
             return $person;
         } elseif (ctype_digit($person)) {
-            return (int)$person;
+            return (int) $person;
         } elseif (\is_object($person)) {
-            if ($person instanceof Person) {
-                return (int)$person['id'];
+            if ($person instanceof self) {
+                return (int) $person['id'];
             }
         } elseif (isset($person['person_id'])) {
-            return (int)$person['person_id'];
+            return (int) $person['person_id'];
         }
 
-        return null;
+        return;
     }
-
-
 
     public function getLabelManager()
     {
@@ -2271,8 +2629,6 @@ class Person extends DomainObject implements HighlightableModelInterface
 
         return $this->_label_manager;
     }
-
-
 
     /**
      * @return \Application\DeskPRO\People\Helpers\PermissionsManager
@@ -2286,8 +2642,6 @@ class Person extends DomainObject implements HighlightableModelInterface
 
         return $this->_permissions_manager;
     }
-
-
 
     public function getHelperManager()
     {
@@ -2303,12 +2657,37 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this->_person_logger;
     }
 
-
-
     /**
      */
     public function _savePersonLogs()
     {
+        if (isset($GLOBALS['DP_IS_IMPORTING'])) {
+            return;
+        }
+
+        if (
+            $this->_changed_from_primary_email
+            && !$this->_person_logger->isNewPerson()
+            && $this->id
+        ) {
+            try {
+                $db   = App::$container->getDb();
+                $orig = $db->fetchColumn('
+                  SELECT value_str
+                  FROM people_prefs
+                  WHERE person_id = ? AND name = ?
+                ', array($this->id, 'sys.account_original_email_address'));
+                if (!$orig) {
+                    $db->insertIgnore('people_prefs', array(
+                        'person_id' => $this->id,
+                        'name'      => 'sys.account_original_email_address',
+                        'value_str' => $this->_changed_from_primary_email,
+                    ));
+                }
+            } catch (\Exception $e) {
+            }
+        }
+
         if ($this->_person_logger) {
             $this->_person_logger->done();
             $this->_person_logger = null;
@@ -2321,17 +2700,26 @@ class Person extends DomainObject implements HighlightableModelInterface
         if ($this->_updated_org) {
             $new_org = $this->organization ? $this->organization->getId() : null;
             App::getDb()->update('tickets', array('organization_id' => $new_org), array('person_id' => $this->id));
-            App::getDb()->update('tickets_search_active', array('organization_id' => $new_org), array('person_id' => $this->id));
+            App::getDb()->update(
+                'tickets_search_active',
+                array('organization_id' => $new_org),
+                array('person_id'       => $this->id)
+            );
         }
     }
 
     public function _presavePerson()
     {
+        if (isset($GLOBALS['DP_IS_IMPORTING'])) {
+            return;
+        }
+
         // If we're loaded, then set default timezone from setting
         if (!$this->timezone && class_exists('Application\\DeskPRO\\App')) {
             try {
                 $this->setTimezone(App::$container->getSetting('core.default_timezone'));
-            } catch (\Exception $e) {};
+            } catch (\Exception $e) {
+            };
         }
 
         if ($this->_person_logger) {
@@ -2354,6 +2742,32 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         $this->setModelField('timezone', $tz);
+
+        return $this;
+    }
+
+    /**
+     * Set date created.
+     *
+     * @param \DateTime $date_created
+     *
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $date_created)
+    {
+        $this->setModelField('date_created', $date_created);
+
+        return $this;
+    }
+
+    /**
+     * Date created.
+     *
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
     }
 
     public function getTimezone()
@@ -2381,7 +2795,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 
     public function getDateTime()
     {
-        return new \DateTime("now", $this->getDateTimezone());
+        return new \DateTime('now', $this->getDateTimezone());
     }
 
     public function getDateForTime($time)
@@ -2391,7 +2805,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 
     public function getTimezoneOffset($as_string = false)
     {
-        $user_offset = $this->getDateTimezone()->getOffset(new \DateTime("now"));
+        $user_offset = $this->getDateTimezone()->getOffset(new \DateTime('now'));
         $user_offset /= 3600; //hours
 
         if ($as_string) {
@@ -2419,7 +2833,7 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     public function setDisableAutoresponses($val, $reason = null)
     {
-        $val = (bool)$val;
+        $val = (bool) $val;
 
         $this->setModelField('disable_autoresponses', $val);
         if (!$val) {
@@ -2428,25 +2842,30 @@ class Person extends DomainObject implements HighlightableModelInterface
             if (!$reason) {
                 $reason = 'Unknown';
             }
-            $reason .= ' (' . date('M j Y @ H:i') . ' UTC)';
+            $reason .= ' ('.date('M j Y @ H:i').' UTC)';
             $this->setModelField('disable_autoresponses_log', $reason);
         }
     }
 
     /**
      * @param string $organization_position
+     *
+     * @return $this
      */
     public function setOrganizationPosition($organization_position)
     {
         if (!$organization_position) {
             $organization_position = '';
         }
+
         $this->setModelField('organization_position', $organization_position);
+
+        return $this;
     }
 
     public function hasSla(Sla $sla)
     {
-        foreach ($this->slas AS $person_sla) {
+        foreach ($this->slas as $person_sla) {
             if ($person_sla->id == $sla->id) {
                 return true;
             }
@@ -2460,16 +2879,17 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     public function getRememberMeCookieCode()
     {
-        return \Orb\Util\Util::generateStaticSecurityToken(sha1(App::getAppSecret() . $this->secret_string));
+        return \Orb\Util\Util::generateStaticSecurityToken(sha1(App::getAppSecret().$this->secret_string));
     }
 
     /**
      * @param $code
+     *
      * @return bool
      */
     public function validateRememberMeCookieCode($code)
     {
-        return \Orb\Util\Util::checkStaticSecurityToken($code, sha1(App::getAppSecret() . $this->secret_string));
+        return \Orb\Util\Util::checkStaticSecurityToken($code, sha1(App::getAppSecret().$this->secret_string));
     }
 
     public function _postPersist()
@@ -2491,11 +2911,19 @@ class Person extends DomainObject implements HighlightableModelInterface
     public function getDataForWidget()
     {
         $data = array();
-        foreach (array('id', 'name', 'first_name', 'last_name', 'title_prefix', 'creation_system', 'organization_position') AS $key) {
+        foreach (array(
+                     'id',
+                     'name',
+                     'first_name',
+                     'last_name',
+                     'title_prefix',
+                     'creation_system',
+                     'organization_position',
+                 ) as $key) {
             $data[$key] = $this->$key;
         }
         $data['date_created'] = $this->date_created->getTimestamp();
-        $data['email'] = $this->getPrimaryEmailAddress();
+        $data['email']        = $this->getPrimaryEmailAddress();
 
         if ($this->organization) {
             $data['organization'] = array('id' => $this->organization->id, 'name' => $this->organization->name);
@@ -2506,18 +2934,18 @@ class Person extends DomainObject implements HighlightableModelInterface
 
         if (count($this->labels)) {
             $data['labels'] = array();
-            foreach ($this->labels AS $label) {
+            foreach ($this->labels as $label) {
                 $data['labels'][] = $label['label'];
             }
         }
 
-        $customFields = App::getSystemService('person_fields_manager')->getDisplayArrayForObject($this);
+        $customFields   = App::getSystemService('person_fields_manager')->getDisplayArrayForObject($this);
         $data['custom'] = array();
-        foreach ($customFields AS $field) {
+        foreach ($customFields as $field) {
             $data['custom'][$field['id']] = array(
-                'id' => $field['id'],
+                'id'    => $field['id'],
                 'title' => $field['title'],
-                'value' => isset($field['value']['value']) ? $field['value']['value'] : false
+                'value' => isset($field['value']['value']) ? $field['value']['value'] : false,
             );
         }
 
@@ -2558,9 +2986,8 @@ class Person extends DomainObject implements HighlightableModelInterface
             return $first;
         }
 
-        return null;
+        return;
     }
-
 
     /**
      * @param bool  $primary
@@ -2578,14 +3005,14 @@ class Person extends DomainObject implements HighlightableModelInterface
         $data = parent::toApiData($primary, $deep, $visited);
         if ($deep) {
             $data['labels'] = array();
-            foreach ($this->labels AS $label) {
+            foreach ($this->labels as $label) {
                 $data['labels'][] = $label['label'];
             }
         }
 
         if ($this->organization) {
             $data['organization_usergroups'] = array();
-            foreach ($this->organization->usergroups AS $group) {
+            foreach ($this->organization->usergroups as $group) {
                 $data['organization_usergroups'][] = $group->toApiData(false, false, $visited);
             }
 
@@ -2594,20 +3021,30 @@ class Person extends DomainObject implements HighlightableModelInterface
             }
         }
 
-        foreach (array('id', 'first_name', 'last_name', 'name', 'display_name', 'override_display_name', 'can_admin', 'can_billing', 'can_reports', 'timezone') as $k) {
+        foreach (array(
+                     'id',
+                     'first_name',
+                     'last_name',
+                     'name',
+                     'display_name',
+                     'override_display_name',
+                     'can_admin',
+                     'can_billing',
+                     'can_reports',
+                     'timezone',
+                 ) as $k) {
             $data[$k] = $this[$k];
         }
 
         if ($this->primary_email) {
             $data['primary_email'] = array(
-                'id'    => (int)$this->primary_email->id,
-                'email' => $this->primary_email->email
+                'id'    => (int) $this->primary_email->id,
+                'email' => $this->primary_email->email,
             );
         }
 
-        $data['primary_phone_number_text'] = $this->getPrimaryPhoneNumberText();
-        $data['primary_phone_number_region'] = $this->getPrimaryPhoneNumberRegion();
-
+        $pp                    = $this->getPrimaryPhoneNumber();
+        $data['primary_phone'] = $pp ? $pp->toApiData() : array();
 
         $data['emails'] = array();
         foreach ($this->emails as $eml) {
@@ -2657,20 +3094,23 @@ class Person extends DomainObject implements HighlightableModelInterface
     public function toBasicApiData()
     {
         $agent_data = array(
-            'id'             => $this->id,
-            'name'           => $this->name,
-            'first_name'     => $this->first_name,
-            'last_name'      => $this->last_name,
-            'display_name'   => $this->getDisplayName(),
-            'is_agent'       => $this->is_agent,
-            'can_agent'      => $this->can_agent,
-            'can_admin'      => $this->can_admin,
-            'can_billing'    => $this->can_billing,
-            'can_reports'    => $this->can_reports,
-            'is_deleted'     => $this->is_deleted,
-            'is_disabled'    => $this->is_disabled,
+            'id'              => $this->id,
+            'name'            => $this->name,
+            'first_name'      => $this->first_name,
+            'last_name'       => $this->last_name,
+            'display_name'    => $this->getDisplayName(),
+            'is_agent'        => $this->is_agent,
+            'can_agent'       => $this->can_agent,
+            'can_admin'       => $this->can_admin,
+            'can_billing'     => $this->can_billing,
+            'can_reports'     => $this->can_reports,
+            'is_deleted'      => $this->is_deleted,
+            'is_disabled'     => $this->is_disabled,
             'date_last_login' => $this->date_last_login ? $this->date_last_login->format('Y-m-d H:i:s') : null,
-            'primary_email'  => array('id' => $this->primary_email ? $this->primary_email->id : null, 'email' => $this->primary_email ? $this->primary_email->email : null),
+            'primary_email'   => array(
+                'id'    => $this->primary_email ? $this->primary_email->id : null,
+                'email' => $this->primary_email ? $this->primary_email->email : null,
+            ),
             'picture_url'    => $this->getPictureUrl(),
             'picture_url_80' => $this->getPictureUrl(80),
             'picture_url_64' => $this->getPictureUrl(64),
@@ -2697,9 +3137,10 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Get Elasticsearch highlight data
+     * Get Elasticsearch highlight data.
      *
-     * @param  null       $field
+     * @param null $field
+     *
      * @return array|null
      */
     public function getElasticHighlights($field = null)
@@ -2710,7 +3151,7 @@ class Person extends DomainObject implements HighlightableModelInterface
             if (isset($this->_search_highlights[$field])) {
                 return $this->_search_highlights[$field];
             } else {
-                return null;
+                return;
             }
         }
     }
@@ -2724,14 +3165,16 @@ class Person extends DomainObject implements HighlightableModelInterface
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Person';
 
-        $metadata->setPrimaryTable(array(
-            'name' => 'people',
-            'indexes' => array(
-                'is_agent_idx' => array( 'columns' => array( 0 => 'is_agent', ), ),
-                'was_agent_idx' => array( 'columns' => array( 0 => 'was_agent', ), ),
-                'is_confirmed_idx' => array( 'columns' => array( 0 => 'is_confirmed', ), ),
+        $metadata->setPrimaryTable(
+            array(
+                'name'    => 'people',
+                'indexes' => array(
+                    'is_agent_idx'     => array('columns' => array(0 => 'is_agent')),
+                    'was_agent_idx'    => array('columns' => array(0 => 'was_agent')),
+                    'is_confirmed_idx' => array('columns' => array(0 => 'is_confirmed')),
+                ),
             )
-        ));
+        );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 
         $metadata->addLifecycleCallback('_initPersonLogger', 'postLoad');
@@ -2745,104 +3188,656 @@ class Person extends DomainObject implements HighlightableModelInterface
                 $metadata->addEntityListener(
                     $event,
                     'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener',
-                    'on' . ucfirst($event)
+                    'on'.ucfirst($event)
                 );
             }
         }
 
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'gravatar_url', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'gravatar_url', ));
-        $metadata->mapField(array( 'fieldName' => 'disable_picture', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'disable_picture', ));
-        $metadata->mapField(array( 'fieldName' => 'is_contact', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_contact', ));
-        $metadata->mapField(array( 'fieldName' => 'is_user', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_user', ));
-        $metadata->mapField(array( 'fieldName' => 'is_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent', ));
-        $metadata->mapField(array( 'fieldName' => 'was_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'was_agent', ));
-        $metadata->mapField(array( 'fieldName' => 'can_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'can_agent', ));
-        $metadata->mapField(array( 'fieldName' => 'can_admin', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'can_admin', ));
-        $metadata->mapField(array( 'fieldName' => 'can_billing', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'can_billing', ));
-        $metadata->mapField(array( 'fieldName' => 'can_reports', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'can_reports', ));
-        $metadata->mapField(array( 'fieldName' => 'is_vacation_mode', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_vacation_mode', ));
-        $metadata->mapField(array( 'fieldName' => 'disable_autoresponses', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'disable_autoresponses', ));
-        $metadata->mapField(array( 'fieldName' => 'disable_autoresponses_log', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'disable_autoresponses_log', ));
-        $metadata->mapField(array( 'fieldName' => 'is_confirmed', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_confirmed', ));
-        $metadata->mapField(array( 'fieldName' => 'is_agent_confirmed', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent_confirmed', ));
-        $metadata->mapField(array( 'fieldName' => 'is_deleted', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_deleted', ));
-        $metadata->mapField(array( 'fieldName' => 'is_disabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_disabled', ));
-        $metadata->mapField(array( 'fieldName' => 'importance', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'importance', ));
-        $metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system', ));
-        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
-        $metadata->mapField(array( 'fieldName' => 'first_name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'first_name', ));
-        $metadata->mapField(array( 'fieldName' => 'last_name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_name', ));
-        $metadata->mapField(array( 'fieldName' => 'title_prefix', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title_prefix', ));
-        $metadata->mapField(array( 'fieldName' => 'override_display_name', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'override_display_name', ));
-        $metadata->mapField(array( 'fieldName' => 'summary', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'summary', ));
-        $metadata->mapField(array( 'fieldName' => 'secret_string', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'secret_string', 'dpqlAccess' => false, 'dpApi' => false, ));
-        $metadata->mapField(array( 'fieldName' => 'organization_position', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'organization_position', ));
-        $metadata->mapField(array( 'fieldName' => 'organization_manager', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'organization_manager', ));
-        $metadata->mapField(array( 'fieldName' => 'timezone', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'timezone', ));
-        $metadata->mapField(array( 'fieldName' => 'password', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'password', 'dpqlAccess' => false, 'dpApi' => false, ));
-        $metadata->mapField(array( 'fieldName' => 'password_scheme', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'password_scheme', 'dpqlAccess' => false, 'dpApi' => false, ));
-        $metadata->mapField(array( 'fieldName' => 'salt', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'salt', 'dpqlAccess' => false, 'dpApi' => false, ));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-        $metadata->mapField(array( 'fieldName' => 'date_last_login', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_last_login', ));
-        $metadata->mapField(array( 'fieldName' => 'date_password_set', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_password_set', ));
-        $metadata->mapField(array( 'fieldName' => 'date_picture_check', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_picture_check', ));
-        $metadata->mapField(array( 'fieldName' => 'browser', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'browser', ));
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'gravatar_url',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'gravatar_url',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'disable_picture',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'disable_picture',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_contact',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_contact',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_user',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_user',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_agent',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_agent',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'was_agent',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'was_agent',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'can_agent',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'can_agent',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'can_admin',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'can_admin',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'can_billing',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'can_billing',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'can_reports',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'can_reports',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_vacation_mode',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_vacation_mode',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'disable_autoresponses',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'disable_autoresponses',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'disable_autoresponses_log',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'disable_autoresponses_log',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_confirmed',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_confirmed',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_agent_confirmed',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_agent_confirmed',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_deleted',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_deleted',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_disabled',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_disabled',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'importance',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'importance',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'creation_system',
+                'type'       => 'string',
+                'length'     => 20,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'creation_system',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'name',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'name',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'first_name',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'first_name',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'last_name',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'last_name',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'title_prefix',
+                'type'       => 'string',
+                'length'     => 50,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'title_prefix',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'override_display_name',
+                'type'       => 'string',
+                'length'     => 200,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'override_display_name',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'summary',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'summary',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'secret_string',
+                'type'       => 'string',
+                'length'     => 40,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'secret_string',
+                'dpqlAccess' => false,
+                'dpApi'      => false,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'organization_position',
+                'type'       => 'string',
+                'length'     => 100,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'organization_position',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'organization_manager',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'organization_manager',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'timezone',
+                'type'       => 'string',
+                'length'     => 50,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'timezone',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'password',
+                'type'       => 'string',
+                'length'     => 100,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'password',
+                'dpqlAccess' => false,
+                'dpApi'      => false,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'password_scheme',
+                'type'       => 'string',
+                'length'     => 20,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'password_scheme',
+                'dpqlAccess' => false,
+                'dpApi'      => false,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'salt',
+                'type'       => 'string',
+                'length'     => 40,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'salt',
+                'dpqlAccess' => false,
+                'dpApi'      => false,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_created',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'date_created',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_last_login',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_last_login',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_password_set',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_password_set',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_picture_check',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_picture_check',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'browser',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'browser',
+            )
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'picture_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'picture_blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), )  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'primary_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array('persist'), 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'primary_email_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'emails', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array('persist'), 'mappedBy' => 'person', 'dpApi' => true ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelPerson', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => true ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataPerson', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => true, 'dpApi' => true));
-        $metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonContactData', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'indexBy' => 'id', 'dpApi' => true, 'dpApiDeep' => true ));
-        $metadata->mapManyToMany(array( 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'cascade' => array('persist','merge'), 'joinTable' => array( 'name' => 'person2usergroups', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'dpApi' => true ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'preferences', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person',  ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'usersource_assoc', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc', 'mappedBy' => 'person',  ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'twitter_users', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonTwitterUser', 'mappedBy' => 'person',  ));
-        $metadata->mapManyToMany(array( 'fieldName' => 'twitter_accounts', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => 'persons' ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'notes', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonNote', 'mappedBy' => 'person', 'cascade' => array('persist', 'remove') ));
-        $metadata->mapOneToMany(array( 'fieldName'    => 'phone_numbers',
-                                       'targetEntity' => 'Application\\DeskPRO\\Entity\\PhoneNumber',
-                                       'mappedBy'     => 'person', 'cascade' => array('persist'),
-                                       'orphanRemoval' => true
-        ));
-        $metadata->mapOneToMany(array(
-            'fieldName'    => 'department_permissions',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\DepartmentPermission',
-            'mappedBy'     => 'person'
-        ));
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'picture_blob',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'fetch'        => ClassMetadata::FETCH_EAGER,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'picture_blob_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+                'dpApi' => true,
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'language',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
+                'mappedBy'     => null,
+                'cascade'      => array('persist'),
+                'inversedBy'   => null,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'language_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'organization',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'fetch'        => ClassMetadata::FETCH_EAGER,
+                'cascade'      => array('persist'),
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'organization_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+                'dpApi' => true,
+            )
+        );
+        $metadata->mapOneToOne(
+            array(
+                'fieldName'    => 'primary_email',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail',
+                'cascade'      => array('persist', 'detach'),
+                'fetch'        => ClassMetadata::FETCH_EAGER,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'primary_email_id',
+                        'referencedColumnName' => 'id',
+                        'unique'               => true,
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'     => 'emails',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\PersonEmail',
+                'cascade'       => array('persist', 'detach'),
+                'mappedBy'      => 'person',
+                'dpApi'         => true,
+                'orphanRemoval' => true,
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'     => 'labels',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\LabelPerson',
+                'cascade'       => array('remove', 'persist', 'merge', 'detach'),
+                'mappedBy'      => 'person',
+                'orphanRemoval' => true,
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'     => 'custom_data',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\CustomDataPerson',
+                'cascade'       => array('remove', 'persist', 'merge', 'detach'),
+                'mappedBy'      => 'person',
+                'orphanRemoval' => true,
+                'dpApi'         => true,
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'    => 'contact_data',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonContactData',
+                'cascade'      => array('remove', 'persist', 'merge', 'detach'),
+                'mappedBy'     => 'person',
+                'indexBy'      => 'id',
+                'dpApi'        => true,
+                'dpApiDeep'    => true,
+            )
+        );
+        $metadata->mapManyToMany(
+            array(
+                'fieldName'    => 'usergroups',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+                'cascade'      => array('persist', 'merge'),
+                'joinTable'    => array(
+                    'name'        => 'person2usergroups',
+                    'schema'      => null,
+                    'joinColumns' => array(
+                        0 => array(
+                            'name'                 => 'person_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => true,
+                            'onDelete'             => 'cascade',
+                            'columnDefinition'     => null,
+                        ),
+                    ),
+                    'inverseJoinColumns' => array(
+                        0 => array(
+                            'name'                 => 'usergroup_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => true,
+                            'onDelete'             => 'cascade',
+                            'columnDefinition'     => null,
+                        ),
+                    ),
+                ),
+                'dpApi' => true,
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'    => 'preferences',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref',
+                'cascade'      => array('persist', 'remove', 'merge'),
+                'mappedBy'     => 'person',
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'    => 'usersource_assoc',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc',
+                'mappedBy'     => 'person',
+                'cascade'      => array('persist', 'remove'),
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'    => 'twitter_users',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonTwitterUser',
+                'mappedBy'     => 'person',
+            )
+        );
+        $metadata->mapManyToMany(
+            array(
+                'fieldName'    => 'twitter_accounts',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount',
+                'mappedBy'     => 'persons',
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'    => 'notes',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonNote',
+                'mappedBy'     => 'person',
+                'cascade'      => array('persist', 'remove'),
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'     => 'phone_numbers',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\PhoneNumber',
+                'mappedBy'      => 'person',
+                'cascade'       => array('persist', 'detach'),
+                'orphanRemoval' => true,
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName'    => 'department_permissions',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\DepartmentPermission',
+                'mappedBy'     => 'person',
+            )
+        );
 
         $metadata->mapOneToMany(array(
-            'fieldName'    => 'report_dashboard_permissions',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportDashboardPermission',
-            'mappedBy'     => 'person'
-        ));
+                                    'fieldName'    => 'report_dashboard_permissions',
+                                    'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportDashboardPermission',
+                                    'mappedBy'     => 'person'
+                                ));
 
-        $metadata->mapManyToMany(array(
-            'fieldName' => 'teams',
-            'mappedBy' => 'members',
-            'dpApi' => true,
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
-            'joinTable' => array(
-                'name' => 'agent_team_members',
-                'joinColumns' => array(array( 'name' => 'person_id' )),
-                'inverseJoinColumns' => array(array( 'name' => 'team_id' )),
-            ),
-        ));
+        $metadata->mapManyToMany(
+            array(
+                'fieldName'    => 'teams',
+                'mappedBy'     => 'members',
+                'dpApi'        => true,
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
+                'joinTable'    => array(
+                    'name'               => 'agent_team_members',
+                    'joinColumns'        => array(array('name' => 'person_id', 'onDelete' => 'CASCADE')),
+                    'inverseJoinColumns' => array(array('name' => 'team_id', 'onDelete' => 'CASCADE')),
+                ),
+            )
+        );
 
-        $metadata->mapManyToOne(array(
-            'fieldName' => 'primary_team',
-            'dpApi' => true,
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
-            'nullable' => true,
-            'joinColumns' => array(array(
-                'name' => 'primary_team_id',
-                'referencedColumnName' => 'id',
-                'nullable' => true,
-                'onDelete' => 'set null'
-            ))
-        ));
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'primary_team',
+                'dpApi'        => true,
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
+                'nullable'     => true,
+                'joinColumns'  => array(
+                    array(
+                        'name'                 => 'primary_team_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                    ),
+                ),
+            )
+        );
+    }
+
+    public function clear()
+    {
+        if ($this->_permissions_manager) {
+            $this->_permissions_manager->clear();
+        }
+        if ($this->_person_logger) {
+            $this->_person_logger->clear();
+        }
     }
 }

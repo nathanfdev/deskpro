@@ -1,46 +1,47 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage UserBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository\Ticket;
+use Application\DeskPRO\HttpKernel\Event\PrePostEvent;
+use Application\DeskPRO\People\PersonGuest;
 use Application\UserBundle\Form\NewTicketParticipantType;
 use Application\UserBundle\Form\NewTicketReplyType;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class TicketsController extends AbstractController
 {
@@ -55,8 +56,21 @@ class TicketsController extends AbstractController
         parent::init();
 
         if ($this->session->get('ticket_access')) {
-            $this->session_allowed = $this->session->get('ticket_access');
+            $this->session_allowed        = $this->session->get('ticket_access');
             $GLOBALS['DP_SET_SKIP_CACHE'] = true;
+        }
+    }
+
+    public function DeskPRO_onControllerPreAction($event)
+    {
+        parent::DeskPRO_onControllerPreAction($event);
+
+        /* @var $event PrePostEvent */
+        if ($this->person instanceof PersonGuest && !in_array($event->get('action'), array('feedbackAction', 'feedbackSaveAction', 'feedbackCloseTicketAction'))) {
+            $event->setResponse(new RedirectResponse($this->generateUrl(
+                'user_login',
+                array('return' => $this->request->getRequestUri())
+            )));
         }
     }
 
@@ -65,75 +79,26 @@ class TicketsController extends AbstractController
     ################################################################################
 
     /**
-     * View a list of all tickets
+     * View a list of all tickets.
      */
     public function listAction()
     {
         if (!$this->person['id']) {
-            $return = $this->request->getRequestUri();
+            $return       = $this->request->getRequestUri();
             $redirect_url = $this->get('router')->generate('user_login', array('return' => $return));
 
             return $this->redirect($redirect_url);
         }
 
-        $page = max($this->in->getUint('p'), 1);
+        $sort     = $this->in->getString('sort') ?: 'date_created';
+        $page     = max($this->in->getUint('p'), 1);
         $per_page = 100;
-        $limit = ($page - 1) * $per_page;
+        $offset   = ($page - 1) * $per_page;
 
-        $dql_join = '';
-        $sort = $this->in->getString('sort');
-        switch ($sort) {
-            case 'department':
-                $dql_join = 'LEFT JOIN ticket.department d'
-                    . "\nLEFT JOIN d.parent d_parent";
-                $sort_dql = 'd_parent.display_order, d.display_order, ticket.id DESC';
-                break;
-
-            case 'last_reply':
-                $sort_dql = 'ticket.date_last_user_reply DESC';
-                break;
-
-            case 'date_created':
-            default:
-                $sort = 'date_created';
-                $sort_dql = 'ticket.id DESC';
-        }
-
-        $count = $this->em->getRepository('DeskPRO:Ticket')->countTicketsForPerson($this->person);
-        if ($this->person->is_agent) {
-            $tickets = $this->em->createQuery("
-                SELECT ticket
-                FROM DeskPRO:Ticket ticket
-                $dql_join
-                WHERE ticket.person = :person AND ticket.status != 'hidden'
-                ORDER BY $sort_dql
-            ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person));
-        } else {
-            if ($this->person->organization && $this->person->organization_manager) {
-
-                // Managers can always see their org tickets, so dont show them
-                // tickets if they are of their own org because those will be on the org page
-                $tickets = $this->em->createQuery("
-                    SELECT ticket
-                    FROM DeskPRO:Ticket ticket
-                    LEFT JOIN ticket.participants part
-                    $dql_join
-                    WHERE (ticket.person = :person OR (part.person = :person AND ticket.organization != :org)) AND ticket.status != 'hidden'
-                    ORDER BY $sort_dql
-                ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person, 'org' => $this->person->organization));
-            } else {
-
-                $tickets = $this->em->createQuery("
-                    SELECT ticket
-                    FROM DeskPRO:Ticket ticket
-                    LEFT JOIN ticket.participants part
-                    $dql_join
-                    WHERE (ticket.person = :person OR part.person = :person) AND ticket.status != 'hidden'
-                    ORDER BY $sort_dql
-                ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person));
-            }
-        }
-
+        /** @var Ticket $rep */
+        $rep      = $this->em->getRepository('DeskPRO:Ticket');
+        $count    = $rep->countTicketsForPerson2($this->person);
+        $tickets  = $rep->getTicketsForPerson($this->person, $offset, $per_page, $sort);
         $pageinfo = Numbers::getPaginationPages($count, $page, $per_page, 3);
 
         $all_tickets      = array();
@@ -143,9 +108,9 @@ class TicketsController extends AbstractController
         $ticket_ids = array();
 
         foreach ($tickets as $t) {
-            $ticket_ids[] = $t['id'];
+            $ticket_ids[]  = $t['id'];
             $all_tickets[] = $t;
-            if ($t['status'] == 'awaiting_agent' OR $t['status'] == 'awaiting_user') {
+            if ($t['status'] == 'awaiting_agent' or $t['status'] == 'awaiting_user') {
                 $active_tickets[] = $t;
             } else {
                 $resolved_tickets[] = $t;
@@ -154,22 +119,22 @@ class TicketsController extends AbstractController
 
         $last_messages = array();
         if ($tickets) {
-            $last_mesasge_ids = App::getDb()->fetchAllCol("
+            $last_mesasge_ids = App::getDb()->fetchAllCol('
                 SELECT MAX(id)
                 FROM tickets_messages
-                WHERE ticket_id IN (?)
+                WHERE ticket_id IN (?) AND is_agent_note = 0
                 GROUP BY ticket_id
-            ", array($ticket_ids), array(Connection::PARAM_INT_ARRAY));
+            ', array($ticket_ids), array(Connection::PARAM_INT_ARRAY));
 
             if ($last_mesasge_ids) {
-                $last_messages = $this->em->createQuery("
+                $last_messages = $this->em->createQuery('
                     SELECT m, p
                     FROM DeskPRO:TicketMessage m
                     JOIN m.person p
                     WHERE m.id IN (?0)
                     GROUP BY m.ticket
                     ORDER BY m.id DESC
-                ")->execute(array($last_mesasge_ids));
+                ')->execute(array($last_mesasge_ids));
             }
 
             $last_messages = Arrays::keyFromData($last_messages, 'ticket_id');
@@ -192,7 +157,7 @@ class TicketsController extends AbstractController
     }
 
     /**
-     * View a list of all organization tickets
+     * View a list of all organization tickets.
      */
     public function listOrganizationAction()
     {
@@ -200,13 +165,8 @@ class TicketsController extends AbstractController
             return $this->redirectRoute('user_tickets');
         }
 
-        $allowed_ids = $this->person->getPermissionsManager()->Departments->getAllowedIds('tickets');
-        if (!$allowed_ids) {
-            return $this->redirectRoute('user_tickets');
-        }
-
         $dql_join = '';
-        $sort = $this->in->getString('sort');
+        $sort     = $this->in->getString('sort');
         switch ($sort) {
             case 'creator':
                 $dql_join = 'INNER JOIN ticket.person p';
@@ -215,7 +175,7 @@ class TicketsController extends AbstractController
 
             case 'department':
                 $dql_join = 'LEFT JOIN ticket.department d'
-                    . "\nLEFT JOIN d.parent d_parent";
+                    ."\nLEFT JOIN d.parent d_parent";
                 $sort_dql = 'd_parent.display_order, d.display_order, ticket.id DESC';
                 break;
 
@@ -225,25 +185,25 @@ class TicketsController extends AbstractController
 
             case 'date_created':
             default:
-                $sort = 'date_created';
+                $sort     = 'date_created';
                 $sort_dql = 'ticket.id DESC';
         }
 
-        $page = max($this->in->getUint('p'), 1);
+        $page     = max($this->in->getUint('p'), 1);
         $per_page = 100;
-        $limit = ($page - 1) * $per_page;
+        $limit    = ($page - 1) * $per_page;
 
         $count = $this->db->fetchColumn("
             SELECT COUNT(*)
             FROM tickets
-            WHERE tickets.organization_id = ? AND tickets.status != 'hidden'
+            WHERE tickets.organization_id = ? AND tickets.status != 'hidden' AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
         ", array($this->person->organization->id));
 
         $tickets = $this->em->createQuery("
             SELECT ticket
             FROM DeskPRO:Ticket ticket
             $dql_join
-            WHERE ticket.organization = :organization AND ticket.status != 'hidden'
+            WHERE ticket.organization = :organization AND ticket.status != 'hidden' AND (ticket.date_last_agent_reply IS NOT NULL OR ticket.date_last_user_reply IS NOT NULL)
             ORDER BY $sort_dql
         ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('organization' => $this->person->organization));
 
@@ -254,9 +214,9 @@ class TicketsController extends AbstractController
         $ticket_ids = array();
 
         foreach ($tickets as $t) {
-            $ticket_ids[] = $t['id'];
+            $ticket_ids[]  = $t['id'];
             $all_tickets[] = $t;
-            if ($t['status'] == 'awaiting_agent' OR $t['status'] == 'awaiting_user') {
+            if ($t['status'] == 'awaiting_agent' or $t['status'] == 'awaiting_user') {
                 $active_tickets[] = $t;
             } else {
                 $resolved_tickets[] = $t;
@@ -267,22 +227,22 @@ class TicketsController extends AbstractController
 
         $last_messages = array();
         if ($tickets) {
-            $last_mesasge_ids = App::getDb()->fetchAllCol("
+            $last_mesasge_ids = App::getDb()->fetchAllCol('
                 SELECT MAX(id)
                 FROM tickets_messages
                 WHERE ticket_id IN (?)
                 GROUP BY ticket_id
-            ", array($ticket_ids), array(Connection::PARAM_INT_ARRAY));
+            ', array($ticket_ids), array(Connection::PARAM_INT_ARRAY));
 
             if ($last_mesasge_ids) {
-                $last_messages = $this->em->createQuery("
+                $last_messages = $this->em->createQuery('
                     SELECT m, p
                     FROM DeskPRO:TicketMessage m
                     LEFT JOIN m.person p
                     WHERE m.id IN (?0)
                     GROUP BY m.ticket
                     ORDER BY m.id DESC
-                ")->execute(array($last_mesasge_ids));
+                ')->execute(array($last_mesasge_ids));
             }
 
             $last_messages = Arrays::keyFromData($last_messages, 'ticket_id');
@@ -306,7 +266,6 @@ class TicketsController extends AbstractController
         ));
     }
 
-
     ################################################################################
     # add-reply
     ################################################################################
@@ -328,13 +287,13 @@ class TicketsController extends AbstractController
             return $this->renderLoginOrPermissionError();
         }
 
-        $newreply = new \Application\UserBundle\Tickets\NewReply($ticket, $this->person);
-        $form = $this->get('form.factory')->create(new NewTicketReplyType(), $newreply);
+        $newreply  = new \Application\UserBundle\Tickets\NewReply($ticket, $this->person);
+        $form      = $this->get('form.factory')->create(new NewTicketReplyType(), $newreply);
         $validator = new \Application\UserBundle\Validator\NewTicketReplyValidator();
 
         $form->handleRequest($this->get('request'));
 
-        $newreply->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
+        $newreply->attach_ids        = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
         $newreply->attach_ids_authed = true;
 
         if ($validator->isValid($newreply)) {
@@ -342,17 +301,17 @@ class TicketsController extends AbstractController
 
             $GLOBALS['DP_SET_SKIP_CACHE'] = true;
         } else {
-            $errors = $validator->getErrors(true);
+            $errors       = $validator->getErrors(true);
             $error_fields = $validator->getErrorGroups(true);
 
             return $this->forward('UserBundle:TicketView:load', array(
-                'ticket_ref' => $ticket->getPublicId(),
+                'ticket_ref'   => $ticket->getPublicId(),
                 'display_data' => array(
-                    'errors' => $errors,
-                    'error_fields' => $error_fields,
-                    'newreply' => $newreply,
-                    'newreply_form' => $form
-                )
+                    'errors'        => $errors,
+                    'error_fields'  => $error_fields,
+                    'newreply'      => $newreply,
+                    'newreply_form' => $form,
+                ),
             ));
         }
 
@@ -370,8 +329,8 @@ class TicketsController extends AbstractController
         $newpart_form = $this->get('form.factory')->create(new NewTicketParticipantType());
 
         return $this->render('UserBundle:Tickets:manage-participants.html.twig', array(
-            'ticket' => $ticket,
-            'newpart_form' => $newpart_form->createView()
+            'ticket'       => $ticket,
+            'newpart_form' => $newpart_form->createView(),
         ));
     }
 
@@ -440,21 +399,21 @@ class TicketsController extends AbstractController
             $message = $this->em->find('DeskPRO:TicketMessage', $message_id);
         }
 
-        $person  = $this->person->getId() ? $this->person : $ticket->person;
+        $person = $this->person->getId() ? $this->person : $ticket->person;
 
         // Verify ticket and message
-        if ($auth != $ticket->auth OR !$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent']) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
+        if ($auth != $ticket->auth or !$message or $message['ticket_id'] != $ticket['id'] or $message['is_agent_note'] or !$message['person']['is_agent']) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Invalid message');
         }
 
         $feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $person, true);
 
-        $rating = null;
+        $rating    = null;
         $setrating = false;
         if ($this->container->getIn()->checkIsset('rating')) {
             $rating = $this->in->getInt('rating');
         } elseif ($this->container->getIn()->checkIsset('setrating')) {
-            $rating = $this->in->getInt('setrating');
+            $rating    = $this->in->getInt('setrating');
             $setrating = true;
         }
 
@@ -462,12 +421,12 @@ class TicketsController extends AbstractController
             $feedback->setRating($rating);
 
             if ($this->in->getBool('save')) {
-                $last_message_id = App::getDb()->fetchColumn("
+                $last_message_id = App::getDb()->fetchColumn('
                     SELECT message_id FROM ticket_feedback
                     WHERE ticket_id = ?
                     ORDER BY message_id DESC
                     LIMIT 1
-                ", array($ticket->getId()));
+                ', array($ticket->getId()));
 
                 if (!$last_message_id || $message->getId() >= $last_message_id) {
                     $ticket->feedback_rating = $feedback->rating;
@@ -506,21 +465,21 @@ class TicketsController extends AbstractController
         $person  = $this->person->getId() ? $this->person : $ticket->person;
 
         // Verify ticket and message
-        if ($auth != $ticket->auth OR !$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent']) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
+        if ($auth != $ticket->auth or !$message or $message['ticket_id'] != $ticket['id'] or $message['is_agent_note'] or !$message['person']['is_agent']) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Invalid message');
         }
 
-        $feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $person, true);
+        $feedback          = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $person, true);
         $feedback->message = $this->in->getString('message');
         $feedback->setRating($this->in->getInt('rating'));
         $this->em->persist($feedback);
 
-        $last_message_id = App::getDb()->fetchColumn("
+        $last_message_id = App::getDb()->fetchColumn('
             SELECT message_id FROM ticket_feedback
             WHERE ticket_id = ?
             ORDER BY message_id DESC
             LIMIT 1
-        ", array($ticket->getId()));
+        ', array($ticket->getId()));
 
         if (!$last_message_id || $message->getId() >= $last_message_id) {
             $ticket->feedback_rating = $feedback->rating;
@@ -534,8 +493,8 @@ class TicketsController extends AbstractController
         $GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
         return $this->render('UserBundle:Tickets:feedback-thank.html.twig', array(
-            'ticket' => $ticket,
-            'message' => $message,
+            'ticket'   => $ticket,
+            'message'  => $message,
             'feedback' => $feedback,
         ));
     }
@@ -552,8 +511,8 @@ class TicketsController extends AbstractController
         $person  = $this->person->getId() ? $this->person : $ticket->person;
 
         // Verify ticket and message
-        if (!$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent']) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
+        if (!$message or $message['ticket_id'] != $ticket['id'] or $message['is_agent_note'] or !$message['person']['is_agent']) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Invalid message');
         }
 
         $feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $person, false);
@@ -576,10 +535,10 @@ class TicketsController extends AbstractController
         $GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
         return $this->render('UserBundle:Tickets:feedback-close.html.twig', array(
-            'ticket' => $ticket,
-            'message' => $message,
-            'feedback' => $feedback,
-            'close_window' => $this->in->getBool('close_win')
+            'ticket'       => $ticket,
+            'message'      => $message,
+            'feedback'     => $feedback,
+            'close_window' => $this->in->getBool('close_win'),
         ));
     }
 
@@ -600,13 +559,13 @@ class TicketsController extends AbstractController
 
             $ticket_message = null;
             if (!$ticket->date_feedback_rating) {
-                $ticket_message = App::getOrm()->createQuery("
+                $ticket_message = App::getOrm()->createQuery('
                     SELECT m
                     FROM DeskPRO:TicketMessage m
                     LEFT JOIN m.person person
                     WHERE m.is_agent_note = false AND person.is_agent = true AND m.ticket = ?0
                     ORDER BY m.id DESC
-                ")->setParameter(0, $ticket)->setMaxResults(1)->getOneOrNullResult();
+                ')->setParameter(0, $ticket)->setMaxResults(1)->getOneOrNullResult();
             }
 
             if (App::getSetting('core.tickets.enable_feedback') && !$ticket->date_feedback_rating && $ticket_message) {
@@ -617,14 +576,14 @@ class TicketsController extends AbstractController
         }
 
         return $this->render('UserBundle:Tickets:resolve.html.twig', array(
-            'ticket' => $ticket,
+            'ticket'  => $ticket,
             'message' => $message,
         ));
     }
 
     public function unresolveAction($ticket_ref)
     {
-        $ticket  = $this->getTicketOr404($ticket_ref);
+        $ticket = $this->getTicketOr404($ticket_ref);
 
         if ($ticket->status != 'resolved' || !$this->person->hasPerm('tickets.reopen_resolved')) {
             return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
@@ -636,7 +595,6 @@ class TicketsController extends AbstractController
 
         return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\Ticket
@@ -652,11 +610,11 @@ class TicketsController extends AbstractController
             $ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
         }
 
-        if (!$ticket) {
+        if (!$ticket || !($ticket->date_last_agent_reply || $ticket->date_last_user_reply)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_ref");
         }
 
-        /** @var $ticket \Application\DeskPRO\Entity\Ticket */
+        /* @var $ticket \Application\DeskPRO\Entity\Ticket */
 
         $is_participant = ($this->person->id == $ticket->person->id || $ticket->hasParticipantPerson($this->person->id));
         $is_org_manager = (
@@ -666,7 +624,7 @@ class TicketsController extends AbstractController
             && $this->person->organization_manager
         );
 
-        if (!$is_participant AND !$is_org_manager AND !isset($this->session_allowed[$ticket['id']])) {
+        if (!$is_participant and !$is_org_manager and !isset($this->session_allowed[$ticket['id']])) {
             throw $this->createNotFoundException();
         }
 
@@ -674,7 +632,7 @@ class TicketsController extends AbstractController
             $person = $this->em->getRepository('DeskPRO:Person')->find($this->session_allowed[$ticket['id']]['person_id']);
 
             // Set the current person context
-            if ($person['is_user'] AND $this->person != $person) {
+            if ($person['is_user'] and $this->person != $person) {
                 $this->person = $person;
                 App::setCurrentPerson($person);
             } else {

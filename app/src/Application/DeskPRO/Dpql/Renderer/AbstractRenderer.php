@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Dpql
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Dpql\Renderer;
 
 use Application\DeskPRO\Dpql\ResultHandler;
@@ -62,7 +59,7 @@ abstract class AbstractRenderer
     protected $_results;
 
     /**
-     * Name of the output type (html, csv, etc)
+     * Name of the output type (html, csv, etc).
      *
      * @var string
      */
@@ -161,10 +158,10 @@ abstract class AbstractRenderer
             $outputFormat = array_unique($outputFormat);
         }
 
-        $this->_typeName = $typeName;
-        $this->_outputFormat = $outputFormat;
-        $this->_handler = $resultHandler;
-        $this->_results = $results;
+        $this->_typeName      = $typeName;
+        $this->_outputFormat  = $outputFormat;
+        $this->_handler       = $resultHandler;
+        $this->_results       = $results;
         $this->_valueRenderer = $this->_getDefaultValueRenderer();
     }
 
@@ -178,11 +175,11 @@ abstract class AbstractRenderer
         $name = preg_replace('/[^a-zA-Z0-9_ -]/', '', $name);
         $name = str_replace(' ', '-', $name);
 
-        return strtolower($name) . '.' . $this->getExtension();
+        return strtolower($name).'.'.$this->getExtension();
     }
 
     /**
-     * Render to the specified format and type
+     * Render to the specified format and type.
      *
      * @return string
      */
@@ -192,11 +189,11 @@ abstract class AbstractRenderer
 
         if ($splitColumns) {
             $output = array();
-            foreach ($this->_results->getSplitResults() AS $splitResult) {
+            foreach ($this->_results->getSplitResults() as $splitResult) {
                 $result = $this->_renderFormatsWithFallback($this->_outputFormat, $splitResult[0]);
                 if ($result) {
                     $splitPrint = array();
-                    foreach ($this->_handler->getSplitColumns() AS $splitColumn) {
+                    foreach ($this->_handler->getSplitColumns() as $splitColumn) {
                         $splitPrint[] = $this->_renderCellValue($splitResult[1], $splitColumn);
                     }
 
@@ -214,10 +211,10 @@ abstract class AbstractRenderer
 
     protected function _renderFormatsWithFallback(array $formats, array $rows)
     {
-        $final = array();
+        $final   = array();
         $success = false;
 
-        foreach ($formats AS $format) {
+        foreach ($formats as $format) {
             $result = $this->_render($format, $rows);
             if ($result !== false) {
                 $success = true;
@@ -289,8 +286,8 @@ abstract class AbstractRenderer
     /**
      * Gets the value of a particular column for the given row.
      *
-     * @param array         $row
-     * @param integer|array $id
+     * @param array     $row
+     * @param int|array $id
      *
      * @return string
      */
@@ -322,32 +319,32 @@ abstract class AbstractRenderer
         $selectColumns = $this->_handler->getSelectColumns();
 
         $distinctXValues = array();
-        $distinctXSort = array();
+        $distinctXSort   = array();
         $distinctYValues = array();
-        $distinctYSort = array();
-        $lookup = array();
+        $distinctYSort   = array();
+        $lookup          = array();
 
-        foreach ($rows AS $row) {
+        foreach ($rows as $row) {
             $xPath = array('root');
-            foreach ($groupXColumns AS $column) {
+            foreach ($groupXColumns as $column) {
                 $pathString = $this->_getGroupPathKey($xPath);
                 $groupValue = $this->getColumnValue($row, $column['groupResultId']);
-                $rendered = $this->_renderCellValue($row, $column);
+                $rendered   = $this->_renderCellValue($row, $column);
 
                 $distinctXValues[$pathString][$groupValue] = $rendered;
-                $distinctXSort[$pathString][$groupValue] = $groupValue === null ? null : $this->getColumnValue($row, $column);
+                $distinctXSort[$pathString][$groupValue]   = $groupValue === null ? null : $this->getColumnValue($row, $column);
 
                 $xPath[] = $groupValue;
             }
 
             $yPath = array('root');
-            foreach ($groupYColumns AS $column) {
+            foreach ($groupYColumns as $column) {
                 $pathString = $this->_getGroupPathKey($yPath);
                 $groupValue = $this->getColumnValue($row, $column['groupResultId']);
-                $rendered = $this->_renderCellValue($row, $column);
+                $rendered   = $this->_renderCellValue($row, $column);
 
                 $distinctYValues[$pathString][$groupValue] = $rendered;
-                $distinctYSort[$pathString][$groupValue] = $groupValue === null ? null : $this->getColumnValue($row, $column);
+                $distinctYSort[$pathString][$groupValue]   = $groupValue === null ? null : $this->getColumnValue($row, $column);
 
                 $yPath[] = $groupValue;
             }
@@ -356,21 +353,21 @@ abstract class AbstractRenderer
                 $this->_renderMatrixCell($row, $selectColumns);
         }
 
-        foreach ($distinctXSort AS $path => $sortValues) {
+        foreach ($distinctXSort as $path => $sortValues) {
             uasort($sortValues, 'strnatcasecmp');
 
-            $values = $distinctXValues[$path];
+            $values                 = $distinctXValues[$path];
             $distinctXValues[$path] = array();
-            foreach ($sortValues AS $key => $null) {
+            foreach ($sortValues as $key => $null) {
                 $distinctXValues[$path][$key] = $values[$key];
             }
         }
-        foreach ($distinctYSort AS $path => $sortValues) {
+        foreach ($distinctYSort as $path => $sortValues) {
             uasort($sortValues, 'strnatcasecmp');
 
-            $values = $distinctYValues[$path];
+            $values                 = $distinctYValues[$path];
             $distinctYValues[$path] = array();
-            foreach ($sortValues AS $key => $null) {
+            foreach ($sortValues as $key => $null) {
                 $distinctYValues[$path][$key] = $values[$key];
             }
         }
@@ -378,7 +375,7 @@ abstract class AbstractRenderer
         return array(
             'xDistinct' => $distinctXValues,
             'yDistinct' => $distinctYValues,
-            'lookup' => $lookup
+            'lookup'    => $lookup,
         );
     }
 
@@ -398,8 +395,8 @@ abstract class AbstractRenderer
         }
 
         $output = array();
-        foreach ($distinct[$pathString] AS $value => $null) {
-            $localPath = $path;
+        foreach ($distinct[$pathString] as $value => $null) {
+            $localPath   = $path;
             $localPath[] = $value;
 
             $children = $this->_getFinalMatrixPaths($localPath, $distinct);
@@ -432,11 +429,11 @@ abstract class AbstractRenderer
 
         $output = array();
 
-        foreach ($distinctValues[$pathLookup] AS $key => $value) {
-            $localPath = $path;
+        foreach ($distinctValues[$pathLookup] as $key => $value) {
+            $localPath   = $path;
             $localPath[] = $key;
 
-            $localPrintPath = $printPath;
+            $localPrintPath   = $printPath;
             $localPrintPath[] = $value;
 
             $childOutput = $this->_getFinalMatrixPathsWithPrintable($localPath, $distinctValues, $localPrintPath);
@@ -462,7 +459,7 @@ abstract class AbstractRenderer
     protected function _renderMatrixCell(array $row, array $selectColumns)
     {
         $values = array();
-        foreach ($selectColumns AS $column) {
+        foreach ($selectColumns as $column) {
             $values[] = $this->_renderCellValue($row, $column);
         }
 
@@ -488,7 +485,7 @@ abstract class AbstractRenderer
             throw new \Exception("Invalid DPQL renderer type $type");
         }
 
-        $class = __NAMESPACE__ . '\\' . self::$_rendererMap[$type];
+        $class = __NAMESPACE__.'\\'.self::$_rendererMap[$type];
 
         return new $class($type, $outputFormat, $resultHandler, $results);
     }

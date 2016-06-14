@@ -81,6 +81,16 @@ define [
       )
 
     startDelete: ->
+      if @field.choices?.length
+        message = @getRegisteredMessage 'remove_choices'
+        return @$modal.open(
+          templateUrl: @getTemplatePath 'Index/modal-alert.html'
+          controller:  ['$scope', '$modalInstance', '$state', ($scope, $modalInstance, $state) ->
+            $scope.message = message
+            $scope.dismiss = -> $modalInstance.dismiss()
+          ]
+        )
+
       doDelete = =>
         @fieldDataService.deleteFieldById(@field_id)
 
@@ -100,3 +110,6 @@ define [
             $modalInstance.dismiss();
         ]
       });
+
+    type: ->
+

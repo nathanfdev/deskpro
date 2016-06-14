@@ -11,22 +11,30 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
       @$scope.phase           = 1
       @$scope.paymentForm = { new_card: {}, address: {} }
 
+      @$scope.dismiss      = => @$modalInstance.dismiss()
+      @$scope.closeSuccess = => @$modalInstance.close()
+
+      if window.DP_USES_CUSTOM_BILLING
+        @$scope.initial_loading = false
+        @$scope.uses_custom_billing = true;
+        return
+
       # DEBUG
       @$scope.paymentForm.mode = 'new'
       @$scope.paymentForm.new_card = {
-        number: '4929000000006',
-        cv2: '123',
-        name: 'CN',
-        expire_yy: '18'
-        expire_mm: '01',
-        type: 'visa'
+        number: '',
+        cv2: '',
+        name: '',
+        expire_yy: ''
+        expire_mm: '',
+        type: ''
       }
       @$scope.paymentForm.address = {
-        country: 'UK',
-        city: 'London',
+        country: '',
+        city: '',
         state: '',
-        post_code: 'W14 0QA',
-        address: 'Flat D, 27 Aynhoe Road'
+        post_code: '',
+        address: ''
       }
 
       @$scope.month_opts = []
@@ -45,9 +53,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
         if @$scope.formErrors and @$scope.formErrors.length
           @$scope.formErrors = []
       )
-
-      @$scope.dismiss      = => @$modalInstance.dismiss()
-      @$scope.closeSuccess = => @$modalInstance.close()
 
       if @upgradeType == 'extend'
         @$scope.toPlan = 1
@@ -83,7 +88,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
         @$scope.initial_loading = false
         @$scope.paymentForm.exist_card = info.card_details || null
         @$scope.paymentForm.invoice = info.invoice || null
-        @$scope.availablePlans = info.available_plans.map( (x) -> { num: x+"", title: if x == 100 then 'Unlimited' else x } )
+        @$scope.availablePlans = info.available_plans.map( (x) -> { num: x+"", title: x } )
         @$scope.toPlan = info.next_plan.agents+""
         @currentPlan = info.next_plan.agents
 

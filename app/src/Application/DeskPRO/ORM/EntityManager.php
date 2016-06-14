@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\ORM;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -42,7 +39,7 @@ use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 
 /**
- * Customized EM to override proxy factory
+ * Customized EM to override proxy factory.
  */
 class EntityManager extends UnprivateEntityManager
 {
@@ -55,7 +52,7 @@ class EntityManager extends UnprivateEntityManager
     {
         parent::__construct($conn, $config, $eventManager);
 
-        $this->unitOfWork = new UnitOfWork($this);
+        $this->unitOfWork   = new UnitOfWork($this);
         $this->proxyFactory = new ProxyFactory(
             $this,
             $config->getProxyDir(),
@@ -76,7 +73,7 @@ class EntityManager extends UnprivateEntityManager
 
             if ($logger === null) {
                 $logger = new \Orb\Log\Logger();
-                $wr = new \Orb\Log\Writer\Stream(dp_get_log_dir() . '/em-persist.log', 'a');
+                $wr     = new \Orb\Log\Writer\Stream(dp_get_log_dir().'/em-persist.log', 'a');
                 $logger->addWriter($wr);
             }
 
@@ -88,7 +85,7 @@ class EntityManager extends UnprivateEntityManager
 
         if ($entity instanceof DomainObject) {
             if ($entity->_isNoPersist()) {
-                $e = new \InvalidArgumentException("Entity marked as no persist: " . get_class($entity) . " (id: " . $entity->getId());
+                $e = new \InvalidArgumentException('Entity marked as no persist: '.get_class($entity).' (id: '.$entity->getId());
                 \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo(\DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e));
 
                 return;
@@ -152,13 +149,13 @@ class EntityManager extends UnprivateEntityManager
     public function flush($entity = null /* note: arg is ignored, see phpdoc comment */)
     {
         if ($this->_delayedInsert) {
-            foreach ($this->_delayedInsert AS $persist) {
+            foreach ($this->_delayedInsert as $persist) {
                 $this->persist($persist);
             }
             $this->_delayedInsert = array();
         }
         if ($this->_delayedUpdate) {
-            foreach ($this->_delayedUpdate AS $closure) {
+            foreach ($this->_delayedUpdate as $closure) {
                 $closure($this);
             }
             $this->_delayedUpdate = array();
@@ -169,19 +166,19 @@ class EntityManager extends UnprivateEntityManager
         $flush_again = false;
 
         if ($this->_delayedInsert) {
-            foreach ($this->_delayedInsert AS $persist) {
+            foreach ($this->_delayedInsert as $persist) {
                 $this->persist($persist);
             }
             $this->_delayedInsert = array();
-            $flush_again = true;
+            $flush_again          = true;
         }
 
         if ($this->_delayedUpdate) {
-            foreach ($this->_delayedUpdate AS $closure) {
+            foreach ($this->_delayedUpdate as $closure) {
                 $closure($this);
             }
             $this->_delayedUpdate = array();
-            $flush_again = true;
+            $flush_again          = true;
         }
 
         if ($flush_again) {
@@ -205,7 +202,7 @@ class EntityManager extends UnprivateEntityManager
             $skip = $class_name;
         }
 
-        foreach ($this->unitOfWork->getIdentityMap() AS $class => $entity_name) {
+        foreach ($this->unitOfWork->getIdentityMap() as $class => $entity_name) {
             if (!in_array($class, $skip)) {
                 $this->unitOfWork->clear($class);
             }

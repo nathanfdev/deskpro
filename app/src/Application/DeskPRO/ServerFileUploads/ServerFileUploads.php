@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\ServerFileUploads;
 
 use Application\DeskPRO\App;
@@ -46,7 +44,6 @@ class ServerFileUploads
      */
     protected $em;
 
-
     /**
      * @param EntityManager $em
      */
@@ -54,7 +51,6 @@ class ServerFileUploads
     {
         $this->em = $em;
     }
-
 
     /**
      * @return array
@@ -64,7 +60,6 @@ class ServerFileUploads
         $php_vars = array();
 
         foreach (array('file_uploads', 'upload_tmp_dir', 'upload_max_filesize', 'post_max_size') as $var) {
-
             $php_vars[$var] = @ini_get($var);
         }
 
@@ -74,7 +69,6 @@ class ServerFileUploads
 
         return $php_vars;
     }
-
 
     /**
      * @return string
@@ -87,11 +81,10 @@ class ServerFileUploads
         $result = ($result['number'] > 1 ?
             floor($result['number']) :
             $result['number'])
-            . ' ' . $result['symbol'];
+            .' '.$result['symbol'];
 
         return $result;
     }
-
 
     /**
      * @return string
@@ -101,7 +94,6 @@ class ServerFileUploads
         return App::get('deskpro.service_urls')->get('dp.kb.editing_php_ini');
     }
 
-
     /**
      * @return string
      */
@@ -109,7 +101,6 @@ class ServerFileUploads
     {
         return Env::getPhpIniPath();
     }
-
 
     /**
      * @return array
@@ -126,7 +117,6 @@ class ServerFileUploads
         );
     }
 
-
     /**
      * @return array
      */
@@ -135,36 +125,29 @@ class ServerFileUploads
         $moving_id = App::getContainer()->getSetting('core.filesystem_move_from_id');
 
         if ($moving_id) {
-
             if ($moving_id < 1) {
-
                 $count_done = 0;
-
             } else {
-
                 $count_done = App::getDb()->fetchColumn(
-                    "SELECT COUNT(*) FROM blobs WHERE id < ?",
+                    'SELECT COUNT(*) FROM blobs WHERE id < ?',
                     array($moving_id)
                 );
             }
 
-            $count_todo = App::getDb()->fetchColumn("SELECT COUNT(*) FROM blobs", array($moving_id));
+            $count_todo = App::getDb()->fetchColumn('SELECT COUNT(*) FROM blobs', array($moving_id));
 
             if (!$count_todo) {
-
                 $count_todo = 1;
             }
 
             $count_left       = $count_todo - $count_done;
             $count_percentage = floor(($count_done / $count_todo) * 100);
-
         } else {
-
             $count_done = $count_todo = $count_left = $count_percentage = 0;
-            $count_todo = App::getDb()->fetchColumn("SELECT COUNT(*) FROM blobs");
+            $count_todo = App::getDb()->fetchColumn('SELECT COUNT(*) FROM blobs');
         }
 
-        $total_size          = App::getDb()->fetchColumn("SELECT SUM(filesize) FROM blobs");
+        $total_size          = App::getDb()->fetchColumn('SELECT SUM(filesize) FROM blobs');
         $total_size_readable = Numbers::filesizeDisplay($total_size);
 
         return array(
@@ -177,7 +160,6 @@ class ServerFileUploads
         );
     }
 
-
     /**
      * @return bool
      */
@@ -185,7 +167,6 @@ class ServerFileUploads
     {
         return App::getContainer()->getSetting('core.filestorage_method');
     }
-
 
     /**
      * @return string
@@ -195,7 +176,6 @@ class ServerFileUploads
         return   App::getContainer()->getBlobDir();
     }
 
-
     /**
      * @return string
      */
@@ -204,9 +184,9 @@ class ServerFileUploads
         return App::getRouter()->generate('api_server_file_uploads');
     }
 
-
     /**
      * @param $file
+     *
      * @return array
      */
     public function getUploadResults($file)
@@ -219,19 +199,15 @@ class ServerFileUploads
         $error  = $accept->getError($file, 'agent');
 
         if ($error) {
-
             if ($error['error_code'] == 'no_file') {
-
                 $is_tmp_writable = Env::getUploadTempDir() && is_writable(Env::getUploadTempDir());
             }
 
             $upload_failed = App::getContainer()->getTranslator()->phrase(
-                'agent.general.attach_error_' . $error['error_code'],
+                'agent.general.attach_error_'.$error['error_code'],
                 $error
             );
-
         } else {
-
             $attach_url = $accept->accept($file)->getDownloadUrl();
         }
 
@@ -242,9 +218,9 @@ class ServerFileUploads
         );
     }
 
-
     /**
-     * @param  array                        $options
+     * @param array $options
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
@@ -253,7 +229,7 @@ class ServerFileUploads
         $options = new OptionsArray($options);
 
         $settings = App::$container->getSettingsHandler();
-        $db = App::$container->getDb();
+        $db       = App::$container->getDb();
 
         $method = $options->get('method', 'db');
 
@@ -276,7 +252,7 @@ class ServerFileUploads
                 $settings->setSetting('core.filestorage_s3_bucket', $options->get('s3_bucket', null));
 
                 // Need to clear CSS blobs too, since the URLs will change
-                \Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
+                \Application\DeskPRO\Style\RefreshStylesheets::refresh(App::$container);
 
                 break;
         }
@@ -290,7 +266,6 @@ class ServerFileUploads
         $settings->setSetting('core.filesystem_move_from_id', '-1');
     }
 
-
     /**
      * @return array
      */
@@ -300,9 +275,8 @@ class ServerFileUploads
 
         $to_method = App::$container->getSettingsHandler()->get('core.filestorage_method');
 
-        if(!empty($transfer['id'])) {
-
-            $status  = 'progress';
+        if (!empty($transfer['id'])) {
+            $status = 'progress';
 
             switch ($to_method) {
                 case 'db': $message = 'Currently transferring files to the database'; break;
@@ -310,18 +284,16 @@ class ServerFileUploads
                 case 's3': $message = 'Currently transferring files AmazonS3'; break;
             }
 
-            $message .= $transfer['count_done'] . ' of ' .  $transfer['count_todo'];
-            $message .= ' (' . $transfer['count_percentage'] . '%) files have been processed.';
-
+            $message .= $transfer['count_done'].' of '.$transfer['count_todo'];
+            $message .= ' ('.$transfer['count_percentage'].'%) files have been processed.';
         } else {
-
             $status  = 'completed';
             $message = 'Transferring done!';
         }
 
         return array(
             'status'  => $status,
-            'message' => $message
+            'message' => $message,
         );
     }
 }

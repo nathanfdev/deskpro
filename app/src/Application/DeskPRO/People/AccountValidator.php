@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
@@ -79,9 +77,10 @@ class AccountValidator
     }
 
     /**
-     * Validate the email address and return the newly created PersonEmail
+     * Validate the email address and return the newly created PersonEmail.
      *
      * @throws \Exception|\OutOfBoundsException
+     *
      * @return \Application\DeskPRO\Entity\PersonEmail
      */
     public function validate()
@@ -91,7 +90,7 @@ class AccountValidator
         $this->em->getConnection()->beginTransaction();
 
         try {
-            $this->email->is_validated = true;
+            $this->email->is_validated     = true;
             $this->email->is_own_validated = true;
             $this->em->persist($this->email);
             $this->em->flush();
@@ -108,13 +107,13 @@ class AccountValidator
             $this->person->is_confirmed = true;
 
             $this->db->update('people', array(
-                'is_confirmed' => 1,
-                'primary_email_id' => $this->email->getId()
+                'is_confirmed'     => 1,
+                'primary_email_id' => $this->email->getId(),
             ), array('id' => $this->person->getId()));
 
             $this->db->update('people_emails', array(
-                'is_validated' => 1,
-                'date_validated' => $this->email->date_validated->format('Y-m-d H:i:s')
+                'is_validated'   => 1,
+                'date_validated' => $this->email->date_validated->format('Y-m-d H:i:s'),
             ), array('id' => $this->email->getId()));
 
             $ticket_manager = App::$container->getTicketManager();
@@ -122,11 +121,11 @@ class AccountValidator
             // Find tickets with this email awaiting validation
             if ($this->ticket_ids) {
                 foreach ($this->ticket_ids as $ticket_id) {
-                    $ticket = $ticket_manager->getTicket($ticket_id);
+                    $ticket  = $ticket_manager->getTicket($ticket_id);
                     $context = $ticket_manager->createUserExecutorContext($this->person, 'update', 'portal');
 
                     $ticket->person_email_validating = null;
-                    $ticket->person_email = $this->email;
+                    $ticket->person_email            = $this->email;
 
                     if ($this->person->is_agent_confirmed) {
                         $ticket->setStatus('awaiting_agent');
@@ -146,7 +145,6 @@ class AccountValidator
             $this->em->getConnection()->commit();
 
             return $this->email;
-
         } catch (\Exception $e) {
             $this->em->getConnection()->rollback();
             throw $e;

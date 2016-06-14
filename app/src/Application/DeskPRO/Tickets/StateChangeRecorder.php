@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Tickets
+ */
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -43,26 +42,26 @@ class StateChangeRecorder extends BaseStateChangeRecorder
      * @var array
      */
     private static $trivial_fields = array(
-        'access_codes'             => true,
-        'ticket_hash'              => true,
-        'date_feedback_rating'     => true,
-        'date_created'             => true,
-        'date_resolved'            => true,
-        'date_archived'            => true,
-        'date_first_agent_assign'  => true,
-        'date_first_agent_reply'   => true,
-        'date_last_agent_reply'    => true,
-        'date_last_user_reply'     => true,
-        'date_agent_waiting'       => true,
-        'date_user_waiting'        => true,
-        'date_status'              => true,
-        'total_user_waiting'       => true,
-        'total_to_first_reply'     => true,
-        'locked_by_agent'          => true,
-        'date_locked'              => true,
-        'has_attachments'          => true,
-        'count_agent_replies'      => true,
-        'count_user_replies'       => true
+        'access_codes'            => true,
+        'ticket_hash'             => true,
+        'date_feedback_rating'    => true,
+        'date_created'            => true,
+        'date_resolved'           => true,
+        'date_archived'           => true,
+        'date_first_agent_assign' => true,
+        'date_first_agent_reply'  => true,
+        'date_last_agent_reply'   => true,
+        'date_last_user_reply'    => true,
+        'date_agent_waiting'      => true,
+        'date_user_waiting'       => true,
+        'date_status'             => true,
+        'total_user_waiting'      => true,
+        'total_to_first_reply'    => true,
+        'locked_by_agent'         => true,
+        'date_locked'             => true,
+        'has_attachments'         => true,
+        'count_agent_replies'     => true,
+        'count_user_replies'      => true,
     );
 
     /**
@@ -76,13 +75,15 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     private $no_id = false;
 
     /**
-     * If this is a trivial changeset
+     * If this is a trivial changeset.
+     *
      * @var bool
      */
     private $is_trivial = false;
 
     /**
-     * When the last trivial check was made
+     * When the last trivial check was made.
+     *
      * @var null
      */
     private $is_trivial_checkid = null;
@@ -100,14 +101,13 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         }
     }
 
-
     /**
      * @return bool
      */
     public function isTrivialChangeSet()
     {
         if ($this->is_trivial_checkid === null || $this->is_trivial_checkid < $this->getStateVersion()) {
-            $this->is_trivial = true;
+            $this->is_trivial         = true;
             $this->is_trivial_checkid = $this->getStateVersion();
 
             foreach ($this->getChangedFields() as $f) {
@@ -120,7 +120,6 @@ class StateChangeRecorder extends BaseStateChangeRecorder
 
         return $this->is_trivial;
     }
-
 
     /**
      * @return bool
@@ -137,11 +136,11 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return false;
     }
 
-
     /**
-     * Check if there has been a new reply of type
+     * Check if there has been a new reply of type.
      *
-     * @param  string $type
+     * @param string $type
+     *
      * @return bool
      */
     private function hasNewMessageOfType($type)
@@ -152,7 +151,9 @@ class StateChangeRecorder extends BaseStateChangeRecorder
 
         foreach (array_reverse($this->getChangesForField('message')) as $change) {
             $message = $change->getNew();
-            if (!$message) continue;
+            if (!$message) {
+                continue;
+            }
 
             switch ($type) {
                 case 'agent_reply':
@@ -176,11 +177,11 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return false;
     }
 
-
     /**
-     * Get new messages of type
+     * Get new messages of type.
      *
-     * @param  string $type
+     * @param string $type
+     *
      * @return bool
      */
     private function getNewMessagesOfType($type = 'any')
@@ -193,7 +194,9 @@ class StateChangeRecorder extends BaseStateChangeRecorder
 
         foreach (array_reverse($this->getChangesForField('message')) as $change) {
             $message = $change->getNew();
-            if (!$message) continue;
+            if (!$message) {
+                continue;
+            }
 
             switch ($type) {
                 case 'any':
@@ -221,7 +224,6 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return $messages;
     }
 
-
     /**
      * Has there been a new agent reply?
      *
@@ -231,7 +233,6 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     {
         return $this->hasChangedField('message');
     }
-
 
     /**
      * Has there been a new agent reply?
@@ -243,7 +244,6 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return $this->hasNewMessageOfType('agent_reply');
     }
 
-
     /**
      * Has there been a new agent note?
      *
@@ -253,7 +253,6 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     {
         return $this->hasNewMessageOfType('agent_note');
     }
-
 
     /**
      * Has there been a new user reply?
@@ -265,9 +264,8 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return $this->hasNewMessageOfType('user_reply');
     }
 
-
     /**
-     * Get an array of any new repies
+     * Get an array of any new repies.
      *
      * @return \Application\DeskPRO\Entity\TicketMessage[]
      */
@@ -276,9 +274,8 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return $this->getNewMessagesOfType('any');
     }
 
-
     /**
-     * Get an array of any new agent replies
+     * Get an array of any new agent replies.
      *
      * @return \Application\DeskPRO\Entity\TicketMessage[]
      */
@@ -287,9 +284,8 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return $this->getNewMessagesOfType('agent_reply');
     }
 
-
     /**
-     * Get an array of any new agent notes
+     * Get an array of any new agent notes.
      *
      * @return \Application\DeskPRO\Entity\TicketMessage[]
      */
@@ -298,9 +294,8 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return $this->getNewMessagesOfType('agent_note');
     }
 
-
     /**
-     * Get an array of any new user replies
+     * Get an array of any new user replies.
      *
      * @return \Application\DeskPRO\Entity\TicketMessage[]
      */

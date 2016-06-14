@@ -1,39 +1,39 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\App\Package;
 
+use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
@@ -63,9 +63,9 @@ class ManifestReader
      */
     private $error_details = array();
 
-
     /**
-     * @param  array          $data
+     * @param array $data
+     *
      * @return ManifestReader
      */
     public static function newFromArray(array $data)
@@ -73,9 +73,9 @@ class ManifestReader
         return new self($data);
     }
 
-
     /**
-     * @param  string         $path
+     * @param string $path
+     *
      * @return ManifestReader
      */
     public static function newFromFile($path)
@@ -84,14 +84,14 @@ class ManifestReader
             return new self(array(), self::ERR_INVALID_FILE, array('file', 'missing_path'));
         }
 
-        $json = @file_get_contents($path);
+        $json = SafeFile::fileGetContents($path, dirname($path));
 
         return self::newFromJson($json);
     }
 
-
     /**
-     * @param  string         $json
+     * @param string $json
+     *
      * @return ManifestReader
      */
     public static function newFromJson($json)
@@ -104,7 +104,6 @@ class ManifestReader
         return new self($data);
     }
 
-
     /**
      * @param array $data
      * @param null  $set_error
@@ -112,7 +111,7 @@ class ManifestReader
      */
     private function __construct(array $data, $set_error = null, array $set_error_detail = null)
     {
-        $this->data = $data;
+        $this->data     = $data;
         $this->manifest = new Manifest();
 
         if ($set_error) {
@@ -134,17 +133,17 @@ class ManifestReader
                 'author.email',
                 'author.link',
                 'tags',
-				'trigger_events',
+                'trigger_events',
                 'settings_def',
             );
 
             $docheck = array();
 
             foreach ($fields as $f) {
-                $setter = Strings::underscoreToCamelCase('set_' . str_replace('.', '_', $f));
-                $value = Arrays::getValue($this->data, $f, '___dp_unset___');
+                $setter = Strings::underscoreToCamelCase('set_'.str_replace('.', '_', $f));
+                $value  = Arrays::getValue($this->data, $f, '___dp_unset___');
                 if ($value === '___dp_unset___') {
-					if ($f == 'tags' || $f == 'is_native' || $f == 'trigger_events') {
+                    if ($f == 'tags' || $f == 'is_native' || $f == 'trigger_events') {
                         // allowed to be unset
                         continue;
                     }
@@ -155,12 +154,12 @@ class ManifestReader
                     } else {
                         $this->manifest->$setter($value);
                     }
-				} else if ($f == 'trigger_events') {
-					if (!is_array($value)) {
-						$this->error_details[] = array('invalid', $f);
-					} else {
-						$this->manifest->$setter($value);
-					}
+                } elseif ($f == 'trigger_events') {
+                    if (!is_array($value)) {
+                        $this->error_details[] = array('invalid', $f);
+                    } else {
+                        $this->manifest->$setter($value);
+                    }
                 } elseif ($f == 'tags') {
                     if (!is_array($value)) {
                         $this->error_details[] = array('invalid', $f);
@@ -168,14 +167,14 @@ class ManifestReader
                         $this->manifest->$setter($value);
                     }
                 } elseif ($f == 'api_version') {
-                    $value = (int)$value;
+                    $value = (int) $value;
                     if ($value != 1) {
                         $this->error_details[] = array('invalid', $f);
                     } else {
                         $this->manifest->$setter($value);
                     }
                 } elseif ($f == 'is_native') {
-                    $value = (bool)$value;
+                    $value = (bool) $value;
                     $this->manifest->setIsNative($value);
                 } else {
                     if (!is_scalar($value)) {
@@ -198,15 +197,14 @@ class ManifestReader
         }
     }
 
-
     /**
      * @param array $fields
      */
     private function validate(array $fields)
     {
         foreach ($fields as $f) {
-            $getter = Strings::underscoreToCamelCase('get_' . str_replace('.', '_', $f));
-            $value = $this->manifest->$getter();
+            $getter = Strings::underscoreToCamelCase('get_'.str_replace('.', '_', $f));
+            $value  = $this->manifest->$getter();
 
             switch ($f) {
                 case 'api_version':
@@ -262,7 +260,7 @@ class ManifestReader
     {
         $lines = array();
         foreach ($this->error_details as $err) {
-            $lines[] = sprintf("[%s] %s", $err[0], $err[1]);
+            $lines[] = sprintf('[%s] %s', $err[0], $err[1]);
         }
 
         return implode("\n", $lines);

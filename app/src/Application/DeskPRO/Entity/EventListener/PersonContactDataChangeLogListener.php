@@ -1,29 +1,30 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\DeskPRO\Entity\EventListener;
 
@@ -44,7 +45,7 @@ class PersonContactDataChangeLogListener extends EntityChangeLogListener
     public function __construct(DeskproContainer $container)
     {
         parent::__construct($container);
-        $this->person_log_listener = $container->get('dp.entity_lister.person_changelog');
+        $this->person_log_listener = $container->get('dp.entity_listener.person_changelog');
     }
 
     /**
@@ -58,8 +59,8 @@ class PersonContactDataChangeLogListener extends EntityChangeLogListener
             $old[$field] = $change[0];
         }
 
-        $change = new ChangeObject('contact_data', $old, $data);
-        $entry = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
+        $change                                       = new ChangeObject('contact_data', $old, $data);
+        $entry                                        = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
         $this->queued_updates[spl_object_hash($data)] = $entry;
     }
 
@@ -76,8 +77,8 @@ class PersonContactDataChangeLogListener extends EntityChangeLogListener
      */
     public function onPrePersist(PersonContactData $data)
     {
-        $change = new ChangeObject('contact_data', null, $data);
-        $entry = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
+        $change                                       = new ChangeObject('contact_data', null, $data);
+        $entry                                        = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
         $this->queued_inserts[spl_object_hash($data)] = $entry;
     }
 
@@ -94,8 +95,8 @@ class PersonContactDataChangeLogListener extends EntityChangeLogListener
      */
     public function onPreRemove(PersonContactData $data)
     {
-        $change = new ChangeObject('contact_data', $data, null);
-        $entry = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
+        $change                                         = new ChangeObject('contact_data', $data, null);
+        $entry                                          = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
         $this->queued_deletions[spl_object_hash($data)] = $entry;
     }
 
@@ -113,21 +114,21 @@ class PersonContactDataChangeLogListener extends EntityChangeLogListener
      */
     protected function doFlush($oid, $type)
     {
-        if (!isset($this->{'queued_' . $type}[$oid])) {
+        if (!isset($this->{'queued_'.$type}[$oid])) {
             return;
         }
 
         /** @var LogEvent $entry */
-        $entry = $this->{'queued_' . $type}[$oid];
-        $person = $entry->getEventObject()->getSubject();
+        $entry       = $this->{'queued_'.$type}[$oid];
+        $person      = $entry->getEventObject()->getSubject();
         $parentEntry = $this->person_log_listener->getUpdateLogEntry($person);
 
         $parentEntry->children->add($entry);
         $entry->parent = $parentEntry;
 
-        unset($this->{'queued_' . $type}[$oid]);
+        unset($this->{'queued_'.$type}[$oid]);
 
-        /**
+        /*
          * we do only one single flush, and only when all queued actions added as child to $parentEntry
          */
         if (!count($this->queued_inserts) && !count($this->queued_updates) && !count($this->queued_deletions)) {

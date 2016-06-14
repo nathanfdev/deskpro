@@ -1,39 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Cutter\Def;
 
-use Application\DeskPRO\App;
 use Orb\Util\Strings;
 
 class Generic implements ForwardDef, QuoteDef
@@ -62,24 +59,25 @@ class Generic implements ForwardDef, QuoteDef
      * to mark the beginning.
      *
      * @param $body
+     *
      * @return array|null
      */
     public function splitFromFirstHeaderText($body)
     {
         $body = Strings::standardEol($body);
 
-        $found = 0;
+        $found      = 0;
         $start_line = null;
 
         // - Try to fix From that has [email address] on a new line after From:
         // - Normalise labels that have starts around them: *From:* which can happen when clients convert html to text (eg postboxapp)
         foreach ($this->translate_map as $set) {
-            $pattern = '#^(%From%): ([^\n\r]+)\s*(\[|<)(.*?)(\]|>)#m';
+            $pattern  = '#^(%From%): ([^\n\r]+)\s*(\[|<)(.*?)(\]|>)#m';
             $pattern2 = '#^\*(%From%|%Sent%|%To%|%Date%|%Subject%|%CC%|%BCC%):\*#mi';
             $pattern3 = '#^(\s*>+\s*)\*(%From%|%Sent%|%To%|%Date%|%Subject%|%CC%|%BCC%):\*#mi';
 
             foreach ($set as $f => $r) {
-                $pattern = str_replace($f, $r, $pattern);
+                $pattern  = str_replace($f, $r, $pattern);
                 $pattern2 = str_replace($f, $r, $pattern2);
                 $pattern3 = str_replace($f, $r, $pattern3);
             }
@@ -104,10 +102,12 @@ class Generic implements ForwardDef, QuoteDef
                     if ($start_line === null) {
                         $start_line = $ln;
                     }
-                    $found++;
-                    if ($found >= 2) break;
+                    ++$found;
+                    if ($found >= 2) {
+                        break;
+                    }
                 } else {
-                    $found = 0;
+                    $found      = 0;
                     $start_line = null;
                 }
             }
@@ -116,13 +116,13 @@ class Generic implements ForwardDef, QuoteDef
                 break;
             }
             $start_line = null;
-            $found = 0;
+            $found      = 0;
         }
 
         // If we didnt find at least two of the four headers,
         // consider it a no-match
         if ($found < 2) {
-            return null;
+            return;
         }
 
         $parts = array(
@@ -136,24 +136,24 @@ class Generic implements ForwardDef, QuoteDef
         return $parts;
     }
 
-
     /**
-     * Get an array of info from the forwarded block
+     * Get an array of info from the forwarded block.
      *
-     * @param  string $body
-     * @param  bool   $is_html
+     * @param string $body
+     * @param bool   $is_html
+     *
      * @return array
      */
     public function getForwardInfo($body, $is_html = false)
     {
         $forward_data = array(
-            'message_body'         => null,
-            'fwd_message_body'     => null,
-            'fwd_message_headers'  => null,
-            'fwd_from_email'       => null,
-            'fwd_from_name'        => null,
-            'fwd_cc_addresses'     => null,
-            'fwd_cc_unknown'       => null,
+            'message_body'        => null,
+            'fwd_message_body'    => null,
+            'fwd_message_headers' => null,
+            'fwd_from_email'      => null,
+            'fwd_from_name'       => null,
+            'fwd_cc_addresses'    => null,
+            'fwd_cc_unknown'      => null,
         );
 
         $parts_pattern = null;
@@ -210,7 +210,7 @@ class Generic implements ForwardDef, QuoteDef
 
         if ($is_html) {
             $fwd_message_body = str_replace(array('<br />', '<br/>'), '<br>', $fwd_message_body);
-            $fwd_parts = preg_split('#<br>\s*<br>#i', $fwd_message_body, 2);
+            $fwd_parts        = preg_split('#<br>\s*<br>#i', $fwd_message_body, 2);
         } else {
             $fwd_parts = preg_split('#\n{2}#i', $fwd_message_body, 2);
         }
@@ -241,30 +241,30 @@ class Generic implements ForwardDef, QuoteDef
             $pos2 = strlen($forward_data['fwd_message_headers']);
         }
 
-        $from_str = substr($forward_data['fwd_message_headers'], $pos, $pos2-$pos);
-        $m = null;
+        $from_str = substr($forward_data['fwd_message_headers'], $pos, $pos2 - $pos);
+        $m        = null;
 
         if (preg_match('#mailto:(.*?)@([a-zA-Z0-9\.\-_]+)#', $from_str.' ', $m)) {
-            $forward_data['fwd_from_email'] = $m[1] . '@' . $m[2];
-        } elseif (preg_match('#(<|\[|\()(.*?)@([a-zA-Z0-9\.\-_]+)(>|\]|\))#i', $from_str, $m)) {
-            $forward_data['fwd_from_email'] = $m[2] . '@' . $m[3];
+            $forward_data['fwd_from_email'] = $m[1].'@'.$m[2];
+        } elseif (preg_match('#(<|\[|\()(\S*)@([a-zA-Z0-9\.\-_]+)(>|\]|\))#i', $from_str, $m)) {
+            $forward_data['fwd_from_email'] = $m[2].'@'.$m[3];
         } elseif (preg_match('#[\w]+:\s*?(.*?)@([a-zA-Z0-9\.\-_]+)#i', $from_str, $m)) {
-            $forward_data['fwd_from_email'] = $m[1] . '@' . $m[2];
+            $forward_data['fwd_from_email'] = $m[1].'@'.$m[2];
         } elseif (preg_match('#\s(.*?)@([a-zA-Z0-9\.\-]+)\s#i', $from_str, $m)) {
-            $forward_data['fwd_from_email'] = $m[1] . '@' . $m[2];
+            $forward_data['fwd_from_email'] = $m[1].'@'.$m[2];
         }
 
         if ($forward_data['fwd_from_email']) {
             $forward_data['fwd_from_email'] = trim($forward_data['fwd_from_email']);
 
-            $pos = strpos($from_str, $forward_data['fwd_from_email']);
+            $pos  = strpos($from_str, $forward_data['fwd_from_email']);
             $name = substr($from_str, 0, $pos);
             if (preg_match('#^[\w]+:(.*?)(<|\[|\()#', $name, $m)) {
                 $name = $m[1];
             } elseif (preg_match('#^[\w]+:(.*?)#', $name, $m)) {
                 $name = $m[1];
             }
-            $name = trim($name);
+            $name                          = trim($name);
             $forward_data['fwd_from_name'] = $name;
         }
 
@@ -279,7 +279,7 @@ class Generic implements ForwardDef, QuoteDef
                 $forward_data['fwd_cc_addresses'] = array();
                 foreach ($emails as $e) {
                     $forward_data['fwd_cc_addresses'][] = array(
-                        'name' => $e->name,
+                        'name'  => $e->name,
                         'email' => $e->email,
                     );
                 }
@@ -292,34 +292,33 @@ class Generic implements ForwardDef, QuoteDef
     }
 
     /**
-     * Cut out the quote block
+     * Cut out the quote block.
      *
-     * @param  string $body
-     * @param  bool   $is_html
+     * @param string $body
+     * @param bool   $is_html
+     *
      * @return string
      */
     public function cutQuoteBlock($body, $is_html = false)
     {
+        // Remove DP_PREVIEW_TEXT stuff which looks like:
+        // <div id="DP_PREVIEW_TEXT_MARK" class="DP_PREVIEW_TEXT_MARK" ...>text</div>
+        $body = preg_replace('#\s*<div[^>]*DP_PREVIEW_TEXT_MARK[^>]*>(.*?)</div>\s*#is', '', $body);
+
         // Have cuts in the form of <div class="DP_TOP_MARK"> or <!--DP_TOP_MARK-->
         $pos = strpos($body, 'DP_TOP_MARK');
         if ($pos === false) {
             $pos = strpos($body, 'DP_TOP_MARK_USER');
             if ($pos === false) {
                 // Try to detect '=== REPLY ABOVE THIS LINE ===' bits
-                $langs = App::getDataService('Language')->getAll();
-                foreach ($langs as $l) {
-                    $re = preg_quote(App::getTranslator()->getPhraseText('agent.emails.reply_above_line', $l), '#');
-                    $matches = null;
-                    if (preg_match('#===(\s|&nbsp;)*'.$re.'(\s|&nbsp;)*===#', $body, $matches, \PREG_OFFSET_CAPTURE)) {
-                        $pos = $matches[0][1];
-                        break;
-                    }
-
-                    // Detect encoded ='s if text was mangled
-                    if (preg_match('#=3D=3D=3D(\s|&nbsp;)*'.$re.'(\s|&nbsp;)*=3D=3D=3D#', $body, $matches, \PREG_OFFSET_CAPTURE)) {
-                        $pos = $matches[0][1];
-                        break;
-                    }
+                $matches = array();
+                if (preg_match(
+                        '#(?:=(?:3D)?){3}(?:\s|&nbsp;)*.+(?: \[.+\])?(?:\s|&nbsp;)*(?:=(?:3D)?){3}#',
+                        $body,
+                        $matches,
+                        \PREG_OFFSET_CAPTURE
+                )) {
+                    $pos = $matches[0][1];
                 }
 
                 if ($pos === false) {
@@ -333,7 +332,7 @@ class Generic implements ForwardDef, QuoteDef
         // We also want to cut from is the < character, so we dont
         // cut mid-way into an html tag
         if ($is_html) {
-            $pos = strrpos($body, "<");
+            $pos = strrpos($body, '<');
             if ($pos) {
                 $body = substr($body, 0, $pos);
             }
@@ -349,10 +348,11 @@ class Generic implements ForwardDef, QuoteDef
     }
 
     /**
-     * Try to cut out text below the email as well
+     * Try to cut out text below the email as well.
      *
-     * @param  string $body
-     * @param  bool   $is_html
+     * @param string $body
+     * @param bool   $is_html
+     *
      * @return string
      */
     public function cutBottomBlock($body, $is_html = false)
@@ -363,13 +363,13 @@ class Generic implements ForwardDef, QuoteDef
 
         // Have cuts in the form of <div class="DP_BOTTOM_MARK"> or <!--DP_BOTTOM_MARK-->
         $body_btm = '';
-        $pos = strpos($body, 'DP_BOTTOM_MARK');
+        $pos      = strpos($body, 'DP_BOTTOM_MARK');
         if ($pos !== false) {
             $body_btm = substr($body, $pos);
             if ($is_html) {
-                $pos = strpos($body_btm, ">");
+                $pos = strpos($body_btm, '>');
                 if ($pos) {
-                    $body_btm = substr($body_btm, $pos+1);
+                    $body_btm = substr($body_btm, $pos + 1);
                 }
             }
 
@@ -384,7 +384,7 @@ class Generic implements ForwardDef, QuoteDef
         }
 
         if ($body_btm && (!$is_html || strip_tags($body_btm))) {
-            $body_btm = "\n\n" . $body_btm;
+            $body_btm = "\n\n".$body_btm;
         } else {
             $body_btm = '';
         }

@@ -1,43 +1,40 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Usersource
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Usersource;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
-use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Adapter\IdentityFinderInterface;
 use Doctrine\ORM\EntityManager;
 
@@ -58,14 +55,13 @@ class UsersourceManager
      */
     private $app_manipulator;
 
-
     /**
      * @param EntityManager      $em
      * @param App\AppManipulator $app_manipulator
      */
     public function __construct(EntityManager $em, App\AppManipulator $app_manipulator)
     {
-        $this->em = $em;
+        $this->em              = $em;
         $this->app_manipulator = $app_manipulator;
     }
 
@@ -92,11 +88,11 @@ class UsersourceManager
         }
     }
 
-
     /**
      * Find a person in a USER usersource based on an email address.
      *
-     * @param  string                             $input this can actually be any input (but is usually email)
+     * @param string $input this can actually be any input (but is usually email)
+     *
      * @return \Application\DeskPRO\Entity\Person
      */
     public function findPersonByEmail($input)
@@ -126,14 +122,14 @@ class UsersourceManager
             }
         }
 
-        return null;
+        return;
     }
 
-
     /**
-     * Get all installed usersources
+     * Get all installed usersources.
      *
      * @return \Application\DeskPRO\Entity\Usersource[]
+     *
      * @deprecated use getAll() and filter with UsersourceCollection as needed
      */
     public function getUsersources()
@@ -147,12 +143,10 @@ class UsersourceManager
         return $this->usersources;
     }
 
-
     /**
-     * Get all usersources for the agent/admin area
+     * Get all usersources for the agent/admin area.
      *
-     * @param  bool                                                                                          $active if true only returns enabled usersources
-     * @return \Application\DeskPRO\Entity\Usersource[]|\Application\DeskPRO\Usersource\UsersourceCollection
+     * @return \Application\DeskPRO\Usersource\UsersourceCollection|\Application\DeskPRO\Entity\Usersource[]
      */
     public function getAll()
     {
@@ -161,10 +155,11 @@ class UsersourceManager
         );
     }
 
-
     /**
-     * @param  string                                   $type
+     * @param string $type
+     *
      * @return \Application\DeskPRO\Entity\Usersource[]
+     *
      * @deprecated use getAll() and filter with UsersourceCollection as needed
      */
     public function getUsersourcesOfType($type)
@@ -182,11 +177,13 @@ class UsersourceManager
         return $ret;
     }
 
-
     /**
-     * Get usersources with a certain capability
+     * Get usersources with a certain capability.
+     *
      * @param $capability
+     *
      * @return \Application\DeskPRO\Entity\Usersource[]
+     *
      * @deprecated use getAll() and filter with UsersourceCollection as needed
      */
     public function getWithCapability($capability)
@@ -201,9 +198,9 @@ class UsersourceManager
         return $ret;
     }
 
-
     /**
      * @return string
+     *
      * @deprecated this shouldn't be used anymore, try to eliminate it form the codebase and use twig extension instead
      */
     public function renderView(Usersource $usersource, $type, array $params = array())
@@ -211,7 +208,7 @@ class UsersourceManager
         $params['usersource'] = $usersource;
 
         $name = $usersource->getAdapter()->getTypename();
-        $tpl = "DeskPRO:Auth:" . $name . "-" . $type . ".html.twig";
+        $tpl  = 'DeskPRO:Auth:'.$name.'-'.$type.'.html.twig';
 
         if (!isset($params['type'])) {
             $params['type'] = 'user';
@@ -225,5 +222,19 @@ class UsersourceManager
     public function getById($sso_usersource_id)
     {
         return $this->usersources = $this->em->getRepository('DeskPRO:Usersource')->find($sso_usersource_id);
+    }
+
+    /**
+     * @param Usersource $usersource
+     * @param \DateTime  $last_updated
+     *
+     * @return \Application\DeskPRO\Entity\PersonUsersourceAssoc[]
+     */
+    public function findAssociationsUpdatedBefore(Usersource $usersource, \DateTime $last_updated)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\PersonUsersourceAssoc $assoc_repo */
+        $assoc_repo = $this->em->getRepository('DeskPRO:PersonUsersourceAssoc');
+
+        return $assoc_repo->getAssociationsUpdatedBefore($usersource, $last_updated);
     }
 }

@@ -1,60 +1,59 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @subpackage Log
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ */
 namespace Orb\Log\Writer;
-use \Orb\Log\LogItem;
 
+use Orb\Log\LogItem;
 
 /**
- * This writer writes to any stream
+ * This writer writes to any stream.
  */
 class Stream extends AbstractWriter
 {
- /**
+    /**
      * Holds the PHP stream to log to.
+     *
      * @var null|stream
      */
     protected $_stream = null;
 
     /**
-     * If we opened the stream ourselves
+     * If we opened the stream ourselves.
+     *
      * @var bool
      */
     protected $_did_open_stream = false;
 
     /**
-     * Chmod the file if we created it
+     * Chmod the file if we created it.
      *
      * @var null
      */
@@ -111,7 +110,7 @@ class Stream extends AbstractWriter
 
             $this->_stream = $stream_or_url;
         } else {
-            $this->stream_url = $stream_or_url;
+            $this->stream_url  = $stream_or_url;
             $this->stream_mode = $mode;
         }
 
@@ -123,9 +122,9 @@ class Stream extends AbstractWriter
     public function getStream()
     {
         if (!$this->_stream) {
-            $mode = $this->stream_mode;
+            $mode          = $this->stream_mode;
             $stream_or_url = $this->stream_url;
-            $is_made = false;
+            $is_made       = false;
             if (!file_exists($stream_or_url)) {
                 $is_made = true;
             }
@@ -146,9 +145,9 @@ class Stream extends AbstractWriter
 
     public function closeStream()
     {
-        if ($this->_did_open_stream AND is_resource($this->_stream)) {
+        if ($this->_did_open_stream and is_resource($this->_stream)) {
             fclose($this->_stream);
-            $this->_stream = null;
+            $this->_stream          = null;
             $this->_did_open_stream = false;
         }
     }
@@ -165,8 +164,8 @@ class Stream extends AbstractWriter
     {
         $stream = $this->getStream();
 
-        if (false === @fwrite($stream, $log_item[LogItem::MESSAGE_LINE] . "\n")) {
-            throw new \RuntimeException("Unable to write to stream");
+        if (false === @fwrite($stream, $log_item[LogItem::MESSAGE_LINE]."\n")) {
+            throw new \RuntimeException('Unable to write to stream');
         }
 
         if ($this->close_after_write) {

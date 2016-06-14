@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Monolog;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -46,7 +45,6 @@ class Logger extends BaseLogger
      */
     private $test_handler;
 
-
     /**
      * @return bool
      */
@@ -54,7 +52,6 @@ class Logger extends BaseLogger
     {
         return $this->test_handler ? true : false;
     }
-
 
     /**
      * @return TestHandler
@@ -66,7 +63,6 @@ class Logger extends BaseLogger
         return $test_handler;
     }
 
-
     /**
      * Enables a local copy of all messages so you can easily fetch messages after
      * (e.g., to save to a separate log after-the-fact).
@@ -76,13 +72,12 @@ class Logger extends BaseLogger
     public function enableSavedMessages()
     {
         if ($this->test_handler) {
-            throw new \LogicException("Saved messages has already been enabled.");
+            throw new \LogicException('Saved messages has already been enabled.');
         }
 
         $this->test_handler = $this->_createTestHandler();
         $this->pushHandler($this->test_handler);
     }
-
 
     /**
      * Clears any saved messages.
@@ -92,25 +87,25 @@ class Logger extends BaseLogger
     public function clearSavedMessges()
     {
         if (!$this->test_handler) {
-            throw new \LogicException("Saved messages has not been enabled.");
+            throw new \LogicException('Saved messages has not been enabled.');
         }
 
-        $k = array_search($this->test_handler, $this->handlers, true);
+        $k                  = array_search($this->test_handler, $this->handlers, true);
         $this->test_handler = $this->_createTestHandler();
         $this->handlers[$k] = $this->test_handler;
     }
-
 
     /**
      * Gets a string of all the logged messages.
      *
      * @throws \LogicException
+     *
      * @return string
      */
     public function getSavedMessages()
     {
         if (!$this->test_handler) {
-            throw new \LogicException("Saved messages has not been enabled.");
+            throw new \LogicException('Saved messages has not been enabled.');
         }
 
         $log = array();
@@ -127,27 +122,29 @@ class Logger extends BaseLogger
         return $log;
     }
 
-
     /**
      * Gets an array of raw records.
      *
-     * @return array
      * @throws \LogicException
+     *
+     * @return array
      */
     public function getSavedMessagesRaw()
     {
         if (!$this->test_handler) {
-            throw new \LogicException("Saved messages has not been enabled.");
+            throw new \LogicException('Saved messages has not been enabled.');
         }
 
         return $this->test_handler->getRecords();
     }
 
     /**
-     * @inheritdoc
-     * @param  int       $level
-     * @param  string    $message
-     * @param  array     $context
+     * {@inheritdoc}
+     *
+     * @param int    $level
+     * @param string $message
+     * @param array  $context
+     *
      * @return bool|void
      */
     public function addRecord($level, $message, array $context = array())

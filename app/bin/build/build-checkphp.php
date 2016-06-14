@@ -7,12 +7,12 @@ if (php_sapi_name() != 'cli') {
 }
 
 define('DP_BUILDING', true);
-define('DP_ROOT', realpath(__DIR__ . '/../../'));
-define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
-define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
+define('DP_ROOT', realpath(__DIR__.'/../../'));
+define('DP_WEB_ROOT', realpath(__DIR__.'/../../../'));
+define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
 
-require DP_ROOT . '/bin/build/inc.php';
-require DP_ROOT . '/bin/build/php-path.php';
+require DP_ROOT.'/bin/build/inc.php';
+require DP_ROOT.'/bin/build/php-path.php';
 require DP_ROOT.'/sys/system.php';
 
 $paths = array(
@@ -20,7 +20,7 @@ $paths = array(
     DP_ROOT.'/languages',
     DP_ROOT.'/bin',
     DP_ROOT.'/src',
-    DP_ROOT.'/sys'
+    DP_ROOT.'/sys',
 );
 
 echo "Checking files for PHP errors\n";
@@ -30,9 +30,9 @@ $check_files = array();
 
 if (in_array('--only-changed', $_SERVER['argv']) && file_exists(DP_ROOT.'/sys/config/changed-files.php')) {
     echo "Using changerd-files file\n";
-    $tmp = include(DP_ROOT.'/sys/config/changed-files.php');
+    $tmp = include DP_ROOT.'/sys/config/changed-files.php';
     foreach ($tmp as $file) {
-        if ($file && preg_match('#\.php$#', $file) && file_exists(DP_WEB_ROOT . '/' . $file)) {
+        if ($file && preg_match('#\.php$#', $file) && file_exists(DP_WEB_ROOT.'/'.$file)) {
             $in_dirs = false;
             foreach ($paths as $dir) {
                 $rel = str_replace(DP_ROOT, 'app', $dir);
@@ -41,7 +41,7 @@ if (in_array('--only-changed', $_SERVER['argv']) && file_exists(DP_ROOT.'/sys/co
                 }
             }
             if ($in_dirs) {
-                $check_files[] = DP_WEB_ROOT . '/' . $file;
+                $check_files[] = DP_WEB_ROOT.'/'.$file;
             }
         }
     }
@@ -51,19 +51,19 @@ if (in_array('--only-changed', $_SERVER['argv']) && file_exists(DP_ROOT.'/sys/co
         $finder->files()->name('*.php')->in($dir);
 
         foreach ($finder as $file) {
-            /** @var \Symfony\Component\Finder\SplFileinfo $file */
+            /* @var \Symfony\Component\Finder\SplFileinfo $file */
             $check_files[] = $file->getRealPath();
         }
     }
 }
 
-echo "Checking " . count($check_files) . " files ...\n";
+echo 'Checking '.count($check_files)." files ...\n";
 
 $has_failed = array();
-$bad_size = array();
+$bad_size   = array();
 foreach ($check_files as $filepath) {
     if (strpos($filepath, '/src/vendor/') === false && strpos($filepath, '/src/vendor-src/') === false) {
-        $cmd = DP_PHP_PATH . " -l \"" . $filepath . "\"";
+        $cmd = DP_PHP_PATH.' -l "'.$filepath.'"';
 
         $out = null;
         exec($cmd, $out, $ret);
@@ -80,9 +80,9 @@ foreach ($check_files as $filepath) {
     } elseif (filesize($filepath) % 4096 == 0 && filesize($filepath) != 0) {
         $bad_size[] = str_replace(DP_ROOT, '', $filepath);
     } else {
-        $x++;
+        ++$x;
         if ($x % 10 === 0) {
-            echo ".";
+            echo '.';
         }
         if ($x % 100 == 0) {
             echo $x;
@@ -94,7 +94,7 @@ echo "\n";
 
 if ($has_failed) {
     echo "There were syntax errors detected in the following files:\n";
-    echo "- " . implode("\n- ", $has_failed);
+    echo '- '.implode("\n- ", $has_failed);
     echo "\n";
     exit(1);
 }
@@ -103,11 +103,11 @@ if ($bad_size) {
     echo "The following files are susceptible to the magic 4096 bug (https://bugs.php.net/bug.php?id=60998):\n";
     foreach ($bad_size as $f) {
         $path = DP_ROOT.$f;
-        $b = file_get_contents($path);
-        $b = str_replace('<?php', "<?php\n\n// ...\n\n", $b);
+        $b    = file_get_contents($path);
+        $b    = str_replace('<?php', "<?php\n\n// ...\n\n", $b);
         file_put_contents($path, $b);
     }
-    echo "They have been fixed automatically.";
+    echo 'They have been fixed automatically.';
     echo "\n";
 }
 

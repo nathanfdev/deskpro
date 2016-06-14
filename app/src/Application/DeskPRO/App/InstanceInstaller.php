@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\App;
 
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
@@ -71,17 +70,17 @@ class InstanceInstaller
         $this->em      = $em;
     }
 
-
     /**
-     * @param  string           $title
-     * @param  array            $settings
-     * @param  DeskproContainer $container
+     * @param string           $title
+     * @param array            $settings
+     * @param DeskproContainer $container
+     *
      * @return AppInstance
      */
     public function install($title, array $settings, DeskproContainer $container, $usersource_type = '')
     {
-        $app = new AppInstance();
-        $app->title = $title ?: $this->package->title;
+        $app          = new AppInstance();
+        $app->title   = $title ?: $this->package->title;
         $app->package = $this->package;
 
         // Need to persist now so we have an actual app record
@@ -90,8 +89,8 @@ class InstanceInstaller
         $this->em->flush();
 
         $settings = self::readAppSettings($this->package, $settings);
-        $context = $this->createInstallContext($this->package, $app, $settings, $container, $usersource_type);
-        $handler = $this->createInstallHandler($this->package, $app);
+        $context  = $this->createInstallContext($this->package, $app, $settings, $container, $usersource_type);
+        $handler  = $this->createInstallHandler($this->package, $app);
 
         $settings = $handler->processSettings($context, $settings);
         $app->setSettings($settings ?: array());
@@ -108,13 +107,13 @@ class InstanceInstaller
         return $app;
     }
 
-
     /**
-     * @param  AppPackage       $package
-     * @param  AppInstance      $app
-     * @param  array            $settings
-     * @param  DeskproContainer $container
-     * @param  null             $usersource_type
+     * @param AppPackage       $package
+     * @param AppInstance      $app
+     * @param array            $settings
+     * @param DeskproContainer $container
+     * @param null             $usersource_type
+     *
      * @return InstallerContext
      */
     protected function createInstallContext(AppPackage $package, AppInstance $app, array $settings, DeskproContainer $container, $usersource_type = null)
@@ -124,10 +123,10 @@ class InstanceInstaller
             $usersource = null;
 
             if ($package->isUsersource()) {
-                $usersource = new Usersource(); // this method only creates the installcontext for NEW app instances
-                $usersource->app = $app;
+                $usersource        = new Usersource(); // this method only creates the installcontext for NEW app instances
+                $usersource->app   = $app;
                 $usersource->title = $app->title;
-                $usersource->type = $usersource_type;
+                $usersource->type  = $usersource_type;
             }
 
             return new InstallerContext($container, $native_app, $settings, $usersource);
@@ -137,12 +136,12 @@ class InstanceInstaller
         return new InstallerContext($container, null, $settings);
     }
 
-
     /**
-     * Native apps have their own install handler (usually), but we always return the NoopInstallerHandler so we always have a handler
+     * Native apps have their own install handler (usually), but we always return the NoopInstallerHandler so we always have a handler.
      *
-     * @param  AppPackage                                                                 $package
-     * @param  AppInstance                                                                $app
+     * @param AppPackage  $package
+     * @param AppInstance $app
+     *
      * @return \Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface
      */
     protected function createInstallHandler(AppPackage $package, AppInstance $app)
@@ -157,10 +156,10 @@ class InstanceInstaller
         return new NoopInstallerHandler();
     }
 
-
     /**
-     * @param  AppPackage $package
-     * @param  array      $settings_form
+     * @param AppPackage $package
+     * @param array      $settings_form
+     *
      * @return array
      */
     public static function readAppSettings(AppPackage $package, array $settings_form)
@@ -190,7 +189,7 @@ class InstanceInstaller
                         break;
 
                     case 'checkbox':
-                        if ($value === true || $value === 1 || $value === "1" || $value === "true") {
+                        if ($value === true || $value === 1 || $value === '1' || $value === 'true') {
                             $value = true;
                         } else {
                             $value = false;
@@ -219,6 +218,18 @@ class InstanceInstaller
                 }
                 if ($val !== null) {
                     $settings[$dep['name']] = $val;
+                }
+            }
+
+            if (isset($setting_def['inline_dependants'])) {
+                foreach ($setting_def['inline_dependants'] as $dep) {
+                    $val = isset($settings_form[$dep['name']]) ? $settings_form[$dep['name']] : null;
+                    if ($val === null && isset($dep['default_value'])) {
+                        $val = $dep['default_value'];
+                    }
+                    if ($val !== null) {
+                        $settings[$dep['name']] = $val;
+                    }
                 }
             }
         }

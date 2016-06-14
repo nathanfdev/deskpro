@@ -79,7 +79,7 @@ DeskPRO.User.ElementHandler.EditTicket = new Orb.Class({
 			// Turn on criteria-less fields now
 			if (!item.checkFn) {
 				itemEl.removeClass('with-criteria');
-				itemEl.show();
+				item.isVisibleOnEdit && itemEl.show();
 			} else {
 				itemEl.addClass('with-criteria');
 				this.depItemsWithChecked = true;
@@ -105,7 +105,7 @@ DeskPRO.User.ElementHandler.EditTicket = new Orb.Class({
 			var item = self.findItemForEl(el);
 			if (!item) return;
 
-			if (item.checkFn(ticketReader)) {
+			if (item.isVisibleOnEdit || item.checkFn && item.checkFn(ticketReader)) {
 				if (!el.is(':visible')) {
 					changed = true;
 					el.show();

@@ -78,6 +78,7 @@ define [
       @results = []
       promise = @Api.sendGet('/email_status/sendmail', {filter: @filter}).success( (data) =>
         @stopSpinner('loading_page', true)
+        @$scope.tracking_enabled = data.tracking_enabled
         @results     = data.sendmail_queue
         @page        = data.page
         @num_pages   = data.num_pages

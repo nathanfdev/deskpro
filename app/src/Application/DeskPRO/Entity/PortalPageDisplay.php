@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -39,7 +38,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Description of layout of the user portal
+ * Description of layout of the user portal.
  *
  * = $data format =
  * <pre>
@@ -55,17 +54,16 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * format which will be converted into camel case (some_type to SomeType).
  *
  * Keys in the data array are insignificant. They may be used to keep track of things in the designer.
- *
  */
 class PortalPageDisplay extends PageDisplayAbstract
 {
     /**
-     * Portal (main page)
+     * Portal (main page).
      */
     const SECTION_PORTAL = 'portal';
 
     /**
-     * Across the top (not columned)
+     * Across the top (not columned).
      */
     const SECTION_PAGETOP = 'pagetop';
 
@@ -85,7 +83,7 @@ class PortalPageDisplay extends PageDisplayAbstract
     const SECTION_FOOTER = 'footer';
 
     /**
-     * The class handler
+     * The class handler.
      *
      * @var string
      */
@@ -118,7 +116,7 @@ class PortalPageDisplay extends PageDisplayAbstract
 
     public function addData($key, $value)
     {
-        $old = $this->data;
+        $old              = $this->data;
         $this->data[$key] = $value;
         $this->_onPropertyChanged('data', $old, $this->data);
     }
@@ -132,28 +130,29 @@ class PortalPageDisplay extends PageDisplayAbstract
 
     public function deleteCachedPages()
     {
-        $cache_id = "d.portal.block.block.portal_{$this->section}_" . str_replace('\\', '', get_class($this));
+        $cache_id = "d.portal.block.block.portal_{$this->section}_".str_replace('\\', '', get_class($this));
         App::getDb()->executeUpdate('
             DELETE FROM cache WHERE id LIKE ?
         ', array("$cache_id%"));
     }
 
-
     /**
-     * @param  string|null      $k Specific key to fetch
+     * @param string|null $k Specific key to fetch
+     *
      * @return array|mixed|null
      */
     public function getData($k = null)
     {
         if ($k !== null) {
-            if (!$this->data) return null;
+            if (!$this->data) {
+                return;
+            }
+
             return isset($this->data[$k]) ? $this->data[$k] : null;
         }
 
         return $this->data;
     }
-
-
 
     ############################################################################
     # Doctrine Metadata
@@ -163,14 +162,14 @@ class PortalPageDisplay extends PageDisplayAbstract
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PortalPageDisplay';
-        $metadata->setPrimaryTable(array( 'name' => 'portal_page_display', ));
+        $metadata->setPrimaryTable(array('name' => 'portal_page_display'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'type', ));
-        $metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));
-        $metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'section', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'section', ));
-        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
+        $metadata->mapField(array('fieldName' => 'type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'type'));
+        $metadata->mapField(array('fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order'));
+        $metadata->mapField(array('fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled'));
+        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array('fieldName' => 'section', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'section'));
+        $metadata->mapField(array('fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway\Reader;
 
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
@@ -65,7 +63,7 @@ abstract class AbstractReader
 
     public function resetAll()
     {
-        $this->vals = array();
+        $this->vals       = array();
         $this->properties = array();
     }
 
@@ -195,7 +193,7 @@ abstract class AbstractReader
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -251,20 +249,27 @@ abstract class AbstractReader
      */
     public function getReceivedAddresses()
     {
-        $to = $this->getToAddresses();
-        $cc = $this->getCcAddresses();
+        $to      = $this->getToAddresses();
+        $cc      = $this->getCcAddresses();
         $orig_to = null;
 
         if ($orig_to_email = $this->getOriginalTo()) {
-            $eml = new EmailAddress();
+            $eml        = new EmailAddress();
             $eml->email = strtolower($orig_to_email);
-            $orig_to = array($eml);
+            $orig_to    = array($eml);
         }
 
         $all = array();
-        if ($to) $all = array_merge($all, $to);
-        if ($cc) $all = array_merge($all, $cc);
-        if ($orig_to) $all = array_merge($all, $orig_to);
+        if ($to) {
+            $all = array_merge($all, $to);
+        }
+        if ($cc) {
+            $all = array_merge($all, $cc);
+        }
+        if ($orig_to) {
+            $all = array_merge($all, $orig_to);
+        }
+
         return $all;
     }
 
@@ -287,8 +292,8 @@ abstract class AbstractReader
      */
     public function getDeliveredAddresses()
     {
-        $to = $this->getToAddresses();
-        $cc = $this->getCcAddresses();
+        $to   = $this->getToAddresses();
+        $cc   = $this->getCcAddresses();
         $from = $this->getFromAddress();
 
         $all = array_merge($to, $cc);
@@ -313,7 +318,7 @@ abstract class AbstractReader
 
         foreach ($try as $header_name) {
             if (!($h = $this->getHeader($header_name))) {
-                return null;
+                return;
             }
 
             if (!$h->getHeader() || !\Orb\Validator\StringEmail::isValueValid($h->getHeader())) {
@@ -327,7 +332,7 @@ abstract class AbstractReader
 
         $this->vals['original_to'] = false;
 
-        return null;
+        return;
     }
 
     /**
@@ -336,7 +341,9 @@ abstract class AbstractReader
     public function getHeader($header)
     {
         if (!isset($this->vals['headers']) || !isset($this->vals['headers'][$header])) {
-            if (!isset($this->vals['headers'])) $this->vals['headers'] = array();
+            if (!isset($this->vals['headers'])) {
+                $this->vals['headers'] = array();
+            }
             $this->vals['headers'][$header] = $this->_getHeader($header);
         }
 
@@ -356,7 +363,7 @@ abstract class AbstractReader
     abstract protected function _getHeader($header);
 
     /**
-     * Returns true if message marks itself as from a robot
+     * Returns true if message marks itself as from a robot.
      *
      * @return bool
      */
@@ -385,7 +392,7 @@ abstract class AbstractReader
         if ($auto) {
             foreach ($auto as $v) {
                 $v = strtolower($v);
-                if ($v == "1" || $v == "yes") {
+                if ($v == '1' || $v == 'yes') {
                     return true;
                 }
             }
@@ -394,9 +401,8 @@ abstract class AbstractReader
         return false;
     }
 
-
     /**
-     * Checks if the email was sent via outlook
+     * Checks if the email was sent via outlook.
      *
      * @return bool
      */
@@ -424,7 +430,6 @@ abstract class AbstractReader
         return $this->vals['is_outlook'];
     }
 
-
     /**
      * Gets a Date object representing the Date header or null if there is no Date header.
      * If there are multiple Date headers, the latest (closest to now) date is used.
@@ -440,11 +445,11 @@ abstract class AbstractReader
         $this->vals['date'] = false;
 
         $use_date = null;
-        $date = null;
+        $date     = null;
 
         $date_header = $this->getHeader('Date');
         if (!$date_header || !count($date_header->header_parts)) {
-            return null;
+            return;
         }
 
         foreach ($date_header->header_parts as $date_part) {
@@ -465,7 +470,7 @@ abstract class AbstractReader
             return $use_date;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -475,19 +480,19 @@ abstract class AbstractReader
     {
         /** @var Header $id */
         if (!$id = $this->getHeader('message-id')) {
-            return null;
+            return;
         }
         $id = reset($id->header_parts);
 
         if (20 > $length = strlen($id)) {
-            return null;
+            return;
         }
 
         $matchLt = false;
         $matchAt = false;
-        $newId = '';
+        $newId   = '';
 
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; ++$i) {
             $char = $id[$i];
 
             if ('<' === $char) {
@@ -512,7 +517,7 @@ abstract class AbstractReader
         }
 
         if (!$matchLt || !$matchAt) {
-            return null;
+            return;
         }
 
         return $newId;

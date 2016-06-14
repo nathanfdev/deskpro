@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Commands
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Commands
+ */
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\Languages\LangPackInfo;
@@ -60,7 +59,7 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->api_key = $input->getOption('api-key');
+        $this->api_key    = $input->getOption('api-key');
         $this->secret_key = $input->getOption('secret-key');
         $user_platform_id = $input->getOption('user-platform-id');
 
@@ -71,28 +70,28 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
         #------------------------------
 
         if (!$input->getOption('skip-base-lang')) {
-            $output->writeln("<info>Uploading base English</info>");
+            $output->writeln('<info>Uploading base English</info>');
 
             foreach ($lang_packs->getDefaultCategories('user') as $file) {
                 $file .= '.php';
-                $filepath = DP_ROOT.'/languages/default/user/' . $file;
+                $filepath = DP_ROOT.'/languages/default/user/'.$file;
 
-                $phrases = include($filepath);
+                $phrases = include $filepath;
 
                 $phrases_send = array();
                 foreach ($phrases as $k => $v) {
                     $phrases_send[] = array(
-                        'string' => $v,
-                        'string-key' => $k
+                        'string'     => $v,
+                        'string-key' => $k,
                     );
                 }
 
                 echo "$file ...";
                 $this->_restPost('string/input', array(
-                    'platform-id' => $user_platform_id,
-                    'tag' => $file,
+                    'platform-id'     => $user_platform_id,
+                    'tag'             => $file,
                     'is-allow-update' => true,
-                    'input' => $phrases_send
+                    'input'           => $phrases_send,
                 ));
                 echo " Done\n";
             }
@@ -103,12 +102,14 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
         #------------------------------
 
         if (!$input->getOption('skip-other-langs')) {
-            $output->writeln("<info>Uploading other languages</info>");
+            $output->writeln('<info>Uploading other languages</info>');
 
             foreach ($lang_packs->getLangIds() as $lid) {
-                if ($lid == 'default') continue;
+                if ($lid == 'default') {
+                    continue;
+                }
 
-                $tmp_dir = sys_get_temp_dir() . "/dp-$lid-" . Strings::random(5);
+                $tmp_dir = sys_get_temp_dir()."/dp-$lid-".Strings::random(5);
                 mkdir($tmp_dir, 0777, true);
 
                 echo "\nProcessing $lid\n";
@@ -117,13 +118,13 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
 
                 foreach ($lang_packs->getDefaultCategories('user') as $file) {
                     $file .= '.php';
-                    $filepath = DP_ROOT.'/languages/'.$lid.'/user/' . $file;
+                    $filepath = DP_ROOT.'/languages/'.$lid.'/user/'.$file;
 
                     if (!is_file($filepath)) {
                         continue;
                     }
 
-                    $phrases = include($filepath);
+                    $phrases = include $filepath;
 
                     $requests = array();
 
@@ -131,16 +132,16 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
                         echo "[$lid] $k ...";
                         $res = $this->_restPost('string/translate', array(
                             'platform-id' => $user_platform_id,
-                            'string-key' => $k,
+                            'string-key'  => $k,
                             'translation' => $v,
-                            'locale' => $locale
+                            'locale'      => $locale,
                         ), true);
 
                         $requests[] = $res;
                         echo " Done\n";
 
                         if (count($requests) == 100) {
-                            echo "Sending ...";
+                            echo 'Sending ...';
                             $this->_getHttpClient()->send($requests);
                             $requests = array();
                             echo "Done\n";
@@ -148,7 +149,7 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
                     }
 
                     if (count($requests)) {
-                        echo "Sending ...";
+                        echo 'Sending ...';
                         $this->_getHttpClient()->send($requests);
                         echo "Done\n";
                     }
@@ -160,15 +161,17 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
     }
 
     /**
-     * @param  string            $path
-     * @return array
+     * @param string $path
+     *
      * @throws \RuntimeException
+     *
+     * @return array
      */
     private function _restGet($path, array $vars = array())
     {
         $vars['api-key']   = $this->api_key;
         $vars['timestamp'] = time();
-        $vars['dev-hash']  = md5($vars['timestamp'] . $this->secret_key);
+        $vars['dev-hash']  = md5($vars['timestamp'].$this->secret_key);
 
         $request = $this->_getHttpClient()->get($path);
         $request->getQuery()->merge($vars);
@@ -182,22 +185,23 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
     }
 
     /**
-     * @param  string            $path
-     * @return array
+     * @param string $path
+     *
      * @throws \RuntimeException
+     *
+     * @return array
      */
     private function _restPost($path, array $post_vars = array(), $return = false)
     {
-        $vars = array();
+        $vars              = array();
         $vars['api-key']   = $this->api_key;
         $vars['timestamp'] = time();
-        $vars['dev-hash']  = md5($vars['timestamp'] . $this->secret_key);
+        $vars['dev-hash']  = md5($vars['timestamp'].$this->secret_key);
 
         $request = $this->_getHttpClient()->post($path);
         $request->getQuery()->merge($vars);
 
         if ($post_vars) {
-
             if ($path == 'string/input') {
                 $post_vars['input'] = json_encode($post_vars['input']);
             }
@@ -234,7 +238,7 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
     private function _getHttpClient()
     {
         $http_client = new HttpClient('http://api.oneskyapp.com/2', array(
-            'ssl.certificate_authority' => false
+            'ssl.certificate_authority' => false,
         ));
 
         return $http_client;

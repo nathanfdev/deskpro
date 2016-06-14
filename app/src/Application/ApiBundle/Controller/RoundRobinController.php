@@ -1,55 +1,53 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\Entity\RoundRobin;
+use Application\DeskPRO\Entity\RoundRobinLogEntry;
 use Application\DeskPRO\Tickets\Actions\ActionComposite;
 use Application\DeskPRO\Tickets\Actions\SetRoundRobin;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RoundRobinController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
         return new UserTypePermission(UserTypePermission::AGENT);
     }
-
 
     ####################################################################################################################
     # list
@@ -57,10 +55,15 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 
     public function listAction()
     {
-        $data = array();
+        $data  = array();
+        $adata = $this->container->getAgentData();
         /** @var $rr RoundRobin */
         foreach ($this->em->getRepository('DeskPRO:RoundRobin')->findAll() as $rr) {
-            $data[] = $rr->toApiData();
+            $rrdata = $rr->toApiData();
+            if ($next = $rr->getNextAgent($adata)) {
+                $rrdata['next'] = $next->toApiData();
+            }
+            $data[] = $rrdata;
         }
 
         return $this->createApiResponse($data);
@@ -77,7 +80,12 @@ class RoundRobinController extends AbstractController implements ProtectedContro
             throw $this->createNotFoundException();
         }
 
-        return $this->createApiResponse($rr->toApiData());
+        $data = $rr->toApiData();
+        if ($next = $rr->getNextAgent($this->container->getAgentData())) {
+            $data['next'] = $next->toApiData();
+        }
+
+        return $this->createApiResponse($data);
     }
 
     ###################################################################################################################
@@ -89,7 +97,7 @@ class RoundRobinController extends AbstractController implements ProtectedContro
         /** @var \Application\DeskPRO\EntityRepository\RoundRobin $rep */
         $rep = $this->em->getRepository('DeskPRO:RoundRobin');
 
-        /** @var $rr RoundRobin */
+        /* @var $rr RoundRobin */
         if (!$id) {
             $rr = new RoundRobin();
             $this->em->persist($rr);
@@ -149,8 +157,10 @@ class RoundRobinController extends AbstractController implements ProtectedContro
     }
 
     /**
-     * check triggers using round robin id, or all round robins if id is null
+     * check triggers using round robin id, or all round robins if id is null.
+     *
      * @param $id
+     *
      * @return Response
      */
     public function checkTriggersAction($id)
@@ -161,11 +171,9 @@ class RoundRobinController extends AbstractController implements ProtectedContro
     protected function isTriggerActionClear($action, $roundRobinId = null)
     {
         if ($action instanceof SetRoundRobin) {
-
             if (!$roundRobinId || $action->getActionOption('id') == $roundRobinId) {
                 return false;
             }
-
         } elseif ($action instanceof ActionComposite) {
             foreach ($action as $subAction) {
                 if (!$this->isTriggerActionClear($subAction)) {
@@ -179,13 +187,15 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 
     protected function countRoundRobinTriggers($disable = false, $roundRobinId = null)
     {
-        $count = 0;
+        $count    = 0;
         $triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getTriggers();
         foreach ($triggers as $trigger) {
             $newActions = new TriggerActions();
             /** @var TriggerActions $actions */
             $actions = $trigger->actions;
-            if (!$actions) continue;
+            if (!$actions) {
+                continue;
+            }
 
             foreach ($actions as $action) {
                 if ($this->isTriggerActionClear($action, $roundRobinId)) {
@@ -194,10 +204,10 @@ class RoundRobinController extends AbstractController implements ProtectedContro
             }
 
             if ($newActions->count() !== $actions->count()) {
-                $count++;
+                ++$count;
 
                 if ($disable) {
-                    $trigger->actions = $newActions;
+                    $trigger->actions      = $newActions;
                     $trigger['is_enabled'] = false;
                     $this->em->flush();
                 }
@@ -205,5 +215,31 @@ class RoundRobinController extends AbstractController implements ProtectedContro
         }
 
         return $count;
+    }
+
+    /**
+     * @param $id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function logsAction($id)
+    {
+        if (!$rr = $this->em->find('DeskPRO:RoundRobin', $id)) {
+            throw new NotFoundHttpException();
+        }
+
+        $entries = $this->em->getRepository('DeskPRO:RoundRobinLogEntry')->findBy(
+            array('rr'      => $rr),
+            array('created' => 'desc')
+        );
+
+        return $this->render('AdminInterfaceBundle:RoundRobin:logs.html.twig', array(
+            'entries' => $entries,
+            'rr'      => $rr,
+        ));
     }
 }

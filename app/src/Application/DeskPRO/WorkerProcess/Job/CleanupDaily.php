@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -53,10 +50,10 @@ class CleanupDaily extends AbstractJob
         # log_items
         #------------------------------
 
-        $last_id = App::getDb()->fetchColumn("SELECT id FROM log_items ORDER BY id DESC LIMIT 1");
+        $last_id = App::getDb()->fetchColumn('SELECT id FROM log_items ORDER BY id DESC LIMIT 1');
         if ($last_id) {
             $delete_before_id = $last_id - 25000; // approx 10 days worth of cron logs
-            $num = App::getDb()->executeUpdate("DELETE FROM log_items WHERE id < $delete_before_id");
+            $num              = App::getDb()->executeUpdate("DELETE FROM log_items WHERE id < $delete_before_id");
 
             if ($num) {
                 $this->logStatus("Cleaned up $num cron log items");
@@ -69,10 +66,10 @@ class CleanupDaily extends AbstractJob
 
         if ($maxage = App::getSetting('agent.alerts_cleanup_time_always')) {
             $datetime = date('Y-m-d H:i:s', time() - $maxage);
-            $num = App::getDb()->executeUpdate("
+            $num      = App::getDb()->executeUpdate('
 				DELETE FROM agent_alerts
 				WHERE date_created < ?
-			", array($datetime));
+			', array($datetime));
 
             if ($num) {
                 $this->logStatus("Cleaned up $num agent alerts");
@@ -81,10 +78,10 @@ class CleanupDaily extends AbstractJob
 
         if ($maxage = App::getSetting('agent.alerts_cleanup_time')) {
             $datetime = date('Y-m-d H:i:s', time() - $maxage);
-            $num = App::getDb()->executeUpdate("
+            $num      = App::getDb()->executeUpdate('
 				DELETE FROM agent_alerts
 				WHERE date_created < ? AND is_dismissed = 1
-			", array($datetime));
+			', array($datetime));
 
             if ($num) {
                 $this->logStatus("Cleaned up $num dismissed agent alerts");
@@ -96,10 +93,10 @@ class CleanupDaily extends AbstractJob
         #------------------------------
 
         $datecut = date('Y-m-d H:i:s', time() - 86400);
-        $num = App::getDb()->executeUpdate("
+        $num     = App::getDb()->executeUpdate('
             DELETE FROM result_cache
             WHERE date_created < ?
-        ", array($datecut));
+        ', array($datecut));
 
         if ($num) {
             $this->logStatus("Cleaned up $num old result caches");
@@ -109,9 +106,9 @@ class CleanupDaily extends AbstractJob
         # Task queue logs Items
         #------------------------------
 
-        $cutoff = 86400 * 14; // 15 days
+        $cutoff  = 86400 * 14; // 15 days
         $datecut = date('Y-m-d H:i:s', time() - $cutoff);
-        $num = App::getDb()->executeUpdate("
+        $num     = App::getDb()->executeUpdate("
             DELETE FROM task_queue
             WHERE status = 'completed' AND date_completed < ?
         ", array($datecut));
@@ -124,12 +121,12 @@ class CleanupDaily extends AbstractJob
         # ref_reserve
         #------------------------------
 
-        $cutoff = 86400; // 1 day
+        $cutoff  = 86400; // 1 day
         $datecut = date('Y-m-d H:i:s', time() - $cutoff);
-        $num = App::getDb()->executeUpdate("
+        $num     = App::getDb()->executeUpdate('
             DELETE FROM ref_reserve
             WHERE date_created < ?
-        ", array($datecut));
+        ', array($datecut));
 
         if ($num) {
             $this->logStatus("Cleaned up $num ref_reserve records");
@@ -140,15 +137,77 @@ class CleanupDaily extends AbstractJob
         #------------------------------
 
         if (App::getSetting('agent.ip_security.enabled')) {
-            $cutoff = App::getSetting('agent.ip_security.whitelist_lifetime');
+            $cutoff  = App::getSetting('agent.ip_security.whitelist_lifetime');
             $datecut = date('Y-m-d H:i:s', time() - $cutoff);
-            $num = App::getDb()->executeUpdate("
+            $num     = App::getDb()->executeUpdate('
                 DELETE FROM white_listed_ips
                 WHERE date_created < ?
-            ", array($datecut));
+            ', array($datecut));
 
             if ($num) {
                 $this->logStatus("Cleaned up $num white_listed_ips records");
+            }
+        }
+
+        #------------------------------
+        # try to fetch config.php
+        #------------------------------
+
+        if (!defined('DPC_IS_CLOUD')) {
+            $url    = rtrim(App::getSetting('core.deskpro_url'), '/').'/config.php';
+            $config = @file_get_contents(
+                $url,
+                false,
+                stream_context_create(array('http' => array('timeout' => 10)))
+            );
+
+            if ($config
+                && strpos($config, '<?') !== false
+                && (DP_DATABASE_PASSWORD === '' || strpos($config, DP_DATABASE_PASSWORD) !== false)
+                && strpos($config, 'DP_DATABASE_PASSWORD') !== false
+            ) {
+                $this->logStatus("CRITICAL: config.php file is publicly readable at $url");
+
+                $tos = array_filter(App::$container->getAgentData()->getAgents(), function ($a) {
+                    return $a->can_admin;
+                });
+                if ($tos) {
+                    $people_list = array_map(function ($a) {
+                        return $a->getDisplayContact();
+                    }, $tos);
+
+                    $to_emails = array_map(function ($a) {
+                        return strtolower($a->getPrimaryEmailAddress());
+                    }, $tos);
+
+                    if (defined('DP_TECHNICAL_EMAIL') && !in_array(strtolower(DP_TECHNICAL_EMAIL), $to_emails)) {
+                        $to_emails[]   = DP_TECHNICAL_EMAIL;
+                        $people_list[] = DP_TECHNICAL_EMAIL;
+                    }
+
+                    $people_list = implode("\n- ", $people_list);
+
+                    $mailer  = App::$container->getMailer();
+                    $message = $mailer->createMessage();
+                    $message->setTo($to_emails);
+                    $message->setPriority(1);
+                    $message->setSubject('[CRITICAL] Warning: Your config.php file is publicly readable');
+
+                    $body = <<<BODY
+Your config.php file is publicly readable at the following URL:
+$url
+
+This is a CRITICAL vulnerability in the way your web server is configured. Your config.php file contains sensitive information such as your MySQL database details (including your password).
+
+Do not ignore this notice. This requires IMMEDIATE attention from an administrator.
+
+This email has been sent to the following people:
+- $people_list
+BODY;
+
+                    $message->setBody($body);
+                    $mailer->send($message);
+                }
             }
         }
 
@@ -161,17 +220,19 @@ class CleanupDaily extends AbstractJob
 
         $cleanup_list = array();
 
-        $tmpdir = dp_get_tmp_dir();
-        $tmpdir_swift = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'swiftmailer-cache';
+        $tmpdir       = dp_get_tmp_dir();
+        $tmpdir_swift = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'swiftmailer-cache';
 
         if (is_dir($tmpdir) && is_readable($tmpdir)) {
             $dir = dir($tmpdir);
 
             while ($f = $dir->read()) {
-                if ($f == '.' || $f == '..') continue;
+                if ($f == '.' || $f == '..') {
+                    continue;
+                }
 
-                $f_path  = $dir->path . DIRECTORY_SEPARATOR . $f;
-                $mtime   = @filemtime($f_path);
+                $f_path = $dir->path.DIRECTORY_SEPARATOR.$f;
+                $mtime  = @filemtime($f_path);
 
                 if (!$mtime || $mtime < $min_time) {
                     continue;
@@ -188,7 +249,7 @@ class CleanupDaily extends AbstractJob
                     $do_cleanup = true;
 
                 // Unzipped distros created during upgrade
-                } elseif (is_dir($f_path) && is_file($f_path . DIRECTORY_SEPARATOR . 'config.new.php') && $mtime < strtotime('-1 day')) {
+                } elseif (is_dir($f_path) && is_file($f_path.DIRECTORY_SEPARATOR.'config.new.php') && $mtime < strtotime('-1 day')) {
                     $do_cleanup = true;
                 }
 
@@ -205,10 +266,12 @@ class CleanupDaily extends AbstractJob
 
             // Swiftmailer may write to the fs sometimes
             while ($f = $dir->read()) {
-                if ($f == '.' || $f == '..' || strlen($f) != 32) continue;
+                if ($f == '.' || $f == '..' || strlen($f) != 32) {
+                    continue;
+                }
 
-                $f_path  = $dir->path . DIRECTORY_SEPARATOR . $f;
-                $mtime   = @filemtime($f_path);
+                $f_path = $dir->path.DIRECTORY_SEPARATOR.$f;
+                $mtime  = @filemtime($f_path);
 
                 if (!$mtime || $mtime > strtotime('-4 days') || !is_dir($f_path)) {
                     continue;
@@ -222,15 +285,16 @@ class CleanupDaily extends AbstractJob
 
         if ($cleanup_list) {
             $file_util = new \Symfony\Component\Filesystem\Filesystem();
-            $x = 0;
+            $x         = 0;
             foreach ($cleanup_list as $f) {
                 try {
                     $file_util->remove($f);
-                    $x++;
-                } catch (\Exception $e) {}
+                    ++$x;
+                } catch (\Exception $e) {
+                }
             }
 
-            $this->logStatus("Cleaned up $x of " . count($cleanup_list) . " old files");
+            $this->logStatus("Cleaned up $x of ".count($cleanup_list).' old files');
         }
 
         #------------------------------
@@ -247,18 +311,53 @@ class CleanupDaily extends AbstractJob
         $num = 0;
 
         foreach ($q->getResult() as $entry) {
-            /** @var $entry TmpData */
+            /* @var $entry TmpData */
             $file = $entry->getData('file');
-            if (!file_exists($file)) continue;
+            if (!file_exists($file)) {
+                continue;
+            }
 
-            unlink($file);
+            @unlink($file);
+            @unlink($file.'.zip');
             App::getOrm()->remove($entry);
-            $num++;
+            ++$num;
         }
 
         if ($num) {
             App::getOrm()->flush();
             $this->logStatus("Cleaned up $num old exports");
+        }
+
+        #------------------------------
+        # Truncate tables approaching max INT size
+        #------------------------------
+
+        // - These tables are continuously filled + cleaned up
+        // but the IDs arent recycled.
+        // - On very big helpdesks they might overflow INT,
+        // so we're just clearing them.
+        // - Ideally we just use bigint but we might be using PHP
+        // treating these as ints, so that'd screw up with bigints on 32b (i.e. $bigint + 1 wouldnt work)
+
+        $db = App::getDb();
+
+        $tables = array(
+            'agent_alerts',
+            'client_messages',
+            'visitors',
+            'visitor_tracks',
+        );
+
+        $threshold = 2145000000;
+        foreach ($tables as $t) {
+            $table_max_id = $db->fetchColumn("SELECT id FROM $t ORDER BY id DESC LIMIT 1");
+            if ($table_max_id && $table_max_id >= $threshold) {
+                $this->logStatus("Truncating big table $t which has $table_max_id records");
+                $db->executeUpdate("DELETE FROM `$t`");
+                $db->executeUpdate('SET FOREIGN_KEY_CHECKS = 0');
+                $db->executeUpdate("TRUNCATE TABLE `$t`");
+                $db->executeUpdate('SET FOREIGN_KEY_CHECKS = 1');
+            }
         }
     }
 }

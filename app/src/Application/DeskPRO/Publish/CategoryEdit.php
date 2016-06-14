@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Addons
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
@@ -41,7 +38,7 @@ use Application\DeskPRO\Entity\NewsCategory;
 use Orb\Util\Arrays;
 
 /**
- * Helps fetch info related to structure of Publish
+ * Helps fetch info related to structure of Publish.
  */
 class CategoryEdit
 {
@@ -50,24 +47,27 @@ class CategoryEdit
     const NEWS      = 'news';
 
     /**
-     * Add a new category to the systme
+     * Add a new category to the systme.
      *
-     * @throws \InvalidArgumentException
+     *
      * @param $type
      * @param $title
+     *
+     * @throws \InvalidArgumentException
+     *
      * @return \Application\DeskPRO\Entity\ArticleCategory|\Application\DeskPRO\Entity\DownloadCategory|\Application\DeskPRO\Entity\NewsCategory|array
      */
     public static function addCategory($type, $title)
     {
         switch ($type) {
             case self::ARTICLES:
-                $obj = new ArticleCategory;
+                $obj = new ArticleCategory();
                 break;
             case self::DOWNLOADS:
-                $obj = new DownloadCategory;
+                $obj = new DownloadCategory();
                 break;
             case self::NEWS:
-                $obj = new NewsCategory;
+                $obj = new NewsCategory();
                 break;
             default:
                 throw new \InvalidArgumentException("Unknown type `$type`");
@@ -84,7 +84,7 @@ class CategoryEdit
         $perm_table = App::getOrm()->getRepository(get_class($obj))->getPermissionTableName();
         App::getDb()->insert($perm_table, array(
             'category_id'  => $obj->getId(),
-            'usergroup_id' => '1'
+            'usergroup_id' => '1',
         ));
 
         App::getContainer()->getSystemService('publish_structure_cache')->flush();
@@ -92,12 +92,12 @@ class CategoryEdit
         return $obj;
     }
 
-
     /**
-     * Update titles for categoryes. $titles is id=>title
+     * Update titles for categoryes. $titles is id=>title.
      *
      * @param $type
-     * @param  array $titles
+     * @param array $titles
+     *
      * @return array
      */
     public static function updateTitles($type, array $titles)
@@ -114,8 +114,8 @@ class CategoryEdit
         $cats = App::getOrm()->createQuery("
             SELECT c
             FROM $entity c INDEX BY c.id
-            WHERE c.id IN (" . implode(',', $ids) . ")
-        ")->execute();
+            WHERE c.id IN (".implode(',', $ids).')
+        ')->execute();
 
         App::getOrm()->beginTransaction();
 
@@ -138,9 +138,9 @@ class CategoryEdit
 
     public static function update($type, $category_id, $title, array $usergroup_ids)
     {
-        $entity = self::getEntityNameFor($type);
+        $entity     = self::getEntityNameFor($type);
         $perm_table = App::getEntityRepository($entity)->getPermissionTableName();
-        $cat = App::getOrm()->find($entity, $category_id);
+        $cat        = App::getOrm()->find($entity, $category_id);
 
         if (!$cat) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -160,8 +160,8 @@ class CategoryEdit
 
                 foreach ($usergroup_ids as $uid) {
                     App::getDb()->insert($perm_table, array(
-                        'category_id' => $cat->id,
-                        'usergroup_id' => $uid
+                        'category_id'  => $cat->id,
+                        'usergroup_id' => $uid,
                     ));
                 }
             }
@@ -171,21 +171,18 @@ class CategoryEdit
             App::getOrm()->commit();
 
             App::getContainer()->getSystemService('publish_structure_cache')->flush();
-            App::getDb()->query("DELETE FROM permissions_cache");
-
+            App::getDb()->query('DELETE FROM permissions_cache');
         } catch (\Exception $e) {
             App::getOrm()->rollback();
             throw $e;
         }
     }
 
-
     /**
      * Update orders. $orders is an array of ID's in the order you want them.
      *
      * @param $type
-     * @param  array $orders
-     * @return void
+     * @param array $orders
      */
     public static function updateOrders($type, array $orders)
     {
@@ -202,8 +199,8 @@ class CategoryEdit
         $cats = App::getOrm()->createQuery("
             SELECT c
             FROM $entity c INDEX BY c.id
-            WHERE c.id IN (" . implode(',', $ids) . ")
-        ")->execute();
+            WHERE c.id IN (".implode(',', $ids).')
+        ')->execute();
 
         App::getDb()->beginTransaction();
 
@@ -213,7 +210,7 @@ class CategoryEdit
                     continue;
                 }
 
-                $cats[$id]['display_order'] = ($order+1) * 10; // 10,20,30, etc
+                $cats[$id]['display_order'] = ($order + 1) * 10; // 10,20,30, etc
                 App::getOrm()->persist($cats[$id]);
             }
 
@@ -231,10 +228,11 @@ class CategoryEdit
     }
 
     /**
-     * Update the structure based off a map of ids to categories
+     * Update the structure based off a map of ids to categories.
      *
      * @param $type
-     * @param  array $map
+     * @param array $map
+     *
      * @return array
      */
     public static function updateStructure($type, array $map, array $check_map = null)
@@ -249,9 +247,9 @@ class CategoryEdit
         // If theres a check map then we want to verify that the current tree is the same,
         // or else error out
         if ($check_map) {
-            $conn = App::getDb();
-            $table = App::getOrm()->getRepository($entity)->getTableName();
-            $current_tree = $conn->fetchAllKeyValue("SELECT id, parent_id FROM " . $conn->quoteIdentifier($table));
+            $conn         = App::getDb();
+            $table        = App::getOrm()->getRepository($entity)->getTableName();
+            $current_tree = $conn->fetchAllKeyValue('SELECT id, parent_id FROM '.$conn->quoteIdentifier($table));
 
             $accurate = true;
             foreach ($check_map as $id => $parent_id) {
@@ -269,7 +267,7 @@ class CategoryEdit
             }
 
             if (!$accurate) {
-                throw new \OutOfBoundsException("Structure check failed");
+                throw new \OutOfBoundsException('Structure check failed');
             }
         }
 
@@ -305,16 +303,17 @@ class CategoryEdit
     /**
      * Deletes a category and all its children if they are empty.
      *
-     * @throws \InvalidArgumentException
+     *
      * @param $type
      * @param $category_id
-     * @return void
+     *
+     * @throws \InvalidArgumentException
      */
     public static function deleteCategory($type, $category_id)
     {
         $entity = self::getEntityNameFor($type);
         $repos  = App::getOrm()->getRepository($entity);
-        $cat = $repos->find($category_id);
+        $cat    = $repos->find($category_id);
 
         if (!$cat) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -359,7 +358,7 @@ class CategoryEdit
         }
 
         if (count($cat->children) || $counts) {
-            throw new \OutOfBoundsException("Category is not empty");
+            throw new \OutOfBoundsException('Category is not empty');
         }
 
         App::getOrm()->beginTransaction();
@@ -386,11 +385,14 @@ class CategoryEdit
     }
 
     /**
-     * Get the content entity for a publish type
+     * Get the content entity for a publish type.
      *
      * @static
-     * @throws \InvalidArgumentException
+     *
      * @param $type
+     *
+     * @throws \InvalidArgumentException
+     *
      * @return string
      */
     public static function getEntityNameFor($type)

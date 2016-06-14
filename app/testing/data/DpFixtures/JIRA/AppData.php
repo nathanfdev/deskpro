@@ -1,5 +1,31 @@
 <?php
 
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
 namespace DpFixtures\JIRA;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
@@ -21,9 +47,9 @@ SQL
         );
 
         $settings = array(
-            'url' => 'https://deskpro.atlassian.net/',
+            'url'          => 'https://deskpro.atlassian.net/',
             'consumer_key' => 'dp-test-hardcoded-consumer',
-            'private_key' => '-----BEGIN RSA PRIVATE KEY-----
+            'private_key'  => '-----BEGIN RSA PRIVATE KEY-----
 MIICXgIBAAKBgQC6yzHCHz3FRHfPlXsftHBVwIpqsGMwSW338sISCUHUIk1CKOf7
 TZX4xilU/XS8rsUx+hS0rhhL5DKwE9WNe6Icot0GjZYa/3X43H5XytHSvEgEKsqZ
 36syXNClrrR7hs0jrCoovMzG2eRzilgBtNoMqgp9KxPWDzfyzZ4WtCnKlQIDAQAB
@@ -39,10 +65,10 @@ UTLcuY+VSR4qhrRKnyxsl+Uphtn4G+bm6jT9YGCd+l/2N4F9kepJBekHFeD2OaHJ
 4+kyYyGDRzjfHpEeaMRxaq7WpGhUPnfDGEcCSbJEILMLlQ==
 -----END RSA PRIVATE KEY-----',
             'oauth_tokens' => array(
-                'oauth_token' => '1vfYH0rCY9IMrXPaEH0RpZiWqYTbixMt',
-                'oauth_token_secret' => 'ityVNKRIUWLkhLvMERlKg6toz88gJAkT',
-                'oauth_expires_in' => 157680000,
-                'oauth_session_handle' => '1w57KHkPWucvEwb8L4JNcUlbDUnY8dn0',
+                'oauth_token'                    => '1vfYH0rCY9IMrXPaEH0RpZiWqYTbixMt',
+                'oauth_token_secret'             => 'ityVNKRIUWLkhLvMERlKg6toz88gJAkT',
+                'oauth_expires_in'               => 157680000,
+                'oauth_session_handle'           => '1w57KHkPWucvEwb8L4JNcUlbDUnY8dn0',
                 'oauth_authorization_expires_in' => 160272000,
             ),
         );

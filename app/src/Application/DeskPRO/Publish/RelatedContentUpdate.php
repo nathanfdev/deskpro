@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Addons
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
@@ -49,7 +46,7 @@ class RelatedContentUpdate
     public function __construct($entity)
     {
         $this->entity = $entity;
-        $this->type = $entity->getTableName();
+        $this->type   = $entity->getTableName();
 
         $this->db = App::getDb();
     }
@@ -58,10 +55,10 @@ class RelatedContentUpdate
     {
         $this->removeRelated($type, $id);
         $this->db->insert('related_content', array(
-            'object_type' => $this->type,
-            'object_id' => $this->entity->id,
+            'object_type'     => $this->type,
+            'object_id'       => $this->entity->id,
             'rel_object_type' => $type,
-            'rel_object_id' => $id
+            'rel_object_id'   => $id,
         ));
     }
 
@@ -78,10 +75,10 @@ class RelatedContentUpdate
             $this->type,
             $this->entity->id,
             $type,
-            $id
+            $id,
         );
 
-        $this->db->executeUpdate("
+        $this->db->executeUpdate('
             DELETE FROM related_content
             WHERE
                 (
@@ -98,6 +95,6 @@ class RelatedContentUpdate
                     AND rel_object_id = ?
                 )
             LIMIT 1
-        ", $params);
+        ', $params);
     }
 }

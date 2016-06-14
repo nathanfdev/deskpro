@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -52,7 +50,6 @@ class DetectSearchTableErrors
         $this->db = $db;
     }
 
-
     /**
      * @return int $limit
      */
@@ -61,7 +58,6 @@ class DetectSearchTableErrors
         return $this->limit;
     }
 
-
     /**
      * @param int $limit
      */
@@ -69,7 +65,6 @@ class DetectSearchTableErrors
     {
         $this->limit = $limit;
     }
-
 
     public function outputErrors($errors = null)
     {
@@ -91,8 +86,8 @@ class DetectSearchTableErrors
                     echo "[data_mismatch] #{$error['ticket_id']} contains different data in search and real\n";
                     foreach ($error['mismatch'] as $k => $v) {
                         echo "\t[$k]\n";
-                        echo "\t\tsearch: " . $v['search'] . "\n";
-                        echo "\t\treal:   " . $v['real'] . "\n";
+                        echo "\t\tsearch: ".$v['search']."\n";
+                        echo "\t\treal:   ".$v['real']."\n";
                     }
                     break;
             }
@@ -119,7 +114,7 @@ class DetectSearchTableErrors
         # Select data
         #------------------------------
 
-        $select_fields = "
+        $select_fields = '
             `id`,
             `language_id`,
             `department_id`,
@@ -144,10 +139,10 @@ class DetectSearchTableErrors
             `date_user_waiting`,
             `total_user_waiting`,
             `total_to_first_reply`
-        ";
+        ';
 
         $search_tickets = array();
-        $q = $this->db->executeQuery("
+        $q              = $this->db->executeQuery("
             SELECT $select_fields
             FROM tickets_search_active
             ORDER BY id DESC
@@ -158,9 +153,8 @@ class DetectSearchTableErrors
         }
         $q->closeCursor();
 
-
         $real_tickets = array();
-        $q = $this->db->executeQuery("
+        $q            = $this->db->executeQuery("
             SELECT $select_fields
             FROM tickets
             WHERE status IN ('awaiting_user', 'awaiting_agent', 'resolved')
@@ -172,7 +166,6 @@ class DetectSearchTableErrors
         }
         $q->closeCursor();
 
-
         #------------------------------
         # Check for bad tickets
         #------------------------------
@@ -182,7 +175,7 @@ class DetectSearchTableErrors
                 $errors[] = array(
                     'type'      => 'missing_real_id',
                     'ticket_id' => $tid,
-                    'msg'       => "in search but not real",
+                    'msg'       => 'in search but not real',
                 );
             } else {
                 $mismatch = array();
@@ -190,7 +183,7 @@ class DetectSearchTableErrors
                     if ($real_tickets[$tid][$k] != $v) {
                         $mismatch[$k] = array(
                             'real'   => $real_tickets[$tid][$k],
-                            'search' => $v
+                            'search' => $v,
                         );
                     }
                 }
@@ -199,10 +192,9 @@ class DetectSearchTableErrors
                     $errors[] = array(
                         'type'      => 'data_mismatch',
                         'ticket_id' => $tid,
-                        'msg'       => "contains different data in search and real",
-                        'mismatch'  => $mismatch
+                        'msg'       => 'contains different data in search and real',
+                        'mismatch'  => $mismatch,
                     );
-
                 }
             }
         }
@@ -212,7 +204,7 @@ class DetectSearchTableErrors
                 $errors[] = array(
                     'type'      => 'missing_search_id',
                     'ticket_id' => $tid,
-                    'msg'       => "in real but not search",
+                    'msg'       => 'in real but not search',
                 );
             }
         }

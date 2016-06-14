@@ -7,7 +7,7 @@
  ##}
 
 /*
- * DeskPRO http://www.deskpro.com/
+ * DeskPRO https://www.deskpro.com/
  * CSS generated {{ 'now'|date('Y-m-d H:i:s') }}
  */
 {% set stylevar = app.getSettingGroup('user_style') %}
@@ -287,6 +287,11 @@
 	padding: 0;
 }
 
+#dp .plaintext-email {
+  font-family: 'Lucida Sans Typewriter', 'Lucida Console', 'Monaco', 'Consolas', monospace;
+  font-size: 90%;
+}
+
 /***********************************************************************************************************************
 * Tweaks to respond to width of devices
 ***********************************************************************************************************************/
@@ -464,6 +469,10 @@ html#dp_html.dp-simple-iframe, html#dp_html body.dp-simple-iframe {
 }
 
 #dp .dp-controls.dp-fill .customfield.datepicker input {
+	width: 166px;
+}
+
+#dp .dp-controls.dp-fill .customfield.DateTime input {
 	width: 166px;
 }
 
@@ -2405,6 +2414,27 @@ dp .dp-new-feedback td {
 }
 
 /******************************
+* Multi level selects
+******************************/
+
+#dp .multilevel-select .multilevel-select-wrap {
+    display: block;
+    background: url({{ stylevar.static_path }}/images/user/elbow-end.gif) no-repeat 0 0;
+	padding-left: 21px;
+	margin: 4px 0 0 3px;
+}
+
+#dp .multilevel-select .multilevel-select-wrap.level-0 {
+    background: none;
+    padding-left: 0;
+}
+{% for i in 2..15 %}
+    #dp .multilevel-select .multilevel-select-wrap.level-{{i}} {
+        margin-left: {{ (i * (i*3)) + 10 }}px;
+    }
+{% endfor %}
+
+/******************************
 * Rating bar
 ******************************/
 
@@ -2473,15 +2503,15 @@ dp .dp-new-feedback td {
 	padding-bottom: 10px;
 }
 
-#dp section.dp-comments-box article.dp-well {
+#dp section.dp-comments-box > article.dp-well {
 	margin-bottom: 0;
 }
 
-#dp section.dp-comments-box article > ul {
+#dp section.dp-comments-box > article > ul {
 	margin: 0;
 }
 
-#dp section.dp-comments-box article > ul > li {
+#dp section.dp-comments-box > article > ul > li {
 	list-style: none;
 	margin: 10px 0 10px 0;
 	padding: 10px 0 10px 0;
@@ -2489,44 +2519,56 @@ dp .dp-new-feedback td {
 	position: relative;
 }
 
-#dp section.dp-comments-box article > ul > li > header .avatar {
+#dp section.dp-comments-box > article > ul > li > header .avatar {
 	float: left;
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 }
 
-#dp section.dp-comments-box article > ul > li > header .byline h4 {
+#dp section.dp-comments-box > article > ul > li > header .byline h4 {
 	font-size: 13pt;
 	font-weight: normal;
 	margin: 0;
 	padding: 2px 0 2px 0;
 }
 
-#dp section.dp-comments-box article > ul > li > article {
+#dp section.dp-comments-box > article > ul > li > article {
 	clear: left;
 	padding: 12px 12px 0 0;
+    word-wrap: break-word;
 }
 
-#dp section.dp-comments-box article > ul > li.new-comment {
+#dp section.dp-comments-box > article > ul > li.new-comment {
 	border-bottom: none;
 }
 
-#dp section.dp-comments-box article > ul > li.new-comment textarea {
+#dp section.dp-comments-box > article > ul > li.new-comment textarea {
 	width: 98%;
 }
 
-#dp section.dp-comments-box article > ul > li.dp-no-comments {
+#dp section.dp-comments-box > article > ul > li.dp-no-comments {
 	margin: 0;
 	border-bottom: 0;
 }
 
-#dp section.dp-comments-box article .dp-validating-note {
+#dp section.dp-comments-box > article .dp-validating-note {
 	font-size: 11px;
 	color: #888;
 }
 
-#dp section.dp-comments-box article .dp-validating-note i {
+#dp section.dp-comments-box > article .dp-validating-note i {
 	{{ _self.opacity(0.5) }}
+}
+
+#dp table.dp_message_table {
+	border-collapse: collapse;
+	border: 1px solid #444;
+}
+
+#dp table.dp_message_table td, #dp table.dp_message_table th {
+	border: 1px solid #444;
+	padding: 4px;
+	vertical-align: top;
 }
 
 /***********************************************************************************************************************

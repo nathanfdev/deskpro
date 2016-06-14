@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Translate
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Translate
+ */
 namespace Application\DeskPRO\Translate;
 
 use Orb\Util\Strings;
@@ -49,9 +48,9 @@ class DephrasifyTemplate
         $this->translate = $translate;
     }
 
-
     /**
-     * @param  string $string The raw twig template
+     * @param string $string The raw twig template
+     *
      * @return string
      */
     public function expand($string)
@@ -62,9 +61,8 @@ class DephrasifyTemplate
         return $string;
     }
 
-
     /**
-     * Expands sub-phrases that are sometimes found in other phrases:
+     * Expands sub-phrases that are sometimes found in other phrases:.
      *
      * "The quick brown {{phrase.fox}} jumped over the lazy dog"
      *
@@ -73,6 +71,7 @@ class DephrasifyTemplate
      * @see Translate::phrase()
      *
      * @param  $string
+     *
      * @return mixed
      */
     public function expandSubphrases($string)
@@ -89,16 +88,17 @@ class DephrasifyTemplate
             // use variables. So they're simple replacements
 
             $phrase_text = $this->translate->phrase($phrase);
-            $string = str_replace($match[0], $phrase_text, $string);
+            $string      = str_replace($match[0], $phrase_text, $string);
         }
 
         return $string;
     }
 
     /**
-     * Expands simple phrases
+     * Expands simple phrases.
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public function expandSimplePhrases($string)
@@ -109,7 +109,7 @@ class DephrasifyTemplate
         }
 
         foreach ($matches as $match) {
-            $phrase = $match[2];
+            $phrase      = $match[2];
             $phrase_text = $this->translate->phrase($phrase);
             $phrase_text = $this->expandSubphrases($phrase_text);
 
@@ -120,11 +120,12 @@ class DephrasifyTemplate
     }
 
     /**
-     * Tries to expand phrases with variables:
+     * Tries to expand phrases with variables:.
      *
      * {{ phrase('
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public function expandVariablePhrases($string)
@@ -135,9 +136,9 @@ class DephrasifyTemplate
         }
 
         foreach ($matches as $match) {
-            $line = $match[0];
-            $phrase = $match[2];
-            $hash_string = "{ " . $match[4] . " }";
+            $line        = $match[0];
+            $phrase      = $match[2];
+            $hash_string = '{ '.$match[4].' }';
             $phrase_text = $this->translate->phrase($phrase);
             $phrase_text = $this->expandSubphrases($phrase_text);
 
@@ -146,16 +147,16 @@ class DephrasifyTemplate
 
             // Empty phrase (ie doesnt exist) or phrase isnt using any vars
             // we can just continue out now
-            if (!$phrase_text OR !$var_places) {
+            if (!$phrase_text or !$var_places) {
                 $string = str_replace($match[0], $phrase_text, $string);
                 continue;
             }
 
-            $found_all = true;
+            $found_all    = true;
             $find_replace = array();
 
             foreach ($var_places as $var) {
-                $varname = $var[1];
+                $varname  = $var[1];
                 $val_expr = $this->_findVarInHashString($varname, $hash_string);
                 if ($val_expr === false) {
                     $found_all = false;
@@ -180,33 +181,34 @@ class DephrasifyTemplate
     }
 
     /**
-     * Tries to parse out the value of a key in a hash string
+     * Tries to parse out the value of a key in a hash string.
      *
      * @param  $varname
      * @param  $hash_string
+     *
      * @return null|string
      */
     protected function _findVarInHashString($varname, $hash_string)
     {
-        $m = null;
+        $m         = null;
         $varname_q = preg_quote($varname, '#');
 
         $key_string = Strings::extractRegexMatch("#(\'|\")$varname_q(\'|\")\s*:\s*#", $hash_string, 0);
 
         // Not found
         if (!$key_string) {
-            return null;
+            return;
         }
 
         $value_expr = null;
         if (!preg_match("#(\'|\")$varname_q(\'|\")\s*:\s*(((\'|\")(?P<quoted>.*?)(\'|\"))|((?P<expr>.*?)(\s|,|\})))#", $hash_string, $value_expr)) {
-            return null;
+            return;
         }
 
         if (isset($value_expr['quoted'])) {
             return $value_expr['quoted'];
         } else {
-            return "{{ " . $value_expr['expr'] . " }}";
+            return '{{ '.$value_expr['expr'].' }}';
         }
     }
 }

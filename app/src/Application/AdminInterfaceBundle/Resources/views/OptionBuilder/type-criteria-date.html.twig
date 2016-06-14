@@ -18,23 +18,29 @@
 				</td>
 				<td width="100%" style="padding-left: 15px;">
 					<div ng-show="!model.use_relative">
-						<span ng-if="model.op == 'lte' || model.op == 'between'">
-							<input type="text" class="form-control" style="width: 140px; display: inline-block;" datepicker-popup="dd MMMM yyyy" ng-model="model.date1" datepicker-options="{'show-weeks': false}" />
+						<span>
+							<input type="text" class="form-control" style="width: 140px; display: inline-block;"
+							       dp-datetime-popup="DD MMMM YYYY"
+							       ng-model="model.date1"
+									/>
 						</span>
 						<span ng-if="model.op == 'between'">&nbsp;&nbsp;and&nbsp;&nbsp;</span>
-						<span ng-if="model.op == 'gte' || model.op == 'between'">
-							<input type="text" class="form-control" style="width: 140px; display: inline-block;" datepicker-popup="dd MMMM yyyy" ng-model="model.date2" datepicker-options="{'show-weeks': false}" />
+						<span ng-if="model.op == 'between'">
+							<input type="text" class="form-control" style="width: 140px; display: inline-block;"
+							       dp-datetime-popup="DD MMMM YYYY"
+							       ng-model="model.date2"
+									/>
 						</span>
 						<div style="margin-top: 2px; font-size: 11px;">
 							<a href="#" ng-click="model.use_relative = true; $event.preventDefault();">Use relative dates instead &rarr;</a>
 						</div>
 					</div>
 					<div ng-show="model.use_relative">
-						<span ng-if="model.op == 'lte' || model.op == 'between'">
+						<span ng-if="model.op == 'lte' || model.op == 'gte' || model.op == 'between'">
 							<dp-time-with-unit model-type="array" ng-model="model.date1_relative"></dp-time-with-unit> ago
 						</span>
 						<span ng-if="model.op == 'between'">&nbsp;&nbsp;and&nbsp;&nbsp;</span>
-						<span ng-if="model.op == 'gte' || model.op == 'between'">
+						<span ng-if="model.op == 'between'">
 							<dp-time-with-unit model-type="array" ng-model="model.date2_relative"></dp-time-with-unit> ago
 						</span>
 						<div style="margin-top: 2px; font-size: 11px;">

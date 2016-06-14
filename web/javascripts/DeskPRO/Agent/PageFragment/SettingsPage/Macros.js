@@ -33,7 +33,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Macros = new Orb.Class({
 			var url = $(this).data('delete-url');
 			var macroId = $(this).data('macro-id');
 
-			DeskPRO_Window.showConfirm('Are you sure you want to permanantly delete this macros?', function() {
+			DeskPRO_Window.showConfirm('Are you sure you want to permanently delete this macro?', function() {
 				$.ajax({
 					url: url,
 					success: function() {

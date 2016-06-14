@@ -23,7 +23,18 @@ var gulp       = require('gulp'),
 //# Task Runners
 //######################################################################################################################
 
-gulp.task('default', ['coffee', 'less', 'sass', 'cpjs', 'loader']);
+gulp.task('default', ['less', 'sass', 'cpjs', 'loader'], function() {
+    // hacking coffee here to run after all others
+    // because something in the other tasks corrupts
+    // the stream and causes coffee compile to fail
+    // randomly sometimes
+    return deskpro.taskGen.coffeeScript([
+        './app/Admin*/**/*.coffee',
+        './app/Agent*/**/*.coffee',
+        './app/Reports*/**/*.coffee',
+        './app/DeskPRO*/**/*.coffee'
+    ]);
+});
 gulp.task('prod', ['coffee', 'less', 'sass', 'cpjs', 'loader', 'rjs', 'rjs-agent']);
 
 
@@ -40,7 +51,6 @@ deskpro.isWatching = false;
 deskpro.watches = [
   ['./app/Admin*/**/*.coffee', ['coffee-admin']],
   ['./app/Agent*/**/*.coffee', ['coffee-agent']],
-  ['./app/Interface*/**/*.coffee', ['coffee-interface']],
   ['./app/Reports/**/*.coffee', ['coffee-reports']],
   ['./app/DeskPRO/**/*.coffee', ['coffee-deskpro']],
   ['./app/**/Resources/style/*.less', ['less-app']],
@@ -54,7 +64,7 @@ deskpro.watches = [
 //------------------------------
 
 deskpro.util.sourceMapRoot = function (file) {
-  var path = file.path.replace(/\\/g, '/')
+  var path = file.path.replace(/\\/g, '/');
   var rel = path.replace(/^.*?\/web\/app\-build\//, '');
 
   // Counts slashes the relative path to decide how many levels up we need to go
@@ -93,7 +103,7 @@ deskpro.taskGen.coffeeScript = function(glob, target_dir) {
   }
 
   return gulp.src(glob)
-    .pipe(cache('watch', {optimizeMemory: true}))
+    .pipe(gulpif(deskpro.isWatching, cache('watch', {optimizeMemory: true})))
     .pipe(gulpif(deskpro.isWatching, plumber()))
     .pipe(sourcemaps.init())
     .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
@@ -110,6 +120,7 @@ deskpro.taskGen.lessCss = function(glob, target_dir) {
   }
 
   return gulp.src(glob)
+    .pipe(gulpif(deskpro.isWatching, cache('watch', {optimizeMemory: true})))
     .pipe(gulpif(deskpro.isWatching, plumber()))
     .pipe(sourcemaps.init())
     .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
@@ -126,6 +137,7 @@ deskpro.taskGen.sassCss = function(glob, target_dir) {
   }
 
   return gulp.src(glob)
+    .pipe(gulpif(deskpro.isWatching, cache('watch', {optimizeMemory: true})))
     .pipe(gulpif(deskpro.isWatching, plumber()))
     .pipe(sourcemaps.init())
     .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
@@ -167,10 +179,6 @@ gulp.task('coffee-agent', function () {
   return deskpro.taskGen.coffeeScript('./app/Agent*/**/*.coffee');
 });
 
-gulp.task('coffee-interface', function () {
-  return deskpro.taskGen.coffeeScript('./app/Interface*/**/*.coffee');
-});
-
 gulp.task('coffee-reports', function () {
   return deskpro.taskGen.coffeeScript('./app/Reports*/**/*.coffee');
 });
@@ -183,7 +191,6 @@ gulp.task('coffee', ['clean'], function() {
   return deskpro.taskGen.coffeeScript([
     './app/Admin*/**/*.coffee',
     './app/Agent*/**/*.coffee',
-    './app/Interface*/**/*.coffee',
     './app/Reports*/**/*.coffee',
     './app/DeskPRO*/**/*.coffee'
   ]);
@@ -199,7 +206,7 @@ gulp.task('cpjs-all', function() {
   var target_dir = './app-build/';
 
   return gulp.src(glob)
-    .pipe(cache('watch', {optimizeMemory: true}))
+    .pipe(gulpif(deskpro.isWatching, cache('watch', {optimizeMemory: true})))
     .pipe(gulpif(deskpro.isWatching, plumber()))
     .pipe(gulp.dest(target_dir))
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
@@ -211,7 +218,7 @@ gulp.task('cpjs', ['clean'], function() {
   var target_dir = './app-build/';
 
   return gulp.src(glob)
-    .pipe(cache('watch', {optimizeMemory: true}))
+      .pipe(gulpif(deskpro.isWatching, cache('watch', {optimizeMemory: true})))
     .pipe(gulpif(deskpro.isWatching, plumber()))
     .pipe(gulp.dest(target_dir))
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
@@ -303,7 +310,7 @@ gulp.task('rjs', ['coffee', 'loader'], function () {
 
 gulp.task('rjs-agent', ['coffee', 'loader'], function () {
   var loadFiles = [
-    './app/Agent/AgentLoad.js',
+    './app/Agent/AgentLoad.js'
   ];
 
   // Hack for agent interface
@@ -334,6 +341,7 @@ gulp.task('rjs-agent', ['coffee', 'loader'], function () {
 //------------------------------
 
 gulp.task('precache', function () {
+  deskpro.isWatching = true;
   var globs = [];
   deskpro.watches.forEach(function (w) {
     globs.push(w[0]);

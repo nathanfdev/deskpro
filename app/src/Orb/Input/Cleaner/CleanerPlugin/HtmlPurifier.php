@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @category Input
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Input
+ */
 namespace Orb\Input\Cleaner\CleanerPlugin;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -39,7 +38,7 @@ use Orb\Input\Cleaner\Cleaner;
 use Orb\Util\Strings;
 
 /**
- * Uses HTMLPurifier to clean HTML input
+ * Uses HTMLPurifier to clean HTML input.
  */
 class HtmlPurifier implements CleanerPlugin
 {
@@ -130,12 +129,12 @@ class HtmlPurifier implements CleanerPlugin
             }
 
             // Set a HTML 4.01 transitional doctype
-            $value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n" . $value;
+            $value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">'."\n".$value;
 
             $m = null;
             if (preg_match('#<head[^>]*>(.*?)</head>#is', $value, $m)) {
                 $value = str_replace($m[0], '', $value);
-                $value = str_replace('<html>', '<html>' . $m[0], $value);
+                $value = str_replace('<html>', '<html>'.$m[0], $value);
             } else {
                 $value = str_replace('<html>', '<html><head></head>', $value);
             }
@@ -164,7 +163,7 @@ class HtmlPurifier implements CleanerPlugin
             // but we need a full document like this so that DOMDocument "cleans" bad HTML properly.
             // E.g., a malformed meta tag could result in a whole paragraph erroneously being moved
             // under a <head> tag if we dont explicitly put them all under body
-            $value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n<html><head></head><body>" . $value . '</body></html>';
+            $value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">'."\n<html><head></head><body>".$value.'</body></html>';
 
             // Replace Wingdings characters with UTF-8 characters
             $map = array(
@@ -189,6 +188,8 @@ class HtmlPurifier implements CleanerPlugin
                 }
             }
 
+            $value = preg_replace('#<div[^>]*display\s*:\s*inline[^>]*>(.*?)</div>#', '<span>\\1</span>', $value);
+
             // Email do a bunch of processing with DOMDocument which messes with HTML Entities
             // There are bugs with different versions of libxml where entites are not properly
             // decoded, or the DOMDocument->substituteEntities not being honoured etc.
@@ -209,7 +210,7 @@ class HtmlPurifier implements CleanerPlugin
         require_once DP_ROOT.'/vendor-src/htmlpurifier/HTMLPurifier.standalone.php';
 
         $purifier = new \HTMLPurifier();
-        $config = $this->getConfigForType($type);
+        $config   = $this->getConfigForType($type);
 
         if ($type == 'html_email') {
             // Cut to the body, also cuts out multiple xml decls
@@ -235,7 +236,8 @@ class HtmlPurifier implements CleanerPlugin
     }
 
     /**
-     * @param  string               $type
+     * @param string $type
+     *
      * @return \HTMLPurifier_Config
      */
     public function getConfigForType($type)
@@ -246,7 +248,7 @@ class HtmlPurifier implements CleanerPlugin
 
         switch ($type) {
             case 'html':
-                $config->set('HTML.Allowed', "
+                $config->set('HTML.Allowed', '
                     *[style|title|class|id],
                     a[rel|rev|name|href|target|title|class]
                     strong,b,em,i,strike,u,
@@ -262,7 +264,7 @@ class HtmlPurifier implements CleanerPlugin
                     dfn,kbd,
                     q[cite],small,
                     tt,var,big
-                ");
+                ');
                 $config->set('HTML.Doctype', 'HTML 4.01 Transitional');
                 $config->set('HTML.TidyLevel', 'medium');
                 $config->set('AutoFormat.RemoveEmpty', false);
@@ -272,7 +274,7 @@ class HtmlPurifier implements CleanerPlugin
                 break;
 
             case 'html_core':
-                $config->set('HTML.Allowed', '*[style],em,i,strong,b,u,strike,a[href],img[src|class|title|alt],ul,li,dd,dt,dl,ol,table,thead,tbody,tfoot,tr,td[colspan|rowspan],th,pre,div[align|class],p[align|class],blockquote,span[class],font[color|face|size],br,hr');
+                $config->set('HTML.Allowed', '*[style],em,i,strong,b,u,strike,a[href|target],img[src|class|title|alt],ul,li,dd,dt,dl,ol,table[border|cellspacing|cellpadding|align|summary],thead,tbody,tfoot,tr,td[colspan|rowspan],th,pre,div[align|class],p[align|class],blockquote,span[class],font[color|face|size],br,hr');
                 $config->set('AutoFormat.AutoParagraph', true);
                 $config->set('AutoFormat.Linkify', true);
                 $config->set('AutoFormat.RemoveSpansWithoutAttributes', true);
@@ -280,7 +282,7 @@ class HtmlPurifier implements CleanerPlugin
                 break;
 
             case 'simple_html':
-                $config->set('HTML.Allowed', 'em,i,strong,b,u,strike,a[href],img[src],ul,li,dd,dt,dl,ol,p[align],span,br');
+                $config->set('HTML.Allowed', 'em,i,strong,b,u,strike,a[href|target],img[src],ul,li,dd,dt,dl,ol,p[align],span,br');
                 $config->set('AutoFormat.AutoParagraph', true);
                 $config->set('AutoFormat.Linkify', true);
                 $config->set('URI.DisableExternalResources', true);
@@ -290,7 +292,7 @@ class HtmlPurifier implements CleanerPlugin
                 break;
 
             case 'html_email':
-                $config->set('HTML.Allowed', "
+                $config->set('HTML.Allowed', '
                     *[style|title|class|id],
                     a[rel|rev|name|href|target|title|class]
                     strong,b,em,i,strike,u,
@@ -306,7 +308,7 @@ class HtmlPurifier implements CleanerPlugin
                     dfn,kbd,
                     q[cite],small,
                     tt,var,big
-                ");
+                ');
                 $config->set('Attr.AllowedClasses', 'MsoNormal');
                 $config->set('URI.DisableExternalResources', true);
                 $config->set('AutoFormat.RemoveEmpty', false);

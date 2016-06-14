@@ -1,41 +1,39 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\People\PermissionUtil;
 
 class CleanupAlways extends AbstractJob
 {
@@ -65,32 +63,33 @@ class CleanupAlways extends AbstractJob
         #------------------------------
 
         // client messages are nearly instant, so this timesnip is very low
-        $datetime = date('Y-m-d H:i:s', time() - 120);
+        $datetime = date('Y-m-d H:i:s', time() - 1800);
 
         // Long-lived channels are still deleted after 14 days
         $datetime2 = date('Y-m-d H:i:s', time() - 1209600);
 
         $long_lived_channels = array(
-            'agent_chat.new-message'
+            'agent_chat.new-message',
         );
 
-        $ids = App::getDb()->fetchAllCol("
+        // We fetch first, then delete in small batches to reduce locking
+        $ids = App::getDb()->fetchAllCol('
             SELECT id FROM client_messages
             WHERE (
                 date_created < ? AND channel NOT IN (?)
             ) OR (
                 date_created < ? AND channel IN (?)
             )
-        ",
+        ',
             array($datetime, $long_lived_channels, $datetime2, $long_lived_channels),
             array(\PDO::PARAM_STR, Connection::PARAM_STR_ARRAY, \PDO::PARAM_STR, Connection::PARAM_STR_ARRAY));
         if ($ids) {
             $batch_ids = array_chunk($ids, 50, false);
             foreach ($batch_ids as $ids) {
-                $num = App::getDb()->executeUpdate("
+                $num = App::getDb()->executeUpdate('
                     DELETE FROM client_messages
                     WHERE id IN (?)
-                ", array($ids), array(Connection::PARAM_INT_ARRAY));
+                ', array($ids), array(Connection::PARAM_INT_ARRAY));
 
                 if ($num) {
                     $this->logStatus("Cleaned up $num old client messages");
@@ -99,10 +98,29 @@ class CleanupAlways extends AbstractJob
         }
 
         #------------------------------
+        # Optimise perms
+        #------------------------------
+
+        if (App::getSetting('trigger.optimise_perms')) {
+            $db = App::getDb();
+            App::getDb()->executeUpdate("REPLACE INTO `settings` (`name`, `value`) VALUES ('trigger.optimise_perms', '0')");
+
+            $ag_perms_cache     = $db->fetchAllGrouped('SELECT usergroup_id, name FROM permissions', array(), 'usergroup_id', null, 'name');
+            $ag_dep_perms_cache = array(
+                'full'   => $db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'full'", array(), 'usergroup_id', null, 'department_id'),
+                'assign' => $db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'assign'", array(), 'usergroup_id', null, 'department_id'),
+            );
+
+            foreach (App::$container->getAgentData()->getAgents() as $a) {
+                PermissionUtil::optimizePermissions($a, $ag_perms_cache, $ag_dep_perms_cache);
+            }
+        }
+
+        #------------------------------
         # Try to delete old update status file
         #------------------------------
 
-        if (file_exists(DP_WEB_ROOT.'/auto-update-status.php') && App::getSetting('core.last_auto_upgrade_time') < time()-180) {
+        if (file_exists(DP_WEB_ROOT.'/auto-update-status.php') && App::getSetting('core.last_auto_upgrade_time') < time() - 180) {
             @unlink(DP_WEB_ROOT.'/auto-update-status.php');
         }
     }

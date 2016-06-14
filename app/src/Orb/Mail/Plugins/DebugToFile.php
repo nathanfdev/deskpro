@@ -1,42 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @subpackage Mail
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ */
 namespace Orb\Mail\Plugins;
 
-
 /**
- * Completely turns off email sending
+ * Completely turns off email sending.
  */
 class DebugToFile implements \Swift_Events_SendListener
 {
@@ -49,13 +45,12 @@ class DebugToFile implements \Swift_Events_SendListener
 
     public function __construct($filepath, $cancel_send = false)
     {
-        $this->filepath = rtrim($filepath, "/\\");
+        $this->filepath    = rtrim($filepath, '/\\');
         $this->cancel_send = $cancel_send;
     }
 
     public function sendPerformed(\Swift_Events_SendEvent $evt)
     {
-
     }
 
     public function beforeSendPerformed(\Swift_Events_SendEvent $evt)
@@ -65,10 +60,10 @@ class DebugToFile implements \Swift_Events_SendListener
         }
 
         $message = $evt->getMessage();
-        $name = time() . mt_rand(1000,9999) . '_' . preg_replace('#[^a-zA-Z0-9]#', '-', substr($message->getSubject(), 0, 50));
-        $name = preg_replace('#-{,2}#', '-', $name);
+        $name    = time().mt_rand(1000, 9999).'_'.preg_replace('#[^a-zA-Z0-9]#', '-', substr($message->getSubject(), 0, 50));
+        $name    = preg_replace('#-{,2}#', '-', $name);
 
-        $path = $this->filepath . DIRECTORY_SEPARATOR . $name . '.txt';
+        $path = $this->filepath.DIRECTORY_SEPARATOR.$name.'.txt';
 
         file_put_contents($path, $message->toString());
 
@@ -96,14 +91,14 @@ class DebugToFile implements \Swift_Events_SendListener
                 $domain = DPC_SITE_DOMAIN;
             }
 
-            file_put_contents($this->info_file_path . DIRECTORY_SEPARATOR . $name . '.json', json_encode(array(
+            file_put_contents($this->info_file_path.DIRECTORY_SEPARATOR.$name.'.json', json_encode(array(
                 'date'       => date('Y-m-d H:i:s'),
                 'tos'        => $tos,
                 'ccs'        => $ccs,
                 'from'       => $from,
                 'subject'    => $message->getSubject(),
                 'domain'     => $domain,
-                'store_path' => $path
+                'store_path' => $path,
             )));
         }
     }

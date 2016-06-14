@@ -72,60 +72,70 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
       type      = options.type
       prop_name = options.propName
       operators = @getOperators(options)
-
       me = @
-      {
-        getTemplate: -> return me.dpTemplateManager.get(me.remoteTemplate)
 
+      result  =
+        getTemplate: -> me.dpTemplateManager.get(me.remoteTemplate)
         getData: -> { operators: operators, options: options }
-
         getDataFormatter: ->
-          {
-            getViewValue: (value = {}, data) ->
+          getViewValue: (value = {}, data) ->
+            if value.op
+              if value.op == 'is' and operators.indexOf('is') == -1
+                value.op = 'contains'
+              else if value.op == 'not' and operators.indexOf('not') == -1
+                value.op = 'notcontains'
 
-              if value.op
-                if value.op == 'is' and operators.indexOf('is') == -1
-                  value.op = 'contains'
-                else if value.op == 'not' and operators.indexOf('not') == -1
-                  value.op = 'notcontains'
+            inputOptions =
+              dropdownAutoWidth: true
+              minimumInputLength: 1
+              multiple: options.isMulti
+              initSelection: (item) -> item
+              ajax:
+                data: (term, page) -> { query: term }
+                quietMillis: 200
+                transport: (query) -> me.Api.sendGet(options.url, query.data).then query.success
+                results: (data, page) -> { results: data.data }
 
-              inputOptions =
-                dropdownAutoWidth: true
-                minimumInputLength: 1
-                initSelection: (item) -> item[prop_name]
-                ajax:
-                  data: (term, page) -> { query: term }
-                  quietMillis: 200
-                  transport: (query) -> me.Api.sendGet(options.url, query.data).then query.success
-                  results: (data, page) -> { results: data.data }
+            $.extend true, inputOptions, options.inputOptions || {}
+            value.options = value.options || {}
 
-              $.extend true, inputOptions, options.inputOptions || {}
+            ret =
+              valueString: value.options[prop_name] || ''
+              op: value.op || _.first(data.operators)
+              inputOptions: inputOptions
 
-              if !value.options?[prop_name]
-                info = null
+            if options.isMulti || value.options[prop_name]?.map?
+              ret.value = []
+              value.options[prop_name]?.map? && value.options[prop_name]?.map (id) ->
+                if options.hardcodedSkipLoadById
+                  ret.value.push options.map id
+                else
+                  me.Api.sendGet(options.url + '/' + id).then (res) ->
+                    return ret.value.push res.data if !options.map
+                    ret.value.push options.map res.data
+            else
+              return ret if !value.options[prop_name]
+              if options.hardcodedSkipLoadById
+                ret.value = options.map value.options[prop_name]
               else
-                info = value.options?.info || {}
-                if !info[prop_name] then info[prop_name] = value.options[prop_name]
+                me.Api.sendGet(options.url + '/' + value.options[prop_name]).then (res) ->
+                  return res.data if !options.map
+                  ret.value = options.map res.data
+            ret
 
-              return {
-                value: info
-                valueString: value.options?[prop_name] || ''
-                op: value.op || _.first(data.operators)
-                inputOptions: inputOptions
-              }
+          getValue: (model = {}, data) ->
+            value = {}
+            value.type = type
+            value.op = model.op
+            value.options = {}
 
-            getValue: (model = {}, data) ->
-              value = {}
-              value.type = type
-              value.op = model.op
-              value.options = {}
-
-              if model.op == 'is' || model.op == 'not'
+            if model.op == 'is' || model.op == 'not'
+              if options.isMulti || model.value?.map?
+                value.options[prop_name] = model.value?.map (item) -> item[prop_name]
+              else
                 value.options[prop_name] = model.value?[prop_name] || ''
-                value.options.info = model.value
-              else
-                value.options[prop_name] = model.valueString
-                value.options.info = model.valueString
-              return value
-          }
-      }
+            else
+              value.options[prop_name] = model.valueString
+              value.options.info = model.valueString
+            value
+

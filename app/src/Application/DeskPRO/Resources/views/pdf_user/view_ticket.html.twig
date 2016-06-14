@@ -95,7 +95,7 @@ body {
     </tr>
     <tr><td colspan="2"><hr /></td></tr>
 
-    <tr><td>{{ message.message_html|raw }}</td></tr>
+    <tr><td>{{ message.getMessageHtml(false)|raw }}</td></tr>
 
 
     {% if message_to_attach[message.id] %}

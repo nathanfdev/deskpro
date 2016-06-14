@@ -269,12 +269,12 @@
 			<div class="dp-more-link">
 				<button class="dp-btn dp-btn-success">{{ phrase('user.portal.search_more-results')}} {{ language_arrow('right') }}</button>
 			</div>
-			<h4>{{ phrase('user.portal.search.no_matches') }}</h4>
+			<h4>{{ phrase('user.portal.search-no_matches') }}</h4>
 			<ul>
-				<li class="ticket"><a href="{{ path('user_tickets_new') }}">{{ phrase('user.portal.search.new-ticket') }}</a></li>
-				<li class="feedback"><a href="{{ path('user_feedback_new') }}">{{ phrase('user.portal.search.new-feedback') }}</a></li>
+				<li class="ticket"><a href="{{ path('user_tickets_new') }}">{{ phrase('user.portal.search-new-ticket') }}</a></li>
+				<li class="feedback"><a href="{{ path('user_feedback_new') }}">{{ phrase('user.portal.search-new-feedback') }}</a></li>
 				{% if not app.getSetting('user.disable_chat_element') and not app.admin_portal_controls and app.user.hasPerm('chat.use') %}
-					<li class="chat no-omni-trigger"><a href="#" class="dp-chat-trigger">{{ phrase('user.portal.search.new-chat') }}</a></li>
+					<li class="chat no-omni-trigger"><a href="#" class="dp-chat-trigger">{{ phrase('user.portal.search-new-chat') }}</a></li>
 				{% endif %}
 			</ul>
 		</div>
@@ -321,6 +321,8 @@
 		DpChatWidget_Options.resumePhrase = {{ phrase('user.chat.window_resume-button')|json_encode|raw }};
 		DpChatWidget_Options.offlinePhrase = {{ phrase('user.chat.window_offline-button')|json_encode|raw }};
 		DpChatWidget_Options.openInWindowPhrase = {{ phrase('user.chat.window_open-new')|json_encode|raw }};
+
+		{% if app.session %}DpChatWidget_Options.languageId = {{app.session.language.id}};{% endif %}
 
 		(function() {
 			var scr = document.createElement('script');

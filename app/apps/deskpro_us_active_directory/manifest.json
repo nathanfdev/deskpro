@@ -98,6 +98,44 @@
 				"options_variable": "permission_groups",
 				"is_required": true
 			}
-		}
+		},
+		{
+		  "name": "auto_user_permission_group",
+		  "usersource_display": "user",
+		  "type": "dynamic_choice",
+		  "options_variable": "permission_groups_user",
+		  "label": "Grant Usergroup",
+		  "description": "Add this usergroup to users who login with this usersource",
+		  "is_required": true
+		},
+		{
+		  "name": "sync_enabled",
+		  "type": "checkbox",
+		  "label": "Enable Auto Sync",
+		  "checkbox_label": "Routinely sync user information from this usersource to DeskPRO",
+		  "default_value": false
+		},
+		{
+		  "name": "disable_ldap_paging",
+		  "type": "checkbox",
+		  "label": "Disable LDAP Paging",
+		  "checkbox_label": "Disable LDAP Paging",
+		  "description": "By default, our sync system uses LDAP Paging to retrieve results. Paging is recommended for Active Directory sync. Check this box if you want to disable paging.",
+		  "default_value": false
+		},
+		{
+		  "name": "ldap_per_page",
+		  "type": "text",
+		  "label": "LDAP Size Limit",
+		  "description": "By default, Active Directory has a size limit of 1000. If your server has a smaller limit, please enter it here.",
+		  "default_value": 1000
+		},
+	  {
+		"name": "raw_info_filter",
+		"type": "text",
+		"label": "Filter",
+		"description": "You can filter based on info provided by the usersource. <a href='https://support.deskpro.com/kb/articles/477' target='_blank'>Learn about this feature</a>",
+		"is_required": false
+	  }
 	]
 }

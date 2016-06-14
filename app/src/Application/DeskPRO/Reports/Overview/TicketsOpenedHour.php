@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
@@ -79,7 +76,6 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
         $this->date_end   = $date_end;
     }
 
-
     /**
      * @param \Application\DeskPRO\Entity\Person $person
      */
@@ -88,16 +84,16 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
         $this->person_context = $person;
     }
 
-
     /**
-     * @return array|mixed
      * @throws \InvalidArgumentException
+     *
+     * @return array|mixed
      */
     public function getTitles()
     {
         switch ($this->date_group) {
             case 'hour':
-                $titles = array_combine(range(1, 23), range(1,23));
+                $titles      = array_combine(range(1, 23), range(1, 23));
                 $titles['0'] = 0;
 
                 foreach ($titles as &$x) {
@@ -106,9 +102,9 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
                     } elseif ($x == 12) {
                         $x = '12pm';
                     } elseif ($x < 12) {
-                        $x = $x . 'am';
+                        $x = $x.'am';
                     } else {
-                        $x = ($x-12) . 'pm';
+                        $x = ($x - 12).'pm';
                     }
                 }
 
@@ -128,10 +124,10 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
                 break;
 
             case 'day':
-                $days = Dates::daysInMonth($this->date_start->format('n'), $this->date_start->format('Y'));
+                $days   = Dates::daysInMonth($this->date_start->format('n'), $this->date_start->format('Y'));
                 $titles = array();
-                foreach (range(1,$days) as $d) {
-                    $titles[$d] = $d . Numbers::ordinalSuffix($d);
+                foreach (range(1, $days) as $d) {
+                    $titles[$d] = $d.Numbers::ordinalSuffix($d);
                 }
 
                 break;
@@ -160,10 +156,10 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
         return $titles;
     }
 
-
     /**
-     * @return array|\int[]|mixed|null
      * @throws \InvalidArgumentException
+     *
+     * @return array|\int[]|mixed|null
      */
     public function getValues()
     {

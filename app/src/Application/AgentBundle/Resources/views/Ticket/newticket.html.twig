@@ -2,11 +2,12 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTicket';
 pageMeta.title = '{{ phrase('agent.general.new_ticket') }}';
 pageMeta.ticket_id = 0;
+pageMeta.agentMap = {{ agent_map|json_encode|raw }};
 
 pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'ticket'}) }}';
 pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 
-pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.billing_auto_timer_new') %}true{% else %}false{% endif %};
+pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.enable_timelog') and app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
@@ -23,6 +24,7 @@ pageMeta.baseId = '{{ baseId }}';
 <input type="hidden" name="for_chat_id" id="{{baseId}}_for_chat_id" value="" />
 <input type="hidden" name="parent_ticket_id" id="{{baseId}}_parent_ticket_id" value="{{ ticket.id|default('0') }}" />
 <input type="hidden" id="{{baseId}}_action" name="options[action]" value="" />
+<input type="hidden" id="{{baseId}}_snippet_ids" name="options[snippet_ids]" value="" />
 
 <div class="pending-info comment" style="display: none;">
 	<i class="reset"></i>
@@ -97,9 +99,11 @@ pageMeta.baseId = '{{ baseId }}';
 						<ul class="results-list">
 
 						</ul>
+						{% if app.user.hasPerm('agent_people.create') %}
 						<footer>
 							<span class="create-user">{{ phrase('agent.general.create_a_new_person') }}</span>
 						</footer>
+						{% endif %}
 					</section>
 				</div>
 			</div>
@@ -171,6 +175,37 @@ pageMeta.baseId = '{{ baseId }}';
 					</td>
 				</tbody>
 
+				{% if app.getSetting('core.problems.enabled') and app.user.hasPerm('agent_problems.view') and app.user.PermissionsManager.get('TicketChecker').canAssociateProblem(ticket) %}
+					<tbody>
+					<th>
+						{{ phrase('agent.problems.problem') }}
+					</th>
+					<td>
+
+						{% if app.user.hasPerm('agent_problems.create') %}
+							{% set open_problems = [{id: -1, title: phrase('agent.problems.create_problem')}]|merge(open_problems) %}
+						{% endif %}
+
+						<div>
+							{% include 'AgentBundle:Common:select-standard.html.twig' with {
+							'name': 'problem_id',
+							'add_classname': 'problem_id',
+							'add_attr': '',
+							'with_blank': 1,
+							'blank_title': 'None',
+							'categories': open_problems,
+							'id': baseId ~ '_select_problem'
+							} %}
+
+							{% if app.user.hasPerm('agent_problems.create') %}
+								<input id="{{ baseId }}_problem_title" type="text" name="problem_title"
+									   style="display: none;" placeholder="{{ phrase('agent.problems.problem') }}"/>
+							{% endif %}
+						</div>
+					</td>
+					</tbody>
+				{% endif %}
+
 				{% if app.getSetting('core.use_ticket_category') %}
 					<tbody class="col fieldprop ticket-field item-on category inline-field" style="display: none;">
 						<th>{{ phrase('agent.general.category') }}</th>
@@ -236,18 +271,25 @@ pageMeta.baseId = '{{ baseId }}';
 					</tbody>
 				{% endif %}
 
+                {# todo why tbody included into loop? #}
 				{% if custom_fields %}
 					{% for f in custom_fields if f.field_def.getTypeName() != 'hidden' %}
 						<tbody class="col fieldprop ticket-field item-on ticket-field-{{f.field_def.id}} item-on-{{f.field_def.id}} inline-field" style="clear:both;display: none;">
-							<th>{{f.title}}</th>
+						<tr>
+							<th>{{ f.title }}</th>
 							<td>
 								{{ render_custom_field_form(f) }}
 							</td>
+						</tr>
 						</tbody>
 					{% endfor %}
 				{% endif %}
 
-                {% include 'AgentBundle:Ticket:newticket-custom-fields-row.html.twig' with {new_custom_fields: new_custom_fields} %}
+                {% include 'AgentBundle:Ticket:newticket-custom-fields-row.html.twig' with {
+                    new_custom_fields: new_custom_fields,
+                    custom_person_fields: custom_person_fields,
+                    custom_org_fields: custom_org_fields
+                } %}
 
 			</table>
 		</article>
@@ -308,7 +350,7 @@ pageMeta.baseId = '{{ baseId }}';
 										<label><input type="radio" name="{{ baseId }}_billing_type" value="time" checked="checked" />{{ phrase('agent.tickets.billing_time') }}:</label>
 									{% endif %}
 									<span id="{{ baseId }}_billing_inputs" class="billing-form-time">
-						<input type="text" id="{{ baseId }}_billing_hours" name="hours" size="2" placeholder="H" />:<input type="text" id="{{ baseId }}_billing_minutes" name="{{ phrase('agent.general.minutes') }}" size="2" placeholder="M" maxlength="2" />:<input type="text" id="{{ baseId }}_billing_seconds" name="{{ phrase('agent.general.seconds') }}" size="2" placeholder="S" maxlength="2" />
+						<input type="text" id="{{ baseId }}_billing_hours" name="hours" size="2" placeholder="H" />:<input type="text" id="{{ baseId }}_billing_minutes" name="{{ phrase('agent.general.minutes') }}" size="2" placeholder="M" maxlength="2" /><span class="billing-seconds-input">:<input type="text" id="{{ baseId }}_billing_seconds" name="{{ phrase('agent.general.seconds') }}" size="2" placeholder="S" maxlength="2" /></span>
 					</span>
 					<span class="billing-form-buttons">
 						<button class="clean-white" id="{{ baseId }}_billing_start">{{ phrase('agent.general.start') }}</button>
@@ -322,10 +364,16 @@ pageMeta.baseId = '{{ baseId }}';
 						<input type="hidden" id="{{ baseId }}_billing_id_hidden" name="billing_id" value="" />
 					</td>
 				</tr>
+				{% for f in billing_fields %}
 				<tr>
-					<th>{{ phrase('agent.general.comment') }}</th>
-					<td><input type="text" id="{{ baseId }}_billing_comment" name="billing_comment" style="width: 98%" maxlength="255" /></td>
+					<th>
+						{{ f.title }}
+					</th>
+					<td>
+						{{ render_custom_field_form(f) }}
+					</td>
 				</tr>
+				{% endfor %}
 			</table>
 		</article>
 	</section>
@@ -337,7 +385,16 @@ pageMeta.baseId = '{{ baseId }}';
 		<strong>{{ phrase('agent.tickets.sending_your_message') }}</strong>
 	</div>
 	<header>
-		<h4>{{ phrase('agent.general.ticket') }}</h4>
+        <nav>
+            <ul id="{{ baseId }}_message_toggle">
+                <li class="on">
+                    {{ phrase('agent.general.message') }}
+                </li>
+                <li data-is-note="1">
+                    {{ phrase('agent.general.note') }}
+                </li>
+            </ul>
+        </nav>
 	</header>
 	<section class="ticketreply">
 		<article>
@@ -452,14 +509,20 @@ pageMeta.baseId = '{{ baseId }}';
 						</a>
 						<a class="dp-btn dp-btn-primary dp-dropdown-toggle status-menu-trigger"><span class="dp-caret dp-caret-up"></span></a>
 					</div>
+					<a id="discard-draft-btn" class="dp-btn dp-btn-primary" type="button" style="display: none;">
+						<span>
+							{{ phrase('agent.tickets.discard_draft') }}
+						</span>
+					</a>
 				</div>
+
 				<div id="{{ baseId }}_send_loading" style="display: none;">
 					<span class="flat-spinner"></span>
 				</div>
 			</td><td valign="middle" style="vertical-align: middle;">
 				<div style="padding-top: 1px; line-height: 100%; margin-left: 10px; float:left;">
 					<label class="hide-note">
-						<input type="checkbox" name="options[notify_user]" {% if app.getSetting('core_tickets.new_default_send_user_notify') or ticket.id %}checked="checked"{% endif %} />
+						<input type="checkbox" name="options[notify_user]" {% if app.getSetting('core_tickets.new_default_send_user_notify') %}checked="checked"{% endif %} />
 						<span class="opt-label-text">
 							{{ phrase('agent.general.email_user') }}
 							<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.email_user_newticket_info') }}"></span>
@@ -483,20 +546,44 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="dp-menu replybox" id="{{ baseId }}_status_menu" style="min-width: 225px;">
 	<section>
 		<div class="dp-menu-area small">
-			<input type="text" class="label-input macro-filter" placeholder="{{ phrase('agent.tickets.apply_a_macro') }}" />
+			<input type="text" class="label-input macro-filter" placeholder="Filter" />
 			<ul class="macro-list">
-				{% for macro in app.user.getHelper('Agent').getMacros() %}
-					<li class="res-ticketmacro-{{ macro.id }}" data-type="macro:{{ macro.id }}" data-label="{{ phrase('agent.tickets.send_newticket_and_apply_x', {name: macro.title}) }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: '0', macro_id: macro.id, macro_reply_context: 1 }) }}">
-						<div class="on-icon"><i class="icon-ok"></i></div>
-						<span class="macro-title">{{ macro.title }}</span>
-					</li>
+				{% import _self as metpl %}
+				{% macro macroRow(item) %}
+					{% import _self as metpl %}
+					{% if item.type == 'item' %}
+						{% set macro = item.item %}
+						<li class="res-ticketmacro-{{ macro.id }}" data-type="macro:{{ macro.id }}" data-label="{{ phrase('agent.tickets.send_newticket_and_apply_x', {name: macro.title}) }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: '0', macro_id: macro.id, macro_reply_context: 1 }) }}">
+							<div class="on-icon"><i class="icon-ok"></i></div>
+							<span class="macro-title">{{ item.title }}</span>
+						</li>
+					{% else %}
+						<li class="coll">
+							<span class="macro-title"><i class="fa fa-caret-right" style="float:right; position:relative;top:4px;"></i>{{ item.title }}</span>
+							<div class="dp-menu replybox sub-menu" style="min-width: 225px;">
+								<section>
+									<div class="dp-menu-area small">
+										<input type="text" class="label-input macro-filter" placeholder="{{ phrase('agent.tickets.reply_and_apply_macro') }}" />
+										<ul class="macro-list">
+											{% for sub_item in item.items %}
+												{{ metpl.macroRow(sub_item) }}
+											{% endfor %}
+										</ul>
+									</div>
+								</section>
+							</div>
+						</li>
+					{% endif %}
+				{% endmacro %}
+				{% for item in app.user.getHelper('Agent').getMacrosStructured() %}
+					{{ metpl.macroRow(item) }}
 				{% endfor %}
 			</ul>
 		</div>
 	</section>
 	<section>
 		<div class="dp-menu-area dp-menu-area-primary">
-			<label>{{ phrase('agent.tickets.newticket_and_set_status') }}</label>
+			<label>{{ phrase('agent.tickets.reply_and_set_status') }}</label>
 			<ul>
 				<li data-type="awaiting_user" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_awaiting_user')}) }}">
 					<div class="on-icon"><i class="icon-ok"></i></div>

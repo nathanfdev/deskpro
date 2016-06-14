@@ -1,9 +1,37 @@
-<?php return array(
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
     'agent_teams' => array(
         'fields' => array('name', 'members'),
     ),
     'api_keys' => array(
-        'fields' => array('code', 'note', 'person')
+        'fields' => array('code', 'note', 'person'),
     ),
     // @TODO - need to return to this, should work, for now throws {"error_code":"http_error.500","error_message":"Method `getid` is undefined"}
     /*'ban_emails' => array(
@@ -13,31 +41,31 @@
         'fields' => array('banned_ip')
     ),*/
     'custom_def_ticket' => array(
-        'fields' => array('title', 'description', 'handler_class', 'options', 'is_user_enabled', 'is_enabled', 'default_value', 'is_agent_field')
+        'fields' => array('title', 'description', 'handler_class', 'options', 'is_user_enabled', 'is_enabled', 'default_value', 'is_agent_field'),
     ),
     'departments' => array(
-        'fields' => array('title', 'user_title', 'parent', 'display_order', 'email_gateway')
+        'fields' => array('title', 'user_title', 'parent', 'display_order', 'email_gateway'),
     ),
     'department_permissions' => array(
-        'fields'  => array('app', 'name', 'value', 'usergroup', 'person'),
+        'fields'         => array('app', 'name', 'value', 'usergroup', 'person'),
         'save_as_change' => array(
             'object_field_id' => 'department',
-            'as_field_id' => 'permissions',
-            'render_value' => function ($obj, $op) {
+            'as_field_id'     => 'permissions',
+            'render_value'    => function ($obj, $op) {
                 $op_word = $op == 'create' ? 'ADD: ' : 'REMOVE: ';
                 if ($obj->person) {
                     return "$op_word{$obj->name} for people@{$obj->person->getId()} -- {$obj->person->getDisplayContact()}";
                 } else {
                     return "$op_word{$obj->name} for usergroups@{$obj->usergroup->getId()} -- {$obj->usergroup->title}";
                 }
-            }
+            },
         ),
     ),
     'email_gateways' => array(
-        'fields' => array('department', 'connection_type', 'connection_options', 'is_enabled')
+        'fields' => array('department', 'connection_type', 'connection_options', 'is_enabled'),
     ),
     'email_gateway_addresses' => array(
-        'fields' => array('match_pattern'),
+        'fields'         => array('match_pattern'),
         'save_as_change' => array(
             'object_field_id' => 'gateway',
             'as_field_id'     => 'email_address',
@@ -45,8 +73,8 @@
                 $op_word = $op == 'create' ? 'ADD: ' : 'REMOVE: ';
 
                 return "$op_word{$obj->match_pattern}";
-            }
-        )
+            },
+        ),
     ),
     'email_transports' => array(
         'fields' => array('match_pattern', 'transport_type', 'transport_options'),
@@ -58,7 +86,7 @@
         'fields' => array('title'),
     ),
     'permissions' => array(
-        'fields'  => array('usergroup', 'person', 'name', 'value'),
+        'fields'         => array('usergroup', 'person', 'name', 'value'),
         'save_as_change' => array(
             'object_field_id' => function ($obj) {
                 if ($obj->usergroup) {
@@ -67,7 +95,7 @@
                     return $obj->person;
                 }
             },
-            'as_field_id' => 'permissions',
+            'as_field_id'  => 'permissions',
             'render_value' => function ($obj, $op) {
                 $op_word = $op == 'create' ? 'ADD: ' : 'REMOVE: ';
                 if ($obj->person) {
@@ -75,21 +103,21 @@
                 } else {
                     return "$op_word{$obj->name}";
                 }
-            }
+            },
         ),
     ),
     'people' => array(
-        'fields' => array('is_agent', 'was_agent', 'can_admin', 'can_billing', 'can_reports', 'is_deleted', 'is_disabled', 'name', 'first_name', 'last_name', 'password'),
+        'fields'       => array('is_agent', 'was_agent', 'can_admin', 'can_billing', 'can_reports', 'is_deleted', 'is_disabled', 'name', 'first_name', 'last_name', 'password'),
         'do_log_check' => function ($obj) {
             if ($obj['is_agent'] || $obj['was_agent']) {
                 return true;
             }
 
             return false;
-        }
+        },
     ),
     'people_emails' => array(
-        'fields' => array('email', 'is_validated'),
+        'fields'         => array('email', 'is_validated'),
         'save_as_change' => array(
             'object_field_id' => 'person',
             'as_field_id'     => 'emails',
@@ -97,24 +125,24 @@
                 $op_word = $op == 'create' ? 'ADD: ' : 'REMOVE: ';
 
                 return "$op_word{$obj->email}";
-            }
-        )
+            },
+        ),
     ),
     'phrasesxxx' => array(
-        'fields' => array('language', 'name', 'phrase'),
-        'save_as_change'      => array(
+        'fields'         => array('language', 'name', 'phrase'),
+        'save_as_change' => array(
             'object_field_id' => 'language',
             'as_field_id'     => 'phrase',
             'render_value'    => function ($obj, $op) {
                 return "{$obj->name} = {$obj->phrase}";
-            }
-        )
+            },
+        ),
     ),
     'products' => array(
-        'fields' => array('title', 'parent', 'display_order')
+        'fields' => array('title', 'parent', 'display_order'),
     ),
     'settings' => array(
-        'fields' => array('name', 'value')
+        'fields' => array('name', 'value'),
     ),
     'slas' => array(
         'fields' => array('warning_trigger', 'fail_trigger', 'apply_priority', 'apply_trigger', 'title', 'sla_type', 'active_time', 'work_start', 'work_end', 'work_days', 'work_timezone', 'work_holidays', 'apply_type'),
@@ -123,24 +151,24 @@
         'fields' => array('name', 'template_code'),
     ),
     'ticket_categories' => array(
-        'fields' => array('title', 'parent', 'display_order')
+        'fields' => array('title', 'parent', 'display_order'),
     ),
     'ticket_priorities' => array(
-        'fields' => array('title', 'priority')
+        'fields' => array('title', 'priority'),
     ),
     'ticket_workflows' => array(
-        'fields' => array('title', 'display_order')
+        'fields' => array('title', 'display_order'),
     ),
     'usergroups' => array(
-        'fields' => array('title', 'note', 'is_enabled')
+        'fields' => array('title', 'note', 'is_enabled'),
     ),
     'usersource_plugins' => array(
-        'fields' => array('title')
+        'fields' => array('title'),
     ),
     'usersources' => array(
-        'fields' => array('title', 'options', 'is_enabled')
+        'fields' => array('title', 'options', 'is_enabled'),
     ),
     'widgets' => array(
         'fields' => array('description', 'title', 'html', 'js', 'css', 'page', 'page_location', 'insert_position', 'enabled'),
-    )
+    ),
 );

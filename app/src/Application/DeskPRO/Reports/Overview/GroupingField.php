@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Reports\Overview;
 
 use Application\DeskPRO\App;
@@ -39,20 +36,20 @@ use Orb\Util\Arrays;
 
 class GroupingField
 {
-    const DEPARTMENT            = 'department';
-    const TICKET_CATEGORY       = 'ticket_category';
-    const TICKET_WORKFLOW       = 'ticket_workflow';
-    const TICKET_PRIORITY       = 'ticket_priority';
-    const LANGUAGE              = 'language';
-    const PRODUCT               = 'product';
-    const TICKET_FIELD          = 'ticket_field';
-    const USER_FIELD            = 'user_field';
-    const AGENT                 = 'agent';
-    const AGENT_TEAM            = 'agent_team';
-    const TICKET_URGENCY        = 'ticket_urgency';
-    const ORGANIZATION          = 'organization';
-    const USER                  = 'user';
-    const USERGROUP             = 'usergroup';
+    const DEPARTMENT      = 'department';
+    const TICKET_CATEGORY = 'ticket_category';
+    const TICKET_WORKFLOW = 'ticket_workflow';
+    const TICKET_PRIORITY = 'ticket_priority';
+    const LANGUAGE        = 'language';
+    const PRODUCT         = 'product';
+    const TICKET_FIELD    = 'ticket_field';
+    const USER_FIELD      = 'user_field';
+    const AGENT           = 'agent';
+    const AGENT_TEAM      = 'agent_team';
+    const TICKET_URGENCY  = 'ticket_urgency';
+    const ORGANIZATION    = 'organization';
+    const USER            = 'user';
+    const USERGROUP       = 'usergroup';
 
     /**
      * @var string
@@ -69,7 +66,6 @@ class GroupingField
      */
     protected $titles = null;
 
-
     /**
      * @param string $field
      */
@@ -78,12 +74,44 @@ class GroupingField
         if (strpos($field, '.') === false) {
             $this->field = $field;
         } else {
-            list ($field, $field_id) = explode('.', $field);
-            $this->field    = $field;
-            $this->field_id = $field_id;
+            list($field, $field_id) = explode('.', $field);
+            $this->field            = $field;
+            $this->field_id         = $field_id;
+
+            // grouping field is a custom field
+            // we need to check that it exists.
+            // ideally we'd throw here, but as backwards compat
+            // we will just fallback
+            switch ($this->field) {
+                case self::TICKET_FIELD:
+                    $fm = App::getSystemService('ticket_fields_manager');
+                    break;
+                case self::USER_FIELD:
+                    $fm = App::getSystemService('person_fields_manager');
+                    break;
+                default:
+                    $fm = null;
+            }
+
+            if ($fm) {
+                $f = $fm->getFieldFromId($this->field_id);
+                if (!$f) {
+                    $this->field    = $this->getDefaultField();
+                    $this->field_id = null;
+                }
+            }
         }
     }
 
+    /**
+     * Used as the default if the specified field is invalid.
+     *
+     * @return string
+     */
+    protected function getDefaultField()
+    {
+        return self::DEPARTMENT;
+    }
 
     public function getFieldInfo()
     {
@@ -92,7 +120,7 @@ class GroupingField
                 return array('select'   => 'COALESCE(tickets.department_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -100,7 +128,7 @@ class GroupingField
                 return array('select'   => 'COALESCE(tickets.agent_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -108,7 +136,7 @@ class GroupingField
                 return array('select'   => 'COALESCE(tickets.agent_team_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -116,7 +144,7 @@ class GroupingField
                 return array('select'   => 'COALESCE(tickets.category_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -124,7 +152,7 @@ class GroupingField
                 return array('select'   => 'COALESCE(tickets.workflow_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -132,7 +160,7 @@ class GroupingField
                 return array('select'   => 'COALESCE(tickets.priority_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -140,7 +168,7 @@ class GroupingField
                 return array('select'   => 'tickets.language_id',
                              'group_by' => 'tickets.language_id',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -148,7 +176,7 @@ class GroupingField
                 return array('select'   => 'COALESCE(tickets.product_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -156,7 +184,7 @@ class GroupingField
                 return array('select'   => 'tickets.urgency',
                              'group_by' => 'tickets.urgency',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -164,7 +192,7 @@ class GroupingField
                 return array('select'   => 'COALESCE(tickets.organization_id, 0) AS org_id',
                              'group_by' => 'org_id',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -173,7 +201,7 @@ class GroupingField
                     'select'   => 'COALESCE(person2usergroups.usergroup_id, 0) AS usergroup_id',
                     'group_by' => 'usergroup_id',
                     'join'     => 'LEFT JOIN person2usergroups ON (person2usergroups.person_id = tickets.person_id)',
-                    'where'    => ''
+                    'where'    => '',
                 );
                 break;
 
@@ -181,7 +209,7 @@ class GroupingField
                 return array('select'   => 'tickets.person_id',
                              'group_by' => 'tickets.person_id',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -195,7 +223,7 @@ class GroupingField
                             'select'   => '0 as group_field',
                             'group_by' => 'group_field',
                             'join'     => '',
-                            'where'    => ''
+                            'where'    => '',
                         );
                     }
 
@@ -208,14 +236,14 @@ class GroupingField
                             LEFT JOIN custom_data_ticket ON (custom_data_ticket.ticket_id = tickets.id AND custom_data_ticket.field_id IN($ids))
                             LEFT JOIN custom_def_ticket ON (custom_def_ticket.id = custom_data_ticket.field_id)
                         ",
-                        'where'    => ''
+                        'where' => '',
                     );
                 } else {
                     return array(
                         'select'   => 'COALESCE(custom_data_ticket.input, 0) AS group_field',
                         'group_by' => 'group_field',
-                        'join'     => 'LEFT JOIN custom_data_ticket ON (custom_data_ticket.ticket_id = tickets.id AND custom_data_ticket.field_id = ' . $this->field_id . ')',
-                        'where'    => ''
+                        'join'     => 'LEFT JOIN custom_data_ticket ON (custom_data_ticket.ticket_id = tickets.id AND custom_data_ticket.field_id = '.$this->field_id.')',
+                        'where'    => '',
                     );
                 }
                 break;
@@ -230,7 +258,7 @@ class GroupingField
                             'select'   => '0 as group_field',
                             'group_by' => 'group_field',
                             'join'     => '',
-                            'where'    => ''
+                            'where'    => '',
                         );
                     }
 
@@ -243,14 +271,14 @@ class GroupingField
                             LEFT JOIN custom_data_person ON (custom_data_person.person_id = tickets.person_id AND custom_data_person.field_id IN($ids))
                             LEFT JOIN custom_def_people ON (custom_def_people.id = custom_data_person.field_id)
                         ",
-                        'where'    => ''
+                        'where' => '',
                     );
                 } else {
                     return array(
                         'select'   => 'COALESCE(custom_data_person.input, 0) AS group_field',
                         'group_by' => 'group_field',
-                        'join'     => 'LEFT JOIN custom_data_person ON (custom_data_person.person_id = tickets.person_id AND custom_data_person.field_id = ' . $this->field_id . ')',
-                        'where'    => ''
+                        'join'     => 'LEFT JOIN custom_data_person ON (custom_data_person.person_id = tickets.person_id AND custom_data_person.field_id = '.$this->field_id.')',
+                        'where'    => '',
                     );
                 }
                 break;
@@ -260,11 +288,12 @@ class GroupingField
         }
     }
 
-
     /**
-     * @param  array                     $values
-     * @return array|null
+     * @param array $values
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return array|null
      */
     public function getTitles(array $values = array())
     {

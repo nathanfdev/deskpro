@@ -32,10 +32,10 @@
 	</nav>
 	<div class="snippet-sections-wrap">
 		<div class="snippet-filter-options">
-			<div style="float: right; margin: 3px 4px 0 0;">
-				<button class="dp-btn dp-btn-small trigger-new-snippet">{{ phrase('agent.snippets.add_snippet') }}</button>
+			<div style="float: right; margin: 3px 2px 0 0;">
+				<button class="dp-btn dp-btn-small trigger-new-snippet" style="padding: 2px;">{{ phrase('agent.snippets.add_snippet') }}</button>
 			</div>
-			<input type="text" id="%baseId%_filter" placeholder="Filter" />
+			<input type="text" id="%baseId%_filter" placeholder="Filter" style="width: 110px" />
 			{% if app.languages.getAll()|length > 1 %}
 				<select name="show_language_id" id="%baseId%_show_language_id">
 					<option value="0">{{ phrase('agent.general.any_language') }}</option>
@@ -44,6 +44,18 @@
 					{% endfor %}
 				</select>
 			{% endif %}
+			<div style="display: inline;">
+				<span id="%baseId%_filters_adv_toggle" style="cursor: pointer">
+					<i class="fa fa-cog"></i>
+				</span>
+				<span id="%baseId%_filters_adv" style="display: none;">
+					<select id="%baseId%_draft_filter">
+						<option value="off">No Drafts</option>
+						<option value="on">With Drafts</option>
+						<option value="only">Only Drafts</option>
+					</select>
+				</span>
+			</div>
 		</div>
 		{# Page Containers #}
 		<div class="layout-content">
@@ -83,6 +95,10 @@
 						{% endfor %}
 					</select>
 				</div>
+
+				<div style="float:right">
+					<input type="checkbox" value="1" id="%baseId%_editsnippet_is_draft" class="is_draft_check" /> Draft
+				</div>
 			</div>
 
 			<input type="hidden" name="snippet_id" value="0" />
@@ -91,7 +107,7 @@
 			<div style="width: 100%">
 				<textarea id="%baseId%_snippet_input" name="snippet_input" placeholder="{{ phrase('agent.general.snippet_text_placeholder') }}" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box; height: 190px"></textarea>
 			</div>
-			<div style="float:left; font-size: 11px;">
+			<div style="float:left; font-size: 11px;" class="snippet-shortcode-block">
 				{% block edit_snippet_bottomleft %}
 					<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.snippets.shortcut_code_info') }}"></span>
 					{{ phrase('agent.snippets.shortcut_code') }}: <span class="snippet-code-wrap">%<input type="text" name="shortcut_code" class="shortcut_code" value="" placeholder="Enter a shortcut" />%</span>

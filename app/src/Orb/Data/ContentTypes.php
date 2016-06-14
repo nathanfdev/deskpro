@@ -1,38 +1,37 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @subpackage Data
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ */
 namespace Orb\Data;
+
+use Orb\Util\Strings;
 
 class ContentTypes
 {
@@ -241,8 +240,6 @@ class ContentTypes
         '323'      => 'text/h323',
     );
 
-
-
     /**
      * Get an array of file extensions.
      *
@@ -253,10 +250,8 @@ class ContentTypes
         return array_keys(self::$ext_to_contenttype);
     }
 
-
-
     /**
-     * Get an array of ext=>contenttype
+     * Get an array of ext=>contenttype.
      *
      * @return array
      */
@@ -265,14 +260,13 @@ class ContentTypes
         return self::$ext_to_contenttype;
     }
 
-
-
     /**
      * Get the contenttype for a given extension.
      *
      * Returns null if no contenttype could be found.
      *
-     * @param  string $ext The file extension
+     * @param string $ext The file extension
+     *
      * @return string
      */
     public static function getContentTypeFromExtension($ext)
@@ -280,35 +274,32 @@ class ContentTypes
         $ext = strtolower(rtrim($ext, '.'));
 
         if (!isset(self::$ext_to_contenttype[$ext])) {
-            return null;
+            return;
         }
 
         return self::$ext_to_contenttype[$ext];
     }
-
-
 
     /**
      * Get the contenttype for a given filename or path.
      *
      * Returns null if no contenttype could be found.
      *
-     * @param  string $filename The filename
+     * @param string $filename The filename
+     *
      * @return string
      */
     public static function getContentTypeFromFilename($filename)
     {
         $dot_pos = strrpos($filename, '.');
         if (!$dot_pos) {
-            return null;
+            return;
         }
 
-        $ext = substr($filename, $dot_pos+1);
+        $ext = substr($filename, $dot_pos + 1);
 
         return self::getContentTypeFromExtension($ext);
     }
-
-
 
     /**
      * Search for a suitable file extension for a given contenttype.
@@ -317,8 +308,9 @@ class ContentTypes
      * first one will be returned unless $find_all is true, in which case an array
      * of all suitable extensions are returned.
      *
-     * @param  string $content_type The content-type to look up
-     * @param  bool   $find_all     When true, an array of extensions will be returned.
+     * @param string $content_type The content-type to look up
+     * @param bool   $find_all     When true, an array of extensions will be returned.
+     *
      * @return string
      */
     public static function findExtensionForContentType($content_type, $find_all = false)
@@ -354,9 +346,8 @@ class ContentTypes
         return $found_keys;
     }
 
-
     /**
-     * Get an array of image types
+     * Get an array of image types.
      *
      * @return array
      */
@@ -371,11 +362,11 @@ class ContentTypes
         );
     }
 
-
     /**
-     * Check to see if a content type is an image type
+     * Check to see if a content type is an image type.
      *
      * @param $content_type
+     *
      * @return bool
      */
     public static function isImageContentType($content_type)
@@ -383,17 +374,24 @@ class ContentTypes
         return in_array($content_type, self::getImageContentTypes());
     }
 
-
     /**
      * @static
+     *
      * @param $content_type
-     * @param  bool $safe
+     * @param bool   $safe
+     * @param string $filename
+     *
      * @return bool
      */
-    public static function isInlineContentType($content_type, $safe = true)
+    public static function isInlineContentType($content_type, $safe = true, $filename = null)
     {
         if (self::isImageContentType($content_type)) {
             return true;
+        }
+
+        $ext = null;
+        if ($filename) {
+            $ext = Strings::getExtension($filename);
         }
 
         switch ($content_type) {
@@ -402,6 +400,24 @@ class ContentTypes
             case 'text/plain':
             case 'text/x-markdown':
             case 'application/pdf':
+                // sometimes a file might be given the content type as text/plain
+                // but might have a filename of a file that should still be downloaded
+                if ($content_type == 'text/plain' && $ext) {
+                    switch ($ext) {
+                        case 'html':
+                        case 'htm':
+                        case 'js':
+                        case 'jsx':
+                        case 'css':
+                        case 'php':
+                        case 'bat':
+                        case 'sh':
+                        case 'json':
+                        case 'yml':
+                            return false;
+                    }
+                }
+
                 return true;
 
             case 'text/html':
@@ -414,8 +430,6 @@ class ContentTypes
 
         return false;
     }
-
-
 
     /**
      * Checks a filename to see if its a file that hsould be displaeyd inline (images, mostly).
@@ -431,7 +445,7 @@ class ContentTypes
             return false;
         }
 
-        $ext = substr($filename, $dot_pos+1);
+        $ext = substr($filename, $dot_pos + 1);
 
         if (in_array($ext, $inline_ext)) {
             return true;

@@ -1,43 +1,43 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\MessageHandler\BasicArray;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
 /**
@@ -57,7 +57,6 @@ use Orb\Util\Strings;
  * So in that case, the original context would just push an ID of this client message,
  * and the client would later request the full information as an HTTP request or by pushing
  * the ID through the socket.
- *
  */
 class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -82,7 +81,7 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
     protected $auth;
 
     /**
-     * Data to give the handler
+     * Data to give the handler.
      *
      * @var array
      */
@@ -91,19 +90,17 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The client ID (usully sessionid) that created this message.
      * This is so when we fetch messages, we don't get our own messages back.
-     *
      */
     protected $created_by_client = '';
 
     /**
      * The client ID (usully sessionid) that this message is for
      * specifically.
-     *
      */
     protected $for_client;
 
     /**
-     * Who this message is for specifically
+     * Who this message is for specifically.
      *
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -127,7 +124,7 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
-        $this->setModelField('auth', Strings::random(15, Strings::CHARS_KEY));
+        $this->setModelField('auth', DpStrings::random(15, Strings::CHARS_KEY));
 
         if (App::has('event_dispatcher')) {
             $this->event_dispatcher = App::get('event_dispatcher');
@@ -142,11 +139,8 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
-
-
     /**
      * @param  $delivery_method
-     * @return void
      */
     public function getHandler()
     {
@@ -155,19 +149,18 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
         return $handler;
     }
 
-
     /**
      */
     public function notifyMessageServers()
     {
-        if (!$this->event_dispatcher) return;
+        if (!$this->event_dispatcher) {
+            return;
+        }
 
         $event = new \Application\DeskPRO\ClientMessage\Event($this);
 
         $this->event_dispatcher->dispatch('DeskPRO_onNewClientMessage', $event);
     }
-
-
 
     ############################################################################
     # Doctrine Metadata
@@ -177,17 +170,17 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ClientMessage';
-        $metadata->setPrimaryTable(array( 'name' => 'client_messages', ));
+        $metadata->setPrimaryTable(array('name' => 'client_messages'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->addLifecycleCallback('notifyMessageServers', 'postPersist');
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'channel', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'channel', ));
-        $metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
-        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
-        $metadata->mapField(array( 'fieldName' => 'created_by_client', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created_by_client', ));
-        $metadata->mapField(array( 'fieldName' => 'for_client', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'for_client', ));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array('fieldName' => 'channel', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'channel'));
+        $metadata->mapField(array('fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth'));
+        $metadata->mapField(array('fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data'));
+        $metadata->mapField(array('fieldName' => 'created_by_client', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created_by_client'));
+        $metadata->mapField(array('fieldName' => 'for_client', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'for_client'));
+        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'for_person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'for_person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array('fieldName' => 'for_person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'for_person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

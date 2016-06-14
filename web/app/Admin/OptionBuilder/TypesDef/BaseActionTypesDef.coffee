@@ -69,10 +69,12 @@ define [
           return me.dpTemplateManager.get(options.template || me.selectTemplate)
 
         getData: ->
+          operators = options.operators || []
           if options.options
             return {
               options: if options_formatter then options_formatter(options.options) else options.options,
-              multiselect: is_multi
+              multiselect: is_multi,
+              operators: operators
             }
           if data_name
             defer = me.$q.defer()
@@ -80,12 +82,15 @@ define [
               defer.resolve({
                 options: if options_formatter then options_formatter(me.options_data[data_name]) else me.options_data[data_name],
                 multiselect: is_multi
+                operators: operators
               })
             )
 
             return defer.promise
           else
-            return {}
+            return {
+              operators: operators
+            }
 
         getDataFormatter: ->
           return {
@@ -96,12 +101,14 @@ define [
 
               return {
                 value: val,
+                op: value.options?.op || value.op || _.first(data.operators)
               }
             getValue: (model = {}, data) ->
               value = {}
               value.type = type
               value.options = {}
               value.options[prop_name] = model.value
+              value.options.op = model.op
               return value
           }
       }
@@ -151,11 +158,13 @@ define [
       me = @
       return {
         getTemplate: ->
-          return me.dpTemplateManager.get(me.inputTemplate)
+          return me.dpTemplateManager.get(options.template || me.inputTemplate)
 
         getData: ->
+          operators = options.operators || []
           return {
             options: options
+            operators: operators
           }
 
         getDataFormatter: ->
@@ -165,7 +174,7 @@ define [
               if Util.isArray(val) then val = val.join(',')
               return {
                 value: val
-                op: value.op || _.first(data.operators)
+                op: value.options?.op || value.op || _.first(data.operators)
               }
             getValue: (model = {}, data) ->
 
@@ -177,6 +186,7 @@ define [
               value.type = type
               value.options = {}
               value.options[prop_name] = val
+              value.options.op = model.op
               return value
           }
       }
@@ -188,13 +198,17 @@ define [
     getStandardForFieldDef: (field, options = {}) ->
       if not options.propName then options.propName = 'value'
 
+      options.operators = ['set', 'unset']
       if field.type_name == 'choice'
         options.options = field.choices.map( (o) -> {title: o.title, value: o.id + ""})
+        options.template = 'OptionBuilder/type-actions-custom-select.html'
         return @getStandardSelect(options)
       else if field.type_name == 'toggle'
         options.options = [{title: 'On', value: "1"}, {title: "Off", value: "0"}]
+        options.template = 'OptionBuilder/type-actions-custom-select.html'
         return @getStandardSelect(options)
       else
+        options.template = 'OptionBuilder/type-actions-custom-input.html'
         return @getStandardInput(options)
 
 
@@ -205,10 +219,10 @@ define [
       # @param {Object} f         The field
       # @retrn {String} The name of the field that was set
       ###
-    initFieldGetter: (base_name, f) ->
+    initFieldGetter: (base_name, f, force) ->
       fname = base_name + f.id
 
-      if not this['get'+fname]
+      if not this['get'+fname] || force?
         this['get'+fname] = (options = {}) =>
           options.type = base_name + f.id
           return @getStandardForFieldDef(f, options)

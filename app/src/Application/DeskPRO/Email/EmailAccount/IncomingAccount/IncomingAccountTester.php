@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
@@ -79,9 +77,8 @@ class IncomingAccountTester
         $this->logger->addWriter($this->logger_writer);
     }
 
-
     /**
-     * Run the test
+     * Run the test.
      *
      * @return bool
      */
@@ -112,7 +109,6 @@ class IncomingAccountTester
         return $this->is_success;
     }
 
-
     /**
      * @return bool
      */
@@ -121,7 +117,6 @@ class IncomingAccountTester
         return $this->is_success;
     }
 
-
     /**
      * @return \Exception
      */
@@ -129,7 +124,6 @@ class IncomingAccountTester
     {
         return $this->exception;
     }
-
 
     /**
      * As part of the test, we fetch the count of messages.
@@ -141,9 +135,8 @@ class IncomingAccountTester
         return $this->message_count;
     }
 
-
     /**
-     * Tests Pop3
+     * Tests Pop3.
      */
     private function _testPop3()
     {
@@ -154,12 +147,12 @@ class IncomingAccountTester
 
         try {
             $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3(array(
-                'host'     => $account_config->host,
-                'user'     => $account_config->user,
-                'password' => $account_config->password,
-                'port'     => $account_config->port,
-                'ssl'      => $account_config->secure_mode,
-                'logger'   => $this->logger,
+                'host'      => $account_config->host,
+                'user'      => $account_config->user,
+                'password'  => $account_config->password,
+                'port'      => $account_config->port,
+                'ssl'       => $account_config->secure_mode,
+                'logger'    => $this->logger,
                 'test_mode' => true,
             ));
 
@@ -167,13 +160,12 @@ class IncomingAccountTester
 
             $this->is_success = true;
         } catch (\Exception $e) {
-            $this->logger->logError(sprintf("Error: %s", $e->getMessage()));
-            $this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+            $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
+            $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
             $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
             $this->is_success = false;
         }
     }
-
 
     private function _testImap()
     {
@@ -184,14 +176,14 @@ class IncomingAccountTester
 
         try {
             $storage = new \Application\DeskPRO\EmailGateway\Storage\Imap(array(
-                'host'     => $account_config->host,
-                'user'     => $account_config->user,
-                'password' => $account_config->password,
-                'port'     => $account_config->port,
-                'secure'   => $account_config->secure_mode,
+                'host'          => $account_config->host,
+                'user'          => $account_config->user,
+                'password'      => $account_config->password,
+                'port'          => $account_config->port,
+                'secure'        => $account_config->secure_mode,
                 'no_validation' => $account_config->no_validation,
-                'logger'   => $this->logger,
-                'test_mode' => true,
+                'logger'        => $this->logger,
+                'test_mode'     => true,
             ));
             if ($account_config->read_mailbox) {
                 $storage->ensureMailboxExists($account_config->read_mailbox);
@@ -204,18 +196,17 @@ class IncomingAccountTester
                 $ids = $storage->getAllMessageUids();
             }
 
-            $this->logger->logInfo("Read IDs: " . implode(', ', $ids));
+            $this->logger->logInfo('Read IDs: '.implode(', ', $ids));
             $this->message_count = count($ids);
 
             $this->is_success = true;
         } catch (\Exception $e) {
-            $this->logger->logError(sprintf("Error: %s", $e->getMessage()));
-            $this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+            $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
+            $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
             $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
             $this->is_success = false;
         }
     }
-
 
     private function _testExchange()
     {
@@ -226,11 +217,11 @@ class IncomingAccountTester
 
         try {
             $storage = new \Application\DeskPRO\EmailGateway\Storage\Exchange(array(
-                'host'     => $account_config->host,
-                'user'     => $account_config->user,
-                'password' => $account_config->password,
-                'port'     => $account_config->port,
-                'logger'   => $this->logger,
+                'host'      => $account_config->host,
+                'user'      => $account_config->user,
+                'password'  => $account_config->password,
+                'port'      => $account_config->port,
+                'logger'    => $this->logger,
                 'test_mode' => true,
             ));
             if ($account_config->read_mailbox) {
@@ -238,7 +229,7 @@ class IncomingAccountTester
             }
 
             $unread_only = false;
-            $folder = null;
+            $folder      = null;
 
             if ($account_config->mode == 'read') {
                 $unread_only = true;
@@ -248,22 +239,57 @@ class IncomingAccountTester
             }
 
             $ids = $storage->searchIds(100, $unread_only, $folder);
-
-            $this->logger->logInfo("Read IDs: " . implode(', ', $ids));
+            $this->logger->logInfo('Read IDs: '.implode(', ', $ids));
             $this->message_count = count($ids);
 
             $this->is_success = true;
+        } catch (\EWS_Exception $e) {
+            switch ($e->getCode()) {
+                case '401':
+                    $this->logger->logError('Your username or password is incorrect.');
+                    break;
+                case '0':
+                    if ($e->getMessage() == 'looks like we got no XML document') {
+                        $this->logger->logError("It looks like the service URL is incorrect. Double-check the URL. It usually looks something like 'https://ews.example.com/EWS/Exchange.asmx'.");
+                    }
+                    break;
+                case '404':
+                    $this->logger->logError("The API endpoint returned a 404 Not Found. Double-check the URL. It usually looks something like 'https://ews.example.com/EWS/Exchange.asmx'.");
+                    break;
+                case '403':
+                    $this->logger->logError('The API endpoint is returning a 403 Forbidden status code. This means that the user you provided does not have permission to use the service. '
+                    ."This could mean that the user doesn't have permission to use the service from this network, or it could be that the specific services that DeskPRO requires are not allowed. "
+                    .'You should ask your sysadmin to check the permissions on this user.');
+                    break;
+                default:
+                    $this->logger->logError('Unknown error. Details:');
+            }
+            $this->logger->logError(str_repeat('-', 35));
+            $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
+            $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
+            $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
+            $this->is_success = false;
         } catch (\Exception $e) {
-            $this->logger->logError(sprintf("Error: %s", $e->getMessage()));
-            $this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+            switch ($e->getCode()) {
+                case '0':
+                    if ($e->getMessage() == 'looks like we got no XML document') {
+                        $this->logger->logError("It looks like the service URL is incorrect. Double-check the URL. It usually looks something like 'https://ews.example.com/EWS/Exchange.asmx'.");
+                    }
+                    break;
+                default:
+                    $this->logger->logError('Unknown error. Details:');
+            }
+
+            $this->logger->logError(str_repeat('-', 35));
+            $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
+            $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
             $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
             $this->is_success = false;
         }
     }
 
-
     /**
-     * Tests Gmail
+     * Tests Gmail.
      */
     private function _testGmail()
     {
@@ -274,12 +300,12 @@ class IncomingAccountTester
 
         try {
             $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3(array(
-                'host'     => 'pop.gmail.com',
-                'user'     => $account_config->user,
-                'password' => $account_config->password,
-                'port'     => 995,
-                'ssl'      => 'ssl',
-                'logger'   => $this->logger,
+                'host'      => 'pop.gmail.com',
+                'user'      => $account_config->user,
+                'password'  => $account_config->password,
+                'port'      => 995,
+                'ssl'       => 'ssl',
+                'logger'    => $this->logger,
                 'test_mode' => true,
             ));
 
@@ -288,15 +314,15 @@ class IncomingAccountTester
             $this->is_success = true;
         } catch (\Exception $e) {
             $this->exception = $e;
-            $this->logger->logError(sprintf("Error: %s", $e->getMessage()));
-            $this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+            $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
+            $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
             $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
             $this->is_success = false;
         }
     }
 
     /**
-     * Tests Office365
+     * Tests Office365.
      */
     private function _testOffice365()
     {
@@ -307,12 +333,12 @@ class IncomingAccountTester
 
         try {
             $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3(array(
-                'host'     => 'outlook.office365.com',
-                'user'     => $config->user,
-                'password' => $config->password,
-                'port'     => 995,
-                'ssl'      => 'ssl',
-                'logger'   => $this->logger,
+                'host'      => 'outlook.office365.com',
+                'user'      => $config->user,
+                'password'  => $config->password,
+                'port'      => 995,
+                'ssl'       => 'ssl',
+                'logger'    => $this->logger,
                 'test_mode' => true,
             ));
 
@@ -321,8 +347,8 @@ class IncomingAccountTester
             $this->is_success = true;
         } catch (\Exception $e) {
             $this->exception = $e;
-            $this->logger->logError(sprintf("Error: %s", $e->getMessage()));
-            $this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+            $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
+            $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
             $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
             $this->is_success = false;
         }

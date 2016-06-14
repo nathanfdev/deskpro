@@ -51,6 +51,13 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 		var self = this;
 		var formData = this.form.serializeArray();
 
+		this.labelsInput && (this.labelsInput.getLabels() || []).forEach(function(label){
+			formData.push({
+				name: 'neworg[labels][]',
+				value: label.replace(/\r?\n/g, "\r\n")
+			});
+		});
+
 		$.ajax({
 			url: BASE_URL + 'agent/organizations/new/save',
 			type: 'POST',
@@ -99,14 +106,10 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 			context: this.getEl('other_props_tabs_content'),
 			autoSelectFirst: false,
 			onTabSwitch: function(eventData) {
-				if (!self.labelsInput && eventData.tabContent.hasClass('tab-properties')) {
+				if (!self.labelsInput && eventData.tabContent.hasClass('tab-properties') && self.getEl('labels_input')[0]) {
 					self.labelsInput = new DeskPRO.UI.LabelsInput({
-						type: 'org',
-						fieldName: 'neworg[labels]',
-						textarea: $(".tags-wrap input", eventData.tabContent),
-						onChange: function() {
-							self.stateSaver.triggerChange();
-						}
+						type: 'organizations',
+						input: self.getEl('labels_input')
 					});
 					self.ownObject(self.labelsInput);
 				}

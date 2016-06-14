@@ -1,248 +1,293 @@
 <script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewPerson';
-pageMeta.title = '{{ phrase('agent.general.new_person') }}';
+    pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewPerson';
+    pageMeta.title = '{{ phrase('agent.general.new_person') }}';
 
-{% set baseId = el_uid() %}
-pageMeta.baseId = '{{ baseId }}';
+    {% set baseId = el_uid() %}
+    pageMeta.baseId = '{{ baseId }}';
 </script>
 <div class="layout-content page-new-news page-new-content">
-<div class="dp-page-content">
-{{ start_counter('steps') }}
+    <div class="dp-page-content">
+        {{ start_counter('steps') }}
 
-<div class="profile-box-container ticket-messages">
-	<header>
-            {% set messageTabs = dp_widgets_raw('ticket', 'messages', 'tab') %}
-            <nav id="{{ baseId }}_messagebox_tabs" data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
-                <ul>
-                    <li data-list-type="messages" class="on" data-tab-for="#{{baseId}}_form">Form</li>
-                    <li class="logs" data-list-type="log" data-tab-for="#{{baseId}}_upload_vcard">{{ phrase('agent.people.upload_vcard') }}</li>
-                </ul>
-            </nav>
-	</header>
-        <section class="form-wrap" id="{{baseId}}_form">
-            <form id="{{baseId}}_newperson" class="keybound-submit">
-                <div class="drop-file-zone"><h1>{{ phrase('agent.people.drop_your_vcard_here') }}</h1></div>
-                <script class="template-upload" type="text/x-tmpl">
+        <div class="profile-box-container ticket-messages">
+            <header>
+                {% set messageTabs = dp_widgets_raw('ticket', 'messages', 'tab') %}
+                <nav id="{{ baseId }}_messagebox_tabs" data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+                    <ul>
+                        <li data-list-type="messages" class="on" data-tab-for="#{{ baseId }}_form">Form</li>
+                        <li class="logs" data-list-type="log"
+                            data-tab-for="#{{ baseId }}_upload_vcard">{{ phrase('agent.people.upload_vcard') }}</li>
+                    </ul>
+                </nav>
+            </header>
+            <section class="form-wrap" id="{{ baseId }}_form">
+                <form id="{{ baseId }}_newperson" class="keybound-submit">
+                    <div class="drop-file-zone"><h1>{{ phrase('agent.people.drop_your_vcard_here') }}</h1></div>
+                    <script class="template-upload" type="text/x-tmpl">
                     {{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
                     <p>{{ '{%=file.name%}' }} ({{ phrase('agent.general.saving') }})</p>
                     {{ '{% } %}' }}
-                </script>
-                <script class="template-download" type="text/x-tmpl"><div style="display:none"></div></script>
-                <div class="first section cat-section" id="{{baseId}}_email_section">
+
+
+                    </script>
+                    <script class="template-download" type="text/x-tmpl">
+                        <div
+                         style="display:none"></div>
+
+                    </script>
+                    <div class="first section cat-section" id="{{ baseId }}_email_section">
                         <div class="content">
-                                <h4>{{ phrase('agent.general.email') }}</h4>
-                                <input type="text" name="newperson[email]" id="{{baseId}}_email" value="" class="fill" />
+                            <h4>{{ phrase('agent.general.email') }}</h4>
+                            <input type="text" name="newperson[email]" id="{{ baseId }}_email" value="" class="fill"/>
                         </div>
-                </div>
+                    </div>
 
-                <div class="section cat-section" id="{{baseId}}_name_section">
+                    <div class="section cat-section" id="{{ baseId }}_name_section">
                         <div class="content">
-                                <h4>{{ phrase('agent.general.name') }}</h4>
-                                <input type="text" name="newperson[name]" id="{{baseId}}_name" value="" class="fill" />
+                            <h4>{{ phrase('agent.general.name') }}</h4>
+                            <input type="text" name="newperson[name]" id="{{ baseId }}_name" value="" class="fill"/>
                         </div>
-                </div>
+                    </div>
 
 
-                <div class="section title-section" id="{{baseId}}_org_section">
+                    <div class="section title-section" id="{{ baseId }}_org_section">
                         <div class="content">
-                                <h4>{{ phrase('agent.general.organization') }}</h4>
-                                <div
-                                        class="org-input"
-                                        id="{{baseId}}_org_searchbox"
-                                        data-element-handler="DeskPRO.Agent.ElementHandler.OrgSearchBox"
-                                        data-search-url="{{ path('agent_orgsearch_quicknamesearch', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
-                                        data-highlight-term="1"
-                                        data-touch-focus="1"
-                                        data-search-param="term"
-                                        data-position-bound=".org-name"
-                                        data-super-container=".page-new-content"
-                                >
-                                        <input type="text" class="org-name fill" id="{{baseId}}_org_name" name="newperson[new_organization]" placeholder="{{ phrase('agent.general.find_or_create_org') }}" value="" />
-                                        <input type="hidden" class="org-id" id="{{baseId}}_org_id" name="newperson[organization_id]" value="" />
-                                        <script type="text/x-deskpro-tmpl" class="user-row-tpl">
+                            <h4>{{ phrase('agent.general.organization') }}</h4>
+                            <div
+                                    class="org-input"
+                                    id="{{ baseId }}_org_searchbox"
+                                    data-element-handler="DeskPRO.Agent.ElementHandler.OrgSearchBox"
+                                    data-search-url="{{ path('agent_orgsearch_quicknamesearch', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+                                    data-highlight-term="1"
+                                    data-touch-focus="1"
+                                    data-search-param="term"
+                                    data-position-bound=".org-name"
+                                    data-super-container=".page-new-content"
+                                    >
+                                <input type="text" class="org-name fill" id="{{ baseId }}_org_name"
+                                       name="newperson[new_organization]"
+                                       placeholder="{{ phrase('agent.general.find_org') }}" value=""/>
+                                <input type="hidden" class="org-id" id="{{ baseId }}_org_id"
+                                       name="newperson[organization_id]" value=""/>
+                                <script type="text/x-deskpro-tmpl" class="user-row-tpl">
                                                 <li>
                                                         <a>
                                                         <span class="org-name"></span>
                                                         <div class="bound-fade"></div>
                                                 </a></li>
-                                        </script>
-                                        <div class="person-search-box org" style="display: none">
-                                                <section>
-                                                        <ul class="results-list">
 
-                                                        </ul>
-                                                        <footer>
-                                                        	<span class="create-org">{{ phrase('agent.general.create') }}: <em></em></span>
-                                                        </footer>
-                                                </section>
-                                        </div>
 
-                                        <div id="{{baseId}}_org_pos" style="display: none; margin-top: 10px">
-                                                <h4>{{ phrase('agent.general.position') }}</h4>
-                                                <input type="text" name="newperson[organization_position]" value="" size="40" />
-                                        </div>
+                                </script>
+                                <div class="person-search-box org" style="display: none">
+                                    <section>
+                                        <ul class="results-list">
+
+                                        </ul>
+                                        {% if app.user.hasPerm('agent_org.create') %}
+                                        <footer>
+                                            <span class="create-org">{{ phrase('agent.general.create') }}
+                                                : <em></em></span>
+                                        </footer>
+                                        {% endif %}
+                                    </section>
                                 </div>
-                        </div>
-                </div>
 
-                <div class="section cat-section" id="{{baseId}}_set_password_section">
-                    <div class="content">
-                        <label>
-                            <input type="checkbox" id="{{baseId}}_set_password" name="newperson[set_password]" value="true" />
-                            {{ phrase('agent.general.set_password') }}
-                        </label>
-                        <div style="display: none;line-height: 25px;" id="{{baseId}}_set_password_trigger">
+                                <div id="{{ baseId }}_org_pos" style="display: none; margin-top: 10px">
+                                    <h4>{{ phrase('agent.general.position') }}</h4>
+                                    <input type="text" name="newperson[organization_position]" value="" size="40"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section cat-section" id="{{ baseId }}_set_password_section">
+                        <div class="content">
                             <label>
-                                <input type="radio" name="newperson[set_password_radio]" value="generate" checked="checked" />
-                                {{ phrase('agent.general.generate_password') }}
+                                <input type="checkbox" id="{{ baseId }}_set_password" name="newperson[set_password]"
+                                       value="true"/>
+                                {{ phrase('agent.general.set_password') }}
                             </label>
+
+                            <div style="display: none;line-height: 25px;" id="{{ baseId }}_set_password_trigger">
+                                <label>
+                                    <input type="radio" name="newperson[set_password_radio]" value="generate"
+                                           checked="checked"/>
+                                    {{ phrase('agent.general.generate_password') }}
+                                </label>
+                                <label>
+                                    <input type="radio" name="newperson[set_password_radio]" value="set"/>
+                                    {{ phrase('agent.general.set_password_manual') }}
+                                    <input type="password" name="newperson[new_password]"
+                                           id="{{ baseId }}_set_password_input" style="display: none;"/>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section cat-section" id="{{ baseId }}_send_email_section">
+                        <div class="content">
                             <label>
-                                <input type="radio" name="newperson[set_password_radio]" value="set" />
-                                {{ phrase('agent.general.set_password_manual') }}
-                                <input type="password" name="newperson[new_password]" id="{{baseId}}_set_password_input" style="display: none;" />
+                                <input type="checkbox" name="newperson[send_welcome_email]"
+                                       id="{{ baseId }}_send_welcome_email" value="1"/>
+                                {{ phrase('agent.general.send_welcome_email') }}
                             </label>
                         </div>
                     </div>
-                </div>
 
-                <div class="section cat-section" id="{{baseId}}_send_email_section">
-                    <div class="content">
-                        <label>
-                            <input type="checkbox" name="newperson[send_welcome_email]" id="{{baseId}}_send_welcome_email" value="1" />
-                            {{ phrase('agent.general.send_welcome_email') }}
-                        </label>
-                    </div>
-                </div>
-
-                {% if custom_fields|length %}
-                <div class="section title-section" id="{{baseId}}_fields_section">
-                        <div class="content">
-                        {% for f in custom_fields %}
-                                <h4>{{ f.title }}</h4>
-                                {{ render_custom_field_form(f) }}
-                                <br />
-                        {% endfor %}
+                    {% if custom_fields|length %}
+                        <div class="section title-section" id="{{ baseId }}_fields_section">
+                            <div class="content">
+                                {% for f in custom_fields %}
+                                    <h4>{{ f.title }}</h4>
+                                    {{ render_custom_field_form(f) }}
+                                    <br/>
+                                {% endfor %}
+                            </div>
                         </div>
-                </div>
-                {% endif %}
+                    {% endif %}
 
-	            {% if custom_fields_definitions|length %}
-		            <div class="section title-section" id="{{baseId}}_custom_fields_section">
-			            <div class="content">
-				            {% for f in custom_fields_definitions %}
-					            <h4>{{ form_label(f) }}</h4>
-					            {{ form_widget(f) }}
-					            <br />
-				            {% endfor %}
-			            </div>
-		            </div>
-	            {% endif %}
+                    {% if custom_fields_definitions|length %}
+                        <div class="section title-section" id="{{ baseId }}_custom_fields_section">
+                            <div class="content">
+                                {% for f in custom_fields_definitions %}
+                                    <h4>{{ form_label(f) }}</h4>
+                                    {{ form_widget(f) }}
+                                    <br/>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
 
-                <div class="section other-section" id="{{baseId}}_other_section">
+                    <div class="section other-section" id="{{ baseId }}_other_section">
                         <div class="content">
-                                {# Tab Container #}
-                                <div class="tab-container">
-                                        <nav id="{{baseId}}_other_props_tabs_wrap">
-                                                <ul id="{{baseId}}_other_props_tabs">
-                                                        <li data-tab-for="> .tab-properties">{{ phrase('agent.general.properties') }}</li>
-                                                </ul>
-                                        </nav>
-                                        <div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none;padding: 0;">
-                                                <div class="tab-properties content-table" style="border: none;">
-                                                        <table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">
-                                                                <tr>
-                                                                        <th width="150">{{ phrase('agent.general.labels') }}</th>
-                                                                        <td>
-                                                                                <input
-                                                                                        type="hidden"
-                                                                                        id="{{baseId}}_labels_input"
-                                                                                        class="labels-input dpe_select dpe_select_noborder"
-                                                                                        data-select-width="auto"
-                                                                                        data-placeholder="Add a label"
-                                                                                        value="{% for label in state.newperson.labels %}{{label}},{% endfor %}"
-                                                                                        data-allow-new="{% if app.user.hasPerm('agent_people.create_labels') %}1{% endif %}"
-                                                                                />
-                                                                        </td>
-                                                                </tr>
-                                                                {% if usergroup_names|length %}
-                                                                        <tr>
-                                                                                <th>{{ phrase('agent.general.usergroups') }}</th>
-                                                                                <td>
-                                                                                        <div id="{{baseId}}_ug_container">
-                                                                                                <select name="newperson[usergroups][]" class="dpe_select">
-                                                                                                        {% for id,name in usergroup_names %}
-                                                                                                                <option value="{{ id }}">{{ name }}</option>
-                                                                                                        {% endfor %}
-                                                                                                </select>
-                                                                                        </div>
-                                                                                </td>
-                                                                        </tr>
-                                                                {% endif %}
-                                                                <tr class="last">
-                                                                        <th class="prop">{{ phrase('agent.general.timezone') }}</th>
-                                                                        <td class="prop">
-                                                                                <select id="{{baseId}}_timezone" name="newperson[timezone]" data-placeholder="{{ phrase('agent.general.timezone') }}" style="width: 200px" class="dpe_select">
-                                                                                        <option></option>
-                                                                                        {% for tz in timezone_options %}
-                                                                                                <option value="{{tz}}" {% if tz == app.getSetting('core.default_timezone') %}selected="selected"{% endif %}>{{ tz }}</option>
-                                                                                        {% endfor %}
-                                                                                </select>
-                                                                        </td>
-                                                                </tr>
-                                                        </table>
-                                                </div>
-                                        </div>
+                            {# Tab Container #}
+                            <div class="tab-container">
+                                <nav id="{{ baseId }}_other_props_tabs_wrap">
+                                    <ul id="{{ baseId }}_other_props_tabs">
+                                        <li data-tab-for="> .tab-properties">{{ phrase('agent.general.properties') }}</li>
+                                    </ul>
+                                </nav>
+                                <div class="content-wrapper" id="{{ baseId }}_other_props_tabs_content"
+                                     style="display: none;padding: 0;">
+                                    <div class="tab-properties content-table" style="border: none;">
+                                        <table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">
+                                            <tr>
+                                                <th width="150">{{ phrase('agent.general.labels') }}</th>
+                                                <td>
+                                                    <input
+                                                            type="hidden"
+                                                            id="{{ baseId }}_labels_input"
+                                                            class="labels-input dpe_select dpe_select_noborder"
+                                                            data-select-width="auto"
+                                                            data-placeholder="Add a label"
+                                                            value="{% for label in state.newperson.labels %}{{ label }},{% endfor %}"
+                                                            data-allow-new="{% if app.user.hasPerm('agent_people.create_labels') %}1{% endif %}"
+                                                            />
+                                                </td>
+                                            </tr>
+                                            {% if usergroup_names|length %}
+                                                <tr>
+                                                    <th>{{ phrase('agent.general.usergroups') }}</th>
+                                                    <td>
+                                                        <div id="{{ baseId }}_ug_container">
+                                                            <select name="newperson[usergroups][]" class="dpe_select">
+                                                                {% for id,name in usergroup_names %}
+                                                                    <option value="{{ id }}">{{ name }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+
+                                            <tr>
+                                                <th class="prop">{{ phrase('agent.general.language') }}</th>
+                                                <td class="prop">
+                                                    <select id="{{ baseId }}_language" name="newperson[language]"
+                                                            data-placeholder="{{ phrase('agent.general.language') }}"
+                                                            style="width: 200px" class="dpe_select">
+                                                        <option value=""></option>
+                                                        {% for l in app.languages.getAll() %}
+                                                            <option value="{{ l.id }}">{{ l.title }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </td>
+                                            </tr>
+
+                                            <tr class="last">
+                                                <th class="prop">{{ phrase('agent.general.timezone') }}</th>
+                                                <td class="prop">
+                                                    <select id="{{ baseId }}_timezone" name="newperson[timezone]"
+                                                            data-placeholder="{{ phrase('agent.general.timezone') }}"
+                                                            style="width: 200px" class="dpe_select">
+                                                        <option></option>
+                                                        {% for tz in timezone_options %}
+                                                            <option value="{{ tz }}"
+                                                                    {% if tz == app.getSetting('core.default_timezone') %}selected="selected"{% endif %}>{{ tz }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </td>
+                                            </tr>
+
+                                        </table>
+                                    </div>
                                 </div>
-                                {# /Tab Container #}
+                            </div>
+                            {# /Tab Container #}
                         </div>
-                </div>
+                    </div>
 
-                <footer class="pop-footer">
+                    <footer class="pop-footer">
                         <div class="is-not-loading">
-                                <button class="submit-trigger clean-white">{{ phrase('agent.people.create_person') }} <kbd>{{ phrase('agent.general.altc') }}</kbd></button>
+                            <button class="submit-trigger clean-white">{{ phrase('agent.people.create_person') }}
+                                <kbd>{{ phrase('agent.general.altc') }}</kbd></button>
                         </div>
                         <div class="is-loading" style="padding-top: 9px;">
-                                <img src="{{ asset('images/spinners/loading-small.gif') }}" />
+                            <img src="{{ asset('images/spinners/loading-small.gif') }}"/>
                         </div>
-                </footer>
+                    </footer>
 
                 </form>
-        </section>
-	<section class="upload-vcard-wrap" id="{{baseId}}_upload_vcard">
-            <form class="new-picture">
-                <header><h3>{{ phrase('agent.people.upload_vcard') }}</h3></header>
-                <div class="upload-control">
-                        <input type="file" name="file-upload" />
-                </div>
-                <div class="files">
-                </div>
+            </section>
+            <section class="upload-vcard-wrap" id="{{ baseId }}_upload_vcard">
+                <form class="new-picture">
+                    <header><h3>{{ phrase('agent.people.upload_vcard') }}</h3></header>
+                    <div class="upload-control">
+                        <input type="file" name="file-upload"/>
+                    </div>
+                    <div class="files">
+                    </div>
 
-                <script class="template-upload" type="text/x-tmpl">
+                    <script class="template-upload" type="text/x-tmpl">
                     {{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
                     <p>{{ '{%=file.name%}' }} ({{ phrase('agent.general.saving') }})</p>
                     {{ '{% } %}' }}
-                </script>
-                <script class="template-download" type="text/x-tmpl">
+
+
+                    </script>
+                    <script class="template-download" type="text/x-tmpl">
                     {{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
-                    {{ '{% if (file.error) { %}'}}
+                    {{ '{% if (file.error) { %}' }}
                     <div class="error">
                             {{ '{%=file.error%}' }}
                     </div>
-                    {{ '{% } else { %}'}}
+                    {{ '{% } else { %}' }}
                     <div>
                             <input type="hidden" name="new_blob_id" class="new_blob_id" value="{{ '{%=file.blob_id%}' }}" />
-                            <img src="{{ '{%=file.download_url%}' }}?s=150" class="pic-new" data-setted-size="{{ '{%=file.download_url%}' }}?s=60&amp;size-fit=1" />
+                            <img src="{{ '{%=file.download_url%}' }}
+                        ?s=150" class="pic-new" data-setted-size="{{ '{%=file.download_url%}' }}?s=60&amp;size-fit=1" />
                     </div>
                     {{ '{% } %}' }}
                     {{ '{% } %}' }}
-                </script>
-        </form>
-	</section>
-	{{ dp_widget_tabs(baseId, 'ticket', 'messages', 'section', 'article', ticket_api) }}
-</div>
-<a class="tab-anchor" href="#">&nbsp;</a>
 
 
+                    </script>
+                </form>
+            </section>
+            {{ dp_widget_tabs(baseId, 'ticket', 'messages', 'section', 'article', ticket_api) }}
+        </div>
+        <a class="tab-anchor" href="#">&nbsp;</a>
 
-</div>
+
+    </div>
 </div>

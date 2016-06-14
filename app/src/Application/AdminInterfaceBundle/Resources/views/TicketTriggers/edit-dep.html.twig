@@ -7,12 +7,12 @@
 				<div class="panel panel-fill indent">
 					<div class="panel-body">
 						<div class="form-group">
-							<h3>"{{ ng_var('TicketTriggersEdit.dep.title') }}" Department Trigger</h3>
+							<h3>"{{ ng_var('TicketTriggersEdit.dep.title') }}" {{ phrase('adm.ticket_triggers.dep_trigger_title') }}</h3>
 							<p style="margin-top: 15px;" ng-if="TicketTriggersEdit.eventType == 'newticket'">
-								This is a department trigger. It will apply when a new ticket is created with this department.
+								{{ phrase('adm.ticket_triggers.dep_trigger_description_newticket') }}
 							</p>
 							<p style="margin-top: 15px;" ng-if="TicketTriggersEdit.eventType == 'update'">
-								This is a department trigger. It will apply when a ticket is moved into this department.
+								{{ phrase('adm.ticket_triggers.dep_trigger_description_update') }}
 							</p>
 						</div>
 					</div>

@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\InstallBundle\Upgrade\Build\Helper201405;
 
 use Application\DeskPRO\Tickets\Actions;
@@ -59,26 +57,26 @@ class TriggerActionConverter
         $func = "upgradeAction_{$t}";
 
         if (!method_exists($this, $func)) {
-            $e = new \Exception("Unknown trigger action: " . $info['type']);
+            $e = new \Exception('Unknown trigger action: '.$info['type']);
             KernelErrorHandler::logException($e);
 
-            return null;
+            return;
         }
 
         try {
             return $this->$func($info['type'], new OptionsArray($info['options']));
         } catch (\Exception $e) {
-            $e = new \Exception("Invalid trigger option: " . $e->getMessage());
+            $e = new \Exception('Invalid trigger option: '.$e->getMessage());
             KernelErrorHandler::logException($e);
 
-            return null;
+            return;
         }
     }
 
     private function upgradeAction_add_agent_notify($type, OptionsArray $options)
     {
         // no translation
-        return null;
+        return;
     }
 
     private function upgradeAction_add_cc($type, OptionsArray $options)
@@ -105,7 +103,7 @@ class TriggerActionConverter
         $labels = Arrays::removeEmptyString($labels);
 
         if (!$labels) {
-            return null;
+            return;
         }
 
         return new Actions\SetLabels(array('add_labels' => $labels));
@@ -160,7 +158,7 @@ class TriggerActionConverter
     {
         return array(
             new Actions\ModMuteAgentEmails(),
-            new Actions\ModMuteUserEmails()
+            new Actions\ModMuteUserEmails(),
         );
     }
 
@@ -172,18 +170,18 @@ class TriggerActionConverter
     private function upgradeAction_enable_new_ticket_confirmation($type, OptionsArray $options)
     {
         return new Actions\SendUserEmail(array(
-            'template' => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
+            'template'    => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
             'do_cc_users' => true,
-            'from_name' => 'helpdesk_name',
+            'from_name'   => 'helpdesk_name',
         ));
     }
 
     private function upgradeAction_enable_user_notification_new_reply_user($type, OptionsArray $options)
     {
         return new Actions\SendUserEmail(array(
-            'template' => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
+            'template'    => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
             'do_cc_users' => true,
-            'from_name' => 'helpdesk_name',
+            'from_name'   => 'helpdesk_name',
         ));
     }
 
@@ -204,7 +202,7 @@ class TriggerActionConverter
 
     private function upgradeAction_hold($type, OptionsArray $options)
     {
-        return new Actions\SetHold(array('is_hold' => (bool)$options->get('is_hold')));
+        return new Actions\SetHold(array('is_hold' => (bool) $options->get('is_hold')));
     }
 
     private function upgradeAction_language($type, OptionsArray $options)
@@ -225,7 +223,7 @@ class TriggerActionConverter
     private function upgradeAction_recalculate_sla_status($type, OptionsArray $options)
     {
         // no translation (not required)
-        return null;
+        return;
     }
 
     private function upgradeAction_remove_labels($type, OptionsArray $options)
@@ -243,7 +241,7 @@ class TriggerActionConverter
         $labels = Arrays::removeEmptyString($labels);
 
         if (!$labels) {
-            return null;
+            return;
         }
 
         return new Actions\SetLabels(array('remove_labels' => $labels));
@@ -260,7 +258,7 @@ class TriggerActionConverter
             'reply_text'        => $options->get('reply_text'),
             'by_assigned_agent' => true,
             'by_agent_id'       => 1,
-            'no_formatter'      => false
+            'no_formatter'      => false,
         ));
     }
 
@@ -268,7 +266,7 @@ class TriggerActionConverter
     {
         return new Actions\SendAgentEmail(array(
             'agent_ids' => $options->get('agents', array()),
-            'template' => $this->getNewTemplateName($options->get('template_name'))
+            'template'  => $this->getNewTemplateName($options->get('template_name')),
         ));
     }
 
@@ -289,76 +287,76 @@ class TriggerActionConverter
     private function upgradeAction_send_org_managers_email($type, OptionsArray $options)
     {
         // no translation (requires full email template)
-        return null;
+        return;
     }
 
     private function upgradeAction_send_user_email($type, OptionsArray $options)
     {
         return new Actions\SendUserEmail(array(
-            'template' => $this->getNewTemplateName($options->get('template_name'))
+            'template' => $this->getNewTemplateName($options->get('template_name')),
         ));
     }
 
     private function upgradeAction_set_agent_email_template_newticket($type, OptionsArray $options)
     {
         // no translation
-        return null;
+        return;
     }
 
     private function upgradeAction_set_email_template_user_new_ticket($type, OptionsArray $options)
     {
         // no translation
-        return null;
+        return;
     }
 
     private function upgradeAction_set_from_address($type, OptionsArray $options)
     {
         // no translation
-        return null;
+        return;
     }
 
     private function upgradeAction_set_from_address_agent($type, OptionsArray $options)
     {
         // no translation
-        return null;
+        return;
     }
 
     private function upgradeAction_set_from_name($type, OptionsArray $options)
     {
         // no translation
-        return null;
+        return;
     }
 
     private function upgradeAction_set_from_name_agent($type, OptionsArray $options)
     {
         // no translation
-        return null;
+        return;
     }
 
     private function upgradeAction_set_gateway_address($type, OptionsArray $options)
     {
         $address_id = $options->get('gateway_address_id', 0);
         if (!isset($this->mappings['gateway_address_to_email_account'][$address_id])) {
-            return null;
+            return;
         }
 
         $id = $this->mappings['gateway_address_to_email_account'][$address_id];
 
-        return new Actions\SetEmailAccount(array('email_account_id'=> $id));
+        return new Actions\SetEmailAccount(array('email_account_id' => $id));
     }
 
     private function upgradeAction_set_initial_from_name($type, OptionsArray $options)
     {
         // no translation
-        return null;
+        return;
     }
 
     private function upgradeAction_set_sla_complete($type, OptionsArray $options)
     {
         if ($options->get('sla_complete')) {
             return new Actions\SetSlasComplete(array(
-                'sla_ids' => array($options->get('sla_id')),
-                'sla_status' => 'nochange'
+                'sla_ids'    => array($options->get('sla_id')),
+                'sla_status' => 'nochange',
             ));
         } else {
             return new Actions\SetSlaReset(array('sla_ids' => array($options->get('sla_id'))));
@@ -368,21 +366,21 @@ class TriggerActionConverter
     private function upgradeAction_set_sla_status($type, OptionsArray $options)
     {
         return new Actions\SetSlasComplete(array(
-            'sla_ids' => array($options->get('sla_id')),
-            'sla_status' => $options->get('sla_status')
+            'sla_ids'    => array($options->get('sla_id')),
+            'sla_status' => $options->get('sla_status'),
         ));
     }
 
     private function upgradeAction_set_user_email_template_newreply_agent($type, OptionsArray $options)
     {
         // no translation
-        return null;
+        return;
     }
 
     private function upgradeAction_set_user_email_template_newticket($type, OptionsArray $options)
     {
         // no translation
-        return null;
+        return;
     }
 
     private function upgradeAction_status($type, OptionsArray $options)
@@ -403,13 +401,15 @@ class TriggerActionConverter
     private function upgradeAction_ticket_field($type, OptionsArray $options)
     {
         $field_id = Strings::extractRegexMatch('#\[(\d+)\]$#', $type);
-        if (!$field_id) return null;
+        if (!$field_id) {
+            return;
+        }
 
-        $value = Arrays::getValue($options->all(), 'custom_fields.field_'. $field_id);
+        $value = Arrays::getValue($options->all(), 'custom_fields.field_'.$field_id);
 
         return new Actions\SetTicketField(array(
             'field_id' => $field_id,
-            'value'    => $value
+            'value'    => $value,
         ));
     }
 
@@ -419,13 +419,13 @@ class TriggerActionConverter
         if ($num > 0) {
             $mode = Actions\SetUrgency::MODE_ADD;
         } else {
-            $num = abs($num);
+            $num  = abs($num);
             $mode = Actions\SetUrgency::MODE_SUB;
         }
 
         return new Actions\SetUrgency(array(
             'urgency' => $num,
-            'mode'    => $mode
+            'mode'    => $mode,
         ));
     }
 
@@ -433,7 +433,7 @@ class TriggerActionConverter
     {
         return new Actions\SetUrgency(array(
             'urgency' => $options->get('num'),
-            'mode'    => $options->get('allow_lower') ? Actions\SetUrgency::MODE_RAISE : Actions\SetUrgency::MODE_SET
+            'mode'    => $options->get('allow_lower') ? Actions\SetUrgency::MODE_RAISE : Actions\SetUrgency::MODE_SET,
         ));
     }
 

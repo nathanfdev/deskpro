@@ -3,7 +3,7 @@
 	<h4 class="modal-title">Delete Agent</h4>
 {% endblock %}
 {% block modal_body %}
-	<ul class="big-option-list">
+	<ul class="big-option-list" ng-if="!isSelf">
 		<li ng-class="{'active': options.method == 'user'}">
 			<div class="inner-group" dp-error-class="form_props.title">
 				<h3>
@@ -34,11 +34,17 @@
 			</ul>
 		</li>
 	</ul>
+	<p ng-if="isSelf">
+		You cannot delete yourself.
+	</p>
 {% endblock %}
 {% block modal_footer %}
-	<button class="btn btn-danger" ng-click="doDelete(options)" ng-hide="is_loading">
+	<button class="btn btn-danger" ng-click="doDelete(options)" ng-hide="isSelf || is_loading">
 		<span ng-show="options.method == 'user'"><i class="fa fa-user"></i> Convert agent into user</span>
 		<span ng-show="options.method == 'delete'"><i class="fa fa-trash-o"></i> Mark the agent account as deleted</span>
+	</button>
+	<button class="btn btn-default" ng-click="dismiss()" ng-if="isSelf">
+		Cancel
 	</button>
 
 	<i class="spinner-flat" ng-show="is_loading"></i>

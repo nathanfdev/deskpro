@@ -5,7 +5,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Ad
     @DEPS      = []
 
     init: ->
-      @default_fwd_regex = '/^(FW|FWD|VL|WG|FS|VB|RV|VS):/i'
+      @default_fwd_regex = '/^(FW|FWD|VL|WG|FS|VB|RV|VS|TR):/i'
       @email_accounts = []
       @$scope.$watch('settings.use_account', (accId) =>
         accId = parseInt(accId)

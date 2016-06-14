@@ -84,7 +84,10 @@
 										>
 								Enable DeskPRO Authentication
 							</label>
-							<div class="text-danger" ng-show="!can_disable_deskpro">{{ phrase('adm.usersources.error_last_usersource') }}</div>
+							<div class="text-danger" ng-show="!can_disable_deskpro">
+								<span ng-if="'agent' === Ctrl.usersourceType">{{ phrase('adm.usersources.error_last_usersource_agent') }}</span>
+								<span ng-if="'user' === Ctrl.usersourceType">{{ phrase('adm.usersources.error_last_usersource') }}</span>
+							</div>
 							<span class="help-block">The DeskPRO usersource is the built-in usersource of DeskPRO by default. You can disable it by unchecking this box.</span>
 						</div>
 					</div>

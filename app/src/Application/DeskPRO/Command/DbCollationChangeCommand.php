@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -50,21 +48,21 @@ class DbCollationChangeCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
     {
         $collation = $input->getOption('collation');
         if (!$collation || !preg_match('/^utf8_([a-z0-9_]+)_ci$/', $collation)) {
-            $output->writeln("No --collation argument given or not a utf8_xxx_ci type.");
+            $output->writeln('No --collation argument given or not a utf8_xxx_ci type.');
 
             return 1;
         }
 
         $start = microtime(true);
-        $db = App::getDb();
+        $db    = App::getDb();
 
         set_time_limit(0);
 
-        if (file_exists(dp_get_tmp_dir() . '/db-collation-status.txt')) {
-            @unlink(dp_get_tmp_dir() . '/db-collation-status.txt');
+        if (file_exists(dp_get_tmp_dir().'/db-collation-status.txt')) {
+            @unlink(dp_get_tmp_dir().'/db-collation-status.txt');
         }
         $write_status = function ($table, $type = 'table') use ($collation) {
-            $fp = @fopen(dp_get_tmp_dir() . '/db-collation-status.txt', 'w');
+            $fp = @fopen(dp_get_tmp_dir().'/db-collation-status.txt', 'w');
             if (!$fp) {
                 return false;
             }
@@ -83,13 +81,13 @@ class DbCollationChangeCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
 
             return 2;
         }
-        @chmod(dp_get_tmp_dir() . '/db-collation-status.txt', 0777);
+        @chmod(dp_get_tmp_dir().'/db-collation-status.txt', 0777);
 
         $db->executeQuery('SET foreign_key_checks = 0');
 
         $tables = $db->fetchAll('SHOW TABLE STATUS');
-        foreach ($tables AS $table) {
-            echo str_pad("Updating $table[Name]...", 50) . "\r";
+        foreach ($tables as $table) {
+            echo str_pad("Updating $table[Name]...", 50)."\r";
             $write_status($table['Name']);
 
             $changes = array();
@@ -98,21 +96,21 @@ class DbCollationChangeCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
             }
 
             $columns = $db->fetchAll("SHOW FULL COLUMNS FROM `$table[Name]`");
-            foreach ($columns AS $column) {
+            foreach ($columns as $column) {
                 if (!empty($column['Collation']) && $column['Collation'] != $collation) {
                     $def = "$column[Type] "
-                        . " CHARACTER SET utf8 COLLATE $collation "
-                        . ($column['Null'] == 'NO' ? ' NOT NULL ' : ' NULL ')
-                        . ($column['Default'] !== null ? ' DEFAULT ' . $db->quote($column['Default']) : '')
-                        . ($column['Extra'] ? " $column[Extra] " : '')
-                        . ($column['Comment'] ? ' COMMENT ' . $db->quote($column['Comment']) : '');
+                        ." CHARACTER SET utf8 COLLATE $collation "
+                        .($column['Null'] == 'NO' ? ' NOT NULL ' : ' NULL ')
+                        .($column['Default'] !== null ? ' DEFAULT '.$db->quote($column['Default']) : '')
+                        .($column['Extra'] ? " $column[Extra] " : '')
+                        .($column['Comment'] ? ' COMMENT '.$db->quote($column['Comment']) : '');
                     $changes[] = "CHANGE  `$column[Field]` `$column[Field]` $def";
                 }
             }
 
             if ($changes) {
                 $db->executequery("
-                    ALTER TABLE `$table[Name]` " . implode(', ', $changes)
+                    ALTER TABLE `$table[Name]` ".implode(', ', $changes)
                 );
             }
         }
@@ -120,9 +118,9 @@ class DbCollationChangeCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
         $db->executeQuery('SET foreign_key_checks = 1');
 
         App::getContainer()->getSettingsHandler()->setSetting('core.db_collation', $collation);
-        @unlink(dp_get_tmp_dir() . '/db-collation-status.txt');
+        @unlink(dp_get_tmp_dir().'/db-collation-status.txt');
 
-        echo str_pad("", 50) . "\r";
-        $output->writeln(sprintf("Completed in %.4f seconds.", microtime(true) - $start));
+        echo str_pad('', 50)."\r";
+        $output->writeln(sprintf('Completed in %.4f seconds.', microtime(true) - $start));
     }
 }

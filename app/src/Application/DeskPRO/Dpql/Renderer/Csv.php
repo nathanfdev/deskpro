@@ -1,39 +1,35 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Dpql
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Dpql\Renderer;
-
 
 /**
  * Renders DPQL results to CSV.
@@ -119,27 +115,27 @@ class Csv extends AbstractRenderer
         $output = array();
 
         $columns = array();
-        foreach ($groupXColumns AS $column) {
+        foreach ($groupXColumns as $column) {
             $columns[] = $this->wrapCell($column['title']);
         }
-        foreach ($groupYColumns AS $column) {
+        foreach ($groupYColumns as $column) {
             $columns[] = $this->wrapCell($column['title']);
         }
-        foreach ($selectColumns AS $column) {
+        foreach ($selectColumns as $column) {
             $columns[] = $this->wrapCell($column['title']);
         }
 
         $output[] = implode(',', $columns);
 
-        foreach ($rows AS $row) {
+        foreach ($rows as $row) {
             $columns = array();
-            foreach ($groupXColumns AS $column) {
+            foreach ($groupXColumns as $column) {
                 $columns[] = $this->wrapCell($this->_renderCellValue($row, $column));
             }
-            foreach ($groupYColumns AS $column) {
+            foreach ($groupYColumns as $column) {
                 $columns[] = $this->wrapCell($this->_renderCellValue($row, $column));
             }
-            foreach ($selectColumns AS $column) {
+            foreach ($selectColumns as $column) {
                 $columns[] = $this->wrapCell($this->_renderCellValue($row, $column));
             }
 
@@ -153,7 +149,7 @@ class Csv extends AbstractRenderer
             $cells = array();
 
             if ($groupYColumns) {
-                foreach ($groupYColumns AS $column) {
+                foreach ($groupYColumns as $column) {
                     $cells[] = $this->wrapCell('');
                 }
                 array_pop($cells);
@@ -161,8 +157,8 @@ class Csv extends AbstractRenderer
             }
 
             $columnTotals = array();
-            foreach ($rows AS $row) {
-                foreach ($totalColumns AS $id) {
+            foreach ($rows as $row) {
+                foreach ($totalColumns as $id) {
                     if ($this->getColumnValue($row, $id) === null) {
                         continue;
                     }
@@ -175,12 +171,12 @@ class Csv extends AbstractRenderer
             }
 
             $firstRow = reset($rows);
-            $fakeRow = array_fill_keys(array_keys($firstRow), null);
-            foreach ($columnTotals AS $id => $value) {
+            $fakeRow  = array_fill_keys(array_keys($firstRow), null);
+            foreach ($columnTotals as $id => $value) {
                 $fakeRow[$id - 1] = $value;
             }
 
-            foreach ($selectColumns AS $column) {
+            foreach ($selectColumns as $column) {
                 if (isset($columnTotals[$column['resultId']])) {
                     $cells[] = $this->wrapCell($this->_renderCellValue($fakeRow, $column));
                 } else {
@@ -203,15 +199,15 @@ class Csv extends AbstractRenderer
     protected function _renderMatrixTable(array $rows)
     {
         $prepared = $this->_prepareMatrixTable($rows);
-        $lookup = $prepared['lookup'];
+        $lookup   = $prepared['lookup'];
 
         $rows = array();
 
-        $rowGroups = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['yDistinct']);
+        $rowGroups  = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['yDistinct']);
         $headerCols = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['xDistinct']);
 
         $select = $this->_handler->getSelectColumns();
-        $first = reset($select);
+        $first  = reset($select);
         if (count($select) == 1 && in_array($first['renderer'], array('number', 'numberraw'), true)) {
             $totalType = $first['renderer'];
         } else {
@@ -219,15 +215,15 @@ class Csv extends AbstractRenderer
         }
 
         $headerRow = array();
-        foreach ($this->_handler->getGroupYColumns() AS $column) {
+        foreach ($this->_handler->getGroupYColumns() as $column) {
             $headerRow[] = $this->wrapCell('');
         }
         $parts = array();
-        foreach ($this->_handler->getGroupXColumns() AS $column) {
+        foreach ($this->_handler->getGroupXColumns() as $column) {
             $parts[] = $column['title'];
         }
         $headerRow[] = $this->wrapCell(implode(' / ', $parts));
-        foreach ($headerCols AS $headerCol) {
+        foreach ($headerCols as $headerCol) {
             $headerRow[] = $this->wrapCell('');
         }
         array_pop($headerRow);
@@ -238,10 +234,10 @@ class Csv extends AbstractRenderer
         $rows[] = implode(',', $headerRow);
 
         $headerRow = array();
-        foreach ($this->_handler->getGroupYColumns() AS $column) {
+        foreach ($this->_handler->getGroupYColumns() as $column) {
             $headerRow[] = $this->wrapCell($column['title']);
         }
-        foreach ($headerCols AS $headerCol) {
+        foreach ($headerCols as $headerCol) {
             $headerRow[] = $this->wrapCell(implode(' / ', $headerCol));
         }
 
@@ -258,15 +254,15 @@ class Csv extends AbstractRenderer
 
         $columnTotals = array();
 
-        foreach ($rowGroups AS $yPath => $printable) {
-            $columns = array();
+        foreach ($rowGroups as $yPath => $printable) {
+            $columns  = array();
             $rowTotal = 0;
 
-            foreach ($printable AS $print) {
+            foreach ($printable as $print) {
                 $columns[] = $this->wrapCell($print);
             }
 
-            foreach ($headerCols AS $xPath => $null) {
+            foreach ($headerCols as $xPath => $null) {
                 if (isset($lookup[$yPath][$xPath])) {
                     $value = $lookup[$yPath][$xPath];
                 } else {
@@ -292,12 +288,12 @@ class Csv extends AbstractRenderer
 
         if ($totalType && $this->_handler->getGroupYColumns()) {
             $columns = array();
-            foreach ($this->_handler->getGroupYColumns() AS $rowGroupSkip) {
+            foreach ($this->_handler->getGroupYColumns() as $rowGroupSkip) {
                 $columns[] = $this->wrapCell('');
             }
             array_pop($columns);
             $columns[] = $this->wrapCell('Total');
-            foreach ($columnTotals AS $value) {
+            foreach ($columnTotals as $value) {
                 $columns[] = $this->wrapCell($this->_valueRenderer->renderValue($value, $totalType));
             }
             $columns[] = $this->wrapCell($this->_valueRenderer->renderValue(array_sum($columnTotals), $totalType));

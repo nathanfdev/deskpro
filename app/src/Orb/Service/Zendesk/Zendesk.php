@@ -1,38 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @subpackage Service
- * @category Zendesk
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Zendesk
+ */
 namespace Orb\Service\Zendesk;
 
 /**
@@ -70,7 +68,6 @@ class Zendesk
      */
     protected $listeners = array();
 
-
     /**
      * Get your $api_key from Settings > Channels > API.
      * If you use your password instead of a token, prefix it with password:. Ex: $api_key = "password:secretpassword".
@@ -99,14 +96,13 @@ class Zendesk
 
         // Not a URL, assume we got just a domain
         if (!preg_match('#^https?://#', $zendesk_url)) {
-            $zendesk_url = 'https://' . $zendesk_url . '/api/v2';
+            $zendesk_url = 'https://'.$zendesk_url.'/api/v2';
         } else {
             $zendesk_url = rtrim($zendesk_url, '/');
         }
 
         $this->zendesk_url = $zendesk_url;
     }
-
 
     /**
      * @return string
@@ -116,7 +112,6 @@ class Zendesk
         return $this->zendesk_url;
     }
 
-
     /**
      * @return string
      */
@@ -124,7 +119,6 @@ class Zendesk
     {
         return $this->user_id;
     }
-
 
     /**
      * @return string
@@ -137,7 +131,6 @@ class Zendesk
 
         return preg_replace('#^token:#', '', $this->api_key);
     }
-
 
     /**
      * Add a callback function to listen to events. Mainly useful for logging.
@@ -152,42 +145,41 @@ class Zendesk
         $this->listeners[] = $callback;
     }
 
-
     /**
      * @param int $timeout
      */
     public function setTimeout($timeout)
     {
-        $this->timeout = (int)$timeout;
+        $this->timeout = (int) $timeout;
     }
 
-
     /**
-     * @param  string $id
+     * @param string $id
+     *
      * @return string
      */
     public function getUrlForEndpoint($id)
     {
-        return $this->zendesk_url . '/' . $id . '.json';
+        return $this->zendesk_url.'/'.$id.'.json';
     }
 
-
     /**
-     * Send a GET request
+     * Send a GET request.
      *
-     * @return \Orb\Service\Zendesk\ApiResponse
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
+     *
+     * @return \Orb\Service\Zendesk\ApiResponse
      */
     public function sendGet($id, array $query_data = null)
     {
         return $this->sendRequest($id, self::GET, null, $query_data);
     }
 
-
     /**
-     * @param  array $requests Array of array($id, $query_data) to be called async
+     * @param array $requests Array of array($id, $query_data) to be called async
+     *
      * @return array Array of results
      */
     public function sendGetMulti(array $requests)
@@ -201,7 +193,7 @@ class Zendesk
                 $req = array($req, null);
             }
 
-            $ev = $this->sendRequest($req[0], self::GET, null, $req[1], true);
+            $ev             = $this->sendRequest($req[0], self::GET, null, $req[1], true);
             $request_ev[$k] = $ev;
 
             $ev = $this->_callListeners('preCall', $ev);
@@ -215,27 +207,27 @@ class Zendesk
         } while ($running > 0);
 
         foreach ($request_ev as &$ev) {
-            $ev['output'] = @curl_multi_getcontent($ev['ch']);
+            $ev['output']    = @curl_multi_getcontent($ev['ch']);
             $ev['http_code'] = @curl_getinfo($ev['ch'], CURLINFO_HTTP_CODE);
-            $ev = $this->_callListeners('postCall', $ev);
+            $ev              = $this->_callListeners('postCall', $ev);
 
             $ev['exception'] = null;
-            $ev['response'] = null;
+            $ev['response']  = null;
 
             if (@curl_errno($ev['ch'])) {
-                $ev['exception'] = new \RuntimeException(sprintf("cURL Error: %s: %s", curl_errno($ev['ch']), curl_error($ev['ch'])));
+                $ev['exception'] = new \RuntimeException(sprintf('cURL Error: %s: %s', curl_errno($ev['ch']), curl_error($ev['ch'])));
             }
 
             if ($ev['output'] === false || !$ev['http_code']) {
-                $ev['exception'] = new ApiException("Request failed", ApiException::REQUEST_FAILED, null, $ev['output']);
+                $ev['exception'] = new ApiException('Request failed', ApiException::REQUEST_FAILED, null, $ev['output']);
             }
 
             if (!$ev['exception']) {
                 try {
-                    $response = new ApiResponse($ev['http_code'], $ev['output']);
+                    $response       = new ApiResponse($ev['http_code'], $ev['output']);
                     $ev['response'] = $response;
                 } catch (ApiException $e) {
-                    $ev['response'] = null;
+                    $ev['response']  = null;
                     $ev['exception'] = $e;
                 }
                 $ev = $this->_callListeners('postResponse', $ev);
@@ -251,31 +243,31 @@ class Zendesk
         return $request_ev;
     }
 
-
     /**
      * Just like sendGet except this will attempt to build a complete collection
      * by re-calling the 'next_page' and appending results.
      *
      * This returns an ARRAY of all results.
      *
-     * @return array
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
+     *
+     * @return array
      */
     public function sendGetAll($id, $key, array $query_data = null)
     {
         $result = array();
 
-        $next_id = $id;
+        $next_id     = $id;
         $next_params = $query_data;
         while ($next_id) {
-            $res = $this->sendRequest($next_id, self::GET, null, $next_params);
+            $res         = $this->sendRequest($next_id, self::GET, null, $next_params);
             $next_params = null;
 
             if ($res->isError()) {
                 throw new ApiException(
-                    "Could not complete: " . $res->getErrorDescription(),
+                    'Could not complete: '.$res->getErrorDescription(),
                     ApiException::API_ERROR,
                     $res->getErrorCode(),
                     $res->getRaw()
@@ -292,63 +284,66 @@ class Zendesk
         return $result;
     }
 
-
     /**
-     * Send a DELETE request
+     * Send a DELETE request.
      *
-     * @return \Orb\Service\Zendesk\ApiResponse
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
+     *
+     * @return \Orb\Service\Zendesk\ApiResponse
      */
     public function sendDelete($id)
     {
         return $this->sendRequest($id, self::DELETE, null);
     }
 
-
     /**
-     * Send a PUT request
+     * Send a PUT request.
      *
-     * @param  string                            $id
-     * @param  array                             $call_data
-     * @return \Orb\Service\Zendesk\ApiResponse
+     * @param string $id
+     * @param array  $call_data
+     *
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
+     *
+     * @return \Orb\Service\Zendesk\ApiResponse
      */
     public function sendPut($id, array $call_data)
     {
         return $this->sendRequest($id, self::PUT, $call_data);
     }
 
-
     /**
-     * Send a GET request
+     * Send a GET request.
      *
-     * @param  string                            $id
-     * @param  array                             $call_data
-     * @return \Orb\Service\Zendesk\ApiResponse
+     * @param string $id
+     * @param array  $call_data
+     *
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
+     *
+     * @return \Orb\Service\Zendesk\ApiResponse
      */
     public function sendPost($id, array $call_data)
     {
         return $this->sendRequest($id, self::POST, $call_data);
     }
 
-
     /**
-     * Send an API request
+     * Send an API request.
      *
-     * @param  string                            $id
-     * @param  string                            $action
-     * @param  array                             $call_data The set
-     * @return \Orb\Service\Zendesk\ApiResponse
+     * @param string $id
+     * @param string $action
+     * @param array  $call_data The set
+     *
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
+     *
+     * @return \Orb\Service\Zendesk\ApiResponse
      */
     public function sendRequest($id, $action, array $call_data = null, array $query_data = null, $no_exec = false)
     {
@@ -356,7 +351,7 @@ class Zendesk
             'id'         => $id,
             'action'     => $action,
             'call_data'  => $call_data,
-            'query_data' => $query_data
+            'query_data' => $query_data,
         );
 
         $ev_data = $this->_callListeners('preInit', $ev_data);
@@ -369,7 +364,7 @@ class Zendesk
         if ($call_data) {
             $call_json = json_encode($call_data);
             if (!$call_json) {
-                throw new \InvalidArgumentException("Could not encode call data", -1);
+                throw new \InvalidArgumentException('Could not encode call data', -1);
             }
         } else {
             $call_json = '[]';
@@ -387,26 +382,26 @@ class Zendesk
         }
 
         if ($query_string) {
-            $url .= '?' . $query_string;
+            $url .= '?'.$query_string;
         }
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_USERPWD, $this->user_id."/".$this->api_key);
+        curl_setopt($ch, CURLOPT_USERPWD, $this->user_id.'/'.$this->api_key);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-        curl_setopt($ch, CURLOPT_USERAGENT, "DeskPRO_Orb/1.0");
+        curl_setopt($ch, CURLOPT_USERAGENT, 'DeskPRO_Orb/1.0');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
 
-        switch($action){
+        switch ($action) {
             case self::POST:
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $call_json);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                     'Content-Type: application/json',
-                    'Content-Length: ' . strlen($call_json))
+                    'Content-Length: '.strlen($call_json), )
                 );
 
                 break;
@@ -445,15 +440,15 @@ class Zendesk
 
         $ev_data['output']    = $output;
         $ev_data['http_code'] = $http_code;
-        $ev_data = $this->_callListeners('postCall', $ev_data);
+        $ev_data              = $this->_callListeners('postCall', $ev_data);
         extract($ev_data, \EXTR_OVERWRITE);
 
         if (curl_errno($ch)) {
-            throw new \RuntimeException(sprintf("cURL Error: %s: %s", curl_errno($ch), curl_error($ch)));
+            throw new \RuntimeException(sprintf('cURL Error: %s: %s', curl_errno($ch), curl_error($ch)));
         }
 
         if ($output === false || !$http_code) {
-            throw new ApiException("Request failed", ApiException::REQUEST_FAILED, null, $output);
+            throw new ApiException('Request failed', ApiException::REQUEST_FAILED, null, $output);
         }
 
         curl_close($ch);
@@ -461,14 +456,15 @@ class Zendesk
         $response = new ApiResponse($http_code, $output);
 
         $ev_data['response'] = $response;
-        $ev_data = $this->_callListeners('postResponse', $ev_data);
+        $ev_data             = $this->_callListeners('postResponse', $ev_data);
         extract($ev_data, \EXTR_OVERWRITE);
 
         return $response;
     }
 
     /**
-     * @param  array $ev_data
+     * @param array $ev_data
+     *
      * @return array
      */
     protected function _callListeners($event_name, array $ev_data)

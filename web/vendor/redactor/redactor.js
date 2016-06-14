@@ -3426,7 +3426,7 @@ var RLANG = {
 
 				$('.redactor_link_text').val(text);
 
-				var thref = self.location.href.replace(/\/$/i, '');
+				var thref = window.location.href.replace(/\/$/i, '');
 				var turl = url.replace(thref, '');
 
 				if (url.search('mailto:') === 0)
@@ -4190,8 +4190,8 @@ var RLANG = {
 	"use strict";
 
 	var protocol = 'http://';
-	var url1 = /(^|&lt;|\s)(www\..+?\..+?)(\s|&gt;|$)/g,
-	url2 = /(^|&lt;|\s)(((https?|ftp):\/\/|mailto:).+?)(\s|&gt;|$)/g,
+	var url1 = /(^|&lt;|\s)(www\..+?\..+?)(\.?[\s<>\)\"\']|\.?$)/g,
+			url2 = /(^|&lt;|\s)(((https?|ftp):\/\/|mailto:).+?)(\.?[\s<>\)\"\']|\.?$)/g,
 
 		linkifyThis = function ()
 		{

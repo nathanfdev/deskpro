@@ -49,37 +49,21 @@
 	{% endfor %}
 	{% endif %}
 
-	{% if not show_only or show_only.mobile %}
-	{% for contact in contact_data.mobile %}
-		<li class="mobile {% if contact.rec.comment %}tipped{% endif %}" {% if contact.rec.comment %}title="{{ contact.rec.comment }}"{% endif %} data-tipped-options="hook: 'leftmiddle'">
-			{% if contact.country_calling_code %}
-				<span class="country-code">+{{ contact.country_calling_code }}</span>
-			{% endif %}
-			<span class="number">{{ contact.number }} {% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}</span>
-		</li>
-	{% endfor %}
-	{% endif %}
-
 	{% if not show_only or show_only.phone %}
-	{% for contact in contact_data.phone %}
-		<li class="{{ contact.type }} {% if contact.rec.comment %}tipped{% endif %}" {% if contact.rec.comment %}title="{{ contact.rec.comment }}"{% endif %} data-tipped-options="hook: 'leftmiddle'">
-			{% if contact.country_calling_code %}
-				<span class="country-code">+{{ contact.country_calling_code }}</span>
-			{% endif %}
-			<span class="number">{{ contact.number }} {% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}</span>
-		</li>
-	{% endfor %}
-	{% endif %}
-
-	{% if not show_only or show_only.fax %}
-	{% for contact in contact_data.fax %}
-		<li class="fax {% if contact.rec.comment %}tipped{% endif %}" {% if contact.rec.comment %}title="{{ contact.rec.comment }}"{% endif %} data-tipped-options="hook: 'leftmiddle'">
-			{% if contact.country_calling_code %}
-				<span class="country-code">+{{ contact.country_calling_code }}</span>
-			{% endif %}
-			<span class="number">{{ contact.number }}</span> {% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}
-		</li>
-	{% endfor %}
+		{# phone.number will be blank is it failed form validation #}
+		{% for phone in person.phone_numbers if phone.number|trim|length > 0 %}
+			<li class="{{ 1 == phone.guessed_type ? 'mobile' : 'phone' }}{% if phone.label %} tipped{% endif %}"{% if phone.label %} title="{{ phone.label }}"{% endif %}>
+				<a href="tel:{{ phone.getNumberFormatted()|replace({' ': '', '-': ''}) }}">
+				<span class="number">{{ phone.getNumberFormatted() }}</span>
+				{% if phone.ext %}
+				<span class="ext">ext. {{ phone.ext }}</span>
+				{% endif %}
+				{% if phone.label %}
+					<strong>{{ phone.label }}</strong>
+				{% endif %}
+				</a>
+			</li>
+		{% endfor %}
 	{% endif %}
 
 	{% if not show_only or show_only.instant_message %}
@@ -98,7 +82,7 @@
 	<div class="addresses">
 		<ul>
 			{% for contact in contact_data.address %}
-				<li class="address tipped" data-tipped='{% if contact.rec.comment %}{{ contact.rec.comment }}<br />{% endif %}<img src="{{ contact.map_url }}" width="200" height="200" />' data-tipped-options="hook: 'leftmiddle'">
+				<li class="address tipped" data-tipped='{% if contact.rec.comment %}{{ contact.rec.comment }}<br />{% endif %}<img src="{{ contact.map_url }}" width="200" height="200" />' data-tipped-options="hook: 'leftmiddle'" data-as-html="true">
 					{{ contact.address_html|raw }} <br/>{% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}
 				</li>
 			{% endfor %}

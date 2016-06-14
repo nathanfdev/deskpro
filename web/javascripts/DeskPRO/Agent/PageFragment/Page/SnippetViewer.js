@@ -15,15 +15,51 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 	initPage: function(el) {
 		var self = this;
+		var driver;
 		this.snippet_typename = this.meta.snippet_typename;
 
 		if (this.snippet_typename == 'tickets') {
-			var driver = DeskPRO_Window.ticketSnippetDriver;
+			driver = DeskPRO_Window.ticketSnippetDriver;
 		} else {
-			var driver = DeskPRO_Window.chatSnippetDriver;
+			driver = DeskPRO_Window.chatSnippetDriver;
 		}
 
 		this.snippetDriver = driver;
+
+		//----------------------------------------
+		// Adv options
+		//----------------------------------------
+
+		this.refreshFilter = function() {
+			var categoryId = parseInt(catList.find('.on').data('category-id') || 0) || 0;
+			var filterString = $.trim(filterInput.val());
+			var languageId   = parseInt(langSelect.val()) || 0;
+			updateCatList(categoryId, filterString, languageId);
+		};
+
+		this.getEl('filters_adv_toggle').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			$(this).hide();
+			self.getEl('filters_adv').show();
+		});
+
+		this.getEl('draft_filter').on('change', function() {
+			self.refreshFilter();
+		});
+
+		var applyClientFilter = function(snippets) {
+			var draftOption = self.getEl('draft_filter').val();
+			return snippets.filter(function(s) {
+				switch (draftOption) {
+					case 'off':
+						return s.is_draft !== true;
+					case 'on':
+						return true;
+					case 'only':
+						return s.is_draft === true;
+				}
+			});
+		};
 
 		//----------------------------------------
 		// Browsing snippets
@@ -118,6 +154,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					var thisRequestTime = lastUpdateRequest;
 					var newList = $('<ul></ul>');
 
+					snippets = applyClientFilter(snippets);
+
 					Array.each(snippets, function(s) {
 						s.title_use   = pickLangText(s.title, myLangId, showLangId);
 						s.snippet_use = pickLangText(s.snippet, myLangId, showLangId);
@@ -168,18 +206,14 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 								return;
 							}
 
+							snippets = applyClientFilter(snippets);
+
 							Array.each(snippets, function(s) {
 								s.title_use   = pickLangText(s.title, myLangId, showLangId);
 								s.snippet_use = pickLangText(s.snippet, myLangId, showLangId);
 							});
 
 							snippets = sortSnippets(snippets);
-
-							var hasMore = false;
-							if (snippets.length > 15) {
-								var hasMore = true;
-								snippets = snippets.slice(0, 15);
-							}
 
 							var newListWrap = $('<div/>');
 							var catTitle = $('<div class="cat-title"/>');
@@ -200,7 +234,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					self.updateUi();
 				} else {
 					driver.loadSnippets({
-						filterString: filterString || null
+						filterString: filterString || null,
+						languageId: languageId || null
 					}, function(snippets) {
 						if (!snippets.length) {
 							return;
@@ -215,18 +250,14 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 								return;
 							}
 
+							catSnippets = applyClientFilter(catSnippets);
+
 							Array.each(catSnippets, function(s) {
 								s.title_use   = pickLangText(s.title, myLangId, showLangId);
 								s.snippet_use = pickLangText(s.snippet, myLangId, showLangId);
 							});
 
 							catSnippets = sortSnippets(catSnippets);
-
-							var hasMore = false;
-							if (catSnippets.length > 15) {
-								var hasMore = true;
-								catSnippets = catSnippets.slice(0, 15);
-							}
 
 							var newListWrap = $('<div/>');
 							var catTitle = $('<div class="cat-title"/>');
@@ -555,7 +586,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 							closeCatEditor();
 
 							if (data.error) {
-								alert("You cannot delete this category because it still has snippets in it. Delete the snippets first then try again.");
+								alert("You cannot delete this category because it still has snippets in it. Delete the snippets first then try again.\n\n-------------\n\nNumber of snippets: " + data.count + "\nNumber of drafts: " + data.count_drafts);
 								return;
 							}
 
@@ -739,6 +770,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			var oldShortcutCode = snippet.shortcut_code;
 
 			snippet.category_id = editSnippetEl.find('select.category_id').val();
+			snippet.is_draft = editSnippetEl.find('.is_draft_check').prop('checked');
 
 			editSnippetEl.find('.lang-bound-title').each(function() {
 				var langId = $(this).data('language-id');
@@ -782,7 +814,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				}
 			});
 
-			snippet.shortcut_code = editSnippetEl.find('.shortcut_code').val();
+			snippet.shortcut_code = !snippet.is_draft ? editSnippetEl.find('.shortcut_code').val() : null;
 
 			editSnippetEl.find('.overlay-footer').addClass('loading');
 			self.snippetDriver.saveSnippet(snippet, function(snippet) {
@@ -814,53 +846,40 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					}
 				}
 
-				var newShortcutCode = snippet.shortcut_code;
+				var newShortcutCode = snippet.shortcut_code,
+						key;
 
 				if (self.snippet_typename == 'tickets') {
-					if (oldShortcutCode && window.DESKPRO_TICKET_SNIPPET_SHORTCODES[oldShortcutCode]) {
-						var idx = window.DESKPRO_TICKET_SNIPPET_SHORTCODES[oldShortcutCode].indexOf(snippet.id);
-						if (idx !== -1) {
-							window.DESKPRO_TICKET_SNIPPET_SHORTCODES[oldShortcutCode].splice(idx, 1);
-						}
-						if (!window.DESKPRO_TICKET_SNIPPET_SHORTCODES[oldShortcutCode].length) {
-							delete window.DESKPRO_TICKET_SNIPPET_SHORTCODES[oldShortcutCode];
-						}
-					}
-					if (newShortcutCode) {
-						if (!window.DESKPRO_TICKET_SNIPPET_SHORTCODES[newShortcutCode]) {
-							window.DESKPRO_TICKET_SNIPPET_SHORTCODES[newShortcutCode] = [];
-						}
-						if (window.DESKPRO_TICKET_SNIPPET_SHORTCODES[newShortcutCode].indexOf(snippet.id) === -1) {
-							window.DESKPRO_TICKET_SNIPPET_SHORTCODES[newShortcutCode].push(snippet.id);
-						}
-
-						if (window.DESKPRO_TICKET_SNIPPET_SHORTCODES[newShortcutCode].length > 1) {
-							DeskPRO_Window.showAlert("Note: There are " + window.DESKPRO_TICKET_SNIPPET_SHORTCODES[newShortcutCode].length + " snippets with the shortcode '" + newShortcutCode + "'. When using this shortcode, all matching snippets will be inserted.");
-						}
-					}
+					key = 'DESKPRO_TICKET_SNIPPET_SHORTCODES';
 				} else if (self.snippet_typename == 'chat') {
-					if (oldShortcutCode && window.DESKPRO_CHAT_SNIPPET_SHORTCODES[oldShortcutCode]) {
-						var idx = window.DESKPRO_CHAT_SNIPPET_SHORTCODES[oldShortcutCode].indexOf(snippet.id);
+					key = 'DESKPRO_CHAT_SNIPPET_SHORTCODES';
+				}
+
+				if (key) {
+					if (oldShortcutCode && window[key][oldShortcutCode]) {
+						var idx = window[key][oldShortcutCode].indexOf(snippet.id);
 						if (idx !== -1) {
-							window.DESKPRO_CHAT_SNIPPET_SHORTCODES[oldShortcutCode].splice(idx, 1);
+							window[key][oldShortcutCode].splice(idx, 1);
 						}
-						if (!window.DESKPRO_CHAT_SNIPPET_SHORTCODES[oldShortcutCode].length) {
-							delete window.DESKPRO_CHAT_SNIPPET_SHORTCODES[oldShortcutCode];
+						if (!window[key][oldShortcutCode].length) {
+							delete window[key][oldShortcutCode];
 						}
 					}
 					if (newShortcutCode) {
-						if (!window.DESKPRO_CHAT_SNIPPET_SHORTCODES[newShortcutCode]) {
-							window.DESKPRO_CHAT_SNIPPET_SHORTCODES[newShortcutCode] = [];
+						if (!window[key][newShortcutCode]) {
+							window[key][newShortcutCode] = [];
 						}
-						if (window.DESKPRO_CHAT_SNIPPET_SHORTCODES[newShortcutCode].indexOf(snippet.id) === -1) {
-							window.DESKPRO_CHAT_SNIPPET_SHORTCODES[newShortcutCode].push(snippet.id);
+						if (window[key][newShortcutCode].indexOf(snippet.id) === -1) {
+							window[key][newShortcutCode].push(snippet.id);
 						}
 
-						if (window.DESKPRO_CHAT_SNIPPET_SHORTCODES[newShortcutCode].length > 1) {
-							DeskPRO_Window.showAlert("Note: There are " + window.DESKPRO_CHAT_SNIPPET_SHORTCODES[newShortcutCode].length + " snippets with the shortcode '" + newShortcutCode + "'. When using this shortcode, all matching snippets will be inserted.");
+						if (window[key][newShortcutCode].length > 1) {
+							DeskPRO_Window.showAlert("Note: There are " + window[key][newShortcutCode].length + " snippets with the shortcode '" + newShortcutCode + "'. When using this shortcode, all matching snippets will be inserted.");
 						}
 					}
 				}
+
+				self.refreshFilter();
 			}, function() {
 				editSnippetEl.find('.overlay-footer').removeClass('loading');
 			});
@@ -872,9 +891,23 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		//------------------------------
 
 		editSnippetEl.find('.delete-snippet-trigger').on('click', function(ev) {
-			var snippet = self.editingSnippet;
+			var snippet = self.editingSnippet,
+					key;
+
 			editSnippetEl.find('.overlay-footer').addClass('loading');
 			self.snippetDriver.deleteSnippet(snippet.id, function(snippet_id) {
+
+				if (self.snippet_typename == 'tickets') {
+					key = 'DESKPRO_TICKET_SNIPPET_SHORTCODES';
+				} else if (self.snippet_typename == 'chat') {
+					key = 'DESKPRO_CHAT_SNIPPET_SHORTCODES';
+				}
+
+				if (window[key] && window[key][snippet.shortcut_code]) {
+					var idx = window[key][snippet.shortcut_code].indexOf(snippet.id);
+					idx > -1 && window[key][snippet.shortcut_code].splice(idx, 1);
+				}
+
 				editSnippetEl.find('.overlay-footer').removeClass('loading');
 				self.snippetEditOverlay.close();
 
@@ -916,19 +949,36 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		if (!snippet) {
 			snippet = {
 				id: 0,
-				category_id: this.getEl('catlist').find('.on').data('category-id') || this.getEl('catlist').find('li').eq(1).data('category-id'),
+        category_id: this.getEl('catlist').find('.on').data('category-id') || this.getEl('catlist').find('li').eq(0).data('category-id'),
 				shortcut_code: '',
 				title: [],
 				snippet: []
 			};
 		}
 
+
 		this.editingSnippet = snippet;
 		var editSnippetEl = this.getEl('edit_snippet');
 		editSnippetEl.find('input, textarea').val('');
 		editSnippetEl.find('input.snippet_id').val(snippet.id);
-		editSnippetEl.find('select.category_id').val(snippet.category_id);
 		editSnippetEl.find('input.shortcut_code').val(snippet.shortcut_code);
+		editSnippetEl.find('.is_draft_check').prop('checked', snippet.is_draft).off().on('change', function(){
+			$(this).prop('checked')
+				? editSnippetEl.find('.snippet-shortcode-block').hide()
+				: editSnippetEl.find('.snippet-shortcode-block').show();
+		}).trigger('change');
+
+    // resort categories
+    var $sorted = this.getEl('editsnippet_category_select').children().sort(function(a, b){
+      var _a = $.trim($(a).text()).toLowerCase(),
+          _b = $.trim($(b).text()).toLowerCase();
+      if (0 === $(a).data('category-id')) return -1;
+      if (0 === $(b).data('category-id')) return 1;
+      return _a > _b ? 1 : -1;
+    }).remove();
+    this.getEl('editsnippet_category_select').append($sorted);
+
+    editSnippetEl.find('select.category_id').val(snippet.category_id);
 
 		if (snippet && snippet.id) {
 			editSnippetEl.find('.is-edit-snippet').show();

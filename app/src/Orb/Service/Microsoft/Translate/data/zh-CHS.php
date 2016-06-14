@@ -1,45 +1,73 @@
-<?php return array(
-    'ar'         => '阿拉伯语',
-    'bg'         => '保加利亚语',
-    'ca'         => '加泰隆语',
-    'zh-CHS'     => '简体中文',
-    'zh-CHT'     => '繁体中文',
-    'cs'         => '捷克语',
-    'da'         => '丹麦语',
-    'nl'         => '荷兰语',
-    'en'         => '英语',
-    'et'         => '爱沙尼亚语',
-    'fi'         => '芬兰语',
-    'fr'         => '法语',
-    'de'         => '德语',
-    'el'         => '希腊语',
-    'ht'         => '海地克里奥尔语',
-    'he'         => '希伯来语',
-    'hi'         => '印地语',
-    'mww'        => '白苗文',
-    'hu'         => '匈牙利语',
-    'id'         => '印度尼西亚语',
-    'it'         => '意大利语',
-    'ja'         => '日语',
-    'tlh'        => 'Klingon',
-    'tlh-QON'    => 'Klingon (Kronos)',
-    'ko'         => '朝鲜语',
-    'lv'         => '拉脱维亚语',
-    'lt'         => '立陶宛语',
-    'ms'         => '马来语',
-    'no'         => '挪威语',
-    'fa'         => '波斯语',
-    'pl'         => '波兰语',
-    'pt'         => '葡萄牙语',
-    'ro'         => '罗马尼亚',
-    'ru'         => '俄语',
-    'sk'         => '斯洛伐克语',
-    'sl'         => '斯洛文尼亚语',
-    'es'         => '西班牙语',
-    'sv'         => '瑞典语',
-    'th'         => '泰语',
-    'tr'         => '土耳其语',
-    'uk'         => '乌克兰语',
-    'ur'         => '乌尔都语',
-    'vi'         => '越南语',
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
+    'ar'      => '阿拉伯语',
+    'bg'      => '保加利亚语',
+    'ca'      => '加泰隆语',
+    'zh-CHS'  => '简体中文',
+    'zh-CHT'  => '繁体中文',
+    'cs'      => '捷克语',
+    'da'      => '丹麦语',
+    'nl'      => '荷兰语',
+    'en'      => '英语',
+    'et'      => '爱沙尼亚语',
+    'fi'      => '芬兰语',
+    'fr'      => '法语',
+    'de'      => '德语',
+    'el'      => '希腊语',
+    'ht'      => '海地克里奥尔语',
+    'he'      => '希伯来语',
+    'hi'      => '印地语',
+    'mww'     => '白苗文',
+    'hu'      => '匈牙利语',
+    'id'      => '印度尼西亚语',
+    'it'      => '意大利语',
+    'ja'      => '日语',
+    'tlh'     => 'Klingon',
+    'tlh-QON' => 'Klingon (Kronos)',
+    'ko'      => '朝鲜语',
+    'lv'      => '拉脱维亚语',
+    'lt'      => '立陶宛语',
+    'ms'      => '马来语',
+    'no'      => '挪威语',
+    'fa'      => '波斯语',
+    'pl'      => '波兰语',
+    'pt'      => '葡萄牙语',
+    'ro'      => '罗马尼亚',
+    'ru'      => '俄语',
+    'sk'      => '斯洛伐克语',
+    'sl'      => '斯洛文尼亚语',
+    'es'      => '西班牙语',
+    'sv'      => '瑞典语',
+    'th'      => '泰语',
+    'tr'      => '土耳其语',
+    'uk'      => '乌克兰语',
+    'ur'      => '乌尔都语',
+    'vi'      => '越南语',
 );

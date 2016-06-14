@@ -14,4 +14,7 @@ define [
     getBaseRouteName: ->
       return "chat.fields"
 
+    type: ->
+      'chats'
+
   Admin_CustomFields_Chat_Ctrl_Edit.EXPORT_CTRL()

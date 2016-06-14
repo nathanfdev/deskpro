@@ -23,129 +23,187 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 			return;
 		}
 
+    var initDateTimePicker = function(){
+      $('input.DateTime:not(.datetimepickerinit), .DateTime input:not(.datetimepickerinit)', wrap).each(function () {
+        $(this).addClass('datetimepickerinit');
+        $(this).datetimepicker({
+          format: 'YYYY-MM-DD HH:mm',
+          widgetParent: $(this).parent().css('position', 'relative'),
+          icons: {
+            time: 'fa fa-clock-o',
+            date: 'fa fa-calendar-o',
+            up: 'fa fa-chevron-up',
+            down: 'fa fa-chevron-down',
+            previous: 'fa fa-chevron-left',
+            next: 'fa fa-chevron-right'
+          }
+        });
+				$(this).on('dp.change', function(){
+					$(this).trigger('change');
+				});
+      });
+
+      $('.Date input:not(.datetimepickerinit)', wrap).each(function () {
+        $(this).addClass('datetimepickerinit');
+        $(this).datetimepicker({
+          format: 'YYYY-MM-DD',
+          widgetParent: $(this).parent().css('position', 'relative'),
+          icons: {
+            time: 'fa fa-clock-o',
+            date: 'fa fa-calendar-o',
+            up: 'fa fa-chevron-up',
+            down: 'fa fa-chevron-down',
+            previous: 'fa fa-chevron-left',
+            next: 'fa fa-chevron-right'
+          }
+        });
+				$(this).on('dp.change', function(){
+					$(this).trigger('change');
+				});
+      });
+    };
+
 		var form = this.getEl('billing_form');
 		var progress = this.getEl('billing_save_progress');
 		var typeInputs = form.find('input[name=' + this.baseId + '_billing_type]');
 		var billingRows = this.getEl('billing_rows');
 
-		typeInputs.change(function() { self.updateBillingForm(true); });
-		this.updateBillingForm(true);
+		this.doInitForm = (function() {
+			form = this.getEl('billing_form');
+			progress = this.getEl('billing_save_progress');
+			typeInputs = form.find('input[name=' + this.baseId + '_billing_type]');
 
-		this.getEl('billing_stop').click(function() {
-			self.stopBillingTimer(false);
-			$(this).hide();
-			self.getEl('billing_start').show();
-		});
-		this.getEl('billing_start').click(function() {
-			if (self.getEl('billing_type_hidden').val() != 'time') {
-				return;
-			}
+			typeInputs.change(function () {
+				self.updateBillingForm(true);
+			});
+			this.updateBillingForm(true);
 
-			self.startBillingTimer(false);
-			$(this).hide();
-			self.getEl('billing_stop').show();
-		});
-		this.getEl('billing_reset').click(function() {
-			if (typeInputs.filter(':checked').val() == 'time') {
-				if (self.getEl('billing_stop').is(':visible')) {
-					self.startBillingTimer(true);
+			this.getEl('billing_stop').click(function () {
+				self.stopBillingTimer(false);
+				$(this).hide();
+				self.getEl('billing_start').show();
+			});
+			this.getEl('billing_start').click(function () {
+				if (self.getEl('billing_type_hidden').val() != 'time') {
+					return;
+				}
+
+				self.startBillingTimer(false);
+				$(this).hide();
+				self.getEl('billing_stop').show();
+			});
+			this.getEl('billing_reset').click(function () {
+				if (typeInputs.filter(':checked').val() == 'time') {
+					if (self.getEl('billing_stop').is(':visible')) {
+						self.startBillingTimer(true);
+					} else {
+						self.stopBillingTimer(true);
+					}
 				} else {
 					self.stopBillingTimer(true);
 				}
-			} else {
-				self.stopBillingTimer(true);
-			}
-		});
-
-		this.getEl('billing_save').click(function() {
-			progress.show();
-
-			$.ajax({
-				url: $(this).data('submit-url'),
-				data: form.find('input, textarea, select').serialize(),
-				type: 'POST',
-				dataType: 'json'
-			}).done(function(json) {
-				if (json.inserted && self.addBillingRow) {
-					self.addBillingRow(json.html);
-					self.resetBillingForm();
-				}
-			}).always(function() {
-				progress.hide();
 			});
-		});
+
+			this.getEl('billing_save').click(function () {
+				progress.show();
+				var $err = self.getEl('billing_save_errors').hide()
+					, id   = $(this).data('charge-id')
+					;
+				$.ajax({
+					url:      $(this).data('submit-url'),
+					data:     form.find('input, textarea, select').serialize(),
+					type:     'POST',
+					dataType: 'json'
+				}).done(function (json) {
+					if (json.inserted && self.addBillingRow) {
+						self.addBillingRow(json.html);
+						self.resetBillingForm();
+					} else if (json.invalid_custom_fields) {
+						$err.children().remove();
+						for (var i in json.invalid_custom_fields) {
+							$err.append('<li>' + json.invalid_custom_fields[i] + '</li>');
+						}
+						$err.show();
+					}
+				}).always(function () {
+					progress.hide();
+				});
+			});
+
+      initDateTimePicker();
+		}).bind(this);
+
+		this.initForm();
 
 		wrap.on('click', 'a.billing-delete', function(e) {
-			var $this = $(this);
-
+			var id = $(this).data('charge-id')
+        , table = $(this).closest('table')
+        ;
 			e.preventDefault();
 
 			if (confirm(billingRows.data('delete-confirm'))) {
 				$.ajax({
-					url: $this.attr('href'),
+					url: $(this).attr('href'),
 					type: 'POST',
 					dataType: 'json'
 				}).done(function (json) {
 					if (json.success) {
-						var table = $this.closest('table');
-						$this.closest('tr').remove();
-						if (!table.find('tbody tr').length)
-						{
+						wrap.find('tr.ticket-charge-edit-' + id + ', tr#ticket-charge-row-' + id + ', tr.ticket-charge-edit-errors-' + id).remove();
+						if (!table.find('tbody tr').length) {
 							table.hide();
 						}
 					}
 				});
 			}
 		});
-		
+
 		wrap.on('click', 'a.billing-edit', function(e) {
 			e.preventDefault();
-			
-			var $this = $(this);
-			
-			var row = $this.parents('tr');
-			
-			billingRows.children('tr').removeClass('edit-mode');
-			
-			row.addClass('edit-mode');
-			
-			var charge = row.data('charge');
-			
-			self.populateForm(row, charge);
-			
+      var id = $(this).data('charge-id')
+        , charge = wrap.find('tr#ticket-charge-row-' + id).hide().data('charge')
+        ;
+      self.populateForm(wrap.find('.ticket-charge-edit-' + id).show(), charge);
 			return false;
 		});
-		
+
 		wrap.on('click', 'a.billing-edit-discard', function(e) {
 			e.preventDefault();
-			
-			var $this = $(this);
-			
-			$this.parents('tr').removeClass('edit-mode');
-			
+      var id = $(this).data('charge-id');
+      wrap.find('tr#ticket-charge-row-' + id).show();
+      wrap.find('tr.ticket-charge-edit-' + id + ', tr.ticket-charge-edit-errors-' + id).hide();
 			return false;
 		});
-		
+
 		wrap.on('click', 'a.billing-edit-save', function(e) {
 			e.preventDefault();
-			
-			var $this = $(this);
-			
-			var row = $this.parents('tr');
-			
+			var id = $(this).data('charge-id')
+        , $form = wrap.find('.ticket-charge-edit-' + id)
+        ;
+			wrap.find('.ticket-charge-edit-errors-' + id).hide();
+
 			$.ajax({
-				url: $this.attr('href'),
-				data: row.find('input').serialize(),
+				url: $(this).attr('href'),
+				data: $form.find('input, textarea, select').serialize(),
 				type: 'POST',
 				dataType: 'json'
 			}).done(function(json) {
 				if (json.updated && json.html) {
-					row.replaceWith(json.html);
+					wrap.find('tr.ticket-charge-edit-' + id + ', tr.ticket-charge-edit-errors-' + id).remove();
+					wrap.find('tr#ticket-charge-row-' + id).replaceWith(json.html);
+          initDateTimePicker();
+				}else if(json.invalid_custom_fields) {
+					var $err = wrap.find('.ticket-charge-edit-errors-' + id).show().find('.form-errors');
+					$err.children().remove();
+					for (var i in json.invalid_custom_fields) {
+						$err.append('<li>' + json.invalid_custom_fields[i] + '</li>');
+					}
+          $err.show();
 				}
+
 			}).always(function() {
 				progress.hide();
 			});
-			
+
 			return false;
 		});
 
@@ -158,6 +216,10 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 			this.getEl('billing_start').show();
 			this.stopBillingTimer(true);
 		}
+	},
+
+	initForm: function() {
+		this.doInitForm();
 	},
 
 	addBillingRow: function(html) {
@@ -218,16 +280,21 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 	},
 
 	resetBillingForm: function() {
-		var form = this.getEl('billing_form');
+		var form = this.getEl('billing_form'), self = this;
 
-		this.getEl('billing_amount').val('');
-		this.getEl('billing_comment').val('');
+		$.get(form.data('refresh-url'), function (data) {
+			form.replaceWith(data);
 
-		if (this.getEl('billing_type_hidden').val() == 'time' && this.options.auto_start_bill) {
-			this.startBillingTimer(true);
-		} else {
-			this.stopBillingTimer(true);
-		}
+			setTimeout((function() {
+				this.initForm();
+
+				if (this.getEl('billing_type_hidden').val() == 'time' && this.options.auto_start_bill) {
+					this.startBillingTimer(true);
+				} else {
+					this.stopBillingTimer(true);
+				}
+			}).bind(self), 100);
+		});
 	},
 
 	startBillingTimer: function(reset) {
@@ -330,33 +397,32 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 
 		return $('#' + id);
 	},
-	
+
 	populateForm: function(form, charge) {
-		form.find('#billing_comment_edit_' + charge.id).val(charge.comment);
-		
+
 		if (charge.amount) {
 			form.find('#billing_hours_edit_' + charge.id).val('');
 			form.find('#billing_minutes_edit_' + charge.id).val('');
 			form.find('#billing_seconds_edit_' + charge.id).val('');
-			
+
 			form.find('#billing_amount_edit_' + charge.id).val(charge.amount);
 		} else if(charge.charge_time) {
 			form.find('#billing_amount_edit_' + charge.id).val('');
-			
+
 			var hours, minutes, seconds;
-			
+
 			var seconds = charge.charge_time;
-			
+
 			if (seconds >= 3600) {
 				hours = Math.floor(seconds / 3600);
 				seconds -= hours * 3600;
-			} 
+			}
 
 			if (seconds >= 60) {
 				minutes = Math.floor(seconds / 60);
 				seconds -= minutes * 60;
 			}
-			
+
 			form.find('#billing_hours_edit_' + charge.id).val(hours);
 			form.find('#billing_minutes_edit_' + charge.id).val(minutes);
 			form.find('#billing_seconds_edit_' + charge.id).val(seconds);

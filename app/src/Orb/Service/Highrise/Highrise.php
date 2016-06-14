@@ -1,38 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @subpackage Service
- * @category Highrise
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Highrise
+ */
 namespace Orb\Service\Highrise;
 
 /**
@@ -40,31 +38,37 @@ namespace Orb\Service\Highrise;
  * classes.
  *
  * @see http://developer.37signals.com/highrise/
+ *
  * @property \Orb\Service\Highrise\Resource\Person person
  */
 class Highrise
 {
     /**
-     * The company highrise URL without trailing slash. Example: http://mycompany.highrisehq.com
+     * The company highrise URL without trailing slash. Example: http://mycompany.highrisehq.com.
+     *
      * @var string
      */
     protected $highrise_url;
 
     /**
      * The auth token for the user.
+     *
      * @var string
      */
     protected $auth_token;
 
     /**
-     * Instantiated resources
+     * Instantiated resources.
+     *
      * @see __get
+     *
      * @var array
      */
     protected $resources = array();
 
     /**
-     * HTTP Client we'll use
+     * HTTP Client we'll use.
+     *
      * @var \Zend\Http\Client
      */
     protected $http;
@@ -72,19 +76,20 @@ class Highrise
     public function __construct($highrise_url, $auth_token)
     {
         $this->highrise_url = $highrise_url;
-        $this->auth_token = $auth_token;
+        $this->auth_token   = $auth_token;
     }
 
     /**
      * Send a GET request.
      *
-     * @param  string              $resource The resource to fetch with leading slash. Will be prepended with highrise url.
-     * @param  array               $params   Any GET params to specify
+     * @param string $resource The resource to fetch with leading slash. Will be prepended with highrise url.
+     * @param array  $params   Any GET params to specify
+     *
      * @return \Zend\Http\Response
      */
     public function sendReadRequest($resource, array $params = array())
     {
-        $resource_url = $this->highrise_url . $resource;
+        $resource_url = $this->highrise_url.$resource;
 
         $http = $this->getHttpClient();
         $http->setUri($resource_url);
@@ -99,14 +104,15 @@ class Highrise
     /**
      * Send a POST request.
      *
-     * @param  string              $resource   The resource to fetch with leading slash. Will be prepended with highrise url.
-     * @param  string              $postdata   The POST data to submit. Highrise expects an XML string.
-     * @param  array               $get_params Any GET params to specify
+     * @param string $resource   The resource to fetch with leading slash. Will be prepended with highrise url.
+     * @param string $postdata   The POST data to submit. Highrise expects an XML string.
+     * @param array  $get_params Any GET params to specify
+     *
      * @return \Zend\Http\Response
      */
     public function sendWriteRequest($resource, $postdata, array $get_params = array(), $use_put = false)
     {
-        $resource_url = $this->highrise_url . $resource;
+        $resource_url = $this->highrise_url.$resource;
 
         $http = $this->getHttpClient();
         $http->setUri($resource_url);
@@ -130,9 +136,10 @@ class Highrise
     /**
      * Send a PUT request.
      *
-     * @param  string              $resource   The resource to fetch with leading slash. Will be prepended with highrise url.
-     * @param  string              $postdata   The POST data to submit. Highrise expects an XML string.
-     * @param  array               $get_params Any GET params to specify
+     * @param string $resource   The resource to fetch with leading slash. Will be prepended with highrise url.
+     * @param string $postdata   The POST data to submit. Highrise expects an XML string.
+     * @param array  $get_params Any GET params to specify
+     *
      * @return \Zend\Http\Response
      */
     public function sendPutRequest($resource, $postdata, array $get_params = array(), $put = false)
@@ -143,13 +150,14 @@ class Highrise
     /**
      * Send a DELETE request.
      *
-     * @param  string              $resource The resource to fetch with leading slash. Will be prepended with highrise url.
-     * @param  array               $params   Any GET params to specify
+     * @param string $resource The resource to fetch with leading slash. Will be prepended with highrise url.
+     * @param array  $params   Any GET params to specify
+     *
      * @return \Zend\Http\Response
      */
     public function sendDeleteRequest($resource, array $params = array())
     {
-        $resource_url = $this->highrise_url . $resource;
+        $resource_url = $this->highrise_url.$resource;
 
         $http = $this->getHttpClient();
         $http->setUri($resource_url);
@@ -179,13 +187,15 @@ class Highrise
     }
 
     /**
-     * Get the HTTP client to use
+     * Get the HTTP client to use.
      *
      * @return \Zend\Http\Client
      */
     public function getHttpClient()
     {
-        if ($this->http === null) $this->setHttpClient();
+        if ($this->http === null) {
+            $this->setHttpClient();
+        }
 
         $this->http->resetParameters();
         $this->http->setAuth($this->auth_token, 'X');
@@ -196,7 +206,8 @@ class Highrise
     /**
      * Read in values from XML into a native PHP array.
      *
-     * @param  string $xml XML doc as a string, or SimpleXmlElement
+     * @param string $xml XML doc as a string, or SimpleXmlElement
+     *
      * @return array
      */
     public function xmlToArray($xml)
@@ -229,7 +240,7 @@ class Highrise
                     $array[$nodename][] = $this->xmlToArray($subnode);
                 }
             } else {
-                $text = trim((string)$node);
+                $text = trim((string) $node);
                 if ($text !== '') {
                     $array[$nodename] = $text;
                 }
@@ -246,20 +257,20 @@ class Highrise
      */
     public function arrayToXml(array $array, $base_nodename)
     {
-        $xml = array();
+        $xml   = array();
         $xml[] = "<{$base_nodename}>";
 
         foreach ($array as $nodename => $node) {
             if (strpos('-id', $nodename) !== false) {
-                $xml[] = "<{$nodename} type=\"integer\">" . ((int)$node) . "</{$nodename}>";
+                $xml[] = "<{$nodename} type=\"integer\">".((int) $node)."</{$nodename}>";
             } elseif (strpos('-at', $nodename) !== false) {
-                $xml[] = "<{$nodename} type=\"datetime\">" . ((string)$node) . "</{$nodename}>";
+                $xml[] = "<{$nodename} type=\"datetime\">".((string) $node)."</{$nodename}>";
             } elseif (strpos('-on', $nodename) !== false) {
-                $xml[] = "<{$nodename} type=\"date\">" . ((string)$node) . "</{$nodename}>";
+                $xml[] = "<{$nodename} type=\"date\">".((string) $node)."</{$nodename}>";
             } elseif (is_array($node)) {
                 $xml[] = $this->arrayToXml($node, $nodename);
             } else {
-                $xml[] = "<{$nodename}>" . ((string)$node) . "</{$nodename}>";
+                $xml[] = "<{$nodename}>".((string) $node)."</{$nodename}>";
             }
         }
 
@@ -271,7 +282,8 @@ class Highrise
     /**
      * Dynamically get resource objects.
      *
-     * @param  string                                          $name
+     * @param string $name
+     *
      * @return \Orb\Service\Highrise\Resource\AbstractResource
      */
     public function __get($name)
@@ -282,9 +294,9 @@ class Highrise
 
         $classname = str_replace($name, '_', '-');
         $classname = \Orb\Util\Strings::dashToCamelCase($classname);
-        $classname = 'Orb\\Service\\Highrise\\Resource\\' . ucfirst($classname);
+        $classname = 'Orb\\Service\\Highrise\\Resource\\'.ucfirst($classname);
 
-        $obj = new $classname($this);
+        $obj                    = new $classname($this);
         $this->resources[$name] = $obj;
 
         return $obj;

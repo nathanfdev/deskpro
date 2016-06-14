@@ -15,7 +15,7 @@
 					The exact format of the CSV file does not matter. You will map CSV columns to DeskPRO fields in the next step.
 				</p>
 				<p> Each user must have a primary email address to be imported. If the email address matches an existing user record, no data will be imported for that user.</p>
-				<p> See <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#importing-user-data-in-csv-format" target="_blank">a list of valid user fields and more details about CSV format</a>.
+				<p> See <a href="https://manuals.deskpro.com/html/admin/importing-data/csv-user-import.html" target="_blank">more details about supported import fields and CSV file format</a>.
 				</p>
 				<br />
 				<form id="fileupload"
@@ -24,7 +24,7 @@
 					  file-upload="fileUploadOptions"
 					  action="{{ ng_var('fileUploadOptions.url') }}">
 
-					<div class="fileinput-button btn btn-success btn-lg" ng-show="!active() && !fileSelected">
+					<div class="fileinput-button btn btn-success btn-lg {{ ng_var('fileUploadOptions.disabled && "disabled"') }}" ng-show="!active() && !fileSelected">
 						<span><i class="fa fa-upload"></i> Select CSV File</span>
 						<input type="file" name="file">
 					</div>
@@ -35,7 +35,7 @@
 
                     <div class="form-group" ng-show="!active() && fileSelected">
                         <label>
-                            Field Delimeter
+                            Field Delimiter
                             <select ui-select2 ng-model="delimeter" name="options[delimeter]" style="min-width: 100px;">
                                 <option value="comma" selected>Comma</option>
                                 <option value="semicolon">Semicolon</option>
@@ -113,20 +113,20 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="(column_id, column_title) in fileUploadResults.columns">
+						<tr ng-repeat="column_title in fileUploadResults.columns track by $index">
 							<td class="alt dp-id-col">
 								{{ ng_var('column_title') }}
 							</td>
 							<td  class="alt dp-id-col">
-								{{ ng_var('fileUploadResults.examples[column_id]') }}
+								{{ ng_var('fileUploadResults.examples[$index]') }}
 							</td>
 							<td>
 								<select
 									ui-select2
-									ng-model="importSettings.fieldMappings[column_id]"
+									ng-model="importSettings.fieldMappings[$index]"
 									style="min-width: 240px"
 									class="no-search"
-									ng-change="Ctrl.selectMapping(column_id, importSettings.fieldMappings[column_id])"
+									ng-change="Ctrl.selectMapping($index, importSettings.fieldMappings[$index])"
 								>
 									<option value="">Do Not Map</option>
 									<optgroup label="Basic Information">
@@ -139,6 +139,7 @@
 										<option value="password">Password</option>
 										<option value="organization">Organization</option>
 										<option value="organization_position">Organization Position</option>
+										<option value="language">Language</option>
 									</optgroup>
 									<optgroup label="Contact Details">
 										<option value="phone">Phone Number</option>
@@ -156,24 +157,24 @@
 									</optgroup>
 									<optgroup label="Custom Fields">
 										<option ng-repeat="field in fileUploadResults.custom_fields"
-												ng-value="field.id">
+												ng-value="'custom_' + field.id">
 											{{ ng_var('field.title') }}
 										</option>
 										<option value="new_custom">New Custom Field</option>
 									</optgroup>
 								</select>
-								<span ng-if="importSettings.showExtraMappings.organization[column_id]">
+								<span ng-if="importSettings.showExtraMappings.organization[$index]">
 									<label>
 										<input type="checkbox"
-											   ng-model="importSettings.additionalMappings[column_id].create_auto" value="1"
+											   ng-model="importSettings.additionalMappings[$index].create_auto" value="1"
 											   checked="checked">
 										Create if does not exist
 									</label>
 								</span>
-								<span ng-if="importSettings.showExtraMappings.phone[column_id]">
+								<span ng-if="importSettings.showExtraMappings.phone[$index]">
 									<select
 										ui-select2
-										ng-model="importSettings.additionalMappings[column_id].type"
+										ng-model="importSettings.additionalMappings[$index].type"
 										style="min-width: 120px"
 										class="no-search"
 									>
@@ -181,17 +182,17 @@
 										<option value="mobile">Mobile</option>
 										<option value="fax">Fax</option>
 									</select>
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 										   placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.website[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.website[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 										   placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.im[column_id]">
+								<span ng-if="importSettings.showExtraMappings.im[$index]">
 									<select
 										ui-select2
-										ng-model="importSettings.additionalMappings[column_id].type"
+										ng-model="importSettings.additionalMappings[$index].type"
 										style="min-width: 120px"
 										class="no-search"
 									>
@@ -203,64 +204,65 @@
 										<option value="gtalk">GTalk</option>
 										<option value="other">Other</option>
 									</select>
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 										   placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.twitter[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.twitter[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 										placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.linkedin[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.linkedin[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 										   placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.facebook[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.facebook[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 											placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.address1[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.address1[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 											placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.address2[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.address2[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 											placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.city[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.city[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 											placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.state[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.state[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 											placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.post_code[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.post_code[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 											placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.country[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].label"
+								<span ng-if="importSettings.showExtraMappings.country[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 											placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.new_custom[column_id]">
-									<input type="text" ng-model="importSettings.additionalMappings[column_id].title"
+								<span ng-if="importSettings.showExtraMappings.new_custom[$index]">
+									<input type="text" ng-model="importSettings.additionalMappings[$index].title"
 											placeholder="Title">
+									{{ ng_var('importSettings.additionalMappings[$index].handler_class') }}
 									<select
 										ui-select2
-										ng-model="importSettings.additionalMappings[column_id].handler_class"
+										ng-model="importSettings.additionalMappings[$index].handler_class"
 										style="min-width: 120px"
 										class="no-search"
 									>
-										<option value="Application\DeskPRO\CustomFields\Handler\Text">
+										<option ng-value="text">
 											Text
 										</option>
-										<option value="Application\DeskPRO\CustomFields\Handler\Textarea">
+										<option value="textarea">
 											Textarea
 										</option>
-										<option value="Application\DeskPRO\CustomFields\Handler\Choice">
+										<option value="choice">
 											Choice
 										</option>
-										<option value="Application\DeskPRO\CustomFields\Handler\Date">
+										<option value="date">
 											Date
 										</option>
 									</select>
@@ -283,6 +285,21 @@
 						This should be selected if the "column name" values above contain actual data.
 					</label>
 				</div>
+
+				<div class="inner-group">
+					<label style="font-weight: normal; display: block;">
+						When a user from your CSV already exists in DeskPRO:
+						<select
+								ui-select2
+								ng-model="importSettings.updateIfExists"
+								class="no-search"
+								>
+							<option value="1">Update the user with information from the CSV file</option>
+							<option value="">Skip</option>
+						</select>
+					</label>
+				</div>
+
 				<div class="inner-group">
 					<label><input type="checkbox" ng-model="importSettings.welcomeEmail" /> Send welcome email to every new user</label>
 				</div>
@@ -308,11 +325,13 @@
 				 ng-if="fileUploadResults && fileUploadResults.upload_failed && fileUploadResults.error == 'not_csv'">
 				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
 				The uploaded file wasn't in CSV format. Please check that the file is formatted as comma separated values.
-				
+
 			</div>
 
             <br />
-            <span ng-show="!importStarted">Last import state: </span>
+            <span ng-show="!importStarted && !disabledOnDemo">Last import state: </span>
+			<span ng-show="disabledOnDemo">Disabled in trial version</span>
+
             <span dp-status-update="/import_csv_status"
                 status-update-conditions="importStarted"
                 status-update-default-message="Checking status..."
@@ -321,9 +340,60 @@
                 status-update-immediate="true"
                 style="font-style:italic;">
             </span>
-            <span ng-if="log">[<a href="{{ ng_var('log') }}" target="_blank">Download CSV</a>]</span>
+            <span ng-if="log">[<a href="{{ ng_var('log') }}" target="_blank">Error log</a>]</span>
 
 		</article>
 
 	</section>
+
+    <section class="dp-paneblock dp-listpane">
+        <header>
+            <h3>Import Logs</h3>
+        </header>
+
+        <article class="padd">
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Filename</th>
+                        <th>Imported Items</th>
+                        <th>Skipped Items</th>
+                        <th>Time Taken</th>
+                        <th>Undo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="log in logs">
+                        <td>{{ ng_var('log.date | amDateFormat:"MMM D, YYYY @ HH:mm"') }}</td>
+                        <td>{{ ng_var('log.data.file') }}</td>
+                        <td>{{ ng_var('log.data.imported') }}</td>
+                        <td>{{ ng_var('log.data.skipped') }}</td>
+                        <td>{{ ng_var('log.time') }}</td>
+                        <td>
+                            <a ng-click="Ctrl.startDeleteUsers(log.name)"
+                               style="cursor: pointer;"
+                               ng-if="'waiting' != log.deletion_status"
+                                    >
+                                {{ phrase('adm.users_import.delete_users_link') }}
+                            </a>
+                            &nbsp;
+                            <i class="fa fa-check text-success"
+                               ng-if="'complete' == log.deletion_status"
+                                    ></i>
+                            <i class="fa fa-spinner fa-spin"
+                               ng-if="'waiting' == log.deletion_status"
+                                    ></i>
+                            <i class="fa fa-times-circle text-danger"
+                               ng-if="'error' == log.deletion_status"
+                                    ></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </article>
+
+    </section>
+
+    <div dp-register-message="delete_users_prompt">{{ phrase('adm.users_import.delete_users_prompt') }}</div>
 {% endblock %}

@@ -1,57 +1,56 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\EntityRepository;
 
-use Doctrine\DBAL\Connection;
 use Application\DeskPRO\Entity;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LabelDef extends AbstractEntityRepository
 {
     protected static $types = array(
-        'articles'             => array('table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'),
-        'deals'                => array('table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'),
-        'downloads'            => array('table' => 'labels_downloads',          'entity' => 'DeskPRO:LabelDownload'),
-        'feedback'             => array('table' => 'labels_feedback',           'entity' => 'DeskPRO:LabelFeedback'),
-        'chat'                 => array('table' => 'labels_chat_conversations', 'entity' => 'DeskPRO:LabelChatConversation'),
-        'news'                 => array('table' => 'labels_news',               'entity' => 'DeskPRO:LabelNews'),
-        'organizations'        => array('table' => 'labels_organizations',      'entity' => 'DeskPRO:LabelOrganization'),
-        'people'               => array('table' => 'labels_people',             'entity' => 'DeskPRO:LabelPeople'),
-        'tasks'                => array('table' => 'labels_tasks',              'entity' => 'DeskPRO:LabelTask'),
-        'tickets'              => array('table' => 'labels_tickets',            'entity' => 'DeskPRO:LabelTicket'),
-        'kb'                   => array('table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'),
+        'articles'      => array('table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'),
+        'deals'         => array('table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'),
+        'downloads'     => array('table' => 'labels_downloads',          'entity' => 'DeskPRO:LabelDownload'),
+        'feedback'      => array('table' => 'labels_feedback',           'entity' => 'DeskPRO:LabelFeedback'),
+        'chat'          => array('table' => 'labels_chat_conversations', 'entity' => 'DeskPRO:LabelChatConversation'),
+        'news'          => array('table' => 'labels_news',               'entity' => 'DeskPRO:LabelNews'),
+        'organizations' => array('table' => 'labels_organizations',      'entity' => 'DeskPRO:LabelOrganization'),
+        'people'        => array('table' => 'labels_people',             'entity' => 'DeskPRO:LabelPeople'),
+        'tasks'         => array('table' => 'labels_tasks',              'entity' => 'DeskPRO:LabelTask'),
+        'tickets'       => array('table' => 'labels_tickets',            'entity' => 'DeskPRO:LabelTicket'),
+        'kb'            => array('table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'),
     );
 
     /**
@@ -91,19 +90,19 @@ class LabelDef extends AbstractEntityRepository
                 break;
         }
         $conn = $this->getEntityManager()->getConnection();
-        $sql = '
+        $sql  = '
             SELECT label, total
             FROM label_defs
             WHERE label_type = ?
             ORDER BY total DESC
         ';
         $params = array($label_type);
-        $types = array(\PDO::PARAM_STR);
+        $types  = array(\PDO::PARAM_STR);
 
         if ($limit) {
             $sql .= ' LIMIT ?';
             $params[] = $limit;
-            $types[] = \PDO::PARAM_INT;
+            $types[]  = \PDO::PARAM_INT;
         }
 
         return $conn->fetchAllKeyValue($sql, $params, $types);
@@ -113,7 +112,9 @@ class LabelDef extends AbstractEntityRepository
      * Get the name of the label entity given a type.
      *
      * @static
+     *
      * @param  $label_type
+     *
      * @return null|string
      */
     public function getLabelEntityFromType($label_type)
@@ -137,12 +138,12 @@ class LabelDef extends AbstractEntityRepository
                 return 'DeskPRO:LabelChatConversation';
         }
 
-        return null;
+        return;
     }
 
-
     /**
-     * @param  string      $label_type
+     * @param string $label_type
+     *
      * @return string|null
      */
     public function getLabelTableFromType($label_type)
@@ -166,13 +167,13 @@ class LabelDef extends AbstractEntityRepository
                 return 'labels_chat_conversations';
         }
 
-        return null;
+        return;
     }
 
     public function getTypeByEntityName($entityName)
     {
         if (false === $type = array_search($entityName, $this->getLabelEntities(), 1)) {
-            return null;
+            return;
         }
 
         $t = substr($type, 7);
@@ -262,18 +263,19 @@ class LabelDef extends AbstractEntityRepository
      * A tablename=>entityname array of objects that have label capabiltiies.
      *
      * @static
+     *
      * @return array
      */
     public function getLabelEntities()
     {
         return array(
-            'labels_organizations' => 'DeskPRO:LabelOrganization',
-            'labels_people'        => 'DeskPRO:LabelPerson',
-            'labels_tickets'       => 'DeskPRO:LabelTicket',
-            'labels_articles'      => 'DeskPRO:LabelArticle',
-            'labels_feedback'      => 'DeskPRO:LabelFeedback',
-            'labels_downloads'     => 'DeskPRO:LabelDownload',
-            'labels_news'          => 'DeskPRO:LabelNews',
+            'labels_organizations'      => 'DeskPRO:LabelOrganization',
+            'labels_people'             => 'DeskPRO:LabelPerson',
+            'labels_tickets'            => 'DeskPRO:LabelTicket',
+            'labels_articles'           => 'DeskPRO:LabelArticle',
+            'labels_feedback'           => 'DeskPRO:LabelFeedback',
+            'labels_downloads'          => 'DeskPRO:LabelDownload',
+            'labels_news'               => 'DeskPRO:LabelNews',
             'labels_chat_conversations' => 'DeskPRO:LabelChatConversation',
         );
     }
@@ -281,6 +283,7 @@ class LabelDef extends AbstractEntityRepository
     /**
      * @param $type
      * @param $label
+     *
      * @return mixed
      */
     public function getDefinition($type, $label)
@@ -288,7 +291,7 @@ class LabelDef extends AbstractEntityRepository
         return $this->getEntityManager()->createQuery(
             'SELECT d FROM DeskPRO:LabelDef d WHERE d.label_type = :type AND d.label = :label'
         )->setParameters(array(
-            'type' => $type,
+            'type'  => $type,
             'label' => trim($label),
         ))->getOneOrNullResult();
     }
@@ -299,14 +302,22 @@ class LabelDef extends AbstractEntityRepository
     public function getAllDefinitions()
     {
         $definitions = $this->getEntityManager()->getConnection()->fetchAll('SELECT * FROM label_defs');
-        $counts = $this->countDefUsages();
+        $counts      = $this->countDefUsages();
 
         foreach ($definitions as &$def) {
-            $label = $def['label'];
+            $label        = $def['label'];
             $def['total'] = isset($counts[$def['label_type']][$label]) ? $counts[$def['label_type']][$label] : 0;
         }
 
         return $definitions;
+    }
+
+    public function getDefinitionsByType($type)
+    {
+        return $this->getEntityManager()->getConnection()->fetchAll(
+            'SELECT * FROM label_defs where label_type = :type',
+            array('type' => $type)
+        );
     }
 
     /**
@@ -315,23 +326,24 @@ class LabelDef extends AbstractEntityRepository
     public function updateDefinitionUsages(\Application\DeskPRO\Entity\LabelDef $definition)
     {
         // Need to run an update to change cases because table is case-insensitive
-        $this->_em->getConnection()->executeUpdate("
+        $this->_em->getConnection()->executeUpdate('
             UPDATE IGNORE label_defs SET label = ? WHERE label = ?
-        ", array($definition->label, $definition->label));
+        ', array($definition->label, $definition->label));
 
-        $this->_em->getConnection()->executeUpdate(sprintf("
+        $this->_em->getConnection()->executeUpdate(sprintf('
             UPDATE IGNORE %s SET label = ? WHERE label = ?
-        ", self::$types[$definition['label_type']]['table']), array($definition->label, $definition->label));
+        ', self::$types[$definition['label_type']]['table']), array($definition->label, $definition->label));
 
-        $counts = $this->countDefUsages(array($definition['label_type']));
-        $label = $definition['label'];
+        $counts              = $this->countDefUsages(array($definition['label_type']));
+        $label               = $definition['label'];
         $definition['total'] = isset($counts[$definition['label_type']][$label])
             ? $counts[$definition['label_type']][$label]
             : 0;
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\LabelDef $definition
+     * @param \Application\DeskPRO\Entity\LabelDef $definition
+     *
      * @throws \Exception
      */
     public function deleteDefinition(\Application\DeskPRO\Entity\LabelDef $definition)
@@ -373,15 +385,14 @@ class LabelDef extends AbstractEntityRepository
         return $res ? $res[0]['color'] : '#d4d4d4';
     }
 
-
-
-
     /***************** these are moved from LabelDefManager ****************/
     /** todo cleanup! */
 
     /**
-     * Get counts for all labels used for a type
-     * @param  array $types
+     * Get counts for all labels used for a type.
+     *
+     * @param array $types
+     *
      * @return mixed
      */
     public function countDefUsages(array $types = array())
@@ -394,7 +405,7 @@ class LabelDef extends AbstractEntityRepository
             if ($k > 0) {
                 $query .= "\n UNION ";
             }
-            $query .= 'SELECT "'.$t.'" as label_type, COUNT(*) AS count, label as label FROM ' . $info['table'] . ' GROUP BY label';
+            $query .= 'SELECT "'.$t.'" as label_type, COUNT(*) AS count, label as label FROM '.$info['table'].' GROUP BY label';
         }
 
         $count_res = $this->getEntityManager()->getConnection()->fetchAll($query);
@@ -418,7 +429,7 @@ class LabelDef extends AbstractEntityRepository
         $ret = array();
 
         // Admin defined
-        foreach ($this->getEntityManager()->getConnection()->fetchAll("SELECT * FROM label_defs") as $x) {
+        foreach ($this->getEntityManager()->getConnection()->fetchAll('SELECT * FROM label_defs') as $x) {
             if (!isset($x['label'])) {
                 $ret[$x['label']] = array();
             }
@@ -433,7 +444,7 @@ class LabelDef extends AbstractEntityRepository
             $parts[] = "SELECT DISTINCT(label) AS label, '$t' AS label_type FROM labels_$t";
         }
 
-        $q = '(' . implode(') UNION (', $parts) . ')';
+        $q = '('.implode(') UNION (', $parts).')';
         foreach ($this->getEntityManager()->getConnection()->fetchAll($q) as $x) {
             if (!isset($x['label'])) {
                 $ret[$x['label']] = array();
@@ -445,22 +456,22 @@ class LabelDef extends AbstractEntityRepository
         return $ret;
     }
 
-
     /**
-     * @param  string                                                        $old_label
-     * @param  string                                                        $new_label
-     * @param  string                                                        $color
-     * @param  string                                                        $type
+     * @param string $old_label
+     * @param string $new_label
+     * @param string $color
+     * @param string $type
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      * @throws \Exception
      */
     public function renameLabelDef($old_label, $new_label, $color, $type)
     {
         if (!self::valid($type)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
-        $types = (array)$type;
+        $types = (array) $type;
 
         $this->getEntityManager()->getConnection()->beginTransaction();
 
@@ -472,7 +483,7 @@ class LabelDef extends AbstractEntityRepository
                 $def_old = $this->getDefinition($t, $old_label);
 
                 $this->getEntityManager()->getConnection()->executeUpdate(
-                    'UPDATE IGNORE ' . $table . ' SET label = ? WHERE label = ?',
+                    'UPDATE IGNORE '.$table.' SET label = ? WHERE label = ?',
                     array($new_label, $old_label)
                 );
 
@@ -481,7 +492,7 @@ class LabelDef extends AbstractEntityRepository
                     $def_new->label = $new_label;
                 } else {
                     $this->getEntityManager()->getConnection()->executeUpdate(
-                        'DELETE FROM ' . $table . ' WHERE label = ?',
+                        'DELETE FROM '.$table.' WHERE label = ?',
                         array($old_label)
                     );
                 }
@@ -489,10 +500,10 @@ class LabelDef extends AbstractEntityRepository
                 if ($def_old && $def_new) {
                     $this->getEntityManager()->remove($def_old);
                 } elseif ($def_old && !$def_new || !$def_old && !$def_new) {
-                    $def_new = new Entity\LabelDef();
+                    $def_new             = new Entity\LabelDef();
                     $def_new->label_type = $type;
-                    $def_new->color = $color ?: '';
-                    $def_new->label = $new_label;
+                    $def_new->color      = $color ?: '';
+                    $def_new->label      = $new_label;
                 } elseif (!$def_old && $def_new) {
                     // nothing to do
                 }

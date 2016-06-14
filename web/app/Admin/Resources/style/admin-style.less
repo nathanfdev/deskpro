@@ -1306,6 +1306,19 @@ nav.dp-tabletabs {
 	padding: 6px;
 }
 
+.toggle-all-button-2 {
+	display: block;
+	text-align: center;
+	em {
+		display: block;
+		font-size: 11px;
+		margin-bottom: 1px;
+		font-style: normal;
+		color: #888;
+		cursor: pointer;
+	}
+}
+
 //######################################################################################################################
 //# Pane Styles
 //######################################################################################################################
@@ -3137,6 +3150,7 @@ button.toast-close-button {
 
 .dp-ob {
 	border: 1px solid #ccc;
+    border-top: none;
 	border-radius: 2px;
 }
 
@@ -3146,6 +3160,20 @@ button.toast-close-button {
 
 .dp-ob-row.dp-ob-loading-options {
 	padding: 10px;
+}
+
+.is-disabled-builder .dp-ob {
+  .dp-ob-newrule {
+    display: none;
+  }
+  .remove-row-trigger {
+    display: none;
+  }
+  .dp-ob-row {
+    opacity: 0.6;
+  }
+  .rowOpts-withCheck { display: none; }
+  .row-options { display: none; }
 }
 
 .dp-ob-newrule {
@@ -3237,6 +3265,9 @@ button.toast-close-button {
 .dp-ob-row {
 	position: relative;
 	border-top: 1px solid #ccc;
+    &:first-of-type {
+      border-top: 1px solid #ccc;
+    }
 	&:last-of-type {
 		border-bottom: none;
 	}
@@ -4045,6 +4076,10 @@ table.table {
 .dp-datepicker {
 	padding: 5px 8px 0 8px;
 
+    table {
+        outline: none;
+    }
+
 	th {
 		padding: 0;
 		margin: 0;
@@ -4804,6 +4839,29 @@ table.agent-perms-table {
 	h4 { font-size: 14px; font-weight: normal; }
 	h5 { font-size: 100%; font-weight: bold; }
 	h6 { font-size: 100%; font-weight: bold; }
+}
+
+.dp-listpane > article > ul::-webkit-scrollbar {
+	-webkit-appearance: none;
+}
+
+.dp-listpane > article > ul::-webkit-scrollbar:vertical {
+	width: 11px;
+}
+
+.dp-listpane > article > ul::-webkit-scrollbar:horizontal {
+	height: 11px;
+}
+
+.dp-listpane > article > ul::-webkit-scrollbar-thumb {
+	border-radius: 8px;
+	border: 2px solid white; /* should match background, can't be transparent */
+	background-color: rgba(0, 0, 0, .5);
+}
+
+.dp-listpane > article > ul::-webkit-scrollbar-track {
+	background-color: #fff;
+	border-radius: 8px;
 }
 
 .dp-alert-ribbon {

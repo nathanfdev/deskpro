@@ -82,6 +82,7 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 				$(this).data('search-url'),
 				{postData: postData}
 			);
+			DeskPRO_Window.$scope.showList();
 		});
 		submitBtn = submitBtn.first();
 

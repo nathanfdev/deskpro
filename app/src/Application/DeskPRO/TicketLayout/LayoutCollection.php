@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\TicketLayout;
 
 use Orb\Util\Strings;
@@ -39,17 +38,18 @@ use Orb\Util\Strings;
 class LayoutCollection implements \Countable, \IteratorAggregate
 {
     /**
-     * Array of layouts keyed by some unique key
+     * Array of layouts keyed by some unique key.
      *
      * @var Layout[]
      */
     private $layouts;
 
     /**
-     * Adds a layout to the collection
+     * Adds a layout to the collection.
      *
-     * @param  Layout                $layout The layout to add
-     * @param  string                $key    The layout key, or null
+     * @param Layout $layout The layout to add
+     * @param string $key    The layout key, or null
+     *
      * @throws \OutOfBoundsException
      */
     public function addLayout($layout, $key)
@@ -65,16 +65,15 @@ class LayoutCollection implements \Countable, \IteratorAggregate
         $this->layouts[$key] = $layout;
     }
 
-
     /**
-     * @param  string $key
+     * @param string $key
+     *
      * @return bool
      */
     public function hasLayout($key)
     {
         return isset($this->layouts[$key]);
     }
-
 
     /**
      * @return bool
@@ -84,11 +83,12 @@ class LayoutCollection implements \Countable, \IteratorAggregate
         return isset($this->layouts[0]);
     }
 
-
     /**
-     * @param  string                    $key
-     * @return Layout
+     * @param string $key
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return Layout
      */
     public function getLayout($key)
     {
@@ -98,23 +98,22 @@ class LayoutCollection implements \Countable, \IteratorAggregate
             return $this->layouts[0];
         }
 
-        throw new \InvalidArgumentException("No layout exists");
+        throw new \InvalidArgumentException('No layout exists');
     }
 
-
     /**
-     * @return Layout
      * @throws \InvalidArgumentException
+     *
+     * @return Layout
      */
     public function getDefaultLayout()
     {
         if (!isset($this->layouts[0])) {
-            throw new \InvalidArgumentException("No default layout exists");
+            throw new \InvalidArgumentException('No default layout exists');
         }
 
         return $this->layouts[0];
     }
-
 
     /**
      * @return string
@@ -128,12 +127,12 @@ class LayoutCollection implements \Countable, \IteratorAggregate
         foreach ($this->layouts as $k => $layout) {
             $k_str = "'$k'";
 
-            $code = trim(Strings::modifyLines($layout->compileJsObj(), "\t\t\t"));
-            $bit_js ="\t\t{$k_str}: {$code}";
+            $code           = trim(Strings::modifyLines($layout->compileJsObj(), "\t\t\t"));
+            $bit_js         = "\t\t{$k_str}: {$code}";
             $layout_codes[] = $bit_js;
         }
 
-        $js .= implode(",\n", $layout_codes) . "\n";
+        $js .= implode(",\n", $layout_codes)."\n";
         $js .= "\t};\n";
 
         $js .= "\treturn {\n";
@@ -142,7 +141,7 @@ class LayoutCollection implements \Countable, \IteratorAggregate
         $js .= "\t\t}\n";
         $js .= "\t};\n";
 
-        $js .= "})()";
+        $js .= '})()';
 
         return $js;
     }

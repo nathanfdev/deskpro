@@ -1,13 +1,39 @@
 <?php
 
-require_once dirname(__FILE__) .'/../../src/Application/DeskPRO/LowUtil/RemoteRequest.php';
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
-if (!defined('DP_BUILD_TIME') && file_exists(dirname(__FILE__) .'/../../sys/config/build-time.php')) {
-    require_once dirname(__FILE__) .'/../../sys/config/build-time.php';
+require_once dirname(__FILE__).'/../../src/Application/DeskPRO/LowUtil/RemoteRequest.php';
+
+if (!defined('DP_BUILD_TIME') && file_exists(dirname(__FILE__).'/../../sys/config/build-time.php')) {
+    require_once dirname(__FILE__).'/../../sys/config/build-time.php';
 }
 
-if (!defined('DP_BUILD_NUM') && file_exists(dirname(__FILE__) .'/../../sys/config/build-num.php')) {
-    require_once dirname(__FILE__) .'/../../sys/config/build-num.php';
+if (!defined('DP_BUILD_NUM') && file_exists(dirname(__FILE__).'/../../sys/config/build-num.php')) {
+    require_once dirname(__FILE__).'/../../sys/config/build-num.php';
 }
 
 #----------------------------------------
@@ -33,12 +59,12 @@ if (!$url) {
 }
 
 if (php_sapi_name() == 'cli') {
-    $url = 'Command: ' . implode(' ', $_SERVER['argv']);
+    $url = 'Command: '.implode(' ', $_SERVER['argv']);
 }
 
 $stats['url'] = $url;
 
-$stats['php_version'] = phpversion();
+$stats['php_version']      = phpversion();
 $stats['php_memory_limit'] = \Orb\Util\Env::getMemoryLimit();
 
 if (function_exists('apc_cache_info')) {
@@ -89,7 +115,7 @@ if (class_exists('PDO')) {
         $stats['php_has_pdo_mysql'] = 0;
     }
 } else {
-    $stats['php_has_pdo'] = 0;
+    $stats['php_has_pdo']       = 0;
     $stats['php_has_pdo_mysql'] = 0;
 }
 
@@ -127,7 +153,7 @@ if (strpos(strtoupper(PHP_OS), 'WIN') === 0) {
     $stats['server_os'] = PHP_OS;
 }
 
-$stats['server_uname'] = php_uname('s') . ' ' . php_uname('r') . ' ' . php_uname('v') . ' ' . php_uname('m');
+$stats['server_uname'] = php_uname('s').' '.php_uname('r').' '.php_uname('v').' '.php_uname('m');
 
 if (isset($_SERVER['SERVER_SOFTWARE'])) {
     if (strpos(strtoupper($_SERVER['SERVER_SOFTWARE']), 'APACHE') !== false) {
@@ -156,20 +182,20 @@ if (isset($_SERVER['SERVER_SOFTWARE'])) {
 #----------------------------------------
 
 $stats['error_info'] = array(
-    'summary' => $__fail_message
+    'summary' => $__fail_message,
 );
 
 if (isset($__license_code)) {
     $stats['error_info']['license_code'] = $__license_code;
-    $stats['license_id'] = 'nolic';
-    $stats['local_hash'] = md5($__license_code);
+    $stats['license_id']                 = 'nolic';
+    $stats['local_hash']                 = md5($__license_code);
 }
 if (isset($__install_key)) {
     $stats['error_info']['install_key'] = $__install_key;
 }
 
 $stats['error_type'] = 'php';
-$stats['local_hash'] = sha1($__fail_message . __FILE__ . php_uname());
+$stats['local_hash'] = sha1($__fail_message.__FILE__.php_uname());
 
 error_log($__fail_message);
 
@@ -180,4 +206,5 @@ try {
         'POST',
         15
     );
-} catch (\Exception $e) {}
+} catch (\Exception $e) {
+}

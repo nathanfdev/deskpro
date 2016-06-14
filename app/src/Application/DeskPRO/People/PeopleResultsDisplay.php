@@ -1,35 +1,33 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage People
+ * DeskPRO.
  */
 namespace Application\DeskPRO\People;
 
@@ -103,18 +101,17 @@ class PeopleResultsDisplay
      */
     public function __construct(array $people)
     {
-        $this->people = $people;
+        $this->people       = $people;
         $this->people_count = count($people);
-        $this->people_ids = array();
+        $this->people_ids   = array();
         foreach ($this->people as $p) {
             $this->people_ids[] = $p->id;
         }
 
-        $this->em = App::getOrm();
-        $this->db = $this->em->getConnection();
+        $this->em            = App::getOrm();
+        $this->db            = $this->em->getConnection();
         $this->field_manager = App::getSystemService('person_fields_manager');
     }
-
 
     /**
      * @return int
@@ -124,7 +121,6 @@ class PeopleResultsDisplay
         return $this->people_count;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\Person[]
      */
@@ -133,13 +129,14 @@ class PeopleResultsDisplay
         return $this->people;
     }
 
-
     /**
      * @return array
      */
     public function getAllLabels()
     {
-        if ($this->all_labels !== null) return $this->all_labels;
+        if ($this->all_labels !== null) {
+            return $this->all_labels;
+        }
 
         if (!$this->people_count) {
             $this->all_labels = array();
@@ -163,7 +160,9 @@ class PeopleResultsDisplay
      */
     public function getAllUsernames()
     {
-        if ($this->people_usernames !== null) return $this->people_usernames;
+        if ($this->people_usernames !== null) {
+            return $this->people_usernames;
+        }
 
         if (!$this->people_count) {
             $this->people_usernames = array();
@@ -188,7 +187,7 @@ class PeopleResultsDisplay
     public function getEmail(Person $person)
     {
         if (!$person->primary_email) {
-            return null;
+            return;
         }
 
         if ($this->primary_emails === null) {
@@ -207,14 +206,16 @@ class PeopleResultsDisplay
 
     public function getAllFieldsData()
     {
-        if ($this->all_fields_data !== null) return $this->all_fields_data;
-        $data = $this->em->createQuery("
+        if ($this->all_fields_data !== null) {
+            return $this->all_fields_data;
+        }
+        $data = $this->em->createQuery('
             SELECT d, def, root_def
             FROM DeskPRO:CustomDataPerson AS d
             LEFT JOIN d.field def
             LEFT JOIN d.root_field root_def
             WHERE d.person IN (?0)
-        ")->execute(array(array_values($this->people_ids)));
+        ')->execute(array(array_values($this->people_ids)));
 
         $this->all_fields_data = array();
         foreach ($data as $d) {
@@ -230,7 +231,8 @@ class PeopleResultsDisplay
     }
 
     /**
-     * @param  Person $person
+     * @param Person $person
+     *
      * @return array
      */
     public function getUserFieldData(Person $person)
@@ -246,10 +248,10 @@ class PeopleResultsDisplay
     public function getCustomFields(Person $person)
     {
         if ($this->people_fields === null) {
-            $field_data = $this->em->createQuery("
+            $field_data = $this->em->createQuery('
                 SELECT cp FROM DeskPRO:CustomDataPerson cp
                 WHERE cp.person IN (?0)
-            ")->execute(array($this->people_ids));
+            ')->execute(array($this->people_ids));
 
             $person_data = array();
 
@@ -275,11 +277,11 @@ class PeopleResultsDisplay
         }
     }
 
-
     /**
-     * Get an array of labels applied to a person
+     * Get an array of labels applied to a person.
      *
-     * @param  \Application\DeskPRO\Entity\Person $person
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return array
      */
     public function getPersonLabels(Person $person)
@@ -289,11 +291,11 @@ class PeopleResultsDisplay
         return empty($this->all_labels[$person->id]) ? array() : $this->all_labels[$person->id];
     }
 
-
     /**
-     * Get an array of usernames from usersources applied to a person
+     * Get an array of usernames from usersources applied to a person.
      *
-     * @param  \Application\DeskPRO\Entity\Person $person
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return array
      */
     public function getPersonUsernames(Person $person)
@@ -303,11 +305,11 @@ class PeopleResultsDisplay
         return empty($this->people_usernames[$person->id]) ? array() : $this->people_usernames[$person->id];
     }
 
-
     /**
-     * Check if a person has labels
+     * Check if a person has labels.
      *
-     * @param  \Application\DeskPRO\Entity\Person $person
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return bool
      */
     public function hasPersonLabels(Person $person)
@@ -317,13 +319,14 @@ class PeopleResultsDisplay
         return !empty($this->all_labels[$person->id]);
     }
 
-
     /**
      * @return array
      */
     public function getAllPeopleTicketCounts()
     {
-        if ($this->people_ticket_counts !== null) return $this->people_ticket_counts;
+        if ($this->people_ticket_counts !== null) {
+            return $this->people_ticket_counts;
+        }
 
         $this->people_ticket_counts = $this->em->getRepository('DeskPRO:Ticket')->getTicketCountsForPeople($this->people);
 
@@ -333,7 +336,8 @@ class PeopleResultsDisplay
     /**
      * Get the number of tickets submitted by a user.
      *
-     * @param  \Application\DeskPRO\Entity\Person $person
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return int
      */
     public function getPersonTicketCount(Person $person)

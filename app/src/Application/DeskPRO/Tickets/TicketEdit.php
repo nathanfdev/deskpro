@@ -1,47 +1,45 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 
 class TicketEdit implements PersonContextInterface
 {
     /**
-     * Application\DeskPRO\Entity\Ticket
+     * Application\DeskPRO\Entity\Ticket.
      */
     protected $ticket;
 
@@ -76,23 +74,22 @@ class TicketEdit implements PersonContextInterface
     public function applyActions(array $actions)
     {
         $this->perm_errors = array();
-        $return = array();
+        $return            = array();
 
         if ($this->person_context) {
             $tcheck = $this->person_context->PermissionsManager->TicketChecker;
         } else {
             $tcheck = null;
         }
-        /** @var $tcheck \Application\DeskPRO\People\PermissionChecker\TicketChecker */
+        /* @var $tcheck \Application\DeskPRO\People\PermissionChecker\TicketChecker */
 
         foreach ($actions as $term => $action) {
-
             $term_id = null;
 
             // $term of ticket_field[12] becomes $term=ticket_field, $term_id=12
             $m = null;
             if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
-                $term = $m[1];
+                $term    = $m[1];
                 $term_id = $m[2];
             }
 
@@ -286,7 +283,7 @@ class TicketEdit implements PersonContextInterface
                             break;
                         }
                     }
-                    foreach ((array)$action as $label) {
+                    foreach ((array) $action as $label) {
                         $this->ticket->getLabelManager()->addLabel($label);
                     }
                     break;
@@ -298,7 +295,7 @@ class TicketEdit implements PersonContextInterface
                             break;
                         }
                     }
-                    foreach ((array)$action as $label) {
+                    foreach ((array) $action as $label) {
                         $this->ticket->getLabelManager()->removeLabel($label);
                     }
                     break;
@@ -333,7 +330,7 @@ class TicketEdit implements PersonContextInterface
                         continue;
                     }
 
-                    $message = new Entity\TicketMessage();
+                    $message            = new Entity\TicketMessage();
                     $message['person']  = $agent;
                     $message['ticket']  = $this->ticket;
                     $message['message'] = $action['new_reply'];

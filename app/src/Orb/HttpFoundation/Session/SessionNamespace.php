@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Usersources
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Usersources
+ */
 namespace Orb\HttpFoundation\Session;
 
 /**
@@ -41,21 +40,23 @@ namespace Orb\HttpFoundation\Session;
 class SessionNamespace implements SessionInterface
 {
     /**
-     * The session object being used
+     * The session object being used.
+     *
      * @var Orb\HttpFoundation\Session\Session
      */
     protected $session;
 
     /**
-     * The string key used in the above session to store these values
+     * The string key used in the above session to store these values.
+     *
      * @var string
      */
     protected $namespace;
 
     protected function __construct(\Orb\HttpFoundation\Session\Session $session, $namespace)
     {
-        $this->session = $session;
-        $this->namespace = '__' . $namespace;
+        $this->session   = $session;
+        $this->namespace = '__'.$namespace;
     }
 
     /**
@@ -69,8 +70,9 @@ class SessionNamespace implements SessionInterface
     /**
      * Checks if a data item is defined.
      *
-     * @param  string  $name The data item name
-     * @return boolean
+     * @param string $name The data item name
+     *
+     * @return bool
      */
     public function has($name)
     {
@@ -82,8 +84,9 @@ class SessionNamespace implements SessionInterface
     /**
      * Returns a data item.
      *
-     * @param  string $name    The attribute name
-     * @param  mixed  $default The default value
+     * @param string $name    The attribute name
+     * @param mixed  $default The default value
+     *
      * @return mixed
      */
     public function get($name, $default = null)
@@ -145,7 +148,9 @@ class SessionNamespace implements SessionInterface
     public function remove($name)
     {
         $this->start();
-        if (!isset($this->session->data[$this->namespace])) return;
+        if (!isset($this->session->data[$this->namespace])) {
+            return;
+        }
 
         unset($this->session->data[$this->namespace][$name]);
 
@@ -156,7 +161,7 @@ class SessionNamespace implements SessionInterface
     }
 
     /**
-     * Removes all data
+     * Removes all data.
      */
     public function removeAllData()
     {
@@ -166,7 +171,7 @@ class SessionNamespace implements SessionInterface
     }
 
     /**
-     * Get this namespace name
+     * Get this namespace name.
      *
      * @return string
      */
@@ -178,9 +183,9 @@ class SessionNamespace implements SessionInterface
     public function getIterator()
     {
         if (isset($this->session->data[$this->namespace])) {
-            return \ArrayIterator($this->session->data[$this->namespace]);
+            return new \ArrayIterator($this->session->data[$this->namespace]);
         } else {
-            return \ArrayIterator(array());
+            return new \ArrayIterator(array());
         }
     }
 

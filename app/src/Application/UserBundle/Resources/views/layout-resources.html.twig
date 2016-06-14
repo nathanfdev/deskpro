@@ -22,6 +22,9 @@
 	{% endif %}
 </script>
 
+{% include 'DeskPRO:Common:notify-logout-script.html.twig' %}
+{% include 'DeskPRO:Common:notify-login-script.html.twig' %}
+
 {% if app.isDebug() %}
 	{{ dp_asset_html('user_vendors') }}
 	{{ dp_asset_html('user_common') }}
@@ -38,6 +41,7 @@
 		{% endif %}
 	{% endif %}
 {% endif %}
+<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/font-awesome/css/font-awesome.min.css') }}" />
 
 {% if app.isDebug() %}
 	<script src="{{ app.request.getBaseUrl()|replace({'/index.php':''}) }}/dp.php/user-lang-{{ app.language.id }}.js?nocache=1&v={{ security_token('lang') }}"></script>

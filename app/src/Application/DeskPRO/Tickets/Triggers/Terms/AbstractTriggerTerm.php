@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
@@ -45,30 +44,30 @@ use Orb\Util\Util;
 
 abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTermInterface
 {
-    const OP_NOOP                 = null;
-    const OP_IS                   = 'is';
-    const OP_NOT                  = 'not';
-    const OP_LT                   = 'lt';
-    const OP_GT                   = 'gt';
-    const OP_LTE                  = 'lte';
-    const OP_GTE                  = 'gte';
-    const OP_BETWEEN              = 'between';
-    const OP_NOTBETWEEN           = 'notbetween';
-    const OP_CONTAINS             = 'contains';
-    const OP_NOTCONTAINS          = 'notcontains';
-    const OP_IS_REGEX             = 'is_regex';
-    const OP_NOT_REGEX            = 'not_regex';
-    const OP_ISSET                = 'isset';
-    const OP_NOTISSET             = 'not_isset';
+    const OP_NOOP        = null;
+    const OP_IS          = 'is';
+    const OP_NOT         = 'not';
+    const OP_LT          = 'lt';
+    const OP_GT          = 'gt';
+    const OP_LTE         = 'lte';
+    const OP_GTE         = 'gte';
+    const OP_BETWEEN     = 'between';
+    const OP_NOTBETWEEN  = 'notbetween';
+    const OP_CONTAINS    = 'contains';
+    const OP_NOTCONTAINS = 'notcontains';
+    const OP_IS_REGEX    = 'is_regex';
+    const OP_NOT_REGEX   = 'not_regex';
+    const OP_ISSET       = 'isset';
+    const OP_NOTISSET    = 'not_isset';
 
-    const OP_CHANGED              = 'changed';
-    const OP_CHANGED_TO           = 'changed_to';
-    const OP_CHANGED_FROM         = 'changed_from';
-    const OP_NOT_CHANGED_TO       = 'not_changed_to';
-    const OP_NOT_CHANGED_FROM     = 'not_changed_from';
+    const OP_CHANGED          = 'changed';
+    const OP_CHANGED_TO       = 'changed_to';
+    const OP_CHANGED_FROM     = 'changed_from';
+    const OP_NOT_CHANGED_TO   = 'not_changed_to';
+    const OP_NOT_CHANGED_FROM = 'not_changed_from';
 
-    const OP_TOUCHED              = 'touched';
-    const OP_NOT_TOUCHED          = 'nottouched';
+    const OP_TOUCHED     = 'touched';
+    const OP_NOT_TOUCHED = 'nottouched';
 
     /**
      * @var
@@ -80,7 +79,6 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
      */
     private $options;
 
-
     /**
      * @param string $op
      * @param array  $options
@@ -90,7 +88,6 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         $this->op = $op;
         $this->_initOptions($options);
     }
-
 
     /**
      * @param array $options
@@ -109,6 +106,9 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
             case 'nottouched':
             case 'changed':
                 foreach ($this->options->getRequiredNames() as $name) {
+                    if ('field_id' === $name) {
+                        continue;
+                    }
                     $this->options->set($name, null);
                 }
                 break;
@@ -116,7 +116,6 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
         $this->options->ensureRequired();
     }
-
 
     /**
      * @return array
@@ -126,7 +125,6 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         return array();
     }
 
-
     /**
      * @return CheckedOptionsArray
      */
@@ -135,9 +133,8 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         return new CheckedOptionsArray();
     }
 
-
     /**
-     * Gets the type name of the criteria
+     * Gets the type name of the criteria.
      *
      * @return string
      */
@@ -145,7 +142,6 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
     {
         return Util::getBaseClassname($this);
     }
-
 
     /**
      * Gets criteria operator (is, is not, etc).
@@ -157,9 +153,8 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         return $this->op;
     }
 
-
     /**
-     * Get's an array of options
+     * Get's an array of options.
      *
      * @return \Orb\Util\OptionsArray
      */
@@ -169,9 +164,10 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @param  string                   $prop_name
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     * @param string                   $prop_name
+     *
      * @return array
      */
     protected function getValueOpArray(Ticket $ticket, ExecutorContextInterface $context, $prop_name)
@@ -182,7 +178,6 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
             // Dotted notation lets us go 'deep' within the
             // object. E.g., person.name = $ticket->person->name
             if (strpos($prop_name, '.') !== false) {
-
                 $value = $ticket;
                 $parts = explode('.', $prop_name);
 
@@ -193,7 +188,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
                     $is_coll = false;
                     if (substr($p, -2) == '[]') {
                         $is_coll = true;
-                        $p = substr($p, 0, -2);
+                        $p       = substr($p, 0, -2);
                     }
 
                     if (isset($value->$p)) {
@@ -217,8 +212,8 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
                 // to reduce that down to email
                 if ($is_coll && $parts) {
                     $parts_default = $parts;
-                    $all_values = $value;
-                    $use_value = array();
+                    $all_values    = $value;
+                    $use_value     = array();
                     foreach ($all_values as $value) {
                         $parts = $parts_default;
                         while (($p = array_shift($parts)) !== null) {
@@ -266,10 +261,10 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
                 } elseif ($this->op == 'not_changed_to') {
                     $op = 'not';
                 } elseif ($this->op == 'changed_from') {
-                    $op = 'is';
+                    $op    = 'is';
                     $value = $state->getFirstChangeForField($prop_name)->getOld();
                 } elseif ($this->op == 'not_changed_from') {
-                    $op = 'not';
+                    $op    = 'not';
                     $value = $state->getFirstChangeForField($prop_name)->getOld();
                 } elseif ($op == 'changed') {
                     $op = 'changed';
@@ -289,27 +284,36 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
             'is_changed_op' => $is_change_op,
             'is_touched_op' => $is_touched_op,
             'was_changed'   => $was_changed,
-            'was_touched'   => $was_touched
+            'was_touched'   => $was_touched,
         );
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @param  string                   $prop_name
-     * @param  string                   $id_prop
-     * @param  array                    $check_ids
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     * @param string                   $prop_name
+     * @param string                   $id_prop
+     * @param array                    $check_ids
+     *
      * @return bool
      */
-    protected function isCollectionMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, $id_prop, array $check_ids = null)
-    {
+    protected function isCollectionMatch(
+        Ticket $ticket,
+        ExecutorContextInterface $context,
+        $prop_name,
+        $id_prop,
+        array $check_ids = null
+    ) {
         $opts  = $this->getValueOpArray($ticket, $context, $prop_name);
         $op    = $opts['op'];
         $value = $opts['value'];
 
         if ($opts['is_touched_op']) {
-            if     ($opts['was_touched'])  return $op == 'touched';
-            elseif (!$opts['was_touched']) return $op == 'nottouched';
+            if ($opts['was_touched']) {
+                return $op == 'touched';
+            } elseif (!$opts['was_touched']) {
+                return $op == 'nottouched';
+            }
         }
 
         if ($opts['is_changed_op'] && !$opts['was_changed']) {
@@ -324,7 +328,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         }
 
         $check_ids = array_fill_keys($check_ids, true);
-        $has = false;
+        $has       = false;
         foreach ($value as $val) {
             if (isset($check_ids[$val->$id_prop])) {
                 $has = true;
@@ -351,23 +355,33 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @param  string                   $prop_name
-     * @param  string                   $id_prop
-     * @param  array                    $check_ids
-     * @param  string                   $multi_mode
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     * @param string                   $prop_name
+     * @param string                   $id_prop
+     * @param array                    $check_ids
+     * @param string                   $multi_mode
+     *
      * @return bool
      */
-    protected function isEntityMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, $id_prop, $check_ids = null, $multi_mode = null)
-    {
+    protected function isEntityMatch(
+        Ticket $ticket,
+        ExecutorContextInterface $context,
+        $prop_name,
+        $id_prop,
+        $check_ids = null,
+        $multi_mode = null
+    ) {
         $opts       = $this->getValueOpArray($ticket, $context, $prop_name);
         $op         = $opts['op'];
         $all_values = $opts['value'];
 
         if ($opts['is_touched_op']) {
-            if     ($opts['was_touched'])  return $op == 'touched';
-            elseif (!$opts['was_touched']) return $op == 'nottouched';
+            if ($opts['was_touched']) {
+                return $op == 'touched';
+            } elseif (!$opts['was_touched']) {
+                return $op == 'nottouched';
+            }
         }
 
         if ($opts['is_changed_op'] && !$opts['was_changed']) {
@@ -390,6 +404,13 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         }
 
         if ($check_ids) {
+            // Strings to lowercase (1)
+            $check_ids = array_map(
+                function ($v) {
+                    return is_string($v) ? strtolower($v) : $v;
+                },
+                $check_ids
+            );
             $check_ids = array_fill_keys($check_ids, true);
         }
 
@@ -399,6 +420,11 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
                 $value_id = 0;
             } else {
                 $value_id = $value->$id_prop;
+            }
+
+            // Strings to lowercase (2)
+            if (is_string($value_id)) {
+                $value_id = strtolower($value_id);
             }
 
             if (isset($check_ids[$value_id])) {
@@ -427,21 +453,29 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @param  string                   $prop_name
-     * @param  \DateTime                $check_value
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     * @param string                   $prop_name
+     * @param \DateTime                $check_value
+     *
      * @return bool
      */
-    protected function isDateMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, \DateTime $check_value = null)
-    {
+    protected function isDateMatch(
+        Ticket $ticket,
+        ExecutorContextInterface $context,
+        $prop_name,
+        \DateTime $check_value = null
+    ) {
         $opts  = $this->getValueOpArray($ticket, $context, $prop_name);
         $op    = $opts['op'];
         $value = $opts['value'];
 
         if ($opts['is_touched_op']) {
-            if     ($opts['was_touched'])  return $op == 'touched';
-            elseif (!$opts['was_touched']) return $op == 'nottouched';
+            if ($opts['was_touched']) {
+                return $op == 'touched';
+            } elseif (!$opts['was_touched']) {
+                return $op == 'nottouched';
+            }
         }
 
         if (!$value) {
@@ -456,27 +490,57 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         $check_value = $check_value->getTimestamp();
 
         switch ($op) {
-            case 'is':     if ($check_value == $value)  return true; break;
-            case 'not':    if ($check_value != $value)  return true; break;
-            case 'gt':     if ($check_value > $value)   return true; break;
-            case 'gte':    if ($check_value >= $value)  return true; break;
-            case 'lt':     if ($check_value < $value)   return true; break;
-            case 'lte':    if ($check_value <= $value)  return true; break;
+            case 'is':
+                if ($check_value == $value) {
+                    return true;
+                }
+                break;
+            case 'not':
+                if ($check_value != $value) {
+                    return true;
+                }
+                break;
+            case 'gt':
+                if ($check_value > $value) {
+                    return true;
+                }
+                break;
+            case 'gte':
+                if ($check_value >= $value) {
+                    return true;
+                }
+                break;
+            case 'lt':
+                if ($check_value < $value) {
+                    return true;
+                }
+                break;
+            case 'lte':
+                if ($check_value <= $value) {
+                    return true;
+                }
+                break;
         }
 
         return false;
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @param  string                   $prop_name
-     * @param  \DateTime                $lower
-     * @param  \DateTime                $upper
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     * @param string                   $prop_name
+     * @param \DateTime                $lower
+     * @param \DateTime                $upper
+     *
      * @return bool
      */
-    protected function isDateRangeMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, \DateTime $lower, \DateTime $upper)
-    {
+    protected function isDateRangeMatch(
+        Ticket $ticket,
+        ExecutorContextInterface $context,
+        $prop_name,
+        \DateTime $lower,
+        \DateTime $upper
+    ) {
         $opts  = $this->getValueOpArray($ticket, $context, $prop_name);
         $value = $opts['value'];
 
@@ -492,10 +556,11 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @param  string                   $prop_name
-     * @param  string                   $check_value
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     * @param string                   $prop_name
+     * @param string                   $check_value
+     *
      * @return bool
      */
     protected function isIntMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, $check_value = null)
@@ -505,35 +570,63 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         $value = $opts['value'];
 
         if ($opts['is_touched_op']) {
-            if     ($opts['was_touched'])  return $op == 'touched';
-            elseif (!$opts['was_touched']) return $op == 'nottouched';
+            if ($opts['was_touched']) {
+                return $op == 'touched';
+            } elseif (!$opts['was_touched']) {
+                return $op == 'nottouched';
+            }
         }
 
         if ($check_value === null) {
             return false;
         }
 
-        $value       = (int)$value;
-        $check_value = (int)$check_value;
+        $value       = (int) $value;
+        $check_value = (int) $check_value;
 
         switch ($op) {
-            case 'is':   if ($value == $check_value)  return true; break;
-            case 'not':  if ($value != $check_value)  return true; break;
-            case 'gt':   if ($value >  $check_value)   return true; break;
-            case 'gte':  if ($value >= $check_value)  return true; break;
-            case 'lt':   if ($value <  $check_value)   return true; break;
-            case 'lte':  if ($value <= $check_value)  return true; break;
+            case 'is':
+                if ($value == $check_value) {
+                    return true;
+                }
+                break;
+            case 'not':
+                if ($value != $check_value) {
+                    return true;
+                }
+                break;
+            case 'gt':
+                if ($value > $check_value) {
+                    return true;
+                }
+                break;
+            case 'gte':
+                if ($value >= $check_value) {
+                    return true;
+                }
+                break;
+            case 'lt':
+                if ($value < $check_value) {
+                    return true;
+                }
+                break;
+            case 'lte':
+                if ($value <= $check_value) {
+                    return true;
+                }
+                break;
         }
 
         return false;
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @param  string                   $prop_name
-     * @param  int                      $lower
-     * @param  int                      $upper
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     * @param string                   $prop_name
+     * @param int                      $lower
+     * @param int                      $upper
+     *
      * @return bool
      */
     protected function isIntRangeMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, $lower, $upper)
@@ -542,36 +635,51 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         $op    = $opts['op'];
         $value = $opts['value'];
 
-        $value = (int)$value;
-        $lower = (int)$lower;
-        $upper = (int)$upper;
+        $value = (int) $value;
+        $lower = (int) $lower;
+        $upper = (int) $upper;
 
         if (Numbers::inRange($value, $lower, $upper)) {
-            if ($op == 'between') return true;
-            else return false;
+            if ($op == 'between') {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            if ($op == 'notbetween') return true;
-            else return false;
+            if ($op == 'notbetween') {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @param  string                   $prop_name
-     * @param  string                   $check_value
-     * @param  string                   $multi_mode
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     * @param string                   $prop_name
+     * @param string                   $check_value
+     * @param string                   $multi_mode
+     *
      * @return bool
      */
-    protected function isStringMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, $check_value = null, $multi_mode = null)
-    {
+    protected function isStringMatch(
+        Ticket $ticket,
+        ExecutorContextInterface $context,
+        $prop_name,
+        $check_value = null,
+        $multi_mode = null
+    ) {
         $opts       = $this->getValueOpArray($ticket, $context, $prop_name);
         $op         = $opts['op'];
         $all_values = $opts['value'];
 
         if ($opts['is_touched_op']) {
-            if     ($opts['was_touched'])  return $op == 'touched';
-            elseif (!$opts['was_touched']) return $op == 'nottouched';
+            if ($opts['was_touched']) {
+                return $op == 'touched';
+            } elseif (!$opts['was_touched']) {
+                return $op == 'nottouched';
+            }
         }
 
         if ($opts['is_changed_op'] && !$opts['was_changed']) {
@@ -591,9 +699,12 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
         $check_value = is_array($check_value) ? $check_value : array($check_value);
 
-        $check_value_i = array_map(function ($v) {
-            return Strings::utf8_strtolower($v);
-        }, $check_value);
+        $check_value_i = array_map(
+            function ($v) {
+                return Strings::utf8_strtolower($v);
+            },
+            $check_value
+        );
 
         $check_fn = function ($value) use ($op, $check_value_i, $check_value) {
 
@@ -608,24 +719,36 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
             $value_i = Strings::utf8_strtolower($value);
             switch ($op) {
                 case 'isset':
-                    if ($value_i !== "") return true;
-                    else return false;
+                    if ($value_i !== '') {
+                        return true;
+                    } else {
+                        return false;
+                    }
                     break;
 
                 case 'not_isset':
-                    if ($value_i === "" || $value_i === null || $value_i === false) return true;
-                    else return false;
+                    if ($value_i === '' || $value_i === null || $value_i === false) {
+                        return true;
+                    } else {
+                        return false;
+                    }
                     break;
 
                 case 'is':
                 case 'not':
                     foreach ($check_value_i as $vi) {
                         if ($value_i == $vi) {
-                            if ($op == 'is') return true;
-                            if ($op == 'not') return false;
+                            if ($op == 'is') {
+                                return true;
+                            }
+                            if ($op == 'not') {
+                                return false;
+                            }
                         }
                     }
-                    if ($op == 'not') return true;
+                    if ($op == 'not') {
+                        return true;
+                    }
                     break;
 
                 case 'contains':
@@ -634,13 +757,20 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
                         // Special case: empty search string
                         // We consider 'ticket subject has ""' to be true
                         if ($vi === '') {
-                            if ($op == 'contains') return true;
-                            else return false;
+                            if ($op == 'contains') {
+                                return true;
+                            } else {
+                                return false;
+                            }
                         }
 
                         if (strpos($value_i, $vi) !== false) {
-                            if ($op == 'contains') return true;
-                            if ($op == 'notcontains') return false;
+                            if ($op == 'contains') {
+                                return true;
+                            }
+                            if ($op == 'notcontains') {
+                                return false;
+                            }
                         }
                     }
                     if ($op == 'notcontains') {
@@ -658,8 +788,12 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
                         }
 
                         if (preg_match($regex, $value)) {
-                            if ($op == 'is_regex') return true;
-                            if ($op == 'not_regex') return false;
+                            if ($op == 'is_regex') {
+                                return true;
+                            }
+                            if ($op == 'not_regex') {
+                                return false;
+                            }
                         }
                     }
                     if ($op == 'not_regex') {
@@ -674,10 +808,11 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
     }
 
     /**
-     * @param  array    $all_values
-     * @param  callback $check_fn
-     * @param  string   $op
-     * @param  string   $multi_mode
+     * @param array    $all_values
+     * @param callback $check_fn
+     * @param string   $op
+     * @param string   $multi_mode
+     *
      * @return bool
      */
     public function getMultiMatchResult(array $all_values, $check_fn, $op, $multi_mode)
@@ -694,9 +829,9 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         $match_count = 0;
         $check_count = 0;
         foreach ($all_values as $v) {
-            $check_count++;
+            ++$check_count;
             if (call_user_func($check_fn, $v)) {
-                $match_count++;
+                ++$match_count;
             }
         }
 
@@ -725,8 +860,9 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @return bool
      */
     public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)

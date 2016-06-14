@@ -7,6 +7,7 @@
 		class="dpe_select dpe_select_noborder labels-box"
 		data-select-width="auto"
 		data-placeholder="Add a label"
+		data-allow-new="{{ app.user.hasPerm('agent_tickets.create_labels') ? 1 : 0 }}"
 		value="{% if ticket and ticket.labels %}{% for label in ticket.labels %}{{ label.label }},{% endfor %}{% endif %}"
 	/>
 </div>

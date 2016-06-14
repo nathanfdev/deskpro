@@ -15,13 +15,16 @@
   "angularGrid":                     "bower_components/angular-grid/build/ng-grid.min",
   "angularUiDatetime":               "vendor/ui-datetime",
   "angularOcLazyLoad":               "bower_components/oclazyload/dist/ocLazyLoad",
+  "angularScrollGlue":               "bower_components/angular-scroll-glue/src/scrollglue",
+
+  "bootstrapDatetime":               "bower_components/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker",
 
   "ngFileUpload":                    "bower_components/ng-file-upload/angular-file-upload.min",
   "ngContextMenu":                   "vendor/ng-context-menu/src/ng-context-menu",
   "jquery":                          "bower_components/jquery/dist/jquery.min",
   "jqueryUi":                        "bower_components/jquery-ui/ui/minified/jquery-ui.min",
   "jquery.ui.widget":                "bower_components/blueimp-file-upload/js/vendor/jquery.ui.widget",
-  "jquery.ui.i18n":                  "bower_components/jquery-ui/ui/i18n/jquery-ui-i18n",
+  "jquery.ui.i18n":                  "bower_components/jquery-ui/ui/minified/i18n/jquery-ui-i18n.min",
   "jquery.fileupload":               "bower_components/blueimp-file-upload/js/jquery.fileupload",
   "jquery.fileupload-process":       "bower_components/blueimp-file-upload/js/jquery.fileupload-process",
   "jquery.fileupload-image":         "bower_components/blueimp-file-upload/js/jquery.fileupload-image",
@@ -48,6 +51,7 @@
   "intl-tel-input":                  "bower_components/intl-tel-input/build/js/intlTelInput.min",
   "redactor":                        "vendor/redactor/redactor.min",
   "cutstring":                       "vendor/cuthtmlstring/cutstring",
+  "intl-tel-input-utils":            "bower_components/intl-tel-input/lib/libphonenumber/build/utils",
 
   "json3":                           "bower_components/json3/lib/json3.min",
 

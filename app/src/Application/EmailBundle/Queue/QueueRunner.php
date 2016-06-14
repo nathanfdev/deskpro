@@ -1,44 +1,40 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\EmailBundle\Queue;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\EmailBundle\SourceMapper\DatabaseSourceMapper;
 use Application\EmailBundle\SourceMapper\SourceMapperInterface;
 use Psr\Log\LoggerInterface;
-use Monolog;
 
 class QueueRunner
 {
@@ -88,11 +84,11 @@ class QueueRunner
     private $done_ids = array();
 
     /**
-     * @param Connection $db
-     * @param QueueProc $queue_proc
+     * @param Connection            $db
+     * @param QueueProc             $queue_proc
      * @param SourceMapperInterface $source_mapper
-     * @param SourceSender $source_sender
-     * @param LoggerInterface $logger
+     * @param SourceSender          $source_sender
+     * @param LoggerInterface       $logger
      */
     public function __construct(Connection $db, QueueProc $queue_proc, SourceMapperInterface $source_mapper, SourceSender $source_sender, LoggerInterface $logger)
     {
@@ -104,8 +100,8 @@ class QueueRunner
     }
 
     /**
-     * @param int $proc_limit  Max number of emails to send
-     * @param int $time_limit  Max time to spend sending
+     * @param int $proc_limit Max number of emails to send
+     * @param int $time_limit Max time to spend sending
      */
     public function setLimits($proc_limit, $time_limit)
     {
@@ -116,8 +112,9 @@ class QueueRunner
     /**
      * Timeout sources that have been marked as processing too long.
      *
-     * @return int
      * @throws \Exception
+     *
+     * @return int
      */
     public function detectProblems()
     {
@@ -141,7 +138,7 @@ class QueueRunner
 
             // Appends to log file about the timeout
             foreach ($batch as $r) {
-                $d = \DateTime::createFromFormat('Y-m-d H:i:s', $r['date_status']);
+                $d   = \DateTime::createFromFormat('Y-m-d H:i:s', $r['date_status']);
                 $msg = sprintf(
                     '[%s] RETRY: Detected process timeout. Stuck at %s since %s (%s mins). Retrying.',
                     date('Y-m-d H:i:s'),
@@ -149,7 +146,7 @@ class QueueRunner
                     $r['date_status'],
                     ceil((time() - $d->getTimestamp()) / 60)
                 );
-                $this->source_mapper->markSourceRetry($r, $msg, new \DateTime("+30 minutes"));
+                $this->source_mapper->markSourceRetry($r, $msg, new \DateTime('+30 minutes'));
 
                 $did = true;
             }
@@ -175,7 +172,7 @@ class QueueRunner
 
             // Appends to log file about the timeout
             foreach ($batch as $r) {
-                $d = \DateTime::createFromFormat('Y-m-d H:i:s', $r['date_status']);
+                $d   = \DateTime::createFromFormat('Y-m-d H:i:s', $r['date_status']);
                 $msg = sprintf(
                     '[%s] ERROR: Detected timeout. Stuck at %s since %s (%s mins)',
                     date('Y-m-d H:i:s'),
@@ -200,7 +197,7 @@ class QueueRunner
                 "); // 1 hrs
 
                 foreach ($batch as $r) {
-                    $this->source_mapper->setSourcePending($r);
+                    $this->source_mapper->setSourcePending($r, new \DateTime('-1 seconds'));
                     $did = true;
                 }
             }
@@ -221,36 +218,48 @@ class QueueRunner
                     SELECT * FROM sendmail_sources
                     WHERE status IN ('pending') AND date_status < ?
                     LIMIT 250
-                ", array(date('Y-m-d H:i:s', time() - 3600))); // 1 hrs
+                ", array(date('Y-m-d H:i:s', time() - 1800))); // 30m
 
                 foreach ($batch as $r) {
-                    $this->source_mapper->setSourcePending($r);
+                    $this->source_mapper->setSourcePending($r, new \DateTime('-1 seconds'));
+                    $did = true;
+                }
+
+                // retry statuses
+                $batch = $this->db->fetchAllKeyed("
+                    SELECT * FROM sendmail_sources
+                    WHERE status IN ('retry') AND date_next_attempt < ?
+                    LIMIT 250
+                ", array(date('Y-m-d H:i:s', time())));
+
+                foreach ($batch as $r) {
+                    $this->source_mapper->setSourcePending($r, new \DateTime('-1 seconds'));
                     $did = true;
                 }
             }
-
         } while ($did);
 
         return $count;
     }
 
-
     /**
-     * Runs through the queue
+     * Runs through the queue.
      *
      * @return int
      */
     public function run()
     {
         $time_start = time();
-        $count = 0;
+        $count      = 0;
 
         $this->logger->info(sprintf('Starting -- Limit: %d -- Max Time: %ds', $this->proc_limit, $this->proc_time_limit));
 
+        $did_early_break = false;
+
         while (true) {
-            $did_break = false;
+            $did_break   = false;
             $batch_count = 0;
-            $batch = $this->reserveBatch();
+            $batch       = $this->reserveBatch();
             $this->logger->info(sprintf('Reserved %d records', count($batch)));
 
             $proc = new QueueProc($this->source_mapper, $this->source_sender, $this->logger);
@@ -258,24 +267,27 @@ class QueueRunner
             if ($batch) {
                 while ($r = array_shift($batch)) {
                     $proc->process($r);
-                    $count++;
-                    $batch_count++;
+                    ++$count;
+                    ++$batch_count;
 
                     if ($count >= $this->proc_limit) {
-                        $this->logger->info("Reached limit, breaking");
-                        $did_break = true;
+                        $this->logger->info('Reached limit, breaking');
+                        $did_break       = true;
+                        $did_early_break = true;
                         break;
                     }
 
                     if ((time() - $time_start) > $this->proc_time_limit) {
-                        $this->logger->info("Reached time limit, breaking");
-                        $did_break = true;
+                        $this->logger->info('Reached time limit, breaking');
+                        $did_break       = true;
+                        $did_early_break = true;
                         break;
                     }
                 }
             }
 
             if ($batch) {
+                $did_early_break = true;
                 $this->logger->info(sprintf('Releasing remainder %d reserved records back into queue', count($batch)));
                 $this->releaseRemaining($batch);
             }
@@ -285,7 +297,8 @@ class QueueRunner
             }
 
             if ((time() - $time_start) > $this->proc_time_limit) {
-                $this->logger->info("Reached time limit, breaking (outer)");
+                $did_early_break = true;
+                $this->logger->info('Reached time limit, breaking (outer)');
                 break;
             }
         }
@@ -293,12 +306,36 @@ class QueueRunner
         $time_end = time();
         $this->logger->info(sprintf('Processed %d records in %ds', $count, $time_end - $time_start));
 
+        // If we broke early then we may have messages stuck in the 'pending' state
+        // we should re-queue the messages so they enter into the queue again and
+        // (in case of our cloud) re-spawn the exec command
+        if ($did_early_break && !($this->source_mapper instanceof DatabaseSourceMapper)) {
+            $this->db->beginTransaction();
+
+            $batch = $this->db->fetchAllKeyed("
+                SELECT * FROM sendmail_sources
+                WHERE status IN ('pending')
+                LIMIT 250
+                FOR UPDATE
+            ");
+
+            foreach ($batch as $r) {
+                $done_ids[] = $r['id'];
+                $this->source_mapper->setSourcePending($r, new \DateTime('-1 seconds'));
+            }
+
+            $this->db->commit();
+
+            $this->logger->info(sprintf('Touched %d records for processing in another run', count($batch)));
+        }
+
         return $count;
     }
 
     /**
-     * @return array Array of id=>status of records to process
      * @throws \Exception
+     *
+     * @return array Array of id=>status of records to process
      */
     private function reserveBatch()
     {
@@ -313,7 +350,7 @@ class QueueRunner
             FROM sendmail_sources
             WHERE
               status IN ('pending', 'retry')
-              AND (date_next_attempt < ? OR date_next_attempt IS NULL)
+              AND (date_next_attempt <= ? OR date_next_attempt IS NULL)
               AND id NOT IN (?)
             ORDER BY status ASC, id ASC
             LIMIT {$this->per_batch}
@@ -321,7 +358,7 @@ class QueueRunner
         ", array(date('Y-m-d H:i:s'), $this->done_ids), array(\PDO::PARAM_STR, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY));
 
         if ($batch) {
-            $batch_ids = array_map(function($r) { return $r['id']; }, $batch);
+            $batch_ids = array_map(function ($r) { return $r['id']; }, $batch);
             $this->done_ids = array_merge($this->done_ids, $batch_ids);
             $this->db->executeUpdate("
                 UPDATE sendmail_sources
@@ -335,13 +372,15 @@ class QueueRunner
         return $batch;
     }
 
-
     /**
      * Given a batch of records that we didnt get to (e.g., timeout happened first), release them back
      * to their original status so they can be run next time.
      *
      * @param array $batch
+     *
      * @throws \Exception
+     *
+     * @return int
      */
     private function releaseRemaining(array $batch)
     {
@@ -352,12 +391,12 @@ class QueueRunner
         $this->db->beginTransaction();
 
         $as_pending = array();
-        $as_retry = array();
+        $as_retry   = array();
 
         foreach ($batch as $info) {
             switch ($info['status']) {
                 case 'pending': $as_pending[] = $info['id']; break;
-                case 'retry':   $as_retry[] = $info['id']; break;
+                case 'retry':   $as_retry[]   = $info['id']; break;
             }
         }
 

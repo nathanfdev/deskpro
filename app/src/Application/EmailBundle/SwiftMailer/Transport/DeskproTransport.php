@@ -1,49 +1,48 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\EmailBundle\SwiftMailer\Transport;
 
-use Application\DeskPRO\BlobStorage;
+use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\EmailBundle\SourceMapper\SourceMapperInterface;
+use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use Orb\Util\Arrays;
+use Orb\Validator\StringEmail;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Swift_Transport;
 use Swift_Events_EventDispatcher;
-use Swift_Mime_Message;
 use Swift_Events_SendEvent;
+use Swift_Mime_Message;
+use Swift_Transport;
 
 class DeskproTransport implements Swift_Transport, StorageTransportInterface
 {
@@ -68,10 +67,10 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
     private $logger = null;
 
     /**
-     * @param SourceMapperInterface $source_mapper
-     * @param EmailAccountManager $email_accounts
+     * @param SourceMapperInterface        $source_mapper
+     * @param EmailAccountManager          $email_accounts
      * @param Swift_Events_EventDispatcher $event_dispatcher
-     * @param LoggerInterface $logger
+     * @param LoggerInterface              $logger
      */
     public function __construct(SourceMapperInterface $source_mapper, EmailAccountManager $email_accounts, Swift_Events_EventDispatcher $event_dispatcher, LoggerInterface $logger = null)
     {
@@ -80,7 +79,6 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
         $this->source_mapper    = $source_mapper;
         $this->logger           = $logger ?: new NullLogger();
     }
-
 
     /**
      * @param Swift_Mime_Message $message
@@ -93,64 +91,66 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
 
         if ($from = Arrays::kvpairs($message->getFrom())) {
             $from = $from[0];
-            $this->logger->debug(sprintf("[Before processing] From: Name = %s, Email = <%s>", $from[1], $from[0]));
+            $this->logger->debug(sprintf('[Before processing] From: Name = %s, Email = <%s>', $from[1], $from[0]));
         } else {
-            $this->logger->debug("[Before processing] From is empty");
+            $this->logger->debug('[Before processing] From is empty');
         }
 
-        $acc = $this->email_accounts->findAccountForSwiftmailerMessage($message);
-        $from_name = Arrays::getFirstItem($message->getFrom() ?: array()) ?: '';
-        $message->setFrom($acc->getUseEmailAddress(), $from_name);
+        $acc        = $this->email_accounts->findAccountForSwiftmailerMessage($message);
+        $from_name  = Arrays::getFirstItem($message->getFrom() ?: array()) ?: App::getSetting('core.site_name');
+        $from_email = $acc->getUseEmailAddress();
+
+        if ($message instanceof MessageOptionsInterface) {
+            if ($message->getMessageOptions()->has(MessageOptionsInterface::OPT_USE_FROM)) {
+                $from_email = $message->getMessageOptions()->get(MessageOptionsInterface::OPT_USE_FROM);
+            }
+        }
+
+        $message->setFrom($from_email, $from_name);
 
         if ($acc) {
-            $this->logger->debug(sprintf("Detected account #%d <%s>", $acc->id, $acc->address));
+            $this->logger->debug(sprintf('Detected account #%d <%s>', $acc->id, $acc->address));
         }
 
         if ($from = Arrays::kvpairs($message->getFrom())) {
             $from = $from[0];
-            $this->logger->debug(sprintf("From: Name = %s, Email = <%s>", $from[1], $from[0]));
+            $this->logger->debug(sprintf('From: Name = %s, Email = <%s>', $from[1], $from[0]));
         } else {
-            $this->logger->debug("From is empty");
+            $this->logger->debug('From is empty');
         }
 
         $message->__dp_deskpro_transport_done_preproc = true;
     }
 
-
     /**
      * Tests if this Transport mechanism has started.
      *
-     * @return boolean
+     * @return bool
      */
     public function isStarted()
     {
-
     }
-
 
     /**
      * Starts this Transport mechanism.
      */
     public function start()
     {
-
     }
-
 
     /**
      * Stops this Transport mechanism.
      */
     public function stop()
     {
-
     }
-
 
     /**
      * Queue the message so it is sent by the queue processor.
      *
      * @param Swift_Mime_Message $message
-     * @param \DateTime $send_date When to send the message. If not specified, it will be sent the next time the processor is run.
+     * @param \DateTime          $send_date When to send the message. If not specified, it will be sent the next time the processor is run.
+     *
      * @return int
      */
     public function queueMessage(Swift_Mime_Message $message, \DateTime $send_date = null)
@@ -161,20 +161,58 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
             $r = $this->source_mapper->createSourceForMessage($message, 'aborted');
             $this->logger->info(sprintf('Message %d queued as aborted (disable_send is enabled in config)', $r['id']), array('sendmail_source_id' => $r['id']));
             $r = $this->source_mapper->setLogText($r);
+        } elseif (!$this->_validateNewMessage($message, $error_message)) {
+            $r = $this->source_mapper->createSourceForMessage($message, 'aborted');
+            $this->logger->info(sprintf('Message %d queued as aborted (failed validation) -- '.$error_message, $r['id']), array('sendmail_source_id' => $r['id']));
+            $r = $this->source_mapper->setLogText($r);
         } else {
             $r = $this->source_mapper->createSourceForMessage($message, 'pending', $send_date);
-            $this->logger->info(sprintf('Message %d queued as pending', $r['id']), array('sendmail_source_id' => $r['id']));
+            if ($r['status'] === 'pending') {
+                $this->logger->info(sprintf('Message %d queued as pending', $r['id']), array('sendmail_source_id' => $r['id']));
+            } else {
+                $this->logger->info(sprintf('Message %d queued as %s %s', $r['id'], $r['status'], @$r['error_code']), array('sendmail_source_id' => $r['id']));
+            }
             $r = $this->source_mapper->setLogText($r);
         }
 
         return $r['id'];
     }
 
+    /**
+     * Before queueing a message, it validates it to see if we should send it. If this returns
+     * false, the message will be saved as aborted.
+     *
+     * @param Swift_Mime_Message $message
+     * @param null               $error_message
+     *
+     * @return bool
+     */
+    private function _validateNewMessage(Swift_Mime_Message $message, &$error_message = null)
+    {
+        $tos        = $message->getTo();
+        $is_invalid = false;
+
+        foreach ($tos as $addy => $name) {
+            if (StringEmail::isExampleEmail($addy)) {
+                $is_invalid = $addy;
+                break;
+            }
+        }
+
+        if ($is_invalid !== false) {
+            $error_message = "$is_invalid is an invalid email address.";
+
+            return false;
+        }
+
+        return true;
+    }
 
     /**
      * Save the message to the DB.
      *
      * @param Swift_Mime_Message $message
+     *
      * @return int
      */
     public function insertMessage(Swift_Mime_Message $message)
@@ -188,14 +226,13 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
         return $r['id'];
     }
 
-
     /**
      * Sends the given message. This might queue the message if queueing is enabled.
      *
      * @param Swift_Mime_Message $message
      * @param string[]           $failedRecipients An array of failures by-reference
      *
-     * @return integer The number of sent emails
+     * @return int The number of sent emails
      */
     public function send(Swift_Mime_Message $message, &$failedRecipients = null)
     {
@@ -207,6 +244,7 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
                 $r = $this->source_mapper->createSourceForMessage($message, 'aborted');
                 $this->logger->info(sprintf('Message %d aborted', $r['id']), array('sendmail_source_id' => $r['ref']));
                 $r = $this->source_mapper->setLogText($r);
+
                 return 0;
             }
         }
@@ -221,7 +259,6 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
 
         return $sent;
     }
-
 
     /**
      * Register a plugin.

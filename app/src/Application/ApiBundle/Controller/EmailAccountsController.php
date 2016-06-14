@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
@@ -39,6 +36,7 @@ use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\EditEmailAccount;
 use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\EditEmailAccountType;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\IncomingAccountTester;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
@@ -53,7 +51,7 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
     protected $emailSettings = null;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -63,7 +61,6 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 
         return $multi;
     }
-
 
     ####################################################################################################################
     # list
@@ -80,7 +77,6 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 
         return $this->createApiResponse($data);
     }
-
 
     ####################################################################################################################
     # get
@@ -100,11 +96,11 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 
         $trigger = null;
         if ($account) {
-            $trigger = $this->em->createQuery("
+            $trigger = $this->em->createQuery('
                 SELECT trigger
                 FROM DeskPRO:TicketTrigger trigger
                 WHERE trigger.email_account = ?0
-            ")->setParameters(array($account))->getOneOrNullResult();
+            ')->setParameters(array($account))->getOneOrNullResult();
         }
 
         if (!$trigger) {
@@ -115,7 +111,6 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 
         return $this->createApiResponse($data);
     }
-
 
     ####################################################################################################################
     # save
@@ -131,6 +126,10 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
             }
         } else {
             $account = new EmailAccount(EmailAccount::TYPE_TICKETS);
+
+            if ($this->settings->get('internal.disable_email_editing.new')) {
+                throw $this->createNotFoundException();
+            }
         }
 
         $edit_account = new EditEmailAccount($account);
@@ -149,12 +148,17 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         }
 
         if ($data['incoming_type'] == 'office365') {
-            $data['outgoing_type']     = 'office365';
+            $data['outgoing_type']         = 'office365';
             $data['out_office365_account'] = $data['in_office365_account'];
         }
 
         $form->submit($data);
-        $edit_account->apply();
+
+        if ($this->settings->get('internal.disable_email_editing.incoming_details')) {
+            $edit_account->apply(false);
+        } else {
+            $edit_account->apply();
+        }
 
         $this->em->persist($account);
         $this->em->flush();
@@ -170,16 +174,15 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         }
     }
 
-
     /**
-     * @param  EmailAccount $account
+     * @param EmailAccount $account
+     *
      * @return array
      */
     protected function getSaveFormData(EmailAccount $account = null)
     {
         return $this->in->getAll('post');
     }
-
 
     ####################################################################################################################
     # remove
@@ -199,14 +202,13 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         return $this->createApiDeleteResponse(array('old_id' => $old_id));
     }
 
-
     ####################################################################################################################
     # test-account
     ####################################################################################################################
 
     public function testAccountAction()
     {
-        $account = new EmailAccount(EmailAccount::TYPE_TICKETS);
+        $account      = new EmailAccount(EmailAccount::TYPE_TICKETS);
         $edit_account = new EditEmailAccount($account);
 
         $form = $this->createForm(
@@ -217,13 +219,13 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         $data = $this->in->getAll('post');
         $form->submit($data);
 
-        $tester = new IncomingAccountTester($edit_account->getIncomingAccountConfig());
+        $tester = new IncomingAccountTester(EmailAccountUtil::decryptIncomingAccount($edit_account->getIncomingAccountConfig(), $this->container->get('dp_enc')));
         $tester->test();
 
         return $this->createApiResponse(array(
             'is_success'    => $tester->isSuccess(),
             'log'           => $tester->getLog(),
-            'message_count' => $tester->getMessageCount()
+            'message_count' => $tester->getMessageCount(),
         ));
     }
 
@@ -233,7 +235,7 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 
     public function testOutgoingAccountAction()
     {
-        $account = new EmailAccount(EmailAccount::TYPE_TICKETS);
+        $account      = new EmailAccount(EmailAccount::TYPE_TICKETS);
         $edit_account = new EditEmailAccount($account);
 
         $form = $this->createForm(
@@ -246,31 +248,31 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 
         if (!StringEmail::isValueValid($this->in->getString('test_email.to'))) {
             return $this->createApiResponse(array(
-                'is_success'    => false,
-                'log'           => 'Invalid TO email address',
+                'is_success' => false,
+                'log'        => 'Invalid TO email address',
             ));
         }
         if (!StringEmail::isValueValid($this->in->getString('test_email.from'))) {
             return $this->createApiResponse(array(
-                'is_success'    => false,
-                'log'           => 'Invalid FROM email address',
+                'is_success' => false,
+                'log'        => 'Invalid FROM email address',
             ));
         }
 
         $out_account = $edit_account->getOutgoingAccountConfig();
         if (!$out_account) {
             return $this->createApiResponse(array(
-                'is_success'    => false,
-                'log'           => 'No outgoing account configuration was specified.',
+                'is_success' => false,
+                'log'        => 'No outgoing account configuration was specified.',
             ));
         }
 
         try {
-            $raw_tr = $this->container->get('email.raw_transport_factory')->createTransport($out_account);
+            $raw_tr = $this->container->get('email.raw_transport_factory')->createTransport(EmailAccountUtil::decryptOutgoingAccount($out_account, $this->container->get('dp_enc')));
         } catch (\Exception $e) {
             return $this->createApiResponse(array(
-                'is_success'    => false,
-                'log'           => $e->getMessage(),
+                'is_success' => false,
+                'log'        => $e->getMessage(),
             ));
         }
 
@@ -290,15 +292,21 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         $logger->info('Begin send test');
 
         $failed = array();
-        $sent = $raw_tr->sendRawMessage(
-            $this->in->getString('test_email.from'),
-            array($this->in->getString('test_email.to')),
-            $fp,
-            $failed
-        );
 
-        if ($failed) {
-            $logger->notice(sprintf('NOTICE: Failed recipients: %s', implode(', ', $failed)));
+        try {
+            $sent = $raw_tr->sendRawMessage(
+                $this->in->getString('test_email.from'),
+                array($this->in->getString('test_email.to')),
+                $fp,
+                $failed
+            );
+
+            if ($failed) {
+                $logger->notice(sprintf('NOTICE: Failed recipients: %s', implode(', ', $failed)));
+            }
+        } catch (\Exception $e) {
+            $sent = 0;
+            $logger->error($e->getMessage());
         }
 
         $logger->info(sprintf('Sent %d messages', $sent));
@@ -310,8 +318,8 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         $log = preg_replace("#^(\[.*?\]) (.*?)\.([A-Z]+): #m", '$1 ', $log);
 
         return $this->createApiResponse(array(
-            'is_success'    => $sent > 0,
-            'log'           => $log,
+            'is_success' => $sent > 0,
+            'log'        => $log,
         ));
     }
 
@@ -331,7 +339,7 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 
         $data = array(
             'email_settings' => $this->emailSettings->toArray(),
-            'max_filesize'     => Env::getEffectiveMaxUploadSize(),
+            'max_filesize'   => Env::getEffectiveMaxUploadSize(),
         );
 
         return $this->createApiResponse($data);

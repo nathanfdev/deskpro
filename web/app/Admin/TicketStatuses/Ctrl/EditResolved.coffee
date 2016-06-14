@@ -8,4 +8,16 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @$scope.getCount = => @$scope.$parent.TicketStatusesList?.getStatusCount('resolved')
       return
 
+
+
+    save: ->
+      @Growl.success @getRegisteredMessage('saved_settings')
+      @$scope.$broadcast 'trigger.save'
+      @$timeout(
+        => @$state.go @$state.current, {}, {reload: true}
+        200
+      )
+
+
+
   Admin_TicketStatuses_Ctrl_EditResolved.EXPORT_CTRL()

@@ -1,41 +1,40 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * Orb
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package Orb
- * @category Auth
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * Orb.
+ *
+ * @category Auth
+ */
 namespace Orb\Auth\Adapter;
 
-use \Orb\Auth\StateHandler\StateHandlerInterface;
-use \Orb\Auth\Result;
+use Orb\Auth\Result;
+use Orb\Auth\StateHandler\StateHandlerInterface;
 
 /**
  * OrbRemoteLoginAuth is a simple protocol where the system redirects the user to a remote login
@@ -96,55 +95,63 @@ use \Orb\Auth\Result;
  * - orba_email: A preferred email address, or an array of preferred email addresses in order of priority
  * - orba_name: The users real name
  */
-abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInterface, CallbackInterface
+abstract class OrbRemoteLoginAuth extends PluginAdapter implements SessionStateInterface, CallbackInterface
 {
     const ERR_INVALID_TOKEN = -10;
-    const ERR_SERVICE_ERR = -11;
+    const ERR_SERVICE_ERR   = -11;
 
     /**
-     * The key to authenticate the request
+     * The key to authenticate the request.
+     *
      * @var string
      */
     protected $consumer_key = null;
 
     /**
-     * The URL to call to initiate the process
+     * The URL to call to initiate the process.
+     *
      * @var string
      */
     protected $initiate_url = null;
 
     /**
-     * The URL to redirect the user back to upon successful login
+     * The URL to redirect the user back to upon successful login.
+     *
      * @var string
      */
     protected $redirect_url = null;
 
     /**
-     * The URL we'll use to verify a users login and possibly fetch userinfo
+     * The URL we'll use to verify a users login and possibly fetch userinfo.
+     *
      * @var string
      */
     protected $verify_url = null;
 
     /**
-     * State handler to store session data
+     * State handler to store session data.
+     *
      * @var Orb\Auth\StateHandler\StateHandlerInterface;
      */
     protected $state;
 
     /**
-     * HTTP client
+     * HTTP client.
+     *
      * @var \Zend\Http\Client
      */
     protected $http;
 
     /**
      * Do we request userinfo as well?
+     *
      * @var int
      */
     protected $with_userinfo = 1;
 
     /**
-     * Data we got back when user returned from providers website
+     * Data we got back when user returned from providers website.
+     *
      * @var array
      */
     protected $got_data = array();
@@ -166,8 +173,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
     /**
      * Switches the adapter to the callback context using form data $data.
      *
-     * @param  array $data Form data or other callback data
-     * @return void
+     * @param array $data Form data or other callback data
      */
     public function setCallbackContext(array $got_data)
     {
@@ -175,13 +181,13 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
     }
 
     /**
-     * Set if we want userinfo or not
+     * Set if we want userinfo or not.
      *
      * @param bool $yes_or_no
      */
     public function setWithUserinfo($yes_or_no)
     {
-        $this->with_userinfo = (int)((bool)$yes_or_no);
+        $this->with_userinfo = (int) ((bool) $yes_or_no);
     }
 
     /**
@@ -189,12 +195,12 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
      *
      * @return
      */
-    public function authenticate()
+    public function doAuthenticate()
     {
         $state = $this->getStateHandler();
 
         // If we dont have tokens yet, we must initiate the request
-        if (!isset($this->got_data['orba_access_token']) OR !isset($this->got_data['orba_verify']) OR !isset($state['orba_user_key'])) {
+        if (!isset($this->got_data['orba_access_token']) or !isset($this->got_data['orba_verify']) or !isset($state['orba_user_key'])) {
             return $this->_initiate();
         }
 
@@ -202,7 +208,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
         # Verify the callback
         #------------------------------
 
-        $check_verify = sha1($this->got_data['orba_access_token'] . $state['orba_user_key']);
+        $check_verify = sha1($this->got_data['orba_access_token'].$state['orba_user_key']);
 
         if ($check_verify != $this->got_data['orba_verify']) {
             return new Result(Result::FAILURE, null, array('error_code' => self::ERR_INVALID_TOKEN, 'error_message' => 'Invalid verify token'));
@@ -217,7 +223,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
 
         $http->setUri($this->verify_url);
         $http->setParameterPost('orba_access_token', $this->got_data['orba_access_token']);
-        $http->setParameterPost('orba_verify', sha1($this->got_data['orba_access_token'] . $state['orba_user_key']));
+        $http->setParameterPost('orba_verify', sha1($this->got_data['orba_access_token'].$state['orba_user_key']));
         if ($this->with_userinfo) {
             $http->setParameterPost('orba_with_userinfo', 1);
         }
@@ -226,7 +232,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
 
         $data = @json_decode($http_result->getBody(), true);
         if (!$data) {
-            throw \UnexpectedValueException('Invalid JSON returned from service');
+            throw new \UnexpectedValueException('Invalid JSON returned from service');
         }
 
         if (isset($data['is_error'])) {
@@ -234,7 +240,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
         }
 
         $identity = new \Orb\Auth\Identity($data['identity'], isset($data['userinfo']) ? $data['userinfo'] : array());
-        $result = new Result(Result::SUCCESS, $identity);
+        $result   = new Result(Result::SUCCESS, $identity);
 
         return $result;
     }
@@ -245,7 +251,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
         $state->clearState();
 
         // The user key used in various signings
-        $user_key = \Orb\Util\Strings::random(20, \Orb\Util\Strings::CHARS_ALPHANUM_IU);
+        $user_key = \Orb\Util\DpStrings::random(20, \Orb\Util\Strings::CHARS_ALPHANUM_IU);
 
         #------------------------------
         # Initiate the request on the service
@@ -262,7 +268,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
 
         $service_data = @json_decode($http_result->getBody(), true);
         if (!$service_data) {
-            throw \UnexpectedValueException('Invalid JSON returned from service');
+            throw new \UnexpectedValueException('Invalid JSON returned from service');
         }
 
         #------------------------------
@@ -278,9 +284,9 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
         } else {
             $redirect_url .= '&';
         }
-        $redirect_url .= 'orba_token=' . urlencode($service_data['orba_token']);
-        $redirect_url .= '&orba_verify=' . sha1($service_data['orba_token'] . $user_key);
-        $redirect_url .= '&redirect_url=' . urlencode($this->redirect_url);
+        $redirect_url .= 'orba_token='.urlencode($service_data['orba_token']);
+        $redirect_url .= '&orba_verify='.sha1($service_data['orba_token'].$user_key);
+        $redirect_url .= '&redirect_url='.urlencode($this->redirect_url);
 
         $result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
 
@@ -304,7 +310,9 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
      */
     public function getHttpClient()
     {
-        if ($this->http !== null) return $this->http;
+        if ($this->http !== null) {
+            return $this->http;
+        }
 
         $this->http = new \Zend\Http\Client();
 
@@ -314,8 +322,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
     /**
      * Switches the adapter to the callback context using form data $data.
      *
-     * @param  Orb\Auth\StateHandler\StateHandlerInterface $state The state handler
-     * @return void
+     * @param Orb\Auth\StateHandler\StateHandlerInterface $state The state handler
      */
     public function setStateHandler(StateHandlerInterface $state)
     {

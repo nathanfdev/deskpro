@@ -59,10 +59,6 @@
 		<h4>User Timezone</h4>
 	</div>
 
-	<div ng-if="field.field_type == 'user_language'">
-		<h4>User Language</h4>
-	</div>
-
 	<div ng-repeat="f in custom_ticket_fields | filter:ticketFieldTitleFilter ">
 		<h4>{{ ng_var('f.title') }}</h4>
 	</div>
@@ -70,6 +66,10 @@
 	<div ng-repeat="f in custom_user_fields | filter:userFieldTitleFilter ">
 		<h4>{{ ng_var('f.title') }}</h4>
 	</div>
+
+    <div ng-repeat="f in custom_org_fields | filter:orgFieldTitleFilter ">
+        <h4>{{ ng_var('f.title') }}</h4>
+    </div>
 
     <div ng-repeat="f in ticket_fields_per_person | filter:CustomFieldTitleFilter ">
         <h4>{{ ng_var('f.title') }}</h4>

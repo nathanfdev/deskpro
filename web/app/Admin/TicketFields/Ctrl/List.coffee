@@ -12,11 +12,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     initialLoad: ->
       promise = @ticket_fields.loadList()
-      promise.then( (list) =>
+      promise.then (list) =>
         @custom_fields = list
         @field_enabled = @ticket_fields.field_enabled
-      )
-      return promise
 
     setFieldEnabled: (id, is_enabled) ->
       @field_enabled[id] = is_enabled

@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage UserBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\UserBundle\Form;
 
 use Application\DeskPRO\App;
@@ -41,15 +38,15 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * The new ticket form
+ * The new ticket form.
  */
 class NewTicketType extends AbstractType
 {
     const MODE_NORMAL = 'normal';
-    const MODE_WIDGE = 'widget';
+    const MODE_WIDGE  = 'widget';
 
     /**
-     * The actual person (logged in)
+     * The actual person (logged in).
      */
     protected $person;
 
@@ -77,7 +74,7 @@ class NewTicketType extends AbstractType
     public function __construct($person, $mode = self::MODE_NORMAL)
     {
         $this->person = $person;
-        $this->mode = $mode;
+        $this->mode   = $mode;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -87,11 +84,11 @@ class NewTicketType extends AbstractType
     }
 
     /**
-     * Configures the person form
+     * Configures the person form.
      */
     protected function buildPersonForm(FormBuilderInterface $builder)
     {
-        if ($this->person AND $this->person['id']) {
+        if ($this->person and $this->person['id']) {
             $this->mock_person = $this->person;
         } else {
             $this->person = null;
@@ -109,7 +106,7 @@ class NewTicketType extends AbstractType
     }
 
     /**
-     * Configures the ticket form
+     * Configures the ticket form.
      */
     protected function buildTicketForm(FormBuilderInterface $builder)
     {
@@ -119,18 +116,18 @@ class NewTicketType extends AbstractType
         # Standard fields
         #------------------------------
 
-        $ticket_options = App::getApi('tickets')->getTicketOptions($this->mock_person);
+        $ticket_options       = App::getApi('tickets')->getTicketOptions($this->mock_person);
         $this->ticket_options = $ticket_options;
 
         $this->ticket_options = $ticket_options;
 
         $ticket_builder->add('subject', 'text');
-        $ticket_builder->add('message', 'textarea');
+        $ticket_builder->add('message', 'textarea', array('filter_clean' => false));
 
         if ($deps = App::getDataService('Department')->getPersonDepartments(App::getCurrentPerson(), 'tickets')) {
             $ticket_builder->add('department_id', 'choice', array(
-                'choices' => Arrays::selectArrayFromHierarchy($deps, 'id', 'title'),
-                'required' => false
+                'choices'  => Arrays::selectArrayFromHierarchy($deps, 'id', 'title'),
+                'required' => false,
             ));
         }
 
@@ -144,8 +141,8 @@ class NewTicketType extends AbstractType
         #------------------------------
 
         if ($this->mode == self::MODE_NORMAL) {
-            $ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-            $custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array());
+            $ticket_field_defs   = App::getApi('custom_fields.tickets')->getEnabledFields();
+            $custom_fields       = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array());
             $this->ticket_fields = $custom_fields;
 
             $builder->add($ticket_builder);

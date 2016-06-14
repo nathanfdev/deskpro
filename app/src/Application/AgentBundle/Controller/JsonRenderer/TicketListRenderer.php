@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\AgentBundle\Controller\JsonRenderer;
 
 use Application\DeskPRO\App;
@@ -73,22 +71,21 @@ class TicketListRenderer
      */
     protected $person;
 
-
     /**
      * @param TicketResultsDisplay $ticket_display
      */
     public function __construct(TicketResultsDisplay $ticket_display)
     {
         $this->ticket_display = $ticket_display;
-        $this->container = App::getContainer();
-        $this->em = App::getContainer()->getEm();
-        $this->db = App::getContainer()->getDb();
-        $this->person = $this->container->get('session')->getPerson();
+        $this->container      = App::getContainer();
+        $this->em             = App::getContainer()->getEm();
+        $this->db             = App::getContainer()->getDb();
+        $this->person         = $this->container->get('session')->getPerson();
     }
 
-
     /**
-     * @param  null|callback $fn_visitor
+     * @param null|callback $fn_visitor
+     *
      * @return array
      */
     public function renderTicketDisplayArray($fn_visitor = null)
@@ -137,7 +134,6 @@ class TicketListRenderer
         return $json_array;
     }
 
-
     /**
      * @return string
      */
@@ -150,44 +146,47 @@ class TicketListRenderer
         return Util::jsonEncode($this->renderTicketDisplayArray());
     }
 
-
     /**
-     * @param  Ticket $ticket
+     * @param Ticket $ticket
+     *
      * @return array
      */
     private function renderTicket(Ticket $ticket)
     {
         $data = array();
 
-        $data['id']                      = $ticket->id;
-        $data['ref']                     = $ticket->ref;
-        $data['auth']                    = $ticket->auth;
-        $data['sent_to_address']         = $ticket->sent_to_address;
-        $data['creation_system']         = $ticket->creation_system;
-        $data['creation_system_option']  = $ticket->creation_system_option;
-        $data['ticket_hash']             = $ticket->ticket_hash;
-        $data['status']                  = $ticket->status;
-        $data['hidden_status']           = $ticket->hidden_status;
-        $data['validating']              = $ticket->validating;
-        $data['is_hold']                 = $ticket->is_hold;
-        $data['urgency']                 = $ticket->urgency;
-        $data['count_agent_replies']     = $ticket->count_agent_replies;
-        $data['count_user_replies']      = $ticket->count_user_replies;
-        $data['feedback_rating']         = $ticket->feedback_rating;
+        $data['id']                     = $ticket->id;
+        $data['ref']                    = $ticket->ref;
+        $data['auth']                   = $ticket->auth;
+        $data['sent_to_address']        = $ticket->sent_to_address;
+        $data['creation_system']        = $ticket->creation_system;
+        $data['creation_system_option'] = $ticket->creation_system_option;
+        $data['ticket_hash']            = $ticket->ticket_hash;
+        $data['status']                 = $ticket->status;
+        $data['hidden_status']          = $ticket->hidden_status;
+        $data['validating']             = $ticket->validating;
+        $data['is_hold']                = $ticket->is_hold;
+        $data['urgency']                = $ticket->urgency;
+        $data['count_agent_replies']    = $ticket->count_agent_replies;
+        $data['count_user_replies']     = $ticket->count_user_replies;
+        $data['feedback_rating']        = $ticket->feedback_rating;
 
         foreach (array('date_feedback_rating', 'date_created', 'date_resolved', 'date_archived', 'date_first_agent_assign', 'date_first_agent_reply', 'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'date_status', 'date_locked') as $field) {
             if ($ticket->$field) {
-                $data[$field] = $ticket->$field->format('Y-m-d H:i:s');
+                if ($timezone = $this->person ? new \DateTimeZone($this->person->getTimezone()) : null) {
+                    $ticket->$field->setTimezone($timezone);
+                }
+                $data[$field]        = $ticket->$field->format('Y-m-d H:i:s');
                 $data["{$field}_ts"] = $ticket->$field->getTimestamp();
             }
         }
 
-        $data['total_user_waiting']      = $ticket->total_user_waiting;
-        $data['total_to_first_reply']    = $ticket->total_to_first_reply;
-        $data['subject']                 = $ticket->subject;
-        $data['properties']              = $ticket->properties;
-        $data['worst_sla_status']        = $ticket->worst_sla_status;
-        $data['waiting_times']           = $ticket->waiting_times;
+        $data['total_user_waiting']   = $ticket->total_user_waiting;
+        $data['total_to_first_reply'] = $ticket->total_to_first_reply;
+        $data['subject']              = $ticket->subject;
+        $data['properties']           = $ticket->properties;
+        $data['worst_sla_status']     = $ticket->worst_sla_status;
+        $data['waiting_times']        = $ticket->waiting_times;
 
         foreach (array('language', 'department', 'category', 'priority', 'workflow', 'product', 'person', 'agent', 'agent_team', 'organization', 'locked_by_agent') as $field) {
             $data[$field] = null;
@@ -208,8 +207,8 @@ class TicketListRenderer
                     $dep = $this->container->getDataService('Department')->get($ticket->department->getId());
                     if ($dep) {
                         $data['department'] = array(
-                            'id' => $dep->id,
-                            'title' => $dep->title,
+                            'id'         => $dep->id,
+                            'title'      => $dep->title,
                             'title_full' => $dep->getFullTitle(),
                         );
 
@@ -222,8 +221,8 @@ class TicketListRenderer
                 case 'organization':
                     if (isset($this->cache_orgs[$ticket->organization->getId()])) {
                         $data['organization'] = array(
-                            'id' => $this->cache_orgs[$ticket->organization->getId()]->id,
-                            'name' => $this->cache_orgs[$ticket->organization->getId()]->name
+                            'id'   => $this->cache_orgs[$ticket->organization->getId()]->id,
+                            'name' => $this->cache_orgs[$ticket->organization->getId()]->name,
                         );
                     }
                     break;
@@ -243,7 +242,7 @@ class TicketListRenderer
 
                 case 'agent_team':
                     $data['agent_team'] = array(
-                        'id' => $ticket->agent_team['id'],
+                        'id'   => $ticket->agent_team['id'],
                         'name' => $ticket->agent_team['name'],
                     );
 
@@ -264,7 +263,8 @@ class TicketListRenderer
             }
         }
 
-        $data['labels'] = $this->ticket_display->getTicketLabels($ticket);
+        $data['labels']   = $this->ticket_display->getTicketLabels($ticket);
+        $data['problems'] = $this->ticket_display->getTicketProblems($ticket);
 
         $custom_data = $this->ticket_display->getTicketFieldData($ticket);
         if ($custom_data) {
@@ -279,8 +279,8 @@ class TicketListRenderer
         $data['ticket_slas'] = array();
         foreach ($this->ticket_display->getTicketSlas($ticket) as $sla) {
             $sla['sla'] = array(
-                'id' => $sla['sla_id'],
-                'title' => $sla['title']
+                'id'    => $sla['sla_id'],
+                'title' => $sla['title'],
             );
             if ($sla['warn_date']) {
                 $sla['warn_date_ts'] = \DateTime::createFromFormat('YYYY-mm-dd H:i:s', $sla['warn_date']);
@@ -294,8 +294,12 @@ class TicketListRenderer
             }
 
             $times = array();
-            if ($sla['warn_date_ts']) $times[] = $sla['warn_date_ts'];
-            if ($sla['fail_date_ts']) $times[] = $sla['fail_date_ts'];
+            if ($sla['warn_date_ts']) {
+                $times[] = $sla['warn_date_ts'];
+            }
+            if ($sla['fail_date_ts']) {
+                $times[] = $sla['fail_date_ts'];
+            }
             if ($times) {
                 $sla['next_trigger_date_ts'] = min($times);
             } else {
@@ -305,21 +309,20 @@ class TicketListRenderer
             $data['ticket_slas'][] = $sla;
         }
 
-
         $data['previews'] = array();
         foreach ($this->ticket_display->getTicketPreview($ticket) as $m) {
             $data['previews'][] = array(
                 'message' => array(
-                    'id'               => $m['id'],
-                    'preview_text'     => $m['preview_text'],
-                    'date_created'     => $m['date_created']->format('Y-m-d H:i:s'),
-                    'date_created_ts'  => $m['date_created']->getTimestamp(),
-                    'status'           => $m['status'],
+                    'id'              => $m['id'],
+                    'preview_text'    => $m['preview_text'],
+                    'date_created'    => $m['date_created']->format('Y-m-d H:i:s'),
+                    'date_created_ts' => $m['date_created']->getTimestamp(),
+                    'status'          => $m['status'],
                 ),
                 'person' => array(
-                    'id'            => $m['person_id'],
-                    'display_name'  => $m['display_name'],
-                    'is_agent'      => $m['is_agent'],
+                    'id'             => $m['person_id'],
+                    'display_name'   => $m['display_name'],
+                    'is_agent'       => $m['is_agent'],
                     'picture_url_16' => $m['picture_url_16'],
                 ),
             );
@@ -357,14 +360,14 @@ class TicketListRenderer
         $data['organization_manager']  = $person->organization_manager;
         $data['timezone']              = $person->timezone;
 
-        $data['date_created'] = $person->date_created->format('Y-m-d H:i:s');
+        $data['date_created']    = $person->date_created->format('Y-m-d H:i:s');
         $data['date_created_ts'] = $person->date_created->getTimestamp();
 
-        $data['display_name']  = $person->getDisplayName();
+        $data['display_name'] = $person->getDisplayName();
         if ($person->primary_email) {
             $data['primary_email'] = array(
                 'id'    => $person->primary_email->id,
-                'email' => $person->primary_email->email
+                'email' => $person->primary_email->email,
             );
         }
 

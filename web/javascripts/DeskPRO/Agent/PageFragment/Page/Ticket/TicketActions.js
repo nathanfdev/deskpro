@@ -246,30 +246,45 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		//------------------------------
 
 		var macroMenu = this.getEl('macros_menu');
-		this.macrosMenu = new DeskPRO.UI.Menu({
-			triggerElement: this.getEl('macros_menu_trigger'),
-			menuElement: macroMenu,
-			onItemClicked: (function(info) {
-				var item = $(info.itemEl);
+		var statusMenuMenu = new DeskPRO.UI.Menu2(macroMenu, {
+			positionBy: this.getEl('macros_menu_trigger'),
+			openBelow: true,
+			onFilterUpdated: function(info) {
+				var isCtrl = info.isCtrl;
+				var ev = info.event;
+
+				if (isCtrl && (ev.which == 85)) {
+					closeStatusMenu();
+					self.page.shortcutReplySetAwaitingUser();
+					info.cancel = true;
+					return;
+				}
+				if (isCtrl && (ev.which == 65)) {
+					closeStatusMenu();
+					self.page.shortcutReplySetAwaitingAgent();
+					info.cancel = true;
+					return;
+				}
+				if (isCtrl && (ev.which == 68)) {
+					closeStatusMenu();
+					self.page.shortcutReplySetResolved();
+					info.cancel = true;
+					return;
+				}
+			},
+			onItemSelected: function(info) {
+				var item = info.item;
 				if (item.hasClass('open-settings-trigger')) {
 					$('#settingswin').trigger('dp_open', 'macros');
-				} else {
-					this.confirmMacro($(info.itemEl).data('macro-id'));
+				} else if (item.data('macro-id')) {
+					self.confirmMacro(item.data('macro-id'));
 				}
-			}).bind(this)
+			}
 		});
 
-		$('#settingswin').on('dp_macros_updated', function(ev) {
-			macroMenu.find('li').not('.open-settings-trigger').remove();
-			Array.each(ev.macroItems, function(x) {
-				var li = $('<li />');
-				li.data('macro-id', x.id);
-				li.text(x.title);
-
-				li.appendTo(macroMenu);
-			});
+		this.getEl('macros_menu_trigger').on('click', function(ev) {
+			statusMenuMenu.open();
 		});
-
 
 		DP.select(this.page.getEl('flag'));
 		DP.select(this.page.getEl('department_id'));
@@ -331,7 +346,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 		DP.console.log('Applying macro %d', this.macroId);
 
-		var url = BASE_URL + 'agent/tickets/'+this.ticketId+'/'+this.macroId+'/apply-macro.json';
+		var url = BASE_URL + 'agent/tickets/'+this.ticketId+'/'+this.macroId+'/apply-macro.json',
+      self = this;
 
 		$.ajax({
 			url: url,
@@ -341,6 +357,28 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			success: function(data) {
 
 				if (data.error) {
+          if (data.error_messages) {
+
+            var prop = self.page.changeManager.getPropertyManager('status');
+            self.page.changeManager.setInstantChange(prop, 'awaiting_agent');
+
+            var list = self.page.getEl('field_errors').find('ul').empty();
+            Array.each(data.error_messages, function(msg) {
+              var li = $('<li/>');
+              li.text(msg);
+              li.appendTo(list);
+            });
+
+            self.page.getEl('field_errors').show().addClass('on');
+
+            self.page.getEl('field_edit_start').click();
+            self.page.getEl('field_edit_cancel').show();
+            self.page.getEl('field_edit_save').show();
+            self.page.getEl('field_edit_controls').removeClass('loading');
+
+            return DeskPRO_Window.showAlert('Your reply was saved but the status was not set to resolved because of form errors. You should correct these errors and then you may set the status to resolved.');
+          }
+
 					DeskPRO_Window.showAlert("The macro was not applied because you do not have permission to perform one or more of the defined actions.");
 					return;
 				}

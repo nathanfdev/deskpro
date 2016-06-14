@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Tickets
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -40,7 +37,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 
 /**
- * Sets status
+ * Sets status.
  */
 class StatusAction extends AbstractAction implements PermissionableAction
 {
@@ -62,7 +59,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     {
         if (!in_array($status, array(
             'awaiting_agent', 'awaiting_user', 'resolved', 'archived',
-            'hidden.spam', 'hidden.validating', 'hidden.deleted'
+            'hidden.spam', 'hidden.validating', 'hidden.deleted',
         ))) {
             throw new \InvalidArgumentException("Invalid status `$status`");
         }
@@ -70,7 +67,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * True to stop processing actions after this one
+     * True to stop processing actions after this one.
      *
      * @return bool
      */
@@ -98,16 +95,16 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
     public function apply(Ticket $ticket)
     {
         if (strpos($this->status, '.') !== false) {
-            list ($status, $hidden_status) = explode('.', $this->status, 2);
+            list($status, $hidden_status) = explode('.', $this->status, 2);
         } else {
-            $status = $this->status;
+            $status        = $this->status;
             $hidden_status = null;
         }
 
@@ -151,9 +148,8 @@ class StatusAction extends AbstractAction implements PermissionableAction
         }
     }
 
-
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -164,13 +160,12 @@ class StatusAction extends AbstractAction implements PermissionableAction
         }
 
         return array(
-            array('action' => 'status', 'status' => $this->status)
+            array('action' => 'status', 'status' => $this->status),
         );
     }
 
-
     /**
-     * Get the full status (stauts.hidden_status)
+     * Get the full status (stauts.hidden_status).
      *
      * @return string
      */
@@ -179,16 +174,15 @@ class StatusAction extends AbstractAction implements PermissionableAction
         return $this->status;
     }
 
-
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
     {
         return $other_action;
     }
-
 
     /**
      * @return string
@@ -197,6 +191,6 @@ class StatusAction extends AbstractAction implements PermissionableAction
     {
         $tr = App::getTranslator();
 
-        return $tr->phrase('admin.tickets.set_status_to_x', array('status' => $tr->phrase('agent.tickets.status_' . str_replace('.', '_', $this->status))));
+        return $tr->phrase('admin.tickets.set_status_to_x', array('status' => $tr->phrase('agent.tickets.status_'.str_replace('.', '_', $this->status))));
     }
 }

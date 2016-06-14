@@ -1,42 +1,39 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Dpql
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\Dpql\Placeholder;
 
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 
 /**
@@ -51,23 +48,23 @@ abstract class AbstractPlaceholder
      * @var array
      */
     protected static $_placeholderMap = array(
-        'EVER' => 'Ever',
-        'LAST_MONTH' => 'LastMonth',
-        'LAST_WEEK' => 'LastWeek',
-        'LAST_YEAR' => 'LastYear',
-        'PAST_24_HOURS' => 'Past24Hours',
-        'PAST_12_HOURS' => 'Past12Hours',
-        'PAST_HOUR' => 'PastHour',
-        'PAST_7_DAYS' => 'Past7Days',
-        'PAST_30_DAYS' => 'Past30Days',
-        'PAST_6_MONTHS' => 'Past6Months',
+        'EVER'           => 'Ever',
+        'LAST_MONTH'     => 'LastMonth',
+        'LAST_WEEK'      => 'LastWeek',
+        'LAST_YEAR'      => 'LastYear',
+        'PAST_24_HOURS'  => 'Past24Hours',
+        'PAST_12_HOURS'  => 'Past12Hours',
+        'PAST_HOUR'      => 'PastHour',
+        'PAST_7_DAYS'    => 'Past7Days',
+        'PAST_30_DAYS'   => 'Past30Days',
+        'PAST_6_MONTHS'  => 'Past6Months',
         'PAST_12_MONTHS' => 'Past12Months',
-        'THIS_MONTH' => 'ThisMonth',
-        'THIS_WEEK' => 'ThisWeek',
-        'THIS_YEAR' => 'ThisYear',
-        'TODAY' => 'Today',
-        'TOMORROW' => 'Tomorrow',
-        'YESTERDAY' => 'Yesterday'
+        'THIS_MONTH'     => 'ThisMonth',
+        'THIS_WEEK'      => 'ThisWeek',
+        'THIS_YEAR'      => 'ThisYear',
+        'TODAY'          => 'Today',
+        'TOMORROW'       => 'Tomorrow',
+        'YESTERDAY'      => 'Yesterday',
     );
 
     /**
@@ -110,8 +107,7 @@ abstract class AbstractPlaceholder
      */
     public function prepareWithIntervals(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = array()
-    )
-    {
+    ) {
         return $this->prepare($statement, $section, $stack, $select, $result);
     }
 
@@ -146,8 +142,7 @@ abstract class AbstractPlaceholder
     public function prepareComparison(
         AbstractPart $lhs, $comparison, Display $statement, $section, array $stack,
         Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = array()
-    )
-    {
+    ) {
         return false;
     }
 
@@ -158,23 +153,23 @@ abstract class AbstractPlaceholder
      */
     protected function _toDpql()
     {
-        return '%' . strtoupper($this->_name) . '%';
+        return '%'.strtoupper($this->_name).'%';
     }
 
     /**
-     * Creates the placeholder with the specific name
+     * Creates the placeholder with the specific name.
      *
      * @param string $name
      *
      * @throws \Application\DeskPRO\Dpql\Exception
-
+     
      * @return \Application\DeskPRO\Dpql\Placeholder\AbstractPlaceholder
      */
     public static function create($name)
     {
         $name = strtoupper($name);
         if (isset(self::$_placeholderMap[$name])) {
-            $map = __NAMESPACE__ . '\\' . self::$_placeholderMap[$name];
+            $map = __NAMESPACE__.'\\'.self::$_placeholderMap[$name];
 
             return new $map($name);
         } else {

@@ -1,41 +1,41 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
+ * DeskPRO.
+ */
 namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\Translate\JsExporter;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -75,12 +75,11 @@ class InterfaceController extends AbstractController
         $rendered = $this->renderTemplateView($tpl_name);
 
         if ($load_data) {
-            $rendered = "<script type=\"application/json\" class=\"DP_LOAD_DATA\">" . $load_data . "</script>$rendered";
+            $rendered = '<script type="application/json" class="DP_LOAD_DATA">'.$load_data."</script>$rendered";
         }
 
         return $this->createResponse($rendered);
     }
-
 
     ####################################################################################################################
     # multi-load-view
@@ -91,7 +90,7 @@ class InterfaceController extends AbstractController
         $views = array();
 
         foreach ($this->in->getCleanValueArray('views', 'string', 'discard') as $view_name) {
-            $id = $view_name;
+            $id       = $view_name;
             $tpl_name = $this->getRealViewName($view_name);
 
             $rendered = null;
@@ -100,13 +99,12 @@ class InterfaceController extends AbstractController
             $views[] = array(
                 'id'       => $id,
                 'template' => $tpl_name,
-                'source'   => $rendered
+                'source'   => $rendered,
             );
         }
 
         return $this->createJsonResponse($views);
     }
-
 
     ####################################################################################################################
     # load-lang
@@ -116,7 +114,7 @@ class InterfaceController extends AbstractController
     {
         $js_exporter = new JsExporter($this->container->getTranslator());
 
-        $get_phrases = include(DP_ROOT.'/languages/expose-js.php');
+        $get_phrases = include DP_ROOT.'/languages/expose-js.php';
         $get_phrases = $get_phrases['admin'];
 
         if ($_format == 'js') {
@@ -159,10 +157,9 @@ class InterfaceController extends AbstractController
                 if ($package->native_name) {
                     $native_package = $app_manager->getNativePackageConfig($package);
 
-                    $real_path = @realpath($native_package->getNativeDir() . '/Resources/views/' . $tpl_name);
-                    if ($real_path && strpos($real_path, $native_package->getNativeDir()) === 0 && file_exists($real_path)) {
-                        return file_get_contents($real_path);
-                    }
+                    $real_path = @realpath($native_package->getNativeDir().'/Resources/views/'.$tpl_name);
+
+                    return SafeFile::fileGetContents($real_path, array($native_package->getNativeDir()));
                 }
             }
         }
@@ -179,11 +176,11 @@ class InterfaceController extends AbstractController
             $view_name = Strings::strReplaceOne('/', ':', $view_name);
             $view_name = str_replace('.html', '.html.twig', $view_name);
             $view_name = str_replace('.html.twig.twig', '.html.twig', $view_name);
-            $tpl_name = "AdminInterfaceBundle:$view_name";
+            $tpl_name  = "AdminInterfaceBundle:$view_name";
         }
 
         if (defined('DPC_IS_CLOUD')) {
-            if ($this->tpl->exists('Cloud'.$tpl_name)){
+            if ($this->tpl->exists('Cloud'.$tpl_name)) {
                 $tpl_name = 'Cloud'.$tpl_name;
             }
         }
@@ -196,28 +193,34 @@ class InterfaceController extends AbstractController
         switch ($tpl_name) {
             case 'AdminInterfaceBundle:PortalEditor:frame.html.twig':
                 return array(
-                    'default_portal_style' => $this->settings->getDefaultGroup('user_style', false)
+                    'default_portal_style' => $this->settings->getDefaultGroup('user_style', false),
                 );
             default:
                 return array();
         }
     }
 
-
     /**
      * @param $code
+     *
      * @return BinaryFileResponse
      */
     public function downloadExportFileAction($code)
     {
         if (!$data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $file = $data->getData('file');
 
+        if ($data->getData('url')) {
+            $response = new RedirectResponse($data->getData('url'));
+
+            return $response;
+        }
+
         if (!file_exists($file)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $response = new BinaryFileResponse($file);

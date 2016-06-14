@@ -1,42 +1,38 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage UserBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\Comments\NewCommentFormType;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\Service\RateLimit;
 use Application\UserBundle\Controller\Helper\Comments;
@@ -61,19 +57,20 @@ class NewsController extends AbstractController
         if ($this->in->getUint('p')) {
             $page = $this->in->getUint('p');
         }
-        if (!$page || $page < 1) $page = 1;
+        if (!$page || $page < 1) {
+            $page = 1;
+        }
 
-        $search_options = array();
+        $search_options             = array();
         $search_options['order_by'] = $this->in->getString('order_by');
 
         $category = null;
 
         if ($slug) {
             $category_id = $this->container->getRouter()->getIdFromSlug($slug);
-            $category = null;
+            $category    = null;
 
             if ($category_id) {
-
                 if ($category_id && $structure->hasNewsCategory($category_id)) {
                     $category = $structure->getNewsCategory($category_id);
                 }
@@ -82,6 +79,7 @@ class NewsController extends AbstractController
                     if ($this->db->count('news_categories', array('id' => $category_id))) {
                         return $this->renderLoginOrPermissionError();
                     }
+
                     return $this->renderStandardError('@user.error.not-found-title', '@user.error.not-found', 404);
                 }
 
@@ -108,7 +106,7 @@ class NewsController extends AbstractController
             $searcher->setPersonContext($this->person);
             $searcher->addTerm('category_specific', 'is', $category['id']);
         } else {
-            $category = null;
+            $category      = null;
             $category_path = null;
 
             $searcher = new \Application\DeskPRO\Searcher\NewsSearch();
@@ -117,8 +115,8 @@ class NewsController extends AbstractController
 
         $searcher->addTerm('status', 'is', 'published');
 
-        $news_cats = $structure->getNewsCategories();
-        $news_cat_objs = $structure->getNewsCategories();
+        $news_cats       = $structure->getNewsCategories();
+        $news_cat_objs   = $structure->getNewsCategories();
         $category_counts = $structure->getNewsCategoryCounts($this->person);
 
         if ($search_options['order_by']) {
@@ -135,15 +133,15 @@ class NewsController extends AbstractController
             $per_page = 20;
         }
 
-        $total = $searcher->getCount();
+        $total    = $searcher->getCount();
         $pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
-        $limit = array(
-            'offset' => ($pageinfo['curpage']-1) * $per_page,
-            'max' => $per_page
+        $limit    = array(
+            'offset' => ($pageinfo['curpage'] - 1) * $per_page,
+            'max'    => $per_page,
         );
 
         $news_ids = $searcher->getMatches($limit);
-        $news = $this->em->getRepository('DeskPRO:News')->getByIds($news_ids, true);
+        $news     = $this->em->getRepository('DeskPRO:News')->getByIds($news_ids, true);
 
         $show_more = false;
         if ($page < $pageinfo['last']) {
@@ -167,22 +165,23 @@ class NewsController extends AbstractController
         }
 
         return $this->render($tpl, array(
-            'news_cats' => $news_cats,
-            'news_cat_objs' => $news_cat_objs,
-            'category' => $category,
+            'news_cats'       => $news_cats,
+            'news_cat_objs'   => $news_cat_objs,
+            'category'        => $category,
             'category_counts' => $category_counts,
-            'category_path' => $category_path,
-            'news_entries' => $news,
-            'comment_counts' => $comment_counts,
-            'num_results' => $total,
-            'pageinfo' => $pageinfo,
-            'per_page' => $per_page,
-            'show_more' => $show_more
+            'category_path'   => $category_path,
+            'news_entries'    => $news,
+            'comment_counts'  => $comment_counts,
+            'num_results'     => $total,
+            'pageinfo'        => $pageinfo,
+            'per_page'        => $per_page,
+            'show_more'       => $show_more,
+            'perms'           => $this->person->PermissionsManager->get('NewsCategories'),
         ));
     }
 
     /**
-     * View a post
+     * View a post.
      *
      * @param  $post_id
      */
@@ -195,6 +194,10 @@ class NewsController extends AbstractController
 
         // Perm check
         if (!$this->person->PermissionsManager->UserPublishChecker->canViewNews($news)) {
+            if ($news->status === 'hidden') {
+                throw $this->createNotFoundException();
+            }
+
             return $this->renderLoginOrPermissionError();
         }
 
@@ -203,11 +206,11 @@ class NewsController extends AbstractController
             return $this->redirectRoute('user_news_view', array('slug' => $news->getUrlSlug()), 301);
         }
 
-        $categories = $this->em->getRepository('DeskPRO:NewsCategory')->getRootNodes();
-        $category = $news->category;
+        $categories    = $this->em->getRepository('DeskPRO:NewsCategory')->getRootNodes();
+        $category      = $news->category;
         $category_path = $category->getTreeParents();
 
-        $comments = null;
+        $comments        = null;
         $comments_widget = null;
         $comments_helper = Comments::create($news);
         if ($comments_helper) {
@@ -217,11 +220,11 @@ class NewsController extends AbstractController
         }
 
         if ($this->container->getSetting('core.facebook_like')) {
-            $like_helper = FacebookLike::create($news);
+            $like_helper   = FacebookLike::create($news);
             $facebook_like = $like_helper->getHtml();
         }
 
-        $related_finder = new RelatedContentFinder($this->person, $news);
+        $related_finder  = new RelatedContentFinder($this->person, $news);
         $related_content = $related_finder->getRelatedEntities();
 
         $content_rating = new ContentRating($news, $this->person, $this->session->getVisitor());
@@ -229,9 +232,9 @@ class NewsController extends AbstractController
         $rating = $content_rating->getRating();
 
         if ($rating_log_search_id = $content_rating->getSearchLogId()) {
-            $this->session->set('news.' . $news['id'], $rating_log_search_id);
-        } elseif ($this->session->has('news.' . $news['id'])) {
-            $rating_log_search_id = $this->session->get('news.' . $news['id']);
+            $this->session->set('news.'.$news['id'], $rating_log_search_id);
+        } elseif ($this->session->has('news.'.$news['id'])) {
+            $rating_log_search_id = $this->session->get('news.'.$news['id']);
         } else {
             $rating_log_search_id = 0;
         }
@@ -244,25 +247,23 @@ class NewsController extends AbstractController
         $this->container->getSystemService('view_log')->view($news);
 
         return $this->render($tpl, array(
-            'rating' => $rating,
+            'rating'               => $rating,
             'rating_log_search_id' => $rating_log_search_id,
-            'news' => $news,
-            'category_path' => $category_path,
-            'category' => $category,
-            'categories' => $categories,
-            'comments' => $comments,
-            'comments_widget' => $comments_widget,
+            'news'                 => $news,
+            'category_path'        => $category_path,
+            'category'             => $category,
+            'categories'           => $categories,
+            'comments'             => $comments,
+            'comments_widget'      => $comments_widget,
 
             'facebook_like' => isset($facebook_like) ? $facebook_like : null,
 
-            'related_content' => $related_content
+            'related_content' => $related_content,
         ));
     }
 
-
-
     /**
-     * Submit a new comment
+     * Submit a new comment.
      *
      * @param  $post_id
      */
@@ -293,8 +294,8 @@ class NewsController extends AbstractController
         );
 
         $newcomment_formtype = new NewCommentFormType($this->person);
-        $form = $this->get('form.factory')->create($newcomment_formtype, $new_comment);
-        $validator = new \Application\UserBundle\Validator\NewCommentValidator();
+        $form                = $this->get('form.factory')->create($newcomment_formtype, $new_comment);
+        $validator           = new \Application\UserBundle\Validator\NewCommentValidator();
         $validator->setPersonContext($this->person);
 
         /** @var RateLimit $rateLimit */
@@ -305,7 +306,6 @@ class NewsController extends AbstractController
         }
 
         if ($this->get('request')->getMethod() == 'POST') {
-
             $trap_fail = false;
             if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
                 $trap_fail = true;
@@ -313,7 +313,7 @@ class NewsController extends AbstractController
 
             if (!$this->consumeRequest('newcomment_news') || $trap_fail) {
                 return $this->redirectRoute('user_news_view', array(
-                    'slug' => $post->getUrlSlug()
+                    'slug' => $post->getUrlSlug(),
                 ));
             }
 
@@ -323,7 +323,7 @@ class NewsController extends AbstractController
                 $this->session->setFlash('comment_error', $validator->getErrors(true));
 
                 return $this->redirectRoute('user_news_view', array(
-                    'slug' => $post->getUrlSlug()
+                    'slug' => $post->getUrlSlug(),
                 ));
             }
 
@@ -335,13 +335,13 @@ class NewsController extends AbstractController
             if ($new_comment->require_login) {
                 return $this->redirectRoute('user_newcomment_finishlogin', array(
                     'comment_type' => 'news',
-                    'comment_id' => $comment->id,
+                    'comment_id'   => $comment->id,
                 ));
             }
         }
 
         return $this->redirectRoute('user_news_view', array(
-            'slug' => $post->getUrlSlug()
+            'slug' => $post->getUrlSlug(),
         ));
     }
 }

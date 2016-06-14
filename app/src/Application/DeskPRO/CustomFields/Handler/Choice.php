@@ -1,44 +1,41 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage Form
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
 use Orb\Util\Arrays;
 
 /**
- * Handles the choice field
+ * Handles the choice field.
  */
 class Choice extends HandlerAbstract
 {
@@ -65,7 +62,9 @@ class Choice extends HandlerAbstract
 
     public function renderHtml($data = null, array $template_vars = array())
     {
-        if ($data === null) return '';
+        if ($data === null) {
+            return '';
+        }
 
         $data['value'] = $this->_getRenderableString($data);
 
@@ -74,7 +73,9 @@ class Choice extends HandlerAbstract
 
     public function renderText($data = null, array $template_vars = array())
     {
-        if ($data === null) return '';
+        if ($data === null) {
+            return '';
+        }
 
         $data['value'] = $this->_getRenderableString($data);
 
@@ -83,122 +84,188 @@ class Choice extends HandlerAbstract
 
     protected function _getRenderableString($data)
     {
-        $val = array();
-
-        if ($this->field_def->field_manager) {
-            $children = $this->field_def->field_manager->getFieldChildren($this->field_def);
-        } else {
-            $children = $this->field_def['children'];
-        }
-
-        // Index array
-        $children = \Orb\Util\Arrays::keyFromData($children, 'id');
-
-        foreach ($children as $child) {
-            $id = $child['id'];
-            if (isset($data['children'][$id]) AND isset($data['children'][$id]['value'])) {
-                $parent_title = '';
-                if ($child->getOption('parent_id')) {
-                    $parent_title = $children[$child->getOption('parent_id')]->getTitle() . ' > ';
-                }
-                $val[] = $parent_title . $child['title'];
-            }
-        }
-
-        $val = implode(', ', $val);
-
-        return $val;
-    }
-
-    public function getFormField($data = null)
-    {
-        $options = array();
-
-        $selected_options = array();
-
+        $val      = array();
         $children = $this->getFieldChildren();
 
-        // Add options
-        $has_children = array();
-        foreach ($children as $child) {
-            if ($child->getOption('parent_id')) {
-                $has_children[$child->getOption('parent_id')] = true;
-            }
+        if (!isset($data['children'])) {
+            return;
         }
 
-        foreach ($children as $child) {
-            if (isset($has_children[$child->getId()])) {
-                if (!$this->expanded && !isset($options[$child->getTitle()])) {
-                    $options[$child->getTitle()] = array();
+        foreach ($data['children'] as $id => $v) {
+            if (!isset($v['value']) || (!$child = @$children[$id])) {
+                continue;
+            }
+
+            $title = $child['title'];
+            // full path
+            while ($parent = @$children[$child->getOption('parent_id')]) {
+                $title = $parent['title'].' > '.$title;
+                $child = $parent;
+            }
+            $val[] = $title;
+        }
+
+        return implode(', ', $val);
+    }
+
+    public function getFormField($data = null, $availableOnly = false)
+    {
+        $children = $this->getFieldChildren();
+        $choices  = array();
+        $selected = array();
+        $map      = array();
+        // client-side hierarchy
+        $root      = array();
+        $max_depth = 1;
+        $sort_map  = array();
+
+        foreach ($children as $id => $child) {
+
+            // map for client-side
+            $map[$id]        = new \StdClass();
+            $map[$id]->id    = $id;
+            $map[$id]->title = $child['title'];
+
+            // add choices
+            $title         = $child['title'];
+            $sort_map[$id] = array($child['display_order']);
+            $d             = 1;
+
+            $sub_child = $child;
+            while ($parent = @$children[$sub_child->getOption('parent_id')]) {
+                ++$d;
+                if ($d > $max_depth) {
+                    $max_depth = $d;
                 }
-            } elseif ($child->getOption('parent_id')) {
-                if (!$this->expanded) {
-                    $title = $children[$child->getOption('parent_id')]->getTitle();
-                    if (!isset($options[$title])) {
-                        $options[$title] = array();
-                    }
-                    $options[$title][$child->getId()] = $child->getTitle();
-                } else {
-                    $title = $children[$child->getOption('parent_id')]->getTitle();
-                    $options[$child->getId()] = $title . ' > ' . $child->getTitle();
+
+                $title           = $parent['title'].' > '.$title;
+                $sort_map[$id][] = $parent['display_order'];
+
+                $sub_child = $parent;
+            }
+            $sort_map[$id] = array_reverse($sort_map[$id]);
+            $choices[$id]  = $title;
+
+            // set values
+            if (!isset($data['children'][$id]['value'])) {
+                continue;
+            }
+            $selected[] = $id;
+        }
+
+        uksort($choices, function ($a_opt, $b_opt) use ($sort_map) {
+            $a_depth = count($sort_map[$a_opt]);
+            $b_depth = count($sort_map[$b_opt]);
+
+            $max_depth = max($a_depth, $b_depth);
+
+            $an = $bn = 0;
+            for ($i = 0; $i < $max_depth; ++$i) {
+                $an = @$sort_map[$a_opt][$i] ?: 0;
+                $bn = @$sort_map[$b_opt][$i] ?: 0;
+
+                if ($an != $bn) {
+                    break;
+                }
+            }
+
+            if ($an == $bn) {
+                return 0;
+            }
+
+            return $an < $bn ? -1 : 1;
+        });
+
+        // map for client-side
+        foreach ($children as $id => $child) {
+            if ($parent = @$map[$child->getOption('parent_id')]) {
+                $parent->children[] = $map[$id];
+                if (isset($choices[$parent->id])) {
+                    unset($choices[$parent->id]);
                 }
             } else {
-                $options[$child->getId()] = $child->getTitle();
+                $root[] = @$map[$id];
             }
         }
 
-        foreach ($children as $child) {
-            $id = $child['id'];
-            if (!$child['handler_class']) {
-                if (isset($data['children'][$id]) AND isset($data['children'][$id]['value'])) {
-                    $selected_options[] = $id;
+        // For max 2-level multi-select, use optgroups
+        if ($max_depth <= 2 && $this->multiple && !$this->expanded) {
+            $choices = array();
+
+            foreach ($root as $opt) {
+                if (!empty($opt->children)) {
+                    $optgroup = array();
+                    foreach ($opt->children as $sub_opt) {
+                        $optgroup[$sub_opt->id] = $sub_opt->title;
+                    }
+                    $choices[$opt->title] = $optgroup;
+                } else {
+                    $choices[$opt->id] = $opt->title;
                 }
             }
         }
 
-        $setData = $selected_options;
-        if (!$this->multiple && is_array($setData)) {
-            $setData = array_pop($setData);
+        // required
+        $required = defined('DP_INTERFACE') && (
+            ('user' === DP_INTERFACE && $this->field_def->getOption('required'))
+            ||
+            ('agent' === DP_INTERFACE && $this->field_def->getOption('agent_required'))
+        );
+
+        $attr                      = $this->field_def->getOption('attr', array());
+        $attr['data-map']          = json_encode($root);
+        $attr['data-custom-field'] = 'choice-'.($this->expanded ? 'expanded' : 'collapsed').($this->multiple ? '-multiple' : null);
+        $attr['data-max-depth']    = $max_depth;
+
+        if ($class = $this->field_def->getOption('custom_css_classname')) {
+            $attr['class'] = @$attr['class'].' '.$class;
+        }
+
+        if (!$this->multiple) {
+            // turns off legacy select2 handler
+            $attr['data-no-select2'] = 1;
+        }
+
+        // - We need to always have a default blank
+        // option for backwards compat with lots of layout/UI code
+        // - Without a blank option, browser will send option1 along with any
+        // form, resulting in a value save when there shouldnt be
+        // (because client-side, we simply display:none fields that dont apply, but browser
+        // will still have field values for them; we need a blank option to send in a case like that).
+        if ($this->expanded) {
+            if ($selected && $required) {
+                $empty_val = '---';
+            } else {
+                $empty_val = false;
+            }
+        } else {
+            $empty_val = '';
         }
 
         $field_opts = array(
-            'choices' => $options,
-            'required' => false,
+            'choices' => $choices,
+            // no required for radios because it adds required="required" to HTML,
+            // and if they're hidden, Chrome will error-out because it cant focus the element
+            // - Its ONLY radios (checks, selects, etc are ok), and ONLY on certain versions of Chrome
+            // Note: this is properly fixed anyway in new-portal because the field isnt in the <form> at all
+            'required'    => $required && !($this->expanded && !$this->multiple),
+            'multiple'    => $this->multiple,
+            'expanded'    => $this->expanded,
+            'empty_value' => $empty_val,
+            'attr'        => $attr,
         );
-        if ($this->multiple) {
-            $field_opts['multiple'] = true;
-        }
-        if ($this->expanded) {
-            $field_opts['expanded'] = true;
+
+        if (!$this->multiple) {
+            // selected value for single select
+            $selected = reset($selected) ?: null;
         }
 
-        $is_radio = false;
-        if ($this->expanded && !$this->multiple) {
-            $is_radio = true;
-        }
-        $is_check = false;
-        if ($this->expanded && $this->multiple) {
-            $is_check = true;
-        }
-
-        $req_opt = false;
-        if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
-            $req_opt = $this->field_def->getOption('required');
-        } elseif (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
-            $req_opt = $this->field_def->getOption('agent_required');
-        }
-        if ($is_radio || $is_check) {
-            $field_opts['empty_value'] = false;
-        } else {
-            $field_opts['empty_value'] = '';
-        }
-
-        $field_choice = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'choice', null, $field_opts);
-        if ($setData) {
-            $field_choice->setData($setData);
-        }
-
-        return $field_choice;
+        return App::getFormFactory()->createNamedBuilder(
+            $this->getFormFieldName(),
+            'choice',
+            $selected,
+            $field_opts
+        );
     }
 
     public function getDataFromForm(array $form_data)
@@ -220,7 +287,7 @@ class Choice extends HandlerAbstract
             } else {
                 // Single selections in the form of field_1 = childid
                 $ret = array(
-                    array($value, 'value', 1)
+                    array($value, 'value', 1),
                 );
             }
 
@@ -240,22 +307,23 @@ class Choice extends HandlerAbstract
             $data = array($data);
         }
 
+        $data = Arrays::func($data, array('Orb\Util\Strings', 'trimWhitespace'));
         $data = Arrays::removeFalsey($data);
 
-		// - Choice values are always ints
-		// But if a multi-select is sent via JS in some old JS code
-		// it's possible a JS null value is sent, which when sent as a POST
-		// to PHP becomes the string 'null', which in turn will become a validation error
-		// - So this is removing those possible 'null' strings
-		$data = array_filter($data, function($d) {
-			return $d !== 'null';
-		});
+        // - Choice values are always ints
+        // But if a multi-select is sent via JS in some old JS code
+        // it's possible a JS null value is sent, which when sent as a POST
+        // to PHP becomes the string 'null', which in turn will become a validation error
+        // - So this is removing those possible 'null' strings
+        $data = array_filter($data, function ($d) {
+            return $d !== 'null';
+        });
 
         #------------------------------
         # Validate selections
         #------------------------------
 
-        $children = $this->getFieldChildren();
+        $children          = $this->getFieldChildren();
         $parent_option_ids = array();
 
         foreach ($children as $c) {
@@ -281,7 +349,7 @@ class Choice extends HandlerAbstract
 
         $options = array();
         foreach (array('required', 'min_length', 'max_length') as $k) {
-            $options[$k] = $this->field_def->getOption($opt_prefix . $k);
+            $options[$k] = $this->field_def->getOption($opt_prefix.$k);
         }
 
         // Without required there are no requirements
@@ -304,9 +372,28 @@ class Choice extends HandlerAbstract
         return array();
     }
 
+    public function renderFormHtml($formView, array $template_vars = array())
+    {
+        // In the agent interface, we render single instances of forms many times
+        // and that screws up the IDs used in the markup
+
+        // we need this hack to generate unique IDs for expanded choice fields
+        // see also Application/DeskPRO/Resources/views/Form/form_div_layout.html.twig - choice_widget_expanded
+
+        $html = parent::renderFormHtml($formView, $template_vars);
+
+        if ($this->expanded) {
+            $rand_id = uniqid('dp_').'_';
+            $html    = preg_replace('#<label([^>]+)for="DP_BASE_ID_#', '<label$1for="'.$rand_id, $html);
+            $html    = preg_replace('#<input([^>]+)id="DP_BASE_ID_#', '<input$1id="'.$rand_id, $html);
+        }
+
+        return $html;
+    }
+
     public function getSearchCapabilities()
     {
-        return array('is', 'not');
+        return array('is', 'not', 'isset', 'not_isset');
     }
 
     public function getFilterCapabilities()

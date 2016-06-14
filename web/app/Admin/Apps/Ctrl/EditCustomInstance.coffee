@@ -1,8 +1,8 @@
 define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
   class Admin_Apps_Ctrl_EditCustomInstance extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Apps_Ctrl_EditCustomInstance'
-    @CTRL_AS   = 'Ctrl'
-    @DEPS      = []
+    @CTRL_ID = 'Admin_Apps_Ctrl_EditCustomInstance'
+    @CTRL_AS = 'Ctrl'
+    @DEPS = []
 
     init: ->
       @$scope.setting_values = {}
@@ -33,7 +33,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 
       @Api.sendDataGet({
         app: '/apps/instances/' + @instanceId
-      }).then( (result) =>
+      }).then((result) =>
         @app = result.data.app.app;
 
         @$scope.$parent.ListCtrl.ensureCustomAppInList(@app)
@@ -41,16 +41,16 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
         @Api.sendDataGet({
           pack: '/apps/packages/' + @app.package_name,
           assets: '/apps/custom/' + @instanceId + '/assets'
-        }).then( (result) =>
+        }).then((result) =>
           @pack = result.data.pack['package']
 
           assets = result.data.assets.assets
 
           asset_groups = {
-            "main":    [],
+            "main": [],
             "ticket": [],
-            "user":    [],
-            "org":     []
+            "user": [],
+            "org": []
           };
 
           app_js = assets.filter((x) -> x.tag == 'app_js')[0]
@@ -63,8 +63,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
             })
 
           asset_groups.ticket = @_getGroupedAssets(assets.filter((x) -> x.name.indexOf('Ticket/') != -1))
-          asset_groups.user   = @_getGroupedAssets(assets.filter((x) -> x.name.indexOf('User/') != -1))
-          asset_groups.org    = @_getGroupedAssets(assets.filter((x) -> x.name.indexOf('Org/') != -1))
+          asset_groups.user = @_getGroupedAssets(assets.filter((x) -> x.name.indexOf('User/') != -1))
+          asset_groups.org = @_getGroupedAssets(assets.filter((x) -> x.name.indexOf('Org/') != -1))
 
           @asset_groups = asset_groups
 
@@ -97,6 +97,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
         })
 
       for asset in assets
+        if app_context == asset then continue
         if not (asset.tag == 'js' and asset.metadata.group_name) then continue
         html_asset = assets.filter((x) -> x.tag == 'html' and x.metadata?.group_name == asset.metadata.group_name)[0]
 
@@ -121,9 +122,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
       for own _, group of @asset_groups
         for asset in group
           if asset.js_id
-            postData.save_assets.push({ id: asset.js_id, content: asset.js })
+            postData.save_assets.push({id: asset.js_id, content: asset.js})
           if asset.html_id
-            postData.save_assets.push({ id: asset.html_id, content: asset.html })
+            postData.save_assets.push({id: asset.html_id, content: asset.html})
 
       @startSpinner('saving_settings')
       @Api.sendPostJson("/apps/instances/#{@instanceId}", postData).then(=>
@@ -140,7 +141,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
     ###
     startDelete: ->
       doDelete = =>
-        @Api.sendDelete('/apps/instances/' + @app.id).success( =>
+        @Api.sendDelete('/apps/instances/' + @app.id).success(=>
 
           # If we are viewing with the parent list, we need to remove this
           # app from the list

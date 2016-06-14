@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\PassPermission;
@@ -38,7 +36,7 @@ use Application\ApiBundle\PermissionStrategy\PassPermission;
 class ApiCombinerController extends AbstractController implements ProtectedControllerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
@@ -59,7 +57,7 @@ class ApiCombinerController extends AbstractController implements ProtectedContr
             // Cut off the query string
             $req_data = array();
             if (($q_pos = strpos($load_data_id, '?')) !== false) {
-                list ($load_data_id, $qs) = explode('?', $load_data_id, 2);
+                list($load_data_id, $qs) = explode('?', $load_data_id, 2);
                 parse_str($qs, $req_data);
             }
 
@@ -71,11 +69,11 @@ class ApiCombinerController extends AbstractController implements ProtectedContr
 
             $ctrl_name = null;
             $ctrl_path = $route_info['_controller'];
-            $m = null;
+            $m         = null;
             if (preg_match('#^(Application|Cloud)\\\\(.*?)\\\\Controller\\\\(.*?)Controller::(.*?)Action$#', $ctrl_path, $m)) {
-                $ctrl_name = $m[2] . ':' . $m[3] . ':' . $m[4];
+                $ctrl_name = $m[2].':'.$m[3].':'.$m[4];
                 if ($m[1] == 'Cloud') {
-                    $ctrl_name = 'Cloud' . $ctrl_name;
+                    $ctrl_name = 'Cloud'.$ctrl_name;
                 }
             }
 
@@ -89,7 +87,7 @@ class ApiCombinerController extends AbstractController implements ProtectedContr
                 if ($req_data) {
                     foreach ($req_data as $rk => $rv) {
                         $_REQUEST[$rk] = $rv;
-                        $_GET[$rk] = $rv;
+                        $_GET[$rk]     = $rv;
                     }
                     $this->in->resetSources();
                 }

@@ -384,13 +384,13 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save',
                                 person_id: this.meta.person_id
 			});
-			
-			this.uploadFile = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile(this,{ 
+
+			this.uploadFile = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile(this,{
 				el: self.getEl('files_box'),
 				deleteUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save',
                                 person_id: this.meta.person_id
 			});
-			
+
 			this.ownObject(this.changePic);
 			this.ownObject(this.uploadVcard);
 			this.ownObject(this.uploadFile);
@@ -410,13 +410,13 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		});
 
 		var person_id = this.meta.person_id;
-		
+
 		this.sortTicketsMenu = new DeskPRO.UI.Menu({
 			triggerElement: this.getEl('sort_tickets_menu_trigger'),
 			menuElement: this.getEl('sort_tickets_menu'),
 			onItemClicked: function(info) {
 				var itemEl = $(info.itemEl), sort_by = itemEl.data('sort-by');
-				
+
 				$.ajax({
 					url: BASE_URL + 'agent/person/' + person_id + '/tickets',
 					data: {sort_by: sort_by},
@@ -429,7 +429,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				});
 			}
 		});
-		
+
 		this.ownObject(this.sortTicketsMenu);
 
 		this.moreactionsMenu = new DeskPRO.UI.Menu({
@@ -438,7 +438,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			onItemClicked: function(info) {
 				var itemEl = $(info.itemEl), action = itemEl.data('action');
 
-				if (action == 'reset-password') {
+				if (action == 'set-password') {
 					DeskPRO_Window.showPrompt(
 						'<div>Enter a new password. The user will be notified.</div>',
 						function(val, wrap) {
@@ -466,6 +466,24 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 							});
 						}
 					);
+				} else if (action == 'reset-password') {
+
+					DeskPRO_Window.showConfirm(
+							self.getEl('reset_password_confirm'),
+							function() {
+								$.ajax({
+									url: BASE_URL + 'agent/login/send-lost.json',
+									type: 'POST',
+									data: { email: self.meta.person.email },
+									dataType: 'json'
+								});
+								self.closeSelf();
+							},
+							null,
+							null, null,
+							400, 260
+					);
+
 				} else if (action == 'delete') {
 					var el = self.getEl('delete_confirm');//.clone();
 					DeskPRO_Window.showConfirm(
@@ -604,6 +622,27 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		$('.new-note textarea', this.getEl('notes_tab')).TextAreaExpander(40, 225);
 
+    var $notes = this.getEl('notes_tab'),
+        notesClickHandler = function(e){
+          var $el = $(e.target).closest('li.note');
+          if (!$el.length) return;
+          $notes.off('click', notesClickHandler);
+
+          $.ajax({
+            url: BASE_URL + 'agent/people/notes/' + $el.data('note-id'),
+            type: 'DELETE',
+            dataType: 'json',
+            success: function(data) {
+              $el.remove();
+              $notes.on('click', '.delete', notesClickHandler);
+            },
+            error: function() {
+              $notes.on('click', '.delete', notesClickHandler);
+            }
+          });
+        };
+    $notes.on('click', '.delete', notesClickHandler);
+
 		var summaryTxt = this.getEl('summary').TextAreaExpander(40, 225);
 
 		this.refreshPropBox();
@@ -625,29 +664,37 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			} else {
 				if (!fieldsForm.hasClass('dp-has-init')) {
 					fieldsForm.addClass('dp-has-init');
-					fieldsForm.find('.Date.customfield input').datepicker({
-						dateFormat: 'yy-mm-dd',
-						showButtonPanel: true,
-						beforeShow: function(input) {
-							setTimeout(function() {
-								var buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane");
-
-								buttonPane.find('button:first').remove();
-
-								var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">Clear</button>');
-								btn.unbind("click").bind("click", function () { $.datepicker._clearDate( input ); });
-								btn.appendTo( buttonPane );
-
-								$(input).datepicker("widget").css('z-index', 30001);
-							},1);
-						}
+					fieldsForm.find('.Date.customfield input').each(function() {
+						$(this).datetimepicker({
+							format: 'YYYY-MM-DD',
+							widgetParent: $(this).parent().css('position', 'relative'),
+							icons: {
+								up: 'fa fa-chevron-up',
+								down: 'fa fa-chevron-down',
+								previous: 'fa fa-chevron-left',
+								next: 'fa fa-chevron-right'
+							}
+						});
+						$(this).on('dp.change', function(){
+							$(this).trigger('change');
+						});
 					});
 
 					$('.DateTime.customfield input', fieldsForm).each(function(){
 						$(this).datetimepicker({
-							format: 'yyyy-mm-dd hh:ii',
-							container: $(this).parent().css('position', 'relative'),
-							autoclose: true
+							format: 'YYYY-MM-DD HH:mm',
+							widgetParent: $(this).parent().css('position', 'relative'),
+							icons: {
+								time: 'fa fa-clock-o',
+								date: 'fa fa-calendar-o',
+								up: 'fa fa-chevron-up',
+								down: 'fa fa-chevron-down',
+								previous: 'fa fa-chevron-left',
+								next: 'fa fa-chevron-right'
+							}
+						});
+						$(this).on('dp.change', function(){
+							$(this).trigger('change');
 						});
 					});
 				}
@@ -753,7 +800,14 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					data: { 'people_ids[]': self.meta.person_id },
 					success: function() {
 						DeskPRO_Window.getMessageBroker().sendMessage('agent.person.removed', { person_id: self.meta.person_id });
-						DeskPRO_Window.removePage(self);
+						DeskPRO_Window.showAlert('The user was deleted');
+
+						var tabs = DeskPRO_Window.getTabWatcher().findTabs('ticket', function(tab) {
+							return (tab && tab.page && tab.page && tab.page.meta.person_id == person_id);
+						});
+						$.each(tabs, function(k, tab) {
+							DeskPRO_Window.removePage(tab.page);
+						});
 					}
 				});
 			});

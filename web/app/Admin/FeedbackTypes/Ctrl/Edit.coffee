@@ -14,31 +14,26 @@ define [
       @usergroups = []
       @selected_usergroups = {}
 
-      return
+
+
 
     initialLoad: ->
+      promises = []
+      promises.push @Api.sendDataGet({usergroups: '/user_groups'}).then (result) =>
+        @usergroups = result.data.usergroups.groups
 
-      if not @$stateParams.id
-
-        return
-
-      else
-
-        data_promise = @Api.sendDataGet({
+      if @$stateParams.id
+        promises.push @Api.sendDataGet({
           feedback_type: '/feedback_types/' + @$stateParams.id,
-          usergroups: '/user_groups'
-        }).then((result) =>
-
+        }).then (result) =>
           @feedback_type = result.data.feedback_type.feedback_type
-          @usergroups = result.data.usergroups.groups
-
           ids = _.pluck(@feedback_type.usergroups, 'id')
-
           for id in ids
             @selected_usergroups[id] = true
-        )
 
-        return @$q.all([data_promise])
+      @$q.all promises
+
+
 
     ###
       # Saves the current form

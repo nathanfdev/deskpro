@@ -1,37 +1,36 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Server;
 
 use Application\DeskPRO\App;
@@ -60,7 +59,7 @@ class ApcStatus
 
         if ($this->is_enabled) {
             $this->cacheinfo = @apc_cache_info('opcode');
-            $this->meminfo = @apc_sma_info();
+            $this->meminfo   = @apc_sma_info();
 
             if (!$this->cacheinfo || !$this->meminfo) {
                 $this->is_enabled = false;
@@ -70,7 +69,6 @@ class ApcStatus
         }
     }
 
-
     /**
      * @return int
      */
@@ -78,7 +76,6 @@ class ApcStatus
     {
         return !empty($this->cacheinfo['num_misses']) ? $this->cacheinfo['num_misses'] : 0;
     }
-
 
     /**
      * @return int
@@ -88,7 +85,6 @@ class ApcStatus
         return !empty($this->cacheinfo['num_hits']) ? $this->cacheinfo['num_hits'] : 0;
     }
 
-
     /**
      * @return int
      */
@@ -96,7 +92,6 @@ class ApcStatus
     {
         return $this->getNumMisses() + $this->getNumHits();
     }
-
 
     /**
      * @return float
@@ -113,7 +108,6 @@ class ApcStatus
         return ($miss / $total) * 100;
     }
 
-
     /**
      * @return float
      */
@@ -129,9 +123,8 @@ class ApcStatus
         return ($hit / $total) * 100;
     }
 
-
     /**
-     * How much memory is currently available (free)
+     * How much memory is currently available (free).
      *
      * @return int
      */
@@ -140,9 +133,8 @@ class ApcStatus
         return !empty($this->meminfo['avail_mem']) ? $this->meminfo['avail_mem'] : 0;
     }
 
-
     /**
-     * How much memory is available for use
+     * How much memory is available for use.
      *
      * @return int
      */
@@ -155,16 +147,15 @@ class ApcStatus
         return 0;
     }
 
-
     /**
-     * Get how much moeor
+     * Get how much moeor.
+     *
      * @return int
      */
     public function getMemUsed()
     {
         return $this->getMemTotal() - $this->getMemFree();
     }
-
 
     /**
      * @return float
@@ -181,7 +172,6 @@ class ApcStatus
         return ($used / $total) * 100;
     }
 
-
     /**
      * @return float
      */
@@ -197,36 +187,35 @@ class ApcStatus
         return ($free / $total) * 100;
     }
 
-
     /**
-     * Get the URL to the apc hitmiss chart
+     * Get the URL to the apc hitmiss chart.
      *
      * @todo this is using App and DP_CONFIG_FILE, perhaps nicer way to do it?
+     *
      * @return string
      */
     public function getHitMissChartUrl()
     {
         $config_hash = md5_file(DP_CONFIG_FILE);
-        $url = App::getSetting('core.deskpro_url') . '?_sys=apc&_=' . Util::generateStaticSecurityToken($config_hash.'apc', 86400) . '&IMG=1&' . time();
+        $url         = App::getSetting('core.deskpro_url').'?_sys=apc&_='.Util::generateStaticSecurityToken($config_hash.'apc', 86400).'&IMG=1&'.time();
 
         return $url;
     }
 
-
     /**
-     * Get the URL to the apc memory chart
+     * Get the URL to the apc memory chart.
      *
      * @todo this is using App and DP_CONFIG_FILE, perhaps nicer way to do it?
+     *
      * @return string
      */
     public function getMemChartUrl()
     {
         $config_hash = md5_file(DP_CONFIG_FILE);
-        $url = App::getSetting('core.deskpro_url') . '?_sys=apc&_=' . Util::generateStaticSecurityToken($config_hash.'apc', 86400) . '&IMG=1&' . time();
+        $url         = App::getSetting('core.deskpro_url').'?_sys=apc&_='.Util::generateStaticSecurityToken($config_hash.'apc', 86400).'&IMG=1&'.time();
 
         return $url;
     }
-
 
     /**
      * @return bool
@@ -235,7 +224,6 @@ class ApcStatus
     {
         return $this->is_enabled;
     }
-
 
     /**
      * Guess if there is a problem based on the number of misses we've had.

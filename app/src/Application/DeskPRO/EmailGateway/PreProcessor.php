@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
@@ -63,26 +61,31 @@ class PreProcessor extends AbstractGatewayProcessor
         # Dupe Detection
         #------------------------------
 
+        // TODO: Put this behind an option
+        // It's possible IDs are non-unique (e.g. by some automated systems)
+        // Until then, this is disabled.
+        /*
         if ($id = $this->reader->getId()) {
             if ($old = $this->getEm()->getRepository('DeskPRO:TicketMessage')->getDupeByMessageID($id)) {
-                /** @var $old TicketMessage */
+                $this->error = EmailSource::ERR_DUPE;
                 $this->source_info[] = 'Ticket ID: '. $old->message->ticket['id'];
                 $this->source_info[] = 'Email Message ID: '. $id;
-                return $this->error = EmailSource::ERR_DUPE;
+                return;
             }
         }
+        */
 
         #------------------------------
         # Invalid From
         #------------------------------
 
-        $validator = new \Orb\Validator\StringEmail();
+        $validator = new \Orb\Validator\StringEmail(array('reject_example' => true));
 
         if (!$validator->isValid($from)) {
-            $this->error = EmailSource::ERR_FROM_INVALID;
-            $this->source_info = array();
-            $this->source_info[] = "Read from address: " . $from;
-            $this->source_info[] = "Errors:\n\n" . $validator->getErrorsDebug();
+            $this->error         = EmailSource::ERR_FROM_INVALID;
+            $this->source_info   = array();
+            $this->source_info[] = 'Read from address: '.$from;
+            $this->source_info[] = "Errors:\n\n".$validator->getErrorsDebug();
 
             return;
         }
@@ -93,10 +96,10 @@ class PreProcessor extends AbstractGatewayProcessor
 
         $account_manager = App::$container->getEmailAccountManager();
         if ($found_account = $account_manager->findAccountForEmailAddress($from)) {
-            $this->error = EmailSource::ERR_FROM_GATEWAY;
-            $this->source_info[] = "Read from address: " . $from;
-            $this->source_info[] = "Matched account: " . $found_account->id;
-            $this->source_info[] = "Account addresses: " . implode(', ', $found_account->getAllAddresses());
+            $this->error         = EmailSource::ERR_FROM_GATEWAY;
+            $this->source_info[] = 'Read from address: '.$from;
+            $this->source_info[] = 'Matched account: '.$found_account->id;
+            $this->source_info[] = 'Account addresses: '.implode(', ', $found_account->getAllAddresses());
 
             return;
         }
@@ -107,9 +110,9 @@ class PreProcessor extends AbstractGatewayProcessor
 
         $match = null;
         if (App::getOrm()->getRepository('DeskPRO:BanEmail')->isEmailBanned($from, $match)) {
-            $this->error = EmailSource::ERR_FROM_BANNED;
-            $this->source_info[] = "Read from address: " . $from;
-            $this->source_info[] = "Matched banned email: " . $match;
+            $this->error         = EmailSource::ERR_FROM_BANNED;
+            $this->source_info[] = 'Read from address: '.$from;
+            $this->source_info[] = 'Matched banned email: '.$match;
 
             return;
         }
@@ -118,10 +121,10 @@ class PreProcessor extends AbstractGatewayProcessor
         # Check for empty message
         #------------------------------
 
-        $subj = trim($this->reader->getSubject()->getSubject());
-        $message = trim($this->reader->getBodyHtml()->getBody());
+        $subj     = trim($this->reader->getSubject()->getSubject());
+        $message  = trim($this->reader->getBodyHtml()->getBody());
         $message2 = trim($this->reader->getBodyText()->getBody());
-        $attach = $this->reader->getAttachments();
+        $attach   = $this->reader->getAttachments();
 
         if (!$subj && !$message && !$message2 && !$attach) {
             $this->error = EmailSource::ERR_EMPTY;
@@ -136,9 +139,9 @@ class PreProcessor extends AbstractGatewayProcessor
 
         if ($this->account->date_read_start && $email_date = $this->reader->getDate() && App::getSetting('core_email.enable_date_limit_rejection')) {
             if ($email_date < $this->account->date_read_start) {
-                $this->error = EmailSource::ERR_DATE_LIMIT;
-                $this->source_info[] = "Gateway date limit: " . $this->account->date_read_start->format(\DateTime::RFC2822);
-                $this->source_info[] = "Message date: " . $email_date->format(\DateTime::RFC2822);
+                $this->error         = EmailSource::ERR_DATE_LIMIT;
+                $this->source_info[] = 'Gateway date limit: '.$this->account->date_read_start->format(\DateTime::RFC2822);
+                $this->source_info[] = 'Message date: '.$email_date->format(\DateTime::RFC2822);
 
                 return;
             }
@@ -153,7 +156,8 @@ class PreProcessor extends AbstractGatewayProcessor
     }
 
     /**
-     * 'error' or 'rejected'
+     * 'error' or 'rejected'.
+     *
      * @return string
      */
     public function getErrorType()
@@ -169,7 +173,7 @@ class PreProcessor extends AbstractGatewayProcessor
     public function getSourceInfo()
     {
         if (!$this->source_info) {
-            return null;
+            return;
         }
 
         if (!is_array($this->source_info)) {

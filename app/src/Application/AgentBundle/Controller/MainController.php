@@ -1,51 +1,53 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketDeleted;
 use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\People\PrefNoticeSet;
+use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Strings;
-use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MainController extends AbstractController
 {
+    protected $deleted_tickets = array();
+
     public function requireRequestToken($action, $arguments = null)
     {
         if ($action == 'indexAction') {
@@ -59,18 +61,18 @@ class MainController extends AbstractController
     {
         $this->person->loadPrefGroup('agent.ui');
 
-        $last_message_id = $this->db->fetchColumn("
+        $last_message_id = $this->db->fetchColumn('
             SELECT id
             FROM client_messages
             ORDER BY id DESC
             LIMIT 1
-        ");
+        ');
         if (!$last_message_id) {
             $last_message_id = -1;
         }
 
         // Used in some header menus for search options
-        $titles = array();
+        $titles                  = array();
         $titles['organizations'] = $this->container->getDataService('Organization')->getOrganizationNames();
         $titles['usergroups']    = $this->container->getDataService('Usergroup')->getUsergroupNames();
 
@@ -80,13 +82,13 @@ class MainController extends AbstractController
 
         // Person menu needs these
         $people_fields = $this->container->getSystemService('person_fields_manager')->getDisplayArray();
-        $org_fields = $this->container->getSystemService('org_fields_manager')->getDisplayArray();
+        $org_fields    = $this->container->getSystemService('org_fields_manager')->getDisplayArray();
 
         // Ticket options for search pane of tickets menu
         $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
         // Agent info
-        $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+        $agents      = $this->em->getRepository('DeskPRO:Person')->getAgents();
         $agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
         // Countr code
@@ -101,35 +103,53 @@ class MainController extends AbstractController
         // Auto-load chats in tabs if assigned to an agent
         $open_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getOpenChatsForAgent($this->person);
 
-        $ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-        $custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
+        $ticket_field_defs                      = App::getApi('custom_fields.tickets')->getEnabledFields();
+        $custom_fields                          = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
         $ticket_options['custom_ticket_fields'] = $custom_fields;
 
         // People stuff
         $ticket_options['people_organizations'] = $this->em->getRepository('DeskPRO:Organization')->getOrganizationNames();
-        $people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+        $people_field_defs                      = App::getApi('custom_fields.people')->getEnabledFields();
         $ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
 
-        $people_options = $titles;
+        $people_options                         = $titles;
         $people_options['custom_people_fields'] = $ticket_options['custom_people_fields'];
 
         $org_options = array(
-            'custom_org_fields' => $this->container->getSystemService('org_fields_manager')->getDisplayArray()
+            'custom_org_fields' => $this->container->getSystemService('org_fields_manager')->getDisplayArray(),
         );
 
-        $cutoff = date('Y-m-d H:i:s', time() - $this->container->getSetting('core_chat.agent_timeout'));
-        $online_agent_ids = $this->db->fetchAllCol("
+        $cutoff           = date('Y-m-d H:i:s', time() - $this->container->getSetting('core_chat.agent_timeout'));
+        $online_agent_ids = $this->db->fetchAllCol('
             SELECT p.id
             FROM sessions s
-            LEFT JOIN people AS p ON p.id = s.person_id
+            JOIN people AS p ON p.id = s.person_id
             WHERE p.is_agent = true AND s.date_last > ?
-        ", array($cutoff));
+        ', array($cutoff));
 
-        $with_chat_perm = array();
+        $online_chat_agent_ids = $this->db->fetchAllCol('
+            SELECT p.id
+            FROM sessions s
+            JOIN people AS p ON p.id = s.person_id
+            WHERE s.is_chat_available = 1 AND p.is_agent = true AND s.date_last > ?
+        ', array($cutoff));
+
+        $with_chat_perm    = array();
+        $without_chat_perm = array();
         foreach ($this->container->getAgentData()->getAgents() as $a) {
             if ($a->hasPerm('agent_chat.use')) {
                 $with_chat_perm[] = $a->id;
+            } elseif (in_array($a->id, $online_chat_agent_ids)) {
+                $without_chat_perm[] = $a->id;
             }
+        }
+
+        if ($without_chat_perm) {
+            $this->db->executeUpdate(
+                'UPDATE sessions SET is_chat_available = ? WHERE person_id IN (?)',
+                array(0, $without_chat_perm),
+                array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY)
+            );
         }
 
         if ($with_chat_perm) {
@@ -150,11 +170,11 @@ class MainController extends AbstractController
             $agent_chat_depmap = array();
         }
 
-        $is_first_login = false;
+        $is_first_login      = false;
         $is_first_login_name = false;
 
         if ($this->person->getPref('agent.first_login')) {
-            $is_first_login = true;
+            $is_first_login      = true;
             $is_first_login_name = $this->person->getPref('agent.first_login_name');
         }
 
@@ -168,10 +188,10 @@ class MainController extends AbstractController
         /** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
         $password_validator = App::$container->getSystemService('password_policy_validator');
 
-        $dp_news = require_once(DP_ROOT.'/sys/config/config.news.php');
-        $read_news = $this->person->getPref('agent.ui.dp_news', array());
+        $dp_news        = require_once DP_ROOT.'/sys/config/config.news.php';
+        $read_news      = $this->person->getPref('agent.ui.dp_news', array());
         $unread_dp_news = array();
-        $person_time = $this->person->date_created->getTimestamp();
+        $person_time    = $this->person->date_created->getTimestamp();
         foreach ($dp_news as $info) {
             $d = @strtotime($info['date']);
             if ($d && ($d > $person_time) && !in_array($info['id'], $read_news)) {
@@ -211,18 +231,18 @@ class MainController extends AbstractController
 
     public function loadVersionNoticeAction($id)
     {
-        $id = preg_replace('#[^a-zA-Z0-9_\-]#', 'x', $id);
-        $target_dir = DP_ROOT.'/docs/changelog/' . $id;
+        $id         = preg_replace('#[^a-zA-Z0-9_\-]#', 'x', $id);
+        $target_dir = DP_ROOT.'/docs/changelog/'.$id;
         if (!is_dir($target_dir)) {
             throw $this->createNotFoundException();
         }
 
-        $html = file_get_contents($target_dir . '/log.html');
+        $html = SafeFile::fileGetContents($target_dir.'/log.html', DP_ROOT.'/docs/changelog');
         $html = Strings::extractRegexMatch('#<body>(.*?)</body>#s', $html, 1);
 
         if (preg_match_all('#<[^>]+src=(\'|")(.*?)(\'|")[^>]+>#', $html, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $m) {
-                $attach_path = $target_dir . '/' . $m[2];
+                $attach_path = $target_dir.'/'.$m[2];
                 if (file_exists($attach_path)) {
                     if (Strings::getExtension($attach_path) == 'png') {
                         $type = 'image/png;';
@@ -231,10 +251,10 @@ class MainController extends AbstractController
                     } else {
                         $type = '';
                     }
-                    $url = "data:{$type}base64," . base64_encode(file_get_contents($attach_path));
+                    $url = "data:{$type}base64,".base64_encode(SafeFile::fileGetContents($attach_path, DP_ROOT.'/docs/changelog'));
 
-                    $str = $m[0];
-                    $str = str_replace($m[2], $url, $str);
+                    $str  = $m[0];
+                    $str  = str_replace($m[2], $url, $str);
                     $html = str_replace($m[0], $str, $html);
                 }
             }
@@ -340,7 +360,7 @@ class MainController extends AbstractController
 
     public function quickSearchAction()
     {
-        $q = $this->in->getString('q');
+        $q    = $this->in->getString('q');
         $sort = $this->in->getString('sort');
 
         $results = array(
@@ -353,7 +373,7 @@ class MainController extends AbstractController
             'person_related'       => array(),
             'organization'         => array(),
             'organization_related' => array(),
-            'chat'                 => array()
+            'chat'                 => array(),
         );
 
         $result_meta = array();
@@ -401,8 +421,8 @@ class MainController extends AbstractController
 
                 $return_results[] = array(
                     'type'    => $type,
-                    'title'   => $this->container->getTranslator()->phrase('agent.search.type_' . $type),
-                    'results' => $rows
+                    'title'   => $this->container->getTranslator()->phrase('agent.search.type_'.$type),
+                    'results' => $rows,
                 );
             }
         }
@@ -412,12 +432,14 @@ class MainController extends AbstractController
         }
 
         $es_status = $this->em->getRepository('DeskPRO:DataStore')->getByName('sys.es_indexer', false);
-        $timecut = new \DateTime('-10 minutes');
+        $timecut   = new \DateTime('-10 minutes');
         if ($es_status && $es_status->getData('status') == 'running' && $es_status->getData('date_last') && $es_status->getData('date_last') > $timecut) {
             $index_running = true;
         } else {
             $index_running = false;
         }
+
+        $return_results[] = $this->getDeletedTicketResults($q);
 
         return $this->createJsonResponse(array(
             'grouped_results' => $return_results,
@@ -446,8 +468,8 @@ class MainController extends AbstractController
 
                 $return_results[] = array(
                     'type'    => $type,
-                    'title'   => $this->container->getTranslator()->phrase('agent.search.type_' . $type),
-                    'results' => $rows
+                    'title'   => $this->container->getTranslator()->phrase('agent.search.type_'.$type),
+                    'results' => $rows,
                 );
             }
         }
@@ -456,14 +478,54 @@ class MainController extends AbstractController
             $group['results'] = $this->renderSearchResults($group['type'], $group['results']);
         }
 
+        $return_results[] = $this->getDeletedTicketResults($q);
+
         return $this->createJsonResponse(array(
-            'grouped_results' => $return_results
+            'grouped_results' => $return_results,
         ));
     }
 
+    protected function getDeletedTicketResults($query)
+    {
+        $res = array(
+            'type'    => 'deleted_tickets',
+            'title'   => $this->container->getTranslator()->phrase('agent.search.type_ticket_deleted'),
+            'results' => array(),
+        );
+
+        if ($sub = preg_replace('/[^\d]/', '', $query)) {
+            /** @var $deleted TicketDeleted */
+            if ($deleted = $this->em->find('DeskPRO:TicketDeleted', $sub)) {
+                if (isset($this->deleted_tickets[$deleted['ticket_id']])) {
+                    $res['results'][] = array(
+                        'id'     => $deleted->ticket_id,
+                        'reason' => $this->deleted_tickets[$deleted->ticket_id]->title,
+                    );
+                    unset($this->deleted_tickets[$deleted['ticket_id']]);
+                } else {
+                    $res['results'][] = array(
+                        'id'     => $deleted->ticket_id,
+                        'reason' => $deleted->reason,
+                    );
+                }
+            }
+        }
+
+        foreach ($this->deleted_tickets as $deleted) {
+            $res['results'][] = array(
+                'id'     => $deleted->id,
+                'reason' => $deleted->title,
+            );
+        }
+        $this->deleted_tickets = array();
+
+        return $res;
+    }
+
     /**
-     * @param  string $type
-     * @param  array  $results
+     * @param string $type
+     * @param array  $results
+     *
      * @return array
      */
     private function renderSearchResults($type, array $results)
@@ -471,7 +533,7 @@ class MainController extends AbstractController
         $rows = array();
 
         $render_person = function (Person $person, array $counts = array()) {
-            $data = array();
+            $data                   = array();
             $data['picture_url']    = $person->getPictureUrl();
             $data['picture_url_80'] = $person->getPictureUrl(80);
             $data['picture_url_64'] = $person->getPictureUrl(64);
@@ -486,8 +548,8 @@ class MainController extends AbstractController
 
             if ($person->primary_email) {
                 $data['primary_email'] = array(
-                    'id'    => (int)$person->primary_email->id,
-                    'email' => $person->primary_email->email
+                    'id'    => (int) $person->primary_email->id,
+                    'email' => $person->primary_email->email,
                 );
             } else {
                 $data['primary_email'] = null;
@@ -512,7 +574,7 @@ class MainController extends AbstractController
                         'status'  => $r->status,
                         'urgency' => $r->urgency,
                         'person'  => null,
-                        'agent'   => null
+                        'agent'   => null,
                     );
 
                     $agent = $ticket_display->getAgent($r);
@@ -525,7 +587,11 @@ class MainController extends AbstractController
                         $ticket_info['person'] = $render_person($person);
                     }
 
-                    $rows[] = $ticket_info;
+                    if ('deleted' === $r->hidden_status) {
+                        $this->deleted_tickets[$r->id] = $r;
+                    } else {
+                        $rows[] = $ticket_info;
+                    }
                 }
                 break;
 
@@ -542,7 +608,7 @@ class MainController extends AbstractController
                         'id'      => $r->id,
                         'subject' => $r->subject,
                         'person'  => null,
-                        'agent'   => null
+                        'agent'   => null,
                     );
 
                     $agent = $r->agent;
@@ -563,7 +629,7 @@ class MainController extends AbstractController
                 foreach ($results as $r) {
                     $rows[] = array(
                         'id'   => $r->id,
-                        'name' => $r->name
+                        'name' => $r->name,
                     );
                 }
                 break;
@@ -575,10 +641,9 @@ class MainController extends AbstractController
                 foreach ($results as $r) {
                     $rows[] = array(
                         'id'    => $r->id,
-                        'title' => $r->title
+                        'title' => $r->title,
                     );
                 }
-            break;
         }
 
         return $rows;
@@ -587,7 +652,7 @@ class MainController extends AbstractController
     public function getPersonTicketsAction(Request $request)
     {
         if (!$person = $this->em->find('DeskPRO:Person', $request->get('person_id'))) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $sort = 'date_created';
@@ -596,8 +661,8 @@ class MainController extends AbstractController
         }
 
         /** @var TicketRepository $rep */
-        $rep = $this->em->getRepository('DeskPRO:Ticket');
-        $limit = $request->get('all') ? null : 15;
+        $rep     = $this->em->getRepository('DeskPRO:Ticket');
+        $limit   = $request->get('all') ? null : 15;
         $tickets = $rep->getPersonTickets($person, $limit, $sort);
 
         return $this->createJsonResponse(array(

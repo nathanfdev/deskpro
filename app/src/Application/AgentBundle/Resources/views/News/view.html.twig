@@ -119,9 +119,13 @@ pageMeta.baseId = '{{ baseId }}';
 				<dd id="{{baseId}}_auto_unpub" {% if not (news.status == 'published') %}style="display: none"{% endif %}>
 					<span class="auto-unpublish" {% if not news.date_end %}style="display: none"{% endif %}>
 						{% set phrase_part1 %}<span class="end-action opt" data-val="{{news.end_action|default('unpublish')}}">{{news.end_action|default(phrase('agent.general.unpublish'))}}</span>{% endset %}
-						{% set phrase_part2 %}<span class="end-date opt" {% if news.date_end %}data-val="{{ news.date_end|date('U') }}"{% endif %}> {% if news.date_end %}{{ news.date_end|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>{% endset %}
+						{% set phrase_part2 %}
+							<div style="display: inline-block; position: relative;">
+								<span class="end-date opt" {% if news.date_end %}data-val="{{ news.date_end|date('j M, y') }}"{% endif %}> {% if news.date_end %}{{ news.date_end|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
+							</div>
+						{% endset %}
 						{{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase_part1, date: phrase_part2}, true) }}
-						<input type="text" class="end-date-input" value="{{ news.date_end|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
+						<input type="text" class="end-date-input" value="{{ news.date_end|date('j M, y') }}" style="display: none; height: 10px;" />
 						(<span class="remove-auto-unpublish options-text">{{ phrase('agent.general.remove') }}</span>)
 					</span>
 					<span class="options-text auto-unpublish-set" {% if news.date_end %}style="display: none"{% endif %}>
@@ -138,9 +142,13 @@ pageMeta.baseId = '{{ baseId }}';
 				<dd id="{{baseId}}_auto_pub" {% if not (news.hidden_status == 'unpublished') %}style="display: none"{% endif %}>
 					<span class="auto-publish" {% if not news.date_published %}style="display: none"{% endif %}>
 						{% set phrase_part1 %}{{ phrase('agent.general.publish') }}{% endset %}
-						{% set phrase_part2 %}<span class="pub-date opt" {% if news.date_published %}data-val="{{ news.date_published|date('U') }}"{% endif %}> {% if news.date_published %}{{ news.date_published|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>{% endset %}
+						{% set phrase_part2 %}
+							<div style="display: inline-block; position: relative;">
+								<span class="pub-date opt" {% if news.date_published %}data-val="{{ news.date_published|date('U') }}"{% endif %}> {% if news.date_published %}{{ news.date_published|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
+							</div>
+						{% endset %}
 						{{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase_part1, date: phrase_part2}, true) }}
-						<input type="text" class="pub-date-input" value="{{ news.date_published|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
+						<input type="text" class="pub-date-input" value="{{ news.date_published|date('j M, y') }}000" style="display: none; height: 10px;" />
 						(<span class="remove-auto-publish options-text">{{ phrase('agent.general.remove') }}</span>)
 					</span>
 					<span class="options-text auto-publish-set" {% if news.date_published %}style="display: none"{% endif %}>

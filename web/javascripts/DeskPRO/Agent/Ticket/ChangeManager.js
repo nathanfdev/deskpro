@@ -22,6 +22,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		this.ticketPage = ticketPage;
 		this.ticketId   = ticketPage.getMetaData('ticket_id');
 		this.updateUrl  = ticketPage.getMetaData('saveActionsUrl');
+    this.dataholdersUrl = ticketPage.getMetaData('getDataholdersUrl');
 	},
 
 	propertyManagers: {},
@@ -39,6 +40,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 			case 'workflow_id':
 			case 'priority_id':
 			case 'language_id':
+			case 'create_problem':
 				manager = new DeskPRO.Agent.Ticket.Property.StandardOption(this.ticketPage, { optionName: type });
 				break;
 			case 'agent_id':
@@ -73,6 +75,9 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				break;
 			case 'urgency':
 				manager = new DeskPRO.Agent.Ticket.Property.Urgency(this.ticketPage);
+				break;
+			case 'problem_id':
+				manager = new DeskPRO.Agent.Ticket.Property.Problem(this.ticketPage);
 				break;
 		}
 
@@ -285,7 +290,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	/**
 	 * Save the changes for all queued items
 	 */
-	saveChanges: function(data, callback) {
+	saveChanges: function(data, callback, onError) {
 		data = data || [];
 
 		var saving_classes = [];
@@ -392,7 +397,8 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 					}
 
 					this.fireEvent('updateResult', [data]);
-				}
+				},
+        error: onError
 			});
 		}
 	},
@@ -445,6 +451,22 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 			});
 		}
 	},
+
+
+  updateDataholders: function () {
+    DeskPRO_Window.util.ajaxWithClientMessages({
+      type:     'GET',
+      url:      this.dataholdersUrl,
+      dataType: 'json',
+      context:  this,
+      success:  function (data) {
+        this.fireEvent('updateResult', [data]);
+      },
+			error: function() {
+
+			}
+    });
+  },
 
 
 

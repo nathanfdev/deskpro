@@ -3,8 +3,42 @@
 		<table class="display-table">
 			<tr>
 				<td class="nowrap"><label class="row-label">Send User Email</label></td>
-				<td ng-show="rowOpts.rowEnabled">
-					<table class="display-table spaced">
+				<td ng-show="rowOpts.rowEnabled" class="row-options">
+          <div ng-if="model.simple_mode">
+            <select ng-if="!is_creating" ui-select2="{dropdownAutoWidth:true}" ng-model="model.template" style="min-width: 50px;" ng-init="model.template = model.template || 'DeskPRO:emails_user:ticket-new-autoreply.html.twig'" ng-change="handleTemplateChange()">
+              <optgroup label="Standard User Emails">
+                {% for email,label in {
+                'DeskPRO:emails_user:ticket-new-autoreply.html.twig': 'New Ticket Auto-Response',
+                'DeskPRO:emails_user:ticket-new-byagent.html.twig': 'New Ticket by Agent',
+                'DeskPRO:emails_user:ticket-reply-byagent.html.twig': 'New Agent Reply',
+                'DeskPRO:emails_user:ticket-reply-autoreply.html.twig': 'User Reply Auto-Response',
+                } %}
+                  <option value="{{ email }}">{{ label }}</option>
+                {% endfor %}
+              </optgroup>
+              <optgroup label="Other User Emails">
+                <option value="DeskPRO:emails_user:ticket-rate.html.twig">Request user feedback</option>
+                <option value="DeskPRO:emails_user:ticket-new-validate-email.html.twig">New ticket requires validation (auto-response)</option>
+                <option value="DeskPRO:emails_user:ticket-awaiting-warn.html.twig">Warn about awaiting ticket</option>
+                <option value="DeskPRO:emails_user:ticket-awaiting-warn-final.html.twig">Final warn about awaiting ticket</option>
+              </optgroup>
+              <optgroup label="Custom Emails">
+                <option ng-repeat="tpl in custom_email_tpls" value="{{ ng_var('tpl.name') }}">{{ ng_var('tpl.title') }}</option>
+                <option value="CREATE">Create a new template...</option>
+              </optgroup>
+            </select>
+            <span ng-if="is_creating">Creating a new template</span>
+            <span ng-if="!is_creating && model.template" style="margin-left: 3px;">
+              <a class="inline-edit-link expanded" ng-click="editTemplate()">
+                <i class="fa fa-pencil"></i>
+                <em>edit template</em>
+              </a>
+            </span>
+            <span class="inline-edit-link" style="float:right; margin: 5px 35px 0 0" ng-click="model.simple_mode = false">
+              Advanced options <i class="fa fa-angle-down"></i>
+            </span>
+          </div>
+					<table class="display-table spaced" ng-if="!model.simple_mode">
 						<tr>
 							<td>Template:</td>
 							<td>
@@ -20,8 +54,10 @@
 										{% endfor %}
 									</optgroup>
 									<optgroup label="Other User Emails">
-										<option value="DeskPRO:emails_user:ticket-rate.html.twig">Request user feedabck</option>
+										<option value="DeskPRO:emails_user:ticket-rate.html.twig">Send satisfaction survey</option>
 										<option value="DeskPRO:emails_user:ticket-new-validate-email.html.twig">New ticket requires validation (auto-response)</option>
+										<option value="DeskPRO:emails_user:ticket-awaiting-warn.html.twig">Warn about awaiting ticket</option>
+										<option value="DeskPRO:emails_user:ticket-awaiting-warn-final.html.twig">Final warn about awaiting ticket</option>
 									</optgroup>
 									<optgroup label="Custom Emails">
 										<option ng-repeat="tpl in custom_email_tpls" value="{{ ng_var('tpl.name') }}">{{ ng_var('tpl.title') }}</option>

@@ -1,32 +1,32 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 namespace Application\DeskPRO\Settings;
-
 
 class EmailAccountsSettings
 {
@@ -39,12 +39,12 @@ class EmailAccountsSettings
 
     /** @var array  */
     protected $values = array(
-        'attach_agent_maxsize'   => 26214400,
-        'attach_agent_must_exts' => array(),
-        'attach_agent_not_exts'  => array(),
-        'attach_user_maxsize'    => 26214400,
-        'attach_user_must_exts'  => array(),
-        'attach_user_not_exts'   => array(),
+        'attach_agent_maxsize'     => 26214400,
+        'attach_agent_must_exts'   => array(),
+        'attach_agent_not_exts'    => array(),
+        'attach_user_maxsize'      => 26214400,
+        'attach_user_must_exts'    => array(),
+        'attach_user_not_exts'     => array(),
         'sendemail_attach_maxsize' => 7340032,
 
         'rate_count'    => 15,
@@ -53,8 +53,10 @@ class EmailAccountsSettings
     );
 
     protected $other_values = array(
-        'core_tickets.enable_dupe_checking' => true,
-        'core_tickets.enable_exact_subject_matching' => false,
+        'core_tickets.enable_dupe_checking'                 => true,
+        'core_tickets.gateway_enable_subject_match'         => true,
+        'core_tickets.enable_same_account_subject_matching' => false,
+        'core_tickets.enable_exact_subject_matching'        => false,
     );
 
     public function __construct(Settings $settings)
@@ -69,7 +71,7 @@ class EmailAccountsSettings
             if ($k == 'sendemail_attach_maxsize') {
                 $storedValue = $this->settings->get('core.sendemail_attach_maxsize');
             } else {
-                $storedValue = $this->settings->get(self::PREFIX . '.' . $k, $v);
+                $storedValue = $this->settings->get(self::PREFIX.'.'.$k, $v);
             }
 
             if (is_int($v)) {
@@ -82,7 +84,7 @@ class EmailAccountsSettings
         }
 
         foreach ($this->other_values as $k => $v) {
-            $data[str_replace('.', '_', $k)] = (bool)$this->settings->get($k);
+            $data[str_replace('.', '_', $k)] = (bool) $this->settings->get($k);
         }
 
         return $data;
@@ -99,15 +101,15 @@ class EmailAccountsSettings
             if (is_int($this->values[$k])) {
                 $storeValue = $v = (int) $v;
             } elseif (is_array($this->values[$k])) {
-                $v = (array) $v;
+                $v          = (array) $v;
                 $storeValue = implode(',', $v);
             }
             $this->values[$k] = $v;
 
             if ($k == 'sendemail_attach_maxsize') {
-                $this->settings->setSetting('core.sendemail_attach_maxsize', (int)$storeValue ?: null);
+                $this->settings->setSetting('core.sendemail_attach_maxsize', (int) $storeValue ?: null);
             } else {
-                $this->settings->setSetting(self::PREFIX . '.' . $k, $storeValue);
+                $this->settings->setSetting(self::PREFIX.'.'.$k, $storeValue);
             }
         }
 
@@ -117,7 +119,7 @@ class EmailAccountsSettings
                 continue;
             }
 
-            $v = (int)((bool)$v);
+            $v = (int) ((bool) $v);
             $this->settings->setSetting($k, $v);
             $this->other_values[$k] = $v;
         }

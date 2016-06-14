@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\PageDisplay\Page;
 
 use Application\DeskPRO\App;
@@ -51,14 +48,14 @@ class PortalPage extends BasicPage implements PersonContextInterface
     protected $page_display_items = array();
 
     /**
-     * The controller requesting the portal item
+     * The controller requesting the portal item.
      *
      * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
     protected $container;
 
     /**
-     * The user who is viewing the item
+     * The user who is viewing the item.
      *
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -67,6 +64,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
     /**
      * If provided, this will lazy-load a PortalPageDisplay for a section if it doesnt exist
      * yet in this object.
+     *
      * @var callback
      */
     protected $lazy_loader = null;
@@ -78,11 +76,11 @@ class PortalPage extends BasicPage implements PersonContextInterface
 
     public function __construct(DeskproContainer $container, Person $person_context)
     {
-        $this->container = $container;
+        $this->container      = $container;
         $this->person_context = $person_context;
 
         if (isset($_GET['admin_portal_controls']) && $person_context->can_admin) {
-            $portal_items = $container->getEm()->getRepository('DeskPRO:PortalPageDisplay')->getAllBlocks();
+            $portal_items        = $container->getEm()->getRepository('DeskPRO:PortalPageDisplay')->getAllBlocks();
             $this->is_admin_mode = true;
             App::get('templating.globals')->setVariable('admin_mode', true);
         } else {
@@ -98,22 +96,22 @@ class PortalPage extends BasicPage implements PersonContextInterface
 
         $group_displays = array();
 
-        $topbar = new PortalPageDisplay();
-        $topbar->type = 'userinfo';
+        $topbar                = new PortalPageDisplay();
+        $topbar->type          = 'userinfo';
         $topbar->display_order = 0;
-        $topbar->is_enabled = true;
-        $topbar->section = 'topbar';
-        $topbar->data = array();
-        $portal_items[] = $topbar;
+        $topbar->is_enabled    = true;
+        $topbar->section       = 'topbar';
+        $topbar->data          = array();
+        $portal_items[]        = $topbar;
 
         foreach ($portal_items as $item) {
             if (!isset($group_displays[$item->section])) {
-                $group_displays[$item->section] =  new PortalPageDisplay();
+                $group_displays[$item->section]          = new PortalPageDisplay();
                 $group_displays[$item->section]->section = $item->section;
-                $group_displays[$item->section]->data = array();
+                $group_displays[$item->section]->data    = array();
             }
 
-            $data = $group_displays[$item->section]->data;
+            $data   = $group_displays[$item->section]->data;
             $data[] = $item;
 
             $group_displays[$item->section]->data = $data;
@@ -125,8 +123,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
     }
 
     /**
-     * @param  callback $lazy_loader
-     * @return void
+     * @param callback $lazy_loader
      */
     public function setLazyLoader($lazy_loader)
     {
@@ -135,8 +132,8 @@ class PortalPage extends BasicPage implements PersonContextInterface
 
     protected function _loadSection($section)
     {
-        if ($this->lazy_loader AND !isset($this->page_displays[$section])) {
-            $lazy_loader = $this->lazy_loader;
+        if ($this->lazy_loader and !isset($this->page_displays[$section])) {
+            $lazy_loader  = $this->lazy_loader;
             $page_display = $lazy_loader($section, $this);
             if ($page_display) {
                 $this->addPageDisplay($page_display);
@@ -145,8 +142,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\Person $person
-     * @return void
+     * @param \Application\DeskPRO\Entity\Person $person
      */
     public function setPersonContext(Person $person)
     {
@@ -154,8 +150,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\PageDisplayAbstract $page_display
-     * @return void
+     * @param \Application\DeskPRO\Entity\PageDisplayAbstract $page_display
      */
     public function addPageDisplay(PageDisplayAbstract $page_display)
     {
@@ -167,8 +162,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
      * Init all items defined in the PortalPageDisplay and add it to
      * this object.
      *
-     * @param  \Application\DeskPRO\Entity\PortalPageDisplay $page_display
-     * @return void
+     * @param \Application\DeskPRO\Entity\PortalPageDisplay $page_display
      */
     protected function _initItems(PortalPageDisplay $page_display)
     {
@@ -182,14 +176,14 @@ class PortalPage extends BasicPage implements PersonContextInterface
         foreach ($data as $item) {
             $this->page_display_items[$section][] = $this->_createPortalItem($section, $item);
         }
-
     }
 
     /**
-     * Creates a PortalItem object given the item info array
+     * Creates a PortalItem object given the item info array.
      *
      * @param $section
      * @param $item
+     *
      * @return \Application\DeskPRO\PageDisplay\Item\Portal\PortalItemAbstract
      */
     public function _createPortalItem($section, $item)
@@ -202,11 +196,11 @@ class PortalPage extends BasicPage implements PersonContextInterface
             $type_class = $type;
         }
 
-        $data = $item->data;
-        $data['pid'] = $item->id;
-        $data['is_enabled'] = $item->is_enabled;
+        $data                  = $item->data;
+        $data['pid']           = $item->id;
+        $data['is_enabled']    = $item->is_enabled;
         $data['display_order'] = $item->display_order;
-        $data['admin_mode'] = $this->is_admin_mode;
+        $data['admin_mode']    = $this->is_admin_mode;
 
         $obj = new $type_class($section, $data, $this->container, $this->person_context);
 
@@ -214,7 +208,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
     }
 
     /**
-     * Get an array of all CSS assets used by all portal items
+     * Get an array of all CSS assets used by all portal items.
      *
      * @return array
      */
@@ -223,7 +217,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
         if ($sections == 'all') {
             $sections = array_keys($this->page_displays);
         } else {
-            $sections = (array)$sections;
+            $sections = (array) $sections;
         }
 
         $assets = array();
@@ -241,7 +235,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
     }
 
     /**
-     * Get an array of all JS assets used by all portal items
+     * Get an array of all JS assets used by all portal items.
      *
      * @return array
      */
@@ -250,7 +244,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
         if ($sections == 'all') {
             $sections = array_keys($this->page_displays);
         } else {
-            $sections = (array)$sections;
+            $sections = (array) $sections;
         }
 
         $assets = array();
@@ -282,8 +276,9 @@ class PortalPage extends BasicPage implements PersonContextInterface
     }
 
     /**
-     * @param  string $section
-     * @param  string $type
+     * @param string $section
+     * @param string $type
+     *
      * @return bool
      */
     public function hasBlock($section, $type)
@@ -306,6 +301,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
      * Get the renderable HTML for a section.
      *
      * @param $section
+     *
      * @return string
      */
     public function getSectionHtml($section)
@@ -334,26 +330,28 @@ class PortalPage extends BasicPage implements PersonContextInterface
             }
 
             if ($cache_info) {
-
                 if (!is_array($cache_info)) {
                     $cache_info = array();
                 }
 
-                if (empty($cache_info['lifetime'])) $cache_info['lifetime'] = false;
-                if (empty($cache_info['tags'])) $cache_info['tags'] = array();
+                if (empty($cache_info['lifetime'])) {
+                    $cache_info['lifetime'] = false;
+                }
+                if (empty($cache_info['tags'])) {
+                    $cache_info['tags'] = array();
+                }
 
-                $cache_id = "block.portal_{$section}_" . str_replace('\\', '', get_class($item));
+                $cache_id       = "block.portal_{$section}_".str_replace('\\', '', get_class($item));
                 $cache_lifetime = null;
 
-                if (!isset($cache_info['user_indifferent']) OR !$cache_info['user_indifferent']) {
-                    $cache_id .= '_' . $this->person_context->getUsergroupSetKey();
+                if (!isset($cache_info['user_indifferent']) or !$cache_info['user_indifferent']) {
+                    $cache_id .= '_'.$this->person_context->getUsergroupSetKey();
                 }
 
                 if (($block_html = $cache->fetch($cache_id)) === false || $this->is_admin_mode) {
                     $block_html = $item->getHtml();
                     $cache->save($cache_id, $block_html, $cache_info['lifetime']);
                 }
-
             } else {
                 $block_html = $item->getHtml();
             }
@@ -363,10 +361,10 @@ class PortalPage extends BasicPage implements PersonContextInterface
             }
 
             if ($block_html) {
-                $pid = $item->getOption('pid');
-                $type = strtolower(\Orb\Util\Util::getBaseClassname($item));
-                $block_html = "<div class=\"dp-p dp-{$type} dp-pid-{$pid}" . ($item->getOption('is_enabled') ? '' : ' dp-p-disabled disabled') . "\" data-dp-pid=\"{$pid}\">{$block_html}</div>";
-                $html[] = $block_html;
+                $pid        = $item->getOption('pid');
+                $type       = strtolower(\Orb\Util\Util::getBaseClassname($item));
+                $block_html = "<div class=\"dp-p dp-{$type} dp-pid-{$pid}".($item->getOption('is_enabled') ? '' : ' dp-p-disabled disabled')."\" data-dp-pid=\"{$pid}\">{$block_html}</div>";
+                $html[]     = $block_html;
             }
         }
 

@@ -5,10 +5,9 @@
 	id="{{replyBaseId}}_reply_form"
 	method="post"
 	action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}"
-
-	data-element-handler="DeskPRO.Agent.ElementHandler.TicketReplyBox"
 	data-upload-url="{{ path('agent_accept_upload') }}"
 	data-base-id="{{replyBaseId}}"
+	data-element-handler="DeskPRO.Agent.ElementHandler.TicketReplyBox"
     {% if app.user.getPref('agent.ticket_close_reply') %}data-close-reply="1"{% endif %}
     {% if app.user.getPref('agent.ticket_close_note') %}data-close-note="1"{% endif %}
 	{% if app.user.getPref('agent.ticket_reverse_order') %}data-is-top-order="1"{% endif %}
@@ -23,8 +22,7 @@
 >
 
 <input type="hidden" id="{{replyBaseId}}_is_note" name="options[is_note]" value="0" />
-<input type="hidden" id="{{baseId}}_is_snippet" name="options[is_snippet]" value="0" />
-<input type="hidden" id="{{baseId}}_snippet_id" name="options[snippet_id]" value="0" />
+<input type="hidden" id="{{baseId}}_snippet_ids" name="options[snippet_ids]" value="0" />
 
 <input type="hidden" id="{{replyBaseId}}_exist_agent_id" value="{{ ticket.agent.id|default(0) }}" />
 <input type="hidden" id="{{replyBaseId}}_exist_agent_team_id" value="{{ ticket.agent_team.id|default(0) }}" />
@@ -33,13 +31,37 @@
 <div class="dp-menu replybox" id="{{ replyBaseId }}_status_menu" style="min-width: 225px;">
 	<section>
 		<div class="dp-menu-area small">
-			<input type="text" class="label-input macro-filter" placeholder="{{ phrase('agent.tickets.reply_and_apply_macro') }}" />
+			<input type="text" class="label-input macro-filter" placeholder="Filter" />
 			<ul class="macro-list">
-				{% for macro in app.user.getHelper('Agent').getMacros() %}
-					<li class="res-ticketmacro-{{ macro.id }}" data-type="macro:{{ macro.id }}" id="{{replyBaseId}}_res_ticketmacro_{{ macro.id }}" data-macro-title="{{ macro.title }}" data-macro-id="{{ macro.id }}" data-label="{{ phrase('agent.tickets.send_reply_and_apply_x', {name: macro.title}) }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: ticket.id, macro_id: macro.id, macro_reply_context: 1 }) }}">
-						<div class="on-icon"><i class="icon-ok"></i></div>
-						<span class="macro-title">{{ macro.title }}</span>
-					</li>
+				{% import _self as metpl %}
+				{% macro macroRow(item, ticket) %}
+					{% import _self as metpl %}
+					{% if item.type == 'item' %}
+						{% set macro = item.item %}
+						<li class="res-ticketmacro-{{ macro.id }}" data-type="macro:{{ macro.id }}" data-label="{{ phrase('agent.tickets.send_newticket_and_apply_x', {name: macro.title}) }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: ticket.id | default(0), macro_id: macro.id, macro_reply_context: 1 }) }}">
+							<div class="on-icon"><i class="icon-ok"></i></div>
+							<span class="macro-title">{{ item.title }}</span>
+						</li>
+					{% else %}
+						<li class="coll">
+							<span class="macro-title"><i class="fa fa-caret-right" style="float:right; position:relative;top:4px;"></i>{{ item.title }}</span>
+							<div class="dp-menu replybox sub-menu" style="min-width: 225px;">
+								<section>
+									<div class="dp-menu-area small">
+										<input type="text" class="label-input macro-filter" placeholder="{{ phrase('agent.tickets.reply_and_apply_macro') }}" />
+										<ul class="macro-list">
+											{% for sub_item in item.items %}
+												{{ metpl.macroRow(sub_item, ticket) }}
+											{% endfor %}
+										</ul>
+									</div>
+								</section>
+							</div>
+						</li>
+					{% endif %}
+				{% endmacro %}
+				{% for item in app.user.getHelper('Agent').getMacrosStructured() %}
+					{{ metpl.macroRow(item, ticket) }}
 				{% endfor %}
 			</ul>
 		</div>
@@ -172,7 +194,7 @@
 								</li>
 							{% endif %}
 						{% endif %}
-						{% if app.getSetting('core_tickets.enable_billing') and app.getSetting('core_tickets.billing_on_reply') %}
+						{% if app.getSetting('core_tickets.enable_timelog') and app.getSetting('core_tickets.billing_on_reply') %}
 							<li id="{{replyBaseId}}_billing_reply">
 								<label>{{ phrase('agent.tickets.charge') }}:</label>
 								<div>
@@ -275,49 +297,66 @@
 					{% else %}
 						{% set assign_opt = 'core_tickets.reply_assign_unassigned' %}
 					{% endif %}
-					<div class="inner-cell" style="padding-left: 11px;">
-						<input type="checkbox" name="options[do_assign_agent]" id="{{replyBaseId}}_agent_sel_check" {% if app.getSetting(assign_opt) %}checked="checked"{% endif %} />
-						<label for="{{replyBaseId}}_agent_sel_check">{{ phrase('agent.general.agent') }}:&nbsp;</label>
-					</div><div class="inner-cell" style="position: relative;">
-						<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_sel_text" style="padding-left: 17px; background-repeat: no-repeat; background-position: 0 50%;"></span> <i class="icon-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
-						<select name="options[agent_id]" id="{{replyBaseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22" style="min-width: 170px;" {% if app.getSetting('core_tickets.reassign_auto_change_status') %}data-auto-switch-status="awaiting_agent"{% endif %} data-invisible-trigger-right="1">
-							<option value="{{ app.user.id }}" data-icon="{{ app.user.getPictureUrl(15) }}" data-name-short="Me">{{ phrase('agent.general.me') }}</option>
-							{% for agent in agents if agent.id != app.user.id %}
-								<option {% if (not app.getSetting(assign_opt) and agent.id == ticket.agent.id) or (app.getSetting(assign_opt) == 'assign' and agent.id == app.user.id) %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(15) }}" data-name-short="{{ agent.getDisplayContactShort(3) }}" value="{{ agent.id }}">
-									{{ agent.display_name }}
-								</option>
-							{% endfor %}
-						</select>
-					</div>
+					{% set keep_assign = not app.getSetting(assign_opt) %}
+					{% if ticket_perms.modify_assign_self or ticket_perms.modify_assign_agent %}
+						<div class="inner-cell" style="padding-left: 11px;">
+							<input type="checkbox" name="options[do_assign_agent]" id="{{replyBaseId}}_agent_sel_check" {% if not keep_assign %}checked="checked"{% endif %} />
+							<label for="{{replyBaseId}}_agent_sel_check">{{ phrase('agent.general.agent') }}:&nbsp;</label>
+						</div>
+						<div class="inner-cell" style="position: relative;">
+							<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_sel_text" style="padding-left: 17px; background-repeat: no-repeat; background-position: 0 50%;"></span> <i class="icon-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
+							<select name="options[agent_id]" id="{{replyBaseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22" style="min-width: 170px;" {% if app.getSetting('core_tickets.reassign_auto_change_status') %}data-auto-switch-status="awaiting_agent"{% endif %} data-invisible-trigger-right="1">
+								{% if ticket_perms.modify_assign_self %}
+									<option value="{{ app.user.id }}" data-icon="{{ app.user.getPictureUrl(15) }}" data-name-short="Me" selected>
+										{{ phrase('agent.general.me') }}
+									</option>
+								{% endif %}
+								{% for agent in agents %}
+									{% if agent.id != app.user.id and ticket_perms.modify_assign_agent %}
+										<option {% if (keep_assign and not ticket_perms.modify_assign_self and ticket.agent == agent) or (not keep_assign and agent.id == app.user.id) %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(15) }}" data-name-short="{{ agent.getDisplayContactShort(3) }}" value="{{ agent.id }}">
+											{{ agent.display_name }}
+										</option>
+									{% endif %}
+								{% endfor %}
+								{% if ticket_perms.modify_assign_agent %}
+									<option value="0" data-icon="{{ asset('images/agent/icons/bullet_red.png') }}" data-name-short="Un.">
+										{{ phrase('agent.general.unassigned') }}
+									</option>
+								{% endif %}
+							</select>
+						</div>
+					{% endif %}
 				</div>
 				{% if agent_teams|length %}
 					<div class="cell">
-						<div class="inner-cell" style="padding-left: 11px;">
-							{% if ticket.agent_team %}
-								{% set assign_opt = 'core_tickets.reply_assignteam_assigned' %}
-							{% else %}
-								{% set assign_opt = 'core_tickets.reply_assignteam_unassigned' %}
-							{% endif %}
-							<input type="checkbox" name="options[do_assign_team]" id="{{ replyBaseId }}_agent_team_sel_check" {% if app.getSetting(assign_opt) %}checked="checked"{% endif %} />
-							<label for="{{ replyBaseId }}_agent_team_sel_check">{{ phrase('agent.general.team') }}:&nbsp;</label>
-						</div><div class="inner-cell" style="position: relative;">
-							<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_team_sel_text" ></span> <i class="icon-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
-							<select name="options[agent_team_id]" id="{{replyBaseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1" style="min-width: 170px;" {% if app.getSetting('core_tickets.reassign_auto_change_status') %}data-auto-switch-status="awaiting_agent"{% endif %} data-invisible-trigger-right="1" data-style-type="icons" data-select-icon-size="22">
-								{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
-								<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
-									{% for team in app.user.getAgent().getTeams() %}
-										<option value="{{ team.id }}" data-icon="{{ team.getAvatarUrl(20) }}" {% if app.getSetting(assign_opt) == 'assign' and (app.user.getPref('agent.ticket_default_team_id') == team.id or not app.user.getPref('agent.ticket_default_team_id')) %}selected="selected"{% endif %}>{{ team.name }}</option>
-									{% endfor %}
-								</optgroup>
+						{% if ticket_perms.modify_assign_self or ticket_perms.modify_assign_team %}
+							<div class="inner-cell" style="padding-left: 11px;">
+								{% if ticket.agent_team %}
+									{% set assign_opt = 'core_tickets.reply_assignteam_assigned' %}
+								{% else %}
+									{% set assign_opt = 'core_tickets.reply_assignteam_unassigned' %}
 								{% endif %}
-
-								{% for team in agent_teams %}
-									{% if (ticket_perms.modify_assign_team or ticket.agent_team.id == team.id) and team.id not in app.user.getAgent().getTeamIds() %}
-										<option value="{{ team.id }}" data-icon="{{ team.getAvatarUrl(20) }}" {% if (not app.getSetting(assign_opt) and team.id == ticket.agent_team.id) %}selected="selected"{% endif %}>{{ team.name }}</option>
+								<input type="checkbox" name="options[do_assign_team]" id="{{ replyBaseId }}_agent_team_sel_check" {% if app.getSetting(assign_opt) %}checked="checked"{% endif %} />
+								<label for="{{ replyBaseId }}_agent_team_sel_check">{{ phrase('agent.general.team') }}:&nbsp;</label>
+							</div><div class="inner-cell" style="position: relative;">
+								<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_team_sel_text" ></span> <i class="icon-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
+								<select name="options[agent_team_id]" id="{{replyBaseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1" style="min-width: 170px;" {% if app.getSetting('core_tickets.reassign_auto_change_status') %}data-auto-switch-status="awaiting_agent"{% endif %} data-invisible-trigger-right="1" data-style-type="icons" data-select-icon-size="22">
+									{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
+									<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
+										{% for team in app.user.getAgent().getTeams() %}
+											<option value="{{ team.id }}" data-icon="{{ team.getAvatarUrl(20) }}" {% if app.getSetting(assign_opt) == 'assign' and (app.user.getPref('agent.ticket_default_team_id') == team.id or not app.user.getPref('agent.ticket_default_team_id')) %}selected="selected"{% endif %}>{{ team.name }}</option>
+										{% endfor %}
+									</optgroup>
 									{% endif %}
-								{% endfor %}
-							</select>
-						</div>
+
+									{% for team in agent_teams %}
+										{% if (ticket_perms.modify_assign_team or ticket.agent_team.id == team.id) and team.id not in app.user.getAgent().getTeamIds() %}
+											<option value="{{ team.id }}" data-icon="{{ team.getAvatarUrl(20) }}" {% if (not app.getSetting(assign_opt) and team.id == ticket.agent_team.id) %}selected="selected"{% endif %}>{{ team.name }}</option>
+										{% endif %}
+									{% endfor %}
+								</select>
+							</div>
+						{% endif %}
 					</div>
 				{% endif %}
 

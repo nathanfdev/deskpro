@@ -2,6 +2,21 @@
 {% block editpane_content %}
 	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && TicketWorks.save()">
 		<section class="dp-paneblock dp-editpane">
+
+            <nav class="dp-blocktabs">
+                <menu dropdown>
+                    <button class="btn btn-default" type="button" dropdown-toggle><span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i></button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a ng-click="TicketWorks.showConvert()">
+                                <i class="fa fa-copy"></i> Convert field to custom field
+                            </a>
+                        </li>
+                    </ul>
+                </menu>
+            </nav>
+            <br /><br />
+
 			<article class="form-horizontal dp-form">
 				<div class="panel panel-fill indent">
 					<div class="panel-body">

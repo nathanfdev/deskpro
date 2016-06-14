@@ -1,34 +1,33 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -57,7 +56,7 @@ class TextSnippetsController extends AbstractController
         }
 
         return $this->render("AgentBundle:TextSnippets:$typename-widget-shell.html.twig", array(
-            'snippet_cats' => $snippet_cats
+            'snippet_cats' => $snippet_cats,
         ));
     }
 
@@ -120,73 +119,12 @@ class TextSnippetsController extends AbstractController
         $filter_string = $this->in->getString('filter_string');
         $language_id   = $this->in->getUint('language_id');
 
-        $lang_repos = $this->container->getObjectLangRepository();
+        /** @var \Application\DeskPRO\EntityRepository\TextSnippet $rep */
+        $rep = $this->em->getRepository('DeskPRO:TextSnippet');
 
-        $snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getAllSnippetsForAgent($typename, $this->person, 1, 500, $category_id);
-        foreach ($this->container->getLanguageData()->getAll() as $lang) {
-            $lang_repos->preloadObjectCollection($lang, $snippets);
-        }
+        $results = $rep->filterSnippetsForAgent($filter_string, $typename, $this->person, 1, 500, $category_id, $language_id);
 
-        if ($filter_string || $language_id) {
-            $snippets_all = $snippets;
-            $snippets = array();
-
-            $filter_string = Strings::utf8_strtolower($filter_string);
-
-
-            foreach ($snippets_all as $snippet) {
-                $match_lang   = false;
-                $match_filter = false;
-
-                if ($language_id) {
-                    foreach ($this->container->getLanguageData()->getAll() as $lang) {
-                        if ($lang->getId() == $language_id) {
-                            if ($snippet->getObjectTranslatable()->getObjectProp('title', $lang)) {
-                                $match_lang = true;
-                            }
-                            break;
-                        }
-                    }
-                } else {
-                    $match_lang = true;
-                }
-
-                if ($filter_string) {
-                    foreach ($this->container->getLanguageData()->getAll() as $lang) {
-                        $test = $snippet->getObjectTranslatable()->getObjectProp('title', $lang);
-                        $test = Strings::utf8_strtolower($test);
-                        if (strpos($test, $filter_string) !== false) {
-                            $match_filter = true;
-                            break;
-                        }
-                    }
-
-                    if (!$match_filter) {
-                        foreach ($this->container->getLanguageData()->getAll() as $lang) {
-                            $test = $snippet->getObjectTranslatable()->getObjectProp('snippet', $lang);
-                            $test = Strings::utf8_strtolower($test);
-                            if (strpos($test, $filter_string) !== false) {
-                                $match_filter = true;
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    $match_filter = true;
-                }
-
-                if ($match_lang && $match_filter) {
-                    $snippets[] = $snippet;
-                }
-            }
-        }
-
-        $data = array('snippets' => array());
-        foreach ($snippets as $snippet) {
-            $data['snippets'][] = $snippet->toApiData();
-        }
-
-        return $this->createJsonResponse($data);
+        return $this->createJsonResponse(array('snippets' => $results));
     }
 
     ####################################################################################################################
@@ -229,6 +167,7 @@ class TextSnippetsController extends AbstractController
         }
 
         $snippet->setShortcutCode($this->in->getString('shortcut_code'));
+        $snippet->is_draft = $this->in->getBool('is_draft');
 
         $this->em->persist($snippet);
         $this->em->flush();
@@ -240,8 +179,9 @@ class TextSnippetsController extends AbstractController
         foreach ($this->container->getLanguageData()->getAll() as $lang) {
             $lang_id = $lang->getId();
 
-            $title   = $this->in->getString("title.$lang_id");
-            $snippet_val = $this->in->getString("snippet.$lang_id");
+            $title       = $this->in->getString("title.$lang_id");
+            $snippet_val = $this->in->getHtml("snippet.$lang_id");
+            $snippet_val = Strings::prepareWysiwygHtml($snippet_val);
 
             if ($title || $snippet_val) {
                 $rec = $this->container->getObjectLangRepository()->setRec($lang, $snippet, 'title', $title);
@@ -286,9 +226,9 @@ class TextSnippetsController extends AbstractController
                 throw $this->createNotFoundException();
             }
         } else {
-            $cat = new TextSnippetCategory();
+            $cat           = new TextSnippetCategory();
             $cat->typename = $typename;
-            $cat->person = $this->person;
+            $cat->person   = $this->person;
         }
 
         $cat->is_global = ($this->in->getString('perm_type') == 'global');
@@ -326,16 +266,24 @@ class TextSnippetsController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $has_snippets = $this->db->fetchColumn("
+        $has_snippets = $this->db->fetchColumn('
             SELECT COUNT(*)
             FROM text_snippets
-            WHERE category_id = ?
-        ", array($cat->getId()));
+            WHERE category_id = ? AND is_draft = 0
+        ', array($cat->getId()));
 
-        if ($has_snippets) {
+        $has_draft_snippets = $this->db->fetchColumn('
+            SELECT COUNT(*)
+            FROM text_snippets
+            WHERE category_id = ? AND is_draft = 1
+        ', array($cat->getId()));
+
+        if ($has_snippets || $has_draft_snippets) {
             return $this->createJsonResponse(array(
-                'error' => true,
-                'error_code' => 'not_empty'
+                'error'        => true,
+                'error_code'   => 'not_empty',
+                'count'        => $has_snippets,
+                'count_drafts' => $has_draft_snippets,
             ));
         }
 
@@ -343,8 +291,8 @@ class TextSnippetsController extends AbstractController
         $this->em->flush();
 
         return $this->createJsonResponse(array(
-            'success' => true,
-            'category_id' => $id
+            'success'     => true,
+            'category_id' => $id,
         ));
     }
 }

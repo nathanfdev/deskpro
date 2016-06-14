@@ -1,68 +1,92 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @category Entities
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Custom data
+ * Custom data.
  */
 class CustomDataFeedback extends CustomDataAbstract
 {
     /**
      * @var \Application\DeskPRO\Entity\Feedback
      */
-
     protected $feedback;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefFeedback
+     * @var CustomDefFeedback
      */
-
     protected $field = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefFeedback
+     * @var CustomDefFeedback
      */
-
     protected $root_field = null;
 
     public function getFeedbackId()
     {
         return $this->feedback['id'];
+    }
+
+    /**
+     * Set a field.
+     *
+     * @param CustomDefFeedback $field
+     *
+     * @return $this
+     */
+    public function setField(CustomDefFeedback $field = null)
+    {
+        $this->setModelField('field', $field);
+
+        return $this;
+    }
+
+    /**
+     * Set a root field.
+     *
+     * @param CustomDefFeedback $field
+     *
+     * @return $this
+     */
+    public function setRootField(CustomDefFeedback $field = null)
+    {
+        $this->setModelField('root_field', $field);
+
+        return $this;
     }
 
     ############################################################################
@@ -77,8 +101,8 @@ class CustomDataFeedback extends CustomDataAbstract
             array(
                  'name'    => 'custom_data_feedback',
                  'indexes' => array(
-                     'obj_id_idx'   => array('columns' => array(0 => 'feedback_id',),),
-                     'field_id_idx' => array('columns' => array(0 => 'field_id', 1 => 'feedback_id',),),
+                     'obj_id_idx'   => array('columns' => array(0 => 'feedback_id')),
+                     'field_id_idx' => array('columns' => array(0 => 'field_id', 1 => 'feedback_id')),
                  ),
             )
         );
@@ -119,8 +143,7 @@ class CustomDataFeedback extends CustomDataAbstract
             array(
                  'fieldName'    => 'feedback',
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
-                 'mappedBy'     => null,
-                 'inversedBy'   => null,
+                 'inversedBy'   => 'custom_data',
                  'joinColumns'  => array(
                      0 => array(
                          'name'                 => 'feedback_id',

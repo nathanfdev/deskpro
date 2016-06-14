@@ -44,6 +44,59 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			);
 		}
 
+		this.listNav = (function(){
+			var $list = self.wrapper.find('section.list-listing:first');
+			return {
+				scrollTo: function($current) {
+					var $children = $list.children('.ng-scope')
+						, totalHeight = 0
+						;
+
+					$children.each(function(){
+						totalHeight += $(this).height();
+					});
+					if ($list.height() > totalHeight) return;
+
+					if ($current.position().top > 0 && $current.position().top < $list.height() - $current.height()) return;
+
+					var scrollTo = $current.position().top < 0
+						? $list.scrollTop() + $current.position().top
+						: $list.scrollTop() + $current.position().top - $list.height() + $current.height();
+					$list.scrollTop(scrollTo);
+				},
+				up: function() {
+					var $current = $list.children('.ng-scope.selection-on:first')
+						, $next = $current.length ? $current.prev('.ng-scope') : $list.children('.ng-scope').first()
+						;
+
+					if ($current.length) $current.removeClass('selection-on');
+					if (!$next.length) $next = $current;
+					$next.addClass('selection-on');
+					this.scrollTo($next);
+				},
+				down: function() {
+					var $current = $list.children('.ng-scope.selection-on:first')
+						, $next = $current.length ? $current.next('.ng-scope') : $list.children('.ng-scope').first()
+						;
+
+					if ($current.length) $current.removeClass('selection-on');
+					if (!$next.length) $next = $current;
+					$next.addClass('selection-on');
+					this.scrollTo($next);
+				},
+				check: function() {
+					var $current = $list.children('.ng-scope.selection-on:first')
+						, $check = $current.find('.dp-tpl article input[type="checkbox"]:first')
+						;
+
+					$check.length && $check.prop('checked', !$check.prop('checked'));
+				},
+				enter: function () {
+					var $current = $list.children('.ng-scope.selection-on:first');
+					$current.length && DeskPRO_Window.runPageRouteFromElement($current.find('article.row-item:first'));
+				}
+			};
+		})();
 		this.addEvent('activate', this.fillListItems, this);
 	},
 
@@ -299,9 +352,24 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.locked-status', function(info) {
 			var ticketId = parseInt(info.ticket_id),
 				byAgentId = info.locked_by ? (parseInt(info.locked_by) || null) : null,
-				isLocked = info.is_locked;
+				data;
 
-			self.mergeTicketData(ticketId, { locked_by_agent: byAgentId });
+			if (info.is_locked) {
+				data = {
+					locked_by_agent: {
+						id: byAgentId,
+						display_name: info.locked_by_name
+					},
+					date_locked: moment().format('YYYY-MM-DD HH:mm:ss')
+				};
+			} else {
+				data = {
+					locked_by_agent: null,
+					date_locked: null
+				}
+			}
+
+			self.mergeTicketData(ticketId, data);
 		}, null, [this.OBJ_ID]);
 
 		if (this.meta.groupBy && this.filterId) {
@@ -1307,6 +1375,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 					return ticket.labels && ticket.labels.length > 0;
 				case 'slas':
 					return ticket.ticket_slas && ticket.ticket_slas.length > 0;
+        case 'problems':
+          return ticket.problems && ticket.problems.length;
 				default:
 					fieldM = field.match(/^ticket_fields\[(\d+)\]$/);
 					if (fieldM) {
@@ -1346,6 +1416,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			resultId: this.meta.resultTypeId,
 			refreshUrl: this.meta.refreshUrl,
 			isListView: false,
+			fields: $scope.display_fields,
 			refreshCallback: function(info) {
 				// Updates to sort order must always refresh
 				if (info.context.isSortUpdate) {
@@ -2023,6 +2094,13 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 		// Reply Box
 		//------------------------------
 
+		var recordSnippetUse = function(snippetId) {
+			var el = $("#" + self.baseId + "_snippet_ids");
+			var current = el.val() || '';
+			var newval = current.length ? current + ',' + snippetId : snippetId+'';
+			el.val(newval);
+		};
+
 		var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
 		this.textarea = textarea;
 
@@ -2104,6 +2182,8 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 				} else if (defaultText) {
 					useText = defaultText;
 				}
+
+				recordSnippetUse(snippetId);
 
 				result = useText || '';
 
@@ -2223,7 +2303,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 			return appendArray;
 		}
 
-		$('input, select, textarea', this.wrapper).filter('[name^="actions["], [name^="actions_set["]').each(function() {
+		$('input, select, textarea', this.wrapper).filter('[name^="actions["], [name^="actions_set["], .do-send-data').each(function() {
 
 			var val = $(this).val(), name = $(this).attr('name');
 

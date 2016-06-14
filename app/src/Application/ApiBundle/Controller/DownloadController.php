@@ -1,37 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
- * @subpackage ApiBundle
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -40,14 +37,15 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Searcher\DownloadSearch;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
-* @SWG\Resource(
-* 	resourcePath="/downloads",
-* 	description="Operations about Downloads",
-* 	basePath="/api"
-* )
-*/
+ * @SWG\Resource(
+ * 	resourcePath="/downloads",
+ * 	description="Operations about Downloads",
+ * 	basePath="/api"
+ * )
+ */
 class DownloadController extends AbstractController
 {
     /**
@@ -143,17 +141,17 @@ class DownloadController extends AbstractController
     public function searchAction()
     {
         $search_map = array(
-            'category_id' => DownloadSearch::TERM_CATEGORY,
+            'category_id'          => DownloadSearch::TERM_CATEGORY,
             'category_id_specific' => DownloadSearch::TERM_CATEGORY_SPECIFIC,
-            'label' => DownloadSearch::TERM_LABEL,
-            'new' => DownloadSearch::TERM_NEW,
-            'popular' => DownloadSearch::TERM_POPULAR,
-            'status' => DownloadSearch::TERM_STATUS
+            'label'                => DownloadSearch::TERM_LABEL,
+            'new'                  => DownloadSearch::TERM_NEW,
+            'popular'              => DownloadSearch::TERM_POPULAR,
+            'status'               => DownloadSearch::TERM_STATUS,
         );
 
         $terms = array();
 
-        foreach ($search_map AS $input => $search_key) {
+        foreach ($search_map as $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ($value) {
                 $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
@@ -161,15 +159,15 @@ class DownloadController extends AbstractController
         }
 
         $date_created_start = $this->in->getUint('date_created_start');
-        $date_created_end = $this->in->getUint('date_created_end');
+        $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
             $terms[] = array('type' => DownloadSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start,
-                'date2' => $date_created_end
+                'date1'             => $date_created_start,
+                'date2'             => $date_created_end,
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => DownloadSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start
+                'date1'             => $date_created_start,
             ));
         }
 
@@ -186,21 +184,23 @@ class DownloadController extends AbstractController
         $result_cache = $this->getApiSearchResult('download', $terms, $extra, $this->in->getUint('cache_id'), new DownloadSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
         $ids = $result_cache->results;
 
-        $page_ids = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
+        $page_ids  = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
         $downloads = App::getEntityRepository('DeskPRO:Download')->getByIds($page_ids, true);
 
         return $this->createApiResponse(array(
-            'page' => $page,
-            'per_page' => $per_page,
-            'total' => count($ids),
-            'cache_id' => $result_cache->id,
-            'downloads' => $this->getApiData($downloads)
+            'page'      => $page,
+            'per_page'  => $per_page,
+            'total'     => count($ids),
+            'cache_id'  => $result_cache->id,
+            'downloads' => $this->getApiData($downloads),
         ));
     }
 
@@ -266,7 +266,7 @@ class DownloadController extends AbstractController
      */
     public function newDownloadAction()
     {
-        $errors = array();
+        $errors   = array();
         $download = new Download();
 
         $title = $this->in->getString('title');
@@ -285,7 +285,7 @@ class DownloadController extends AbstractController
         $cat = $this->em->find('DeskPRO:DownloadCategory', $this->in->getUint('category_id'));
         if (!$cat) {
             $errors['category_id'] = array('invalid_argument.category_id', 'category_id not found');
-            } else {
+        } else {
             $download->category = $cat;
         }
 
@@ -305,12 +305,12 @@ class DownloadController extends AbstractController
             if (!$error) {
                 $blob = $accept->accept($file);
             } else {
-                $message = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
-                $errors['attach'] = array($error['error_code'] . '.attach', $message);
+                $message          = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
+                $errors['attach'] = array($error['error_code'].'.attach', $message);
             }
         } else {
             $blob_id = $this->in->getUint('attach_id');
-            $blob = $this->em->find('DeskPRO:Blob', $blob_id);
+            $blob    = $this->em->find('DeskPRO:Blob', $blob_id);
             if (!$blob) {
                 $errors['attach_id'] = array('invalid_argument.attach_id', 'attach_id not found');
             }
@@ -440,7 +440,7 @@ class DownloadController extends AbstractController
         if ($title) {
             $download->title = $title;
 
-            $rev = ContentRevisionUtil::findOrCreate($download, 'title', $this->person);
+            $rev        = ContentRevisionUtil::findOrCreate($download, 'title', $this->person);
             $rev->title = $download->title;
 
             $revs['title'] = $rev;
@@ -455,7 +455,7 @@ class DownloadController extends AbstractController
         if ($content && $content != $download->content) {
             $download->content = $this->in->getHtml('content');
 
-            $rev = ContentRevisionUtil::findOrCreate($download, array('content'), $this->person);
+            $rev          = ContentRevisionUtil::findOrCreate($download, array('content'), $this->person);
             $rev->content = $download->content;
 
             $revs['content'] = $rev;
@@ -486,9 +486,9 @@ class DownloadController extends AbstractController
 
             $download->blob = $blob;
 
-            $rev = ContentRevisionUtil::findOrCreate($download, array('blob', 'title'), $this->person);
+            $rev        = ContentRevisionUtil::findOrCreate($download, array('blob', 'title'), $this->person);
             $rev->title = $download->title;
-            $rev->blob = $download->blob;
+            $rev->blob  = $download->blob;
 
             $revs['file'] = $rev;
         }
@@ -501,7 +501,7 @@ class DownloadController extends AbstractController
             }
         }
 
-        foreach ($revs AS $rev) {
+        foreach ($revs as $rev) {
             $this->em->persist($rev);
         }
         $this->em->persist($download);
@@ -619,20 +619,20 @@ class DownloadController extends AbstractController
         }
 
         $person_id = $this->in->getUint('person_id');
-        $person = null;
+        $person    = null;
         if ($person_id) {
             $person = $this->em->getRepository('DeskPRO:Person')->find($person_id);
         }
 
         $status = $this->in->getString('status');
 
-        $comment = new DownloadComment();
-        $comment->download = $download;
-        $comment->person = $person ?: $this->person;
-        $comment['content'] = $content;
-        $comment['status'] = $status ?: 'visible';
-        $comment['is_reviewed'] = ($comment['status'] == 'visible' && !$person);
-        $comment['date_created']  = new \DateTime();
+        $comment                 = new DownloadComment();
+        $comment->download       = $download;
+        $comment->person         = $person ?: $this->person;
+        $comment['content']      = $content;
+        $comment['status']       = $status ?: 'visible';
+        $comment['is_reviewed']  = ($comment['status'] == 'visible' && !$person);
+        $comment['date_created'] = new \DateTime();
 
         $this->em->persist($comment);
         $this->em->flush();
@@ -673,7 +673,7 @@ class DownloadController extends AbstractController
     public function getDownloadCommentAction($download_id, $comment_id)
     {
         $download = $this->_getDownloadOr404($download_id);
-        $comment = $this->em->getRepository('DeskPRO:DownloadComment')->find($comment_id);
+        $comment  = $this->em->getRepository('DeskPRO:DownloadComment')->find($comment_id);
         if (!$comment || $comment->download->id != $download->id) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
@@ -732,15 +732,15 @@ class DownloadController extends AbstractController
     public function postDownloadCommentAction($download_id, $comment_id)
     {
         $download = $this->_getDownloadOr404($download_id);
-        $comment = $this->em->getRepository('DeskPRO:DownloadComment')->find($comment_id);
+        $comment  = $this->em->getRepository('DeskPRO:DownloadComment')->find($comment_id);
         if (!$comment || $comment->download->id != $download->id) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
         $approved = false;
-        $status = $this->in->getString('status');
+        $status   = $this->in->getString('status');
         if ($status) {
-            $approved = ($status == 'visible' && $comment->status != 'visible');
+            $approved        = ($status == 'visible' && $comment->status != 'visible');
             $comment->status = $status;
         }
 
@@ -789,7 +789,7 @@ class DownloadController extends AbstractController
     public function deleteDownloadCommentAction($download_id, $comment_id)
     {
         $download = $this->_getDownloadOr404($download_id);
-        $comment = $this->em->getRepository('DeskPRO:DownloadComment')->find($comment_id);
+        $comment  = $this->em->getRepository('DeskPRO:DownloadComment')->find($comment_id);
         if (!$comment || $comment->download->id != $download->id) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
@@ -859,7 +859,7 @@ class DownloadController extends AbstractController
     public function postDownloadLabelsAction($download_id)
     {
         $download = $this->_getDownloadOr404($download_id, 'edit');
-        $label = $this->in->getString('label');
+        $label    = $this->in->getString('label');
 
         if ($label === '') {
             return $this->createApiErrorResponse('required_field', "Field 'label' missing or empty");
@@ -960,10 +960,10 @@ class DownloadController extends AbstractController
      */
     public function getValidatingCommentsAction()
     {
-        $comments = $this->em->getRepository('DeskPRO:DownloadComment')->getValidatingComments();
+        $comments   = $this->em->getRepository('DeskPRO:DownloadComment')->getValidatingComments();
         $entity_key = 'download';
-        $output = array();
-        foreach ($comments AS $key => $value) {
+        $output     = array();
+        foreach ($comments as $key => $value) {
             $output[$key] = $value->toApiData(false, true);
             if ($value->$entity_key) {
                 $output[$key][$entity_key] = $value->$entity_key->toApiData(false, false);
@@ -1067,13 +1067,13 @@ class DownloadController extends AbstractController
             $this->em->persist($category);
             $this->em->flush();
 
-            foreach ($usergroup_ids AS $usergroup_id) {
+            foreach ($usergroup_ids as $usergroup_id) {
                 if (!$usergroup_id) {
                     continue;
                 }
                 App::getDb()->insert('download_category2usergroup', array(
                     'category_id'  => $category->getId(),
-                    'usergroup_id' => $usergroup_id
+                    'usergroup_id' => $usergroup_id,
                 ));
             }
 
@@ -1168,7 +1168,6 @@ class DownloadController extends AbstractController
             }
             $category->title = $title;
         }
-
 
         if ($this->in->checkIsset('parent_id')) {
             $parent_id = $this->in->getUint('parent_id');
@@ -1267,7 +1266,7 @@ class DownloadController extends AbstractController
         $category = $this->_getCategoryOr404($category_id);
 
         $terms = array(
-            array('type' => DownloadSearch::TERM_CATEGORY_SPECIFIC, 'op' => 'contains', 'options' => array($category->id))
+            array('type' => DownloadSearch::TERM_CATEGORY_SPECIFIC, 'op' => 'contains', 'options' => array($category->id)),
         );
 
         $order_by = $this->in->getString('order');
@@ -1283,21 +1282,23 @@ class DownloadController extends AbstractController
         $result_cache = $this->getApiSearchResult('download', $terms, $extra, $this->in->getUint('cache_id'), new DownloadSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
         $ids = $result_cache->results;
 
-        $page_ids = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
+        $page_ids  = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
         $downloads = App::getEntityRepository('DeskPRO:Download')->getByIds($page_ids, true);
 
         return $this->createApiResponse(array(
-            'page' => $page,
-            'per_page' => $per_page,
-            'total' => count($ids),
-            'cache_id' => $result_cache->id,
-            'downloads' => $this->getApiData($downloads)
+            'page'      => $page,
+            'per_page'  => $per_page,
+            'total'     => count($ids),
+            'cache_id'  => $result_cache->id,
+            'downloads' => $this->getApiData($downloads),
         ));
     }
 
@@ -1365,7 +1366,7 @@ class DownloadController extends AbstractController
         }
 
         $exists = false;
-        foreach ($category->usergroups AS $group) {
+        foreach ($category->usergroups as $group) {
             if ($group->id == $group_id) {
                 $exists = true;
                 break;
@@ -1374,8 +1375,8 @@ class DownloadController extends AbstractController
 
         if (!$exists) {
             $this->db->insert('download_category2usergroup', array(
-                'category_id' => $category->id,
-                'usergroup_id' => $group_id
+                'category_id'  => $category->id,
+                'usergroup_id' => $group_id,
             ));
         }
 
@@ -1416,7 +1417,7 @@ class DownloadController extends AbstractController
         $category = $this->_getCategoryOr404($category_id);
 
         $exists = false;
-        foreach ($category->usergroups AS $group) {
+        foreach ($category->usergroups as $group) {
             if ($group->id == $group_id) {
                 $exists = true;
                 break;
@@ -1456,7 +1457,7 @@ class DownloadController extends AbstractController
     {
         $category = $this->_getCategoryOr404($category_id);
 
-        foreach ($category->usergroups AS $key => $group) {
+        foreach ($category->usergroups as $key => $group) {
             if ($group->id == $group_id) {
                 $category->usergroups->remove($key);
                 $this->em->persist($category);
@@ -1469,9 +1470,11 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @return \Application\DeskPRO\Entity\Download
+     * @param int $id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return \Application\DeskPRO\Entity\Download
      */
     protected function _getDownloadOr404($id, $check_perm = false)
     {
@@ -1483,11 +1486,11 @@ class DownloadController extends AbstractController
 
         if ($check_perm) {
             if ($check_perm == 'edit' && !$this->person->PermissionsManager->PublishChecker->canEdit($download)) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+                throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
             }
 
             if ($check_perm == 'delete' && !$this->person->PermissionsManager->PublishChecker->canDelete($download)) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+                throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
             }
         }
 
@@ -1495,9 +1498,11 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @return \Application\DeskPRO\Entity\DownloadCategory
+     * @param int $id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *
+     * @return \Application\DeskPRO\Entity\DownloadCategory
      */
     protected function _getCategoryOr404($id)
     {

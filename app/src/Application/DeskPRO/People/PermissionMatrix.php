@@ -1,36 +1,34 @@
 <?php
-/**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
 
-/**
- * DeskPRO
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
  *
- * @package DeskPRO
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace Application\DeskPRO\People;
 
 class PermissionMatrix
@@ -75,7 +73,6 @@ class PermissionMatrix
      */
     private $usergroup_perms;
 
-
     /**
      * @param \Application\DeskPRO\Entity\Person[]    $agents
      * @param \Application\DeskPRO\Entity\Usergroup[] $groups
@@ -88,14 +85,14 @@ class PermissionMatrix
         foreach ($groups as $g) {
             if ($g->is_agent_group) {
                 $this->agentgroup_to_agents[$g->id] = array();
-                $this->agent_groups[$g->id] = $g;
+                $this->agent_groups[$g->id]         = $g;
             } else {
                 $this->user_groups[$g->id] = $g;
             }
         }
 
         foreach ($agents as $a) {
-            $this->agents[$a->id] = $a;
+            $this->agents[$a->id]          = $a;
             $this->agent_to_groups[$a->id] = array();
 
             foreach ($this->agent_groups as $g) {
@@ -107,9 +104,8 @@ class PermissionMatrix
         }
     }
 
-
     /**
-     * Set permissions from a "permission" array (eg including raw department_permissions records from the db)
+     * Set permissions from a "permission" array (eg including raw department_permissions records from the db).
      *
      * <code>
      * array('usergroup_id' => 1, 'name' => 'use', 'value' => 1),
@@ -126,7 +122,7 @@ class PermissionMatrix
         $this->agentgroup_perms = array();
         $this->usergroup_perms  = array();
 
-        foreach($records as $rec) {
+        foreach ($records as $rec) {
             if (empty($rec['value']) || !$rec['value']) {
                 continue;
             }
@@ -161,7 +157,7 @@ class PermissionMatrix
     }
 
     /**
-     * Set permission from an array of permission objects (e.g., DepartmentPermission)
+     * Set permission from an array of permission objects (e.g., DepartmentPermission).
      *
      * @param $records
      */
@@ -174,11 +170,10 @@ class PermissionMatrix
                 'usergroup_id' => !empty($rec->usergroup) ? $rec->usergroup->id : null,
                 'person_id'    => !empty($rec->person) ? $rec->person->id : null,
                 'name'         => $rec->name,
-                'value'        => $rec->value
+                'value'        => $rec->value,
             );
         }
     }
-
 
     /**
      * Re-writes the set permissions into a reduced set of permissions based on

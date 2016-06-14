@@ -170,9 +170,39 @@ DeskPRO.User.Window = new Orb.Class({
 		});
 
 		$('.timeago').timeago();
-		$('input.datepicker, .datepicker input').datepicker({
-			dateFormat: 'yy-mm-dd'
+		$('input.datepicker, .datepicker input').each(function() {
+			$(this).datetimepicker({
+				format: 'YYYY-MM-DD',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
 		});
+		$('.DateTime.customfield input').each(function(){
+			$(this).datetimepicker({
+				format: 'YYYY-MM-DD HH:mm',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					time: 'fa fa-clock-o',
+					date: 'fa fa-calendar-o',
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
+		});
+
 
 		$(document).on('click', '.dp-bound-faded', function() {
 			var parent = $(this).parent();
@@ -246,8 +276,7 @@ DeskPRO.User.Window = new Orb.Class({
 						&& boundLeft < elementPosition.left
 						&& boundRight > (elementPosition.left + actualWidth)
 						&& boundBottom > (elementPosition.top + actualHeight)
-					};
-
+					}
 					var position;
 					if (above) {
 						position = 'top';
@@ -382,7 +411,116 @@ DeskPRO.User.Window = new Orb.Class({
 
 	getPageHandler: function() {
 		return this.PAGE;
-	}
+	},
+
+  /**
+   * Plays a sound through HTML5 audio element.
+   *
+   * @param files A file or array of file sources (MP3 and OGG for best cross-browser)
+   * @param options
+   * @return jQuery
+   */
+  playSound: function(files, setOptions) {
+
+    setOptions = setOptions || {};
+
+    options = $.extend({}, {
+      'autoplay': true,
+      'volume': false,
+      'loop': false,
+      'destroyAfter': true
+    }, setOptions);
+
+    if (this.volume == 0) {
+      return null;
+    }
+
+    if (typeof files == 'string') {
+      files = [files];
+    }
+
+    var volume = this.volume;
+    if (options.volume) {
+      volume = options.volume;
+    }
+
+    volume = volume + 0.0;
+
+    var html = [];
+    html.push('<audio ');
+    if (volume != 1) {
+      html.push(' volume="' + volume + '" ');
+    }
+    if (options.loop) {
+      html.push(' loop="loop" ');
+    }
+    html.push('>');
+
+    Array.each(files, function(f) {
+      html.push('<source src="' + f.path + '" type="' + f.type + '" />');
+    });
+
+    html.push('</audio>');
+    html = html.join('');
+
+    var el = $(html);
+
+    try {
+      el.get(0).volume = volume;
+    } catch (e) {}
+
+    if (options.destroyAfter) {
+      el.bind('ended', function() {
+        $(this).remove();
+      });
+    }
+
+    if (options.appendTo) {
+      $(options.appendTo).append(el);
+    } else {
+      el.appendTo('body');
+    }
+
+    if (options.autoplay) {
+      try	{
+        el.get(0).play();
+      } catch(e) { }
+    }
+
+    return el;
+  },
+
+
+  /**
+   * Plays a standard sound from the static dir. This assumes an MP3
+   * and OGG version of the file exists.
+   *
+   * @param name
+   * @param options
+   */
+  playLibrarySound: function(name, options) {
+    if ($.browser.msie) {
+      var files = [{path: ASSETS_BASE_URL + '/sounds/' + name + '.wav', type: 'audio/wav'}];
+    } else {
+      var files = [
+        {path: ASSETS_BASE_URL + '/sounds/' + name + '.mp3', type: 'audio/mpeg'},
+        {path: ASSETS_BASE_URL + '/sounds/' + name + '.ogg', type: 'audio/ogg'}
+      ];
+    }
+
+    this.playSound(files, options);
+  },
+
+  handleSoundElements: function(el) {
+    var self = this;
+    if ($(el).is('[data-play-sound]')) {
+      self.playLibrarySound($(el).data('play-sound'), {appendTo: el});
+    } else {
+      $('[data-play-sound]', el).each(function() {
+        self.playLibrarySound($(this).data('play-sound'), {appendTo: el});
+      });
+    }
+  }
 });
 
 function Orb_Util_TimeAgo_getPhraseFor(type, num, ago) {
