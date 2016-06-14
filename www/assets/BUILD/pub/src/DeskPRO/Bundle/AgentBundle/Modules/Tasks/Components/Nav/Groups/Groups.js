@@ -17,6 +17,7 @@ export class Groups extends React.Component {
         label:  'My Tasks'
       }
     };
+
     if (myTeams.size > 0) {
       Object.assign(options, options, {
         team: {
@@ -24,8 +25,8 @@ export class Groups extends React.Component {
           label:  'My Team Tasks'
         }
       });
-      console.log('HERE WE GO', options);
     }
+
     Object.assign(options, options, {
       department: {
         filter: { assigned_department: ['me'] },
