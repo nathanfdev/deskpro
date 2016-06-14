@@ -54,7 +54,7 @@ class NewsController extends AbstractController
      */
     public function indexAction(Request $request, $_format)
     {
-        $page   = $request->query->get('page', 1);
+        $page   = $request->query->getInt('page', 1);
         $person = $this->getCurrentPerson();
 
         //
@@ -64,7 +64,7 @@ class NewsController extends AbstractController
             $pager = $this->getNewsDataService()->getNewsPager(
                 null,
                 $page,
-                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
+                $request->query->getInt('per_page', $this->getBrandSetting('portal.per_page_rss')),
                 $person
             );
 
@@ -118,7 +118,7 @@ class NewsController extends AbstractController
      */
     public function browseAction(Request $request, NewsCategory $category, $_format)
     {
-        $page   = $request->query->get('page', 1);
+        $page   = $request->query->getInt('page', 1);
         $person = $this->getCurrentPerson();
 
         //
@@ -128,7 +128,7 @@ class NewsController extends AbstractController
             $pager = $this->getNewsDataService()->getNewsPager(
                 $category,
                 $page,
-                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
+                $request->query->getInt('per_page', $this->getBrandSetting('portal.per_page_rss')),
                 $person
             );
 

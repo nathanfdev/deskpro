@@ -77,7 +77,7 @@ class FeedbackController extends AbstractController
      */
     public function indexAction(Request $request, $_format)
     {
-        $page   = $request->query->get('page', 1);
+        $page   = $request->query->getInt('page', 1);
         $person = $this->getUser() ?: new PersonGuest();
 
         //
@@ -94,7 +94,7 @@ class FeedbackController extends AbstractController
 
             $pager = $this->getFeedbackDataService()->getItemsPager(
                 $page,
-                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
+                $request->query->getInt('per_page', $this->getBrandSetting('portal.per_page_rss')),
                 $filter,
                 $person
             );
@@ -307,7 +307,7 @@ class FeedbackController extends AbstractController
      */
     public function browseAction(Request $request, $filter_uri)
     {
-        $page   = $request->query->get('page', 1);
+        $page   = $request->query->getInt('page', 1);
         $person = $this->getUser() ?: new PersonGuest();
 
         try {
