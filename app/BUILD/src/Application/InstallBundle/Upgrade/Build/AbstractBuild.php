@@ -339,7 +339,7 @@ abstract class AbstractBuild
                 }
             }, $alter);
 
-            $cmd_base = '{tool} --alter {query} --alter-foreign-keys-method auto --no-version-check --host {db_host} --database {db_name} --user {db_user} --password {db_pass} --port {db_port} {mode_param} {dsn}';
+            $cmd_base = '{tool} --alter {query} --alter-foreign-keys-method auto --no-version-check --recursion-method none --host {db_host} --database {db_name} --user {db_user} --password {db_pass} --port {db_port} {mode_param} {dsn}';
 
             $dbinfo = LowUtil::getMysqlInfoFromConfigArray($env->getConfig('database'));
 
