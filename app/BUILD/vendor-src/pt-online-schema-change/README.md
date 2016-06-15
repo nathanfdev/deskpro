@@ -6,7 +6,12 @@ To use pt-online-schema-change:
 
 2. Create `/config/config.upgrader.php` and add the following lines to enable our patched tool:
 
-    %dp.app_dir%/vendor-src/pt-online-schema-change/pt-online-schema-change
+    $CONFIG = [];
+    $CONFIG['online_schema_upgrade'] = '%dp.app_dir%/vendor-src/pt-online-schema-change/pt-online-schema-change';
+
+    // optionally use a different user/password
+    $CONFIG['online_schema_upgrade_user']     = 'drop_capable_user';
+    $CONFIG['online_schema_upgrade_password'] = 'pass';
 
 ---
 
