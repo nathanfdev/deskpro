@@ -1,31 +1,26 @@
 import React, { PropTypes } from 'react';
 import { ProfileForm } from './Form/ProfileForm';
-import Loader from 'react-loader';
 
 export class Content extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    dispatch:  PropTypes.func.isRequired,
     languages: PropTypes.object.isRequired,
     timezones: PropTypes.object.isRequired,
-    profile: PropTypes.object.isRequired,
-    profileLoaded: PropTypes.bool.isRequired
+    profile:   PropTypes.object.isRequired
   };
 
   render() {
-    const { dispatch, languages, timezones, profile, profileLoaded } = this.props;
+    const { dispatch, languages, timezones, profile } = this.props;
 
     return (
       <div>
-        <Loader loaded={profileLoaded}
-                opacity={0}
-                width={3}>
-
-          <ProfileForm dispatch={dispatch}
-                       languages={languages}
-                       timezones={timezones}
-                       profile={profile} />
-        </Loader>
+        <ProfileForm
+          dispatch={dispatch}
+          languages={languages}
+          timezones={timezones}
+          profile={profile}
+        />
       </div>
     );
   }
