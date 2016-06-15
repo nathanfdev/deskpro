@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
@@ -40,7 +37,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\ReversedTransformer;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -78,19 +74,10 @@ class CustomFieldChoiceType extends AbstractType
                 // for radio boxes ChoiceType uses PRE_SET_DATA callback,
                 // so we need to transform our choice to HierarchyNode before it called
                 $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onTransformRadioData'], 100);
-                $builder->addViewTransformer(new ReversedTransformer(new CustomDefHierarchyNodeTransformer($options['choice_list'])), true);
             }
         }
 
         $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer($options['choice_list']), true);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'deskpro_custom_field_choice';
     }
 
     /**

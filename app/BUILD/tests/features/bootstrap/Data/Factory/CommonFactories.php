@@ -82,6 +82,8 @@ class CommonFactories
      * @param string $type
      * @param array  $data
      *
+     * @throws \Exception
+     *
      * @return CustomDefAbstract
      */
     public static function customDef($type, array $data = [])
@@ -95,15 +97,17 @@ class CommonFactories
         ];
 
         $typeToHandler = [
-            ''              => null,
-            'text'          => 'Application\DeskPRO\CustomFields\Handler\Text',
-            'textarea'      => 'Application\DeskPRO\CustomFields\Handler\Textarea',
-            'date'          => 'Application\DeskPRO\CustomFields\Handler\Date',
-            'datetime'      => 'Application\DeskPRO\CustomFields\Handler\DateTime',
-            'multi_choice'  => 'Application\DeskPRO\CustomFields\Handler\Choice',
-            'single_choice' => 'Application\DeskPRO\CustomFields\Handler\Choice',
-            'toggle'        => 'Application\DeskPRO\CustomFields\Handler\Toggle',
-            'hidden'        => 'Application\DeskPRO\CustomFields\Handler\Hidden',
+            ''               => null,
+            'text'           => CustomDefAbstract::HANDLER_CLASS_TEXT,
+            'textarea'       => CustomDefAbstract::HANDLER_CLASS_TEXTAREA,
+            'date'           => CustomDefAbstract::HANDLER_CLASS_DATE,
+            'datetime'       => CustomDefAbstract::HANDLER_CLASS_DATETIME,
+            'checkbox_group' => CustomDefAbstract::HANDLER_CLASS_CHOICE,
+            'radio_group'    => CustomDefAbstract::HANDLER_CLASS_CHOICE,
+            'single_choice'  => CustomDefAbstract::HANDLER_CLASS_CHOICE,
+            'multi_choice'   => CustomDefAbstract::HANDLER_CLASS_CHOICE,
+            'toggle'         => CustomDefAbstract::HANDLER_CLASS_TOGGLE,
+            'hidden'         => CustomDefAbstract::HANDLER_CLASS_HIDDEN,
         ];
 
         $def = new $types[$type]();
@@ -112,10 +116,21 @@ class CommonFactories
         if (!array_key_exists('type', $data)) {
             $data['type'] = '';
         }
+        if (!array_key_exists($data['type'], $typeToHandler)) {
+            throw new \Exception("Unknown handler class '{$data['type']}''");
+        }
 
-        $data['handler_class']                               = $typeToHandler[$data['type']];
-        $data['type'] !== 'multi_choice' or $data['options'] = ['multiple' => true, 'expanded' => true];
+        $data['handler_class'] = $typeToHandler[$data['type']];
+
+        if (in_array($data['type'], ['checkbox_group', 'multi_choice'])) {
+            $data['options']['multiple'] = true;
+        }
+        if (in_array($data['type'], ['checkbox_group', 'radio_group'])) {
+            $data['options']['expanded'] = true;
+        }
+
         unset($data['type']);
+
         Helper::pick($data, 'handler_class', $def, 'setHandlerClass');
 
         // Provide rest of the $data properties
@@ -161,8 +176,11 @@ class CommonFactories
      */
     public static function sla(array $data)
     {
-        $sla                                             = new Sla();
-        array_key_exists('type', $data) or $data['type'] = 'first_response';
+        $sla = new Sla();
+        if (!array_key_exists('type', $data)) {
+            $data['type'] = 'first_response';
+        }
+
         Helper::pick($data, 'title', $sla, 'setTitle', uniqid('Sla_'));
         Helper::pick($data, 'type', $sla, 'setSlaType', uniqid('type_'));
 

@@ -36,5 +36,3 @@ Feature: Registration
     And I press "Register"
     Then I should be on "/register/set-password"
     And I should receive an email with the subject phrase "user.email_subjects.password_set"
-
-

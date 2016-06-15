@@ -112,17 +112,12 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFieldChoiceType
     arguments: ["@form_hierarchy_generator"]
     tags:
-      - { name: form.type, alias: deskpro_custom_field_choice }
+      - { name: form.type }
 
   form.date:
     class: DeskPRO\Bundle\AppBundle\Form\Type\DateType
     tags:
       - { name: form.type, alias: deskpro_date }
-
-  form.datetime:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType
-    tags:
-      - { name: form.type, alias: deskpro_datetime }
 
   form.display_html:
     class: DeskPRO\Bundle\AppBundle\Form\Type\DisplayHtmlType

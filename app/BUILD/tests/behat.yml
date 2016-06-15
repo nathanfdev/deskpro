@@ -35,6 +35,8 @@ api:
                 - DpBehat\System\Alerts\IncidentsContext
                 - DpBehat\TicketLogsContext
                 - DpBehat\Data\DataContext
+                - DpBehat\Data\CustomDataContext
+                - DpBehat\Data\TicketLayoutContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
@@ -108,7 +110,7 @@ portal:
             paths:
                 - %paths.base%/features/portal
             contexts:
-                - Behat\MinkExtension\Context\MinkContext
+                - DpBehat\Portal\MinkContext
                 - DpBehat\HooksContext
                 - DpBehat\Portal\TestsContext
                 - DpBehat\Portal\RefsContext
@@ -123,6 +125,7 @@ portal:
                 - DpBehat\Portal\TicketsContext
                 - DpBehat\Portal\ContentContext
                 - DpBehat\Portal\GenericContext
+                - DpBehat\Portal\FormContext
                 - DpBehat\Portal\TicketContext
                 - DpBehat\Http\HttpContext
                 - DpBehat\DataSetContext:
@@ -132,6 +135,8 @@ portal:
                 - DpBehat\Portal\PortalDesigner\AssetsContext
                 - DpBehat\System\AntiAbuse\AntiAbuseContext
                 - DpBehat\Data\DataContext
+                - DpBehat\Data\CustomDataContext
+                - DpBehat\Data\TicketLayoutContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:

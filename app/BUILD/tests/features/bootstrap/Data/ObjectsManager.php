@@ -54,6 +54,8 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketCategory;
+use Application\DeskPRO\Entity\TicketLayout;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Entity\TicketWorkflow;
@@ -91,6 +93,14 @@ class ObjectsManager
         $this->em = $em;
         $this->initTypeFactories();
         $this->initTypeLocators();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isClosed()
+    {
+        return null !== $this->em->getConnection();
     }
 
     /**
@@ -170,9 +180,10 @@ class ObjectsManager
         foreach ($data as &$value) {
             if ($value === 'NULL') {
                 $value = null;
-            }
-            if (($date = \DateTime::createFromFormat('Y-m-d G:i:s', $value)) !== false) {
+            } elseif (($date = \DateTime::createFromFormat('Y-m-d G:i:s', $value)) !== false) {
                 $value = $date;
+            } elseif (is_array($array = json_decode($value, true))) {
+                $value = $array;
             }
         }
 
@@ -219,6 +230,7 @@ class ObjectsManager
             'Admin'                  => [Factory\PersonFactories::class, 'create', 'admin'],
             'Usergroup'              => [Factory\SimpleFactory::class, 'create', Usergroup::class],
             'Language'               => [Factory\SimpleFactory::class, 'create', Language::class],
+            'TicketMessage'          => [Factory\SimpleFactory::class, 'create', TicketMessage::class],
         ];
     }
 
@@ -247,14 +259,16 @@ class ObjectsManager
             'NewsCategory'           => [$this, 'find', NewsCategory::class],
             'DownloadCategory'       => [$this, 'find', DownloadCategory::class],
             'ClientDevice'           => [$this, 'find', ClientDevice::class],
-            'User'                   => [$this, 'find', Person::class, ['is_agent' => false, 'is_admin' => false]],
-            'Agent'                  => [$this, 'find', Person::class, ['is_agent' => true, 'is_admin' => false]],
-            'Admin'                  => [$this, 'find', Person::class, ['is_agent' => false, 'is_admin' => true]],
+            'User'                   => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => false]],
+            'Agent'                  => [$this, 'find', Person::class, ['is_agent' => true, 'can_admin' => false]],
+            'Admin'                  => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => true]],
             'Blob'                   => [$this, 'find', Blob::class],
             'TaskAttachment'         => [$this, 'find', TaskAttachment::class],
             'GlossaryWordDefinition' => [$this, 'find', GlossaryWordDefinition::class],
             'GlossaryWord'           => [$this, 'find', GlossaryWord::class],
             'Language'               => [$this, 'find', Language::class],
+            'TicketLayout'           => [$this, 'find', TicketLayout::class],
+            'TicketMessage'          => [$this, 'find', TicketMessage::class],
         ];
     }
 }

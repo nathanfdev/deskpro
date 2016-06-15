@@ -76,7 +76,7 @@ trait KernelAwareTrait
     }
 
     /**
-     * Init ObjectManager
+     * Init ObjectManager.
      */
     protected static function initOm()
     {
@@ -84,13 +84,17 @@ trait KernelAwareTrait
     }
 
     /**
-     * @return ObjectsManager
      * @throws \Exception
+     *
+     * @return ObjectsManager
      */
     protected static function getOm()
     {
         if (!self::$objectsManager) {
             throw new \Exception('ObjectManager has not yet been initialized');
+        }
+        if (!self::$objectsManager->isClosed()) {
+            throw new \Exception('ObjectManager is closed');
         }
 
         return self::$objectsManager;
@@ -175,8 +179,9 @@ trait KernelAwareTrait
     }
 
     /**
-     * @return ObjectsManager
      * @throws \Exception
+     *
+     * @return ObjectsManager
      */
     protected function om()
     {

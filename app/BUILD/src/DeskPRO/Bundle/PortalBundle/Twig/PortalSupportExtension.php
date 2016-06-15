@@ -602,7 +602,9 @@ class PortalSupportExtension extends \Twig_Extension
         }
 
         if ($timezone === null) {
-            $person = $this->container->get('security.token_storage')->getToken()->getUser();
+            $token  = $this->container->get('security.token_storage')->getToken();
+            $person = $token ? $token->getUser() : null;
+
             if ($person && $person instanceof Person) {
                 $timezone = $person->getTimezone();
             } else {

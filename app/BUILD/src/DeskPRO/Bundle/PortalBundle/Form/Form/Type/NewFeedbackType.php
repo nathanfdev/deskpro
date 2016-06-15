@@ -127,7 +127,7 @@ class NewFeedbackType extends AbstractType
 
         $builder
             ->add('custom_data', CombinedType::class, [
-                'forms' => $this->getCustomDataForms($options),
+                'forms' => $this->getCustomDataForms(),
             ])
             ->add('attachments', FeedbackAttachmentCollectionType::class, [
                 'person' => $options['person'],
@@ -180,8 +180,7 @@ class NewFeedbackType extends AbstractType
                 'person' => Person::class,
             ])
             ->setDefaults([
-                'data_class'      => Feedback::class,
-                'agent_interface' => false,
+                'data_class' => Feedback::class,
             ])
         ;
     }
@@ -195,24 +194,22 @@ class NewFeedbackType extends AbstractType
     }
 
     /**
-     * @param array $options
-     *
      * @return array
      */
-    protected function getCustomDataForms(array $options)
+    protected function getCustomDataForms()
     {
         $forms = [];
         $defs  = $this->fieldManager->getAvailableFeedbackDefs();
 
-        foreach ($defs as $field_def) {
+        foreach ($defs as $def) {
             $forms[] = [
-                'name'    => 'custom_feedback_def_'.$field_def->getId(),
+                'name'    => $def->getId(),
                 'type'    => CustomDataType::class,
                 'options' => [
-                    'custom_def'      => $field_def,
+                    'custom_def'      => $def,
                     'property_path'   => 'custom_data',
-                    'agent_interface' => $options['agent_interface'],
-                    'label'           => $field_def->getTitle(),
+                    'agent_interface' => false,
+                    'label'           => $def->getTitle(),
                 ],
             ];
         }

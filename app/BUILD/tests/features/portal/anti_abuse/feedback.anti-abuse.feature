@@ -14,9 +14,9 @@ Feature: To prevent feedback submitting abuse
 
     When I select "Suggestion" from "new_feedback_category"
     And I fill in the following:
-      | new_feedback[title]                                    | feedback title   |
-      | new_feedback[content]                                  | feedback content |
-      | new_feedback[custom_data][custom_feedback_def_1][data] | 2                |
+      | new_feedback[title]                | feedback title   |
+      | new_feedback[content]              | feedback content |
+      | new_feedback[custom_data][1][data] | 2                |
     And I press "Add your feedback"
     Then the url should match "/feedback"
 
@@ -30,9 +30,9 @@ Feature: To prevent feedback submitting abuse
 
     When I select "Suggestion" from "new_feedback_category"
     And I fill in the following:
-      | new_feedback[title]                                    | feedback title   |
-      | new_feedback[content]                                  | feedback content |
-      | new_feedback[custom_data][custom_feedback_def_1][data] | 2                |
+      | new_feedback[title]                | feedback title   |
+      | new_feedback[content]              | feedback content |
+      | new_feedback[custom_data][1][data] | 2                |
     And I press "Add your feedback"
     Then the url should match "/feedback"
 
@@ -46,11 +46,11 @@ Feature: To prevent feedback submitting abuse
 
     When I select "Suggestion" from "new_feedback_category"
     And I fill in the following:
-      | new_feedback[name]                                     | Tyrion Lannister                        |
-      | new_feedback[email][email]                             | ohmylion@kingslanding.westeros          |
-      | new_feedback[title]                                    | About debts                             |
-      | new_feedback[content]                                  | A Lannister should always pay his debts |
-      | new_feedback[custom_data][custom_feedback_def_1][data] | 2                                       |
+      | new_feedback[name]                 | Tyrion Lannister                        |
+      | new_feedback[email][email]         | ohmylion@kingslanding.westeros          |
+      | new_feedback[title]                | About debts                             |
+      | new_feedback[content]              | A Lannister should always pay his debts |
+      | new_feedback[custom_data][1][data] | 2                                       |
     And I press "Add your feedback"
     Then the url should match "/feedback"
 
@@ -64,11 +64,11 @@ Feature: To prevent feedback submitting abuse
 
     When I select "Suggestion" from "new_feedback_category"
     And I fill in the following:
-      | new_feedback[name]                                     | Eddard Stark            |
-      | new_feedback[email][email]                             | ned@winterfell.westeros |
-      | new_feedback[title]                                    | Let's prepare           |
-      | new_feedback[content]                                  | Winter is coming        |
-      | new_feedback[custom_data][custom_feedback_def_1][data] | 2                       |
+      | new_feedback[name]                 | Eddard Stark            |
+      | new_feedback[email][email]         | ned@winterfell.westeros |
+      | new_feedback[title]                | Let's prepare           |
+      | new_feedback[content]              | Winter is coming        |
+      | new_feedback[custom_data][1][data] | 2                       |
     When I press "Add your feedback"
     Then the url should match "/feedback"
 

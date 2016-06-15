@@ -7,19 +7,19 @@ Feature: Ticket custom fields
   Background:
     Given I'm authenticated as admin
     And only the following custom ticket fields exist:
-      | #                      | Type          | Title               | Parent                |
-      | text_field             | text          | Text field          |                       |
-      | textarea_field         | textarea      | Textarea field      |                       |
-      | date_field             | date          | Date field          |                       |
-      | datetime_field         | datetime      | Datetime field      |                       |
-      | single_choice_field    | single_choice | Single Choice field |                       |
-      | single_choice_v1_field |               | Single Choice v1    | {single_choice_field} |
-      | single_choice_v2_field |               | Single Choice v2    | {single_choice_field} |
-      | single_choice_v3_field |               | Single Choice v3    | {single_choice_field} |
-      | multi_choice_field     | multi_choice  | Multi Choice field  |                       |
-      | multi_choice_v1_field  |               | Multi Choice v1     | {multi_choice_field}  |
-      | multi_choice_v2_field  |               | Multi Choice v2     | {multi_choice_field}  |
-      | multi_choice_v3_field  |               | Multi Choice v3     | {multi_choice_field}  |
+      | #                       | Type           | Title               | Parent                 |
+      | text_field              | text           | Text field          |                        |
+      | textarea_field          | textarea       | Textarea field      |                        |
+      | date_field              | date           | Date field          |                        |
+      | datetime_field          | datetime       | Datetime field      |                        |
+      | single_choice_field     | single_choice  | Single Choice field |                        |
+      | single_choice_v1_field  |                | Single Choice v1    | {single_choice_field}  |
+      | single_choice_v2_field  |                | Single Choice v2    | {single_choice_field}  |
+      | single_choice_v3_field  |                | Single Choice v3    | {single_choice_field}  |
+      | checkbox_group_field    | checkbox_group | Multi Choice field  |                        |
+      | checkbox_group_v1_field |                | Multi Choice v1     | {checkbox_group_field} |
+      | checkbox_group_v2_field |                | Multi Choice v2     | {checkbox_group_field} |
+      | checkbox_group_v3_field |                | Multi Choice v3     | {checkbox_group_field} |
 
   Scenario: I retrieve a list of custom fields
     When I send a GET request to "/api/v2/ticket_custom_fields"
@@ -52,7 +52,7 @@ Feature: Ticket custom fields
     "~date_field~": "2015-10-11",
     "~datetime_field~": "2016-01-02 15:30:42",
     "~single_choice_field~": ["~single_choice_v2_field~"],
-    "~multi_choice_field~": ["~multi_choice_v1_field~", "~multi_choice_v3_field~"]
+    "~checkbox_group_field~": ["~checkbox_group_v1_field~", "~checkbox_group_v3_field~"]
   }
 }
     """
@@ -64,9 +64,9 @@ Feature: Ticket custom fields
     And the JSON node "data.fields.{single_choice_field}.detail.{single_choice_v2_field}.title" should be equal to "Single Choice v2"
     And the JSON node "data.fields.{single_choice_field}.detail.{single_choice_v1_field}.title" should not exist
     And the JSON node "data.fields.{single_choice_field}.detail.{single_choice_v3_field}.title" should not exist
-    And the JSON node "data.fields.{multi_choice_field}.detail.{multi_choice_v1_field}.title" should be equal to "Multi Choice v1"
-    And the JSON node "data.fields.{multi_choice_field}.detail.{multi_choice_v3_field}.title" should be equal to "Multi Choice v3"
-    And the JSON node "data.fields.{multi_choice_field}.detail.{multi_choice_v2_field}" should not exist
+    And the JSON node "data.fields.{checkbox_group_field}.detail.{checkbox_group_v1_field}.title" should be equal to "Multi Choice v1"
+    And the JSON node "data.fields.{checkbox_group_field}.detail.{checkbox_group_v3_field}.title" should be equal to "Multi Choice v3"
+    And the JSON node "data.fields.{checkbox_group_field}.detail.{checkbox_group_v2_field}" should not exist
 
   Scenario: I modify a ticket with custom fields
     Given I send a POST request to "/api/v2/tickets" with body:
@@ -79,7 +79,7 @@ Feature: Ticket custom fields
     "~date_field~": "2015-10-11",
     "~datetime_field~": "2016-01-02 15:30:42",
     "~single_choice_field~": ["~single_choice_v2_field~"],
-    "~multi_choice_field~": ["~multi_choice_v1_field~", "~multi_choice_v3_field~"]
+    "~checkbox_group_field~": ["~checkbox_group_v1_field~", "~checkbox_group_v3_field~"]
   }
 }
     """
@@ -94,7 +94,7 @@ Feature: Ticket custom fields
     "~date_field~": "2015-12-11",
     "~datetime_field~": "2016-02-01 15:30:42",
     "~single_choice_field~": ["~single_choice_v1_field~"],
-    "~multi_choice_field~": ["~multi_choice_v1_field~", "~multi_choice_v2_field~"]
+    "~checkbox_group_field~": ["~checkbox_group_v1_field~", "~checkbox_group_v2_field~"]
   }
 }
     """
@@ -107,9 +107,9 @@ Feature: Ticket custom fields
     And the JSON node "data.fields.{single_choice_field}.detail.{single_choice_v1_field}.title" should be equal to "Single Choice v1"
     And the JSON node "data.fields.{single_choice_field}.detail.{single_choice_v2_field}.title" should not exist
     And the JSON node "data.fields.{single_choice_field}.detail.{single_choice_v3_field}.title" should not exist
-    And the JSON node "data.fields.{multi_choice_field}.detail.{multi_choice_v1_field}.title" should be equal to "Multi Choice v1"
-    And the JSON node "data.fields.{multi_choice_field}.detail.{multi_choice_v2_field}.title" should be equal to "Multi Choice v2"
-    And the JSON node "data.fields.{multi_choice_field}.detail.{multi_choice_v3_field}" should not exist
+    And the JSON node "data.fields.{checkbox_group_field}.detail.{checkbox_group_v1_field}.title" should be equal to "Multi Choice v1"
+    And the JSON node "data.fields.{checkbox_group_field}.detail.{checkbox_group_v2_field}.title" should be equal to "Multi Choice v2"
+    And the JSON node "data.fields.{checkbox_group_field}.detail.{checkbox_group_v3_field}" should not exist
 
   Scenario: I try to create a custom field via API
     Given I send a POST request to "/api/v2/ticket_custom_fields"
