@@ -116,6 +116,10 @@ export class NestedList extends React.Component {
       ? 'with-connectors depth-' + (depth - 1)
       : 'depth-0';
 
+    if (!this.props.items || !this.props.items.length) {
+      return <div></div>;
+    }
+
     return (
       <ul className={className}>
         {this.props.items.map((item, key) => this.renderListItem(item, depth, key))}
