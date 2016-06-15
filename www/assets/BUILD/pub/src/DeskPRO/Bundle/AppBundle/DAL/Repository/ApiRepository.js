@@ -52,7 +52,6 @@ export class ApiRepository {
    * @returns {Promise} promise
    */
   search(params, include = null) {
-    console.log(`DP_API/${this.url}?${this.compileParams(include ? { ...params, include } : params)}`);
     return this.api.sendGet(`DP_API/${this.url}?${this.compileParams(include ? { ...params, include } : params)}`);
   }
 

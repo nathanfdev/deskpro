@@ -20,7 +20,9 @@ const initialState = {
 
   fields: {
     [constants.VIEW_MODE_CARD]: [
-      { id: 'project', title: 'Project', visible: true },
+      { id: 'id', title: 'Id', visible: true, required: true },
+      { id: 'title', title: 'Title', visible: true, required: true },
+      { id: 'project', title: 'Project', visible: true, required: true },
       { id: 'date_due', title: 'Due', visible: true },
       { id: 'linked', title: 'Linked Items', visible: true },
       { id: 'assignee', title: 'Assignee', visible: true }

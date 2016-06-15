@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
+use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ContentAbstract as ContentEntity;
 use JMS\Serializer\Annotation as JMS;
 
@@ -48,6 +49,13 @@ class ContentCsv extends Content
     protected $language;
 
     /**
+     * Content category.
+     *
+     * @JMS\Type("string")
+     */
+    protected $category;
+
+    /**
      * Constructor.
      *
      * @param \Application\DeskPRO\Entity\ContentAbstract $entity
@@ -58,6 +66,16 @@ class ContentCsv extends Content
 
         $this->person   = $entity->getPerson() ? $entity->getPerson()->getName() : '';
         $this->language = $entity->getLanguage() ? $entity->getLanguage()->getTitle() : '';
-        $this->content  = mb_substr($entity->getContentPlain(), 0, 50);
+        if ($entity instanceof Article) {
+            $categoryNames = [];
+            $categories    = $entity->getCategories();
+            foreach ($categories as $category) {
+                $categoryNames[] = $category->getTitle();
+            }
+            $this->category = implode(', ', $categoryNames);
+        } else {
+            $this->category = $entity->getCategory() ? $entity->getCategory()->getTitle() : '';
+        }
+        $this->content = mb_substr($entity->getContentPlain(), 0, 50);
     }
 }
