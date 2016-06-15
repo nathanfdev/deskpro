@@ -3,7 +3,7 @@ import { async, setValue, setFullPayload } from 'DeskPRO/Component/Ampliflux/red
 import { constants } from '../../../Constants/Constants';
 import * as actions from '../Actions/chatListActions';
 
-const initialState = {
+export const initialState = {
   async:             { done: true },
   viewMode:          constants.VIEW_MODE_CARD,
   currentListParams: {

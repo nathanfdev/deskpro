@@ -43,6 +43,7 @@ describe('List', () => {
 
     renderInTicketsApp(fakeState,
       <List
+        currentListParams={toImmutable({})}
         elements={[]}
         selected={[]}
         viewMode={viewMode}
