@@ -339,7 +339,7 @@ abstract class AbstractBuild
                 }
             }, $alter);
 
-            $cmd_base = '{tool} --alter {query} --alter-foreign-keys-method auto --no-version-check --recursion-method none --host {db_host} --database {db_name} --user {db_user} --password {db_pass} --port {db_port} {mode_param} {dsn}';
+            $cmd_base = '{tool} --alter {query} --alter-foreign-keys-method drop_swap --no-version-check --recursion-method none --host {db_host} --database {db_name} --user {db_user} --password {db_pass} --port {db_port} {mode_param} {dsn}';
 
             $dbinfo = LowUtil::getMysqlInfoFromConfigArray($env->getConfig('database'));
 
@@ -406,7 +406,8 @@ abstract class AbstractBuild
         } catch (\Exception $e) {
             // check the table still exists
             // If this throws, it will propagate up
-            $this->execDbQuery("SELECT 'val' AS test FROM `$table` LIMIT 1");
+            $db = $this->container->get('doctrine')->getConnection('default');
+            $db->fetchColumn("SELECT 'val' AS test FROM `$table` LIMIT 1");
         }
     }
 
