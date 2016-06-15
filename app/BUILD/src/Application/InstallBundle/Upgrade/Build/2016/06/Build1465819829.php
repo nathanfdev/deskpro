@@ -51,7 +51,9 @@ SQL;
             $newBans[] = $this->convertBan($ban['banned_ip']);
         }
 
-        $db->batchInsert('ban_ips', $newBans);
+        if ($newBans) {
+            $db->batchInsert('ban_ips', $newBans);
+        }
     }
 
     private function convertBan($ip)
