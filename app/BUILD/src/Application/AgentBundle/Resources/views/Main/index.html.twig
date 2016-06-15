@@ -110,7 +110,9 @@
 	{% if app.getSetting('core.favicon_blob_id') %}
 		<link rel="shortcut icon" id="favicon" href="{{ path('favicon', {}, true) }}" />
 	{% else %}
-		<link rel="shortcut icon" id="favicon" href="{{ app.getRequest().getBasePath() }}/favicon.ico" />
+		<link rel="icon" type="image/png" sizes="32x32" href="{{ app.getRequest().getBasePath() }}/images/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="96x96" href="{{ app.getRequest().getBasePath() }}/images/favicon-96x96.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="{{ app.getRequest().getBasePath() }}/images/favicon-16x16.png" />
 	{% endif %}
 
 	<title>{{ phrase('agent.interface.deskpro_agent_interface') }}</title>
