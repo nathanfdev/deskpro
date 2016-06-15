@@ -304,12 +304,12 @@
                                             <div class="ui checkbox image field proactive-style">
                                                 <input type="radio" name="widget_style"
                                                        ng-model="brand_settings.chat.popup.style"
-                                                       id="proactive_style_agent_text_input" class="hidden"
-                                                       value="agent_text_input">
-                                                <label for="proactive_style_agent_text_input">
-                                                    Agent with text and input field
+                                                       id="proactive_style_agent_text_button" class="hidden"
+                                                       value="agent_text_button">
+                                                <label for="proactive_style_agent_text_button">
+                                                    Agent with text and button
                                                     <div class="ui divider"></div>
-                                                    <img src="{{ asset('images/admin/chat-widget/agent-text-input.png') }}"
+                                                    <img src="{{ asset('images/admin/chat-widget/agent-text-button.png') }}"
                                                          alt="agent text and input"/>
                                                 </label>
                                             </div>
@@ -318,12 +318,12 @@
                                             <div class="ui checkbox image field proactive-style">
                                                 <input type="radio" name="widget_style"
                                                        ng-model="brand_settings.chat.popup.style"
-                                                       id="proactive_style_agent_text_button" class="hidden"
-                                                       value="agent_text_button">
-                                                <label for="proactive_style_agent_text_button">
-                                                    Agent with text and button
+                                                       id="proactive_style_agent_text_input" class="hidden"
+                                                       value="agent_text_input">
+                                                <label for="proactive_style_agent_text_input">
+                                                    Agent with text and input field
                                                     <div class="ui divider"></div>
-                                                    <img src="{{ asset('images/admin/chat-widget/agent-text-button.png') }}"
+                                                    <img src="{{ asset('images/admin/chat-widget/agent-text-input.png') }}"
                                                          alt="agent text and input"/>
                                                 </label>
                                             </div>
@@ -512,20 +512,25 @@
             </div>
             <div class="nine wide column">
                 <div class="ui segments">
-                    <div class="ui segment embed-help-title" ng-click="show_embed_help = !show_embed_help">
-                        <h3>Add widget &amp; chat to your site</h3>
-                        Get instructions and help on how to add the widget to your website
+                    <div class="ui segment embed-help-title" ng-click="show_embed_help = !show_embed_help"
+                        ng-class="{'open': show_embed_help}">
+                        <img class="circular-plus" src="{{ asset('images/admin/chat-widget/green-circular-plus.svg') }}" />
+                        <div class="title-content">
+                            <h3>Add widget &amp; chat to your site</h3>
+                            Get instructions and help on how to add the widget to your website
+                        </div>
+                        <img class="big-arrow" src="{{ asset('images/admin/chat-widget/green-arrow.svg') }}" />
                     </div>
                     <div class="ui segment" ng-show="show_embed_help">
                         <label>Embed code</label>
                         <div class="inline fields">
                             <div class="ui twelve wide field">
-                                <input type="text" readonly="readonly"
-                                       ng-model="code"/>
+                                <input type="text" readonly="readonly" onClick="this.select();" ng-model="code"/>
                             </div>
                             <div class="ui four wide field">
                                 <button class="ui basic button" clip-copy="code"
-                                        clip-click="Growl.success('The code snippet was copied to your clipboard')">COPY
+                                        clip-click="Growl.success('The code snippet was copied to your clipboard')">
+                                    COPY
                                 </button>
                             </div>
                         </div>
@@ -627,7 +632,8 @@
                     </div>
                 </div>
 
-                <button class="ui button" ng-click="Ctrl.reset()">Reset</button>
+                <button class="ui button" ng-click="Ctrl.reset()">Reset to default</button>
+                <button class="ui button" ng-click="Ctrl.discard()">Discard changes</button>
                 <button class="ui button" ng-click="Ctrl.updateChatCode()">Save</button>
 
             </div>

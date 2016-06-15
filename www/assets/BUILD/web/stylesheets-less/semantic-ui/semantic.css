@@ -28822,6 +28822,10 @@ ol.ui.horizontal.list li:before,
 /*******************************
          Site Overrides
 *******************************/
+.ui.grid > .row {
+  margin-left: 0;
+  margin-right: 0;
+}
 /*
  * # Semantic - Menu
  * http://github.com/semantic-org/semantic-ui/
@@ -42479,6 +42483,16 @@ a.ui.card:hover,
 .ui.toggle.checkbox input:checked:focus ~ .box:hover::before,
 .ui.toggle.checkbox input:checked:focus ~ label:hover::before {
   border: 1px solid #459b51;
+}
+.ui.toggle.checkbox input ~ .box:after,
+.ui.toggle.checkbox input ~ label:after {
+  background: #ffffff url(../../../../images/admin/semantic/x.svg) center no-repeat;
+  background-size: 14px 14px;
+}
+.ui.toggle.checkbox input:checked ~ .box:after,
+.ui.toggle.checkbox input:checked ~ label:after {
+  background: #ffffff url(../../../../images/admin/semantic/tick.svg) center no-repeat;
+  background-size: 14px 14px;
 }
 /*!
  * # Semantic UI - Dimmer

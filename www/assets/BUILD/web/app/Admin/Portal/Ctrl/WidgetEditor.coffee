@@ -25,7 +25,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
       @$scope.saving_code = false
       @$scope.applying_to_portal = false
-      @$scope.show_embed_help = true
+      @$scope.show_embed_help = false
       @$scope.formErrors = {}
 
       @$scope.section = @$location.hash()
@@ -91,7 +91,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
     loadCode: ->
       @Api2.sendGet('widget/code')
 
-    reset: ->
+    discard: ->
       if confirm("Current edit on the settings will be overridden. Are your sure?")
         localStorage.removeItem 'widgetSettings'
         @initialLoad(true).then( =>
