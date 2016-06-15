@@ -12,6 +12,7 @@
                         </div>
                         <div class="content" ng-class="{'active': section == 'button_settings'}" data-target="button_settings">
                             <div class="field">
+                                {{ ng_var('brand_settings.button.translations') }}
                                 <label for="label">Label</label>
                                 <div class="inline fields">
                                     <div class="thirteen wide field">
@@ -19,17 +20,8 @@
                                                ng-model="brand_settings.button.translations[0].name">
                                     </div>
                                     <div class="three wide field">
-                                        <div class="ui left labeled language button">
-                                            <a class="ui basic label">
-                                                <i class="icon globe"></i>
-                                            </a>
-                                            <div class="ui button">
-                                                1/5
-                                                <div class="ui tiny progress">
-                                                    <div class="bar" style="width:20%"></div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <dp-semantic-language-button translations="brand_settings.button.translations" key="name" languages="languages">
+                                        </dp-semantic-language-button>
                                     </div>
                                 </div>
                             </div>
@@ -163,13 +155,13 @@
                                     <div class="ui toggle checkbox">
                                         <input type="checkbox" id="chat_enabled" ng-model="global_settings.chat.enabled"
                                                class="hidden right">
-                                        <label for="chat_enabled">Chat enabled <i class="icon help circle"></i></label>
+                                        <label for="chat_enabled">{{ phrase('admin.widget.chat_switcher') }} <i class="icon help circle"></i></label>
                                     </div>
                                 </div>
                             </div>
                             <div class="field" ng-if="global_settings.chat.enabled">
-                                <label>Who can use chat</label>
-                                <p>Manage which usergroups have access to chat</p>
+                                <label>{{ phrase('admin.widget.chat_permissions_title') }}</label>
+                                <p>{{ phrase('admin.widget.chat_permissions_desc') }}</p>
                                 <div class="inline field" ng-repeat="group in user_groups">
                                     <div class="ui checkbox">
                                         <input type="checkbox" id="permission_group_{{ ng_var('group.id') }}"
@@ -188,13 +180,12 @@
                                         <input type="checkbox" id="require_informations"
                                                ng-model="brand_settings.chat.request_user_info" class="hidden right">
                                         <label for="require_informations">
-                                            Require information before chat commences
+                                            {{ phrase('admin.widget.chat_request_person_for_comments') }}
                                         </label>
                                     </div>
                                 </div>
                                 <p>
-                                    Require users to provide their name and email address as well as adding custom
-                                    fields or require departments.
+                                    {{ phrase('admin.widget.chat_request_person_desc') }}
                                 </p>
                                 <div class="dp-item-list">
                                     <div class="inline field with-drag-handle">
@@ -397,17 +388,8 @@
                                             <input type="text" name="label" ng-model="brand_settings.chat.popup.translations[0].heading">
                                         </div>
                                         <div class="three wide field">
-                                            <div class="ui left labeled language button">
-                                                <a class="ui basic label">
-                                                    <i class="icon globe"></i>
-                                                </a>
-                                                <div class="ui button">
-                                                    1/5
-                                                    <div class="ui tiny progress">
-                                                        <div class="bar" style="width:20%"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <dp-semantic-language-button translations="brand_settings.chat.popup.translations" key="heading" languages="languages">
+                                            </dp-semantic-language-button>
                                         </div>
                                     </div>
                                     <label>Subheading</label>
@@ -416,17 +398,8 @@
                                             <textarea rows="3" ng-model="brand_settings.chat.popup.translations[0].subheading"></textarea>
                                         </div>
                                         <div class="three wide field">
-                                            <div class="ui left labeled language button">
-                                                <a class="ui basic label">
-                                                    <i class="icon globe"></i>
-                                                </a>
-                                                <div class="ui button">
-                                                    1/5
-                                                    <div class="ui tiny progress">
-                                                        <div class="bar" style="width:20%"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <dp-semantic-language-button translations="brand_settings.chat.popup.translations" key="subheading" languages="languages">
+                                            </dp-semantic-language-button>
                                         </div>
                                     </div>
                                 </div>
@@ -437,17 +410,8 @@
                                             <input type="text" name="label" ng-model="brand_settings.chat.popup.translations[0].title">
                                         </div>
                                         <div class="three wide field">
-                                            <div class="ui left labeled language button">
-                                                <a class="ui basic label">
-                                                    <i class="icon globe"></i>
-                                                </a>
-                                                <div class="ui button">
-                                                    1/5
-                                                    <div class="ui tiny progress">
-                                                        <div class="bar" style="width:20%"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <dp-semantic-language-button translations="brand_settings.chat.popup.translations" key="title" languages="languages">
+                                            </dp-semantic-language-button>
                                         </div>
                                     </div>
                                     <label>Message</label>
@@ -456,17 +420,8 @@
                                             <textarea rows="3" ng-model="brand_settings.chat.popup.translations[0].message"></textarea>
                                         </div>
                                         <div class="three wide field">
-                                            <div class="ui left labeled language button">
-                                                <a class="ui basic label">
-                                                    <i class="icon globe"></i>
-                                                </a>
-                                                <div class="ui button">
-                                                    1/5
-                                                    <div class="ui tiny progress">
-                                                        <div class="bar" style="width:20%"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <dp-semantic-language-button translations="brand_settings.chat.popup.translations" key="message" languages="languages">
+                                            </dp-semantic-language-button>
                                         </div>
                                     </div>
                                 </div>
@@ -616,15 +571,29 @@
                 </div>
 
                 <div class="preview" ng-hide="show_embed_help">
-                    <div class="ui inline field">
+                    <div class="ui inline field" ng-if="false">
                         <label>Preview</label>
                         <div class="ui labeled action input">
                             <div class="ui label">
                                 http://
                             </div>
-                            <input type="text" placeholder="mysite.com">
-                            <button class="ui basic button">Go</button>
+                            <input type="text" id="iframe-target" placeholder="mysite.com">
+                            <button class="ui basic button" ng-click="Ctrl.changeFrameSource()">Go</button>
                         </div>
+                    </div>
+                    <div class="ui buttons state-buttons">
+                        <button class="ui small button" ng-class="{'active': demo_state == 'button'}" ng-click="Ctrl.changeDemoState('button')">
+                            Button
+                        </button>
+                        <button class="ui small button" ng-class="{'active': demo_state == 'pre-chat'}" ng-click="Ctrl.changeDemoState('pre-chat')">
+                            Pre-chat
+                        </button>
+                        <button class="ui small button" ng-class="{'active': demo_state == 'in-chat'}" ng-click="Ctrl.changeDemoState('in-chat')">
+                            In Chat
+                        </button>
+                        <button class="ui small button" ng-class="{'active': demo_state == 'ticket'}" ng-click="Ctrl.changeDemoState('ticket')">
+                            Ticket
+                        </button>
                     </div>
                     <div class="widget-editor-live-demo-container">
                         <div class="widget-editor-live-demo-loader" ng-hide="widgetLoaded"><i></i></div>
@@ -632,10 +601,14 @@
                     </div>
                 </div>
 
-                <button class="ui button" ng-click="Ctrl.reset()">Reset to default</button>
-                <button class="ui button" ng-click="Ctrl.discard()">Discard changes</button>
-                <button class="ui button" ng-click="Ctrl.updateChatCode()">Save</button>
-
+                <button class="ui button right" ng-click="Ctrl.reset()">Reset to default</button>
+                <button class="ui button" ng-click="Ctrl.discard()" ng-disabled="!flag_has_changed">Discard changes</button>
+                <button class="ui button" ng-click="Ctrl.updateChatCode()" ng-disabled="!flag_has_changed">Save</button>
+                <div ng-show="flag_has_changed" class="pending_changes">
+                    <p>
+                        Pending changes
+                    </p>
+                </div>
             </div>
         </div>
     </form>

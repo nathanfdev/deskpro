@@ -9,6 +9,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
       @$scope.url = {}
       @$scope.company = {}
+      @$scope.remote_settings = {}
       @$scope.brand_settings = {}
       @$scope.global_settings = {}
       @$scope.custom_fields = []
@@ -26,19 +27,23 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       @$scope.saving_code = false
       @$scope.applying_to_portal = false
       @$scope.show_embed_help = false
+      @$scope.pending_changes = false
+      @$scope.demo_state = 'button'
       @$scope.formErrors = {}
+      @$scope.flag_has_changed = false
 
       @$scope.section = @$location.hash()
       @$scope.section or= 'button_settings'
 
     initialLoad: (reset = false) ->
+      savedSettings = localStorage.getItem 'dpWidgetSettings'
       setupPromise = @Api2.sendGet('/widget/setup').then (response) =>
         data = response.data.data
+        @$scope.remote_settings = JSON.parse(JSON.stringify(data.settings))
 
         @$scope.url = data.url;
         @$scope.company = data.company;
         if !reset
-          savedSettings = localStorage.getItem 'widgetSettings'
           if savedSettings
             savedSettings = JSON.parse savedSettings
         else
@@ -54,6 +59,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
         @$scope.enabled_on_portal = data.enabled_on_portal;
 
         @initLiveDemo()
+        @updateLiveDemo()
         @getChatCustomFields(savedSettings)
         @getUserGroups()
         @loadEditUserGroupPermissions(savedSettings)
@@ -88,12 +94,12 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
       return options
 
-    loadCode: ->
-      @Api2.sendGet('widget/code')
+    loadCode: (withOptions = false) ->
+      @Api2.sendGet("widget/code?options=#{withOptions}")
 
     discard: ->
       if confirm("Current edit on the settings will be overridden. Are your sure?")
-        localStorage.removeItem 'widgetSettings'
+        localStorage.removeItem 'dpWidgetSettings'
         @initialLoad(true).then( =>
           @Growl.success "Settings reseted"
         )
@@ -170,6 +176,12 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
     getFrameNode: ->
       document.getElementById('live-demo')
 
+    changeFrameSource: () ->
+      if document.getElementById('iframe-target').value
+        # Replace this assignment by an API call to get the actual background picture
+        background_src = @$scope.url.helpdesk+"/assets/BUILD/web/images/admin/chat-widget/screenshot-deskpro.png"
+        @initLiveDemo(background_src)
+
     getLiveDemoDocument: ->
       @getFrameNode().contentDocument
 
@@ -229,6 +241,14 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
           @$scope.applying_to_portal = false
       )
 
+    hasChanged: ->
+      console.log 'check has changed'
+      if JSON.stringify(@$scope.global_settings) != JSON.stringify(@$scope.remote_settings.global)
+        return true
+      if JSON.stringify(@$scope.brand_settings) != JSON.stringify(@$scope.remote_settings.brand)
+        return true
+      return false
+
     updateChatCode: ->
       @$scope.code = ''
       @$scope.saving_code = true
@@ -261,23 +281,29 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       @startSpinner('saving')
       @$q.all([permissionPromise, customFieldsPromise, widgetPromise]).then( =>
         @stopSpinner('saving')
-        localStorage.removeItem 'widgetSettings'
+        localStorage.removeItem 'dpWidgetSettings'
         @Growl.success "Settings saved"
       , (info) =>
         @stopSpinner('saving', true)
         @applyErrorResponseToView(info)
       )
+      
+    changeDemoState: (state) ->
+      @$scope.demo_state = state
 
-    initLiveDemo: ->
+
+    initLiveDemo: (background_src = false) ->
       window.addEventListener('message', (event) =>
         if (event.data?.type == 'widgetStatus')
           @$scope.$apply( => @$scope.widgetLoaded = true)
       , false);
 
-      @loadCode().then((codeResponse) =>
+      @loadCode(true).then((codeResponse) =>
         code = codeResponse.data.replace(/widget": {/, "widget\": {\n\"live_demo\": true,")
+        background_src ||= @$scope.url.helpdesk+"/assets/BUILD/web/images/admin/chat-widget/screenshot.png"
+        style = "style=\"background: url('#{background_src}') bottom right no-repeat\""
         demoDocument = @getLiveDemoDocument();
-        demoDocument.write('<body>' + code + '</body>');
+        demoDocument.write("<body #{style}>#{code}</body>");
         demoDocument.close();
 
         @getFrameNode().contentWindow.addEventListener('message', (event) =>
@@ -287,9 +313,10 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
       return;
 
-    updateLiveDemo: ->
+    updateLiveDemo: () ->
       DpWidget = @getFrameNode().contentWindow.DpWidget;
-      localStorage.setItem 'widgetSettings', JSON.stringify(@getSaveData())
+      @$scope.flag_has_changed = @hasChanged()
+      localStorage.setItem 'dpWidgetSettings', JSON.stringify(@getSaveData())
       if (DpWidget)
         DpWidget.dispatchCustomEvent('reloadOptions', @getOptions(true));
         DpWidget.dispatchCustomEvent('reloadSettings', @$scope.global_settings);

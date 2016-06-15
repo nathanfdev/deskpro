@@ -2,6 +2,10 @@
   $inline-label-width: 250px;
   padding: 20px;
 
+  .right {
+    float: right;
+  }
+
   h3 .icon {
     font-size: 16px;
     color: #b3b3b3;
@@ -121,6 +125,12 @@
       top: 0;
       left: 0;
     }
+  }
+
+  .pending_changes {
+    margin-top: 10px;
+    color: #8c9295;
+    font-size: 12px;
   }
 }
 .sp-input {

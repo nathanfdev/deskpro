@@ -89,11 +89,15 @@ class WidgetSettingsController extends BaseController
      *
      * @Rest\Get("/widget/code")
      *
+     * @param Request $request
+     *
      * @return string
      */
-    public function getWidgetCodeAction()
+    public function getWidgetCodeAction(Request $request)
     {
-        return new Response($this->get('widget_loader_code_renderer')->getWidgetCode());
+        $withOptions = $request->query->get('options') ? true : false;
+
+        return new Response($this->get('widget_loader_code_renderer')->getWidgetCode($withOptions));
     }
 
     /**

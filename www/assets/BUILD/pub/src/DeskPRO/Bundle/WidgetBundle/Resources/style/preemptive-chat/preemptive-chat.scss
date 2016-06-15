@@ -137,6 +137,66 @@ $secondary-preemptive-background-color: #fff;
   position: relative;
   box-shadow : 0 1px 1px $main-preemptive-box-shadow-color;
 
+  &.widget_button_agent {
+    background: none;
+    bottom: 0;
+    right: 100px;
+    margin-bottom: 0;
+    position: absolute;
+    padding: 0;
+    box-shadow: none;
+    border: none;
+
+    .preemtive-chat-content{
+      padding: 0;
+      position: relative;
+
+      .dpdesignportal-chat-header-avatar {
+        position: absolute;
+        bottom: 0;
+        right: 10px;
+        border: 1px solid #fff;
+      }
+
+      &.small {
+        .dpdesignportal-chat-header-avatar {
+          height: 28px;
+          width: 28px;
+        }
+      }
+
+      &.medium {
+        .dpdesignportal-chat-header-avatar {
+          height: 40px;
+          width: 40px;
+        }
+      }
+
+      &.large {
+        .dpdesignportal-chat-header-avatar {
+          height: 50px;
+          width: 50px;
+          right: 20px;
+        }
+      }
+    }
+
+    .close-panel,
+    .preemtive-chat-footer,
+    p,
+    h1,
+    h2 {
+      display: none;
+    }
+
+    ul {
+      display: inline-block;
+      margin: 0;
+      list-style: none;
+      padding: 0;
+    }
+  }
+
   &.small {// For the multiple agent avatars/no text type of panel
     width: 200px;
     h1 {

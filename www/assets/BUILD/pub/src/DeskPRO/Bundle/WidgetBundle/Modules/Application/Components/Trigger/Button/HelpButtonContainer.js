@@ -116,7 +116,7 @@ export class HelpButtonContainer extends React.Component {
 
   renderPopup() {
     const { widgetPosition } = this.props;
-    const { backgroundColor, textColor, borderColor, liveDemo, popupStyle } = this.props;
+    const { backgroundColor, textColor, borderColor, liveDemo, popupStyle, size } = this.props;
     const popupProps = {
       widgetPosition,
       backgroundColor,
@@ -124,22 +124,23 @@ export class HelpButtonContainer extends React.Component {
       borderColor,
       liveDemo,
       popupStyle,
+      size,
       onClick: this.onClick,
       onClose: this.onClosePopup
     };
 
-    if (popupStyle !== 'agents_button') {
-      return (
-        <AgentMessagePopupContainer {...popupProps}>
-          {popupStyle.match(/_button$/)
-            ? <ReplyButtons {...popupProps} />
-            : <ReplyForm {...popupProps} />
-          }
-        </AgentMessagePopupContainer>
-      );
+    if (popupStyle === 'agents_button') {
+      return <OnlineAgentsPopup {...popupProps} />;
     }
 
-    return <OnlineAgentsPopup {...popupProps} />;
+    return (
+      <AgentMessagePopupContainer {...popupProps}>
+        {popupStyle.match(/_button$/)
+          ? <ReplyButtons {...popupProps} />
+          : <ReplyForm {...popupProps} />
+        }
+      </AgentMessagePopupContainer>
+    );
   }
 
   render() {

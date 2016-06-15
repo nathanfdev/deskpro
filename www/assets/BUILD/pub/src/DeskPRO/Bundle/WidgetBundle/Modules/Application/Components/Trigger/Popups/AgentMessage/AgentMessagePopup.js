@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { AgentAvatars } from '../AgentAvatars';
 import Immutable from 'immutable';
+import classNames from 'classnames';
 import { ChatPopup } from '../ChatPopup';
 
 export class AgentMessagePopup extends React.Component {
@@ -9,6 +10,7 @@ export class AgentMessagePopup extends React.Component {
     primaryAgent:        PropTypes.object,
     onClick:             PropTypes.func,
     children:            PropTypes.node,
+    size:                PropTypes.string,
     popupStyle:          PropTypes.string,
     helpPopupTitle:      PropTypes.string,
     helpPopupMessage:    PropTypes.string,
@@ -18,16 +20,16 @@ export class AgentMessagePopup extends React.Component {
 
   render() {
     const { primaryAgent = Immutable.fromJS({}), children, onClick } = this.props;
-    const { helpPopupTitle, helpPopupMessage, helpPopupHeading, helpPopupSubheading, popupStyle } = this.props;
+    const { helpPopupTitle, helpPopupMessage, helpPopupHeading, helpPopupSubheading, popupStyle, size } = this.props;
     const childProps = children.props;
     
-    const showAgent = popupStyle.match(/^agent_/);
+    const showAgent = popupStyle.match(/agent/);
 
     const h1 = showAgent ? primaryAgent.get('display_name') : helpPopupHeading;
 
     return (
       <ChatPopup {...this.props}>
-        <div className="preemtive-chat-content" onClick={onClick}>
+        <div className={classNames('preemtive-chat-content', size)} onClick={onClick}>
           <div className="dpdesignportal-chat-header">
             {showAgent && <AgentAvatars primaryAgent={primaryAgent} />}
             <h1><span>{h1}</span></h1>

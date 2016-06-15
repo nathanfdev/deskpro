@@ -30,6 +30,7 @@ define [
   'Admin/Main/Directive/DpOnOffSwitch',
   'Admin/Main/Directive/DpMatchMinHeight',
   'Admin/Main/Directive/DpOpenPhraseEditor',
+  'Admin/Main/Directive/DpOpenPhraseMapEditor',
   'Admin/Main/Directive/DpOrderMenu',
   'Admin/Main/Directive/DpPingFlash',
   'Admin/Main/Directive/DpRegisterMessage',
@@ -45,6 +46,7 @@ define [
   'Admin/Main/Directive/DpRedactor',
   'Admin/Main/Directive/DpDate',
   'Admin/Main/Directive/DpReadFile',
+  'Admin/Main/Directive/DpSemanticLanguageButton',
 
   'Admin/TicketDeps/Directive/LayoutEditor',
   'Admin/TicketDeps/Directive/LayoutEditorField',
@@ -89,6 +91,7 @@ define [
   Admin_Main_Directive_DpOnOffSwitch,
   Admin_Main_Directive_DpMatchMinHeight,
   Admin_Main_Directive_DpOpenPhraseEditor,
+  Admin_Main_Directive_DpOpenPhraseMapEditor,
   Admin_Main_Directive_DpOrderMenu,
   Admin_Main_Directive_DpPingFlash,
   Admin_Main_Directive_DpRegisterMessage,
@@ -104,6 +107,7 @@ define [
   Admin_Main_Directive_DpRedactor,
   Admin_Main_Directive_DpDate,
   Admin_Main_Directive_DpReadFile,
+  Admin_Main_Directive_DpSemanticLanguageButton,
 
   Admin_TicketDeps_Directive_LayoutEditor,
   Admin_TicketDeps_Directive_LayoutEditorField,
@@ -149,6 +153,7 @@ define [
     Module.directive('dpOnoffSwitch',                  Admin_Main_Directive_DpOnOffSwitch)
     Module.directive('dpMatchMinHeight',               Admin_Main_Directive_DpMatchMinHeight)
     Module.directive('dpOpenPhraseEditor',             Admin_Main_Directive_DpOpenPhraseEditor)
+    Module.directive('dpOpenPhraseMapEditor',          Admin_Main_Directive_DpOpenPhraseMapEditor)
     Module.directive('dpOrderMenu',                    Admin_Main_Directive_DpOrderMenu)
     Module.directive('dpPingFlash',                    Admin_Main_Directive_DpPingFlash)
     Module.directive('dpRegisterMessage',              Admin_Main_Directive_DpRegisterMessage)
@@ -164,6 +169,7 @@ define [
     Module.directive('dpRedactor',                     Admin_Main_Directive_DpRedactor)
     Module.directive('dpDate',                         Admin_Main_Directive_DpDate)
     Module.directive('dpReadFile',                     Admin_Main_Directive_DpReadFile)
+    Module.directive('dpSemanticLanguageButton',       Admin_Main_Directive_DpSemanticLanguageButton)
 
     Module.directive('dpTicketLayoutEditor',           Admin_TicketDeps_Directive_LayoutEditor)
     Module.directive('dpTicketLayoutEditorField',      Admin_TicketDeps_Directive_LayoutEditorField)

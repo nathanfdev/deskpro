@@ -49,6 +49,7 @@ define([
   'Admin/Languages/Ctrl/PhraseGroup',
   'Admin/Languages/Ctrl/PhraseResGroup',
   'Admin/Languages/Ctrl/Settings',
+  'Admin/Languages/Ctrl/TranslateMapModal',
   'Admin/Languages/Ctrl/TranslateModal',
   'Admin/License/Ctrl/License',
   'Admin/License/Ctrl/UpgradeLicenseModal',
