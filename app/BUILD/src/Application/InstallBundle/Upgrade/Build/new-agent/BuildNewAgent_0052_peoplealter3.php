@@ -32,8 +32,7 @@ class BuildNewAgent_0052_peoplealter3 extends AbstractBuild
 {
     public function run()
     {
-        $this->execDbQueryQuiet('default', 'ALTER TABLE `custom_data_person`
-            ADD UNIQUE INDEX `unique_idx` (`field_id` ASC, `person_id` ASC, `root_field_id` ASC);');
+        $this->execSlowAlterTableQuiet('custom_data_person', 'ADD UNIQUE INDEX `unique_idx` (`field_id` ASC, `person_id` ASC, `root_field_id` ASC)');
     }
 }
 

@@ -48,9 +48,7 @@ class BuildNewAgent_0061_ticketalter2 extends AbstractBuild
 
         $instructions[] = 'DROP visitor_id, ADD visitor_id VARCHAR(120) NULL DEFAULT NULL';
 
-        $this->execDbQuery('default', 'SET FOREIGN_KEY_CHECKS = 0');
-        $this->execDbQuery('default', 'ALTER TABLE tickets_messages '.implode(', ', $instructions));
-        $this->execDbQuery('default', 'SET FOREIGN_KEY_CHECKS = 1');
+        $this->execSlowAlterTable('tickets_messages', implode(', ', $instructions));
     }
 }
 

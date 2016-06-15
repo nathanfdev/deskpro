@@ -47,10 +47,7 @@ class BuildNewAgent_0060_ticketalter1 extends AbstractBuild
         }
 
         $instructions[] = 'DROP person_email_validating_id, DROP validating';
-
-        $this->execDbQuery('default', 'SET FOREIGN_KEY_CHECKS = 0');
-        $this->execDbQuery('default', 'ALTER TABLE tickets '.implode(', ', $instructions));
-        $this->execDbQuery('default', 'SET FOREIGN_KEY_CHECKS = 1');
+        $this->execSlowAlterTable('tickets', implode(', ', $instructions), false);
     }
 }
 

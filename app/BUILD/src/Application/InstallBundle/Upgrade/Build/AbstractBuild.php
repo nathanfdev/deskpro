@@ -298,16 +298,21 @@ abstract class AbstractBuild
      */
     public function execSlowAlterTable($table, $alter, $smart = true)
     {
-        $do_smart = true;
-        if ($smart) {
-            $count = $this->container->getDb()->fetchColumn("SELECT COUNT(*) FROM `$table` LIMIT 20000");
-            if ($count < 20000) {
-                $do_smart = false;
-            }
-        }
-
         $env                = $this->container->get('deskpro.app_env');
         $use_online_upgrade = $env->getConfig('upgrader.online_schema_upgrade');
+        $use_online_upgrade = str_replace('%dp.app_dir%', $env->getAppDir(), $use_online_upgrade);
+
+        $do_smart = true;
+        if (!$use_online_upgrade) {
+            $do_smart = false;
+        } else {
+            if ($smart) {
+                $count = $this->container->getDb()->fetchColumn("SELECT COUNT(*) FROM `$table` LIMIT 20000");
+                if ($count < 20000) {
+                    $do_smart = false;
+                }
+            }
+        }
 
         if ($do_smart && $use_online_upgrade) {
             $logger = $this->logger;
@@ -322,6 +327,17 @@ abstract class AbstractBuild
             }
 
             $logger->info("Tool path: $tool");
+
+            // FKs have leading underscores if the tool has run on the table before.
+            // The leading underscores are toggled on/off, each time the tool is run
+            // Se also the README in vendor-src/pt-online-schema-change/README.md
+            $alter = preg_replace_callback('#DROP\s+FOREIGN\s+KEY\s+(?P<underscore>_?)(?P<fkname>[a-zA-Z0-9_]+)#i', function (array $m) {
+                if ($m['underscore']) {
+                    return 'DROP FOREIGN KEY '.$m['fkname'];
+                } else {
+                    return 'DROP FOREIGN KEY _'.$m['fkname'];
+                }
+            }, $alter);
 
             $cmd_base = '{tool} --alter {query} --alter-foreign-keys-method auto --no-version-check --host {db_host} --database {db_name} --user {db_user} --password {db_pass} --port {db_port} {mode_param} {dsn}';
 
@@ -366,7 +382,31 @@ abstract class AbstractBuild
             }
         } else {
             $sql = "ALTER TABLE `$table` $alter";
+            $this->execMutateSql('SET FOREIGN_KEY_CHECKS = 0');
             $this->execMutateSql($sql);
+            $this->execMutateSql('SET FOREIGN_KEY_CHECKS = 1');
+        }
+    }
+
+    /**
+     * The same as execSlowAlterTable except we ignore most errors.
+     *
+     * The only time we throw an exception is if the table doesn't exist anymore.
+     * This is very edge-casey to do with using pt-online-schema-change with the drop_swap
+     * method where the rename failed.
+     *
+     * @param string $table
+     * @param string $alter
+     * @param bool   $smart
+     */
+    public function execSlowAlterTableQuiet($table, $alter, $smart = true)
+    {
+        try {
+            $this->execSlowAlterTable($table, $alter, $smart);
+        } catch (\Exception $e) {
+            // check the table still exists
+            // If this throws, it will propagate up
+            $this->execDbQuery("SELECT 'val' AS test FROM `$table` LIMIT 1");
         }
     }
 
