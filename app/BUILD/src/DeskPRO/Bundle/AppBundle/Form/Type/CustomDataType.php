@@ -333,6 +333,11 @@ class CustomDataType extends AbstractType
         $resolver
             ->setDefaults([
                 'label' => function (Options $options) {
+                    $noLabelTypes = [CustomDefAbstract::TYPE_HIDDEN, CustomDefAbstract::TYPE_DISPLAY];
+                    if (in_array($options['custom_def']->getType(), $noLabelTypes)) {
+                        return false;
+                    }
+
                     return $options['custom_def']->getTitle();
                 },
                 'help' => function (Options $options) {

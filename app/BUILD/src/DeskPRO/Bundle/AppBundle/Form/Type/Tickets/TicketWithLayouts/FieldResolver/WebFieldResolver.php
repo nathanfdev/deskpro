@@ -128,15 +128,10 @@ class WebFieldResolver extends AbstractFieldResolver
             'custom_def'      => $def,
             'property_path'   => $propertyPath,
             'agent_interface' => $context->isAgentView(),
-            'label'           => $def->getTitle(),
             'required'        => $def->isRequired($context->isAgentView()),
             'inline'          => false,
             'ticket'          => $context->getTicket(),
         ];
-
-        if (in_array($def->getType(), [CustomDefAbstract::TYPE_HIDDEN, CustomDefAbstract::TYPE_DISPLAY])) {
-            $options['label'] = false;
-        }
 
         return new FormField(CustomDataType::class, $options);
     }
