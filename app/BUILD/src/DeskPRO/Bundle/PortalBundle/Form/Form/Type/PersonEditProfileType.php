@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -185,8 +186,6 @@ class PersonEditProfileType extends AbstractType
      */
     public function onPreSetData(FormEvent $event)
     {
-        $field_manager = $this->field_manager;
-
         /** @var \Application\DeskPRO\Entity\Person $person */
         $person = $event->getData();
         $form   = $event->getForm();
@@ -214,13 +213,13 @@ class PersonEditProfileType extends AbstractType
             ]);
         }
 
-        foreach ($field_manager->getAvailablePersonDefs() as $field_def) {
-            if (!$field_def->isEnabled()) {
+        foreach ($this->field_manager->getAvailablePersonDefs() as $def) {
+            if (!$def->isEnabled()) {
                 continue;
             }
 
-            $form->add('user_field_'.$field_def->getId(), CustomDataType::class, [
-                'custom_def'      => $field_def,
+            $form->add($def->getId(), CustomDataType::class, [
+                'custom_def'      => $def,
                 'property_path'   => 'custom_data',
                 'agent_interface' => false,
             ]);

@@ -57,7 +57,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     const HANDLER_CLASS_CHOICE   = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
     const HANDLER_CLASS_TOGGLE   = 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle';
     const HANDLER_CLASS_DATE     = 'Application\\DeskPRO\\CustomFields\\Handler\\Date';
-    const HANDLER_CLASS_DATETIME = 'Application\\DeskPRO\\CustomFields\\Handler\\Datetime';
+    const HANDLER_CLASS_DATETIME = 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime';
     const HANDLER_CLASS_DISPLAY  = 'Application\\DeskPRO\\CustomFields\\Handler\\Display';
     const HANDLER_CLASS_HIDDEN   = 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden';
 
@@ -1008,13 +1008,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      */
     public function isChoiceType()
     {
-        switch ($this->handler_class) {
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
-                return true;
-
-            default:
-                return false;
-        }
+        return $this->handler_class === self::HANDLER_CLASS_CHOICE;
     }
 
     /**
@@ -1032,14 +1026,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      */
     public function isDateType()
     {
-        switch ($this->handler_class) {
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Date':
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime':
-                return true;
-
-            default:
-                return false;
-        }
+        return in_array($this->handler_class, [self::HANDLER_CLASS_DATE, self::HANDLER_CLASS_DATETIME], true);
     }
 
     /**
@@ -1048,9 +1035,9 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     public function getDateExpectedFormat()
     {
         switch ($this->handler_class) {
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Date':
+            case self::HANDLER_CLASS_DATE:
                 return 'Y-m-d';
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime':
+            case self::HANDLER_CLASS_DATETIME:
                 return 'Y-m-d H:i:s';
             default:
                 return false;

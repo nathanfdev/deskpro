@@ -29,18 +29,18 @@ Feature: Filter data by custom fields
     And I have a <entity_type> record referenced as entity_8
     And I have a <entity_type> record referenced as entity_9
     And I have a <entity_type> record referenced as entity_10
-    And the object "entity_1" has custom data "text_field" with only value "text"
-    And the object "entity_1" has custom data "textarea_field" with only value "textarea"
-    And the object "entity_2" has custom data "textarea_field" with only value "textarea"
-    And the object "entity_3" has custom data "toggle_field" with only value 1
-    And the object "entity_4" has custom data "toggle_field" with only value 0
-    And the object "entity_5" has custom data "hidden_field" with only value "val1"
-    And the object "entity_6" has custom data "hidden_field" with only value "val2"
-    And the object "entity_7" has custom data "single_choice_field" with only value "{single_choice_v1_field},{single_choice_v2_field}"
-    And the object "entity_8" has custom data "single_choice_field" with only value "{single_choice_v2_field}"
-    And the object "entity_9" has custom data "date_field" with only value "2016-06-11"
-    And the object "entity_10" has custom data "date_field" with only value "now"
-    And the object "entity_10" has custom data "datetime_field" with only value "2016-06-06 12:00:00"
+    And the object "entity_1" has "text_field" custom data with "text"
+    And the object "entity_1" has "textarea_field" custom data with "textarea"
+    And the object "entity_2" has "textarea_field" custom data with "textarea"
+    And the object "entity_3" has "toggle_field" custom data with 1
+    And the object "entity_4" has "toggle_field" custom data with 0
+    And the object "entity_5" has "hidden_field" custom data with "val1"
+    And the object "entity_6" has "hidden_field" custom data with "val2"
+    And the object "entity_7" has "single_choice_field" custom data with "{single_choice_v1_field},{single_choice_v2_field}"
+    And the object "entity_8" has "single_choice_field" custom data with "{single_choice_v2_field}"
+    And the object "entity_9" has "date_field" custom data with "2016-06-11"
+    And the object "entity_10" has "date_field" custom data with "now"
+    And the object "entity_10" has "datetime_field" custom data with "2016-06-06 12:00:00"
 
     When I send a GET request to "/api/v2/<endpoint>?<prefix>_field.~text_field~=text"
     And the response status code should be 200

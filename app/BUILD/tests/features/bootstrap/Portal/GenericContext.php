@@ -89,49 +89,6 @@ class GenericContext extends BasePortalContext
     }
 
     /**
-     * @Then I should see a form error with :message
-     */
-    public function iShouldSeeAFormErrorWith($message)
-    {
-        $this->assertSession()->elementExists('css', '.error-large');
-        $this->assertSession()->elementTextContains('css', '.error-large', $message);
-    }
-
-    /**
-     * @Then I should see a form error list with the phrase :phrase
-     */
-    public function iShouldSeeAFormErrorListWith($phrase)
-    {
-        $this->assertSession()->elementExists('css', '.form-error-list');
-        $this->assertSession()->elementTextContains('css', '.form-error-list li span', $this->phrase($phrase));
-    }
-
-    /**
-     * @Then I should see a form error with the phrase :phrase
-     */
-    public function iShouldSeeAFormErrorWithPhrase($phrase)
-    {
-        $container = $this->getSession()->getPage();
-        $regex     = '/'.preg_quote($this->phrase($phrase), '/').'/ui';
-
-        /** @var \Behat\Mink\Element\NodeElement[] $nodes */
-        $nodes = $container->findAll('css', '.error-large');
-
-        foreach ($nodes as $n) {
-            if (preg_match($regex, $n->getText())) {
-                return true;
-            }
-        }
-
-        $message = sprintf(
-            'The phrase "%s" was not found in the text of any .error-large elements.',
-            $phrase
-        );
-
-        throw new \Exception($message);
-    }
-
-    /**
      * @Then :user should be subscribed to the :content_type content :title
      */
     public function userShouldBeSubscribedToTheCategory($user, $content_type, $title)
@@ -321,11 +278,6 @@ class GenericContext extends BasePortalContext
         $ss_repo = $this->repository(SendmailSource::class);
 
         return $ss_repo->getLatest();
-    }
-
-    protected function phrase($phrase)
-    {
-        return $this->get('language_manager')->phrase($phrase);
     }
 
     protected function isSubscribedContent(Person $person, ContentAbstract $content)

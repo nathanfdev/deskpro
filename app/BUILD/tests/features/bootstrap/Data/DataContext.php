@@ -28,7 +28,6 @@
 
 namespace DpBehat\Data;
 
-use Application\DeskPRO\Entity\CustomDefAbstract;
 use Behat\Gherkin\Node\TableNode;
 use DpBehat\BaseContext;
 
@@ -118,7 +117,12 @@ class DataContext extends BaseContext
 
         list($class, $id) = self::$references[$name];
 
-        return self::getEm()->find($class, $id);
+        $entity = self::getEm()->find($class, $id);
+        if (!$entity) {
+            throw new \Exception("Entity for $name ref not found");
+        }
+
+        return $entity;
     }
 
     /**
@@ -242,7 +246,9 @@ class DataContext extends BaseContext
 
             // Resolve references to other objects
             foreach ($data as &$value) {
-                $value = self::isReference($value) ? self::resolveReference($value) : $value;
+                if (self::isReference($value)) {
+                    $value = self::resolveReference($value);
+                }
             }
 
             $record = $this->om()->create($type, $data);
@@ -270,61 +276,6 @@ class DataContext extends BaseContext
         $this->theFollowingRecordsExist($type, $table);
     }
 
-    /**
-     * @Given the object :entityRef has custom data :customDefRef with only value :value
-     *
-     * @param string $entityRef
-     * @param string $customDefRef
-     * @param string $value
-     *
-     * @throws \Exception
-     */
-    public function theObjectWithReferenceHasCustomDataWithOnlyValue($entityRef, $customDefRef, $value)
-    {
-        /** @var CustomDefAbstract $customDef */
-        $customDef = $this->getReference($customDefRef);
-        $entity    = $this->getReference($entityRef);
-        $value     = self::replace($value);
-
-        if (!method_exists($entity, 'getCustomData') || !method_exists($entity, 'addCustomData')) {
-            throw new \Exception("$entityRef doesn't support custom data");
-        }
-
-        if ($customDef->isChoiceType()) {
-            foreach (explode(',', $value) as $choiceId) {
-                $choiceDef = $customDef->getChildById($choiceId);
-                if (!$choiceDef) {
-                    throw new \Exception("$customDefRef doesn't have choice $choiceId");
-                }
-
-                $customData = $customDef->createNewDataInstance();
-                $customData->setField($choiceDef);
-                $customData->setValue(1);
-
-                $entity->addCustomData($customData);
-            }
-        } else {
-            $customData = $customDef->createNewDataInstance();
-
-            if ($customDef->getWidgetType() === CustomDefAbstract::TYPE_TOGGLE) {
-                $customData->setValue($value);
-            } elseif ($customDef->isDateType()) {
-                $date = new \DateTime($value);
-                if ($customDef->getWidgetType() === CustomDefAbstract::TYPE_DATE) {
-                    $date->modify('midnight');
-                }
-
-                $customData->setValue($date->getTimestamp());
-            } else {
-                $customData->setData($value);
-            }
-
-            $entity->addCustomData($customData);
-        }
-
-        $this->persistAndFlush($entity);
-    }
-
     // ConcreteDataContext ---------------------------------------------------------------------------------------------
 
     /**
@@ -334,74 +285,6 @@ class DataContext extends BaseContext
     {
         $this->noRecordsExist('TaskAttachment');
         $this->noRecordsExist('Blob');
-    }
-
-    /**
-     * @Given there are no custom ticket fields defined
-     */
-    public function noCustomTicketFieldsExist()
-    {
-        $this->noRecordsExist('CustomDefTicket');
-    }
-
-    /**
-     * @Given the following custom ticket fields exist:
-     *
-     * @param TableNode $table
-     */
-    public function theFollowingCustomTicketFieldsExist(TableNode $table)
-    {
-        $this->theFollowingRecordsExist('CustomDefTicket', $table);
-    }
-
-    /**
-     * @Given only the following custom ticket fields exist:
-     *
-     * @param TableNode $table
-     */
-    public function onlyTheFollowingCustomTicketFieldsExist(TableNode $table)
-    {
-        $this->onlyTheFollowingRecordsExist('CustomDefTicket', $table);
-    }
-
-    /**
-     * @Given only the following custom organization fields exist:
-     *
-     * @param TableNode $table
-     */
-    public function onlyTheFollowingCustomOrganizationFieldsExist(TableNode $table)
-    {
-        $this->onlyTheFollowingRecordsExist('CustomDefOrganization', $table);
-    }
-
-    /**
-     * @Given only the following custom feedback fields exist:
-     *
-     * @param TableNode $table
-     */
-    public function onlyTheFollowingCustomFeedbackFieldsExist(TableNode $table)
-    {
-        $this->onlyTheFollowingRecordsExist('CustomDefFeedback', $table);
-    }
-
-    /**
-     * @Given only the following custom person fields exist:
-     *
-     * @param TableNode $table
-     */
-    public function onlyTheFollowingCustomPersonFieldsExist(TableNode $table)
-    {
-        $this->onlyTheFollowingRecordsExist('CustomDefPerson', $table);
-    }
-
-    /**
-     * @Given only the following custom chat fields exist:
-     *
-     * @param TableNode $table
-     */
-    public function onlyTheFollowingCustomChatFieldsExist(TableNode $table)
-    {
-        $this->onlyTheFollowingRecordsExist('CustomDefChat', $table);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -430,13 +313,7 @@ class DataContext extends BaseContext
      */
     private static function isReference($string)
     {
-        if (empty($string)) {
-            return false;
-        }
-
-        $last = strlen($string) - 1;
-
-        return ($string[0] === '{' && $string[$last] === '}') || ($string[0] === '~' && $string[$last] === '~');
+        return is_string($string) && (preg_match('/^{[\w-]+}$/', $string) || preg_match('/^~[\w-]+~$/', $string));
     }
 
     /**
@@ -451,6 +328,7 @@ class DataContext extends BaseContext
             if (!$isJson) {
                 $content = str_replace('{'.$name.'}', $value, $content);
             }
+
             $content = str_replace('~'.$name.'~', $value, $content);
         }
 
@@ -476,6 +354,9 @@ class DataContext extends BaseContext
             }
 
             $object = self::resolveReference($ref);
+            if (!$object) {
+                throw new \Exception("Object $ref not found");
+            }
 
             $reflectionObject = new \ReflectionObject($object);
             if (!$reflectionObject->hasProperty($prop)) {

@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\CustomFieldManager;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
@@ -42,6 +38,8 @@ use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomFieldChoiceType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -247,7 +245,7 @@ class CustomFieldManager
                 ];
 
                 return new FormField(
-                    'deskpro_custom_field_choice',
+                    CustomFieldChoiceType::class,
                     $this->getGeneralOptionsForField($def, $options)
                 );
 
@@ -294,7 +292,7 @@ class CustomFieldManager
                     ];
 
                     return new FormField(
-                        'deskpro_datetime',
+                        DateTimeType::class,
                         $this->getGeneralOptionsForField($def, $options)
                     );
                 }

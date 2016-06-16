@@ -14,7 +14,7 @@ Feature: submitting new feedback
     When I select "Suggestion" from "new_feedback_category"
     And I fill in "new_feedback_title" with "My New Feedback Title"
     And I fill in "new_feedback_content" with "I need to report the following bug. It happens when..."
-    And I fill in "new_feedback_custom_data_custom_feedback_def_1_data" with "Custom Text"
+    And I fill in "new_feedback_custom_data_1_data" with "Custom Text"
     And I press "Add your feedback"
     Then I should be on "/feedback/view/my-new-feedback-title"
     And the response status code should be 200
@@ -41,7 +41,7 @@ Feature: submitting new feedback
     When I select "Suggestion" from "new_feedback_category"
     And I fill in "new_feedback_title" with "A Guest Feedback Title"
     And I fill in "new_feedback_content" with "I need to report the following bug. It happens when..."
-    And I fill in "new_feedback_custom_data_custom_feedback_def_1_data" with "Custom Text"
+    And I fill in "new_feedback_custom_data_1_data" with "Custom Text"
     And I fill in "new_feedback_name" with "Mr Guest"
     And I fill in "new_feedback_email_email" with "guest@deskpro.com"
     And I press "Add your feedback"

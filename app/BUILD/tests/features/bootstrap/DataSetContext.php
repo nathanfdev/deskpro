@@ -120,6 +120,7 @@ class DataSetContext extends BaseContext
         }
 
         DataContext::clear();
+        DataContext::initOm();
 
         self::$reinstall = false;
     }

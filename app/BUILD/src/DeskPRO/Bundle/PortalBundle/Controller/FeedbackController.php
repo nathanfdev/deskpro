@@ -382,6 +382,7 @@ class FeedbackController extends AbstractController
             'rerendering_saved' => false, // wont happen here because we always rerender on index
             'is_subscribed'     => $isSubscribed,
             'lockout'           => $request->get('lockout', false),
+            'lockout_time'      => 0,
         ];
 
         if ($request->isXmlHttpRequest()) {

@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
@@ -88,15 +84,12 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
         }
 
         if (!is_array($value)) {
-            /* @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode $value */
-            return (string) $value->getData()->getId();
+            return $value instanceof HierarchyNode ? (string) $value->getData()->getId() : $value;
         }
 
         $items = [];
-
-        /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode[] $value */
         foreach ($value as $item) {
-            $items[] = (string) $item->getData()->getId();
+            $items[] = $item instanceof HierarchyNode ? (string) $item->getData()->getId() : $item;
         }
 
         return $items;

@@ -180,6 +180,26 @@ class TicketLayout extends DomainObject
     }
 
     /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->is_enabled;
+    }
+
+    /**
+     * @param bool $is_enabled
+     *
+     * @return $this
+     */
+    public function setIsEnabled($is_enabled)
+    {
+        $this->setModelField('is_enabled', $is_enabled);
+
+        return $this;
+    }
+
+    /**
      * Enable the layout.
      */
     public function enable()
