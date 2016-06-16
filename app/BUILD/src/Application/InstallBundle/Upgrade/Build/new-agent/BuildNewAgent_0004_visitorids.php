@@ -52,8 +52,6 @@ class BuildNewAgent_0004_visitorids extends AbstractBuild
             'sessions',
         ];
 
-        $this->execDbQuery('default', 'SET FOREIGN_KEY_CHECKS = 0');
-
         foreach ($tables as $t) {
             $instructions = [];
             if ($fk = $sh->findForeignKey($t, 'visitor_id', 'visitors', 'id')) {
@@ -65,11 +63,9 @@ class BuildNewAgent_0004_visitorids extends AbstractBuild
 
             $instructions[] = 'DROP visitor_id, ADD visitor_id VARCHAR(120) NULL DEFAULT NULL';
 
-            $sql = "ALTER TABLE $t ".implode(', ', $instructions);
-            $this->execDbQuery('default', $sql);
+            // Using slow alter here mainly for searchlog and chat_conversations, which might be large
+            $this->execSlowAlterTable($t, implode(', ', $instructions));
         }
-
-        $this->execDbQuery('default', 'SET FOREIGN_KEY_CHECKS = 1');
     }
 }
 

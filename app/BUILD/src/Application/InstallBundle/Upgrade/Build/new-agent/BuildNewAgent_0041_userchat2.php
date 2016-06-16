@@ -36,7 +36,7 @@ class BuildNewAgent_0041_userchat2 extends AbstractBuild
 {
     public function run()
     {
-        $this->execDbQuery('default', 'ALTER TABLE chat_messages ADD is_user TINYINT(1) NOT NULL DEFAULT 0');
+        $this->execSlowAlterTable('chat_messages', 'ADD is_user TINYINT(1) NOT NULL DEFAULT 0');
     }
 }
 

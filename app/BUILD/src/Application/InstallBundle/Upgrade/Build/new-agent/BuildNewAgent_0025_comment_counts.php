@@ -32,54 +32,8 @@ class BuildNewAgent_0025_comment_counts extends AbstractBuild
 {
     public function run()
     {
-        $this->execDbQueryQuiet('default',
-            'UPDATE `articles` a
-              LEFT JOIN (
-                SELECT ac.`article_id`,
-                  COUNT(ac.`id`) num_comments
-                FROM `article_comments` ac
-                WHERE ac.`status` = \'visible\'
-                GROUP BY ac.`article_id`
-              ) calc
-              ON calc.`article_id` = a.`id`
-              SET a.`num_comments` = IFNULL(calc.`num_comments`, 0);'
-        );
-        $this->execDbQueryQuiet('default',
-            'UPDATE `downloads` d
-              LEFT JOIN (
-                SELECT dc.`download_id`,
-                  COUNT(dc.`id`) num_comments
-                FROM `download_comments` dc
-                WHERE dc.`status` = \'visible\'
-                GROUP BY dc.`download_id`
-              ) calc
-              ON calc.`download_id` = d.`id`
-              SET d.`num_comments` = IFNULL(calc.`num_comments`, 0);'
-        );
-        $this->execDbQueryQuiet('default',
-            'UPDATE `feedback` f
-              LEFT JOIN (
-                SELECT fc.`feedback_id`,
-                  COUNT(fc.`id`) num_comments
-                FROM `feedback_comments` fc
-                WHERE fc.`status` = \'visible\'
-                GROUP BY fc.`feedback_id`
-              ) calc
-              ON calc.`feedback_id` = f.`id`
-              SET f.`num_comments` = IFNULL(calc.`num_comments`, 0);'
-        );
-        $this->execDbQueryQuiet('default',
-            'UPDATE `news` n
-              LEFT JOIN (
-                SELECT nc.`news_id`,
-                  COUNT(nc.`id`) num_comments
-                FROM `news_comments` nc
-                WHERE nc.`status` = \'visible\'
-                GROUP BY nc.`news_id`
-              ) calc
-              ON calc.`news_id` = n.`id`
-              SET n.`num_comments` = IFNULL(calc.`num_comments`, 0);'
-        );
+        //  Noop, this build script was removed
+        // (this file remains so the manifest doesnt change)
     }
 }
 

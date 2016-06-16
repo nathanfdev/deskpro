@@ -36,7 +36,7 @@ class BuildNewAgent_0051_peoplealter2 extends AbstractBuild
 {
     public function run()
     {
-        $this->execDbQuery('default', 'ALTER TABLE people_emails DROP is_own_validated');
+        $this->execSlowAlterTable('people_emails', 'DROP is_own_validated');
     }
 }
 
