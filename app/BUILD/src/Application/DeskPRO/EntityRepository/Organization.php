@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,10 +31,12 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Query;
 use Orb\Util\Numbers;
 
@@ -189,6 +191,21 @@ class Organization extends AbstractEntityRepository
     }
 
     /**
+     * @return array
+     */
+    public function countMembers(array $orgs)
+    {
+        $ids = array_map(function ($a) { return $a->id; }, $orgs);
+
+        return App::getDb()->fetchAllKeyValue('
+            SELECT organization_id as id, COUNT(*) as count
+            FROM people
+            WHERE organization_id IN (?) AND is_deleted = 0
+            GROUP BY organization_id
+        ', array($ids), array(Connection::PARAM_INT_ARRAY));
+    }
+
+    /**
      * Gets the list of organization managers.
      *
      * @param \Application\DeskPRO\Entity\Organization $org
@@ -242,5 +259,12 @@ class Organization extends AbstractEntityRepository
             WHERE LOWER(o.name) LIKE ?1
             ORDER BY o.name ASC
         ')->setMaxResults($limit)->execute(array(1 => $q), $mode);
+    }
+
+    public function getOrgMembers(OrganizationEntity $org, $limit = 15)
+    {
+        return $this->getEntityManager()->createQuery('
+            SELECT p FROM DeskPRO:Person p WHERE p.organization = :org
+        ')->setParameter('org', $org)->setMaxResults((int) $limit)->getResult();
     }
 }

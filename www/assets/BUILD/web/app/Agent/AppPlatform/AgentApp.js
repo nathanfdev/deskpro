@@ -981,7 +981,6 @@ define([
 				});
 
 				scope.loadPersonTickets = function(person) {
-
 					if (person === scope.expandedPerson) {
 						return scope.expandedPerson = null;
 					}
@@ -1004,10 +1003,39 @@ define([
 					});
 				};
 
+        scope.loadOrgMembers = function(org) {
+          if (org === scope.expandedOrg) {
+            return scope.expandedOrg = null;
+          }
+
+          scope.expandedOrg = org;
+
+          if (org.members_data) {
+            return;
+          }
+
+          $http({
+            method: 'GET',
+            params: { org_id: org.id },
+            url: 'DP_URL/agent/quick-search/get-org-members.json'
+          }).success(function(data) {
+            if (data.results) {
+              org.members_data = data.results;
+            }
+          }).error(function() {
+
+          });
+        };
+
 				scope.openAllTickets = function(person) {
 					scope.clearSearch();
 					DeskPRO_Window.loadListPane(scope.search_url, {postData: {search_person_id: person.id}});
 				};
+
+        scope.openAllMembers = function(org) {
+          scope.clearSearch();
+          DeskPRO_Window.loadListPane(scope.search_url, {postData: {search_organization_id: org.id}});
+        };
 			}
 		}
 	}]);
