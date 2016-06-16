@@ -47,7 +47,7 @@ class WebFieldResolver extends AbstractFieldResolver
     /**
      * {@inheritdoc}
      */
-    protected function createCaptcha(TicketWithLayoutsContext $context, $ignore_validation)
+    protected function createCaptcha(TicketWithLayoutsContext $context)
     {
         if (!$context->getOption('use_captcha')) {
             return false;
@@ -61,10 +61,6 @@ class WebFieldResolver extends AbstractFieldResolver
             'mapped'         => false,
             'error_bubbling' => false,
         ];
-
-        if ($ignore_validation) {
-            $options = $this->markNoValidation($options);
-        }
 
         return new FormField('deskpro_captcha', $options);
     }
@@ -122,7 +118,7 @@ class WebFieldResolver extends AbstractFieldResolver
     /**
      * {@inheritdoc}
      */
-    protected function createCustomField(TicketWithLayoutsContext $context, $propertyPath, CustomDefAbstract $def = null, $ignoreValidation = false)
+    protected function createCustomField(TicketWithLayoutsContext $context, $propertyPath, CustomDefAbstract $def = null)
     {
         if (!$def || !$def->isEnabled()) {
             return false;
@@ -140,10 +136,6 @@ class WebFieldResolver extends AbstractFieldResolver
 
         if (in_array($def->getType(), [CustomDefAbstract::TYPE_HIDDEN, CustomDefAbstract::TYPE_DISPLAY])) {
             $options['label'] = false;
-        }
-        if ($ignoreValidation) {
-            $options                      = $this->markNoValidation($options);
-            $options['ignore_validation'] = true;
         }
 
         return new FormField(CustomDataType::class, $options);

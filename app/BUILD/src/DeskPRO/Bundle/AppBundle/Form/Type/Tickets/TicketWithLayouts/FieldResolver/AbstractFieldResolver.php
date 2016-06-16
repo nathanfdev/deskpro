@@ -113,15 +113,14 @@ abstract class AbstractFieldResolver
     /**
      * @param TicketWithLayoutsContext $context
      * @param LayoutField              $field
-     * @param bool|false               $ignore_validation
      *
      * @return FormField|false
      */
-    public function createFormField(TicketWithLayoutsContext $context, LayoutField $field, $ignore_validation = false)
+    public function createFormField(TicketWithLayoutsContext $context, LayoutField $field)
     {
         switch ($field->getFieldType()) {
             case FormFields::SUBJECT:
-                return $this->createSubject($ignore_validation);
+                return $this->createSubject();
             case FormFields::MESSAGE:
                 if (TicketWithLayoutsContext::VISIBILITY_NEW !== $context->getVisibility()) {
                     return false;
@@ -141,7 +140,7 @@ abstract class AbstractFieldResolver
             case FormFields::PRODUCT:
                 return $this->createProduct($context);
             case FormFields::CAPTCHA:
-                return $this->createCaptcha($context, $ignore_validation);
+                return $this->createCaptcha($context);
             case FormFields::CC:
                 return $this->createCc($context);
             case FormFields::FOLLOWERS:
@@ -153,13 +152,13 @@ abstract class AbstractFieldResolver
             case FormFields::LABELS:
                 return $this->createLabelsField($context);
             case FormFields::USER_FIELD:
-                return $this->createCustomUserField($context, $field, $ignore_validation);
+                return $this->createCustomUserField($context, $field);
             case FormFields::ORG_FIELD:
-                return $this->createCustomOrgField($context, $field, $ignore_validation);
+                return $this->createCustomOrgField($context, $field);
             case FormFields::TICKET_FIELD:
-                return $this->createCustomTicketField($context, $field, $ignore_validation);
+                return $this->createCustomTicketField($context, $field);
             case FormFields::CUSTOM_FIELD:
-                return $this->createCustomPerField($context, $field, $ignore_validation);
+                return $this->createCustomPerField($context, $field);
             default:
                 return false;
         }
@@ -192,11 +191,9 @@ abstract class AbstractFieldResolver
     }
 
     /**
-     * @param bool $ignore_validation
-     *
      * @return FormField
      */
-    protected function createSubject($ignore_validation)
+    protected function createSubject()
     {
         $options = [
             'label'       => $this->phrase('portal.forms.label_subject'),
@@ -205,10 +202,6 @@ abstract class AbstractFieldResolver
                 new Assert\Length(['min' => 5]),
             ],
         ];
-
-        if ($ignore_validation) {
-            $options = $this->markNoValidation($options);
-        }
 
         return new FormField('text', $options);
     }
@@ -246,29 +239,27 @@ abstract class AbstractFieldResolver
     /**
      * @param TicketWithLayoutsContext $context
      * @param LayoutField              $field
-     * @param bool|false               $ignore_validation
      *
      * @return FormField
      */
-    protected function createCustomTicketField(TicketWithLayoutsContext $context, LayoutField $field, $ignore_validation = false)
+    protected function createCustomTicketField(TicketWithLayoutsContext $context, LayoutField $field)
     {
         $field_def = $this->fieldManager->getCustomTicketFieldById($field->getFieldId());
 
-        return $this->createCustomField($context, 'custom_data', $field_def, $ignore_validation);
+        return $this->createCustomField($context, 'custom_data', $field_def);
     }
 
     /**
      * @param TicketWithLayoutsContext $context
      * @param LayoutField              $field
-     * @param bool|false               $ignore_validation
      *
      * @return FormField
      */
-    protected function createCustomUserField(TicketWithLayoutsContext $context, LayoutField $field, $ignore_validation = false)
+    protected function createCustomUserField(TicketWithLayoutsContext $context, LayoutField $field)
     {
         $def = $this->fieldManager->getCustomPersonFieldById($field->getFieldId());
 
-        $field = $this->createCustomField($context, 'person.custom_data', $def, $ignore_validation);
+        $field = $this->createCustomField($context, 'person.custom_data', $def);
         $field->setOption('owner_form', $context->getForm()->get(FormFields::PERSON));
 
         return $field;
@@ -277,11 +268,10 @@ abstract class AbstractFieldResolver
     /**
      * @param TicketWithLayoutsContext $context
      * @param LayoutField              $field
-     * @param bool|false               $ignore_validation
      *
      * @return FormField
      */
-    protected function createCustomOrgField(TicketWithLayoutsContext $context, LayoutField $field, $ignore_validation = false)
+    protected function createCustomOrgField(TicketWithLayoutsContext $context, LayoutField $field)
     {
         $person_organization = $context->getPerson()->getOrganization();
         $ticket_organization = $context->getTicket()->getOrganization();
@@ -302,17 +292,16 @@ abstract class AbstractFieldResolver
 
         $field_def = $this->fieldManager->getCustomOrganizationFieldById($field->getFieldId());
 
-        return $this->createCustomField($context, 'organization.custom_data', $field_def, $ignore_validation);
+        return $this->createCustomField($context, 'organization.custom_data', $field_def);
     }
 
     /**
      * @param TicketWithLayoutsContext $context
      * @param LayoutField              $field
-     * @param bool|false               $ignore_validation
      *
      * @return FormField
      */
-    protected function createCustomPerField(TicketWithLayoutsContext $context, LayoutField $field, $ignore_validation = false)
+    protected function createCustomPerField(TicketWithLayoutsContext $context, LayoutField $field)
     {
         $field_context = new CustomFieldTicketContext($context->getTicket());
         $def           = $this->customPerFieldManager->getCustomPerFieldDefinition($field->getFieldId(), $field_context);
@@ -335,10 +324,6 @@ abstract class AbstractFieldResolver
             'custom_per_field_definition' => $def,
             'mapped'                      => false,
         ];
-
-        if ($ignore_validation) {
-            $options = $this->markNoValidation($options);
-        }
 
         return new FormField('deskpro_custom_per_field_data', $options);
     }
@@ -472,11 +457,10 @@ abstract class AbstractFieldResolver
 
     /**
      * @param TicketWithLayoutsContext $context
-     * @param bool                     $ignore_validation
      *
      * @return FormField
      */
-    abstract protected function createCaptcha(TicketWithLayoutsContext $context, $ignore_validation);
+    abstract protected function createCaptcha(TicketWithLayoutsContext $context);
 
     /**
      * @param TicketWithLayoutsContext $context
@@ -496,24 +480,10 @@ abstract class AbstractFieldResolver
      * @param TicketWithLayoutsContext $context
      * @param string                   $propertyPath
      * @param CustomDefAbstract        $def
-     * @param bool                     $ignoreValidation
      *
      * @return FormField
      */
-    abstract protected function createCustomField(TicketWithLayoutsContext $context, $propertyPath, CustomDefAbstract $def = null, $ignoreValidation = false);
-
-    /**
-     * @param array $options
-     *
-     * @return array
-     */
-    protected function markNoValidation(array $options)
-    {
-        return array_merge($options, [
-            'validation_groups' => [],
-            'constraints'       => [],
-        ]);
-    }
+    abstract protected function createCustomField(TicketWithLayoutsContext $context, $propertyPath, CustomDefAbstract $def = null);
 
     /**
      * @param string $name
