@@ -61,7 +61,7 @@ define(function() {
 
   routes.push({
     id: 'portal',
-    url: '/portal',
+    url: '/portal/{brandId:[0-9]+}',
     templateName: 'Index/app-nav-portal.html',
 		controller: 'Admin_Portal_Ctrl_Nav'
 	});

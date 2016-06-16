@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -48,7 +48,7 @@ class BrandController extends AbstractController
 
         $serialized_brands = $this->container->getSerializer()->serializeArray($brands);
 
-        return $this->createApiResponse(array('brands' => $serialized_brands));
+        return $this->createApiResponse(['brands' => $serialized_brands]);
     }
 
     public function showAction($id)
@@ -74,7 +74,7 @@ class BrandController extends AbstractController
             $http_status = 201;
         }
 
-        $errors = array();
+        $errors = [];
 
         $name = $this->in->getString('brand.name');
         if (!$name) {
