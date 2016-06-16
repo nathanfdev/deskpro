@@ -73,12 +73,15 @@
 		<a class="name click-through" route-notabreload="1" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
 			<span class="with-icon" style="background-image: url('<%- person.picture_url_16 %>');"><%- person.display_name %></span></a>
 		<span class="email">&lt;<%- (person.primary_email || {}).email %>&gt;</span>
-		<div class="bound-fade">
+		<div class="bound-fade" style="width: auto;">
 			<% if (person.tickets_count > 0) { %>
-				<span class="sub-items-link" ng-click="loadPersonTickets(result); $event.stopPropagation()">
+                <span class="sub-items-link" ng-click="loadPersonTickets(result); $event.stopPropagation()">
 					<%- person.tickets_count + ' Ticket' + (1 === person.tickets_count ? '' : 's') %>
 				</span>
 			<% } %>
+            <span class="sub-items-link" style="margin-right: 5px;" data-route="page:{{ path('agent_ticket_new', {person_id: '0000'})|replace({'0000': '<%= person.id %>'})|raw }}">
+                + Ticket
+            </span>
 		</div>
 	</div>
 </article>

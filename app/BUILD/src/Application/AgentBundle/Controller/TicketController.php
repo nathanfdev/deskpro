@@ -3764,7 +3764,9 @@ class TicketController extends AbstractController
     {
         $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
-        $agents      = $this->em->getRepository('DeskPRO:Person')->getAgents();
+        /** @var \Application\DeskPRO\EntityRepository\Person $personRep */
+        $personRep   = $this->em->getRepository('DeskPRO:Person');
+        $agents      = $personRep->getAgents();
         $agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
         #------------------------------
@@ -3826,10 +3828,12 @@ class TicketController extends AbstractController
         $field_manager = $this->container->getTicketFieldManager();
         $custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
-        $billing_field_manager     = $this->container->getBillingFieldManager();
-        $group                     = $this->container->get('form.factory')->createNamedBuilder('billing_fields');
-        $billing_fields            = $billing_field_manager->getDisplayArrayForObject(new Entity\TicketCharge(), $group);
-        $person                    = new Person();
+        $billing_field_manager = $this->container->getBillingFieldManager();
+        $group                 = $this->container->get('form.factory')->createNamedBuilder('billing_fields');
+        $billing_fields        = $billing_field_manager->getDisplayArrayForObject(new Entity\TicketCharge(), $group);
+
+        $pid                       = (int) $this->request->get('person_id');
+        $person                    = $pid ? $personRep->find($pid) : new Person();
         $custom_person_fields_form = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
         $custom_org_fields_form    = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
         $custom_person_fields      = $this->container->getPersonFieldManager()->getDisplayArrayForObject($person, $custom_person_fields_form);
@@ -3863,6 +3867,7 @@ class TicketController extends AbstractController
 
         return $this->render('AgentBundle:Ticket:newticket.html.twig', [
             'ticket'               => $ticket,
+            'person'               => $person,
             'message'              => $message,
             'attachments'          => isset($attachments) ? $attachments : null,
             'agents'               => $agents,
