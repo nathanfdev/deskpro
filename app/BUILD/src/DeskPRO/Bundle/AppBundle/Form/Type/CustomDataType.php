@@ -29,17 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
-use Application\DeskPRO\Entity\CustomDataChat;
-use Application\DeskPRO\Entity\CustomDataFeedback;
-use Application\DeskPRO\Entity\CustomDataOrganization;
-use Application\DeskPRO\Entity\CustomDataPerson;
-use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\DeskPRO\Entity\CustomDefAbstract;
-use Application\DeskPRO\Entity\CustomDefChat;
-use Application\DeskPRO\Entity\CustomDefFeedback;
-use Application\DeskPRO\Entity\CustomDefOrganization;
-use Application\DeskPRO\Entity\CustomDefPerson;
-use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
@@ -240,7 +230,7 @@ class CustomDataType extends AbstractType
             // add new items
             foreach ($data as $fieldId) {
                 if (!in_array($fieldId, $exist)) {
-                    $customData = $this->createCustomData($customDef);
+                    $customData = $customDef->createCustomData();
                     $customData->setValue(1);
                     $customData->setField($customDef->getChildById($fieldId));
 
@@ -255,7 +245,7 @@ class CustomDataType extends AbstractType
                 $customData = $customDefData->first();
                 $customData->setData($data);
             } else {
-                $customData = $this->createCustomData($customDef);
+                $customData = $customDef->createCustomData();
                 $customData->setData($data);
 
                 $customDefData->add($customData);
@@ -407,30 +397,6 @@ class CustomDataType extends AbstractType
     }
 
     /**
-     * Create custom data object.
-     *
-     * @param CustomDefAbstract $customDef
-     *
-     * @return CustomDataAbstract
-     */
-    protected function createCustomData(CustomDefAbstract $customDef)
-    {
-        if ($customDef instanceof CustomDefTicket) {
-            return new CustomDataTicket();
-        } elseif ($customDef instanceof CustomDefPerson) {
-            return new CustomDataPerson();
-        } elseif ($customDef instanceof CustomDefOrganization) {
-            return new CustomDataOrganization();
-        } elseif ($customDef instanceof CustomDefFeedback) {
-            return new CustomDataFeedback();
-        } elseif ($customDef instanceof CustomDefChat) {
-            return new CustomDataChat();
-        }
-
-        throw new \RuntimeException('Unsupported custom data owner '.get_class($customDef));
-    }
-
-    /**
      * Filter custom def data from custom data collection.
      *
      * @param Collection        $allCustomData
@@ -460,7 +426,7 @@ class CustomDataType extends AbstractType
                 }
 
                 if ($defaultValue) {
-                    $defaultCustomData = $this->createCustomData($customDef);
+                    $defaultCustomData = $customDef->createCustomData();
                     $defaultCustomData
                         ->setField($customDef)
                         ->setRootField($customDef)
