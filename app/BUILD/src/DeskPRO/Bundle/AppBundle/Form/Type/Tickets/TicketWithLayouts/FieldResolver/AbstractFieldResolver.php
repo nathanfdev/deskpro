@@ -57,32 +57,32 @@ abstract class AbstractFieldResolver
     /**
      * @var HierarchyGenerator
      */
-    private $hierarchyGenerator;
+    protected $hierarchyGenerator;
 
     /**
      * @var LanguageManager
      */
-    private $languageManager;
+    protected $languageManager;
 
     /**
      * @var CustomFieldManager
      */
-    private $fieldManager;
+    protected $fieldManager;
 
     /**
      * @var CustomPerFieldManager
      */
-    private $customPerFieldManager;
+    protected $customPerFieldManager;
 
     /**
      * @var TicketFieldSettings
      */
-    private $fieldSettings;
+    protected $fieldSettings;
 
     /**
      * @var BrandAwareSettingsResolver
      */
-    private $settingsResolver;
+    protected $settingsResolver;
 
     /**
      * Constructor.

@@ -1,4 +1,4 @@
-import { createAction } from 'Ampliflux';
+import { createAction } from 'DeskPRO/Component/Ampliflux';
 import {
   requireChatLoginSelector,
   widgetSessionIsLoginSelector,
@@ -7,20 +7,35 @@ import {
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 import {
   chatBeginModeSelector,
-  widgetRawPositionSelector,
+  widgetTypeSelector,
+  widgetProactiveChatSelector,
   helpButtonSelector,
   helpPopupSelector,
   liveDemoSelector,
-  agentAcceptTimeoutSelector,
-  agentPollingTimeoutSelector
+  ticketDefaultDepartmentSelector,
+  ticketSelectDepartmentTypeSelector
 } from '../Selectors/dpWindow';
 import { chatIdSelector, needValidateEmailSelector } from '../../Chat/Selectors/chat';
+import { loadNewTicketForm } from '../../Ticket/Actions/ticketActions';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { addSessionCode } from './bootstrapActions';
-import { history } from '../../../Services/history';
+import { history, getLocation } from '../../../Services/history';
 import $ from 'jquery';
-import Immutable from 'immutable';
 
+const openChatBeginStageByMode = chatBeginMode => {
+  switch (chatBeginMode) {
+    case 'conversation':
+      history.replace('/chat/begin/conversation');
+      break;
+    case 'form':
+      history.replace('/chat/begin/form');
+      break;
+    case 'simple':
+    default:
+      history.replace('/chat/begin/simple');
+      break;
+  }
+};
 const openChatBeginStage = createAction(
   'WIDGET_OPEN_CHAT_BEGIN_STAGE',
   () => (dispatch, getState) => {
@@ -31,20 +46,8 @@ const openChatBeginStage = createAction(
 
     if (isLogin) {
       history.replace('/chat/begin/simple');
-      return;
-    }
-
-    switch (chatBeginMode) {
-      case 'conversation':
-        history.replace('/chat/begin/conversation');
-        break;
-      case 'form':
-        history.replace('/chat/begin/form');
-        break;
-      case 'simple':
-      default:
-        history.replace('/chat/begin/simple');
-        break;
+    } else {
+      openChatBeginStageByMode(chatBeginMode);
     }
   }
 );
@@ -82,7 +85,6 @@ export const openWidget = createAction(
   'WIDGET_OPEN',
   () => (dispatch, getState) => {
     const state = getState();
-
     const widgetHasChat = widgetHasChatSelector(state);
     const requireChatLogin = requireChatLoginSelector(state);
     const agentsCounts = onlineAgentsCountSelector(state);
@@ -111,6 +113,19 @@ export const openWidget = createAction(
     return null;
   }
 );
+export const reopenWidget = createAction('WIDGET_REOPEN', () => dispatch => {
+  getLocation(location => {
+    // if history location was changed then just reopen widget, no need to resolve path
+    // /chat is default path
+    if (location.pathname !== '/chat') {
+      dispatch(windowResize());
+    } else {
+      dispatch(openWidget());
+    }
+  });
+
+  return null;
+});
 
 export const loadOptions = createAction('WIDGET_OPTIONS', options => $.extend(true, {}, options));
 export const reloadOptions = createAction(
@@ -120,27 +135,48 @@ export const reloadOptions = createAction(
       return;
     }
 
-    const state = getState();
-    const newOptions = Immutable.fromJS($.extend(true, {}, options));
-
+    // get old state options
+    let state = getState();
     const buttonOptions = helpButtonSelector(state);
     const popupOptions = helpPopupSelector(state);
-    const widgetPosition = widgetRawPositionSelector(state);
-    const agentAcceptTimeout = agentAcceptTimeoutSelector(state);
-    const agentPollingTimeout = agentPollingTimeoutSelector(state);
 
+    const widgetType = widgetTypeSelector(state);
+    const chatBeginMode = chatBeginModeSelector(state);
+    const proactiveMode = widgetProactiveChatSelector(state);
+    const defaultTicketDepartment = ticketDefaultDepartmentSelector(state);
+    const ticketDepartmentType = ticketSelectDepartmentTypeSelector(state);
+
+    // reload options and reselect options with new state values
     dispatch(loadOptions(options));
+    state = getState();
 
-    const buttonOptionsHaveChanged = !buttonOptions.equals(newOptions.get('button'));
-    const popupOptionsHaveChanged = !popupOptions.equals(newOptions.getIn(['chat', 'popup']));
-    const widgetPositionHasChanged = widgetPosition !== newOptions.getIn(['widget', 'position']);
-    const chatWaitingTimeoutHasChanged = agentAcceptTimeout !== newOptions.getIn(['chat', 'waiting_timeout']);
-    const onlineAgentPollingTimeoutHasChanged = agentPollingTimeout !== newOptions.getIn(['widget', 'agent_polling_timeout']);
+    const newButtonOptions = helpButtonSelector(state);
+    const newPopupOptions = helpPopupSelector(state);
+    const newChatBeginMode = chatBeginModeSelector(state);
 
-    if (buttonOptionsHaveChanged || popupOptionsHaveChanged) {
+    // compare old/new options to decide if we need to open or close widget to display the changes
+    const buttonOptionsHaveChanged = !newButtonOptions.equals(buttonOptions);
+    const popupOptionsHaveChanged = !newPopupOptions.equals(popupOptions);
+    const proactiveModeChanged = proactiveMode !== widgetProactiveChatSelector(state);
+    const defaultTicketDepartmentChanged = defaultTicketDepartment !== ticketDefaultDepartmentSelector(state);
+    const ticketDepartmentTypeChanged = ticketDepartmentType !== ticketSelectDepartmentTypeSelector(state);
+    const widgetTypeChanged = widgetType !== widgetTypeSelector(state);
+
+    if (buttonOptionsHaveChanged || popupOptionsHaveChanged || proactiveModeChanged) {
+      // if button or popup options were changed
+      // then we should also close widget to display them
       dispatch(closeWidget());
-    } else if (!widgetPositionHasChanged && !chatWaitingTimeoutHasChanged && !onlineAgentPollingTimeoutHasChanged) {
-      dispatch(openWidget());
+    } else if (widgetTypeChanged) {
+      // if widget body type was changed ("column" or "bubble")
+      // then we should open the widget to display that
+      dispatch(reopenWidget());
+    } else if (chatBeginMode !== newChatBeginMode) {
+      openChatBeginStageByMode(newChatBeginMode);
+      dispatch(reopenWidget());
+    } else if (defaultTicketDepartmentChanged || ticketDepartmentTypeChanged) {
+      history.replace('/ticket/form');
+      dispatch(reopenWidget());
+      dispatch(loadNewTicketForm());
     }
   }
 );
@@ -166,10 +202,10 @@ export const openLoginWindow = createAction(
     }
 
     loginWindowOpened = window.open(
-      window.DP_HELPDESK_URL + `focus-win/login?${queryParams}`,
+      `${window.DP_HELPDESK_URL}focus-win/login?${queryParams}`,
       '',
       `width=${width},height=${height},left=${left},top=${top},` +
-      `resizable=1,directories=0,titlebar=0,location=0,status=0,toolbar=0,menubar=0`
+      'resizable=1,directories=0,titlebar=0,location=0,status=0,toolbar=0,menubar=0'
     );
   }
 );

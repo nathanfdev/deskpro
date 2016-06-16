@@ -72,17 +72,15 @@ class TicketController extends AbstractApiController
     public function newTicketAction(Request $request, $visitor_id)
     {
         if (!$this->isGranted(UseSectionVoter::USE_TICKETS)) {
-            $can_open_ticket = $this->isGranted(UseSectionVoter::VIEW_TICKETS_LINK);
-            $params          = [
-                'can_open_ticket' => $can_open_ticket,
-            ];
-            $content = [
-                'data' => $this->render('Theme:NewTicket:guest_new_ticket_not_allowed.html.twig', $params)
-                    ->getContent(),
+            $params = [
+                'can_open_ticket' => $this->isGranted(UseSectionVoter::VIEW_TICKETS_LINK),
             ];
 
-            return new View($content, Response::HTTP_OK);
+            return new View([
+                'data' => $this->render('Theme:NewTicket:guest_new_ticket_not_allowed.html.twig', $params)->getContent(),
+            ]);
         }
+
         $ticket_service = $this->get('tickets.new_ticket');
         $ticket         = $ticket_service->createNewTicket($request, $visitor_id, $this->getUser());
         $person         = $ticket->getPerson();
@@ -96,6 +94,7 @@ class TicketController extends AbstractApiController
             'allow_extra_fields'            => true,
             'use_captcha'                   => false,
             'department_id'                 => $request->query->getInt('department_id'),
+            'hide_department_field'         => $request->query->getBoolean('hide_department_field'),
         ]);
 
         $form->handleRequest($request);
@@ -135,9 +134,9 @@ class TicketController extends AbstractApiController
             'show_ticket_suggestions' => (bool) $this->getBrandContainer()->getSetting('core.show_ticket_suggestions'),
         ];
 
-        $content     = ['data' => $this->render('Theme:NewTicket:new_ticket_form.html.twig', $params)->getContent()];
-        $status_code = !$form->isSubmitted() ? Response::HTTP_OK : Response::HTTP_BAD_REQUEST;
+        $content    = ['data' => $this->render('Theme:NewTicket:new_ticket_form.html.twig', $params)->getContent()];
+        $statusCode = !$form->isSubmitted() ? Response::HTTP_OK : Response::HTTP_BAD_REQUEST;
 
-        return new View($content, $status_code);
+        return new View($content, $statusCode);
     }
 }

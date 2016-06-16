@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
@@ -270,6 +271,7 @@ class ObjectsManager
             'GlossaryWordDefinition' => [$this, 'find', GlossaryWordDefinition::class],
             'GlossaryWord'           => [$this, 'find', GlossaryWord::class],
             'Language'               => [$this, 'find', Language::class],
+            'DataStore'              => [$this, 'find', DataStore::class],
         ];
     }
 }

@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Department;
@@ -39,6 +36,9 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class DepartmentsController.
+ */
 abstract class DepartmentsController extends CrudController
 {
     public static $entity    = Department::class;
@@ -92,8 +92,21 @@ abstract class DepartmentsController extends CrudController
             $qb->andWhere('e.id IN (:allowed_department_ids)');
             $qb->setParameter('allowed_department_ids', $allowedDepartmentIds);
         }
+        if ($request->query->getBoolean('selectable')) {
+            $subQb = $qb->getEntityManager()->createQueryBuilder();
+            $subQb
+                ->select('count(childDepartment.id)')
+                ->from(Department::class, 'childDepartment')
+                ->where("childDepartment.parent = $alias.id")
+            ;
+
+            $qb->andWhere("($subQb) = 0");
+        }
     }
 
+    /**
+     * @return int[]
+     */
     abstract protected function getAllowedDepartmentsId();
 
     /**

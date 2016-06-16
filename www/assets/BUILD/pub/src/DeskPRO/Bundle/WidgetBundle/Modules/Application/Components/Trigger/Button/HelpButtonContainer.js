@@ -6,7 +6,7 @@ import { AgentMessagePopupContainer } from '../Popups/AgentMessage/AgentMessageP
 import { ReplyButtons } from '../Popups/AgentMessage/ReplyButtons';
 import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
 import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
-import { openWidget, openTriggerPopup, closeTriggerPopup } from '../../../Actions/dpWindowActions';
+import { reopenWidget, openTriggerPopup, closeTriggerPopup } from '../../../Actions/dpWindowActions';
 import { loadOnlineAgents } from '../../../Actions/peopleActions';
 import { onlineAgentsCountSelector } from '../../../Selectors/peopleSelectors';
 import {
@@ -22,8 +22,8 @@ import {
   triggerPopupOpenedSelector,
   liveDemoSelector
 } from '../../../Selectors/dpWindow';
-
 import { widgetHasChatSelector } from '../../../Selectors/bootstrap';
+import { getLocation } from '../../../../../Services/history';
 
 @connect(state => ({
   hasChat:             widgetHasChatSelector(state),
@@ -48,6 +48,7 @@ export class HelpButtonContainer extends React.Component {
     triggerPopupOpened:  PropTypes.bool,
     widgetOpened:        PropTypes.bool,
     popupStyle:          PropTypes.string,
+    size:                PropTypes.string,
     widgetPosition:      PropTypes.string,
     dispatch:            PropTypes.func,
     backgroundColor:     PropTypes.string,
@@ -61,9 +62,26 @@ export class HelpButtonContainer extends React.Component {
     liveDemo: PropTypes.bool
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      locationPath: false
+    };
+  }
+
   componentDidMount() {
     this.checkRenderPopup();
     this.pollingRequest();
+  }
+
+  componentWillUpdate() {
+    getLocation(location => {
+      if (this.state.locationPath !== location.pathname) {
+        this.setState({
+          locationPath: location.pathname
+        });
+      }
+    });
   }
 
   componentDidUpdate() {
@@ -71,7 +89,7 @@ export class HelpButtonContainer extends React.Component {
   }
 
   onClick = () => {
-    this.props.dispatch(openWidget());
+    this.props.dispatch(reopenWidget());
   };
 
   onClosePopup = () => {
@@ -125,8 +143,9 @@ export class HelpButtonContainer extends React.Component {
       liveDemo,
       popupStyle,
       size,
-      onClick: this.onClick,
-      onClose: this.onClosePopup
+      onClick:   this.onClick,
+      onClose:   this.onClosePopup,
+      getButton: () => this.refs.button
     };
 
     if (popupStyle === 'agents_button') {
@@ -135,10 +154,7 @@ export class HelpButtonContainer extends React.Component {
 
     return (
       <AgentMessagePopupContainer {...popupProps}>
-        {popupStyle.match(/_button$/)
-          ? <ReplyButtons {...popupProps} />
-          : <ReplyForm {...popupProps} />
-        }
+        {popupStyle.match(/_button$/) ? <ReplyButtons {...popupProps} /> : <ReplyForm {...popupProps} />}
       </AgentMessagePopupContainer>
     );
   }
@@ -153,7 +169,12 @@ export class HelpButtonContainer extends React.Component {
             {this.renderPopup()}
           </OnlineAgentsContainer>
         }
-        <HelpButton {...this.props} onClick={this.onClick} />
+        <HelpButton
+          {...this.props}
+          ref="button"
+          locationPath={this.state.locationPath}
+          onClick={this.onClick}
+        />
       </div>
     );
   }

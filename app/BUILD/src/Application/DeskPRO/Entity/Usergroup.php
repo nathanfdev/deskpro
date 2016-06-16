@@ -52,6 +52,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property string                       $sys_name
  * @property bool                         $is_enabled
  * @property Permission[]|ArrayCollection $permissions
+ *
  * @JMS\ExclusionPolicy("all")
  */
 class Usergroup extends DomainObject
@@ -122,7 +123,12 @@ class Usergroup extends DomainObject
     protected $is_enabled = true;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * Usergroup permissions.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Entity\Permission")
+     *
+     * @var ArrayCollection|Permission[]
      */
     protected $permissions;
 
@@ -144,20 +150,28 @@ class Usergroup extends DomainObject
 
     /**
      * @param Permission $permission
+     *
+     * @return $this
      */
     public function addPermission(Permission $permission)
     {
         $this->permissions->add($permission);
         $this->_onPropertyChanged('permissions', $this->permissions, $this->permissions);
+
+        return $this;
     }
 
     /**
-     * @param $permission
+     * @param Permission $permission
+     *
+     * @return $this
      */
-    public function removePermission($permission)
+    public function removePermission(Permission $permission)
     {
         $this->permissions->removeElement($permission);
         $this->_onPropertyChanged('permissions', $this->permissions, $this->permissions);
+
+        return $this;
     }
 
     /**

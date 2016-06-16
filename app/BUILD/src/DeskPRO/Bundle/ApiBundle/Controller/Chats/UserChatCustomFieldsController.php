@@ -26,42 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\ApiBundle\Controller\Chats;
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
-
-use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\CustomDefChat;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\DepartmentsController;
+use DeskPRO\Bundle\ApiBundle\Controller\AbstractCustomFieldsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
- * Class TicketDepartmentsController.
+ * Class UserChatCustomFieldsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/ticket_departments")
- * @ApiDoc(target="all", section="Departments", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Department")
+ * @Rest\Route("/user_chat_custom_fields")
+ * @ApiDoc(target="all", section="Chats")
  */
-class TicketDepartmentsController extends DepartmentsController
+class UserChatCustomFieldsController extends AbstractCustomFieldsController
 {
-    public static $entity    = Department::class;
-    public static $type      = DepartmentType::class;
-    public static $listOrder = 'asc';
-
-    protected static $property       = 'is_tickets_enabled';
-    protected static $departmentType = 'tickets';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getAllowedDepartmentsId()
-    {
-        $permissionBag = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());
-
-        return $permissionBag->getAllowedTicketDepartmentIds();
-    }
+    public static $entity = CustomDefChat::class;
 }

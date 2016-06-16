@@ -22,9 +22,7 @@ export class AgentMessagePopup extends React.Component {
     const { primaryAgent = Immutable.fromJS({}), children, onClick } = this.props;
     const { helpPopupTitle, helpPopupMessage, helpPopupHeading, helpPopupSubheading, popupStyle, size } = this.props;
     const childProps = children.props;
-    
     const showAgent = popupStyle.match(/agent/);
-
     const h1 = showAgent ? primaryAgent.get('display_name') : helpPopupHeading;
 
     return (

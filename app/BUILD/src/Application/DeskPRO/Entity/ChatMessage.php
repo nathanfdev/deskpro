@@ -317,10 +317,10 @@ class ChatMessage extends DomainObject
         if (!$url) {
             $url = App::get('router')->generate(
                 'serve_default_picture',
-                array(
+                [
                     's'        => $size,
                     'size-fit' => 1,
-                ),
+                ],
                 true
             );
         }
@@ -467,7 +467,7 @@ class ChatMessage extends DomainObject
      */
     public function getInfo()
     {
-        $info = array();
+        $info = [];
 
         $info['conversation_id'] = $this->conversation->id;
         $info['message_id']      = $this->id;
@@ -516,7 +516,7 @@ class ChatMessage extends DomainObject
         return $content;
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
         if (is_string($data['content'])) {

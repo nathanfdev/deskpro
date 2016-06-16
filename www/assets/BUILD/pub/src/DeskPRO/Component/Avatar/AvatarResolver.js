@@ -18,7 +18,7 @@ export class AvatarResolver extends React.Component {
     const avatarProps = { size, urlPattern, gravatar };
 
     const childProps = children.props;
-    const childContent = React.cloneElement(children, {...childProps});
+    const childContent = React.cloneElement(children, { ...childProps });
 
     if (urlPattern) {
       return (

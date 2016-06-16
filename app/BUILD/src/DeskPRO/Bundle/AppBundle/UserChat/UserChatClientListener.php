@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\UserChat;
 
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
@@ -82,7 +78,7 @@ class UserChatClientListener implements EventSubscriberInterface
      */
     public function onStarted(UserChatEvent $event)
     {
-        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_NEW, $event->getConversation());
+        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_NEW, $event->getChat());
     }
 
     /**
@@ -150,7 +146,7 @@ class UserChatClientListener implements EventSubscriberInterface
      */
     public function onSendMessage(UserChatEvent $event)
     {
-        $conversation = $event->getConversation();
+        $conversation = $event->getChat();
         $message      = $event->getData();
         $channel      = $conversation->getChannelId('newmessage');
 
@@ -162,7 +158,7 @@ class UserChatClientListener implements EventSubscriberInterface
      */
     public function onAckMessages(UserChatEvent $event)
     {
-        $conversation = $event->getConversation();
+        $conversation = $event->getChat();
         $message_ids  = $event->getData();
         $channel      = $conversation->getChannelId('ack_messages');
 
@@ -174,7 +170,7 @@ class UserChatClientListener implements EventSubscriberInterface
      */
     public function onUserTyping(UserChatEvent $event)
     {
-        $conversation   = $event->getConversation();
+        $conversation   = $event->getChat();
         $preview_string = $event->getData();
         $channel        = $conversation->getChannelId('usertyping');
 
@@ -188,7 +184,7 @@ class UserChatClientListener implements EventSubscriberInterface
      */
     protected function getInfo(UserChatEvent $event)
     {
-        return $this->serializer->toArray($event->getConversation(), new SideloadSerializationContext());
+        return $this->serializer->toArray($event->getChat(), new SideloadSerializationContext());
     }
 
     /**

@@ -26,20 +26,44 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Usergroups;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Widget;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use Application\DeskPRO\Entity\Person;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class UserGroupsController.
- *
- * @ApiModes("all")
- * @Rest\Route("/user_groups")
- * @ApiDoc(target="all", section="Usergroups", output="Application\DeskPRO\Entity\Usergroup")
+ * Class WidgetPeopleDemoState.
  */
-class UserGroupsController extends AbstractUserGroupsController
+class WidgetPeopleDemoState
 {
-    public static $isAgentGroup = false;
+    const PERSON_AVATAR_SYS_PREFIX = 'widget_live_demo_avatar_';
+
+    const AGENTS_COUNT = 3;
+    const USERS_COUNT  = 3;
+
+    /**
+     * @var Person[]
+     *
+     * @JMS\Type("array<Application\DeskPRO\Entity\Person>")
+     */
+    private $agents;
+
+    /**
+     * @var Person[]
+     *
+     * @JMS\Type("array<Application\DeskPRO\Entity\Person>")
+     */
+    private $users;
+
+    /**
+     * Constructor.
+     *
+     * @param array $agents
+     * @param array $users
+     */
+    public function __construct(array $agents, array $users)
+    {
+        $this->agents = $agents;
+        $this->users  = $users;
+    }
 }

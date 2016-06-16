@@ -29,10 +29,12 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
+use DeskPRO\Bundle\AppBundle\Form\Type\HiddenEntityType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
@@ -44,6 +46,21 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class WebFieldResolver extends AbstractFieldResolver
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected function createDepartment(TicketWithLayoutsContext $context)
+    {
+        // If department is preset then we hide department field
+        if ($context->getOption('hide_department_field') && $context->getTicket()->getDepartment()) {
+            return new FormField(HiddenEntityType::class, [
+                'entity_class' => Department::class,
+            ]);
+        }
+
+        return parent::createDepartment($context);
+    }
+
     /**
      * {@inheritdoc}
      */

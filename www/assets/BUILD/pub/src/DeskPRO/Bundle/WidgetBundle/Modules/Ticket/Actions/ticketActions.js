@@ -1,7 +1,14 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
+import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 import { history } from '../../../Services/history';
+import { ticketDefaultDepartmentSelector, isTicketDepartmentFieldHidden, liveDemoSelector } from '../../Application/Selectors/dpWindow';
+
+const getNewTicketQueryParams = state => ({
+  department_id:         ticketDefaultDepartmentSelector(state),
+  hide_department_field: isTicketDepartmentFieldHidden(state)
+});
 
 export const setNewTicketFormContent = createAction('WIDGET_SET_NEW_TICKET_FORM_CONTENT');
 
@@ -13,8 +20,11 @@ export const loadTicketDisplayFields = createAction(
 
 export const loadNewTicketForm = createAction(
   'WIDGET_LOAD_NEW_TICKET_FORM',
-  () => dispatch => {
-    const promise = widgetApi.sendGet('DP_API/tickets/new', { ...ajaxOptions });
+  () => (dispatch, getState) => {
+    const state = getState();
+    const queryParams = getNewTicketQueryParams(state);
+
+    const promise = widgetApi.sendGet(`DP_API/tickets/new?${compileParams(queryParams)}`, { ...ajaxOptions });
     promise.success(response => dispatch(setNewTicketFormContent(response.data)));
 
     return promise;
@@ -23,8 +33,15 @@ export const loadNewTicketForm = createAction(
 
 export const saveNewTicketForm = createAction(
   'WIDGET_SAVE_NEW_TICKET_FORM',
-  params => dispatch => {
-    const promise = widgetApi.sendPost('DP_API/tickets/new', params, { ...ajaxOptions });
+  params => (dispatch, getState) => {
+    const state = getState();
+    const liveDemo = liveDemoSelector(state);
+    if (liveDemo) {
+      return null;
+    }
+
+    const queryParams = getNewTicketQueryParams(state);
+    const promise = widgetApi.sendPost(`DP_API/tickets/new?${compileParams(queryParams)}`, params, { ...ajaxOptions });
     promise.then(
       response => {
         if (response.data && response.data.ticket_id) {

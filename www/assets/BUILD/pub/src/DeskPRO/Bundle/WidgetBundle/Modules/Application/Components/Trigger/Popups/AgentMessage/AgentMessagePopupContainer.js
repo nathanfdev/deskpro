@@ -9,9 +9,9 @@ import {
 import { AgentMessagePopup } from './AgentMessagePopup';
 
 @connect(state => ({
-  helpPopupTitle:   helpPopupTitleSelector(state),
-  helpPopupMessage: helpPopupMessageSelector(state),
-  helpPopupHeading: helpPopupHeadingSelector(state),
+  helpPopupTitle:      helpPopupTitleSelector(state),
+  helpPopupMessage:    helpPopupMessageSelector(state),
+  helpPopupHeading:    helpPopupHeadingSelector(state),
   helpPopupSubheading: helpPopupSubheadingSelector(state)
 
 }))

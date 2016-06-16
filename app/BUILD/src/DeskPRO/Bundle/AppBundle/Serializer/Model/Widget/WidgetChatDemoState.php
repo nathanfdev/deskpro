@@ -26,20 +26,39 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Usergroups;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Widget;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatMessage;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class UserGroupsController.
- *
- * @ApiModes("all")
- * @Rest\Route("/user_groups")
- * @ApiDoc(target="all", section="Usergroups", output="Application\DeskPRO\Entity\Usergroup")
+ * Class WidgetChatDemoState.
  */
-class UserGroupsController extends AbstractUserGroupsController
+class WidgetChatDemoState
 {
-    public static $isAgentGroup = false;
+    /**
+     * @var ChatConversation
+     *
+     * @JMS\Type("Application\DeskPRO\Entity\ChatConversation")
+     */
+    private $info;
+
+    /**
+     * @var ChatMessage[]
+     *
+     * @JMS\Type("array<Application\DeskPRO\Entity\ChatMessage>")
+     */
+    private $messages;
+
+    /**
+     * Constructor.
+     *
+     * @param ChatConversation $chat
+     */
+    public function __construct(ChatConversation $chat)
+    {
+        $this->info     = $chat;
+        $this->messages = $chat->getCreatedMessages();
+    }
 }

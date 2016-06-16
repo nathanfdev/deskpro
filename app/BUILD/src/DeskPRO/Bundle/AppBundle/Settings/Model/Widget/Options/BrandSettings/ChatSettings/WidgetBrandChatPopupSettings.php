@@ -38,8 +38,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class WidgetBrandChatPopupSettings
 {
-    const REPLY_TYPE_BUTTONS = 'buttons';
-    const REPLY_TYPE_BUTTON  = 'reply';
+    const STYLE_AGENT_TEXT_BUTTON   = 'agent_text_button';
+    const STYLE_AGENT_TEXT_INPUT    = 'agent_text_input';
+    const STYLE_AGENTS_BUTTON       = 'agents_button';
+    const STYLE_TEXT_BUTTON         = 'text_button';
+    const STYLE_TEXT_INPUT          = 'text_input';
+    const STYLE_WIDGET_BUTTON_AGENT = 'widget_button_agent';
 
     /**
      * @var ArrayCollection|WidgetBrandChatPopupTranslation[]
@@ -58,15 +62,7 @@ class WidgetBrandChatPopupSettings
      * @JMS\Type("string")
      * @Assert\NotBlank()
      */
-    private $replyType = self::REPLY_TYPE_BUTTONS;
-
-    /**
-     * @var string
-     *
-     * @JMS\Type("string")
-     * @Assert\NotBlank()
-     */
-    private $style = 'agent_text_button';
+    private $style = self::STYLE_AGENT_TEXT_BUTTON;
 
     /**
      * Constructor.
@@ -74,26 +70,6 @@ class WidgetBrandChatPopupSettings
     public function __construct()
     {
         $this->translations = new ArrayCollection();
-    }
-
-    /**
-     * @return string
-     */
-    public function getReplyType()
-    {
-        return $this->replyType;
-    }
-
-    /**
-     * @param string $replyType
-     *
-     * @return $this
-     */
-    public function setReplyType($replyType)
-    {
-        $this->replyType = $replyType;
-
-        return $this;
     }
 
     /**

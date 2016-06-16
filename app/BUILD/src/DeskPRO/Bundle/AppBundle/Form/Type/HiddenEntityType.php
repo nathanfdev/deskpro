@@ -26,67 +26,60 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataFixtures\Tools;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
+
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\EntityToIdTransformer;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class RandomFileFromDir.
+ * Class HiddenEntityType.
  */
-class RandomFileFromDir implements \Countable
+class HiddenEntityType extends AbstractType
 {
     /**
-     * @var string
+     * @var EntityManager
      */
-    private $path;
+    protected $em;
 
     /**
-     * @var \SplFileInfo[]
-     */
-    private $files = [];
-
-    /**
-     * @var int
-     */
-    private $count;
-
-    /**
-     * RandomFileFromDir constructor.
+     * Constructor.
      *
-     * @param string $path
-     * @param bool   $deep Read all sub-dirs as well
+     * @param EntityManager $em
      */
-    public function __construct($path, $deep = true)
+    public function __construct(EntityManager $em)
     {
-        $this->path = $path;
-
-        $flags = \FilesystemIterator::CURRENT_AS_FILEINFO
-            | \FilesystemIterator::SKIP_DOTS
-            | \FilesystemIterator::UNIX_PATHS;
-
-        if ($deep) {
-            $iter = new \RecursiveDirectoryIterator($this->path, $flags);
-        } else {
-            $iter = new \FilesystemIterator($this->path, $flags);
-        }
-
-        $this->files = iterator_to_array($iter, false);
-        $this->count = count($this->files);
+        $this->em = $em;
     }
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
-    public function count()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return $this->count;
+        $builder->addModelTransformer(new EntityToIdTransformer($this->em->getRepository($options['entity_class'])));
     }
 
     /**
-     * @return \SplFileInfo
+     * {@inheritdoc}
      */
-    public function next()
+    public function getParent()
     {
-        $rand = mt_rand(0, $this->count - 1);
+        return HiddenType::class;
+    }
 
-        return $this->files[$rand];
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver
+            ->setRequired('entity_class')
+            ->setAllowedTypes([
+                'entity_class' => 'string',
+            ])
+        ;
     }
 }

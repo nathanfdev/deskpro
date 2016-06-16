@@ -209,13 +209,12 @@ export const sendTranscriptInfo = createAction(
 export const pollingChat = createAction(
   'WIDGET_CHAT_POLLING',
   (chatId, params) => (dispatch, getState) => {
+    const state = getState();
     if (!chatId) {
       return null;
     }
 
-    const state = getState();
     const queryParams = compileParams(addSessionCode(state, params));
-
     const promise = widgetApi.sendGet(`DP_API/chats/${chatId}/polling?${queryParams}`, { ...ajaxOptions });
     promise.success(response => {
       const locked = lockedPollingSelector(state);

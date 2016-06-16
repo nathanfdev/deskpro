@@ -26,20 +26,40 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Usergroups;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Widget;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use Application\DeskPRO\Entity\ChatConversation;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class UserGroupsController.
- *
- * @ApiModes("all")
- * @Rest\Route("/user_groups")
- * @ApiDoc(target="all", section="Usergroups", output="Application\DeskPRO\Entity\Usergroup")
+ * Class WidgetLiveDemoState.
  */
-class UserGroupsController extends AbstractUserGroupsController
+class WidgetLiveDemoState
 {
-    public static $isAgentGroup = false;
+    /**
+     * @var WidgetPeopleDemoState
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Widget\WidgetPeopleDemoState")
+     */
+    private $people;
+
+    /**
+     * @var WidgetChatDemoState
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Widget\WidgetChatDemoState")
+     */
+    private $chat;
+
+    /**
+     * Constructor.
+     *
+     * @param array            $agents
+     * @param array            $users
+     * @param ChatConversation $chat
+     */
+    public function __construct(array $agents, array $users, ChatConversation $chat)
+    {
+        $this->people = new WidgetPeopleDemoState($agents, $users);
+        $this->chat   = new WidgetChatDemoState($chat);
+    }
 }

@@ -26,20 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Usergroups;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use Application\DeskPRO\Entity\CustomDefAbstract;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class UserGroupsController.
- *
- * @ApiModes("all")
- * @Rest\Route("/user_groups")
- * @ApiDoc(target="all", section="Usergroups", output="Application\DeskPRO\Entity\Usergroup")
+ * Class CustomFieldType.
  */
-class UserGroupsController extends AbstractUserGroupsController
+class CustomFieldType extends AbstractType
 {
-    public static $isAgentGroup = false;
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('is_enabled', ApiBooleanType::class);
+        $builder->add('display_order', NumberType::class);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class'         => CustomDefAbstract::class,
+            'allow_extra_fields' => true,
+        ]);
+    }
 }

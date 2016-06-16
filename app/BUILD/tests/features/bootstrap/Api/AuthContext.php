@@ -34,6 +34,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\TmpData;
+use Behat\Behat\Hook\Scope\BeforeFeatureScope;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit;
@@ -80,6 +81,11 @@ class AuthContext extends BaseContext
     private static $isTheFirstSuiteScenario = true;
 
     /**
+     * @var bool
+     */
+    private static $isNew = false;
+
+    /**
      * Schedule DB cleanup before next login.
      *
      * @BeforeFeature
@@ -91,10 +97,17 @@ class AuthContext extends BaseContext
 
     /**
      * @BeforeFeature
+     *
+     * @param BeforeFeatureScope $scope
      */
-    public static function initFirstFeatureScenarioFlag()
+    public static function initFirstFeatureScenarioFlag(BeforeFeatureScope $scope)
     {
         self::$isFirstFeatureScenario = true;
+
+        // prevent api db set install for new features
+        if ($scope->getFeature()->hasTag('new')) {
+            self::$isNew = true;
+        }
     }
 
     /**
@@ -138,7 +151,16 @@ class AuthContext extends BaseContext
     {
         // Install DB on @BeforeSuite ----------------------------------------------------------------------------------
         if (self::$isTheFirstSuiteScenario) {
-            $this->dataSetContext->iInstallDataSet('api');
+            if (self::$isNew) {
+                $statement = $this->em()->getConnection()->executeQuery('SHOW TABLES LIKE "people"');
+                $statement->execute();
+                if (!$statement->rowCount()) {
+                    $this->dataSetContext->iInstallDataSet('api');
+                }
+            } else {
+                $this->dataSetContext->iInstallDataSet('api');
+            }
+
             self::$isTheFirstSuiteScenario = false;
         }
 
