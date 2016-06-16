@@ -26,35 +26,42 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Extension;
 
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class DeskproCheckboxExtension.
+ */
 class DeskproCheckboxExtension extends AbstractTypeExtension
 {
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(
-            array(
-                'checkbox_label' => '',
-            )
-        );
+        $resolver->setDefaults([
+            'checkbox_label' => '',
+        ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $view->vars['checkbox_label'] = $options['checkbox_label'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getExtendedType()
     {
-        return 'Symfony\Component\Form\Extension\Core\Type\CheckboxType';
+        return CheckboxType::class;
     }
 }
