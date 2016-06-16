@@ -186,7 +186,11 @@ class InstanceReader
             ]);
         }
 
+        // It is possible that $releases is empty (e.g. failed to load a manifest)
         $latestRelease = $releases->getLatest();
+        if (!$latestRelease) {
+            $latestRelease = $currentRelease;
+        }
 
         $numBetween = -1;
         foreach ($releases as $r) {

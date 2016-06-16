@@ -47,7 +47,7 @@ class DistroManifestLoader
     /**
      * @param string $versionApiRoot
      *
-     * @return DistroVersions
+     * @return DistroManifestLoader
      */
     public static function create($versionApiRoot = self::VERSION_API_ROOT)
     {
@@ -122,5 +122,13 @@ class DistroManifestLoader
         });
 
         return new DistroReleaseCollection($releases);
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiUrl()
+    {
+        return $this->client->getConfig('base_uri');
     }
 }

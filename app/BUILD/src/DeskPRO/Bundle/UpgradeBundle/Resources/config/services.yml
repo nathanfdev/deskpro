@@ -6,6 +6,8 @@ services:
   dp.upgrader.distro.manifest_loader:
     class: DeskPRO\Bundle\UpgradeBundle\Distro\DistroManifestLoader
     factory: [DeskPRO\Bundle\UpgradeBundle\Distro\DistroManifestLoader, create]
+    arguments:
+      - "@=service('deskpro.app_env').getConfig('paths.distro_manifest', constant('DeskPRO\\\\Bundle\\\\UpgradeBundle\\\\Distro\\\\DistroManifestLoader::VERSION_API_ROOT'))"
 
   dp.upgrader.distro.installer:
     class: DeskPRO\Bundle\UpgradeBundle\Distro\DistroInstaller
