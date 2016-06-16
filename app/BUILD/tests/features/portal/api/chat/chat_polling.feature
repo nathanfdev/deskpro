@@ -3,8 +3,7 @@ Feature: Widget Chat
   Chat polling/send message
 
   Background: Fresh database
-    Given I have usergroups
-    And I have a User record referenced as person_1
+    Given a user with "user@deskpro.dev" email exists
     And I have guest portal api session with code "AAAAAAAAAAAAAAA"
 
   Scenario: I'm checking for chat changes
@@ -44,8 +43,8 @@ Feature: Widget Chat
 
   Scenario: I send empty message
     Given only the following Chat records exist:
-      | #      | Person     | Session               |
-      | chat_1 | {person_1} | {sid_AAAAAAAAAAAAAAA} |
+      | #      | Person             | Session               |
+      | chat_1 | {user@deskpro.dev} | {sid_AAAAAAAAAAAAAAA} |
 
     When I send a POST request to "/portal/api/chats/{chat_1}/messages?dpsid={sid_AAAAAAAAAAAAAAA}"
     Then the response status code should be 200
@@ -54,8 +53,8 @@ Feature: Widget Chat
 
   Scenario: I send text message
     Given only the following Chat records exist:
-      | #      | Person     | Session               |
-      | chat_1 | {person_1} | {sid_AAAAAAAAAAAAAAA} |
+      | #      | Person             | Session               |
+      | chat_1 | {user@deskpro.dev} | {sid_AAAAAAAAAAAAAAA} |
 
     When I send a POST request to "/portal/api/chats/{chat_1}/messages?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
       | key     | value           |
@@ -63,6 +62,7 @@ Feature: Widget Chat
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data[0].content" should contain "my message text"
+
     When I send a GET request to "/portal/api/chats/{chat_1}/polling?last_message_id=1&dpsid={sid_AAAAAAAAAAAAAAA}"
     Then the response status code should be 200
     And the response should be in JSON

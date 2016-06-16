@@ -17,10 +17,10 @@ Feature:
       | sc2 | active     | Second active feedback status category |
       | sc3 | closed     | First closed feedback status category  |
     And I have the following Feedback records:
-      | #  | Person  | Category | StatusCategory | Title           | Status | IsReviewed |
-      | f1 | {agent} | {c1}     | {sc1}          | First feedback  | active | 1          |
-      | f2 | {agent} | {c1}     | {sc2}          | Second feedback | active | 1          |
-      | f2 | {agent} | {c2}     | {sc2}          | Second feedback | closed | 1          |
+      | #  | Person              | Category | StatusCategory | Title           | Status | IsReviewed |
+      | f1 | {agent@deskpro.dev} | {c1}     | {sc1}          | First feedback  | active | 1          |
+      | f2 | {agent@deskpro.dev} | {c1}     | {sc2}          | Second feedback | active | 1          |
+      | f2 | {agent@deskpro.dev} | {c2}     | {sc2}          | Second feedback | closed | 1          |
 
   Scenario: I GET list of feedback in CSV format
     When I send a GET request to "/api/v2/feedback/csv?category=First+feedback+category&status_category={sc1}&count=200"

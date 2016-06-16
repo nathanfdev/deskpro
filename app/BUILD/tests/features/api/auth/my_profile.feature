@@ -10,8 +10,8 @@ Feature: Person profile
     And the response status code should be 200
     And the JSON node "data.name" should be equal to "Admin Admin"
     And the JSON node "data.display_name" should be equal to 0
-    And the JSON node "data.primary_email" should be equal to "admin@deskpro.com"
-    And the JSON node "data.emails[0]" should be equal to "admin@deskpro.com"
+    And the JSON node "data.primary_email" should be equal to "admin@deskpro.dev"
+    And the JSON node "data.emails[0]" should be equal to "admin@deskpro.dev"
     And the JSON node "data.phone" should be equal to 0
     And the JSON node "data.language_id" should be equal to 1
     And the JSON node "data.timezone" should be equal to "UTC"

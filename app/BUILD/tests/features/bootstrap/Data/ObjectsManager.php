@@ -154,6 +154,7 @@ class ObjectsManager
         } else {
             $args = [];
         }
+
         $objects = call_user_func_array($locator, $args);
 
         return $objects;
@@ -225,12 +226,12 @@ class ObjectsManager
             'TicketParticipant'      => [Factory\SimpleFactory::class, 'create', TicketParticipant::class],
             'Sla'                    => [Factory\CommonFactories::class, 'sla'],
             'SLA'                    => [Factory\CommonFactories::class, 'sla'],
-            'User'                   => [Factory\PersonFactories::class, 'create', 'user'],
-            'Agent'                  => [Factory\PersonFactories::class, 'create', 'agent'],
-            'Admin'                  => [Factory\PersonFactories::class, 'create', 'admin'],
             'Usergroup'              => [Factory\SimpleFactory::class, 'create', Usergroup::class],
             'Language'               => [Factory\SimpleFactory::class, 'create', Language::class],
             'TicketMessage'          => [Factory\SimpleFactory::class, 'create', TicketMessage::class],
+            'User'                   => [Factory\CommonFactories::class, 'person', 'user'],
+            'Agent'                  => [Factory\CommonFactories::class, 'person', 'agent'],
+            'Admin'                  => [Factory\CommonFactories::class, 'person', 'admin'],
         ];
     }
 
@@ -240,7 +241,13 @@ class ObjectsManager
     private function initTypeLocators()
     {
         $this->typeLocators = [
+            'Person'                 => [$this, 'find', Person::class],
+            'User'                   => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => false]],
+            'Agent'                  => [$this, 'find', Person::class, ['is_agent' => true, 'can_admin' => false]],
+            'Admin'                  => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => true]],
             'Ticket'                 => [$this, 'find', Ticket::class],
+            'TicketLayout'           => [$this, 'find', TicketLayout::class],
+            'TicketMessage'          => [$this, 'find', TicketMessage::class],
             'SLA'                    => [$this, 'find', Sla::class],
             'Organization'           => [$this, 'find', Organization::class],
             'Chat'                   => [$this, 'find', ChatConversation::class],
@@ -251,24 +258,18 @@ class ObjectsManager
             'CustomDefChat'          => [$this, 'find', CustomDefChat::class],
             'CustomDefFeedback'      => [$this, 'find', CustomDefFeedback::class],
             'Task'                   => [$this, 'find', Task::class],
-            'Person'                 => [$this, 'find', Person::class],
+            'TaskAttachment'         => [$this, 'find', TaskAttachment::class],
             'Article'                => [$this, 'find', Article::class],
             'News'                   => [$this, 'find', News::class],
+            'NewsCategory'           => [$this, 'find', NewsCategory::class],
             'Download'               => [$this, 'find', Download::class],
             'ArticleCategory'        => [$this, 'find', ArticleCategory::class],
-            'NewsCategory'           => [$this, 'find', NewsCategory::class],
             'DownloadCategory'       => [$this, 'find', DownloadCategory::class],
             'ClientDevice'           => [$this, 'find', ClientDevice::class],
-            'User'                   => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => false]],
-            'Agent'                  => [$this, 'find', Person::class, ['is_agent' => true, 'can_admin' => false]],
-            'Admin'                  => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => true]],
             'Blob'                   => [$this, 'find', Blob::class],
-            'TaskAttachment'         => [$this, 'find', TaskAttachment::class],
             'GlossaryWordDefinition' => [$this, 'find', GlossaryWordDefinition::class],
             'GlossaryWord'           => [$this, 'find', GlossaryWord::class],
             'Language'               => [$this, 'find', Language::class],
-            'TicketLayout'           => [$this, 'find', TicketLayout::class],
-            'TicketMessage'          => [$this, 'find', TicketMessage::class],
         ];
     }
 }

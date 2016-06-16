@@ -2,17 +2,14 @@
 Feature: Edit ticket form custom fields
 
   Background:
-    Given I have usergroups
-    And only the following User records exist:
-      | #    | Email            |
-      | user | user@deskpro.dev |
+    Given a user with "user@deskpro.dev" email exists
     And I am authenticated as user
     And only the following Ticket records exist:
-      | #        | Person | Ref | Subject        | Date Last User Reply |
-      | ticket_1 | {user} | ref | Ticket Subject | 2015-06-15 17:00:00  |
+      | #        | Person             | Ref | Subject        | Date Last User Reply |
+      | ticket_1 | {user@deskpro.dev} | ref | Ticket Subject | 2015-06-15 17:00:00  |
     And only the following TicketMessage records exist:
-      | Ticket     | Person | Message |
-      | {ticket_1} | {user} | text    |
+      | Ticket     | Person             | Message |
+      | {ticket_1} | {user@deskpro.dev} | text    |
 
   Scenario: I check custom fields exist on the form
     Given only the following custom ticket fields exist:

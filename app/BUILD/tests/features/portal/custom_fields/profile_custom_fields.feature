@@ -2,10 +2,7 @@
 Feature: User profile form custom fields
 
   Background:
-    Given I have usergroups
-    And only the following User records exist:
-      | #    | Email            |
-      | user | user@deskpro.dev |
+    Given a user with "user@deskpro.dev" email exists
     And I am authenticated as user
 
   Scenario: I check custom fields exist on the form

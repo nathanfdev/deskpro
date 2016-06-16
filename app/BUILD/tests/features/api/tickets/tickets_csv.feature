@@ -11,12 +11,12 @@ Feature:
       | #         | Name                  |
       | microsoft | Microsoft Corporation |
     And only the following Ticket records exist:
-      | #       | Subject            | Agent   | Organization | Status         | Hidden status |
-      | ticket1 | First Demo Ticket  | {agent} | {microsoft}  | awaiting_user  |               |
-      | ticket2 | Second Demo Ticket | {agent} |              | awaiting_agent |               |
-      | ticket3 | Third Demo Ticket  | {agent} | {microsoft}  | resolved       |               |
-      | ticket4 | Fourth Demo Ticket | {agent} |              | archived       |               |
-      | ticket5 | Fifth Demo Ticket  | {agent} |              | hidden         | deleted       |
+      | #       | Subject            | Agent               | Organization | Status         | Hidden status |
+      | ticket1 | First Demo Ticket  | {agent@deskpro.dev} | {microsoft}  | awaiting_user  |               |
+      | ticket2 | Second Demo Ticket | {agent@deskpro.dev} |              | awaiting_agent |               |
+      | ticket3 | Third Demo Ticket  | {agent@deskpro.dev} | {microsoft}  | resolved       |               |
+      | ticket4 | Fourth Demo Ticket | {agent@deskpro.dev} |              | archived       |               |
+      | ticket5 | Fifth Demo Ticket  | {agent@deskpro.dev} |              | hidden         | deleted       |
 
   Scenario: I GET list of tickets in CSV format
     When I send a GET request to "/api/v2/tickets/csv?organization={microsoft}&status=resolved&count=200"
