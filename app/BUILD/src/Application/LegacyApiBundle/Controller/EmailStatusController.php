@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -591,14 +591,14 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
     public function deleteSendmailAction($id)
     {
-        $sendmail = $this->em->find('DeskPRO:SendmailQueue', $id);
+        $sendmail = $this->em->find('EmailBundle:SendmailSource', $id);
         if (!$sendmail) {
             throw $this->createNotFoundException();
         }
 
-        if ($sendmail->blob) {
+        if ($sendmail->getBlob()) {
             try {
-                $this->container->getBlobStorage()->deleteBlobRecord($sendmail->blob);
+                $this->container->getBlobStorage()->deleteBlobRecord($sendmail->getBlob());
             } catch (\Exception $e) {
             }
         }

@@ -646,6 +646,18 @@
 			<textarea style="width: 80%; height: 150px; font-family: Consolas, Monaco, monospace;">{{ log.details.content }}</textarea>
 		</div>
 	</div>
+{% elseif log.action_type == 'deleted_attachments' %}
+	<span class="new-val expand" data-set=".deleted-attachments-details">
+		Deleted {{ log.details.deleted|length }} attachment{% if log.details.deleted|length > 1 %}s{% endif %}:
+	</span>
+	<br />
+	<div class="expand-set deleted-attachments-details" style="display: none">
+		{% for del in log.details.deleted %}
+			<span>
+				{{ del.filename }} ({{ del.filesize }}) from message #{{ del.message }}
+			</span>
+		{% endfor %}
+	</div>
 {% elseif log.action_type == 'email_account' %}
 	<span class="type">{{ phrase('agent.general.email_account') }}</span>
     {{ phrase('agent.tickets.changed_from') }}

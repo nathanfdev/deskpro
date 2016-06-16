@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Service;
 
 use Guzzle\Http\Client as HttpClient;
@@ -120,8 +121,12 @@ class LicenseService
                 return;
             }
 
-            $rss = simplexml_load_string($response->getBody(true));
+            $rss = @simplexml_load_string($response->getBody(true));
             unset($r);
+
+            if (!$rss || empty($rss) || empty($rss->channel->item)) {
+                return;
+            }
 
             $x = 0;
             foreach ($rss->channel->item as $item) {
