@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,10 +38,10 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 /**
- * @property int $id
+ * @property int    $id
  * @property string $name
  * @property string $theme_id
- * @property Blob $logo_blob
+ * @property Blob   $logo_blob
  */
 class Brand extends DomainObject
 {
@@ -56,6 +56,11 @@ class Brand extends DomainObject
      * @var string the brand name
      */
     protected $name;
+
+    /**
+     * @var string the brand url
+     */
+    protected $url;
 
     /**
      * @var \DeskPRO\Bundle\AppBundle\Entity\ThemeSet
@@ -125,7 +130,23 @@ class Brand extends DomainObject
         $this->setModelField('name', $name);
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param string $url
+     */
+    public function setUrl($url)
+    {
+        $this->setModelField('name', $url);
+    }
+
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data              = parent::toApiData($primary, $deep, $visited);
         $data['logo_blob'] = $this->logo_blob ? $this->logo_blob->toApiData() : null;
@@ -146,6 +167,7 @@ class Brand extends DomainObject
 
         $builder->mapId();
         $builder->mapString('name');
+        $builder->mapString('url');
         $builder->createOneToOne('theme_set', 'DeskPRO\Bundle\AppBundle\Entity\ThemeSet')->cascadePersist()->build();
         $builder->createOneToOne('edit_theme_set', 'DeskPRO\Bundle\AppBundle\Entity\ThemeSet')->build();
         $builder->createOneToOne('logo_blob', 'Application\DeskPRO\Entity\Blob')->addJoinColumn('logo_blob_id', 'id', true, false, 'cascade');

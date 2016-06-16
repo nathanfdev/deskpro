@@ -32,6 +32,16 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         return
 
     changeBrand: ->
-      @$state.go('portal', {brandId: @$scope.brandId})
+      if @$scope.brandId == '-1'
+        if confirm "Do you want to create a new brand?"
+          @Api2.sendPost('brands').then (res) =>
+            @$scope.brands.push res.data.data
+            @Growl.success("Brand created")
+            @$state.go 'portal.setup', {brandId: res.data.data.id}
+        else
+          @$scope.brandId = @$stateParams.brandId
+      else
+        @$state.go 'portal.setup', {brandId: @$scope.brandId}
+
 
   Admin_Portal_Ctrl_Nav.EXPORT_CTRL()

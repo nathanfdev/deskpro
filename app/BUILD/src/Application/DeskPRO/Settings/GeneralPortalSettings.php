@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Settings;
 
 class GeneralPortalSettings
@@ -41,25 +42,24 @@ class GeneralPortalSettings
     /**
      * @var array
      */
-    private $map = array(
-        'site_url'     => array('core.site_url', 'string'),
-        'site_name'    => array('core.site_name', 'string'),
-        'deskpro_url'  => array('core.deskpro_url', 'string'),
-        'deskpro_name' => array('core.deskpro_name', 'string'),
+    private $map = [
+        'site_url'     => ['core.site_url', 'string'],
+        'site_name'    => ['core.site_name', 'string'],
+        'deskpro_url'  => ['core.deskpro_url', 'string'],
+        'deskpro_name' => ['core.deskpro_name', 'string'],
 
-        'apps_feedback'  => array('core.apps_feedback', 'bool'),
-        'apps_kb'        => array('core.apps_kb', 'bool'),
-        'apps_news'      => array('core.apps_news', 'bool'),
-        'apps_downloads' => array('core.apps_downloads', 'bool'),
+        'apps_feedback'  => ['core.apps_feedback', 'bool'],
+        'apps_kb'        => ['core.apps_kb', 'bool'],
+        'apps_news'      => ['core.apps_news', 'bool'],
+        'apps_downloads' => ['core.apps_downloads', 'bool'],
 
-        'iface_portal' => array('core.iface_portal', 'bool'),
-        'iface_portal' => array('core.iface_portal', 'bool'),
-        'iface_widget' => array('core.iface_widget', 'bool'),
+        'iface_portal' => ['core.iface_portal', 'bool'],
+        'iface_widget' => ['core.iface_widget', 'bool'],
 
-        'show_ratings'           => array('user.show_ratings', 'bool'),
-        'show_ratings_min_votes' => array('user.show_ratings_min_votes', 'int'),
-        'publish_comments'       => array('user.publish_comments', 'bool'),
-    );
+        'show_ratings'           => ['user.show_ratings', 'bool'],
+        'show_ratings_min_votes' => ['user.show_ratings_min_votes', 'int'],
+        'publish_comments'       => ['user.publish_comments', 'bool'],
+    ];
 
     /**
      * @var string
@@ -160,7 +160,7 @@ class GeneralPortalSettings
      */
     public function toArray()
     {
-        $export_settings = array();
+        $export_settings = [];
 
         foreach ($this->map as $name => $info) {
             switch ($info[1]) {
@@ -191,7 +191,7 @@ class GeneralPortalSettings
     {
         if (isset($set_settings['portal_mode'])) {
             if ($set_settings['portal_mode'] != 'publish') {
-                foreach (array('apps_feedback', 'apps_kb', 'apps_news', 'apps_downloads') as $n) {
+                foreach (['apps_feedback', 'apps_kb', 'apps_news', 'apps_downloads'] as $n) {
                     $set_settings[$n] = 0;
                 }
             }
