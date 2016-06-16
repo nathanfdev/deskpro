@@ -880,8 +880,11 @@ class ServeFileScript extends LowScriptAbstract
     /**
      * Renders a blob.
      *
-     * @param $blob
-     * @param null $size
+     * @param int|array   $blob
+     * @param int|null    $size
+     * @param string|null $blob_auth
+     *
+     * @throws \Exception
      */
     protected function showBlob($blob, $size = null, $blob_auth = null)
     {
@@ -935,6 +938,16 @@ class ServeFileScript extends LowScriptAbstract
                     return;
                 }
             }
+        }
+
+        if (!is_array($blob) || empty($blob)) {
+            if ($this->error_mode == 'exception') {
+                throw new \Exception('File not found. (3.1)', 400);
+            }
+            header('HTTP/1.0 404 Not Found');
+            echo 'File not found. (3.1)';
+
+            return;
         }
 
         $blob_id = $blob['id'];
@@ -1032,7 +1045,7 @@ class ServeFileScript extends LowScriptAbstract
         if ($blob['storage_loc'] == 'fs') {
             $this->sendFromFilesystem($blob);
         } else {
-            $this->sendFromDatabase($blob, $this->getPdoRead());
+            $this->sendFromDatabase($blob);
         }
     }
 
