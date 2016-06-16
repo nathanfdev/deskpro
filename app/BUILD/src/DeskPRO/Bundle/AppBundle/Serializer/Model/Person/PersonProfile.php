@@ -90,7 +90,7 @@ class PersonProfile
     /**
      * Person phone.
      *
-     * @JMS\Type("array<array<string>>")
+     * @JMS\Type("array<string>")
      *
      * @var array|null
      */

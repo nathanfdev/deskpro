@@ -14,70 +14,69 @@ import Loader from 'react-loader';
 
 export class ProfileForm extends React.Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    dispatch:  PropTypes.func.isRequired,
     languages: PropTypes.object.isRequired,
     timezones: PropTypes.object.isRequired,
-    profile: PropTypes.object.isRequired
+    profile:   PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
 
     const profile = props.profile;
-    const avatar = profile.get('avatar');
-    const phone = profile.get('phone');
+    const avatar  = profile.get('avatar');
+    const phone   = profile.get('phone');
 
     this.state = {
       data: {
+        name:          profile.get('name'),
+        display_name:  profile.get('display_name'),
+        emails:        profile.get('emails').toArray() || [],
+        primary_email: profile.get('primary_email'),
+        language_id:   profile.get('language_id'),
+        timezone:      profile.get('timezone') || 'UTC',
+
         avatar: {
           blob_auth_id: avatar && avatar.get('blob_auth_id'),
-          url: avatar && avatar.get('url')
+          url:          avatar && avatar.get('url')
         },
-        name: profile.get('name'),
-        display_name: profile.get('display_name'),
-        emails: profile.get('emails').toArray() || [],
-        primary_email: profile.get('primary_email'),
+
         phone: {
-          number: phone && phone.get('number'),
+          number:    phone && phone.get('number'),
           extension: phone && phone.get('extension')
         },
-        language_id: profile.get('language_id'),
-        timezone: profile.get('timezone') || 'UTC',
+
         password: {
-          first: null,
+          first:  null,
           second: null
         }
       },
+
       errors: {},
       submit: false
     };
   }
 
-  onChangeAvatar = (value) => {
-    this.updateData({
-      avatar: {
-        url: value ? this.state.data.avatar.url : null,
-        blob_auth_id: value
-      }
-    });
+  onChangeAvatar = value => {
+    this.updateData(
+      {
+        avatar: {
+          url:          value ? this.state.data.avatar.url : null,
+          blob_auth_id: value
+        }
+      });
   };
 
-  onChangeName = (value) => {
-    this.updateData({
-      name: value
-    });
+  onChangeName = value => {
+    this.updateData({ name: value });
   };
 
-  onChangeDisplayName = (value) => {
-    this.updateData({
-      display_name: value
-    });
+  onChangeDisplayName = value => {
+    this.updateData({ display_name: value });
   };
 
-  onChangeEmails = (emails) => {
-    const diff = {
-      emails: emails
-    };
+  onChangeEmails = emails => {
+    const diff = { emails };
     if (emails.length) {
       diff.primary_email = emails[0];
     }
@@ -85,59 +84,38 @@ export class ProfileForm extends React.Component {
     this.updateData(diff);
   };
 
-  onChangePrimaryEmail = (value) => {
-    this.updateData({
-      primary_email: value
-    });
+  onChangePrimaryEmail = value => {
+    this.updateData({ primary_email: value });
   };
 
   onChangePhone = (number, extension) => {
-    this.updateData({
-      phone: {
-        number: number,
-        extension: extension
-      }
-    });
+    this.updateData({ phone: { number, extension } });
   };
 
   onChangeLanguage = (value) => {
-    this.updateData({
-      language_id: value
-    });
+    this.updateData({ language_id: value });
   };
 
   onChangeTimezone = (value) => {
-    this.updateData({
-      timezone: value
-    });
+    this.updateData({ timezone: value });
   };
 
   onChangePassword = (first, second) => {
-    this.updateData({
-      password: {
-        first: first,
-        second: second
-      }
-    });
+    this.updateData({ password: { first, second } });
   };
 
   updateData(diff) {
     const oldData = this.state.data;
-    this.setState({
-      data: {...oldData, ...diff}
-    });
+    this.setState({ data: { ...oldData, ...diff } });
   }
 
   submitForm = (event) => {
     event.preventDefault();
-    this.setState({
-      submit: true,
-      errors: {}
-    });
+    this.setState({ submit: true, errors: {} });
 
     const { dispatch } = this.props;
-    const stateData = this.state.data;
-    const submitData = {...stateData};
+    const stateData  = this.state.data;
+    const submitData = { ...stateData };
 
     if (submitData.avatar.blob_auth_id) {
       submitData.avatar_blob_auth_id = submitData.avatar.blob_auth_id;
@@ -150,24 +128,20 @@ export class ProfileForm extends React.Component {
 
     const promise = dispatch(updateMyProfile(submitData));
     promise
-      .success(() => this.setState({
-        submit: false
-      }))
-      .catch(result => this.setState({
-        submit: false,
-        errors: result.getData().errors
-      }))
+      .success(() => this.setState({ submit: false }))
+      .catch(result => this.setState({ submit: false, errors: result.getData().errors }))
     ;
   };
 
   renderNameField() {
     return (
       <Field label="Your name" name="name" errors={this.state.errors}>
-        <Avatar personName={this.state.data.name}
-                value={this.state.data.avatar.url}
-                onChange={this.onChangeAvatar}/>
-        <Name value={this.state.data.name}
-              onChange={this.onChangeName} />
+        <Avatar
+          personName={this.state.data.name}
+          value={this.state.data.avatar.url}
+          onChange={this.onChangeAvatar}
+        />
+        <Name value={this.state.data.name} onChange={this.onChangeName} />
       </Field>
     );
   }
@@ -175,8 +149,7 @@ export class ProfileForm extends React.Component {
   renderDisplayNameField() {
     return (
       <Field name="display_name" errors={this.state.errors}>
-        <DisplayName value={this.state.data.display_name}
-                     onChange={this.onChangeDisplayName} />
+        <DisplayName value={this.state.data.display_name} onChange={this.onChangeDisplayName} />
       </Field>
     );
   }
@@ -184,9 +157,7 @@ export class ProfileForm extends React.Component {
   renderEmailField() {
     return (
       <Field label="Your email" name="emails" errors={this.state.errors}>
-        <Email emails={this.state.data.emails}
-               onChange={this.onChangeEmails} />
-      </Field>
+        <Email emails={this.state.data.emails} onChange={this.onChangeEmails} /> </Field>
     );
   }
 
@@ -198,9 +169,11 @@ export class ProfileForm extends React.Component {
 
     return (
       <Field label="Primary email" name="primary_email" errors={this.state.errors}>
-        <PrimaryEmail emails={emails}
-                      value={this.state.data.primary_email}
-                      onChange={this.onChangePrimaryEmail} />
+        <PrimaryEmail
+          emails={emails}
+          value={this.state.data.primary_email}
+          onChange={this.onChangePrimaryEmail}
+        />
       </Field>
     );
   }
@@ -208,8 +181,7 @@ export class ProfileForm extends React.Component {
   renderPhoneField() {
     return (
       <Field label="Phone #" name="phone" errors={this.state.errors}>
-        <Phone value={this.state.data.phone}
-               onChange={this.onChangePhone} />
+        <Phone value={this.state.data.phone} onChange={this.onChangePhone} />
       </Field>
     );
   }
@@ -222,9 +194,11 @@ export class ProfileForm extends React.Component {
 
     return (
       <Field label="Language" name="language_id" errors={this.state.errors}>
-        <Language languages={languages}
-                  value={this.state.data.language_id}
-                  onChange={this.onChangeLanguage} />
+        <Language
+          languages={languages}
+          value={this.state.data.language_id}
+          onChange={this.onChangeLanguage}
+        />
       </Field>
     );
   }
@@ -234,9 +208,11 @@ export class ProfileForm extends React.Component {
 
     return (
       <Field label="Time Zone" name="timezone" errors={this.state.errors}>
-        <Timezone timezones={timezones}
-                  value={this.state.data.timezone}
-                  onChange={this.onChangeTimezone} />
+        <Timezone
+          timezones={timezones}
+          value={this.state.data.timezone}
+          onChange={this.onChangeTimezone}
+        />
       </Field>
     );
   }
@@ -244,9 +220,7 @@ export class ProfileForm extends React.Component {
   renderPasswordField() {
     return (
       <Field label="Password" name="password" errors={this.state.errors}>
-        <Password
-          value={this.state.data.password}
-          onChange={this.onChangePassword} />
+        <Password value={this.state.data.password} onChange={this.onChangePassword} />
       </Field>
     );
   }
@@ -255,11 +229,12 @@ export class ProfileForm extends React.Component {
     return (
       <div className="bucket">
         <div className="bucket-column submit">
-          <Loader left="45%"
-                  opacity={0}
-                  width={3}
-                  loaded={!this.state.submit}>
-
+          <Loader
+            left="45%"
+            opacity={0}
+            width={3}
+            loaded={!this.state.submit}
+          >
             <input type="submit" value="Save" onClick={this.submitForm} />
           </Loader>
         </div>
