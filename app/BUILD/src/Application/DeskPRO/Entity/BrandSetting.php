@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\BrandSetting as BrandSettingRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -83,7 +84,7 @@ class BrandSetting extends \Application\DeskPRO\Domain\DomainObject
         $builder = new ClassMetadataBuilder($metadata);
         $builder->mapId();
         $builder->setTable('settings_brand');
-        $builder->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\SettingBrand');
+        $builder->setCustomRepositoryClass(BrandSettingRepository::class);
         $builder->addUniqueConstraint([
             'name',
             'brand_id',

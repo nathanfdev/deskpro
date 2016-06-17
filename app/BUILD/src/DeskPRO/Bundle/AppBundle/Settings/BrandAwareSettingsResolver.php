@@ -76,6 +76,10 @@ class BrandAwareSettingsResolver
     public function getSetting($name, $default = null)
     {
         if ($this->brand_stack && $this->brand_stack->getActive()) {
+            if ($default === null) {
+                $default = $this->getGlobalSetting($name);
+            }
+
             return $this->getBrandSetting($name, $default);
         }
 

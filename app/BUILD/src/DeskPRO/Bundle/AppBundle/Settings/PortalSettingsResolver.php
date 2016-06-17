@@ -31,12 +31,15 @@ namespace DeskPRO\Bundle\AppBundle\Settings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAntiAbuseSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalUserRateLimit;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
+use DeskPRO\Bundle\AppBundle\Settings\Model\PortalGeneralSettings;
 
 /**
  * Class PortalSettingsResolver.
  */
 class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implements AntiAbuseSettingsAwareInterface
 {
+    const SITE_NAME = 'core.site_name';
+    const SITE_URL  = 'core.site_url';
     /**
      * {@inheritdoc}
      *
@@ -89,5 +92,16 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
         $this->setRateLimitGroup($userRateLimit->getSubmitComment(), 'rate_limit.submit_comment'.$userType);
         $this->setRateLimitGroup($userRateLimit->getUploadAttachment(), 'rate_limit.upload_attachment'.$userType);
         $this->setRateLimitGroup($userRateLimit->getShareContent(), 'rate_limit.share_content'.$userType);
+    }
+
+    public function getGeneralSettings()
+    {
+        $model = new PortalGeneralSettings();
+
+        $model
+            ->setSiteName($this->getSetting(self::SITE_NAME))
+            ->setSiteUrl($this->getSetting(self::SITE_URL));
+
+        return $model;
     }
 }
