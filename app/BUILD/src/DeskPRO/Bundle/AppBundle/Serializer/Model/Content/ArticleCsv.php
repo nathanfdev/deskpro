@@ -28,56 +28,23 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
-use Application\DeskPRO\Entity\ContentAbstract;
-use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\News;
-use JMS\Serializer\Annotation as JMS;
+use Application\DeskPRO\Entity\Article;
 
-class ContentCsv extends Content
+class ArticleCsv extends ContentCsv
 {
     /**
-     * Person created this content first time.
-     *
-     * @JMS\Type("string")
-     */
-    protected $person;
-
-    /**
-     * Person created this content first time.
-     *
-     * @JMS\Type("string")
-     */
-    protected $language;
-
-    /**
-     * Content category.
-     *
-     * @JMS\Type("string")
-     */
-    protected $category;
-
-    /**
-     * Constructor.
-     *
-     * @param \Application\DeskPRO\Entity\ContentAbstract $entity
-     */
-    public function __construct(ContentAbstract $entity)
-    {
-        parent::__construct($entity);
-
-        $this->person   = $entity->getPerson() ? $entity->getPerson()->getName() : '';
-        $this->language = $entity->getLanguage() ? $entity->getLanguage()->getTitle() : '';
-        $this->content  = mb_substr($entity->getContentPlain(), 0, 50);
-        $this->category = $this->getCategory($entity);
-    }
-
-    /**
-     * @param ContentAbstract|News|Download $entity
+     * @param Article $entity
      *
      * @return string
      */
     protected function getCategory($entity)
     {
-        return $entity->getCategory() ? $entity->getCategory()->getTitle() : '';
+        $categoryNames = [];
+        $categories    = $entity->getCategories();
+        foreach ($categories as $category) {
+            $categoryNames[] = $category->getTitle();
+        }
+
+        return implode(', ', $categoryNames);
     }
 }

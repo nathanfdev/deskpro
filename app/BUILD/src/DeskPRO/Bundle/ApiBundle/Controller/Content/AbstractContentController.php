@@ -60,7 +60,7 @@ abstract class AbstractContentController extends CrudController
      *
      * @Rest\Get("/csv")
      * @SerializerView(mapping={
-     *     "Application\DeskPRO\Entity\Article": "DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentCsv",
+     *     "Application\DeskPRO\Entity\Article": "DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ArticleCsv",
      *     "Application\DeskPRO\Entity\News": "DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentCsv",
      *     "Application\DeskPRO\Entity\Download": "DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentCsv",
      * })
