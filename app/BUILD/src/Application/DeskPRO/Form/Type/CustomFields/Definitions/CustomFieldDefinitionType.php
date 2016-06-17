@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,59 +36,55 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CustomFieldDefinitionType extends AbstractType implements EventSubscriberInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text', array(
+            ->add('title', 'text', [
                 'required' => true,
-            ))
-            ->add('description', 'textarea', array(
+            ])
+            ->add('description', 'textarea', [
                 'required' => false,
-            ))
-
-            ->add('is_enabled', 'checkbox', array(
+            ])
+            ->add('is_enabled', 'checkbox', [
                 'required' => true,
-            ))
-
+            ])
             ->add($builder->create('options', 'form')
                 ->add('required', 'checkbox')
-            )
-        ;
+            );
 
         $builder->addEventSubscriber($this);
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(array(
+            ->setDefaults([
                 'data_class' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
                 'allow_edit' => false,
-            ))
-            ->setRequired(array(
+            ])
+            ->setRequired([
                 'persister',
-            ))
-            ->setOptional(array(
+            ])
+            ->setDefined([
                 'context',
                 'allow_edit',
-            ))
-            ->setAllowedTypes(array(
+            ])
+            ->setAllowedTypes([
                 // todo
-                'context' => array(
+                'context' => [
                     'Application\DeskPRO\Entity\Person',
                     'Application\DeskPRO\Entity\Ticket',
                     'Application\DeskPRO\Entity\Organization',
-                ),
+                ],
                 'persister' => 'Application\DeskPRO\CustomFields\CustomDataPersister',
-            ))
-        ;
+            ]);
     }
 
     /**
@@ -116,7 +112,7 @@ class CustomFieldDefinitionType extends AbstractType implements EventSubscriberI
             return;
         }
 
-        $definition['form_type'] = str_replace(array('\Definitions', 'Definition'), array('', ''), get_class($this));
+        $definition['form_type'] = str_replace(['\Definitions', 'Definition'], ['', ''], get_class($this));
     }
 
     /**
@@ -124,10 +120,10 @@ class CustomFieldDefinitionType extends AbstractType implements EventSubscriberI
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             FormEvents::PRE_SUBMIT  => 'onPreSubmit',
             FormEvents::POST_SUBMIT => 'onPostSubmit',
-        );
+        ];
     }
 
     public function getName()

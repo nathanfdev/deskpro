@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class ChatUserTypingType.
@@ -54,7 +54,7 @@ class ChatUserTypingType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'csrf_protection'               => false,

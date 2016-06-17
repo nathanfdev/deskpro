@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -41,7 +42,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class BlobType extends AbstractType
 {
@@ -69,8 +70,8 @@ class BlobType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreData'));
-        $builder->addEventListener(FormEvents::SUBMIT, array($this, 'onPostSubmit'));
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreData']);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onPostSubmit']);
 
         $builder->addModelTransformer(new BlobTypeModelTransformer($this->blob_repo));
     }
@@ -99,7 +100,7 @@ class BlobType extends AbstractType
                 $this->em->persist($blob);
                 $form->setData($blob);
                 $form->remove('upload');
-                $form->add('delete', 'checkbox', array('mapped' => false, 'required' => false));
+                $form->add('delete', 'checkbox', ['mapped' => false, 'required' => false]);
                 $form->add('blob_auth', 'hidden');
             }
         } else {
@@ -117,9 +118,9 @@ class BlobType extends AbstractType
         $form = $event->getForm();
 
         if (!$blob) {
-            $form->add('upload', 'file', array(
+            $form->add('upload', 'file', [
                 'mapped' => false,
-            ));
+            ]);
 
             if ($form->has('delete_blob')) {
                 $form->remove('delete_blob');
@@ -145,12 +146,12 @@ class BlobType extends AbstractType
         return 'deskpro_blob';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => null,
-            )
+            ]
         );
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,54 +37,53 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TaskType extends AbstractType implements EventSubscriberInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('title', 'text', array(
+            ->add('title', 'text', [
                 'required' => true,
-            ))
-        ->add('person', 'entity', array(
+            ])
+            ->add('person', 'entity', [
                 'class'         => 'DeskPRO:Person',
                 'required'      => true,
                 'property'      => 'display_name',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('p')->where('p.is_agent = true AND p.is_deleted = false');
                 },
-            ))
-        // UTC!
-        ->add('date_due', 'datetime', array(
+            ])
+            // UTC!
+            ->add('date_due', 'datetime', [
                 'widget'   => 'single_text',
                 'required' => false,
-            ))
-        ->add('visibility', 'choice', array(
+            ])
+            ->add('visibility', 'choice', [
                 'required' => false,
-                'choices'  => array(
+                'choices'  => [
                     Task::PRIVATE_VISIBILITY => 'private',
                     Task::PUBLIC_VISIBILITY  => 'public',
-                ),
-            ))
-        ->add('assigned_agent', 'entity', array(
+                ],
+            ])
+            ->add('assigned_agent', 'entity', [
                 'class'         => 'DeskPRO:Person',
                 'required'      => false,
                 'property'      => 'display_name',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('p')->where('p.is_agent = true AND p.is_deleted = false');
                 },
-            ))
-        ->add('assigned_agent_team', 'entity', array(
+            ])
+            ->add('assigned_agent_team', 'entity', [
                 'class'    => 'DeskPRO:AgentTeam',
                 'required' => false,
                 'property' => 'name',
-            ))
-        ->add('ticket', 'text', array(
+            ])
+            ->add('ticket', 'text', [
                 'required' => false,
                 'mapped'   => false,
-            ))
-        ;
+            ]);
 
         $builder->addEventSubscriber($this);
     }
@@ -148,12 +147,12 @@ class TaskType extends AbstractType implements EventSubscriberInterface
         }
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Application\DeskPRO\Entity\Task',
             'timezone'   => null,
-        ));
+        ]);
     }
 
     public function getName()
@@ -163,9 +162,9 @@ class TaskType extends AbstractType implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             FormEvents::PRE_SUBMIT  => 'onPreSubmit',
             FormEvents::POST_SUBMIT => 'onPostSubmit',
-        );
+        ];
     }
 }

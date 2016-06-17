@@ -32,7 +32,7 @@ use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayOfStringsTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class LabelsCollectionType.
@@ -66,7 +66,7 @@ class LabelsCollectionType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setRequired(['labels_class', 'labels_owner', 'labels_property', 'owner_property'])

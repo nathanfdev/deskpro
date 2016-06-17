@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\People\Agents\Type;
 
 use Application\DeskPRO\Form\Type\PhoneNumberType;
+use Application\DeskPRO\People\Agents\EditAgent;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EditAgentType extends AbstractType
 {
@@ -45,32 +47,32 @@ class EditAgentType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array('required' => true));
-        $builder->add('override_name', 'text', array('required' => false));
+        $builder->add('name', 'text', ['required' => true]);
+        $builder->add('override_name', 'text', ['required' => false]);
 
         $builder->add('primary_phone', new PhoneNumberType());
 
-        $builder->add('emails', 'collection', array(
+        $builder->add('emails', 'collection', [
             'type'            => 'email',
             'allow_add'       => true,
             'allow_delete'    => true,
             'invalid_message' => 'Invalid Email.',
-        ));
+        ]);
 
-        $builder->add('zones', 'choice', array(
-            'choices'  => array('admin' => 'admin', 'reports' => 'reports'),
+        $builder->add('zones', 'choice', [
+            'choices'  => ['admin' => 'admin', 'reports' => 'reports'],
             'multiple' => true,
             'required' => false,
-        ));
+        ]);
 
-        $builder->add('teams', 'entity', array(
+        $builder->add('teams', 'entity', [
             'class'           => 'DeskPRO:AgentTeam',
             'required'        => false,
             'multiple'        => true,
             'invalid_message' => 'Invalid Team.',
-        ));
+        ]);
 
-        $builder->add('agent_groups', 'entity', array(
+        $builder->add('agent_groups', 'entity', [
             'class'         => 'DeskPRO:Usergroup',
             'required'      => false,
             'multiple'      => true,
@@ -78,26 +80,26 @@ class EditAgentType extends AbstractType
                 return $er->createQueryBuilder('ug')->where('ug.is_agent_group = true');
             },
             'invalid_message' => 'Invalid Agent Group.',
-        ));
+        ]);
 
-        $builder->add('primary_team', 'entity', array(
+        $builder->add('primary_team', 'entity', [
             'class'           => 'DeskPRO:AgentTeam',
             'required'        => false,
             'invalid_message' => 'Invalid Agent Team.',
-        ));
+        ]);
 
         $builder->add('notification_settings', 'collection');
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class'         => 'Application\\DeskPRO\\People\\Agents\\EditAgent',
+        $resolver->setDefaults([
+            'data_class'         => EditAgent::class,
             'cascade_validation' => true,
-        ));
+        ]);
     }
 
     /**

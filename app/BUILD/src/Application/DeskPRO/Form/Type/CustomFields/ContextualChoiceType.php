@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,7 +38,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContextualChoiceType extends ChoiceType
 {
@@ -51,31 +51,30 @@ class ContextualChoiceType extends ChoiceType
         parent::buildForm($builder, $options);
 
         if ($options['allow_edit']) {
-            $builder->add('custom_choice', 'text', array(
+            $builder->add('custom_choice', 'text', [
                 'required' => false,
                 'label'    => false,
                 'mapped'   => false,
-                'attr'     => array(
+                'attr'     => [
                     'placeholder' => 'Custom choice',
                     'style'       => 'display:none;',
-                ),
-            ));
+                ],
+            ]);
         }
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         parent::setDefaultOptions($resolver);
         $options = $this->definition['options'];
         $resolver
-            ->setRequired(array('context'))
-            ->setDefaults(array(
+            ->setRequired(['context'])
+            ->setDefaults([
                 'allow_edit' => isset($options['allow_edit']) ? $options['allow_edit'] : false,
-            ))
-        ;
+            ]);
     }
 
     /**
@@ -139,10 +138,10 @@ class ContextualChoiceType extends ChoiceType
             $choices = $form->get('value')->getConfig()->getOption('choice_list')->getChoices();
             $this->handleCustomChoice($form, $choices, $data);
             $form->remove('value');
-            $form->add('value', 'entity', array_merge($this->getValueOptions(), array(
+            $form->add('value', 'entity', array_merge($this->getValueOptions(), [
                 'class'   => 'DeskPRO:CustomFieldDefinition',
                 'choices' => $choices,
-            )));
+            ]));
 
             $event->setData($data);
         }
@@ -153,7 +152,7 @@ class ContextualChoiceType extends ChoiceType
      *
      * @param FormInterface $form
      * @param array         $choices
-     * @param $data
+     * @param               $data
      */
     protected function handleCustomChoice(FormInterface $form, array &$choices, &$data)
     {
@@ -181,7 +180,7 @@ class ContextualChoiceType extends ChoiceType
             $newDef->parent    = $this->definition;
             $newDef->children  = new ArrayCollection();
             $newDef['title']   = $data['custom_choice'];
-            $newDef['options'] = array();
+            $newDef['options'] = [];
 
             if ($context = $form->getConfig()->getOption('context')) {
                 $newDef['context_id'] = $context['id'];

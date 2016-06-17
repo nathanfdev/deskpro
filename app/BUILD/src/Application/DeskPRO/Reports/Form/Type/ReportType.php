@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Reports\Form\Type;
 
+use Application\DeskPRO\Reports\ReportEdit;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ReportType extends AbstractType
 {
@@ -42,13 +44,13 @@ class ReportType extends AbstractType
         $builder->add('report', new ReportPropsType());
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
-                 'data_class'         => 'Application\\DeskPRO\\Reports\\ReportEdit',
-                 'cascade_validation' => true,
-            )
+            [
+                'data_class'         => ReportEdit::class,
+                'cascade_validation' => true,
+            ]
         );
     }
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,41 +29,43 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Departments\Form\Type;
 
+use Application\DeskPRO\Entity\Department;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TicketDepartmentPropsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('title', 'text', array(
+        $builder->add('title', 'text', [
             'required' => false,
-        ));
-        $builder->add('user_title', 'text', array(
+        ]);
+        $builder->add('user_title', 'text', [
             'required' => false,
-        ));
-        $builder->add('parent', 'entity', array(
+        ]);
+        $builder->add('parent', 'entity', [
             'class'         => 'DeskPRO:Department',
             'required'      => false,
             'query_builder' => function (EntityRepository $er) {
                 return $er->createQueryBuilder('d')->where('d.is_tickets_enabled = true AND d.parent IS NULL')->orderBy('d.display_order', 'ASC');
             },
-        ));
-        $builder->add('avatar', 'text', array(
+        ]);
+        $builder->add('avatar', 'text', [
             'required' => false,
             'mapped'   => false,
-        ));
+        ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'Application\\DeskPRO\\Entity\\Department',
-        ));
+        $resolver->setDefaults([
+            'data_class' => Department::class,
+        ]);
     }
 
     public function getName()

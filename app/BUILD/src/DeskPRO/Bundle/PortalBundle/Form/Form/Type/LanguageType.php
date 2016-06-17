@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class LanguageType extends AbstractType
 {
@@ -48,33 +49,33 @@ class LanguageType extends AbstractType
         return 'entity';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(array('view_context'));
-        $resolver->setAllowedValues(array('view_context' => array('user', 'agent', 'admin')));
-        $resolver->setDefaults(array(
+        $resolver->setRequired(['view_context']);
+        $resolver->setAllowedValues(['view_context' => ['user', 'agent', 'admin']]);
+        $resolver->setDefaults([
             'property_path' => 'language',
             'class'         => 'Application\\DeskPRO\\Entity\\Language',
             'property'      => 'title',
             'empty_data'    => null,
             'query_builder' => function (Options $options) {
-                    return function (EntityRepository $repo) use ($options) {
-                        $query = $repo
-                            ->createQueryBuilder('l')
-                            ->select('l');
-                        if ('user' === $options->get('view_context')) {
-                            $query->andWhere('l.has_user = true');
-                        }
-                        if ('agent' === $options->get('view_context')) {
-                            $query->andWhere('l.has_agent = true');
-                        }
-                        if ('admin' === $options->get('view_context')) {
-                            $query->andWhere('l.has_admin = true');
-                        }
+                return function (EntityRepository $repo) use ($options) {
+                    $query = $repo
+                        ->createQueryBuilder('l')
+                        ->select('l');
+                    if ('user' === $options->get('view_context')) {
+                        $query->andWhere('l.has_user = true');
+                    }
+                    if ('agent' === $options->get('view_context')) {
+                        $query->andWhere('l.has_agent = true');
+                    }
+                    if ('admin' === $options->get('view_context')) {
+                        $query->andWhere('l.has_admin = true');
+                    }
 
-                        return $query;
-                    };
-                },
-        ));
+                    return $query;
+                };
+            },
+        ]);
     }
 }

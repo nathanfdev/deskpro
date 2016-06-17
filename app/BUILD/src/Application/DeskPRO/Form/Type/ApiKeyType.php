@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Form\Type;
 
 use Application\DeskPRO\Entity\ApiKey;
@@ -37,34 +38,34 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ApiKeyType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('note', 'text', array('required' => true));
+        $builder->add('note', 'text', ['required' => true]);
         $builder->add(
             'person',
             'entity',
-            array(
-                 'class'         => 'DeskPRO:Person',
-                 'required'      => false,
-                 'multiple'      => false,
-                 'property'      => 'display_name',
-                 'query_builder' => function (EntityRepository $er) {
-                     return $er->createQueryBuilder('p')->where(
-                         'p.is_agent = true AND p.is_deleted = false'
-                     );
-                 },
-            )
+            [
+                'class'         => 'DeskPRO:Person',
+                'required'      => false,
+                'multiple'      => false,
+                'property'      => 'display_name',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('p')->where(
+                        'p.is_agent = true AND p.is_deleted = false'
+                    );
+                },
+            ]
         );
 
-        $builder->add('flags', 'choice', array(
-            'choices'  => array(ApiKey::FLAG_SUPER_KEY => ApiKey::FLAG_SUPER_KEY, ApiKey::FLAG_ADMIN_MANAGE => ApiKey::FLAG_ADMIN_MANAGE),
+        $builder->add('flags', 'choice', [
+            'choices'  => [ApiKey::FLAG_SUPER_KEY => ApiKey::FLAG_SUPER_KEY, ApiKey::FLAG_ADMIN_MANAGE => ApiKey::FLAG_ADMIN_MANAGE],
             'multiple' => true, // an array
             'required' => false,
-        ));
+        ]);
 
         // cleanup extra data
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
@@ -74,12 +75,12 @@ class ApiKeyType extends AbstractType
         });
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
-                 'data_class' => 'Application\\DeskPRO\\Entity\\ApiKey',
-            )
+            [
+                'data_class' => ApiKey::class,
+            ]
         );
     }
 
