@@ -17,6 +17,7 @@ export class KBTab extends Component {
     super(props);
     this.state = { expanded: false };
   }
+
   getAttachTarget = () => this.refs.articles;
 
   render = () => {
@@ -34,7 +35,11 @@ export class KBTab extends Component {
               count={articles.get('count')}
               callback={toggle}
             />
-            <NestedList content="articles" items={articles.get('nested').toJS()} />
+            <NestedList
+              content="articles"
+              groupedBy={articles.get('grouped_by')}
+              items={articles.get('nested').toJS()}
+            />
             <NavGroupingPopup
               attachTo={this.getAttachTarget}
               content="articles"

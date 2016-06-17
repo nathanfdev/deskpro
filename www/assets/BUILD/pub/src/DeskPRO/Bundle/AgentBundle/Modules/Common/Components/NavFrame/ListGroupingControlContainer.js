@@ -1,7 +1,8 @@
 import React, { PropTypes, Component } from 'react';
+import { connect } from 'react-redux';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { connect } from 'react-redux';
+import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 
 @connect()
 export class ListGroupingControlContainer extends Component {
@@ -28,7 +29,9 @@ export class ListGroupingControlContainer extends Component {
 
     for (let i = 0; i < options.length; i++) {
       if (options[i].selected) {
-        dispatch(changeListGrouping(options[i].value, content, id));
+        const value = options[i].value;
+        dispatch(changeListGrouping(value, content, id));
+        dispatch(updateRoutingState('group', content, value));
         break;
       }
     }

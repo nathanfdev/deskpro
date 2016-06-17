@@ -32,7 +32,11 @@ export class DownloadsTab extends Component {
       <SectionsPane>
         <Section>
           <SectionGroupedHeader label="Downloads" ref="downloads" count={downloads.get('count')} callback={toggle} />
-          <NestedList content="downloads" items={downloads.get('nested').toJS()} />
+          <NestedList
+            content="downloads"
+            items={downloads.get('nested').toJS()}
+            groupedBy={downloads.get('grouped_by')}
+          />
           <NavGroupingPopup
             attachTo={this.getAttachTarget}
             content="downloads"

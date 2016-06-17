@@ -38,6 +38,7 @@ export class NewsTab extends Component {
           <NestedList
             content="news"
             items={news.get('nested').toJS()}
+            groupedBy={news.get('grouped_by')}
           />
           <NavGroupingPopup
             attachTo={this.getAttachTarget}

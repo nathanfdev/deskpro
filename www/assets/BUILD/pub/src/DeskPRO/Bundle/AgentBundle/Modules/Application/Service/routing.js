@@ -59,7 +59,7 @@ function componentStateToString(state) {
   let string = '';
   state.forEach((value, key) => {
     const encodedValue = value.join ? value.join(',') : value;
-    string += key + '-' + encodedValue + ';';
+    string += `${key}-${encodedValue};`;
   });
 
   return string.slice(0, -1);
@@ -76,7 +76,7 @@ export function stateToString(state) {
   ensureNoReservedChars(state);
 
   let string = '';
-  state.forEach((data, component) => string += component + ':' + componentStateToString(data) + '.');
+  state.forEach((data, component) => string += `${component}:${componentStateToString(data)}.`);
 
   return string.slice(0, -1);
 }
@@ -97,13 +97,13 @@ function componentStateFromString(string) {
   parts.forEach(part => {
     const [key, value] = part.split('-');
     if (!key || !value) {
-      return
+      return null;
     }
 
     let decodedValue;
     if (value.indexOf(',') > -1) {
       decodedValue = value.split(',');
-      decodedValue = decodedValue.map(item => item.match(/^\d+$/) ? Number(item) : item);
+      decodedValue = decodedValue.map(item => (item.match(/^\d+$/) ? Number(item) : item));
     } else {
       decodedValue = value.match(/^\d+$/) ? Number(value) : value;
     }

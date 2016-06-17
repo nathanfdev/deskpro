@@ -13,6 +13,7 @@ export class ListItemContainer extends Component {
     hash:        PropTypes.object,
     group:       PropTypes.string,
     label:       PropTypes.string.isRequired,
+    content:       PropTypes.string.isRequired,
     children:    PropTypes.node,
     listOptions: PropTypes.object.isRequired
   };
@@ -23,9 +24,10 @@ export class ListItemContainer extends Component {
   }
 
   componentDidMount = () => {
-    const { hash, listOptions, dispatch, group } = this.props;
-    const activeItemId = hash.get('nav') ? hash.get('nav').get(group) : null;
-    if (activeItemId === this.itemId) {
+    const { hash, listOptions, dispatch, group, content } = this.props;
+    console.log('Group', group);
+    const activeItemId = hash.get('nav') ? hash.get('nav').get(`${content}_${group}`) : null;
+    if (activeItemId === this.itemId && content === listOptions.content) {
       dispatch(applyParams(listOptions));
     }
   };
@@ -36,13 +38,15 @@ export class ListItemContainer extends Component {
   };
 
   render = () => {
+    const { group, label, children, content } = this.props;
     const props = {
-      groupId:  'nav',
-      active:   this.props.group,
-      onClick:  this.loadList,
-      itemId:   this.itemId,
-      label:    this.props.label,
-      children: this.props.children
+      label,
+      children,
+
+      groupId: 'nav',
+      active:  `${content}_${group}`,
+      onClick: this.loadList,
+      itemId:  this.itemId
     };
 
     return (
