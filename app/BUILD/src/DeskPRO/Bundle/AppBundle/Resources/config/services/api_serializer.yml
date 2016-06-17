@@ -54,6 +54,11 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.feedback_comment:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\FeedbackCommentHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.content:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ContentHandler
     tags:

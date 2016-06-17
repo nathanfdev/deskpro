@@ -2,7 +2,6 @@ import { createSelector } from 'reselect';
 import { hashStateSelectorFactory } from '../../../Modules/Application/Selectors/routing';
 import { constants } from '../../../Constants/Constants';
 
-
 const stateSelector = state => state.Feedback.list;
 
 export const idsSelector = createSelector(
@@ -13,6 +12,11 @@ export const idsSelector = createSelector(
 export const currentListParamsSelector = createSelector(
   stateSelector,
   state => state.get('currentListParams')
+);
+
+export const fieldsSelector = createSelector(
+  stateSelector,
+  state => state.get('fields')
 );
 
 export const tableFieldsSelector = createSelector(
