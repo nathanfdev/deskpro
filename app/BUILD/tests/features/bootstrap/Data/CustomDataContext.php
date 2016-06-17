@@ -80,14 +80,14 @@ class CustomDataContext extends BaseContext
                     throw new \Exception("$customDefRef doesn't have choice $choiceId");
                 }
 
-                $customData = $customDef->createNewDataInstance();
+                $customData = $customDef->createCustomData();
                 $customData->setField($choiceDef);
                 $customData->setValue(1);
 
                 $entity->addCustomData($customData);
             }
         } else {
-            $customData = $customDef->createNewDataInstance();
+            $customData = $customDef->createCustomData();
 
             if ($customDef->getWidgetType() === CustomDefAbstract::TYPE_TOGGLE) {
                 $customData->setValue($value);

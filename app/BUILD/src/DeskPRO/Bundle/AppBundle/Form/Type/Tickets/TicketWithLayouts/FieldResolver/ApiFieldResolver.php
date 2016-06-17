@@ -45,7 +45,7 @@ class ApiFieldResolver extends AbstractFieldResolver
     /**
      * {@inheritdoc}
      */
-    protected function createCaptcha(TicketWithLayoutsContext $context, $ignore_validation)
+    protected function createCaptcha(TicketWithLayoutsContext $context)
     {
         return false;
     }
@@ -111,7 +111,7 @@ class ApiFieldResolver extends AbstractFieldResolver
     /**
      * {@inheritdoc}
      */
-    protected function createCustomField(TicketWithLayoutsContext $context, $propertyPath, CustomDefAbstract $def = null, $ignoreValidation = false)
+    protected function createCustomField(TicketWithLayoutsContext $context, $propertyPath, CustomDefAbstract $def = null)
     {
         if (!$def || !$def->isEnabled()) {
             return false;

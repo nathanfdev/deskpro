@@ -209,7 +209,6 @@ class NewFeedbackType extends AbstractType
                     'custom_def'      => $def,
                     'property_path'   => 'custom_data',
                     'agent_interface' => false,
-                    'label'           => $def->getTitle(),
                 ],
             ];
         }

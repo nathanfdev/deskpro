@@ -597,7 +597,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * @return CustomDataAbstract
      */
-    public function createNewDataInstance()
+    public function createCustomData()
     {
         /* @var CustomDataAbstract $customData */
         $className  = $this->getCustomDataClass();

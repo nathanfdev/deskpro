@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
@@ -133,7 +134,6 @@ class PersonRegistrationType extends AbstractType
                     'custom_def'      => $field_def,
                     'property_path'   => 'custom_data',
                     'agent_interface' => false,
-                    'label'           => $field_def->getTitle(),
                 ]);
             }
 
