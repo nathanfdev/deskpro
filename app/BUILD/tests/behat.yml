@@ -172,6 +172,7 @@ production:
                 - DpBehat\Api\JsonContext
                 - DpBehat\Api\RestContext
                 - DpBehat\Portal\AuthContext
+                - DpBehat\Data\PeopleContext
                 - DpBehat\Http\HttpContext
                 - DpBehat\System\Alerts\EventsContext
                 - DpBehat\ProductionModeContext

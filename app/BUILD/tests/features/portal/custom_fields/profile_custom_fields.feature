@@ -2,8 +2,7 @@
 Feature: User profile form custom fields
 
   Background:
-    Given a user with "user@deskpro.dev" email exists
-    And I am authenticated as user
+    Given I'm authenticated as user
 
   Scenario: I check custom fields exist on the form
     Given only the following custom person fields exist:

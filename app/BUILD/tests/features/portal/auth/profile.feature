@@ -11,7 +11,7 @@ Feature: User Profile
     Then I should be on "/login"
 
   Scenario: I visit my profile page
-    Given I am authenticated as user
+    Given I'm authenticated as user
     When I go to "/profile"
     Then I should be on "/profile"
 
