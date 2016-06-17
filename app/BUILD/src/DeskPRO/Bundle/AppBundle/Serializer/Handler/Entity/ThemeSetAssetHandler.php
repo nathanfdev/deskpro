@@ -75,8 +75,7 @@ class ThemeSetAssetHandler extends AbstractEntityHandler
         if (in_array(AssetsManager::CUSTOM_ASSET_TAG, $entity->getTags())
             || in_array(AssetsManager::CUSTOM_LOGO_TAG, $entity->getTags())
         ) {
-            $url = $this->router->generate(
-                'dp_portal_custom_asset', ['name' => $entity->getName()], RouterInterface::ABSOLUTE_URL);
+            $url = $entity->getBlob()->getDownloadUrl(true, true);
         }
 
         return new ThemeSetAssetModel($entity, $url);

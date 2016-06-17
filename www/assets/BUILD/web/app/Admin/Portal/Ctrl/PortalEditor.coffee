@@ -9,6 +9,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
       @recompiling = false
+      @savingMulti = false
       @advanced = {header: '', footer: '', main_scss: '', custom_scss: '', javascript: ''}
       @available_themes = [
         {id: "standard", title: "Standard"},
@@ -43,21 +44,25 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @theme_set = null;
       @refreshPreviewUrl()
 
-    save: () =>
+    save: ->
       request = @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/advanced-edits',
         data: @advanced
       })
       promises = [@saveValues(), @editWelcomeBox(), request]
-      all = Promise.all(promises)
-      @recompiling = true
-      all.then(
-        () => @recompiling = false; @refreshPreviewUrl(),
-        () => @serverError(); @recompiling = false
+      all = @$q.all(promises)
+      @savingMulti = true
+      all.then( =>
+        console.log("ERE")
+        @savingMulti = false
+        @refreshPreviewUrl()
+      , =>
+        @serverError()
+        @savingMulti = false
       )
 
-    editTheme: () =>
+    editTheme: ->
       request = @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/info',
@@ -71,16 +76,16 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         () => @serverError(); @recompiling = false
       )
 
-    saveWelcomeBox: () =>
+    saveWelcomeBox: ->
       @editWelcomeBox().then(
-        () => @refreshReviewUrl()
+        () => if not @savingMulti then @refreshPreviewUrl()
       )
 
-    clearWelcomeBox: () =>
+    clearWelcomeBox: ->
        @welcome_box = {title: '', message: ''}
        @saveWelcomeBox()
 
-    editWelcomeBox: () =>
+    editWelcomeBox: ->
       request = @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/welcome-message',
@@ -92,7 +97,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         () => @serverError(); @recompiling = false
       )
 
-    saveValues: () =>
+    saveValues: ->
       request = @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/variable-values',
@@ -103,6 +108,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         () => @recompiling = false; @values = angular.copy(@$scope.values),
         () => @serverError(); @recompiling = false
       )
+      return request
 
     commit: () ->
       @showConfirm('Are you sure you want to apply this changes to the portal?', 'Confirm save').result.then(
@@ -111,7 +117,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
             promises = [@saveValues(), @editWelcomeBox()];
           else
             promises = [true]
-          all = Promise.all(promises)
+          all = @$q.all(promises)
           all.then (
             () =>
               @$http.get('/portal/api/style/edit-theme-set/commit').then(
@@ -127,7 +133,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           @recompiling = true
           request = @$http.get('/portal/api/style/edit-theme-set/discard')
           promises = [request, @loadAdvancedEdits(), @loadLogo(), @loadValues()]
-          all = Promise.all(promises)
+          all = @$q.all(promises)
           all.then(
             () => new Promise( (resolve) => resolve(@refrechPreviewUrl())).then(() => @success('Changes were discarded'); @recompiling = false),
             () => @serverError(); @recompiling = false
@@ -191,7 +197,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       parts = template.split(':')
       if parts[1] then parts[1] else parts[0]
 
-    editTemplate: () =>
+    editTemplate: ->
       @$http.get('/portal/api/style/edit-theme-set/template-info?template=' + @selected_template).success((data) =>
         @selected_template_info = {
           code: data.source,
@@ -200,7 +206,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         @selected_template_info_loaded = true
       )
 
-    openTemplateEditor: (tpl) =>
+    openTemplateEditor: (tpl) ->
       @selected_template = tpl
       @$http.get('/portal/api/style/edit-theme-set/template-info?template=' + @selected_template).success((data) =>
         @selected_template_info = {
@@ -210,7 +216,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         @selected_template_info_loaded = true
       )
 
-    saveTemplateEditor: () =>
+    saveTemplateEditor: () ->
       @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
@@ -225,7 +231,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
 
-    revertTemplateEditor: () =>
+    revertTemplateEditor: () ->
       @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
@@ -236,7 +242,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @selected_template = null
       @selected_template_info_loaded = false
 
-    openCssEditor: (type) =>
+    openCssEditor: (type) ->
       @css_template_selected = true
       @$http.get('/portal/api/style/edit-theme-set/advanced-edits').success((data) =>
         @css_template_info = {
@@ -246,16 +252,16 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         }
       )
 
-    cancelCssEditor: () =>
+    cancelCssEditor: ->
       @css_template_selected = false
       @css_template_info = false
 
-    saveCssEditor: () =>
+    saveCssEditor: ->
       data = {};
       data[@css_template_info.type] = @css_template_info.code;
       @recompiling = true
 
-      @$http({
+      req = @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/advanced-edits',
         data: angular.toJson(data)
@@ -266,7 +272,9 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @css_template_selected = null
       @css_template_info = false
 
-    cancelTemplateEditor: () =>
+      return req
+
+    cancelTemplateEditor: ->
       @selected_template = null
       @selected_template_info_loaded = false
 
@@ -298,7 +306,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     loadLogo: () ->
       @$http.get('/portal/api/style/edit-theme-set/logo').success((response) => @custom_logo = response.data?.url)
 
-    upload: (files) =>
+    upload: (files)->
       for file in files
         @uploading_files_count++;
         @$upload.upload({
@@ -312,7 +320,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           () => @error('Server error occurred. Unable to upload files.')
         );
 
-    uploadLogo: (files) =>
+    uploadLogo: (files) ->
       @$upload
         .upload({url: '/portal/api/style/edit-theme-set/logo', file: files[0]})
         .then(
@@ -340,18 +348,18 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           () => @asset_files = @asset_files.filter (f) -> f isnt file
         )
 
-    deleteLogo: () =>
+    deleteLogo: () ->
       @$http.delete('/portal/api/style/edit-theme-set/logo').success(() => @custom_logo = null)
 
-    openAdvancedTab: (tab) => @advanced_tab = tab
-    isAdvancedTab: (tab) => @advanced_tab == tab
+    openAdvancedTab: (tab) -> @advanced_tab = tab
+    isAdvancedTab: (tab) -> @advanced_tab == tab
 
-    isAdvancedExpanded: () => @is_advanced_expanded
-    collapseAdvanced: () => @is_advanced_expanded = false
-    expandAdvanced: () => @is_advanced_expanded = true
+    isAdvancedExpanded: () -> @is_advanced_expanded
+    collapseAdvanced: () -> @is_advanced_expanded = false
+    expandAdvanced: () -> @is_advanced_expanded = true
 
-    canPreview: () =>
-      !@recompiling and (@preview_as is 'guest' or @preview_as is 'myself' or @preview_as_email)
+    canPreview: ->
+      !@recompiling and !@savingMulti and (@preview_as is 'guest' or @preview_as is 'myself' or @preview_as_email)
 
     previewAs: (mode) =>
       @preview_as = mode
@@ -360,7 +368,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @preview_as_email = null
       @refreshPreviewUrl()
 
-    promptEmail: () =>
+    promptEmail: ->
       modalInstance = @$modal.open({
         templateUrl: @getTemplatePath('Portal/Editor/email-modal.html'),
         controller: ['$scope', '$modalInstance', '$http', 'preview_as', ($scope, $modalInstance, $http, preview_as) ->
@@ -378,8 +386,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       });
       modalInstance.result.then((email) => @preview_as_email = email; @refreshPreviewUrl())
 
-    error: (message) => @showAlert(message, 'Changes were not applied')
-    success: (message) => @showAlert(message, 'Changes were applied')
-    serverError: (message) => @error('Server error occurred. Unable to save data (' + message.message + ').')
+    error: (message) -> @showAlert(message, 'Changes were not applied')
+    success: (message) -> @showAlert(message, 'Changes were applied')
+    serverError: (message) -> @error('Server error occurred. Unable to save data (' + message.message + ').')
 
   Admin_Portal_Ctrl_PortalEditor.EXPORT_CTRL()

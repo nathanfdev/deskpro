@@ -41,6 +41,12 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * When blobs are stored in the database, they are stored as muliple parts in this table.
  *
  * (Ordering is by id ASC)
+ *
+ * Warning: Using blob storage records directly (e.g. to read data) is almost always wrong. DeskPRO
+ * has multiple storage mechanisms (filesystem, S3) so reading from blob storage mechanism
+ * means your code will only work if the db mechanism is used, which may not be the case.
+ *
+ * Use the DeskproBlobStorage service to read data.
  */
 class BlobStorage extends \Application\DeskPRO\Domain\DomainObject
 {

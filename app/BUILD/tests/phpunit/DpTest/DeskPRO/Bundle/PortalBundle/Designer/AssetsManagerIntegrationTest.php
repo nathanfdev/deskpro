@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,12 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DpTest\DeskPRO\Bundle\PortalBundle\Designer;
 
-use Application\DeskPRO\Entity\BlobStorage;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use Doctrine\ORM\EntityManager;
@@ -62,6 +59,11 @@ class AssetsManagerIntegrationTest extends PortalTestCase
     private $edit_theme_set;
 
     /**
+     * @var DeskproBlobStorage
+     */
+    private $blobStorage;
+
+    /**
      * {@inheritdoc}
      */
     protected function setUp()
@@ -73,7 +75,8 @@ class AssetsManagerIntegrationTest extends PortalTestCase
         $this->em->persist($this->edit_theme_set);
         $this->em->flush();
 
-        $this->service = new AssetsManager($this->em, new ThemeSet(), $this->edit_theme_set);
+        $this->blobStorage = $this->getContainer()->get('blob.storage');
+        $this->service     = new AssetsManager($this->em, $this->blobStorage, new ThemeSet(), $this->edit_theme_set);
     }
 
     /**
@@ -130,9 +133,8 @@ class AssetsManagerIntegrationTest extends PortalTestCase
 
         $this->service->uploadEditThemeSetAsset($file);
 
-        $asset   = $this->service->getEditThemeSetAssets()[0];
-        $storage = $this->findBlobStorage($asset->getBlob());
-        $this->assertEquals(file_get_contents($path), $storage->getData());
+        $asset = $this->service->getEditThemeSetAssets()[0];
+        $this->assertEquals(file_get_contents($path), $this->blobStorage->copyBlobRecordToString($asset->getBlob()));
     }
 
     /**
@@ -157,10 +159,8 @@ class AssetsManagerIntegrationTest extends PortalTestCase
         $this->cleanThemeSetAssets($this->edit_theme_set);
         $file = new UploadedFile($path = __DIR__.'/file/asset.txt', 'asset.txt');
         $this->service->uploadEditThemeSetAsset($file);
-        $name = $this->service->getEditThemeSetAssets()[0]->getName();
+        $blob = $this->service->getEditThemeSetAssets()[0]->getBlob();
 
-        $storage = $this->service->getAssetBlobStorage($name);
-        $this->assertInstanceOf(BlobStorage::class, $storage);
-        $this->assertEquals(file_get_contents($path), $storage->getData());
+        $this->assertEquals(file_get_contents($path), $this->blobStorage->copyBlobRecordToString($blob));
     }
 }

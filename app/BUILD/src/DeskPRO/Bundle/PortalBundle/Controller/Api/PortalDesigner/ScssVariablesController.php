@@ -30,9 +30,8 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
 use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Leafo\ScssPhp\Exception\ParserException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,14 +39,15 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class ScssVariablesController.
+ *
+ * @Rest\Route("/portal/api/style")
  */
 class ScssVariablesController extends AbstractApiController
 {
     use HelperMethods;
 
     /**
-     * @Route("/portal/api/style/variable-groups")
-     * @Method({"GET"})
+     * @Rest\Get("/variable-groups")
      */
     public function getVariableGroupsAction()
     {
@@ -55,8 +55,7 @@ class ScssVariablesController extends AbstractApiController
     }
 
     /**
-     * @Route("/portal/api/style/edit-theme-set/variable-values")
-     * @Method({"GET"})
+     * @Rest\Get("/edit-theme-set/variable-values")
      */
     public function getVariableValuesAction()
     {
@@ -64,8 +63,7 @@ class ScssVariablesController extends AbstractApiController
     }
 
     /**
-     * @Route("/portal/api/style/edit-theme-set/variable-values")
-     * @Method({"PUT"})
+     * @Rest\Put("/edit-theme-set/variable-values")
      *
      * @param Request $request
      *
@@ -73,8 +71,11 @@ class ScssVariablesController extends AbstractApiController
      */
     public function saveVariableValuesAction(Request $request)
     {
-        $variables    = json_decode($request->getContent(), true);
         $editThemeSet = $this->getBrandThemeManager()->getCurrentEditThemeSet();
+        $variables    = json_decode($request->getContent(), true);
+        if (!is_array($variables)) {
+            $variables = [];
+        }
 
         try {
             $this->getPortalStylesCompiler()->recompile($variables, $editThemeSet);
