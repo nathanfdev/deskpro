@@ -2,7 +2,7 @@ Feature: Adding custom header, footer, SCSS and javascript
 
   Background: Fresh database
     Given I install the fresh data set
-    And I am authenticated as admin
+    And I'm authenticated as admin
 
   Scenario: I get current advanced edit data
     When I go to "/portal/api/style/edit-theme-set/advanced-edits"

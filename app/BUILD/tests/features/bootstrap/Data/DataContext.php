@@ -313,7 +313,7 @@ class DataContext extends BaseContext
      */
     private static function isReference($string)
     {
-        return is_string($string) && (preg_match('/^{[\w-]+}$/', $string) || preg_match('/^~[\w-]+~$/', $string));
+        return is_string($string) && (preg_match('/^{[\w-@.]+}$/', $string) || preg_match('/^~[\w-@.]+~$/', $string));
     }
 
     /**

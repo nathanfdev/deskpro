@@ -3,15 +3,14 @@ Feature: Widget Chat
   Chat end/reopen
 
   Background: Fresh database
-    Given I have usergroups
-    And I have a User record referenced as person_1
+    Given a user with "user@deskpro.dev" email exists
     And I have guest portal api session with code "AAAAAAAAAAAAAAA"
     And I have authorized portal api session with code "BBBBBBBBBBBBBBB" for "user@deskpro.dev"
 
   Scenario: I end and reopen chat
     Given only the following Chat records exist:
-      | #      | Person     | Session               |
-      | chat_1 | {person_1} | {sid_AAAAAAAAAAAAAAA} |
+      | #      | Person             | Session               |
+      | chat_1 | {user@deskpro.dev} | {sid_AAAAAAAAAAAAAAA} |
 
     When I send a POST request to "/portal/api/chats/{chat_1}/end?dpsid={sid_AAAAAAAAAAAAAAA}"
     Then the response status code should be 204

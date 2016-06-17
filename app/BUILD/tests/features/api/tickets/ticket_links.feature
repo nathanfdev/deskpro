@@ -5,7 +5,7 @@ Feature: Ticket link endpoint
 
   Background:
     Given I'm authenticated as admin
-    And agent@deskpro.com and user@deskpro.com exist
+    And agent and user exist
     And I have an AgentTeam record with name equal to "Demo team" which is referenced as agent_team
     And I create an Organization with name equal to "Demo organization" and reference it as organization
     And only the following Ticket records exist:
@@ -68,7 +68,7 @@ Feature: Ticket link endpoint
     And the JSON node "data.children[0].id" should be equal to "{ticket_2}"
     And the JSON node "linked.organization.{organization}.name" should be equal to "Demo organization"
     And the JSON node "linked.agent_team.{agent_team}.name" should be equal to "Demo team"
-    And the JSON node "linked.person.{admin}.primary_email" should be equal to "admin@deskpro.com"
+    And the JSON node "linked.person.{admin}.primary_email" should be equal to "admin@deskpro.dev"
 
   Scenario: I'm getting linked tickets list w/o sideloading
     Given I send a "POST" request to "/api/v2/tickets/{ticket_1}/links" with body:

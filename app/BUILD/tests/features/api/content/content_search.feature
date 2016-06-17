@@ -6,20 +6,20 @@ Feature: /articles, /news, /downloads endpoints
 
   Background:
     Given I'm authenticated as admin
-    And agent@deskpro.com and user@deskpro.com exist
+    And agent and user exist
     And the only ArticleCategory has title equal to "Test" and referenced as "article_category"
     And the only NewsCategory has title equal to "Test" and referenced as "news_category"
     And the only DownloadCategory has title equal to "Test" and referenced as "download_category"
     And only the following Article records exist:
-      | #  | Title            | Status    | Person  | To Category         |
-      | a1 | Demo Article #1  | published | {admin} | {article_category}  |
-      | a2 | Demo Article #2  | published | {agent} | {article_category}  |
-      | a3 | Demo Article #3  | published | {agent} |                     |
+      | #  | Title           | Status    | Person  | To Category        |
+      | a1 | Demo Article #1 | published | {admin} | {article_category} |
+      | a2 | Demo Article #2 | published | {agent} | {article_category} |
+      | a3 | Demo Article #3 | published | {agent} |                    |
     And only the following News records exist:
-      | #  | Title            | Status    | Person  | Category            |
-      | n1 | Demo News #1     | published | {admin} | {news_category}     |
-      | n2 | Demo News #2     | published | {agent} | {news_category}     |
-      | n3 | Demo News #3     | published | {agent} |                     |
+      | #  | Title        | Status    | Person  | Category        |
+      | n1 | Demo News #1 | published | {admin} | {news_category} |
+      | n2 | Demo News #2 | published | {agent} | {news_category} |
+      | n3 | Demo News #3 | published | {agent} |                 |
     And only the following Download records exist:
       | #  | Title            | Status    | Person  | Category            |
       | d1 | Demo Download #1 | published | {admin} | {download_category} |

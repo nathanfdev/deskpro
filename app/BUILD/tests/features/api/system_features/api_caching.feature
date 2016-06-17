@@ -7,8 +7,8 @@ Feature: Api Caching
 
   Background:
     Given I install the "api" data set
-      And the setting "response.cache.enabled" is set to 1
-      And my request is authenticated
+    And my request is authenticated
+    And the setting "response.cache.enabled" is set to 1
 
   Scenario: I'm getting response without cache feature
     Given the setting "response.cache.enabled" is set to 0

@@ -8,7 +8,7 @@ Feature: To prevent feedback submitting abuse
       | default |
 
   Scenario: Checking lockout response for user
-    Given I am authenticated as "user"
+    Given I'm authenticated as "user"
     And I set "submit_feedback" rate limit to 1 attempt within 15 minutes with "lockout" response and 15 minutes lockout time
     And I am on "/feedback"
 
@@ -24,7 +24,7 @@ Feature: To prevent feedback submitting abuse
     Then I should see "You have submitted feedback too many times."
 
   Scenario: Checking captcha response for user
-    Given I am authenticated as "user"
+    Given I'm authenticated as "user"
     And I set "submit_feedback" rate limit to 1 attempt within 15 minutes with "captcha" response
     And I am on "/feedback"
 

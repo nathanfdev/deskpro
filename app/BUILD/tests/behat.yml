@@ -19,7 +19,6 @@ api:
                 - Behat\MinkExtension\Context\MinkContext
                 - DpBehat\Api\JsonContext
                 - DpBehat\HooksContext
-                - DpBehat\PeopleContext
                 - DpBehat\Api\RestContext
                 - DpBehat\Api\AuthContext
                 - DpBehat\TermEngine\TermEngineBehatContext
@@ -35,6 +34,7 @@ api:
                 - DpBehat\System\Alerts\IncidentsContext
                 - DpBehat\TicketLogsContext
                 - DpBehat\Data\DataContext
+                - DpBehat\Data\PeopleContext
                 - DpBehat\Data\CustomDataContext
                 - DpBehat\Data\TicketLayoutContext
     extensions:
@@ -64,7 +64,7 @@ system-api:
                 - DpBehat\Api\JsonContext
                 - DpBehat\Api\RestContext
                 - DpBehat\Api\AuthContext
-                - DpBehat\PeopleContext
+                - DpBehat\Data\PeopleContext
                 - DpBehat\System\Alerts\IncidentsContext
     extensions:
         Sanpi\Behatch\Extension: ~
@@ -117,7 +117,6 @@ portal:
                 - DpBehat\Api\JsonContext
                 - DpBehat\Api\RestContext
                 - DpBehat\LanguageContext
-                - DpBehat\PeopleContext
                 - DpBehat\Portal\PortalModeContext
                 - DpBehat\Portal\PortalBrandThemeContext
                 - DpBehat\Portal\AuthContext
@@ -135,6 +134,7 @@ portal:
                 - DpBehat\Portal\PortalDesigner\AssetsContext
                 - DpBehat\System\AntiAbuse\AntiAbuseContext
                 - DpBehat\Data\DataContext
+                - DpBehat\Data\PeopleContext
                 - DpBehat\Data\CustomDataContext
                 - DpBehat\Data\TicketLayoutContext
     extensions:
@@ -172,6 +172,7 @@ production:
                 - DpBehat\Api\JsonContext
                 - DpBehat\Api\RestContext
                 - DpBehat\Portal\AuthContext
+                - DpBehat\Data\PeopleContext
                 - DpBehat\Http\HttpContext
                 - DpBehat\System\Alerts\EventsContext
                 - DpBehat\ProductionModeContext

@@ -7,7 +7,7 @@ Feature: Editing portal templates
     And the default brand is using the standard theme
     
   Scenario: I get custom logo data
-    Given I am authenticated as admin
+    Given I'm authenticated as admin
     When I send a GET request to "/portal/api/style/edit-theme-set/templates"
     Then the response status code should be 200
     And the response should contain "Theme::layout.html.twig"
@@ -19,7 +19,7 @@ Feature: Editing portal templates
     And the response should contain "{% show section alerts %}"
 
   Scenario: I modify Theme::layout.html.twig
-    Given I am authenticated as admin
+    Given I'm authenticated as admin
     When I send a PUT request to "/portal/api/style/edit-theme-set/template-sources?template=Theme::layout.html.twig" with body:
     """
 {
@@ -29,7 +29,7 @@ Feature: Editing portal templates
     Then the response status code should be 204
 
   Scenario: I retrieve modified Theme::layout.html.twig
-    Given I am authenticated as admin
+    Given I'm authenticated as admin
     And I send a PUT request to "/portal/api/style/edit-theme-set/template-sources?template=Theme::layout.html.twig" with body:
     """
 {

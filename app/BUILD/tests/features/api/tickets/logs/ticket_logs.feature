@@ -9,7 +9,7 @@ Feature: Ticket logs
     And I have a Department record referenced as demo_department
     And I create a Ticket with department equal to "{demo_department}" and reference it as demo_ticket
     And there are no CustomDefTicket records
-    And agent@deskpro.com and user@deskpro.com exist
+    And agent and user exist
 
   Scenario: I delete a ticket follower and verify logs
     Given I add the following TicketParticipant records:
@@ -63,7 +63,7 @@ Feature: Ticket logs
     When I send a POST request to "/api/v2/tickets/{demo_ticket}/cc" with body:
     """
 {
-  "person": "user@deskpro.com"
+  "person": "user@deskpro.dev"
 }
     """
     Then the response status code should be 201

@@ -3,14 +3,13 @@ Feature: Widget Chat
   Chat email validation
 
   Background: Fresh database
-    Given I have usergroups
-    And I have a User record referenced as person_1
+    Given a user with "user@deskpro.dev" email exists
     And I have guest portal api session with code "AAAAAAAAAAAAAAA"
 
   Scenario: I try to validate email without session code
     Given only the following Chat records exist:
-      | #      | Person     | Session               |
-      | chat_1 | {person_1} | {sid_AAAAAAAAAAAAAAA} |
+      | #      | Person             | Session               |
+      | chat_1 | {user@deskpro.dev} | {sid_AAAAAAAAAAAAAAA} |
 
     When I send a POST request to "/portal/api/chats/{chat_1}/validate/email"
     Then the response status code should be 403
@@ -31,8 +30,8 @@ Feature: Widget Chat
 
   Scenario: I send empty validation code
     Given only the following Chat records exist:
-      | #      | Person     | Session               |
-      | chat_1 | {person_1} | {sid_AAAAAAAAAAAAAAA} |
+      | #      | Person             | Session               |
+      | chat_1 | {user@deskpro.dev} | {sid_AAAAAAAAAAAAAAA} |
 
     When I send a POST request to "/portal/api/chats/{chat_1}/validate/email?dpsid={sid_AAAAAAAAAAAAAAA}"
     Then the response status code should be 400
@@ -41,8 +40,8 @@ Feature: Widget Chat
 
   Scenario: I try to validate email with wrong code
     Given only the following Chat records exist:
-      | #      | Person     | Session               |
-      | chat_1 | {person_1} | {sid_AAAAAAAAAAAAAAA} |
+      | #      | Person             | Session               |
+      | chat_1 | {user@deskpro.dev} | {sid_AAAAAAAAAAAAAAA} |
 
     When I send a POST request to "/portal/api/chats/{chat_1}/validate/email?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
       | key  | value     |
@@ -53,8 +52,8 @@ Feature: Widget Chat
 
   Scenario: I regenerate email validation code
     Given only the following Chat records exist:
-      | #      | Person     | Session               |
-      | chat_1 | {person_1} | {sid_AAAAAAAAAAAAAAA} |
+      | #      | Person             | Session               |
+      | chat_1 | {user@deskpro.dev} | {sid_AAAAAAAAAAAAAAA} |
     And I set chat email validation code "correct code" for chat "{chat_1}"
 
     When I send a POST request to "/portal/api/chats/{chat_1}/validate/email/regenerate?dpsid={sid_AAAAAAAAAAAAAAA}"
@@ -70,8 +69,8 @@ Feature: Widget Chat
 
   Scenario: I validate email successfully
     Given only the following Chat records exist:
-      | #      | Person     | Session               |
-      | chat_1 | {person_1} | {sid_AAAAAAAAAAAAAAA} |
+      | #      | Person             | Session               |
+      | chat_1 | {user@deskpro.dev} | {sid_AAAAAAAAAAAAAAA} |
     And I set chat email validation code "correct code" for chat "{chat_1}"
 
     When I send a POST request to "/portal/api/chats/{chat_1}/validate/email?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:

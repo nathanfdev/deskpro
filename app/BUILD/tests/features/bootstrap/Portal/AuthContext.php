@@ -26,16 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpBehat\Portal;
 
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Mink\Driver\BrowserKitDriver;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
+use DpBehat\Data\PeopleContext as PeopleDataContext;
 use DpBehat\RebootableContextInterface;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 use Symfony\Component\BrowserKit\Cookie;
@@ -45,8 +43,25 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
 {
     public static $session;
 
-    /** @var  \Application\DeskPRO\Entity\Person */
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
     private $me;
+
+    /**
+     * @var PeopleDataContext
+     */
+    private $peopleDataContext;
+
+    /**
+     * @BeforeScenario
+     *
+     * @param BeforeScenarioScope $scope
+     */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $this->peopleDataContext = $scope->getEnvironment()->getContext('DpBehat\Data\PeopleContext');
+    }
 
     public function rebootContext()
     {
@@ -200,11 +215,14 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
     }
 
     /**
-     * @Given I am authenticated as :who
+     * @Given I'm authenticated as :role
+     *
+     * @param string $role
      */
-    public function iAmAuthenticatedAsUser($who)
+    public function iAmAuthenticatedAs($role)
     {
-        $this->iLoginWithCredentials($who);
+        $this->peopleDataContext->personByRoleExists($role);
+        $this->iLoginWithCredentials($role);
     }
 
     /**
