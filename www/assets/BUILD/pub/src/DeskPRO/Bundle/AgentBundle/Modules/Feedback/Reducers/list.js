@@ -13,26 +13,55 @@ export const feedbackListInitialState = {
   elements: [], // array of filtered elements IDs (feedback or comments)
 
   fields: {
-    [constants.VIEW_MODE_CARD]: [
-      { id: 'id', title: 'Id', visible: true, required: true },
-      { id: 'title', title: 'Title', visible: true, required: true },
-      { id: 'person', title: 'Author', visible: true, required: true },
-      { id: 'content', title: 'Content', visible: true, required: true },
-      { id: 'status', title: 'Status', visible: true, required: true },
-      { id: 'category', title: 'Category', visible: true },
-      { id: 'date_created', title: 'Date Created', visible: true },
-      { id: 'labels', title: 'Labels', visible: true }
-    ],
+    feedback: {
+      [constants.VIEW_MODE_CARD]: [
+        { id: 'id', title: 'ID', visible: true, required: true },
+        { id: 'title', title: 'Title', visible: true, required: true },
+        { id: 'person', title: 'Author', visible: true, required: true },
+        { id: 'content', title: 'Content', visible: true, required: true },
+        { id: 'status', title: 'Status', visible: true, required: true },
+        { id: 'category', title: 'Category', visible: true },
+        { id: 'date_created', title: 'Date Created', visible: true },
+        { id: 'labels', title: 'Labels', visible: true }
+      ],
 
-    [constants.VIEW_MODE_TABLE]: [
-      { id: 'id', title: 'Id', visible: true },
-      { id: 'title', title: 'Title', visible: true },
-      { id: 'person', title: 'Author', visible: true },
-      { id: 'content', title: 'Content', visible: true },
-      { id: 'status', title: 'Status', visible: true },
-      { id: 'date_created', title: 'Date Created', visible: true },
-      { id: 'labels', title: 'Labels', visible: true }
-    ]
+      [constants.VIEW_MODE_TABLE]: [
+        { id: 'id', title: 'ID', visible: true },
+        { id: 'title', title: 'Title', visible: true },
+        { id: 'person', title: 'Author', visible: true },
+        { id: 'content', title: 'Content', visible: true },
+        { id: 'status', title: 'Status', visible: true },
+        { id: 'date_created', title: 'Date Created', visible: true },
+        { id: 'labels', title: 'Labels', visible: true }
+      ]
+    },
+    comments: {
+      [constants.VIEW_MODE_CARD]: [
+        { id: 'id', title: 'ID', visible: true, required: true },
+        { id: 'person', title: 'Author', visible: true, required: true },
+        { id: 'content', title: 'Comment', visible: true, required: true },
+        { id: 'title', title: 'Feedback Title', visible: true, required: true },
+        { id: 'category', title: 'Feedback Category', visible: true },
+        { id: 'status', title: 'Comment Status', visible: true, required: true },
+        { id: 'date_created', title: 'Date Created', visible: true },
+        { id: 'labels', title: 'Labels', visible: true }
+      ],
+
+      [constants.VIEW_MODE_TABLE]: [
+        { id: 'id', title: 'ID', visible: true },
+        { id: 'person', title: 'Author', visible: true },
+        { id: 'content', title: 'Comment', visible: true },
+        { id: 'status', title: 'Comment Status', visible: true },
+        { id: 'feedback_id', title: 'Feedback ID', visible: true },
+        { id: 'title', title: 'Feedback Title', visible: true },
+        { id: 'feedback_content', title: 'Feedback Content', visible: true },
+        { id: 'category', title: 'Feedback Category', visible: true },
+        { id: 'feedback_status', title: 'Feedback Status', visible: true },
+        { id: 'hidden_status', title: 'Feedback Hidden Status', visible: true },
+        { id: 'date_created', title: 'Date Created', visible: true },
+        { id: 'labels', title: 'Labels', visible: true }
+      ]
+    }
   },
 
   currentListParams: { // currently viewed list GET parameters map

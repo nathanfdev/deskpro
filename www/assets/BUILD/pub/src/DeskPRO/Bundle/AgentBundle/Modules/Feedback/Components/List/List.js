@@ -22,8 +22,7 @@ export class List extends Component {
     toggleSelected:    PropTypes.func.isRequired,
     handlePageClick:   PropTypes.func.isRequired,
     currentViewMode:   PropTypes.string.isRequired,
-    cardFields:        PropTypes.object.isRequired,
-    tableFields:       PropTypes.object.isRequired,
+    fields:            PropTypes.object.isRequired,
     elements:          PropTypes.object.isRequired
   };
 
@@ -44,30 +43,33 @@ export class List extends Component {
   }
 
   renderFeedback() {
-    const { currentViewMode, toggleSelected, cardFields, tableFields, elements } = this.props;
+    const { currentViewMode, toggleSelected } = this.props;
 
     if (currentViewMode === constants.VIEW_MODE_CARD) {
       return (
-        <FeedbackCardsContainer toggleSelected={toggleSelected} fields={cardFields} elements={elements} />
+        <FeedbackCardsContainer toggleSelected={toggleSelected} />
       );
     }
     return (
-      <FeedbackTableContainer fields={tableFields} elements={elements} />
+      <FeedbackTableContainer />
     );
   }
 
   renderComments() {
-    const { currentViewMode, selected, toggleSelected } = this.props;
+    const { currentViewMode, toggleSelected } = this.props;
     if (currentViewMode === constants.VIEW_MODE_CARD) {
-      return <CommentCardsContainer selected={selected} toggleSelected={toggleSelected} />;
+      return <CommentCardsContainer toggleSelected={toggleSelected} />;
     }
     return <CommentTableContainer />;
   }
 
   render() {
     const { isLoaded, pagination, selected, handlePageClick, isComments } = this.props;
-    const { currentListParams, currentViewMode, cardFields, tableFields } = this.props;
-    const exportedFields = currentViewMode === constants.VIEW_MODE_CARD ? cardFields : tableFields;
+    const { currentListParams, currentViewMode, fields } = this.props;
+    const exportedFields = isComments
+      ? fields.get('comments').get(currentViewMode)
+      : fields.get('feedback').get(currentViewMode);
+
     const content        = isComments ? 'FeedbackComment' : 'Feedback';
     let params           = currentListParams.toJS();
     const { navItem } = params;

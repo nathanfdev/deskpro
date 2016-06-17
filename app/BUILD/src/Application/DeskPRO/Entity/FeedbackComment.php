@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -54,6 +53,11 @@ class FeedbackComment extends CommentAbstract
      * @var Feedback
      */
     protected $feedback;
+
+    public function getFeedback()
+    {
+        return $this->feedback;
+    }
 
     ############################################################################
     # Doctrine Metadata
