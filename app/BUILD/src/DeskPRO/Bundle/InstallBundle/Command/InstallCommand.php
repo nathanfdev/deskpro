@@ -32,9 +32,11 @@ use DeskPRO\Bundle\InstallBundle\Installer\InstallerContext;
 use DeskPRO\Bundle\InstallBundle\Installer\InstallProfile;
 use DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 use DeskPRO\Bundle\InstallBundle\InstallSession\InstallSession;
+use DeskPRO\Bundle\InstallBundle\InstallSession\SessionManager;
 use DeskPRO\Component\Exception\Filesystem\FileWriteException;
 use DeskPRO\Component\Util\EnvUtils;
 use DeskPRO\Component\Util\TypeUtils;
+use DpRun\DpEnv;
 use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -126,8 +128,11 @@ class InstallCommand extends ContainerAwareCommand
         }
         $profile->readAnswersInput($input);
 
+        /** @var DpEnv $app_env */
         $app_env = $this->getContainer()->get('deskpro.app_env');
-        $sm      = $this->getContainer()->get('install.session_manager');
+        /** @var SessionManager $sm */
+        $sm = $this->getContainer()->get('install.session_manager');
+        /** @var InstallSession $session */
         $session = $sm->getLastInstallSession($input->getOption('restart') || $force_restart);
 
         $restart_step = $input->getOption('redo-step');
