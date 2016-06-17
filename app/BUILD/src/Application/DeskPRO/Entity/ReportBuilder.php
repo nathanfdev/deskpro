@@ -113,6 +113,154 @@ class ReportBuilder extends DomainObject
     }
 
     /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getUniqueKey()
+    {
+        return $this->unique_key;
+    }
+
+    /**
+     * @param null|string $unique_key
+     *
+     * @return $this
+     */
+    public function setUniqueKey($unique_key)
+    {
+        $this->setModelField('unique_key', $unique_key);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
+    }
+
+    /**
+     * @param int $display_order
+     *
+     * @return $this
+     */
+    public function setDisplayOrder($display_order)
+    {
+        $this->setModelField('display_order', $display_order);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param string $category
+     *
+     * @return $this
+     */
+    public function setCategory($category)
+    {
+        $this->setModelField('category',  $category);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCustom()
+    {
+        return $this->is_custom;
+    }
+
+    /**
+     * @param bool $is_custom
+     *
+     * @return $this
+     */
+    public function setIsCustom($is_custom)
+    {
+        $this->setModelField('is_custom', (bool) $is_custom);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    /**
+     * @param string $query
+     *
+     * @return $this
+     */
+    public function setQuery($query)
+    {
+        $this->setModelField('query', $query);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     *
+     * @return $this
+     */
+    public function setDescription($description)
+    {
+        $this->setModelField('description', $description);
+
+        return $this;
+    }
+
+    /**
+     * @return ReportBuilder
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param ReportBuilder $parent
+     *
+     * @return $this
+     */
+    public function setParent(ReportBuilder $parent)
+    {
+        $this->setModelField('parent', $parent);
+
+        return $this;
+    }
+
+    /**
      * @param string $type
      * @param array  $params
      *
@@ -251,6 +399,18 @@ class ReportBuilder extends DomainObject
         }
 
         return $title;
+    }
+
+    /**
+     * @param $title
+     *
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->setModelField('title', $title);
+
+        return $this;
     }
 
     /**
