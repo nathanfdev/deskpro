@@ -48,9 +48,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		this.addEvent('activate', function() {
 			window.setTimeout(function() {
-				if (!self.getEl('user_searchbox').find('input.person-id').val()) {
+        var pid = self.getEl('user_searchbox').find('input.person-id').val();
+				if (!pid) {
 					self.getEl('userselect').focus();
-				}
+				} else {
+          self.setUser(pid);
+        }
 			}, 60);
 		});
 
