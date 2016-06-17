@@ -68,7 +68,7 @@ class ContextualChoiceType extends ChoiceType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        parent::setDefaultOptions($resolver);
+        parent::configureOptions($resolver);
         $options = $this->definition['options'];
         $resolver
             ->setRequired(['context'])

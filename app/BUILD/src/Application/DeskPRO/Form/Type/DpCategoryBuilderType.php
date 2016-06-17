@@ -63,7 +63,7 @@ class DpCategoryBuilderType extends CollectionType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        parent::setDefaultOptions($resolver);
+        parent::configureOptions($resolver);
         $resolver
             ->setRequired(['persister'])
             ->addAllowedTypes([

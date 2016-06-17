@@ -70,7 +70,7 @@ class ChoiceType extends CustomFieldType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        parent::setDefaultOptions($resolver);
+        parent::configureOptions($resolver);
         $resolver->setDefaults([
             'data_class' => null,
             'allow_edit' => false,

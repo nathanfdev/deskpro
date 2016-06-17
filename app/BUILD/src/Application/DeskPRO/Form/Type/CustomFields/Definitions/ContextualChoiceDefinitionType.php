@@ -40,17 +40,17 @@ class ContextualChoiceDefinitionType extends ChoiceDefinitionType
         // if we need to define all properties, not only children
         if (!$options['children_only']) {
             $builder->get('options')
-                ->add('allow_edit', 'checkbox')
-            ;
+                ->add('allow_edit', 'checkbox');
         }
     }
+
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        parent::setDefaultOptions($resolver);
-        $resolver->setRequired(array('context'));
+        parent::configureOptions($resolver);
+        $resolver->setRequired(['context']);
     }
 
     /**

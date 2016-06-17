@@ -60,7 +60,7 @@ abstract class AbstractUrlProfileType extends AbstractContactDataItemType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        parent::setDefaultOptions($resolver);
+        parent::configureOptions($resolver);
 
         $resolver->setDefaults([
             'error_mapping' => [
