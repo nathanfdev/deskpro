@@ -13,8 +13,8 @@ export class ApiRepository {
    * @returns {void}
    */
   constructor(api, url, supportsLoadAll = false) {
-    this.api = api;
-    this.url = url.replace(/^\/+/, '');
+    this.api             = api;
+    this.url             = url.replace(/^\/+/, '');
     this.supportsLoadAll = supportsLoadAll;
   }
 
@@ -51,8 +51,8 @@ export class ApiRepository {
    * @param {string} include Include string for sideloading
    * @returns {Promise} promise
    */
-  search(params, include) {
-    return this.api.sendGet(`DP_API/${this.url}?` + this.compileParams(include ? {...params, include} : params));
+  search(params, include = null) {
+    return this.api.sendGet(`DP_API/${this.url}?${this.compileParams(include ? { ...params, include } : params)}`);
   }
 
   /**
@@ -60,7 +60,7 @@ export class ApiRepository {
    * @returns {Promise} promise
    */
   loadCsv(params) {
-    return this.api.sendGet(`DP_API/${this.url}/csv?` + this.compileParams(params));
+    return this.api.sendGet(`DP_API/${this.url}/csv?${this.compileParams(params)}`);
   }
 
   /**

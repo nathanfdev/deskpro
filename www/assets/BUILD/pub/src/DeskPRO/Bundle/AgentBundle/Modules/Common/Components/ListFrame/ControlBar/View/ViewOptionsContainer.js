@@ -24,27 +24,32 @@ export class ViewOptionsContainer extends Component {
     }
   }
 
+  renderItem = (type, option) => {
+    const { viewMode, toggleFieldVisibility, changeFieldOrder } = this.props;
+    return (
+      <div key={type}>
+        <Item
+          discMarked
+          label={option.label}
+          widgetClass="dpw-navigation-dropdown-column-list-item"
+          isActive={viewMode === type}
+        />
+        <ViewOptionsList
+          {...option}
+          type={type}
+          toggleFieldVisibility={toggleFieldVisibility}
+          changeFieldOrder={changeFieldOrder}
+        />
+      </div>
+    );
+  };
+
   render() {
-    const { viewMode, options, toggleFieldVisibility, changeFieldOrder } = this.props;
+    const { options } = this.props;
 
     return (
       <Menu widgetClass="dpw-navigation-dropdown-secondary">
-        {Object.entries(options).map(([type, option]) =>
-          <div key={type}>
-            <Item
-              discMarked
-              label={option.label}
-              widgetClass="dpw-navigation-dropdown-column-list-item"
-              isActive={viewMode === type}
-            />
-            <ViewOptionsList
-              {...option}
-              type={type}
-              toggleFieldVisibility={toggleFieldVisibility}
-              changeFieldOrder={changeFieldOrder}
-            />
-          </div>
-        )}
+        {Object.entries(options).map(([type, option]) => this.renderItem(type, option))}
       </Menu>
     );
   }

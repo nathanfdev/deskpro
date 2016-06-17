@@ -1,4 +1,5 @@
 import { renderInRedux, fakeState, toImmutable } from 'Helpers';
+import { initialState } from 'DeskPRO/Bundle/AgentBundle/Modules/Chat/Reducers/list';
 
 /**
  * Creates fake chat app state
@@ -15,7 +16,7 @@ export function fakeChatsState(num = 0) {
   }
 
   return fakeState({
-    Chat:         { list: toImmutable({ currentListParams: {} }) },
+    Chat:         { list: toImmutable(initialState) },
     RecordsStore: {
       store: toImmutable({
         UserChat: {

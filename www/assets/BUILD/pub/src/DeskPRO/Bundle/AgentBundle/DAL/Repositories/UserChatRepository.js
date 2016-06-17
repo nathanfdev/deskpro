@@ -10,6 +10,6 @@ export class UserChatRepository extends ApiRepository {
    * @return Promise
    */
   loadCounts(groupBy, agent) {
-    return this.api.sendGet(`DP_API/${this.url}/counts?group_by=` + groupBy + (agent ? '&agent=' + agent : ''));
+    return this.api.sendGet(`DP_API/${this.url}/counts?group_by=${groupBy}${(agent ? `&agent=${agent}` : '')}`);
   }
 }

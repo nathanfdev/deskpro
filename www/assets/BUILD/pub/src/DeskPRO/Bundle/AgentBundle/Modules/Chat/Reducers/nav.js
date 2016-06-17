@@ -1,38 +1,38 @@
-import { createReducer } from 'Ampliflux';
 import Immutable from 'immutable';
-import { async, mergeFullPayload, setValue } from 'Ampliflux/reducers/handlers';
+import { createReducer } from 'DeskPRO/Component/Ampliflux';
+import { async, mergeFullPayload, setValue } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
 import * as actions from '../Actions/chatNavActions';
 
 const initialState = {
-  async: {
-    done: false
-  },
+  async: { done: false },
+
   my: {
-    total: 0,
-    grouped_by: 'date_period',
+    total:                    0,
+    grouped_by:               'date_period',
     isGroupingControlVisible: false,
-    nested: [/* {count, group} */]
+    nested:                   [/* {count, group} */]
   },
+
   all: {
-    total: 0,
-    grouped_by: 'agent',
+    total:                    0,
+    grouped_by:               'agent',
     isGroupingControlVisible: false,
-    nested: [/* {count, group} */]
+    nested:                   [/* {count, group} */]
   }
 };
 
 export default createReducer(initialState, {
 
-  [actions.initialLoad]: async({
-    success: mergeFullPayload(),
-    start: setValue('async.done', false),
-    done: setValue('async.done', true)
-  }),
+  [actions.initialLoad]: async(
+    {
+      success: mergeFullPayload(),
+      start:   setValue('async.done', false),
+      done:    setValue('async.done', true)
+    }),
 
-  [actions.loadCounts]: async({
-    success: (state, payload) =>
-      state.set(payload.list, Immutable.fromJS(payload.counts))
-  }),
+  [actions.loadCounts]: async(
+    { success: (state, payload) => state.set(payload.list, Immutable.fromJS(payload.counts)) }
+  ),
 
   [actions.toggleListGroupingVisibility]: (state, payload) => {
     const target = ['lists', payload, 'isGroupingControlVisible'];

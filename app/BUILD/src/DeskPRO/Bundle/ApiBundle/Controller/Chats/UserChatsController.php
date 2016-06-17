@@ -85,7 +85,7 @@ class UserChatsController extends CrudController
      * Get data for export to CSV.
      *
      * @Rest\Get("/csv")
-     *  @SerializerView(mapping={
+     * @SerializerView(mapping={
      *     "Application\DeskPRO\Entity\ChatConversation": "DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\ChatCsv"
      * })
      *
@@ -106,7 +106,7 @@ class UserChatsController extends CrudController
         $context = new RequestQueryContext($qb, $alias, $request);
 
         DateHelper::applyDateRangeFilter($context, 'date_created', 'created_from', 'created_to');
-        DateHelper::applyDatePeriodFilter($context, 'date_created', 'date_created');
+        DateHelper::applyDatePeriodFilter($context, 'date_created', 'date_period');
         ListHelper::applyInListFilter($context, 'department');
         CustomDataHelper::applyCustomDataFilters($context, 'chat', CustomDefChat::class);
 
@@ -148,8 +148,7 @@ class UserChatsController extends CrudController
                 $qb
                     ->addSelect("DATE($alias.date_created) as group_name")
                     ->addSelect("DATE($alias.date_created) as title")
-                    ->groupBy('group_name')
-                ;
+                    ->groupBy('group_name');
 
                 break;
             case 'date_period':
@@ -162,8 +161,7 @@ class UserChatsController extends CrudController
                     ->addSelect('g.id as group_name')
                     ->addSelect('g.name as title')
                     ->leftJoin("$alias.agent", 'g')
-                    ->groupBy('group_name')
-                ;
+                    ->groupBy('group_name');
 
                 break;
             case 'department':
@@ -171,8 +169,7 @@ class UserChatsController extends CrudController
                     ->addSelect('g.id as group_name')
                     ->addSelect('g.title as title')
                     ->leftJoin("$alias.department", 'g')
-                    ->groupBy('group_name')
-                ;
+                    ->groupBy('group_name');
 
                 break;
         }

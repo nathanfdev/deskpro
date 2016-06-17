@@ -25,6 +25,12 @@ export class List extends React.Component {
     const { isLoaded, pagination, viewMode, cardFields, tableFields, currentListParams } = this.props;
     const { toggleSelected, handlePageClick } = this.props;
     const exportedFields = viewMode === constants.VIEW_MODE_CARD ? cardFields : tableFields;
+    let params           = currentListParams.toJS();
+    const { navItem } = params;
+    if (navItem) {
+      delete params.navItem;
+      params = { ...params, ...navItem };
+    }
 
     return (
       <ListFrameContainer>
@@ -33,7 +39,7 @@ export class List extends React.Component {
         </ListFrameMenu>
         <ListFrameContents isLoaded={isLoaded}>
           <SaveAsCsv
-            currentListParams={currentListParams}
+            currentListParams={params}
             exportedFields={exportedFields.toArray()}
             content="UserChat"
           />

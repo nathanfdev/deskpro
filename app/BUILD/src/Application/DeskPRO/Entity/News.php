@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
@@ -39,7 +38,6 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
-use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -50,7 +48,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @PortalLinkRoute("portal_news_post_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
  * @PortalLinkRoute("portal_news_post_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
  * @PortalLinkRoute("portal_news_post_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
- * @JMS\ExclusionPolicy("all")
  */
 class News extends ContentAbstract implements HighlightableModelInterface
 {
@@ -64,18 +61,12 @@ class News extends ContentAbstract implements HighlightableModelInterface
     /**
      * Revisions of this news.
      *
-     * @JMS\Expose()
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\NewsRevision>>")
-     *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $revisions;
 
     /**
      * String array of labels associated with this news.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\NewsLabel>>")
      *
      * @Assert\Valid()
      * @AppAssert\UniqueCollection(property={"label"})

@@ -20,13 +20,15 @@ describe('List', () => {
   const ChatsCardsContainer = require('~List/View/List/ChatsCardsContainer').ChatsCardsContainer;
   const ChatsTableContainer = require('~List/View/Table/ChatsTableContainer').ChatsTableContainer;
 
-  const renderList = (viewMode = 'card') => {
+  const renderList = (viewMode = 'card', pagination = null) => {
     const emptyList = toImmutable([]);
-    renderChatsInRedux(0,
+    renderChatsInRedux(3,
       <List
+        currentListParams={toImmutable({})}
         elements={[]}
         viewMode={viewMode}
         loaded
+        pagination={pagination}
         cardFields={emptyList}
         tableFields={emptyList}
       />);

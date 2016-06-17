@@ -28,26 +28,24 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-use Application\DeskPRO\Entity\ContentAbstract;
-use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Article;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ArticleCsv;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Content as ContentModel;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentCsv;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
-class ContentHandler extends AbstractEntityHandler
+class ArticleHandler extends AbstractEntityHandler
 {
     /**
      * {@inheritdoc}
-     * 
-     * @param ContentAbstract $entity
+     *
+     * @param Article $entity
      */
     protected function createModel($entity, SideloadSerializationContext $context)
     {
         $serializerClass = $context->getMappedClass(get_class($entity));
 
-        if ($serializerClass === ContentCsv::class) {
-            return new ContentCsv($entity);
+        if ($serializerClass === ArticleCsv::class) {
+            return new ArticleCsv($entity);
         }
 
         return new ContentModel($entity);
@@ -58,6 +56,6 @@ class ContentHandler extends AbstractEntityHandler
      */
     public static function getClassNames()
     {
-        return [News::class, Download::class];
+        return [Article::class];
     }
 }

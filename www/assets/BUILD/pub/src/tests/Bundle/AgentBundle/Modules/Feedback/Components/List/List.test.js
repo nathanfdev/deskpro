@@ -28,6 +28,7 @@ describe('Feedback: List', () => {
     renderInFeedbackApp(
       fakeState,
       <List
+        currentListParams={toImmutable({})}
         elements={emptyList}
         selected={selected}
         currentViewMode={viewMode}

@@ -68,7 +68,13 @@ export class List extends Component {
     const { isLoaded, pagination, selected, handlePageClick, isComments } = this.props;
     const { currentListParams, currentViewMode, cardFields, tableFields } = this.props;
     const exportedFields = currentViewMode === constants.VIEW_MODE_CARD ? cardFields : tableFields;
-    const content = isComments ? 'FeedbackComment' : 'Feedback';
+    const content        = isComments ? 'FeedbackComment' : 'Feedback';
+    let params           = currentListParams.toJS();
+    const { navItem } = params;
+    if (navItem) {
+      delete params.navItem;
+      params = { ...params, ...navItem };
+    }
 
     return (
       <ListFrameContainer>
@@ -78,7 +84,7 @@ export class List extends Component {
         </ListFrameMenu>
         <ListFrameContents isLoaded={isLoaded}>
           <SaveAsCsv
-            currentListParams={currentListParams}
+            currentListParams={params}
             exportedFields={exportedFields.toArray()}
             content={content}
           />

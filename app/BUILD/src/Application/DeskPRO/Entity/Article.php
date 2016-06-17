@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\ObjectTranslatable;
@@ -45,7 +44,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
-use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -55,7 +53,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     route_param_map={"slug":"slug"}, type="toggle_subscription")
  * @PortalLinkRoute("portal_kb_article_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
  * @PortalLinkRoute("portal_kb_article_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
- * @JMS\ExclusionPolicy("all")
  */
 class Article extends ContentAbstract implements HighlightableModelInterface, LabelsOwner
 {
@@ -71,9 +68,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
 
     /**
      * Revisions of this article.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\ArticleRevision>>")
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
@@ -101,9 +95,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
 
     /**
      * String array of labels associated with this article.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\ArticleLabel>>")
      *
      * @Assert\Valid()
      * @AppAssert\UniqueCollection(property={"label"})

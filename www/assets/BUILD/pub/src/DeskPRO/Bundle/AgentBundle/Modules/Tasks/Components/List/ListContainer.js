@@ -1,26 +1,32 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { pureRender } from 'DeskPRO/Component/Ampliflux';
 import { List } from './List';
 import { selectedSelector } from '../../../Application/Selectors/massActions';
-import { currentViewModeSelector, listParamsNavSelector, isLoadedSelector } from '../../Selectors/list';
-import { unload } from '../../Actions/listActions';
-import { pureRender } from 'Ampliflux';
+import { currentViewModeSelector, listParamsNavSelector, isLoadedSelector, paginationSelector } from '../../Selectors/list';
+import { applyFilters } from '../../Actions/listActions';
 
-@connect(state => ({
-  isLoaded:    isLoadedSelector(state),
-  currentView: currentViewModeSelector(state),
-  selected:    selectedSelector(state),
-  currentNav:  listParamsNavSelector(state)
-}))
+@connect(
+  state => ({
+    isLoaded:    isLoadedSelector(state),
+    currentView: currentViewModeSelector(state),
+    selected:    selectedSelector(state),
+    currentNav:  listParamsNavSelector(state),
+    pagination:  paginationSelector(state)
+  }),
+  { applyFilters }
+)
 
 @pureRender
 
 export class ListContainer extends React.Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired
+    applyFilters: PropTypes.func.isRequired
   };
 
   render() {
-    return <List {...this.props} />;
+    const handlePageClick = page => this.props.applyFilters({ page });
+
+    return <List {...this.props} handlePageClick={handlePageClick} />;
   }
 }
