@@ -31,8 +31,11 @@ services:
 
   deskpro.zippy:
     class: "Alchemy\\Zippy\\Zippy"
-    factory: ["AppBundle\\Zippy\\ZippyFactory", "getZippy"]
+    factory: ["DeskPRO\\Bundle\\AppBundle\\Zippy\\ZippyFactory", "getZippy"]
     arguments: ["@service_container"]
+
+  deskpro.logging.line_formatter:
+    class: DeskPRO\Bundle\AppBundle\Logging\Formatter\CleanLineFormatter
 
   ######################################################################################################################
   # Apps

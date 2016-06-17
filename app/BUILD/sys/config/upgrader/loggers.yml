@@ -1,0 +1,25 @@
+monolog:
+  channels:
+    - upgrader.general
+    - upgrader.http
+
+  handlers:
+    logger.upgrader:
+      level: debug
+      type: stream
+      path: '%kernel.logs_dir%/upgrader.log'
+      channels: [upgrader]
+      formatter: deskpro.logging.line_formatter
+
+    logger.upgrader.general:
+      min_level: debug
+      type: filter
+      path: '%kernel.logs_dir%/upgrader.log'
+      handler: logger.upgrader
+      channels: [upgrader.general]
+
+    logger.upgrader.http:
+      min_level: info
+      type: filter
+      handler: logger.upgrader
+      channels: [upgrader.http]

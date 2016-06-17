@@ -28,8 +28,8 @@
 
 return [
     'app' => [
-        '15740.0' => ['src' => ['file.txt' => 'File'], 'sys' => ['file.txt' => 'File', 'config' => ['build-time.txt' => '1465734864']]],
-        '15741.0' => ['src' => ['file.txt' => 'File'], 'sys' => ['file.txt' => 'File', 'config' => ['build-time.txt' => '1465734865']]],
+        '15740.0' => ['src' => ['file.txt' => 'File'], 'sys' => ['Resources' => [], 'file.txt' => 'File', 'config' => ['build-time.txt' => '1465734864']]],
+        '15741.0' => ['src' => ['file.txt' => 'File'], 'sys' => ['Resources' => [], 'file.txt' => 'File', 'config' => ['build-time.txt' => '1465734865']]],
         'run'     => ['file.txt' => 'File'],
     ],
     'var' => [

@@ -60,6 +60,10 @@ class DistroReleaseCollection implements \Countable, \IteratorAggregate
      */
     public function getById($id)
     {
+        if (empty($this->releases)) {
+            return;
+        }
+
         return ListUtils::first($this->releases, function (DistroRelease $r) use ($id) { return $r->getId() === $id; });
     }
 
@@ -68,6 +72,10 @@ class DistroReleaseCollection implements \Countable, \IteratorAggregate
      */
     public function getLatest()
     {
+        if (empty($this->releases)) {
+            return;
+        }
+
         return ListUtils::last($this->releases);
     }
 

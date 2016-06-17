@@ -35,6 +35,8 @@ use Symfony\Component\DependencyInjection\Reference;
 /* @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 $loader->import(__DIR__.'/config.shared.php');
 $loader->import(__DIR__.'/config.legacy.yml');
+$loader->import(__DIR__.'/upgrader/loggers.yml');
+$loader->import(__DIR__.'/upgrader/services.yml');
 
 ############################################################################
 # Parameters
@@ -189,21 +191,6 @@ $definition->setArguments(
 );
 $definition->addTag('templating.engine', array('alias' => 'jsonphp'));
 $container->setDefinition('templating.engine.jsonphp', $definition);
-
-// Monolog default logging, turn off unless specifically enabled (eg in some _dev configs)
-$container->loadFromExtension('monolog', array(
-    'handlers' => array(
-        'main' => array(
-            'type' => 'service',
-            'id'   => 'deskpro.logging.null_handler',
-        ),
-        'email_log_collector' => array(
-            'type'     => 'service',
-            'id'       => 'email.log_collector',
-            'channels' => array('dp.email.out.mailer', 'dp.email.out.transport', 'dp.email.out.queue', 'dp.email.out.raw_transport'),
-        ),
-    ),
-));
 
 ############################################################################
 # Twig Configuration

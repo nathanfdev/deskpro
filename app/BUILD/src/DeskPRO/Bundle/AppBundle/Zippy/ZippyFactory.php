@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace AppBundle\Zippy;
+namespace DeskPRO\Bundle\AppBundle\Zippy;
 
 use Alchemy\Zippy;
 use Symfony\Component\DependencyInjection\Container;
@@ -38,7 +38,7 @@ class ZippyFactory
      *
      * @return Zippy\Zippy
      */
-    public function getZippy(Container $container)
+    public static function getZippy(Container $container)
     {
         $zippy = Zippy\Zippy::load();
 

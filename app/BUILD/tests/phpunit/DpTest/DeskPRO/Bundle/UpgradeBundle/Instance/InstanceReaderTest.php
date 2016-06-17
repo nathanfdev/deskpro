@@ -95,8 +95,8 @@ class InstanceReaderTest extends DeskProTestCase
         $this->assertEquals($this->root->url().'/var/kernel_cache', $inst->getKernelCacheBasePath());
         $this->assertEquals($this->root->url().'/var/kernel_cache/FOO', $inst->getKernelCachePath('FOO'));
 
-        $this->assertEquals($this->root->url().'/www', $inst->getWwwBasePath());
-        $this->assertEquals($this->root->url().'/www/assets/FOO', $inst->getWwwPath('FOO'));
+        $this->assertEquals($this->root->url().'/www/assets', $inst->getAssetsBasePath());
+        $this->assertEquals($this->root->url().'/www/assets/FOO', $inst->getAssetsPath('FOO'));
     }
 
     /**

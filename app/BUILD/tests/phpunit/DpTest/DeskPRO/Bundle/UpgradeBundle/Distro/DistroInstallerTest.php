@@ -35,6 +35,7 @@ namespace DpTest\DeskPRO\Bundle\UpgradeBundle\Distro;
 use Alchemy\Zippy\Zippy;
 use DeskPRO\Bundle\UpgradeBundle\Distro\DistroInstaller;
 use DeskPRO\Bundle\UpgradeBundle\Instance\InstanceReader;
+use DeskPRO\Component\Filesystem\TmpDir;
 use DpTest\DeskProTestCase;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
@@ -147,6 +148,7 @@ class DistroInstallerTest extends DeskProTestCase
         $tmpDir = $this->tmpAppStructure();
 
         $instance = new InstanceReader(
+            '15740.0',
             $tmpDir.'/app',
             $tmpDir.'/www',
             $tmpDir.'/var/kernel_cache'
@@ -159,7 +161,8 @@ class DistroInstallerTest extends DeskProTestCase
         $this->assertTrue(is_dir($tmpDir.'/var/kernel_cache/15742.0/dp_run'), 'Check that dp_run was copied to kernel cache dir');
         $this->assertTrue(is_file($tmpDir.'/www/assets/15742.0/pub/file.txt'), 'Check that pub dir was copied');
         $this->assertTrue(is_file($tmpDir.'/www/assets/15742.0/web/file.txt'), 'Check that web dir was copied');
-        $this->assertTrue(is_file($tmpDir.'/www/assets/15742.0/pub/deskpro.zip'), 'Check that deskpro.zip was copied');
+        $this->assertTrue(is_file($tmpDir.'/app/15742.0/sys/Resources/deskpro.zip'), 'Check that deskpro.zip was 
+        copied');
 
         $inst->enableRunFromBuild('15742.0');
         $this->assertTrue(is_file($tmpDir.'/app/run/new_file.txt'), 'Check that run dir was enabled');
@@ -176,11 +179,87 @@ class DistroInstallerTest extends DeskProTestCase
         chmod($tmpDir.'/app', 0555);
 
         $instance = new InstanceReader(
+            '15740.0',
             $tmpDir.'/app',
             $tmpDir.'/www',
             $tmpDir.'/var/kernel_cache'
         );
         $inst = new DistroInstaller($this->zippy, $instance);
         $inst->installFromZip($this->getDistroZipPath());
+    }
+
+    /**
+     * @test
+     */
+    public function it_detects_perm_errors()
+    {
+        $tmpDir = $this->tmpAppStructure();
+
+        chmod($tmpDir, 0555);
+        chmod($tmpDir.'/app', 0555);
+        chmod($tmpDir.'/www/assets', 0555);
+        chmod($tmpDir.'/var/kernel_cache', 0555);
+
+        $instance = new InstanceReader(
+            '15740.0',
+            $tmpDir.'/app',
+            $tmpDir.'/www',
+            $tmpDir.'/var/kernel_cache'
+        );
+        $inst = new DistroInstaller($this->zippy, $instance);
+
+        $probs    = $inst->detectProblems();
+        $probKeys = array_keys($probs);
+
+        $this->assertEquals([
+            'app_dir_not_writable',
+            'kernel_cache_dir_not_writable',
+            'assets_dir_not_writable',
+        ], $probKeys);
+    }
+
+    /**
+     * @test
+     */
+    public function it_detects_no_perm_errors()
+    {
+        $tmpDir = $this->tmpAppStructure();
+
+        $instance = new InstanceReader(
+            '15740.0',
+            $tmpDir.'/app',
+            $tmpDir.'/www',
+            $tmpDir.'/var/kernel_cache'
+        );
+        $inst = new DistroInstaller($this->zippy, $instance);
+
+        $probs = $inst->detectProblems();
+        $this->assertEmpty($probs);
+    }
+
+    /**
+     * @test
+     */
+    public function it_detects_tmpdir_error()
+    {
+        $fakeTmpDir = TmpDir::makeTmpDir(sys_get_temp_dir());
+        chmod($fakeTmpDir, 0555);
+
+        $tmpDir = $this->tmpAppStructure();
+
+        $instance = new InstanceReader(
+            '15740.0',
+            $tmpDir.'/app',
+            $tmpDir.'/www',
+            $tmpDir.'/var/kernel_cache'
+        );
+        $inst = new DistroInstaller($this->zippy, $instance, $fakeTmpDir);
+
+        $probs    = $inst->detectProblems();
+        $probKeys = array_keys($probs);
+
+        $this->assertEquals([
+            'tmp_dir_not_writable',
+        ], $probKeys);
     }
 }

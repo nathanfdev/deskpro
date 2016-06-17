@@ -113,7 +113,7 @@ class InstanceReader
      *
      * @return string
      */
-    public function getWwwPath($forBuildId)
+    public function getAssetsPath($forBuildId)
     {
         return $this->wwwPath.DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.$forBuildId;
     }
@@ -121,9 +121,9 @@ class InstanceReader
     /**
      * @return string
      */
-    public function getWwwBasePath()
+    public function getAssetsBasePath()
     {
-        return $this->wwwPath;
+        return $this->wwwPath.DIRECTORY_SEPARATOR.'assets';
     }
 
     /**

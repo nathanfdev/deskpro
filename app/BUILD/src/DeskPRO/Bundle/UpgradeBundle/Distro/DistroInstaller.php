@@ -32,10 +32,13 @@ use Alchemy\Zippy\Zippy;
 use DeskPRO\Bundle\UpgradeBundle\Instance\InstanceReader;
 use DeskPRO\Component\Filesystem\TmpDir;
 use DpRun\BuildScanner;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
-class DistroInstaller
+class DistroInstaller implements LoggerAwareInterface
 {
     /**
      * @var Zippy
@@ -53,6 +56,11 @@ class DistroInstaller
     private $tmpDir;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * DistroInstaller constructor.
      *
      * @param Zippy          $zippy
@@ -64,39 +72,117 @@ class DistroInstaller
         $this->zippy          = $zippy;
         $this->instanceStatus = $instanceStatus;
         $this->tmpDir         = $tmpDir ?: sys_get_temp_dir();
+
+        $this->setLogger(new NullLogger());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * Detect issues that will cause the installer to fail.
+     *
+     * @return array
+     */
+    public function detectProblems()
+    {
+        $problems = [];
+
+        if (!is_writable($this->tmpDir)) {
+            $problems['tmp_dir_not_writable'] = sprintf('The temporary directory is not writable: %s', $this->tmpDir);
+        }
+
+        if (!is_writable($this->instanceStatus->getAppBasePath())) {
+            $problems['app_dir_not_writable'] = sprintf('The app directory is not writable: %s',
+                $this->instanceStatus->getAppBasePath());
+        }
+
+        if (!is_writable($this->instanceStatus->getKernelCacheBasePath())) {
+            $problems['kernel_cache_dir_not_writable'] = sprintf('The app directory is not writable: %s',
+                $this->instanceStatus->getKernelCacheBasePath());
+        }
+
+        if (!is_writable($this->instanceStatus->getAssetsBasePath())) {
+            $problems['assets_dir_not_writable'] = sprintf('The www assets directory is not writable: %s',
+                $this->instanceStatus->getAssetsBasePath());
+        }
+
+        return $problems;
     }
 
     /**
      * @param string $zipPath
+     * @param string $asBuild
+     *
+     * @throws \Exception
+     * @throws IOException
+     */
+    public function installFromZip($zipPath, $asBuild = null)
+    {
+        $ts = microtime(true);
+        $this->logger->debug(sprintf('Installing files -- begin at %s', date('Y-m-d H:i:s')));
+
+        try {
+            $this->doInstallFromZip($zipPath, $asBuild);
+        } catch (\Exception $e) {
+            throw $e;
+        } finally {
+            $this->logger->debug(sprintf('Installing files -- finished at %s (%.3fs)', date('Y-m-d H:i:s'), microtime(true) - $ts));
+        }
+    }
+
+    /**
+     * @param string $zipPath
+     * @param string $asBuild
      *
      * @throws IOException
      */
-    public function installFromZip($zipPath)
+    private function doInstallFromZip($zipPath, $asBuild = null)
     {
         $fs = new Filesystem();
+
+        $this->logger->debug(sprintf('Temp base dir: %s', $this->tmpDir));
+        $this->logger->debug(sprintf('Zip file: %s', $zipPath));
 
         $scratchDir = TmpDir::makeTmpDir($this->tmpDir);
         $zip        = $this->zippy->open($zipPath);
 
+        $this->logger->debug(sprintf('Extracting to: %s', $scratchDir));
         $zip->extract($scratchDir);
 
         $buildScanner = new BuildScanner("$scratchDir/app");
         $buildId      = $buildScanner->getLatestBuildDir();
 
-        // Copy the zip to the public dir
-        // which serves as a record and easy way to fetch it if needed
-        copy($zipPath, "$scratchDir/www/assets/$buildId/pub/deskpro.zip");
+        $this->logger->debug(sprintf('Build scanner detected: %s', implode(', ', $buildScanner->getAvailableBuilds())));
+        $this->logger->debug(sprintf('Latest build is: %s', $buildScanner->getLatestBuildDir()));
+
+        if (!$asBuild) {
+            $asBuild = $buildId;
+            $this->logger->debug(sprintf('$asBuild specified: %s', $asBuild));
+        }
+
+        // Copy the zip to sys/Resources dir
+        $copyZipPath = "$scratchDir/app/$buildId/sys/Resources/deskpro.zip";
+        copy($zipPath, $copyZipPath);
+
+        $this->logger->debug(sprintf('Zip copied as a record to: %s', $copyZipPath));
 
         $moves = [
-            "$scratchDir/app/$buildId"              => $this->instanceStatus->getAppPath($buildId),
-            "$scratchDir/var/kernel_cache/$buildId" => $this->instanceStatus->getKernelCachePath($buildId),
-            "$scratchDir/www/assets/$buildId"       => $this->instanceStatus->getWwwPath($buildId),
+            "$scratchDir/app/$buildId"              => $this->instanceStatus->getAppPath($asBuild),
+            "$scratchDir/var/kernel_cache/$buildId" => $this->instanceStatus->getKernelCachePath($asBuild),
+            "$scratchDir/www/assets/$buildId"       => $this->instanceStatus->getAssetsPath($asBuild),
 
             // Move run dir into kernel_cache, we might enable it in just a moment
-            "$scratchDir/app/run" => $this->instanceStatus->getKernelCachePath($buildId).'/dp_run',
+            "$scratchDir/app/run" => $this->instanceStatus->getKernelCachePath($asBuild).'/dp_run',
         ];
 
         foreach ($moves as $from => $to) {
+            $this->logger->debug(sprintf('Rename: %s => %s', $from, $to));
             $fs->rename($from, $to);
         }
     }
@@ -121,7 +207,7 @@ class DistroInstaller
         // The cached dp_run dir doesnt exist for whatever reason, we need to re-extract the full zip
         if (!is_dir($newRunPath)) {
             $scratchDir = TmpDir::makeTmpDir($this->tmpDir);
-            $zip        = $this->zippy->open($this->instanceStatus->getWwwPath($buildId).'/pub/deskpro.zip');
+            $zip        = $this->zippy->open($this->instanceStatus->getAppPath($buildId).'/sys/Resources/deskpro.zip');
             $zip->extract($scratchDir);
 
             $newRunPath = "$scratchDir/app/run";

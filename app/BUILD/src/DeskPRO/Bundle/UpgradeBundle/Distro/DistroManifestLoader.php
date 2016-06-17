@@ -30,11 +30,15 @@ namespace DeskPRO\Bundle\UpgradeBundle\Distro;
 
 use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroRelease;
 use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroReleaseCollection;
-use GuzzleHttp\Client as HttpClient;
+use DeskPRO\Component\Util\TypeUtils;
+use GuzzleHttp;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\RequestOptions;
+use GuzzleHttp\Exception\GuzzleException;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
-class DistroManifestLoader
+class DistroManifestLoader implements LoggerAwareInterface
 {
     const VERSION_API_ROOT  = 'https://deskpro.github.io/';
     const MANIFEST_ENDPOINT = 'releases/manifest.json';
@@ -45,22 +49,54 @@ class DistroManifestLoader
     private $client;
 
     /**
-     * @param string $versionApiRoot
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @param string               $versionApiRoot
+     * @param LoggerInterface|null $logger
+     * @param LoggerInterface|null $httpLogger
      *
      * @return DistroManifestLoader
      */
-    public static function create($versionApiRoot = self::VERSION_API_ROOT)
+    public static function create($versionApiRoot = self::VERSION_API_ROOT, LoggerInterface $logger = null, LoggerInterface $httpLogger = null)
     {
-        $client = new HttpClient([
+        $stack = GuzzleHttp\HandlerStack::create();
+
+        if ($httpLogger) {
+            $stack->push(GuzzleHttp\Middleware::log(
+                $httpLogger,
+                new GuzzleHttp\MessageFormatter('{method} {uri} -> {code} {phrase}')
+            ));
+        }
+
+        $client = new GuzzleHttp\Client([
             'base_uri' => $versionApiRoot,
 
-            RequestOptions::ALLOW_REDIRECTS => true,
-            RequestOptions::CONNECT_TIMEOUT => 10,
-            RequestOptions::TIMEOUT         => 10,
-            RequestOptions::DECODE_CONTENT  => 'gzip',
+            GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true,
+            GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => 10,
+            GuzzleHttp\RequestOptions::TIMEOUT         => 10,
+            GuzzleHttp\RequestOptions::DECODE_CONTENT  => 'gzip',
+
+            'handler' => $stack,
         ]);
 
-        return new self($client);
+        $l = new self($client);
+
+        if ($logger) {
+            $l->setLogger($logger);
+        }
+
+        return $l;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 
     /**
@@ -69,15 +105,42 @@ class DistroManifestLoader
     public function __construct(ClientInterface $client)
     {
         $this->client = $client;
+        $this->logger = new NullLogger();
     }
 
     /**
+     * @throws \Exception        Any other uncaught error (dont think there are any)
+     * @throws GuzzleException   HTTP error
+     * @throws \RuntimeException If the result is invalid
+     *
      * @return DistroReleaseCollection
      */
     public function loadReleases()
     {
-        $request = $this->client->request('GET', self::MANIFEST_ENDPOINT);
-        $data    = @json_decode($request->getBody()->getContents(), true);
+        $ts = microtime(true);
+        $this->logger->debug(sprintf('loadReleases -- begin at %s', date('Y-m-d H:i:s')));
+
+        try {
+            return $this->doLoadReleases();
+        } catch (\Exception $e) {
+            $this->logger->error(sprintf('[%s:%s] %s', TypeUtils::getBaseTypeName($e), $e->getCode(), $e->getMessage()));
+            throw $e;
+        } finally {
+            $this->logger->debug(sprintf('loadReleases -- done at %s (%.3fs)', date('Y-m-d H:i:s'), microtime(true) -
+                $ts));
+        }
+    }
+
+    /**
+     * @throws GuzzleException
+     * @throws \RuntimeException If the result is invalid
+     *
+     * @return DistroReleaseCollection
+     */
+    private function doLoadReleases()
+    {
+        $response = $this->client->request('GET', self::MANIFEST_ENDPOINT);
+        $data     = @json_decode($response->getBody()->getContents(), true);
 
         /*
             We expect a payload like:
@@ -103,7 +166,7 @@ class DistroManifestLoader
          */
 
         if (!$data || empty($data['releases'])) {
-            throw new \RuntimeException('Invalid service result');
+            throw new \UnexpectedValueException('Invalid service result');
         }
 
         $releases = array_map(function ($r) {
@@ -120,6 +183,8 @@ class DistroManifestLoader
 
             return $a < $b ? -1 : 1;
         });
+
+        $this->logger->info(sprintf('Manifest contains %d releases', count($releases)));
 
         return new DistroReleaseCollection($releases);
     }

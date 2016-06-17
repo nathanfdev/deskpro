@@ -2,12 +2,17 @@ services:
   dp.upgrader.distro.downloader:
     class: DeskPRO\Bundle\UpgradeBundle\Distro\DistroDownloader
     factory: [DeskPRO\Bundle\UpgradeBundle\Distro\DistroDownloader, create]
+    arguments:
+      - "@monolog.logger.upgrader.general"
+      - "@monolog.logger.upgrader.http"
 
   dp.upgrader.distro.manifest_loader:
     class: DeskPRO\Bundle\UpgradeBundle\Distro\DistroManifestLoader
     factory: [DeskPRO\Bundle\UpgradeBundle\Distro\DistroManifestLoader, create]
     arguments:
       - "@=service('deskpro.app_env').getConfig('paths.distro_manifest', constant('DeskPRO\\\\Bundle\\\\UpgradeBundle\\\\Distro\\\\DistroManifestLoader::VERSION_API_ROOT'))"
+      - "@monolog.logger.upgrader.general"
+      - "@monolog.logger.upgrader.http"
 
   dp.upgrader.distro.installer:
     class: DeskPRO\Bundle\UpgradeBundle\Distro\DistroInstaller
@@ -15,6 +20,8 @@ services:
       - "@deskpro.zippy"
       - "@dp.upgrader.instance_reader"
       - "@=service('deskpro.app_env').getUserTmpDir()"
+    calls:
+      - [setLogger, ["@monolog.logger.upgrader.general"]]
 
   dp.upgrader.instance_reader:
     class: DeskPRO\Bundle\UpgradeBundle\Instance\InstanceReader

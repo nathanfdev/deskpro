@@ -28,8 +28,8 @@ monolog:
     - "dp.tickets.filters.tengine.php.compiler"
   handlers:
     main:
-      type:   service
-      id:     monolog.handler.deskpro_fingers_crossed
+      type:     service
+      id:       monolog.handler.deskpro_fingers_crossed
     term_engine:
       type: service
       id: term_engine.log_handler

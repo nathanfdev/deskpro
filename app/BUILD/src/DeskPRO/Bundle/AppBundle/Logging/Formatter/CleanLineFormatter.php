@@ -26,21 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Logging\Formatter;
+
+use Monolog\Formatter\LineFormatter;
+
 /**
- * DeskPRO.
+ * Similar to the default LineFormatter except we remove empty '[]' at the end of log lines.
  */
-
-namespace DeskPRO\Bundle\UpgradeBundle\DependencyInjection;
-
-use DeskPRO\Bundle\AppBundle\DependencyInjection\YamlDirectoryLoader;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\Extension;
-
-class UpgradeExtension extends Extension
+class CleanLineFormatter extends LineFormatter
 {
-    public function load(array $config, ContainerBuilder $container)
+    const SIMPLE_FORMAT = "[%datetime%] <%channel%.%level_name%> %message% %context% %extra%\n";
+
+    /**
+     * {@inheritdoc}
+     */
+    public function format(array $record)
     {
-        $loader = new YamlDirectoryLoader($container);
-        $loader->loadDir(__DIR__.'/../Resources/config');
+        $output = $oldOutput = parent::format($record);
+
+        do {
+            $oldOutput = $output;
+            $output    = preg_replace('/\s*\[\s*\]$/', '', rtrim($output, " \t"));
+        } while ($oldOutput !== $output);
+
+        return $output;
     }
 }

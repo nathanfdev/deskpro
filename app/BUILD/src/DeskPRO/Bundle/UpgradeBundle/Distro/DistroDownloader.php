@@ -29,27 +29,58 @@
 namespace DeskPRO\Bundle\UpgradeBundle\Distro;
 
 use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroRelease;
-use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7;
-use GuzzleHttp\RequestOptions;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use Symfony\Component\Filesystem\Filesystem;
 
-class DistroDownloader
+class DistroDownloader implements LoggerAwareInterface
 {
     /**
      * @var ClientInterface
      */
     private $client;
 
-    public static function create()
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @param LoggerInterface|null $logger
+     * @param LoggerInterface|null $httpLogger
+     *
+     * @return DistroDownloader
+     */
+    public static function create(LoggerInterface $logger = null, LoggerInterface $httpLogger = null)
     {
-        $client = new HttpClient([
-            RequestOptions::ALLOW_REDIRECTS => true,
-            RequestOptions::CONNECT_TIMEOUT => 10,
-            RequestOptions::TIMEOUT         => 1200,
+        $stack = GuzzleHttp\HandlerStack::create();
+
+        if ($httpLogger) {
+            $stack->push(GuzzleHttp\Middleware::log(
+                $httpLogger,
+                new GuzzleHttp\MessageFormatter('{method} {uri} -> {code} {phrase}')
+            ));
+        }
+
+        $client = new GuzzleHttp\Client([
+            GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true,
+            GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => 10,
+            GuzzleHttp\RequestOptions::TIMEOUT         => 1800,
+
+            'handler' => $stack,
         ]);
 
-        return new self($client);
+        $dl = new self($client);
+
+        if ($logger) {
+            $dl->setLogger($logger);
+        }
+
+        return $dl;
     }
 
     /**
@@ -60,6 +91,51 @@ class DistroDownloader
     public function __construct(ClientInterface $client)
     {
         $this->client = $client;
+        $this->logger = new NullLogger();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * @param string      $targetPath
+     * @param string|null $checksum
+     *
+     * @return bool
+     */
+    private function doesTargetExist($targetPath, $checksum = null)
+    {
+        if (file_exists($targetPath)) {
+            $hash = hash_file('sha256', $targetPath);
+            if ($checksum !== $hash) {
+                $fs = new Filesystem();
+                $fs->remove($targetPath);
+            }
+
+            // otherwise we have the file already and it's already correct
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string      $targetPath
+     * @param string|null $checksum
+     */
+    private function verifyFile($targetPath, $checksum = null)
+    {
+        if ($checksum) {
+            $hash = hash_file('sha256', $targetPath);
+            if ($checksum !== $hash) {
+                throw new \UnexpectedValueException('The downloaded file has an invalid checksum.');
+            }
+        }
     }
 
     /**
@@ -68,6 +144,10 @@ class DistroDownloader
      */
     public function download(DistroRelease $releaseDetail, $targetPath)
     {
+        if ($this->doesTargetExist($targetPath, $releaseDetail->getSha256())) {
+            return;
+        }
+
         $targetFp     = Psr7\try_fopen($targetPath, 'w');
         $targetStream = Psr7\stream_for($targetFp);
 
@@ -75,9 +155,44 @@ class DistroDownloader
         Psr7\copy_to_stream($request->getBody(), $targetStream);
         fclose($targetFp);
 
-        $hash = hash_file('sha256', $targetPath);
-        if ($releaseDetail->getSha256() !== $hash) {
-            throw new \RuntimeException('The downloaded file has an invalid checksum.');
+        $this->verifyFile($targetPath, $releaseDetail->getSha256());
+    }
+
+    /**
+     * @param string $zipUrl
+     * @param string $targetPath
+     * @param string $checksum
+     */
+    public function downloadUrl($zipUrl, $targetPath, $checksum = null)
+    {
+        if ($this->doesTargetExist($targetPath, $checksum)) {
+            return;
         }
+
+        $targetFp     = Psr7\try_fopen($targetPath, 'w');
+        $targetStream = Psr7\stream_for($targetFp);
+
+        $response = $this->client->request('GET', $zipUrl);
+        Psr7\copy_to_stream($response->getBody(), $targetStream);
+        fclose($targetFp);
+
+        $this->verifyFile($targetPath, $checksum);
+    }
+
+    /**
+     * @param string $zipPath
+     * @param string $targetPath
+     * @param string $checksum
+     */
+    public function downloadLocalFile($zipPath, $targetPath, $checksum = null)
+    {
+        if ($this->doesTargetExist($targetPath, $checksum)) {
+            return;
+        }
+
+        $fs = new Filesystem();
+        $fs->copy($zipPath, $targetPath, true);
+
+        $this->verifyFile($targetPath, $checksum);
     }
 }
