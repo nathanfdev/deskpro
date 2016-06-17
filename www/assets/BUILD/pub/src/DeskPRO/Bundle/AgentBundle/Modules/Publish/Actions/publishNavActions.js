@@ -1,15 +1,20 @@
-import { createAction } from 'Ampliflux';
+import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
+import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 
 export const initialLoad = createAction(
   'PUBLISH_NAV_INITIAL_LOAD',
-  () => new Promise(
+  () => (dispatch, getState) => new Promise(
     (resolve) => {
+      const currentArticlesGrouping  = hashStateSelectorFactory(['group', 'articles'], 'category')(getState());
+      const currentNewsGrouping      = hashStateSelectorFactory(['group', 'news'], 'category')(getState());
+      const currentDownloadsGrouping = hashStateSelectorFactory(['group', 'downloads'], 'category')(getState());
+
       const batch = 'DP_API/batch'
-              + '?get[articles]=DP_API/articles/counts?group_by%3Dcategory'
-              + '&get[news]=DP_API/news/counts?group_by%3Dcategory'
-              + '&get[downloads]=DP_API/downloads/counts?group_by%3Dcategory'
+              + `?get[articles]=DP_API/articles/counts?group_by%3D${currentArticlesGrouping}`
+              + `&get[news]=DP_API/news/counts?group_by%3D${currentNewsGrouping}`
+              + `&get[downloads]=DP_API/downloads/counts?group_by%3D${currentDownloadsGrouping}`
               + '&get[categories]=DP_API/content_categories'
               + '&get[articlesDraftsCount]=DP_API/articles/counts?status%3Dhidden%26hidden_status%3Ddraft'
               + '&get[articlesPendingCount]=DP_API/article_pending_creates/counts'
