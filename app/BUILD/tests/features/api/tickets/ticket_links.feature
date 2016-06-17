@@ -5,17 +5,17 @@ Feature: Ticket link endpoint
 
   Background:
     Given I'm authenticated as admin
-    And agent@deskpro.dev and user@deskpro.dev exist
+    And agent and user exist
     And I have an AgentTeam record with name equal to "Demo team" which is referenced as agent_team
     And I create an Organization with name equal to "Demo organization" and reference it as organization
     And only the following Ticket records exist:
-      | #        | Subject      | Organization   | Agent team   | Agent               |
-      | ticket_1 | Ticket One   |                |              | {agent@deskpro.dev} |
-      | ticket_2 | Ticket Two   | {organization} | {agent_team} | {admin@deskpro.dev} |
-      | ticket_3 | Ticket Three |                |              |                     |
-      | ticket_4 | Ticket Four  |                |              |                     |
-      | ticket_5 | Ticket Five  |                |              |                     |
-      | ticket_6 | Ticket Six   |                |              |                     |
+      | #        | Subject      | Organization   | Agent team   | Agent   |
+      | ticket_1 | Ticket One   |                |              | {agent} |
+      | ticket_2 | Ticket Two   | {organization} | {agent_team} | {admin} |
+      | ticket_3 | Ticket Three |                |              |         |
+      | ticket_4 | Ticket Four  |                |              |         |
+      | ticket_5 | Ticket Five  |                |              |         |
+      | ticket_6 | Ticket Six   |                |              |         |
 
   Scenario: I link two tickets (add children ticket)
     When I send a "POST" request to "/api/v2/tickets/{ticket_1}/links" with body:
@@ -68,7 +68,7 @@ Feature: Ticket link endpoint
     And the JSON node "data.children[0].id" should be equal to "{ticket_2}"
     And the JSON node "linked.organization.{organization}.name" should be equal to "Demo organization"
     And the JSON node "linked.agent_team.{agent_team}.name" should be equal to "Demo team"
-    And the JSON node "linked.person.{admin@deskpro.dev}.primary_email" should be equal to "admin@deskpro.dev"
+    And the JSON node "linked.person.{admin}.primary_email" should be equal to "admin@deskpro.dev"
 
   Scenario: I'm getting linked tickets list w/o sideloading
     Given I send a "POST" request to "/api/v2/tickets/{ticket_1}/links" with body:

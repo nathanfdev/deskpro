@@ -129,7 +129,7 @@ class PeopleContext extends BaseContext
     }
 
     /**
-     * @Given ":email" admin exists
+     * @Given :email admin exists
      * @Given an admin with ":email" email exists
      *
      * @param string $email
@@ -168,12 +168,15 @@ class PeopleContext extends BaseContext
         }
 
         DataContext::setReference($email, $person);
+        if ($email === 'admin@deskpro.dev') {
+            DataContext::setReference('admin', $person);
+        }
 
         return $person;
     }
 
     /**
-     * @Given ":email" agent exists
+     * @Given :email agent exists
      * @Given an agent with ":email" email exists
      *
      * @param string $email
@@ -211,6 +214,9 @@ class PeopleContext extends BaseContext
         }
 
         DataContext::setReference($email, $person);
+        if ($email === 'agent@deskpro.dev') {
+            DataContext::setReference('agent', $person);
+        }
 
         return $person;
     }
@@ -253,12 +259,15 @@ class PeopleContext extends BaseContext
         }
 
         DataContext::setReference($email, $person);
+        if ($email === 'user@deskpro.dev') {
+            DataContext::setReference('user', $person);
+        }
 
         return $person;
     }
 
     /**
-     * @Given agent@deskpro.dev and user@deskpro.dev exist
+     * @Given agent and user exist
      */
     public function agentAndUserExist()
     {

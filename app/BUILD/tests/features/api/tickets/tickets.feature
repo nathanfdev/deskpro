@@ -6,17 +6,17 @@ Feature: /tickets endpoint
 
   Background:
     Given I'm authenticated as admin
-    And agent@deskpro.dev and user@deskpro.dev exist
+    And agent and user exist
     And the following Organization records exist:
       | #         | Name                  |
       | microsoft | Microsoft Corporation |
     And only the following Ticket records exist:
-      | #       | Subject            | Agent               | Organization | Status         | Hidden status |
-      | ticket1 | First Demo Ticket  | {admin@deskpro.dev} | {microsoft}  | awaiting_user  |               |
-      | ticket2 | Second Demo Ticket | {agent@deskpro.dev} |              | awaiting_agent |               |
-      | ticket3 | Third Demo Ticket  | {agent@deskpro.dev} |              | resolved       |               |
-      | ticket4 | Fourth Demo Ticket | {agent@deskpro.dev} |              | archived       |               |
-      | ticket5 | Fifth Demo Ticket  | {agent@deskpro.dev} |              | hidden         | deleted       |
+      | #       | Subject            | Agent   | Organization | Status         | Hidden status |
+      | ticket1 | First Demo Ticket  | {admin} | {microsoft}  | awaiting_user  |               |
+      | ticket2 | Second Demo Ticket | {agent} |              | awaiting_agent |               |
+      | ticket3 | Third Demo Ticket  | {agent} |              | resolved       |               |
+      | ticket4 | Fourth Demo Ticket | {agent} |              | archived       |               |
+      | ticket5 | Fifth Demo Ticket  | {agent} |              | hidden         | deleted       |
     And I have a Department record referenced as department
     And there are no custom ticket fields defined
 
@@ -28,9 +28,9 @@ Feature: /tickets endpoint
   "parent": ~ticket1~,
   "department": ~department~,
   "is_hold": true,
-  "person":  ~user@deskpro.dev~,
-  "agent": ~agent@deskpro.dev~,
-  "followers": ["agent@deskpro.dev", ~admin@deskpro.dev~],
+  "person":  ~user~,
+  "agent": ~agent~,
+  "followers": ["agent@deskpro.dev", ~admin~],
   "cc": ["user@deskpro.dev"]
 }
     """
@@ -40,13 +40,13 @@ Feature: /tickets endpoint
     And the JSON node "data.is_hold" should be equal to 1
     And the JSON node "data.parent" should be equal to "{ticket1}"
     And the JSON node "data.department" should be equal to "{department}"
-    And the JSON node "data.person" should be equal to "{user@deskpro.dev}"
-    And the JSON node "data.agent" should be equal to "{agent@deskpro.dev}"
+    And the JSON node "data.person" should be equal to "{user}"
+    And the JSON node "data.agent" should be equal to "{agent}"
     And the JSON node "data.cc" should have 1 element
-    And the JSON node "data.cc[0]" should be equal to "{user@deskpro.dev}"
+    And the JSON node "data.cc[0]" should be equal to "{user}"
     And the JSON node "data.followers" should have 2 elements
-    And the JSON node "data.followers[0]" should be equal to "{agent@deskpro.dev}"
-    And the JSON node "data.followers[1]" should be equal to "{admin@deskpro.dev}"
+    And the JSON node "data.followers[0]" should be equal to "{agent}"
+    And the JSON node "data.followers[1]" should be equal to "{admin}"
 
   Scenario: I modify a ticket
     When I send a PUT request to "/api/v2/tickets/{ticket1}" with body:
@@ -62,7 +62,7 @@ Feature: /tickets endpoint
     """
 {
   "subject": "Modified 4",
-  "followers": [~agent@deskpro.dev~, ~admin@deskpro.dev~]
+  "followers": [~agent~, ~admin~]
 }
     """
     And the response status code should be 204
@@ -102,7 +102,7 @@ Feature: /tickets endpoint
     And the JSON node "data.subject" should be equal to "First Demo Ticket"
     And the JSON node "linked" should have 2 elements
     And the JSON node "linked.person" should have 1 element
-    And the JSON node "linked.person.{admin@deskpro.dev}.primary_email" should be equal to "admin@deskpro.dev"
+    And the JSON node "linked.person.{admin}.primary_email" should be equal to "admin@deskpro.dev"
     And the JSON node "linked.organization" should have 1 element
     And the JSON node "linked.organization.{microsoft}.name" should be equal to "Microsoft Corporation"
 
@@ -117,16 +117,16 @@ Feature: /tickets endpoint
     And the JSON node "data[3].subject" should be equal to "First Demo Ticket"
     And the JSON node "linked" should have 1 element
     And the JSON node "linked.person" should have 2 elements
-    And the JSON node "linked.person.{admin@deskpro.dev}.primary_email" should be equal to "admin@deskpro.dev"
-    And the JSON node "linked.person.{agent@deskpro.dev}.primary_email" should be equal to "agent@deskpro.dev"
+    And the JSON node "linked.person.{admin}.primary_email" should be equal to "admin@deskpro.dev"
+    And the JSON node "linked.person.{agent}.primary_email" should be equal to "agent@deskpro.dev"
 
   Scenario: I try to create a ticket with incorrect user types
     When I send a POST request to "/api/v2/tickets" with body:
     """
 {
   "subject": "Sample Ticket",
-  "person": ~agent@deskpro.dev~,
-  "agent": ~user@deskpro.dev~
+  "person": ~agent~,
+  "agent": ~user~
 }
     """
     Then the response status code should be 400

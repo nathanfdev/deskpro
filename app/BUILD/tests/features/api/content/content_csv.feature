@@ -6,7 +6,7 @@ Feature:
 
   Background:
     Given I'm authenticated as admin
-    And agent@deskpro.dev and user@deskpro.dev exist
+    And agent and user exist
     And I have permissions to use articles
     And I have permissions to use news
     And I have permissions to use downloads
@@ -14,20 +14,20 @@ Feature:
     And the only NewsCategory has title equal to "Test" and referenced as "news_category"
     And the only DownloadCategory has title equal to "Test" and referenced as "download_category"
     And only the following Article records exist:
-      | #  | Title           | Status    | Person              | To Category        |
-      | a1 | Demo Article #1 | published | {admin@deskpro.dev} | {article_category} |
-      | a2 | Demo Article #2 | published | {agent@deskpro.dev} | {article_category} |
-      | a3 | Demo Article #3 | published | {agent@deskpro.dev} |                    |
+      | #  | Title           | Status    | Person  | To Category        |
+      | a1 | Demo Article #1 | published | {admin} | {article_category} |
+      | a2 | Demo Article #2 | published | {agent} | {article_category} |
+      | a3 | Demo Article #3 | published | {agent} |                    |
     And only the following News records exist:
-      | #  | Title        | Status    | Person              | Category        |
-      | n1 | Demo News #1 | published | {admin@deskpro.dev} | {news_category} |
-      | n2 | Demo News #2 | published | {agent@deskpro.dev} | {news_category} |
-      | n3 | Demo News #3 | published | {agent@deskpro.dev} |                 |
+      | #  | Title        | Status    | Person  | Category        |
+      | n1 | Demo News #1 | published | {admin} | {news_category} |
+      | n2 | Demo News #2 | published | {agent} | {news_category} |
+      | n3 | Demo News #3 | published | {agent} |                 |
     And only the following Download records exist:
-      | #  | Title            | Status    | Person              | Category            |
-      | d1 | Demo Download #1 | published | {admin@deskpro.dev} | {download_category} |
-      | d2 | Demo Download #2 | published | {agent@deskpro.dev} | {download_category} |
-      | d3 | Demo Download #3 | published | {agent@deskpro.dev} |                     |
+      | #  | Title            | Status    | Person  | Category            |
+      | d1 | Demo Download #1 | published | {admin} | {download_category} |
+      | d2 | Demo Download #2 | published | {agent} | {download_category} |
+      | d3 | Demo Download #3 | published | {agent} |                     |
 
   Scenario Outline: I search for content with empty search criteria
     When I send a GET request to "/api/v2/<endpoint>/csv"

@@ -9,14 +9,14 @@ Feature: Ticket logs
     And I have a Department record referenced as demo_department
     And I create a Ticket with department equal to "{demo_department}" and reference it as demo_ticket
     And there are no CustomDefTicket records
-    And agent@deskpro.dev and user@deskpro.dev exist
+    And agent and user exist
 
   Scenario: I delete a ticket follower and verify logs
     Given I add the following TicketParticipant records:
-      | Ticket        | Person              |
-      | {demo_ticket} | {agent@deskpro.dev} |
+      | Ticket        | Person  |
+      | {demo_ticket} | {agent} |
     And I reset the "{demo_ticket}" ticket logs
-    When I send a DELETE request to "/api/v2/tickets/{demo_ticket}/followers/{agent@deskpro.dev}"
+    When I send a DELETE request to "/api/v2/tickets/{demo_ticket}/followers/{agent}"
     And the "{demo_ticket}" ticket should have "changed_agent_participants" log
 
   Scenario: I create a ticket and check its' logs
@@ -25,8 +25,8 @@ Feature: Ticket logs
 {
   "subject": "Modified 1",
   "department": ~demo_department~,
-  "person":  ~user@deskpro.dev~,
-  "agent": ~agent@deskpro.dev~
+  "person":  ~user~,
+  "agent": ~agent~
 }
     """
     Then the "{lastCreatedId}" ticket should have the following logs:
@@ -44,7 +44,7 @@ Feature: Ticket logs
     """
 {
   "subject": "Modified 3",
-  "followers": [~agent@deskpro.dev~]
+  "followers": [~agent~]
 }
     """
     Then the "{demo_ticket}" ticket should have no the following logs:
