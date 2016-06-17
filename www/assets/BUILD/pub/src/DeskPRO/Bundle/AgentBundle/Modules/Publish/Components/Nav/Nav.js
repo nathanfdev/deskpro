@@ -17,7 +17,6 @@ export class Nav extends Component {
     downloads:        PropTypes.object.isRequired,
     todo:             PropTypes.object.isRequired,
     grouping:         PropTypes.object.isRequired,
-    onGroupingChange: PropTypes.func.isRequired,
     setMine:          PropTypes.func.isRequired
   };
 

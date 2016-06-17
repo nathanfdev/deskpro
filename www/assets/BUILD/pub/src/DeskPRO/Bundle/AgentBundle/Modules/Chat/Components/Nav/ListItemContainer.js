@@ -15,6 +15,7 @@ export class ListItemContainer extends Component {
     dispatch:    PropTypes.func.isRequired,
     count:       PropTypes.number.isRequired,
     label:       PropTypes.string.isRequired,
+    active:      PropTypes.string.isRequired,
     listOptions: PropTypes.object.isRequired,
     hash:        PropTypes.object
   };
@@ -25,8 +26,8 @@ export class ListItemContainer extends Component {
   }
 
   componentDidMount = () => {
-    const { hash, listOptions, dispatch } = this.props;
-    const activeItemId = hash.get('nav') ? hash.get('nav').get('active') : null;
+    const { hash, listOptions, dispatch, active } = this.props;
+    const activeItemId = hash.get('nav') ? hash.get('nav').get(active) : null;
 
     if (activeItemId === this.itemId) {
       dispatch(applyParams(listOptions));
@@ -39,9 +40,10 @@ export class ListItemContainer extends Component {
   };
 
   render = () => {
-    const { label, count } = this.props;
+    const { label, count, active } = this.props;
     const props = {
       label,
+      active,
 
       groupId: 'nav',
       onClick: this.loadList,

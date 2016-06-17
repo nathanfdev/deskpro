@@ -13,7 +13,7 @@ export class ListItemContainer extends Component {
     hash:        PropTypes.object,
     group:       PropTypes.string,
     label:       PropTypes.string.isRequired,
-    content:       PropTypes.string.isRequired,
+    content:     PropTypes.string.isRequired,
     children:    PropTypes.node,
     listOptions: PropTypes.object.isRequired
   };
@@ -25,8 +25,8 @@ export class ListItemContainer extends Component {
 
   componentDidMount = () => {
     const { hash, listOptions, dispatch, group, content } = this.props;
-    console.log('Group', group);
     const activeItemId = hash.get('nav') ? hash.get('nav').get(`${content}_${group}`) : null;
+
     if (activeItemId === this.itemId && content === listOptions.content) {
       dispatch(applyParams(listOptions));
     }

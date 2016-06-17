@@ -40,6 +40,7 @@ export class MyChats extends Component {
         count={count}
         key={index}
         label={label}
+        active="my"
         listOptions={{ navItem: { [groupBy]: group }, agent: 'me' }}
       />
     );

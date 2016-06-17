@@ -16,6 +16,8 @@ export class AllChats extends Component {
     this.setState({ expanded: false });
   };
 
+  getAttachTarget = () => this.refs.allSection;
+
   toggle = (event) => {
     event.preventDefault();
     this.setState({ expanded: !this.state.expanded });
@@ -26,18 +28,18 @@ export class AllChats extends Component {
     const group   = item.get('id');
     const count   = item.get('count');
     const label   = item.get('title') || '-';
-
+    console.log('Group', group);
+    console.log('groupBy', groupBy);
     return (
       <ListItemContainer
         count={count}
         label={label}
         key={index}
+        active="all"
         listOptions={{ navItem: { [groupBy]: group } }}
       />
     );
   };
-
-  getAttachTarget = () => this.refs.allSection;
 
   render() {
     const { all } = this.props;

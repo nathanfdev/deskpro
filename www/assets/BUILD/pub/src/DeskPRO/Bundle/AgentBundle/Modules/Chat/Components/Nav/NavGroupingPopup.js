@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { ListGroupingControlContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
-import { changeListGrouping } from '../../Actions/chatNavActions.js';
+import { changeListGrouping } from '../../Actions/chatNavActions';
 
 export class NavGroupingPopup extends Component {
 
