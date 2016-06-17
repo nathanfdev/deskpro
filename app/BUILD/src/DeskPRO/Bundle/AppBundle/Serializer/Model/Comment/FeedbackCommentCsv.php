@@ -45,7 +45,7 @@ class FeedbackCommentCsv extends FeedbackComment
      *
      * @JMS\Type("integer")
      */
-    private $feedback_id;
+    private $feedbackId;
 
     /**
      * Title of feedback this comment belongs to.
@@ -59,21 +59,21 @@ class FeedbackCommentCsv extends FeedbackComment
      *
      * @JMS\Type("string")
      */
-    private $feedback_content;
+    private $feedbackContent;
 
     /**
      * Status of feedback this comment belongs to.
      *
      * @JMS\Type("string")
      */
-    private $feedback_status;
+    private $feedbackStatus;
 
     /**
      * Hidden status of feedback this comment belongs to.
      *
      * @JMS\Type("string")
      */
-    private $hidden_status;
+    private $hiddenStatus;
 
     /**
      * Category of feedback this comment belongs to.
@@ -90,13 +90,14 @@ class FeedbackCommentCsv extends FeedbackComment
     public function __construct($entity)
     {
         parent::__construct($entity);
-        $this->person           = $entity->getPerson() ? $entity->getPerson()->getName() : '';
-        $this->content          = mb_substr($entity->getContent(), 0, 50);
-        $this->feedback_id      = $this->feedback->getId();
-        $this->title            = $this->feedback->getTitle();
-        $this->feedback_content = mb_substr($this->feedback->getRealContent(), 0, 50);
-        $this->feedback_status  = $this->feedback->getStatusCategory() ? $this->feedback->getStatusCategory()->getTitle() : '';
-        $this->hidden_status    = $this->feedback->getHiddenStatus() ?: '';
-        $this->category         = $this->feedback->getCategory() ? $this->feedback->getCategory()->getTitle() : '';
+        $this->person          = $entity->getPerson() ? $entity->getPerson()->getName() : '';
+        $this->content         = mb_substr($entity->getContent(), 0, 50);
+        $this->feedbackId      = $this->feedback->getId();
+        $this->title           = $this->feedback->getTitle();
+        $this->feedbackContent = mb_substr($this->feedback->getRealContent(), 0, 50);
+        $this->feedbackStatus  = $this->feedback->getStatusCategory() ? $this->feedback->getStatusCategory()
+            ->getTitle() : '';
+        $this->hiddenStatus = $this->feedback->getHiddenStatus() ?: '';
+        $this->category     = $this->feedback->getCategory() ? $this->feedback->getCategory()->getTitle() : '';
     }
 }
