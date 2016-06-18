@@ -59,8 +59,8 @@ class AuditLogController extends BaseController
 
         $pagination = new Pagerfanta($adapter);
 
-        $pagination->setCurrentPage($request->query->get('page', 1));
-        $pagination->setMaxPerPage($request->query->get('count', 10));
+        $pagination->setCurrentPage($request->query->getInt('page', 1));
+        $pagination->setMaxPerPage($request->query->getInt('count', 10));
 
         return View::create($this->wrap($pagination));
     }

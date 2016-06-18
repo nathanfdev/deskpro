@@ -98,10 +98,10 @@ class SideloadSerializationContext extends SerializationContext
     {
         $request     = $container->get('request_stack')->getCurrentRequest();
         $rawIncludes = $request->query->get('include');
-        $idsOnly     = $request->query->get('ids_only');
+        $idsOnly     = $request->query->getBoolean('ids_only', false);
 
         $context = new self(self::cleanIncludes($rawIncludes), $container->get('security.token_storage'));
-        $context->setIdsOnly((bool) $idsOnly);
+        $context->setIdsOnly($idsOnly);
         $context->setRequest($request);
 
         return $context;

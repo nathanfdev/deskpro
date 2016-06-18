@@ -189,7 +189,7 @@ class SearchController extends BaseController
             (string) $request->query->get('sort')
         );
 
-        $limit = (int) $request->get('limit');
+        $limit = (int) $request->query->getInt('limit');
         if ($limit) {
             $searchRequest->setLimit(min($searchRequest->getLimit(), $limit));
         }

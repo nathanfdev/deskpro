@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -225,15 +226,15 @@ abstract class CrudController extends BaseController
             $qb->setParameters(compact('ids'));
         }
 
-        $limit = (int) $request->query->get('limit', static::$listLimit);
+        $limit = (int) $request->query->getInt('limit', static::$listLimit);
         if ($limit && $limit < 0) {
             throw $this->createBadRequestException('You must select a limit of at least 1');
         }
 
         // return QueryBuilder result or Pagerfanta depending on if pagination is enabled for the controller
         if (static::$listPaginate) {
-            $page  = (int) $request->query->get('page', 1);
-            $count = (int) $request->query->get('count', static::$listPerPage);
+            $page  = (int) $request->query->getInt('page', 1);
+            $count = (int) $request->query->getInt('count', static::$listPerPage);
 
             if ($count > static::$listMaxResults) {
                 throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');

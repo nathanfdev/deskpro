@@ -140,21 +140,20 @@ class LogsController extends BaseController
      */
     public function putOptionsAction(Request $request)
     {
-        $enabled = $request->request->get('enabled');
+        $enabled = $request->request->getBoolean('enabled');
         $modes   = $request->request->get('modes');
 
         $em = $this->get('doctrine.orm.default_entity_manager');
 
         /** @var SettingRepo $repo */
         $repo = $em->getRepository('\Application\DeskPRO\Entity\Setting');
-        $repo->updateSetting('api_log.enabled', $enabled);
-        $repo->updateSetting('api_log.modes', $modes);
+
         if (!$setting = $repo->findOneBy(['name' => 'api_log.enabled'])) {
             $setting       = new Setting();
             $setting->name = 'api_log.enabled';
         }
         /* @var Setting $setting */
-        $setting->value = (bool) $enabled;
+        $setting->value = $enabled;
 
         if (!$modesSetting = $repo->findOneBy(['name' => 'api_log.modes'])) {
             $modesSetting       = new Setting();

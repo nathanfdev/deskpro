@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -83,7 +83,7 @@ class DeskproSlugConverter implements ParamConverterInterface
                         array_merge(
                             $request->attributes->get('_route_params'),
                             array(
-                                $slug_attribute_name => $obj->getSlug(7),
+                                $slug_attribute_name => $obj->getSlug(),
                             )
                         )
                     );
