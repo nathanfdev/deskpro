@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,16 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\DeskPRO\JobQueue\Processor;
 
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Facebook\FacebookApi;
 use Application\DeskPRO\JobQueue\JobQueue;
 use Doctrine\DBAL\Connection;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Processes outgoing Facebook Page Feed jobs.
@@ -63,21 +60,17 @@ class OutgoingFacebookFeedProcessor extends AbstractJobProcessor
     /**
      * {@inheritdoc}
      */
-    public function setDataOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(
-            array(
-                'message',
-                'app_id',
-                'app_secret',
-                'page_token',
-                'replying_to_id',
-            )
-        );
+        $resolver->setRequired([
+            'message',
+            'app_id',
+            'app_secret',
+            'page_token',
+            'replying_to_id',
+        ]);
 
-        $resolver->setDefaults(
-            array()
-        );
+        $resolver->setDefaults([]);
     }
 
     public function process(array $data, array $job)

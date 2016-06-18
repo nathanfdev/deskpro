@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,16 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\DeskPRO\JobQueue\Processor\MassActions;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\JobQueue\Processor\AbstractJobProcessor;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Services\ApplicatorServiceInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Services\MassActionServiceInterface;
 use Doctrine\DBAL\Connection;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Processes mass actions on publish-like content (articles, news, downloads, feedback).
@@ -60,7 +57,7 @@ class PublishProcessor extends AbstractJobProcessor
     /**
      * {@inheritdoc}
      */
-    public function setDataOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired(['ids', 'actions', 'content']);
         $resolver->setAllowedTypes(['content' => 'string']);
@@ -74,7 +71,7 @@ class PublishProcessor extends AbstractJobProcessor
      */
     public function process(array $data, array $job)
     {
-        /* @var ApplicatorServiceInterface $applicator */
+        /* @var MassActionServiceInterface $applicator */
         $service = $this->container->get('action_engine.'.$data['content']);
         $service->apply($data['ids'], $data['actions']);
 

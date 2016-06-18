@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\DeskPRO\JobQueue\Processor;
 
 use Application\DeskPRO\Entity\Job;
@@ -37,7 +34,7 @@ use Application\DeskPRO\Sms\SmsProviderFactory;
 use Doctrine\DBAL\Connection;
 use Orb\Sms\SmsMessage;
 use Orb\Sms\SmsSender;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Processes an outgoing SMS message.
@@ -65,22 +62,18 @@ class OutgoingSmsProcessor extends AbstractJobProcessor
     /**
      * {@inheritdoc}
      */
-    public function setDataOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(
-            array(
-                'message',
-                'to_number',
-                'provider',
-            )
-        );
+        $resolver->setRequired([
+            'message',
+            'to_number',
+            'provider',
+        ]);
 
-        $resolver->setDefaults(
-            array(
-                'from_number'     => null,
-                'provider_params' => array(),
-            )
-        );
+        $resolver->setDefaults([
+            'from_number'     => null,
+            'provider_params' => [],
+        ]);
     }
 
     public function process(array $data, array $job)

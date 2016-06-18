@@ -31,7 +31,7 @@ namespace Application\DeskPRO\JobQueue\Processor\Reset;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\JobQueue\Processor\AbstractJobProcessor;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class Base extends AbstractJobProcessor
 {
@@ -58,7 +58,7 @@ abstract class Base extends AbstractJobProcessor
     /**
      * {@inheritdoc}
      */
-    public function setDataOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'context_person_id' => null,
