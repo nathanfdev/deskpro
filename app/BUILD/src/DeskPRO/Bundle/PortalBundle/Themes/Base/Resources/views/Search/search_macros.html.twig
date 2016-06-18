@@ -58,7 +58,7 @@
           <span class="feedback-count"><i class="fa fa-thumbs-up"></i>{{ feedback.total_rating >= 0 ? (feedback.total_rating > 0 ? '+' : '') : '-' }}{{ feedback.total_rating }}</span>
           {{ feedback.title }}
       </span>
-      <p>{{ feedback.content_html|html_content_preview(350) }}</p>
+      <p>{{ feedback.getContentPlainHtml()|html_content_preview(350) }}</p>
     </a>
   </li>
 {% endmacro %}
