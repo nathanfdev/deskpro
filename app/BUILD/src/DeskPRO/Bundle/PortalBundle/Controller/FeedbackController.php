@@ -404,6 +404,8 @@ class FeedbackController extends AbstractController
             'form'               => $form->createView(),
             'form_was_submitted' => false,
             'user'               => $this->getUser(),
+            'lockout'            => false,
+            'lockout_time'       => false,
         ]);
 
         //
