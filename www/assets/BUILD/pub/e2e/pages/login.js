@@ -1,3 +1,5 @@
+import { url } from '../helpers.js';
+
 const commands = {
   login: function(login, password) {
     return this
@@ -11,7 +13,7 @@ const commands = {
 };
 
 module.exports = {
-  url: 'http://dp.lo/new-agent/login',
+  url: url('/login'),
   commands: [commands],
   elements: {
     loginInput:       {selector: 'input[type=text]'},

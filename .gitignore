@@ -231,3 +231,4 @@ app/tests/phantomjsdriver.log
 www/assets/BUILD/pub/e2e/reports/*
 www/assets/BUILD/pub/bin/chromedriver
 www/assets/BUILD/pub/bin/selenium.jar
+www/assets/BUILD/pub/e2e/config.js

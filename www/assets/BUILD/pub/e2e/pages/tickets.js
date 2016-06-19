@@ -1,5 +1,7 @@
+import { url } from '../helpers.js';
+
 module.exports = {
-  url: 'http://dp.lo/new-agent/tickets',
+  url: url('/tickets'),
   elements: {
     filtersTab: {
       locateStrategy: 'xpath',
