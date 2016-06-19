@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
 import { decorate } from 'stories/decorate';
-import { SectionsPane, Section, SectionHeader, SectionGroupedHeader, NestedList }
+import { SectionsPane, Section, SectionHeader, NestedList }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 
 storiesOf('Common: Section Header', module)
@@ -21,7 +21,13 @@ storiesOf('Common: Section Header', module)
       <SectionHeader>Simple Header</SectionHeader>
   )
   .add(
-    'Simple w/ SLA',
+    'w/ label',
+    () =>
+      <SectionHeader label="Using the label prop">
+      </SectionHeader>
+  )
+  .add(
+    'w/ SLA',
     () =>
       <SectionHeader>
         Demo SLA
@@ -32,17 +38,24 @@ storiesOf('Common: Section Header', module)
       </SectionHeader>
   )
   .add(
-    'Grouped w/o label, count, callback',
+    'w/ grouping',
     () =>
-      <SectionGroupedHeader>Grouped Header</SectionGroupedHeader>
+      <SectionHeader callback={action('action')}>
+        Grouped Header
+      </SectionHeader>
   )
   .add(
-    'Grouped w/ label, count, callback',
+    'w/ count',
     () =>
-      <SectionGroupedHeader
-        label="Grouped Header"
-        count="999"
-        callback={action('action')}>
-      </SectionGroupedHeader>
+      <SectionHeader count="999">
+        With count
+      </SectionHeader>
+  )
+  .add(
+    'w/ grouping and count',
+    () =>
+      <SectionHeader callback={action('action')} count="999">
+        With grouping and count
+      </SectionHeader>
   )
 ;

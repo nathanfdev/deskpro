@@ -1,7 +1,7 @@
 import React from 'react';
 const { Component, PropTypes } = React;
 import {
-  SectionsPane, Section, SectionGroupedHeader
+  SectionsPane, Section, SectionHeader
 }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { NestedList } from '../NestedList';
@@ -29,7 +29,7 @@ export class NewsTab extends Component {
     return (
       <SectionsPane>
         <Section>
-          <SectionGroupedHeader
+          <SectionHeader
             label="News"
             count={news.get('count')}
             ref="news"

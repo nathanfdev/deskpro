@@ -20,8 +20,7 @@ export class Nav extends Component {
     setMine:   PropTypes.func.isRequired
   };
 
-  toggle(event) {
-    event.preventDefault();
+  toggle() {
     this.setState({ expanded: !this.state.expanded });
   }
 

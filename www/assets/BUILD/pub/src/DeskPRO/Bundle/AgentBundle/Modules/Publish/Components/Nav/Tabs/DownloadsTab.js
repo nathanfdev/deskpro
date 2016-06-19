@@ -2,7 +2,7 @@ import React from 'react';
 const { Component, PropTypes } = React;
 
 import {
-  SectionsPane, Section, SectionGroupedHeader
+  SectionsPane, Section, SectionHeader
 }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { NestedList } from '../NestedList';
@@ -31,7 +31,7 @@ export class DownloadsTab extends Component {
     return (
       <SectionsPane>
         <Section>
-          <SectionGroupedHeader label="Downloads" ref="downloads" count={downloads.get('count')} callback={toggle} />
+          <SectionHeader label="Downloads" ref="downloads" count={downloads.get('count')} callback={toggle} />
           <NestedList
             content="downloads"
             items={downloads.get('nested').toJS()}

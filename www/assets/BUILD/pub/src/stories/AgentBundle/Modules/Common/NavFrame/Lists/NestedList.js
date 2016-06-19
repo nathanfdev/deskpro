@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
 import { decorate } from 'stories/decorate';
-import { SectionsPane, Section, SectionGroupedHeader, NestedList }
+import { SectionsPane, Section, SectionHeader, NestedList }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 
 storiesOf('Common: NestedList', module)
