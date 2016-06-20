@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\Entity\Brand;
@@ -36,6 +33,9 @@ use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 
+/**
+ * Class BrandThemeManager.
+ */
 class BrandThemeManager
 {
     /**
@@ -46,7 +46,7 @@ class BrandThemeManager
     /**
      * @var ThemeSetCopyingService
      */
-    private $theme_set_copying_service;
+    private $themeSetCopyingService;
 
     /**
      * @var ThemeSet
@@ -54,16 +54,17 @@ class BrandThemeManager
     private $brandStack;
 
     /**
-     * BrandThemeManager constructor.
+     * Constructor.
      *
-     * @param EntityManager $em
-     * @param BrandStack    $brandStack
+     * @param EntityManager          $em
+     * @param BrandStack             $brandStack
+     * @param ThemeSetCopyingService $themeSetCopyingService
      */
-    public function __construct(EntityManager $em, BrandStack $brandStack, ThemeSetCopyingService $theme_set_copying_service)
+    public function __construct(EntityManager $em, BrandStack $brandStack, ThemeSetCopyingService $themeSetCopyingService)
     {
-        $this->em                        = $em;
-        $this->brandStack                = $brandStack;
-        $this->theme_set_copying_service = $theme_set_copying_service;
+        $this->em                     = $em;
+        $this->brandStack             = $brandStack;
+        $this->themeSetCopyingService = $themeSetCopyingService;
     }
 
     /**
@@ -97,7 +98,7 @@ class BrandThemeManager
         if (!$edit_theme_set = $this->getCurrentBrand()->getEditThemeSet()) {
             $theme_set      = $this->getCurrentThemeSet();
             $edit_theme_set = new ThemeSet();
-            $this->theme_set_copying_service->copy($theme_set, $edit_theme_set);
+            $this->themeSetCopyingService->copy($theme_set, $edit_theme_set);
             $brand = $this->getCurrentBrand();
             $brand->setEditThemeSet($edit_theme_set);
             $this->em->persist($edit_theme_set);

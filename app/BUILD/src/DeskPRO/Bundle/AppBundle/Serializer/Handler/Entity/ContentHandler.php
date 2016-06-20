@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\News;
@@ -59,6 +58,6 @@ class ContentHandler extends AbstractEntityHandler
      */
     public static function getClassNames()
     {
-        return [Article::class, News::class, Download::class];
+        return [News::class, Download::class];
     }
 }

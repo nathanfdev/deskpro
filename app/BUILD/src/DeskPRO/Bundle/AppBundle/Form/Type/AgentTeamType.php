@@ -38,7 +38,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class AgentTeamType.
@@ -53,17 +53,17 @@ class AgentTeamType extends AbstractType
         $builder
             ->add('name', TextType::class, ['required' => true])
             ->add('avatar', BlobAuthType::class, ['required' => false])
-            ->add('members', EntityType::class, array(
+            ->add('members', EntityType::class, [
                 'class'    => Person::class,
                 'property' => 'id',
                 'multiple' => true,
-            ));
+            ]);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(['data_class' => AgentTeam::class]);
     }

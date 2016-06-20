@@ -48,7 +48,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class PersonType.
@@ -145,7 +145,7 @@ class PersonType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setDefaults([
@@ -215,23 +215,22 @@ class PersonType extends AbstractType
      */
     private function getCustomDataFields(array $options)
     {
-        $field_defs  = $this->field_manager->getAvailablePersonDefs();
-        $form_fields = [];
+        $defs   = $this->field_manager->getAvailablePersonDefs();
+        $fields = [];
 
-        foreach ($field_defs as $field_def) {
-            $form_fields[] = [
-                'name'    => $field_def->getId(),
+        foreach ($defs as $def) {
+            $fields[] = [
+                'name'    => $def->getId(),
                 'type'    => CustomDataType::class,
                 'options' => [
-                    'custom_def'      => $field_def,
+                    'custom_def'      => $def,
                     'property_path'   => 'custom_data',
                     'agent_interface' => $options['agent_interface'],
-                    'label'           => $field_def->getTitle(),
                     'inline'          => true,
                 ],
             ];
         }
 
-        return $form_fields;
+        return $fields;
     }
 }

@@ -50,7 +50,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class TicketType.
@@ -145,7 +145,7 @@ class TicketType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setDefaults([
@@ -163,24 +163,23 @@ class TicketType extends AbstractType
      */
     private function getCustomDataFields(FormBuilderInterface $builder, array $options)
     {
-        $field_defs  = $this->field_manager->getAvailableTicketDefs();
-        $form_fields = [];
+        $defs   = $this->field_manager->getAvailableTicketDefs();
+        $fields = [];
 
-        foreach ($field_defs as $field_def) {
-            $form_fields[] = [
-                'name'    => $field_def->getId(),
+        foreach ($defs as $def) {
+            $fields[] = [
+                'name'    => $def->getId(),
                 'type'    => CustomDataType::class,
                 'options' => [
-                    'custom_def'      => $field_def,
+                    'custom_def'      => $def,
                     'property_path'   => 'custom_data',
                     'agent_interface' => $options['agent_interface'],
-                    'label'           => $field_def->getTitle(),
                     'inline'          => true,
                     'ticket'          => $builder->getData(),
                 ],
             ];
         }
 
-        return $form_fields;
+        return $fields;
     }
 }

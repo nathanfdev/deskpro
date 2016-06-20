@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -41,7 +40,6 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
-use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -54,7 +52,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @PortalLinkRoute("portal_downloads_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
  * @PortalLinkRoute("portal_downloads_download", route_param_map={"slug":"slug"}, type="save")
  * @PortalLinkCustom(type="serve")
- * @JMS\ExclusionPolicy("all")
  */
 class Download extends ContentAbstract implements HighlightableModelInterface
 {
@@ -67,9 +64,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * Revisions of this download.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\DownloadRevision>>")
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
@@ -104,9 +98,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * String array of labels associated with this download.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\DownloadLabel>>")
      *
      * @Assert\Valid()
      * @AppAssert\UniqueCollection(property={"label"})

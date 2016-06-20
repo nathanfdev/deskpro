@@ -2,11 +2,7 @@
 Feature: Check custom field pre set values
 
   Background:
-    Given I have usergroups
-    And only the following User records exist:
-      | #    | Email            |
-      | user | user@deskpro.dev |
-    And I am authenticated as user
+    Given I'm authenticated as user
 
   Scenario: I check text field
     Given only the following custom person fields exist:

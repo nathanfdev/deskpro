@@ -238,15 +238,16 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 
             // set default translations
             $defaultLanguage = $this->em->getRepository(Language::class)->findOneBy(['sys_name' => 'default']);
+            if ($defaultLanguage) {
+                $defaultPopupTranslation = new WidgetBrandChatPopupTranslation();
+                $defaultPopupTranslation->setLanguage($defaultLanguage->getId());
 
-            $defaultPopupTranslation = new WidgetBrandChatPopupTranslation();
-            $defaultPopupTranslation->setLanguage($defaultLanguage->getId());
+                $defaultButtonTranslation = new WidgetBrandButtonTranslation();
+                $defaultButtonTranslation->setLanguage($defaultLanguage->getId());
 
-            $defaultButtonTranslation = new WidgetBrandButtonTranslation();
-            $defaultButtonTranslation->setLanguage($defaultLanguage->getId());
-
-            $model->getChat()->getPopup()->getTranslations()->add($defaultPopupTranslation);
-            $model->getButton()->getTranslations()->add($defaultButtonTranslation);
+                $model->getChat()->getPopup()->getTranslations()->add($defaultPopupTranslation);
+                $model->getButton()->getTranslations()->add($defaultButtonTranslation);
+            }
         }
 
         return $model;

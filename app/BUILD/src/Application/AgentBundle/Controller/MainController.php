@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketDeleted;
@@ -152,7 +154,7 @@ class MainController extends AbstractController
                 FROM department_permissions
                 WHERE
                     department_permissions.person_id IN (?)
-                    AND department_permissions.app = 'chat' 
+                    AND department_permissions.app = 'chat'
                     AND department_permissions.value = 1
                     AND department_permissions.is_active = 1
             ", [$with_chat_perm], 'person_id', null, 'department_id', [Connection::PARAM_INT_ARRAY]);
@@ -534,6 +536,14 @@ class MainController extends AbstractController
             return $data;
         };
 
+        $render_org = function (Organization $org, array $counts = []) {
+            return [
+                'id'      => $org->id,
+                'name'    => $org->name,
+                'members' => $counts[$org->id],
+            ];
+        };
+
         switch ($type) {
             case 'ticket':
                 $ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($results);
@@ -598,11 +608,9 @@ class MainController extends AbstractController
                 break;
 
             case 'organization':
+                $counts = $this->em->getRepository('DeskPRO:Organization')->countMembers($results);
                 foreach ($results as $r) {
-                    $rows[] = [
-                        'id'   => $r->id,
-                        'name' => $r->name,
-                    ];
+                    $rows[] = $render_org($r, $counts);
                 }
                 break;
 
@@ -639,6 +647,22 @@ class MainController extends AbstractController
 
         return $this->createJsonResponse([
             'results' => $this->renderSearchResults('ticket', $tickets),
+        ]);
+    }
+
+    public function getOrgMembersAction(Request $request)
+    {
+        if (!$org = $this->em->find('DeskPRO:Organization', $request->get('org_id'))) {
+            throw new NotFoundHttpException();
+        }
+
+        /** @var \Application\DeskPRO\EntityRepository\Organization $rep */
+        $rep     = $this->em->getRepository('DeskPRO:Organization');
+        $limit   = $request->get('all') ? null : 15;
+        $members = $rep->getOrgMembers($org, $limit);
+
+        return $this->createJsonResponse([
+            'results' => $this->renderSearchResults('person', $members),
         ]);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,7 +39,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class CustomFieldType extends AbstractType implements EventSubscriberInterface
 {
@@ -64,31 +64,31 @@ abstract class CustomFieldType extends AbstractType implements EventSubscriberIn
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(array(
+            ->setDefaults([
                 'data_class' => 'Application\DeskPRO\Entity\CustomFieldData',
                 'label'      => $this->definition['title'],
-                'attr'       => array(
+                'attr'       => [
                     'data-definition-type' => $this->getName(),
                     'data-definition-id'   => $this->definition['id'],
-                ),
+                ],
                 'allow_edit' => false,
-            ))
-            ->setRequired(array(
+            ])
+            ->setRequired([
                 'owner', 'persister',
-            ))
-            ->setOptional(array(
+            ])
+            ->setDefined([
                 'context', 'allow_edit',
-            ))
-            ->setAllowedTypes(array(
+            ])
+            ->setAllowedTypes([
                 'owner'     => 'Application\DeskPRO\Domain\DomainObject',
                 'persister' => 'Application\DeskPRO\CustomFields\CustomDataPersister',
-                'context'   => array('null', 'Application\DeskPRO\Domain\DomainObject'),
-            ));
+                'context'   => ['null', 'Application\DeskPRO\Domain\DomainObject'],
+            ]);
     }
 
     /**
@@ -170,9 +170,9 @@ abstract class CustomFieldType extends AbstractType implements EventSubscriberIn
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             FormEvents::PRE_SUBMIT  => 'onPreSubmit',
             FormEvents::POST_SUBMIT => 'onPostSubmit',
-        );
+        ];
     }
 }

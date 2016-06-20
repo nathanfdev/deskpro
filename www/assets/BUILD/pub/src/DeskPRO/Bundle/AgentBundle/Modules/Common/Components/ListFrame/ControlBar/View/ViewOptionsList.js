@@ -27,22 +27,30 @@ export class ViewOptionsList extends Component {
     changeFieldOrder({ type, from, to });
   };
 
+  renderField = (field, index) => {
+    if (!field.get('required')) {
+      const { type } = this.props;
+      return (
+        <ViewFieldContainer
+          key={index}
+          index={index}
+          field={field}
+          type={type}
+          toggleVisibility={this.toggleVisibility}
+          changeOrder={this.changeOrder}
+        />
+      );
+    }
+    return null;
+  };
+
   render() {
-    const { type, fields } = this.props;
+    const { fields } = this.props;
 
     return (
       <div className="dpw-navigation-dropdown-column-list">
         <ul>
-          {fields.map((field, index) =>
-            <ViewFieldContainer
-              key={index}
-              index={index}
-              field={field}
-              type={type}
-              toggleVisibility={this.toggleVisibility}
-              changeOrder={this.changeOrder}
-            />
-          )}
+          {fields.map((field, index) => this.renderField(field, index))}
         </ul>
       </div>
     );

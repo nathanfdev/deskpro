@@ -154,10 +154,9 @@ class TasksCountsDataService
             ->select('COUNT(t.id)')
             ->join('t.assigned', 'ta')
             ->andWhere('t.for_del <> 1')
-            ->andWhere(
-                $qb->expr()->neq('ta.person', $this->user->getId()),
-                $qb->expr()->eq('t.creator', $this->user->getId())
-            )
+            ->andWhere('t.creator = :user')
+            ->andWhere('ta.person <> :user OR ta.person IS NULL')
+            ->setParameter('user', $this->user->getId())
         ;
 
         return (int) $qb->getQuery()->getSingleScalarResult();

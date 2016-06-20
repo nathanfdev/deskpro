@@ -36,7 +36,7 @@ class BuildNewAgent_0050_peoplealter1 extends AbstractBuild
 {
     public function run()
     {
-        $this->execDbQuery('default', 'ALTER TABLE people DROP is_agent_confirmed');
+        $this->execSlowAlterTable('people', 'DROP is_agent_confirmed');
     }
 }
 

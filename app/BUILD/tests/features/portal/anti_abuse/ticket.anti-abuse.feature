@@ -8,7 +8,7 @@ Feature: To prevent ticket submitting abuse
       | default |
 
   Scenario: Checking lockout response for user
-    Given I am authenticated as "user"
+    Given I'm authenticated as "user"
     And I set "submit_ticket" rate limit to 1 attempt within 15 minutes with "lockout" response and 15 minutes lockout time
     And I am on "/new-ticket"
 
@@ -27,7 +27,7 @@ Feature: To prevent ticket submitting abuse
     Then I should see "You have submitted too many tickets to this moment and were locked out." in the ".inline-form-alert" element
 
   Scenario: Checking captcha response for user
-    Given I am authenticated as "user"
+    Given I'm authenticated as "user"
     And I set "submit_ticket" rate limit to 1 attempt within 15 minutes with "captcha" response
     And I am on "/new-ticket"
 

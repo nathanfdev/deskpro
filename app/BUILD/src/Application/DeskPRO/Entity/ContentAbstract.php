@@ -29,23 +29,20 @@
 /**
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use DpSys\LowError\SystemErrorHandler;
-use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
  * Basic properties on content.
- *
- * @JMS\ExclusionPolicy("all")
  */
-abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
+abstract class ContentAbstract extends DomainObject
 {
     const CONTENT_TYPE = null;
 
@@ -66,19 +63,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The unqique ID.
      *
-     * @JMS\Expose()
-     * @JMS\Groups({"labels"})
-     * @JMS\Type("integer")
-     *
      * @var int
      */
     protected $id = null;
 
     /**
      * Person created this content first time.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      *
      * @var Person
      */
@@ -87,18 +77,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Language content was written.
      *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Language>")
-     *
      * @var Language
      */
     protected $language = null;
 
     /**
      * Content slug.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("string")
      *
      * @var string
      */
@@ -107,18 +91,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Content title.
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
      * @var string
      */
     protected $title = '';
 
     /**
      * The main content for the item. This should be HTML!
-     *
-     * @JMS\Expose()
-     * @JMS\Type("string")
      *
      * @var string
      */
@@ -127,18 +105,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * View counts.
      *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
-     *
      * @var int
      */
     protected $view_count = 0;
 
     /**
      * Total rating: This is a tally and must be updated when a rating is added.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
      *
      * @var int
      */
@@ -152,9 +124,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Number of user-visible comments: This is a count that must be updated when a comment is added.
      *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
-     *
      * @var int
      */
     protected $num_comments = 0;
@@ -162,18 +131,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Total rating.
      *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
-     *
      * @var int
      */
     protected $num_ratings = 0;
 
     /**
      * Status title.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("string")
      *
      * @var string
      */
@@ -186,9 +149,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * DateTime when content was created.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("DateTime")
      *
      * @var DateTime
      */
@@ -206,9 +166,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * DateTime when content was updated last time.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("DateTime")
      *
      * @var \DateTime
      */
@@ -626,10 +583,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * Last author touched this content.
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
-     * @JMS\SerializedName("last_author_id")
      */
     public function getLastAuthor()
     {
@@ -651,9 +604,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * Vote stats object, like {"up": 1, "down": 1}.
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("array")
      */
     public function getVoteStats()
     {

@@ -28,8 +28,8 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Blob;
-use Application\DeskPRO\Entity\BlobStorage;
 use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
@@ -55,6 +55,11 @@ class AdvancedEditsManager
     private $em;
 
     /**
+     * @var DeskproBlobStorage
+     */
+    private $bs;
+
+    /**
      * @var ThemeSet
      */
     private $theme_set;
@@ -77,17 +82,19 @@ class AdvancedEditsManager
     /**
      * Constructor.
      *
-     * @param EntityManager     $em
-     * @param ThemeSet          $theme_set
-     * @param ThemeSet          $edit_theme_set
-     * @param \Twig_Environment $twig
-     * @param string            $mainScssPath
+     * @param EntityManager      $em
+     * @param DeskproBlobStorage $bs
+     * @param ThemeSet           $themeSet
+     * @param ThemeSet           $editThemeSet
+     * @param \Twig_Environment  $twig
+     * @param string             $mainScssPath
      */
-    public function __construct(EntityManager $em, ThemeSet $theme_set, ThemeSet $edit_theme_set, \Twig_Environment $twig, $mainScssPath)
+    public function __construct(EntityManager $em, DeskproBlobStorage $bs, ThemeSet $themeSet, ThemeSet $editThemeSet, \Twig_Environment $twig, $mainScssPath)
     {
         $this->em             = $em;
-        $this->theme_set      = $theme_set;
-        $this->edit_theme_set = $edit_theme_set;
+        $this->bs             = $bs;
+        $this->theme_set      = $themeSet;
+        $this->edit_theme_set = $editThemeSet;
         $this->twig           = $twig;
         $this->mainScssPath   = $mainScssPath;
     }
@@ -104,13 +111,13 @@ class AdvancedEditsManager
             $this->saveTemplate(self::CUSTOM_FOOTER_TEMPLATE_NAME, $data['footer']);
         }
         if (array_key_exists('custom_scss', $data)) {
-            $this->saveThemeSetAsset(self::CUSTOM_SCSS_ASSET_NAME, self::CUSTOM_SCSS_ASSET_TAG, $data['custom_scss']);
+            $this->saveThemeSetAsset(self::CUSTOM_SCSS_ASSET_NAME, self::CUSTOM_SCSS_ASSET_TAG, 'text/css', $data['custom_scss']);
         }
         if (array_key_exists('main_scss', $data)) {
-            $this->saveThemeSetAsset(self::MAIN_SCSS_ASSET_NAME, self::MAIN_SCSS_ASSET_TAG, $data['main_scss']);
+            $this->saveThemeSetAsset(self::MAIN_SCSS_ASSET_NAME, self::MAIN_SCSS_ASSET_TAG, 'text/css', $data['main_scss']);
         }
         if (array_key_exists('javascript', $data)) {
-            $this->saveThemeSetAsset(self::CUSTOM_JS_ASSET_NAME, self::CUSTOM_JS_ASSET_TAG, $data['javascript']);
+            $this->saveThemeSetAsset(self::CUSTOM_JS_ASSET_NAME, self::CUSTOM_JS_ASSET_TAG, 'text/javascript', $data['javascript']);
         }
     }
 
@@ -135,12 +142,13 @@ class AdvancedEditsManager
      */
     public function getMainScss()
     {
-        $scss = (string) $this->findOrCreateBlobStorage(self::MAIN_SCSS_ASSET_NAME, self::MAIN_SCSS_ASSET_TAG)->getData();
-        if (empty(trim($scss))) {
-            $scss = file_get_contents($this->mainScssPath);
+        $blob = $this->findBlob(self::MAIN_SCSS_ASSET_NAME, $this->edit_theme_set);
+
+        if ($blob) {
+            return $this->bs->copyBlobRecordToString($blob);
         }
 
-        return $scss;
+        return file_get_contents($this->mainScssPath);
     }
 
     /**
@@ -148,10 +156,13 @@ class AdvancedEditsManager
      */
     public function getEditThemeSetScss()
     {
-        $scss = (string) $this->findOrCreateBlobStorage(self::CUSTOM_SCSS_ASSET_NAME, self::CUSTOM_SCSS_ASSET_TAG)->getData();
+        $blob = $this->findBlob(self::CUSTOM_SCSS_ASSET_NAME, $this->edit_theme_set);
 
-        if (empty(trim($scss))) {
-            $scss = <<<CODE
+        if ($blob) {
+            return $this->bs->copyBlobRecordToString($blob);
+        }
+
+        $scss = <<<CODE
 /*
     Use this template to add custom CSS to your site.
     
@@ -161,9 +172,7 @@ class AdvancedEditsManager
     Read more about SCSS here: http://sass-lang.com/guide
 */
 
-
 CODE;
-        }
 
         return $scss;
     }
@@ -173,9 +182,9 @@ CODE;
      */
     public function getEditThemeSetJs()
     {
-        $storage = $this->findBlobStorage(self::CUSTOM_JS_ASSET_NAME, $this->edit_theme_set);
+        $blob = $this->findBlob(self::CUSTOM_JS_ASSET_NAME, $this->edit_theme_set);
 
-        return $storage ? (string) $storage->getData() : '';
+        return $blob ? $this->bs->copyBlobRecordToString($blob) : '';
     }
 
     /**
@@ -183,9 +192,9 @@ CODE;
      */
     public function getJs()
     {
-        $storage = $this->findBlobStorage(self::CUSTOM_JS_ASSET_NAME, $this->theme_set);
+        $blob = $this->findBlob(self::CUSTOM_JS_ASSET_NAME, $this->theme_set);
 
-        return $storage ? (string) $storage->getData() : '';
+        return $blob ? $this->bs->copyBlobRecordToString($blob) : '';
     }
 
     /**
@@ -223,79 +232,52 @@ CODE;
     /**
      * @param string $name
      * @param string $tag
+     * @param string $mimeType
      * @param string $code
-     */
-    private function saveThemeSetAsset($name, $tag, $code)
-    {
-        $storage = $this->findOrCreateBlobStorage($name, $tag, md5($code));
-        $storage->setData($code);
-        $this->em->persist($storage);
-        $this->em->flush();
-    }
-
-    /**
-     * @param string        $name
-     * @param string        $tag
-     * @param null|string   $blob_hash Is used to create a new Blob when can't find an existing
-     * @param null|ThemeSet $theme_set Search/create within the theme set, current edit ThemeSet is used by default
      *
-     * @return BlobStorage
+     * @return ThemeSetAsset
      */
-    private function findOrCreateBlobStorage($name, $tag, $blob_hash = '', ThemeSet $theme_set = null)
+    private function saveThemeSetAsset($name, $tag, $mimeType, $code)
     {
-        $theme_set or $theme_set = $this->edit_theme_set;
+        $theme_set = $this->edit_theme_set;
+
+        $blob    = $this->bs->createBlobRecordFromString($code, $name, $mimeType, ['tag' => 'brand_asset.'.$tag]);
+        $oldBlob = null;
 
         // Find existing or create a new ThemeSetAsset
-
         $asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy(compact('name', 'theme_set'));
-        if (!$asset) {
+
+        if ($asset) {
+            $oldBlob = $asset->getBlob();
+        } else {
             $asset = new ThemeSetAsset();
-            $asset->setName($name);
-            $asset->setThemeSet($theme_set);
-            $asset->setTags([$tag]);
-            $this->em->persist($asset);
-            $this->em->flush();
         }
 
-        // Find existing or create a new Blob
+        $asset->setName($name);
+        $asset->setThemeSet($theme_set);
+        $asset->setTags([$tag]);
+        $asset->setBlob($blob);
+        $this->em->persist($asset);
+        $this->em->flush();
 
-        if (!$blob = $asset->getBlob()) {
-            $blob               = new Blob();
-            $blob->filename     = $name;
-            $blob->content_type = 'text';
-            $blob->blob_hash    = $blob_hash;
-            $asset->setBlob($blob);
-            $this->em->persist($blob);
-            $this->em->persist($asset);
-            $this->em->flush();
+        if ($oldBlob) {
+            $this->bs->deleteBlobRecord($oldBlob);
         }
 
-        // Find existing or create a new BlobStorage
-
-        $storage = $this->em->getRepository(BlobStorage::class)->findOneBy(['blob_id' => $blob->getId()]);
-        if (!$storage) {
-            $storage = new BlobStorage();
-            $storage->setBlobId($blob->getId());
-        }
-
-        return $storage;
+        return $blob;
     }
 
     /**
      * @param string        $name
      * @param ThemeSet|null $theme_set
      *
-     * @return BlobStorage|null
+     * @return Blob|null
      */
-    public function findBlobStorage($name, ThemeSet $theme_set = null)
+    private function findBlob($name, ThemeSet $theme_set = null)
     {
         /** @var ThemeSetAsset $asset */
-        if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy(compact('name', 'theme_set'))) {
-            if ($blob = $asset->getBlob()) {
-                return $this->em->getRepository(BlobStorage::class)->findOneBy(['blob_id' => $blob->getId()]);
-            }
-        }
+        $asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy(compact('name', 'theme_set'));
 
-        return;
+        return $asset ? $asset->getBlob() : null;
     }
 }

@@ -9,32 +9,33 @@ import { renderInFeedbackApp } from '../../feedback.test-helper';
 import { toImmutable } from 'Helpers';
 
 describe('Feedback: List', () => {
-  const ListFrameContainer = require('~ListFrame/frame').ListFrameContainer;
-  const ListFrameMenu = require('~ListFrame/ListFrameMenu').ListFrameMenu;
-  const ListFrameContents = require('~ListFrame/ListFrameContents').ListFrameContents;
-  const List = require('~List/List').List;
-  const PaginationBoxView = require('~Pagination/PaginationBoxView').PaginationBoxView;
-  const ControlBarContainer = require('~List/ControlBar/ControlBarContainer').ControlBarContainer;
-  const MassActionContainer = require('~List/ControlBar/MassActionContainer').MassActionContainer;
+  const ListFrameContainer     = require('~ListFrame/frame').ListFrameContainer;
+  const ListFrameMenu          = require('~ListFrame/ListFrameMenu').ListFrameMenu;
+  const ListFrameContents      = require('~ListFrame/ListFrameContents').ListFrameContents;
+  const List                   = require('~List/List').List;
+  const PaginationBoxView      = require('~Pagination/PaginationBoxView').PaginationBoxView;
+  const ControlBarContainer    = require('~List/ControlBar/ControlBarContainer').ControlBarContainer;
+  const MassActionContainer    = require('~List/ControlBar/MassActionContainer').MassActionContainer;
   const FeedbackCardsContainer = require('~List/View/Card/FeedbackCardsContainer').FeedbackCardsContainer;
-  const CommentCardsContainer = require('~List/View/Card/CommentCardsContainer').CommentCardsContainer;
+  const CommentCardsContainer  = require('~List/View/Card/CommentCardsContainer').CommentCardsContainer;
   const FeedbackTableContainer = require('~List/View/Table/FeedbackTableContainer').FeedbackTableContainer;
-  const CommentTableContainer = require('~List/View/Table/CommentTableContainer').CommentTableContainer;
-  const fakeState = {};
+  const CommentTableContainer  = require('~List/View/Table/CommentTableContainer').CommentTableContainer;
+  const fakeState              = {};
 
   const renderList = (viewMode = 'card', selected = toImmutable([]), isComments = false, pagination = null) => {
     const emptyList = toImmutable([]);
-    const func = () => {};
+    const func      = () => {
+    };
     renderInFeedbackApp(
       fakeState,
       <List
+        currentListParams={toImmutable({})}
         elements={emptyList}
         selected={selected}
         currentViewMode={viewMode}
         isComments={isComments}
         pagination={pagination}
-        cardFields={emptyList}
-        tableFields={emptyList}
+        fields={toImmutable({ feedback: { card: [1, 2], table: [3, 4] }, comments: { card: [1, 2], table: [3, 4] } })}
         toggleSelected={func}
         handlePageClick={func}
         isLoaded
@@ -127,7 +128,7 @@ describe('Feedback: List', () => {
   it('shouldn\'t render PaginationBoxView when the pagination passed with total_pages === 1', () => {
     spyOn(PaginationBoxView.prototype, 'render').and.callThrough();
 
-    renderList('card', toImmutable([]), false, toImmutable({total_pages: 1}));
+    renderList('card', toImmutable([]), false, toImmutable({ total_pages: 1 }));
 
     expect(PaginationBoxView.prototype.render).not.toHaveBeenCalled();
   });
@@ -135,7 +136,7 @@ describe('Feedback: List', () => {
   it('should render PaginationBoxView when the pagination passed with total_pages > 1', () => {
     spyOn(PaginationBoxView.prototype, 'render').and.callThrough();
 
-    renderList('card', toImmutable([]), false, toImmutable({total_pages: 2}));
+    renderList('card', toImmutable([]), false, toImmutable({ total_pages: 2 }));
 
     expect(PaginationBoxView.prototype.render).toHaveBeenCalled();
   });

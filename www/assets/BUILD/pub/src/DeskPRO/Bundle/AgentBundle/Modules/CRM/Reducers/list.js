@@ -19,6 +19,8 @@ export const crmListInitialState = {
   fields: {
     people: {
       [constants.VIEW_MODE_CARD]: [
+        { id: 'id', title: 'ID', visible: true, required: true },
+        { id: 'name', title: 'Name', visible: true, required: true },
         { id: 'date_created', title: 'Date Created', visible: true },
         { id: 'language', title: 'Language', visible: true }
       ],
@@ -36,6 +38,8 @@ export const crmListInitialState = {
 
     org: {
       [constants.VIEW_MODE_CARD]: [
+        { id: 'id', title: 'ID', visible: true, required: true },
+        { id: 'name', title: 'Name', visible: true, required: true },
         { id: 'date_created', title: 'Date Created', visible: true }
       ],
 

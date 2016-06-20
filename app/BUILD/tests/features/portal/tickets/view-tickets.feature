@@ -11,12 +11,12 @@ Feature: View Tickets
     Then the url should match ".*/login"
 
 #  Scenario: I visit the tickets page
-#    Given I am authenticated as user
+#    Given I'm authenticated as user
 #    When I go to the tickets page
 #    Then I should see my tickets
 #
 #  Scenario: I view my ticket
-#    Given I am authenticated as user
+#    Given I'm authenticated as user
 #    And I have a ticket
 #    When I view my ticket
 #    Then I should see my ticket

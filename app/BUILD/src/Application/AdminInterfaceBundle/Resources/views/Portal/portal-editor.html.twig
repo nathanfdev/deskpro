@@ -250,7 +250,7 @@
             <div ng-show="(Portal.preview_as == 'user' || Portal.preview_as == 'agent') && !Portal.preview_as_email">
                 You need to select {{ '{{ Portal.preview_as }}' }} email
             </div>
-            <div ng-show="Portal.recompiling">Recompiling assets...</div>
+            <div ng-show="Portal.recompiling || Portal.savingMulti">Recompiling assets...</div>
 
             <div class="widescreen-info">
                 The editor works better on screens over 1280 pixels. Something about full screen and hiding the sidebar

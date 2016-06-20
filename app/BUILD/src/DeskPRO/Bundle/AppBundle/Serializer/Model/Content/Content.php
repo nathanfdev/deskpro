@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
+use Application\DeskPRO\Entity\ContentAbstract;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -182,9 +183,9 @@ class Content
     /**
      * Constructor.
      *
-     * @param \Application\DeskPRO\Entity\ContentAbstract $entity
+     * @param ContentAbstract $entity
      */
-    public function __construct(\Application\DeskPRO\Entity\ContentAbstract $entity)
+    public function __construct(ContentAbstract $entity)
     {
         $this->id           = $entity->getId();
         $this->person       = $entity->getPerson();

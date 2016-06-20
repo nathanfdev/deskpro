@@ -7,11 +7,11 @@ Feature: Search users by emails
     Given I install the fresh data set
 
   Scenario: I search for users
-    Given I am authenticated as admin
+    Given I'm authenticated as admin
     When I send a GET request to "/portal/api/emails?target=user&term=a"
     Then the response status code should be 200
 
   Scenario: I search for agents
-    Given I am authenticated as admin
+    Given I'm authenticated as admin
     When I send a GET request to "/portal/api/emails?target=agent&term=a"
     Then the response status code should be 200

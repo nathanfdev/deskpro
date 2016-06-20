@@ -38,7 +38,7 @@ use DpBehat\Data\DataContext;
 class TicketLogsContext extends BaseContext
 {
     /**
-     * @Given I reset the ":ticketId" ticket logs
+     * @Given I reset the :ticketId ticket logs
      *
      * @param int $ticketId
      */
@@ -57,7 +57,7 @@ class TicketLogsContext extends BaseContext
     }
 
     /**
-     * @Then print the ":ticketId" ticket logs
+     * @Then print the :ticketId ticket logs
      *
      * @param $ticketId
      */
@@ -79,7 +79,7 @@ class TicketLogsContext extends BaseContext
     }
 
     /**
-     * @Then the ":ticketId" ticket should have ":actionType" log
+     * @Then the :ticketId ticket should have :actionType log
      *
      * @param int    $ticketId
      * @param string $actionType
@@ -100,7 +100,7 @@ class TicketLogsContext extends BaseContext
     }
 
     /**
-     * @Then the ":ticketId" ticket should not have ":actionType" log
+     * @Then the :ticketId ticket should not have :actionType log
      *
      * @param int    $ticketId
      * @param string $actionType
@@ -117,7 +117,7 @@ class TicketLogsContext extends BaseContext
     }
 
     /**
-     * @Then the ":ticketId" ticket should have ":actionType" log with detail ":detailName" = ":expectedValue"
+     * @Then the :ticketId ticket should have :actionType log with detail :detailName = :expectedValue
      *
      * @param int    $ticketId
      * @param string $actionType
@@ -139,7 +139,7 @@ class TicketLogsContext extends BaseContext
     }
 
     /**
-     * @Then the ":ticketId" ticket should have the following logs:
+     * @Then the :ticketId ticket should have the following logs:
      *
      * @param int       $ticketId
      * @param TableNode $actions
@@ -164,7 +164,7 @@ class TicketLogsContext extends BaseContext
     }
 
     /**
-     * @Then the ":ticketId" ticket should have no the following logs:
+     * @Then the :ticketId ticket should have no the following logs:
      *
      * @param int       $ticketId
      * @param TableNode $actions

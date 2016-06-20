@@ -5,9 +5,9 @@ Feature: Ticket permission groups
     Given I'm authenticated as agent
     And I have a Department record referenced as d1
     And I have the following Ticket records:
-    | #  | Agent   | Department   |
-    | t1 | {agent} | {d1}         |
-    | t2 | NULL    | {d1}         |
+      | #  | Agent   | Department |
+      | t1 | {agent} | {d1}       |
+      | t2 | NULL    | {d1}       |
     And I remove "agent" usergroup relation "agent_all_perms"
     And I remove "agent" usergroup relation "agent_all_safe_perms"
 

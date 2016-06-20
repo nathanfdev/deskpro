@@ -270,7 +270,7 @@ class ProfileController extends AbstractController
             //////////////////////////////////////////////////////////////////////////////////////////////
             // CHANGE PRIMARY EMAIL
             //////////////////////////////////////////////////////////////////////////////////////////////
-            if ($emailId = $request->query->get('new_primary')) {
+            if ($emailId = $request->query->getInt('new_primary')) {
                 /** @var \Application\DeskPRO\Entity\PersonEmail $proposedNewPrimaryEmail */
                 $proposedNewPrimaryEmail = $this->getRepo('DeskPRO:PersonEmail')->find($emailId);
                 if ($proposedNewPrimaryEmail->getPerson()->getId() == $person->getId()) {
@@ -285,7 +285,7 @@ class ProfileController extends AbstractController
             //////////////////////////////////////////////////////////////////////////////////////////////
             // REMOVE EMAIL
             //////////////////////////////////////////////////////////////////////////////////////////////
-            if ($emailId = $request->query->get('remove_email')) {
+            if ($emailId = $request->query->getInt('remove_email')) {
                 /** @var \Application\DeskPRO\Entity\PersonEmail $proposedEmailRemoval */
                 $proposedEmailRemoval = $this->getRepo('DeskPRO:PersonEmail')->find($emailId);
                 if ($proposedEmailRemoval->getPerson()->getId() == $person->getId()) {

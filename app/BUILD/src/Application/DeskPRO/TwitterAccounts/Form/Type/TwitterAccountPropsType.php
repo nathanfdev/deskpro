@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\TwitterAccounts\Form\Type;
 
+use Application\DeskPRO\Entity\TwitterAccount;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TwitterAccountPropsType extends AbstractType
 {
@@ -43,27 +45,27 @@ class TwitterAccountPropsType extends AbstractType
         $builder->add(
             'persons',
             'entity',
-            array(
-                 'class'         => 'DeskPRO:Person',
-                 'required'      => false,
-                 'expanded'      => true,
-                 'multiple'      => true,
-                 'property'      => 'display_name',
-                 'query_builder' => function (EntityRepository $er) {
-                     return $er->createQueryBuilder('p')->where(
-                         'p.is_agent = true AND p.is_deleted = false'
-                     );
-                 },
-            )
+            [
+                'class'         => 'DeskPRO:Person',
+                'required'      => false,
+                'expanded'      => true,
+                'multiple'      => true,
+                'property'      => 'display_name',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('p')->where(
+                        'p.is_agent = true AND p.is_deleted = false'
+                    );
+                },
+            ]
         );
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
-                 'data_class' => 'Application\\DeskPRO\\Entity\\TwitterAccount',
-            )
+            [
+                'data_class' => TwitterAccount::class,
+            ]
         );
     }
 

@@ -33,7 +33,7 @@ export class List extends Component {
         </ListFrameMenu>
         <ListFrameContents isLoaded={isLoaded}>
           <SaveAsCsv
-            currentListParams={currentListParams}
+            currentListParams={currentListParams.toJS()}
             exportedFields={fieldsConfig.get(viewMode).toArray()}
             content="Ticket"
           />

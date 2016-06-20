@@ -71,7 +71,7 @@ class TicketTimelineDataService extends AbstractDataService
         foreach ($logs as $l) {
             switch ($l->action_type) {
                 case 'ticket_created':
-                    $timeline->addLine(new Line\TicketCreatedLine($l->person, $l->date_created));
+                    $timeline->addLine(new Line\TicketCreatedLine($l->date_created, $l->person));
                     break;
 
                 case 'message_created':

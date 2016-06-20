@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\Entity\Brand as BrandEntity;
@@ -119,7 +120,7 @@ class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequest
     protected function detectFromEsiQuery(Request $request)
     {
         if (IsProxyRequestHelper::check($request)) {
-            if ($brand_id = $request->query->get('brand_id')) {
+            if ($brand_id = $request->query->getInt('brand_id')) {
                 $this->logger->info(sprintf('found "%s" in esi brand_id query', $brand_id));
 
                 return $this->brand_repository->find($brand_id);

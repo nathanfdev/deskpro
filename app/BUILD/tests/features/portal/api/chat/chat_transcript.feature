@@ -3,16 +3,15 @@ Feature: Widget Chat
   Chat transcript
 
   Background: Fresh database
-    Given I have usergroups
-    And I have a User record referenced as person_1
+    Given a user with "user@deskpro.dev" email exists
     And I have guest portal api session with code "AAAAAAAAAAAAAAA"
 
   Scenario Outline: I send transcript empty info as guest
     Given the setting "portal.chat.email_validation" is set to <email_validation>
     And the setting "portal.chat.require_login" is set to <require_login>
     And only the following Chat records exist:
-      | #      | Person     | Session               |
-      | chat_1 | {person_1} | {sid_AAAAAAAAAAAAAAA} |
+      | #      | Person             | Session               |
+      | chat_1 | {user@deskpro.dev} | {sid_AAAAAAAAAAAAAAA} |
 
     When I send a POST request to "/portal/api/chats/{chat_1}/transcript/info?dpsid={sid_AAAAAAAAAAAAAAA}"
     Then the response status code should be 400
@@ -32,8 +31,8 @@ Feature: Widget Chat
     Given the setting "portal.chat.email_validation" is set to 0
     And the setting "portal.chat.require_login" is set to 0
     And only the following Chat records exist:
-      | #      | Person     | Session               |
-      | chat_1 | {person_1} | {sid_AAAAAAAAAAAAAAA} |
+      | #      | Person             | Session               |
+      | chat_1 | {user@deskpro.dev} | {sid_AAAAAAAAAAAAAAA} |
 
     When I send a POST request to "/portal/api/chats/{chat_1}/transcript/info?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
       | key   | value            |
@@ -45,8 +44,8 @@ Feature: Widget Chat
     Given the setting "portal.chat.email_validation" is set to 1
     And the setting "portal.chat.require_login" is set to 0
     And only the following Chat records exist:
-      | #      | Person     | Session               |
-      | chat_1 | {person_1} | {sid_AAAAAAAAAAAAAAA} |
+      | #      | Person             | Session               |
+      | chat_1 | {user@deskpro.dev} | {sid_AAAAAAAAAAAAAAA} |
 
     When I send a POST request to "/portal/api/chats/{chat_1}/transcript/info?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
       | key   | value                    |
@@ -61,8 +60,8 @@ Feature: Widget Chat
     Given the setting "portal.chat.email_validation" is set to 1
     And the setting "portal.chat.require_login" is set to 1
     And only the following Chat records exist:
-      | #      | Person     | Session               |
-      | chat_1 | {person_1} | {sid_AAAAAAAAAAAAAAA} |
+      | #      | Person             | Session               |
+      | chat_1 | {user@deskpro.dev} | {sid_AAAAAAAAAAAAAAA} |
 
     When I send a POST request to "/portal/api/chats/{chat_1}/transcript/info?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
       | key   | value                    |
@@ -77,8 +76,8 @@ Feature: Widget Chat
     Given the setting "portal.chat.email_validation" is set to <email_validation>
     And the setting "portal.chat.require_login" is set to <require_login>
     And only the following Chat records exist:
-      | #      | Person     | Session               |
-      | chat_1 | {person_1} | {sid_AAAAAAAAAAAAAAA} |
+      | #      | Person             | Session               |
+      | chat_1 | {user@deskpro.dev} | {sid_AAAAAAAAAAAAAAA} |
     And I reset chat user info for chat "{chat_1}"
 
     When I send a POST request to "/portal/api/chats/{chat_1}/transcript/toggle?dpsid={sid_AAAAAAAAAAAAAAA}"
@@ -95,8 +94,8 @@ Feature: Widget Chat
 
   Scenario Outline: I toggle send transcript
     Given only the following Chat records exist:
-      | #      | Person     | Session               |
-      | chat_1 | {person_1} | {sid_AAAAAAAAAAAAAAA} |
+      | #      | Person             | Session               |
+      | chat_1 | {user@deskpro.dev} | {sid_AAAAAAAAAAAAAAA} |
     And I set chat user "<email>" for chat "{chat_1}"
     And I reset chat should send transcript for chat "{chat_1}"
 

@@ -28,7 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
-use Application\DeskPRO\Entity\ContentAbstract as ContentEntity;
+use Application\DeskPRO\Entity\ContentAbstract;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\News;
 use JMS\Serializer\Annotation as JMS;
 
 class ContentCsv extends Content
@@ -48,16 +50,34 @@ class ContentCsv extends Content
     protected $language;
 
     /**
+     * Content category.
+     *
+     * @JMS\Type("string")
+     */
+    protected $category;
+
+    /**
      * Constructor.
      *
      * @param \Application\DeskPRO\Entity\ContentAbstract $entity
      */
-    public function __construct(ContentEntity $entity)
+    public function __construct(ContentAbstract $entity)
     {
         parent::__construct($entity);
 
         $this->person   = $entity->getPerson() ? $entity->getPerson()->getName() : '';
         $this->language = $entity->getLanguage() ? $entity->getLanguage()->getTitle() : '';
         $this->content  = mb_substr($entity->getContentPlain(), 0, 50);
+        $this->category = $this->getCategory($entity);
+    }
+
+    /**
+     * @param ContentAbstract|News|Download $entity
+     *
+     * @return string
+     */
+    protected function getCategory($entity)
+    {
+        return $entity->getCategory() ? $entity->getCategory()->getTitle() : '';
     }
 }

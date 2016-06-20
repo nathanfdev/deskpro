@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Facebook\Type;
 
+use Application\DeskPRO\Facebook\EditPage;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EditPageType extends AbstractType
 {
@@ -44,30 +46,30 @@ class EditPageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('app', new EditAppType());
-        $builder->add('graph_id', 'text', array('required' => true));
-        $builder->add('user_graph_id', 'text', array('required' => true));
-        $builder->add('page_token', 'text', array('required' => true));
-        $builder->add('user_token', 'text', array('required' => true));
-        $builder->add('name', 'text', array('required' => true));
-        $builder->add('picture_url', 'text', array('required' => true));
-        $builder->add('import_wall_posts', 'checkbox', array('required' => false));
-        $builder->add('disable_own_wall_posts', 'checkbox', array('required' => false));
-        $builder->add('import_direct_messages', 'checkbox', array('required' => false));
-        $builder->add('is_enabled', 'hidden', array('required' => false));
-        $builder->add('is_connected', 'hidden', array('required' => false));
-        $builder->add('is_tested', 'hidden', array('required' => false));
+        $builder->add('graph_id', 'text', ['required' => true]);
+        $builder->add('user_graph_id', 'text', ['required' => true]);
+        $builder->add('page_token', 'text', ['required' => true]);
+        $builder->add('user_token', 'text', ['required' => true]);
+        $builder->add('name', 'text', ['required' => true]);
+        $builder->add('picture_url', 'text', ['required' => true]);
+        $builder->add('import_wall_posts', 'checkbox', ['required' => false]);
+        $builder->add('disable_own_wall_posts', 'checkbox', ['required' => false]);
+        $builder->add('import_direct_messages', 'checkbox', ['required' => false]);
+        $builder->add('is_enabled', 'hidden', ['required' => false]);
+        $builder->add('is_connected', 'hidden', ['required' => false]);
+        $builder->add('is_tested', 'hidden', ['required' => false]);
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
-                'data_class'         => 'Application\\DeskPRO\\Facebook\\EditPage',
+            [
+                'data_class'         => EditPage::class,
                 'cascade_validation' => true,
-            )
+            ]
         );
     }
 

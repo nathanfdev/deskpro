@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
-use Application\DeskPRO\Entity\Blob;
-use Application\DeskPRO\Entity\BlobStorage;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use Doctrine\ORM\EntityManager;
@@ -52,6 +52,11 @@ class AssetsManager
     private $em;
 
     /**
+     * @var DeskproBlobStorage
+     */
+    private $bs;
+
+    /**
      * @var ThemeSet
      */
     private $theme_set;
@@ -62,13 +67,15 @@ class AssetsManager
     private $edit_theme_set;
 
     /**
-     * @param EntityManager $em
-     * @param ThemeSet      $theme_set
-     * @param ThemeSet      $edit_theme_set
+     * @param EntityManager      $em
+     * @param DeskproBlobStorage $bs
+     * @param ThemeSet           $theme_set
+     * @param ThemeSet           $edit_theme_set
      */
-    public function __construct(EntityManager $em, ThemeSet $theme_set, ThemeSet $edit_theme_set)
+    public function __construct(EntityManager $em, DeskproBlobStorage $bs, ThemeSet $theme_set, ThemeSet $edit_theme_set)
     {
         $this->em             = $em;
+        $this->bs             = $bs;
         $this->theme_set      = $theme_set;
         $this->edit_theme_set = $edit_theme_set;
     }
@@ -94,6 +101,9 @@ class AssetsManager
      */
     public function deleteEditThemeSetAsset(ThemeSetAsset $asset)
     {
+        if ($asset->getBlob()) {
+            $this->bs->deleteBlobRecord($asset->getBlob());
+        }
         $this->em->remove($asset);
         $this->em->flush();
     }
@@ -109,22 +119,6 @@ class AssetsManager
     }
 
     /**
-     * @param string $name
-     *
-     * @return BlobStorage|null
-     */
-    public function getAssetBlobStorage($name)
-    {
-        /** @var ThemeSetAsset $asset */
-        $asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy(compact('name'));
-        if ($asset && $blob = $asset->getBlob()) {
-            return $this->em->getRepository(BlobStorage::class)->findOneBy(['blob_id' => $blob->getId()]);
-        }
-
-        return;
-    }
-
-    /**
      * @param UploadedFile $file
      *
      * @return ThemeSetAsset
@@ -132,6 +126,9 @@ class AssetsManager
     public function uploadLogo(UploadedFile $file)
     {
         if ($logo = $this->getEditThemeSetLogoAsset()) {
+            if ($logo->getBlob()) {
+                $this->bs->deleteBlobRecord($logo->getBlob());
+            }
             $this->em->remove($logo);
             $this->em->flush();
         }
@@ -187,21 +184,12 @@ class AssetsManager
         $asset = new ThemeSetAsset();
         $asset->setThemeSet($this->edit_theme_set);
         $asset->setName($name);
-        $asset->setBlob($blob = new Blob());
         $asset->setTags([$tag]);
 
-        $blob->filename     = $name;
-        $blob->blob_hash    = md5_file($file->getRealPath());
-        $blob->content_type = $file->getClientMimeType();
+        $blob = $this->bs->createBlobRecordFromFile($file->getRealPath(), $name, $file->getClientMimeType(), ['brand_asset.'.$tag]);
+        $asset->setBlob($blob);
 
-        $this->em->persist($blob);
         $this->em->persist($asset);
-        $this->em->flush();
-
-        $storage          = new BlobStorage();
-        $storage->blob_id = $blob->getId();
-        $storage->data    = file_get_contents($file->getRealPath());
-        $this->em->persist($storage);
         $this->em->flush();
 
         return $asset;

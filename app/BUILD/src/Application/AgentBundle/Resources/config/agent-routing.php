@@ -206,6 +206,11 @@ $collection->create('agent_quicksearch_getpersontickets', [
     'controller' => 'AgentBundle:Main:getPersonTickets',
 ]);
 
+$collection->create('agent_quicksearch_getorgmembers', [
+    'path'       => '/quick-search/get-org-members.json',
+    'controller' => 'AgentBundle:Main:getOrgMembers',
+]);
+
 $collection->create('agent_recyclebin', [
     'path'       => '/recycle-bin',
     'controller' => 'AgentBundle:RecycleBin:list',

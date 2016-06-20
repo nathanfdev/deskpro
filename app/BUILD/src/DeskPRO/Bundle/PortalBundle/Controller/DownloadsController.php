@@ -73,8 +73,8 @@ class DownloadsController extends AbstractController
         if ('rss' === $_format) {
             $pager = $this->getDownloadsDataService()->getDownloadsPager(
                 null,
-                $request->query->get('page', 1),
-                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
+                $request->query->getInt('page', 1),
+                $request->query->getInt('per_page', $this->getBrandSetting('portal.per_page_rss')),
                 $person
             );
 
@@ -135,7 +135,7 @@ class DownloadsController extends AbstractController
      */
     public function browseAction(Request $request, DownloadCategory $category, $_format)
     {
-        $page   = $request->query->get('page', 1);
+        $page   = $request->query->getInt('page', 1);
         $person = $this->getCurrentPerson();
 
         //
@@ -145,7 +145,7 @@ class DownloadsController extends AbstractController
             $pager = $this->getDownloadsDataService()->getDownloadsPager(
                 $category,
                 $page,
-                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
+                $request->query->getInt('per_page', $this->getBrandSetting('portal.per_page_rss')),
                 $person
             );
 

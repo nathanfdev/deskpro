@@ -7,20 +7,15 @@ export class SaveAsCsv extends Component {
   static propTypes = {
     content:           PropTypes.string.isRequired,
     exportedFields:    PropTypes.array.isRequired,
-    currentListParams: PropTypes.object.isRequired
+    currentListParams: PropTypes.object.isRequired,
+    count:             PropTypes.number
   };
 
   saveAsCsv = (event) => {
     event.preventDefault();
-    const { exportedFields, content } = this.props;
-    let params = this.props.currentListParams.toJS();
-    const { navItem } = params;
-    if (navItem) {
-      delete params.navItem;
-      params = { ...params, ...navItem };
-    }
+    const { exportedFields, currentListParams, content, count = 200 } = this.props;
 
-    repository(content).loadCsv(Object.assign({}, params, { count: 200 }))
+    repository(content).loadCsv(Object.assign({}, currentListParams, { count }))
       .then(response => {
         const fields     = [];
         const fieldNames = [];

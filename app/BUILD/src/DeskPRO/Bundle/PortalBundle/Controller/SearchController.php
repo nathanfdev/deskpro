@@ -172,7 +172,7 @@ class SearchController extends AbstractController
 
         $total    = 0;
         $per_page = 25;
-        $cur_page = $request->query->get('page', 1);
+        $cur_page = $request->query->getInt('page', 1);
 
         switch ($type) {
             case 'all':

@@ -7,8 +7,7 @@ import {
   currentViewModeSelector,
   paginationSelector,
   isLoadedSelector,
-  cardFieldsSelector,
-  tableFieldsSelector,
+  fieldsSelector,
   idsSelector
 } from '../../Selectors/list';
 import { toggleSelectedAction } from '../../../Application/Actions/massActions';
@@ -24,8 +23,7 @@ import { connect } from 'react-redux';
     isLoaded:          isLoadedSelector(state),
     currentApp:        state.Application.dpWindow.get('activeAppId'),
     currentViewMode:   currentViewModeSelector(state),
-    cardFields:        cardFieldsSelector(state),
-    tableFields:       tableFieldsSelector(state),
+    fields:            fieldsSelector(state),
     elements:          idsSelector(state)
   }),
   { applyParams, toggleSelectedAction }

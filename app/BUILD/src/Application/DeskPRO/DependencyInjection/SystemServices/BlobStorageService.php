@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -158,6 +159,13 @@ class BlobStorageService
             $bs->setAdapterForTag('logs.sendmail_source_log', $log_adapter_id);
             $bs->setAdapterForTag('logs.ticket_proc_log', $log_adapter_id);
         }
+
+        // Use local storage for CSS because we need to read it
+        // from local domain for paths to resolve properly
+        $bs->setAdapterForTag('brand_asset.custom_style', 'db');
+        $bs->setAdapterForTag('brand_asset.main', 'db');
+        $bs->setAdapterForTag('brand_asset.portal_css', 'db');
+        $bs->setAdapterForTag('brand_asset.portal_rtl_css', 'db');
 
         return $bs;
     }

@@ -31,9 +31,12 @@ namespace DeskPRO\Bundle\InstallBundle\Command;
 use DeskPRO\Bundle\InstallBundle\Installer\InstallerContext;
 use DeskPRO\Bundle\InstallBundle\Installer\InstallProfile;
 use DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
+use DeskPRO\Bundle\InstallBundle\InstallSession\InstallSession;
+use DeskPRO\Bundle\InstallBundle\InstallSession\SessionManager;
 use DeskPRO\Component\Exception\Filesystem\FileWriteException;
 use DeskPRO\Component\Util\EnvUtils;
 use DeskPRO\Component\Util\TypeUtils;
+use DpRun\DpEnv;
 use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -125,8 +128,11 @@ class InstallCommand extends ContainerAwareCommand
         }
         $profile->readAnswersInput($input);
 
+        /** @var DpEnv $app_env */
         $app_env = $this->getContainer()->get('deskpro.app_env');
-        $sm      = $this->getContainer()->get('install.session_manager');
+        /** @var SessionManager $sm */
+        $sm = $this->getContainer()->get('install.session_manager');
+        /** @var InstallSession $session */
         $session = $sm->getLastInstallSession($input->getOption('restart') || $force_restart);
 
         $restart_step = $input->getOption('redo-step');
@@ -204,15 +210,19 @@ class InstallCommand extends ContainerAwareCommand
             new InstallStep\InstallTablesStep($context),
             new InstallStep\InstallConfigStep($context),
             new InstallStep\InstallFixturesStep($context),
+            new InstallStep\DataSyncStep($context),
             new InstallStep\InstallCronCommand($context),
             new InstallStep\AdminAccountStep($context),
             new InstallStep\DoneStep($context),
         ];
 
+        if ($session->getSource() === InstallSession::SOURCE_WIN_INSTALLER || $input->getOption('skip-wizard')) {
+            $skip_list[] = 'file_integrity';
+        }
+
         if ($input->getOption('skip-wizard')) {
             array_unshift($steps, new InstallStep\SkipWizardStep($context));
 
-            $skip_list[] = 'file_integrity';
             $skip_list[] = 'own_requirements';
             $skip_list[] = 'check_existing';
             $skip_list[] = 'accept_paths';

@@ -105,20 +105,6 @@ class OrganizationsController extends CrudController
     }
 
     /**
-     * Get data for export to CSV.
-     *
-     * @Rest\Get("/csv")
-     *
-     * @param Request $request
-     *
-     * @return \FOS\RestBundle\View\View
-     */
-    public function csvAction(Request $request)
-    {
-        return $this->listAction($request);
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)

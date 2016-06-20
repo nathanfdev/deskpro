@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\DeskPRO\JobQueue\Processor;
 
 use Application\DeskPRO\Entity\Job;
@@ -37,7 +34,6 @@ use Application\DeskPRO\JobQueue\JobQueueException;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\OptionsResolver\Exception\ExceptionInterface as OptionsResolverException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Helper methods available to children, encouraged to extend this when creating a job processor (but not required to).
@@ -92,9 +88,9 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
      * Note: if the job data (payload) causes this resolver to throw an exception, the job will be rejected automatically
      * for you
      *
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    abstract public function setDataOptions(OptionsResolverInterface $resolver);
+    abstract public function configureOptions(OptionsResolver $resolver);
 
     /**
      * this is what needs to be implemented - this method will receive the payload and it needs to be dealt with.

@@ -43,6 +43,7 @@ describe('CRM: List', () => {
     renderInCrmApp(
       fakeState,
       <List
+        currentListParams={toImmutable({})}
         elements={[]}
         selected={selected}
         currentViewMode={viewMode}

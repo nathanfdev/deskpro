@@ -36,7 +36,7 @@ use DeskPRO\Bundle\AppBundle\Form\DataTransformer\HtmlPurifierTransformer;
 use Orb\Input\Cleaner\Cleaner;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class HtmlTextareaType.
@@ -71,7 +71,7 @@ class HtmlTextareaType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'html_type'    => 'html',

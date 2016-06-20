@@ -13,6 +13,11 @@ const initialState = {
   fields: {
     articles: {
       [constants.VIEW_MODE_CARD]: [
+        { id: 'id', title: 'Id', visible: true, required: true },
+        { id: 'title', title: 'Title', visible: true, required: true },
+        { id: 'person', title: 'Author', visible: true, required: true },
+        { id: 'content', title: 'Content', visible: true },
+        { id: 'status', title: 'Status', visible: true, required: true },
         { id: 'category', title: 'Category', visible: true },
         { id: 'date_created', title: 'Date Created', visible: true },
         { id: 'labels', title: 'Labels', visible: true }
@@ -30,6 +35,11 @@ const initialState = {
 
     news: {
       [constants.VIEW_MODE_CARD]: [
+        { id: 'id', title: 'Id', visible: true, required: true },
+        { id: 'title', title: 'Title', visible: true, required: true },
+        { id: 'person', title: 'Author', visible: true, required: true },
+        { id: 'content', title: 'Content', visible: true },
+        { id: 'status', title: 'Status', visible: true, required: true },
         { id: 'category', title: 'Category', visible: true },
         { id: 'date_created', title: 'Date Created', visible: true },
         { id: 'labels', title: 'Labels', visible: true }
@@ -47,6 +57,11 @@ const initialState = {
 
     downloads: {
       [constants.VIEW_MODE_CARD]: [
+        { id: 'id', title: 'Id', visible: true, required: true },
+        { id: 'title', title: 'Title', visible: true, required: true },
+        { id: 'person', title: 'Author', visible: true, required: true },
+        { id: 'content', title: 'Content', visible: true },
+        { id: 'status', title: 'Status', visible: true, required: true },
         { id: 'category', title: 'Category', visible: true },
         { id: 'date_created', title: 'Date Created', visible: true },
         { id: 'labels', title: 'Labels', visible: true }

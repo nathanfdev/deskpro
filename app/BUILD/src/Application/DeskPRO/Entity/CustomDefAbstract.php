@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\CustomFields\Handler;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -52,14 +53,14 @@ use Orb\Util\Numbers;
  */
 class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
-    const HANDLER_CLASS_TEXT     = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
-    const HANDLER_CLASS_TEXTAREA = 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea';
-    const HANDLER_CLASS_CHOICE   = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
-    const HANDLER_CLASS_TOGGLE   = 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle';
-    const HANDLER_CLASS_DATE     = 'Application\\DeskPRO\\CustomFields\\Handler\\Date';
-    const HANDLER_CLASS_DATETIME = 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime';
-    const HANDLER_CLASS_DISPLAY  = 'Application\\DeskPRO\\CustomFields\\Handler\\Display';
-    const HANDLER_CLASS_HIDDEN   = 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden';
+    const HANDLER_CLASS_TEXT     = Handler\Text::class;
+    const HANDLER_CLASS_TEXTAREA = Handler\Textarea::class;
+    const HANDLER_CLASS_CHOICE   = Handler\Choice::class;
+    const HANDLER_CLASS_TOGGLE   = Handler\Toggle::class;
+    const HANDLER_CLASS_DATE     = Handler\Date::class;
+    const HANDLER_CLASS_DATETIME = Handler\DateTime::class;
+    const HANDLER_CLASS_DISPLAY  = Handler\Display::class;
+    const HANDLER_CLASS_HIDDEN   = Handler\Hidden::class;
 
     const TYPE_TEXT     = 'text';
     const TYPE_TEXTAREA = 'textarea';
@@ -597,7 +598,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * @return CustomDataAbstract
      */
-    public function createNewDataInstance()
+    public function createCustomData()
     {
         /* @var CustomDataAbstract $customData */
         $className  = $this->getCustomDataClass();

@@ -3,7 +3,8 @@ Feature: Widget Chat
   Create a new chat
 
   Background: Fresh database
-    Given I have usergroups
+    Given no Person records exist
+    And a user with "user@deskpro.dev" email exists
     And I have guest portal api session with code "AAAAAAAAAAAAAAA"
     And I have authorized portal api session with code "BBBBBBBBBBBBBBB" for "user@deskpro.dev"
 
@@ -97,7 +98,7 @@ Feature: Widget Chat
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.person" should exist
-    And the JSON node "data.person_name" should be equal to "Ganon User"
+    And the JSON node "data.person_name" should be equal to "User User"
     And the JSON node "data.person_email" should be equal to "user@deskpro.dev"
     And the JSON node "data.need_validate_email" should be equal to "0"
 

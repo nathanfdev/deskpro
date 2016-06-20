@@ -2,11 +2,7 @@
 Feature: Edit ticket form custom fields
 
   Background:
-    Given I have usergroups
-    And only the following User records exist:
-      | #    | Email            |
-      | user | user@deskpro.dev |
-    And I am authenticated as user
+    Given I'm authenticated as user
     And only the following Ticket records exist:
       | #        | Person | Ref | Subject        | Date Last User Reply |
       | ticket_1 | {user} | ref | Ticket Subject | 2015-06-15 17:00:00  |

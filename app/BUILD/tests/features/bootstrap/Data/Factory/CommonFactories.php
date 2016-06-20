@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
@@ -46,6 +47,28 @@ use DpBehat\Data\DataContext;
  */
 class CommonFactories
 {
+    /**
+     * @param string $role
+     * @param array  $data
+     *
+     * @return Person
+     */
+    public static function person($role, array $data = [])
+    {
+        $data['password'] = 'password';
+        if ($role === 'agent') {
+            $data['is_agent'] = 1;
+        } elseif ($role === 'admin') {
+            $data['is_agent']  = 1;
+            $data['can_admin'] = 1;
+        }
+
+        $person = new Person();
+        SimpleFactory::provide($person, $data);
+
+        return $person;
+    }
+
     /**
      * @param array $data
      *

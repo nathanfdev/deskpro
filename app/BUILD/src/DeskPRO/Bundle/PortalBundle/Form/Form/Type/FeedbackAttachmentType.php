@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -43,7 +43,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FeedbackAttachmentType extends AbstractType
 {
@@ -79,13 +79,13 @@ class FeedbackAttachmentType extends AbstractType
             if (!$attachment->getBlob()) {
                 $this->addUpload($form);
             } else {
-                $form->add('blob_auth', 'hidden', array('property_path' => 'blob.authcode'));
-                $form->add('delete', 'checkbox', array('mapped' => false, 'required' => false));
+                $form->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode']);
+                $form->add('delete', 'checkbox', ['mapped' => false, 'required' => false]);
             }
         });
 
-        $builder->addEventListener(FormEvents::SUBMIT, array($this, 'postSubmit'));
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'preSubmit'));
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'postSubmit']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'preSubmit']);
     }
 
     public function addUpload(FormInterface $form)
@@ -141,7 +141,7 @@ class FeedbackAttachmentType extends AbstractType
                     $form->remove('upload');
                 }
                 if (!$form->has('blob_auth')) {
-                    $form->add('blob_auth', 'hidden', array('property_path' => 'blob.authcode'));
+                    $form->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode']);
                 }
             }
         }
@@ -185,12 +185,12 @@ class FeedbackAttachmentType extends AbstractType
                 $attachment->setPerson($person);
 
                 $form->remove('upload');
-                $form->add('delete', 'checkbox', array('mapped' => false, 'required' => false));
-                $form->add('blob_auth', 'hidden', array('property_path' => 'blob.authcode'));
+                $form->add('delete', 'checkbox', ['mapped' => false, 'required' => false]);
+                $form->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode']);
             }
         } else {
             if (!$form->has('blob_auth')) {
-                $form->add('blob_auth', 'hidden', array('property_path' => 'blob.authcode'));
+                $form->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode']);
             }
         }
 
@@ -205,24 +205,24 @@ class FeedbackAttachmentType extends AbstractType
         return 'feedback_attachment';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'Application\\DeskPRO\\Entity\\FeedbackAttachment',
-            )
+            ]
         );
 
         $resolver->setRequired(
-            array(
+            [
                 'person',
-            )
+            ]
         );
 
         $resolver->setAllowedTypes(
-            array(
+            [
                 'person' => 'Application\\DeskPRO\\Entity\\Person',
-            )
+            ]
         );
     }
 }

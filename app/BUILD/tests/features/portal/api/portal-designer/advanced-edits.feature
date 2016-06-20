@@ -2,7 +2,7 @@ Feature: Adding custom header, footer, SCSS and javascript
 
   Background: Fresh database
     Given I install the fresh data set
-    And I am authenticated as admin
+    And I'm authenticated as admin
 
   Scenario: I get current advanced edit data
     When I go to "/portal/api/style/edit-theme-set/advanced-edits"
@@ -106,8 +106,7 @@ Feature: Adding custom header, footer, SCSS and javascript
     """
     And I send a PUT request to "/portal/api/style/edit-theme-set/variable-values"
     And I go to "/portal/api/style/edit-theme-set/commit"
-    When I go to "/portal/api/style/portal.css"
-    Then the response should contain ".my-important-custom-css-class"
+    Then the portal theme set css should contain ".my-important-custom-css-class"
 
   Scenario: I check custom JS is applied to the portal
     And I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:

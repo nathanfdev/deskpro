@@ -40,7 +40,7 @@ use DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpBehat\BaseContext;
 use DpBehat\Data\DataContext;
-use DpBehat\Data\Factory\PersonFactories;
+use DpBehat\Data\PeopleContext as PeopleDataContext;
 use DpBehat\DataSetContext;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
@@ -58,6 +58,11 @@ class AuthContext extends BaseContext
      * @var DataSetContext
      */
     private $dataSetContext;
+
+    /**
+     * @var PeopleDataContext
+     */
+    private $peopleDataContext;
 
     /**
      * @var bool DB will be cleaned up before feature if this is set to true
@@ -93,6 +98,20 @@ class AuthContext extends BaseContext
     }
 
     /**
+     * @BeforeScenario
+     *
+     * @param BeforeScenarioScope $scope
+     */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $environment = $scope->getEnvironment();
+
+        $this->restContext       = $environment->getContext('DpBehat\Api\RestContext');
+        $this->dataSetContext    = $environment->getContext('DpBehat\DataSetContext');
+        $this->peopleDataContext = $environment->getContext('DpBehat\Data\PeopleContext');
+    }
+
+    /**
      * Clean up DB.
      */
     public function cleanup()
@@ -112,6 +131,8 @@ class AuthContext extends BaseContext
 
     /**
      * @Given I'm authenticated as :role
+     *
+     * @param string $role
      */
     public function iAmAuthenticatedAs($role)
     {
@@ -129,36 +150,13 @@ class AuthContext extends BaseContext
         self::$isFirstFeatureScenario = false;
 
         // Log in ------------------------------------------------------------------------------------------------------
-        $email = "$role@deskpro.com";
-        if (DataContext::getPlaceholder('myEmail', false) === $email) {
-            $person = DataContext::getReference('me');
-        } else {
-            $person            = DataContext::getReference($role, false);
-            $person or $person = $this->findPersonByEmail($email);
-            if (!$person) {
-                PersonFactories::initUsergroups($this->em());
-                $person = PersonFactories::create($role, compact('email'));
-                $this->persistAndFlush($person);
-            }
+        $person = $this->peopleDataContext->personByRoleExists($role);
+        DataContext::setReference($role, $person);
+        DataContext::setReference('me', $person);
 
-            DataContext::setReference($role, $person);
-            DataContext::setReference('me', $person);
-            DataContext::setPlaceholder('myEmail', $email);
-        }
         $this->authenticateAs($person);
 
         self::initOm();
-    }
-
-    /**
-     * @BeforeScenario
-     */
-    public function gatherContexts(BeforeScenarioScope $scope)
-    {
-        $environment = $scope->getEnvironment();
-
-        $this->restContext    = $environment->getContext('DpBehat\Api\RestContext');
-        $this->dataSetContext = $environment->getContext('DpBehat\DataSetContext');
     }
 
     /**

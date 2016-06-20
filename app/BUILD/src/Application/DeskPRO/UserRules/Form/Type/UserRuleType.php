@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\UserRules\Form\Type;
 
+use Application\DeskPRO\UserRules\UserRuleEdit;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserRuleType extends AbstractType
 {
@@ -42,13 +44,13 @@ class UserRuleType extends AbstractType
         $builder->add('user_rule', new UserRulePropsType());
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
-                 'data_class'         => 'Application\\DeskPRO\\UserRules\\UserRuleEdit',
-                 'cascade_validation' => true,
-            )
+            [
+                'data_class'         => UserRuleEdit::class,
+                'cascade_validation' => true,
+            ]
         );
     }
 

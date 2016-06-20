@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Twig;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
@@ -109,7 +110,7 @@ class LanguageExtension extends \Twig_Extension
      */
     public function getObjectPhrase($object, $property = false)
     {
-        return $this->language_manager->objectPhrase($object, $property);
+        return nl2br(htmlspecialchars($this->language_manager->objectPhrase($object, $property)));
     }
 
     /**
