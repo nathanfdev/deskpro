@@ -30,9 +30,11 @@ export default createReducer(initialState, {
       done:    setValue('async.done', true)
     }),
 
-  [actions.loadCounts]: async(
-    { success: (state, payload) => state.set(payload.list, Immutable.fromJS(payload.counts)) }
-  ),
+  [actions.loadCounts]: async({
+    success: (state, payload) => state.set(payload.list, Immutable.fromJS(payload.counts)),
+    start:   setValue('async.done', false),
+    done:    setValue('async.done', true)
+  }),
 
   [actions.toggleListGroupingVisibility]: (state, payload) => {
     const target = ['lists', payload, 'isGroupingControlVisible'];

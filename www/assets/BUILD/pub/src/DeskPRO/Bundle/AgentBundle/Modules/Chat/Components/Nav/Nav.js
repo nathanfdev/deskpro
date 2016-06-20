@@ -5,7 +5,7 @@ import {
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { MyChats } from './Sections/MyChats';
 import { AllChats } from './Sections/AllChats';
-import { pureRender } from 'Ampliflux';
+import { pureRender } from 'DeskPRO/Component/Ampliflux';
 
 // @todo Remove
 import {
@@ -55,15 +55,15 @@ export class Nav extends Component {
   };
 
   render() {
-    const { my, all, isLoaded, changeGrouping } = this.props;
+    const { my, all, isLoaded } = this.props;
 
     return (
       <NavFrame>
         <NavFrameHeaderContainer icon="icon-dp-streamline-bubble-conversation-4">Chat</NavFrameHeaderContainer>
         <NavFrameBody isLoaded={isLoaded}>
           <SectionsPane>
-            <MyChats my={my} changeListGrouping={changeGrouping} />
-            <AllChats all={all} changeListGrouping={changeGrouping} />
+            <MyChats my={my} />
+            <AllChats all={all} />
           </SectionsPane>
           <a href="#" onClick={this.demoNotifications}>Demo notifications</a>
         </NavFrameBody>

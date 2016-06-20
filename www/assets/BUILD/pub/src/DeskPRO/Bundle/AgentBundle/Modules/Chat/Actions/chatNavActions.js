@@ -47,8 +47,8 @@ export const toggleListGroupingVisibility = createAction(
 
 export const changeListGrouping = createAction(
   'CHAT_NAV_CHANGE_LIST_GROUPING',
-  (list, groupBy) => dispatch => {
-    dispatch(loadCounts(list, groupBy));
+  (groupBy, list) => dispatch => {
+    dispatch(loadCounts(groupBy, list));
     return { list, groupBy };
   }
 );

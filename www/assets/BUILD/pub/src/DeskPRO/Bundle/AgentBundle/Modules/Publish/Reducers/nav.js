@@ -96,9 +96,9 @@ export default createReducer(initialState, {
 
   [actions.changeListGrouping]: (state, payload) => state.setIn([payload.content, 'grouped_by'], payload.grouped_by),
 
-  [actions.setMine]:            (state, payload) => state.setIn(['todo', 'articles', 'mine'], payload),
+  [actions.setMine]: (state, payload) => state.setIn(['todo', 'articles', 'mine'], payload),
 
-  [actions.initialLoad]:        async({
+  [actions.initialLoad]: async({
     success: mergeFullPayload(),
     start:   setValue('async.done', false),
     done:    setValue('async.done', true)

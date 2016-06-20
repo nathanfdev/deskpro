@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Section, SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
+import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { ListItemContainer } from '../ListItemContainer';
 import { NavGroupingPopup } from '../NavGroupingPopup';
 
@@ -8,15 +8,17 @@ export class AllChats extends Component {
     all: PropTypes.object.isRequired
   };
 
+  /** @namespace this.refs.allSection */
+
   componentWillMount() {
     this.state = { expanded: false };
   }
 
+  getAttachTarget = () => this.refs.allSection;
+
   close = () => {
     this.setState({ expanded: false });
   };
-
-  getAttachTarget = () => this.refs.allSection;
 
   toggle = (event) => {
     event.preventDefault();
@@ -28,16 +30,16 @@ export class AllChats extends Component {
     const group   = item.get('id');
     const count   = item.get('count');
     const label   = item.get('title') || '-';
-    console.log('Group', group);
-    console.log('groupBy', groupBy);
+
     return (
       <ListItemContainer
-        count={count}
         label={label}
         key={index}
-        active="all"
+        content="all"
         listOptions={{ navItem: { [groupBy]: group } }}
-      />
+      >
+        <ListItem count={count} label={label} />
+      </ListItemContainer>
     );
   };
 
