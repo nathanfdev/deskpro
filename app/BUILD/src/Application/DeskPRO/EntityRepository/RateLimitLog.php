@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
-use Application\DeskPRO\Entity\RateLimitLog as RateLimitLogEntity;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuseConfig;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\QueryBuilder;
@@ -55,15 +54,23 @@ class RateLimitLog extends AbstractEntityRepository
      */
     public function save($action, PersonEntity $person, $ip = null, $lockout = false)
     {
-        $log = new RateLimitLogEntity();
-        $log
-            ->setAction($action)
-            ->setIp($ip ?: 0)
-            ->setPersonId($person->getId())
-            ->setDateCreated(new \DateTime())
-            ->setIsLockout($lockout);
-        $this->_em->persist($log);
-        $this->_em->flush($log);
+        $sql = <<<SQL
+INSERT INTO %s
+(`action`, `ip`, `person_id`, `date_created`, `is_lockout`)
+VALUES
+(:action, :ip, :person_id, :date_created, :is_lockout)
+SQL;
+        $sql = sprintf($sql, $this->getTableName());
+        $this->_em->getConnection()->executeQuery(
+            $sql,
+            [
+                'action'       => $action,
+                'ip'           => $ip ?: 0,
+                'person_id'    => $person->getId(),
+                'date_created' => date('Y-m-d H:i:s'),
+                'is_lockout'   => $lockout ? 1 : 0,
+            ]
+        );
     }
 
     /**
