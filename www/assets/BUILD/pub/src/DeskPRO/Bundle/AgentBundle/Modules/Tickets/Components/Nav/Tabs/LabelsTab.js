@@ -9,6 +9,6 @@ export class LabelsTab extends Component {
   };
 
   render() {
-    return <LabelsDictionary labels={this.props.labels} onClick={this.props.onLabelClick} />;
+    return <LabelsDictionary labels={this.props.labels} onClick={this.props.onClick} />;
   }
 }

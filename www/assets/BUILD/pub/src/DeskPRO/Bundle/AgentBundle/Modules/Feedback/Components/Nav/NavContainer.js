@@ -29,13 +29,7 @@ export class NavContainer extends Component {
     this.props.dispatch(initialLoad());
   }
 
-  onLabelClick = (params) => {
-    this.props.dispatch(applyParams({ isComments: false, navItem: { [params.name]: params.value } }));
-  };
-
   render() {
-    return (
-      <Nav {...this.props} onLabelClick={this.onLabelClick} />
-    );
+    return <Nav {...this.props} onLabelClick={applyParams} />;
   }
 }
