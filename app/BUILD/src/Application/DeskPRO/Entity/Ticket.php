@@ -2422,10 +2422,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function setAgent(Person $agent = null)
     {
         if ($agent) {
-            if (!$agent->isAgent()) {
-                throw new \InvalidArgumentException(sprintf('%s is not an agent', $agent->getId()));
-            }
-
             // Do we need to update the first assign date?
             if (is_null($this->date_first_agent_assign)) {
                 $this['date_first_agent_assign'] = new \DateTime();
