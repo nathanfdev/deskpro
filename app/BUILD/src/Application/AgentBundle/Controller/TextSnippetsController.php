@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\Entity\TextSnippet;
@@ -135,78 +136,12 @@ class TextSnippetsController extends AbstractController
         $filter_string = $this->in->getString('filter_string');
         $language_id   = $this->in->getUint('language_id');
 
-        $lang_repos = $this->container->getObjectLangRepository();
+        /** @var \Application\DeskPRO\EntityRepository\TextSnippet $rep */
+        $rep = $this->em->getRepository('DeskPRO:TextSnippet');
 
-        $snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getAllSnippetsForAgent(
-            $typename,
-            $this->person,
-            1,
-            500,
-            $category_id
-        );
-        foreach ($this->container->getLanguageData()->getAll() as $lang) {
-            $lang_repos->preloadObjectCollection($lang, $snippets);
-        }
+        $results = $rep->filterSnippetsForAgent($filter_string, $typename, $this->person, 1, 500, $category_id, $language_id);
 
-        if ($filter_string || $language_id) {
-            $snippets_all = $snippets;
-            $snippets     = array();
-
-            $filter_string = Strings::utf8_strtolower($filter_string);
-
-            foreach ($snippets_all as $snippet) {
-                $match_lang   = false;
-                $match_filter = false;
-
-                if ($language_id) {
-                    foreach ($this->container->getLanguageData()->getAll() as $lang) {
-                        if ($lang->getId() == $language_id) {
-                            if ($snippet->getObjectTranslatable()->getObjectProp('title', $lang)) {
-                                $match_lang = true;
-                            }
-                            break;
-                        }
-                    }
-                } else {
-                    $match_lang = true;
-                }
-
-                if ($filter_string) {
-                    foreach ($this->container->getLanguageData()->getAll() as $lang) {
-                        $test = $snippet->getObjectTranslatable()->getObjectProp('title', $lang);
-                        $test = Strings::utf8_strtolower($test);
-                        if (strpos($test, $filter_string) !== false) {
-                            $match_filter = true;
-                            break;
-                        }
-                    }
-
-                    if (!$match_filter) {
-                        foreach ($this->container->getLanguageData()->getAll() as $lang) {
-                            $test = $snippet->getObjectTranslatable()->getObjectProp('snippet', $lang);
-                            $test = Strings::utf8_strtolower($test);
-                            if (strpos($test, $filter_string) !== false) {
-                                $match_filter = true;
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    $match_filter = true;
-                }
-
-                if ($match_lang && $match_filter) {
-                    $snippets[] = $snippet;
-                }
-            }
-        }
-
-        $data = array('snippets' => array());
-        foreach ($snippets as $snippet) {
-            $data['snippets'][] = $snippet->toApiData();
-        }
-
-        return $this->createJsonResponse($data);
+        return $this->createJsonResponse(array('snippets' => $results));
     }
 
     ####################################################################################################################

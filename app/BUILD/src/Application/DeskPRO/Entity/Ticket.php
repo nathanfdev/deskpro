@@ -990,7 +990,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         if ($this->person->findEmailAddress($email_address)) {
             return $this->person;
 
-            // Any of the participants
+        // Any of the participants
         } else {
             foreach ($this->getUserParticipants() as $person) {
                 if ($person->findEmailAddress($email_address)) {
@@ -1661,6 +1661,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @param TicketAttachment $attach
+     */
+    public function removeAttachment(TicketAttachment $attach)
+    {
+        $this->attachments->removeElement($attach);
+        $attach->message->removeAttachment($attach);
+
+        $this->_onPropertyChanged('attachments', null, $this->attachments);
+        $this->getStateChangeRecorder()->record('attachments', $attach, null);
+
+        if ($this->attachments->isEmpty()) {
+            $this->setModelField('has_attachments', false);
+        }
+    }
+
+    /**
      * Find an existing data record for a field id.
      *
      * @param int|CustomDefTicket $field_id
@@ -1977,7 +1993,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $x->label = $l;
 
         foreach ($this->labels as $idx => $label) {
-            if (strtolower($label->label) == strtolower($x->label)) {
+            if (Strings::utf8_strtolower($label->label) == Strings::utf8_strtolower($x->label)) {
                 $this->labels->remove($idx);
                 $this->_onPropertyChanged('labels', null, $this->labels);
 

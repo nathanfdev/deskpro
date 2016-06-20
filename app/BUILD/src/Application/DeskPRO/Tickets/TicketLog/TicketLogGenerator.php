@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\TicketLog;
 
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -676,6 +677,12 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
             case 'webhook':
                 $data                = $change instanceof ChangeData ? $change->getData() : array();
                 $data['action_type'] = 'webhook';
+
+                return $data;
+
+            case 'deleted_attachments':
+                $data                = $change instanceof ChangeData ? $change->getData() : array();
+                $data['action_type'] = 'deleted_attachments';
 
                 return $data;
 
