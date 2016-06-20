@@ -1,15 +1,15 @@
 {
-  "src_folders": ["e2e/tests"],
-  "output_folder": "e2e/reports",
+  "src_folders": ["src/tests/e2e/tests"],
+  "output_folder": "src/tests/e2e/reports",
   "custom_commands_path": "",
   "custom_assertions_path": "",
-  "page_objects_path": "e2e/pages",
-  "globals_path": "e2e/globals.js",
+  "page_objects_path": "src/tests/e2e/pages",
+  "globals_path": "src/tests/e2e/globals.js",
 
   "selenium": {
     "start_process": true,
     "server_path": "./bin/selenium.jar",
-    "log_path": "./e2e/reports",
+    "log_path": "./src/tests/e2e/reports",
     "host": "127.0.0.1",
     "port": 4444,
     "cli_args": {
@@ -18,7 +18,6 @@
   },
   "test_settings": {
     "default": {
-      "launch_url": "http://dp.lo/new-agent",
       "selenium_port": 4444,
       "selenium_host": "localhost",
       "silent": true,

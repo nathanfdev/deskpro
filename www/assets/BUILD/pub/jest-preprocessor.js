@@ -69,15 +69,15 @@ module.exports = {
         "import$1'" + margin + "DeskPRO/Component/Ampliflux$2'$3"
       );
 
-      // Helpers/... paths ----------------------------------------------------------------------------------------
+      // helpers/... paths ----------------------------------------------------------------------------------------
 
       result = result.replace(
-        /^import(.*)[\"\']Helpers(.*)[\"\'](.*)$/gm,
-        "import$1'" + margin + "tests/Helpers$2'$3"
+        /^import(.*)[\"\']helpers(.*)[\"\'](.*)$/gm,
+        "import$1'" + margin + "tests/helpers$2'$3"
       );
       result = result.replace(
-        /^(.+)([\s=])require\([\"\']Helpers(.*)[\"\']\)(.*)$/gm,
-        "$1$2require('" + margin + "tests/Helpers$3')$4"
+        /^(.+)([\s=])require\([\"\']helpers(.*)[\"\']\)(.*)$/gm,
+        "$1$2require('" + margin + "tests/helpers$3')$4"
       );
     }
 
