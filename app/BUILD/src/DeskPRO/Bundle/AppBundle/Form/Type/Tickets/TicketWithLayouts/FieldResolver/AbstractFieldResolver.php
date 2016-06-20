@@ -171,14 +171,6 @@ abstract class AbstractFieldResolver
      */
     protected function createDepartment(TicketWithLayoutsContext $context)
     {
-        $person    = $context->getOption('person');
-        $hierarchy = $this->hierarchyGenerator->generateTicketDepartmentsHierarchy($person);
-
-        // if it is 1 or less to choose from, dont even add this field to the form
-        if ($hierarchy->countSelectable() <= 1) {
-            return false;
-        }
-
         return new FormField(TicketDepartmentChoiceType::class, [
             'label'       => $this->phrase('portal.forms.label_department'),
             'person'      => $context->getPerson(),
