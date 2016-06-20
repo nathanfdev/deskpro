@@ -113,6 +113,9 @@ class PortalController extends AbstractController
     public function homeAction()
     {
         $allowedFeedbackTypes = $this->getPermissionBagForCurrentUser()->getAllowedFeedbackCategoryIds();
+        if (!$this->getUser() && $this->canUseNothing()) {
+            return $this->redirectToRoute('portal_login');
+        }
 
         return $this->renderThemeView('Theme:Portal:home.html.twig',
             array(
@@ -512,5 +515,18 @@ class PortalController extends AbstractController
                 ],
             ], Response::HTTP_BAD_REQUEST);
         }
+    }
+
+    private function canUseNothing()
+    {
+        $checker = $this->container->get('security.authorization_checker');
+
+        return !(
+            $checker->isGranted('USE_TICKETS')
+            || $checker->isGranted('USE_ARTICLES')
+            || $checker->isGranted('USE_NEWS')
+            || $checker->isGranted('USE_DOWNLOADS')
+            || $checker->isGranted('USE_FEEDBACK')
+        );
     }
 }
