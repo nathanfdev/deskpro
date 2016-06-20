@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { pureRender } from 'Ampliflux';
 import invariant from 'invariant';
+import { pureRender } from 'DeskPRO/Component/Ampliflux';
 
 @pureRender
 export class ListItem extends React.Component {
@@ -51,7 +51,7 @@ export class ListItem extends React.Component {
   renderCountIcon() {
     const { count = 0 } = this.props;
 
-    invariant(!isNaN(parseInt(count)) && isFinite(count), 'The "count" property is not a number');
+    invariant(!isNaN(parseInt(count, 10)) && isFinite(count), 'The "count" property is not a number');
 
     return (
       <a className="list-counter active" href="#">{count}</a>
@@ -76,7 +76,7 @@ export class ListItem extends React.Component {
     return (
       <a href="" className="list-counter-dropdown active" onClick={this.onItemControlClick}>
         <span>&nbsp;</span>
-        <i className="fa fa-angle-down"></i>
+        <i className="fa fa-angle-down" />
       </a>
     );
   }
@@ -84,7 +84,7 @@ export class ListItem extends React.Component {
   render() {
     const { children, active, onClick, onEdit } = this.props;
 
-    let label = this.props.label;
+    let label  = this.props.label;
     let nested = '';
 
     if (children instanceof Array && children.length) {

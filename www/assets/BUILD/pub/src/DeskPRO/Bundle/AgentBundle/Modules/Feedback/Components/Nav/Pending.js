@@ -23,7 +23,7 @@ export class Pending extends Component {
             label="Feedback to Review"
             listOptions={{ isComments: false, navItem: { awaiting_validation: 1 } }}
           >
-            <ListItem count={fCount} label="Feedback to Review"/>
+            <ListItem count={fCount} label="Feedback to Review" />
           </ListItemContainer>
 
           <ListItemContainer

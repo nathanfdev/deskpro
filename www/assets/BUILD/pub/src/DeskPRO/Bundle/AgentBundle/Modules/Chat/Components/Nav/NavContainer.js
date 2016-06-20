@@ -30,23 +30,12 @@ export class NavContainer extends Component {
     this.props.dispatch(actions.toggleListGroupingVisibility(listName));
   };
 
-  changeGrouping = listName => e => {
-    const options = e.target.options;
-    for (let i = 0; i < options.length; i++) {
-      if (options[i].selected) {
-        this.props.dispatch(actions.changeListGrouping(listName, options[i].value));
-      }
-    }
-  };
-
   render = () => {
-    const changeGrouping           = (listName) => this.changeGrouping(listName);
     const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName);
 
     return (
       <Nav
         {...this.props}
-        changeGrouping={changeGrouping}
         toggleGroupingVisibility={toggleGroupingVisibility}
       />
     );

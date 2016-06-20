@@ -35,12 +35,14 @@ export class ListItemContainer extends Component {
   };
 
   render() {
+    const { label, children } = this.props;
+
     const props = {
-      groupId:  'nav',
-      onClick:  this.loadList,
-      itemId:   this.itemId,
-      label:    this.props.label,
-      children: this.props.children
+      label, children,
+
+      groupId: 'nav',
+      onClick: this.loadList,
+      itemId:  this.itemId
     };
 
     return (

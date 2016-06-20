@@ -1,11 +1,12 @@
-import { createAction } from 'Ampliflux';
+import { createAction } from 'DeskPRO/Component/Ampliflux';
+import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { editedFilterIdSelector } from '../Selectors/nav';
-import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { filterSetGroupingsSettingsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Selectors/settings';
-import { updateFilterGrouping } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
+import {
+  setAgentSettings, updateFilterGrouping
+} from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 
 /**
  * Used to identify requests within record stores
@@ -68,11 +69,8 @@ export const initialLoad = createAction(
     (resolve) => {
       const currentGroupingParams = filterSetGroupingsSettingsSelector(getState()).toJS();
       const groupingQuery         = [];
-      for (const key in currentGroupingParams) {
-        if (currentGroupingParams.hasOwnProperty(key)) {
-          groupingQuery.push(`group_by[${key}]` + '=' + currentGroupingParams[key].main_grouping);
-        }
-      }
+      Object.keys(currentGroupingParams)
+        .forEach(key => groupingQuery.push(`group_by[${key}]=${currentGroupingParams[key].main_grouping}`));
       const groupingQueryString = groupingQuery.join('%26');
 
       const batch = 'DP_API/batch'

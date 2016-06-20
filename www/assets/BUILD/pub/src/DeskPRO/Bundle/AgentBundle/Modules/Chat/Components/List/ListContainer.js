@@ -12,20 +12,22 @@ import {
 }
   from '../../../../../AppBundle/Modules/RecordsStore';
 
-@connect(state => ({
-  isLoaded:          isLoadedSelector(state),
-  pagination:        paginationSelector(state),
-  viewMode:          viewModeSelector(state),
-  elements:          elementsSelector(state),
-  currentListParams: currentListParamsSelector(state),
-  cardFields:        cardFieldsSelector(state),
-  tableFields:       tableFieldsSelector(state)
-}), {
-           setCollection,
-           releaseCollection,
-           toggleSelectedAction,
-           applyParams
-         })
+@connect(
+  state => ({
+    isLoaded:          isLoadedSelector(state),
+    pagination:        paginationSelector(state),
+    viewMode:          viewModeSelector(state),
+    elements:          elementsSelector(state),
+    currentListParams: currentListParamsSelector(state),
+    cardFields:        cardFieldsSelector(state),
+    tableFields:       tableFieldsSelector(state)
+  }),
+  {
+    setCollection,
+    releaseCollection,
+    toggleSelectedAction,
+    applyParams
+  })
 
 export class ListContainer extends Component {
   static propTypes = {

@@ -5,7 +5,7 @@ import {
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { MyChats } from './Sections/MyChats';
 import { AllChats } from './Sections/AllChats';
-import { pureRender } from 'Ampliflux';
+import { pureRender } from 'DeskPRO/Component/Ampliflux';
 
 // @todo Remove
 import {

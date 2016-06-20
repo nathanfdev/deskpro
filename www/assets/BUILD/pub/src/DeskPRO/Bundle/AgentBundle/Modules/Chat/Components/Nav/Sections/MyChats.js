@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  Section, SectionHeader
-}
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
+import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { ListItemContainer } from '../ListItemContainer';
 import { NavGroupingPopup } from '../NavGroupingPopup';
 
@@ -19,6 +16,8 @@ export class MyChats extends Component {
   componentWillMount() {
     this.state = { expanded: false };
   }
+
+  getAttachTarget = () => this.refs.mySection;
 
   close = () => {
     this.setState({ expanded: false });
@@ -37,15 +36,15 @@ export class MyChats extends Component {
 
     return (
       <ListItemContainer
-        count={count}
         key={index}
         label={label}
+        content="my"
         listOptions={{ navItem: { [groupBy]: group }, agent: 'me' }}
-      />
+      >
+        <ListItem count={count} label={label} />
+      </ListItemContainer>
     );
   };
-
-  getAttachTarget = () => this.refs.mySection;
 
   render() {
     const { my } = this.props;

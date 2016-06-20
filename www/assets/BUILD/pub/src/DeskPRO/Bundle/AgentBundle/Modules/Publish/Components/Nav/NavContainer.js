@@ -24,16 +24,6 @@ export class NavContainer extends Component {
     dispatch(actions.initialLoad());
   };
 
-  onGroupingChange = listName =>
-    event => {
-      const options = event.target.options;
-      for (let i = 0; i < options.length; i++) {
-        if (options[i].selected) {
-          this.props.dispatch(actions.changeListGrouping(listName, options[i].value));
-        }
-      }
-    };
-
   setMine = isMine => {
     this.props.dispatch(actions.setMine(isMine));
   };
@@ -42,7 +32,6 @@ export class NavContainer extends Component {
     (<Nav
       {...this.props}
       grouping={this.props.grouping}
-      onGroupingChange={this.onGroupingChange}
       setMine={this.setMine}
     />);
 
