@@ -30,6 +30,8 @@ namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Zend\Json\Server\Exception\HttpException;
 
 /**
  * Class TagProcessor.
@@ -77,7 +79,13 @@ class TagProcessor
             throw new \RuntimeException('no handler found for "'.$tag->getName().'"');
         }
 
-        $response = $handler->handle($tag, $tagRequest);
+        try {
+            $response = $handler->handle($tag, $tagRequest);
+        } catch (AccessDeniedException $e) {
+            $response = '';
+        } catch (HttpException $e) {
+            $response = '';
+        }
 
         if (!$response) {
             return ''; // be passive and default to blank
