@@ -28,20 +28,10 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model;
 
-use Application\DeskPRO\Entity\Brand;
 use JMS\Serializer\Annotation as JMS;
 
-class PortalGeneralSettings
+class PortalGeneralSettings extends AbstractBrandAwareSettings
 {
-    /**
-     * Current Brand.
-     * 
-     * @var Brand
-     * 
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
-     */
-    protected $brand;
-
     /**
      * Site name.
      *
@@ -59,6 +49,87 @@ class PortalGeneralSettings
      * @JMS\Type("string")
      */
     private $siteUrl;
+
+    /**
+     * Application feedback enabled.
+     *
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $appsFeedback;
+
+    /**
+     * Application Knowledge base enabled.
+     *
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $appsKb;
+
+    /**
+     * Application news enabled.
+     *
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $appsNews;
+
+    /**
+     * Application downloads enabled.
+     *
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $appsDownloads;
+
+    /**
+     * Application portal enabled.
+     *
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $ifacePortal;
+
+    /**
+     * Application widget enabled.
+     *
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $ifaceWidget;
+
+    /**
+     * Show ratings.
+     *
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $showRatings;
+
+    /**
+     * Show ratings minimum votes.
+     *
+     * @var int
+     *
+     * @JMS\Type("integer")
+     */
+    private $showRatingsMinVotes;
+
+    /**
+     * Publish comments.
+     *
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $publishComments;
 
     /**
      * @return string
@@ -96,6 +167,201 @@ class PortalGeneralSettings
     public function setSiteUrl($siteUrl)
     {
         $this->siteUrl = $siteUrl;
+
+        return $this;
+    }
+
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("portal_mode")
+     *
+     * @return string
+     */
+    public function getPortalMode()
+    {
+        if ($this->appsDownloads || $this->appsFeedback || $this->appsKb || $this->appsNews) {
+            return 'publish';
+        }
+
+        return 'tickets';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAppsFeedback()
+    {
+        return $this->appsFeedback;
+    }
+
+    /**
+     * @param bool $appsFeedback
+     *
+     * @return PortalGeneralSettings
+     */
+    public function setAppsFeedback($appsFeedback)
+    {
+        $this->appsFeedback = $appsFeedback;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAppsKb()
+    {
+        return $this->appsKb;
+    }
+
+    /**
+     * @param bool $appsKb
+     *
+     * @return PortalGeneralSettings
+     */
+    public function setAppsKb($appsKb)
+    {
+        $this->appsKb = $appsKb;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAppsNews()
+    {
+        return $this->appsNews;
+    }
+
+    /**
+     * @param bool $appsNews
+     *
+     * @return PortalGeneralSettings
+     */
+    public function setAppsNews($appsNews)
+    {
+        $this->appsNews = $appsNews;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAppsDownloads()
+    {
+        return $this->appsDownloads;
+    }
+
+    /**
+     * @param bool $appsDownloads
+     *
+     * @return PortalGeneralSettings
+     */
+    public function setAppsDownloads($appsDownloads)
+    {
+        $this->appsDownloads = $appsDownloads;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIfacePortal()
+    {
+        return $this->ifacePortal;
+    }
+
+    /**
+     * @param bool $ifacePortal
+     *
+     * @return PortalGeneralSettings
+     */
+    public function setIfacePortal($ifacePortal)
+    {
+        $this->ifacePortal = $ifacePortal;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIfaceWidget()
+    {
+        return $this->ifaceWidget;
+    }
+
+    /**
+     * @param bool $ifaceWidget
+     *
+     * @return PortalGeneralSettings
+     */
+    public function setIfaceWidget($ifaceWidget)
+    {
+        $this->ifaceWidget = $ifaceWidget;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowRatings()
+    {
+        return $this->showRatings;
+    }
+
+    /**
+     * @param bool $showRatings
+     *
+     * @return PortalGeneralSettings
+     */
+    public function setShowRatings($showRatings)
+    {
+        $this->showRatings = $showRatings;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getShowRatingsMinVotes()
+    {
+        return $this->showRatingsMinVotes;
+    }
+
+    /**
+     * @param int $showRatingsMinVotes
+     *
+     * @return PortalGeneralSettings
+     */
+    public function setShowRatingsMinVotes($showRatingsMinVotes)
+    {
+        $this->showRatingsMinVotes = $showRatingsMinVotes;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPublishComments()
+    {
+        return $this->publishComments;
+    }
+
+    /**
+     * @param bool $publishComments
+     *
+     * @return PortalGeneralSettings
+     */
+    public function setPublishComments($publishComments)
+    {
+        $this->publishComments = $publishComments;
 
         return $this;
     }

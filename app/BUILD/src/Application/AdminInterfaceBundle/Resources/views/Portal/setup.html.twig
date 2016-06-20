@@ -252,8 +252,9 @@
             <div class="form-footer">
                 <hr>
                 <div dp-hide-spinning="saving">
-                    <button type="submit" ng-click="Ctrl.saveSettings()">{{ phrase('admin.general.save_settings') }}</button>
-                    <button ng-disabled="brand_id == default_brand.id" ng-click="Ctrl.deleteBrand()">{{ phrase('admin.setup.delete_brand') }}</button>
+                    <button ng-if="brand_id == 'new'" type="submit" ng-click="Ctrl.createBrand()">{{ phrase('admin.portal.create_brand') }}</button>
+                    <button ng-show="brand_id != 'new'" type="submit" ng-click="Ctrl.saveSettings()">{{ phrase('admin.general.save_settings') }}</button>
+                    <button ng-show="brand_id != 'new'" ng-disabled="brand_id == default_brand.id" ng-click="Ctrl.deleteBrand()">{{ phrase('admin.setup.delete_brand') }}</button>
                 </div>
                 <div dp-show-spinning="saving">
                     <i class="spinner-flat"></i>

@@ -17,6 +17,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
       @$scope.brandId = @$stateParams.brandId
 
+      @portalSettings.setBrandId(@$scope.brandId)
+
+      @$scope.$watch('brand_id', =>
+        @portalSettings.getSettings().then((s) => @settings = s)
+      )
+
       @Api2.sendGet('brands').then (res) =>
         @$scope.brands = res.data.data
 
@@ -34,13 +40,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     changeBrand: ->
       if @$scope.brandId == '-1'
         if confirm "Do you want to create a new brand?"
-          @Api2.sendPost('brands').then (res) =>
-            @$scope.brands.push res.data.data
-            @Growl.success("Brand created")
-            @$state.go 'portal.setup', {brandId: res.data.data.id}
+          @$state.go 'portal.setup', {brandId: 'new'}
         else
           @$scope.brandId = @$stateParams.brandId
-      else
+      else if @$scope.brandId
         @$state.go 'portal.setup', {brandId: @$scope.brandId}
 
 

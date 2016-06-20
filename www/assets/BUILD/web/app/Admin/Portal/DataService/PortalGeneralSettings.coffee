@@ -1,16 +1,20 @@
 define ['DeskPRO/Util/Util'], (Util)  ->
   class Admin_Portal_Service_PortalGeneralSettings
-    @$inject = ['Api', '$q']
+    @$inject = ['Api2', '$q']
 
-    constructor: (@Api, @$q) ->
+    constructor: (@Api2, @$q) ->
 
     init: ->
       # simple counter that other controllers
       # watch to know when the settings object
       # has changed
       @version = 1
-      @settingPromise = null
+      @settingPromise = []
       @settings = null
+      @brandId = null
+
+    setBrandId: (brandId) ->
+      @brandId = brandId
 
     ###
     # Unsets loaded settings cache. Next time it is fetched, a HTTP call will be made.
@@ -30,17 +34,17 @@ define ['DeskPRO/Util/Util'], (Util)  ->
     getSettings: ->
       d = @$q.defer()
 
-      if @settingPromise
-        @settingPromise.then((r) =>
+      if @settingPromise[@brandId]
+        @settingPromise[@brandId].then((r) =>
           d.resolve(Util.clone(r, true))
         , (r, s) =>
           d.reject(r, s)
         )
-      else if @settings
+      else if @settings && @settings.brand == @brandId
         d.resolve(Util.clone(@settings, true))
       else
         @_loadSettings().then((r) =>
-          d.resolve(Util.clone(r, true))
+          d.resolve(Util.clone(r.data.data, true))
         , (r, s) =>
           d.reject(r, s)
         )
@@ -54,17 +58,20 @@ define ['DeskPRO/Util/Util'], (Util)  ->
     ###
     _loadSettings: ->
       d = @$q.defer()
-      @settingPromise = d.promise
+      @settingPromise[@brandId] = d.promise
 
-      p = @Api.sendGet('/settings/portal/general').success((data) =>
-        @settings = data.portal_settings
-        @version += 1
-        d.resolve(@settings)
-        @settingPromise = null
-      ).error((data, status) =>
-        d.reject(data, status)
-        @settingPromise = null
-      )
+      if @brandId
+        p = @Api2.sendGet('/settings/brands/'+@brandId+'/portal_general').success((res) =>
+          @settings = res.data
+          @version += 1
+          d.resolve(@settings)
+          @settingPromise[@brandId] = null
+        ).error((data, status) =>
+          d.reject(data, status)
+          @settingPromise[@brandId] = null
+        )
+      else
+        p = @$q.when({})
 
       p
 
@@ -75,18 +82,19 @@ define ['DeskPRO/Util/Util'], (Util)  ->
     updateSettings: (settings) ->
       d = @$q.defer()
 
-      postData = {
-        portal_settings: settings
-      }
+      data = angular.copy(settings);
 
-      @Api.sendPostJson('/settings/portal/general', postData).success((data) =>
+      # Virtual value we don't want to save it
+      delete data.portal_mode;
+
+      @Api2.sendPostJson('/settings/brands/'+@brandId+'/portal_general', data).then((res) =>
         @_loadSettings().then(=>
-          d.resolve(data)
+          d.resolve(res.data.data)
         , =>
-          d.resolve(data)
+          d.resolve(res.data.data)
         )
-      , (data, status) =>
-        d.reject(data, status)
+      , (res, status) =>
+        d.reject(res, status)
       )
 
       d.promise

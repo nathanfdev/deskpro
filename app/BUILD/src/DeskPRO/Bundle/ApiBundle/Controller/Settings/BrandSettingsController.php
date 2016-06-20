@@ -39,7 +39,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class UsersourceSettingsController.
+ * Class BrandSettingsController.
  *
  * @ApiModes("all")
  * @Rest\Route("/settings/brands/{brandId}")
@@ -51,7 +51,12 @@ class BrandSettingsController extends AbstractBrandAwareSettingsController
      */
     protected function getModel()
     {
-        return $this->get('portal_settings_resolver')->getGeneralSettings();
+        /** @var PortalGeneralSettings $settings */
+        $settings = $this->get('portal_settings_resolver')->getGeneralSettings();
+
+        $settings->setBrand($this->brand);
+
+        return $settings;
     }
 
     protected function getType()
@@ -71,6 +76,15 @@ class BrandSettingsController extends AbstractBrandAwareSettingsController
         $settings_repository
             ->updateSetting(PortalSettingsResolver::SITE_NAME, $model->getSiteName(), $brand)
             ->updateSetting(PortalSettingsResolver::SITE_URL, $model->getSiteUrl(), $brand)
+            ->updateSetting(PortalSettingsResolver::APPS_FEEDBACK, $model->isAppsFeedback(), $brand)
+            ->updateSetting(PortalSettingsResolver::APPS_KB, $model->isAppsKb(), $brand)
+            ->updateSetting(PortalSettingsResolver::APPS_NEWS, $model->isAppsNews(), $brand)
+            ->updateSetting(PortalSettingsResolver::APPS_DOWNLOADS, $model->isAppsDownloads(), $brand)
+            ->updateSetting(PortalSettingsResolver::IFACE_PORTAL, $model->isIfacePortal(), $brand)
+            ->updateSetting(PortalSettingsResolver::IFACE_WIDGET, $model->isIfaceWidget(), $brand)
+            ->updateSetting(PortalSettingsResolver::SHOW_RATINGS, $model->isShowRatings(), $brand)
+            ->updateSetting(PortalSettingsResolver::SHOW_RATINGS_MIN_VOTES, $model->getShowRatingsMinVotes(), $brand)
+            ->updateSetting(PortalSettingsResolver::PUBLISH_COMMENTS, $model->isPublishComments(), $brand)
         ;
     }
 
@@ -101,7 +115,7 @@ class BrandSettingsController extends AbstractBrandAwareSettingsController
     }
 
     /**
-     * Create widget.
+     * Save general settings.
      *
      * @ApiDoc(
      *     section="Brand Settings",
@@ -124,7 +138,7 @@ class BrandSettingsController extends AbstractBrandAwareSettingsController
      *
      * @return View
      */
-    public function postWidgetSetupAction(Request $request, $brandId)
+    public function postPortalGeneralAction(Request $request, $brandId)
     {
         $this->handleForm($request, $brandId);
 

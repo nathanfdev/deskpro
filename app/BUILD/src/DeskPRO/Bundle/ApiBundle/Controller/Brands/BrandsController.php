@@ -38,6 +38,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\BrandType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\PortalBundle\Designer\ThemeSetCopyingService;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -117,6 +118,11 @@ class BrandsController extends CrudController
     {
         $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
 
+        $brand = new Brand();
+
+        $form = $this->createForm(BrandType::class, $brand);
+        $form->submit($request->request->all());
+
         $themeSet = new ThemeSet();
         $themeSet->setThemeId('standard');
         $this->persistModel($themeSet);
@@ -125,14 +131,12 @@ class BrandsController extends CrudController
         $editThemeSet->setThemeId('standard');
         $this->persistModel($editThemeSet);
 
-        $brand = new Brand();
-
         $brand->setThemeSet($themeSet);
         $brand->setEditThemeSet($editThemeSet);
 
-        $status = Response::HTTP_CREATED;
+        $this->persistModel($brand);
 
-        $view = View::create($this->wrap($this->persistModel($brand)), $status);
+        $view = View::create($this->wrap($brand), Response::HTTP_CREATED);
         $view->setLocation($this->getLocationUrl($brand, $request));
 
         return $view;

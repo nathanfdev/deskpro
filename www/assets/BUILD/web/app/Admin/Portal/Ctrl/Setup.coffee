@@ -13,6 +13,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @$scope.default_brand = res.data.data
 
       @$scope.$watch('Ctrl.portalSettings.version', =>
+#        @portalSettings.getSettings().then((s) => @settings = s)
+      )
+
+      @$scope.$watch('brand_id', =>
+        @portalSettings.setBrandId(@$scope.brand_id)
         @portalSettings.getSettings().then((s) => @settings = s)
       )
 
@@ -29,9 +34,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @portalSettings.updateSettingsTemporary(@settings)
 
     initialLoad: ->
-      @portalSettings.getSettings().then((s) =>
-        @settings = s
-      )
+      if (@$scope.brand_id != 'new')
+        @portalSettings.setBrandId(@$scope.brand_id)
+        @portalSettings.getSettings().then((s) =>
+          @settings = s
+        )
 
     saveSettings: ->
       @startSpinner()
@@ -40,6 +47,19 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       , =>
         @stopSpinner()
       )
+
+    createBrand: ->
+      brand = {
+        name: @settings.deskpro_name,
+        url: @settings.deskpro_url
+      }
+      @Api2.sendPostJson('brands', brand).then (res) =>
+        @Growl.success("Brand created")
+        @brandId = res.data.data.id
+        @portalSettings.setBrandId(res.data.data.id)
+        @saveSettings()
+        @$state.go 'portal.setup', {brandId: @brandId}
+
 
     deleteBrand: ->
       if confirm "Are you sure you want to delete this brand? Theme personalization and templates will be lost."

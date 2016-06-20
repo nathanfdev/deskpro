@@ -143,7 +143,7 @@ class Brand extends DomainObject
      */
     public function setUrl($url)
     {
-        $this->setModelField('name', $url);
+        $this->setModelField('url', $url);
     }
 
     public function toApiData($primary = true, $deep = true, array $visited = [])

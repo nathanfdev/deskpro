@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -119,6 +119,7 @@ return array(
     'admin.portal.comment_require_validation'              => 'Require all comments to be manually validated by agents',
     'admin.portal.comment_use_captcha'                     => 'Show a CAPTCHA on comment forms',
     'admin.portal.commenting'                              => 'Commenting',
+    'admin.portal.create_brand'                            => 'Create Brand',
     'admin.portal.custom_fields'                           => 'Custom Fields',
     'admin.portal.edit_html'                               => 'Edit HTML',
     'admin.portal.edit_logo'                               => 'Edit Logo',

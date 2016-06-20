@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\BrandSetting;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,7 +46,7 @@ abstract class AbstractBrandAwareSettingsController extends BaseController
     protected $brand;
 
     /**
-     * @return object
+     * @return AbstractBrandAwareSettings
      */
     abstract protected function getModel();
 
@@ -65,7 +66,7 @@ abstract class AbstractBrandAwareSettingsController extends BaseController
     /**
      * Set the brand as the active Brand in the BrandStack.
      *
-     * @param $brandId
+     * @param int $brandId
      */
     protected function setBrandStack($brandId)
     {
@@ -83,21 +84,27 @@ abstract class AbstractBrandAwareSettingsController extends BaseController
      */
     protected function getBrand($brandId)
     {
-        $brand = $this->getRepository(Brand::class)->find($brandId);
-        if (!$brand) {
+        if ($this->brand) {
+            return $this->brand;
+        }
+        $this->brand = $this->getRepository(Brand::class)->find($brandId);
+        if (!$this->brand) {
             throw $this->createNotFoundException('Brand not found');
         }
 
-        return $brand;
+        return $this->brand;
     }
 
     /**
      * @param Request $request
+     * @param         $brandId
      *
      * @return View
      */
     protected function handleForm(Request $request, $brandId)
     {
+        $this->getBrand($brandId);
+
         $model = $this->getModel();
 
         $form = $this->createForm($this->getType(), $model);
