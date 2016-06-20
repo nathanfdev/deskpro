@@ -29,7 +29,7 @@
 namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
 use Application\DeskPRO\People\Purger;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UsersProcessor extends Base
 {
@@ -38,7 +38,7 @@ class UsersProcessor extends Base
     /**
      * {@inheritdoc}
      */
-    public function setDataOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'context_person_id' => null,

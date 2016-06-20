@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\DeskPRO\JobQueue\Processor;
 
 use Application\DeskPRO\Entity\Job;
@@ -41,7 +38,7 @@ use Doctrine\DBAL\Connection;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\Logger;
 use Orb\Util\Env;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UsersourceSyncProcessor extends AbstractJobProcessor
 {
@@ -82,20 +79,18 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         $this->job_queue          = $job_queue;
     }
 
-    public function setDataOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            array(
-                'original_start_timestamp' => time(),
-                'sync_cursor_location'     => 1,
-                'sync_cursor_counter'      => 0,
-                'sync_cursor_phase'        => 1,
-                'phase_2_count'            => 0,
-                'phase_2_usersource'       => null,
-                'current_usersource_id'    => null,
-                'phase'                    => 1,
-            )
-        );
+        $resolver->setDefaults([
+            'original_start_timestamp' => time(),
+            'sync_cursor_location'     => 1,
+            'sync_cursor_counter'      => 0,
+            'sync_cursor_phase'        => 1,
+            'phase_2_count'            => 0,
+            'phase_2_usersource'       => null,
+            'current_usersource_id'    => null,
+            'phase'                    => 1,
+        ]);
     }
 
     public function process(array $data, array $job)
@@ -207,19 +202,19 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             }
 
             try {
-                $this->sync_manager->refreshAll($usersource, $cursor, array($this, 'pauseJobCondition'));
+                $this->sync_manager->refreshAll($usersource, $cursor, [$this, 'pauseJobCondition']);
 
                 if (!$cursor->isCompleted() && !static::$aborted) {
                     // time to pause and re-run this phase at this usersource at the cursor location
                     $this->scheduleNextSync(
-                        array(
+                        [
                             'phase'                    => 1,
                             'original_start_timestamp' => $start_timestamp,
                             'sync_cursor_location'     => $cursor->getLocation(),
                             'sync_cursor_counter'      => $cursor->getCounter(),
                             'sync_cursor_phase'        => $cursor->getPhase(),
                             'current_usersource_id'    => $last_processed_usersource_id,
-                        ),
+                        ],
                         new \DateTime('now + 10 seconds')
                     );
 
@@ -263,7 +258,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         // phase 1 is completed now
         // schedule phase 2 for immediate
         $this->scheduleNextSync(
-            array('original_start_timestamp' => $start_timestamp, 'phase' => 2),
+            ['original_start_timestamp' => $start_timestamp, 'phase' => 2],
             new \DateTime('now + 10 seconds')
         );
 
@@ -302,7 +297,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             $count_total_associations     = count($associations);
             foreach ($associations as $association) {
                 /* @var \Application\DeskPRO\Entity\PersonUsersourceAssoc $association */
-                    $identity = $association->getIdentity();
+                $identity = $association->getIdentity();
                 ++$count_processed_associations;
                 try {
                     if ($this->sync_manager->refreshIdentity($association->getUsersource(), $identity)) {
@@ -310,16 +305,16 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                         $log->incrementRecordCount();
                     } else {
                         ++$count;
-                            // there was a problem, but if we don't update the association it will
-                            // loop the sync forever
-                            $this->sync_manager->getSyncHelper()->log(Logger::INFO, 'failed to find "'.$identity.'" on remote usersource, updating association updatedAt time anyway so we do not loop the sync, usersource='.$usersource->getId());
+                        // there was a problem, but if we don't update the association it will
+                        // loop the sync forever
+                        $this->sync_manager->getSyncHelper()->log(Logger::INFO, 'failed to find "'.$identity.'" on remote usersource, updating association updatedAt time anyway so we do not loop the sync, usersource='.$usersource->getId());
                         $association->setDateUpdated(new \DateTime());
                         $this->sync_manager->getSyncHelper()->persistAndFlushEntity($association);
                     }
                 } catch (\Exception $e) {
                     $this->sync_manager->getSyncHelper()->log(Logger::ERR, 'an exception was thrown when refresh "'.$identity.'" from remote usersource, usersource='.$usersource->getId());
-                        // log the error, but continue processing
-                        ++$this_usersource_errors;
+                    // log the error, but continue processing
+                    ++$this_usersource_errors;
                     SystemErrorHandler::logException($e, false);
                     if ($this_usersource_errors > 10) {
                         $log->markErrorStatus();
@@ -348,12 +343,12 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                 $this->sync_manager->saveLog($log);
 
                 $this->scheduleNextSync(
-                    array(
+                    [
                         'phase'                    => 2,
                         'phase_2_count'            => $count,
                         'phase_2_usersource'       => $last_processed_usersource_id,
                         'original_start_timestamp' => $data['original_start_timestamp'],
-                    ),
+                    ],
                     new \DateTime('now + 10 seconds')
                 );
 
@@ -371,7 +366,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
         // phase 2 is complete
         // reschedule job one for 24 hours from now
         $this->scheduleNextSync(
-            array('phase' => 1),
+            ['phase' => 1],
             new \DateTime('tomorrow 1am')
         );
 

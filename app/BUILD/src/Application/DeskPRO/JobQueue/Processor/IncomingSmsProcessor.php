@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\DeskPRO\JobQueue\Processor;
 
 use Application\DeskPRO\Entity\Job;
@@ -39,7 +36,7 @@ use Application\DeskPRO\Sms\Detector\TicketDetector;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketManager;
 use Doctrine\DBAL\Connection;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Processes an incoming SMS message.
@@ -78,7 +75,11 @@ class IncomingSmsProcessor extends AbstractJobProcessor
     private $ticket_manager;
 
     /**
-     * @param Connection $connection
+     * @param Connection         $connection
+     * @param SmsAccountDetector $sms_account_detector
+     * @param PersonDetector     $person_detector
+     * @param TicketDetector     $ticket_detector
+     * @param TicketManager      $ticket_manager
      */
     public function __construct(
         Connection $connection,
@@ -97,19 +98,11 @@ class IncomingSmsProcessor extends AbstractJobProcessor
     /**
      * {@inheritdoc}
      */
-    public function setDataOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(array(
-                'message',
-                'from_number',
-            )
-        );
+        $resolver->setRequired(['message', 'from_number']);
 
-        $resolver->setDefaults(array(
-                'sms_account_id' => null,
-                'to_number'      => null,
-            )
-        );
+        $resolver->setDefaults(['sms_account_id' => null, 'to_number' => null]);
     }
 
     /**
