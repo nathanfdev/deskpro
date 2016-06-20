@@ -32,7 +32,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\RateLimitGroupType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAgentRateLimit;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class PortalUserRateLimitType.
@@ -52,7 +52,7 @@ class PortalAgentRateLimitType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => PortalAgentRateLimit::class,

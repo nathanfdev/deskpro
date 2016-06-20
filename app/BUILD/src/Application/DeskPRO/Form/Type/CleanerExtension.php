@@ -34,11 +34,12 @@ namespace Application\DeskPRO\Form\Type;
 
 use Orb\Input\Cleaner\Cleaner;
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CleanerExtension extends AbstractTypeExtension
 {
@@ -54,7 +55,7 @@ class CleanerExtension extends AbstractTypeExtension
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'onPreSubmit'), 128); // high priority
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 128); // high priority
     }
 
     public function onPreSubmit(FormEvent $event)
@@ -69,10 +70,10 @@ class CleanerExtension extends AbstractTypeExtension
 
     protected function cleanData($raw_data, FormInterface $form)
     {
-        $clean_data = array();
+        $clean_data = [];
 
         if (empty($raw_data)) {
-            return array();
+            return [];
         }
 
         foreach ($raw_data as $form_name => $data) {
@@ -107,23 +108,23 @@ class CleanerExtension extends AbstractTypeExtension
         return $clean_data;
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        parent::setDefaultOptions($resolver);
+        parent::configureOptions($resolver);
 
         $resolver->setDefaults(
-            array(
+            [
                 'filter_clean' => true,
-            )
+            ]
         )->setAllowedTypes(
-            array(
+            [
                 'filter_clean' => 'bool',
-            )
+            ]
         );
     }
 
     public function getExtendedType()
     {
-        return 'Symfony\Component\Form\Extension\Core\Type\FormType';
+        return FormType::class;
     }
 }

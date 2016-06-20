@@ -42,7 +42,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -102,8 +102,7 @@ class TicketReplyType extends AbstractType
             ])
             ->add('submit', 'submit', [
                 'label' => $this->language_manager->phrase('portal.tickets.add-reply'),
-            ])
-        ;
+            ]);
     }
 
     public function checkForDupes($value, ExecutionContextInterface $context)
@@ -137,14 +136,14 @@ class TicketReplyType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setDefaults([
                 'message_label' => false,
-                'constraints'   => array(
-                    new Callback(array($this, 'checkForDupes')),
-                ),
+                'constraints'   => [
+                    new Callback([$this, 'checkForDupes']),
+                ],
             ])
             ->setRequired([
                 'person', 'ticket', 'ticket_message', 'settings',
@@ -154,7 +153,6 @@ class TicketReplyType extends AbstractType
                 'ticket_message' => TicketMessage::class,
                 'settings'       => SettingsBag::class,
                 'person'         => Person::class,
-            ])
-        ;
+            ]);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ObjectLang;
 
 use Application\DeskPRO\Entity\Language;
@@ -40,7 +37,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class ObjectLangType.
@@ -56,8 +52,7 @@ class ObjectLangType extends AbstractType
             ->add('language', EntityType::class, [
                 'class' => Language::class,
             ])
-            ->add('value', 'html_textarea')
-        ;
+            ->add('value', 'html_textarea');
 
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSetRelations']);
     }
@@ -65,7 +60,7 @@ class ObjectLangType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         /* @var OptionsResolver $resolver */
         $resolver
@@ -80,8 +75,7 @@ class ObjectLangType extends AbstractType
             ->addAllowedTypes([
                 'prop_name' => 'string',
                 'owner'     => ObjectTranslatableInterface::class,
-            ])
-        ;
+            ]);
     }
 
     /**
@@ -95,7 +89,6 @@ class ObjectLangType extends AbstractType
         $data = $event->getData();
         $data
             ->setObject($context->getOwner())
-            ->setPropName($context->getPropName())
-        ;
+            ->setPropName($context->getPropName());
     }
 }

@@ -37,7 +37,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class AgentChatMessageType.
@@ -51,8 +51,7 @@ class AgentChatMessageType extends AbstractType
     {
         $builder
             ->add('message', HtmlTextareaType::class)
-            ->add('uuid', TextType::class)
-        ;
+            ->add('uuid', TextType::class);
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
     }
@@ -60,7 +59,7 @@ class AgentChatMessageType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setRequired(['person', 'chat'])
@@ -70,8 +69,7 @@ class AgentChatMessageType extends AbstractType
             ->setAllowedTypes([
                 'person' => Person::class,
                 'chat'   => AgentChat::class,
-            ])
-        ;
+            ]);
     }
 
     /**

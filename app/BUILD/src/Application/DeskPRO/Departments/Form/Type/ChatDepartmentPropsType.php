@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Departments\Form\Type;
 
+use Application\DeskPRO\Entity\Department;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ChatDepartmentPropsType extends AbstractType
 {
@@ -43,45 +45,45 @@ class ChatDepartmentPropsType extends AbstractType
         $builder->add(
             'title',
             'text',
-            array(
-                 'required' => false,
-            )
+            [
+                'required' => false,
+            ]
         );
         $builder->add(
             'user_title',
             'text',
-            array(
-                 'required' => false,
-            )
+            [
+                'required' => false,
+            ]
         );
         $builder->add(
             'parent',
             'entity',
-            array(
-                 'class'         => 'DeskPRO:Department',
-                 'required'      => false,
-                 'query_builder' => function (EntityRepository $er) {
-                     return $er->createQueryBuilder('d')->where(
-                         'd.is_chat_enabled = true AND d.parent IS NULL'
-                     )->orderBy(
-                         'd.display_order',
-                         'ASC'
-                     );
-                 },
-            )
+            [
+                'class'         => 'DeskPRO:Department',
+                'required'      => false,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('d')->where(
+                        'd.is_chat_enabled = true AND d.parent IS NULL'
+                    )->orderBy(
+                        'd.display_order',
+                        'ASC'
+                    );
+                },
+            ]
         );
-        $builder->add('avatar', 'entity', array(
+        $builder->add('avatar', 'entity', [
             'required' => false,
             'class'    => 'DeskPRO:Blob',
-        ));
+        ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
-                 'data_class' => 'Application\\DeskPRO\\Entity\\Department',
-            )
+            [
+                'data_class' => Department::class,
+            ]
         );
     }
 

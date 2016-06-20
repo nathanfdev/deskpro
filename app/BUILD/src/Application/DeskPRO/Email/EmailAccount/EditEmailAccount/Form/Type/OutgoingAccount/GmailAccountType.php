@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,25 +29,27 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\OutgoingAccount;
 
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\GmailConfig;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class GmailAccountType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('user',     'email',    array('required' => true));
-        $builder->add('password', 'dp_enc_password', array('required' => false));
+        $builder->add('user', 'email', ['required' => true]);
+        $builder->add('password', 'dp_enc_password', ['required' => false]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'Application\\DeskPRO\\Email\\EmailAccount\\OutgoingAccount\\GmailConfig',
-        ));
+        $resolver->setDefaults([
+            'data_class' => GmailConfig::class,
+        ]);
     }
 
     public function getName()

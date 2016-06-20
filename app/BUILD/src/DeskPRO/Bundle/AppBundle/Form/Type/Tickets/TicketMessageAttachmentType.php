@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Attachments\AcceptAttachment;
@@ -45,7 +46,8 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 /**
  * Class TicketMessageAttachmentType.
@@ -237,7 +239,7 @@ class TicketMessageAttachmentType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setDefaults([
@@ -265,7 +267,7 @@ class TicketMessageAttachmentType extends AbstractType
             'required'    => false,
             'label'       => false,
             'constraints' => [
-                new \Symfony\Component\Validator\Constraints\File([
+                new File([
                     'uploadErrorMessage'         => 'portal.forms.error_upload_general',
                     'uploadFormSizeErrorMessage' => 'portal.forms.error_upload_html_size',
                     'uploadIniSizeErrorMessage'  => 'portal.forms.error_upload_ini_size',
