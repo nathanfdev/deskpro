@@ -80,11 +80,14 @@ class BuildNewAgent_0023_ticketlayouts extends AbstractBuild
                     $hasPerson   = true;
                     $newFields[] = $this->getPersonFieldDev();
                 }
+            } elseif ($field['field_type'] === 'attach' || $field['field_type'] === 'attachments') {
+                continue;
             } else {
-                if ($field['field_type'] === 'attach') {
-                    $field['field_type'] = 'attachments';
-                }
                 $newFields[] = $field;
+
+                if ($field['field_type'] === 'message') {
+                    $newFields[] = $this->getAttachFieldDev();
+                }
             }
         }
 
@@ -101,6 +104,25 @@ class BuildNewAgent_0023_ticketlayouts extends AbstractBuild
         return [
             'version'    => 1,
             'field_type' => 'person',
+            'field_id'   => null,
+            'options'    => [
+                'criteria'           => null,
+                'on_newticket'       => true,
+                'on_viewticket'      => true,
+                'on_viewticket_mode' => 'always',
+                'on_editticket'      => true,
+            ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function getAttachFieldDev()
+    {
+        return [
+            'version'    => 1,
+            'field_type' => 'attachments',
             'field_id'   => null,
             'options'    => [
                 'criteria'           => null,
