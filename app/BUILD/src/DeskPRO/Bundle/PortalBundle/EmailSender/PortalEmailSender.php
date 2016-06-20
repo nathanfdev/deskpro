@@ -341,12 +341,4 @@ class PortalEmailSender
     {
         return $this->container->get('router');
     }
-
-    /**
-     * @return \DeskPRO\Bundle\PortalBundle\Person\PersonValidator
-     */
-    protected function getPersonValidator()
-    {
-        return $this->container->get('person.portal_validator');
-    }
 }

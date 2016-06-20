@@ -28,10 +28,12 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\People\PersonGuest;
+use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\UploadAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Security\DpTransferSessionAuthToken;
@@ -39,6 +41,7 @@ use DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Util\RandUtils;
 use Orb\Auth\Adapter\SamlAdapterInterface;
+use Orb\Util\Util;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -48,10 +51,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+/**
+ * Class PortalController.
+ */
 class PortalController extends AbstractController
 {
     /**
      * @Route("/template_editor", name="portal_temp")
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
     public function tempAction(Request $request)
     {
@@ -100,7 +110,7 @@ class PortalController extends AbstractController
      * @Route("/", name="user")
      * @PageHttpCache()
      */
-    public function homeAction(Request $request)
+    public function homeAction()
     {
         $allowedFeedbackTypes = $this->getPermissionBagForCurrentUser()->getAllowedFeedbackCategoryIds();
 
@@ -115,7 +125,12 @@ class PortalController extends AbstractController
     /**
      * @Route("/login", name="portal_login")
      * @Route("/login", name="user_login")
+     *
      * @PageHttpCache()
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
     public function loginAction(Request $request)
     {
@@ -150,9 +165,6 @@ class PortalController extends AbstractController
         $this->getAntiAbuseService()->check($abuse_check);
         if ($abuse_check->isCaptchaRecommended()) {
             $captcha_form = $this->createForm('deskpro_captcha');
-        } elseif ($abuse_check->isLockoutRecommended()) {
-            $lockout     = true;
-            $lockoutTime = $abuse_check->getLockoutTime();
         }
         $usersources_view = $this->get('usersources_view_helper')->createUsersourceViewList();
 
@@ -192,13 +204,15 @@ class PortalController extends AbstractController
     /**
      * @Route("/logout/{auth}", name="user_logout")
      *
+     * @param string $auth
+     *
      * @return RedirectResponse
      */
     public function legacyLogoutLinkAction($auth)
     {
         $appSecret = $this->get('settings_resolver')->getGlobalSettings()->get('core.app_secret', '');
 
-        if (!\Orb\Util\Util::checkStaticSecurityToken($auth, md5($appSecret.'user_logout'))) {
+        if (!Util::checkStaticSecurityToken($auth, md5($appSecret.'user_logout'))) {
             throw $this->createNotFoundException();
         }
 
@@ -222,6 +236,10 @@ class PortalController extends AbstractController
 
     /**
      * @Route("/change-language", name="portal_change_language")
+     *
+     * @param Request $request
+     *
+     * @return RedirectResponse
      */
     public function changeLanguageAction(Request $request)
     {
@@ -244,6 +262,10 @@ class PortalController extends AbstractController
 
     /**
      * @Route("/dismiss-lang-alert", name="portal_dismiss_lang_alert")
+     *
+     * @param Request $request
+     *
+     * @return RedirectResponse
      */
     public function ignoreLangAlertAction(Request $request)
     {
@@ -262,6 +284,10 @@ class PortalController extends AbstractController
      * and if so, what HTML they should use to render it.
      *
      * @Route("/captcha-html", name="portal_captcha_html")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
     public function catpchaHtmlAction(Request $request)
     {
@@ -288,6 +314,11 @@ class PortalController extends AbstractController
         );
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return RedirectResponse
+     */
     public function removeTrailingSlashAction(Request $request)
     {
         $pathInfo   = $request->getPathInfo();
@@ -312,6 +343,10 @@ class PortalController extends AbstractController
      *
      * @Route("/dpblob", name="portal_blob_upload")
      * @Method("POST")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
     public function uploadBlobAction(Request $request)
     {
@@ -352,6 +387,7 @@ class PortalController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
+        /** @var Blob $blob */
         $blob = $this->get('attachment_accepter')->accept($file, true);
 
         return new JsonResponse([
@@ -378,6 +414,10 @@ class PortalController extends AbstractController
     /**
      * @Route("/saml/metadata/{usersource_id}.xml", name="portal_saml_metadata")
      * @Route("/saml/metadata/{usersource_id}.xml", name="user_saml_metadata")
+     *
+     * @param int $usersource_id
+     *
+     * @return Response
      */
     public function samlMetadataAction($usersource_id)
     {
@@ -386,8 +426,11 @@ class PortalController extends AbstractController
         if (!$usersource) {
             throw $this->createNotFoundException();
         }
-        /** @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $factory */
-        $factory = $this->container->getSystemService('usersource_auth_adapter_factory');
+
+        /** @var DeskproContainer $container */
+        $container = $this->container;
+        /** @var UsersourceAuthAdapterFactory $factory */
+        $factory = $container->getSystemService('usersource_auth_adapter_factory');
         $adapter = $factory->getAuthAdapter($usersource);
 
         if ($adapter instanceof SamlAdapterInterface) {
@@ -416,6 +459,11 @@ class PortalController extends AbstractController
      *
      * @Route("/dpblob/{id}-{authcode}", name="portal_blob_delete")
      * @Method("DELETE")
+     *
+     * @param Request $request
+     * @param Blob    $blob
+     *
+     * @return JsonResponse
      */
     public function deleteBlobAction(Request $request, Blob $blob)
     {
@@ -427,14 +475,6 @@ class PortalController extends AbstractController
         $success = $this->get('blob.storage')->deleteBlobRecord($blob);
 
         return new JsonResponse(['success' => (bool) $success]);
-    }
-
-    /**
-     * @return \DeskPRO\Bundle\PortalBundle\Person\PersonValidator
-     */
-    protected function getPersonValidator()
-    {
-        return $this->get('person.portal_validator');
     }
 
     /**
