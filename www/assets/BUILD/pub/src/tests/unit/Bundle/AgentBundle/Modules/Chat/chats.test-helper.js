@@ -1,4 +1,4 @@
-import { renderInRedux, fakeState, toImmutable } from 'helpers';
+import { renderInRedux, fakeState } from 'helpers';
 import { initialState } from 'DeskPRO/Bundle/AgentBundle/Modules/Chat/Reducers/list';
 
 /**
@@ -16,16 +16,16 @@ export function fakeChatsState(num = 0) {
   }
 
   return fakeState({
-    Chat:         { list: toImmutable(initialState) },
+    Chat:         { list: initialState },
     RecordsStore: {
-      store: toImmutable({
+      store: {
         UserChat: {
           records,
 
           collections: { chats: ids },
           statuses:    { chats: { isDone: true } }
         }
-      })
+      }
     }
   });
 }

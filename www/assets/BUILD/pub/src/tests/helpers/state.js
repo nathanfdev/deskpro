@@ -8,22 +8,33 @@ export function toImmutable(data) {
 export function fakeState(additional = {}) {
   const base = {
     Agent: {
-      settings: toImmutable({tickets: {filter_groupings: {}}})
+      settings: {tickets: {filter_groupings: {}}}
     },
     Application: {
-      routing: toImmutable({hash: {}}),
-      dpWindow: toImmutable({
+      routing: {hash: {}},
+      dpWindow: {
         activeAppId: 'whatever',
         winDims: {}
-      }),
-      massActions: toImmutable({selected: []})
+      },
+      massActions: {selected: []}
     },
     RecordsStore: {
-      store: toImmutable({})
+      store: {}
     }
   };
+  const state = $.extend(true, {}, base, additional);
 
-  return $.extend(true, {}, base, additional);
+  Object.keys(state).forEach(i => {
+    if (state[i] === null || typeof state[i] !== 'object') {
+      throw `State error: ${state[i]} is not an object`;
+    }
+
+    Object.keys(state[i]).forEach(j => {
+      state[i][j] = toImmutable(state[i][j]);
+    });
+  });
+
+  return state;
 }
 
 export function fakeRecordsStore(store) {

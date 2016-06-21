@@ -1,4 +1,4 @@
-import { renderInRedux, fakeState, toImmutable } from 'helpers';
+import { renderInRedux, fakeState } from 'helpers';
 import { feedbackNavInitialState } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Reducers/nav';
 import { feedbackListInitialState } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/Reducers/list';
 import { massActionsInitialState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Reducers/massActions';
@@ -18,11 +18,11 @@ export function fakeFeedbackState(state) {
   let newstate =  fakeState({
     Application: { massActions: massActionsInitialState },
     Feedback:    {
-      nav:  toImmutable(feedbackNavInitialState),
-      list: toImmutable(feedbackListInitialState)
+      nav:  feedbackNavInitialState,
+      list: feedbackListInitialState
     },
     RecordsStore: {
-      store: toImmutable({
+      store: {
 
         Person: {
           collections: { feedback: [1] },
@@ -41,12 +41,12 @@ export function fakeFeedbackState(state) {
           records:     mapKeyedFromArray(fakeTypes, 'id'),
           statuses:    { loading: false, success: true }
         }
-      })
+      }
     },
     ...state
   });
 
-  newstate.Feedback.list = newstate.Feedback.list.set('elements', toImmutable([1]));
+  newstate.Feedback.list = newstate.Feedback.list.set('elements', [1]);
 
   return newstate;
 }

@@ -3,18 +3,17 @@
 jest.dontMock('~ListView/ListCardViewContainer');
 
 import React from 'react';
-import { fakeRecordsStoreState, toImmutable } from 'helpers';
 import { renderInTicketsApp } from '../../../../tickets.test-helper';
 
 const fakeState = {
   RecordsStore: {
-    store: toImmutable({
+    store: {
       Ticket: {
         records:     { 1: {}, 2: {}, 3: {} },
         collections: { list: ['1', '2', '3'] },
         statuses:    { list: { isDone: true } }
       }
-    })
+    }
   }
 };
 
