@@ -193,12 +193,15 @@ class DistroInstaller implements LoggerAwareInterface
      * @param string $buildId
      *
      * @throws IOException
+     * @throws \InvalidArgumentException When the build doesnt exist
+     * @throws \Exception
      */
     public function enableRunFromBuild($buildId)
     {
         $fs = new Filesystem();
 
         if (!$this->instanceStatus->hasBuild($buildId)) {
+            $this->logger->error("$buildId dir does not exist");
             throw new \InvalidArgumentException("Cannot enable run for $buildId: Build is not installed");
         }
 
@@ -206,9 +209,18 @@ class DistroInstaller implements LoggerAwareInterface
 
         // The cached dp_run dir doesnt exist for whatever reason, we need to re-extract the full zip
         if (!is_dir($newRunPath)) {
-            $scratchDir = TmpDir::makeTmpDir($this->tmpDir);
-            $zip        = $this->zippy->open($this->instanceStatus->getAppPath($buildId).'/sys/Resources/deskpro.zip');
-            $zip->extract($scratchDir);
+            $this->logger->info('The default run path from kernel cache doesnt exist, we will need to re-extract');
+
+            try {
+                $scratchDir = TmpDir::makeTmpDir($this->tmpDir);
+                $this->logger->info("Extracting into temp scratch dir: $scratchDir");
+
+                $zip = $this->zippy->open($this->instanceStatus->getAppPath($buildId).'/sys/Resources/deskpro.zip');
+                $zip->extract($scratchDir);
+            } catch (\Exception $e) {
+                $this->logger->error('Failed to extract: '.$e->getMessage());
+                throw $e;
+            }
 
             $newRunPath = "$scratchDir/app/run";
         }
@@ -216,19 +228,28 @@ class DistroInstaller implements LoggerAwareInterface
         $runPath    = $this->instanceStatus->getAppBasePath().'/run';
         $oldRunPath = $runPath.'.'.uniqid('');
 
+        $this->logger->info('Existing run dir will be moved to: '.$oldRunPath);
+
         $moves = [
             $runPath    => $oldRunPath,
             $newRunPath => $runPath,
         ];
 
         foreach ($moves as $from => $to) {
-            $fs->rename($from, $to);
+            try {
+                $this->logger->info("Move: $from => $to");
+                $fs->rename($from, $to);
+            } catch (\Exception $e) {
+                $this->logger->error('Failed fs move: '.$e->getMessage());
+                throw $e;
+            }
         }
 
         // Remove the old one
         try {
             $fs->remove($oldRunPath);
         } catch (\Exception $e) {
+            $this->logger->warning('There was a problem removing the old build files: '.$e->getMessage());
             // We just ignore an exception here.
             // It is unlikely to occur, and it's not a
             // big issue if it does.

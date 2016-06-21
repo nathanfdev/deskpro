@@ -32,8 +32,7 @@
 
 namespace DeskPRO\Bundle\UpgradeBundle;
 
-use DeskPRO\Bundle\UpgradeBundle\Command\DownloadBuildCommand;
-use DeskPRO\Bundle\UpgradeBundle\Command\StatusCommand;
+use DeskPRO\Bundle\UpgradeBundle\Command as UpgradeCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -41,8 +40,9 @@ class UpgradeBundle extends Bundle
 {
     public function registerCommands(Application $application)
     {
-        $application->add(new DownloadBuildCommand());
-        $application->add(new StatusCommand());
+        $application->add(new UpgradeCommand\DownloadBuildCommand());
+        $application->add(new UpgradeCommand\StatusCommand());
+        $application->add(new UpgradeCommand\UpdateSysBuildCommand());
     }
 
     public function getNamespace()
