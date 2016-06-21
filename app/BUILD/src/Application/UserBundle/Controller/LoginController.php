@@ -393,7 +393,7 @@ HTML;
         $inputEmail = $this->in->getString('email');
         if (!$inputEmail || !$this->in->getString('password')) {
             if ($request->getMethod() == 'POST') {
-                $this->session->set('failed_to_login', $inputEmail);
+                $this->session->set('failed_login_name', $inputEmail);
                 $this->session->save();
             }
 
