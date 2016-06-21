@@ -137,6 +137,7 @@ portal:
                 - DpBehat\Data\PeopleContext
                 - DpBehat\Data\CustomDataContext
                 - DpBehat\Data\TicketLayoutContext
+                - DpBehat\PermissionContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:

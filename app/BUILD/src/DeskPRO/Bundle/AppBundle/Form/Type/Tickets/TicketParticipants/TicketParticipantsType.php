@@ -42,7 +42,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Accepts comma separated list or array of emails.
+ * Accepts array of emails.
  */
 class TicketParticipantsType extends AbstractType
 {
@@ -51,7 +51,7 @@ class TicketParticipantsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData'], 100);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onMergeData']);
     }
 
@@ -70,6 +70,7 @@ class TicketParticipantsType extends AbstractType
     {
         $resolver
             ->setDefaults([
+                'inline'         => false,
                 'error_bubbling' => false,
                 'mapped'         => false,
                 'allow_add'      => true,
@@ -77,11 +78,12 @@ class TicketParticipantsType extends AbstractType
                 'entry_type'     => TicketParticipantType::class,
                 'entry_options'  => function (Options $options) {
                     return [
-                        'is_agent'    => $options['is_agent'],
-                        'owner'       => $options['owner'],
-                        'constraints' => new Assert\Valid(),
-                        'inline'      => true,
-                        'set_owner'   => false,
+                        'error_bubbling' => $options['inline'],
+                        'is_agent'       => $options['is_agent'],
+                        'owner'          => $options['owner'],
+                        'constraints'    => new Assert\Valid(),
+                        'inline'         => true,
+                        'set_owner'      => false,
                     ];
                 },
             ])

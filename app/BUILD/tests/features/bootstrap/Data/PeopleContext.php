@@ -159,13 +159,14 @@ class PeopleContext extends BaseContext
             ]);
 
             $person->setEmail($email, true);
-            $person->addUsergroup($this->everyoneGroupExists());
-            $person->addUsergroup($this->registeredGroupExists());
-            $person->addUsergroup($this->agentAllSafePermGroupExists());
-            $person->addUsergroup($this->agentAllPermGroupExists());
-
-            $this->persistAndFlush($person);
         }
+
+        $person->addUsergroup($this->everyoneGroupExists());
+        $person->addUsergroup($this->registeredGroupExists());
+        $person->addUsergroup($this->agentAllSafePermGroupExists());
+        $person->addUsergroup($this->agentAllPermGroupExists());
+
+        $this->persistAndFlush($person);
 
         DataContext::setReference($email, $person);
         if ($email === 'admin@deskpro.dev') {
@@ -177,7 +178,7 @@ class PeopleContext extends BaseContext
 
     /**
      * @Given :email agent exists
-     * @Given an agent with ":email" email exists
+     * @Given an agent with :email email exists
      *
      * @param string $email
      *
@@ -206,12 +207,13 @@ class PeopleContext extends BaseContext
             ]);
 
             $person->setEmail($email, true);
-            $person->addUsergroup($this->everyoneGroupExists());
-            $person->addUsergroup($this->registeredGroupExists());
-            $person->addUsergroup($this->agentAllSafePermGroupExists());
-
-            $this->persistAndFlush($person);
         }
+
+        $person->addUsergroup($this->everyoneGroupExists());
+        $person->addUsergroup($this->registeredGroupExists());
+        $person->addUsergroup($this->agentAllSafePermGroupExists());
+
+        $this->persistAndFlush($person);
 
         DataContext::setReference($email, $person);
         if ($email === 'agent@deskpro.dev') {
@@ -252,11 +254,12 @@ class PeopleContext extends BaseContext
             ]);
 
             $person->setEmail($email, true);
-            $person->addUsergroup($this->everyoneGroupExists());
-            $person->addUsergroup($this->registeredGroupExists());
-
-            $this->persistAndFlush($person);
         }
+
+        $person->addUsergroup($this->everyoneGroupExists());
+        $person->addUsergroup($this->registeredGroupExists());
+
+        $this->persistAndFlush($person);
 
         DataContext::setReference($email, $person);
         if ($email === 'user@deskpro.dev') {

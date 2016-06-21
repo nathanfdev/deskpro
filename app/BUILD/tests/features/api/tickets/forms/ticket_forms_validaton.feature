@@ -303,8 +303,8 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "errors.fields.cc.fields.cc_0.errors[1].code" should be equal to "extra_fields"
-    And the JSON node "errors.fields.cc.fields.cc_0.errors[1].message" should be equal to "Unexpected field names: cc"
+    And the JSON node "errors.fields.cc.fields.cc_0.errors[0].code" should be equal to "extra_fields"
+    And the JSON node "errors.fields.cc.fields.cc_0.errors[0].message" should be equal to "Unexpected field names: cc"
 
   Scenario: I sent not valid cc email
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:

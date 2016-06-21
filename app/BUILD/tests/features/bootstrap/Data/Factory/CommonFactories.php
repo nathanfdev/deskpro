@@ -78,7 +78,14 @@ class CommonFactories
     {
         $ticket = new Ticket();
         $ticket->disableAutoTicketProcess();
-        array_key_exists('agent', $data) or $data['agent'] = DataContext::getReference('me', false);
+
+        if (!array_key_exists('agent', $data)) {
+            $me = DataContext::getReference('me', false);
+            if ($me && $me->isAgent()) {
+                $data['agent'] = $me;
+            }
+        }
+
         Helper::pick($data, 'subject', $ticket, 'setSubject', uniqid('Ticket_'));
 
         SimpleFactory::provide($ticket, $data);

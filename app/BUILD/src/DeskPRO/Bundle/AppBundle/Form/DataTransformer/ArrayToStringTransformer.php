@@ -26,11 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\DataTransformerInterface;
 
 /**
@@ -60,6 +58,9 @@ class ArrayToStringTransformer implements DataTransformerInterface
     {
         if ($value === null) {
             return '';
+        }
+        if ($value instanceof ArrayCollection) {
+            $value = $value->toArray();
         }
 
         return implode($this->delimiter, (array) $value);
