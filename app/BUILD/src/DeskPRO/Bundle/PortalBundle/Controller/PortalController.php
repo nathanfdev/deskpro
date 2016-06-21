@@ -117,6 +117,10 @@ class PortalController extends AbstractController
             return $this->redirectToRoute('portal_login');
         }
 
+        if ($redirectToApp = $this->getOneAppRedirect()) {
+            return $redirectToApp;
+        }
+
         return $this->renderThemeView('Theme:Portal:home.html.twig',
             array(
                 'page_title'    => $this->createPageTitle()->homepage(),
@@ -517,6 +521,9 @@ class PortalController extends AbstractController
         }
     }
 
+    /**
+     * @return bool
+     */
     private function canUseNothing()
     {
         $checker = $this->container->get('security.authorization_checker');
@@ -528,5 +535,32 @@ class PortalController extends AbstractController
             || $checker->isGranted('USE_DOWNLOADS')
             || $checker->isGranted('USE_FEEDBACK')
         );
+    }
+
+    /**
+     * @return RedirectResponse
+     */
+    private function getOneAppRedirect()
+    {
+        $checker = $this->container->get('security.authorization_checker');
+
+        $tickets   = (int) $checker->isGranted('USE_TICKETS');
+        $articles  = ((int) $checker->isGranted('USE_ARTICLES')) << 1;
+        $news      = ((int) $checker->isGranted('USE_NEWS')) << 2;
+        $downloads = ((int) $checker->isGranted('USE_DOWNLOADS')) << 3;
+        $feedback  = ((int) $checker->isGranted('USE_FEEDBACK')) << 4;
+        $result    = 0b00000 | $tickets | $articles | $news | $downloads | $feedback;
+        $routeMap  = [
+            0b00001 => 'portal_new_ticket',
+            0b00010 => 'portal_kb',
+            0b00100 => 'portal_news',
+            0b01000 => 'portal_downloads',
+            0b10000 => 'portal_feedback',
+        ];
+
+        // lets check the result is power of two
+        if ($result && !($result & ($result - 1)) && isset($routeMap[$result])) {
+            return $this->redirectToRoute($routeMap[$result]);
+        }
     }
 }
