@@ -112,6 +112,12 @@ class InstallFixturesStep extends AbstractStep
     {
         $db = $this->getContext()->getMainContainer()->get('database_connection');
 
+        $db->delete('settings', ['name' => 'core.install_source']);
+        $db->insert('settings', [
+            'name'  => 'core.install_source',
+            'value' => $this->getContext()->getSession()->getSource() ?: 'default',
+        ]);
+
         #---------------------------------------------
         # Filestorage method
         #---------------------------------------------
