@@ -33,6 +33,7 @@ use Psr\Log\LogLevel;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Exception\LogoutException;
 
 class SystemErrorHandler
 {
@@ -186,6 +187,7 @@ class SystemErrorHandler
                 && $exception->getStatusCode() < 500)
             || $exception instanceof MethodNotAllowedException
             || $exception instanceof AccessDeniedException
+            || $exception instanceof LogoutException
         ) {
             return false;
         }

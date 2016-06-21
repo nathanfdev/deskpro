@@ -89,7 +89,7 @@ class CustomFieldUtil
                 if (!$data->getValue()) {
                     $ids = explode(',', $data->getInput());
                 } else {
-                    $ids = array($data->getValue());
+                    $ids = array($data->getFieldId());
                 }
                 $selected = array();
                 foreach ($ids as $id) {
@@ -111,5 +111,37 @@ class CustomFieldUtil
         }
 
         return $value;
+    }
+
+    /**
+     * @param CustomDefAbstract $field
+     * @param                   $customData
+     *
+     * @return CustomDataAbstract[]
+     */
+    public static function getCustomDataForField(CustomDefAbstract $field, $customData)
+    {
+        $fieldId = $field->getId();
+
+        $matches  = [];
+        $isChoice = false;
+        foreach ($customData as $data) {
+            $cdField     = $data->getField();
+            $cdRootField = $data->getRootField();
+
+            if (($cdField && $cdField->getId() === $fieldId) || ($cdRootField && $cdRootField->getId() === $fieldId)) {
+                $matches[] = $data;
+
+                if ($cdRootField && $cdRootField->isChoiceType()) {
+                    $isChoice = true;
+                }
+            }
+        }
+
+        if (empty($matches)) {
+            return [];
+        }
+
+        return $matches;
     }
 }

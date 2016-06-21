@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\CustomFields\Handler\Date;
@@ -158,7 +159,7 @@ class TicketViewDataService extends AbstractDataService
                         break;
                     }
                     /* @var \Application\DeskPRO\Entity\CustomDataTicket $data */
-                    $data = $ticket->getCustomDataForField($field_def);
+                    $data = CustomFieldUtil::getCustomDataForField($field_def, $ticket->getCustomData());
                     $this->addCustomDataProperty($view, $field_id, $field_def, $data, $layout_field->isVisibleOnViewAlways());
                     break;
                 case FormFields::ORG_FIELD:
@@ -172,7 +173,7 @@ class TicketViewDataService extends AbstractDataService
                         break;
                     }
                     /* @var \Application\DeskPRO\Entity\CustomDataOrganization $data */
-                    $data = $organization->getCustomDataForField($field_def);
+                    $data = CustomFieldUtil::getCustomDataForField($field_def, $organization->getCustomData());
                     $this->addCustomDataProperty($view, $field_id, $field_def, $data, $layout_field->isVisibleOnViewAlways());
                     break;
                 case FormFields::USER_FIELD:
@@ -182,7 +183,7 @@ class TicketViewDataService extends AbstractDataService
                         break;
                     }
                     /* @var \Application\DeskPRO\Entity\CustomDataPerson $data */
-                    $data = $ticket->person->getCustomDataForField($field_def);
+                    $data = CustomFieldUtil::getCustomDataForField($field_def, $ticket->person->getCustomData());
                     $this->addCustomDataProperty($view, $field_id, $field_def, $data, $layout_field->isVisibleOnViewAlways());
                     break;
                 case FormFields::CUSTOM_FIELD: // per-user custom fields
@@ -262,7 +263,16 @@ class TicketViewDataService extends AbstractDataService
      */
     public function addCustomDataProperty(TicketView $view, $field_id, CustomDefAbstract $field_def, $data, $is_always_visible)
     {
-        $value = $data ? CustomFieldUtil::getValueForCustomFormField($field_def, $data) : null;
+        if (is_array($data)) {
+            $value = array_map(function ($data) use ($field_def) {
+                $value = $data ? CustomFieldUtil::getValueForCustomFormField($field_def, $data) : null;
+
+                return $value;
+            }, $data);
+            $value = implode(', ', $value);
+        } else {
+            $value = $data ? CustomFieldUtil::getValueForCustomFormField($field_def, $data) : null;
+        }
 
         $view->addProperty(
             $field_id,
