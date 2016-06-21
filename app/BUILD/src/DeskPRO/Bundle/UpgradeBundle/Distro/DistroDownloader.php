@@ -110,15 +110,33 @@ class DistroDownloader implements LoggerAwareInterface
      */
     private function doesTargetExist($targetPath, $checksum = null)
     {
+        $this->logger->info(sprintf('Target file: %s', $targetPath));
+
         if (file_exists($targetPath)) {
-            $hash = hash_file('sha256', $targetPath);
-            if ($checksum !== $hash) {
-                $fs = new Filesystem();
-                $fs->remove($targetPath);
+            $this->logger->info('Target already exists');
+
+            if ($checksum) {
+                $this->logger->info('Verifying checksum');
+                $hash = hash_file('sha256', $targetPath);
+
+                $this->logger->info('Calculated checksum: '.$hash);
+                $this->logger->info('Expected checksum:   '.$checksum);
+
+                if ($checksum === $hash) {
+                    $this->logger->info('Checksum OK');
+
+                    return true;
+                }
+
+                $this->logger->info('Checksum invalid');
+            } else {
+                $this->logger->info('No checksum provided to validate the file');
             }
 
-            // otherwise we have the file already and it's already correct
-            return true;
+            $this->logger->info('Deleting existing file');
+
+            $fs = new Filesystem();
+            $fs->remove($targetPath);
         }
 
         return false;
@@ -141,58 +159,88 @@ class DistroDownloader implements LoggerAwareInterface
     /**
      * @param DistroRelease $releaseDetail
      * @param string        $targetPath
+     *
+     * @throws \RuntimeException                                   When failing to copy stream
+     * @throws \UnexpectedValueException                           When failing to verify checksum
+     * @throws \Symfony\Component\Filesystem\Exception\IOException When failing to delete an existing file
+     * @throws \Exception
      */
     public function download(DistroRelease $releaseDetail, $targetPath)
     {
-        if ($this->doesTargetExist($targetPath, $releaseDetail->getSha256())) {
-            return;
+        try {
+            if ($this->doesTargetExist($targetPath, $releaseDetail->getSha256())) {
+                return;
+            }
+
+            $targetFp     = Psr7\try_fopen($targetPath, 'w');
+            $targetStream = Psr7\stream_for($targetFp);
+
+            $request = $this->client->request('GET', $releaseDetail->getZipUrl());
+            Psr7\copy_to_stream($request->getBody(), $targetStream);
+            fclose($targetFp);
+
+            $this->verifyFile($targetPath, $releaseDetail->getSha256());
+        } catch (\Exception $e) {
+            $this->logger->error(sprintf('[%s:%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
+            throw $e;
         }
-
-        $targetFp     = Psr7\try_fopen($targetPath, 'w');
-        $targetStream = Psr7\stream_for($targetFp);
-
-        $request = $this->client->request('GET', $releaseDetail->getZipUrl());
-        Psr7\copy_to_stream($request->getBody(), $targetStream);
-        fclose($targetFp);
-
-        $this->verifyFile($targetPath, $releaseDetail->getSha256());
     }
 
     /**
      * @param string $zipUrl
      * @param string $targetPath
      * @param string $checksum
+     *
+     * @throws \RuntimeException                                   When failing to copy stream
+     * @throws \UnexpectedValueException                           When failing to verify checksum
+     * @throws \Symfony\Component\Filesystem\Exception\IOException When failing to delete an existing file
+     * @throws \Exception
      */
     public function downloadUrl($zipUrl, $targetPath, $checksum = null)
     {
-        if ($this->doesTargetExist($targetPath, $checksum)) {
-            return;
+        try {
+            if ($this->doesTargetExist($targetPath, $checksum)) {
+                return;
+            }
+
+            $targetFp     = Psr7\try_fopen($targetPath, 'w');
+            $targetStream = Psr7\stream_for($targetFp);
+
+            $response = $this->client->request('GET', $zipUrl);
+            Psr7\copy_to_stream($response->getBody(), $targetStream);
+            fclose($targetFp);
+
+            $this->verifyFile($targetPath, $checksum);
+        } catch (\Exception $e) {
+            $this->logger->error(sprintf('[%s:%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
+            throw $e;
         }
-
-        $targetFp     = Psr7\try_fopen($targetPath, 'w');
-        $targetStream = Psr7\stream_for($targetFp);
-
-        $response = $this->client->request('GET', $zipUrl);
-        Psr7\copy_to_stream($response->getBody(), $targetStream);
-        fclose($targetFp);
-
-        $this->verifyFile($targetPath, $checksum);
     }
 
     /**
      * @param string $zipPath
      * @param string $targetPath
      * @param string $checksum
+     *
+     * @throws \RuntimeException                                   When failing to copy stream
+     * @throws \UnexpectedValueException                           When failing to verify checksum
+     * @throws \Symfony\Component\Filesystem\Exception\IOException When failing to delete an existing file
+     * @throws \Exception
      */
     public function downloadLocalFile($zipPath, $targetPath, $checksum = null)
     {
-        if ($this->doesTargetExist($targetPath, $checksum)) {
-            return;
+        try {
+            if ($this->doesTargetExist($targetPath, $checksum)) {
+                return;
+            }
+
+            $fs = new Filesystem();
+            $fs->copy($zipPath, $targetPath, true);
+
+            $this->verifyFile($targetPath, $checksum);
+        } catch (\Exception $e) {
+            $this->logger->error(sprintf('[%s:%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
+            throw $e;
         }
-
-        $fs = new Filesystem();
-        $fs->copy($zipPath, $targetPath, true);
-
-        $this->verifyFile($targetPath, $checksum);
     }
 }
