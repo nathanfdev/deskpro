@@ -14,8 +14,10 @@ const runEmbed = function(helpdeskUrl, options, containerEl) {
 
   (node.frameElement || node).style.cssText = 'border: none; margin: 0; padding: 0;';
 
+  const langSeg = language && language != '0' ? `${language}/` : '';
+
   node.src = (function() {
-    let src = helpdeskUrl + `/focus-win/${language}/new-ticket`;
+    let src = helpdeskUrl + `/focus-win${langSeg}/new-ticket`;
     if (department) {
       src += `?department_id=${department}`;
       if (hide_department) {
