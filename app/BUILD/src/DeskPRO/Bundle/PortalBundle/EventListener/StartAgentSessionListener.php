@@ -81,7 +81,9 @@ class StartAgentSessionListener implements EventSubscriberInterface
         // TODO this is still flawed, the initial request doesnt seem to
         // cause TransferSessionAuthProvider to execute and actually transfer the agent session
 
-        if (!$request->cookies->has('dpsid') && $request->cookies->has('dpsid-agent')) {
+        if (!$request->cookies->has('dpsid')
+            && ($request->cookies->has('dpsid-agent') || $request->cookies->has('dpsid-admin'))
+        ) {
             if (!$this->session->isStarted()) {
                 $this->session->start();
             }

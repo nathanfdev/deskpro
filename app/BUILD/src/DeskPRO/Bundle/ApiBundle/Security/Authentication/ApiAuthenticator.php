@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Security\Authentication;
 
 use Application\DeskPRO\Entity\Person;
@@ -63,7 +64,10 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
     public function createToken(Request $request, $providerKey)
     {
         // agent session cookie
-        if ($session_id = $request->cookies->get('dpsid-agent')) {
+        if (
+            ($session_id = $request->cookies->get('dpsid-agent'))
+            || ($session_id = $request->cookies->get('dpsid-admin'))
+        ) {
             $agent_token = new AgentSessionSecurityToken('anon.', $session_id, $providerKey);
 
             // add app if possible

@@ -197,7 +197,7 @@ class DpTransferSessionAuthListener implements ListenerInterface
     protected function checkAgentInterfaceAuthNeedsTransfer(Request $request)
     {
         // not logged in to portal
-        if ($sid = $request->cookies->get('dpsid-agent')) {
+        if (($sid = $request->cookies->get('dpsid-agent')) || ($sid = $request->cookies->get('dpsid-admin'))) {
             $session_id    = Session::getIdFromCode($sid);
             $agent_session = App::getDb()->fetchAssoc(
                 '
