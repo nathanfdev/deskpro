@@ -35,10 +35,9 @@ define [
   AdminModule.factory('dpHttpSessionInterceptor', ['$q', ($q) ->
     return {
       responseError: (rejection) ->
-        if rejection.status? and rejection.data?.error? and rejection.status == 403 and rejection.data.error == "session_expired"
+        if rejection.status? and rejection.status == 403
           window.location = window.DP_BASE_URL + 'agent/login?timeout=1&return=' + encodeURIComponent(window.DP_BASE_URL + 'admin/' + window.location.hash);
-        else
-          return $q.reject(rejection)
+        return $q.reject(rejection)
     }
   ])
   AdminModule.config(['$httpProvider', ($httpProvider) ->
