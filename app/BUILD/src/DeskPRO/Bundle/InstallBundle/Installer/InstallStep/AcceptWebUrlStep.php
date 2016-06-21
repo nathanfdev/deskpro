@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 
+use DeskPRO\Bundle\InstallBundle\InstallSession\InstallSession;
 use DpSys\SoftwareRequirements\DeskproRequirements;
 use Orb\Util\Strings;
 use Symfony\Component\Console\Question\Question;
@@ -102,6 +103,10 @@ class AcceptWebUrlStep extends AbstractStep
 
     private function validateUrl($url)
     {
+        if ($this->getSession()->getSource() == InstallSession::SOURCE_WIN_INSTALLER) {
+            return true;
+        }
+
         $url = rtrim($url, '/');
         $env = $this->getContext()->getDpEnv();
 
@@ -227,6 +232,10 @@ class AcceptWebUrlStep extends AbstractStep
      */
     private function validateRequirements($res)
     {
+        if ($this->getSession()->getSource() == InstallSession::SOURCE_WIN_INSTALLER) {
+            return true;
+        }
+
         if (!$res) {
             return false;
         }
