@@ -64,7 +64,7 @@ class BrandSetting extends AbstractEntityRepository
                     value = VALUES(value)
             ', [$name, $value, $brand->getId()]);
         } else {
-            $db->delete('settings', ['name' => $name, 'brand_id' => $brand->getId()]);
+            $db->delete('settings_brand', ['name' => $name, 'brand_id' => $brand->getId()]);
         }
 
         return $this;

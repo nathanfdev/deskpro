@@ -26,14 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Organization;
@@ -385,11 +382,17 @@ SQL
             "
         );
 
+        // we need a brand here, but the other db's use data.php which has all the brands
+        $brand = new Brand();
+        $brand->setName('default');
+        $this->getEm()->persist($brand);
+        $this->getEm()->flush();
+
         $this->getDb()->exec(
             "
             REPLACE INTO `settings` (`name`, `value`)
             VALUES
-                ('portal.default_brand', '1'),
+                ('portal.default_brand', '".$brand->getId()."'),
                 ('core.app_secret', 'YXI5Z2HSQ9IF8KROQQ63GL4FB4CV57ZIIZ7CZO68FUDYBZIP2M'),
                 ('core.cron_logreport.cli-phperr.log', '1380716762'),
                 ('core.default_from_email', 'noreply@example.com'),

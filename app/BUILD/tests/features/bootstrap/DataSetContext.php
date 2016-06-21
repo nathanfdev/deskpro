@@ -114,9 +114,9 @@ class DataSetContext extends BaseContext
         }
 
         if (self::$reinstall) {
-            echo 'successfully reinstalled data set (took '.(time() - $install_start).' seconds)';
+            echo 'successfully reinstalled '.$set.' data set (took '.(time() - $install_start).' seconds)';
         } else {
-            echo 'successfully installed data set (took '.(time() - $install_start).' seconds)';
+            echo 'successfully installed '.$set.' data set (took '.(time() - $install_start).' seconds)';
         }
 
         DataContext::clear();

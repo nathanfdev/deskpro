@@ -68,7 +68,7 @@ class BrandsController extends CrudController
      *      requirements={
      *          {
      *              "name"="id",
-     *              "requirement"="deafult|\d+",
+     *              "requirement"="default|\d+",
      *              "description"="The id of the resource or default",
      *              "dataType"="integer"
      *          }
