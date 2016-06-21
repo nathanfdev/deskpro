@@ -37,6 +37,41 @@ class StringUtils
     {
     }
 
+    /**
+     * @param string $format
+     * @param array  $args
+     * @param string $default
+     *
+     * @return string
+     */
+    public static function format($format, array $args, $default = '__EXCEPTION__')
+    {
+        $values     = [];
+        $realFormat = preg_replace_callback('#%(\((?P<name>.?)\))?#', function (array $match) use (&$values, $args,
+            $default) {
+            $name = $match['name'];
+            if (array_key_exists($args, $name)) {
+                $val = $args[$name];
+            } else {
+                if ($default === '__EXCEPTION__') {
+                    throw new \InvalidArgumentException('Unknown named argument');
+                }
+                $val = $default;
+            }
+
+            $values[] = $val;
+
+            return '%';
+        }, $format);
+
+        return vsprintf($realFormat, $values);
+    }
+
+    /**
+     * @param string $string
+     *
+     * @return string
+     */
     public static function toSnakeCase($string)
     {
         $string = preg_replace('/(.)([A-Z][a-z]+)/', '$1_$2', $string);
@@ -46,6 +81,12 @@ class StringUtils
         return ltrim(strtolower($string), '_');
     }
 
+    /**
+     * @param string $string
+     * @param bool   $upper
+     *
+     * @return string
+     */
     public static function toCamelCase($string, $upper = true)
     {
         $result = implode('', array_map('ucfirst', explode('_', $string)));
