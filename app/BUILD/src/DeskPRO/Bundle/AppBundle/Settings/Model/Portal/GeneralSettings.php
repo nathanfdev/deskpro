@@ -26,11 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Settings\Model;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\Portal;
 
+use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use JMS\Serializer\Annotation as JMS;
 
-class PortalGeneralSettings extends AbstractBrandAwareSettings
+class GeneralSettings extends AbstractBrandAwareSettings
 {
     /**
      * Site name.
@@ -142,7 +143,7 @@ class PortalGeneralSettings extends AbstractBrandAwareSettings
     /**
      * @param string $siteName
      *
-     * @return PortalGeneralSettings
+     * @return GeneralSettings
      */
     public function setSiteName($siteName)
     {
@@ -162,7 +163,7 @@ class PortalGeneralSettings extends AbstractBrandAwareSettings
     /**
      * @param string $siteUrl
      *
-     * @return PortalGeneralSettings
+     * @return GeneralSettings
      */
     public function setSiteUrl($siteUrl)
     {
@@ -197,7 +198,7 @@ class PortalGeneralSettings extends AbstractBrandAwareSettings
     /**
      * @param bool $appsFeedback
      *
-     * @return PortalGeneralSettings
+     * @return GeneralSettings
      */
     public function setAppsFeedback($appsFeedback)
     {
@@ -217,7 +218,7 @@ class PortalGeneralSettings extends AbstractBrandAwareSettings
     /**
      * @param bool $appsKb
      *
-     * @return PortalGeneralSettings
+     * @return GeneralSettings
      */
     public function setAppsKb($appsKb)
     {
@@ -237,7 +238,7 @@ class PortalGeneralSettings extends AbstractBrandAwareSettings
     /**
      * @param bool $appsNews
      *
-     * @return PortalGeneralSettings
+     * @return GeneralSettings
      */
     public function setAppsNews($appsNews)
     {
@@ -257,7 +258,7 @@ class PortalGeneralSettings extends AbstractBrandAwareSettings
     /**
      * @param bool $appsDownloads
      *
-     * @return PortalGeneralSettings
+     * @return GeneralSettings
      */
     public function setAppsDownloads($appsDownloads)
     {
@@ -277,7 +278,7 @@ class PortalGeneralSettings extends AbstractBrandAwareSettings
     /**
      * @param bool $ifacePortal
      *
-     * @return PortalGeneralSettings
+     * @return GeneralSettings
      */
     public function setIfacePortal($ifacePortal)
     {
@@ -297,7 +298,7 @@ class PortalGeneralSettings extends AbstractBrandAwareSettings
     /**
      * @param bool $ifaceWidget
      *
-     * @return PortalGeneralSettings
+     * @return GeneralSettings
      */
     public function setIfaceWidget($ifaceWidget)
     {
@@ -317,7 +318,7 @@ class PortalGeneralSettings extends AbstractBrandAwareSettings
     /**
      * @param bool $showRatings
      *
-     * @return PortalGeneralSettings
+     * @return GeneralSettings
      */
     public function setShowRatings($showRatings)
     {
@@ -337,7 +338,7 @@ class PortalGeneralSettings extends AbstractBrandAwareSettings
     /**
      * @param int $showRatingsMinVotes
      *
-     * @return PortalGeneralSettings
+     * @return GeneralSettings
      */
     public function setShowRatingsMinVotes($showRatingsMinVotes)
     {
@@ -357,7 +358,7 @@ class PortalGeneralSettings extends AbstractBrandAwareSettings
     /**
      * @param bool $publishComments
      *
-     * @return PortalGeneralSettings
+     * @return GeneralSettings
      */
     public function setPublishComments($publishComments)
     {

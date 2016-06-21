@@ -31,7 +31,11 @@ namespace DeskPRO\Bundle\AppBundle\Settings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAntiAbuseSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalUserRateLimit;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
-use DeskPRO\Bundle\AppBundle\Settings\Model\PortalGeneralSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\DownloadsSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\FeedbackSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GeneralSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\KbSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\NewsSettings;
 
 /**
  * Class PortalSettingsResolver.
@@ -52,6 +56,16 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
     const SHOW_RATINGS           = 'user.show_ratings';
     const SHOW_RATINGS_MIN_VOTES = 'user.show_ratings_min_votes';
     const PUBLISH_COMMENTS       = 'user.publish_comments';
+
+    const TAB_FEEDBACK  = 'user.portal_tab_feedback';
+    const TAB_KB        = 'user.portal_tab_articles';
+    const TAB_NEWS      = 'user.portal_tab_news';
+    const TAB_DOWNLOADS = 'user.portal_tab_downloads';
+
+    const SUBSCRIPTION_FEEDBACK  = 'user.feedback_subscriptions';
+    const SUBSCRIPTION_KB        = 'user.kb_subscriptions';
+    const SUBSCRIPTION_NEWS      = 'user.news_subscriptions';
+    const SUBSCRIPTION_DOWNLOADS = 'user.downloads_subscriptions';
 
     /**
      * {@inheritdoc}
@@ -106,9 +120,12 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
         $this->setRateLimitGroup($userRateLimit->getShareContent(), 'rate_limit.share_content'.$userType);
     }
 
+    /**
+     * @return GeneralSettings
+     */
     public function getGeneralSettings()
     {
-        $model = new PortalGeneralSettings();
+        $model = new GeneralSettings();
 
         $model
             ->setSiteName($this->getSetting(self::SITE_NAME))
@@ -122,6 +139,70 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
             ->setShowRatings($this->getSetting(self::SHOW_RATINGS))
             ->setShowRatingsMinVotes($this->getSetting(self::SHOW_RATINGS_MIN_VOTES))
             ->setPublishComments($this->getSetting(self::PUBLISH_COMMENTS))
+        ;
+
+        return $model;
+    }
+
+    /**
+     * @return KbSettings
+     */
+    public function getKbSettings()
+    {
+        $model = new KbSettings();
+
+        $model
+            ->setEnabled($this->getSetting(self::APPS_KB))
+            ->setTabEnabled($this->getSetting(self::TAB_KB))
+            ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_KB))
+        ;
+
+        return $model;
+    }
+
+    /**
+     * @return FeedbackSettings
+     */
+    public function getFeedbackSettings()
+    {
+        $model = new FeedbackSettings();
+
+        $model
+            ->setEnabled($this->getSetting(self::APPS_FEEDBACK))
+            ->setTabEnabled($this->getSetting(self::TAB_FEEDBACK))
+            ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_FEEDBACK))
+        ;
+
+        return $model;
+    }
+
+    /**
+     * @return NewsSettings
+     */
+    public function getNewsSettings()
+    {
+        $model = new NewsSettings();
+
+        $model
+            ->setEnabled($this->getSetting(self::APPS_NEWS))
+            ->setTabEnabled($this->getSetting(self::TAB_NEWS))
+            ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_NEWS))
+        ;
+
+        return $model;
+    }
+
+    /**
+     * @return DownloadsSettings
+     */
+    public function getDownloadsSettings()
+    {
+        $model = new DownloadsSettings();
+
+        $model
+            ->setEnabled($this->getSetting(self::APPS_DOWNLOADS))
+            ->setTabEnabled($this->getSetting(self::TAB_DOWNLOADS))
+            ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_DOWNLOADS))
         ;
 
         return $model;

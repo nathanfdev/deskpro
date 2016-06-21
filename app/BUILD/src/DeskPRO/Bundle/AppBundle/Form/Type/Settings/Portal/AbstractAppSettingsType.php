@@ -26,19 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal;
 
 use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\PortalGeneralSettings;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PortalGeneralSettingsType extends AbstractType
+abstract class AbstractAppSettingsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -46,30 +41,12 @@ class PortalGeneralSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('site_name', TextType::class)
-            ->add('site_url', UrlType::class)
-            ->add('apps_feedback', ApiBooleanType::class)
-            ->add('apps_kb', ApiBooleanType::class)
-            ->add('apps_news', ApiBooleanType::class)
-            ->add('apps_downloads', ApiBooleanType::class)
-            ->add('iface_portal', ApiBooleanType::class)
-            ->add('iface_widget', ApiBooleanType::class)
-            ->add('show_ratings', ApiBooleanType::class)
-            ->add('show_ratings_min_votes', IntegerType::class)
-            ->add('publish_comments', ApiBooleanType::class)
+            ->add('enabled', ApiBooleanType::class)
+            ->add('tab_enabled', ApiBooleanType::class)
+            ->add('subscriptions', ApiBooleanType::class)
             ->add('brand', 'entity', [
                 'class' => Brand::class,
             ])
         ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'data_class' => PortalGeneralSettings::class,
-        ]);
     }
 }

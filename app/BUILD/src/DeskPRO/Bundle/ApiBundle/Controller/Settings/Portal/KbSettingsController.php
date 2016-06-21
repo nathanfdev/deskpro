@@ -26,12 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Settings;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Settings\Portal;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\PortalGeneralSettingsType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\PortalGeneralSettings;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\KbSettingsType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\KbSettings;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -39,20 +40,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class BrandSettingsController.
+ * Class KbSettingsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/settings/brands/{brandId}")
+ * @Rest\Route("/settings/brands/{brandId}/portal/kb")
  */
-class BrandSettingsController extends AbstractBrandAwareSettingsController
+class KbSettingsController extends AbstractBrandAwareSettingsController
 {
-    /**
-     * @return PortalGeneralSettings
-     */
     protected function getModel()
     {
-        /** @var PortalGeneralSettings $settings */
-        $settings = $this->get('portal_settings_resolver')->getGeneralSettings();
+        /** @var KbSettings $settings */
+        $settings = $this->get('portal_settings_resolver')->getKbSettings();
 
         $settings->setBrand($this->brand);
 
@@ -61,12 +59,12 @@ class BrandSettingsController extends AbstractBrandAwareSettingsController
 
     protected function getType()
     {
-        return PortalGeneralSettingsType::class;
+        return KbSettingsType::class;
     }
 
     /**
-     * @param PortalGeneralSettings $model
-     * @param int                   $brandId
+     * @param KbSettings $model
+     * @param int        $brandId
      */
     protected function persistModel($model, $brandId)
     {
@@ -74,40 +72,32 @@ class BrandSettingsController extends AbstractBrandAwareSettingsController
 
         $settings_repository = $this->getSettingRepository();
         $settings_repository
-            ->updateSetting(PortalSettingsResolver::SITE_NAME, $model->getSiteName(), $brand)
-            ->updateSetting(PortalSettingsResolver::SITE_URL, $model->getSiteUrl(), $brand)
-            ->updateSetting(PortalSettingsResolver::APPS_FEEDBACK, $model->isAppsFeedback(), $brand)
-            ->updateSetting(PortalSettingsResolver::APPS_KB, $model->isAppsKb(), $brand)
-            ->updateSetting(PortalSettingsResolver::APPS_NEWS, $model->isAppsNews(), $brand)
-            ->updateSetting(PortalSettingsResolver::APPS_DOWNLOADS, $model->isAppsDownloads(), $brand)
-            ->updateSetting(PortalSettingsResolver::IFACE_PORTAL, $model->isIfacePortal(), $brand)
-            ->updateSetting(PortalSettingsResolver::IFACE_WIDGET, $model->isIfaceWidget(), $brand)
-            ->updateSetting(PortalSettingsResolver::SHOW_RATINGS, $model->isShowRatings(), $brand)
-            ->updateSetting(PortalSettingsResolver::SHOW_RATINGS_MIN_VOTES, $model->getShowRatingsMinVotes(), $brand)
-            ->updateSetting(PortalSettingsResolver::PUBLISH_COMMENTS, $model->isPublishComments(), $brand)
+            ->updateSetting(PortalSettingsResolver::APPS_KB, $model->isEnabled(), $brand)
+            ->updateSetting(PortalSettingsResolver::TAB_KB, $model->isTabEnabled(), $brand)
+            ->updateSetting(PortalSettingsResolver::SUBSCRIPTION_KB, $model->isSubscriptions(), $brand)
         ;
     }
 
     /**
      * @ApiDoc(
-     *     section="Brand Settings",
+     *     section="Portal Settings",
      *     description="Get portal general settings",
      *     statusCodes={
      *         200="Success",
      *         404="Not Found error will returned in case we can't find the specified brand"
      *     },
      *     output={
-     *          "class"="Application\DeskPRO\Settings\GeneralPortalSettings"
+     *          "class"="DeskPRO\Bundle\AppBundle\Settings\Model\Portal\KbSettings"
      *      }
      * )
      *
-     * @Rest\Get("/portal_general")
+     * @Rest\Get("")
      *
      * @param int $brandId
      *
      * @return View
      */
-    public function getPortalGeneralAction($brandId)
+    public function getAction($brandId)
     {
         $this->setBrandStack($brandId);
 
@@ -118,7 +108,7 @@ class BrandSettingsController extends AbstractBrandAwareSettingsController
      * Save general settings.
      *
      * @ApiDoc(
-     *     section="Brand Settings",
+     *     section="Portal Settings",
      *     description="Save portal general settings",
      *
      *     statusCodes={
@@ -126,19 +116,19 @@ class BrandSettingsController extends AbstractBrandAwareSettingsController
      *         400="In case your request was malformed",
      *     },
      *     input= {
-     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\PortalGeneralSettingsType",
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\Portal\KbSettingsType",
      *         "name"="",
      *         "options"={"method"="POST"},
      *     }
      *)
-     * @Rest\Post("/portal_general")
+     * @Rest\Post("")
      *
      * @param Request $request
      * @param int     $brandId
      *
      * @return View
      */
-    public function postPortalGeneralAction(Request $request, $brandId)
+    public function postAction(Request $request, $brandId)
     {
         $this->handleForm($request, $brandId);
 
