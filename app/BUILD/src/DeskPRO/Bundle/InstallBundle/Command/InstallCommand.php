@@ -218,6 +218,9 @@ class InstallCommand extends ContainerAwareCommand
 
         if ($session->getSource() === InstallSession::SOURCE_WIN_INSTALLER || $input->getOption('skip-wizard')) {
             $skip_list[] = 'file_integrity';
+            $skip_list[] = 'own_requirements';
+            $skip_list[] = 'install_cron_command';
+            $skip_list[] = 'check_existing';
         }
 
         if ($input->getOption('skip-wizard')) {
