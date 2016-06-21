@@ -1,11 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ListItemStatefulContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
-import { applyParams } from '../../Actions/publishListActions';
 import { urlSanitize } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Service/routing';
+import { routingStateSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
+import { applyParams } from '../../Actions/publishListActions';
 
 @connect(state => ({
-  hash: state.Application.routing.get('hash')
+  hash: routingStateSelector(state)
 }))
 export class ListItemContainer extends Component {
   static propTypes = {

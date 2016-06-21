@@ -1,45 +1,46 @@
-import { createAction } from 'Ampliflux';
+import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
-import { setupActionAlerts }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
+import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 import { setImMe } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
 
 export const donePreloading = createAction('APP_BOOTSTRAP_DONE_PRELOADING');
-export const preloadData = createAction(
+export const preloadData    = createAction(
   'BOOTSTRAP_PRELOAD_DATA',
   () => dispatch => new Promise(
     (resolve) => {
-      const batch = 'DP_API/batch?get='
-          + 'DP_API/ticket_departments'
-          + ',DP_API/chat_departments'
-          + ',DP_API/ticket_departments%3Fmy%3Dtrue'
-          + ',DP_API/agents'
-          + ',DP_API/agent_teams'
-          + ',DP_API/agent_teams%3Fmy%3Dtrue'
-          + ',DP_API/languages'
-          + ',DP_API/user_groups'
-          + ',DP_API/helpdesk/agent-client/settings'
-          + ',DP_API/notify/setup/action-alerts'
-          + ',DP_API/me'
-        ;
+      const batchComponents = {
+        chat_departments:      { endpoint: 'chat_departments' },
+        agents:                { endpoint: 'agents' },
+        languages:             { endpoint: 'languages' },
+        user_groups:           { endpoint: 'user_groups' },
+        settings:              { endpoint: 'helpdesk/agent-client/settings' },
+        alerts:                { endpoint: 'notify/setup/action-alerts' },
+        me:                    { endpoint: 'me' },
+        agent_teams:           { endpoint: 'agent_teams' },
+        my_agent_teams:        { endpoint: 'agent_teams', query: 'my=true' },
+        ticket_departments:    { endpoint: 'ticket_departments' },
+        my_ticket_departments: { endpoint: 'ticket_departments', query: 'my=true' }
+      };
+      const batch           = api.prepareParams(batchComponents);
+
       api.sendGet(batch)
         .success(({ responses }) => {
           const data = flattenBatchResponses(responses);
-          dispatch(setCollection('Department', 'all_tickets', data[0]));
-          dispatch(setCollection('Department', 'all_chat', data[1]));
-          dispatch(setCollection('Department', 'my_tickets', data[2]));
-          dispatch(setCollection('Person', 'agents', data[3]));
-          dispatch(setCollection('AgentTeam', 'all', data[4]));
-          dispatch(setCollection('AgentTeam', 'my', data[5]));
-          dispatch(setCollection('Language', 'all', data[6]));
-          dispatch(setCollection('UserGroup', 'all', data[7]));
-          dispatch(setAgentSettings(data[8]));
-          dispatch(setupActionAlerts(data[9]));
-          dispatch(setCollection('Person', 'me', [data[10].person]));
-          dispatch(setImMe(data[10].person));
+          dispatch(setCollection('Department', 'all_tickets', data.ticket_departments));
+          dispatch(setCollection('Department', 'all_chat', data.chat_departments));
+          dispatch(setCollection('Department', 'my_tickets', data.my_ticket_departments));
+          dispatch(setCollection('Person', 'agents', data.agents));
+          dispatch(setCollection('AgentTeam', 'all', data.agent_teams));
+          dispatch(setCollection('AgentTeam', 'my', data.my_agent_teams));
+          dispatch(setCollection('Language', 'all', data.languages));
+          dispatch(setCollection('UserGroup', 'all', data.user_groups));
+          dispatch(setAgentSettings(data.settings));
+          dispatch(setupActionAlerts(data.alerts));
+          dispatch(setCollection('Person', 'me', [data.me.person]));
+          dispatch(setImMe(data.me.person));
 
           dispatch(donePreloading());
         })

@@ -72,16 +72,17 @@ export const initialLoad = createAction(
       Object.keys(currentGroupingParams)
         .forEach(key => groupingQuery.push(`group_by[${key}]=${currentGroupingParams[key].main_grouping}`));
       const groupingQueryString = groupingQuery.join('%26');
+      const batchComponents     = {
+        labels:          { endpoint: 'ticket_labels' },
+        categories:      { endpoint: 'ticket_categories' },
+        workflows:       { endpoint: 'ticket_workflows' },
+        products:        { endpoint: 'ticket_products' },
+        starsCount:      { endpoint: 'ticket_stars/counts' },
+        filters:         { endpoint: 'new/ticket_filters' },
+        filterSetsCount: { endpoint: 'new/ticket_filter_sets/all/counts', query: groupingQueryString }
+      };
 
-      const batch = 'DP_API/batch'
-              + `?get[filterSetsCount]=DP_API/new/ticket_filter_sets/all/counts%3F${groupingQueryString}`
-              + '&get[labels]=DP_API/ticket_labels'
-              + '&get[categories]=DP_API/ticket_categories'
-              + '&get[workflows]=DP_API/ticket_workflows'
-              + '&get[products]=DP_API/ticket_products'
-              + '&get[starsCount]=DP_API/ticket_stars/counts'
-              + '&get[filters]=DP_API/new/ticket_filters'
-        ;
+      const batch = api.prepareParams(batchComponents);
 
       api.sendGet(batch).success(({ responses }) => {
         const payload      = flattenBatchResponses(responses);

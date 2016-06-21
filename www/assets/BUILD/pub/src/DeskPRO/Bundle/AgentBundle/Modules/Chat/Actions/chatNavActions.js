@@ -14,14 +14,15 @@ export const initialLoad = createAction(
   'CHAT_INITIAL_LOAD',
   () => (dispatch, getState) => new Promise(
     (resolve) => {
-      const currentMyGrouping   = hashStateSelectorFactory(['group', 'my'], 'date_period')(getState());
-      const currentNewsGrouping = hashStateSelectorFactory(['group', 'all'], 'date_period')(getState());
+      const currentMyGrouping  = hashStateSelectorFactory(['group', 'my'], 'date_period')(getState());
+      const currentAllGrouping = hashStateSelectorFactory(['group', 'all'], 'date_period')(getState());
+      const batchComponents    = {
+        agents: { endpoint: 'agents/assigned_to_chat' },
+        my:     { endpoint: 'user_chats/counts', query: `group_by=${currentMyGrouping}` },
+        all:    { endpoint: 'user_chats/counts', query: `group_by=${currentAllGrouping}` }
+      };
 
-      const batch = 'DP_API/batch'
-              + `?get[my]=DP_API/user_chats/counts?group_by%3D${currentMyGrouping}`
-              + `&get[all]=DP_API/user_chats/counts?group_by%3D${currentNewsGrouping}`
-              + '&get[agents]=DP_API/agents/assigned_to_chat'
-        ;
+      const batch = api.prepareParams(batchComponents);
       api.sendGet(batch).success(({ responses }) => {
         const payload = flattenBatchResponses(responses);
         dispatch(setCollection('Agent', 'all_chat', payload.agents));

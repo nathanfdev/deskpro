@@ -1,4 +1,4 @@
-import { createAction } from 'Ampliflux';
+import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import Immutable from 'immutable';
@@ -57,12 +57,14 @@ export const deleteProject = createAction(
 export const loadCounts = createAction(
   'TASKS_NAV_COUNTS_LOAD',
   () => new Promise(resolve => {
-    const batch = 'DP_API/batch'
-            + '?get[groups]=DP_API/tasks/counts/groups'
-            + '&get[agents]=DP_API/tasks/counts/agents'
-            + '&get[projects]=DP_API/tasks/counts/projects'
-            + '&get[labels]=DP_API/task_labels'
-      ;
+    const batchComponents = {
+      groups:   { endpoint: 'tasks/counts/groups' },
+      agents:   { endpoint: 'tasks/counts/agents' },
+      projects: { endpoint: 'tasks/counts/projects' },
+      labels:   { endpoint: 'task_labels' }
+    };
+
+    const batch = api.prepareParams(batchComponents);
 
     api.sendGet(batch).success(({ responses }) => {
       const payload = flattenBatchResponses(responses);
