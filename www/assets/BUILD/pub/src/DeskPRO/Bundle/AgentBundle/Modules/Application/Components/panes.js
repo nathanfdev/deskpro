@@ -42,21 +42,20 @@ export class AppPane extends React.Component {
 }
 
 @connect(state => ({
-  workspace:     workspaceSelector(state),
-  workspaceDims: workspaceDimsSelector(state)
+  isHoverMode: !workspaceSelector(state).appNavPane
 }))
-export class NavPane extends React.Component {
+export class NavPaneContainer extends React.Component {
   static propTypes = {
-    workspace:     PropTypes.object.isRequired,
-    workspaceDims: PropTypes.object.isRequired
+    isHoverMode: PropTypes.bool.isRequired
   };
 
   constructor(props) {
     super(props);
+    
+    // State to track mouse hover/leave if menu is in hover mode
     this.state = {
-      isHover: false
+      isHovered: false
     };
-
     this.timeout = null;
   }
 
@@ -67,7 +66,7 @@ export class NavPane extends React.Component {
 
     this.timeout = window.setTimeout(() => {
       this.timeout = null;
-      this.setState({ isHover: true });
+      this.setState({ isHovered: true });
     }, 350);
   };
 
@@ -76,28 +75,50 @@ export class NavPane extends React.Component {
       window.clearTimeout(this.timeout);
       this.timeout = null;
     }
-    this.setState({ isHover: false });
+    this.setState({ isHovered: false });
   };
 
   onClick = () => {
-    this.setState({ isHover: true });
+    this.setState({ isHovered: true });
   };
 
   render() {
-    const { workspace, workspaceDims } = this.props;
-    const classes = getWorkspaceClasses(workspace, ['dp-panes-nav']);
+    let jsx = (
+      <NavPane isVisible={!this.props.isHoverMode || this.state.isHovered}>
+        {this.props.children}
+      </NavPane>
+    );
 
-    if (this.state.isHover) {
-      classes.push('with-nav-hover');
+    // Add mouse events if menu is in hover mode
+    if (this.props.isHoverMode) {
+      jsx = (
+        <div
+          onMouseEnter={this.onMouseEnter}
+          onMouseLeave={this.onMouseLeave}
+          onClick={this.onClick}
+        >
+          {jsx}
+        </div>
+      );
     }
 
+    return jsx;
+  }
+}
+
+export class NavPane extends React.Component {
+  static propTypes = {
+    isVisible: PropTypes.bool.isRequired
+  };
+
+  render() {
+    let classNames = this.props.isVisible
+      ? 'with-nav-on with-nav-hover'
+      : 'with-nav-off';
+    classNames += ' dp-panes-nav';
+
     return (
-      <div
-        className={classes.join(' ')}
-        onMouseEnter={this.onMouseEnter}
-        onMouseLeave={this.onMouseLeave}
-        onClick={this.onClick}
-      >
+      <div className={classNames}>
         <div className="dp-collapsed-placeholder"></div>
         <div className="dp-panes-nav-body">{this.props.children}</div>
       </div>
