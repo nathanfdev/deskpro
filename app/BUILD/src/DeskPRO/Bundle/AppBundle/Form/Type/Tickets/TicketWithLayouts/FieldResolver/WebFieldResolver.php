@@ -52,8 +52,11 @@ class WebFieldResolver extends AbstractFieldResolver
      */
     protected function createDepartment(TicketWithLayoutsContext $context)
     {
-        // If department is preset then we hide department field
-        if ($context->getOption('hide_department_field') && $context->getTicket()->getDepartment()) {
+        // if we have just one department or the 'hide_department_field' option is set
+        // then render hidden field instead of selectbox
+
+        $department = $context->getTicket()->getDepartment();
+        if ($department && ($this->isSingleDepartment($context) || $context->getOption('hide_department_field'))) {
             return new FormField(HiddenEntityType::class, [
                 'entity_class' => Department::class,
             ]);

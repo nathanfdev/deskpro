@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Hierarchy;
 
 use DeskPRO\Bundle\AppBundle\Form\ChoiceList\HierarchyChoiceList;
@@ -139,14 +140,13 @@ class Hierarchy extends BaseHierarchy
     }
 
     /**
-     * It might in the future be possible for this and the normal count() method to differ, because some nodes are parents and
-     * not selectable. For now it is the same as counting the hierarchy, but the concept should be respected in code (form types).
+     * Some nodes are parents and not selectable, count only leaf nodes.
      *
      * @return int
      */
     public function countSelectable()
     {
-        return $this->countTree(); // for now this acts as an alias, but we should preserve the concept
+        return $this->countTree(true);
     }
 
     /**

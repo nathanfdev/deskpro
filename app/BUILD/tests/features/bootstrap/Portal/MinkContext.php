@@ -37,6 +37,36 @@ use DpBehat\Data\DataContext;
 class MinkContext extends \Behat\MinkExtension\Context\MinkContext
 {
     /**
+     * @override
+     *
+     * @param string $page
+     */
+    public function visit($page)
+    {
+        parent::visit(DataContext::replace($page));
+    }
+
+    /**
+     * @override
+     *
+     * @param string $text
+     */
+    public function assertResponseContains($text)
+    {
+        parent::assertResponseContains(DataContext::replace($text));
+    }
+
+    /**
+     * @override
+     *
+     * @param string $text
+     */
+    public function assertResponseNotContains($text)
+    {
+        parent::assertResponseNotContains(DataContext::replace($text));
+    }
+
+    /**
      * @Then I should see the :locator field
      *
      * @param string $locator
@@ -94,7 +124,9 @@ class MinkContext extends \Behat\MinkExtension\Context\MinkContext
      */
     public function assertHiddenFieldContains($name, $value)
     {
-        $name = DataContext::replace($name);
+        $name  = DataContext::replace($name);
+        $value = DataContext::replace($value);
+
         $node = $this->getSession()->getPage()->find('css', 'input[name="'.$name.'"]');
         if (null === $node) {
             throw new \Exception("Field $name not found");

@@ -256,7 +256,10 @@ class HierarchyGenerator
                     }
                 }
 
-                $root_nodes = [];
+                /** @var HierarchyNode[] $rootNodes */
+                $rootNodes = [];
+                $addedDepartments = [];
+
                 /** @var \Application\DeskPRO\Entity\Department $department */
                 foreach ($allowed_departments as $department) {
                     $found_root = null;
@@ -278,14 +281,20 @@ class HierarchyGenerator
                         $department = $found_root;
                     }
 
-                    $root_nodes[] = new HierarchyNode(
+                    // add only unique root departments
+                    if (in_array($department, $addedDepartments)) {
+                        continue;
+                    }
+
+                    $addedDepartments[] = $department;
+                    $rootNodes[] = new HierarchyNode(
                         $department,
                         0,
                         HierarchyGenerator::reverseDisplayOrder($department->display_order)
                     );
                 }
 
-                $hierarchy = new Hierarchy($root_nodes, new FlatListLanguageAwareFormatter($this->language_manager, 'user'));
+                $hierarchy = new Hierarchy($rootNodes, new FlatListLanguageAwareFormatter($this->language_manager, 'user'));
                 $hierarchy->markOnlyLeafSelections();
 
                 $recursive = function (Department $dep, HierarchyNode $parent, $depth) use (&$recursive,
@@ -295,6 +304,7 @@ class HierarchyGenerator
                         if (!$allowed_departments->contains($child)) {
                             continue; // not allowed to use this dep.
                         }
+
                         $parent->addChild($child_node = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->display_order)));
                         $recursive($child, $child_node, $depth + 1);
                     }

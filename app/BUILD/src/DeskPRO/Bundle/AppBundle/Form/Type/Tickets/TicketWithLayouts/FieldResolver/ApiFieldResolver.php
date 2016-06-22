@@ -45,6 +45,19 @@ class ApiFieldResolver extends AbstractFieldResolver
     /**
      * {@inheritdoc}
      */
+    protected function createDepartment(TicketWithLayoutsContext $context)
+    {
+        // we can just skip department field for api if it's single and already chosen
+        if ($context->getTicket()->getDepartment() && $this->isSingleDepartment($context)) {
+            return false;
+        }
+
+        return parent::createDepartment($context);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function createCaptcha(TicketWithLayoutsContext $context)
     {
         return false;

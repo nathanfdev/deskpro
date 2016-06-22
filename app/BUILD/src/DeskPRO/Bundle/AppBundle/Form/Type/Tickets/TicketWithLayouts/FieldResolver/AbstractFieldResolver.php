@@ -491,4 +491,20 @@ abstract class AbstractFieldResolver
     {
         return $this->languageManager->phrase($name, $vars);
     }
+
+    /**
+     * Get department selectable count.
+     * We can add specific logic to skip this field or render it as hidden.
+     *
+     * @param TicketWithLayoutsContext $context
+     *
+     * @return bool
+     */
+    protected function isSingleDepartment(TicketWithLayoutsContext $context)
+    {
+        $person    = $context->getOption('person');
+        $hierarchy = $this->hierarchyGenerator->generateTicketDepartmentsHierarchy($person);
+
+        return $hierarchy->countSelectable() <= 1;
+    }
 }
