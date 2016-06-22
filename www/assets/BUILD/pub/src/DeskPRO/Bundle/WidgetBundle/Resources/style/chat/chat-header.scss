@@ -127,6 +127,7 @@ div.dpdesignportal-chat-header {
   }
 
   .dpdesignportal-chat-header-avatar {
+    overflow: hidden;
     width: 45px;
     height: 45px;
     background-color: #eceaea;
@@ -147,6 +148,15 @@ div.dpdesignportal-chat-header {
     }
 
     i { top: 12px; }
+
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
 
     &.avatar-transparent {
       &:before {

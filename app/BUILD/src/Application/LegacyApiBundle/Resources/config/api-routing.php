@@ -5776,6 +5776,15 @@ $collection->create(
 );
 
 $collection->create(
+    'api_chat_fields_save_batch',
+    [
+        'path'       => '/chat_fields/batch',
+        'controller' => 'LegacyApiBundle:ChatFields:saveBatchCustomField',
+        'methods'    => ['PUT'],
+    ]
+);
+
+$collection->create(
     'api_chat_fields',
     [
         'path'       => '/chat_fields',
@@ -6423,6 +6432,16 @@ $collection->create(
         'controller'   => 'LegacyApiBundle:Usergroups:save',
         'requirements' => ['id' => '(\\d+|[a-z0-9_\.\-]+)'],
         'methods'      => ['POST'],
+    ]
+);
+
+$collection->create(
+    'api_user_groups_save',
+    [
+        'path'         => '/user_groups/permissions/{type}',
+        'controller'   => 'LegacyApiBundle:Usergroups:savePermissions',
+        'requirements' => ['type' => '([-\._a-z0-9]+)'],
+        'methods'      => ['PUT'],
     ]
 );
 

@@ -123,9 +123,7 @@ class BatchController extends BaseController
             $info['url'] = '/api/v2/'.ltrim($info['url'], '/');
         }
         if (!$this->matchRouteUrl($info['url'])) {
-            if (!$this->matchRouteUrl($info['url'])) {
-                throw $this->createBadRequestException("Route path for '{$info['url']}' not found");
-            }
+            throw $this->createBadRequestException("Route path for '{$info['url']}' not found");
         }
 
         $json_serialized = null;

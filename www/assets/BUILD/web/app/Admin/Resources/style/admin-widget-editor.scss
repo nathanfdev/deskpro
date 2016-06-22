@@ -1,5 +1,15 @@
 .widget-editor {
   $inline-label-width: 250px;
+  padding: 20px;
+
+  .right {
+    float: right;
+  }
+
+  h3 .icon {
+    font-size: 16px;
+    color: #b3b3b3;
+  }
 
   .inline-block-label {
     width: $inline-label-width;
@@ -13,20 +23,88 @@
     margin-left: $inline-label-width;
   }
 
-  .errors {
-    color: red;
+  .ui.button.add-custom-field {
+    margin-top: 10px;
+    margin-bottom: 20px;
   }
 
-  .sp-input {
-    background: #fff;
+  .ui.field.proactive-style {
+    width: 90%;
+    margin: 0 5%;
+  }
+
+  .errors {
+    color: red;
+    list-style-type: none;
+    padding-left: 0;
+
+    li {
+      padding-left: 0;
+    }
+  }
+
+  .sp-replacer {
+    border: none;
+    background: #fcfcfc;
+  }
+
+  .dp-item-list .drag-handle {
+    position: inherit;
+    float: right;
+    margin-right: 20px;
+    top: 0;
+  }
+
+  .ui.segments {
+    border-color: #47bf61;
+
+    .embed-help-title {
+
+      cursor: pointer;
+
+      .title-content {
+        display: inline-block;
+      }
+
+      h3 {
+        color: #42b257;
+      }
+
+      .circular-plus,
+      .big-arrow {
+        height: 40px;
+        width: 40px;
+        vertical-align: baseline;
+      }
+
+      .circular-plus {
+        margin-right: 10px;
+      }
+
+      .big-arrow {
+        float: right;
+      }
+
+      &.open {
+        .big-arrow {
+          transform: rotate(0.5turn);
+        }
+      }
+    }
+  }
+
+  .ui.attached.menu {
+    margin-top: 30px;
+  }
+
+  .cms-install h4 {
+    margin-bottom: 15px;
   }
 
   .widget-editor-live-demo-container {
-    position: absolute;
-    top: 80px;
-    left: 600px;
+    margin-top: 30px;
+    margin-bottom: 30px;
     z-index: 1000;
-    width: 390px;
     height: 520px;
     background-color: #ffffff;
     border: 1px solid #000000;
@@ -47,12 +125,20 @@
     }
 
     iframe {
-      width: inherit;
+      width: 100%;
       height: inherit;
       border: 0;
-      position: absolute;
       top: 0;
       left: 0;
     }
   }
+
+  .pending_changes {
+    margin-top: 10px;
+    color: #8c9295;
+    font-size: 12px;
+  }
+}
+.sp-input {
+  background: #fff;
 }

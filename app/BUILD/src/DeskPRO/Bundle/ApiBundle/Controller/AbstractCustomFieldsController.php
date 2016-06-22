@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldType;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -36,8 +37,13 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class AbstractCustomFieldsController extends CrudController
 {
-    public static $exposeOnly = ['list', 'get'];
-    public static $listOrder  = 'asc';
+    public static $exposeOnly  = ['list', 'get', 'put'];
+    public static $type        = CustomFieldType::class;
+    public static $listSort    = 'display_order';
+    public static $listOrder   = 'asc';
+    public static $sortOptions = [
+        'display_order' => 'display_order',
+    ];
 
     /**
      * {@inheritdoc}

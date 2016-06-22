@@ -88,10 +88,10 @@ class EntityHeirarchyType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
+            ->setRequired('choice_list')
             ->setDefaults([
                 'hierarchy_generator' => $this->hierarchy_generator,
             ])
-            ->setRequired('choice_list')
         ;
     }
 }

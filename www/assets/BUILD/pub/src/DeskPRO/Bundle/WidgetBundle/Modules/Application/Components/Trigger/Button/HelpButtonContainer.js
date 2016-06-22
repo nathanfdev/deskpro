@@ -6,30 +6,29 @@ import { AgentMessagePopupContainer } from '../Popups/AgentMessage/AgentMessageP
 import { ReplyButtons } from '../Popups/AgentMessage/ReplyButtons';
 import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
 import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
-import { openWidget, openTriggerPopup, closeTriggerPopup } from '../../../Actions/dpWindowActions';
+import { reopenWidget, openTriggerPopup, closeTriggerPopup } from '../../../Actions/dpWindowActions';
 import { loadOnlineAgents } from '../../../Actions/peopleActions';
 import { onlineAgentsCountSelector } from '../../../Selectors/peopleSelectors';
 import {
   widgetProactiveChatSelector,
   widgetOpenedSelector,
   widgetPositionSelector,
+  widgetPopupStyleSelector,
   helpButtonSizeSelector,
   helpButtonNameSelector,
   helpButtonBackgroundColorSelector,
   helpButtonTextColorSelector,
-  helpPopupTitleSelector,
-  helpPopupMessageSelector,
-  helpPopupReplyTypeSelector,
   agentPollingTimeoutSelector,
   triggerPopupOpenedSelector,
   liveDemoSelector
 } from '../../../Selectors/dpWindow';
-
 import { widgetHasChatSelector } from '../../../Selectors/bootstrap';
+import { getLocation } from '../../../../../Services/history';
 
 @connect(state => ({
   hasChat:             widgetHasChatSelector(state),
   proactiveChat:       widgetProactiveChatSelector(state),
+  popupStyle:          widgetPopupStyleSelector(state),
   triggerPopupOpened:  triggerPopupOpenedSelector(state),
   widgetOpened:        widgetOpenedSelector(state),
   widgetPosition:      widgetPositionSelector(state),
@@ -37,9 +36,6 @@ import { widgetHasChatSelector } from '../../../Selectors/bootstrap';
   name:                helpButtonNameSelector(state),
   backgroundColor:     helpButtonBackgroundColorSelector(state),
   textColor:           helpButtonTextColorSelector(state),
-  helpPopupTitle:      helpPopupTitleSelector(state),
-  helpPopupMessage:    helpPopupMessageSelector(state),
-  helpPopupReplyType:  helpPopupReplyTypeSelector(state),
   agentsCount:         onlineAgentsCountSelector(state),
   agentPollingTimeout: agentPollingTimeoutSelector(state),
   liveDemo:            liveDemoSelector(state)
@@ -51,11 +47,10 @@ export class HelpButtonContainer extends React.Component {
     proactiveChat:       PropTypes.bool,
     triggerPopupOpened:  PropTypes.bool,
     widgetOpened:        PropTypes.bool,
+    popupStyle:          PropTypes.string,
+    size:                PropTypes.string,
     widgetPosition:      PropTypes.string,
     dispatch:            PropTypes.func,
-    helpPopupTitle:      PropTypes.string,
-    helpPopupMessage:    PropTypes.string,
-    helpPopupReplyType:  PropTypes.string,
     backgroundColor:     PropTypes.string,
     borderColor:         PropTypes.string,
     textColor:           PropTypes.string,
@@ -67,9 +62,26 @@ export class HelpButtonContainer extends React.Component {
     liveDemo: PropTypes.bool
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      locationPath: false
+    };
+  }
+
   componentDidMount() {
     this.checkRenderPopup();
     this.pollingRequest();
+  }
+
+  componentWillUpdate() {
+    getLocation(location => {
+      if (this.state.locationPath !== location.pathname) {
+        this.setState({
+          locationPath: location.pathname
+        });
+      }
+    });
   }
 
   componentDidUpdate() {
@@ -77,7 +89,7 @@ export class HelpButtonContainer extends React.Component {
   }
 
   onClick = () => {
-    this.props.dispatch(openWidget());
+    this.props.dispatch(reopenWidget());
   };
 
   onClosePopup = () => {
@@ -121,30 +133,30 @@ export class HelpButtonContainer extends React.Component {
   }
 
   renderPopup() {
-    const { widgetPosition, helpPopupTitle, helpPopupMessage, helpPopupReplyType } = this.props;
-    const { backgroundColor, textColor, borderColor, liveDemo } = this.props;
+    const { widgetPosition } = this.props;
+    const { backgroundColor, textColor, borderColor, liveDemo, popupStyle, size } = this.props;
     const popupProps = {
       widgetPosition,
       backgroundColor,
       textColor,
       borderColor,
       liveDemo,
-      onClick: this.onClick,
-      onClose: this.onClosePopup
+      popupStyle,
+      size,
+      onClick:   this.onClick,
+      onClose:   this.onClosePopup,
+      getButton: () => this.refs.button
     };
 
-    if (helpPopupTitle && helpPopupMessage) {
-      return (
-        <AgentMessagePopupContainer {...popupProps}>
-          {helpPopupReplyType === 'buttons'
-            ? <ReplyButtons {...popupProps} />
-            : <ReplyForm {...popupProps} />
-          }
-        </AgentMessagePopupContainer>
-      );
+    if (popupStyle === 'agents_button') {
+      return <OnlineAgentsPopup {...popupProps} />;
     }
 
-    return <OnlineAgentsPopup {...popupProps} />;
+    return (
+      <AgentMessagePopupContainer {...popupProps}>
+        {popupStyle.match(/_button$/) ? <ReplyButtons {...popupProps} /> : <ReplyForm {...popupProps} />}
+      </AgentMessagePopupContainer>
+    );
   }
 
   render() {
@@ -157,7 +169,12 @@ export class HelpButtonContainer extends React.Component {
             {this.renderPopup()}
           </OnlineAgentsContainer>
         }
-        <HelpButton {...this.props} onClick={this.onClick} />
+        <HelpButton
+          {...this.props}
+          ref="button"
+          locationPath={this.state.locationPath}
+          onClick={this.onClick}
+        />
       </div>
     );
   }

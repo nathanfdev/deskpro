@@ -5,10 +5,16 @@ export const translationsSelectorFactory = (property, defaultValue) => (options,
   const filtered = options.get('translations').filter(translation => translation.get('language') === language);
 
   if (filtered.size) {
-    return filtered.first().get(property);
+    const currentLanguageValue = filtered.first().get(property);
+    if (currentLanguageValue) {
+      return currentLanguageValue;
+    }
   }
   if (options.get('translations').size) {
-    return options.get('translations').first().get(property);
+    const defaultLanguageValue = options.get('translations').first().get(property);
+    if (defaultLanguageValue) {
+      return defaultLanguageValue;
+    }
   }
 
   return defaultValue;
@@ -135,12 +141,12 @@ export const chatOptionsSelector = createSelector(
 
 export const widgetProactiveChatSelector = createSelector(
   chatOptionsSelector,
-  options => options.get('proactive') !== undefined ? options.get('proactive') : true
+  options => (options.get('proactive') !== undefined ? options.get('proactive') : true)
 );
 
 export const chatBeginModeSelector = createSelector(
   chatOptionsSelector,
-  options => options.get('request_user_info') ? options.get('begin_mode') : 'simple'
+  options => (options.get('request_user_info') ? options.get('begin_mode') : 'simple')
 );
 
 export const helpPopupSelector = createSelector(
@@ -160,12 +166,49 @@ export const helpPopupMessageSelector = createSelector(
   translationsSelectorFactory('message', 'Need help? Just reply to start a live chat with one of our team.')
 );
 
-export const helpPopupReplyTypeSelector = createSelector(
+export const helpPopupHeadingSelector = createSelector(
   helpPopupSelector,
-  options => options.get('reply_type')
+  widgetLanguageSelector,
+  translationsSelectorFactory('heading', 'Ask us a question!')
+);
+
+export const helpPopupSubheadingSelector = createSelector(
+  helpPopupSelector,
+  widgetLanguageSelector,
+  translationsSelectorFactory(
+    'subheading',
+    'Our team are online and ready to help with your enquiries. Send us a message to get started.'
+  )
+);
+
+export const widgetPopupStyleSelector = createSelector(
+  helpPopupSelector,
+  options => options.get('style')
 );
 
 export const agentAcceptTimeoutSelector = createSelector(
   chatOptionsSelector,
   options => options.get('waiting_timeout') || 120 // 2 minutes
+);
+
+// Ticket options selectors
+export const ticketOptionsSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('ticket')
+);
+
+export const ticketDefaultDepartmentSelector = createSelector(
+  ticketOptionsSelector,
+  options => options.get('default_department')
+);
+
+export const ticketSelectDepartmentTypeSelector = createSelector(
+  ticketOptionsSelector,
+  options => options.get('select_department')
+);
+
+export const isTicketDepartmentFieldHidden = createSelector(
+  ticketDefaultDepartmentSelector,
+  ticketSelectDepartmentTypeSelector,
+  (defaultDepartment, selectDepartmentType) => selectDepartmentType === 'default' && defaultDepartment > 0
 );

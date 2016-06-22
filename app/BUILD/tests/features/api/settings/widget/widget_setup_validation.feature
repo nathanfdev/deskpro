@@ -1,8 +1,8 @@
+@new
 Feature: Widget Setup
 
   Background:
-    Given I install the api data set
-    And my request is authenticated
+    Given I'm authenticated as admin
 
   Scenario: I send empty request
     When I send a POST request to "/api/v2/widget/setup"
@@ -18,8 +18,8 @@ Feature: Widget Setup
     And the JSON node "errors.fields.brand.fields.button.fields.translations.errors[0].code" should be equal to "too_few_elements"
     And the JSON node "errors.fields.brand.fields.button.fields.translations.errors[0].message" should be equal to "This collection should contain 1 elements or more."
 
-    And the JSON node "errors.fields.brand.fields.chat.fields.popup.fields.reply_type.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.brand.fields.chat.fields.popup.fields.reply_type.errors[0].message" should be equal to "This value should not be blank."
+    And the JSON node "errors.fields.brand.fields.chat.fields.popup.fields.style.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.brand.fields.chat.fields.popup.fields.style.errors[0].message" should be equal to "This value should not be blank."
     And the JSON node "errors.fields.brand.fields.chat.fields.popup.fields.translations.errors[0].code" should be equal to "too_few_elements"
     And the JSON node "errors.fields.brand.fields.chat.fields.popup.fields.translations.errors[0].message" should be equal to "This collection should contain 1 elements or more."
 
@@ -43,7 +43,7 @@ Feature: Widget Setup
         "chat": {
           "waiting_timeout": 10,
           "popup": {
-            "reply_type": "unknown"
+            "style": "unknown"
           }
         },
         "ticket": {
@@ -64,8 +64,8 @@ Feature: Widget Setup
     And the JSON node "errors.fields.brand.fields.button.fields.size.errors[0].code" should be equal to "bad_choice"
     And the JSON node "errors.fields.brand.fields.button.fields.size.errors[0].message" should be equal to "One or more of the given values is invalid."
 
-    And the JSON node "errors.fields.brand.fields.chat.fields.popup.fields.reply_type.errors[0].code" should be equal to "bad_choice"
-    And the JSON node "errors.fields.brand.fields.chat.fields.popup.fields.reply_type.errors[0].message" should be equal to "One or more of the given values is invalid."
+    And the JSON node "errors.fields.brand.fields.chat.fields.popup.fields.style.errors[0].code" should be equal to "bad_choice"
+    And the JSON node "errors.fields.brand.fields.chat.fields.popup.fields.style.errors[0].message" should be equal to "One or more of the given values is invalid."
     And the JSON node "errors.fields.brand.fields.chat.fields.waiting_timeout.errors[0].code" should be equal to "too_low"
     And the JSON node "errors.fields.brand.fields.chat.fields.waiting_timeout.errors[0].message" should be equal to "This value should be greater than or equal to 30."
 
@@ -155,7 +155,6 @@ Feature: Widget Setup
 }
     """
     Then the response status code should be 400
-    And print last JSON response
     And the JSON node "errors.fields.brand.fields.button.fields.translations.errors[0].code" should be equal to "not_unique_collection"
     And the JSON node "errors.fields.brand.fields.button.fields.translations.errors[0].message" should be equal to "One or more of the given values is not unique."
     And the JSON node "errors.fields.brand.fields.button.fields.translations.fields.translations_0.fields.language.errors[0].code" should be equal to "required"

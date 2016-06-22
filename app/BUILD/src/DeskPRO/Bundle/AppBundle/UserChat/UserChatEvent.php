@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\UserChat;
 
 use Application\DeskPRO\Entity\ChatConversation;
@@ -61,7 +58,7 @@ class UserChatEvent extends Event
     /**
      * @var ChatConversation
      */
-    protected $conversation;
+    protected $chat;
 
     /**
      * @var mixed
@@ -76,23 +73,23 @@ class UserChatEvent extends Event
     /**
      * Constructor.
      *
-     * @param ChatConversation $conversation
+     * @param ChatConversation $chat
      * @param mixed            $data
      * @param array            $metadata
      */
-    public function __construct(ChatConversation $conversation, $data = [], array $metadata = [])
+    public function __construct(ChatConversation $chat, $data = [], array $metadata = [])
     {
-        $this->conversation = $conversation;
-        $this->data         = $data;
-        $this->metadata     = $metadata;
+        $this->chat     = $chat;
+        $this->data     = $data;
+        $this->metadata = $metadata;
     }
 
     /**
      * @return ChatConversation
      */
-    public function getConversation()
+    public function getChat()
     {
-        return $this->conversation;
+        return $this->chat;
     }
 
     /**

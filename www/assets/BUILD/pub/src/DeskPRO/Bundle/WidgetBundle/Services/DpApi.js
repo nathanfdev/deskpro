@@ -6,3 +6,4 @@ export const widgetApi = new DpApi($.ajax);
 widgetApi.enableJsonPayloads();
 widgetApi.setDefaultHeader('X-Agent-Request', 'true');
 widgetApi.addInterceptor(new UrlCorrector(`${window.DP_HELPDESK_URL}portal/api/`, /^\/?DP_API\//));
+

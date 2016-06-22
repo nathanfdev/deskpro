@@ -508,6 +508,46 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         return $this->_label_manager;
     }
 
+    /**
+     * @return string
+     */
+    public function getSavePath()
+    {
+        return $this->save_path;
+    }
+
+    /**
+     * @param string $save_path
+     *
+     * @return $this
+     */
+    public function setSavePath($save_path)
+    {
+        $this->setModelField('save_path', $save_path);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSysName()
+    {
+        return $this->sys_name;
+    }
+
+    /**
+     * @param int $sys_name
+     *
+     * @return $this
+     */
+    public function setSysName($sys_name)
+    {
+        $this->setModelField('sys_name', $sys_name);
+
+        return $this;
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $is_image = $this->isImage();

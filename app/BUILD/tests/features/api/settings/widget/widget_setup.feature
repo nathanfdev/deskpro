@@ -32,7 +32,7 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.chat.popup.translations[0].language" should be equal to 1
     And the JSON node "data.settings.brand.chat.popup.translations[0].title" should be equal to the string "Customer Support"
     And the JSON node "data.settings.brand.chat.popup.translations[0].message" should be equal to the string "Need help? Just reply to start a live chat with one of our team."
-    And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to the string "buttons"
+    And the JSON node "data.settings.brand.chat.popup.style" should be equal to the string "agent_text_button"
     And the JSON node "data.settings.brand.chat.begin_mode" should be equal to the string "form"
     And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 150
     And the JSON node "data.settings.brand.ticket.select_department" should be equal to the string "custom"
@@ -43,8 +43,9 @@ Feature: Widget Setup
     And the response status code should be 200
     And the response should contain "DESKPRO_WIDGET_LOADER::BEGIN"
     And the response should contain "DESKPRO_WIDGET_LOADER::END"
-    And the response should contain "helpdeskUrl"
-    And the response should contain "request_user_info"
+    And the response should contain "pub/build/widget_loader.min.js"
+    And the response should contain "dp-widget-loader"
+    And the response should contain "data-helpdesk-url"
 
   Scenario: I update global widget configuration
     When I send a POST request to "/api/v2/widget/setup" with body:
@@ -84,15 +85,19 @@ Feature: Widget Setup
           {
             "language": 1,
             "title": "Customer Support (edited)",
-            "message": "Need help? Just reply to start a live chat with one of our team. (edited)"
+            "message": "Need help? Just reply to start a live chat with one of our team. (edited)",
+            "heading": "Ask us a question! (edited)",
+            "subheading": "Our team are online and ready to help with your enquiries. Send us a message to get started. (edited)"
           },
           {
             "language": 2,
             "title": "Customer Support (fr)",
-            "message": "Need help? Just reply to start a live chat with one of our team. (fr)"
+            "message": "Need help? Just reply to start a live chat with one of our team. (fr)",
+            "heading": "Ask us a question! (fr)",
+            "subheading": "Our team are online and ready to help with your enquiries. Send us a message to get started. (fr)"
           }
         ],
-        "reply_type": "buttons"
+        "style": "agent_text_input"
       }
     },
     "ticket": {
@@ -122,13 +127,17 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.button.size" should be equal to the string "medium"
     And the JSON node "data.settings.brand.chat.begin_mode" should be equal to the string "form"
     And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 40
-    And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to the string "buttons"
+    And the JSON node "data.settings.brand.chat.popup.style" should be equal to the string "agent_text_input"
     And the JSON node "data.settings.brand.chat.popup.translations[0].language" should be equal to 1
     And the JSON node "data.settings.brand.chat.popup.translations[0].title" should be equal to the string "Customer Support (edited)"
     And the JSON node "data.settings.brand.chat.popup.translations[0].message" should be equal to the string "Need help? Just reply to start a live chat with one of our team. (edited)"
+    And the JSON node "data.settings.brand.chat.popup.translations[0].heading" should be equal to the string "Ask us a question! (edited)"
+    And the JSON node "data.settings.brand.chat.popup.translations[0].subheading" should be equal to the string "Our team are online and ready to help with your enquiries. Send us a message to get started. (edited)"
     And the JSON node "data.settings.brand.chat.popup.translations[1].language" should be equal to 2
     And the JSON node "data.settings.brand.chat.popup.translations[1].title" should be equal to the string "Customer Support (fr)"
     And the JSON node "data.settings.brand.chat.popup.translations[1].message" should be equal to the string "Need help? Just reply to start a live chat with one of our team. (fr)"
+    And the JSON node "data.settings.brand.chat.popup.translations[1].heading" should be equal to the string "Ask us a question! (fr)"
+    And the JSON node "data.settings.brand.chat.popup.translations[1].subheading" should be equal to the string "Our team are online and ready to help with your enquiries. Send us a message to get started. (fr)"
     And the JSON node "data.settings.brand.ticket.select_department" should be equal to the string "custom"
 
   Scenario: I apply chat widget to the portal
@@ -165,10 +174,12 @@ Feature: Widget Setup
           {
             "language": 1,
             "title": "Customer Support (edited)",
-            "message": "Need help? Just reply to start a live chat with one of our team. (edited)"
+            "message": "Need help? Just reply to start a live chat with one of our team. (edited)",
+            "heading": "Ask us a question! (edited)",
+            "subheading": "Our team are online and ready to help with your enquiries. Send us a message to get started. (edited)"
           }
         ],
-        "reply_type": "buttons"
+        "style": "agent_text_input"
       }
     },
     "ticket": {
@@ -195,7 +206,7 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.button.size" should be equal to the string "large"
     And the JSON node "data.settings.brand.chat.begin_mode" should be equal to the string "conversation"
     And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 40
-    And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to the string "buttons"
+    And the JSON node "data.settings.brand.chat.popup.style" should be equal to the string "agent_text_input"
     And the JSON node "data.settings.brand.ticket.select_department" should be equal to the string "default"
     And the JSON node "data.settings.brand.ticket.default_department" should be equal to 2
 
@@ -207,11 +218,3 @@ Feature: Widget Setup
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.enabled_on_portal" should be equal to 0
-
-  Scenario: I check the widget code after changes
-    When I send a GET request to "/api/v2/widget/code"
-    And the response status code should be 200
-    And the response should contain "DESKPRO_WIDGET_LOADER::BEGIN"
-    And the response should contain "DESKPRO_WIDGET_LOADER::END"
-    And the response should contain "request_user_info"
-    And the response should contain "agent_polling_timeout"

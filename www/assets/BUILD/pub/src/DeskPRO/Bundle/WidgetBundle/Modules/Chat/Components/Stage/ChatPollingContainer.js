@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { history } from '../../../../Services/history';
+import { history, getLocation } from '../../../../Services/history';
 import moment from 'moment';
 import { pollingChat, unsetLoaded, unsetChatId } from '../../Actions/chatActions';
 import {
@@ -48,7 +48,7 @@ export class ChatPollingContainer extends React.Component {
       return;
     }
 
-    this._unlisten = history.listen(location => {
+    getLocation(location => {
       // Redirect if has chat info only
       if (!hasChatInfo) {
         return;
@@ -69,18 +69,18 @@ export class ChatPollingContainer extends React.Component {
       }
     });
 
-    this._unlisten();
-
     // Send ajax next request
     const queryParams = {
       last_timestamp:  moment().format(),
       last_message_id: lastMessageId
     };
-    const promise = dispatch(pollingChat(chatId, queryParams));
-    const onSuccessResponse = () => {
-      setTimeout(this.pollingRequest, 3000);
-    };
 
+    const promise = dispatch(pollingChat(chatId, queryParams));
+    if (!promise || !promise.then) {
+      return;
+    }
+
+    const onSuccessResponse = () => setTimeout(this.pollingRequest, 3000);
     const onErrorResponse = response => {
       // Stop polling on wring session code
       const data = response.data;

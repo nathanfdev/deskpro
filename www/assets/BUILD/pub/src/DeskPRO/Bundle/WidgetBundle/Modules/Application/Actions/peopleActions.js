@@ -1,4 +1,4 @@
-import { createAction } from 'Ampliflux';
+import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { ajaxOptions } from './bootstrapActions';
 import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';

@@ -75,7 +75,7 @@ class MapUtils
      */
     public static function filterOutFalsey($array)
     {
-        $new = array();
+        $new = [];
 
         foreach ($array as $k => $v) {
             if ($v) {
@@ -87,7 +87,7 @@ class MapUtils
     }
 
     /**
-     * @param $array
+     * @param             $array
      * @param array|mixed $values Values to remove
      * @param bool        $strict Strict checking on $values
      *
@@ -95,10 +95,10 @@ class MapUtils
      */
     public static function filterOutValues($array, $values, $strict = true)
     {
-        $new = array();
+        $new = [];
 
         if (!is_array($values)) {
-            $values = array($values);
+            $values = [$values];
         }
 
         foreach ($array as $k => $v) {
@@ -114,14 +114,14 @@ class MapUtils
      * Creates a new array with $key=>$value first, and then the rest of $array after.
      *
      * @param \Traversable|array $array
-     * @param $key
-     * @param $val
+     * @param                    $key
+     * @param                    $val
      *
      * @return array
      */
     public static function prependItem($array, $key, $val)
     {
-        $new = array($key => $val);
+        $new = [$key => $val];
 
         foreach ($array as $k => $v) {
             if (!isset($new[$k])) {
@@ -142,7 +142,7 @@ class MapUtils
      */
     public static function rekeyByFn($array, $fn)
     {
-        $new = array();
+        $new = [];
 
         foreach ($array as $k => $v) {
             $set_k = call_user_func($fn, $v, $k);
@@ -164,7 +164,7 @@ class MapUtils
      */
     public static function rekeyByKey($array, $key)
     {
-        $new = array();
+        $new = [];
 
         foreach ($array as $v) {
             if (array_key_exists($key, $v)) {
@@ -185,7 +185,7 @@ class MapUtils
      */
     public static function rekeyByProperty($array, $key)
     {
-        $new = array();
+        $new = [];
 
         foreach ($array as $v) {
             if (isset($v->$key)) {

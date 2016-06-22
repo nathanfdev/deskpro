@@ -130,6 +130,12 @@ services:
     tags:
       - { name: form.type, alias: deskpro_hidden }
 
+  form.entity_hidden:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\HiddenEntityType
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: form.type }
+
   form.api_date:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
     tags:

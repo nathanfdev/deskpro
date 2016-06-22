@@ -19,13 +19,12 @@ export class AgentAvatars extends React.Component {
         <ul className={classNames({ multiple: !primaryAgent })}>
           {displayAgents.map((agent, index) =>
             <li key={index}>
-              <AvatarResolver avatar={agent.get('avatar')} size={150}>
+              <AvatarResolver avatar={agent.get('avatar')} size={100}>
                 <AgentAvatar />
               </AvatarResolver>
             </li>
           )}
         </ul>
-        {primaryAgent && <hr />}
       </div>
     );
   }

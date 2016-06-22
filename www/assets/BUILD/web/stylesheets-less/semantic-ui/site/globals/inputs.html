@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test inputs</title>
+    <link rel="stylesheet" href="../../../../app-build/Admin/Resources/style/semantic.css">
+    <style type="text/css">
+        body {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="ui grid">
+        <div class="sixteen column">
+            <h1>Forms</h1>
+            <div>
+                <form class="ui form">
+                    <div class="field">
+                        <label>First Name</label>
+                        <input type="text" name="first-name" placeholder="First Name">
+                    </div>
+                    <div class="field">
+                        <label>Last Name</label>
+                        <input type="text" name="last-name" placeholder="Last Name">
+                    </div>
+                    <div class="field error">
+                        <label>Email</label>
+                        <input type="email" name="last-name" placeholder="Email" value="Wrong Email">
+                    </div>
+                    <div class="field">
+                        <div class="ui checkbox">
+                            <input type="checkbox" tabindex="0" class="hidden">
+                            <label>I agree to the Terms and Conditions</label>
+                        </div>
+                    </div>
+                    <div class="inline field">
+                        <div class="ui checkbox">
+                            <input type="checkbox" tabindex="0" class="hidden">
+                            <label>Checkbox</label>
+                        </div>
+                    </div>
+                    <div class="inline field">
+                        <div class="ui slider checkbox">
+                            <input type="checkbox" tabindex="0" class="hidden">
+                            <label>Slider</label>
+                        </div>
+                        <label></label>
+                    </div>
+                    <div class="inline field">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" tabindex="0" class="hidden">
+                            <label>Toggle</label>
+                        </div>
+                    </div>
+                    <label>Radios</label>
+                    <div class="inline field">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="size" tabindex="0" class="hidden">
+                            <label>Radio 1</label>
+                        </div>
+                    </div>
+                    <div class="inline field">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="size" tabindex="1" class="hidden">
+                            <label>Radio 2</label>
+                        </div>
+                    </div>
+                    <div class="inline field">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="size" tabindex="2" class="hidden">
+                            <label>Radio 3</label>
+                        </div>
+                    </div>
+                    <button class="ui button" type="submit">Submit</button>
+                </form>
+                <h2>Buttons</h2>
+                <button class="large ui button">
+                    Large
+                </button>
+                <button class="medium ui button">
+                    Medium
+                </button>
+                <button class="small ui button">
+                    Small
+                </button>
+                <button class="tiny ui button">
+                    Tiny
+                </button>
+                <br />
+                <br />
+                <button class="large ui basic button">
+                    Large
+                </button>
+                <button class="medium ui basic button">
+                    Medium
+                </button>
+                <button class="small ui basic button">
+                    Small
+                </button>
+                <button class="tiny ui basic button">
+                    Tiny
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="../../../../node_modules/semantic-ui-less/definitions/modules/checkbox.js"></script>
+    <script type="application/javascript">
+        $('.ui.checkbox')
+                .checkbox()
+        ;
+    </script>
+</body>
+</html>

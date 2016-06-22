@@ -114,11 +114,11 @@ class TicketWithLayoutsWebType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'allow_rerender' => true,
-            'use_captcha'    => true,
-            'field_resolver' => $this->fieldResolver,
-            'field_renderer' => $this->fieldRenderer,
-            'layout_factory' => function ($department) {
+            'use_captcha'           => true,
+            'hide_department_field' => false,
+            'field_resolver'        => $this->fieldResolver,
+            'field_renderer'        => $this->fieldRenderer,
+            'layout_factory'        => function ($department) {
                 return $this->layoutFactory->getLayoutForTicketForm($department, false);
             },
         ]);

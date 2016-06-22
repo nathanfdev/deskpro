@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,12 +26,8 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\UserChat;
 
-use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -80,63 +76,16 @@ class UserChatSystemListener implements EventSubscriberInterface
      */
     public function onChatEvent(UserChatEvent $event)
     {
-        $conversation = $event->getConversation();
-        $params       = $event->getData();
-        $metadata     = $event->getMetadata();
-
-        $phrase_id = preg_replace('/^user_chat\./', '', $event->getName());
-        $content   = array_merge($params, ['phrase_id' => $phrase_id]);
-        $metadata  = array_merge($content, $metadata);
-
-        $chat_message = new ChatMessage();
-        $chat_message
-            ->setIsSys(true)
-            ->setIsUserHidden($this->isUserHiddenMessage($event))
-            ->setIsHtml($this->isHtmlMessage($event))
-            ->setContent(json_encode($content))
-            ->setMetadata($metadata)
-        ;
-
-        $conversation->addMessage($chat_message);
+        $conversation = $event->getChat();
+        $chatMessage  = UserChatMessages::createSysMessage($event->getName(), $event);
+        $conversation->addMessage($chatMessage);
 
         $this->em->persist($conversation);
         $this->em->flush();
 
-        $channel_type         = $chat_message->getIsUserHidden() ? 'newmessage_hidden' : 'newmessage';
-        $conversation_channel = $conversation->getChannelId($channel_type);
+        $channelType = $chatMessage->getIsUserHidden() ? 'newmessage_hidden' : 'newmessage';
+        $channel     = $conversation->getChannelId($channelType);
 
-        $event->getDispatcher()->dispatch(
-            ClientMessageEvent::SEND,
-            new ClientMessageEvent($conversation_channel, $chat_message)
-        );
-    }
-
-    /**
-     * Is html sys message.
-     *
-     * @param UserChatEvent $event
-     *
-     * @return bool
-     */
-    protected function isHtmlMessage(UserChatEvent $event)
-    {
-        return in_array($event->getName(), [
-            UserChatEvent::USER_TRACK,
-        ]);
-    }
-
-    /**
-     * Hide user in sys message.
-     *
-     * @param UserChatEvent $event
-     *
-     * @return bool
-     */
-    protected function isUserHiddenMessage(UserChatEvent $event)
-    {
-        return in_array($event->getName(), [
-            UserChatEvent::STARTED,
-            UserChatEvent::USER_TRACK,
-        ]);
+        $event->getDispatcher()->dispatch(ClientMessageEvent::SEND, new ClientMessageEvent($channel, $chatMessage));
     }
 }

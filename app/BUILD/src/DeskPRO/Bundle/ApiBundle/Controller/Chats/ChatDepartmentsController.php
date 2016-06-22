@@ -46,7 +46,7 @@ class ChatDepartmentsController extends DepartmentsController
     protected static $departmentType = 'chat';
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     protected function getAllowedDepartmentsId()
     {

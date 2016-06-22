@@ -1,0 +1,10 @@
+services:
+
+  dp.fixtures.faker:
+    class: Faker\Generator
+    factory: Faker\Factory::create
+
+  dp.fixtures.people_avatar_reader:
+    class: DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomFileFromDir
+    arguments:
+      - "%kernel.root_dir%/../src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars_people"

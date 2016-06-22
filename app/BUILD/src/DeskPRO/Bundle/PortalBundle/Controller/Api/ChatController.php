@@ -34,6 +34,7 @@ use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CustomDefChat;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatMessages;
 use DeskPRO\Bundle\PortalBundle\Annotation\Dpsid;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatCreateType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatFeedbackType;
@@ -205,26 +206,15 @@ class ChatController extends AbstractApiController
             return $this->generateFormErrorsResponse($form);
         }
 
-        $chat_messages = [];
+        $chatMessages = [];
 
         // Add message to chat conversation
         $content = $form->get('message')->getData();
         if ($content) {
-            $chat_message = new ChatMessage();
-            $chat_message
-                ->setOrigin('user')
-                ->setAuthor($conversation->getPerson())
-                ->setContent($content)
-                ->setIsUser(true)
-                ->setIsHtml(true)
-                ->setMetadata([
-                    'is_html'         => true,
-                    'is_user_message' => true,
-                ])
-            ;
+            $chatMessage = UserChatMessages::createUserTextMessage($conversation, $content);
 
-            $conversation->addMessage($chat_message);
-            $chat_messages[] = $chat_message;
+            $conversation->addMessage($chatMessage);
+            $chatMessages[] = $chatMessage;
         }
 
         $serializer = $this->get('serializer');
@@ -246,8 +236,8 @@ class ChatController extends AbstractApiController
                 $content .= sprintf('<div class="file-thumb"><img src="%s" /></div>', $attachment->getThumbnailUrl(50, true));
             }
 
-            $chat_message = new ChatMessage();
-            $chat_message
+            $chatMessage = new ChatMessage();
+            $chatMessage
                 ->setOrigin('user')
                 ->setAuthor($conversation->getPerson())
                 ->setContent($content)
@@ -262,18 +252,18 @@ class ChatController extends AbstractApiController
                 ])
             ;
 
-            $conversation->addMessage($chat_message);
-            $chat_messages[] = $chat_message;
+            $conversation->addMessage($chatMessage);
+            $chatMessages[] = $chatMessage;
         }
 
         $this->saveConversation($conversation);
 
         // Dispatch send message event after saving chat conversation to get message ids
-        foreach ($chat_messages as $chat_message) {
-            $this->dispatch(UserChatEvent::SEND_MESSAGE, new UserChatEvent($conversation, $chat_message));
+        foreach ($chatMessages as $chatMessage) {
+            $this->dispatch(UserChatEvent::SEND_MESSAGE, new UserChatEvent($conversation, $chatMessage));
         }
 
-        return View::create($this->wrap($chat_messages));
+        return View::create($this->wrap($chatMessages));
     }
 
     /**

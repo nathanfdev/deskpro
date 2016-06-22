@@ -1,6 +1,6 @@
-import { createReducer } from 'Ampliflux';
+import { createReducer } from 'DeskPRO/Component/Ampliflux';
 import * as actions from '../Actions/bootstrapActions';
-import { setValue, setFullPayload, async, composeHandlers } from 'Ampliflux/reducers/handlers';
+import { setValue, setFullPayload, async, composeHandlers } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
 import { dispatchWidgetStatus } from '../../../Services/WindowApi';
 
 const initialState = {
@@ -13,7 +13,8 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [actions.getSession]: async({
+  [actions.setLiveDemoSession]: setFullPayload('session'),
+  [actions.getSession]:         async({
     success: setFullPayload('session')
   }),
   [actions.setSettings]:     setFullPayload('settings'),

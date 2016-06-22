@@ -48,6 +48,8 @@ class WidgetBrandChatPopupTranslationType extends AbstractType
         $builder
             ->add('title', TextType::class)
             ->add('message', TextType::class)
+            ->add('heading', TextType::class)
+            ->add('subheading', TextType::class)
         ;
     }
 

@@ -26,11 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
-namespace DeskPRO\Bundle\ApiBundle\Controller\Settings;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Settings\Widget;
 
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Setting;
@@ -89,11 +85,15 @@ class WidgetSettingsController extends BaseController
      *
      * @Rest\Get("/widget/code")
      *
+     * @param Request $request
+     *
      * @return string
      */
-    public function getWidgetCodeAction()
+    public function getWidgetCodeAction(Request $request)
     {
-        return new Response($this->get('widget_loader_code_renderer')->getWidgetCode());
+        $withOptions = $request->query->get('options') ? true : false;
+
+        return new Response($this->get('widget_loader_code_renderer')->getWidgetCode($withOptions));
     }
 
     /**
@@ -168,7 +168,7 @@ class WidgetSettingsController extends BaseController
      * @ApiDoc(
      *     section="Widget setup",
      *     resourceDescription="Operations about widget setup",
-     *     description="remove widget",
+     *     description="remove widget from portal",
      *     statusCodes={
      *         200="Returned if request was successful",
      *     },
@@ -182,6 +182,36 @@ class WidgetSettingsController extends BaseController
     {
         $settingRepo = $this->getSettingsRepository();
         $settingRepo->updateSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL, false);
+
+        return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Reset widget settings.
+     *
+     * @ApiDoc(
+     *     section="Widget setup",
+     *     resourceDescription="Operations about widget setup",
+     *     description="reset widget settings",
+     *     statusCodes={
+     *         200="Returned if request was successful",
+     *     },
+     *)
+     *
+     * @Rest\Delete("/widget/setup")
+     */
+    public function resetSettingsAction()
+    {
+        $settings = $this->getOrCreateWidgetBrandSettings();
+        if ($settings->getId()) {
+            $this->getManager()->remove($settings);
+            $this->getManager()->flush();
+        }
+
+        $settingRepo = $this->getSettingsRepository();
+        $settingRepo->updateSetting(WidgetSettingsResolver::CHAT_EMAIL_VALIDATION, false);
+        $settingRepo->updateSetting(WidgetSettingsResolver::CHAT_REQUIRE_LOGIN, false);
+        $settingRepo->updateSetting(WidgetSettingsResolver::CHAT_ENABLED, true);
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }

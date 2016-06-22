@@ -3,21 +3,24 @@ import { connect } from 'react-redux';
 import { TicketFormContent } from './TicketFormContent';
 import { TicketFormSpinner } from './TicketFormSpinner';
 import { bootstrapTicketApp, saveNewTicketForm } from '../../Actions/ticketActions';
-import { contentSelector, contentLoadingSelector, contentSavingSelector } from '../../Selectors/ticket';
+import { bootstrapSelector, contentSelector, contentLoadingSelector, contentSavingSelector } from '../../Selectors/ticket';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import $ from 'jquery';
 
 @connect(state => ({
-  content: contentSelector(state),
-  loading: contentLoadingSelector(state),
-  saving:  contentSavingSelector(state)
+  content:   contentSelector(state),
+  bootstrap: bootstrapSelector(state),
+  loading:   contentLoadingSelector(state),
+  saving:    contentSavingSelector(state)
 }))
 export class TicketFormContentContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func,
-    content:  PropTypes.string,
-    loading:  PropTypes.bool,
-    saving:   PropTypes.bool
+    dispatch:  PropTypes.func,
+    content:   PropTypes.string,
+    bootstrap: PropTypes.bool,
+    loading:   PropTypes.bool,
+    saving:    PropTypes.bool
   };
 
   componentDidMount() {
@@ -30,26 +33,25 @@ export class TicketFormContentContainer extends React.Component {
   };
 
   render() {
-    const { loading, saving, content } = this.props;
+    const { bootstrap, loading, saving, content } = this.props;
     const style = {};
     if (!$('.form-ticket', content).length) {
-      style.display = `none`;
+      style.display = 'none';
     }
-    return loading
-      ? <TicketFormSpinner />
-      : <div>
-          <div className="header open-new-ticket" style={style}>
-            <span className="img" />
-            <h1>{portalPhrases.get('portal.tickets.new-title')}</h1>
-            <p>{portalPhrases.get('portal.tickets.new-intro')}</p>
-          </div>
-          <div className="dpdesignportal-form">
-            <TicketFormContent
-              content={content}
-              saving={saving}
-              onSubmit={this.onSubmit}
-            />
-          </div>
-        </div>;
+    return bootstrap || loading ? <TicketFormSpinner /> :
+      <div>
+        <div className="header open-new-ticket" style={style}>
+          <span className="img" />
+          <h1>{portalPhrases.get('portal.tickets.new-title')}</h1>
+          <p>{portalPhrases.get('portal.tickets.new-intro')}</p>
+        </div>
+        <div className="dpdesignportal-form">
+          <TicketFormContent
+            content={content}
+            saving={saving}
+            onSubmit={this.onSubmit}
+          />
+        </div>
+      </div>;
   }
 }

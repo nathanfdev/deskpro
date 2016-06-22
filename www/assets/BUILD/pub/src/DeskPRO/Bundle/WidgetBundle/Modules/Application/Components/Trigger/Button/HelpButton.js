@@ -1,12 +1,7 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import classNames from 'classnames';
-import { chatIdSelector } from '../../../../Chat/Selectors/chat';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import classNames from 'classnames';
 
-@connect(state => ({
-  chatId: chatIdSelector(state)
-}))
 export class HelpButton extends React.Component {
 
   static propTypes = {
@@ -19,7 +14,7 @@ export class HelpButton extends React.Component {
     textColor:       PropTypes.string,
     disabled:        PropTypes.bool,
     triggerResize:   PropTypes.func,
-    chatId:          PropTypes.number
+    locationPath:    PropTypes.string
   };
 
   componentDidUpdate() {
@@ -32,10 +27,10 @@ export class HelpButton extends React.Component {
   };
 
   render() {
-    const { widgetPosition, name, size, disabled, backgroundColor, textColor, chatId } = this.props;
+    const { widgetPosition, name, size, disabled, backgroundColor, textColor, locationPath } = this.props;
 
     let buttonCaption;
-    if (chatId) {
+    if (locationPath === '/chat/active') {
       buttonCaption = portalPhrases.get('portal.chat.reopen_chat_action');
     } else {
       buttonCaption = name;

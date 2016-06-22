@@ -2,6 +2,7 @@
   "name": "DeskPRO",
   "version": "1.0.0",
   "devDependencies": {
+    "autoprefixer": "^6.3.6",
     "bower": "^1.5.2",
     "coffee-script": "1.9.1",
     "del": "1.1.1",
@@ -14,6 +15,7 @@
     "gulp-if": "1.2.5",
     "gulp-less": "3.0.0",
     "gulp-plumber": "0.6.6",
+    "gulp-postcss": "^6.1.1",
     "gulp-r": "1.1.3",
     "gulp-rename": "1.2.0",
     "gulp-requirejs": "^0.1.3",
@@ -24,13 +26,16 @@
     "gulp-watch": "4.1.1",
     "gulp-watch-less": "0.2.1",
     "karma": "0.12.24",
-    "karma-jasmine": "0.2.3",
     "karma-chrome-launcher": "0.1.5",
+    "karma-jasmine": "0.2.3",
+    "kss": "^3.0.0-beta.14",
     "lazypipe": "0.2.2",
     "less": "2.3.1",
     "node-sass": "3.7.0",
+    "postcss-discard-comments": "^2.0.4",
     "run-sequence": "1.0.2",
-    "sassdoc": "^2.1.18"
+    "sassdoc": "^2.1.18",
+    "semantic-ui-less": "^2.1.8"
   },
   "scripts": {
     "bower-install": "bower install --config.interactive=false --allow-root",

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Entity\CustomDefChat;
 use Application\LegacyApiBundle\Controller\Helper\CustomFieldHelper;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -60,12 +61,12 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
      */
     public function listAction()
     {
-        $data = array();
+        $data = [];
 
-        /** @var \Application\DeskPRO\CustomFields\ChatFieldManager $field_manager */
-        $field_manager = $this->container->getSystemService('chat_fields_manager');
+        /** @var \Application\DeskPRO\CustomFields\ChatFieldManager $fieldManager */
+        $fieldManager = $this->container->getSystemService('chat_fields_manager');
 
-        $custom_fields         = $field_manager->getDefinedFields();
+        $custom_fields         = $fieldManager->getDefinedFields();
         $data['custom_fields'] = $this->getApiData($custom_fields, false);
 
         return $this->createApiResponse($data);
@@ -86,12 +87,12 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
      */
     public function getCustomFieldAction($id)
     {
-        $field = $this->em->find('DeskPRO:CustomDefChat', $id);
+        $field = $this->em->find(CustomDefChat::class, $id);
         if (!$field || $field->parent) {
             throw $this->createNotFoundException();
         }
 
-        $data          = array();
+        $data          = [];
         $data['field'] = $field->toApiData();
 
         return $this->createApiResponse($data);
@@ -113,16 +114,16 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
      */
     public function saveCustomFieldAction($id)
     {
-        /** @var \Application\DeskPRO\CustomFields\ChatFieldManager $field_manager */
-        $field_manager = $this->container->getSystemService('chat_fields_manager');
+        /** @var \Application\DeskPRO\CustomFields\ChatFieldManager $fieldManager */
+        $fieldManager = $this->container->getSystemService('chat_fields_manager');
 
         if ($id) {
-            $field = $this->em->find('DeskPRO:CustomDefChat', $id);
+            $field = $this->em->find(CustomDefChat::class, $id);
             if (!$field || $field->parent) {
                 throw $this->createNotFoundException();
             }
         } else {
-            $field                = $field_manager->createNewDefEntity();
+            $field                = $fieldManager->createNewDefEntity();
             $field->handler_class = $this->in->getString('handler_class');
         }
 
@@ -133,16 +134,16 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
 
         if ($id) {
             return $this->createSuccessResponse(
-                array(
-                     'field_id' => $field->id,
-                )
+                [
+                    'field_id' => $field->id,
+                ]
             );
         } else {
             return $this->createSuccessResponse(
-                array(
-                     'field_id' => $field->id,
-                     $this->generateUrl('api_chat_fields_get', array('id' => $field->id)),
-                )
+                [
+                    'field_id' => $field->id,
+                    $this->generateUrl('api_chat_fields_get', ['id' => $field->id]),
+                ]
             );
         }
     }
@@ -162,7 +163,7 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
      */
     public function deleteCustomFieldAction($id)
     {
-        $field = $this->em->find('DeskPRO:CustomDefChat', $id);
+        $field = $this->em->find(CustomDefChat::class, $id);
         if (!$field || $field->parent) {
             throw $this->createNotFoundException();
         }
@@ -185,9 +186,9 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
      */
     public function toggleFieldAction($field_id, $is_enabled)
     {
-        /** @var \Application\DeskPRO\CustomFields\ChatFieldManager $field_manager */
-        $field_manager = $this->container->getSystemService('chat_fields_manager');
-        $field_manager->setFieldEnabledById($field_id, $is_enabled);
+        /** @var \Application\DeskPRO\CustomFields\ChatFieldManager $fieldManager */
+        $fieldManager = $this->container->getSystemService('chat_fields_manager');
+        $fieldManager->setFieldEnabledById($field_id, $is_enabled);
 
         return $this->createSuccessResponse();
     }
@@ -201,8 +202,29 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
      */
     public function saveDisplayOrderAction()
     {
-        $display_orders = $this->in->getCleanValueArray('display_orders', 'uint', 'discard');
-        $this->em->getRepository('DeskPRO:CustomDefChat')->updateDisplayOrders($display_orders);
+        $displayOrders = $this->in->getCleanValueArray('display_orders', 'uint', 'discard');
+        $this->em->getRepository(CustomDefChat::class)->updateDisplayOrders($displayOrders);
+
+        return $this->createSuccessResponse();
+    }
+
+    ####################################################################################################################
+    # save batch
+    ####################################################################################################################
+
+    public function saveBatchCustomFieldAction()
+    {
+        $fields = $this->in->getCleanValueArray('custom_fields');
+
+        $helper = new CustomFieldHelper($this);
+
+        foreach ($fields as $fieldData) {
+            $field = $this->em->find(CustomDefChat::class, $fieldData['id']);
+            if (!$field || $field->parent) {
+                throw $this->createNotFoundException();
+            }
+            $helper->saveFormToField($field, $fieldData);
+        }
 
         return $this->createSuccessResponse();
     }

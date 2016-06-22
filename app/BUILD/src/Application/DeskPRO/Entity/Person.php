@@ -2699,10 +2699,14 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * Set the picture blob.
      *
      * @param \Application\DeskPRO\Entity\Blob $blob
+     *
+     * @return $this
      */
     public function setPictureBlob(Blob $blob = null)
     {
         $this->setModelField('picture_blob', $blob);
+
+        return $this;
     }
 
     /**

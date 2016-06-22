@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Numbers;
 
 /**
@@ -48,11 +49,16 @@ use Orb\Util\Numbers;
  * @property Person    $person
  * @property bool      $value
  * @property bool      $is_active
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class Permission extends DomainObject
 {
     /**
      * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      *
      * @var int
      */
@@ -60,6 +66,9 @@ class Permission extends DomainObject
 
     /**
      * The name of the permission.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -84,6 +93,9 @@ class Permission extends DomainObject
     /**
      * Any numeric number (ex filesize, flag).
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var bool
      */
     protected $value = null;
@@ -101,6 +113,9 @@ class Permission extends DomainObject
      *
      * So we turn these extra perms "off" so the resolver doesn't fetch them. That means if a
      * hd with many agent uses groups instead of overrides, permission resolving is much much faster.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -138,7 +153,7 @@ class Permission extends DomainObject
      */
     public static function getEffectivePermissions(array $perms)
     {
-        $effective_perms = array();
+        $effective_perms = [];
 
         foreach ($perms as $perm) {
             if (is_array($perm)) {

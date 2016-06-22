@@ -1,0 +1,18 @@
+/*******************************
+         Site Overrides
+*******************************/
+
+.ui.tabular.menu .item {
+  background: @dp-greyscale-50;
+
+  border-top: 1px solid @dp-greyscale-250;
+  border-left: 1px solid @dp-greyscale-250;
+  border-right-color: transparent;
+}
+.ui.tabular.menu .item.active ~ .item {
+  border-left-color: transparent;
+  border-right: 1px solid @dp-greyscale-250;
+}
+.ui.tabular.menu .item:hover {
+  background-color: @dp-bright-sky;
+}

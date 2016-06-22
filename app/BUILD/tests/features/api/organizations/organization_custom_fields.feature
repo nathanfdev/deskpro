@@ -8,7 +8,7 @@ Feature: /organization_custom_fields endpoint
     And my request is authenticated
 
   Scenario: I retrieve a list of custom fields
-    When I send a GET request to "/api/v2/organization_custom_fields"
+    When I send a GET request to "/api/v2/organization_custom_fields?order_by=id"
     Then the response should be in JSON
     And the response status code should be 200
 

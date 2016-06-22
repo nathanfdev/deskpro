@@ -84,9 +84,6 @@ class TicketWithLayoutsManipulatorType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults([
-                'allow_rerender' => false,
-            ])
             ->setRequired(['field_resolver', 'field_renderer', 'layout_factory'])
             ->setAllowedTypes([
                 'field_resolver' => AbstractFieldResolver::class,

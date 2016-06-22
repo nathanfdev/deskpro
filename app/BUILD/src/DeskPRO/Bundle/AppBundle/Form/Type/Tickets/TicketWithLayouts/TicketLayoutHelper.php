@@ -115,7 +115,10 @@ class TicketLayoutHelper extends AbstractType
 
                 $choice = null;
                 if (is_scalar($submitted_value)) {
-                    $choice = current($form->get($key)->getConfig()->getOption('choice_list')->getChoicesForValues([$submitted_value]));
+                    $choiceList = $form->get($key)->getConfig()->getOption('choice_list');
+                    if ($choiceList) {
+                        $choice = current($choiceList->getChoicesForValues([$submitted_value]));
+                    }
                 }
 
                 if ($choice instanceof HierarchyNode) {

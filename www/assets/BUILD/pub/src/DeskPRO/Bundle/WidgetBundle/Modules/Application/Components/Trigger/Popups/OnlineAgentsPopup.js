@@ -1,12 +1,14 @@
 import React, { PropTypes } from 'react';
 import { AgentAvatars } from './AgentAvatars';
 import { ChatPopup } from './ChatPopup';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class OnlineAgentsPopup extends React.Component {
 
   static propTypes = {
     backgroundColor: PropTypes.string,
     textColor:       PropTypes.string,
+    popupStyle:      PropTypes.string,
     onlineAgents:    PropTypes.object,
     onClick:         PropTypes.func,
     onClose:         PropTypes.func,
@@ -40,7 +42,6 @@ export class OnlineAgentsPopup extends React.Component {
               <AgentAvatars onlineAgents={onlineAgents} />
             </div>
           </div>
-          <hr />
         </div>
         <div className="preemtive-chat-content">
           <div className="preemtive-chat-footer">
@@ -54,7 +55,7 @@ export class OnlineAgentsPopup extends React.Component {
                   color: textColor
                 }}
               >
-                Start a conversation
+                {portalPhrases.get('portal.chat.start_conversation')}
               </a>
             </div>
           </div>

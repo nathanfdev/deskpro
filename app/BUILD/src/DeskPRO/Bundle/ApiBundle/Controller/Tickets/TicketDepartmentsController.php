@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Department;
@@ -54,6 +55,9 @@ class TicketDepartmentsController extends DepartmentsController
     protected static $property       = 'is_tickets_enabled';
     protected static $departmentType = 'tickets';
 
+    /**
+     * {@inheritdoc}
+     */
     protected function getAllowedDepartmentsId()
     {
         $permissionBag = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());

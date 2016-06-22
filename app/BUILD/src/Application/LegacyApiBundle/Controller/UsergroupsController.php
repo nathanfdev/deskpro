@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -68,10 +68,10 @@ class UsergroupsController extends AbstractController implements ProtectedContro
 
     public function listAction($type)
     {
-        $data = array();
+        $data = [];
 
         if ($type == 'non_sys_user') {
-            $data['groups'] = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
+            $data['groups'] = $this->em->getRepository(Usergroup::class)->getUsergroupNames();
         } else {
             $ugs = $this->em->createQuery('
                 SELECT ug
@@ -104,12 +104,12 @@ class UsergroupsController extends AbstractController implements ProtectedContro
             throw $this->createNotFoundException();
         }
 
-        $perms = new GroupsDbLoader(array($usergroup), $this->em);
+        $perms = new GroupsDbLoader([$usergroup], $this->em);
 
         $data          = $usergroup->toApiData();
         $data['perms'] = $perms->getGroupPermissions($usergroup->id);
 
-        return $this->createApiResponse(array('group' => $data));
+        return $this->createApiResponse(['group' => $data]);
     }
 
     ###################################################################################################################
@@ -134,7 +134,7 @@ class UsergroupsController extends AbstractController implements ProtectedContro
 
         $this->db->executeUpdate('DELETE FROM permissions_cache');
 
-        return $this->createApiDeleteResponse(array('old_group_id' => (int) $id));
+        return $this->createApiDeleteResponse(['old_group_id' => (int) $id]);
     }
 
     ####################################################################################################################
@@ -169,10 +169,10 @@ class UsergroupsController extends AbstractController implements ProtectedContro
 
         $usergroup_edit = new UsergroupEdit($usergroup);
 
-        $formData = array('group' => $this->in->getArrayValue('group'));
+        $formData = ['group' => $this->in->getArrayValue('group')];
         unset($formData['group']['perms']);
 
-        $form = $this->createForm(new UsergroupType(), $usergroup_edit, array('cascade_validation' => true));
+        $form = $this->createForm(new UsergroupType(), $usergroup_edit, ['cascade_validation' => true]);
         $form->submit($formData, true);
 
         if (!$form->isValid()) {
@@ -204,11 +204,39 @@ class UsergroupsController extends AbstractController implements ProtectedContro
 
         if (!$id) {
             return $this->createApiCreateResponse(
-                array('id' => $usergroup->id),
-                $this->generateUrl('api_user_groups_get', array('id' => $usergroup->id), true)
+                ['id' => $usergroup->id],
+                $this->generateUrl('api_user_groups_get', ['id' => $usergroup->id], true)
             );
         } else {
             return $this->createApiSuccessResponse();
         }
+    }
+
+    public function savePermissionsAction($type)
+    {
+        $newPermissions = $this->in->getCleanValueArray('permissions');
+
+        $userGroups = $this->container->getUserGroups()->getAll();
+
+        $perms = new GroupsDbLoader($userGroups, $this->em);
+
+        $db_persister = new GroupDbPersister($this->em);
+
+        list($permissionType, $permissionAction) = explode('.', $type);
+
+        foreach ($userGroups as $userGroup) {
+            $permissions = $perms->getGroupPermissions($userGroup->getId());
+            if (!isset($permissions->$permissionType->$permissionAction)) {
+                return $this->createApiErrorResponse('unknown_permission', 'The permission '.$type.' does not exists');
+            }
+            if (!empty($newPermissions[$userGroup->getId()])) {
+                $permissions->$permissionType->$permissionAction = true;
+            } else {
+                $permissions->$permissionType->$permissionAction = false;
+            }
+            $db_persister->savePerms($userGroup, $permissions);
+        }
+
+        return $this->createApiSuccessResponse();
     }
 }

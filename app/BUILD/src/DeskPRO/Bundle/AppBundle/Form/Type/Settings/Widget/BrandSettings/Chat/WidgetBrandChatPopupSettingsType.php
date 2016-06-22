@@ -52,12 +52,15 @@ class WidgetBrandChatPopupSettingsType extends AbstractType
                 'allow_delete'   => true,
                 'error_bubbling' => false,
             ])
-            ->add('reply_type', ChoiceType::class, [
-                'property_path'     => 'replyType',
+            ->add('style', ChoiceType::class, [
                 'choices_as_values' => true,
                 'choices'           => [
-                    WidgetBrandChatPopupSettings::REPLY_TYPE_BUTTON,
-                    WidgetBrandChatPopupSettings::REPLY_TYPE_BUTTONS,
+                    WidgetBrandChatPopupSettings::STYLE_AGENT_TEXT_BUTTON,
+                    WidgetBrandChatPopupSettings::STYLE_AGENT_TEXT_INPUT,
+                    WidgetBrandChatPopupSettings::STYLE_AGENTS_BUTTON,
+                    WidgetBrandChatPopupSettings::STYLE_TEXT_BUTTON,
+                    WidgetBrandChatPopupSettings::STYLE_TEXT_INPUT,
+                    WidgetBrandChatPopupSettings::STYLE_WIDGET_BUTTON_AGENT,
                 ],
             ])
         ;

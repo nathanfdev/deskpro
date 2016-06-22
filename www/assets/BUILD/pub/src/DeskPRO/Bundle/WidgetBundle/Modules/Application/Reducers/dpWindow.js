@@ -1,5 +1,5 @@
-import { createReducer } from 'Ampliflux';
-import { setValue, setFullPayload } from 'Ampliflux/reducers/handlers';
+import { createReducer } from 'DeskPRO/Component/Ampliflux';
+import { setValue, setFullPayload } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
 import * as actions from '../Actions/dpWindowActions';
 
 const initialState = {
@@ -28,6 +28,7 @@ export default createReducer(initialState, {
   [actions.openTriggerPopup]:  setValue('triggerPopupOpened', true),
   [actions.closeTriggerPopup]: setValue('triggerPopupOpened', false),
 
-  [actions.openWidget]:  setValue('widgetOpened', true),
-  [actions.closeWidget]: setValue('widgetOpened', false)
+  [actions.openWidget]:   setValue('widgetOpened', true),
+  [actions.reopenWidget]: setValue('widgetOpened', true),
+  [actions.closeWidget]:  setValue('widgetOpened', false)
 });
