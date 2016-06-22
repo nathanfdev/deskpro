@@ -135,7 +135,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           promises = [request, @loadAdvancedEdits(), @loadLogo(), @loadValues()]
           all = @$q.all(promises)
           all.then(
-            () => new Promise( (resolve) => resolve(@refrechPreviewUrl())).then(() => @success('Changes were discarded'); @recompiling = false),
+            () => new Promise( (resolve) => resolve(@refreshPreviewUrl())).then(() => @success('Changes were discarded'); @recompiling = false),
             () => @serverError(); @recompiling = false
           );
       )

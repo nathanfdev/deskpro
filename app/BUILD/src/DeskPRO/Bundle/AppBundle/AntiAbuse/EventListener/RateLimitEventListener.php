@@ -163,19 +163,21 @@ class RateLimitEventListener implements EventSubscriberInterface
         if (!$config->isValid()) {
             throw new \Exception('Invalid rate limit action');
         }
+        $captchaResponse = $config->getResponse() === AntiAbuseConfig::RESPONSE_CAPTCHA;
 
-        $event->setConfig($config);
-
-        if (!$config->isEnabled()) {
+        if (!$config->isEnabled() || !$captchaResponse) {
+            // leave early, we don't want to count anything
             return false;
         }
+
+        $event->setConfig($config);
 
         /** @var RateLimitLogRepository $rep */
         $rep = $this->em->getRepository(RateLimitLog::class);
         $res = $rep->count($config, $event->getIp());
 
         return $res >= (int) $config->getLimit()
-            ? $config->getResponse() === AntiAbuseConfig::RESPONSE_CAPTCHA
+            ? $captchaResponse
             : false;
     }
 
@@ -195,24 +197,27 @@ class RateLimitEventListener implements EventSubscriberInterface
             throw new \Exception('Invalid rate limit action');
         }
 
-        $event->setConfig($config);
-        if (!$config->isEnabled()) {
+        $lockoutResponse = $config->getResponse() === AntiAbuseConfig::RESPONSE_LOCKOUT;
+
+        if (!$config->isEnabled() || !$lockoutResponse) {
             return false;
         }
+
+        $event->setConfig($config);
 
         /** @var RateLimitLogRepository $rep */
         $rep = $this->em->getRepository(RateLimitLog::class);
 
         // at first let's decide if we are in lockout
         $lastLockoutAttempt = $rep->getLastLockedOutAttempt($event->getConfig(), $event->getIp());
-        if ($lastLockoutAttempt && $lastLockoutAttempt + $config->getLockoutTime() > time()) {
+        if ($lockoutResponse && $lastLockoutAttempt && $lastLockoutAttempt + $config->getLockoutTime() > time()) {
             return true; // we are in lockout already so it's required
         }
 
         $res = $rep->count($config, $event->getIp());
 
         return $res >= $config->getLimit()
-            ? $config->getResponse() === AntiAbuseConfig::RESPONSE_LOCKOUT
+            ? $lockoutResponse
             : false;
     }
 

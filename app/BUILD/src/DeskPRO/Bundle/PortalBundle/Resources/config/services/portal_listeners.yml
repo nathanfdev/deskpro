@@ -84,6 +84,11 @@ services:
     tags:
       - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 0 }
 
+  api_exception.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\ApiExceptionListener
+    tags:
+      - { name: kernel.event_subscriber}
+
   controller_name_converter:
       class: DeskPRO\Bundle\PortalBundle\HttpKernel\ControllerNameParser
       tags: [{name: monolog.logger, channel: request}]

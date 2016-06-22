@@ -55,7 +55,7 @@ define ->
       # @return {promise}
     ###
     loadPending: ->
-      if not @pending.length
+      if not @pending?.length
         d = @$q.defer()
         d.resolve()
         return d.promise

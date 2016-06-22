@@ -94,7 +94,7 @@ class PortalHttpCache extends EventDispatchingHttpCache
         $cacheDisabled = $DP_ENV->getConfig('settings.disable_portal_http_cache');
 
         // Cache is disabled for agents or users, they need to see content asap
-        if (!$cacheDisabled && ($request->cookies->has('dpsid-agent'))) {
+        if (!$cacheDisabled && ($request->cookies->has('dpsid-agent') || $request->cookies->has('dpsid-admin'))) {
             $cacheDisabled = true;
         }
 
