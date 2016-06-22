@@ -4,7 +4,6 @@ import { TicketFormContent } from './TicketFormContent';
 import { TicketFormSpinner } from './TicketFormSpinner';
 import { bootstrapTicketApp, saveNewTicketForm } from '../../Actions/ticketActions';
 import { contentSelector, contentLoadingSelector, contentSavingSelector } from '../../Selectors/ticket';
-import { history } from '../../../../Services/history';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 @connect(state => ({
@@ -27,9 +26,7 @@ export class TicketFormContentContainer extends React.Component {
   }
 
   onSubmit = data => {
-    const { dispatch } = this.props;
-    const promise = dispatch(saveNewTicketForm(data));
-    promise.then(() => history.replace('ticket/form_submitted'));
+    this.props.dispatch(saveNewTicketForm(data));
   };
 
   render() {
