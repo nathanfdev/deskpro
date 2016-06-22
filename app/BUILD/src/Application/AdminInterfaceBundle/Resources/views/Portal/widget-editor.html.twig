@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
-    <form class="ui form widget-editor">
+    <form class="ui form widget-editor admin-next">
         <div class="ui grid">
             <div class="seven wide column">
                 <h3><i class="icon setting"></i>{{ phrase('admin.widget.settings_heading') }}</h3>
@@ -597,19 +597,22 @@
                             <button class="ui basic button" ng-click="Ctrl.changeFrameSource()">Go</button>
                         </div>
                     </div>
-                    <div class="ui buttons state-buttons">
-                        <button class="ui small button" ng-class="{'active': demo_state == 'button'}" ng-click="Ctrl.changeDemoState('button')">
+                    <div class="ui pointing menu">
+                        <div class="item">
+                            Preview Mode:
+                        </div>
+                        <a class="item" ng-class="{'active': demo_state == 'button'}" ng-click="Ctrl.changeDemoState('button')">
                             Button
-                        </button>
-                        <button class="ui small button" ng-class="{'active': demo_state == 'pre-chat'}" ng-click="Ctrl.changeDemoState('pre-chat')" ng-if="global_settings.chat.enabled">
+                        </a>
+                        <a class="item" ng-class="{'active': demo_state == 'pre-chat'}" ng-click="Ctrl.changeDemoState('pre-chat')" ng-if="global_settings.chat.enabled">
                             Pre-chat
-                        </button>
-                        <button class="ui small button" ng-class="{'active': demo_state == 'in-chat'}" ng-click="Ctrl.changeDemoState('in-chat')" ng-if="global_settings.chat.enabled">
+                        </a>
+                        <a class="item" ng-class="{'active': demo_state == 'in-chat'}" ng-click="Ctrl.changeDemoState('in-chat')" ng-if="global_settings.chat.enabled">
                             In Chat
-                        </button>
-                        <button class="ui small button" ng-class="{'active': demo_state == 'ticket'}" ng-click="Ctrl.changeDemoState('ticket')">
+                        </a>
+                        <a class="item" ng-class="{'active': demo_state == 'ticket'}" ng-click="Ctrl.changeDemoState('ticket')">
                             Ticket
-                        </button>
+                        </a>
                     </div>
                     <div class="widget-editor-live-demo-container">
                         <div class="widget-editor-live-demo-loader" ng-hide="widgetLoaded"><i></i></div>

@@ -2,15 +2,13 @@
          Site Overrides
 *******************************/
 
-.ui.active.button,
-.ui.button:active,
-.ui.active.button:active {
-  transform: translateY(2px);
-}
-
 .ui.basic.buttons .button,
 .ui.basic.button {
   border: 1px solid @dp-greyscale-250;
+}
+
+.ui.buttons.state-buttons > .ui.button.active:not(.basic):not(.inverted), .ui.buttons.state-buttons:not(.basic):not(.inverted) > .button.active {
+    box-shadow: 0px 2px 0px @dp-greyscale-450;
 }
 
 .ui.basic.buttons .button:hover,

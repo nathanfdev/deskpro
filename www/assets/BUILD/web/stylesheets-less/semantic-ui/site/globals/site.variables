@@ -55,11 +55,11 @@
     Fonts
 ******************************/
 
-@fontName : 'Open Sans';
+@fontName : 'Helvetica Neue', Helvetica, Arial, sans-serif;
 @fontPath: '../../../../fonts';
 @googleFontSizes   : '300,400,600,700,400italic,700italic';
-@pageFont: 'Open Sans', 'Helvetica Neue', Arial, Helvetica, sans-serif;
-@headerFont: 'Open Sans', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+@pageFont: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+@headerFont: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
 @textColor: @dp-greyscale-1000;
 
@@ -67,8 +67,8 @@
     Font sizes
 ******************************/
 
-@fontSize: 16px;
-@emSize: 16px;
+@fontSize: 12px;
+@emSize: 14px;
 
 @small: 0.75rem;
 @tiny: 0.625rem;
