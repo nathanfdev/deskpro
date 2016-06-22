@@ -64,6 +64,8 @@ class BuildNewAgent_0010_brand extends AbstractBuild
         // Make sure it's set to the default brand ID
         $brand_id = $db->lastInsertId();
         $this->saveSetting('portal.default_brand', $brand_id);
+        $this->saveSetting('portal.widget.enabled', 1);
+        $this->saveSetting('portal.chat.enabled', 1);
     }
 }
 
