@@ -61,7 +61,7 @@ define ['DeskPRO/Util/Util'], (Util)  ->
       @settingPromise[@brandId] = d.promise
 
       if @brandId
-        p = @Api2.sendGet('/settings/brands/'+@brandId+'/portal_general').success((res) =>
+        p = @Api2.sendGet('/settings/brands/'+@brandId+'/portal/general').success((res) =>
           @settings = res.data
           @version += 1
           d.resolve(@settings)
@@ -87,7 +87,7 @@ define ['DeskPRO/Util/Util'], (Util)  ->
       # Virtual value we don't want to save it
       delete data.portal_mode;
 
-      @Api2.sendPostJson('/settings/brands/'+@brandId+'/portal_general', data).then((res) =>
+      @Api2.sendPostJson('/settings/brands/'+@brandId+'/portal/general', data).then((res) =>
         @_loadSettings().then(=>
           d.resolve(res.data.data)
         , =>

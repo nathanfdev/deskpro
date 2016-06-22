@@ -35,9 +35,9 @@ namespace DeskPRO\Bundle\PortalBundle\Mode;
  */
 class PortalModeFactory
 {
-    const REGEX_ADMIN         = '#^/admin\-mode(/{1}.*|$)$#';
-    const REGEX_BRAND         = '#^/brand-([0-9]+?)(/{1}.*|$)$#';
     const REGEX_ADMIN_PREVIEW = '#^/admin\-preview(/{1}.*|$)$#';
+    const REGEX_BRAND         = '#^/brand-([0-9]+?)(/{1}.*|$)$#';
+    const REGEX_ADMIN         = '#^/admin\-mode(/{1}.*|$)$#';
     const REGEX_FOCUS_WIN     = '#^/focus\-win(/{1}.*|$)$#';
     const REGEX_FRAME_EMBED   = '#^/frame\-embed(/{1}.*|$)$#';
 
@@ -57,7 +57,7 @@ class PortalModeFactory
             $mode->setInternalPath(strlen($matches[2]) > 0 ? $matches[2] : '/');
             $mode->setModePath(sprintf('/brand-%s', $brand_id));
         } elseif (preg_match(self::REGEX_ADMIN, $path, $matches)) {
-            // this one will likely be deleted completey, no use at the moment
+            // this one will likely be deleted completely, no use at the moment
             $mode->setAdmin();
             $mode->setInternalPath(strlen($matches[1]) > 0 ? $matches[1] : '/');
             $mode->setModePath('/admin-mode');

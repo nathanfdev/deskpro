@@ -14,6 +14,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         {id: "standard", title: "Standard"},
         {id: "sidebar", title: "Sidebar"}
       ]
+      @$scope.brand_id = @$stateParams.brandId
       @$scope.welcome_box = {
         title: '',
         message: ''
@@ -44,7 +45,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     save: =>
       request = @$http({
         method: 'PUT',
-        url: '/portal/api/style/edit-theme-set/advanced-edits',
+        url: '/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/advanced-edits',
         data: @advanced
       })
       promises = [@saveValues(), @editWelcomeBox(), request]
@@ -62,7 +63,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     editTheme: =>
       request = @$http({
         method: 'PUT',
-        url: '/portal/api/style/edit-theme-set/info',
+        url: '/brand-'+@$scope.brand_id+'/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/info',
         data: {
           theme_id: @selected_theme
         }
@@ -85,7 +86,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     editWelcomeBox: =>
       request = @$http({
         method: 'PUT',
-        url: '/portal/api/style/edit-theme-set/welcome-message',
+        url: '/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/welcome-message',
         data: @$scope.welcome_box
       })
       @recompiling = true
@@ -97,7 +98,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     saveValues: =>
       request = @$http({
         method: 'PUT',
-        url: '/portal/api/style/edit-theme-set/variable-values',
+        url: '/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/variable-values',
         data: @$scope.values
       })
       @recompiling = true
@@ -118,7 +119,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           all = @$q.all(promises)
           all.then (
             () =>
-              @$http.get('/portal/api/style/edit-theme-set/commit').then(
+              @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/commit').then(
                 () => @success('Changes were applied to the portal'); @commiting = false,
                 () => @serverError(); @commiting = false
               )
@@ -129,7 +130,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @showConfirm('Are you sure you want to discard all changes you\'ve made?', 'Confirm discard').result.then(
         () =>
           @recompiling = true
-          request = @$http.get('/portal/api/style/edit-theme-set/discard')
+          request = @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/discard')
           promises = [request, @loadAdvancedEdits(), @loadLogo(), @loadValues()]
           all = @$q.all(promises)
           all.then(
@@ -140,7 +141,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
     initialLoad: =>
       @$q.all([
-        @$http.get('/portal/api/style/variable-groups').success((data) => @groups = data),
+        @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/variable-groups').success((data) => @groups = data),
         @loadValues(),
         @loadAdvancedEdits(),
         @loadAssetFiles(),
@@ -170,7 +171,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @preview_url = preview_url
 
     loadValues: (success) =>
-      @$http.get('/portal/api/style/edit-theme-set/variable-values').success(
+      @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/variable-values').success(
         (values) =>
           angular.extend(@$scope.values, values)
           @values = angular.copy(@$scope.values)
@@ -180,7 +181,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       )
 
     loadTemplateOptions: () =>
-      @$http.get('/portal/api/style/edit-theme-set/templates').success(
+      @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/templates').success(
         (templates) =>
           for template in templates
             @template_options.push({
@@ -196,7 +197,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       if parts[1] then parts[1] else parts[0]
 
     editTemplate: =>
-      @$http.get('/portal/api/style/edit-theme-set/template-info?template=' + @selected_template).success((data) =>
+      @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/template-info?template=' + @selected_template).success((data) =>
         @selected_template_info = {
           code: data.source,
           is_custom: data.is_custom
@@ -206,7 +207,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
     openTemplateEditor: (tpl) =>
       @selected_template = tpl
-      @$http.get('/portal/api/style/edit-theme-set/template-info?template=' + @selected_template).success((data) =>
+      @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/template-info?template=' + @selected_template).success((data) =>
         @selected_template_info = {
           code: data.source,
           is_custom: data.is_custom
@@ -217,7 +218,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     saveTemplateEditor: () =>
       @$http({
         method: 'PUT',
-        url: '/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
+        url: '/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
         data: angular.toJson({code: @selected_template_info.code})
       })
       .success(
@@ -232,7 +233,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     revertTemplateEditor: () =>
       @$http({
         method: 'PUT',
-        url: '/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
+        url: '/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
         data: angular.toJson({revert: true})
       })
       .error(@serverError)
@@ -242,7 +243,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
     openCssEditor: (type) =>
       @css_template_selected = true
-      @$http.get('/portal/api/style/edit-theme-set/advanced-edits').success((data) =>
+      @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/advanced-edits').success((data) =>
         @css_template_info = {
           loaded: true,
           type: type,
@@ -261,7 +262,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
       req = @$http({
         method: 'PUT',
-        url: '/portal/api/style/edit-theme-set/advanced-edits',
+        url: '/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/advanced-edits',
         data: angular.toJson(data)
       })
       .success(=> @recompiling = false)
@@ -277,7 +278,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @selected_template_info_loaded = false
 
     loadAdvancedEdits: (success) =>
-      @$http.get('/portal/api/style/edit-theme-set/advanced-edits').success(
+      @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/advanced-edits').success(
         (advanced) =>
           angular.extend(@advanced, advanced)
           if success
@@ -285,30 +286,30 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       )
 
     loadAssetFiles: () =>
-      @$http.get('/portal/api/style/edit-theme-set/assets').success(
+      @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/assets').success(
         (response) => angular.extend(@asset_files, response.data)
       )
 
     loadThemeSet: () =>
-      @$http.get('/portal/api/style/edit-theme-set/info').success((data) =>
+      @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/info').success((data) =>
         @theme_set = data
         @selected_theme = @theme_set.theme_id
       )
 
     loadWelcomeBox: () =>
-      @$http.get('/portal/api/style/edit-theme-set/welcome-message').success((response) =>
+      @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/welcome-message').success((response) =>
         @$scope.welcome_box = response.data
         @welcome_box = angular.copy(@$scope.welcome_box)
       )
 
     loadLogo: () =>
-      @$http.get('/portal/api/style/edit-theme-set/logo').success((response) => @custom_logo = response.data?.url)
+      @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/logo').success((response) => @custom_logo = response.data?.url)
 
     upload: (files) =>
       for file in files
         @uploading_files_count++
         @$upload.upload({
-          url: '/portal/api/style/edit-theme-set/assets',
+          url: '/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/assets',
           file: file
         }).then(
           (response) =>
@@ -320,7 +321,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
     uploadLogo: (files) =>
       @$upload
-        .upload({url: '/portal/api/style/edit-theme-set/logo', file: files[0]})
+        .upload({url: '/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/logo', file: files[0]})
         .then(
           (response) => @custom_logo = response.data.data.url,
           () => @error('Server error occurred. Unable to upload files.')
@@ -342,12 +343,12 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
     delete: (file) =>
       if window.confirm('Are you sure you want to remove ' + file.name + '?')
-        @$http.delete('/portal/api/style/edit-theme-set/assets/' + file.id).success(
+        @$http.delete('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/assets/' + file.id).success(
           () => @asset_files = @asset_files.filter (f) -> f isnt file
         )
 
     deleteLogo: () =>
-      @$http.delete('/portal/api/style/edit-theme-set/logo').success(() => @custom_logo = null)
+      @$http.delete('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/logo').success(() => @custom_logo = null)
 
     openAdvancedTab: (tab) => @advanced_tab = tab
     isAdvancedTab: (tab) => @advanced_tab == tab
@@ -375,7 +376,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           $scope.ok = () -> $modalInstance.close(@email)
           $scope.cancel = () -> $modalInstance.dismiss('cancel')
           $scope.loadEmails = (val) ->
-            $http.get('/portal/api/emails?term=' + val + '&target=' + preview_as)
+            $http.get('/brand-'+@$scope.brand_id+'/portal/api/emails?term=' + val + '&target=' + preview_as)
                  .then((response) => response.data)
         ],
         resolve: {

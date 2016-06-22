@@ -43,9 +43,9 @@ use Symfony\Component\HttpFoundation\Response;
  * Class BrandSettingsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/settings/brands/{brandId}/portal_general")
+ * @Rest\Route("/settings/brands/{brandId}/portal/general")
  */
-class BrandSettingsController extends AbstractBrandAwareSettingsController
+class GeneralSettingsController extends AbstractBrandAwareSettingsController
 {
     /**
      * @return GeneralSettings
