@@ -101,9 +101,63 @@ class InstallFixturesStep extends AbstractStep
             $this->writeln($proc->getOutput());
         }
 
+        $this->installOptions();
+
         $this->writeln('Done!');
 
         $this->getSession()->enableFlag('install_fixtures_ok');
+    }
+
+    private function installOptions()
+    {
+        $db = $this->getContext()->getMainContainer()->get('database_connection');
+
+        $db->delete('settings', ['name' => 'core.install_source']);
+        $db->insert('settings', [
+            'name'  => 'core.install_source',
+            'value' => $this->getContext()->getSession()->getSource() ?: 'default',
+        ]);
+
+        #---------------------------------------------
+        # Filestorage method
+        #---------------------------------------------
+
+        $fsMethod = $this->getContext()->getProfile()->getAnswer('filestorage_method');
+
+        if ($fsMethod) {
+            $db->delete('settings', ['name' => 'core.filestorage_method']);
+
+            switch ($fsMethod) {
+                case 'fs':
+                    $db->insert('settings', ['name' => 'core.filestorage_method', 'value' => 'fs']);
+                    break;
+
+                case 's3':
+                    $db->insert('settings', ['name' => 'core.filestorage_method', 'value' => 's3']);
+                    $db->executeUpdate("DELETE FROM settings WHERE name LIKE 'core.filestorage_s3%'");
+
+                    $fsOptions = @json_decode(
+                        $this->getContext()->getProfile()->getAnswer('filestorage_options') ?: '{}',
+                        true
+                    );
+
+                    foreach ([
+                        's3_key' => 'core.filestorage_s3_key',
+                        's3_secret' => 'core.filestorage_s3_secret',
+                        's3_bucket' => 'core.filestorage_s3_bucket',
+                        's3_basepath' => 'core.filestorage_s3_basepath',
+                        's3_file_url_domain' => 'core.filestorage_s3_file_url_domain',
+                    ] as $optionName => $settingName) {
+                        if (!empty($fsOptions[$optionName])) {
+                            $db->insert('settings', [
+                                'name'  => $settingName,
+                                'value' => $fsOptions[$optionName],
+                            ]);
+                        }
+                    }
+                    break;
+            }
+        }
     }
 
     public function isComplete()

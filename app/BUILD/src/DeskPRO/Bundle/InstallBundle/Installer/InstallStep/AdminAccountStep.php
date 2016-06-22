@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -91,6 +91,7 @@ class AdminAccountStep extends AbstractStep
         $em->persist($admin);
 
         $admin->getPrimaryEmail()->setEmail($this->getSession()->getUser()->email);
+        $admin->setName($this->getSession()->getUser()->name);
         $em->persist($admin->getPrimaryEmail());
 
         // And we need to delete that special label that is used to

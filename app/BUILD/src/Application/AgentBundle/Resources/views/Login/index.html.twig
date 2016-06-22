@@ -322,6 +322,13 @@
 				</div>
 			</form>
 		</div>
+
+		{% if app.getSetting('core.install_source') == 'win_installer' %}
+			<div style="padding: 0 25px 15px 25px; line-height: 14pt; font-size: 11px;">
+				You may also reset your password using the DeskPRO Windows application. Using the computer
+				that DeskPRO was installed on, click the DeskPRO icon in your system tray and select "Reset Password".
+			</div>
+		{% endif %}
 	</div>
 
 	{##############################################################################################################}

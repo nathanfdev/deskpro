@@ -51,6 +51,7 @@ class InstallProfile
         'user_email',
         'user_password',
         'skip_recommendations',
+        'filestorage_method',
     ];
 
     /**
