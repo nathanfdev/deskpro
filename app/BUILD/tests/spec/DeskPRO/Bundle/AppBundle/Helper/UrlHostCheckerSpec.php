@@ -88,4 +88,15 @@ class UrlHostCheckerSpec extends ObjectBehavior
         $this->isMatchUrl('http://site.com:443/fooF', 'http://site.com:443/')->shouldReturn(true);
         $this->isMatchUrl('/news', 'http://site.com:443')->shouldReturn(true);
     }
+
+    public function it_simplify_urls()
+    {
+        $this->simplifyUrl('http://mydomain.com')->shouldBe('mydomain.com');
+        $this->simplifyUrl('http://mydomain.com/en')->shouldBe('mydomain.com');
+        $this->simplifyUrl('foo.com')->shouldBe('foo.com');
+        $this->simplifyUrl('//foo.com')->shouldBe('foo.com');
+        $this->simplifyUrl('http://mydomain.com:9000')->shouldBe('mydomain.com:9000');
+        $this->simplifyUrl('https://mydomain.com')->shouldBe('mydomain.com');
+        $this->simplifyUrl('https://samesite.com:8043/fooD')->shouldBe('samesite.com:8043');
+    }
 }

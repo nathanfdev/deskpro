@@ -47,14 +47,21 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class FeedbackSettingsController extends AbstractBrandAwareSettingsController
 {
+    /**
+     * @var FeedbackSettings
+     */
+    protected $model;
+
+    /**
+     * @return FeedbackSettings
+     */
     protected function getModel()
     {
-        /** @var FeedbackSettings $settings */
-        $settings = $this->get('portal_settings_resolver')->getFeedbackSettings();
+        $this->model = $this->get('portal_settings_resolver')->getFeedbackSettings();
 
-        $settings->setBrand($this->brand);
+        $this->model->setBrand($this->brand);
 
-        return $settings;
+        return $this->model;
     }
 
     protected function getType()

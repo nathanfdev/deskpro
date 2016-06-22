@@ -46,6 +46,11 @@ abstract class AbstractBrandAwareSettingsController extends BaseController
     protected $brand;
 
     /**
+     * @var AbstractBrandAwareSettings
+     */
+    protected $model;
+
+    /**
      * @return AbstractBrandAwareSettings
      */
     abstract protected function getModel();

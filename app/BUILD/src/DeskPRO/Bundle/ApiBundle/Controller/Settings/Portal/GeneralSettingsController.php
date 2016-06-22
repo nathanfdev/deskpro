@@ -32,12 +32,12 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\GeneralSettingsType;
+use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GeneralSettings;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class BrandSettingsController.
@@ -48,16 +48,20 @@ use Symfony\Component\HttpFoundation\Response;
 class GeneralSettingsController extends AbstractBrandAwareSettingsController
 {
     /**
+     * @var GeneralSettings
+     */
+    protected $model;
+
+    /**
      * @return GeneralSettings
      */
     protected function getModel()
     {
-        /** @var GeneralSettings $settings */
-        $settings = $this->get('portal_settings_resolver')->getGeneralSettings();
+        $this->model = $this->get('portal_settings_resolver')->getGeneralSettings();
 
-        $settings->setBrand($this->brand);
+        $this->model->setBrand($this->brand);
 
-        return $settings;
+        return $this->model;
     }
 
     protected function getType()
@@ -143,8 +147,22 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
      */
     public function postAction(Request $request, $brandId)
     {
-        $this->handleForm($request, $brandId);
+        $view = $this->handleForm($request, $brandId);
 
-        return new View(null, Response::HTTP_NO_CONTENT);
+        if ($view && $brandId != $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand')) {
+            $url = $this->model->getDeskproUrl();
+
+            /** @var UrlHostChecker $urlHostChecker */
+            $urlHostChecker = $this->get('url_host_checker');
+
+            $brand = $this->getBrand($brandId);
+            $brand->setUrl($urlHostChecker->simplifyUrl($url));
+
+            $em = $this->getManager();
+            $em->persist($brand);
+            $em->flush();
+        }
+
+        return $view;
     }
 }

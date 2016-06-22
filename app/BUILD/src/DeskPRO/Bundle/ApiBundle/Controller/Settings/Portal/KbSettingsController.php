@@ -47,14 +47,21 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class KbSettingsController extends AbstractBrandAwareSettingsController
 {
+    /**
+     * @var KbSettings
+     */
+    protected $model;
+
+    /**
+     * @return KbSettings
+     */
     protected function getModel()
     {
-        /** @var KbSettings $settings */
-        $settings = $this->get('portal_settings_resolver')->getKbSettings();
+        $this->model = $this->get('portal_settings_resolver')->getKbSettings();
 
-        $settings->setBrand($this->brand);
+        $this->model->setBrand($this->brand);
 
-        return $settings;
+        return $this->model;
     }
 
     protected function getType()

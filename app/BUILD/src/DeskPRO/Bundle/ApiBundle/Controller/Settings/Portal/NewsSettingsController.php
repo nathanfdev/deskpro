@@ -47,14 +47,21 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class NewsSettingsController extends AbstractBrandAwareSettingsController
 {
+    /**
+     * @var NewsSettings
+     */
+    protected $model;
+
+    /**
+     * @return NewsSettings
+     */
     protected function getModel()
     {
-        /** @var NewsSettings $settings */
-        $settings = $this->get('portal_settings_resolver')->getNewsSettings();
+        $this->model = $this->get('portal_settings_resolver')->getNewsSettings();
 
-        $settings->setBrand($this->brand);
+        $this->model->setBrand($this->brand);
 
-        return $settings;
+        return $this->model;
     }
 
     protected function getType()

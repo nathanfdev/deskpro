@@ -105,6 +105,10 @@ class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequest
             $brand = $this->detectBrandMode($mode);
         } else {
             $brand = $this->detectFromEsiQuery($event->getRequest());
+
+            if ($brand === null) {
+                // match domain name
+            }
         }
 
         if (!$brand) {

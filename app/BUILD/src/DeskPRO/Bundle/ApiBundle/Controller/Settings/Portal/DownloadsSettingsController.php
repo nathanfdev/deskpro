@@ -47,14 +47,21 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class DownloadsSettingsController extends AbstractBrandAwareSettingsController
 {
+    /**
+     * @var DownloadsSettings
+     */
+    protected $model;
+
+    /**
+     * @return DownloadsSettings
+     */
     protected function getModel()
     {
-        /** @var DownloadsSettings $settings */
-        $settings = $this->get('portal_settings_resolver')->getDownloadsSettings();
+        $this->model = $this->get('portal_settings_resolver')->getDownloadsSettings();
 
-        $settings->setBrand($this->brand);
+        $this->model->setBrand($this->brand);
 
-        return $settings;
+        return $this->model;
     }
 
     protected function getType()
