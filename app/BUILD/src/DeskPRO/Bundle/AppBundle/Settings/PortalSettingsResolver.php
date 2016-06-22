@@ -42,8 +42,10 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\NewsSettings;
  */
 class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implements AntiAbuseSettingsAwareInterface
 {
-    const SITE_NAME = 'core.site_name';
-    const SITE_URL  = 'core.site_url';
+    const SITE_NAME     = 'core.site_name';
+    const SITE_URL      = 'core.site_url';
+    const HELPDESK_NAME = 'core.deskpro_name';
+    const HELPDESK_URL  = 'core.deskpro_url';
 
     const APPS_FEEDBACK  = 'core.apps_feedback';
     const APPS_KB        = 'core.apps_kb';
@@ -130,6 +132,8 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
         $model
             ->setSiteName($this->getSetting(self::SITE_NAME))
             ->setSiteUrl($this->getSetting(self::SITE_URL))
+            ->setDeskproName($this->getSetting(self::HELPDESK_NAME))
+            ->setDeskproUrl($this->getSetting(self::HELPDESK_URL))
             ->setAppsFeedback($this->getSetting(self::APPS_FEEDBACK))
             ->setAppsKb($this->getSetting(self::APPS_KB))
             ->setAppsNews($this->getSetting(self::APPS_NEWS))

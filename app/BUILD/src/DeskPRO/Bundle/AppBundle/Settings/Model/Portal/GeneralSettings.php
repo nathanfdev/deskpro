@@ -52,6 +52,24 @@ class GeneralSettings extends AbstractBrandAwareSettings
     private $siteUrl;
 
     /**
+     * HelpDesk name.
+     *
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $deskproName;
+
+    /**
+     * HelpDesk name.
+     *
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $deskproUrl;
+
+    /**
      * Application feedback enabled.
      *
      * @var bool
@@ -168,6 +186,46 @@ class GeneralSettings extends AbstractBrandAwareSettings
     public function setSiteUrl($siteUrl)
     {
         $this->siteUrl = $siteUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDeskproName()
+    {
+        return $this->deskproName;
+    }
+
+    /**
+     * @param string $deskproName
+     *
+     * @return GeneralSettings
+     */
+    public function setDeskproName($deskproName)
+    {
+        $this->deskproName = $deskproName;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDeskproUrl()
+    {
+        return $this->deskproUrl;
+    }
+
+    /**
+     * @param string $deskproUrl
+     *
+     * @return GeneralSettings
+     */
+    public function setDeskproUrl($deskproUrl)
+    {
+        $this->deskproUrl = $deskproUrl;
 
         return $this;
     }

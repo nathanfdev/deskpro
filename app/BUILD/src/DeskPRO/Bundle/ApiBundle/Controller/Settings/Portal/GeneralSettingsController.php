@@ -77,6 +77,8 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
         $settings_repository
             ->updateSetting(PortalSettingsResolver::SITE_NAME, $model->getSiteName(), $brand)
             ->updateSetting(PortalSettingsResolver::SITE_URL, $model->getSiteUrl(), $brand)
+            ->updateSetting(PortalSettingsResolver::HELPDESK_NAME, $model->getDeskproName(), $brand)
+            ->updateSetting(PortalSettingsResolver::HELPDESK_URL, $model->getDeskproUrl(), $brand)
             ->updateSetting(PortalSettingsResolver::APPS_FEEDBACK, $model->isAppsFeedback(), $brand)
             ->updateSetting(PortalSettingsResolver::APPS_KB, $model->isAppsKb(), $brand)
             ->updateSetting(PortalSettingsResolver::APPS_NEWS, $model->isAppsNews(), $brand)

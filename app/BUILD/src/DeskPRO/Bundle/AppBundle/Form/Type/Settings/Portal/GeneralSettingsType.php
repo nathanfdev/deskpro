@@ -48,6 +48,8 @@ class GeneralSettingsType extends AbstractType
         $builder
             ->add('site_name', TextType::class)
             ->add('site_url', UrlType::class)
+            ->add('deskpro_name', TextType::class)
+            ->add('deskpro_url', UrlType::class)
             ->add('apps_feedback', ApiBooleanType::class)
             ->add('apps_kb', ApiBooleanType::class)
             ->add('apps_news', ApiBooleanType::class)
