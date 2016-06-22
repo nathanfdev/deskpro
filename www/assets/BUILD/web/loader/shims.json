@@ -14,7 +14,7 @@
   "angularSlider":                   ["angular"],
   "angularGrid":                     ["angular", "jquery"],
   "angularSelectize":                ["angular"],
-  "angularScrollGlue": ["angular"],
+  "angularScrollGlue":               ["angular"],
   "bootstrapDatetime":               ["jquery", "moment"],
   "ngClip":                          ["angular"],
   "ngFileUpload":                    ["angular"],
@@ -33,5 +33,6 @@
   "trackjs":                         { "exports": "trackJs"},
   "intl-tel-input":                  ["jquery"],
   "spectrum":                        ["jquery"],
-  "angularSpectrumColorpicker":      ["angular", "spectrum"]
+  "angularSpectrumColorpicker":      ["angular", "spectrum"],
+  "semanticAccordion":               ["jquery"]
 }
