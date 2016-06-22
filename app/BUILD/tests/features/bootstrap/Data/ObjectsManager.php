@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
@@ -272,6 +273,7 @@ class ObjectsManager
             'GlossaryWord'           => [$this, 'find', GlossaryWord::class],
             'Language'               => [$this, 'find', Language::class],
             'DataStore'              => [$this, 'find', DataStore::class],
+            'EmailAccount'           => [$this, 'find', EmailAccount::class],
         ];
     }
 }

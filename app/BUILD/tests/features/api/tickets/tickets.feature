@@ -19,6 +19,7 @@ Feature: /tickets endpoint
       | ticket5 | Fifth Demo Ticket  | {agent} |              | hidden         | deleted       |
     And I have a Department record referenced as department
     And there are no custom ticket fields defined
+    And no EmailAccount records exist
 
   Scenario: I create a ticket
     When I send a POST request to "/api/v2/tickets" with body:
@@ -133,7 +134,7 @@ Feature: /tickets endpoint
     And the JSON node "errors.fields.agent.errors[0].code" should be equal to "person_not_agent"
     And the JSON node "errors.fields.agent.errors[0].message" should exist
 
-  Scenario: I trye to add account email as cc
+  Scenario: I try to add account email as cc
     Given I've just created a new person with name "Email account" and primary email "dev@deskprodev.com"
     Given I've just created a new email account "dev@deskprodev.com"
     When I send a POST request to "/api/v2/tickets" with body:
@@ -146,6 +147,7 @@ Feature: /tickets endpoint
     And the JSON node "errors.fields.cc.fields.cc_0.errors[0].code" should be equal to "system_email"
     And the JSON node "errors.fields.cc.fields.cc_0.errors[0].message" should contain "dev@deskprodev.com"
     And the JSON node "errors.fields.cc.fields.cc_0.errors[0].message" should contain "is already being used as email account."
+    And the JSON node "errors.fields.cc.fields.cc_0.errors[1].code" should be equal to the string "person_not_user"
 
   @skip-ci
   # This scenario passed because the api data set defined a require custom field

@@ -380,7 +380,7 @@ class TicketMessage extends DomainObject
      *
      * @return $this
      */
-    public function setPerson(Person $person)
+    public function setPerson(Person $person = null)
     {
         $this->setModelField('person', $person);
 
@@ -406,9 +406,12 @@ class TicketMessage extends DomainObject
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getPersonId()
     {
-        return $this->person['id'];
+        return $this->person ? $this->person->getId() : null;
     }
 
     public function setCreationSystem($system)

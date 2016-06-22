@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HiddenEntityType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsWebType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -87,7 +88,11 @@ class WebFieldResolver extends AbstractFieldResolver
      */
     protected function createCc(TicketWithLayoutsContext $context)
     {
-        return false;
+        return new FormField(TicketParticipantsWebType::class, [
+            'owner'    => $context->getTicket(),
+            'is_agent' => false,
+            'required' => false,
+        ]);
     }
 
     /**
@@ -95,7 +100,11 @@ class WebFieldResolver extends AbstractFieldResolver
      */
     protected function createFollowers(TicketWithLayoutsContext $context)
     {
-        return false;
+        return new FormField(TicketParticipantsWebType::class, [
+            'owner'    => $context->getTicket(),
+            'is_agent' => true,
+            'required' => false,
+        ]);
     }
 
     /**

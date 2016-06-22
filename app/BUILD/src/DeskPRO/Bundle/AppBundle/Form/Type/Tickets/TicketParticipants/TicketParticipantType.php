@@ -34,6 +34,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDisableAutoProcessListener;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -60,12 +61,11 @@ class TicketParticipantType extends AbstractType
         ]);
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
 
         if ($options['inline']) {
+            $builder->addEventListener(FormEvents::POST_SET_DATA, [$this, 'onSetInlineEmailField']);
             $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetInlineData']);
-        }
-        if ($options['set_owner']) {
-            $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
         }
     }
 
@@ -81,13 +81,7 @@ class TicketParticipantType extends AbstractType
                 'data_class'     => TicketParticipant::class,
                 'error_bubbling' => false,
                 'error_mapping'  => function (Options $options) {
-                    if ($options['inline']) {
-                        return [];
-                    }
-
-                    return [
-                        '.' => 'person',
-                    ];
+                    return $options['inline'] ? [] : ['.' => 'person'];
                 },
             ])
             ->setRequired(['is_agent', 'owner'])
@@ -101,15 +95,49 @@ class TicketParticipantType extends AbstractType
     }
 
     /**
+     * Add person email field to keep and validate email address.
+     * Uses to transform data to single input and display errors properly.
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onSetInlineEmailField(FormEvent $event)
+    {
+        $data  = $event->getData();
+        $email = null;
+
+        if ($data instanceof TicketParticipant) {
+            $person = $data->getPerson();
+            if ($person && $person->getPrimaryEmail()) {
+                $email = $person->getPrimaryEmail()->getEmail();
+            } elseif ($data->getPersonEmail()) {
+                $email = $data->getPersonEmail()->getEmail();
+            }
+        }
+
+        $event->getForm()->add('person_email', TextType::class, [
+            'data'           => $email,
+            'mapped'         => false,
+            'error_bubbling' => true,
+        ]);
+    }
+
+    /**
      * @internal
      *
      * @param FormEvent $event
      */
     public function onSetInlineData(FormEvent $event)
     {
-        $event->setData([
-            'person' => $event->getData(),
-        ]);
+        $data = $event->getData();
+
+        if (is_scalar($data)) {
+            $event->setData([
+                'person'       => $data,
+                'person_email' => $data,
+            ]);
+        }
     }
 
     /**
@@ -119,11 +147,18 @@ class TicketParticipantType extends AbstractType
      */
     public function onSetRelations(FormEvent $event)
     {
-        $form = $event->getForm();
-        $data = $event->getData();
+        $form    = $event->getForm();
+        $data    = $event->getData();
+        $options = $form->getConfig()->getOptions();
 
-        if ($data instanceof TicketParticipant && !$data->getId()) {
-            $form->getConfig()->getOption('owner')->addParticipant($data);
+        if ($data instanceof TicketParticipant) {
+            if (!$data->getId() && $options['set_owner']) {
+                /* @var Ticket $options['owner'] */
+                $options['owner']->addParticipant($data);
+            }
+            if ($data->getPerson()) {
+                $data->setPersonEmail($data->getPerson()->getPrimaryEmail());
+            }
         }
     }
 }

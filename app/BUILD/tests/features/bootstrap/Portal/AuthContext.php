@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\Person;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Mink\Driver\BrowserKitDriver;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
+use DpBehat\Data\DataContext;
 use DpBehat\Data\PeopleContext as PeopleDataContext;
 use DpBehat\RebootableContextInterface;
 use DpTestSrc\TestBundle\UserDetailsRepo;
@@ -221,8 +222,10 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
      */
     public function iAmAuthenticatedAs($role)
     {
-        $this->peopleDataContext->personByRoleExists($role);
+        $person = $this->peopleDataContext->personByRoleExists($role);
         $this->iLoginWithCredentials($role);
+
+        DataContext::setReference('me', $person);
     }
 
     /**

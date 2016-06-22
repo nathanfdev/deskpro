@@ -94,9 +94,12 @@ class PersonAssignType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetFields'], 200);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPerson'], 100);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onResetPerson']);
     }
 
     /**
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onSetFields(FormEvent $event)
@@ -113,6 +116,8 @@ class PersonAssignType extends AbstractType
     }
 
     /**
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onSetPerson(FormEvent $event)
@@ -121,7 +126,7 @@ class PersonAssignType extends AbstractType
         $form = $event->getForm();
 
         /** @var \Application\DeskPRO\EntityRepository\Person $person_repository */
-        $person_repository = $this->em->getRepository('DeskPRO:Person');
+        $person_repository = $this->em->getRepository(Person::class);
         $default_person    = $form->getConfig()->getOption('person');
 
         // Set person entity from request fields (id or email)
@@ -160,8 +165,20 @@ class PersonAssignType extends AbstractType
 
             $event->setData($data);
         }
-        if (!$person) {
-            $form->addError(new FormError(ErrorsCodes::NOT_NULL));
+    }
+
+    /**
+     * We should set person to NULL if it was not found or not created properly.
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onResetPerson(FormEvent $event)
+    {
+        $data = $event->getData();
+        if ($data instanceof Person && !$data->getEmailAddress()) {
+            $event->setData(null);
         }
     }
 

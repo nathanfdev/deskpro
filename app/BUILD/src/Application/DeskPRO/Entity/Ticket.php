@@ -2041,20 +2041,19 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      *
      * @return $this
      */
-    public function setPerson(Person $person)
+    public function setPerson(Person $person = null)
     {
         $this->setModelField('person', $person);
-
-        if ($person->getRealLanguage()) {
-            $this['language'] = $person->getRealLanguage();
-        }
-
-        if ($organization = $person->getOrganization()) {
-            $this->setOrganization($organization);
-        }
-
-        if ($this->person_email && $this->person_email->person->getId() != $person->getId()) {
-            $this['person_email'] = null;
+        if ($person) {
+            if ($person->getRealLanguage()) {
+                $this['language'] = $person->getRealLanguage();
+            }
+            if ($organization = $person->getOrganization()) {
+                $this->setOrganization($organization);
+            }
+            if ($this->person_email && $this->person_email->person->getId() != $person->getId()) {
+                $this['person_email'] = null;
+            }
         }
 
         return $this;

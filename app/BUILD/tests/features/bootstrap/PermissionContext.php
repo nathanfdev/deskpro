@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat;
 
 use Application\DeskPRO\Entity\Permission;
@@ -121,7 +122,7 @@ class PermissionContext extends BaseContext
      * @param string $departmentId
      * @param string $app
      */
-    public function iGrantDepartmentPermission($departmentId, $who, $app)
+    public function iGrantDepartmentPermissionForUser($departmentId, $who, $app)
     {
         AuthContext::scheduleCleanup();
 
@@ -132,6 +133,27 @@ class PermissionContext extends BaseContext
         $connection->executeUpdate(
             'INSERT IGNORE INTO department_permissions SET department_id = ?, person_id = ?, app = ?, name="full", value=1, is_active=1',
             [$departmentId, $person->getId(), $app]
+        );
+    }
+
+    /**
+     * @Given I grant the :departmentId department permission of :app app for usergroup :usergroup
+     *
+     * @param string $usergroup
+     * @param string $departmentId
+     * @param string $app
+     */
+    public function iGrantDepartmentPermissionForUsergroup($departmentId, $usergroup, $app)
+    {
+        AuthContext::scheduleCleanup();
+
+        $departmentId = DataContext::replace($departmentId);
+        $usergroup    = DataContext::getReference($usergroup.'_group');
+
+        $connection = $this->em()->getConnection();
+        $connection->executeUpdate(
+            'INSERT IGNORE INTO department_permissions SET department_id = ?, usergroup_id = ?, app = ?, name="full", value=1, is_active=1',
+            [$departmentId, $usergroup->getId(), $app]
         );
     }
 
