@@ -126,7 +126,7 @@ return array(
     'agent.publish.sticky_words_title'            => 'Wyszukiwane Słowa',
     'agent.publish.untranslated_articles'         => 'Nieprzetłumaczone Artykuły',
     'agent.publish.validating_comment_manage_tip' => 'Komentarz oczekuje na akceptację. Kliknij, aby zarządzać',
-    'agent.publish.validating_list_title'         => '1 Akceptowany|{{count}} Akceptowane',
+    'agent.publish.validating_list_title'         => '1 recenzja|{{count}} recenzje',
     'agent.publish.view_count'                    => 'Zobacz Ilość',
     'agent.publish.view_count_highest_lowest'     => 'Zobacz Ilość (Najwyższe-Najniższe)',
     'agent.publish.view_count_lowest_highest'     => 'Zobacz Ilość (Najniższe-Najwyższe)',

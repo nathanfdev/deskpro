@@ -126,7 +126,7 @@ return array(
     'agent.publish.sticky_words_title'            => 'Hľadať slová',
     'agent.publish.untranslated_articles'         => 'Nepreložené články',
     'agent.publish.validating_comment_manage_tip' => 'Komentár očakáva schválenie. Kliknite pre úpravu',
-    'agent.publish.validating_list_title'         => '1 overovanie|{{count}} overení',
+    'agent.publish.validating_list_title'         => '1 preskúmanie|{{count}} preskúmaní',
     'agent.publish.view_count'                    => 'Zobraziť počet',
     'agent.publish.view_count_highest_lowest'     => 'Zobraziť počet (Najvyšší-Najnižší)',
     'agent.publish.view_count_lowest_highest'     => 'Zobraziť počet (Najnižší-Najvyšší)',
