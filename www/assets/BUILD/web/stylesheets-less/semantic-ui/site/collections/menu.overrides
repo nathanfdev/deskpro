@@ -2,6 +2,10 @@
          Site Overrides
 *******************************/
 
+.ui.menu .item {
+    font-weight: normal;
+}
+
 .ui.tabular.menu .item {
   background: @dp-greyscale-50;
 
