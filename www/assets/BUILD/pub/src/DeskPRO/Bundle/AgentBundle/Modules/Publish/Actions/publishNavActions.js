@@ -10,21 +10,23 @@ export const initialLoad = createAction(
       const currentArticlesGrouping  = hashStateSelectorFactory(['group', 'articles'], 'category')(getState());
       const currentNewsGrouping      = hashStateSelectorFactory(['group', 'news'], 'category')(getState());
       const currentDownloadsGrouping = hashStateSelectorFactory(['group', 'downloads'], 'category')(getState());
+      const batchComponents          = {
+        articles:             { endpoint: 'articles/counts', query: `group_by=${currentArticlesGrouping}` },
+        news:                 { endpoint: 'news/counts', query: `group_by=${currentNewsGrouping}` },
+        downloads:            { endpoint: 'downloads/counts', query: `group_by=${currentDownloadsGrouping}` },
+        categories:           { endpoint: 'content_categories' },
+        articlesDraftsCount:  { endpoint: 'articles/counts', query: 'status=hidden&hidden_status=draft' },
+        articlesPendingCount: { endpoint: 'article_pending_creates/counts' },
 
-      const batch = 'DP_API/batch'
-              + `?get[articles]=DP_API/articles/counts?group_by%3D${currentArticlesGrouping}`
-              + `&get[news]=DP_API/news/counts?group_by%3D${currentNewsGrouping}`
-              + `&get[downloads]=DP_API/downloads/counts?group_by%3D${currentDownloadsGrouping}`
-              + '&get[categories]=DP_API/content_categories'
-              + '&get[articlesDraftsCount]=DP_API/articles/counts?status%3Dhidden%26hidden_status%3Ddraft'
-              + '&get[articlesPendingCount]=DP_API/article_pending_creates/counts'
-              + '&get[articlesCommentsToValidateCount]=DP_API/article_comments/counts?status%3Dvalidating'
-              + '&get[newsCommentsToValidateCount]=DP_API/news_comments/counts?status%3Dvalidating'
-              + '&get[downloadsCommentsToValidateCount]=DP_API/download_comments/counts?status%3Dvalidating'
-              + '&get[articlesCommentsToReviewCount]=DP_API/article_comments/counts?is_reviewed%3D0'
-              + '&get[newsCommentsToReviewCount]=DP_API/news_comments/counts?is_reviewed%3D0'
-              + '&get[downloadsCommentsToReviewCount]=DP_API/download_comments/counts?is_reviewed%3D0'
-        ;
+        articlesCommentsToValidateCount:  { endpoint: 'article_comments/counts', query: 'status=validating' },
+        newsCommentsToValidateCount:      { endpoint: 'news_comments/counts', query: 'status=validating' },
+        downloadsCommentsToValidateCount: { endpoint: 'download_comments/counts', query: 'status=validating' },
+        articlesCommentsToReviewCount:    { endpoint: 'article_comments/counts', query: 'is_reviewed=0' },
+        newsCommentsToReviewCount:        { endpoint: 'news_comments/counts', query: 'is_reviewed=0' },
+        downloadsCommentsToReviewCount:   { endpoint: 'download_comments/counts', query: 'is_reviewed=0' }
+      };
+
+      const batch = api.prepareParams(batchComponents);
 
       api.sendGet(batch).success(({ responses }) => {
         const payload = flattenBatchResponses(responses);

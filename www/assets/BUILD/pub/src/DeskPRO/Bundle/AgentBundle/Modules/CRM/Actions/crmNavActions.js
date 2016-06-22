@@ -5,13 +5,15 @@ import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 export const initialLoad = createAction(
   'CRM_NAV_INITIAL_LOAD',
   () => new Promise(resolve => {
-    const batch = 'DP_API/batch'
-        + '?get[users]=DP_API/people/counts?is_agent%3D0%26is_deleted%3D0%26group_by%3Duser_group'
-        + '&get[agents]=DP_API/people/counts?is_agent%3D1%26is_deleted%3D0%26group_by%3Dagent_team'
-        + '&get[organizations]=DP_API/organizations/counts'
-        + '&get[personLabels]=DP_API/person_labels'
-        + '&get[organizationLabels]=DP_API/organization_labels'
-      ;
+    const batchComponents = {
+      users:              { endpoint: 'people/counts', query: 'is_agent=0&is_deleted=0&group_by=user_group' },
+      agents:             { endpoint: 'people/counts', query: 'is_agent=1&is_deleted=0&group_by=agent_team' },
+      organizations:      { endpoint: 'organizations/counts' },
+      personLabels:       { endpoint: 'person_labels' },
+      organizationLabels: { endpoint: 'organization_labels' }
+    };
+
+    const batch = api.prepareParams(batchComponents);
 
     api.sendGet(batch).success(({ responses }) => resolve(flattenBatchResponses(responses)));
   })

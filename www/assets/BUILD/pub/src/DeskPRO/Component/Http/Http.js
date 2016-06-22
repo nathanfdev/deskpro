@@ -7,15 +7,15 @@ export class Http {
     this.ajaxFn = ajaxFn;
 
     this.defaults = {
-      'ALL': {},
-      'GET': {},
-      'POST': {},
-      'PATCH': {},
-      'PUT': {},
-      'DELETE': {}
+      ALL:    {},
+      GET:    {},
+      POST:   {},
+      PATCH:  {},
+      PUT:    {},
+      DELETE: {}
     };
 
-    this.interceptors = [];
+    this.interceptors    = [];
     this.resultResolvers = [];
     this.init();
   }
@@ -93,7 +93,7 @@ export class Http {
    * @returns {Object}
    * @private
    */
-  _applyDefaultConfig(config) {
+  applyDefaultConfig(config) {
     if (!config.method) {
       config.method = 'GET';
     }
@@ -132,13 +132,13 @@ export class Http {
    */
   send(config) {
     const sendReq = (config) => {
-      config = this._applyDefaultConfig(config);
+      config = this.applyDefaultConfig(config);
 
       if (config.method === 'POST' || config.method === 'PUT' || config.method === 'PATCH') {
         if (config.jsonPayload) {
           config.contentType = 'application/json';
           config.processData = false;
-          config.data = JSON.stringify(config.data || {});
+          config.data        = JSON.stringify(config.data || {});
         }
       }
       if (config.crossDomain && config.dataType === 'json') {
@@ -173,16 +173,16 @@ export class Http {
 
     this.interceptors.forEach(i => {
       if (i.request || i.requestError) {
-        chain.unshift(this._getBoundInterceptor(i.request, i), this._getBoundInterceptor(i.requestError, i));
+        chain.unshift(this.getBoundInterceptor(i.request, i), this.getBoundInterceptor(i.requestError, i));
       }
       if (i.response || i.responseError) {
-        chain.push(this._getBoundInterceptor(i.response, i), this._getBoundInterceptor(i.responseError, i));
+        chain.push(this.getBoundInterceptor(i.response, i), this.getBoundInterceptor(i.responseError, i));
       }
     });
 
     this.resultResolvers.forEach(i => {
       if (i.response || i.responseError) {
-        chain.push(this._getBoundInterceptor(i.response, i), this._getBoundInterceptor(i.responseError, i));
+        chain.push(this.getBoundInterceptor(i.response, i), this.getBoundInterceptor(i.responseError, i));
       }
     });
 
@@ -209,7 +209,7 @@ export class Http {
     return promise;
   }
 
-  _getBoundInterceptor(i, s) {
+  getBoundInterceptor(i, s) {
     if (!i) {
       return null;
     } else if (_.isPlainObject(s)) {

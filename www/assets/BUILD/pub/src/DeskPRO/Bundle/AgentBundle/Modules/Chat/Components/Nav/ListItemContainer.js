@@ -2,12 +2,12 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { pureRender } from 'DeskPRO/Component/Ampliflux';
 import { ListItemStatefulContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
-import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
+import { routingStateSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 import { urlSanitize } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Service/routing';
 import { applyParams } from '../../Actions/chatListActions.js';
 
 @connect(state => ({
-  activeItemId: hashStateSelectorFactory(['nav', 'active'])(state)
+  hash: routingStateSelector(state)
 }))
 @pureRender
 export class ListItemContainer extends Component {
@@ -28,7 +28,8 @@ export class ListItemContainer extends Component {
   }
 
   componentDidMount = () => {
-    const { listOptions, dispatch, activeItemId } = this.props;
+    const { listOptions, dispatch, hash, content } = this.props;
+    const activeItemId = hash.get('nav') ? hash.get('nav').get(content) : null;
     if (activeItemId === this.itemId) {
       dispatch(applyParams(listOptions));
     }
