@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -43,6 +43,7 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Role\SwitchUserRole;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
@@ -233,9 +234,9 @@ class SwitchUserListener implements ListenerInterface
             $this->logger->info(sprintf('Attempt to switch to user "%s"', $username));
         }
 
-        $user = $this->provider->loadUserByUsername($username);
-
-        if (!$user) {
+        try {
+            $user = $this->provider->loadUserByUsername($username);
+        } catch (UsernameNotFoundException $e) {
             $back_token = $original_token ?: $this->token_storage->getToken();
 
             return new UsernamePasswordToken(

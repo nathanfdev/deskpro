@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Security;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepo;
 use Application\DeskPRO\People\PersonGuest;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
@@ -71,7 +72,13 @@ class DpPersonUserProvider implements UserProviderInterface
         }
 
         // the off chance the email slips by (never expected)
-        return $this->person_repo->findOneByEmail($username);
+        $person = $this->person_repo->findOneByEmail($username);
+
+        if (!$person) {
+            throw new UsernameNotFoundException(sprintf('User %s was not found', $username));
+        }
+
+        return $person;
     }
 
     /**

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Security\Authentication;
 
 use Application\DeskPRO\Entity\Person;
@@ -218,9 +219,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
 
         /* @var \Application\DeskPRO\Entity\Person $person */
         try {
-            if (!$person = $user_provider->loadUserByUsername($person_id)) {
-                $this->throwUnauthorized($unauthorized_msg);
-            }
+            $person = $user_provider->loadUserByUsername($person_id);
         } catch (UsernameNotFoundException $e) {
             // we have the person id from the session, but we cant find a person object with it
             $this->throwUnauthorized($unauthorized_msg);
