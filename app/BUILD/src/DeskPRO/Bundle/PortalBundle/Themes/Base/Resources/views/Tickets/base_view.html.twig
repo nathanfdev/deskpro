@@ -77,7 +77,7 @@
                                         </span>
                                         <ul>
                                             <li>
-                                                {{ macros.person_sidebar(ticket.person) }}
+                                                {{ macros.person_sidebar(ticket.person, false, ticket.person.isAgent()) }}
                                             </li>
                                         </ul>
                                     </li>

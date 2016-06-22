@@ -20,16 +20,16 @@
         <a href="mailto:{{ person.primary_email_address }}">
             {% endif %}
             <span class="avatar-meta">
-        {% if person %}
-            <span class="primary {% if as_agent %}single{% endif %}">{% if as_agent %}{{ person.display_name_user }}{% else %}{{ person.display_name }}{% endif %}</span>
-            {% if not as_agent %}<span class="secondary">{{ person.primary_email_address }}</span>{% endif %}
-        {% else %}
-            <span class="primary">{{ phrase('portal.tickets.view_unassigned') }}</span>
-            <span class="secondary">{{ phrase('portal.tickets.view_unassigned_more') }}</span>
-        {% endif %}
-    </span>
-            {% if person and not as_agent %}
-        </a>
+                {% if person %}
+                    <span class="primary {% if as_agent %}single{% endif %}">{% if as_agent %}{{ person.display_name_user }}{% else %}{{ person.display_name }}{% endif %}</span>
+                    {% if not as_agent %}<span class="secondary">{{ person.primary_email_address }}</span>{% endif %}
+                {% else %}
+                    <span class="primary">{{ phrase('portal.tickets.view_unassigned') }}</span>
+                    <span class="secondary">{{ phrase('portal.tickets.view_unassigned_more') }}</span>
+                {% endif %}
+            </span>
+        {% if person and not as_agent %}
+            </a>
         {% endif %}
     </div>
 {% endmacro %}
@@ -37,7 +37,7 @@
     {% if person %}
         <span class="agent-avatar agent-avatar-mid" style="background-image: url({{ avatar_url(person, 36) }});"></span>
         <span class="ticket-owner-name">{{ person.display_name_user }}</span>
-        {% if include_email or person.isAgent() %}
+        {% if include_email or not person.isAgent() %}
             <span class="ticket-owner-email">({{ person.primary_email_address }})</span>
         {% endif %}
     {% else %}
