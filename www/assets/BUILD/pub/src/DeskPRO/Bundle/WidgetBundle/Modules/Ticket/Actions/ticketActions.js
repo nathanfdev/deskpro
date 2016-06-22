@@ -1,6 +1,7 @@
-import { createAction } from 'Ampliflux';
+import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
+import { history } from '../../../Services/history';
 
 export const setNewTicketFormContent = createAction('WIDGET_SET_NEW_TICKET_FORM_CONTENT');
 
@@ -25,7 +26,13 @@ export const saveNewTicketForm = createAction(
   params => dispatch => {
     const promise = widgetApi.sendPost('DP_API/tickets/new', params, { ...ajaxOptions });
     promise.then(
-      response => dispatch(setNewTicketFormContent(response.data)),
+      response => {
+        if (response.data && response.data.ticket_id) {
+          history.replace('ticket/form_submitted');
+        } else {
+          dispatch(setNewTicketFormContent(response.data));
+        }
+      },
       response => dispatch(setNewTicketFormContent(response.data.data))
     );
 

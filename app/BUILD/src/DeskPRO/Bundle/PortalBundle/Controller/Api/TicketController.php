@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
@@ -38,6 +34,7 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -118,7 +115,12 @@ class TicketController extends AbstractApiController
                 $ticket_service->acceptNewTicketForGuest($ticket, $request);
             }
 
-            return new View();
+            // check if ticket was created and then return success response
+            if ($ticket->getId()) {
+                return new View(['ticket_id' => $ticket->getId()]);
+            } else {
+                $form->addError(new FormError('Unable to save ticket.'));
+            }
         }
 
         $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [

@@ -3,6 +3,7 @@ $main-color-light: lighten(#3575bd, 45%);
 
 $page-background: #fff;
 
+$font-size-base: 13px !default;
 $text-color: #606060;
 $text-color-lighter: lighten($text-color, 15%);
 $text-opacue: 0.5;
@@ -19,6 +20,10 @@ $button-color: $main-color;
 $zindex-very-top: 5000;
 $universal-left-padding: 10px;
 $grey: #e6e6e6;
+
+$state-danger-text: #a94442 !default;
+$state-danger-bg: #f2dede !default;
+$brand-danger: #d9534f !default;
 
 .dp-react-widget {
   display: inline !important;
@@ -637,4 +642,53 @@ $grey: #e6e6e6;
 
 .email-present {
   border: 1px dashed $form-border-color !important;
+}
+
+.form-error-list {
+  background: $state-danger-bg;
+  border: 2px solid lighten($brand-danger, 30%);
+  border-radius: 2px;
+  color: $text-color;
+  font-size: $font-size-base;
+  padding: 1em 1.5em;
+  line-height: 1.2em;
+
+  h1 {
+    font-weight: normal;
+    font-size: 1.1em;
+  }
+
+  ul {
+    display: block;
+    list-style: none;
+    padding: 0 0 1px;
+    margin: 15px 0 1px;
+  }
+
+  li {
+    padding: 0 0 1px;
+    margin: 0 0 1px;
+  }
+
+  li + li {
+    a {
+      margin-top: 10px;
+    }
+
+  }
+
+  strong {
+    color: $state-danger-text;
+  }
+
+  a {
+    display: block;
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    color: inherit;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
