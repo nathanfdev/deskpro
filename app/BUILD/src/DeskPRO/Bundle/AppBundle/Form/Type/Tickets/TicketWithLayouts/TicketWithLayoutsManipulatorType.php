@@ -150,9 +150,8 @@ class TicketWithLayoutsManipulatorType extends AbstractType
             }
         }
 
-        foreach ($changes->getFieldsToRemove() as $field) {
-            $context->getFieldRenderer()->removeField($context, $field);
-        }
+        // We dont need to process getFieldsToRemove beccause it is always empty.
+        // (The previous layout is empty here in onPreData)
     }
 
     /**
