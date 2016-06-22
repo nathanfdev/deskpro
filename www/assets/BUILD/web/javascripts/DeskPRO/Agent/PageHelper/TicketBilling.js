@@ -84,7 +84,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 				self.getEl('billing_start').show();
 			});
 			this.getEl('billing_start').click(function () {
-				if (self.getEl('billing_type_hidden').val() != 'time') {
+				if (self.getBillingType() !== 'time') {
 					return;
 				}
 
@@ -93,7 +93,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 				self.getEl('billing_stop').show();
 			});
 			this.getEl('billing_reset').click(function () {
-				if (typeInputs.filter(':checked').val() == 'time') {
+				if (self.getBillingType() === 'time') {
 					if (self.getEl('billing_stop').is(':visible')) {
 						self.startBillingTimer(true);
 					} else {
@@ -111,7 +111,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 					;
 				$.ajax({
 					url:      $(this).data('submit-url'),
-					data:     form.find('input, textarea, select').serialize(),
+					data:     self.getFormData(),
 					type:     'POST',
 					dataType: 'json'
 				}).done(function (json) {
@@ -183,7 +183,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 
 			$.ajax({
 				url: $(this).attr('href'),
-				data: $form.find('input, textarea, select').serialize(),
+				data: self.getFormData(),
 				type: 'POST',
 				dataType: 'json'
 			}).done(function(json) {
@@ -218,6 +218,28 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 		}
 	},
 
+  getFormData: function() {
+    var form = this.getEl('billing_form');
+    var old = form.find('input, textarea, select').serializeArray();
+    var data = {};
+    for (var entry of old) {
+      if (entry.name.indexOf('billing_type') !== -1) {
+        data.billing_type = entry.value;
+      } else {
+        data[entry.name] = entry.value;
+      }
+    }
+    return data;
+  },
+
+  getBillingType: function() {
+    var form = this.getEl('billing_form');
+    var typeInputs = form.find('input[name=' + this.baseId + '_billing_type]');
+    return typeInputs.is('[type="hidden"]')
+      ? typeInputs.val()
+      : typeInputs.filter(':checked').val();
+  },
+
 	initForm: function() {
 		this.doInitForm();
 	},
@@ -232,17 +254,6 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 	},
 
 	updateBillingForm: function(reset) {
-		var form = this.getEl('billing_form');
-		var typeInputs = form.find('input[name=' + this.baseId + '_billing_type]');
-
-		if (typeInputs.is('[type="hidden"]')) {
-			var val = typeInputs.val();
-		} else {
-			var val = typeInputs.filter(':checked').val();
-		}
-
-		this.getEl('billing_type_hidden').val(val);
-
 		var replyBaseId = $('form.ticket-reply-form', this.getEl('replybox_wrap')).data('base-id');
 		if (replyBaseId) {
 			var replyBillingRow = $('#' + replyBaseId + '_billing_reply');
@@ -252,7 +263,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 
 		this.clearTimer();
 
-		if (val == 'time') {
+		if (this.getBillingType() === 'time') {
 			if (this.getEl('billing_stop').is(':visible')) {
 				// "stop" means it was running, so start it again
 				this.startBillingTimer(reset);
@@ -288,7 +299,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 			setTimeout((function() {
 				this.initForm();
 
-				if (this.getEl('billing_type_hidden').val() == 'time' && this.options.auto_start_bill) {
+				if (this.getBillingType() === 'time' && this.options.auto_start_bill) {
 					this.startBillingTimer(true);
 				} else {
 					this.stopBillingTimer(true);

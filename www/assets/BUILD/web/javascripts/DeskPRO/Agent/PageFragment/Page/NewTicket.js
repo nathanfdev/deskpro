@@ -69,6 +69,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			this.addEvent('deactivate', function() {
 				billing.stopBillingTimer(true);
 			});
+
+      this.billing = billing;
 		}
 
 		$('.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
@@ -726,6 +728,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.wrapper.addClass('loading');
 		this.getEl('send_btn').hide();
 		this.getEl('send_loading').show();
+
+    if (this.billing) {
+      formData.push({ name: 'billing_type', value: this.billing.getBillingType() });
+    }
 
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/new/save',
