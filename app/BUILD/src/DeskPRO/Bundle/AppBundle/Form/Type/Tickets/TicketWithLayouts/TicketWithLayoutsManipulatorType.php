@@ -137,9 +137,6 @@ class TicketWithLayoutsManipulatorType extends AbstractType
         $changes = $this->layoutHelper->getLayoutChanges($context);
 
         foreach ($changes->getAdditionalFields() as $field) {
-            if (!$context->hasValidVisibility($field)) {
-                continue;
-            }
             if ($field->hasCriteria() && !$field->getCriteria()->isTicketMatch($context->getTicket())) {
                 continue;
             }
@@ -180,9 +177,6 @@ class TicketWithLayoutsManipulatorType extends AbstractType
         $changes   = $this->layoutHelper->getLayoutChanges($context, $extracted);
 
         foreach ($changes->getAdditionalFields() as $field) {
-            if (!$context->hasValidVisibility($field)) {
-                continue;
-            }
             if ($field->hasCriteria() && !$field->getCriteria()->isSubmittedDataMatch($extracted)) {
                 continue;
             }

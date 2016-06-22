@@ -123,14 +123,6 @@ class TicketWithLayoutsWebFullType extends AbstractType
 
         $changes = $this->layoutHelper->getLayoutChanges($context);
         foreach ($changes->getAdditionalFields() as $field) {
-            // Check visibility here because that is static for the current visibility mode,
-            // but we don't check criteria because that is dynamic, and the client
-            // has Javascript to show/hide based on criteria rules
-
-            if (!$context->hasValidVisibility($field)) {
-                continue;
-            }
-
             $formField = $this->fieldResolver->createFormField($context, $field);
             if ($formField) {
                 $this->fieldRenderer->addField($context, $field, $formField);

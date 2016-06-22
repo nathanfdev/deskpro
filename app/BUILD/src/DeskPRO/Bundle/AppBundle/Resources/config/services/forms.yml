@@ -29,13 +29,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory
     arguments: ["@doctrine.orm.default_entity_manager", "@?captcha_decider"]
 
-  ticket_layout_differ:
-    class: DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer
-
   ticket_with_layouts_helper:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketLayoutHelper
-    arguments:
-      - "@ticket_layout_differ"
 
   ticket_field_settings:
     class: DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings

@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
-use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer;
+use DeskPRO\Component\Util\ListUtils;
 use Symfony\Component\Form\AbstractType;
 
 /**
@@ -39,21 +39,6 @@ use Symfony\Component\Form\AbstractType;
  */
 class TicketLayoutHelper extends AbstractType
 {
-    /**
-     * @var \DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer
-     */
-    protected $layout_differ;
-
-    /**
-     * Constructor.
-     *
-     * @param TicketLayoutDiffer $layout_differ
-     */
-    public function __construct(TicketLayoutDiffer $layout_differ)
-    {
-        $this->layout_differ = $layout_differ;
-    }
-
     /**
      * @param LayoutField $field
      * @param array       $extracted_data
@@ -143,35 +128,35 @@ class TicketLayoutHelper extends AbstractType
      */
     public function getLayoutChanges(TicketWithLayoutsContext $context, $extracted_data = [])
     {
-        $initial_layout = $context->getPreviouslyActiveLayout();
-        $new_layout     = $context->getActiveLayout();
+        $new_layout = $context->getActiveLayout();
 
-        $additional_fields = $this->layout_differ->findFieldsToAdd($initial_layout, $new_layout);
-        $fields_to_remove  = $this->layout_differ->findFieldsToRemove($initial_layout, $new_layout);
+        $additional_fields = [];
+        $fields_to_remove  = [];
 
-        // DEPENDENT FIELDS
-        // find fields that should be rendered, but weren't before, via criteria with recently submitted data
+        // We need to figure out which fields have been added or removed from the form
+        // This can be simple (e.g. dependant on the department layout) or more complicated,
+        // like being dependant on criteria
+
         $fields_requiring_rerender = [];
         foreach ($new_layout->all() as $field) {
-            if (!$context->hasValidVisibility($field)) {
-                if ($context->fieldWasDisplayedBefore($field)) {
-                    $fields_to_remove[] = $field;
-                }
-            } elseif ($context->fieldWasDisplayedBefore($field)) {
+            if ($context->fieldWasDisplayedBefore($field)) {
                 // this field was displayed before. should it continue to be displayed?
-                if ($this->fieldHasCriteriaAndCriteriaDoesNOTMatch($field, $extracted_data)) {
+                if (!$context->hasValidVisibility($field) || $this->fieldHasCriteriaAndCriteriaDoesNOTMatch($field, $extracted_data)) {
                     $fields_to_remove[] = $field;
                 }
             } else {
                 // this field was not displayed before, but should it be added and the form re-rendered?
-                if ($this->fieldDoesNotHaveCriteriaOrHasCriteriaAndMatches($field, $extracted_data)) {
-                    if (!in_array($field, $additional_fields)) {
-                        $additional_fields[] = $field;
+                if ($context->hasValidVisibility($field) && $this->fieldDoesNotHaveCriteriaOrHasCriteriaAndMatches($field, $extracted_data)) {
+                    $additional_fields[]         = $field;
+
+                    if (!$context->fieldWasDisplayedBefore($field)) {
+                        $fields_requiring_rerender[] = $field;
                     }
-                    $fields_requiring_rerender[] = $field;
                 }
             }
         }
+
+        $additional_fields = ListUtils::unique($additional_fields);
 
         return new TicketLayoutChanges($fields_requiring_rerender, $fields_to_remove, $additional_fields);
     }
