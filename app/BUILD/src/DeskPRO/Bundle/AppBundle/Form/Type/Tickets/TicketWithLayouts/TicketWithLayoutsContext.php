@@ -74,11 +74,6 @@ class TicketWithLayoutsContext
     private $previous_layout;
 
     /**
-     * @var string
-     */
-    private $visibility;
-
-    /**
      * @var \Symfony\Component\Form\FormInterface
      */
     private $form;
@@ -207,13 +202,13 @@ class TicketWithLayoutsContext
      */
     public function hasValidVisibility(LayoutField $field)
     {
-        if (self::VISIBILITY_NEW === $this->visibility && !$field->isVisibleOnNew()) {
+        if (self::VISIBILITY_NEW === $this->getVisibility() && !$field->isVisibleOnNew()) {
             return false;
         }
-        if (self::VISIBILITY_EDIT === $this->visibility && !$field->isVisibleOnEdit()) {
+        if (self::VISIBILITY_EDIT === $this->getVisibility() && !$field->isVisibleOnEdit()) {
             return false;
         }
-        if (self::VISIBILITY_VIEW === $this->visibility && !$field->isVisibleOnView()) {
+        if (self::VISIBILITY_VIEW === $this->getVisibility() && !$field->isVisibleOnView()) {
             return false;
         }
 

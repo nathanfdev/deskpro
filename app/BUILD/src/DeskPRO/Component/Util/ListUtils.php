@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Component\Util;
 
 /**
@@ -57,7 +58,7 @@ class ListUtils
 
         foreach ($array as $k => $v) {
             if ($fn($v, $k)) {
-                if ($preserveKeys) {
+                if (!$preserveKeys) {
                     $new[] = $v;
                 } else {
                     $new[$k] = $v;
@@ -124,8 +125,8 @@ class ListUtils
     {
         $arr = [];
 
-        foreach ($array as $v) {
-            $arr[] = $fn($v);
+        foreach ($array as $k => $v) {
+            $arr[] = $fn($v, $k);
         }
 
         return $arr;
@@ -143,8 +144,8 @@ class ListUtils
     {
         $arr = [];
 
-        foreach ($array as $v) {
-            $v2 = $fn($v);
+        foreach ($array as $k => $v) {
+            $v2 = $fn($v, $k);
             if ($v2 !== null) {
                 $arr[] = $v2;
             }
@@ -309,6 +310,53 @@ class ListUtils
                 $ret = array_merge($ret, self::flatten($a));
             } else {
                 $ret[] = $a;
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Remove duplicates form the list. This is a more powerful version of array_unique.
+     *
+     * $cmp can be:
+     * - === to do a strict check
+     * - == to do a non-strict check
+     * - callable($a, $b) to do a custom comparison. Return a truthy value when they are equal.
+     *
+     * @param \Traversable|array $array
+     * @param string|callable    $cmp
+     *
+     * @return array
+     */
+    public static function unique($array, $cmp = '===')
+    {
+        $ret = [];
+
+        foreach ($array as $v) {
+            if (empty($ret)) {
+                $ret[] = $v;
+            } else {
+                if ($cmp === '===') {
+                    if (!in_array($v, $ret, true)) {
+                        $ret[] = $v;
+                    }
+                } elseif ($cmp === '==') {
+                    if (!in_array($v, $ret)) {
+                        $ret[] = $v;
+                    }
+                } else {
+                    $found = false;
+                    foreach ($ret as $existV) {
+                        if (call_user_func($cmp, $v, $existV)) {
+                            $found = true;
+                            break;
+                        }
+                    }
+                    if (!$found) {
+                        $ret[] = $v;
+                    }
+                }
             }
         }
 

@@ -379,6 +379,10 @@ abstract class AbstractFieldResolver
             return false;
         }
 
+        if (!$context->isAgentView()) {
+            return false;
+        }
+
         $default = $this->settingsResolver->getSetting('core.default_ticket_work', null);
         if ($default) {
             if (!$context->getTicket()->getWorkflowId()) {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Component\Util;
 
 use DeskPRO\Component\Util\ListUtils;
@@ -69,6 +70,19 @@ class ListUtilsTest extends DeskProTestCase
         $this->assertEquals(
             array(1, 2, 3),
             ListUtils::filterOutValues(array(false, 1, 2, null, 3), false, false)
+        );
+    }
+
+    public function testUnique()
+    {
+        $this->assertEquals(
+            array(false, 2, 3),
+            ListUtils::unique(array(false, 2, null, 3, false, null, 3, '3'), '==')
+        );
+
+        $this->assertEquals(
+            array(false, 2, null, 3, '3'),
+            ListUtils::unique(array(false, 2, null, 3, false, null, 3, '3'), '===')
         );
     }
 }
