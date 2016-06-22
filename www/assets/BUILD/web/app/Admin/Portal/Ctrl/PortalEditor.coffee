@@ -164,7 +164,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       sys_name.replace(/[\-_]/g, ' ').replace(/^(.)|\s(.)/g, (v) -> v.toUpperCase())
 
     refreshPreviewUrl: =>
-      preview_url = '/admin-preview?anti-cache=' + (new Date()).getTime()
+      preview_url = '/admin-preview-'+@$scope.brand_id+'?anti-cache=' + (new Date()).getTime()
       if @preview_as is 'user' or @preview_as is 'agent' then preview_url += '&_preview_as=' + @preview_as_email
       if @preview_as is 'myself' then preview_url += '&_preview_as=_exit'
       if @preview_as is 'guest' then preview_url += '&_preview_as=_anon'

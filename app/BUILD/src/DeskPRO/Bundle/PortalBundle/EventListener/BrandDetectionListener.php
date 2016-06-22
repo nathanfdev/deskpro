@@ -132,7 +132,7 @@ class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequest
 
     protected function detectBrandMode(PortalMode $mode)
     {
-        if ($mode->isBrand()) {
+        if ($mode->isBrand() || $mode->isAdminPreview()) {
             try {
                 return $this->brand_repository->find($mode->getData());
             } catch (\Exception $e) {
