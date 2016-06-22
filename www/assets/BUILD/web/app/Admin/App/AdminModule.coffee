@@ -40,6 +40,8 @@ define [
   'select2'
   'toastr'
 
+  'semanticAccordion'
+
   'DeskPRO/OptionBuilder/Module'
   'DeskPRO/CategoryBuilder/Module'
   'DeskPRO/Directive/DpDateTimePicker'

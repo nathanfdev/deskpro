@@ -628,12 +628,7 @@
             </div>
         </div>
     </form>
-    <script src="/assets/BUILD/web/node_modules/semantic-ui-less/definitions/modules/accordion.js"></script>
     <script type="application/javascript">
-        $('.ui.accordion').accordion({
-            onOpen: function() {
-                history.replaceState(undefined, undefined, window.location.hash.replace(/widget_editor(#.+)?$/, 'widget_editor#' + this.getAttribute('data-target')));
-            }
-        });
+        $('.ui.accordion').accordion();
     </script>
 {% endblock %}

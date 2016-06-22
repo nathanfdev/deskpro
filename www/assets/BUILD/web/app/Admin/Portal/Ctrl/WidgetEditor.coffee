@@ -208,9 +208,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
 
     changeFrameSource: () ->
       if document.getElementById('iframe-target').value
-        # Replace this assignment by an API call to get the actual background picture
-        background_src = @$scope.url.helpdesk+"/assets/BUILD/web/images/admin/chat-widget/screenshot-deskpro.png"
-        @initLiveDemo(background_src)
+        @initLiveDemo()
 
     changeDemoState: (state) ->
       @$scope.demo_state = state
@@ -327,8 +325,10 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
 
       @loadCode(true).then (codeResponse) =>
         code = codeResponse.data.replace(/widget": {/, "widget\": {\n\"live_demo\": true,")
-        background_src ||= @$scope.url.helpdesk+"/assets/BUILD/web/images/admin/chat-widget/screenshot.png"
-        style = "style=\"background: url('#{background_src}') bottom right no-repeat\""
+        if background_src
+          style = "style=\"background: url('#{background_src}') bottom right no-repeat\""
+        else
+          style = "style=\"\""
         demoDocument = @getLiveDemoDocument();
         demoDocument.write("<body #{style}>#{code}</body>");
         demoDocument.close();
