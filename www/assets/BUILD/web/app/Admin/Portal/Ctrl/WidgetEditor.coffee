@@ -208,9 +208,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
 
     changeFrameSource: () ->
       if document.getElementById('iframe-target').value
-        # Replace this assignment by an API call to get the actual background picture
-        background_src = @$scope.url.helpdesk+"/assets/BUILD/web/images/admin/chat-widget/screenshot-deskpro.png"
-        @initLiveDemo(background_src)
+        @initLiveDemo()
 
     changeDemoState: (state) ->
       @$scope.demo_state = state
