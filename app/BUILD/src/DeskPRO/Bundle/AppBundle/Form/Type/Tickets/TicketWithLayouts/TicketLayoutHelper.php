@@ -154,9 +154,10 @@ class TicketLayoutHelper extends AbstractType
         $fields_requiring_rerender = [];
         foreach ($new_layout->all() as $field) {
             if (!$context->hasValidVisibility($field)) {
-                continue;
-            }
-            if ($context->fieldWasDisplayedBefore($field)) {
+                if ($context->fieldWasDisplayedBefore($field)) {
+                    $fields_to_remove[] = $field;
+                }
+            } elseif ($context->fieldWasDisplayedBefore($field)) {
                 // this field was displayed before. should it continue to be displayed?
                 if ($this->fieldHasCriteriaAndCriteriaDoesNOTMatch($field, $extracted_data)) {
                     $fields_to_remove[] = $field;
