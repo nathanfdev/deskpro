@@ -45,18 +45,31 @@ export class LanguageChanger extends React.Component {
     this.props.clickLanguage(lang_code);
   }
 
+  updateTopPos = () => {
+    if (!this.refs.lang_dropdown) {
+      return;
+    }
+    const $langDropdown = $(this.refs.lang_dropdown);
+    const $header = $langDropdown.closest('.top-bar');
+
+    if (!$header[0]) {
+      return;
+    }
+
+    $langDropdown.css({ top: $header.height() + 8 });
+  };
+
   render() {
     const active_lang_code = this.props.active_lang_code;
-    const enabled_langs = this.props.enabled_langs;
 
     return (
-      <div className="language-changer-widget">
+      <div className="language-changer-widget" onMouseOver={this.updateTopPos}>
         <a href="#" className="button-small button-language">
           <img src={portalUrlGenerator.getFlagPath(this.getLangFlag(active_lang_code))} alt=""/>
           {this.getLangTitle(active_lang_code)} <i className="fa fa-caret-down"></i>
         </a>
 
-        <div className="language-dropdown">
+        <div className="language-dropdown" ref="lang_dropdown">
           <ul>
             {this.renderDropdown()}
           </ul>
