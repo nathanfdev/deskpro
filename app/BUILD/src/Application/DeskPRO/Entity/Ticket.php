@@ -4186,6 +4186,30 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @param string $creation_system
+     *
+     * @return $this
+     */
+    public function setCreationSystem($creation_system)
+    {
+        $this->setModelField('creation_system', $creation_system);
+
+        return $this;
+    }
+
+    /**
+     * @param string $creation_system_option
+     *
+     * @return $this
+     */
+    public function setCreationSystemOption($creation_system_option)
+    {
+        $this->setModelField('creation_system_option', $creation_system_option);
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getCreationSystem()
