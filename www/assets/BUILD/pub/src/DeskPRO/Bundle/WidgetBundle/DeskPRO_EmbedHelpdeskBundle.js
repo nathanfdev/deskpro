@@ -14,7 +14,9 @@ const runEmbed = function(helpdeskUrl, options, containerEl) {
 
   (node.frameElement || node).style.cssText = 'border: none; margin: 0; padding: 0;';
 
-  node.src = helpdeskUrl + (`/frame-embed/${language}/`).replace(/\/$/, '');
+  const langSeg = language && language != '0' ? `${language}/` : '';
+
+  node.src = helpdeskUrl + (`/frame-embed/${langSeg}`).replace(/\/$/, '');
 
   const calculatedWidth = function() {
     if (options.width && parseInt(options.width) !== 0 && !isNaN(parseInt(options.width))) {

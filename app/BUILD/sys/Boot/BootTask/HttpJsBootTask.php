@@ -205,15 +205,15 @@ CODE;
         return <<<CODE
 (function() {
 window.DESKPRO_EMBED_OPTIONS = {
-    "helpdeskUrl": DpHelpdesk_Options.deskproUrl.replace(/\/$/, ''),
-    "containerId": DpHelpdesk_Options.containerId,
-    "department": DpHelpdesk_Options.departmentId,
+    "helpdeskUrl": DpNewTicket_Options.deskproUrl.replace(/\/$/, ''),
+    "containerId": DpNewTicket_Options.containerId,
+    "department": DpNewTicket_Options.departmentId,
     "type": "form",
     "language": "",
     "width": 0
 };
 
-document.getElementById(DpHelpdesk_Options.containerId).style.display = 'block';
+document.getElementById(DpNewTicket_Options.containerId).style.display = 'block';
 
 var scr   = document.createElement('script');
 scr.type  = 'text/javascript';
