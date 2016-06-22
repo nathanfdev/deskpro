@@ -13,7 +13,8 @@ const config = {
   resolve: {
     root: [
       path.resolve('./src'),
-      path.resolve('./src/DeskPRO/Component')
+      path.resolve('./src/DeskPRO/Component'),
+      path.resolve('./src/tests')
     ]
   }
 };

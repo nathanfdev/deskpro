@@ -1,3 +1,4 @@
-import './AgentBundle/Modules/Application/AppSwitcher.js'
-import './AgentBundle/Modules/Common/NavFrame/Section.js'
-import './AgentBundle/Modules/Common/NavFrame/Lists/NestedList.js'
+import './AgentBundle/Modules/Application/AppSwitcher'
+import './AgentBundle/Modules/Common/NavFrame/Section'
+import './AgentBundle/Modules/Common/NavFrame/Lists/NestedList'
+import './AgentBundle/Frames/nav'

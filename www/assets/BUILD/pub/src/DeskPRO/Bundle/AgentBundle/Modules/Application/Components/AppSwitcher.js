@@ -61,7 +61,6 @@ export class AppSwitcher extends React.Component {
 
   render() {
     const { currentApp } = this.props;
-    console.log('current app: ' + currentApp);
     const classes = classNames('dpw-app-bar', { 'dpw-app-bar-expanded': this.state.expandedSwitcher });
 
     return (

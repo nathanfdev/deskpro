@@ -79,6 +79,17 @@ module.exports = {
         /^(.+)([\s=])require\([\"\']helpers(.*)[\"\']\)(.*)$/gm,
         "$1$2require('" + margin + "tests/helpers$3')$4"
       );
+
+      // DemoState/... paths ----------------------------------------------------------------------------------------
+
+      result = result.replace(
+        /^import(.*)[\"\']DemoState(.*)[\"\'](.*)$/gm,
+        "import$1'" + margin + "tests/DemoState$2'$3"
+      );
+      result = result.replace(
+        /^(.+)([\s=])require\([\"\']DemoState(.*)[\"\']\)(.*)$/gm,
+        "$1$2require('" + margin + "tests/DemoState$3')$4"
+      );
     }
 
     return result;

@@ -11,7 +11,7 @@ describe('Feedback: FeedbackApp component', () => {
   const ListContainer = require('~components/List/ListContainer').ListContainer;
 
   function render() {
-    return renderInRedux(fakeState({}), <FeedbackApp />);
+    return renderInRedux({}, <FeedbackApp />);
   }
 
   it('should render NavContainer', () => {

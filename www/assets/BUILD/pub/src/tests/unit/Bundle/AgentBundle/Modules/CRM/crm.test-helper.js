@@ -1,18 +1,12 @@
-import { renderInRedux, fakeState } from 'helpers';
-import { crmNavInitialState } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/Reducers/nav';
+import $ from 'jquery';
+import { renderInRedux } from 'helpers';
+import { crmNavInitialState } from 'DemoState/Navigation/crm';
 import { crmListInitialState } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/Reducers/list';
-import { massActionsInitialState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Reducers/massActions';
 
-function fakeCrmState(state) {
-  return fakeState({
-    CRM: {
-      nav:  crmNavInitialState,
-      list: crmListInitialState
-    },
-    ...state
-  });
-}
-
-export function renderInCrmApp(state, jsx, dispatch) {
-  return renderInRedux(fakeCrmState(state), jsx, dispatch);
+export function renderInCrmApp(additional, jsx, dispatch) {
+  return renderInRedux(
+    $.extend(true, {CRM: {list: crmListInitialState}}, crmNavInitialState, additional),
+    jsx,
+    dispatch
+  );
 }

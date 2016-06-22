@@ -12,8 +12,8 @@ export const ticketsNavInitialState = {
 
   // async indicators
   async: {
-    done:           false,       // initial load
-    filtersLoading: [] // filters being loaded (array of filter IDs)
+    done:           false, // initial load
+    filtersLoading: []     // filters being loaded (array of filter IDs)
   }
 };
 

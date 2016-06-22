@@ -1,17 +1,12 @@
-import { renderInRedux, fakeState } from 'helpers';
-import { ticketsNavInitialState } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/Reducers/nav';
+import $ from 'jquery';
+import { renderInRedux } from 'helpers';
+import { ticketsNavInitialState } from 'DemoState/Navigation/tickets';
 import { ticketsListInitialState } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/Reducers/list';
 
-export function fakeTicketsState(state) {
-  return fakeState({
-    Tickets:     {
-      nav:  ticketsNavInitialState,
-      list: ticketsListInitialState
-    },
-    ...state
-  });
-}
-
-export function renderInTicketsApp(state, jsx, dispatch) {
-  return renderInRedux(fakeTicketsState(state), jsx, dispatch);
+export function renderInTicketsApp(additional, jsx, dispatch) {
+  return renderInRedux(
+    $.extend(true, {Tickets: {list: ticketsListInitialState}}, ticketsNavInitialState, additional),
+    jsx,
+    dispatch
+  );
 }

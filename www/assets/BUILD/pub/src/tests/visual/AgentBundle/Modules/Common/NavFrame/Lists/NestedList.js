@@ -1,11 +1,11 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
-import { decorate } from 'tests/visual/decorate';
+import { css } from 'tests/visual/decorators';
 import { SectionsPane, Section, SectionHeader, NestedList }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 
 storiesOf('Common: NestedList', module)
-  .addDecorator(story => decorate(
+  .addDecorator(story => css(
     <div style={{width: '250px'}}>
       <SectionsPane>
         <Section>

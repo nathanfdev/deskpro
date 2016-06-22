@@ -1,4 +1,4 @@
-import { renderInRedux, fakeState } from 'helpers';
+import { renderInRedux } from 'helpers';
 import { initialState } from 'DeskPRO/Bundle/AgentBundle/Modules/Chat/Reducers/list';
 
 /**
@@ -15,7 +15,7 @@ export function fakeChatsState(num = 0) {
     ids.push(`${id}`);
   }
 
-  return fakeState({
+  return {
     Chat:         { list: initialState },
     RecordsStore: {
       store: {
@@ -27,7 +27,7 @@ export function fakeChatsState(num = 0) {
         }
       }
     }
-  });
+  };
 }
 
 /**

@@ -11,7 +11,7 @@ describe('CRM: CrmApp component', () => {
   const ListContainer = require('~components/List/ListContainer').ListContainer;
 
   function render() {
-    return renderInRedux(fakeState({}), <CrmApp />);
+    return renderInRedux({}, <CrmApp />);
   }
 
   it('should render NavContainer', () => {

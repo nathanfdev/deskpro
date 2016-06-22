@@ -11,7 +11,7 @@ describe('Ticket: TicketsApp component', () => {
   const ListContainer = require('~components/List/ListContainer').ListContainer;
 
   function render() {
-    return renderInRedux(fakeState({}), <TicketsApp />);
+    return renderInRedux({}, <TicketsApp />);
   }
 
   it('should render NavContainer', () => {

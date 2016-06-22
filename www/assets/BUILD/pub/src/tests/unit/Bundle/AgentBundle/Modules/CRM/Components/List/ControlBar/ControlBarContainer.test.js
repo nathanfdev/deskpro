@@ -9,10 +9,9 @@ import { renderInCrmApp } from '../../../crm.test-helper';
 describe('CRM: ControlBarContainer', () => {
   const ControlBarContainer = require('~ControlBar/ControlBarContainer').ControlBarContainer;
   const ControlBar          = require('~CommonControlBar/ControlBar').ControlBar;
-  const fakeState           = {};
 
   const render = () => {
-    renderInCrmApp(fakeState, <ControlBarContainer />);
+    renderInCrmApp({}, <ControlBarContainer />);
   };
 
   it('should render ControlBar', () => {
