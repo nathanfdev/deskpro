@@ -122,42 +122,45 @@ class TicketLayoutHelper extends AbstractType
 
     /**
      * @param TicketWithLayoutsContext $context
-     * @param array                    $extracted_data
+     * @param array                    $extractedData
      *
      * @return TicketLayoutChanges
      */
-    public function getLayoutChanges(TicketWithLayoutsContext $context, $extracted_data = [])
+    public function getLayoutChanges(TicketWithLayoutsContext $context, $extractedData = [])
     {
-        $new_layout = $context->getActiveLayout();
+        $prevLayout = $context->getPreviouslyActiveLayout();
+        $newLayout  = $context->getActiveLayout();
 
-        $additional_fields = [];
-        $fields_to_remove  = [];
+        $additionalFields = [];
+        $fieldsToRemove   = ListUtils::filter($prevLayout->all(), function (LayoutField $f) use ($newLayout) {
+            return !$newLayout->has($f->getId());
+        });
 
         // We need to figure out which fields have been added or removed from the form
         // This can be simple (e.g. dependant on the department layout) or more complicated,
         // like being dependant on criteria
 
-        $fields_requiring_rerender = [];
-        foreach ($new_layout->all() as $field) {
+        $fieldsRequiringRerender = [];
+        foreach ($newLayout->all() as $field) {
             if ($context->fieldWasDisplayedBefore($field)) {
                 // this field was displayed before. should it continue to be displayed?
-                if (!$context->hasValidVisibility($field) || $this->fieldHasCriteriaAndCriteriaDoesNOTMatch($field, $extracted_data)) {
-                    $fields_to_remove[] = $field;
+                if (!$context->hasValidVisibility($field) || $this->fieldHasCriteriaAndCriteriaDoesNOTMatch($field, $extractedData)) {
+                    $fieldsToRemove[] = $field;
                 }
             } else {
                 // this field was not displayed before, but should it be added and the form re-rendered?
-                if ($context->hasValidVisibility($field) && $this->fieldDoesNotHaveCriteriaOrHasCriteriaAndMatches($field, $extracted_data)) {
-                    $additional_fields[]         = $field;
+                if ($context->hasValidVisibility($field) && $this->fieldDoesNotHaveCriteriaOrHasCriteriaAndMatches($field, $extractedData)) {
+                    $additionalFields[] = $field;
 
                     if (!$context->fieldWasDisplayedBefore($field)) {
-                        $fields_requiring_rerender[] = $field;
+                        $fieldsRequiringRerender[] = $field;
                     }
                 }
             }
         }
 
-        $additional_fields = ListUtils::unique($additional_fields);
+        $additionalFields = ListUtils::unique($additionalFields);
 
-        return new TicketLayoutChanges($fields_requiring_rerender, $fields_to_remove, $additional_fields);
+        return new TicketLayoutChanges($fieldsRequiringRerender, $fieldsToRemove, $additionalFields);
     }
 }
