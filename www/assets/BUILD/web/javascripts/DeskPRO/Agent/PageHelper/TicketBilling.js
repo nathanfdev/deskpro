@@ -222,7 +222,8 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
     var form = this.getEl('billing_form');
     var old = form.find('input, textarea, select').serializeArray();
     var data = {};
-    for (var entry of old) {
+    for (var idx = 0; idx < old.length; idx++) {
+      var entry = old[idx];
       if (entry.name.indexOf('billing_type') !== -1) {
         data.billing_type = entry.value;
       } else {
