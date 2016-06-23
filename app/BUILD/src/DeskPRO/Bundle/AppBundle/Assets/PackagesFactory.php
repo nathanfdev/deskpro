@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -100,14 +100,17 @@ class PackagesFactory
 
         if (empty($this->asset_paths['vendor_assets'])) {
             $this->asset_paths['vendor_assets'] = PathMapInfo::create()
-                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/node_modules')
-                ->setVersion('build');
+                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/node_modules');
         }
 
         if (empty($this->asset_paths['app_assets'])) {
             $this->asset_paths['app_assets'] = PathMapInfo::create()
-                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/build')
-                ->setVersion('build');
+                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/build');
+        }
+
+        if (empty($this->asset_paths['appsrc_assets'])) {
+            $this->asset_paths['appsrc_assets'] = PathMapInfo::create()
+                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/src');
         }
     }
 

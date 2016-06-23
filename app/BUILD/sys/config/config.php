@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -166,7 +166,8 @@ $container->loadFromExtension('framework', array(
         'engines'          => array('twig', 'php', 'jsonphp'),
         'assets_base_urls' => 'http://bogus/SET_IN_ASSET_PACKAGE_PASS',
         'packages'         => array(
-            'app_assets' => array('base_url' => 'http://bogus/SET_IN_ASSET_PACKAGE_PASS'),
+            'app_assets'    => array('base_url' => 'http://bogus/SET_IN_ASSET_PACKAGE_PASS'),
+            'appsrc_assets' => array('base_url' => 'http://bogus/SET_IN_ASSET_PACKAGE_PASS'),
         ),
     ),
     'validation' => array('enabled' => true, 'static_method' => array('loadValidatorMetadata'), 'api' => '2.4'),

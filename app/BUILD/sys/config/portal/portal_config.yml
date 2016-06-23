@@ -28,6 +28,7 @@ framework:
         assets_base_urls: "http://bogus/SET_IN_ASSET_PACKAGE_PASS"
         packages:
           app_assets: { base_url: "http://bogus/SET_IN_ASSET_PACKAGE_PASS" }
+          appsrc_assets: { base_url: "http://bogus/SET_IN_ASSET_PACKAGE_PASS" }
           vendor_assets: { base_url: "http://bogus/SET_IN_ASSET_PACKAGE_PASS" }
     default_locale:  "%locale%"
     trusted_hosts:   ~

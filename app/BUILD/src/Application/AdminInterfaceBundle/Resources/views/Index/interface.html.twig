@@ -4,6 +4,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
+
+    {% if app.getSetting('core.favicon_blob_id') %}
+        <link rel="shortcut icon" id="favicon" href="{{ path('favicon', {}, true) }}" />
+    {% else %}
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-16x16.png', 'appsrc_assets') }}" />
+        <link rel="icon" type="image/png" sizes="24x24" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-24x24.png', 'appsrc_assets') }}" />
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-32x32.png', 'appsrc_assets') }}" />
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-64x64.png', 'appsrc_assets') }}" />
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-96x96.png', 'appsrc_assets') }}" />
+    {% endif %}
+
     <title>{{ phrase('adm.general.deskpro_admin_interface') }}</title>
 
     <!--[if lte IE 8]>
