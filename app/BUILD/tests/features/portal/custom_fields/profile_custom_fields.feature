@@ -35,4 +35,4 @@ Feature: User profile form custom fields
 
     When I fill in "person_profile[{text_field}][data]" with "12345"
     And I press "Save"
-    Then I should see a form error with the phrase "portal.forms.error_too_short"
+    Then I should see a form error with the phrase "This value should have 10 characters or more"

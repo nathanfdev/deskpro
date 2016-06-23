@@ -56,7 +56,7 @@ class FormContext extends BasePortalContext
     }
 
     /**
-     * @Then I should see a form error with the phrase :phrase
+     * @Then /^I should see a form error with the phrase "(?P<phrase>(?:[^"]|\\")*)"$/
      *
      * @param string $phrase
      *
@@ -65,9 +65,10 @@ class FormContext extends BasePortalContext
     public function iShouldSeeAFormErrorWithPhrase($phrase)
     {
         $phrase = $this->phrase($phrase) ?: $phrase;
+        $phrase = $this->fixStepArgument($phrase);
 
         $container = $this->getSession()->getPage();
-        $regex     = '/'.preg_quote($this->phrase($phrase), '/').'/ui';
+        $regex     = '/'.preg_quote($phrase, '/').'/ui';
 
         /** @var \Behat\Mink\Element\NodeElement[] $nodes */
         $nodes = $container->findAll('css', '.error-large');
@@ -87,7 +88,7 @@ class FormContext extends BasePortalContext
     }
 
     /**
-     * @Then I should not see a form error with the phrase :phrase
+     * @Then /^I should not see a form error with the phrase "(?P<phrase>(?:[^"]|\\")*)"$/
      *
      * @param string $phrase
      *
@@ -96,6 +97,7 @@ class FormContext extends BasePortalContext
     public function iShouldNotSeeAFormErrorWithPhrase($phrase)
     {
         $phrase = $this->phrase($phrase) ?: $phrase;
+        $phrase = $this->fixStepArgument($phrase);
 
         $container = $this->getSession()->getPage();
         $regex     = '/'.preg_quote($phrase, '/').'/ui';
@@ -108,5 +110,17 @@ class FormContext extends BasePortalContext
                 throw new \Exception("The phrase \"$phrase\" was found in the text of any .error-large elements.");
             }
         }
+    }
+
+    /**
+     * Returns fixed step argument (with \\" replaced back to ").
+     *
+     * @param string $argument
+     *
+     * @return string
+     */
+    protected function fixStepArgument($argument)
+    {
+        return str_replace('\\"', '"', $argument);
     }
 }

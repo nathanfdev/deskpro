@@ -35,7 +35,7 @@ Feature: Edit ticket form custom fields
 
     When I fill in "ticket[ticket_field_{text_field}][data]" with "12345"
     And I press "Save"
-    Then I should not see a form error with the phrase "portal.forms.error_too_short"
+    Then I should not see a form error with the phrase "This value should have"
 
     When I reload the page
     Then the "ticket[ticket_field_{text_field}][data]" field should contain "12345"
@@ -51,4 +51,4 @@ Feature: Edit ticket form custom fields
 
     When I fill in "ticket[ticket_field_{text_field}][data]" with "12345"
     And I press "Save"
-    Then I should see a form error with the phrase "portal.forms.error_too_short"
+    Then I should see a form error with the phrase "This value should have 10 characters or more"

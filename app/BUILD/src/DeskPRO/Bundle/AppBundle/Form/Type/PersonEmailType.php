@@ -34,7 +34,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class PersonEmailType.
@@ -51,6 +51,7 @@ class PersonEmailType extends AbstractType
             'required'       => $options['required'],
             'error_bubbling' => $options['inline'],
             'mapped'         => $options['mapped_email'],
+            'constraints'    => $options['email_constraints'],
         ]);
     }
 
@@ -65,8 +66,10 @@ class PersonEmailType extends AbstractType
             'inline'       => false,
             'mapped_email' => true,
             'constraints'  => [
-                new EmailConstraint(),
                 new FreeEmailConstraint(),
+            ],
+            'email_constraints' => [
+                new Assert\Email(),
             ],
         ]);
     }

@@ -25,7 +25,7 @@ Feature: New feedback form custom fields
     And I fill in "new_feedback_content" with "I need to report the following bug. It happens when..."
     And I fill in "new_feedback[custom_data][{text_field}][data]" with "12345"
     And I press "Add your feedback"
-    Then I should not see a form error with the phrase "portal.forms.error_too_short"
+    Then I should not see a form error with the phrase "This value should have "
 
   Scenario: I check custom fields validation
     Given only the following custom feedback fields exist:
@@ -38,4 +38,4 @@ Feature: New feedback form custom fields
     And I fill in "new_feedback_content" with "I need to report the following bug. It happens when..."
     And I fill in "new_feedback[custom_data][{text_field}][data]" with "12345"
     And I press "Add your feedback"
-    Then I should see a form error with the phrase "portal.forms.error_too_short"
+    Then I should see a form error with the phrase "This value should have 10 characters or more"

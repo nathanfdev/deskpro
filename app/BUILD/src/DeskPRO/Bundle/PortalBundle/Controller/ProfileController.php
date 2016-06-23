@@ -310,14 +310,10 @@ class ProfileController extends AbstractController
             // NEW EMAIL
             //////////////////////////////////////////////////////////////////////////////////////////////
             $newEmail     = new PersonEmail();
-            $addEmailForm = $this->createForm(
-                PersonEmailType::class,
-                $newEmail,
-                [
-                    'action'      => $this->generateUrl('portal_user_profile_emails'),
-                    'email_label' => 'Email',
-                ]
-            );
+            $addEmailForm = $this->createForm(PersonEmailType::class, $newEmail, [
+                'action'      => $this->generateUrl('portal_user_profile_emails'),
+                'email_label' => 'Email',
+            ]);
             $addEmailForm->handleRequest($request);
             if ($addEmailForm->isValid()) {
                 if ($this->isSavedFormSubRequest($request)) {
