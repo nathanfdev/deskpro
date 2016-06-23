@@ -35,9 +35,11 @@
 
     {% block page_content %}
         {% block content_header %}
-            <section class="welcome-news">
-                {% show section nav_buttons %}
-            </section>
+            {% if should_show_nav_buttons() %}
+                <section class="welcome-news">
+                    {% show section nav_buttons %}
+                </section>
+            {% endif %}
         {% endblock content_header %}
         <section class="with-dpx">
             <div class="column-full">
