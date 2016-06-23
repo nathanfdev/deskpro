@@ -60,7 +60,7 @@
                             <div class="ticket-sidebar-container ticket-sidebar-info">
                                 <h1>{{ phrase('portal.tickets.view_ticket_info') }}</h1>
                                 <ul class="major">
-                                    <li>
+                                    <li class="item-assigned">
                                         <span class="sidebar-small-title">
                                             {{ phrase('portal.tickets.view_assigned_agent') }}
                                         </span>
@@ -71,7 +71,7 @@
                                         </ul>
                                     </li>
 
-                                    <li>
+                                    <li class="item-opened-by">
                                         <span class="sidebar-small-title">
                                             {{ phrase('portal.tickets.view_opened_by') }}
                                         </span>
@@ -82,7 +82,7 @@
                                         </ul>
                                     </li>
 
-                                    <li>
+                                    <li class="item-participants">
                                         <span class="sidebar-small-title">
                                             {{ phrase('portal.tickets.view_participants' ) }}
                                         </span>
@@ -136,7 +136,7 @@
                                         </ul>
                                     </li>
 
-                                    <li>
+                                    <li class="item-ticket-ref">
                                         <span class="sidebar-small-title">{{ phrase('portal.tickets.ticket-ref') }}</span>
                                         <ul>
                                             <li>{{ ticket_public_id(ticket) }}</li>
