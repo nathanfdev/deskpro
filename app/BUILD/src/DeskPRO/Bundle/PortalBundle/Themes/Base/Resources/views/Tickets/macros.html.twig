@@ -21,7 +21,7 @@
             {% endif %}
             <span class="avatar-meta">
         {% if person %}
-            <span class="primary {% if as_agent %}single{% endif %}">{{ person.display_name }}</span>
+            <span class="primary {% if as_agent %}single{% endif %}">{% if as_agent %}{{ person.display_name_user }}{% else %}{{ person.display_name }}{% endif %}</span>
             {% if not as_agent %}<span class="secondary">{{ person.primary_email_address }}</span>{% endif %}
         {% else %}
             <span class="primary">{{ phrase('portal.tickets.view_unassigned') }}</span>
