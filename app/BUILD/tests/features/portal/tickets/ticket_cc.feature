@@ -15,10 +15,16 @@ Feature: Add and edit ticket participants
     And the only default ticket layout exists with fields:
       | user_layout |
       | cc          |
+    And only the following Department records exist:
+      | #  | Title        | Is Tickets Enabled |
+      | d1 | Department 1 | 1                  |
+      | d2 | Department 2 | 1                  |
+    And I grant the "{d1}" department permission of tickets app for usergroup registered
+    And I grant the "{d2}" department permission of tickets app for usergroup registered
 
   Scenario: I edit ticket with cc
     Given I go to "/tickets/ref/edit"
-    And I select "Sales" from "Department"
+    And I select "Department 1" from "Department"
     And I fill in "Cc" with "user_1@deskpro.dev,user_2@deskpro.dev"
     And I press "Save"
     When I go to "/tickets/ref/edit"
@@ -35,11 +41,11 @@ Feature: Add and edit ticket participants
     And I fill in "Cc" with "agent@deskpro.dev"
     When I press "Submit"
     Then the "Cc" field should contain "agent@deskpro.dev"
-    And I should see a form error with the phrase "portal.forms.person_not_user"
+    And I should see a form error with the phrase "Person with identifier \"agent@deskpro.dev\" is not user."
 
   Scenario: I check ticket cc validation (not found)
     Given I go to "/new-ticket"
     And I fill in "Cc" with "unkkwon_agent@deskpro.dev"
     When I press "Submit"
     Then the "Cc" field should contain "unkkwon_agent@deskpro.dev"
-    And I should see a form error with the phrase "portal.forms.person_not_found"
+    And I should see a form error with the phrase "Person with identifier \"unkkwon_agent@deskpro.dev\" not found."

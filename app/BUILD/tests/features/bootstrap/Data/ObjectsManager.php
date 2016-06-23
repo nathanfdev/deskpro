@@ -53,6 +53,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketCategory;
@@ -244,6 +245,7 @@ class ObjectsManager
     {
         $this->typeLocators = [
             'Person'                 => [$this, 'find', Person::class],
+            'PersonEmail'            => [$this, 'find', PersonEmail::class],
             'User'                   => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => false]],
             'Agent'                  => [$this, 'find', Person::class, ['is_agent' => true, 'can_admin' => false]],
             'Admin'                  => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => true]],

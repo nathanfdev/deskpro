@@ -27,7 +27,7 @@ Feature: Registration form custom fields
     And I fill in "Confirm" with "password"
     And I fill in "person_registration[{text_field}][data]" with "12345"
     And I press "Register"
-    Then I should not see a form error with the phrase "portal.forms.error_too_short"
+    Then I should not see a form error with the phrase "This value should have"
 
     When I click the email verification link
     And I go to "/profile"
@@ -46,4 +46,4 @@ Feature: Registration form custom fields
     And I fill in "person_registration[{text_field}][data]" with "12345"
     And I press "Register"
 
-    Then I should see a form error with the phrase "portal.forms.error_too_short"
+    Then I should see a form error with the phrase "This value should have 10 characters or more"

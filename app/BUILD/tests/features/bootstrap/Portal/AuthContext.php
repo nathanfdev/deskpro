@@ -30,6 +30,7 @@ namespace DpBehat\Portal;
 
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Mink\Driver\BrowserKitDriver;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
@@ -142,11 +143,17 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
 
     /**
      * @Given I have a verified email :email_address
+     *
+     * @param string $email_address
      */
     public function iHaveAVerifiedEmail($email_address)
     {
-        $email    = new \Application\DeskPRO\Entity\PersonEmail();
         $this->me = $this->repository(Person::class)->find($this->me->getId());
+        if (in_array($email_address, $this->me->getEmailAddresses())) {
+            return;
+        }
+
+        $email = new PersonEmail();
         $email->setPerson($this->me);
         $email->setEmail($email_address);
         $email->setIsValidated(true);
