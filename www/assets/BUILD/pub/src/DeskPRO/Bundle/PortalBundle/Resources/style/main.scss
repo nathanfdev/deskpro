@@ -7911,10 +7911,8 @@ ul.big-button-collection {
     border: 1px solid $brand-primary;
     color: $brand-primary;
     border-bottom: 2px solid $brand-primary;
-
-    .title {
-      text-decoration: underline;
-    }
+    text-decoration: none;
+    background: #fdfeff;
 
     .title, .subtitle, i {
       color: inherit;
