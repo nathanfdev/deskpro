@@ -40,7 +40,7 @@
 				<a class="btn btn-default" ng-class="{'active': isStateActive('.create') }" href="{{ ng_href('tickets.ticket_deps.gocreate') }}" dp-list-autoload autoload-priority="2"><i class="fa fa-plus"></i> New Department</a>
 			</div>
 
-			<div class="dp-empty-list-notice" ng-show="ListCtrl.deps.length == 1">
+			<div class="dp-empty-list-notice" ng-show="ListCtrl.depData.getLeafOptionsArray().length == 1">
 				<p>
 					{{ phrase('adm.departments.not_user_visible') }}
 				</p>
