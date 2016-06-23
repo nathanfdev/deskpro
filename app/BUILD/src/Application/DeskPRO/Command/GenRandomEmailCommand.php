@@ -253,7 +253,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         # Done
         #------------------------------
 
-        echo trim($this->getContainer()->getTemplating()->render($tpl, $vars));
+        echo trim($this->getContainer()->get('templating.email')->render($tpl, $vars));
         echo "\n";
 
         return 0;
