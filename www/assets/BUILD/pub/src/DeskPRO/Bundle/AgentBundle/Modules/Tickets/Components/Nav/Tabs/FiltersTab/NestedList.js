@@ -4,7 +4,7 @@ import { ListItemContainer } from './ListItemContainer';
 import { UrgencyList } from './UrgencyList';
 import Immutable from 'immutable';
 
-export class NestedListContainer extends BaseNestedList {
+export class NestedList extends BaseNestedList {
   renderListItem(item, depth) {
     this.ensureValidDepth(depth);
     const { nested, id, type, parent } = item;

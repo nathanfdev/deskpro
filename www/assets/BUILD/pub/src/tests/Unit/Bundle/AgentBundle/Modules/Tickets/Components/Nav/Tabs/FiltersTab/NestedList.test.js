@@ -1,15 +1,15 @@
 // #define ~components DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/Nav/Tabs/FiltersTab
 
-jest.dontMock('~components/NestedListContainer');
+jest.dontMock('~components/NestedList');
 jest.dontMock('~components/ListItemContainer');
 
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { renderInTicketsApp } from '../../../../tickets.test-helper';
 
-describe('Tickets Navigation: NestedListContainer component', () => {
-  const NestedListContainer = require('~components/NestedListContainer').NestedListContainer;
-  const UrgencyList         = require('~components/UrgencyList').UrgencyList;
+describe('Tickets Navigation: NestedList component', () => {
+  const NestedList  = require('~components/NestedList').NestedList;
+  const UrgencyList = require('~components/UrgencyList').UrgencyList;
 
   const dummyProps = {
     alwaysExpanded: true,
@@ -48,7 +48,7 @@ describe('Tickets Navigation: NestedListContainer component', () => {
   let node;
 
   function render(props) {
-    node = ReactDOM.findDOMNode(renderInTicketsApp({}, <NestedListContainer {...props} />));
+    node = ReactDOM.findDOMNode(renderInTicketsApp({}, <NestedList {...props} />));
   }
 
   it('should render list items', () => {

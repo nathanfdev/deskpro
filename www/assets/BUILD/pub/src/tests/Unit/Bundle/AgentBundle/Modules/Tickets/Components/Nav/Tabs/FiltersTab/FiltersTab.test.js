@@ -8,8 +8,8 @@ import { toImmutable } from 'Helpers';
 import { renderInTicketsApp } from '../../../../tickets.test-helper';
 
 describe('Tickets Navigation: FiltersTab component', () => {
-  const FiltersTab          = require('~components/FiltersTab').FiltersTab;
-  const NestedListContainer = require('~components/NestedListContainer').NestedListContainer;
+  const FiltersTab = require('~components/FiltersTab').FiltersTab;
+  const NestedList = require('~components/NestedList').NestedList;
 
   function render() {
     const props = {
@@ -25,9 +25,9 @@ describe('Tickets Navigation: FiltersTab component', () => {
     expect(title.textContent).toEqual('Test Filter Set');
   });
 
-  it('should render NestedListContainer', () => {
-    spyOn(NestedListContainer.prototype, 'render');
+  it('should render NestedList', () => {
+    spyOn(NestedList.prototype, 'render');
     render();
-    expect(NestedListContainer.prototype.render).toHaveBeenCalled();
+    expect(NestedList.prototype.render).toHaveBeenCalled();
   });
 });
