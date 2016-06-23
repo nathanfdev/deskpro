@@ -10,14 +10,19 @@ describe('Tickets Navigation: UrgencyList component', () => {
           require('DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/Nav/Tabs/FiltersTab/UrgencyList').UrgencyList;
 
   const items = toImmutable([
-    { id: 1, count: 1 }, { id: 3, count: 42 }
+    {id: 1, count: 1}, {id: 3, count: 42}, {id: 4, count: 0}
   ]);
 
-  it('should render urgency  sliders', () => {
+  it('should render urgency sliders', () => {
     const component = TestUtilAdditions.renderIntoDocument(<UrgencyList items={items} />);
 
     expect(TestUtilAdditions.find(component, '.slider.level-1').length).toEqual(1);
     expect(TestUtilAdditions.find(component, '.slider.level-3').length).toEqual(1);
+  });
+
+  it('should not render sliders for zero or missing urgency groups', () => {
+    const component = TestUtilAdditions.renderIntoDocument(<UrgencyList items={items} />);
+
     expect(TestUtilAdditions.find(component, '.slider').length).toEqual(2);
   });
 });

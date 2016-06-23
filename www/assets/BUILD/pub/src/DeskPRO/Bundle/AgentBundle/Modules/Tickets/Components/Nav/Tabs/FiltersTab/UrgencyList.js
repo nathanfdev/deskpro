@@ -10,7 +10,7 @@ export class UrgencyList extends Component {
 
     return (
       <div className="sidebar-urgent-sliders">
-        {items.map(item => (
+        {items.map(item => !item.get('count') ? '' : (
           <div key={item.get('id')} className={'slider level-' + item.get('id')}>
             <div className="slider-container">
               <span className="slider-grabber-wrapper">
