@@ -16,7 +16,7 @@ Feature: Editing portal templates
     Given I login with admin credentials from the login page
     When I send a GET request to "/portal/api/style/edit-theme-set/template-info?template=Theme::layout.html.twig"
     Then the response status code should be 200
-    And the response should contain "{% show section alerts %}"
+    And the response should contain "% show section alerts %"
 
   Scenario: I modify Theme::layout.html.twig
     Given I'm authenticated as admin

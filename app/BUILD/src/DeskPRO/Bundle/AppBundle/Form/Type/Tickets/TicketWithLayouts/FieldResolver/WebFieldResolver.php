@@ -56,7 +56,7 @@ class WebFieldResolver extends AbstractFieldResolver
         // then render hidden field instead of selectbox
 
         $department = $context->getTicket()->getDepartment();
-        if ($department && ($this->isSingleDepartment($context) || $context->getOption('hide_department_field'))) {
+        if ($department && ($this->isNotSelectableDepartment($context) || $context->getOption('hide_department_field'))) {
             return new FormField(HiddenEntityType::class, [
                 'entity_class' => Department::class,
             ]);
