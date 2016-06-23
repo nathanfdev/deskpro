@@ -31,7 +31,6 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 use Application\DeskPRO\Entity\Brand;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -44,7 +43,7 @@ class BrandType extends AbstractType
     {
         $builder
             ->add('name', TextType::class)
-            ->add('url', UrlType::class)
+            ->add('url', TextType::class)
         ;
     }
 

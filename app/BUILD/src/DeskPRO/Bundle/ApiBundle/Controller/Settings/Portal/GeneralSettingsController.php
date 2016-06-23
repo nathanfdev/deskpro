@@ -116,6 +116,11 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
      */
     public function getAction($brandId)
     {
+        // For a new brand we first retrieve the default settings
+        if ($brandId == 'new') {
+            $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+        }
+
         $this->setBrandStack($brandId);
 
         return new View($this->wrap($this->getModel()));
@@ -157,6 +162,7 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
 
             $brand = $this->getBrand($brandId);
             $brand->setUrl($urlHostChecker->simplifyUrl($url));
+            $brand->setName($url = $this->model->getDeskproName());
 
             $em = $this->getManager();
             $em->persist($brand);

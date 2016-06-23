@@ -57,8 +57,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @Growl.success("Brand created")
         @brandId = res.data.data.id
         @portalSettings.setBrandId(res.data.data.id)
-        @saveSettings()
-        @$state.go 'portal.setup', {brandId: @brandId}
+        @saveSettings().then(=>
+          @$state.go 'portal.setup', {brandId: @brandId}
+        )
 
 
     deleteBrand: ->
