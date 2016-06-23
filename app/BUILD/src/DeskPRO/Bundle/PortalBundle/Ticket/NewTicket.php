@@ -119,13 +119,14 @@ class NewTicket
     }
 
     /**
-     * @param Request $request
-     * @param string  $visitor_id
-     * @param Person  $person
+     * @param Request     $request
+     * @param string      $visitor_id
+     * @param Person      $person
+     * @param string|null $creationSystem
      *
      * @return Ticket
      */
-    public function createNewTicket(Request $request, $visitor_id, Person $person = null)
+    public function createNewTicket(Request $request, $visitor_id, Person $person = null, $creationSystem = null)
     {
         $language = $this->language_manager->getLanguageStack()->getActiveOrDefault();
         $person   = $person ?: new PersonGuest();
@@ -133,6 +134,10 @@ class NewTicket
         $ticket = $this->ticket_manager->createTicket();
         $ticket->setPerson($person);
         $ticket->setLanguage($language);
+
+        if ($creationSystem) {
+            $ticket->setCreationSystem($creationSystem);
+        }
 
         $ticket_message = new TicketMessage();
         $ticket_message->setVisitorId($visitor_id);

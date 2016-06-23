@@ -884,7 +884,7 @@ define [
       options.operators = ['is', 'not']
       options.options = [
         {title: "Created by a user via the portal", value: "web.person.portal"},
-        {title: "Created by a user via the Feedback and Support tab", value: "web.person.widget"},
+        {title: "Created by a user via the widget", value: "web.person.widget"},
         {title: "Created by a user via an embedded form", value: "web.person.embed"},
         {title: "Created by a user via email", value: "gateway.person"},
         {title: "Created by an agent via the agent interface", value: "web.agent.portal"},

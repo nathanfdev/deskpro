@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
@@ -82,7 +83,7 @@ class TicketController extends AbstractApiController
         }
 
         $ticket_service = $this->get('tickets.new_ticket');
-        $ticket         = $ticket_service->createNewTicket($request, $visitor_id, $this->getUser());
+        $ticket         = $ticket_service->createNewTicket($request, $visitor_id, $this->getUser(), Ticket::CREATED_WEB_PERSON_WIDGET);
         $person         = $ticket->getPerson();
         $ticket_message = $ticket->messages[0];
 
