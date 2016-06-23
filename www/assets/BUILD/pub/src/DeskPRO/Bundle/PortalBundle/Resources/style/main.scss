@@ -9847,6 +9847,12 @@ form {
       @include margin-right(3px);
       font-size: $font-size-base;
     }
+    .clear-input {
+      display: inline-block;
+      position: absolute;
+      top: -5px;
+      right: -10px;
+    }
   }
 
   input[type="text"], input[type="email"], textarea {
