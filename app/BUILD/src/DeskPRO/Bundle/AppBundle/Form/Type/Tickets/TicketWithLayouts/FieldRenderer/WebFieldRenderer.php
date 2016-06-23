@@ -78,25 +78,6 @@ class WebFieldRenderer implements FieldRendererInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function removeField(TicketWithLayoutsContext $context, LayoutField $field)
-    {
-        $form = $context->getForm();
-        if (!$form->has($field->getId())) {
-            return;
-        }
-
-        $form->remove($field->getId());
-
-        // attachments field should have more_attachments button for portal,
-        // so remove it as well
-        if ($field->getFieldType() === FormFields::ATTACHMENTS && $form->has('more_attachments')) {
-            $form->remove('more_attachments');
-        }
-    }
-
-    /**
      * @param TicketWithLayoutsContext $context
      */
     public function addSubmitButton(TicketWithLayoutsContext $context)

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Ticket;
 
 use Application\DeskPRO\Entity\Department;
@@ -88,7 +89,7 @@ class TicketLayoutFactory
     public function getLayout($department = null)
     {
         $layout = null;
-        // Note: I removed the following condition, we still definitley want to do this is $dep is a Dep entity.
+        // Note: I removed the following condition, we still definitely want to do this is $dep is a Dep entity.
         //if ($department && !($department instanceof Department)) {
         if ($department) {
             $layout = $this

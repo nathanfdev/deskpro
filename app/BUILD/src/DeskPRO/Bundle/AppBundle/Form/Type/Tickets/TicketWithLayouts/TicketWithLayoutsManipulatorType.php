@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDisableAutoProcessListener;
@@ -51,20 +52,13 @@ class TicketWithLayoutsManipulatorType extends AbstractType
     private $hierarchyGenerator;
 
     /**
-     * @var TicketLayoutHelper
-     */
-    private $layoutHelper;
-
-    /**
      * Constructor.
      *
      * @param HierarchyGenerator $hierarchyGenerator
-     * @param TicketLayoutHelper $layoutHelper
      */
-    public function __construct(HierarchyGenerator $hierarchyGenerator, TicketLayoutHelper $layoutHelper)
+    public function __construct(HierarchyGenerator $hierarchyGenerator)
     {
         $this->hierarchyGenerator = $hierarchyGenerator;
-        $this->layoutHelper       = $layoutHelper;
     }
 
     /**
@@ -131,21 +125,9 @@ class TicketWithLayoutsManipulatorType extends AbstractType
         }
 
         $context = TicketWithLayoutsContext::createOnPreSetData($event);
-        $changes = $this->layoutHelper->getLayoutChanges($context);
-
-        foreach ($changes->getAdditionalFields() as $field) {
-            if ($field->hasCriteria() && !$field->getCriteria()->isTicketMatch($context->getTicket())) {
-                continue;
-            }
-
-            $formField = $context->getFieldResolver()->createFormField($context, $field);
-            if ($formField) {
-                $context->getFieldRenderer()->addField($context, $field, $formField);
-            }
-        }
-
-        // We dont need to process getFieldsToRemove beccause it is always empty.
-        // (The previous layout is empty here in onPreData)
+        TicketLayoutHelper::renderFormFields($context, function (LayoutField $field) use ($context) {
+            return $field->getCriteria()->isTicketMatch($context->getTicket());
+        });
     }
 
     /**
@@ -170,23 +152,11 @@ class TicketWithLayoutsManipulatorType extends AbstractType
         }
 
         $context   = TicketWithLayoutsContext::createOnPreSubmit($event);
-        $extracted = $this->layoutHelper->getExtractedData($data, $context);
-        $changes   = $this->layoutHelper->getLayoutChanges($context, $extracted);
+        $extracted = TicketLayoutHelper::getExtractedData($data, $context);
 
-        foreach ($changes->getAdditionalFields() as $field) {
-            if ($field->hasCriteria() && !$field->getCriteria()->isSubmittedDataMatch($extracted)) {
-                continue;
-            }
-
-            $formField = $context->getFieldResolver()->createFormField($context, $field);
-            if ($formField) {
-                $context->getFieldRenderer()->addField($context, $field, $formField);
-            }
-        }
-
-        foreach ($changes->getFieldsToRemove() as $field) {
-            $context->getFieldRenderer()->removeField($context, $field);
-        }
+        TicketLayoutHelper::renderFormFields($context, function (LayoutField $field) use ($extracted) {
+            return $field->getCriteria()->isSubmittedDataMatch($extracted);
+        });
     }
 
     /**
@@ -201,12 +171,12 @@ class TicketWithLayoutsManipulatorType extends AbstractType
         $ticket = $event->getForm()->getData();
 
         // update ticket message properties
-        /** @var TicketMessage $ticket_message */
-        $ticket_message = $ticket->messages->first();
-        if ($ticket_message) {
+        /** @var TicketMessage $ticketMessage */
+        $ticketMessage = $ticket->messages->first();
+        if ($ticketMessage) {
             $person = $ticket->getPerson();
-            $ticket_message->setPerson($person);
-            foreach ($ticket_message->getAttachments() as $attachment) {
+            $ticketMessage->setPerson($person);
+            foreach ($ticketMessage->getAttachments() as $attachment) {
                 $blob = $attachment->getBlob();
                 if ($blob) {
                     $blob->is_temp = false;

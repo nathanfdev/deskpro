@@ -67,22 +67,6 @@ class NewTicketController extends AbstractController
         $person         = $ticket->getPerson();
         $ticket_message = $ticket->messages[0];
 
-        // do a one through with the GET request to update our model before starting the "real" form
-        $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, [
-            'person'            => $person,
-            'method'            => 'GET',
-            'validation_groups' => false,
-            'action'            => $this->generateUrl('portal_new_ticket'),
-            'department_id'     => $request->query->getInt('department_id'),
-        ]);
-        $form->submit($request->query->get('ticket', []), false);
-
-        foreach ($ticket_message->getAttachments() as $attachment) {
-            if (!$attachment->getBlob()) {
-                $ticket_message->removeAttachment($attachment);
-            }
-        }
-
         $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, [
             'person'                => $person,
             'action'                => $this->generateUrl('portal_new_ticket'),

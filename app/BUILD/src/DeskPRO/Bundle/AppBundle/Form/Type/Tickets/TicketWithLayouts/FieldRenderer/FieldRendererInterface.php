@@ -43,10 +43,4 @@ interface FieldRendererInterface
      * @param FormField                $formField
      */
     public function addField(TicketWithLayoutsContext $context, LayoutField $field, FormField $formField);
-
-    /**
-     * @param TicketWithLayoutsContext $context
-     * @param LayoutField              $field
-     */
-    public function removeField(TicketWithLayoutsContext $context, LayoutField $field);
 }

@@ -179,6 +179,22 @@ class ChatContext extends BaseContext
     }
 
     /**
+     * @Then I remember last :chatId chat message id
+     *
+     * @param int $chatId
+     */
+    public function iSaveConversationLastMessageId($chatId)
+    {
+        $chatId       = DataContext::replace($chatId);
+        $conversation = $this->findConversation($chatId);
+
+        $lastMessage = $conversation->messages->last();
+        if ($lastMessage) {
+            DataContext::setPlaceholder('lastCreatedId', $lastMessage->getId());
+        }
+    }
+
+    /**
      * @param int $chatId
      *
      * @return ChatConversation

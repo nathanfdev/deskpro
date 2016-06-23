@@ -58,28 +58,17 @@ class TicketWithLayoutsWebType extends AbstractType
     private $fieldRenderer;
 
     /**
-     * @var TicketLayoutHelper
-     */
-    private $layoutHelper;
-
-    /**
      * Constructor.
      *
      * @param WebFieldResolver    $fieldResolver
      * @param WebFieldRenderer    $fieldRenderer
      * @param TicketLayoutFactory $layoutFactory
-     * @param TicketLayoutHelper  $layoutHelper
      */
-    public function __construct(
-        WebFieldResolver    $fieldResolver,
-        WebFieldRenderer    $fieldRenderer,
-        TicketLayoutFactory $layoutFactory,
-        TicketLayoutHelper  $layoutHelper
-    ) {
+    public function __construct(WebFieldResolver $fieldResolver, WebFieldRenderer $fieldRenderer, TicketLayoutFactory $layoutFactory)
+    {
         $this->fieldResolver = $fieldResolver;
         $this->fieldRenderer = $fieldRenderer;
         $this->layoutFactory = $layoutFactory;
-        $this->layoutHelper  = $layoutHelper;
     }
 
     /**
@@ -103,8 +92,8 @@ class TicketWithLayoutsWebType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onAddUIFields'], -1);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddUIFields'], -1);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onAddUiFields'], -1);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddUiFields'], -1);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddRerenderField'], -1);
     }
 
@@ -132,7 +121,7 @@ class TicketWithLayoutsWebType extends AbstractType
      * @param FormEvent $event
      * @param string    $eventName
      */
-    public function onAddUIFields(FormEvent $event, $eventName)
+    public function onAddUiFields(FormEvent $event, $eventName)
     {
         if ($eventName === FormEvents::PRE_SUBMIT) {
             $context = TicketWithLayoutsContext::createOnPreSubmit($event);
@@ -153,31 +142,32 @@ class TicketWithLayoutsWebType extends AbstractType
      */
     public function onAddRerenderField(FormEvent $event)
     {
+        $form    = $event->getForm();
         $data    = $event->getData();
         $context = TicketWithLayoutsContext::createOnPreSubmit($event);
 
         $hasNotSubmitted = false;
         $displayedFields = isset($data['displayed_fields']) ? array_flip(explode(',', $data['displayed_fields'])) : [];
 
-        $extracted = $this->layoutHelper->getExtractedData($data, $context);
-        $changes   = $this->layoutHelper->getLayoutChanges($context, $extracted);
-
-        foreach ($changes->getAdditionalFields() as $field) {
-            if ($field->hasCriteria() && !$field->getCriteria()->isSubmittedDataMatch($extracted)) {
+        $fields = TicketLayoutHelper::getLayoutFields($context);
+        foreach ($fields as $field) {
+            // the form was already updated via the form manipulator pre submit callback
+            // so check if the field should be rendered based on the rendered form
+            if (!$form->has($field->getId())) {
                 continue;
             }
 
-            $formField = $this->fieldResolver->createFormField($context, $field);
-            if ($formField) {
-                // check if there was submitted data for this field
-                if (!array_key_exists($field->getId(), $data) && !isset($displayedFields[$field->getId()])) {
-                    $hasNotSubmitted = true;
-                }
+            // check if there was submitted data for this field and that the field wasn't on the previous layout
+            $notSubmitted   = !array_key_exists($field->getId(), $data);
+            $wasntDisplayed = !isset($displayedFields[$field->getId()]);
+
+            if ($notSubmitted && $wasntDisplayed && !$context->fieldWasDisplayedBefore($field)) {
+                $hasNotSubmitted = true;
             }
         }
 
-        // we signal to the controller that we want to rerender (and NOT submit or process) by adding a hidden field
-        if ($context->hadLayout() && $hasNotSubmitted && count($changes->getFieldsRequiringRerender()) > 0 && count($data) > 0) {
+        // we signal to the controller that we want to re-render (and NOT submit or process) by adding a hidden field
+        if ($context->hadLayout() && $hasNotSubmitted && $hasNotSubmitted && count($data) > 0) {
             $this->fieldRenderer->addRerenderField($context);
         }
     }

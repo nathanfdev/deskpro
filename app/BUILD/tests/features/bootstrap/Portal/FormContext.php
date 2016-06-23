@@ -28,6 +28,10 @@
 
 namespace DpBehat\Portal;
 
+use Behat\Gherkin\Node\TableNode;
+use Behat\Mink\Element\NodeElement;
+use DpBehat\Data\DataContext;
+
 /**
  * Class FormContext.
  */
@@ -108,6 +112,58 @@ class FormContext extends BasePortalContext
         foreach ($nodes as $n) {
             if (preg_match($regex, $n->getText())) {
                 throw new \Exception("The phrase \"$phrase\" was found in the text of any .error-large elements.");
+            }
+        }
+    }
+
+    /**
+     * @Then the :locator form should have :expectedCount elements
+     *
+     * @param string $locator
+     * @param int    $expectedCount
+     *
+     * @throws \Exception
+     */
+    public function theFormShouldHaveElementsCount($locator, $expectedCount)
+    {
+        $form  = $this->getSession()->getPage()->find('css', $locator);
+        $nodes = $form->findAll('css', 'input, textarea, select');
+
+        $count = count($nodes);
+        if ($count !== $expectedCount) {
+            throw new \Exception("Form should have $expectedCount element but it has {$count}");
+        }
+    }
+
+    /**
+     * @Then I should see :locator form fields in following order:
+     *
+     * @param string    $locator
+     * @param TableNode $expectedElements
+     *
+     * @throws \Exception
+     */
+    public function iShouldSeeFormElementsOrder($locator, TableNode $expectedElements)
+    {
+        $form = $this->getSession()->getPage()->find('css', $locator);
+
+        /** @var NodeElement[] $nodes */
+        $nodes = $form->findAll('css', 'input, textarea, select');
+        foreach ($expectedElements as $num => $data) {
+            if (!isset($nodes[$num])) {
+                throw new \Exception("Form element $num not found");
+            }
+
+            $node = $nodes[$num];
+            foreach (['name', 'class'] as $attribute) {
+                if (!empty($data[$attribute])) {
+                    $expectedValue = DataContext::replace($data[$attribute]) ?: '';
+                    $elementValue  = $node->getAttribute($attribute) ?: '';
+
+                    if ($expectedValue !== $elementValue) {
+                        throw new \Exception("Form element $num expected to contain $expectedValue got $elementValue");
+                    }
+                }
             }
         }
     }

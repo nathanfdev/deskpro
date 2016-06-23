@@ -182,10 +182,10 @@ class TicketTypeTest extends PortalTestCase
         // assert
         $this->assertRerenderFormExists($form);
         $this->assertFields($form, [
-            'person',
             'department',
             'subject',
             'message',
+            'person',
             'attachments',
             'more_attachments',
             'ticket_field_1',
