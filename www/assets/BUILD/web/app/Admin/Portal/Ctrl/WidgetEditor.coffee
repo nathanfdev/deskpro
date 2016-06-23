@@ -311,7 +311,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
         @applyErrorResponseToView(info)
       )
 
-    initLiveDemo: (background_src = false) ->
+    initLiveDemo: () ->
       window.addEventListener('message', (event) =>
         if (event.data?.type == 'widgetStatus')
           @$scope.$apply =>
@@ -325,12 +325,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
 
       @loadCode(true).then (codeResponse) =>
         code = codeResponse.data.replace(/widget": {/, "widget\": {\n\"live_demo\": true,")
-        if background_src
-          style = "style=\"background: url('#{background_src}') bottom right no-repeat\""
-        else
-          style = "style=\"\""
+
         demoDocument = @getLiveDemoDocument();
-        demoDocument.write("<body #{style}>#{code}</body>");
+        demoDocument.write("<body>#{code}</body>");
         demoDocument.close();
 
         @getFrameNode().contentWindow.addEventListener('message', (event) =>
