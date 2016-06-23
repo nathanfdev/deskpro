@@ -131,7 +131,7 @@ return array(
     'agent.publish.sticky_words_title'            => 'Search Words',
     'agent.publish.untranslated_articles'         => 'Untranslated Articles',
     'agent.publish.validating_comment_manage_tip' => 'Comment is awaiting validation. Click to manage',
-    'agent.publish.validating_list_title'         => '1 Validating|{{count}} Validating',
+    'agent.publish.validating_list_title'         => '1 reviewing|{{count}} reviewing',
     'agent.publish.view_count'                    => 'View Count',
     'agent.publish.view_count_highest_lowest'     => 'View Count (Highest-Lowest)',
     'agent.publish.view_count_lowest_highest'     => 'View Count (Lowest-Highest)',

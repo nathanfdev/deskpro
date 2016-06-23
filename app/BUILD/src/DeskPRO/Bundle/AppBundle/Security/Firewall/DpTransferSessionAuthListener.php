@@ -197,29 +197,31 @@ class DpTransferSessionAuthListener implements ListenerInterface
     protected function checkAgentInterfaceAuthNeedsTransfer(Request $request)
     {
         // not logged in to portal
-        if (($sid = $request->cookies->get('dpsid-agent')) || ($sid = $request->cookies->get('dpsid-admin'))) {
-            $session_id    = Session::getIdFromCode($sid);
-            $agent_session = App::getDb()->fetchAssoc(
-                '
+        foreach (['dpsid-agent', 'dpsid-admin'] as $cookie) {
+            if ($sid = $request->cookies->get($cookie)) {
+                $session_id    = Session::getIdFromCode($sid);
+                $agent_session = App::getDb()->fetchAssoc(
+                    '
                     SELECT person_id, auth
                     FROM sessions
                     WHERE id = ?
                 ',
-                array(
-                    $session_id,
-                )
-            );
+                    array(
+                        $session_id,
+                    )
+                );
 
-            list(, $auth) = explode('-', $sid);
-            if ($agent_session && $agent_session['auth'] == $auth && $agent_session['person_id']) {
-                if ($person = App::getEntityRepository('DeskPRO:Person')->find($agent_session['person_id'])) {
-                    if (
-                        // if the session isnt started, or if it is and we dont have a portal logged in user
-                        // NOTE: v. important to be careful to not start the session here
-                        !$request->getSession()->isStarted()
-                        || ($request->getSession()->isStarted() && !$request->getSession()->get('auth_person_id'))
-                    ) {
-                        return $sid;
+                list(, $auth) = explode('-', $sid);
+                if ($agent_session && $agent_session['auth'] == $auth && $agent_session['person_id']) {
+                    if ($person = App::getEntityRepository('DeskPRO:Person')->find($agent_session['person_id'])) {
+                        if (
+                            // if the session isnt started, or if it is and we dont have a portal logged in user
+                            // NOTE: v. important to be careful to not start the session here
+                            !$request->getSession()->isStarted()
+                            || ($request->getSession()->isStarted() && !$request->getSession()->get('auth_person_id'))
+                        ) {
+                            return $sid;
+                        }
                     }
                 }
             }
