@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\EntityRepository\Brand;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
+use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
@@ -53,101 +54,132 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequestInterface
 {
     /**
-     * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
+     * @var BrandStack
      */
-    private $brand_stack;
+    private $brandStack;
 
     /**
-     * @var \Application\DeskPRO\NewSettings\SettingsResolver
+     * @var SettingsResolver
      */
-    private $settings_resolver;
+    private $settingsResolver;
 
     /**
      * @var \Application\DeskPRO\EntityRepository\Brand
      */
-    private $brand_repository;
+    private $brandRepository;
 
     /**
      * @var \Application\DeskPRO\Entity\Brand
      */
-    private $default_brand;
+    private $defaultBrand;
 
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     private $logger;
 
     /**
+     * @var UrlHostChecker
+     */
+    private $urlHostChecker;
+
+    /**
      * @var PortalModeStorage
      */
-    private $mode_storage;
+    private $modeStorage;
 
-    public function __construct(BrandStack $brand_stack, SettingsResolver $settings_resolver, Brand $brand_repository, BrandEntity $default_brand, PortalModeStorage $mode_storage, LoggerInterface $logger)
-    {
-        $this->brand_stack       = $brand_stack;
-        $this->settings_resolver = $settings_resolver;
-        $this->brand_repository  = $brand_repository;
-        $this->default_brand     = $default_brand;
-        $this->mode_storage      = $mode_storage;
-        $this->logger            = $logger;
+    public function __construct(
+        BrandStack $brandStack,
+        SettingsResolver $settingsResolver,
+        Brand $brandRepository,
+        BrandEntity $defaultBrand,
+        PortalModeStorage $modeStorage,
+        LoggerInterface $logger,
+        UrlHostChecker $urlHostChecker
+    ) {
+        $this->brandStack       = $brandStack;
+        $this->settingsResolver = $settingsResolver;
+        $this->brandRepository  = $brandRepository;
+        $this->defaultBrand     = $defaultBrand;
+        $this->modeStorage      = $modeStorage;
+        $this->logger           = $logger;
+        $this->urlHostChecker   = $urlHostChecker;
     }
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if (!$event->isMasterRequest()) {
-            // only run this on the master request - we only detect once per request.
-            return;
-        }
-
         $brand = null;
-
-        if ($mode = $this->mode_storage->getMode()) {
-            $brand = $this->detectBrandMode($mode);
-        } else {
-            $brand = $this->detectFromEsiQuery($event->getRequest());
-
-            if ($brand === null) {
-                // match domain name
+        if ($event->isMasterRequest()) {
+            if ($mode = $this->modeStorage->getMode()) {
+                $brand = $this->detectBrandMode($mode);
+            } else {
+                $brand = $this->detectFromEsiQuery($event->getRequest());
             }
         }
-
-        if (!$brand) {
-            $this->logger->info('Brand Detector: can\'t determine brand from request. falling back on default brand');
-            $brand = $this->getDefaultBrand();
+        if ($brand === null) {
+            $brand = $this->detectBrandByHost($event);
         }
+        if ($brand !== null) {
+            if (!$brand) {
+                $this->logger->info('Brand Detector: can\'t determine brand from request. falling back on default brand');
+                $brand = $this->getDefaultBrand();
+            }
+            $this->brandStack->push($brand);
 
-        $this->brand_stack->push($brand);
-
-        $this->logger->info('Brand Detector: initialized brand stack with brand id='.$brand->getId());
+            $this->logger->info('Brand Detector: initialized brand stack with brand id='.$brand->getId());
+        }
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return null|Brand|void
+     */
     protected function detectFromEsiQuery(Request $request)
     {
         if (IsProxyRequestHelper::check($request)) {
             if ($brand_id = $request->query->getInt('brand_id')) {
                 $this->logger->info(sprintf('found "%s" in esi brand_id query', $brand_id));
 
-                return $this->brand_repository->find($brand_id);
+                return $this->brandRepository->find($brand_id);
             }
         }
 
         return;
     }
 
+    /**
+     * @param PortalMode $mode
+     *
+     * @return null|Brand|void
+     */
     protected function detectBrandMode(PortalMode $mode)
     {
         if ($mode->isBrand() || $mode->isAdminPreview()) {
             try {
-                return $this->brand_repository->find($mode->getData());
+                return $this->brandRepository->find($mode->getData());
             } catch (\Exception $e) {
                 return;
             }
         }
     }
 
+    /**
+     * @param GetResponseEvent $event
+     *
+     * @return null|Brand
+     */
+    protected function detectBrandByHost(GetResponseEvent $event)
+    {
+        $host  = $event->getRequest()->getHttpHost();
+        $brand = $this->brandRepository->findOneBy(['url' => $this->urlHostChecker->simplifyUrl($host)]);
+
+        return $brand;
+    }
+
     protected function getDefaultBrand()
     {
-        return $this->default_brand;
+        return $this->defaultBrand;
     }
 
     /**

@@ -21,6 +21,7 @@ services:
       - "@default_brand"
       - "@portal_mode_storage"
       - "@logger"
+      - "@url_host_checker"
     tags:
       - { name: kernel.event_subscriber }
 

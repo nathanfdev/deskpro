@@ -52,7 +52,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       all = @$q.all(promises)
       @savingMulti = true
       all.then( =>
-        console.log("ERE")
         @savingMulti = false
         @refreshPreviewUrl()
       , =>
