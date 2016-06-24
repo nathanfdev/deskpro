@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO;
 
 use Application\DeskPRO\People\PersonGuest;
@@ -38,6 +39,7 @@ use Orb\Log\Filter\CallbackFormatter;
 use Orb\Log\LogItem;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * A global singleton that facilitates fetching well known objects and values.
@@ -274,7 +276,7 @@ class App
     }
 
     /**
-     * @return Routing\Router
+     * @return RouterInterface
      */
     public static function getRouter()
     {

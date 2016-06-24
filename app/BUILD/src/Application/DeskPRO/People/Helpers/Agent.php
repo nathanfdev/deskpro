@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,11 +31,13 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Helper added to People who are agents, works with agent-specific stuff.
@@ -189,7 +191,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
      */
     public function hasTeams()
     {
-        return ($this->countTeams() > 0);
+        return $this->countTeams() > 0;
     }
 
     /**
@@ -331,7 +333,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         if ($sig_html) {
             $fn = function ($m) {
                 $url = App::getSetting('core.deskpro_url');
-                $url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[1], 'filename' => $m[2]), false), '/');
+                $url .= ltrim(App::getRouter()->generate('serve_blob', array('blob_auth_id' => $m[1], 'filename' => $m[2]), RouterInterface::ABSOLUTE_PATH), '/');
 
                 return sprintf('<img src="%s" title="%s" class="dp-signature-image" alt="%s" />',
                     $url, htmlspecialchars($m[2]), htmlspecialchars($m[0])

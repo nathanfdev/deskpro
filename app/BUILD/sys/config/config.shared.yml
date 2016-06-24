@@ -6,6 +6,20 @@ parameters:
   doctrine.dbal.connection_factory.class: DeskPRO\Bundle\AppBundle\Doctrine\ConnectionFactory
   templating.cache_warmer.template_paths.class: DeskPRO\Bundle\AppBundle\CacheWarmer\TemplatePathsCacheWarmer
 
+services:
+  dp.url_request_context_factory:
+    public: false
+    class: DeskPRO\Bundle\AppBundle\Routing\UrlRequestContextFactory
+    arguments:
+      - "@service_container"
+
+  dp.dynamic_context_router:
+    class: DeskPRO\Bundle\AppBundle\Routing\RouterWithDynamicContext
+    decorates: "router"
+    arguments:
+      - "@dp.dynamic_context_router.inner"
+      - "@dp.url_request_context_factory"
+
 monolog:
   channels: # you MUST also update portal_config.yml if you change these
     - "dp.tickets.filters.tengine.dbal.engine"

@@ -31,6 +31,7 @@
  *
  * @category Templating
  */
+
 namespace Application\DeskPRO\Twig\Extension;
 
 use Application\DeskPRO\App;
@@ -40,6 +41,7 @@ use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
+use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Auth\Adapter\IframeSsoInterface;
 use Orb\Auth\Adapter\JsSsoInterface;
@@ -49,9 +51,11 @@ use Orb\Util\Arrays;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class TemplatingExtension extends \Twig_Extension
 {
@@ -806,7 +810,9 @@ class TemplatingExtension extends \Twig_Extension
 
     public function getObjectPath($object, array $params = [], $context = 'user')
     {
-        $generator = $this->container->get('router')->getGenerator();
+        /** @var Router $router */
+        $router    = RouterUtils::unwrapDecoratedRouter($this->container->get('router'));
+        $generator = $router->getGenerator();
 
         return $generator->generateObjectUrl($object, $params, $context);
     }
@@ -930,7 +936,7 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         $path      = Strings::canonicalPath($path);
-        $root_path = '/'.trim($this->container->get('router')->getGenerator()->generate('user', [], false), '/');
+        $root_path = '/'.trim($this->container->get('router')->generate('user', [], RouterInterface::ABSOLUTE_PATH), '/');
 
         if (!trim($path, '/') || strpos($path, $root_path) !== 0) {
             return false;
@@ -941,7 +947,10 @@ class TemplatingExtension extends \Twig_Extension
 
     public function urlFragment($name, array $parameters = [])
     {
-        return $this->container->get('router')->getGenerator()->generateFragment($name, $parameters, false);
+        /** @var Router $router */
+        $router = RouterUtils::unwrapDecoratedRouter($this->container->get('router'));
+
+        return $router->getGenerator()->generateFragment($name, $parameters, false);
     }
 
     public function renderCustomField($display_array, array $vars = [])

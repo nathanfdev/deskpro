@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\FragmentRouter;
@@ -37,6 +38,7 @@ use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConf
 use Application\DeskPRO\Assets\RequireJsConfigGenerator;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
+use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -194,7 +196,8 @@ class MiscController extends AbstractController
 
         $js[] = 'window.DESKPRO_TICKET_PRI_MAP = '.json_encode($this->container->getDataService('TicketPriority')->getIdToPriorityMap()).';';
 
-        $fragment_router = new FragmentRouter($this->get('router')->getGenerator());
+        $router          = RouterUtils::unwrapDecoratedRouter($this->get('router'));
+        $fragment_router = new FragmentRouter($router->getGenerator());
         $js[]            = $fragment_router->compile();
 
         /** @var \Application\DeskPRO\EntityRepository\LabelDef $labelDef */

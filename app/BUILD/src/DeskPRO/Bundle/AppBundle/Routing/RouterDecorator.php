@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,46 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace Application\DeskPRO\Routing;
+namespace DeskPRO\Bundle\AppBundle\Routing;
 
-use Orb\Util\Strings;
+use Symfony\Component\Routing\RouterInterface;
 
-class Router extends \Symfony\Bundle\FrameworkBundle\Routing\Router
+interface RouterDecorator
 {
-    public function setOptions(array $options)
-    {
-        if (isset($options['debug'])) {
-            $options['debug'] = false;
-        }
-
-        return parent::setOptions($options);
-    }
-
-    public function generateUrl($name, $parameters = array())
-    {
-        return $this->getGenerator()->generateUrl($name, $parameters);
-    }
-
     /**
-     * Read the ID in a slug: 123-some-title will return 123.
-     *
-     * If no ID couldbe found, then 0 is returned.
-     *
-     * @param $slug
-     *
-     * @return int
+     * @return RouterInterface
      */
-    public function getIdFromSlug($slug)
-    {
-        $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
-
-        if (!$id) {
-            return 0;
-        }
-
-        return (int) $id;
-    }
+    public function getBaseRouter();
 }

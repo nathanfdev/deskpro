@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,7 @@ use Application\DeskPRO\JIRA\Api;
 use Application\DeskPRO\JIRA\ApiCoreException;
 use Application\DeskPRO\JIRA\Meta;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\RouterInterface;
 
 class JIRA
 {
@@ -343,7 +344,7 @@ class JIRA
      */
     public function createComment($issueId, Person $author, Ticket $ticket, $message)
     {
-        $url = $this->container->get('router')->generateUrl('agent', array(), true)
+        $url = $this->container->get('router')->generate('agent', array(), RouterInterface::ABSOLUTE_URL)
             .'#app.tickets,t.o:'.$ticket['id'];
 
         try {
@@ -366,7 +367,7 @@ class JIRA
     public function createRemoteIssueLink(Ticket $ticket, $issueId)
     {
         try {
-            $url = $this->container->get('router')->generateUrl('agent', array(), true)
+            $url = $this->container->get('router')->generate('agent', array(), RouterInterface::ABSOLUTE_URL)
                 .'#app.tickets,t.o:'.$ticket['id'];
 
             $data = array(

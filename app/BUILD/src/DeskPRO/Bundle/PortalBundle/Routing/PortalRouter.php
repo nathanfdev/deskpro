@@ -34,13 +34,12 @@ namespace DeskPRO\Bundle\PortalBundle\Routing;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
+use DeskPRO\Bundle\AppBundle\Routing\RouterDecorator;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use League\Url\Url;
-use Symfony\Bundle\FrameworkBundle\Routing\Router as BaseRouter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouterInterface;
@@ -48,7 +47,7 @@ use Symfony\Component\Routing\RouterInterface;
 /**
  * Class PortalRouter.
  */
-class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcherInterface
+class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcherInterface, RouterDecorator
 {
     public static $generating_ignored_routes = [
         'saml_sls',
@@ -157,7 +156,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
     ];
 
     /**
-     * @var \Symfony\Bundle\FrameworkBundle\Routing\Router
+     * @var RouterInterface
      */
     private $router;
 
@@ -179,22 +178,21 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
     /**
      * Constructor.
      *
-     * @param BaseRouter        $router
+     * @param RouterInterface   $router
      * @param LanguageManager   $language_manager
      * @param PortalModeStorage $mode_store
      * @param PortalModeFactory $mode_factory
      */
-    public function __construct(BaseRouter $router, LanguageManager $language_manager, PortalModeStorage $mode_store, PortalModeFactory $mode_factory)
+    public function __construct(RouterInterface $router, LanguageManager $language_manager, PortalModeStorage $mode_store, PortalModeFactory $mode_factory)
     {
         $this->router           = $router;
         $this->language_manager = $language_manager;
         $this->mode_store       = $mode_store;
         $this->mode_factory     = $mode_factory;
-        $this->router->setOption('matcher_cache_class', 'ProjectUrlMatcher');
     }
 
     /**
-     * @return BaseRouter
+     * @return RouterInterface
      */
     public function getBaseRouter()
     {
@@ -296,29 +294,11 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
     }
 
     /**
-     * This has a semantically different meaning from the standard generate() function. Both methods were
-     * used in the DpKernel Router, and the difference seems to be that:.
-     *
-     * generateUrl is absolute
-     *
-     * @param $name
-     * @param array $parameters
-     *
-     * @return string
-     *
-     * @deprecated use generate()
-     */
-    public function generateUrl($name, $parameters = [])
-    {
-        return $this->generate($name, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
-    }
-
-    /**
      * Is used by DpKernel.
      *
      * @return $this
      *
-     * @deprecated $this is a generator already
+     * @deprecated This is not part of RouterInterface, dont use this method
      */
     public function getGenerator()
     {
@@ -378,7 +358,9 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
      */
     public function warmUp($cacheDir)
     {
-        $this->router->warmUp($cacheDir);
+        if ($this->router instanceof WarmableInterface) {
+            $this->router->warmUp($cacheDir);
+        }
     }
 
     /**

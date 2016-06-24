@@ -42,6 +42,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @ApiModes("all")
@@ -446,7 +447,7 @@ class MiscController extends AbstractController
                     'agent_email' => $agent->getPrimaryEmailAddress(),
                     'valid_until' => date('Y-m-d H:i:s', time() + 300),
                     'login_token' => $token,
-                    'login_url'   => App::getRouter()->generateUrl('user').'agent/login?tok='.$agent->getId().'-'.$token,
+                    'login_url'   => $this->get('router')->generate('user', [], RouterInterface::ABSOLUTE_URL).'agent/login?tok='.$agent->getId().'-'.$token,
                 );
 
                 return $this->createApiResponse($data);

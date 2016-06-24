@@ -29,11 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
-use DeskPRO\Bundle\PortalBundle\Routing\PortalRouter;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\LogoutException;
 
 /**
@@ -42,7 +43,7 @@ use Symfony\Component\Security\Core\Exception\LogoutException;
 class LogoutExceptionRedirectListener
 {
     /**
-     * @var PortalRouter
+     * @var RouterInterface
      */
     private $router;
 
@@ -52,10 +53,10 @@ class LogoutExceptionRedirectListener
     private $redirectActionName;
 
     /**
-     * @param PortalRouter $router
-     * @param string       $redirectActionName
+     * @param RouterInterface $router
+     * @param string          $redirectActionName
      */
-    public function __construct(PortalRouter $router, $redirectActionName)
+    public function __construct(RouterInterface $router, $redirectActionName)
     {
         $this->router             = $router;
         $this->redirectActionName = $redirectActionName;
