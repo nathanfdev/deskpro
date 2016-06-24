@@ -30,7 +30,24 @@ pageMeta.person_id = 0;
 pageMeta.baseId = '{{ baseId }}';
 </script>
 <div class="userchat-page">
-
+{% macro agents_list(agents, title, assigned_agent_id, me) %}
+	{% if agents is not empty %}
+		<li>
+			<label>{{ title }}</label>
+			<div class="bound-fade"></div>
+		</li>
+		{% for agent in agents %}
+			{% if agent.id != me and agent %}
+				<li {% if assigned_agent_id == agent.id %}class="on"{% endif %}>
+					<input type="radio" name="{{baseId}}_agent" value="{{ agent.id }}" {% if assigned_agent_idid == agent.id %}checked="checked"{% endif %} />
+					<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+					<div class="bound-fade"></div>
+				</li>
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+{% endmacro %}
+{% import _self as self %}
 <header class="page-header">
 	<table cellspacing="titleline-layout" width="100%"><tr>
 		<td class="item"><h4 class="id-number">#{{ convo.id }}</h4></td>
@@ -348,16 +365,9 @@ pageMeta.baseId = '{{ baseId }}';
 					<input type="radio" name="{{baseId}}_agent" value="0" {% if not convo.agent %}checked="checked"{% endif %}  />
 					<label><span class="agent-pic agent-label-0">{{ phrase('agent.general.unassigned') }}</span></label>
 				</li>
-
-				{% for agent in agents %}
-				{% if agent.id != app.user.id %}
-				<li {% if convo.agent.id == agent.id %}class="on"{% endif %}>
-					<input type="radio" name="{{baseId}}_agent" value="{{ agent.id }}" {% if convo.agent.id == agent.id %}checked="checked"{% endif %} />
-					<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
-					<div class="bound-fade"></div>
-				</li>
-				{% endif %}
-				{% endfor %}
+				{{ self.agents_list(available_for_chat_agents, 'Available for chat', convo.agent.id, app.user.id) }}
+				{{ self.agents_list(online_agents, 'Online', convo.agent.id, app.user.id) }}
+				{{ self.agents_list(offline_agents, 'Offline', convo.agent.id, app.user.id) }}
 			</ul>
 		</section>
 	</div>
@@ -373,16 +383,9 @@ pageMeta.baseId = '{{ baseId }}';
 					<input type="checkbox" name="{{bsaeId}}_part" value="{{ app.user.id }}" {% if app.user.id in participant_ids and convo.agent.id != app.user.id %}checked="checked"{% endif %} />
 					<label><span class="agent-pic agent-part-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.general.me') }}</span></label>
 				</li>
-
-				{% for agent in agents %}
-				{% if agent.id != app.user.id %}
-				<li {% if convo.participants[agent.id] and convo.agent.id != agent.id %}class="on"{% endif %}>
-					<input type="checkbox" name="{{bsaeId}}_part" value="{{ agent.id }}" {% if convo.participants[agent.id] and convo.agent.id != agent.id %}checked="checked"{% endif %} />
-					<label><span class="agent-pic agent-part-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
-					<div class="bound-fade"></div>
-				</li>
-				{% endif %}
-				{% endfor %}
+				{{ self.agents_list(available_for_chat_agents, 'Available for chat', convo.agent.id, app.user.id) }}
+				{{ self.agents_list(online_agents, 'Online', convo.agent.id, app.user.id) }}
+				{{ self.agents_list(offline_agents, 'Offline', convo.agent.id, app.user.id) }}
 			</ul>
 		</section>
 	</div>

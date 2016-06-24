@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -40,6 +41,8 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\Searcher\ChatConversationSearch;
 use Application\DeskPRO\Searcher\SearcherAbstract;
 use Orb\Util\Dates;
@@ -78,7 +81,27 @@ class UserChatController extends AbstractController
         $session = $convo->getSession();
 
         // For selector
-        $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+        /** @var PersonRepository $personRepository */
+        $personRepository          = $this->em->getRepository(Person::class);
+        $availableForChatAgentsIds = $personRepository->getActiveAgentIdsForUserChat();
+        $onlineAgentsIds           = $personRepository->getActiveAgents(true);
+
+        $agents = $personRepository->getAgents();
+        $me     = $this->person;
+
+        $offlineAgents = array_filter($agents, function ($agent) use ($onlineAgentsIds, $me) {
+            /* @var Person $agent */
+            return !in_array($agent->getId(), $onlineAgentsIds) && $agent->getId() != $me->getId();
+        });
+        $availableForChatAgents = array_filter($agents, function ($agent) use ($availableForChatAgentsIds, $me) {
+            /* @var Person $agent */
+            return in_array($agent->getId(), $availableForChatAgentsIds) && $agent->getId() != $me->getId();
+        });
+        $onlineAgents = array_filter($agents, function ($agent) use ($onlineAgentsIds, $availableForChatAgentsIds, $me) {
+            /* @var Person $agent */
+            return in_array($agent->getId(), array_diff($onlineAgentsIds, $availableForChatAgentsIds)) &&
+            $agent->getId() != $me->getId();
+        });
 
         $convoApi = [];
         foreach (['id', 'subject', 'person_name', 'person_email', 'status', 'ended_by'] as $key) {
@@ -97,15 +120,17 @@ class UserChatController extends AbstractController
         $customFields = $fieldManager->getDisplayArrayForObject($convo);
 
         return $this->render('AgentBundle:UserChat:view.html.twig', [
-            'convo_messages' => $convoMessages,
-            'convo'          => $convo,
-            'convo_api'      => $convoApi,
-            'session'        => $session,
-            'agents'         => $agents,
-            'block'          => $block,
-            '$field_manager' => $fieldManager,
-            'custom_fields'  => $customFields,
-            'has_joined'     => $hasJoined,
+            'convo_messages'            => $convoMessages,
+            'convo'                     => $convo,
+            'convo_api'                 => $convoApi,
+            'session'                   => $session,
+            'available_for_chat_agents' => $availableForChatAgents,
+            'online_agents'             => $onlineAgents,
+            'offline_agents'            => $offlineAgents,
+            'block'                     => $block,
+            '$field_manager'            => $fieldManager,
+            'custom_fields'             => $customFields,
+            'has_joined'                => $hasJoined,
         ]);
     }
 
