@@ -179,9 +179,25 @@ class ObjectsManager
      *
      * @return array
      */
-    private function preProcessValues(array $data)
+    public static function preProcessValues(array $data)
     {
         foreach ($data as &$value) {
+            $value = self::preProcessValue($value);
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return \DateTime|mixed|null
+     */
+    public static function preProcessValue($value)
+    {
+        if (is_scalar($value)) {
+            $value = DataContext::replace($value, true);
+
             if ($value === 'NULL') {
                 $value = null;
             } elseif (($date = \DateTime::createFromFormat('Y-m-d G:i:s', $value)) !== false) {
@@ -191,7 +207,7 @@ class ObjectsManager
             }
         }
 
-        return $data;
+        return $value;
     }
 
     /**

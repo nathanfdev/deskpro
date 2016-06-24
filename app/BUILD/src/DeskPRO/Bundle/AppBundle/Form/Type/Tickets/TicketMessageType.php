@@ -126,6 +126,7 @@ class TicketMessageType extends AbstractType
             $builder->add('ticket', TicketWithLayoutsApiType::class, [
                 'person'              => $options['person'],
                 'ticket_view_context' => TicketWithLayoutsContext::VIEW_AGENT,
+                'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_EDIT,
                 'disabled'            => true,
                 'constraints'         => [
                     // don't add this constraint on the `ticket_message.ticket` property

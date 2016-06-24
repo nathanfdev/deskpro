@@ -40,6 +40,7 @@ use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
 use DpTest\PortalTestCase;
 use Symfony\Component\Form\FormInterface;
@@ -400,7 +401,9 @@ class TicketTypeTest extends PortalTestCase
         $person = $this->getNormalPerson();
 
         $form = $this->getContainer()->get('form.factory')->create(TicketWithLayoutsApiType::class, $ticket, [
-            'person' => $person,
+            'person'              => $person,
+            'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
+            'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
         ]);
 
         $this->assertTrue($form->has('fields'));
@@ -477,8 +480,10 @@ class TicketTypeTest extends PortalTestCase
         $ticket->addMessage($message);
 
         $form = $this->getContainer()->get('form.factory')->create(TicketWithLayoutsWebType::class, $ticket, [
-            'person'          => $person,
-            'csrf_protection' => false,
+            'person'              => $person,
+            'csrf_protection'     => false,
+            'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
+            'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
         ]);
 
         return $form;

@@ -73,17 +73,26 @@ class TicketWithLayoutsType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
-                'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
-                'data_class'          => Ticket::class,
-                'department_id'       => null,
+                'data_class'    => Ticket::class,
+                'department_id' => null,
             ])
-            ->setRequired('person')
+            ->setRequired([
+                'person',
+
+                // always require to set this props in the controller (no default options) to make sure that we get the form configuration as we expected
+                // the form fields are very dependant on the visibility context ('new', 'edit') and layout type ('agent' or 'user')
+                'ticket_visibility',
+                'ticket_view_context',
+            ])
             ->addAllowedValues([
                 'ticket_visibility' => [
                     TicketWithLayoutsContext::VISIBILITY_NEW,
                     TicketWithLayoutsContext::VISIBILITY_EDIT,
                     TicketWithLayoutsContext::VISIBILITY_VIEW,
+                ],
+                'ticket_view_context' => [
+                    TicketWithLayoutsContext::VIEW_USER,
+                    TicketWithLayoutsContext::VIEW_AGENT,
                 ],
             ])
             ->setAllowedTypes([

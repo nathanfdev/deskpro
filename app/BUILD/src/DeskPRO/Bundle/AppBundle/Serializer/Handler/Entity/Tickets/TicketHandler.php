@@ -197,6 +197,7 @@ class TicketHandler extends AbstractEntityHandler
     {
         $form = $this->formFactory->create(TicketWithLayoutsApiType::class, $entity, [
             'ticket_view_context' => $viewContext,
+            'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_EDIT,
             'person'              => $context->getUser(),
             'disabled'            => true,
         ]);

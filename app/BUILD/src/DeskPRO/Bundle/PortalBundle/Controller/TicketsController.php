@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
@@ -39,6 +40,7 @@ use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\People\PersonGuest;
 use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
@@ -236,11 +238,11 @@ class TicketsController extends AbstractController
         }
 
         $person = $this->getUser();
-
-        $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, [
-            'person'            => $person,
-            'ticket_visibility' => 'edit',
-            'department_id'     => $request->query->getInt('department_id'),
+        $form   = $this->createForm(TicketWithLayoutsWebType::class, $ticket, [
+            'person'              => $person,
+            'department_id'       => $request->query->getInt('department_id'),
+            'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
+            'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_EDIT,
         ]);
 
         $form->handleRequest($request);
@@ -265,9 +267,10 @@ class TicketsController extends AbstractController
         list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
 
         $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [
-            'person'            => $person,
-            'ticket_visibility' => 'edit',
-            'action'            => $this->generateUrl('portal_tickets_edit', ['ticket_ref' => $ticket->getPublicId()]),
+            'person'              => $person,
+            'action'              => $this->generateUrl('portal_tickets_edit', ['ticket_ref' => $ticket->getPublicId()]),
+            'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
+            'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_EDIT,
         ]);
         $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
         $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';

@@ -71,7 +71,7 @@ class TicketWithLayoutsContext
     /**
      * @var TicketLayout
      */
-    private $previous_layout;
+    private $previousLayout;
 
     /**
      * @var \Symfony\Component\Form\FormInterface
@@ -125,10 +125,10 @@ class TicketWithLayoutsContext
      */
     public function __construct(FormInterface $form, Ticket $ticket, TicketLayout $layout)
     {
-        $this->form            = $form;
-        $this->ticket          = $ticket;
-        $this->layout          = $layout;
-        $this->previous_layout = $layout;
+        $this->form           = $form;
+        $this->ticket         = $ticket;
+        $this->layout         = $layout;
+        $this->previousLayout = $layout;
     }
 
     /**
@@ -146,7 +146,7 @@ class TicketWithLayoutsContext
      */
     public function getActiveLayout()
     {
-        return self::VIEW_AGENT === $this->getViewContext() ? $this->layout->agent_layout : $this->layout->user_layout;
+        return $this->isAgentView() ? $this->layout->getAgentLayout() : $this->layout->getUserLayout();
     }
 
     /**
@@ -154,7 +154,7 @@ class TicketWithLayoutsContext
      */
     public function getPreviouslyActiveLayout()
     {
-        return self::VIEW_AGENT === $this->getViewContext() ? $this->previous_layout->agent_layout : $this->previous_layout->user_layout;
+        return $this->isAgentView() ? $this->previousLayout->getAgentLayout() : $this->previousLayout->getUserLayout();
     }
 
     /**
@@ -166,31 +166,11 @@ class TicketWithLayoutsContext
     }
 
     /**
-     * Returns "user" or "agent".
-     *
-     * @return string
-     */
-    public function getViewContext()
-    {
-        return $this->getOption('ticket_view_context', self::VIEW_USER);
-    }
-
-    /**
      * @return bool
      */
     public function isAgentView()
     {
         return $this->getViewContext() === self::VIEW_AGENT;
-    }
-
-    /**
-     * The view, such as "new", "edit", "view" (constants of this class).
-     *
-     * @return string
-     */
-    public function getVisibility()
-    {
-        return $this->getOption('ticket_visibility');
     }
 
     /**
@@ -202,14 +182,13 @@ class TicketWithLayoutsContext
      */
     public function hasValidVisibility(LayoutField $field)
     {
-        if (self::VISIBILITY_NEW === $this->getVisibility() && !$field->isVisibleOnNew()) {
-            return false;
-        }
-        if (self::VISIBILITY_EDIT === $this->getVisibility() && !$field->isVisibleOnEdit()) {
-            return false;
-        }
-        if (self::VISIBILITY_VIEW === $this->getVisibility() && !$field->isVisibleOnView()) {
-            return false;
+        switch ($this->getVisibility()) {
+            case self::VISIBILITY_NEW:
+                return $field->isVisibleOnNew();
+            case self::VISIBILITY_EDIT:
+                return $field->isVisibleOnEdit();
+            case self::VISIBILITY_VIEW:
+                return $field->isVisibleOnView();
         }
 
         return true;
@@ -221,14 +200,6 @@ class TicketWithLayoutsContext
     public function getForm()
     {
         return $this->form;
-    }
-
-    /**
-     * @return Person
-     */
-    public function getPerson()
-    {
-        return $this->getOption('person');
     }
 
     /**
@@ -244,8 +215,8 @@ class TicketWithLayoutsContext
      */
     public function setNewLayout(TicketLayout $destination_layout)
     {
-        $this->previous_layout = $this->layout;
-        $this->layout          = $destination_layout;
+        $this->previousLayout = $this->layout;
+        $this->layout         = $destination_layout;
     }
 
     /**
@@ -253,7 +224,7 @@ class TicketWithLayoutsContext
      */
     public function getPreviousLayout()
     {
-        return $this->previous_layout;
+        return $this->previousLayout;
     }
 
     /**
@@ -311,6 +282,14 @@ class TicketWithLayoutsContext
     }
 
     /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->getOption('person');
+    }
+
+    /**
      * @return AbstractFieldResolver
      */
     public function getFieldResolver()
@@ -324,5 +303,25 @@ class TicketWithLayoutsContext
     public function getFieldRenderer()
     {
         return $this->getOption('field_renderer');
+    }
+
+    /**
+     * Returns "user" or "agent".
+     *
+     * @return string
+     */
+    public function getViewContext()
+    {
+        return $this->getOption('ticket_view_context', self::VIEW_USER);
+    }
+
+    /**
+     * The view, such as "new", "edit", "view" (constants of this class).
+     *
+     * @return string
+     */
+    public function getVisibility()
+    {
+        return $this->getOption('ticket_visibility');
     }
 }

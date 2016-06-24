@@ -146,6 +146,9 @@ class FormContext extends BasePortalContext
     public function iShouldSeeFormElementsOrder($locator, TableNode $expectedElements)
     {
         $form = $this->getSession()->getPage()->find('css', $locator);
+        if (!$form) {
+            throw new \Exception("Form $locator not found");
+        }
 
         /** @var NodeElement[] $nodes */
         $nodes = $form->findAll('css', 'input, textarea, select');
