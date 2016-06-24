@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Routing;
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -46,7 +48,7 @@ use Symfony\Component\Routing\RouterInterface;
  * context populated from a Request, we need to create one ourselves
  * based on settings.
  */
-class RouterWithDynamicContext implements RouterInterface, RouterDecorator
+class RouterWithDynamicContext implements RouterInterface, RouterDecorator, RequestMatcherInterface
 {
     /**
      * @var RouterInterface
@@ -139,5 +141,17 @@ class RouterWithDynamicContext implements RouterInterface, RouterDecorator
     public function match($pathinfo)
     {
         return $this->router->match($pathinfo);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function matchRequest(Request $request)
+    {
+        if ($this->router instanceof RequestMatcherInterface) {
+            return $this->router->matchRequest($request);
+        }
+
+        return $this->router->match($request->getPathInfo());
     }
 }
