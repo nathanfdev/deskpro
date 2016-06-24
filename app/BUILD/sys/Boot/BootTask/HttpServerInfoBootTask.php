@@ -68,11 +68,25 @@ class HttpServerInfoBootTask implements BootTaskInterface
     {
         switch ($action) {
             case 'ping':
-                header('Content-Type: text/plain');
-                echo 'pong';
-                if ($msg = $this->env->getDatManager()->readTxtFile('pong_message')) {
-                    echo "\n";
-                    echo $msg;
+                $msg = $this->env->getDatManager()->readTxtFile('pong_message', null);
+
+                if (isset($_GET['jsonp']) && isset($_GET['callback'])) {
+                    header('Content-Type: application/javascript');
+                    $ret = ['response' => 'pong'];
+                    if ($msg) {
+                        $ret['message'] = $msg;
+                    }
+                    echo $_GET['callback'];
+                    echo '(';
+                    echo json_encode($ret);
+                    echo ');';
+                } else {
+                    header('Content-Type: text/plain');
+                    echo 'pong';
+                    if ($msg) {
+                        echo "\n";
+                        echo $msg;
+                    }
                 }
                 exit;
 

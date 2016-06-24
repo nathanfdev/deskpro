@@ -70,7 +70,7 @@
 
 {% block pre_content %}
 
-	{% if app.request.get('admin.wrong_scheme') %}
+	{% if is_to_admin and url_corrections.https %}
 
 		<div class="non-secure-warning" style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
 			<h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: Insecure Login Form</h2>
@@ -93,7 +93,7 @@
 			<p>If you need to change the URL or disable HTTPS, log in and go to Settings > Setup.</p>
 		</div>
 
-	{% elseif app.request.get('admin.wrong_host') %}
+	{% elseif is_to_admin and url_corrections.host %}
 
 		<div class="non-secure-warning" style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
 			<h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: You are using the helpdesk through an invalid URL</h2>
@@ -108,7 +108,7 @@
 
 	{% endif %}
 
-	{% if app.request.get('agent.wrong_scheme') %}
+	{% if not is_to_admin and url_corrections.https %}
 
 		<div class="non-secure-warning" style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
 			<h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: Insecure URL</h2>
@@ -126,7 +126,7 @@
 			</small>
 		</div>
 
-	{% elseif app.request.get('agent.wrong_host') %}
+	{% elseif not is_to_admin and url_corrections.host %}
 
 		<div class="non-secure-warning" style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
 			<h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: You are using the helpdesk through an invalid URL</h2>

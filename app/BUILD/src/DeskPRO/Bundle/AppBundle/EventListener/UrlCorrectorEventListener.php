@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
@@ -75,11 +76,6 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
 
     public function onController(FilterControllerEvent $event)
     {
-        if ($this->interfaceInfo->isInterfaceId([InterfaceInfo::ID_USER, InterfaceInfo::ID_ADMIN, InterfaceInfo::ID_AGENT])) {
-            // not a normal web request
-            return;
-        }
-
         if ($this->isExcludedEvent($event)) {
             return;
         }
@@ -140,6 +136,12 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
     {
         if (!$event->isMasterRequest()) {
             $this->logger->debug('[UrlCorrector] Skip: Not master request');
+
+            return true;
+        }
+
+        if (!$this->interfaceInfo->isInterfaceId([InterfaceInfo::ID_USER, InterfaceInfo::ID_ADMIN, InterfaceInfo::ID_AGENT])) {
+            $this->logger->debug('[UrlCorrector] Skip: Not a specified interface');
 
             return true;
         }
@@ -220,7 +222,7 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::CONTROLLER => array('onController', -1),
+            KernelEvents::CONTROLLER => array('onController', 125),
         );
     }
 }

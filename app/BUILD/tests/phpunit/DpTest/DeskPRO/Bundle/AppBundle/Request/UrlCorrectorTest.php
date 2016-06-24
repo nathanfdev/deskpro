@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -226,5 +226,47 @@ class UrlCorrectorTest extends DeskProTestCase
 
         $this->assertEquals([UrlCorrector::CORRECTION_INDEX_SEGMENT, UrlCorrector::CORRECTION_HTTPS, UrlCorrector::CORRECTION_HOST], $urlCorrector->getCorrections($request));
         $this->assertEquals('https://foo.example.com/sub-dir/new-ticket?foo=bar', $urlCorrector->getCorrectedUrl($request));
+    }
+
+    public function testChangedPort()
+    {
+        $urlCorrector = new UrlCorrector([
+            'autoCorrectScheme' => true,
+            'autoCorrectHost'   => true,
+            'helpdeskUrl'       => 'https://foo.example.com:8080/sub-dir/',
+        ]);
+
+        $request = $this->createRequest('https://foo.example.com:9000/sub-dir/index.php/new-ticket?foo=bar');
+
+        $this->assertEquals([UrlCorrector::CORRECTION_INDEX_SEGMENT, UrlCorrector::CORRECTION_HOST], $urlCorrector->getCorrections($request));
+        $this->assertEquals('https://foo.example.com:8080/sub-dir/new-ticket?foo=bar', $urlCorrector->getCorrectedUrl($request));
+    }
+
+    public function testChangedPortScheme()
+    {
+        $urlCorrector = new UrlCorrector([
+            'autoCorrectScheme' => true,
+            'autoCorrectHost'   => true,
+            'helpdeskUrl'       => 'https://foo.example.com:8080/sub-dir/',
+        ]);
+
+        $request = $this->createRequest('http://foo.example.com:9000/sub-dir/index.php/new-ticket?foo=bar');
+
+        $this->assertEquals([UrlCorrector::CORRECTION_INDEX_SEGMENT, UrlCorrector::CORRECTION_HTTPS, UrlCorrector::CORRECTION_HOST], $urlCorrector->getCorrections($request));
+        $this->assertEquals('https://foo.example.com:8080/sub-dir/new-ticket?foo=bar', $urlCorrector->getCorrectedUrl($request));
+    }
+
+    public function testChangedNoPort()
+    {
+        $urlCorrector = new UrlCorrector([
+            'autoCorrectScheme' => true,
+            'autoCorrectHost'   => true,
+            'helpdeskUrl'       => 'https://foo.example.com:8080/sub-dir/',
+        ]);
+
+        $request = $this->createRequest('http://foo.example.com/sub-dir/index.php/new-ticket?foo=bar');
+
+        $this->assertEquals([UrlCorrector::CORRECTION_INDEX_SEGMENT, UrlCorrector::CORRECTION_HTTPS, UrlCorrector::CORRECTION_HOST], $urlCorrector->getCorrections($request));
+        $this->assertEquals('https://foo.example.com:8080/sub-dir/new-ticket?foo=bar', $urlCorrector->getCorrectedUrl($request));
     }
 }

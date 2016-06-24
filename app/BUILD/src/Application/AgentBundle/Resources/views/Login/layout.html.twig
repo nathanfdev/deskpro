@@ -764,7 +764,7 @@
 <script type="text/javascript" src="{{ asset('javascripts/Orb/Orb.js') }}"></script>
 <script type="text/javascript" src="{{ asset('javascripts/Orb/Util/TimeAgo.js') }}"></script>
 
-{% if app.request.get('agent.wrong_scheme') %}
+{% if not is_to_admin and url_corrections %}
 {# when we have wrong scheme, ping https and redirect if its available #}
 <script>
 	var pingResponseHandler = function(data) {
@@ -773,7 +773,7 @@
 		}
 	};
 	$(function(){
-		var scriptSrc = '{{ url_full('user', {_sys: 'ping', type: 'jsonp', callback: 'pingResponseHandler'}) }}';
+		var scriptSrc = '{{ url_full('user', {__serverinfo: 'ping', jsonp: 1, callback: 'pingResponseHandler'}) }}';
 		$('head').append('<script type="text/javascript" src="' + scriptSrc + '"/>');
 	});
 </script>
@@ -796,7 +796,7 @@
 			</div>
 		{% endif %}
 
-		{% if not app.request.get('agent.wrong_scheme') and not app.request.get('agent.wrong_host') %}
+		{% if not is_to_admin or not url_corrections|length %}
 		<div class="dialog-box">
 			{% block content %}{% endblock %}
 		</div>
