@@ -105,7 +105,7 @@ class UrlRequestContextFactory
 
         $port = (int) @$urlParts['port'];
         if (!$port) {
-            if ($urlParts['host'] === 'https') {
+            if ($urlParts['scheme'] === 'https') {
                 $port = 443;
             } else {
                 $port = 80;
@@ -114,8 +114,10 @@ class UrlRequestContextFactory
 
         if ($urlParts['scheme'] === 'https') {
             $context->setHttpsPort($port);
+            $context->setHttpPort(80);
         } else {
             $context->setHttpPort($port);
+            $context->setHttpsPort(443);
         }
 
         $this->absContextToBrand[$brand->getId()] = $context;
