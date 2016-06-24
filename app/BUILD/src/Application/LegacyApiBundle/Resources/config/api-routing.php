@@ -6436,7 +6436,7 @@ $collection->create(
 );
 
 $collection->create(
-    'api_user_groups_save',
+    'api_user_groups_save_permissions',
     [
         'path'         => '/user_groups/permissions/{type}',
         'controller'   => 'LegacyApiBundle:Usergroups:savePermissions',

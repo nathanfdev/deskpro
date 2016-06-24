@@ -32,6 +32,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Template;
+use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
@@ -65,7 +66,7 @@ class PortalController extends AbstractController
      */
     public function tempAction(Request $request)
     {
-        $t_repo        = $this->getRepo('DeskPRO:Template');
+        $t_repo        = $this->getRepo(Template::class);
         $themeset      = $this->getPortalBrandTheme()->getActiveThemeSet();
         $template_name = $request->get('template_name');
 
@@ -148,8 +149,8 @@ class PortalController extends AbstractController
         if (($token = $request->query->get('tok')) && strpos($token, '-')) {
             list($person_id, $login_token) = explode('-', $token, 2);
 
-            /** @var \Application\DeskPRO\Entity\Person $person */
-            $person = $this->getEm()->find('DeskPRO:Person', $person_id);
+            /** @var Person $person */
+            $person = $this->getEm()->find(Person::class, $person_id);
 
             if ($person && $person->checkPassword($login_token)) {
                 $token = new DpTransferSessionAuthToken($person, 'token_login_'.RandUtils::randomString(20));
@@ -428,8 +429,8 @@ class PortalController extends AbstractController
      */
     public function samlMetadataAction($usersource_id)
     {
-        /** @var \Application\DeskPRO\Entity\Usersource $usersource */
-        $usersource = $this->getEm()->find('DeskPRO:Usersource', $usersource_id);
+        /** @var Usersource $usersource */
+        $usersource = $this->getEm()->find(Usersource::class, $usersource_id);
         if (!$usersource) {
             throw $this->createNotFoundException();
         }
@@ -519,6 +520,8 @@ class PortalController extends AbstractController
                 ],
             ], Response::HTTP_BAD_REQUEST);
         }
+
+        return;
     }
 
     /**
@@ -526,15 +529,7 @@ class PortalController extends AbstractController
      */
     private function canUseNothing()
     {
-        $checker = $this->container->get('security.authorization_checker');
-
-        return !(
-            $checker->isGranted('USE_TICKETS')
-            || $checker->isGranted('USE_ARTICLES')
-            || $checker->isGranted('USE_NEWS')
-            || $checker->isGranted('USE_DOWNLOADS')
-            || $checker->isGranted('USE_FEEDBACK')
-        );
+        return $this->container->get('navigation_helper')->hasNoActiveApps();
     }
 
     /**
@@ -542,25 +537,11 @@ class PortalController extends AbstractController
      */
     private function getOneAppRedirect()
     {
-        $checker = $this->container->get('security.authorization_checker');
-
-        $tickets   = (int) $checker->isGranted('USE_TICKETS');
-        $articles  = ((int) $checker->isGranted('USE_ARTICLES')) << 1;
-        $news      = ((int) $checker->isGranted('USE_NEWS')) << 2;
-        $downloads = ((int) $checker->isGranted('USE_DOWNLOADS')) << 3;
-        $feedback  = ((int) $checker->isGranted('USE_FEEDBACK')) << 4;
-        $result    = 0b00000 | $tickets | $articles | $news | $downloads | $feedback;
-        $routeMap  = [
-            0b00001 => 'portal_new_ticket',
-            0b00010 => 'portal_kb',
-            0b00100 => 'portal_news',
-            0b01000 => 'portal_downloads',
-            0b10000 => 'portal_feedback',
-        ];
-
-        // lets check the result is power of two
-        if ($result && !($result & ($result - 1)) && isset($routeMap[$result])) {
-            return $this->redirectToRoute($routeMap[$result]);
+        $navigationHelper = $this->container->get('navigation_helper');
+        if ($route = $navigationHelper->getRedirectRouteForOneApp()) {
+            return $this->redirectToRoute($route);
         }
+
+        return false;
     }
 }

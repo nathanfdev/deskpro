@@ -158,6 +158,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('portal_mode', [$this, 'getPortalMode'], ['is_safe' => ['html', 'javascript']]),
             new \Twig_SimpleFunction('is_portal_widget_enabled', [$this, 'isPortalWidgetEnabled']),
             new \Twig_SimpleFunction('portal_widget_loader', [$this, 'getWidgetLoader'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('should_show_nav_buttons', [$this, 'shouldShowNavButtons']),
 
             // Copied from legacy templating, used to render notification rows
             new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
@@ -184,6 +185,11 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     // legacy
+    /**
+     * @param $phrase_name
+     *
+     * @return bool
+     */
     public function hasPhrase($phrase_name)
     {
         return $this->container->get('deskpro.core.translate')->hasPhrase($phrase_name);
@@ -565,6 +571,16 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         }
 
         return $html;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldShowNavButtons()
+    {
+        $navigationHelper = $this->container->get('navigation_helper');
+
+        return !$navigationHelper->hasOnlyOneApp() && !$navigationHelper->hasNoActiveApps();
     }
 
     /**

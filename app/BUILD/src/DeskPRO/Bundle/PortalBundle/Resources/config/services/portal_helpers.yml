@@ -2,25 +2,30 @@
 services:
 
   tabs_helper:
-      class: DeskPRO\Bundle\PortalBundle\Helper\PortalTabsHelper
-      arguments: ["@brand_stack", "@security.authorization_checker"]
+    class: DeskPRO\Bundle\PortalBundle\Helper\PortalTabsHelper
+    arguments: ["@brand_stack", "@security.authorization_checker"]
 
   usersources_view_helper:
-      class: DeskPRO\Bundle\PortalBundle\View\UsersourcesHelper
-      arguments: ["@dp_authentication_manager.user", "@language_manager"]
+    class: DeskPRO\Bundle\PortalBundle\View\UsersourcesHelper
+    arguments: ["@dp_authentication_manager.user", "@language_manager"]
 
   ratings_helper:
-      class: DeskPRO\Bundle\PortalBundle\Helper\PortalRatingsHelper
-      arguments: ["@doctrine.orm.default_entity_manager", "@request_stack"]
+    class: DeskPRO\Bundle\PortalBundle\Helper\PortalRatingsHelper
+    arguments: ["@doctrine.orm.default_entity_manager", "@request_stack"]
 
   subscriptions_helper:
-      class: DeskPRO\Bundle\PortalBundle\Helper\ContentSubscriptionsHelper
-      arguments: ["@doctrine.orm.default_entity_manager"]
+    class: DeskPRO\Bundle\PortalBundle\Helper\ContentSubscriptionsHelper
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   language_changer:
-      class: DeskPRO\Bundle\PortalBundle\Helper\LanguageChanger
-      arguments: ["@router", "@language_manager", "@portal_mode_storage"]
+    class: DeskPRO\Bundle\PortalBundle\Helper\LanguageChanger
+    arguments: ["@router", "@language_manager", "@portal_mode_storage"]
 
   icon_factory:
-      class: DeskPRO\Bundle\PortalBundle\View\PortalIconFactory
-      arguments: ["@brand_stack"]
+    class: DeskPRO\Bundle\PortalBundle\View\PortalIconFactory
+    arguments: ["@brand_stack"]
+
+  navigation_helper:
+      class: DeskPRO\Bundle\PortalBundle\Helper\NavigationHelper
+      arguments:
+        - "@security.authorization_checker"

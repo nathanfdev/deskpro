@@ -197,18 +197,35 @@ export class OmniSearch extends React.Component {
           }
 
           <div className="search-results-footer">
-            <a href={portalUrlGenerator.path('/new-ticket')}>
-              <i className="fa fa-comment"></i>
-              <span>{portalPhrases.get('portal.general.nav-newticket')}</span>
-            </a>
-            <a href={portalUrlGenerator.path('/feedback')}>
-              <i className="fa fa-list"></i>
-              <span>{portalPhrases.get('portal.general.submit-feedback')}</span>
-            </a>
-            <a href="#">
-              <i className="fa fa-comments"></i>
-              <span>{portalPhrases.get('portal.general.start-chat')}</span>
-            </a>
+            {
+              window.DESKPRO_CAN_USE_TICKETS
+                ?
+                <a href={portalUrlGenerator.path('/new-ticket')}>
+                  <i className="fa fa-comment" />
+                  <span>{portalPhrases.get('portal.general.nav-newticket')}</span>
+                </a>
+                : null
+            }
+
+            {
+              window.DESKPRO_CAN_USE_FEEDBACK
+                ?
+                <a href={portalUrlGenerator.path('/feedback')}>
+                  <i className="fa fa-list" />
+                  <span>{portalPhrases.get('portal.general.submit-feedback')}</span>
+                </a>
+                : null
+            }
+
+            {
+              window.DESKPRO_CAN_USE_CHAT
+                ?
+                <a href="#">
+                  <i className="fa fa-comments" />
+                  <span>{portalPhrases.get('portal.general.start-chat')}</span>
+                </a>
+                : null
+            }
           </div>
         </div>
       </ClickOut>

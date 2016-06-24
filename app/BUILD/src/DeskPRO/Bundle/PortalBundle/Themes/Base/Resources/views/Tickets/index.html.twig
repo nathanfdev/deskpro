@@ -58,6 +58,11 @@
                                 <div class="bucket">
                                     <span>{{ phrase('portal.tickets.list_search') }}</span>
                                     <input title="{{ phrase('portal.tickets.list_search') }}" name="q" value="{{ search_query }}" type="text" />
+                                    {% if search_query %}
+                                        <a href="{{ path('portal_tickets', { type: type }) }}" class="clear-input">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    {% endif %}
                                 </div>
                             </form>
                         </li>
