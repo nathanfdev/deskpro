@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -105,7 +106,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         }
 
         $context->getLogger()->debug("[AbstractEmailAction] Using template: $template");
-        if (!$this->getContainer()->getTemplating()->exists($template)) {
+        if (!$this->getContainer()->get('templating.email')->exists($template)) {
             $context->getLogger()->warn('[AbstractEmailAction] Template does not exist');
             throw new \InvalidArgumentException('invalid_template');
         }
