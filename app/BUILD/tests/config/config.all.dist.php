@@ -72,3 +72,4 @@ $CONFIG['env'] = [
 ];
 
 $CONFIG['settings']['disable_outgoing_email'] = true;
+$CONFIG['settings']['core.deskpro_url']       = 'http://pr-next.deskprodev.com/';
