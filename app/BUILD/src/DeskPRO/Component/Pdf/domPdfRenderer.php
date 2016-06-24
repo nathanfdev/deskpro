@@ -49,7 +49,7 @@ class domPdfRenderer implements PdfRendererInterface
      */
     private $resolver;
 
-    public function __construct($resolver, $tmpRootDir)
+    public function __construct($resolver)
     {
         $this->resolver = $resolver;
 

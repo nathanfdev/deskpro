@@ -88,10 +88,39 @@ class LibBootTask implements BootTaskInterface
 
         \Orb\Util\Strings::setPhpUtf8Dir(DP_APP_DIR.'/vendor-src/php-utf8');
 
+        // Set mpdf temp dirs
+        if (!defined('_MPDF_TEMP_PATH')) {
+            define('_MPDF_TEMP_PATH', $this->getTmpDir($env, 'mpdf').DIRECTORY_SEPARATOR);
+        }
+        if (!defined('_MPDF_TTFONTDATAPATH')) {
+            define('_MPDF_TTFONTDATAPATH', $this->getTmpDir($env, 'mpdf_ttffontdata').DIRECTORY_SEPARATOR);
+        }
+
         require DP_APP_DIR.'/src/DeskPRO/Component/Filesystem/SafeFile.php';
         SafeFile::setEmitWarningsOption(true);
         SafeFile::addBlacklistDir($env->getDpRoot().DIRECTORY_SEPARATOR.'config');
         SafeFile::addBlacklistDir($env->getUserBackupsDir());
         SafeFile::addBlacklistDir($env->getUserFilesDir());
+    }
+
+    /**
+     * @param \DpRun\DpEnv $env
+     * @param              $dir
+     *
+     * @return string
+     */
+    private function getTmpDir(\DpRun\DpEnv $env, $dir)
+    {
+        $tmpDir = $env->getUserTmpDir().DIRECTORY_SEPARATOR.$dir;
+        if (!is_dir($tmpDir)) {
+            if (!@mkdir($tmpDir, 0777, true)) {
+                $tmpDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.$dir;
+                if (!is_dir($tmpDir)) {
+                    @mkdir($tmpDir, 0777, true);
+                }
+            }
+        }
+
+        return $tmpDir;
     }
 }
