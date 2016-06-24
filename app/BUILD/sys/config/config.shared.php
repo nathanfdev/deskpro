@@ -372,14 +372,14 @@ $container->setDefinition('deskpro.logger.changelog', $definition);
 
 $definition = new Definition('DeskPRO\Bundle\AppBundle\Logging\DeskproFilesystemHandler');
 $definition->addArgument(new Expression("service('deskpro.app_env').getUserLogsDir()"));
-$definition->addArgument(new Expression("service('deskpro.app_env').getConfig('logs.general_log_level')"));
+$definition->addArgument(new Expression("service('deskpro.app_env').getConfig('logs.log_level')"));
 $definition->addArgument('%kernel.name%');
 $definition->addArgument('%kernel.environment%');
 $container->setDefinition('monolog.handler.deskpro_filesystem', $definition);
 
 $definition = new Definition('Monolog\Handler\FingersCrossedHandler');
 $definition->addArgument(new Reference('monolog.handler.deskpro_filesystem'));
-$definition->addArgument(new Expression("service('deskpro.app_env').getConfig('logs.general_log_level_threshold')"));
+$definition->addArgument(new Expression("service('deskpro.app_env').getConfig('logs.log_level_threshold')"));
 $container->setDefinition('monolog.handler.deskpro_fingers_crossed', $definition);
 
 $definition = new Definition(

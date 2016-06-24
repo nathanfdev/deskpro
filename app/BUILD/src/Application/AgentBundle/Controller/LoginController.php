@@ -203,6 +203,10 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             $captcha = $this->container->getSystemObject('form_captcha', ['type' => 'user_login']);
         }
 
+        $url_corrections = $request->attributes->get('deskpro.url_corrector.corrections', []);
+        $url_corrections = array_combine($url_corrections, $url_corrections);
+        $is_to_admin     = $return ? strpos($return, 'admin') !== false : false;
+
         return $this->render(
             'AgentBundle:Login:index.html.twig',
             [
@@ -217,6 +221,8 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                 'timeout'           => $this->in->getBool('timeout'),
                 'captcha'           => $captcha,
                 'render_forgot_pw'  => $this->in->getString('forgot') ?: false,
+                'url_corrections'   => $url_corrections,
+                'is_to_admin'       => $is_to_admin,
             ]
         );
     }

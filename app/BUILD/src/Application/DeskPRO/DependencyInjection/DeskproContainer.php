@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection;
 
 use Application\DeskPRO\App;
@@ -39,6 +40,7 @@ use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * This is an extension to the DI container that knows how to initialize
@@ -451,7 +453,7 @@ class DeskproContainer extends Container
     /**
      * Get the router.
      *
-     * @return \Application\DeskPRO\Routing\Router
+     * @return RouterInterface
      */
     public function getRouter()
     {

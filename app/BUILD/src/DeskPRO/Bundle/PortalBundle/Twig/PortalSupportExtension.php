@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity\Person;
 use Carbon\Carbon;
+use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -337,7 +338,7 @@ class PortalSupportExtension extends \Twig_Extension
         // one of the rare time we use this $base_symfony_router. This is used to
         // generate the URL without the /mode/lang_code prefix appended to the base url.
         // JS uses this to generate paths to /web/images and such.
-        $base_symfony_router = $portal_router->getBaseRouter();
+        $base_symfony_router = RouterUtils::unwrapDecoratedRouter($portal_router);
 
         // $root_url is the url that the root index.php lives on
         $root_url = $base_symfony_router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);

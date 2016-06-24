@@ -35,7 +35,7 @@ namespace Application\DeskPRO\Portal;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Publish\Structure as PublishStructure;
 use Doctrine\ORM\EntityManager;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
 
 class SitemapGenerator
 {
@@ -69,7 +69,7 @@ class SitemapGenerator
      */
     protected $items = null;
 
-    public function __construct($base_url, EntityManager $em, Router $router)
+    public function __construct($base_url, EntityManager $em, RouterInterface $router)
     {
         $this->base_url = rtrim($base_url, '/');
         $this->em       = $em;

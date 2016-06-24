@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -71,22 +71,33 @@ class UrlCorrector
         }
 
         if ($this->options['helpdeskUrl'] && ($this->options['autoCorrectScheme'] || $this->options['autoCorrectHost'])) {
-            $correct_info = @parse_url($this->options['helpdeskUrl']);
+            $correctInfo   = @parse_url($this->options['helpdeskUrl']);
+            $correctScheme = strtolower(@$correctInfo['scheme']);
+            $correctHost   = strtolower(@$correctInfo['host']);
+            $correctPort   = intval(@$correctInfo['port']) ?: ($correctInfo['scheme'] === 'https' ? 443 : 80);
 
-            if ($correct_info) {
+            if ($correctInfo) {
                 if ($this->options['autoCorrectScheme']) {
-                    $correct_scheme = strtolower(@$correct_info['scheme']);
-
                     // We only ever 'upgrade' from http->https
-                    if ($correct_scheme === 'https' && $request->getScheme() !== 'https') {
+                    if ($correctScheme === 'https' && $request->getScheme() !== 'https') {
                         $corrections[] = self::CORRECTION_HTTPS;
                     }
                 }
 
                 if ($this->options['autoCorrectHost']) {
-                    $correct_host = strtolower(@$correct_info['host']);
-                    if ($correct_host !== $request->getHost()) {
+                    $gotHost = $request->getHost();
+                    $gotPort = intval($request->getPort()) ?: ($request->isSecure() ? 443 : 80);
+
+                    if ($correctHost !== $gotHost) {
                         $corrections[] = self::CORRECTION_HOST;
+                    } else {
+                        // We consider the port part of the host if its not default 80/443
+                        // (which would be caught by schema correction above)
+                        if (($correctPort !== 80 && $correctPort !== 443) || ($gotPort !== 80 && $gotPort !== 443)) {
+                            if ($correctPort !== $gotPort) {
+                                $corrections[] = self::CORRECTION_HOST;
+                            }
+                        }
                     }
                 }
             }
@@ -100,7 +111,6 @@ class UrlCorrector
      * specific corrections; it simply returns the real, expected URL.
      *
      * @param Request $request
-     * @param array   $corrections
      *
      * @return string
      */

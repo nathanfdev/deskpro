@@ -502,7 +502,7 @@ class TicketMessage extends DomainObject
         // An email might have inline attachments and we tokenize them with these
         // codes so we can now turn them into inline images or attachment links
         $fn = function ($m, $before = '') use ($resizeInlines) {
-            $download_url = App::getRouter()->getGenerator()->generate(
+            $download_url = App::getRouter()->generate(
                 'serve_blob',
                 ['blob_auth_id' => $m[2], 'filename' => $m[3]],
                 UrlGeneratorInterface::ABSOLUTE_URL
@@ -528,7 +528,7 @@ class TicketMessage extends DomainObject
             }
 
             if ($m[1] === 'signature_image') {
-                $url = App::getRouter()->getGenerator()->generate(
+                $url = App::getRouter()->generate(
                     'serve_blob',
                     ['blob_auth_id' => $m[2], 'filename' => $m[3], 'sc' => $sc_code],
                     UrlGeneratorInterface::ABSOLUTE_URL
@@ -540,7 +540,7 @@ class TicketMessage extends DomainObject
                 if ($resizeInlines) {
                     $_p['s'] = 350;
                 }
-                $url = App::getRouter()->getGenerator()->generate(
+                $url = App::getRouter()->generate(
                     'serve_blob',
                     $_p,
                     UrlGeneratorInterface::ABSOLUTE_URL
