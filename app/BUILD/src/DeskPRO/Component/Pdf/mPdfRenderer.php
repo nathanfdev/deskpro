@@ -43,35 +43,9 @@ class mPdfRenderer implements PdfRendererInterface
      */
     private $resolver;
 
-    public function __construct($resolver, $tmpRootDir)
+    public function __construct($resolver)
     {
         $this->resolver = $resolver;
-
-        if (!defined('_MPDF_TEMP_PATH')) {
-            $tmpDir = $tmpRootDir.'/mpdf';
-            if (!is_dir($tmpDir)) {
-                if (!@mkdir($tmpDir, 0777, true)) {
-                    $tmpDir = sys_get_temp_dir().'/mpdf';
-                    if (!is_dir($tmpDir)) {
-                        @mkdir($tmpDir, 0777, true);
-                    }
-                }
-            }
-            define('_MPDF_TEMP_PATH', $tmpDir.'/');
-        }
-
-        if (!defined('_MPDF_TTFONTDATAPATH')) {
-            $tmpDir = $tmpRootDir.'/mpdf_ttfontdata';
-            if (!is_dir($tmpDir)) {
-                if (!@mkdir($tmpDir, 0777, true)) {
-                    $tmpDir = sys_get_temp_dir().'/mpdf_ttfontdata';
-                    if (!is_dir($tmpDir)) {
-                        @mkdir($tmpDir, 0777, true);
-                    }
-                }
-            }
-            define('_MPDF_TTFONTDATAPATH', $tmpDir.'/');
-        }
 
         $this->object = new \mPDF(
             'utf-8', // Language/Character set
