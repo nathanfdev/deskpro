@@ -32,46 +32,12 @@ use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
 use DeskPRO\Component\Util\ListUtils;
-use Symfony\Component\Form\AbstractType;
 
 /**
  * Class TicketLayoutHelper.
  */
-class TicketLayoutHelper extends AbstractType
+class TicketLayoutHelper
 {
-    /**
-     * @param LayoutField $field
-     * @param array       $extracted_data
-     *
-     * @return bool
-     */
-    public function fieldHasCriteriaAndCriteriaDoesNOTMatch(LayoutField $field, $extracted_data)
-    {
-        return $field->getCriteria() && !$field->getCriteria()->isSubmittedDataMatch($extracted_data);
-    }
-
-    /**
-     * @param LayoutField $field
-     * @param array       $extracted_data
-     *
-     * @return bool
-     */
-    public function fieldHasCriteriaAndItDOESMatch(LayoutField $field, $extracted_data)
-    {
-        return $field->getCriteria() && $field->getCriteria()->isSubmittedDataMatch($extracted_data);
-    }
-
-    /**
-     * @param LayoutField $field
-     * @param array       $extracted_data
-     *
-     * @return bool
-     */
-    public function fieldDoesNotHaveCriteriaOrHasCriteriaAndMatches(LayoutField $field, $extracted_data)
-    {
-        return !$field->getCriteria() || ($field->getCriteria() && $field->getCriteria()->isSubmittedDataMatch($extracted_data));
-    }
-
     /**
      * Submitted choice values are not submitted with the entity Id. Instead we are given the choice list key.
      *
@@ -82,11 +48,11 @@ class TicketLayoutHelper extends AbstractType
      *
      * @return array the form key and its selected entity ID (or null if not submitted)
      */
-    public function getExtractedData(array $submitted_data, TicketWithLayoutsContext $context)
+    public static function getExtractedData(array $submitted_data, TicketWithLayoutsContext $context)
     {
-        $form       = $context->getForm();
-        $final_data = [];
-        $keys       = [
+        $form      = $context->getForm();
+        $finalData = [];
+        $keys      = [
             FormFields::DEPARTMENT,
             FormFields::PRODUCT,
             FormFields::CATEGORY,
@@ -111,59 +77,77 @@ class TicketLayoutHelper extends AbstractType
                 }
 
                 if ($choice) {
-                    $final_data[$key] = $choice->getId();
+                    $finalData[$key] = $choice->getId();
                 } else {
-                    $final_data[$key] = null;
+                    $finalData[$key] = null;
                 }
             } else {
-                $final_data[$key] = null;
+                $finalData[$key] = null;
             }
         }
 
-        return $final_data;
+        return $finalData;
     }
 
     /**
      * @param TicketWithLayoutsContext $context
-     * @param array                    $extractedData
      *
-     * @return TicketLayoutChanges
+     * @return LayoutField[]
      */
-    public function getLayoutChanges(TicketWithLayoutsContext $context, $extractedData = [])
+    public static function getLayoutFields(TicketWithLayoutsContext $context)
     {
-        $prevLayout = $context->getPreviouslyActiveLayout();
-        $newLayout  = $context->getActiveLayout();
-
-        $additionalFields = [];
-        $fieldsToRemove   = ListUtils::filter($prevLayout->all(), function (LayoutField $f) use ($newLayout) {
-            return !$newLayout->has($f->getId());
-        });
-
-        // We need to figure out which fields have been added or removed from the form
-        // This can be simple (e.g. dependant on the department layout) or more complicated,
-        // like being dependant on criteria
-
-        $fieldsRequiringRerender = [];
-        foreach ($newLayout->all() as $field) {
-            if ($context->fieldWasDisplayedBefore($field)) {
-                // this field was displayed before. should it continue to be displayed?
-                if (!$context->hasValidVisibility($field) || $this->fieldHasCriteriaAndCriteriaDoesNOTMatch($field, $extractedData)) {
-                    $fieldsToRemove[] = $field;
-                }
-            } else {
-                // this field was not displayed before, but should it be added and the form re-rendered?
-                if ($context->hasValidVisibility($field) && $this->fieldDoesNotHaveCriteriaOrHasCriteriaAndMatches($field, $extractedData)) {
-                    $additionalFields[] = $field;
-
-                    if (!$context->fieldWasDisplayedBefore($field)) {
-                        $fieldsRequiringRerender[] = $field;
-                    }
-                }
+        $fields = [];
+        foreach ($context->getActiveLayout()->all() as $field) {
+            if ($context->hasValidVisibility($field)) {
+                $fields[$field->getId()] = $field;
             }
         }
 
-        $additionalFields = ListUtils::unique($additionalFields);
+        return ListUtils::unique($fields);
+    }
 
-        return new TicketLayoutChanges($fieldsRequiringRerender, $fieldsToRemove, $additionalFields);
+    /**
+     * Render form fields.
+     *
+     * @param TicketWithLayoutsContext $context
+     * @param callable                 $matchedCriteria
+     */
+    public static function renderFormFields(TicketWithLayoutsContext $context, callable $matchedCriteria)
+    {
+        // layout may changed or new fields could be added with new criteria checks depends on submitted data
+        // so remove all the form fields and re-render them again
+        // also it allows to render the layout fields in proper display order
+
+        $form = $context->getForm();
+        foreach ($form->all() as $child) {
+            $form->remove($child->getName());
+        }
+
+        // some of the form fields depends on person form field to re-set their data properly
+        // so we should create person field first and detach/re-add in the proper display order
+
+        $fieldResolver = $context->getFieldResolver();
+        $fieldRenderer = $context->getFieldRenderer();
+
+        $personField = new LayoutField(FormFields::PERSON);
+        $fieldRenderer->addField($context, $personField, $fieldResolver->createFormField($context, $personField));
+
+        foreach (self::getLayoutFields($context) as $field) {
+            if ($field->hasCriteria() && !$matchedCriteria($field)) {
+                continue;
+            }
+
+            if ($field->getId() === FormFields::PERSON) {
+                // as person field is already on the form we need to detach it and set in the proper display order
+                $formField = $form->get(FormFields::PERSON);
+                $form->remove(FormFields::PERSON);
+                $form->add($formField);
+            } else {
+                $formField = $fieldResolver->createFormField($context, $field);
+                if ($formField) {
+                    $fieldRenderer->addField($context, $field, $formField);
+                }
+            }
+        }
     }
 }

@@ -62,8 +62,9 @@ Feature: Widget Chat
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data[0].content" should contain "my message text"
+    And I remember last "{chat_1}" chat message id
 
-    When I send a GET request to "/portal/api/chats/{chat_1}/polling?last_message_id=1&dpsid={sid_AAAAAAAAAAAAAAA}"
+    When I send a GET request to "/portal/api/chats/{chat_1}/polling?dpsid={sid_AAAAAAAAAAAAAAA}"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "chat_info.data.id" should exist

@@ -36,6 +36,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * This is stub form. Used to output a 'full' form with every field,
@@ -51,11 +52,6 @@ class TicketWithLayoutsWebFullType extends AbstractType
     private $layoutFactory;
 
     /**
-     * @var TicketLayoutHelper
-     */
-    private $layoutHelper;
-
-    /**
      * @var WebFieldResolver
      */
     private $fieldResolver;
@@ -69,18 +65,12 @@ class TicketWithLayoutsWebFullType extends AbstractType
      * Constructor.
      *
      * @param TicketLayoutFactory $layoutFactory
-     * @param TicketLayoutHelper  $layoutHelper
      * @param WebFieldResolver    $fieldResolver
      * @param WebFieldRenderer    $fieldRenderer
      */
-    public function __construct(
-        TicketLayoutFactory $layoutFactory,
-        TicketLayoutHelper  $layoutHelper,
-        WebFieldResolver    $fieldResolver,
-        WebFieldRenderer    $fieldRenderer
-    ) {
+    public function __construct(TicketLayoutFactory $layoutFactory, WebFieldResolver $fieldResolver, WebFieldRenderer $fieldRenderer)
+    {
         $this->layoutFactory = $layoutFactory;
-        $this->layoutHelper  = $layoutHelper;
         $this->fieldResolver = $fieldResolver;
         $this->fieldRenderer = $fieldRenderer;
     }
@@ -110,6 +100,20 @@ class TicketWithLayoutsWebFullType extends AbstractType
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'field_resolver' => $this->fieldResolver,
+            'field_renderer' => $this->fieldRenderer,
+            'layout_factory' => function ($department) {
+                return $this->layoutFactory->getLayoutForTicketForm($department, false);
+            },
+        ]);
+    }
+
+    /**
      * Returns fields from all layouts.
      *
      * @internal
@@ -121,13 +125,10 @@ class TicketWithLayoutsWebFullType extends AbstractType
         $context = new TicketWithLayoutsContext($event->getForm(), $event->getData(), new TicketLayout());
         $context->setNewLayout($this->layoutFactory->getFullLayoutForTicketForm());
 
-        $changes = $this->layoutHelper->getLayoutChanges($context);
-        foreach ($changes->getAdditionalFields() as $field) {
-            $formField = $this->fieldResolver->createFormField($context, $field);
-            if ($formField) {
-                $this->fieldRenderer->addField($context, $field, $formField);
-            }
-        }
+        TicketLayoutHelper::renderFormFields($context, function () {
+            // just stub, no need form field validation for the 'full' form
+            return true;
+        });
 
         $this->fieldRenderer->addSubmitButton($context);
     }

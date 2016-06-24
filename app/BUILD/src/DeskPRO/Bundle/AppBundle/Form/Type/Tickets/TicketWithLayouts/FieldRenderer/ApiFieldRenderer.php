@@ -80,27 +80,4 @@ class ApiFieldRenderer implements FieldRendererInterface
             $form->add($field->getId(), $formField->getType(), $formField->getOptions());
         }
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function removeField(TicketWithLayoutsContext $context, LayoutField $field)
-    {
-        $form = $context->getForm();
-
-        if (isset(self::$customDataMapping[$field->getFieldType()])) {
-            // remove custom fields from the layout in api context
-            $groupName = self::$customDataMapping[$field->getFieldType()];
-            if ($form->has($groupName)) {
-                $customGroup = $form->get($groupName);
-                if ($customGroup->has($field->getFieldId())) {
-                    $customGroup->remove($field->getFieldId());
-                }
-            }
-        } else {
-            if ($form->has($field->getId())) {
-                $form->remove($field->getId());
-            }
-        }
-    }
 }

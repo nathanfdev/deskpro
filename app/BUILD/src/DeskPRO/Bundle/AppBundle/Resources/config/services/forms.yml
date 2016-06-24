@@ -29,9 +29,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory
     arguments: ["@doctrine.orm.default_entity_manager", "@?captcha_decider"]
 
-  ticket_with_layouts_helper:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketLayoutHelper
-
   ticket_field_settings:
     class: DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings
     arguments: ["@doctrine.orm.default_entity_manager", "@brand_aware_settings_resolver"]
@@ -237,7 +234,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsManipulatorType
     arguments:
       - "@form_hierarchy_generator"
-      - "@ticket_with_layouts_helper"
     tags:
       - { name: form.type }
 
@@ -247,7 +243,6 @@ services:
       - "@ticket_with_layouts_web_field_resolver"
       - "@ticket_with_layouts_web_field_renderer"
       - "@ticket_layout_factory"
-      - "@ticket_with_layouts_helper"
     tags:
       - { name: form.type }
 
@@ -255,7 +250,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType
     arguments:
       - "@ticket_layout_factory"
-      - "@ticket_with_layouts_helper"
       - "@ticket_with_layouts_web_field_resolver"
       - "@ticket_with_layouts_web_field_renderer"
     tags:
