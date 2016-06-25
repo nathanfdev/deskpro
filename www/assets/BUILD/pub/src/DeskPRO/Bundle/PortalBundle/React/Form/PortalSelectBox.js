@@ -12,7 +12,6 @@ export class LevelSelectActionStore extends FormActionStore {
     opts.each((x, el) => {
       el.selected = el.value === data.value || $(el).data('id') === data.value;
     });
-
     this.el.trigger('change');
   }
 
@@ -30,9 +29,9 @@ export class LevelSelectActionStore extends FormActionStore {
       }
 
       options.push({
-        id: $optEl.data('id'),
-        title: $optEl.data('title') || $optEl.data('name') || $optEl.text(),
-        parent: parent,
+        id:       $optEl.data('id'),
+        title:    $optEl.data('title') || $optEl.data('name') || $optEl.text(),
+        parent:   parent,
         children: []
       });
     });
@@ -128,12 +127,7 @@ export class PortalSelectBox extends React.Component {
       subGroup = _.find(group, i => this.state.valuePath.indexOf(i.id) !== -1);
     }
 
-    const options = group.map((g) => {
-      return {
-        id: g.id,
-        title: g.title
-      };
-    });
+    const options = group.map((g) => ({ id: g.id, title: g.title }));
 
     return (
       <div>
@@ -168,14 +162,19 @@ export function createComponent(select, renderTo, widgetOptions = {}) {
 
   // We need to rewrite opt-groups into normal options or else our widget
   // doesnt work :(
+
+  // remember value to set it again after the modifications
+  // because we loose it if selectbox is changed
+  const value = $select.val();
+
   $select.find('optgroup').each((x, optgroup) => {
     const $optgroup = $(optgroup);
 
     const memSel = $('<select>');
     const parentId = _.uniqueId('opt_');
     const newOpt = $('<option>');
-    newOpt.data('id', parentId);
-    newOpt.data('name', $optgroup.attr('label'));
+    newOpt.attr('data-id', parentId);
+    newOpt.attr('data-name', $optgroup.attr('label'));
     newOpt.attr('disabled', true);
     newOpt.text($optgroup.attr('label'));
 
@@ -183,7 +182,8 @@ export function createComponent(select, renderTo, widgetOptions = {}) {
 
     $optgroup.find('option').each((i, opt) => {
       const $opt = $(opt).clone();
-      $opt.data('parent', parentId);
+      $opt.attr('data-id', _.uniqueId('opt_'));
+      $opt.attr('data-parent', parentId);
       memSel.append($opt);
     });
 
@@ -200,6 +200,8 @@ export function createComponent(select, renderTo, widgetOptions = {}) {
       $opt.data('id', newId);
     }
   });
+
+  $select.val(value);
 
   const actionStore = new LevelSelectActionStore($select);
   const component = React.createElement(PortalSelectBox, { actionStore, widgetOptions });
