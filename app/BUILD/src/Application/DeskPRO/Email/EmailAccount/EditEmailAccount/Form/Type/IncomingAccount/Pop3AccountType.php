@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\IncomingAccount;
 
+use Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
