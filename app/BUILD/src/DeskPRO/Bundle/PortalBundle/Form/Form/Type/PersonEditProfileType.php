@@ -26,18 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -52,17 +54,17 @@ class PersonEditProfileType extends AbstractType
     /**
      * @var CustomFieldManager
      */
-    private $field_manager;
+    private $fieldManager;
 
     /**
      * @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager
      */
-    private $language_manager;
+    private $languageManager;
 
     /**
      * @var DeskproBlobStorage
      */
-    private $blob_storage;
+    private $blobStorage;
 
     /**
      * @var EntityManager
@@ -72,17 +74,17 @@ class PersonEditProfileType extends AbstractType
     /**
      * Constructor.
      *
-     * @param CustomFieldManager $field_manager
-     * @param LanguageManager    $language_manager
-     * @param DeskproBlobStorage $blob_storage
+     * @param CustomFieldManager $fieldManager
+     * @param LanguageManager    $languageManager
+     * @param DeskproBlobStorage $blobStorage
      * @param EntityManager      $em
      */
-    public function __construct(CustomFieldManager $field_manager, LanguageManager $language_manager, DeskproBlobStorage $blob_storage, EntityManager $em)
+    public function __construct(CustomFieldManager $fieldManager, LanguageManager $languageManager, DeskproBlobStorage $blobStorage, EntityManager $em)
     {
-        $this->field_manager    = $field_manager;
-        $this->language_manager = $language_manager;
-        $this->blob_storage     = $blob_storage;
-        $this->em               = $em;
+        $this->fieldManager    = $fieldManager;
+        $this->languageManager = $languageManager;
+        $this->blobStorage     = $blobStorage;
+        $this->em              = $em;
     }
 
     /**
@@ -91,16 +93,16 @@ class PersonEditProfileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text', [
+            ->add('name', TextType::class, [
                 'label' => $this->phrase('portal.forms.label_name'),
             ])
-            ->add('timezone', 'timezone', [
+            ->add('timezone', TimezoneType::class, [
                 'label' => $this->phrase('portal.forms.label_timezone'),
             ])
         ;
 
-        if ($this->language_manager->isMultiLanguagePortal()) {
-            $builder->add('language_id', 'deskpro_language', [
+        if ($this->languageManager->isMultiLanguagePortal()) {
+            $builder->add('language_id', LanguageType::class, [
                 'view_context' => 'user',
                 'label'        => $this->phrase('portal.forms.label_language'),
             ]);
@@ -120,7 +122,7 @@ class PersonEditProfileType extends AbstractType
      */
     public function onSubmit(FormEvent $event)
     {
-        $blob_storage = $this->blob_storage;
+        $blob_storage = $this->blobStorage;
         $em           = $this->em;
 
         /** @var \Application\DeskPRO\Entity\Person $person */
@@ -140,7 +142,7 @@ class PersonEditProfileType extends AbstractType
                 $em->persist($blob);
 
                 $form->remove('upload_picture');
-                $form->add('delete_picture', 'checkbox', [
+                $form->add('delete_picture', CheckboxType::class, [
                     'required' => false,
                     'mapped'   => false,
                 ]);
@@ -149,7 +151,7 @@ class PersonEditProfileType extends AbstractType
 
         if ($form->has('delete_picture')) {
             if ($form->get('delete_picture')->getData()) {
-                $blob_storage->deleteBlobRecord($person->picture_blob);
+                $blob_storage->deleteBlobRecord($person->getPictureBlob());
                 $person->setPictureBlob(null);
             }
         }
@@ -190,30 +192,30 @@ class PersonEditProfileType extends AbstractType
         $person = $event->getData();
         $form   = $event->getForm();
 
-        if ($person->organization && $person->organization_manager) {
-            $form->add('manager_auto_add', 'checkbox', [
+        if ($person->getOrganization() && $person->isOrganizationManager()) {
+            $form->add('manager_auto_add', CheckboxType::class, [
                 'required'       => false,
                 'mapped'         => false,
                 'label'          => false,
                 'checkbox_label' => $this->phrase('portal.account.automatically_join_org_tickets', [
-                    'org_name' => $person->organization->getName(),
+                    'org_name' => $person->getOrganization()->getName(),
                 ]),
             ]);
         }
 
-        if ($person->picture_blob) {
-            $form->add('delete_picture', 'checkbox', [
+        if ($person->getPictureBlob()) {
+            $form->add('delete_picture', CheckboxType::class, [
                 'required' => false,
                 'mapped'   => false,
             ]);
         } else {
-            $form->add('upload_picture', 'file', [
+            $form->add('upload_picture', FileType::class, [
                 'required' => false,
                 'mapped'   => false,
             ]);
         }
 
-        foreach ($this->field_manager->getAvailablePersonDefs() as $def) {
+        foreach ($this->fieldManager->getAvailablePersonDefs() as $def) {
             if (!$def->isEnabled()) {
                 continue;
             }
@@ -233,11 +235,11 @@ class PersonEditProfileType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => 'Application\DeskPRO\Entity\Person',
+                'data_class' => Person::class,
             ])
             ->setRequired(['settings'])
             ->setAllowedTypes([
-                'settings' => 'Application\DeskPRO\NewSettings\SettingsBag',
+                'settings' => SettingsBag::class,
             ])
         ;
     }
@@ -258,6 +260,6 @@ class PersonEditProfileType extends AbstractType
      */
     private function phrase($name, array $vars = [])
     {
-        return $this->language_manager->phrase($name, $vars);
+        return $this->languageManager->phrase($name, $vars);
     }
 }

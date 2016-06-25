@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
@@ -39,6 +35,8 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\RegistrationAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonChangePasswordType;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEditProfileType;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -193,13 +191,10 @@ class ProfileController extends AbstractController
         //
         // PROFILE
         //
-        $profileForm = $this->createForm(
-            'person_profile',
-            $person,
-            [
-                'settings' => $this->getBrandContainer()->getSettings(),
-            ]
-        );
+        $profileForm = $this->createForm(PersonEditProfileType::class, $person, [
+            'settings' => $this->getBrandContainer()->getSettings(),
+        ]);
+
         $profileForm->handleRequest($request);
         if ($profileForm->isValid()) {
             $this->getEm()->flush();
@@ -211,9 +206,10 @@ class ProfileController extends AbstractController
         //
         // PASSWORD
         //
-        $passwordForm = $this->createForm('person_change_password', $person, [
+        $passwordForm = $this->createForm(PersonChangePasswordType::class, $person, [
             'settings' => $this->getBrandContainer()->getSettings(),
         ]);
+
         if ('POST' === $request->getMethod()) {
             $history = null;
             if ($person->password && $person->password_scheme == 'bcrypt') {
@@ -222,6 +218,7 @@ class ProfileController extends AbstractController
                 $history->password_scheme = $person->password_scheme;
                 $history->password        = $person->password;
             }
+
             $passwordForm->handleRequest($request);
             if ($passwordForm->isValid()) {
                 if ($history) {

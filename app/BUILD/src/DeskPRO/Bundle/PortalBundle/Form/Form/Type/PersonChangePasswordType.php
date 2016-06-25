@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
@@ -127,6 +123,12 @@ class PersonChangePasswordType extends AbstractType
         ;
     }
 
+    /**
+     * @param string $phrase
+     * @param array  $vars
+     *
+     * @return string
+     */
     public function phrase($phrase, $vars = [])
     {
         return $this->translate->phrase($phrase, $vars);
