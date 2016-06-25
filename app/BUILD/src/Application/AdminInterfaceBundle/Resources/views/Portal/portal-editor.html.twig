@@ -222,7 +222,11 @@
                 </div>
 
                 <div class="template-picker" ng-show="Portal.isOpen('expert')">
-                    <select ng-model="Portal.selected_template"
+                    <select ui-select2='{ containerCssClass : "select2-container-template-picker", dropdownCssClass : "select2-dropdown-template-picker" }'
+                            clas="template-picker"
+                            style="width: 300px;"
+                            data-placeholder="Choose a template"
+                            ng-model="Portal.selected_template"
                             ng-change="Portal.editTemplate()"
                             ng-options="t.value as t.name group by t.group for t in Portal.template_options">
                     </select>

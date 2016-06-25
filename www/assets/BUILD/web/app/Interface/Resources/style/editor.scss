@@ -1,3 +1,6 @@
+$editor-panel-bg: #3a3f45;
+$transition: all 0.15s ease;
+
 .portal-editor-wrap {
 
   // Font Stacks
@@ -188,8 +191,7 @@
     }
   }
 
-  $editor-panel-bg: #3a3f45;
-  $transition: all 0.15s ease;
+
 
   .editor-panel {
     background: $editor-panel-bg;
@@ -838,5 +840,40 @@
   .sp-dd {
     display: none;
   }
+}
 
+.select2-dropdown-template-picker {
+  background-color: $editor-panel-bg;
+
+  .select2-input {
+    color: #9da3a8;
+    background: #fff url('../../../../images/select2.png') no-repeat 100% -22px;
+    background: url('../../../../images/select2.png') no-repeat 100% -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, $editor-panel-bg), color-stop(0.99, darken($editor-panel-bg, 5%)));
+    background: url('../../../../images/select2.png') no-repeat 100% -22px, -webkit-linear-gradient(center bottom, $editor-panel-bg 85%, darken($editor-panel-bg, 5%) 99%);
+    background: url('../../../../images/select2.png') no-repeat 100% -22px, -moz-linear-gradient(center bottom, $editor-panel-bg 85%, darken($editor-panel-bg, 5%) 99%);
+    background: url('../../../../images/select2.png') no-repeat 100% -22px, linear-gradient(to bottom, $editor-panel-bg 85%, darken($editor-panel-bg, 5%) 99%) 0 0;
+  }
+
+  .select2-result-label {
+    color: #9da3a8;
+  }
+}
+
+.select2-container-template-picker {
+  .select2-choice, .select2-chosen {
+    background: $editor-panel-bg;
+    border-color: darken($editor-panel-bg, 5%);
+  }
+}
+.select2-container-template-picker.select2-dropdown-open {
+  background: $editor-panel-bg;
+  .select2-choice, .select2-chosen {
+    background: $editor-panel-bg;
+  }
+}
+
+.select2-dropdown-template-picker, .select2-dropdown-template-picker.select2-dropdown-open {
+  .select2-no-results {
+    color: #9da3a8;
+  }
 }
