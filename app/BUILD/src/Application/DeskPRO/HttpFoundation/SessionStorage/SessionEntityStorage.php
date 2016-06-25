@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -519,7 +519,13 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             $this->metadataBag->stampNew();
         }
 
-        $ret = session_regenerate_id($destroy);
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $ret = session_regenerate_id($destroy);
+        } else {
+            // were going to consider regeneration as true. Actually it's hard to realise why it's not started yet.
+            $ret = true;
+            $this->start();
+        }
 
         if ($this->isStarted() && $this->getEntity()) {
             session_write_close();
