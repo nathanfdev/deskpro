@@ -197,7 +197,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       parts = template.split(':')
       if parts[1] then parts[1] else parts[0]
 
-    editTemplate: ->
+    editTemplate: =>
       @$http.get('/portal/api/style/edit-theme-set/template-info?template=' + @selected_template).success((data) =>
         @selected_template_info = {
           code: data.source,
@@ -206,7 +206,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         @selected_template_info_loaded = true
       )
 
-    openTemplateEditor: (tpl) ->
+    openTemplateEditor: (tpl) =>
       @selected_template = tpl
       @$http.get('/portal/api/style/edit-theme-set/template-info?template=' + @selected_template).success((data) =>
         @selected_template_info = {
@@ -216,7 +216,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         @selected_template_info_loaded = true
       )
 
-    saveTemplateEditor: () ->
+    saveTemplateEditor: () =>
       @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
