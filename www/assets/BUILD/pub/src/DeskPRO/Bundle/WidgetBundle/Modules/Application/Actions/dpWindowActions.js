@@ -20,7 +20,9 @@ import { loadNewTicketForm } from '../../Ticket/Actions/ticketActions';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { addSessionCode } from './bootstrapActions';
 import { history, getLocation } from '../../../Services/history';
+import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import $ from 'jquery';
+import lscache from 'lscache';
 
 const openChatBeginStageByMode = chatBeginMode => {
   switch (chatBeginMode) {
@@ -128,6 +130,27 @@ export const reopenWidget = createAction('WIDGET_REOPEN', () => dispatch => {
 });
 
 export const loadOptions = createAction('WIDGET_OPTIONS', options => $.extend(true, {}, options));
+export const fetchOptions = createAction(
+  'WIDGET_FETCH_OPTIONS',
+  () => dispatch => new Promise(resolve => {
+    // try to get data from local storage
+    const cachedOptions = lscache.get('dpWidget.options');
+    if (cachedOptions) {
+      dispatch(loadOptions(cachedOptions));
+      resolve();
+    }
+
+    const promise = widgetApi.sendGet('DP_API/widget/options');
+    promise.then(response => {
+      const options = response.data.data;
+
+      dispatch(loadOptions(options));
+      lscache.set('dpWidget.options', options, 15);
+      resolve();
+    });
+  })
+);
+// live demo action
 export const reloadOptions = createAction(
   'WIDGET_RELOAD_OPTIONS',
   options => (dispatch, getState) => {

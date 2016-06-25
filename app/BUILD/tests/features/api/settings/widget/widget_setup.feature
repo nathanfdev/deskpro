@@ -45,7 +45,7 @@ Feature: Widget Setup
     And the response should contain "DESKPRO_WIDGET_LOADER::END"
     And the response should contain "pub/build/widget_loader.min.js"
     And the response should contain "dp-widget-loader"
-    And the response should contain "data-helpdesk-url"
+    And the response should contain "helpdeskUrl"
 
   Scenario: I update global widget configuration
     When I send a POST request to "/api/v2/widget/setup" with body:
