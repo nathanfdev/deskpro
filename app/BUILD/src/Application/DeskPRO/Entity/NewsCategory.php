@@ -79,12 +79,22 @@ class NewsCategory extends CategoryAbstract
     /**
      * Usergroups that has access to this category.
      *
-     * @JMS\Groups("download_categories")
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Download>>")
+     * @JMS\Groups("news_categories")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Usergroup>>")
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $usergroups;
+
+    /**
+     * Brand linked to the category.
+     *
+     * @JMS\Groups("news_categories")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
+     *
+     * @var Brand
+     */
+    protected $brand;
 
     public function __construct()
     {
@@ -243,6 +253,22 @@ class NewsCategory extends CategoryAbstract
                 'fieldName'    => 'articles',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\News',
                 'mappedBy'     => 'category',
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'brand',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Brand',
+                'mappedBy'     => null,
+                'inversedBy'   => 'news_categories',
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'brand_id',
+                        'referencedColumnName' => 'id',
+                        'onDelete'             => 'set null',
+                    ],
+                ],
+                'dpApi' => true,
             ]
         );
     }

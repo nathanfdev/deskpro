@@ -34,8 +34,11 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\RelatedContent;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\ArrayAdapter;
@@ -52,12 +55,18 @@ class NewsDataService extends AbstractDataService
     /**
      * @var PermissionsManager
      */
-    protected $permissions_manager;
+    protected $permissionsManager;
 
-    public function __construct(EntityManager $em, PermissionsManager $permissionsManager)
+    /**
+     * @var BrandStack
+     */
+    protected $brandStack;
+
+    public function __construct(EntityManager $em, PermissionsManager $permissionsManager, BrandStack $brandStack)
     {
-        $this->em                  = $em;
-        $this->permissions_manager = $permissionsManager;
+        $this->em                 = $em;
+        $this->permissionsManager = $permissionsManager;
+        $this->brandStack         = $brandStack;
     }
 
     /**
@@ -67,44 +76,45 @@ class NewsDataService extends AbstractDataService
     {
         $em = $this->em;
 
-        return $this->generateAndCache(array('hasAny'), function () use ($em) {
+        return $this->generateAndCache(['hasAny'], function () use ($em) {
             return $em->getConnection()->fetchColumn('SELECT COUNT(*) FROM news LIMIT 1') ? true : false;
         });
     }
 
     /**
      * @param NewsCategory $category
-     * @param $page
-     * @param $max_per_page
+     * @param              $page
+     * @param              $max_per_page
+     * @param Person       $person
      *
      * @return Pagerfanta
      */
     public function getNewsPager(NewsCategory $category = null, $page, $max_per_page, Person $person)
     {
-        $em                  = $this->em;
-        $permissions_manager = $this->permissions_manager;
+        $em                 = $this->em;
+        $permissionsManager = $this->permissionsManager;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getNewsPager',
                 $category,
                 $page,
                 $max_per_page,
                 $person,
-            ),
-            function () use ($em, $permissions_manager, $category, $max_per_page, $page, $person) {
+            ],
+            function () use ($em, $permissionsManager, $category, $max_per_page, $page, $person) {
                 $qb = $em->createQueryBuilder();
 
                 $qb->select('n')
-                    ->from('DeskPRO:News', 'n')
+                    ->from(News::class, 'n')
                     ->where('n.status = :status')->setParameter('status', News::STATUS_PUBLISHED)
                     ->orderBy('n.id', 'DESC');
 
-                $allowed_ids = $permissions_manager->getPortalPermissionsBag($person)->getAllowedNewsCategories();
+                $allowed_ids = $permissionsManager->getPortalPermissionsBag($person)->getAllowedNewsCategories();
                 if ($category) {
                     // find allowed ids
                     $cat_ids = $category->getTreeIds(true);
-                    $using_ids = array();
+                    $using_ids = [];
                     foreach ($cat_ids as $cat_id) {
                         if (in_array($cat_id, $allowed_ids)) {
                             $using_ids[] = $cat_id;
@@ -115,8 +125,8 @@ class NewsDataService extends AbstractDataService
                 }
 
                 if (empty($using_ids)) {
-                    // nocategories are allowed, so no articles are either, returning a blank array pager
-                    $pager = new Pagerfanta(new ArrayAdapter(array()));
+                    // no categories are allowed, so no articles are either, returning a blank array pager
+                    $pager = new Pagerfanta(new ArrayAdapter([]));
                 } else {
                     $qb->leftJoin('n.category', 'c')
                         ->andWhere('c IN (:cat)')->setParameter('cat', $using_ids);
@@ -140,28 +150,34 @@ class NewsDataService extends AbstractDataService
      * TODO: this is using the doctrine proxy as a method of finding children of the category. Might be able to improve that.
      *
      * @param int|null|NewsCategory $category
+     * @param Person                $person
      *
-     * @throws \InvalidArgumentException
-     *
-     * @return NewsCategory[]
+     * @return \Application\DeskPRO\Entity\NewsCategory[]
      */
     public function getCategoryChildren($category, Person $person)
     {
         $that = $this;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getCategoryChildren',
                 $category,
                 $person,
-            ),
+            ],
             function () use ($that, $category, $person) {
-                $allowed_ids = $that->permissions_manager->getPortalPermissionsBag(
+                $allowedIds = $that->permissionsManager->getPortalPermissionsBag(
                     $person
                 )->getAllowedNewsCategories();
 
+                $activeBrand = $that->brandStack->getActive();
+
                 if (!$category) { // get root categories
-                    $result = $that->getNewsCategoriesRepo()->findBy(array('parent' => null, 'id' => $allowed_ids));
+                    $result = $that->getNewsCategoriesRepo()
+                        ->findBy([
+                            'parent' => null,
+                            'id'     => $allowedIds,
+                            'brand'  => $activeBrand->getBrand(),
+                        ]);
                 } else {
                     if (!$category instanceof NewsCategory) { // if not already category, try to make it one
                         if (!$category = $that->getCategory($category)) {
@@ -169,17 +185,20 @@ class NewsDataService extends AbstractDataService
                         }
                     }
 
-                    $children = $category->children;
+                    $children = $category->getChildren();
 
-                    $result = array();
+                    $result = [];
                     foreach ($children as $child) {
-                        if (in_array($child->getId(), $allowed_ids)) {
+                        if (in_array($child->getId(), $allowedIds)) {
                             $result[] = $child;
                         }
                     }
                 }
 
-                $result = ListUtils::sortByFnValue($result, function ($v) { return $v->getDisplayOrder(); });
+                $result = ListUtils::sortByFnValue($result, function ($v) {
+                    /* @var NewsCategory $v */
+                    return $v->getDisplayOrder();
+                });
 
                 return $result;
             }
@@ -196,10 +215,10 @@ class NewsDataService extends AbstractDataService
         $that = $this;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getPost',
                 $post,
-            ),
+            ],
             function () use ($that, $post) {
                 if (!$post) { // we need some input
                     return;
@@ -228,10 +247,10 @@ class NewsDataService extends AbstractDataService
         $that = $this;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getCategory',
                 $category,
-            ),
+            ],
             function () use ($that, $category) {
                 if (!$category) { // we need some input
                     return;
@@ -251,11 +270,11 @@ class NewsDataService extends AbstractDataService
         $that = $this;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getPostComments',
                 $post,
                 $person,
-            ),
+            ],
             function () use ($that, $post, $person) {
                 $post = $that->getPost($post);
 
@@ -269,7 +288,7 @@ class NewsDataService extends AbstractDataService
      */
     public function getNewsRepo()
     {
-        return $this->em->getRepository('DeskPRO:News');
+        return $this->em->getRepository(News::class);
     }
 
     /**
@@ -277,7 +296,7 @@ class NewsDataService extends AbstractDataService
      */
     public function getNewsCategoriesRepo()
     {
-        return $this->em->getRepository('DeskPRO:NewsCategory');
+        return $this->em->getRepository(NewsCategory::class);
     }
 
     /**
@@ -285,7 +304,7 @@ class NewsDataService extends AbstractDataService
      */
     public function getNewsCommentRepo()
     {
-        return $this->em->getRepository('DeskPRO:NewsComment');
+        return $this->em->getRepository(NewsComment::class);
     }
 
     /**
@@ -293,6 +312,6 @@ class NewsDataService extends AbstractDataService
      */
     public function getRelatedContentRepo()
     {
-        return $this->em->getRepository('DeskPRO:RelatedContent');
+        return $this->em->getRepository(RelatedContent::class);
     }
 }

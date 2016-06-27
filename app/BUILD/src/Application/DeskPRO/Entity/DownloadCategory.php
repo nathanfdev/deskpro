@@ -76,11 +76,21 @@ class DownloadCategory extends CategoryAbstract
      * Usergroups that has access to this category.
      *
      * @JMS\Groups("download_categories")
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Download>>")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Usergroup>>")
      *
      * @var ArrayCollection
      */
     protected $usergroups;
+
+    /**
+     * Brand linked to the category.
+     *
+     * @JMS\Groups("download_categories")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
+     *
+     * @var Brand
+     */
+    protected $brand;
 
     public function __construct()
     {
@@ -239,6 +249,22 @@ class DownloadCategory extends CategoryAbstract
                 'fieldName'    => 'downloads',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Download',
                 'mappedBy'     => 'category',
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'brand',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Brand',
+                'mappedBy'     => null,
+                'inversedBy'   => 'download_categories',
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'brand_id',
+                        'referencedColumnName' => 'id',
+                        'onDelete'             => 'set null',
+                    ],
+                ],
+                'dpApi' => true,
             ]
         );
     }

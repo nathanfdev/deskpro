@@ -34,8 +34,11 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\RelatedContent;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\ArrayAdapter;
@@ -47,14 +50,20 @@ class ArticlesDataService extends AbstractDataService
     /**
      * @var PermissionsManager
      */
-    protected $permissions_manager;
+    protected $permissionsManager;
 
-    public function __construct(EntityManager $em, PermissionsManager $permissionsManager)
+    /**
+     * @var BrandStack
+     */
+    protected $brandStack;
+
+    public function __construct(EntityManager $em, PermissionsManager $permissionsManager, BrandStack $brandStack)
     {
         parent::__construct($em);
 
-        $this->em                  = $em;
-        $this->permissions_manager = $permissionsManager;
+        $this->em                 = $em;
+        $this->permissionsManager = $permissionsManager;
+        $this->brandStack         = $brandStack;
     }
 
     /**
@@ -71,17 +80,17 @@ class ArticlesDataService extends AbstractDataService
 
     /**
      * @param ArticleCategory $category
-     * @param $page
-     * @param $maxPerPage
-     * @param Person $person
-     * @param bool   $withTree
+     * @param                 $page
+     * @param                 $maxPerPage
+     * @param Person          $person
+     * @param bool            $withTree
      *
      * @return Pagerfanta
      */
     public function getArticlesPager(ArticleCategory $category = null, $page, $maxPerPage, Person $person, $withTree = false)
     {
         $em                 = $this->em;
-        $permissionsManager = $this->permissions_manager;
+        $permissionsManager = $this->permissionsManager;
 
         return $this->generateAndCache(
             [
@@ -96,7 +105,7 @@ class ArticlesDataService extends AbstractDataService
                 $qb = $em->createQueryBuilder();
 
                 $qb->select('a')
-                    ->from('DeskPRO:Article', 'a')
+                    ->from(Article::class, 'a')
                     ->where('a.status = :status')->setParameter('status', Article::STATUS_PUBLISHED)
                     ->orderBy('a.id', 'DESC');
 
@@ -123,7 +132,7 @@ class ArticlesDataService extends AbstractDataService
                     $pager = new Pagerfanta(new ArrayAdapter([]));
                 } else {
                     $qb->leftJoin('a.categories', 'c')
-                    ->andWhere('c.id IN (:cat_ids)')->setParameter('cat_ids', $usingIds);
+                        ->andWhere('c.id IN (:cat_ids)')->setParameter('cat_ids', $usingIds);
 
                     $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
                 }
@@ -139,7 +148,7 @@ class ArticlesDataService extends AbstractDataService
     public function getTopArticlesPager($page, $maxPerPage, Person $person)
     {
         $em                 = $this->em;
-        $permissionsManager = $this->permissions_manager;
+        $permissionsManager = $this->permissionsManager;
 
         return $this->generateAndCache(
             [
@@ -152,7 +161,7 @@ class ArticlesDataService extends AbstractDataService
                 $qb = $em->createQueryBuilder();
 
                 $qb->select('a')
-                    ->from('DeskPRO:Article', 'a')
+                    ->from(Article::class, 'a')
                     ->where('a.status = :status')->setParameter('status', Article::STATUS_PUBLISHED)
                     ->orderBy('a.total_rating', 'DESC');
 
@@ -180,20 +189,18 @@ class ArticlesDataService extends AbstractDataService
     /**
      * Takes null, a category ID, or a ArticleCategory and returns an iterable collection of ArticleCategories.
      *
-     * Null means ruturn the roots.
+     * Null means return the roots.
      *
      * TODO: this is using the doctrine proxy as a method of finding children of the category. Might be able to improve that.
      *
      * @param int|null|ArticleCategory $category
+     * @param Person                   $person
      *
-     * @throws \InvalidArgumentException
-     *
-     * @return ArticleCategory[]
+     * @return \Application\DeskPRO\Entity\ArticleCategory[]
      */
     public function getCategoryChildren($category, Person $person)
     {
-        $that               = $this;
-        $permissionsManager = $this->permissions_manager;
+        $that = $this;
 
         return $this->generateAndCache(
             [
@@ -201,11 +208,20 @@ class ArticlesDataService extends AbstractDataService
                 $category,
                 $person,
             ],
-            function () use ($that, $category, $person, $permissionsManager) {
-                $allowedIds = $permissionsManager->getPortalPermissionsBag($person)->getAllowedArticleCategories();
+            function () use ($that, $category, $person) {
+                $allowedIds = $that->permissionsManager->getPortalPermissionsBag(
+                    $person
+                )->getAllowedArticleCategories();
+
+                $activeBrand = $that->brandStack->getActive();
 
                 if (!$category) { // get root categories
-                    $result = $that->getArticleCategoriesRepo()->findBy(['parent' => null, 'id' => $allowedIds]);
+                    $result = $that->getArticleCategoriesRepo()
+                        ->findBy([
+                            'parent' => null,
+                            'id'     => $allowedIds,
+                            'brand'  => $activeBrand->getBrand(),
+                        ]);
                 } else {
                     if (!$category instanceof ArticleCategory) { // if not already category, try to make it one
                         if (!$category = $that->getCategory($category)) {
@@ -213,7 +229,7 @@ class ArticlesDataService extends AbstractDataService
                         }
                     }
 
-                    $children = $category->children;
+                    $children = $category->getChildren();
 
                     $result = [];
                     foreach ($children as $child) {
@@ -223,7 +239,10 @@ class ArticlesDataService extends AbstractDataService
                     }
                 }
 
-                $result = ListUtils::sortByFnValue($result, function ($v) { return $v->getDisplayOrder(); });
+                $result = ListUtils::sortByFnValue($result, function ($v) {
+                    /* @var ArticleCategory $v */
+                    return $v->getDisplayOrder();
+                });
 
                 return $result;
             }
@@ -313,7 +332,7 @@ class ArticlesDataService extends AbstractDataService
      */
     public function getArticlesRepo()
     {
-        return $this->em->getRepository('DeskPRO:Article');
+        return $this->em->getRepository(Article::class);
     }
 
     /**
@@ -321,7 +340,7 @@ class ArticlesDataService extends AbstractDataService
      */
     public function getArticleCategoriesRepo()
     {
-        return $this->em->getRepository('DeskPRO:ArticleCategory');
+        return $this->em->getRepository(ArticleCategory::class);
     }
 
     /**
@@ -329,7 +348,7 @@ class ArticlesDataService extends AbstractDataService
      */
     public function getArticleCommentRepo()
     {
-        return $this->em->getRepository('DeskPRO:ArticleComment');
+        return $this->em->getRepository(ArticleComment::class);
     }
 
     /**
@@ -337,6 +356,6 @@ class ArticlesDataService extends AbstractDataService
      */
     public function getRelatedContentRepo()
     {
-        return $this->em->getRepository('DeskPRO:RelatedContent');
+        return $this->em->getRepository(RelatedContent::class);
     }
 }

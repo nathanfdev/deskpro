@@ -34,8 +34,20 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\ContentAbstract;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\DownloadComment;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\Entity\NewsComment;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ResultCache;
 use Application\DeskPRO\People\PermissionUtil;
 use Application\DeskPRO\Publish\AgentHelper as PublishHelper;
@@ -44,6 +56,9 @@ use Application\DeskPRO\Searcher\ArticleSearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
 use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
+use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
+use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -85,7 +100,7 @@ class PublishController extends AbstractController
         #------------------------------
 
         $kb_cats        = $this->publish_helper->getCategoryStructure(PublishHelper::ARTICLES);
-        $kb_repo        = $this->em->getRepository('DeskPRO:ArticleCategory');
+        $kb_repo        = $this->em->getRepository(ArticleCategory::class);
         $kb_cats_counts = $this->publish_helper->getCategoryCounts(PublishHelper::ARTICLES);
 
         $kb_translate_queue = [0 => 0];
@@ -110,7 +125,7 @@ class PublishController extends AbstractController
         #------------------------------
 
         $news_cats        = $this->publish_helper->getCategoryStructure(PublishHelper::NEWS);
-        $news_repo        = $this->em->getRepository('DeskPRO:NewsCategory');
+        $news_repo        = $this->em->getRepository(NewsCategory::class);
         $news_cats_counts = $this->publish_helper->getCategoryCounts(PublishHelper::NEWS);
 
         #------------------------------
@@ -118,7 +133,7 @@ class PublishController extends AbstractController
         #------------------------------
 
         $download_cats        = $this->publish_helper->getCategoryStructure(PublishHelper::DOWNLOADS);
-        $download_repo        = $this->em->getRepository('DeskPRO:DownloadCategory');
+        $download_repo        = $this->em->getRepository(DownloadCategory::class);
         $download_cats_counts = $this->publish_helper->getCategoryCounts(PublishHelper::DOWNLOADS);
 
         #------------------------------
@@ -140,6 +155,35 @@ class PublishController extends AbstractController
 
         $usergroups = $this->container->getDataService('Usergroup')->getUserUsergroups();
 
+        #------------------------------
+        # Resolve app activation
+        #------------------------------
+
+        $appSettings = [
+            PortalSettingsResolver::APPS_KB        => false,
+            PortalSettingsResolver::APPS_DOWNLOADS => false,
+            PortalSettingsResolver::APPS_NEWS      => false,
+        ];
+
+        /** @var Brand[] $brands */
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
+        /** @var BrandStack $brandStack */
+        $brandStack = $this->get('brand_stack');
+
+        /** @var BrandAwareSettingsResolver $brandSettingsResolver */
+        $brandSettingsResolver = $this->get('brand_aware_settings_resolver');
+
+        foreach ($brands as $brand) {
+            $brandStack->push($brand);
+
+            foreach ($appSettings as $key => &$setting) {
+                $setting = $setting || $brandSettingsResolver->getSetting($key);
+            }
+
+            $brandStack->pop();
+        }
+
         $counts['comments'] = $this->publish_helper->getCommentsCountInfo();
 
         $data['section_html'] = $this->renderView('AgentBundle:Publish:window-section.html.twig', [
@@ -158,6 +202,8 @@ class PublishController extends AbstractController
             'download_cats'        => $download_cats,
             'download_repo'        => $download_repo,
             'download_cats_counts' => $download_cats_counts,
+
+            'app_settings' => $appSettings,
 
             'glossary_words' => $glossary_words,
             'glossary_count' => $glossary_count,
@@ -383,13 +429,13 @@ class PublishController extends AbstractController
     {
         switch ($typename) {
             case 'articles':
-                return 'DeskPRO:ArticleComment';
+                return ArticleComment::class;
             case 'downloads':
-                return 'DeskPRO:DownloadComment';
+                return DownloadComment::class;
             case 'news':
-                return 'DeskPRO:NewsComment';
+                return NewsComment::class;
             case 'feedback':
-                return 'DeskPRO:FeedbackComment';
+                return FeedbackComment::class;
         }
     }
 
@@ -586,22 +632,22 @@ class PublishController extends AbstractController
         $entity_name = null;
         switch ($type) {
             case 'articles':
-                $entity_name = 'DeskPRO:Article';
+                $entity_name = Article::class;
                 break;
             case 'article':
-                $entity_name = 'DeskPRO:Article';
+                $entity_name = Article::class;
                 break;
             case 'downloads':
-                $entity_name = 'DeskPRO:Download';
+                $entity_name = Download::class;
                 break;
             case 'download':
-                $entity_name = 'DeskPRO:Download';
+                $entity_name = Download::class;
                 break;
             case 'news':
-                $entity_name = 'DeskPRO:News';
+                $entity_name = News::class;
                 break;
             case 'feedback':
-                $entity_name = 'DeskPRO:Feedback';
+                $entity_name = Feedback::class;
                 break;
         }
 
@@ -668,13 +714,13 @@ class PublishController extends AbstractController
         $entity_name = null;
         switch ($type) {
             case 'article':
-                $entity_name = 'DeskPRO:ArticleCategory';
+                $entity_name = ArticleCategory::class;
                 break;
             case 'download':
-                $entity_name = 'DeskPRO:DownloadCategory';
+                $entity_name = DownloadCategory::class;
                 break;
             case 'news':
-                $entity_name = 'DeskPRO:NewsCategory';
+                $entity_name = NewsCategory::class;
                 break;
         }
 
@@ -704,14 +750,24 @@ class PublishController extends AbstractController
             $save_structure = [];
         }
 
+        $save_category['brand_id'] = $this->in->getUint('category.brand_id');
+        if (!$save_category['brand_id']) {
+            $save_category['brand_id'] = $this->get('settings_resolver')->getGlobalSettings()
+                ->get('portal.default_brand');
+        }
+
         #------------------------------
         # Save category
         #------------------------------
 
         if ($save_category['id'] && $cat = $this->em->getRepository($entity_name)->find($save_category['id'])) {
             if ($save_category['title']) {
-                $cat->title = $save_category['title'];
-                $this->db->update($table, ['title' => $cat->title], ['id' => $cat->id]);
+                $cat->title    = $save_category['title'];
+                $cat->brand_id = $save_category['brand_id'];
+                $this->db->update($table, [
+                    'title'    => $cat->title,
+                    'brand_id' => $cat->brand_id,
+                ], ['id' => $cat->id]);
             }
 
             $this->db->delete($perm_table, ['category_id' => $cat->id]);
@@ -827,13 +883,13 @@ class PublishController extends AbstractController
         $entity_name = null;
         switch ($type) {
             case 'article':
-                $entity_name = 'DeskPRO:ArticleCategory';
+                $entity_name = ArticleCategory::class;
                 break;
             case 'download':
-                $entity_name = 'DeskPRO:DownloadCategory';
+                $entity_name = DownloadCategory::class;
                 break;
             case 'news':
-                $entity_name = 'DeskPRO:NewsCategory';
+                $entity_name = NewsCategory::class;
                 break;
         }
 
@@ -843,9 +899,13 @@ class PublishController extends AbstractController
 
         $all_categories = $this->em->getRepository($entity_name)->getInHierarchy();
 
+        /** @var Brand[] $brands */
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
         return $this->render('AgentBundle:Publish:new-cat.html.twig', [
             'type'           => $type,
             'all_categories' => $all_categories,
+            'brands'         => $brands,
         ]);
     }
 
@@ -854,13 +914,13 @@ class PublishController extends AbstractController
         $entity_name = null;
         switch ($type) {
             case 'article':
-                $entity_name = 'DeskPRO:ArticleCategory';
+                $entity_name = ArticleCategory::class;
                 break;
             case 'download':
-                $entity_name = 'DeskPRO:DownloadCategory';
+                $entity_name = DownloadCategory::class;
                 break;
             case 'news':
-                $entity_name = 'DeskPRO:NewsCategory';
+                $entity_name = NewsCategory::class;
                 break;
         }
 
@@ -1009,7 +1069,7 @@ class PublishController extends AbstractController
 
         $result_cache = false;
         if ($this->in->getUint('cache_id')) {
-            $result_cache = $this->em->getRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
+            $result_cache = $this->em->getRepository(ResultCache::class)->find($this->in->getUint('cache_id'));
             if (!$result_cache or $result_cache['person_id'] != $this->person['id']) {
                 $result_cache = false;
             }
@@ -1083,7 +1143,7 @@ class PublishController extends AbstractController
             ORDER BY id DESC
         ', [$object_type, $object_id, $view_action], 'person_id');
 
-        $people = $this->em->getRepository('DeskPRO:Person')->getByIds(array_keys($id_to_info));
+        $people = $this->em->getRepository(Person::class)->getByIds(array_keys($id_to_info));
 
         return $this->render('AgentBundle:Publish:who-viewed.html.twig', [
             'id_to_info'  => $id_to_info,

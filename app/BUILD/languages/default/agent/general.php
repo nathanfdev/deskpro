@@ -117,6 +117,8 @@ return [
     'agent.general.billing_interface'                       => 'Billing Interface',
     'agent.general.blank'                                   => 'Blank',
     'agent.general.browser_agent'                           => 'Browser Agent',
+    'agent.general.brand'                                   => 'Brand',
+    'agent.general.brands'                                  => 'Brands',
     'agent.general.by_agent'                                => 'By an agent',
     'agent.general.by_agent_for_user'                       => 'By agent on behalf of user',
     'agent.general.by_anyone'                               => 'By anyone',

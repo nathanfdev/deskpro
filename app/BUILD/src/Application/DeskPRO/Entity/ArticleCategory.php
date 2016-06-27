@@ -81,6 +81,16 @@ class ArticleCategory extends CategoryAbstract
     protected $usergroups;
 
     /**
+     * Brand linked to the category.
+     *
+     * @JMS\Groups("articles_categories")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
+     *
+     * @var Brand
+     */
+    protected $brand;
+
+    /**
      * If this is true, then all categories and articles under this one
      * are considered agent KB articles and wont be displayed in
      * the user interface.
@@ -359,6 +369,22 @@ class ArticleCategory extends CategoryAbstract
                 'fieldName'    => 'articles',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Article',
                 'mappedBy'     => 'categories',
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'brand',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Brand',
+                'mappedBy'     => null,
+                'inversedBy'   => 'article_categories',
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'brand_id',
+                        'referencedColumnName' => 'id',
+                        'onDelete'             => 'set null',
+                    ],
+                ],
+                'dpApi' => true,
             ]
         );
     }

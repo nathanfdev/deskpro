@@ -26,6 +26,14 @@ DeskPRO.Agent.PageFragment.Page.PublishNewCat = new Orb.Class({
 			Orb.cancelEvent(ev);
 		});
 
+		el.find('select[name="category[parent_id]"]').on('change', function(ev) {
+			if ($(ev.target).val() == 0) {
+				$('#new_category_brand').show();
+			} else {
+				$('#new_category_brand').hide();
+			}
+		});
+
 		var footer = el.find('footer');
 		footer.find('.submit-trigger').on('click', function(ev) {
 			Orb.cancelEvent(ev);

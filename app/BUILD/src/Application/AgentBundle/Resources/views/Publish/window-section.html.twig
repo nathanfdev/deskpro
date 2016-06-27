@@ -49,7 +49,7 @@
 		</article>
 	</section>
 
-	{% if app.getSetting('core.apps_kb') %}
+	{% if app_settings['core.apps_kb'] %}
 		<section class="pane-section dp-collapsible dp-collapsible-open" id="publish_section_kb">
 			<header>
 				<h1>
@@ -99,7 +99,7 @@
 		</section>
 	{% endif%}
 
-	{% if app.getSetting('core.apps_news') %}
+	{% if app_settings['core.apps_news'] %}
 		<section class="pane-section dp-collapsible" id="publish_section_news">
 			<header>
 				<h1>
@@ -121,7 +121,7 @@
 		</section>
 	{% endif %}
 
-	{% if app.getSetting('core.apps_downloads') %}
+	{% if app_settings['core.apps_downloads'] %}
 		<section class="pane-section dp-collapsible" id="publish_section_downloads">
 			<header>
 				<h1>

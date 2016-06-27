@@ -49,6 +49,16 @@ pageMeta.baseId = '{{ baseId }}';
 							} %}
 						</td>
 					</tr>
+					<tr id="new_category_brand">
+						<th width="100">{{ phrase('agent.general.brand') }}</th>
+						<td>
+							<select name="category[brand_id]">
+								{% for brand in brands %}
+									<option value="{{ brand.id }}">{{ brand.name }}</option>
+								{% endfor %}
+							</select>
+						</td>
+					</tr>
 					<tr>
 						<th width="80">{{ phrase('agent.general.permissions') }}</th>
 						<td>

@@ -67,6 +67,12 @@ class ArticlesController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
+     *
+     * @param TagRequest      $tag_request
+     * @param array           $options
+     * @param ArticleCategory $category
+     *
+     * @return Response
      */
     public function categoriesAction(TagRequest $tag_request, array $options, ArticleCategory $category = null)
     {

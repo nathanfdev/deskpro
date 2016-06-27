@@ -61,7 +61,7 @@ DeskPRO.Agent.PageFragment.ListPane.NewsList = new Orb.Class({
 		this.getEl('catfoot').find('.cat-save-trigger').on('click', function(ev){
 			Orb.cancelEvent(ev);
 
-			var postData = catEl.find('input').serializeArray();
+			var postData = catEl.find('input, select').serializeArray();
 
 			self.getEl('catfoot').addClass('dp-loading-on');
 			$.ajax({
