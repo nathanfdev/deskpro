@@ -34,6 +34,11 @@ define [
       })
 
       options.push({
+        title: 'Followers',
+        value: 'FilterAgentParticipant'
+      })
+
+      options.push({
         title: 'Agent Team',
         value: 'FilterAgentTeam'
       })
@@ -527,6 +532,15 @@ define [
       options.dataName = 'agents'
       options.extraOptions = [
         {title: 'Unassigned', value: 0},
+        {title: 'Current Agent', value: -1}
+      ]
+      def = @getStandardSelect(options)
+      return def
+
+    getFilterAgentParticipant: (options = {}) ->
+      options.propName = 'agent_ids'
+      options.dataName = 'agents'
+      options.extraOptions = [
         {title: 'Current Agent', value: -1}
       ]
       def = @getStandardSelect(options)
