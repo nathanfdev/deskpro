@@ -9083,7 +9083,6 @@ table .form-help {
     }
 
     .filter-box {
-      width: 60%;
       input {
         width: 100%;
         padding: $padding-base-vertical $padding-base-horizontal;
@@ -9181,7 +9180,7 @@ table .form-help {
       @include blank-list;
       width: 100%;
       border: 1px solid $input-border;
-      max-height: 300px;
+      max-height: 320px;
       overflow-y: auto;
       margin: -1px 0 0 0;
       background: $page-bg;
