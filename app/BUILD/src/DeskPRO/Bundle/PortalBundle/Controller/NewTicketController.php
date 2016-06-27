@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
@@ -68,6 +69,8 @@ class NewTicketController extends AbstractController
         $ticket_message = $ticket->messages[0];
 
         $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, [
+            'ticket_view_context'   => TicketWithLayoutsContext::VIEW_USER,
+            'ticket_visibility'     => TicketWithLayoutsContext::VISIBILITY_NEW,
             'person'                => $person,
             'action'                => $this->generateUrl('portal_new_ticket'),
             'department_id'         => $request->query->getInt('department_id'),
@@ -150,9 +153,11 @@ class NewTicketController extends AbstractController
         }
 
         $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [
-            'person'        => $person,
-            'action'        => $this->generateUrl('portal_new_ticket'),
-            'department_id' => $request->query->getInt('department_id'),
+            'person'              => $person,
+            'action'              => $this->generateUrl('portal_new_ticket'),
+            'department_id'       => $request->query->getInt('department_id'),
+            'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
+            'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
         ]);
 
         /** @var \Application\DeskPRO\TicketLayout\LayoutCollection $layouts */

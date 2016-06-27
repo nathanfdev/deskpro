@@ -26,15 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -132,6 +130,7 @@ class TicketFormsController extends AbstractTicketsController
         $options = array_merge($options, [
             'person'              => $this->getUser(),
             'ticket_view_context' => $request->attributes->get('context'),
+            'ticket_visibility'   => $model->getId() ? TicketWithLayoutsContext::VISIBILITY_EDIT : TicketWithLayoutsContext::VISIBILITY_NEW,
         ]);
 
         return parent::handleForm($model, $request, $options);

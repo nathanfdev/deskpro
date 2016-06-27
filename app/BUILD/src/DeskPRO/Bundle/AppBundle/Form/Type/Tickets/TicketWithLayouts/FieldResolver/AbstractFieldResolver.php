@@ -122,10 +122,6 @@ abstract class AbstractFieldResolver
             case FormFields::SUBJECT:
                 return $this->createSubject();
             case FormFields::MESSAGE:
-                if (TicketWithLayoutsContext::VISIBILITY_NEW !== $context->getVisibility()) {
-                    return false;
-                }
-
                 return $this->createMessage($context);
             case FormFields::PERSON:
                 return $this->createPerson($context);

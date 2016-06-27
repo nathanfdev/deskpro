@@ -81,6 +81,8 @@ class TicketLayoutContext extends BaseContext
      *
      * @param string    $departmentRef
      * @param TableNode $fields
+     *
+     * @throws \Exception
      */
     public function theTicketLayoutExists($departmentRef, TableNode $fields)
     {
@@ -101,7 +103,17 @@ class TicketLayoutContext extends BaseContext
                     $fieldId   = (int) $matches[2];
                 }
 
-                $layouts[$context]->add(new LayoutField($fieldType, $fieldId));
+                $layoutField = new LayoutField($fieldType, $fieldId);
+                if (!empty($data[$context.'_options'])) {
+                    $options = ObjectsManager::preProcessValue($data[$context.'_options']);
+                    if (!is_array($options)) {
+                        throw new \Exception("Unable to set layout options for the field $fieldType");
+                    }
+
+                    $layoutField->setOptionsFromArray($options);
+                }
+
+                $layouts[$context]->add($layoutField);
             }
         }
 

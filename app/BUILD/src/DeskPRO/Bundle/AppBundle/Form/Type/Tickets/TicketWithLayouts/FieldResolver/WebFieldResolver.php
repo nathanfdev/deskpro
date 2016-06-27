@@ -128,6 +128,10 @@ class WebFieldResolver extends AbstractFieldResolver
      */
     protected function createMessage(TicketWithLayoutsContext $context)
     {
+        if (TicketWithLayoutsContext::VISIBILITY_NEW !== $context->getVisibility()) {
+            return false;
+        }
+
         return new FormField(TicketDescriptionType::class, [
             'mapped'         => false,
             'label'          => false,
