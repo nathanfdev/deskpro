@@ -4,10 +4,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     @CTRL_AS = 'Portal'
     @DEPS    = ['$http', '$scope', '$timeout', '$upload', '$modal', 'Growl']
 
-    init: ->
+    init: =>
       @open_panels = ['theme', 'colors', 'advanced', 'expert']
-
-
       @recompiling = false
       @savingMulti = false
       @advanced = {header: '', footer: '', main_scss: '', custom_scss: '', javascript: ''}
@@ -15,8 +13,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         {id: "standard", title: "Standard"},
         {id: "sidebar", title: "Sidebar"}
       ]
-
-
       @$scope.welcome_box = {
         title: '',
         message: ''
@@ -44,7 +40,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @theme_set = null;
       @refreshPreviewUrl()
 
-    save: ->
+    save: =>
       request = @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/advanced-edits',
@@ -62,7 +58,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         @savingMulti = false
       )
 
-    editTheme: ->
+    editTheme: =>
       request = @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/info',
@@ -76,16 +72,16 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         () => @serverError(); @recompiling = false
       )
 
-    saveWelcomeBox: ->
+    saveWelcomeBox: =>
       @editWelcomeBox().then(
         () => if not @savingMulti then @refreshPreviewUrl()
       )
 
-    clearWelcomeBox: ->
+    clearWelcomeBox: =>
        @welcome_box = {title: '', message: ''}
        @saveWelcomeBox()
 
-    editWelcomeBox: ->
+    editWelcomeBox: =>
       request = @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/welcome-message',
@@ -97,7 +93,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         () => @serverError(); @recompiling = false
       )
 
-    saveValues: ->
+    saveValues: =>
       request = @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/variable-values',
@@ -110,7 +106,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       )
       return request
 
-    commit: () ->
+    commit: () =>
       @showConfirm('Are you sure you want to apply this changes to the portal?', 'Confirm save').result.then(
         () =>
           if @isDirtyState()
@@ -127,7 +123,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           );
       );
 
-    discard: () ->
+    discard: () =>
       @showConfirm('Are you sure you want to discard all changes you\'ve made?', 'Confirm discard').result.then(
         () =>
           @recompiling = true
@@ -140,7 +136,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           );
       )
 
-    initialLoad: ->
+    initialLoad: =>
       @$q.all([
         @$http.get('/portal/api/style/variable-groups').success((data) => @groups = data),
         @loadValues(),
@@ -152,16 +148,16 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         @loadWelcomeBox()
       ])
 
-    togglePanel: (name) ->
+    togglePanel: (name) =>
       if name in @open_panels
         @open_panels = @open_panels.filter (e) -> e != name
       else
         @open_panels.push name
 
-    isOpen: (name) ->
+    isOpen: (name) =>
       name in @open_panels
 
-    label: (sys_name) ->
+    label: (sys_name) =>
       sys_name.replace(/[\-_]/g, ' ').replace(/^(.)|\s(.)/g, (v) -> v.toUpperCase())
 
     refreshPreviewUrl: =>
@@ -171,7 +167,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       if @preview_as is 'guest' then preview_url += '&_preview_as=_anon'
       @preview_url = preview_url
 
-    loadValues: (success) ->
+    loadValues: (success) =>
       @$http.get('/portal/api/style/edit-theme-set/variable-values').success(
         (values) =>
           angular.extend(@$scope.values, values)
@@ -181,7 +177,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
             success()
       )
 
-    loadTemplateOptions: () ->
+    loadTemplateOptions: () =>
       @$http.get('/portal/api/style/edit-theme-set/templates').success(
         (templates) =>
           for template in templates
@@ -192,12 +188,12 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
             })
       )
 
-    templateName: (template) -> template.split(':')[2].replace(/\.twig/, '')
-    templateGroup: (template) ->
+    templateName: (template) => template.split(':')[2].replace(/\.twig/, '')
+    templateGroup: (template) =>
       parts = template.split(':')
       if parts[1] then parts[1] else parts[0]
 
-    editTemplate: ->
+    editTemplate: =>
       @$http.get('/portal/api/style/edit-theme-set/template-info?template=' + @selected_template).success((data) =>
         @selected_template_info = {
           code: data.source,
@@ -206,7 +202,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         @selected_template_info_loaded = true
       )
 
-    openTemplateEditor: (tpl) ->
+    openTemplateEditor: (tpl) =>
       @selected_template = tpl
       @$http.get('/portal/api/style/edit-theme-set/template-info?template=' + @selected_template).success((data) =>
         @selected_template_info = {
@@ -216,7 +212,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         @selected_template_info_loaded = true
       )
 
-    saveTemplateEditor: () ->
+    saveTemplateEditor: () =>
       @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
@@ -231,7 +227,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
 
-    revertTemplateEditor: () ->
+    revertTemplateEditor: () =>
       @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
@@ -242,7 +238,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @selected_template = null
       @selected_template_info_loaded = false
 
-    openCssEditor: (type) ->
+    openCssEditor: (type) =>
       @css_template_selected = true
       @$http.get('/portal/api/style/edit-theme-set/advanced-edits').success((data) =>
         @css_template_info = {
@@ -252,11 +248,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         }
       )
 
-    cancelCssEditor: ->
+    cancelCssEditor: =>
       @css_template_selected = false
       @css_template_info = false
 
-    saveCssEditor: ->
+    saveCssEditor: =>
       data = {};
       data[@css_template_info.type] = @css_template_info.code;
       @recompiling = true
@@ -274,11 +270,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
       return req
 
-    cancelTemplateEditor: ->
+    cancelTemplateEditor: =>
       @selected_template = null
       @selected_template_info_loaded = false
 
-    loadAdvancedEdits: (success) ->
+    loadAdvancedEdits: (success) =>
       @$http.get('/portal/api/style/edit-theme-set/advanced-edits').success(
         (advanced) =>
           angular.extend(@advanced, advanced)
@@ -286,27 +282,27 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
             success()
       )
 
-    loadAssetFiles: () ->
+    loadAssetFiles: () =>
       @$http.get('/portal/api/style/edit-theme-set/assets').success(
         (response) => angular.extend(@asset_files, response.data)
       )
 
-    loadThemeSet: () ->
+    loadThemeSet: () =>
       @$http.get('/portal/api/style/edit-theme-set/info').success((data) =>
         @theme_set = data
         @selected_theme = @theme_set.theme_id
       )
 
-    loadWelcomeBox: () ->
+    loadWelcomeBox: () =>
       @$http.get('/portal/api/style/edit-theme-set/welcome-message').success((response) =>
         @$scope.welcome_box = response.data
         @welcome_box = angular.copy(@$scope.welcome_box)
       )
 
-    loadLogo: () ->
+    loadLogo: () =>
       @$http.get('/portal/api/style/edit-theme-set/logo').success((response) => @custom_logo = response.data?.url)
 
-    upload: (files)->
+    upload: (files) =>
       for file in files
         @uploading_files_count++;
         @$upload.upload({
@@ -320,7 +316,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           () => @error('Server error occurred. Unable to upload files.')
         );
 
-    uploadLogo: (files) ->
+    uploadLogo: (files) =>
       @$upload
         .upload({url: '/portal/api/style/edit-theme-set/logo', file: files[0]})
         .then(
@@ -328,17 +324,17 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           () => @error('Server error occurred. Unable to upload files.')
         );
 
-    copyUrl: (file) ->
+    copyUrl: (file) =>
       window.prompt('Copy this:', file.url)
       return
 
-    isDirtyState: ->
+    isDirtyState: =>
       return true if not angular.equals(@welcome_box, @$scope.welcome_box)
       return true if not angular.equals(@values, @$scope.values)
 
       return false
 
-    notifyUrlCopied: () ->
+    notifyUrlCopied: () =>
       @Growl.success('File URL was copied to your clipboard');
       return
 
@@ -348,17 +344,17 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           () => @asset_files = @asset_files.filter (f) -> f isnt file
         )
 
-    deleteLogo: () ->
+    deleteLogo: () =>
       @$http.delete('/portal/api/style/edit-theme-set/logo').success(() => @custom_logo = null)
 
-    openAdvancedTab: (tab) -> @advanced_tab = tab
-    isAdvancedTab: (tab) -> @advanced_tab == tab
+    openAdvancedTab: (tab) => @advanced_tab = tab
+    isAdvancedTab: (tab) => @advanced_tab == tab
 
-    isAdvancedExpanded: () -> @is_advanced_expanded
-    collapseAdvanced: () -> @is_advanced_expanded = false
-    expandAdvanced: () -> @is_advanced_expanded = true
+    isAdvancedExpanded: () => @is_advanced_expanded
+    collapseAdvanced: () => @is_advanced_expanded = false
+    expandAdvanced: () => @is_advanced_expanded = true
 
-    canPreview: ->
+    canPreview: =>
       !@recompiling and !@savingMulti and (@preview_as is 'guest' or @preview_as is 'myself' or @preview_as_email)
 
     previewAs: (mode) =>
@@ -368,7 +364,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @preview_as_email = null
       @refreshPreviewUrl()
 
-    promptEmail: ->
+    promptEmail: =>
       modalInstance = @$modal.open({
         templateUrl: @getTemplatePath('Portal/Editor/email-modal.html'),
         controller: ['$scope', '$modalInstance', '$http', 'preview_as', ($scope, $modalInstance, $http, preview_as) ->
@@ -386,8 +382,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       });
       modalInstance.result.then((email) => @preview_as_email = email; @refreshPreviewUrl())
 
-    error: (message) -> @showAlert(message, 'Changes were not applied')
-    success: (message) -> @showAlert(message, 'Changes were applied')
-    serverError: (message) -> @error('Server error occurred. Unable to save data (' + message.message + ').')
+    error: (message) => @showAlert(message, 'Changes were not applied')
+    success: (message) => @showAlert(message, 'Changes were applied')
+    serverError: (message) => @error('Server error occurred. Unable to save data (' + message.message + ').')
 
   Admin_Portal_Ctrl_PortalEditor.EXPORT_CTRL()

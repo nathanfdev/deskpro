@@ -1,5 +1,5 @@
 Orb.createNamespace('DeskPRO.Agent.WindowElement.Section');
-
+//
 /**
  * The UserChat section also controls the chat status at the top of the window.
  */
