@@ -133,20 +133,27 @@ export const loadOptions = createAction('WIDGET_OPTIONS', options => $.extend(tr
 export const fetchOptions = createAction(
   'WIDGET_FETCH_OPTIONS',
   () => dispatch => new Promise(resolve => {
+    const setOptions = options => {
+      // we need to merge the fetched options with the 'window.DP_OPTIONS' to have per-page customization
+      // (e.g. have Page A on your site can use different phrases than Page B)
+      const mergedOptions = $.extend(true, {}, options, window.DP_OPTIONS);
+
+      dispatch(loadOptions(mergedOptions));
+      resolve();
+    };
+
     // try to get data from local storage
     const cachedOptions = lscache.get('dpWidget.options');
     if (cachedOptions) {
-      dispatch(loadOptions(cachedOptions));
-      resolve();
+      setOptions(cachedOptions);
     }
 
     const promise = widgetApi.sendGet('DP_API/widget/options');
     promise.then(response => {
       const options = response.data.data;
 
-      dispatch(loadOptions(options));
+      setOptions(options);
       lscache.set('dpWidget.options', options, 15);
-      resolve();
     });
   })
 );
