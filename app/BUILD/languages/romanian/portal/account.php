@@ -27,12 +27,13 @@
  */
 
 return array(
-    'portal.account.section-title-reset-password' => 'Resetare parola',
-    'portal.account.section-title-register'       => 'Inrestreaza-te',
-    'portal.account.login-register-header'        => 'Inrestreaza-te',
-    'portal.account.login-register-btn'           => 'Inrestreaza-te',
-    'portal.account.section-title-profile'        => 'Profil',
     'portal.account.change-password'              => 'Schimba parola',
-    'portal.account.reset-password-btn'           => 'Resetare parola',
+    'portal.account.email-btn-resend-validation'  => 'Retrimite email-ul de validare',
+    'portal.account.login-register-btn'           => 'Inrestreaza-te',
+    'portal.account.login-register-header'        => 'Inrestreaza-te',
     'portal.account.register-btn'                 => 'Inrestreaza-te',
+    'portal.account.reset-password-btn'           => 'Resetare parola',
+    'portal.account.section-title-profile'        => 'Profil',
+    'portal.account.section-title-register'       => 'Inrestreaza-te',
+    'portal.account.section-title-reset-password' => 'Resetare parola',
 );

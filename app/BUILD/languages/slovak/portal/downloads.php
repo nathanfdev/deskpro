@@ -27,7 +27,8 @@
  */
 
 return array(
-    'portal.downloads.section-title' => 'Stiahnutia',
-    'portal.downloads.search-title'  => 'Stiahnutia',
     'portal.downloads.download'      => 'Stiahnuť',
+    'portal.downloads.search-title'  => 'Stiahnutia',
+    'portal.downloads.section-title' => 'Stiahnutia',
+    'portal.downloads.view-as-agent' => 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.',
 );

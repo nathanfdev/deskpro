@@ -27,7 +27,8 @@
  */
 
 return array(
-    'portal.downloads.section-title' => 'İndirmeler',
-    'portal.downloads.search-title'  => 'İndirmeler',
     'portal.downloads.download'      => 'İndir',
+    'portal.downloads.search-title'  => 'İndirmeler',
+    'portal.downloads.section-title' => 'İndirmeler',
+    'portal.downloads.view-as-agent' => 'Bir personel iseniz bu sayfayı görebilirsiniz. Normal kullanıcılar bu sayfayı göremezler.',
 );

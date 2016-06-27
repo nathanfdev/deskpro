@@ -52,6 +52,8 @@ return array(
     'user.emails.ticket_flood'                => 'Hai di recente inviato un email al nostro help desk.<br /><br />il nostro sistema ha riscontrato che hai inviato molti messaggi in rapida successione che, molto probabilmente, sono automatizzati',
     'user.emails.ticket_message_title'        => 'Il {{date}} alle {{time}}, {{author}} ha scritto:',
     'user.emails.ticket_no-autoresponse'      => 'Attenzione: Email di conferma disabilitate',
+    'user.emails.ticket_rate-negative'        => 'No',
+    'user.emails.ticket_rate-positive'        => 'Sì',
     'user.emails.ticket_received'             => 'Il tuo ticket è stato ricevuto. Uno dei membri dello staff ti risponderà a breve.',
     'user.emails.ticket_reply-confirm'        => 'Grazie per la tua risposta. Uno dei membri dello staff ti risponderà a breve.',
     'user.emails.ticket_validate'             => 'Grazie per averci<br /><br />contattato',

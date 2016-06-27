@@ -32,6 +32,7 @@ return array(
     'user.email_subjects.comment-deleted'          => 'Edustajamme on lukenut kommenttisi',
     'user.email_subjects.email-too-big'            => 'Sähköpostiosoitteesi "{{subject}}" hylättiin',
     'user.email_subjects.email_new-confirm'        => 'Vahvista sähköpostiosoitteesi',
+    'user.email_subjects.email_primary-confirm'    => 'Vahvista sähköpostiosoitteesi',
     'user.email_subjects.feedback_new'             => 'Kiitos lähettämästäsi palautteesta',
     'user.email_subjects.feedback_new-approved'    => 'Palautteesi hyväskyttiin',
     'user.email_subjects.feedback_new-comment'     => 'Uusi kommentti ketjussa "{{title}}"',

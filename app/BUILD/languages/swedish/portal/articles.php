@@ -27,6 +27,7 @@
  */
 
 return array(
-    'portal.articles.section-title' => 'Kunskapsbas',
     'portal.articles.search-title'  => 'Kunskapsbas',
+    'portal.articles.section-title' => 'Kunskapsbas',
+    'portal.articles.view-as-agent' => 'Du kan se denna sida för att du är en agent. Normala användare kommer inte att kunna visa denna sida.',
 );

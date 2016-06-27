@@ -27,8 +27,11 @@
  */
 
 return array(
-    'portal.feedback.section-title'   => 'Feedback',
-    'portal.feedback.section-desc'    => 'Dessa förslag har postats av användare precis som du; vi ser gärna att du diskuterar och röstar på de förslag som listas. Om du har ett nytt förslag så är du välkommen att posta det.',
+    'portal.feedback.attachments'     => 'Bifogade filer',
+    'portal.feedback.btn-closed'      => 'Stängd',
+    'portal.feedback.btn-vote'        => 'Jag håller med',
     'portal.feedback.search-title'    => 'Feedback',
+    'portal.feedback.section-desc'    => 'Dessa förslag har postats av användare precis som du; vi ser gärna att du diskuterar och röstar på de förslag som listas. Om du har ett nytt förslag så är du välkommen att posta det.',
+    'portal.feedback.section-title'   => 'Feedback',
     'portal.feedback.submit_feedback' => 'Posta feedback',
 );

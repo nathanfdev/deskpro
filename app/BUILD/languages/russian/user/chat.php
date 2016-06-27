@@ -44,6 +44,7 @@ return array(
     'user.chat.form_feedback_title'             => 'Отправить нам отзыв',
     'user.chat.form_feedback_transcript-email'  => 'Отправить запись этого разговора',
     'user.chat.log_chat-id'                     => 'Идентификатор чата',
+    'user.chat.log_created-date'                => 'Создано {{date}}',
     'user.chat.log_fields_department'           => 'Отдел',
     'user.chat.log_message_author-you'          => 'Вы',
     'user.chat.message_agent-timeout'           => 'Приносим свои извинения; произошло разъединение с{{name}}. Пожалуйста, подождите, пока мы подберем Вам нового специалиста',

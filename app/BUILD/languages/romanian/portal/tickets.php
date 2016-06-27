@@ -38,6 +38,7 @@ return array(
     'portal.tickets.list_subject'                   => 'Subiect',
     'portal.tickets.list_title'                     => 'Tichetele dumneavoastra',
     'portal.tickets.new-intro'                      => 'Va rugam sa completati acest formular iar unul din agentii nostri va va raspunde cu un email in cel mai scurt timp posibil.',
+    'portal.tickets.new-section-title'              => 'Contacteaza-ne',
     'portal.tickets.rate-intro'                     => '{{name}} v-a ajutat cu tichetul "{{subject}}"',
     'portal.tickets.rate-negative'                  => 'Nu a fost bun',
     'portal.tickets.rate-neutral'                   => 'A fost in regula',

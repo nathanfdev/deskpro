@@ -30,6 +30,7 @@ return array(
     'portal.general.add-comment'                 => 'Adauga un comentariu',
     'portal.general.agent'                       => 'Agent',
     'portal.general.attachments'                 => 'Atasamente',
+    'portal.general.btn-cancel'                  => 'Anulare',
     'portal.general.btn-download-pdf'            => 'Downloadati PDF-ul',
     'portal.general.btn-go'                      => 'Start',
     'portal.general.delete'                      => 'Sterge',
@@ -41,6 +42,7 @@ return array(
     'portal.general.nav-kb-desc'                 => 'Citeste articolele de ajutor',
     'portal.general.nav-news'                    => 'Stiri',
     'portal.general.nav-news-desc'               => 'Stiri si noutati',
+    'portal.general.nav-newticket'               => 'Contacteaza-ne',
     'portal.general.nav-profile'                 => 'Profil',
     'portal.general.nav-register'                => 'Inrestreaza-te',
     'portal.general.nav-reset-password'          => 'Resetare parola',
@@ -55,5 +57,6 @@ return array(
     'portal.general.search-labels-section-title' => 'Cauta etichete',
     'portal.general.search-section-title'        => 'Cautare',
     'portal.general.search_btn'                  => 'Cautare',
+    'portal.general.share-this'                  => 'Distribuie',
     'portal.general.submit-feedback'             => 'Trimite Feedback',
 );

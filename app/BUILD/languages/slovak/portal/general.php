@@ -30,6 +30,7 @@ return array(
     'portal.general.add-comment'                 => 'Pridať komentár',
     'portal.general.agent'                       => 'Operátor',
     'portal.general.attachments'                 => 'Pripojenia',
+    'portal.general.btn-cancel'                  => 'Zrušiť',
     'portal.general.btn-download-pdf'            => 'Stiahnuť PDF',
     'portal.general.btn-go'                      => 'Ísť',
     'portal.general.delete'                      => 'Zmazať',
@@ -41,6 +42,7 @@ return array(
     'portal.general.nav-kb-desc'                 => 'Čítaj pomocné články',
     'portal.general.nav-news'                    => 'Novinky',
     'portal.general.nav-news-desc'               => 'Novinky a aktualizácie',
+    'portal.general.nav-newticket'               => 'Kontaktujte nás',
     'portal.general.nav-profile'                 => 'Profil',
     'portal.general.nav-register'                => 'Registrovať',
     'portal.general.nav-reset-password'          => 'Reset hesla',
@@ -55,6 +57,7 @@ return array(
     'portal.general.search-labels-section-title' => 'Hľadaj štítky',
     'portal.general.search-section-title'        => 'Hľadať',
     'portal.general.search_btn'                  => 'Hľadať',
+    'portal.general.share-this'                  => 'Zdieľať toto',
     'portal.general.show'                        => 'Ukáž',
     'portal.general.submit-feedback'             => 'Predložiť spätnú väzbu',
 );

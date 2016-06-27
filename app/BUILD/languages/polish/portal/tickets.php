@@ -38,6 +38,7 @@ return array(
     'portal.tickets.list_subject'                   => 'Temat',
     'portal.tickets.list_title'                     => 'Twoje zgłoszenia',
     'portal.tickets.new-intro'                      => 'Wypełnij formularz zgłoszenia. Jeden z naszych pracowników wkrótce skontaktuje się z Tobą.',
+    'portal.tickets.new-section-title'              => 'Napisz do nas',
     'portal.tickets.rate-intro'                     => '{{name}} pomógł/pomogła Ci rozwiązać zgłoszenie "{{subject}}"',
     'portal.tickets.rate-negative'                  => 'Zła',
     'portal.tickets.rate-neutral'                   => 'Co nieco',

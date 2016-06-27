@@ -28,4 +28,5 @@
 
 return array(
     'portal.news.section-title' => 'Actualités',
+    'portal.news.view-as-agent' => 'Vous pouvez voir cette page car vous êtes un agent. Les utilisateurs normaux ne peuvent pas voir cette page.',
 );

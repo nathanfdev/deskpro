@@ -27,12 +27,16 @@
  */
 
 return array(
-    'portal.chat.list_agent'             => '에이전트',
-    'portal.chat.log_department'         => '부서',
-    'portal.chat.you'                    => '고객님',
     'portal.chat.assigned_to'            => '{{name}} 과 대화가 연결되었습니다',
+    'portal.chat.chat_transcript'        => '대화 기록',
+    'portal.chat.end_chat'               => '대화를 종료합니다',
     'portal.chat.ended_by'               => '대화가 {{name}} 에 의해 종료되었습니다',
     'portal.chat.ended_user'             => '대화가 사용자에 의해 종료되었습니다',
+    'portal.chat.feedback_action'        => '피드백 보내기',
+    'portal.chat.helpful'                => '도움이 되었습니다',
+    'portal.chat.label-name'             => '이름',
+    'portal.chat.list_agent'             => '에이전트',
+    'portal.chat.log_department'         => '부서',
     'portal.chat.message_assigned'       => '{{name}} 과 대화가 연결되었습니다',
     'portal.chat.message_ended'          => '대화가 종료되었습니다',
     'portal.chat.message_ended-by'       => '대화가 {{name}} 에 의해 종료되었습니다',
@@ -47,6 +51,8 @@ return array(
     'portal.chat.message_user-timeout'   => '사용자의 시간이 초과되었습니다.',
     'portal.chat.message_user_joined'    => '{{name}} 가 대화에 참여했습니다',
     'portal.chat.message_user_left'      => '{{name}} 님이 대화방에서 나가셨습니다',
+    'portal.chat.not_helpful'            => '도움이 되지 않았다',
     'portal.chat.transcript_sent'        => '대화 내용이 {{email}}로 보내졌습니다.',
     'portal.chat.unassigned'             => '미배정 채팅',
+    'portal.chat.you'                    => '고객님',
 );

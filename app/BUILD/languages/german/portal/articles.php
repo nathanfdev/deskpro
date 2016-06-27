@@ -27,6 +27,7 @@
  */
 
 return array(
-    'portal.articles.section-title' => 'Knowledgebase',
     'portal.articles.search-title'  => 'Knowledgebase',
+    'portal.articles.section-title' => 'Knowledgebase',
+    'portal.articles.view-as-agent' => 'Sie können diese Seite sehen weil Sie ein Agent sind. Normale Benutzer können diese Seite nicht sehen.',
 );

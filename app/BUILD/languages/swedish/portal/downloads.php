@@ -27,7 +27,8 @@
  */
 
 return array(
-    'portal.downloads.section-title' => 'Nedladdningar',
-    'portal.downloads.search-title'  => 'Nedladdningar',
     'portal.downloads.download'      => 'Ladda ner',
+    'portal.downloads.search-title'  => 'Nedladdningar',
+    'portal.downloads.section-title' => 'Nedladdningar',
+    'portal.downloads.view-as-agent' => 'Du kan se denna sida för att du är en agent. Normala användare kommer inte att kunna visa denna sida.',
 );

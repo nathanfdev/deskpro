@@ -31,6 +31,7 @@ return array(
     'user.email_subjects.comment-approved'         => 'Ваш комментарий добавлен',
     'user.email_subjects.comment-deleted'          => 'Ваш комментарий прочтен нашими сотрудниками',
     'user.email_subjects.email_new-confirm'        => 'Подтвердите Ваш адрес электронной почты',
+    'user.email_subjects.email_primary-confirm'    => 'Подтвердите Ваш адрес электронной почты',
     'user.email_subjects.feedback_new'             => 'Спасибо Вам за оставленный отзыв',
     'user.email_subjects.feedback_new-approved'    => 'Ваш отзыв принят к рассмотрению',
     'user.email_subjects.feedback_new-comment'     => 'Добавлен новый комментарий в раздел "{{title}}"',

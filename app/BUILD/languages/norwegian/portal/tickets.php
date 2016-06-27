@@ -28,12 +28,16 @@
 
 return array(
     'portal.tickets.feedback_message_leave_comment' => 'Eventuelt legg igjen en kommentar',
+    'portal.tickets.guest-thanks-section-title'     => 'Takk',
+    'portal.tickets.guest_thank_you_title'          => 'Takk',
     'portal.tickets.list_agent'                     => 'Tildelt medarbeider',
+    'portal.tickets.list_department'                => 'Avdeling',
     'portal.tickets.list_status_open'               => 'Uløste saker',
     'portal.tickets.list_status_resolved'           => 'Lukket',
     'portal.tickets.list_subject'                   => 'Emne',
     'portal.tickets.list_title'                     => 'Dine saker',
     'portal.tickets.new-intro'                      => 'Vennligst fyll ut skjema og en av våre medarbeidere vil svare deg på epost så snart som mulig.',
+    'portal.tickets.new-section-title'              => 'Kontakt oss',
     'portal.tickets.related_articles_title'         => 'Relaterte artikler',
     'portal.tickets.resolve_my_ticket_btn'          => 'Lukk saken',
     'portal.tickets.resolve_ticket'                 => 'Løs sak: {{subject}}',

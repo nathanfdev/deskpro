@@ -55,6 +55,8 @@ return array(
     'user.emails.ticket_flood'                => 'Du sendte en epost til vår kundesenter. Vårt automatiske system har oppdaget at du har sendt mange meldinger rett etter hverandre, som for oss ser ut til å være automatiske. <br /><br />For å beskytte oss mot en autosvar løkke, så vil ikke vårt kundesenter sende flere automatiske meldinger til deg.',
     'user.emails.ticket_message_title'        => 'Den {{date}} kl {{time}}, {{author}} skrev:',
     'user.emails.ticket_no-autoresponse'      => 'Advarsel: Bekreftelsesepost er skrudd av.',
+    'user.emails.ticket_rate-negative'        => 'Nei',
+    'user.emails.ticket_rate-positive'        => 'Ja',
     'user.emails.ticket_received'             => 'Din sak har blitt mottatt. En av våre medarbeidere vil svare innen kort tid.',
     'user.emails.ticket_reply-confirm'        => 'Takk for ditt svar. En av våre medarbeidere vil svare innen kort tid.',
     'user.emails.ticket_validate'             => 'Takk for at du tok kontakt.<br /><br />Før en av våre medarbeidere vil lese og svare på meldingen din, må du bekrefte epost-addressen din.',

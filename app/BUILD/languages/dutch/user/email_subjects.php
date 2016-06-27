@@ -31,6 +31,7 @@ return array(
     'user.email_subjects.comment-approved'         => 'Uw opmerking is goedgekeurd',
     'user.email_subjects.comment-deleted'          => 'Uw opmerking is gelezen door een medewerken',
     'user.email_subjects.email_new-confirm'        => 'Valideer uw e-mailadres',
+    'user.email_subjects.email_primary-confirm'    => 'Valideer uw e-mailadres',
     'user.email_subjects.feedback_new'             => 'Bedankt voor het sturen van uw feedback',
     'user.email_subjects.feedback_new-approved'    => 'Uw feedback is goedgekeurd',
     'user.email_subjects.feedback_new-comment'     => 'Er is een nieuwe opmerking op "{{title}}"',

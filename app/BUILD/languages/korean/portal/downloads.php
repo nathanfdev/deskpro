@@ -27,7 +27,8 @@
  */
 
 return array(
-    'portal.downloads.section-title' => '다운로드 파일들',
-    'portal.downloads.search-title'  => '다운로드 파일들',
     'portal.downloads.download'      => '다운로드',
+    'portal.downloads.search-title'  => '다운로드 파일들',
+    'portal.downloads.section-title' => '다운로드 파일들',
+    'portal.downloads.view-as-agent' => '직원들만 이 페이지를 열람 할 수 있습니다. 일반 사용자는 열람 할 수 없습니다.',
 );

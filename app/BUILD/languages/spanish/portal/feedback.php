@@ -27,6 +27,9 @@
  */
 
 return array(
+    'portal.feedback.attachments'     => 'Adjuntos',
+    'portal.feedback.btn-closed'      => 'Cerrado',
+    'portal.feedback.btn-vote'        => 'Estoy de acuerdo',
     'portal.feedback.form_title'      => 'Título',
     'portal.feedback.search-title'    => 'Comentarios',
     'portal.feedback.section-desc'    => 'Estas sugerencias han sido enviadas por clientes como usted; le animamos a discutir y votar aquellas con las que esté de acuerdo y enviarnos sus sugerencias si no las encuentra en la lista.',

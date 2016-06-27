@@ -28,4 +28,5 @@
 
 return array(
     'portal.news.section-title' => 'الأخبار',
+    'portal.news.view-as-agent' => 'أنت في هذه الصفحة لأنك أحد الموظفين. العملاء وبقية العضويات لن يمكنهم مشاهدة هذه الصفحة.',
 );

@@ -38,6 +38,7 @@ return array(
     'portal.tickets.list_subject'                   => 'Onderwerp',
     'portal.tickets.list_title'                     => 'Uw tickets',
     'portal.tickets.new-intro'                      => 'Vul dit formulier in en één van onze medewerkers zal u zo spoedig mogelijk via mail antwoorden.',
+    'portal.tickets.new-section-title'              => 'Neem contact met ons op',
     'portal.tickets.rate-negative'                  => 'Het was niet goed',
     'portal.tickets.rate-neutral'                   => 'Het was OK',
     'portal.tickets.rate-positive'                  => 'Het was geweldig',

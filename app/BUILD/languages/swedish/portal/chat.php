@@ -28,8 +28,14 @@
 
 return array(
     'portal.chat.assigned_to'            => 'Chat tilldelas {{name}}',
+    'portal.chat.chat_transcript'        => 'Chatlogg',
+    'portal.chat.end_chat'               => 'Avsluta Chatten',
     'portal.chat.ended_by'               => 'Chatten avslutades av {{name}}',
     'portal.chat.ended_user'             => 'Chatten avslutades av användaren',
+    'portal.chat.feedback_action'        => 'Skicka Feedback',
+    'portal.chat.helpful'                => 'Hjälpfull',
+    'portal.chat.label-name'             => 'Ditt Namn',
+    'portal.chat.log_department'         => 'Avdelning',
     'portal.chat.message_assigned'       => 'Chat tilldelas {{name}}',
     'portal.chat.message_ended'          => 'Chatten har avslutats',
     'portal.chat.message_ended-by'       => 'Chatten avslutades av {{name}}',
@@ -44,5 +50,7 @@ return array(
     'portal.chat.message_user-timeout'   => 'Användaren kopplades ifrån',
     'portal.chat.message_user_joined'    => '{{name}} anslöt till chatten',
     'portal.chat.message_user_left'      => '{{name}} lämnade chatten',
+    'portal.chat.not_helpful'            => 'Inte Hjälpfull',
     'portal.chat.unassigned'             => 'Chatten är inte tilldelad',
+    'portal.chat.you'                    => 'Du',
 );

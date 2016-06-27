@@ -27,7 +27,8 @@
  */
 
 return array(
-    'portal.downloads.section-title' => 'Pliki do pobrania',
-    'portal.downloads.search-title'  => 'Pliki do pobrania',
     'portal.downloads.download'      => 'Pobierz',
+    'portal.downloads.search-title'  => 'Pliki do pobrania',
+    'portal.downloads.section-title' => 'Pliki do pobrania',
+    'portal.downloads.view-as-agent' => 'Masz dostęp do tej strony, bo jesteś pracownikiem. Pozostali użytkownicy nie będą mogli korzystać z tej strony.',
 );

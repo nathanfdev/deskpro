@@ -30,6 +30,7 @@ return array(
     'portal.general.add-comment'                 => 'Plaats een reactie',
     'portal.general.agent'                       => 'Medewerker',
     'portal.general.attachments'                 => 'Bijlagen',
+    'portal.general.btn-cancel'                  => 'Annuleren',
     'portal.general.btn-download-pdf'            => 'Download PDF',
     'portal.general.btn-go'                      => 'Gaan',
     'portal.general.delete'                      => 'Verwijderen',
@@ -40,6 +41,7 @@ return array(
     'portal.general.nav-kb'                      => 'Kennisbank',
     'portal.general.nav-kb-desc'                 => 'Lees artikelen',
     'portal.general.nav-news'                    => 'Nieuws',
+    'portal.general.nav-newticket'               => 'Neem contact met ons op',
     'portal.general.nav-profile'                 => 'Profiel',
     'portal.general.nav-register'                => 'Registreer',
     'portal.general.nav-reset-password'          => 'Reset uw wachtwoord',
@@ -54,5 +56,6 @@ return array(
     'portal.general.search-labels-section-title' => 'Zoek labels',
     'portal.general.search-section-title'        => 'Zoeken',
     'portal.general.search_btn'                  => 'Zoeken',
+    'portal.general.share-this'                  => 'Deel dit',
     'portal.general.submit-feedback'             => 'Feedback plaatsen',
 );

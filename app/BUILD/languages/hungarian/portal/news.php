@@ -28,4 +28,5 @@
 
 return array(
     'portal.news.section-title' => 'Hírek',
+    'portal.news.view-as-agent' => 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.',
 );

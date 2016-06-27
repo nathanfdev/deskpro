@@ -38,6 +38,7 @@ return array(
     'portal.tickets.list_subject'                   => 'Konu',
     'portal.tickets.list_title'                     => 'Çağrı Kayıtlarınız',
     'portal.tickets.new-intro'                      => 'Lütfen bu formu doldurun. Personelimiz mümkün olan en kısa sürede size eposta ile geri dönüş yapacaktır.',
+    'portal.tickets.new-section-title'              => 'İletişim',
     'portal.tickets.rate-negative'                  => 'Kötü',
     'portal.tickets.rate-neutral'                   => 'Bitmiştir',
     'portal.tickets.rate-positive'                  => 'Harika',

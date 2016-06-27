@@ -32,6 +32,7 @@ return array(
     'user.email_subjects.comment-deleted'          => 'Váš komentár bol prečítaný našimi operátormi',
     'user.email_subjects.email-too-big'            => 'Váš e-mail "{{subject}}" nebol prijatý',
     'user.email_subjects.email_new-confirm'        => 'Potvrďte Vašu e-mailovú adresu',
+    'user.email_subjects.email_primary-confirm'    => 'Potvrďte Vašu e-mailovú adresu',
     'user.email_subjects.feedback_new'             => 'Ďakujeme za podanie Vašej spätnej väzby',
     'user.email_subjects.feedback_new-approved'    => 'Vaša spätná väzba bol prijatá',
     'user.email_subjects.feedback_new-comment'     => 'Nový komentár v "{{title}}"',

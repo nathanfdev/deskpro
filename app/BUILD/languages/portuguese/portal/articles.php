@@ -27,6 +27,7 @@
  */
 
 return array(
-    'portal.articles.section-title' => 'Base de Conhecimento',
     'portal.articles.search-title'  => 'Base de Conhecimento',
+    'portal.articles.section-title' => 'Base de Conhecimento',
+    'portal.articles.view-as-agent' => 'Pode ver esta página, porque é um agente. Os usuários normais não serão capazes de ver esta página.',
 );

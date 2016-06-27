@@ -27,8 +27,11 @@
  */
 
 return array(
-    'portal.feedback.section-title'   => 'フィードバック',
-    'portal.feedback.section-desc'    => '他のユーザから以下の様な提案があります。投票や意見交換を通してあなたのご意見をお聞かせください。また新たな提案がある場合は、新しいアイデアをお送りください。',
+    'portal.feedback.attachments'     => '添付',
+    'portal.feedback.btn-closed'      => 'クローズ(対応済み)',
+    'portal.feedback.btn-vote'        => '同意',
     'portal.feedback.search-title'    => 'フィードバック',
+    'portal.feedback.section-desc'    => '他のユーザから以下の様な提案があります。投票や意見交換を通してあなたのご意見をお聞かせください。また新たな提案がある場合は、新しいアイデアをお送りください。',
+    'portal.feedback.section-title'   => 'フィードバック',
     'portal.feedback.submit_feedback' => 'フィードバックを送信',
 );

@@ -27,8 +27,11 @@
  */
 
 return array(
-    'portal.feedback.section-title'   => 'Предложения',
-    'portal.feedback.section-desc'    => 'Следующие предложения были добавлены другими пользователями. Рекомендуем Вам прочитать их и проголосовать за те, которые Вы поддерживаете, а также  высказать свои предложения, если Вы не нашли их в списке.',
+    'portal.feedback.attachments'     => 'Приложение',
+    'portal.feedback.btn-closed'      => 'Закрыто',
+    'portal.feedback.btn-vote'        => 'Я согласен/-на',
     'portal.feedback.search-title'    => 'Предложения',
+    'portal.feedback.section-desc'    => 'Следующие предложения были добавлены другими пользователями. Рекомендуем Вам прочитать их и проголосовать за те, которые Вы поддерживаете, а также  высказать свои предложения, если Вы не нашли их в списке.',
+    'portal.feedback.section-title'   => 'Предложения',
     'portal.feedback.submit_feedback' => 'Оставить отзыв',
 );

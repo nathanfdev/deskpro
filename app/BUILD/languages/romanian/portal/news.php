@@ -28,4 +28,5 @@
 
 return array(
     'portal.news.section-title' => 'Stiri',
+    'portal.news.view-as-agent' => 'Puteti vedea aceasta pagina deoarece sunteti un agent. Userii nu au dreptul sa vizualizeze aceasta pagina',
 );

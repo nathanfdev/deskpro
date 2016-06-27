@@ -28,4 +28,5 @@
 
 return array(
     'portal.news.section-title' => 'Aktualności',
+    'portal.news.view-as-agent' => 'Masz dostęp do tej strony, bo jesteś pracownikiem. Pozostali użytkownicy nie będą mogli korzystać z tej strony.',
 );

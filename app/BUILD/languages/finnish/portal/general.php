@@ -30,6 +30,7 @@ return array(
     'portal.general.add-comment'                 => 'Lisää kommentti',
     'portal.general.agent'                       => 'Edustaja',
     'portal.general.attachments'                 => 'Liitetiedostot',
+    'portal.general.btn-cancel'                  => 'Peruuta',
     'portal.general.btn-download-pdf'            => 'Lataa PDF',
     'portal.general.btn-go'                      => 'Mene',
     'portal.general.delete'                      => 'Poista',
@@ -41,6 +42,7 @@ return array(
     'portal.general.nav-kb-desc'                 => 'Lue tuki artikkeleita',
     'portal.general.nav-news'                    => 'Uutiset',
     'portal.general.nav-news-desc'               => 'Uutisia & päivityksiä',
+    'portal.general.nav-newticket'               => 'Ota yhteyttä',
     'portal.general.nav-profile'                 => 'Profiili',
     'portal.general.nav-register'                => 'Rekisteröidy',
     'portal.general.nav-reset-password'          => 'Vaihda salasana',
@@ -55,6 +57,7 @@ return array(
     'portal.general.search-labels-section-title' => 'Etsi nimikkeitä',
     'portal.general.search-section-title'        => 'Etsi',
     'portal.general.search_btn'                  => 'Etsi',
+    'portal.general.share-this'                  => 'Jaa',
     'portal.general.show'                        => 'Näytä',
     'portal.general.submit-feedback'             => 'Lähetä palaute',
 );

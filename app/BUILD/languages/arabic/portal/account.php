@@ -27,12 +27,13 @@
  */
 
 return array(
-    'portal.account.section-title-reset-password' => 'إعادة تعيين كلمة المرور',
-    'portal.account.section-title-register'       => 'تسجيل عضوية',
-    'portal.account.login-register-header'        => 'تسجيل عضوية',
-    'portal.account.login-register-btn'           => 'تسجيل عضوية',
-    'portal.account.section-title-profile'        => 'الملف الشخصي',
     'portal.account.change-password'              => 'تغيير كلمة المرور',
-    'portal.account.reset-password-btn'           => 'إعادة تعيين كلمة المرور',
+    'portal.account.email-btn-resend-validation'  => 'إعد أرسال رسالة التفعيل',
+    'portal.account.login-register-btn'           => 'تسجيل عضوية',
+    'portal.account.login-register-header'        => 'تسجيل عضوية',
     'portal.account.register-btn'                 => 'تسجيل عضوية',
+    'portal.account.reset-password-btn'           => 'إعادة تعيين كلمة المرور',
+    'portal.account.section-title-profile'        => 'الملف الشخصي',
+    'portal.account.section-title-register'       => 'تسجيل عضوية',
+    'portal.account.section-title-reset-password' => 'إعادة تعيين كلمة المرور',
 );

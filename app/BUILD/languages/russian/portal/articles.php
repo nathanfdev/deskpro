@@ -27,6 +27,7 @@
  */
 
 return array(
-    'portal.articles.section-title' => 'База знаний',
     'portal.articles.search-title'  => 'База знаний',
+    'portal.articles.section-title' => 'База знаний',
+    'portal.articles.view-as-agent' => 'Вы видите данную страницу, потому что являетесь нашим сотрудником. Обычным пользователям данная страница недоступна для просмотра.',
 );

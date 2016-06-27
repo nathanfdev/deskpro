@@ -27,12 +27,13 @@
  */
 
 return array(
-    'portal.account.section-title-reset-password' => 'Jelszócsere',
-    'portal.account.section-title-register'       => 'Regisztráljon',
-    'portal.account.login-register-header'        => 'Regisztráljon',
-    'portal.account.login-register-btn'           => 'Regisztráljon',
-    'portal.account.section-title-profile'        => 'Ügyfélfiók',
     'portal.account.change-password'              => 'Jelszócsere',
-    'portal.account.reset-password-btn'           => 'Jelszócsere',
+    'portal.account.email-btn-resend-validation'  => 'Megerősítő e-mail újraküldése',
+    'portal.account.login-register-btn'           => 'Regisztráljon',
+    'portal.account.login-register-header'        => 'Regisztráljon',
     'portal.account.register-btn'                 => 'Regisztráljon',
+    'portal.account.reset-password-btn'           => 'Jelszócsere',
+    'portal.account.section-title-profile'        => 'Ügyfélfiók',
+    'portal.account.section-title-register'       => 'Regisztráljon',
+    'portal.account.section-title-reset-password' => 'Jelszócsere',
 );

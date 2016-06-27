@@ -42,6 +42,8 @@ return array(
     'user.chat.form_feedback_rate-unsatisfied'  => 'No',
     'user.chat.form_feedback_title'             => 'Invia un feedback',
     'user.chat.form_feedback_transcript-email'  => 'Invia questa chat a',
+    'user.chat.log_fields_department'           => 'Dipartimento',
+    'user.chat.log_message_author-you'          => 'Tu',
     'user.chat.message_agent-timeout'           => 'Ci scusiamo; sembra che {{name}} si sia disconnesso. Attendi mentre cerchiamo un altro membro dello staff.',
     'user.chat.message_assigned'                => 'Chat assegnata a {{name}}',
     'user.chat.message_chatting-with'           => 'Stai chattando con',

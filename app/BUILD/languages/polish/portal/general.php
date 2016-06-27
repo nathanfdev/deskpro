@@ -30,6 +30,7 @@ return array(
     'portal.general.add-comment'                 => 'Dodaj komentarz',
     'portal.general.agent'                       => 'Konsultant',
     'portal.general.attachments'                 => 'Załączniki',
+    'portal.general.btn-cancel'                  => 'Anuluj',
     'portal.general.btn-download-pdf'            => 'Pobierz PDF',
     'portal.general.btn-go'                      => 'Przejdź',
     'portal.general.delete'                      => 'Usuń',
@@ -41,6 +42,7 @@ return array(
     'portal.general.nav-kb-desc'                 => 'Czytaj artykuły pomocnicze',
     'portal.general.nav-news'                    => 'Aktualności',
     'portal.general.nav-news-desc'               => 'Aktualności i wydarzenia',
+    'portal.general.nav-newticket'               => 'Napisz do nas',
     'portal.general.nav-profile'                 => 'Profil',
     'portal.general.nav-register'                => 'Zarejestruj się',
     'portal.general.nav-reset-password'          => 'Zmień hasło',
@@ -55,6 +57,7 @@ return array(
     'portal.general.search-labels-section-title' => 'Szukaj wyników',
     'portal.general.search-section-title'        => 'Szukaj',
     'portal.general.search_btn'                  => 'Szukaj',
+    'portal.general.share-this'                  => 'Podziel się',
     'portal.general.show'                        => 'Pokaż',
     'portal.general.submit-feedback'             => 'Wyślij opinię',
 );

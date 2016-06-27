@@ -27,7 +27,5 @@
  */
 
 return array(
-    'portal.articles.search-title'  => 'Base de conocimiento',
-    'portal.articles.section-title' => 'Base de conocimiento',
-    'portal.articles.view-as-agent' => 'Puede ver esta página porque es un agente. Los usuarios normales no tienen autorización para ver esta página.',
+    'portal.news.view-as-agent' => 'Du kan se denne siden for du er en medarbeider. Normale brukere kan ikke se denne siden.',
 );

@@ -27,7 +27,8 @@
  */
 
 return array(
-    'portal.downloads.section-title' => 'Letöltések',
-    'portal.downloads.search-title'  => 'Letöltések',
     'portal.downloads.download'      => 'Letöltés',
+    'portal.downloads.search-title'  => 'Letöltések',
+    'portal.downloads.section-title' => 'Letöltések',
+    'portal.downloads.view-as-agent' => 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.',
 );

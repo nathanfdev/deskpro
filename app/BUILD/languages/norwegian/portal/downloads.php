@@ -27,7 +27,8 @@
  */
 
 return array(
-    'portal.downloads.section-title' => 'Nedlastninger',
-    'portal.downloads.search-title'  => 'Nedlastninger',
     'portal.downloads.download'      => 'Last ned',
+    'portal.downloads.search-title'  => 'Nedlastninger',
+    'portal.downloads.section-title' => 'Nedlastninger',
+    'portal.downloads.view-as-agent' => 'Du kan se denne siden for du er en medarbeider. Normale brukere kan ikke se denne siden.',
 );

@@ -38,6 +38,7 @@ return array(
     'portal.tickets.list_subject'                   => '제목',
     'portal.tickets.list_title'                     => '당신의 티켓들',
     'portal.tickets.new-intro'                      => '이 양식을 작성해 주시면 최대한 빠르게 답변 해 드리겠습니다.',
+    'portal.tickets.new-section-title'              => '고객센터 문의',
     'portal.tickets.rate-intro'                     => '{{name}} 이 "{{subject}}" 티켓에 관해 도움을 드렸습니다.',
     'portal.tickets.rate-negative'                  => '좋지 않았습니다',
     'portal.tickets.rate-neutral'                   => '괜찮았습니다',

@@ -31,6 +31,7 @@ return array(
     'user.email_subjects.comment-approved'         => 'コメントは承認されました。',
     'user.email_subjects.comment-deleted'          => 'あなたのコメントはエージェントにより確認されました。',
     'user.email_subjects.email_new-confirm'        => 'メールアドレスを認証してください。',
+    'user.email_subjects.email_primary-confirm'    => 'メールアドレスを認証してください。',
     'user.email_subjects.feedback_new'             => 'フィードバックを頂きありがとうございました。',
     'user.email_subjects.feedback_new-approved'    => 'フィードバックは承認されました。',
     'user.email_subjects.feedback_new-comment'     => '"{{title}}"に新着コメントがあります。',

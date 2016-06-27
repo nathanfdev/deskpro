@@ -27,7 +27,8 @@
  */
 
 return array(
-    'portal.downloads.section-title' => 'Descarcari',
-    'portal.downloads.search-title'  => 'Descarcari',
     'portal.downloads.download'      => 'Descarca',
+    'portal.downloads.search-title'  => 'Descarcari',
+    'portal.downloads.section-title' => 'Descarcari',
+    'portal.downloads.view-as-agent' => 'Puteti vedea aceasta pagina deoarece sunteti un agent. Userii nu au dreptul sa vizualizeze aceasta pagina',
 );

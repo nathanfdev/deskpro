@@ -28,4 +28,5 @@
 
 return array(
     'portal.news.section-title' => 'Novinky',
+    'portal.news.view-as-agent' => 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.',
 );

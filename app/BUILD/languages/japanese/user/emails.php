@@ -54,6 +54,8 @@ return array(
     'user.emails.ticket_flood'                => 'ヘルプデスクへメールを頂いた方へ通知します。あなたから短い間隔で複数のメッセージを頂いたため、当社の自動システムはあなたからのメッセージを自動発信のメッセージであると判断しました。<br /><br />双方の自動発信によるループトラフィックを避けるため、当社からの自動通知メッセージの送信を停止します。',
     'user.emails.ticket_message_title'        => '{{date}} {{time}}, 作成者{{author}} :',
     'user.emails.ticket_no-autoresponse'      => '注意: 確認メールの送信設定がオフです',
+    'user.emails.ticket_rate-negative'        => 'いいえ',
+    'user.emails.ticket_rate-positive'        => 'はい',
     'user.emails.ticket_received'             => 'リクエストを受け付けました。エージェントにより折り返しいたしますのでしばらくお待ちください。',
     'user.emails.ticket_reply-confirm'        => '返信を頂きありがとうございます。エージェントが折り返しいたしますのでしばらくお待ちください。',
     'user.emails.ticket_validate'             => 'ご連絡をいただきありがとうございます。<br /><br />エージェントによる対応を開始する前に、あなたのメールアドレスの認証手続きを行ってください。',

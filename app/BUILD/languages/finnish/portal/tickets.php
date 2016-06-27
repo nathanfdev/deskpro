@@ -38,6 +38,7 @@ return array(
     'portal.tickets.list_subject'                   => 'Aihe',
     'portal.tickets.list_title'                     => 'Kutsusi',
     'portal.tickets.new-intro'                      => 'Täytä lomake niin otamme mahdollisimman pian yhteyttä.',
+    'portal.tickets.new-section-title'              => 'Ota yhteyttä',
     'portal.tickets.rate-intro'                     => '{{name}} auttoi sinua kutsussasi "{{subject}}"',
     'portal.tickets.rate-negative'                  => 'Se ei ollut hyvä',
     'portal.tickets.rate-neutral'                   => 'Se oli OK',

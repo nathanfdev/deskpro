@@ -31,6 +31,7 @@ return array(
     'user.email_subjects.comment-approved'         => 'Commento approvato',
     'user.email_subjects.comment-deleted'          => 'Comento letto da un membro dello staff',
     'user.email_subjects.email_new-confirm'        => 'Convalida il tuo indirizzo email',
+    'user.email_subjects.email_primary-confirm'    => 'Convalida il tuo indirizzo email',
     'user.email_subjects.feedback_new'             => 'Grazie per il tuo feedback',
     'user.email_subjects.feedback_new-approved'    => 'Feedback approvato',
     'user.email_subjects.feedback_new-disapproved' => 'Feedback rifiutato',

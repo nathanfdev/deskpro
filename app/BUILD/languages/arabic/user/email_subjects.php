@@ -32,6 +32,7 @@ return array(
     'user.email_subjects.comment-deleted'          => 'تم قراءة تعليقك بواسطة موظفنا',
     'user.email_subjects.email-too-big'            => 'بريدك الإلكتروني "{{subject}}" لم يقبل',
     'user.email_subjects.email_new-confirm'        => 'يرجي التحقق من صحة بريدك الالكتروني',
+    'user.email_subjects.email_primary-confirm'    => 'يرجي التحقق من صحة بريدك الالكتروني',
     'user.email_subjects.feedback_new'             => 'شكرا علي إضافة حساب فيس بوك الخاص بك',
     'user.email_subjects.feedback_new-approved'    => 'تمت الموافقه على تنويهاتك',
     'user.email_subjects.feedback_new-comment'     => 'يوجد تعليق جديد في : {{title}}',

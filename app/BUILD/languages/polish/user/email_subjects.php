@@ -32,6 +32,7 @@ return array(
     'user.email_subjects.comment-deleted'          => 'Twój komentarz został przeczytany przez naszych pracowników',
     'user.email_subjects.email-too-big'            => 'Twój "{{subject}}" nie jest zaakceptowany',
     'user.email_subjects.email_new-confirm'        => 'Potwierdź swój adres email',
+    'user.email_subjects.email_primary-confirm'    => 'Potwierdź swój adres email',
     'user.email_subjects.feedback_new'             => 'Dziękujemy za wysłaną opinię',
     'user.email_subjects.feedback_new-approved'    => 'Twoja opinia została zaakceptowana',
     'user.email_subjects.feedback_new-comment'     => 'Nowy komentarz pojawił się na "{{title}}"',

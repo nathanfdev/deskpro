@@ -27,6 +27,9 @@
  */
 
 return array(
+    'portal.feedback.attachments'     => 'Bijlagen',
+    'portal.feedback.btn-closed'      => 'Gesloten',
+    'portal.feedback.btn-vote'        => 'Ik ben het eens',
     'portal.feedback.form_title'      => 'Titel',
     'portal.feedback.search-title'    => 'Feedback',
     'portal.feedback.section-desc'    => 'Deze suggesties zijn ingediend door klanten zoals u; Wij moedigen het aan om op reacties te discussiëren en te stemmen. indien het idee nog niet is vermeld, kunt u uw eigen reactie plaatsen.',

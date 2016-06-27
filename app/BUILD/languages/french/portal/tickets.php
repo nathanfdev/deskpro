@@ -38,6 +38,7 @@ return array(
     'portal.tickets.list_subject'                   => 'Sujet',
     'portal.tickets.list_title'                     => 'Vos tickets',
     'portal.tickets.new-intro'                      => 'Merci de compléter ce formulaire, un de nos agents vous répondra par email dès que possible.',
+    'portal.tickets.new-section-title'              => 'Nous contacter',
     'portal.tickets.rate-intro'                     => '{{name}} vous a aidé avec votre ticket "{{subject}}"',
     'portal.tickets.rate-negative'                  => 'Mauvaise',
     'portal.tickets.rate-neutral'                   => 'Partiellement',
@@ -51,6 +52,7 @@ return array(
     'portal.tickets.section-title'                  => 'Tickets',
     'portal.tickets.timeline_marked_resolved'       => 'Clôturé',
     'portal.tickets.view_btn_edit'                  => 'Modifier',
+    'portal.tickets.view_label_your_email'          => 'Votre email',
     'portal.tickets.view_label_your_name'           => 'Votre nom',
     'portal.tickets.view_unassigned'                => 'Non attribué',
 );

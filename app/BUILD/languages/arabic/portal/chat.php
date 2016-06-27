@@ -27,11 +27,15 @@
  */
 
 return array(
-    'portal.chat.log_department'         => 'قسم',
-    'portal.chat.you'                    => 'أنت',
     'portal.chat.assigned_to'            => 'تم اسناد هذه المحادثة الى{{name}}',
+    'portal.chat.chat_transcript'        => 'نسخه طبق الاصل من المحادثه',
+    'portal.chat.end_chat'               => 'انهاء المحادثة',
     'portal.chat.ended_by'               => 'المحادثة انتهت بواسطة الموظف{{name}}',
     'portal.chat.ended_user'             => 'المحادثة انتهت بواسطة المستخدم',
+    'portal.chat.feedback_action'        => 'أرسل تنويه',
+    'portal.chat.helpful'                => 'مفيدة',
+    'portal.chat.label-name'             => 'اسمك',
+    'portal.chat.log_department'         => 'قسم',
     'portal.chat.message_assigned'       => 'تم اسناد هذه المحادثة الى{{name}}',
     'portal.chat.message_ended'          => 'المحادثة انتهت',
     'portal.chat.message_ended-by'       => 'المحادثة انتهت بواسطة الموظف{{name}}',
@@ -46,5 +50,7 @@ return array(
     'portal.chat.message_user-timeout'   => 'انتهت المهله المتاحه للتفاعل',
     'portal.chat.message_user_joined'    => '{{name}} التحق بالمحادثة',
     'portal.chat.message_user_left'      => '{{name}} غادر المحادثة',
+    'portal.chat.not_helpful'            => 'غير مفيدة',
     'portal.chat.unassigned'             => 'المحادثة غير مسندة لاحد',
+    'portal.chat.you'                    => 'أنت',
 );

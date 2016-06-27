@@ -27,12 +27,13 @@
  */
 
 return array(
-    'portal.account.section-title-reset-password' => 'Parola Sıfırla',
-    'portal.account.section-title-register'       => 'Kayı ol',
-    'portal.account.login-register-header'        => 'Kayı ol',
-    'portal.account.login-register-btn'           => 'Kayı ol',
-    'portal.account.section-title-profile'        => 'Profil',
     'portal.account.change-password'              => 'Parola Değiştir',
-    'portal.account.reset-password-btn'           => 'Parola Sıfırla',
+    'portal.account.email-btn-resend-validation'  => 'Doğrulama Epostasını Tekrar Gönder',
+    'portal.account.login-register-btn'           => 'Kayı ol',
+    'portal.account.login-register-header'        => 'Kayı ol',
     'portal.account.register-btn'                 => 'Kayı ol',
+    'portal.account.reset-password-btn'           => 'Parola Sıfırla',
+    'portal.account.section-title-profile'        => 'Profil',
+    'portal.account.section-title-register'       => 'Kayı ol',
+    'portal.account.section-title-reset-password' => 'Parola Sıfırla',
 );

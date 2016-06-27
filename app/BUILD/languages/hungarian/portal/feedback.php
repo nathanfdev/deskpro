@@ -27,8 +27,11 @@
  */
 
 return array(
-    'portal.feedback.section-title'   => 'Ötlettár',
-    'portal.feedback.section-desc'    => 'Ezeken az oldalakon olyan ötleteket, javaslatokat, hibabejelentéseket és visszajelzéseket talál, amelyeket az Önhöz hasonló ügyfeleinktől kaptunk. Kérjük, segítse Ön is munkánkat észrevételeivel! Böngésszen a mások által beküldött kérések, kérdések és észrevételek között; szóljon hozzá egy témához, vagy csak adjon le egy szavazatot azokra a bejegyzésekre, amelyekkel egyetért. Amennyiben az Ön ötlete még nem szerepel a listán, kérjük ne habozzon megosztani velünk - küldjön be új témát!',
+    'portal.feedback.attachments'     => 'Mellékletek',
+    'portal.feedback.btn-closed'      => 'Lezárt',
+    'portal.feedback.btn-vote'        => 'Egyetértek',
     'portal.feedback.search-title'    => 'Ötlettár',
+    'portal.feedback.section-desc'    => 'Ezeken az oldalakon olyan ötleteket, javaslatokat, hibabejelentéseket és visszajelzéseket talál, amelyeket az Önhöz hasonló ügyfeleinktől kaptunk. Kérjük, segítse Ön is munkánkat észrevételeivel! Böngésszen a mások által beküldött kérések, kérdések és észrevételek között; szóljon hozzá egy témához, vagy csak adjon le egy szavazatot azokra a bejegyzésekre, amelyekkel egyetért. Amennyiben az Ön ötlete még nem szerepel a listán, kérjük ne habozzon megosztani velünk - küldjön be új témát!',
+    'portal.feedback.section-title'   => 'Ötlettár',
     'portal.feedback.submit_feedback' => 'Visszajelzés küldése',
 );

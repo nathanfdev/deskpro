@@ -27,12 +27,16 @@
  */
 
 return array(
-    'portal.chat.list_agent'             => 'Agente',
-    'portal.chat.log_department'         => 'Departamento',
-    'portal.chat.you'                    => 'Usted',
     'portal.chat.assigned_to'            => 'Conversación asignada a {{name}}',
+    'portal.chat.chat_transcript'        => 'Transcripción de conversación',
+    'portal.chat.end_chat'               => 'Fin de conversación',
     'portal.chat.ended_by'               => 'Conversación finalizada por {{name}}',
     'portal.chat.ended_user'             => 'Conversación finalizada por usuario',
+    'portal.chat.feedback_action'        => 'Enviar comentario',
+    'portal.chat.helpful'                => 'De ayuda',
+    'portal.chat.label-name'             => 'Su nombre',
+    'portal.chat.list_agent'             => 'Agente',
+    'portal.chat.log_department'         => 'Departamento',
     'portal.chat.message_assigned'       => 'Conversación asignada a {{name}}',
     'portal.chat.message_ended'          => 'Conversación finalizada',
     'portal.chat.message_ended-by'       => 'Conversación finalizada por {{name}}',
@@ -47,6 +51,8 @@ return array(
     'portal.chat.message_user-timeout'   => 'Superada tiempo de espera de usuario',
     'portal.chat.message_user_joined'    => '{{name}} se ha unido a la conversación',
     'portal.chat.message_user_left'      => '{{name}} ha abandonado la conversación',
+    'portal.chat.not_helpful'            => 'No ha sido de ayuda',
     'portal.chat.transcript_sent'        => 'Enviar copia a {{email}}',
     'portal.chat.unassigned'             => 'Conversación no asignada',
+    'portal.chat.you'                    => 'Usted',
 );

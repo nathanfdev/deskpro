@@ -31,6 +31,7 @@ return array(
     'user.email_subjects.comment-approved'         => 'Din kommentar blev godkänd',
     'user.email_subjects.comment-deleted'          => 'Din kommentar har blivit granskad av våra agenter',
     'user.email_subjects.email_new-confirm'        => 'Bekräfta din e-postadress',
+    'user.email_subjects.email_primary-confirm'    => 'Bekräfta din e-postadress',
     'user.email_subjects.feedback_new'             => 'Tack för att du skickade in din feedback',
     'user.email_subjects.feedback_new-approved'    => 'Din feedback har blivit godkänd',
     'user.email_subjects.feedback_new-comment'     => 'Det finns en ny kommentar på "{{title}}"',

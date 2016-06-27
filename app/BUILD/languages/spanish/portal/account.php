@@ -27,12 +27,13 @@
  */
 
 return array(
-    'portal.account.section-title-reset-password' => 'Reinicializar contraseña',
-    'portal.account.section-title-register'       => 'Registro',
-    'portal.account.login-register-header'        => 'Registro',
-    'portal.account.login-register-btn'           => 'Registro',
-    'portal.account.section-title-profile'        => 'Perfil',
     'portal.account.change-password'              => 'Cambiar contraseña',
-    'portal.account.reset-password-btn'           => 'Reinicializar contraseña',
+    'portal.account.email-btn-resend-validation'  => 'Reenviar correo electrónico de validación',
+    'portal.account.login-register-btn'           => 'Registro',
+    'portal.account.login-register-header'        => 'Registro',
     'portal.account.register-btn'                 => 'Registro',
+    'portal.account.reset-password-btn'           => 'Reinicializar contraseña',
+    'portal.account.section-title-profile'        => 'Perfil',
+    'portal.account.section-title-register'       => 'Registro',
+    'portal.account.section-title-reset-password' => 'Reinicializar contraseña',
 );

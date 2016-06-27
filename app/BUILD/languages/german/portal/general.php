@@ -30,6 +30,7 @@ return array(
     'portal.general.add-comment'                 => 'Fügen Sie einen Kommentar hinzu',
     'portal.general.agent'                       => 'Agent',
     'portal.general.attachments'                 => 'Anhänge',
+    'portal.general.btn-cancel'                  => 'Abbrechen',
     'portal.general.btn-download-pdf'            => 'PDF herunterladen',
     'portal.general.btn-go'                      => 'Los',
     'portal.general.delete'                      => 'Löschen',
@@ -41,6 +42,7 @@ return array(
     'portal.general.nav-kb-desc'                 => 'Hilfeartikel lesen',
     'portal.general.nav-news'                    => 'Neuigkeiten',
     'portal.general.nav-news-desc'               => 'Neuheiten & Aktualisierungen',
+    'portal.general.nav-newticket'               => 'Kontaktieren Sie uns',
     'portal.general.nav-profile'                 => 'Profil',
     'portal.general.nav-register'                => 'Registrieren',
     'portal.general.nav-reset-password'          => 'Kennwort zurücksetzen',
@@ -55,6 +57,7 @@ return array(
     'portal.general.search-labels-section-title' => 'Label durchsuchen',
     'portal.general.search-section-title'        => 'Suchen',
     'portal.general.search_btn'                  => 'Suchen',
+    'portal.general.share-this'                  => 'Teilen',
     'portal.general.show'                        => 'Anzeigen',
     'portal.general.submit-feedback'             => 'Feedback abgeben',
 );

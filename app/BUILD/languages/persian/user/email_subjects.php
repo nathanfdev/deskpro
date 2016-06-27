@@ -31,6 +31,7 @@ return array(
     'user.email_subjects.comment-approved'         => 'نظر شما مورد تایید قرار گرفت',
     'user.email_subjects.comment-deleted'          => 'نظر شما توسط ماموران ما خوانده شده',
     'user.email_subjects.email_new-confirm'        => 'اعتبار سنجی آدرس ایمیل شما',
+    'user.email_subjects.email_primary-confirm'    => 'اعتبار سنجی آدرس ایمیل شما',
     'user.email_subjects.feedback_new'             => 'با تشکر از شما برای ارسال نظرات خود',
     'user.email_subjects.feedback_new-approved'    => 'نظرات شما مورد تایید قرار گرفته است',
     'user.email_subjects.feedback_new-comment'     => 'یک نظر جدید وجود دارد "{{title}}"',

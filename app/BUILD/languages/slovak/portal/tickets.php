@@ -38,6 +38,7 @@ return array(
     'portal.tickets.list_subject'                   => 'Predmet',
     'portal.tickets.list_title'                     => 'Vaše tikety',
     'portal.tickets.new-intro'                      => 'Prosím vyplňte tento formulár a jeden z našich opertátorov vás bude kontaktovať e-mailom akonáhle bude vedieť.',
+    'portal.tickets.new-section-title'              => 'Kontaktujte nás',
     'portal.tickets.rate-intro'                     => '{{name}} Vám pomohol s tiketom "{{subject}}"',
     'portal.tickets.rate-negative'                  => 'Nebolo to dobré',
     'portal.tickets.rate-neutral'                   => 'Bolo to OK',

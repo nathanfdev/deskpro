@@ -27,8 +27,11 @@
  */
 
 return array(
-    'portal.feedback.section-title'   => 'Feedback',
-    'portal.feedback.section-desc'    => 'Questi suggerimenti sono stati inviati da utenti come voi; discutete e votate quelli che preferite o inserite il vostro suggerimento se non è già presente.',
+    'portal.feedback.attachments'     => 'Allegati',
+    'portal.feedback.btn-closed'      => 'Chiuso',
+    'portal.feedback.btn-vote'        => 'Concordo',
     'portal.feedback.search-title'    => 'Feedback',
+    'portal.feedback.section-desc'    => 'Questi suggerimenti sono stati inviati da utenti come voi; discutete e votate quelli che preferite o inserite il vostro suggerimento se non è già presente.',
+    'portal.feedback.section-title'   => 'Feedback',
     'portal.feedback.submit_feedback' => 'Invia feedback',
 );

@@ -27,6 +27,7 @@
  */
 
 return array(
-    'portal.articles.section-title' => 'Knowledgebase',
     'portal.articles.search-title'  => 'Knowledgebase',
+    'portal.articles.section-title' => 'Knowledgebase',
+    'portal.articles.view-as-agent' => 'Puteti vedea aceasta pagina deoarece sunteti un agent. Userii nu au dreptul sa vizualizeze aceasta pagina',
 );

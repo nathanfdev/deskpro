@@ -27,8 +27,11 @@
  */
 
 return array(
-    'portal.feedback.section-title'   => 'Indlæg',
-    'portal.feedback.section-desc'    => 'Disse forslag er indsendt af brugere som dig; Vi opfordrer dig til diskussion og stem på dem du er enige med og send dine egne forslag, hvis forslaget ikke er stillet.',
+    'portal.feedback.attachments'     => 'Vedhæftelser',
+    'portal.feedback.btn-closed'      => 'Lukket',
+    'portal.feedback.btn-vote'        => 'Jeg er enig',
     'portal.feedback.search-title'    => 'Indlæg',
+    'portal.feedback.section-desc'    => 'Disse forslag er indsendt af brugere som dig; Vi opfordrer dig til diskussion og stem på dem du er enige med og send dine egne forslag, hvis forslaget ikke er stillet.',
+    'portal.feedback.section-title'   => 'Indlæg',
     'portal.feedback.submit_feedback' => 'Send indlæg',
 );

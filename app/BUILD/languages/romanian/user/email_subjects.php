@@ -32,6 +32,7 @@ return array(
     'user.email_subjects.comment-deleted'          => 'Comentariul dumneavoastra a fost citit de agentii nostri',
     'user.email_subjects.email-too-big'            => 'Emailul dumneavoastra "{{subject}}" nu a fost acceptat',
     'user.email_subjects.email_new-confirm'        => 'Va rugam sa validati adresa dumneavoastra de email',
+    'user.email_subjects.email_primary-confirm'    => 'Va rugam sa validati adresa dumneavoastra de email',
     'user.email_subjects.feedback_new'             => 'Multumim pentru feedback',
     'user.email_subjects.feedback_new-approved'    => 'Feedback-ul dumneavoastra a fost aprobat',
     'user.email_subjects.feedback_new-comment'     => 'A fost postat un nou comentariu la "{{title}}"',

@@ -38,6 +38,7 @@ return array(
     'portal.tickets.list_subject'                   => 'Asunto',
     'portal.tickets.list_title'                     => 'Sus tickets',
     'portal.tickets.new-intro'                      => 'Por favor, complete el formulario y uno de nuestros agentes le responderá por correo electrónico lo antes posible',
+    'portal.tickets.new-section-title'              => 'Contáctenos',
     'portal.tickets.rate-intro'                     => '{{name}} le ha ayudado con su ticket "{{subject}}"',
     'portal.tickets.rate-negative'                  => 'No ha sido bueno',
     'portal.tickets.rate-neutral'                   => 'Ha ayudado',

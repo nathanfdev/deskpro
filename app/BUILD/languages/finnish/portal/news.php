@@ -28,4 +28,5 @@
 
 return array(
     'portal.news.section-title' => 'Uutiset',
+    'portal.news.view-as-agent' => 'Näet tämän sivun koska olet edustajamme. Peruskäyttäjät eivät näe tätä sivua.',
 );

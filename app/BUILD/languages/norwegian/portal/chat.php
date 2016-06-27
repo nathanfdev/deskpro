@@ -28,8 +28,13 @@
 
 return array(
     'portal.chat.assigned_to'            => 'Chat er tildelt {{name}}',
+    'portal.chat.chat_transcript'        => 'Samtale referat',
+    'portal.chat.end_chat'               => 'Avslutt samtale',
     'portal.chat.ended_by'               => 'Chat ble avsluttet av {{name}}',
     'portal.chat.ended_user'             => 'Chat ble avsluttet av kunde',
+    'portal.chat.helpful'                => 'Hjalp meg',
+    'portal.chat.label-name'             => 'Ditt navn',
+    'portal.chat.log_department'         => 'Avdeling',
     'portal.chat.message_assigned'       => 'Chat er tildelt {{name}}',
     'portal.chat.message_ended'          => 'Chat avsluttet',
     'portal.chat.message_ended-by'       => 'Chat ble avsluttet av {{name}}',
@@ -44,5 +49,7 @@ return array(
     'portal.chat.message_user-timeout'   => 'Kunde har tidsavbrudd',
     'portal.chat.message_user_joined'    => '{{name}} kom inn i samtalen',
     'portal.chat.message_user_left'      => '{{name}} forlot samtalen',
+    'portal.chat.not_helpful'            => 'Hjalp ikke',
     'portal.chat.unassigned'             => 'Chat unassigned',
+    'portal.chat.you'                    => 'Du',
 );

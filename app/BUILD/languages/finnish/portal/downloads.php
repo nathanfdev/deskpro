@@ -27,7 +27,8 @@
  */
 
 return array(
-    'portal.downloads.section-title' => 'Lataukset',
-    'portal.downloads.search-title'  => 'Lataukset',
     'portal.downloads.download'      => 'Lataa',
+    'portal.downloads.search-title'  => 'Lataukset',
+    'portal.downloads.section-title' => 'Lataukset',
+    'portal.downloads.view-as-agent' => 'Näet tämän sivun koska olet edustajamme. Peruskäyttäjät eivät näe tätä sivua.',
 );

@@ -27,6 +27,9 @@
  */
 
 return array(
+    'portal.feedback.attachments'     => '첨부파일',
+    'portal.feedback.btn-closed'      => '닫혔습니다',
+    'portal.feedback.btn-vote'        => '동의합니다.',
     'portal.feedback.form_title'      => '제목',
     'portal.feedback.search-title'    => '피드백',
     'portal.feedback.section-title'   => '피드백',

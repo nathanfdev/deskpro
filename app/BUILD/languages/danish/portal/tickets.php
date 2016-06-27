@@ -37,6 +37,7 @@ return array(
     'portal.tickets.list_subject'                   => 'Emne',
     'portal.tickets.list_title'                     => 'Dine sager',
     'portal.tickets.new-intro'                      => 'Udfyld venligst hele denne blanket og en af vores medarbejdere vil svare dig via email så hurtigt som muligt',
+    'portal.tickets.new-section-title'              => 'Kontakt os',
     'portal.tickets.related_articles_title'         => 'Relaterede artikler',
     'portal.tickets.resolve_my_ticket_btn'          => 'Luk min sag',
     'portal.tickets.resolve_ticket'                 => 'Luk sagen: {{subject}}',

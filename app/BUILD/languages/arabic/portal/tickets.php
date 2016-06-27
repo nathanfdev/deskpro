@@ -38,6 +38,7 @@ return array(
     'portal.tickets.list_subject'                   => 'الموضوع',
     'portal.tickets.list_title'                     => 'تذاكرك',
     'portal.tickets.new-intro'                      => 'فضلاً أملئ هذه الإستمارة وسيرد عليك أحد وكلائنا عبر البريد الإلكتروني في أقرب وقت ممكن.',
+    'portal.tickets.new-section-title'              => 'إتصل بنا',
     'portal.tickets.rate-intro'                     => '{{name}} ساعدك في هذه التذكرة "{{subject}}"',
     'portal.tickets.rate-negative'                  => 'لم تكن مناسبة',
     'portal.tickets.rate-neutral'                   => 'لقد كانت جيده',

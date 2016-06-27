@@ -27,6 +27,9 @@
  */
 
 return array(
+    'portal.feedback.attachments'     => 'Liitetiedostot',
+    'portal.feedback.btn-closed'      => 'Suljettu',
+    'portal.feedback.btn-vote'        => 'Samaa mieltä',
     'portal.feedback.form_title'      => 'Aihe',
     'portal.feedback.search-title'    => 'Palaute',
     'portal.feedback.section-desc'    => 'Nämä samankaltaiset ehdotukset on tullut asiakkailtamme. Ehdotamme että kesksutelet ja äänestä heidän ehdotuksistaan ja lisäät omasi mikäli ajatustasi ei ole jo listattu.',

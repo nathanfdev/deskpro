@@ -27,6 +27,9 @@
  */
 
 return array(
+    'portal.feedback.attachments'     => 'Ekler',
+    'portal.feedback.btn-closed'      => 'Kapalı',
+    'portal.feedback.btn-vote'        => 'Katılıyorum',
     'portal.feedback.form_title'      => 'Başlık',
     'portal.feedback.search-title'    => 'Geri Bildirim',
     'portal.feedback.section-desc'    => 'Bu tavsiyeler siz gibi müşterilerimiz tarafından gönderildi; üzerlerinde tartışmanız oylamanız ve eğer girileri değilse yeni tavsiyelerde bulunmanız bizim için çok değerli.',

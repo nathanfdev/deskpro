@@ -32,6 +32,7 @@ return array(
     'user.email_subjects.comment-deleted'          => 'Yorumunuz personelimiz tarafından okundu',
     'user.email_subjects.email-too-big'            => '{{subject}} başlıklı email konunuz kabul edilmiştir.',
     'user.email_subjects.email_new-confirm'        => 'Eposta adresinizi doğrulayın',
+    'user.email_subjects.email_primary-confirm'    => 'Eposta adresinizi doğrulayın',
     'user.email_subjects.feedback_new'             => 'Geri bildirimde bulunduğunuz için teşekkürler',
     'user.email_subjects.feedback_new-approved'    => 'Geri bildiriminiz onaylandı',
     'user.email_subjects.feedback_new-comment'     => 'Yeni bir yorum mevcut "{{title}}"',

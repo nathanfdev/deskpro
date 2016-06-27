@@ -28,4 +28,5 @@
 
 return array(
     'portal.news.section-title' => '뉴스',
+    'portal.news.view-as-agent' => '직원들만 이 페이지를 열람 할 수 있습니다. 일반 사용자는 열람 할 수 없습니다.',
 );

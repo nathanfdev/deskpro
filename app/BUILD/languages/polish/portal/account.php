@@ -27,12 +27,13 @@
  */
 
 return array(
-    'portal.account.section-title-reset-password' => 'Zmień hasło',
-    'portal.account.section-title-register'       => 'Zarejestruj się',
-    'portal.account.login-register-header'        => 'Zarejestruj się',
-    'portal.account.login-register-btn'           => 'Zarejestruj się',
-    'portal.account.section-title-profile'        => 'Profil',
     'portal.account.change-password'              => 'Zmień hasło',
-    'portal.account.reset-password-btn'           => 'Zmień hasło',
+    'portal.account.email-btn-resend-validation'  => 'Wyślij email potwierdzający ponownie',
+    'portal.account.login-register-btn'           => 'Zarejestruj się',
+    'portal.account.login-register-header'        => 'Zarejestruj się',
     'portal.account.register-btn'                 => 'Zarejestruj się',
+    'portal.account.reset-password-btn'           => 'Zmień hasło',
+    'portal.account.section-title-profile'        => 'Profil',
+    'portal.account.section-title-register'       => 'Zarejestruj się',
+    'portal.account.section-title-reset-password' => 'Zmień hasło',
 );

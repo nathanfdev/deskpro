@@ -30,6 +30,7 @@ return array(
     'portal.general.add-comment'                 => 'Adicionar comentário',
     'portal.general.agent'                       => 'Agente',
     'portal.general.attachments'                 => 'Anexos',
+    'portal.general.btn-cancel'                  => 'Cancelar',
     'portal.general.btn-download-pdf'            => 'Baixar PDF',
     'portal.general.btn-go'                      => 'Seguinte',
     'portal.general.delete'                      => 'Excluir',
@@ -56,5 +57,6 @@ return array(
     'portal.general.search-labels-section-title' => 'Procurar Etiquetas',
     'portal.general.search-section-title'        => 'Pesquisar',
     'portal.general.search_btn'                  => 'Pesquisar',
+    'portal.general.share-this'                  => 'Partilhe isto',
     'portal.general.submit-feedback'             => 'Submeter Comentário',
 );

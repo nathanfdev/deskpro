@@ -55,6 +55,8 @@ return array(
     'user.emails.ticket_flood'                => 'Du har for nyligt sendt en mail til vores helpdesk. Vores system har automatisk bemærket, at du har sendt mange beskeder hurtigt efter hinanden.<br /><br />For at beskytte mod autosvar loop vil vores helpdesk ikke sende flere email notifikationer til dig.',
     'user.emails.ticket_message_title'        => 'Den {{date}} kl. {{time}}, skrev {{author}}:',
     'user.emails.ticket_no-autoresponse'      => 'Advarsel: Mail bekræftelse er slået fra.',
+    'user.emails.ticket_rate-negative'        => 'Nej',
+    'user.emails.ticket_rate-positive'        => 'Ja',
     'user.emails.ticket_received'             => 'Din sag er modtaget. En af vore medarbejdere vil svare snarest.',
     'user.emails.ticket_reply-confirm'        => 'Tak for dit svar. En af vore medarbejdere svare snarest.',
     'user.emails.ticket_validate'             => 'Tak fordi du kontaktede os.<br /><br />Før vore medarbejdere læser og svarer din besked, skal du bekræfte din email adresse.',

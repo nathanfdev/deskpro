@@ -38,6 +38,7 @@ return array(
     'portal.tickets.list_subject'                   => 'Betreff',
     'portal.tickets.list_title'                     => 'Ihre Tickets',
     'portal.tickets.new-intro'                      => 'Bitte füllen Sie dieses Formular aus und einer unserer Mitarbeiter wird Ihnen per Email so bald wie möglich antworten.',
+    'portal.tickets.new-section-title'              => 'Kontaktieren Sie uns',
     'portal.tickets.rate-intro'                     => '{{name}} haf Ihnen mit Ihrem Ticket "{{subject}}"',
     'portal.tickets.rate-negative'                  => 'Es war nicht gut',
     'portal.tickets.rate-neutral'                   => 'Es war OK',

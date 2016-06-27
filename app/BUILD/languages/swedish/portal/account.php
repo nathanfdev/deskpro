@@ -27,12 +27,13 @@
  */
 
 return array(
-    'portal.account.section-title-reset-password' => 'Återställ lösenordet',
-    'portal.account.section-title-register'       => 'Registrera',
-    'portal.account.login-register-header'        => 'Registrera',
-    'portal.account.login-register-btn'           => 'Registrera',
-    'portal.account.section-title-profile'        => 'Profil',
     'portal.account.change-password'              => 'Ändra Lösenord',
-    'portal.account.reset-password-btn'           => 'Återställ lösenordet',
+    'portal.account.email-btn-resend-validation'  => 'Skicka valideringsmailet igen',
+    'portal.account.login-register-btn'           => 'Registrera',
+    'portal.account.login-register-header'        => 'Registrera',
     'portal.account.register-btn'                 => 'Registrera',
+    'portal.account.reset-password-btn'           => 'Återställ lösenordet',
+    'portal.account.section-title-profile'        => 'Profil',
+    'portal.account.section-title-register'       => 'Registrera',
+    'portal.account.section-title-reset-password' => 'Återställ lösenordet',
 );

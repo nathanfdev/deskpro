@@ -30,6 +30,7 @@ return array(
     'portal.general.add-comment'                 => '댓글 등록',
     'portal.general.agent'                       => '에이전트',
     'portal.general.attachments'                 => '첨부파일',
+    'portal.general.btn-cancel'                  => '취소',
     'portal.general.btn-download-pdf'            => 'PDF 다운로드',
     'portal.general.btn-go'                      => '등록',
     'portal.general.delete'                      => '삭제',
@@ -41,6 +42,7 @@ return array(
     'portal.general.nav-kb-desc'                 => '도움말 보기',
     'portal.general.nav-news'                    => '뉴스',
     'portal.general.nav-news-desc'               => '뉴스 & 업데이트',
+    'portal.general.nav-newticket'               => '고객센터 문의',
     'portal.general.nav-profile'                 => '프로필',
     'portal.general.nav-register'                => '가입',
     'portal.general.nav-reset-password'          => '비밀번호 재설정',
@@ -55,6 +57,7 @@ return array(
     'portal.general.search-labels-section-title' => '레벨 검색',
     'portal.general.search-section-title'        => '검색',
     'portal.general.search_btn'                  => '검색',
+    'portal.general.share-this'                  => '공유하기',
     'portal.general.show'                        => '보기',
     'portal.general.submit-feedback'             => '피드백 남기기',
 );

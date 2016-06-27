@@ -27,7 +27,8 @@
  */
 
 return array(
-    'portal.downloads.section-title' => 'Descargas',
-    'portal.downloads.search-title'  => 'Descargas',
     'portal.downloads.download'      => 'Descarga',
+    'portal.downloads.search-title'  => 'Descargas',
+    'portal.downloads.section-title' => 'Descargas',
+    'portal.downloads.view-as-agent' => 'Puede ver esta página porque es un agente. Los usuarios normales no tienen autorización para ver esta página.',
 );

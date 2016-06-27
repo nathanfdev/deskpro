@@ -28,4 +28,5 @@
 
 return array(
     'portal.news.section-title' => 'Haberler',
+    'portal.news.view-as-agent' => 'Bir personel iseniz bu sayfayı görebilirsiniz. Normal kullanıcılar bu sayfayı göremezler.',
 );

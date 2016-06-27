@@ -27,12 +27,13 @@
  */
 
 return array(
-    'portal.account.section-title-reset-password' => 'パスワードのリセット',
-    'portal.account.section-title-register'       => '登録',
-    'portal.account.login-register-header'        => '登録',
-    'portal.account.login-register-btn'           => '登録',
-    'portal.account.section-title-profile'        => 'プロフィール',
     'portal.account.change-password'              => 'パスワード変更',
-    'portal.account.reset-password-btn'           => 'パスワードのリセット',
+    'portal.account.email-btn-resend-validation'  => '承認のためのEメールを再送',
+    'portal.account.login-register-btn'           => '登録',
+    'portal.account.login-register-header'        => '登録',
     'portal.account.register-btn'                 => '登録',
+    'portal.account.reset-password-btn'           => 'パスワードのリセット',
+    'portal.account.section-title-profile'        => 'プロフィール',
+    'portal.account.section-title-register'       => '登録',
+    'portal.account.section-title-reset-password' => 'パスワードのリセット',
 );

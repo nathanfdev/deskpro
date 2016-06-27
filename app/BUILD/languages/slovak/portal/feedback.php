@@ -27,6 +27,9 @@
  */
 
 return array(
+    'portal.feedback.attachments'     => 'Pripojenia',
+    'portal.feedback.btn-closed'      => 'Uzavreté',
+    'portal.feedback.btn-vote'        => 'Súhlasím',
     'portal.feedback.form_title'      => 'Nadpis',
     'portal.feedback.search-title'    => 'Spätná väzba',
     'portal.feedback.section-desc'    => 'Tieto návrhy boli schválené zákazníkmi ako vy; skúste problém s nimi prediskutovať a prísť na koreň problému spoločne.',

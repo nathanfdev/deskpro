@@ -32,6 +32,7 @@ return array(
     'user.email_subjects.comment-deleted'          => 'Votre commentaire a été lu par nos agents',
     'user.email_subjects.email-too-big'            => 'Votre email "{{subject}}" n\'a pu être envoyé',
     'user.email_subjects.email_new-confirm'        => 'Validez votre adresse email',
+    'user.email_subjects.email_primary-confirm'    => 'Validez votre adresse email',
     'user.email_subjects.feedback_new'             => 'Merci de nous avoir fait part de vos remarques',
     'user.email_subjects.feedback_new-approved'    => 'Votre remarque a été approuvée',
     'user.email_subjects.feedback_new-comment'     => 'Il y a un nouveau commentaire sur "{{title}}"',

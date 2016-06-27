@@ -27,6 +27,9 @@
  */
 
 return array(
+    'portal.feedback.attachments'     => 'مرفقات',
+    'portal.feedback.btn-closed'      => 'مغلق',
+    'portal.feedback.btn-vote'        => 'موافق',
     'portal.feedback.form_title'      => 'العنوان',
     'portal.feedback.search-title'    => 'أقتراحات',
     'portal.feedback.section-desc'    => 'هذه الأقتراحات تم أضفافتها بواسطة عملاء أخرين; يسعدنا ان تشاركنا النقاش و التصويت على الأقتراحات التي تناسبك ويمكنك أضافة أقتراح جديد إذا لم يكن مضاف مسبقاً.',

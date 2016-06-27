@@ -27,12 +27,16 @@
  */
 
 return array(
-    'portal.chat.list_agent'             => 'Medewerker',
-    'portal.chat.log_department'         => 'Afdeling',
-    'portal.chat.you'                    => 'U',
     'portal.chat.assigned_to'            => 'Chat toegewezen aan {{name}}',
+    'portal.chat.chat_transcript'        => 'Kopie van chatgeschiedenis',
+    'portal.chat.end_chat'               => 'Beëindig chat',
     'portal.chat.ended_by'               => 'Chat beëindigd door {{name}}',
     'portal.chat.ended_user'             => 'Chat beëindigd door gebruiker',
+    'portal.chat.feedback_action'        => 'Verzend feedback',
+    'portal.chat.helpful'                => 'Behulpzaam',
+    'portal.chat.label-name'             => 'Uw naam',
+    'portal.chat.list_agent'             => 'Medewerker',
+    'portal.chat.log_department'         => 'Afdeling',
     'portal.chat.message_assigned'       => 'Chat toegewezen aan {{name}}',
     'portal.chat.message_ended'          => 'Chat beëindigd',
     'portal.chat.message_ended-by'       => 'Chat beëindigd door {{name}}',
@@ -47,5 +51,7 @@ return array(
     'portal.chat.message_user-timeout'   => 'Gebruiker sessie verlopen',
     'portal.chat.message_user_joined'    => '{{name}} is toegetreden tot de chat',
     'portal.chat.message_user_left'      => '{{name}} heeft de chat verlaten',
+    'portal.chat.not_helpful'            => 'Niet behulpzaam',
     'portal.chat.unassigned'             => 'Chat niet toegewezen',
+    'portal.chat.you'                    => 'U',
 );

@@ -27,7 +27,8 @@
  */
 
 return array(
-    'portal.downloads.section-title' => 'Transferências',
-    'portal.downloads.search-title'  => 'Transferências',
     'portal.downloads.download'      => 'Baixar',
+    'portal.downloads.search-title'  => 'Transferências',
+    'portal.downloads.section-title' => 'Transferências',
+    'portal.downloads.view-as-agent' => 'Pode ver esta página, porque é um agente. Os usuários normais não serão capazes de ver esta página.',
 );

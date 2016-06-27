@@ -27,12 +27,16 @@
  */
 
 return array(
-    'portal.chat.list_agent'             => 'Personel',
-    'portal.chat.log_department'         => 'Departman',
-    'portal.chat.you'                    => 'Siz',
     'portal.chat.assigned_to'            => 'Sohbet atandı: {{name}}',
+    'portal.chat.chat_transcript'        => 'Sohbet Dökümü',
+    'portal.chat.end_chat'               => 'Sohbeti Bitir',
     'portal.chat.ended_by'               => 'Sohbet {{name}} tarafından bitirildi',
     'portal.chat.ended_user'             => 'Sohbet kullanıcı tarafından bitirildi',
+    'portal.chat.feedback_action'        => 'Değerlendirme Gönder',
+    'portal.chat.helpful'                => 'Yararlı',
+    'portal.chat.label-name'             => 'Adınız',
+    'portal.chat.list_agent'             => 'Personel',
+    'portal.chat.log_department'         => 'Departman',
     'portal.chat.message_assigned'       => 'Sohbet atandı: {{name}}',
     'portal.chat.message_ended'          => 'Sohbet bitti',
     'portal.chat.message_ended-by'       => 'Sohbet {{name}} tarafından bitirildi',
@@ -47,6 +51,8 @@ return array(
     'portal.chat.message_user-timeout'   => 'Kullanıcı zaman aşımı',
     'portal.chat.message_user_joined'    => '{{name}} sohbete katıldı',
     'portal.chat.message_user_left'      => '{{name}} sohbetten ayrıldı',
+    'portal.chat.not_helpful'            => 'Yararlı Değil',
     'portal.chat.transcript_sent'        => '{{email}} adresinize transkript gönderilmiştir.',
     'portal.chat.unassigned'             => 'Sohbet ataması kaldırıldı',
+    'portal.chat.you'                    => 'Siz',
 );

@@ -27,6 +27,9 @@
  */
 
 return array(
+    'portal.feedback.attachments'     => 'Anhänge',
+    'portal.feedback.btn-closed'      => 'Geschlossen',
+    'portal.feedback.btn-vote'        => 'Ich stimme zu',
     'portal.feedback.form_title'      => 'Titel',
     'portal.feedback.search-title'    => 'Feedback',
     'portal.feedback.section-desc'    => 'Diese Vorschläge wurden von Kunden wie Ihnen übermittelt. Wir empfehlen Ihnen diese zu diskutieren und für die zu Voten denen Sie zustimmen sowie eigene Vorschläge zu unterbreiten, falls eine Anregung noch nicht aufgelistet ist.',

@@ -29,6 +29,7 @@
 return array(
     'portal.general.add-comment'                 => 'أضف تعليق',
     'portal.general.attachments'                 => 'مرفقات',
+    'portal.general.btn-cancel'                  => 'الغاء',
     'portal.general.btn-download-pdf'            => 'تحميل ملف PDF',
     'portal.general.btn-go'                      => 'أذهب',
     'portal.general.delete'                      => 'حذف',
@@ -40,6 +41,7 @@ return array(
     'portal.general.nav-kb-desc'                 => 'اقرء مقالات المساعدة',
     'portal.general.nav-news'                    => 'الأخبار',
     'portal.general.nav-news-desc'               => 'الأخبار و التحديثات',
+    'portal.general.nav-newticket'               => 'إتصل بنا',
     'portal.general.nav-profile'                 => 'الملف الشخصي',
     'portal.general.nav-register'                => 'تسجيل عضوية',
     'portal.general.nav-reset-password'          => 'إعادة تعيين كلمة المرور',
@@ -54,6 +56,7 @@ return array(
     'portal.general.search-labels-section-title' => 'ابحث في التصنيفات',
     'portal.general.search-section-title'        => 'بحث',
     'portal.general.search_btn'                  => 'بحث',
+    'portal.general.share-this'                  => 'شارك',
     'portal.general.show'                        => 'عرض',
     'portal.general.submit-feedback'             => 'أضف أقتراح',
 );

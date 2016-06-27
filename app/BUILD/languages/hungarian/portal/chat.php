@@ -28,8 +28,14 @@
 
 return array(
     'portal.chat.assigned_to'            => 'A beszélgetés {{name}} munkatársunkhoz hozzárendelve.',
+    'portal.chat.chat_transcript'        => 'Beszélgetés összefoglaló',
+    'portal.chat.end_chat'               => 'Beszélgetés vége',
     'portal.chat.ended_by'               => '{{name}} befejezte a beszélgetést',
     'portal.chat.ended_user'             => 'A felhasználó befejezte a beszélgetést',
+    'portal.chat.feedback_action'        => 'Visszajelzés küldése',
+    'portal.chat.helpful'                => 'Hasznos',
+    'portal.chat.label-name'             => 'Az Ön neve',
+    'portal.chat.log_department'         => 'Részleg',
     'portal.chat.message_assigned'       => 'A beszélgetés {{name}} munkatársunkhoz hozzárendelve.',
     'portal.chat.message_ended'          => 'Beszélgetés vége',
     'portal.chat.message_ended-by'       => '{{name}} befejezte a beszélgetést',
@@ -44,5 +50,7 @@ return array(
     'portal.chat.message_user-timeout'   => 'A felhasználó kifutott az időből',
     'portal.chat.message_user_joined'    => '{{name}} csatlakozott a beszélgetéshez',
     'portal.chat.message_user_left'      => '{{name}} kilépett a beszélgetésből',
+    'portal.chat.not_helpful'            => 'Nem hasznos',
     'portal.chat.unassigned'             => 'Beszélgetés kiosztatlan',
+    'portal.chat.you'                    => 'Ön',
 );

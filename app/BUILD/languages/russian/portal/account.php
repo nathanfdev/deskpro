@@ -27,12 +27,13 @@
  */
 
 return array(
-    'portal.account.section-title-reset-password' => 'Восстановить пароль',
-    'portal.account.section-title-register'       => 'Зарегистрироваться',
-    'portal.account.login-register-header'        => 'Зарегистрироваться',
-    'portal.account.login-register-btn'           => 'Зарегистрироваться',
-    'portal.account.section-title-profile'        => 'Профиль',
     'portal.account.change-password'              => 'Поменять пароль',
-    'portal.account.reset-password-btn'           => 'Восстановить пароль',
+    'portal.account.email-btn-resend-validation'  => 'Повторно выслать письмо',
+    'portal.account.login-register-btn'           => 'Зарегистрироваться',
+    'portal.account.login-register-header'        => 'Зарегистрироваться',
     'portal.account.register-btn'                 => 'Зарегистрироваться',
+    'portal.account.reset-password-btn'           => 'Восстановить пароль',
+    'portal.account.section-title-profile'        => 'Профиль',
+    'portal.account.section-title-register'       => 'Зарегистрироваться',
+    'portal.account.section-title-reset-password' => 'Восстановить пароль',
 );

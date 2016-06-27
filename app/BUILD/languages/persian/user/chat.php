@@ -42,6 +42,7 @@ return array(
     'user.chat.form_feedback_rate-unsatisfied'  => 'خیر',
     'user.chat.form_feedback_title'             => 'ارسال نظرات به ما',
     'user.chat.form_feedback_transcript-email'  => 'ارسال یک رونوشت از این گفتگو به',
+    'user.chat.log_message_author-you'          => 'شما',
     'user.chat.message_agent-timeout'           => 'عذر خواهی ما را بپذیرید; {{name}} به نظر می رسد که اتصال قطع شده است. لطفا صبر کنید در حالی که سعی کنید برای پیدا کردن نماینده دیگری.',
     'user.chat.message_assigned'                => 'گپ و گفتگو اختصاص یافته به {{name}}',
     'user.chat.message_chatting-with'           => 'چت با شما',

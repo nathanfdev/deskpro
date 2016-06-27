@@ -30,6 +30,7 @@ return array(
     'portal.general.add-comment'                 => 'Yorum ekle',
     'portal.general.agent'                       => 'Personel',
     'portal.general.attachments'                 => 'Ekler',
+    'portal.general.btn-cancel'                  => 'Vazgeç',
     'portal.general.btn-download-pdf'            => 'PDF İndir',
     'portal.general.btn-go'                      => 'Git',
     'portal.general.delete'                      => 'Sil',
@@ -41,6 +42,7 @@ return array(
     'portal.general.nav-kb-desc'                 => 'Yardım Belgelerini Oku',
     'portal.general.nav-news'                    => 'Haberler',
     'portal.general.nav-news-desc'               => 'Güncel Haberler',
+    'portal.general.nav-newticket'               => 'İletişim',
     'portal.general.nav-profile'                 => 'Profil',
     'portal.general.nav-register'                => 'Kayı ol',
     'portal.general.nav-reset-password'          => 'Parola Sıfırla',
@@ -55,6 +57,7 @@ return array(
     'portal.general.search-labels-section-title' => 'Etiketlerde Ara',
     'portal.general.search-section-title'        => 'Ara',
     'portal.general.search_btn'                  => 'Ara',
+    'portal.general.share-this'                  => 'bunu paylaş',
     'portal.general.show'                        => 'Gösteri',
     'portal.general.submit-feedback'             => 'Geri Bildirim Gönder',
 );

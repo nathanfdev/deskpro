@@ -27,7 +27,8 @@
  */
 
 return array(
-    'portal.downloads.section-title' => 'تحميلات',
-    'portal.downloads.search-title'  => 'تحميلات',
     'portal.downloads.download'      => 'تحميل',
+    'portal.downloads.search-title'  => 'تحميلات',
+    'portal.downloads.section-title' => 'تحميلات',
+    'portal.downloads.view-as-agent' => 'أنت في هذه الصفحة لأنك أحد الموظفين. العملاء وبقية العضويات لن يمكنهم مشاهدة هذه الصفحة.',
 );

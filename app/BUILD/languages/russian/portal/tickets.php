@@ -38,6 +38,7 @@ return array(
     'portal.tickets.list_subject'                   => 'Тема',
     'portal.tickets.list_title'                     => 'Ваши заявки',
     'portal.tickets.new-intro'                      => 'Пожалуйста, заполните эту форму, и один из наших специалистов свяжется с Вами по электронной почте в ближайшее время',
+    'portal.tickets.new-section-title'              => 'Обратная связь',
     'portal.tickets.rate-intro'                     => '{{name}} помог Вам по заявке: "{{subject}}"',
     'portal.tickets.rate-negative'                  => 'Неудовлетворительно',
     'portal.tickets.rate-neutral'                   => 'Скорей да',

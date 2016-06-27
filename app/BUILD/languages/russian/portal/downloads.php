@@ -27,7 +27,8 @@
  */
 
 return array(
-    'portal.downloads.section-title' => 'Загрузки',
-    'portal.downloads.search-title'  => 'Загрузки',
     'portal.downloads.download'      => 'Загрузить',
+    'portal.downloads.search-title'  => 'Загрузки',
+    'portal.downloads.section-title' => 'Загрузки',
+    'portal.downloads.view-as-agent' => 'Вы видите данную страницу, потому что являетесь нашим сотрудником. Обычным пользователям данная страница недоступна для просмотра.',
 );

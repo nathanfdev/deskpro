@@ -27,12 +27,13 @@
  */
 
 return array(
-    'portal.account.section-title-reset-password' => '비밀번호 재설정',
-    'portal.account.section-title-register'       => '가입',
-    'portal.account.login-register-header'        => '가입',
-    'portal.account.login-register-btn'           => '가입',
-    'portal.account.section-title-profile'        => '프로필',
     'portal.account.change-password'              => '비밀번호 바꾸기',
-    'portal.account.reset-password-btn'           => '비밀번호 재설정',
+    'portal.account.email-btn-resend-validation'  => '승인 이메일 다시 보내기',
+    'portal.account.login-register-btn'           => '가입',
+    'portal.account.login-register-header'        => '가입',
     'portal.account.register-btn'                 => '가입',
+    'portal.account.reset-password-btn'           => '비밀번호 재설정',
+    'portal.account.section-title-profile'        => '프로필',
+    'portal.account.section-title-register'       => '가입',
+    'portal.account.section-title-reset-password' => '비밀번호 재설정',
 );

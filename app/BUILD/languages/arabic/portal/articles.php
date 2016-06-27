@@ -27,6 +27,7 @@
  */
 
 return array(
-    'portal.articles.section-title' => 'قاعدة المعرفة',
     'portal.articles.search-title'  => 'قاعدة المعرفة',
+    'portal.articles.section-title' => 'قاعدة المعرفة',
+    'portal.articles.view-as-agent' => 'أنت في هذه الصفحة لأنك أحد الموظفين. العملاء وبقية العضويات لن يمكنهم مشاهدة هذه الصفحة.',
 );

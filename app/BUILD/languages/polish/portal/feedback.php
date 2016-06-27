@@ -27,6 +27,9 @@
  */
 
 return array(
+    'portal.feedback.attachments'     => 'Załączniki',
+    'portal.feedback.btn-closed'      => 'Zamknięte',
+    'portal.feedback.btn-vote'        => 'Zgadzam się',
     'portal.feedback.form_title'      => 'Tytuł',
     'portal.feedback.search-title'    => 'Opinie',
     'portal.feedback.section-desc'    => 'Te sugestie zostały wysłane przez innych użytkowników. Możesz wziąć udział w dyskusji, zagłosować na opinie, z którymi się zgadzasz oraz wysłać własne sugestie, jeżeli masz własny ciekawy pomysł.',

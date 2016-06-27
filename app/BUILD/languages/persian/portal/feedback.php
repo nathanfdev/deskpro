@@ -27,7 +27,10 @@
  */
 
 return array(
-    'portal.feedback.section-title'   => 'انتقادات و پیشنهادات',
+    'portal.feedback.attachments'     => 'فایل پیوست',
+    'portal.feedback.btn-closed'      => 'بسته',
+    'portal.feedback.btn-vote'        => 'من موافقت می کنم',
     'portal.feedback.search-title'    => 'انتقادات و پیشنهادات',
+    'portal.feedback.section-title'   => 'انتقادات و پیشنهادات',
     'portal.feedback.submit_feedback' => 'ارسال انتقاد و پیشنهاد',
 );

@@ -31,6 +31,7 @@ return array(
     'user.email_subjects.comment-approved'         => 'A hozzászólása jóváhagyásra került',
     'user.email_subjects.comment-deleted'          => 'Munkatársunk ellenőrizte hozzászólását',
     'user.email_subjects.email_new-confirm'        => 'Erősítse meg e-mail címét',
+    'user.email_subjects.email_primary-confirm'    => 'Erősítse meg e-mail címét',
     'user.email_subjects.feedback_new'             => 'Köszönjük visszajelzését',
     'user.email_subjects.feedback_new-approved'    => 'A visszajelzése jóváhagyásra került',
     'user.email_subjects.feedback_new-comment'     => 'Új hozzászólás érkezett: {{title}}',
