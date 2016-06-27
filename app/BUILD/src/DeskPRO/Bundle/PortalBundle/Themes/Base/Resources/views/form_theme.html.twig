@@ -528,14 +528,6 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
     {% endif %}
 {% endblock %}
 
-{% block deskpro_custom_field_choice_widget %}
-    {% if expanded %}
-        {{- block('deskpro_custom_field_choice_widget_expanded') -}}
-    {% else %}
-        {{- block('deskpro_custom_field_choice_widget_collapsed') -}}
-    {% endif %}
-{% endblock %}
-
 {% block deskpro_custom_field_choice_widget_expanded -%}
     <div {{ block('widget_container_attributes') }}>
         <div class="{% if multiple %}dpx-checkbox-group{% endif %} dp-choice-widget-group with-dpx">
