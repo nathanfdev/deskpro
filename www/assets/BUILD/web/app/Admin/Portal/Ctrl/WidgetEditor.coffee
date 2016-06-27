@@ -271,7 +271,10 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       angular.toJson(@$scope.chat_custom_fields) != angular.toJson(@$scope.remote_chat_custom_fields)
 
     loadCode: (withOptions = false) ->
-      @Api2.sendGet("widget/code?options=#{withOptions}")
+      if withOptions
+        @Api2.sendGet("widget/code?options=1")
+      else
+        @Api2.sendGet("widget/code")
 
     updateChatCode: ->
       @$scope.code = ''

@@ -1,7 +1,7 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { loadBatch } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { loadOnlineAgents } from './peopleActions';
-import { loadOptions, openWidget, reopenWidget, closeWidget } from './dpWindowActions';
+import { loadOptions, fetchOptions, openWidget, reopenWidget, closeWidget } from './dpWindowActions';
 import { pollingChat, setChatId, unsetChatId, setLastAgentId } from '../../Chat/Actions/chatActions';
 import {
   widgetSessionCodeSelector,
@@ -12,7 +12,7 @@ import {
   widgetSessionChatIdSelector
 } from '../Selectors/bootstrap';
 
-import { liveDemoSelector } from '../Selectors/dpWindow';
+import { liveDemoSelector, noFetchOptionsSelector } from '../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
@@ -49,6 +49,7 @@ export const getSession = createAction(
   )
 );
 
+// live demo action
 export const reloadSettings = createAction(
   'WIDGET_RELOAD_SETTINGS',
     settings => (dispatch, getState) => {
@@ -150,9 +151,12 @@ export const bootstrapWidget = createAction(
   'WIDGET_BOOTSTRAP',
   () => (dispatch, getState) => new Promise(resolve => {
     // load widget options first to choose which mode to use ("normal" or "demo")
-    dispatch(loadOptions(window.DP_OPTIONS));
+    const options = window.DP_OPTIONS;
+
+    dispatch(loadOptions(options));
     const state = getState();
     const liveDemo = liveDemoSelector(state);
+    const noFetchOptions = noFetchOptionsSelector(state);
 
     if (liveDemo) {
       // bootstrap live demo mode
@@ -163,12 +167,20 @@ export const bootstrapWidget = createAction(
       .then(() => resolve());
     } else {
       // bootstrap normal mode
-      Promise.all([
+      const promises = [
         dispatch(loadOnlineAgents()),
         dispatch(getSession()),
         dispatch(loadPortalPhraseTranslations())
-      ])
-      .then(response => {
+      ];
+
+      // if we load the widget from the portal then we can pass all options through 'window.DP_OPTIONS'
+      // so we don't need to do extra api call to get them
+      // otherwise we have short 'DP_OPTIONS' config with just helpdesk url and get others via the api request and cache it
+      if (!noFetchOptions) {
+        promises.push(dispatch(fetchOptions()));
+      }
+
+      Promise.all(promises).then(response => {
         // possibly reload translations with proper user's lang
         // do it again when user's session is loaded
         dispatch(loadPortalPhraseTranslations());

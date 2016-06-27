@@ -1,6 +1,0 @@
-const options = {{ options | json_encode | raw }};
-
-localStorage.setItem('dpWidgetOptions', JSON.stringify(options));
-if (!window.DESKPRO_INIT_TRIGGERED) {
-    window.DESKPRO_WIDGET_INIT(options);
-}

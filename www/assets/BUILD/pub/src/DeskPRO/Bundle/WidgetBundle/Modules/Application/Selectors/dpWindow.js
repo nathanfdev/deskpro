@@ -1,8 +1,10 @@
 import { createSelector } from 'reselect';
 import { widgetLanguageSelector } from './bootstrap';
+import Immutable from 'immutable';
 
 export const translationsSelectorFactory = (property, defaultValue) => (options, language) => {
-  const filtered = options.get('translations').filter(translation => translation.get('language') === language);
+  const translations = options.get('translations') || [];
+  const filtered = translations.filter(translation => translation.get('language') === language);
 
   if (filtered.size) {
     const currentLanguageValue = filtered.first().get(property);
@@ -10,8 +12,8 @@ export const translationsSelectorFactory = (property, defaultValue) => (options,
       return currentLanguageValue;
     }
   }
-  if (options.get('translations').size) {
-    const defaultLanguageValue = options.get('translations').first().get(property);
+  if (translations.size) {
+    const defaultLanguageValue = translations.first().get(property);
     if (defaultLanguageValue) {
       return defaultLanguageValue;
     }
@@ -62,13 +64,18 @@ export const widgetBodyHeightSelector = createSelector(
 // Options selectors
 export const widgetOptionsSelector = createSelector(
   stateSelector,
-  state => state.get('options')
+  state => state.get('options') || Immutable.fromJS({})
+);
+
+export const noFetchOptionsSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('noFetchOptions')
 );
 
 // Base widget options selectors
 export const widgetBaseOptionsSelector = createSelector(
   widgetOptionsSelector,
-  options => options.get('widget')
+  options => options.get('widget') || Immutable.fromJS({})
 );
 
 export const widgetTypeSelector = createSelector(
@@ -104,7 +111,7 @@ export const agentPollingTimeoutSelector = createSelector(
 // Help button options selectors
 export const helpButtonSelector = createSelector(
   widgetOptionsSelector,
-  options => options.get('button')
+  options => options.get('button') || Immutable.fromJS({})
 );
 
 export const helpButtonSizeSelector = createSelector(
@@ -120,7 +127,7 @@ export const helpButtonNameSelector = createSelector(
 
 export const helpButtonColorsSelector = createSelector(
   helpButtonSelector,
-  options => options.get('colors')
+  options => options.get('colors') || Immutable.fromJS({})
 );
 
 export const helpButtonBackgroundColorSelector = createSelector(
@@ -136,7 +143,7 @@ export const helpButtonTextColorSelector = createSelector(
 // Chat options selectors
 export const chatOptionsSelector = createSelector(
   widgetOptionsSelector,
-  options => options.get('chat')
+  options => options.get('chat') || Immutable.fromJS({})
 );
 
 export const widgetProactiveChatSelector = createSelector(
@@ -151,7 +158,7 @@ export const chatBeginModeSelector = createSelector(
 
 export const helpPopupSelector = createSelector(
   chatOptionsSelector,
-  options => options.get('popup')
+  options => options.get('popup') || Immutable.fromJS({})
 );
 
 export const helpPopupTitleSelector = createSelector(

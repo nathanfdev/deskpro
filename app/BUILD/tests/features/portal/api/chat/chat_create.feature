@@ -2,7 +2,7 @@
 Feature: Widget Chat
   Create a new chat
 
-  Background: Fresh database
+  Background:
     Given no Person records exist
     And a user with "user@deskpro.dev" email exists
     And I have guest portal api session with code "AAAAAAAAAAAAAAA"

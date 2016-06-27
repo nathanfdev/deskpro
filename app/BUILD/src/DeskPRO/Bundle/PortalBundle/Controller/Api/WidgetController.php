@@ -28,36 +28,23 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
-use DeskPRO\Component\Util\MapUtils;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Response;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
 
 /**
  * Class WidgetController.
+ *
+ * @Rest\Route("/portal/api/widget")
  */
 class WidgetController extends AbstractApiController
 {
     /**
-     * @Route("/portal/api/widget/widget_options", name="portal_api_widget_options")
-     * @Method({"GET"})
-     * 
-     * @return Response
+     * @Rest\Get("/options")
+     *
+     * @return View
      */
     public function getWidgetOptionsAction()
     {
-        $widgetSettingsResolver = $this->container->get('widget_settings_resolver');
-        $urlSettings            = $widgetSettingsResolver->getWidgetUrlSettings();
-        $widgetOptions          = $this->get('serializer')->toArray($widgetSettingsResolver->getWidgetBrandOptions());
-        $widgetOptions          = MapUtils::prependItem($widgetOptions, 'helpdeskUrl', $urlSettings->getHelpdesk());
-        $widgetOptions['date']  = time();
-
-        $response = $this->render(
-            'PortalBundle:Api:widget_options.js.twig',
-            ['options' => $widgetOptions]
-        );
-        $response->headers->set('Content-Type', 'text/javascript');
-
-        return $response;
+        return new View($this->wrap($this->container->get('widget_settings_resolver')->getWidgetBrandOptions()));
     }
 }
