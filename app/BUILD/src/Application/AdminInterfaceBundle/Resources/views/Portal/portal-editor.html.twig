@@ -221,7 +221,7 @@
                     </a>
                 </div>
 
-                <div class="template-picker" ng-show="Portal.isOpen('expert')">
+                <div class="template-picker" ng-show="Portal.isOpen('expert') && !(Portal.selected_template && Portal.selected_template_info_loaded) && !(Portal.css_template_selected && Portal.css_template_info.loaded)">
                     <select ui-select2='{ containerCssClass : "select2-container-template-picker", dropdownCssClass : "select2-dropdown-template-picker" }'
                             clas="template-picker"
                             style="width: 300px;"
