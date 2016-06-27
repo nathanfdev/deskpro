@@ -38,35 +38,44 @@ class PhraseProject
     private $files;
 
     /**
-     * @param string $langDir
-     * @param string $projectId
+     * @param string          $langDir
+     * @param string|string[] $projectId
      *
      * @return PhraseProject
      */
     public static function createProject($langDir, $projectId)
     {
-        switch ($projectId) {
-            case 'portal':
-                $dirs = [
-                    $langDir.'/portal',
-                    $langDir.'/user',
-                ];
-                break;
+        $projectIds = (array) $projectId;
 
-            case 'agent':
-                $dirs = [$langDir.'/agent'];
-                break;
+        $dirs = [];
 
-            case 'other':
-                $dirs = [
-                    $langDir.'/adm',
-                    $langDir.'/admin',
-                    $langDir.'/api',
-                ];
-                break;
+        foreach ($projectIds as $projectId) {
+            switch ($projectId) {
+                case 'portal':
+                case 'user': // user is old alias for portal
+                    $dirs = array_merge($dirs, [
+                        $langDir.'/portal',
+                        $langDir.'/user',
+                    ]);
+                    break;
 
-            default:
-                throw new \InvalidArgumentException();
+                case 'agent':
+                    $dirs = array_merge($dirs, [
+                        $langDir.'/agent',
+                    ]);
+                    break;
+
+                case 'other':
+                    $dirs = array_merge($dirs, [
+                        $langDir.'/adm',
+                        $langDir.'/admin',
+                        $langDir.'/api',
+                    ]);
+                    break;
+
+                default:
+                    throw new \InvalidArgumentException();
+            }
         }
 
         $dirs = array_filter($dirs, function ($v) { return is_dir($v); });
@@ -99,5 +108,47 @@ class PhraseProject
     public function getFiles()
     {
         return $this->files;
+    }
+
+    /**
+     * @return \SplFileInfo[]
+     */
+    public function getFilesMap()
+    {
+        $map = [];
+
+        foreach ($this->getFiles() as $f) {
+            $map[self::getPathFileId($f)] = $f;
+        }
+
+        return $map;
+    }
+
+    /**
+     * @param string $fileId
+     *
+     * @return null|\SplFileInfo
+     */
+    public function getFileByFileId($fileId)
+    {
+        foreach ($this->getFiles() as $f) {
+            if ($fileId === self::getPathFileId($f)) {
+                return $f;
+            }
+        }
+
+        return;
+    }
+
+    /**
+     * Returns an 'id' for a file path. E.g., 'portal/foo.php' instead of a full path.
+     *
+     * @param \SplFileInfo $file
+     *
+     * @return string
+     */
+    public static function getPathFileId(\SplFileInfo $file)
+    {
+        return basename($file->getPath()).'/'.$file->getFilename();
     }
 }
