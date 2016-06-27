@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -66,7 +66,7 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
     public function getByIds(array $ids, $keep_order = false)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
         $class = $this->getName();
@@ -77,7 +77,7 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
                 SELECT o
                 FROM {$class} o INDEX BY o.id
                 WHERE o.id IN(?0)
-            ")->execute(array($ids));
+            ")->execute([$ids]);
 
         if ($keep_order) {
             $q_res = Arrays::orderIdArray($ids, $q_res);
@@ -139,7 +139,7 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 
     public function getReportAssociations()
     {
-        return array();
+        return [];
     }
 
     /**

@@ -1593,7 +1593,7 @@ $collection->create(
 );
 
 $collection->create('agent_publish_listcomments', [
-    'path'       => '/publish/comments/list/{type}',
+    'path'       => '/publish/comments/list/{brandId}/{type}',
     'controller' => 'AgentBundle:Publish:listComments',
     'options'    => ['fragment_type' => 'list', 'fragment_name' => 'list_comments'],
 ]);

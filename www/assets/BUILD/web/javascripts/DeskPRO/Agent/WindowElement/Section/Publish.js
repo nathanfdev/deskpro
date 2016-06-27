@@ -122,7 +122,10 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 					scroller.updateSize();
 				}
 			}
-		}).bind(this));
+		}).bind(this),
+		{
+			brand_id: $('#publish_brand_id').val()
+		});
 	},
 
 	_initSection: function(data) {
@@ -152,6 +155,10 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			$('#' + this.selected_id).addClass('nav-selected');
 		}
 
+		$('#publish_brand_id').on('change', function() {
+			self.reload();
+		});
+
 		if (this.expanded_ids && this.expanded_ids.length) {
 			Array.each(this.expanded_ids, function(id) {
 				var el = $('#' + id);
@@ -171,8 +178,6 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		}
 
 		this._initSectionSearch();
-
-		var self = this;
 
 		this.contentEl.find('.pane-section').filter('.dp-collapsible').each(function() {
 			var section = $(this);

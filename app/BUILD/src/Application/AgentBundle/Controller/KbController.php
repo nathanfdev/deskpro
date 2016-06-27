@@ -816,9 +816,16 @@ class KbController extends AbstractController
             $is_trans_view = true;
             $trans_lang_id = $this->in->getUint('language_id');
 
+            $brandId = $this->in->getUInt('brand_id');
+
+            if (!$brandId) {
+                $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+            }
+
             $result_helper = ArticleResults::newFromRequest($this, [
                 'pending_translate'      => true,
                 'pending_translate_lang' => $this->in->getUint('language_id'),
+                'brand_id'               => $brandId,
             ]);
         } else {
             $result_helper = ArticleResults::newFromRequest($this, [

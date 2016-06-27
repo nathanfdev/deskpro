@@ -48,8 +48,8 @@
 			</div>
 			{% if pageinfo.last > 1 %}
 				<ul class="pagenav {% if not pageinfo.prev %}no-prev{% endif  %}{% if not pageinfo.next %}no-next{% endif  %}">
-					<li class="prev" data-route="{{ path('agent_publish_listcomments', {type: type, page: pageinfo.prev}) }}"></li>
-					<li class="next" data-route="{{ path('agent_publish_listcomments', {type: type, page: pageinfo.next}) }}"></li>
+					<li class="prev" data-route="{{ path('agent_publish_listcomments', {type: type, 'brandId': selected_brand_id, page: pageinfo.prev}) }}"></li>
+					<li class="next" data-route="{{ path('agent_publish_listcomments', {type: type, 'brandId': selected_brand_id, page: pageinfo.next}) }}"></li>
 				</ul>
 			{% endif %}
 		</div>

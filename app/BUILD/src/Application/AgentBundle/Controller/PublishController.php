@@ -96,10 +96,45 @@ class PublishController extends AbstractController
         $data = [];
 
         #------------------------------
+        # Resolve app activation
+        #------------------------------
+
+        $appSettings = [
+            PortalSettingsResolver::APPS_KB        => false,
+            PortalSettingsResolver::APPS_DOWNLOADS => false,
+            PortalSettingsResolver::APPS_NEWS      => false,
+        ];
+
+        /** @var Brand[] $brands */
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
+        /** @var BrandStack $brandStack */
+        $brandStack = $this->get('brand_stack');
+
+        /** @var BrandAwareSettingsResolver $brandSettingsResolver */
+        $brandSettingsResolver = $this->get('brand_aware_settings_resolver');
+
+        $selectedBrandId = $this->in->getUint('brand_id');
+
+        if (!$selectedBrandId) {
+            $selectedBrandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+        }
+
+        foreach ($brands as $brand) {
+            if ($brand->getId() == $selectedBrandId) {
+                $brandStack->push($brand);
+                foreach ($appSettings as $key => &$setting) {
+                    $setting = $setting || $brandSettingsResolver->getSetting($key);
+                }
+                $brandStack->pop();
+            }
+        }
+
+        #------------------------------
         # KB
         #------------------------------
 
-        $kb_cats        = $this->publish_helper->getCategoryStructure(PublishHelper::ARTICLES);
+        $kb_cats        = $this->publish_helper->getCategoryStructure(PublishHelper::ARTICLES, $selectedBrandId);
         $kb_repo        = $this->em->getRepository(ArticleCategory::class);
         $kb_cats_counts = $this->publish_helper->getCategoryCounts(PublishHelper::ARTICLES);
 
@@ -110,11 +145,14 @@ class PublishController extends AbstractController
             $c = $this->db->fetchColumn("
                 SELECT COUNT(*) FROM articles
                 LEFT JOIN object_lang ON (object_lang.ref_type = 'articles' AND object_lang.ref_id = articles.id AND object_lang.language_id = ?)
+                INNER JOIN article_to_categories ON articles.id = article_to_categories.article_id
+                INNER JOIN article_categories ON article_categories.id = article_to_categories.category_id
                 WHERE
                     articles.status = 'published'
                     AND (articles.language_id IS NULL OR articles.language_id != ?)
                     AND object_lang.id IS NULL
-            ", [$lang->getId(), $lang->getId()]);
+                    AND article_categories.brand_id = ?
+            ", [$lang->getId(), $lang->getId(), $selectedBrandId]);
 
             $kb_translate_queue[$lang->getId()] = $c;
             $kb_translate_queue[0] += $c;
@@ -124,7 +162,7 @@ class PublishController extends AbstractController
         # News
         #------------------------------
 
-        $news_cats        = $this->publish_helper->getCategoryStructure(PublishHelper::NEWS);
+        $news_cats        = $this->publish_helper->getCategoryStructure(PublishHelper::NEWS, $selectedBrandId);
         $news_repo        = $this->em->getRepository(NewsCategory::class);
         $news_cats_counts = $this->publish_helper->getCategoryCounts(PublishHelper::NEWS);
 
@@ -132,7 +170,7 @@ class PublishController extends AbstractController
         # Downloads
         #------------------------------
 
-        $download_cats        = $this->publish_helper->getCategoryStructure(PublishHelper::DOWNLOADS);
+        $download_cats        = $this->publish_helper->getCategoryStructure(PublishHelper::DOWNLOADS, $selectedBrandId);
         $download_repo        = $this->em->getRepository(DownloadCategory::class);
         $download_cats_counts = $this->publish_helper->getCategoryCounts(PublishHelper::DOWNLOADS);
 
@@ -155,36 +193,7 @@ class PublishController extends AbstractController
 
         $usergroups = $this->container->getDataService('Usergroup')->getUserUsergroups();
 
-        #------------------------------
-        # Resolve app activation
-        #------------------------------
-
-        $appSettings = [
-            PortalSettingsResolver::APPS_KB        => false,
-            PortalSettingsResolver::APPS_DOWNLOADS => false,
-            PortalSettingsResolver::APPS_NEWS      => false,
-        ];
-
-        /** @var Brand[] $brands */
-        $brands = $this->em->getRepository(Brand::class)->findAll();
-
-        /** @var BrandStack $brandStack */
-        $brandStack = $this->get('brand_stack');
-
-        /** @var BrandAwareSettingsResolver $brandSettingsResolver */
-        $brandSettingsResolver = $this->get('brand_aware_settings_resolver');
-
-        foreach ($brands as $brand) {
-            $brandStack->push($brand);
-
-            foreach ($appSettings as $key => &$setting) {
-                $setting = $setting || $brandSettingsResolver->getSetting($key);
-            }
-
-            $brandStack->pop();
-        }
-
-        $counts['comments'] = $this->publish_helper->getCommentsCountInfo();
+        $counts['comments'] = $this->publish_helper->getCommentsCountInfo($selectedBrandId);
 
         $data['section_html'] = $this->renderView('AgentBundle:Publish:window-section.html.twig', [
             'usergroups' => $usergroups,
@@ -203,7 +212,9 @@ class PublishController extends AbstractController
             'download_repo'        => $download_repo,
             'download_cats_counts' => $download_cats_counts,
 
-            'app_settings' => $appSettings,
+            'app_settings'      => $appSettings,
+            'brands'            => $brands,
+            'selected_brand_id' => $selectedBrandId,
 
             'glossary_words' => $glossary_words,
             'glossary_count' => $glossary_count,
@@ -475,7 +486,7 @@ class PublishController extends AbstractController
     # list comments
     ############################################################################
 
-    public function listCommentsAction($type)
+    public function listCommentsAction($type, $brandId = 0)
     {
         if ($type !== 'all') {
             try {
@@ -485,6 +496,10 @@ class PublishController extends AbstractController
             }
 
             $this->publish_helper->setEnabledTypes([$type]);
+        }
+
+        if (!$brandId) {
+            $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
         }
 
         $perPage = 25;
@@ -499,16 +514,16 @@ class PublishController extends AbstractController
             'offset' => ($currentPage - 1) * $perPage,
         ];
 
-        $pageinfo = null;
+        $pageInfo = null;
         $total    = null;
         if (!@$_REQUEST['_partial']) {
-            $counts = $this->publish_helper->getCommentsCountInfo();
+            $counts = $this->publish_helper->getCommentsCountInfo($brandId);
             $total  = $counts[$type];
 
-            $pageinfo = Numbers::getPaginationPages($total, $currentPage, $perPage);
+            $pageInfo = Numbers::getPaginationPages($total, $currentPage, $perPage);
         }
 
-        $comments = $this->publish_helper->getComments($limit);
+        $comments = $this->publish_helper->getComments($limit, $brandId);
 
         $tpl = 'AgentBundle:Publish:list-comments.html.twig';
         if (@$_REQUEST['_partial']) {
@@ -516,10 +531,11 @@ class PublishController extends AbstractController
         }
 
         return $this->render($tpl, [
-            'type'     => $type,
-            'comments' => $comments,
-            'total'    => $total,
-            'pageinfo' => $pageinfo,
+            'type'              => $type,
+            'comments'          => $comments,
+            'total'             => $total,
+            'pageinfo'          => $pageInfo,
+            'selected_brand_id' => $brandId,
         ]);
     }
 
