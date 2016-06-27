@@ -27,12 +27,13 @@
  */
 
 return array(
-    'portal.account.section-title-reset-password' => 'Kennwort zurücksetzen',
-    'portal.account.section-title-register'       => 'Registrieren',
-    'portal.account.login-register-header'        => 'Registrieren',
-    'portal.account.login-register-btn'           => 'Registrieren',
-    'portal.account.section-title-profile'        => 'Profil',
     'portal.account.change-password'              => 'Kennwort ändern',
-    'portal.account.reset-password-btn'           => 'Kennwort zurücksetzen',
+    'portal.account.email-btn-resend-validation'  => 'Validierungsmail erneut zusenden',
+    'portal.account.login-register-btn'           => 'Registrieren',
+    'portal.account.login-register-header'        => 'Registrieren',
     'portal.account.register-btn'                 => 'Registrieren',
+    'portal.account.reset-password-btn'           => 'Kennwort zurücksetzen',
+    'portal.account.section-title-profile'        => 'Profil',
+    'portal.account.section-title-register'       => 'Registrieren',
+    'portal.account.section-title-reset-password' => 'Kennwort zurücksetzen',
 );

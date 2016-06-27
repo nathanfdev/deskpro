@@ -27,7 +27,19 @@
  */
 
 return array(
-    'portal.downloads.section-title' => 'Descargas',
-    'portal.downloads.search-title'  => 'Descargas',
-    'portal.downloads.download'      => 'Descarga',
+    'portal.downloads.download'          => 'Descarga',
+    'portal.downloads.search-title'      => 'Descargas',
+    'portal.downloads.section-title'     => 'Descargas',
+    'portal.downloads.view-as-agent'     => 'Puede ver esta página porque es un agente. Los usuarios normales no tienen autorización para ver esta página.',
+    'user.downloads.button-download'     => 'Descarga',
+    'user.downloads.change_file'         => 'Cambia archivo',
+    'user.downloads.downloads-count'     => 'El archivo ha sido descargado una vez|El archivo ha sido descargado {{count}} veces',
+    'user.downloads.file_not_found'      => 'El archivo no se ha encontrado',
+    'user.downloads.message_no-files'    => 'No hay archivos en esta carpeta.',
+    'user.downloads.noun'                => 'Archivo',
+    'user.downloads.related_downloads'   => 'Archivos relacionados',
+    'user.downloads.sidebar_description' => 'Vier nuestro archivo|Buscar entre nuestros {{count}} archivos',
+    'user.downloads.title'               => 'Descargas',
+    'user.downloads.title-categories'    => 'Hay una sub-carpeta|Hay {{count}} sub-carpetas',
+    'user.downloads.title-downloads'     => 'Hay un archivo|Hay {{count}} archivos',
 );

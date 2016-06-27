@@ -27,7 +27,19 @@
  */
 
 return array(
-    'portal.downloads.section-title' => 'İndirmeler',
-    'portal.downloads.search-title'  => 'İndirmeler',
-    'portal.downloads.download'      => 'İndir',
+    'portal.downloads.download'          => 'İndir',
+    'portal.downloads.search-title'      => 'İndirmeler',
+    'portal.downloads.section-title'     => 'İndirmeler',
+    'portal.downloads.view-as-agent'     => 'Bir personel iseniz bu sayfayı görebilirsiniz. Normal kullanıcılar bu sayfayı göremezler.',
+    'user.downloads.button-download'     => 'İndir',
+    'user.downloads.change_file'         => 'Dosyayı Değiştir',
+    'user.downloads.downloads-count'     => 'Bu dosya {{count}} defa indirildi',
+    'user.downloads.file_not_found'      => 'Dosya bulunamadı',
+    'user.downloads.message_no-files'    => 'Bu dizinde dosya yok.',
+    'user.downloads.noun'                => 'Dosya',
+    'user.downloads.related_downloads'   => 'İlişkili Dosyalar',
+    'user.downloads.sidebar_description' => 'Dosyaya bak|Dosyalara gözat - {{count}}',
+    'user.downloads.title'               => 'İndirmeler',
+    'user.downloads.title-categories'    => '1 alt dizin var |{{count}} alt dizin var',
+    'user.downloads.title-downloads'     => '1 dosya var|{{count}} dosya var',
 );

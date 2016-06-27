@@ -27,6 +27,6 @@
  */
 
 return array(
-    'portal.articles.section-title' => 'ナレッジベース',
     'portal.articles.search-title'  => 'ナレッジベース',
+    'portal.articles.section-title' => 'ナレッジベース',
 );

@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => 'Ei löytynyt.',
     'user.error.attach_ext-allowed'      => 'Vain seuraavat tiedostotyypit voidaan ladata: {{error_detail}}',
     'user.error.attach_ext-not-allow'    => 'Lataamasi tiedostotyyppi ei ole sallittu.',
     'user.error.attach_failed'           => 'Liitetiedoston lataaminen epäonnistui (keskeytitkö lataamisen?). Yritä uudelleen.',

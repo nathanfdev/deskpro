@@ -27,6 +27,7 @@
  */
 
 return array(
-    'portal.articles.section-title' => 'Baza Wiedzy',
     'portal.articles.search-title'  => 'Baza Wiedzy',
+    'portal.articles.section-title' => 'Baza Wiedzy',
+    'portal.articles.view-as-agent' => 'Masz dostęp do tej strony, bo jesteś pracownikiem. Pozostali użytkownicy nie będą mogli korzystać z tej strony.',
 );

@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => 'یافت نشد',
     'user.error.attach_ext-allowed'      => 'فقط انواع فایل های زیر را می توانید آپلود کنید: {{error_detail}}',
     'user.error.attach_ext-not-allow'    => 'نوع فایل آپلود شده شما مجاز نمی باشد.',
     'user.error.attach_no-file'          => 'لطفا یک فایل برای آپلود انتخاب کنید',

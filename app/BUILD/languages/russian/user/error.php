@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => 'Не найдено',
     'user.error.attach_ext-allowed'      => 'Могут быть загружены файлы только следующих типов: {{error_detail}}',
     'user.error.attach_ext-not-allow'    => 'Тип файла, который Вы загрузили, не поддерживается.',
     'user.error.attach_failed'           => 'Загрузка Вашего приложения не завершена (возможно, Вы отменили её?). Пожалуйста, попробуйте ещё раз.',

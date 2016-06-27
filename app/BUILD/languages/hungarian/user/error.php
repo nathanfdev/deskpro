@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => 'Nincs találat',
     'user.error.attach_ext-allowed'      => 'Kizárólag a következő fájl típusok feltöltése megengedett: {{error_detail}}',
     'user.error.attach_ext-not-allow'    => 'A feltölteni kívánt fájl típusa nem megfelelő.',
     'user.error.attach_failed'           => 'A melléklet feltöltése megszakadt. Kérjük ismételje meg a feltöltést!',

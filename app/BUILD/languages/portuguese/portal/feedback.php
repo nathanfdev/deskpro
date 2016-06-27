@@ -27,6 +27,9 @@
  */
 
 return array(
+    'portal.feedback.attachments'     => 'Anexos',
+    'portal.feedback.btn-closed'      => 'Fechado',
+    'portal.feedback.btn-vote'        => 'Concordo',
     'portal.feedback.search-title'    => 'Comentário',
     'portal.feedback.section-desc'    => 'Estas sugestões foram apresentadas por clientes como você, nós encorajamos-lo a discutir e votar naqueles com que concorda e enviar suas próprias sugestões, se a sugestão não estiver listada.',
     'portal.feedback.section-title'   => 'Comentário',

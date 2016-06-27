@@ -27,6 +27,6 @@
  */
 
 return array(
-    'portal.articles.section-title' => 'مرکز آموزش',
     'portal.articles.search-title'  => 'مرکز آموزش',
+    'portal.articles.section-title' => 'مرکز آموزش',
 );

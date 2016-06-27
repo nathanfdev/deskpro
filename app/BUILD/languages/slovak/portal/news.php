@@ -28,4 +28,13 @@
 
 return array(
     'portal.news.section-title' => 'Novinky',
+    'portal.news.view-as-agent' => 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.',
+    'user.news.all-categories'  => 'Všetky kategórie',
+    'user.news.category'        => 'Kategória',
+    'user.news.latest_news'     => 'Najnovšie novinky',
+    'user.news.news_not_found'  => 'Príspevok nenájdený',
+    'user.news.posted_date'     => 'Príspevok pridaný dňa: {{date}}',
+    'user.news.related_news'    => 'Podobné novinky',
+    'user.news.title'           => 'Novinky',
+    'user.news.type_news'       => 'Novinky',
 );

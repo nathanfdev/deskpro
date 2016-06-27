@@ -27,6 +27,7 @@
  */
 
 return array(
-    'portal.articles.section-title' => 'Tudásbázis',
     'portal.articles.search-title'  => 'Tudásbázis',
+    'portal.articles.section-title' => 'Tudásbázis',
+    'portal.articles.view-as-agent' => 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.',
 );

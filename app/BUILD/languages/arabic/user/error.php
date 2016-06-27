@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => 'غير موجود',
     'user.error.attach_ext-allowed'      => 'أنواع الملفات التالية فقط هي المسموح برفعها :{{error_detail}}',
     'user.error.attach_ext-not-allow'    => 'نوع الملف الذي قمت برفعه غير مصرح به',
     'user.error.attach_failed'           => 'فشلت محاولة رفع المرفقات ( هل قمت بإلغاء الرفع ؟ ). يرجي المحاوله مرة أخرى .',

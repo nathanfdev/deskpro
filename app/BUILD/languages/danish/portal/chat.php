@@ -27,12 +27,16 @@
  */
 
 return array(
-    'portal.chat.list_agent'             => 'Sagsbehandler',
-    'portal.chat.log_department'         => 'Afdeling',
-    'portal.chat.you'                    => 'Du',
     'portal.chat.assigned_to'            => 'Chat tildelt {{name}}',
+    'portal.chat.chat_transcript'        => 'Chat samtaleudskrift',
+    'portal.chat.end_chat'               => 'Afslut chat',
     'portal.chat.ended_by'               => 'Chat endt af {{name}}',
     'portal.chat.ended_user'             => 'Chat endt af brugeren',
+    'portal.chat.feedback_action'        => 'Send tilbagemelding',
+    'portal.chat.helpful'                => 'Hjælpfuld',
+    'portal.chat.label-name'             => 'Dit navn',
+    'portal.chat.list_agent'             => 'Sagsbehandler',
+    'portal.chat.log_department'         => 'Afdeling',
     'portal.chat.message_assigned'       => 'Chat tildelt {{name}}',
     'portal.chat.message_ended'          => 'Chat slut',
     'portal.chat.message_ended-by'       => 'Chat endt af {{name}}',
@@ -47,5 +51,7 @@ return array(
     'portal.chat.message_user-timeout'   => 'Brugeren har haft timeout',
     'portal.chat.message_user_joined'    => '{{name}} deltager nu i chatten',
     'portal.chat.message_user_left'      => '{{name}} har forladt chatten',
+    'portal.chat.not_helpful'            => 'Ikke hjælpfuld',
     'portal.chat.unassigned'             => 'Chat utildelt',
+    'portal.chat.you'                    => 'Du',
 );

@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => 'Hittades Inte',
     'user.error.attach_ext-allowed'      => 'Endast följande filtyper kan laddas upp: {{error_detail}}',
     'user.error.attach_ext-not-allow'    => 'Filtypen du försöker ladda upp är inte tillåten.',
     'user.error.attach_failed'           => 'Uppladdningen av din bifogade fil misslyckades (avbröt du den?). Var vänlig och försök igen.',

@@ -140,7 +140,7 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
 
             $lang    = $langPacks->getLangInfo($langId);
             $locale  = $lang['locale'];
-            $langDir = str_replace('\\', '/', $langPacks->getLangDir().'/'.$reqLangId);
+            $langDir = str_replace('\\', '/', $langPacks->getLangDir().'/'.$langId);
 
             $output->writeln(sprintf('******************** Language: %s (%s) ********************', $langId, $locale));
 
@@ -171,6 +171,12 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
                             } else {
                                 $targetFileName = $langFileCompiler->getFilenameFromPhraseName(MapUtils::firstKey($phrases));
                                 $phpCode        = $langFileCompiler->compilePhpCode($phrases);
+
+                                $targetDir = basename($langDir.'/'.$targetFileName);
+                                if (!is_dir($targetDir)) {
+                                    mkdir($targetDir, 0755);
+                                }
+
                                 file_put_contents($langDir.'/'.$targetFileName, $phpCode);
                                 $output->writeln('Done');
                             }

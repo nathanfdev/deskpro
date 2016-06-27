@@ -27,12 +27,13 @@
  */
 
 return array(
-    'portal.account.section-title-reset-password' => 'Reset uw wachtwoord',
-    'portal.account.section-title-register'       => 'Registreer',
-    'portal.account.login-register-header'        => 'Registreer',
-    'portal.account.login-register-btn'           => 'Registreer',
-    'portal.account.section-title-profile'        => 'Profiel',
     'portal.account.change-password'              => 'Wijzig wachtwoord',
-    'portal.account.reset-password-btn'           => 'Reset uw wachtwoord',
+    'portal.account.email-btn-resend-validation'  => 'Stuur validatie e-mail',
+    'portal.account.login-register-btn'           => 'Registreer',
+    'portal.account.login-register-header'        => 'Registreer',
     'portal.account.register-btn'                 => 'Registreer',
+    'portal.account.reset-password-btn'           => 'Reset uw wachtwoord',
+    'portal.account.section-title-profile'        => 'Profiel',
+    'portal.account.section-title-register'       => 'Registreer',
+    'portal.account.section-title-reset-password' => 'Reset uw wachtwoord',
 );

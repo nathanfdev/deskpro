@@ -27,9 +27,15 @@
  */
 
 return array(
+    'portal.tickets.attachments'                => 'فایل پیوست',
     'portal.tickets.guest-thanks-section-title' => 'با تشکر از شما',
     'portal.tickets.guest_thank_you_title'      => 'با تشکر از شما',
+    'portal.tickets.list_subject'               => 'موضوع',
+    'portal.tickets.new-section-title'          => 'تماس با ما',
     'portal.tickets.related_articles_title'     => 'مقالات مرتبط',
     'portal.tickets.view_btn_edit'              => 'ویرایش',
     'portal.tickets.view_label_your_name'       => 'نام شما',
+    'user.tickets.fields_category'              => 'دسته بندی',
+    'user.tickets.fields_product'               => 'محصول',
+    'user.tickets.from_x_at_y'                  => 'از {{name}} به {{date}}',
 );

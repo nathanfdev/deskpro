@@ -27,6 +27,7 @@
  */
 
 return array(
-    'portal.articles.section-title' => 'Kunnskapsbase',
     'portal.articles.search-title'  => 'Kunnskapsbase',
+    'portal.articles.section-title' => 'Kunnskapsbase',
+    'portal.articles.view-as-agent' => 'Du kan se denne siden for du er en medarbeider. Normale brukere kan ikke se denne siden.',
 );

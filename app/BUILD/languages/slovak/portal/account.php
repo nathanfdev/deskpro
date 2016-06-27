@@ -27,12 +27,13 @@
  */
 
 return array(
-    'portal.account.section-title-reset-password' => 'Reset hesla',
-    'portal.account.section-title-register'       => 'Registrovať',
-    'portal.account.login-register-header'        => 'Registrovať',
-    'portal.account.login-register-btn'           => 'Registrovať',
-    'portal.account.section-title-profile'        => 'Profil',
     'portal.account.change-password'              => 'Zmeniť heslo',
-    'portal.account.reset-password-btn'           => 'Reset hesla',
+    'portal.account.email-btn-resend-validation'  => 'Znovu odoslať overovací e-mail',
+    'portal.account.login-register-btn'           => 'Registrovať',
+    'portal.account.login-register-header'        => 'Registrovať',
     'portal.account.register-btn'                 => 'Registrovať',
+    'portal.account.reset-password-btn'           => 'Reset hesla',
+    'portal.account.section-title-profile'        => 'Profil',
+    'portal.account.section-title-register'       => 'Registrovať',
+    'portal.account.section-title-reset-password' => 'Reset hesla',
 );

@@ -27,6 +27,9 @@
  */
 
 return array(
+    'portal.feedback.attachments'     => 'Pièce jointes',
+    'portal.feedback.btn-closed'      => 'Fermé',
+    'portal.feedback.btn-vote'        => 'Je suis d\'accord',
     'portal.feedback.form_title'      => 'Titre',
     'portal.feedback.search-title'    => 'Remarques',
     'portal.feedback.section-desc'    => 'Ces suggestions ont été proposées par des utilisateurs comme vous. Nous vous conseillons de discuter ces suggestions, voter pour celles que vous approuvez et soumettre les vôtres si votre idée n\'est pas encore representée ici.',

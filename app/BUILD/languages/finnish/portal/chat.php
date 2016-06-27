@@ -27,12 +27,16 @@
  */
 
 return array(
-    'portal.chat.list_agent'             => 'Edustaja',
-    'portal.chat.log_department'         => 'Laji',
-    'portal.chat.you'                    => 'Sinä',
     'portal.chat.assigned_to'            => 'Keskusteluun liitetty {{name}}',
+    'portal.chat.chat_transcript'        => 'Keskustelu kopio',
+    'portal.chat.end_chat'               => 'Lopeta keskustelu',
     'portal.chat.ended_by'               => '{{name}} lopetti keskustelun',
     'portal.chat.ended_user'             => 'Käyttäjä on päättänyt keskustelun',
+    'portal.chat.feedback_action'        => 'Lähetä palautetta',
+    'portal.chat.helpful'                => 'Hyödyllinen',
+    'portal.chat.label-name'             => 'Nimesi',
+    'portal.chat.list_agent'             => 'Edustaja',
+    'portal.chat.log_department'         => 'Laji',
     'portal.chat.message_assigned'       => 'Keskusteluun liitetty {{name}}',
     'portal.chat.message_ended'          => 'Keskustelu päätetty',
     'portal.chat.message_ended-by'       => '{{name}} lopetti keskustelun',
@@ -47,6 +51,8 @@ return array(
     'portal.chat.message_user-timeout'   => 'Käyttäjä aika katkaistu',
     'portal.chat.message_user_joined'    => '{{name}} liittyi keskusteluun',
     'portal.chat.message_user_left'      => '{{name}} poistui keskustelusta',
+    'portal.chat.not_helpful'            => 'Hyödytön',
     'portal.chat.transcript_sent'        => 'Keskustelun kopio lähetetty {{email}}',
     'portal.chat.unassigned'             => 'Ei liitettyä kesksutelua',
+    'portal.chat.you'                    => 'Sinä',
 );

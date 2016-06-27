@@ -27,6 +27,6 @@
  */
 
 return array(
-    'portal.articles.section-title' => 'Videnbase',
     'portal.articles.search-title'  => 'Videnbase',
+    'portal.articles.section-title' => 'Videnbase',
 );

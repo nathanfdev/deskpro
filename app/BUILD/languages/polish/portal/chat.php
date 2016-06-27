@@ -27,12 +27,16 @@
  */
 
 return array(
-    'portal.chat.list_agent'             => 'Konsultant',
-    'portal.chat.log_department'         => 'Dział zgłoszenia',
-    'portal.chat.you'                    => 'Ty',
     'portal.chat.assigned_to'            => 'Czat został przypisany do {{name}}',
+    'portal.chat.chat_transcript'        => 'Log czatu',
+    'portal.chat.end_chat'               => 'Zakończ czat',
     'portal.chat.ended_by'               => 'Czat został zakończony przez {{name}}',
     'portal.chat.ended_user'             => 'Czat został zakończony przez użytkownika',
+    'portal.chat.feedback_action'        => 'Wyślij opinię',
+    'portal.chat.helpful'                => 'Przydatna',
+    'portal.chat.label-name'             => 'Twoje imię',
+    'portal.chat.list_agent'             => 'Konsultant',
+    'portal.chat.log_department'         => 'Dział zgłoszenia',
     'portal.chat.message_assigned'       => 'Czat został przypisany do {{name}}',
     'portal.chat.message_ended'          => 'Czat został zakończony',
     'portal.chat.message_ended-by'       => 'Czat został zakończony przez {{name}}',
@@ -47,6 +51,8 @@ return array(
     'portal.chat.message_user-timeout'   => 'Użytkownik wykorzystał limit czatu',
     'portal.chat.message_user_joined'    => '{{name}} dołączył(a) do czatu',
     'portal.chat.message_user_left'      => '{{name}} opuścił(a) czat',
+    'portal.chat.not_helpful'            => 'Nieprzydatna',
     'portal.chat.transcript_sent'        => 'Transkrypt wysłano do {{email}}',
     'portal.chat.unassigned'             => 'Czat nie został przypisany',
+    'portal.chat.you'                    => 'Ty',
 );

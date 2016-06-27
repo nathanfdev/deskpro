@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => 'Nicht gefunden',
     'user.error.attach_ext-allowed'      => 'Nur die folgenden Dateitypen können hochgeladen werden: {{error_detail}}',
     'user.error.attach_ext-not-allow'    => 'Der Dateityp der von Ihnen hochgeladene Datei ist nicht erlaubt.',
     'user.error.attach_failed'           => 'Ihr Anhang konnte nicht hochgeladen werden (haben Sie abgebrochen?). Sie sollten es noch einmal versuchen.',

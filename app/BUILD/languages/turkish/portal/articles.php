@@ -27,6 +27,7 @@
  */
 
 return array(
-    'portal.articles.section-title' => 'Bilgi Bankası',
     'portal.articles.search-title'  => 'Bilgi Bankası',
+    'portal.articles.section-title' => 'Bilgi Bankası',
+    'portal.articles.view-as-agent' => 'Bir personel iseniz bu sayfayı görebilirsiniz. Normal kullanıcılar bu sayfayı göremezler.',
 );

@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => 'Ikke fundet',
     'user.error.attach_ext-allowed'      => 'En af følgende filtyper kan ikke uploades: {{error_detail}}',
     'user.error.attach_ext-not-allow'    => 'Typen af den fil du har uploaded er ikke tilladt.',
     'user.error.attach_failed'           => 'Din vedhæftede fil blev ikke uploaded (afbrød du overførslen). Prøv igen.',

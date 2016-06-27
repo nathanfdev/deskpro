@@ -27,6 +27,6 @@
  */
 
 return array(
-    'portal.articles.section-title' => 'Kennisbank',
     'portal.articles.search-title'  => 'Kennisbank',
+    'portal.articles.section-title' => 'Kennisbank',
 );

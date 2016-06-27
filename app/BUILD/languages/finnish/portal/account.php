@@ -27,12 +27,13 @@
  */
 
 return array(
-    'portal.account.section-title-reset-password' => 'Vaihda salasana',
-    'portal.account.section-title-register'       => 'Rekisteröidy',
-    'portal.account.login-register-header'        => 'Rekisteröidy',
-    'portal.account.login-register-btn'           => 'Rekisteröidy',
-    'portal.account.section-title-profile'        => 'Profiili',
     'portal.account.change-password'              => 'Vaihda salasana',
-    'portal.account.reset-password-btn'           => 'Vaihda salasana',
+    'portal.account.email-btn-resend-validation'  => 'Lähetä vahvistussähköposti uudelleen',
+    'portal.account.login-register-btn'           => 'Rekisteröidy',
+    'portal.account.login-register-header'        => 'Rekisteröidy',
     'portal.account.register-btn'                 => 'Rekisteröidy',
+    'portal.account.reset-password-btn'           => 'Vaihda salasana',
+    'portal.account.section-title-profile'        => 'Profiili',
+    'portal.account.section-title-register'       => 'Rekisteröidy',
+    'portal.account.section-title-reset-password' => 'Vaihda salasana',
 );

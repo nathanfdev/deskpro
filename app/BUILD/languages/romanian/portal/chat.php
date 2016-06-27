@@ -27,12 +27,16 @@
  */
 
 return array(
-    'portal.chat.list_agent'             => 'Agent',
-    'portal.chat.log_department'         => 'Departament',
-    'portal.chat.you'                    => 'Dumneavoastra',
     'portal.chat.assigned_to'            => 'Chat-ul este asignat catre {{name}}',
+    'portal.chat.chat_transcript'        => 'Inregistrare Chat',
+    'portal.chat.end_chat'               => 'Finalizati chat-ul',
     'portal.chat.ended_by'               => 'Chat inchis de catre {{name}}',
     'portal.chat.ended_user'             => 'Chat inchis de catre user',
+    'portal.chat.feedback_action'        => 'Trimite feedback',
+    'portal.chat.helpful'                => 'De ajutor',
+    'portal.chat.label-name'             => 'Numele dumneavoastra',
+    'portal.chat.list_agent'             => 'Agent',
+    'portal.chat.log_department'         => 'Departament',
     'portal.chat.message_assigned'       => 'Chat-ul este asignat catre {{name}}',
     'portal.chat.message_ended'          => 'Chat terminat',
     'portal.chat.message_ended-by'       => 'Chat inchis de catre {{name}}',
@@ -47,6 +51,8 @@ return array(
     'portal.chat.message_user-timeout'   => 'Sesiunea userului a expirat',
     'portal.chat.message_user_joined'    => '{{name}} a intrat in chat',
     'portal.chat.message_user_left'      => '{{name}} a parasit chat-ul',
+    'portal.chat.not_helpful'            => 'Inutil',
     'portal.chat.transcript_sent'        => 'Copia conversatie a fost trimisa la adresa: {{email}}',
     'portal.chat.unassigned'             => 'Chat neasignat',
+    'portal.chat.you'                    => 'Dumneavoastra',
 );

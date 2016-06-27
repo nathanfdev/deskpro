@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => 'Niet gevonden',
     'user.error.attach_ext-allowed'      => 'Alleen de volgende bestandstypes kunnen worden geüpload: {{error_detail}}',
     'user.error.attach_ext-not-allow'    => 'Het bestandstype dat u heeft geüpload wordt niet toegestaan.',
     'user.error.attach_failed'           => 'Het uploaden van de bijlage is mislukt (heeft u dit geannuleerd?). Probeer het opnieuw.',
@@ -34,7 +35,6 @@ return array(
     'user.error.attach_size'             => 'Uw bijlage is te groot. De maximale bestandsgrootte is {{error_detail}}',
     'user.error.attach_unknown-error'    => 'Er was een probleem met onze server tijdens het accepteren van uw bijlage. Probeer het opnieuw.',
     'user.error.error_code'              => 'Error code',
-    'user.error.error_title'             => 'Error',
     'user.error.expired-token'           => 'De pagina die u probeert te bereiken is verlopen. Ga terug en probeer het opnieuw.',
     'user.error.form_choice_invalid'     => 'Selecteer een optie van de lijst',
     'user.error.form_choice_max'         => 'Selecteer ten hoogste 1 optie|Selecteer ten hoogste {{count}} opties',

@@ -27,13 +27,15 @@
  */
 
 return array(
-    'portal.forms.label_save'       => 'Lagre',
-    'portal.forms.label_submit'     => 'Send',
-    'portal.forms.label_name'       => 'Navn',
+    'portal.forms.label_category'   => 'Kategori',
+    'portal.forms.label_department' => 'Avdeling',
     'portal.forms.label_first_name' => 'Fornavn',
-    'portal.forms.label_last_name'  => 'Etternavn',
     'portal.forms.label_full_name'  => 'Ditt navn',
-    'portal.forms.label_subject'    => 'Emne',
+    'portal.forms.label_last_name'  => 'Etternavn',
     'portal.forms.label_message'    => 'Melding',
+    'portal.forms.label_name'       => 'Navn',
     'portal.forms.label_priority'   => 'Prioritet',
+    'portal.forms.label_save'       => 'Lagre',
+    'portal.forms.label_subject'    => 'Emne',
+    'portal.forms.label_submit'     => 'Send',
 );

@@ -27,6 +27,9 @@
  */
 
 return array(
+    'portal.feedback.attachments'     => 'Atasamente',
+    'portal.feedback.btn-closed'      => 'Inchis',
+    'portal.feedback.btn-vote'        => 'Sunt de acord',
     'portal.feedback.search-title'    => 'Feedback',
     'portal.feedback.section-desc'    => 'Aceste sugestii au fost trimise de clienti ca dumneavoastra; va rugam sa discutati si sa le votati pe cele pe care le agreati sau sa postati propriile sugestii daca ideea nu este deja listata.',
     'portal.feedback.section-title'   => 'Feedback',

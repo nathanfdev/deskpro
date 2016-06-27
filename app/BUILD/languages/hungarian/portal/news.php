@@ -28,4 +28,13 @@
 
 return array(
     'portal.news.section-title' => 'Hírek',
+    'portal.news.view-as-agent' => 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.',
+    'user.news.all-categories'  => 'Minden kategória',
+    'user.news.category'        => 'Kategória',
+    'user.news.latest_news'     => 'Legfrissebb híreink',
+    'user.news.news_not_found'  => 'Nincs bejegyzés',
+    'user.news.posted_date'     => 'Dátum: {{date}}',
+    'user.news.related_news'    => 'Kapcsolódó hírek',
+    'user.news.title'           => 'Hírek',
+    'user.news.type_news'       => 'Hírek',
 );

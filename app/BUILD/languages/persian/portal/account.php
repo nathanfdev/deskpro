@@ -27,12 +27,13 @@
  */
 
 return array(
-    'portal.account.section-title-reset-password' => 'تنظیم مجدد رمز عبور',
-    'portal.account.section-title-register'       => 'ثبت نام',
-    'portal.account.login-register-header'        => 'ثبت نام',
-    'portal.account.login-register-btn'           => 'ثبت نام',
-    'portal.account.section-title-profile'        => 'پروفایل',
     'portal.account.change-password'              => 'تغییر رمز عبور',
-    'portal.account.reset-password-btn'           => 'تنظیم مجدد رمز عبور',
+    'portal.account.email-btn-resend-validation'  => 'ارسال ایمیل تایید',
+    'portal.account.login-register-btn'           => 'ثبت نام',
+    'portal.account.login-register-header'        => 'ثبت نام',
     'portal.account.register-btn'                 => 'ثبت نام',
+    'portal.account.reset-password-btn'           => 'تنظیم مجدد رمز عبور',
+    'portal.account.section-title-profile'        => 'پروفایل',
+    'portal.account.section-title-register'       => 'ثبت نام',
+    'portal.account.section-title-reset-password' => 'تنظیم مجدد رمز عبور',
 );

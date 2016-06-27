@@ -27,13 +27,15 @@
  */
 
 return array(
-    'portal.forms.label_name'                => 'نام',
-    'portal.forms.label_first_name'          => 'نام',
-    'portal.forms.label_last_name'           => 'نام خانوادگی',
-    'portal.forms.label_full_name'           => 'نام شما',
-    'portal.forms.label_timezone'            => 'منطقه زمانی',
-    'portal.forms.label_language'            => 'زبان',
-    'portal.forms.label_password'            => 'رمز عبور',
-    'portal.forms.label_category'            => 'دسته',
     'portal.forms.error_password_min_length' => 'لطفا یک رمز عبور حداقل 5 کاراکتر وارد کنید .',
+    'portal.forms.label_category'            => 'دسته',
+    'portal.forms.label_first_name'          => 'نام',
+    'portal.forms.label_full_name'           => 'نام شما',
+    'portal.forms.label_language'            => 'زبان',
+    'portal.forms.label_last_name'           => 'نام خانوادگی',
+    'portal.forms.label_message'             => 'پیغام',
+    'portal.forms.label_name'                => 'نام',
+    'portal.forms.label_password'            => 'رمز عبور',
+    'portal.forms.label_subject'             => 'موضوع',
+    'portal.forms.label_timezone'            => 'منطقه زمانی',
 );

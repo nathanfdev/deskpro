@@ -28,4 +28,13 @@
 
 return array(
     'portal.news.section-title' => '뉴스',
+    'portal.news.view-as-agent' => '직원들만 이 페이지를 열람 할 수 있습니다. 일반 사용자는 열람 할 수 없습니다.',
+    'user.news.all-categories'  => '모든 카테고리',
+    'user.news.category'        => '카테고리',
+    'user.news.latest_news'     => '최신 뉴스',
+    'user.news.news_not_found'  => '게시물을 찾을 수 없습니다.',
+    'user.news.posted_date'     => '게시 날짜: {{date}}',
+    'user.news.related_news'    => '관련 뉴스',
+    'user.news.title'           => '뉴스',
+    'user.news.type_news'       => '뉴스',
 );

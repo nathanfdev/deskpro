@@ -27,12 +27,13 @@
  */
 
 return array(
-    'portal.account.section-title-reset-password' => 'Nulstil password',
-    'portal.account.section-title-register'       => 'Registrer',
-    'portal.account.login-register-header'        => 'Registrer',
-    'portal.account.login-register-btn'           => 'Registrer',
-    'portal.account.section-title-profile'        => 'Profil',
     'portal.account.change-password'              => 'Skift password',
-    'portal.account.reset-password-btn'           => 'Nulstil password',
+    'portal.account.email-btn-resend-validation'  => 'Gensend bekræftelses mail',
+    'portal.account.login-register-btn'           => 'Registrer',
+    'portal.account.login-register-header'        => 'Registrer',
     'portal.account.register-btn'                 => 'Registrer',
+    'portal.account.reset-password-btn'           => 'Nulstil password',
+    'portal.account.section-title-profile'        => 'Profil',
+    'portal.account.section-title-register'       => 'Registrer',
+    'portal.account.section-title-reset-password' => 'Nulstil password',
 );

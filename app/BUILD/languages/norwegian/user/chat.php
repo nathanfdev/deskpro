@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -27,9 +27,26 @@
  */
 
 return array(
+    'portal.chat.assigned_to'                   => 'Chat er tildelt {{name}}',
+    'portal.chat.ended_by'                      => 'Chat ble avsluttet av {{name}}',
+    'portal.chat.ended_user'                    => 'Chat ble avsluttet av kunde',
+    'portal.chat.log_department'                => 'Avdeling',
+    'portal.chat.message_assigned'              => 'Chat er tildelt {{name}}',
+    'portal.chat.message_ended'                 => 'Chat avsluttet',
+    'portal.chat.message_ended-by'              => 'Chat ble avsluttet av {{name}}',
+    'portal.chat.message_ended-by-user'         => 'Chat ble avsluttet av kunde',
+    'portal.chat.message_set-department'        => '{{name}} satt avdeling til {{department}}',
+    'portal.chat.message_set_department'        => '{{name}} satt avdeling til {{department}}',
+    'portal.chat.message_started'               => 'Chat startet',
+    'portal.chat.message_user-joined'           => '{{name}} kom inn i samtalen',
+    'portal.chat.message_user-left'             => '{{name}} forlot samtalen',
+    'portal.chat.message_user-returned'         => 'Kunde kom tilbake',
+    'portal.chat.message_user-timeout'          => 'Kunde har tidsavbrudd',
+    'portal.chat.message_user_joined'           => '{{name}} kom inn i samtalen',
+    'portal.chat.message_user_left'             => '{{name}} forlot samtalen',
+    'portal.chat.you'                           => 'Du',
     'user.chat.email'                           => 'Din epost adresse',
     'user.chat.ended-no-agent'                  => 'Vi beklager, men det er ingen som kan chatte med deg akkurat nå. Vennligst send oss en epost eller prøv senere.',
-    'user.chat.form_chat_button-submit'         => 'Send',
     'user.chat.form_chat_send-file'             => 'Last opp fil',
     'user.chat.form_create_button-submit'       => 'Start Chat',
     'user.chat.form_create_department'          => 'Velg avdeling',
@@ -42,6 +59,9 @@ return array(
     'user.chat.form_feedback_rate-unsatisfied'  => 'Nei',
     'user.chat.form_feedback_title'             => 'Send oss tilbakemelding',
     'user.chat.form_feedback_transcript-email'  => 'Send et referat av denne samtalen til',
+    'user.chat.log_created-date'                => 'Laget {{date}}',
+    'user.chat.log_fields_department'           => 'Avdeling',
+    'user.chat.log_message_author-you'          => 'Du',
     'user.chat.message_agent-timeout'           => 'Vi beklager; {{name}} ser ut til å ha blitt frakoblet. Vennligst vent mens vi finner en annen medarbeider',
     'user.chat.message_assigned'                => 'Chat er tildelt {{name}}',
     'user.chat.message_chatting-with'           => 'Du chatter med',

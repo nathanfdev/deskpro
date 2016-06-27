@@ -28,4 +28,13 @@
 
 return array(
     'portal.news.section-title' => 'Новости',
+    'portal.news.view-as-agent' => 'Вы видите данную страницу, потому что являетесь нашим сотрудником. Обычным пользователям данная страница недоступна для просмотра.',
+    'user.news.all-categories'  => 'Все категории',
+    'user.news.category'        => 'Категория',
+    'user.news.latest_news'     => 'Последние новости',
+    'user.news.news_not_found'  => 'Сообщение не найдено',
+    'user.news.posted_date'     => 'Добавлено:{{date}}',
+    'user.news.related_news'    => 'Новости по теме',
+    'user.news.title'           => 'Новости',
+    'user.news.type_news'       => 'Новости',
 );

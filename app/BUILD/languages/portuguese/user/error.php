@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => 'Não encontrada',
     'user.error.attach_ext-allowed'      => 'Somente os seguintes tipos de ficheiros podem ser carregados: {{error_detail}}',
     'user.error.attach_ext-not-allow'    => 'O tipo de ficheiro que carregou não é permitido.',
     'user.error.attach_failed'           => 'O carregamento do seu anexo falhou (cancelou o mesmo?). Deve tentar novamente.',

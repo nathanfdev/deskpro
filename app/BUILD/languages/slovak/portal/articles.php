@@ -27,6 +27,7 @@
  */
 
 return array(
-    'portal.articles.section-title' => 'Databáza znalostí',
     'portal.articles.search-title'  => 'Databáza znalostí',
+    'portal.articles.section-title' => 'Databáza znalostí',
+    'portal.articles.view-as-agent' => 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.',
 );

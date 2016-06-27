@@ -28,8 +28,14 @@
 
 return array(
     'portal.chat.assigned_to'            => 'Chat assegnata a {{name}}',
+    'portal.chat.chat_transcript'        => 'Trascrittura della chat',
+    'portal.chat.end_chat'               => 'Termina la chat',
     'portal.chat.ended_by'               => 'Chat terminata da {{name}}',
     'portal.chat.ended_user'             => 'Chat terminata dall\'utente',
+    'portal.chat.feedback_action'        => 'Invia un feedback',
+    'portal.chat.helpful'                => 'Di aiuto',
+    'portal.chat.label-name'             => 'Il tuo nome',
+    'portal.chat.log_department'         => 'Dipartimento',
     'portal.chat.message_assigned'       => 'Chat assegnata a {{name}}',
     'portal.chat.message_ended'          => 'Chat terminata',
     'portal.chat.message_ended-by'       => 'Chat terminata da {{name}}',
@@ -44,5 +50,7 @@ return array(
     'portal.chat.message_user-timeout'   => 'L\'utente ha avuto un problema di time out',
     'portal.chat.message_user_joined'    => '{{name}} si è connesso alla chat',
     'portal.chat.message_user_left'      => '{{name}} ha lasciato la chat',
+    'portal.chat.not_helpful'            => 'Non di aiuto',
     'portal.chat.unassigned'             => 'Chat non assegnata',
+    'portal.chat.you'                    => 'Tu',
 );

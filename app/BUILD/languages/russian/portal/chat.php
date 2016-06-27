@@ -27,11 +27,15 @@
  */
 
 return array(
-    'portal.chat.log_department'         => 'Отдел',
-    'portal.chat.you'                    => 'Вы',
     'portal.chat.assigned_to'            => 'Диалог передан {{name}}',
+    'portal.chat.chat_transcript'        => 'История чата',
+    'portal.chat.end_chat'               => 'Завершить диалог',
     'portal.chat.ended_by'               => 'Разговор завершен {{name}}',
     'portal.chat.ended_user'             => 'Разговор завершен пользователем',
+    'portal.chat.feedback_action'        => 'Отправить отзыв',
+    'portal.chat.helpful'                => 'Полезно',
+    'portal.chat.label-name'             => 'Ваше имя',
+    'portal.chat.log_department'         => 'Отдел',
     'portal.chat.message_assigned'       => 'Диалог передан {{name}}',
     'portal.chat.message_ended'          => 'Разговор завершен',
     'portal.chat.message_ended-by'       => 'Разговор завершен {{name}}',
@@ -46,5 +50,7 @@ return array(
     'portal.chat.message_user-timeout'   => 'Пользователь временно вышел',
     'portal.chat.message_user_joined'    => '{{name}} присоединился к диалогу',
     'portal.chat.message_user_left'      => '{{name}} прекратил диалог',
+    'portal.chat.not_helpful'            => 'Бесполезно',
     'portal.chat.unassigned'             => 'Диалог отменен',
+    'portal.chat.you'                    => 'Вы',
 );

@@ -27,12 +27,16 @@
  */
 
 return array(
-    'portal.chat.list_agent'             => 'Agent',
-    'portal.chat.log_department'         => 'Abteilung',
-    'portal.chat.you'                    => 'Sie',
     'portal.chat.assigned_to'            => 'Chat zugewiesen an {{name}}',
+    'portal.chat.chat_transcript'        => 'Chat Abschrift',
+    'portal.chat.end_chat'               => 'Chat beenden',
     'portal.chat.ended_by'               => 'Chat beendet durch {{name}}',
     'portal.chat.ended_user'             => 'Chat durch den Benutzer beendet',
+    'portal.chat.feedback_action'        => 'Feedback senden',
+    'portal.chat.helpful'                => 'Hilfreich',
+    'portal.chat.label-name'             => 'Ihr Name',
+    'portal.chat.list_agent'             => 'Agent',
+    'portal.chat.log_department'         => 'Abteilung',
     'portal.chat.message_assigned'       => 'Chat zugewiesen an {{name}}',
     'portal.chat.message_ended'          => 'Chat beendet',
     'portal.chat.message_ended-by'       => 'Chat beendet durch {{name}}',
@@ -47,6 +51,8 @@ return array(
     'portal.chat.message_user-timeout'   => 'Der Benutzer hat eine Zeitüberschreitung',
     'portal.chat.message_user_joined'    => '{{name}} ist dem Chat beigetreten',
     'portal.chat.message_user_left'      => '{{name}} hat den Chat verlassen',
+    'portal.chat.not_helpful'            => 'Nicht hilfreich',
     'portal.chat.transcript_sent'        => 'Transcript gesendet an {{email}}',
     'portal.chat.unassigned'             => 'Chat nicht zugewiesen',
+    'portal.chat.you'                    => 'Sie',
 );

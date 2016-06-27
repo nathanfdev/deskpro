@@ -28,8 +28,14 @@
 
 return array(
     'portal.chat.assigned_to'            => 'このチャットは{{name}}が担当します。',
+    'portal.chat.chat_transcript'        => 'チャットトランスクリプト',
+    'portal.chat.end_chat'               => 'チャットを終了',
     'portal.chat.ended_by'               => '{{name}}によりチャットは終了されました。',
     'portal.chat.ended_user'             => 'チャットはユーザにより終了しました。',
+    'portal.chat.feedback_action'        => 'フィードバックを送信',
+    'portal.chat.helpful'                => '参考になった',
+    'portal.chat.label-name'             => 'あなたの名前',
+    'portal.chat.log_department'         => '部門',
     'portal.chat.message_assigned'       => 'このチャットは{{name}}が担当します。',
     'portal.chat.message_ended'          => 'チャットは終了しました。',
     'portal.chat.message_ended-by'       => '{{name}}によりチャットは終了されました。',
@@ -44,5 +50,7 @@ return array(
     'portal.chat.message_user-timeout'   => 'ユーザがタイムアウトしました。',
     'portal.chat.message_user_joined'    => '{{name}} がチャットへ参加しました。',
     'portal.chat.message_user_left'      => '{{name}} がチャットを離れました。',
+    'portal.chat.not_helpful'            => '参考にならなかった',
     'portal.chat.unassigned'             => 'チャットはアサインされていません。',
+    'portal.chat.you'                    => 'あなた',
 );

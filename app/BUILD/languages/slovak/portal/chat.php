@@ -27,12 +27,16 @@
  */
 
 return array(
-    'portal.chat.list_agent'             => 'Operátor',
-    'portal.chat.log_department'         => 'Oddelenie',
-    'portal.chat.you'                    => 'Vy',
     'portal.chat.assigned_to'            => 'Chat pridelený {{name}}',
+    'portal.chat.chat_transcript'        => 'Odpis konverzácie',
+    'portal.chat.end_chat'               => 'Ukončiť konverzáciu',
     'portal.chat.ended_by'               => 'Chat ukončený užívateľom {{name}}',
     'portal.chat.ended_user'             => 'Chat ukončený užívateľom',
+    'portal.chat.feedback_action'        => 'Zaslať spätnú väzbu',
+    'portal.chat.helpful'                => 'Pomocné',
+    'portal.chat.label-name'             => 'Vaše meno',
+    'portal.chat.list_agent'             => 'Operátor',
+    'portal.chat.log_department'         => 'Oddelenie',
     'portal.chat.message_assigned'       => 'Chat pridelený {{name}}',
     'portal.chat.message_ended'          => 'Konverzácia ukončená',
     'portal.chat.message_ended-by'       => 'Chat ukončený užívateľom {{name}}',
@@ -47,6 +51,8 @@ return array(
     'portal.chat.message_user-timeout'   => 'Užívateľ sa odpojil',
     'portal.chat.message_user_joined'    => '{{name}} sa pripojil ku konverzácii',
     'portal.chat.message_user_left'      => '{{name}} opustil konverzáciu',
+    'portal.chat.not_helpful'            => 'Nie nápomocné',
     'portal.chat.transcript_sent'        => 'Odpis zaslaný na adresu {{email}}',
     'portal.chat.unassigned'             => 'Chat nepriradený',
+    'portal.chat.you'                    => 'Vy',
 );

@@ -27,6 +27,6 @@
  */
 
 return array(
-    'portal.account.section-title-reset-password' => 'Nullstill passord',
     'portal.account.reset-password-btn'           => 'Nullstill passord',
+    'portal.account.section-title-reset-password' => 'Nullstill passord',
 );

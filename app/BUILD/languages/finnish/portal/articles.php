@@ -27,6 +27,7 @@
  */
 
 return array(
-    'portal.articles.section-title' => 'Tietokanta',
     'portal.articles.search-title'  => 'Tietokanta',
+    'portal.articles.section-title' => 'Tietokanta',
+    'portal.articles.view-as-agent' => 'Näet tämän sivun koska olet edustajamme. Peruskäyttäjät eivät näe tätä sivua.',
 );
