@@ -520,6 +520,14 @@ END HEIRARCHY
 CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
 ###}
 
+{% block custom_field_choice_widget %}
+    {% if expanded %}
+        {{- block('deskpro_custom_field_choice_widget_expanded') -}}
+    {% else %}
+        {{- block('deskpro_custom_field_choice_widget_collapsed') -}}
+    {% endif %}
+{% endblock %}
+
 {% block deskpro_custom_field_choice_widget %}
     {% if expanded %}
         {{- block('deskpro_custom_field_choice_widget_expanded') -}}
