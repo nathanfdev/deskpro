@@ -16,21 +16,17 @@ export class SortWidget extends React.Component {
 
   render() {
     const { filter } = this.props;
-
-    const arrowDown = ' (desc)';
-    const arrowUp = ' (asc)';
-
     const sorts = {
-      'most-popular-desc':   portalPhrases.get('portal.general.prop_popularity') + arrowDown,
-      'most-popular-asc':    portalPhrases.get('portal.general.prop_popularity') + arrowUp,
-      'highest-rating-desc': portalPhrases.get('portal.general.prop_rating') + arrowDown,
-      'highest-rating-asc':  portalPhrases.get('portal.general.prop_rating') + arrowUp,
-      'date-desc':           portalPhrases.get('portal.general.prop_date') + arrowDown,
-      'date-asc':            portalPhrases.get('portal.general.prop_date') + arrowUp,
-      'most-discussed-desc': portalPhrases.get('portal.general.prop_comments') + arrowDown,
-      'most-discussed-asc':  portalPhrases.get('portal.general.prop_comments') + arrowUp,
-      'most-views-desc':     portalPhrases.get('portal.general.prop_views') + arrowDown,
-      'most-views-asc':      portalPhrases.get('portal.general.prop_views') + arrowUp
+      'most-popular-desc':   portalPhrases.get('portal.general.prop_popularity_desc'),
+      'most-popular-asc':    portalPhrases.get('portal.general.prop_popularity_asc'),
+      'highest-rating-desc': portalPhrases.get('portal.general.prop_rating_desc'),
+      'highest-rating-asc':  portalPhrases.get('portal.general.prop_rating_asc'),
+      'date-desc':           portalPhrases.get('portal.general.prop_date_desc'),
+      'date-asc':            portalPhrases.get('portal.general.prop_date_asc'),
+      'most-discussed-desc': portalPhrases.get('portal.general.prop_comments_desc'),
+      'most-discussed-asc':  portalPhrases.get('portal.general.prop_comments_asc'),
+      'most-views-desc':     portalPhrases.get('portal.general.prop_views_desc'),
+      'most-views-asc':      portalPhrases.get('portal.general.prop_views_asc')
     };
 
     const selectedSort = { id: filter.sort + '-' + filter.sort_direction, title: 'Sort' };
