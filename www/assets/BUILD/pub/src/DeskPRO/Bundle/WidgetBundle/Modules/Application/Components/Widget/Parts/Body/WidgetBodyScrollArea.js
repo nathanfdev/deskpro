@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import ScrollArea from 'react-scrollbar-iframe';
+import ScrollArea from 'react-scrollbar-versioned';
 
 export class WidgetBodyScrollArea extends React.Component {
 

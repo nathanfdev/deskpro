@@ -16,7 +16,7 @@ import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListe
 import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { DropZoneOverlay } from './Upload/DropZone/DropZoneOverlay';
 import { ReopenOverlay } from './ReopenOverlay';
-import ScrollArea from 'react-scrollbar-iframe';
+import ScrollArea from 'react-scrollbar-versioned';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class ReplyForm extends React.Component {

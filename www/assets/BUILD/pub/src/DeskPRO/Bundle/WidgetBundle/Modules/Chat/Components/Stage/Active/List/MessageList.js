@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import ScrollArea from 'react-scrollbar-iframe';
+import ScrollArea from 'react-scrollbar-versioned';
 import { MessageFactoryContainer } from './MessageFactoryContainer';
 import '../../../../../../Resources/sounds/pop.mp3';
 import '../../../../../../Resources/sounds/pop.ogg';
