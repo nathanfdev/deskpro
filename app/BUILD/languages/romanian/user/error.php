@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => 'Nu a fost gasit',
     'user.error.attach_ext-allowed'      => 'Doar urmatoarele tipuri de fisiere pot fi urcate: {{error_detail}}',
     'user.error.attach_ext-not-allow'    => 'Tipul de fisier urcat de dumneavoastra nu este permis.',
     'user.error.attach_failed'           => 'Atasamentul dumneavoastra nu a putut fi urcat (a fost anulat?). Va rugam sa incercati din nou.',

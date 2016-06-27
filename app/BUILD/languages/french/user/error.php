@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => 'Introuvable',
     'user.error.attach_ext-allowed'      => 'Seuls les types de fichiers suivants peuvent être téléchargés:{{error_detail}}',
     'user.error.attach_ext-not-allow'    => 'Le type de fichier que vous avez téléchargé n\'est pas supporté.',
     'user.error.attach_failed'           => 'Votre pièce jointe n\'a pas pu être téléchargée (avez-vous annulé le téléchargement?). Vous devriez réessayer.',

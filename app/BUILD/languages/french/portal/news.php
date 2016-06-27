@@ -29,4 +29,12 @@
 return array(
     'portal.news.section-title' => 'Actualités',
     'portal.news.view-as-agent' => 'Vous pouvez voir cette page car vous êtes un agent. Les utilisateurs normaux ne peuvent pas voir cette page.',
+    'user.news.all-categories'  => 'Toutes catégories',
+    'user.news.category'        => 'Catégorie',
+    'user.news.latest_news'     => 'Dernières actualités',
+    'user.news.news_not_found'  => 'Article introuvable',
+    'user.news.posted_date'     => 'Publié le: {{date}}',
+    'user.news.related_news'    => 'Actualités similaires',
+    'user.news.title'           => 'Actualités',
+    'user.news.type_news'       => 'Actualités',
 );

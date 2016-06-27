@@ -27,6 +27,22 @@
  */
 
 return array(
+    'user.knowledgebase.article-viewed'           => 'Tätä artikkelia on katsottu 1 kerta|Tätä artikkelia on katsottu {{count}} kertaa',
+    'user.knowledgebase.article_not_found'        => 'Artikkelia ei löytynyt.',
     'user.knowledgebase.auto_action_on_date'      => 'Automaattisesti {{action}}  {{date}}',
+    'user.knowledgebase.category_no-articles'     => 'Ei artikkeleita tässä kategoriassa',
     'user.knowledgebase.creating_pending_article' => 'Luodaan artikkelia',
+    'user.knowledgebase.knowledgebase'            => 'Tietokanta',
+    'user.knowledgebase.link_view-all'            => 'Tarkastele 1 artikkelia|Tarkastele {{count}} artikkelia',
+    'user.knowledgebase.related_articles'         => 'Vastaavia artikkeleita',
+    'user.knowledgebase.sidebar_description'      => 'Tietokannastamme löytyy yksi vastaava artikkeli jonka on kirjoittanut tukihenkilömme, josta löytyy vastaus kysymykseenne|Titokannastamme löytyy {{count}} vastaavaa artikkelia jonka on kirjoittanut tukihenkilömme, josta löytyy vastaus kysymykseenne',
+    'user.knowledgebase.subscribe-article'        => '<a href="{{link}}">Tilaa</a> artikkeliin saadaksesi ilmoitukset sähköpostiin kun artikkelia päivitetään.',
+    'user.knowledgebase.subscribe-category'       => '<a href="{{link}}">Tilaa</a> tähän kategoriaan saadaksesi ilmoitukset sähköpostiin uusista artikkeleista.',
+    'user.knowledgebase.title'                    => 'Tietokanta',
+    'user.knowledgebase.title-articles'           => 'Löytyy 1 artikkeli|Löytyy {{count}} artikkelia',
+    'user.knowledgebase.title-articles-paged'     => 'Näytetään artikkelisi {{first}} / {{last}} yhteensä {{total}}',
+    'user.knowledgebase.title-categories'         => 'Löytyy 1 ala-kategoria|Löytyy {{count}} ala-kategoriaa',
+    'user.knowledgebase.type_article'             => 'Artikkeli',
+    'user.knowledgebase.unsubscribe-article'      => 'Olet tilannut tämän artikkelin päivitykset. <a href="{{link}}">Lopeta tilaus</a>.              ',
+    'user.knowledgebase.unsubscribe-category'     => 'Olet tilannut tämän kategorian artikkelit, saat viestin kun uusia artikkeleita julkaistaan. <a href="{{link}}">Lopeta tilaus</a>.',
 );

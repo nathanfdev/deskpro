@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => '見つかりません。',
     'user.error.attach_ext-allowed'      => '次のファイル形式のみアップロードが可能です。: {{error_detail}}',
     'user.error.attach_ext-not-allow'    => 'アップロードされたファイル形式では受付できません。',
     'user.error.attach_failed'           => '添付ファイルのアップロードに失敗しました。あるいはキャンセルされた可能性があります。アップロードをやり直してください。',

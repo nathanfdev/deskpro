@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.tickets.attachments'                    => '첨부파일',
     'portal.tickets.feedback_message_leave_comment' => '댓글 남기기',
     'portal.tickets.guest-thanks-section-title'     => '감사합니다.',
     'portal.tickets.guest_thank_you_title'          => '감사합니다.',
@@ -44,6 +45,10 @@ return array(
     'portal.tickets.rate-neutral'                   => '괜찮았습니다',
     'portal.tickets.rate-positive'                  => '아주 좋았습니다',
     'portal.tickets.rate-question'                  => '서비스에 대해서 평가해 주세요?',
+    'portal.tickets.rate-thanks-vialink'            => '평가해 주셔서 감사합니다. 아래에 추가 사항을 남기 실수 있습니다.',
+    'portal.tickets.rate_helpful'                   => '도움이 되었습니다',
+    'portal.tickets.rate_support'                   => '서비스 평가하기',
+    'portal.tickets.rate_unhelpful'                 => '도움이 되지 않았다',
     'portal.tickets.related_articles_title'         => '관련 논문들',
     'portal.tickets.resolve_my_ticket_btn'          => '티켓 해결하기',
     'portal.tickets.resolve_ticket'                 => '티켓 해결하기: {{subject}}',
@@ -51,6 +56,7 @@ return array(
     'portal.tickets.search-title'                   => '티켓들',
     'portal.tickets.section-title'                  => '티켓들',
     'portal.tickets.timeline_marked_resolved'       => '해결된',
+    'portal.tickets.timeline_you'                   => '고객님',
     'portal.tickets.view_btn_edit'                  => '수정',
     'portal.tickets.view_label_your_name'           => '이름',
     'portal.tickets.view_unassigned'                => '미배정',

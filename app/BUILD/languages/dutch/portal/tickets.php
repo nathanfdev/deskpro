@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.tickets.attachments'                    => 'Bijlagen',
     'portal.tickets.feedback_message_leave_comment' => 'Laat een reactie achter',
     'portal.tickets.guest-thanks-section-title'     => 'Bedankt',
     'portal.tickets.guest_thank_you_title'          => 'Bedankt',
@@ -42,6 +43,8 @@ return array(
     'portal.tickets.rate-negative'                  => 'Het was niet goed',
     'portal.tickets.rate-neutral'                   => 'Het was OK',
     'portal.tickets.rate-positive'                  => 'Het was geweldig',
+    'portal.tickets.rate_helpful'                   => 'Behulpzaam',
+    'portal.tickets.rate_unhelpful'                 => 'Niet behulpzaam',
     'portal.tickets.related_articles_title'         => 'Gerelateerde artikelen',
     'portal.tickets.resolve_my_ticket_btn'          => 'Markeer mijn ticket als opgelost',
     'portal.tickets.resolve_ticket'                 => 'Markeer ticket {{subject}} als opgelost',
@@ -49,7 +52,20 @@ return array(
     'portal.tickets.search-title'                   => 'Tickets',
     'portal.tickets.section-title'                  => 'Tickets',
     'portal.tickets.timeline_marked_resolved'       => 'Opgelost',
+    'portal.tickets.timeline_you'                   => 'U',
     'portal.tickets.view_btn_edit'                  => 'Bewerken',
     'portal.tickets.view_label_your_name'           => 'Uw naam',
     'portal.tickets.view_unassigned'                => 'Niet toegewezen',
+    'user.tickets.empty_message'                    => '(Leeg antwoord)',
+    'user.tickets.feedback_message_leave_comment'   => 'Laat een reactie achter',
+    'user.tickets.fields_category'                  => 'Categorie',
+    'user.tickets.fields_department'                => 'Afdeling',
+    'user.tickets.fields_priority'                  => 'Prioriteit',
+    'user.tickets.form_error_captcha'               => 'Voer de code in',
+    'user.tickets.form_error_captcha_invalid'       => 'De code is incorrect ingevoerd',
+    'user.tickets.from_x_at_y'                      => 'Van {{name}} op {{date}}',
+    'user.tickets.no_subject'                       => '(Geen onderwerp)',
+    'user.tickets.rate-negative'                    => 'Het was niet goed',
+    'user.tickets.rate-neutral'                     => 'Het was OK',
+    'user.tickets.rate-positive'                    => 'Het was geweldig',
 );

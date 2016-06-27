@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => '찾을 수 없습니다.',
     'user.error.attach_ext-allowed'      => '{{error_detail}} 파일 종류만 업로드 하실 수 있습니다.',
     'user.error.attach_ext-not-allow'    => '업로드 하신 파일은 허용되지 않습니다.',
     'user.error.attach_failed'           => '첨부 파일이 업로드에 실패했습니다 (최소하셨습니까?). 다시 시도해 주십시오.',

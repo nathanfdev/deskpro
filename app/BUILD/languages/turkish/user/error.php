@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => 'Bulunamadı',
     'user.error.attach_ext-allowed'      => 'Sadece şu dosya tipleri yüklenebilir: {{error_detail}}',
     'user.error.attach_ext-not-allow'    => 'Yüklemeye çalıştığınız dosya tipine izin verilmemektedir.',
     'user.error.attach_failed'           => 'Ekinizin yüklemesi başarısız oldu (İptal mi ettiniz?) Yeniden denemelisiniz.',

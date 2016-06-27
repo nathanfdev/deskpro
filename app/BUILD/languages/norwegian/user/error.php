@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'           => 'Fant Ikke',
     'user.error.attach_ext-allowed'    => 'Bare følgende filtyper kan lastes opp: {{error_detail}}',
     'user.error.attach_ext-not-allow'  => 'Filtypen som du lastet opp er ikke tillat.',
     'user.error.attach_failed'         => 'Vedlegget ditt ble ikke lastet opp (Avbrøt du?) Prøv igjen.',

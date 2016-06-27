@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => 'Non trovato',
     'user.error.attach_ext-allowed'      => 'Solo i seguenti tipi di file possono essere caricati: {{error_detail}}',
     'user.error.attach_ext-not-allow'    => 'Il tipo di file che volete caricare non è permesso.',
     'user.error.attach_failed'           => 'Il vostro allegato non è stato caricato. Riprovate ancora.',

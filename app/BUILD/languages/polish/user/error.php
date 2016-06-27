@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => 'Nie znaleziono',
     'user.error.attach_ext-allowed'      => 'Tylko następujące typy plików mogą być załadowane: {{error_detail}}',
     'user.error.attach_ext-not-allow'    => 'Ten typ pliku nie jest dozwolony.',
     'user.error.attach_failed'           => 'Nie udało się załadować Twojego załącznika (przerwałeś proces?). Spróbuj jeszcze raz.',

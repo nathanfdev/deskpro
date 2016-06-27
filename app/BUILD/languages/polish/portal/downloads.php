@@ -27,8 +27,19 @@
  */
 
 return array(
-    'portal.downloads.download'      => 'Pobierz',
-    'portal.downloads.search-title'  => 'Pliki do pobrania',
-    'portal.downloads.section-title' => 'Pliki do pobrania',
-    'portal.downloads.view-as-agent' => 'Masz dostęp do tej strony, bo jesteś pracownikiem. Pozostali użytkownicy nie będą mogli korzystać z tej strony.',
+    'portal.downloads.download'          => 'Pobierz',
+    'portal.downloads.search-title'      => 'Pliki do pobrania',
+    'portal.downloads.section-title'     => 'Pliki do pobrania',
+    'portal.downloads.view-as-agent'     => 'Masz dostęp do tej strony, bo jesteś pracownikiem. Pozostali użytkownicy nie będą mogli korzystać z tej strony.',
+    'user.downloads.button-download'     => 'Pobierz',
+    'user.downloads.change_file'         => 'Zmień plik',
+    'user.downloads.downloads-count'     => 'Ten plik został pobrany 1 raz|Ten plik został pobrany razy - {{count}}',
+    'user.downloads.file_not_found'      => 'Ten plik nie został znaleziony',
+    'user.downloads.message_no-files'    => 'W tym folderze nie ma plików',
+    'user.downloads.noun'                => 'Plik',
+    'user.downloads.related_downloads'   => 'Powiązane pliki',
+    'user.downloads.sidebar_description' => 'Zobacz nasz plik| Przejrzyj pliki - {{count}}',
+    'user.downloads.title'               => 'Pliki do pobrania',
+    'user.downloads.title-categories'    => 'Znaleziony 1 podfolder|Znalezionych podfolderów - {{count}}',
+    'user.downloads.title-downloads'     => 'Znaleziony 1 plik|Znalezionych plików - {{count}}',
 );

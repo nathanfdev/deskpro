@@ -27,6 +27,7 @@
  */
 
 return array(
+    'portal.error.404-title'             => 'Nenájdené',
     'user.error.attach_ext-allowed'      => 'Iba nasledujúce typy súborov môžu byť nahrané: {{error_detail}}',
     'user.error.attach_ext-not-allow'    => 'Typ súboru, ktorý ste nahral nie je povolený.',
     'user.error.attach_failed'           => 'Nahrávanie pripojeného súboru bolo neúspešné(pozastavil ste to). Skúste znova.',
