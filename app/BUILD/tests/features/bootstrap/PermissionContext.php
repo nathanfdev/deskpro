@@ -158,6 +158,40 @@ class PermissionContext extends BaseContext
     }
 
     /**
+     * @Given I clear department permissions for :who
+     *
+     * @param $who
+     */
+    public function iClearDepartmentPermissionsForWho($who)
+    {
+        AuthContext::scheduleCleanup();
+        $person = $this->getPerson($who);
+
+        $connection = $this->em()->getConnection();
+        $connection->executeUpdate(
+            'DELETE FROM department_permissions WHERE person_id = ?',
+            [$person->getId()]
+        );
+    }
+
+    /**
+     * @Given I clear permissions for :who
+     *
+     * @param $who
+     */
+    public function iClearPermissionsForWho($who)
+    {
+        AuthContext::scheduleCleanup();
+        $person = $this->getPerson($who);
+
+        $connection = $this->em()->getConnection();
+        $connection->executeUpdate(
+            'DELETE FROM permissions WHERE person_id = ?',
+            [$person->getId()]
+        );
+    }
+
+    /**
      * @Given I have permissions to use :entity
      *
      * @param string $entity

@@ -26,45 +26,62 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\HttpCache;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Usergroup;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalUsergroupDecider;
 use FOS\HttpCache\UserContext\ContextProviderInterface;
 use FOS\HttpCache\UserContext\UserContext;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 
+/**
+ * Class PortalUserHashContextProvider.
+ */
 class PortalUserHashContextProvider implements ContextProviderInterface
 {
+    /**
+     * @var SettingsResolver
+     */
+    private $settingsResolver;
+
     /**
      * @var TokenStorage
      */
     private $tokenStorage;
 
     /**
-     * @var PortalPermissionsManager
+     * @var PortalUsergroupDecider
      */
-    private $permissionsManager;
+    private $usergroupDecider;
 
     /**
      * @var AuthorizationChecker
      */
     private $authChecker;
 
+    /**
+     * Constructor.
+     *
+     * @param SettingsResolver       $settingsResolver
+     * @param TokenStorage           $tokenStorage
+     * @param AuthorizationChecker   $authChecker
+     * @param PortalUsergroupDecider $usergroupDecider
+     */
     public function __construct(
-        TokenStorage $tokenStorage,
-        AuthorizationChecker $authChecker,
-        PortalPermissionsManager $permissionsManager
+        SettingsResolver       $settingsResolver,
+        TokenStorage           $tokenStorage,
+        AuthorizationChecker   $authChecker,
+        PortalUsergroupDecider $usergroupDecider
     ) {
-        $this->tokenStorage       = $tokenStorage;
-        $this->permissionsManager = $permissionsManager;
-        $this->authChecker        = $authChecker;
+        $this->settingsResolver = $settingsResolver;
+        $this->tokenStorage     = $tokenStorage;
+        $this->usergroupDecider = $usergroupDecider;
+        $this->authChecker      = $authChecker;
     }
 
     /**
@@ -77,12 +94,18 @@ class PortalUserHashContextProvider implements ContextProviderInterface
     public function updateUserContext(UserContext $context)
     {
         $cacheKey = 'guest';
-        if ($token = $this->tokenStorage->getToken()) {
+        $token    = $this->tokenStorage->getToken();
+
+        if ($token) {
             $person = $token->getUser();
             try {
                 if ($person instanceof Person && $this->authChecker->isGranted('ROLE_USER')) {
                     // only if there is a valid, and authenticated, user in the security token
-                    $cacheKey = $this->permissionsManager->getCacheKeyForPerson($person);
+                    $settings   = $this->settingsResolver->getGlobalSettings();
+                    $timestamp  = $settings->get(PortalPermissionsManager::CACHE_TIMESTAMP_SETTING_NAME);
+                    $userGroups = Usergroup::generateUsergroupSetKey($this->usergroupDecider->getUsergroupIdsForPerson($person));
+
+                    $cacheKey = "$timestamp-permissions-$userGroups";
                 }
             } catch (BadCredentialsException $e) {
                 // keep the silence, nothing bad was happened, so we just keep 'guest' cache_key

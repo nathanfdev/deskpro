@@ -2,7 +2,7 @@ services:
 
   portal_http_cache_user_context:
       class: DeskPRO\Bundle\PortalBundle\HttpCache\PortalUserHashContextProvider
-      arguments: ["@security.token_storage", "@security.authorization_checker", "@portal_permissions_manager"]
+      arguments: ["@settings_resolver", "@security.token_storage", "@security.authorization_checker", "@portal_usergroup_decider"]
       tags:
         - { name: fos_http_cache.user_context_provider }
 

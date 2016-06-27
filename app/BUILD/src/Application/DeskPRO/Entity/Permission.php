@@ -38,7 +38,6 @@ use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
-use Orb\Util\Numbers;
 
 /**
  * Permissions are flags applied groups or specific users.
@@ -164,7 +163,7 @@ class Permission extends DomainObject
                 $v = $perm->value;
             }
 
-            if (!Numbers::isInteger($v)) {
+            if (is_scalar($v)) {
                 $v = (int) $v;
             }
 

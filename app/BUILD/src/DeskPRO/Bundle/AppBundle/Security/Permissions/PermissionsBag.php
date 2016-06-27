@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Permissions;
 
 use Application\DeskPRO\Entity\Article;
@@ -39,6 +40,7 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\Entity\Permission;
 
 /**
  * The PermissionsBag acts like an immutable array, and also offers an API with methods like has('key') and get('key', 'default').
@@ -91,13 +93,13 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     /**
      * Constructor.
      *
-     * @param array $permissions
-     * @param array $departmentTicketIds
-     * @param array $departmentChatIds
-     * @param array $feedbackCategoryIds
-     * @param array $newsCategoryIds
-     * @param array $articleCategoryIds
-     * @param array $downloadCategoryIds
+     * @param Permission[] $permissions
+     * @param array        $departmentTicketIds
+     * @param array        $departmentChatIds
+     * @param array        $feedbackCategoryIds
+     * @param array        $newsCategoryIds
+     * @param array        $articleCategoryIds
+     * @param array        $downloadCategoryIds
      */
     public function __construct(
         array $permissions = [],
@@ -381,7 +383,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
      */
     public function setArray(array $permissions)
     {
-        $this->permissions = $permissions;
+        $this->permissions = Permission::getEffectivePermissions($permissions);
 
         return $this;
     }

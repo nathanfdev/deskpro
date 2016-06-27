@@ -52,13 +52,13 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 /**
  * Departments.
  *
- * @property string title
- * @property string $user_title
- * @property bool $is_tickets_enabled
- * @property bool $is_chat_enabled
- * @property int $display_order
- * @property Department $parent
- * @property Department $children
+ * @property string                       title
+ * @property string                       $user_title
+ * @property bool                         $is_tickets_enabled
+ * @property bool                         $is_chat_enabled
+ * @property int                          $display_order
+ * @property Department                   $parent
+ * @property Department[]|ArrayCollection $children
  */
 class Department extends DomainObject implements HasPhraseName, PersonList, AvatarOwner
 {
@@ -73,7 +73,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     protected $parent = null;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $children = null;
 
@@ -120,6 +120,11 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
      * @var ProjectMember[]|ArrayCollection
      */
     protected $project_members;
+
+    /**
+     * @var DepartmentPermission[]|ArrayCollection
+     */
+    protected $permissions;
 
     /**
      * @return Department
@@ -239,7 +244,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
      */
     public function getAllParents()
     {
-        $parents = array();
+        $parents = [];
         $d       = $this;
         while ($d = $d->getParent()) {
             $parents[] = $d;
@@ -258,6 +263,18 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
         }
 
         return 0;
+    }
+
+    /**
+     * @param Department $parent
+     *
+     * @return $this
+     */
+    public function setParent(Department $parent = null)
+    {
+        $this->setModelField('parent', $parent);
+
+        return $this;
     }
 
     /**
@@ -386,13 +403,21 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     /**
      * Get all children down the entire tree.
      *
-     * Note: Currently only two levels, so this is the same as getChildren()
-     *
-     * @return array
+     * @return array|Department[]
      */
     public function getAllChildren()
     {
-        return $this->getChildren();
+        $children = [];
+        $iterator = function (Department $department) use (&$children, &$iterator) {
+            foreach ($department->getChildren() as $child) {
+                $children[] = $child;
+                $iterator($child);
+            }
+        };
+
+        $iterator($this);
+
+        return $children;
     }
 
     /**
@@ -401,6 +426,14 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     public function getChildren()
     {
         return $this->children;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLeaf()
+    {
+        return $this->children->count() === 0;
     }
 
     /**
@@ -420,10 +453,10 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
         $phrase_name = 'obj_department.'.$this->id.'_'.$property;
 
         if ($property == 'user') {
-            return array(
+            return [
                 'obj_department.'.$this->id.'_user',
                 'obj_department.'.$this->id.'_title',
-            );
+            ];
         }
 
         return $phrase_name;
@@ -691,6 +724,14 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
             [
                 'fieldName'    => 'project_members',
                 'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember',
+                'mappedBy'     => 'department',
+            ]
+        );
+
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'permissions',
+                'targetEntity' => DepartmentPermission::class,
                 'mappedBy'     => 'department',
             ]
         );

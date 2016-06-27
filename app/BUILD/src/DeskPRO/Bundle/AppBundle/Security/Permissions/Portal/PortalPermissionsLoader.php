@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,17 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\Security\Permissions\Portal;
 
-use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
-use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\DepartmentPermission;
+use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Permission;
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
 
 /**
  * This is an adapter into the "old" permissions storage system.
@@ -54,221 +57,192 @@ class PortalPermissionsLoader
     protected $cache;
 
     /**
-     * @var \Application\DeskPRO\DBAL\Connection
+     * @var EntityManager
      */
-    private $connection;
+    private $em;
 
     /**
      * Constructor.
      *
-     * @param Connection $connection
+     * @param EntityManager $em
      */
-    public function __construct(Connection $connection)
+    public function __construct(EntityManager $em)
     {
-        $this->connection = $connection;
+        $this->em = $em;
     }
 
     /**
-     * @param array $usergroupIds
+     * Returns a list of usergroups permissions.
+     *
+     * @param array $userGroups
+     *
+     * @return Permission[]
+     */
+    public function getUsergroupPermissions(array $userGroups)
+    {
+        return $this->em->getRepository(Permission::class)->findBy([
+            'usergroup' => $userGroups,
+            'person'    => null,
+        ]);
+    }
+
+    /**
+     * @param array $userGroups
      *
      * @return mixed
      */
-    public function loadPermissions(array $usergroupIds)
+    public function getAllowedFeedbackCategories(array $userGroups)
     {
-        return $this->generateAndCache(
-            [
-                'loadPermissionsForGroupSet',
-                $usergroupIds,
-            ],
-            function () use ($usergroupIds) {
-                $perms = $this->getUsergroupsPermissions($usergroupIds);
-
-                $result = [];
-                foreach ($perms as $permissionGroup) {
-                    foreach ($permissionGroup as $p) {
-                        $result[] = $p;
-                    }
-                }
-
-                return Permission::getEffectivePermissions($result);
-            }
-        );
+        return $this->getAllowedCategories(FeedbackCategory::class, $userGroups);
     }
 
     /**
-     * @param Person $person
+     * @param array $userGroups
      *
      * @return mixed
      */
-    public function loadAllowedDepartments(Person $person)
+    public function getAllowedNewsCategories(array $userGroups)
     {
-        return $this->generateAndCache(
-            [
-                'loadAllowedDepartments',
-                $person,
-            ],
-            function () use ($person) {
-                return $person->getPermissionsManager()->Departments->getAllAllowed();
-            }
-        );
+        return $this->getAllowedCategories(NewsCategory::class, $userGroups);
     }
 
     /**
-     * @param Person $person
+     * @param array $userGroups
      *
      * @return mixed
      */
-    public function loadAllowedFeedbackCategories(Person $person)
+    public function getAllowedArticleCategories(array $userGroups)
     {
-        return $this->generateAndCache(
-            [
-                'loadAllowedFeedbackCategories',
-                $person,
-            ],
-            function () use ($person) {
-                return $person->getPermissionsManager()->FeedbackCategories->getAllowedCategories();
-            }
-        );
+        return $this->getAllowedCategories(ArticleCategory::class, $userGroups);
     }
 
     /**
-     * @param Person $person
+     * @param array $userGroups
      *
      * @return mixed
      */
-    public function loadAllowedNewsCategories(Person $person)
+    public function getAllowedDownloadCategories(array $userGroups)
     {
-        return $this->generateAndCache(
-            [
-                'loadAllowedNewsCategories',
-                $person,
-            ],
-            function () use ($person) {
-                return $person->getPermissionsManager()->NewsCategories->getAllowedCategories();
-            }
-        );
+        return $this->getAllowedCategories(DownloadCategory::class, $userGroups);
     }
 
     /**
-     * @param Person $person
+     * @param array $userGroups
+     *
+     * @return array
+     */
+    public function getAllowedTicketDepartments(array $userGroups)
+    {
+        return $this->getAllowedDepartments($userGroups, DepartmentPermission::APP_TICKETS);
+    }
+
+    /**
+     * @param array $userGroups
+     *
+     * @return array
+     */
+    public function getAllowedChatDepartments(array $userGroups)
+    {
+        return $this->getAllowedDepartments($userGroups, DepartmentPermission::APP_CHAT);
+    }
+
+    /**
+     * @param string $entityClass
+     * @param array  $userGroups
+     *
+     * @return array
+     */
+    private function getAllowedCategories($entityClass, array $userGroups)
+    {
+        /** @var CategoryHierarchy $repository */
+        $repository = $this->em->getRepository($entityClass);
+
+        return $repository->getCategoriesForUsergroups($userGroups);
+    }
+
+    /**
+     * @param array  $userGroups
+     * @param string $app
      *
      * @return mixed
      */
-    public function loadAllowedArticleCategories(Person $person)
+    private function getAllowedDepartments(array $userGroups, $app)
     {
-        return $this->generateAndCache(
-            [
-                'loadAllowedArticleCategories',
-                $person,
-            ],
-            function () use ($person) {
-                return $person->getPermissionsManager()->ArticleCategories->getAllowedCategories();
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('dp')
+            ->from(DepartmentPermission::class, 'dp')
+            ->join('dp.department', 'd')
+            ->where(
+                'dp.usergroup IN (:usergroup_ids)',
+                'dp.is_active = 1',
+                'dp.value = 1',
+                "d.is_{$app}_enabled = 1"
+            )
+            ->setParameter('usergroup_ids', $userGroups)
+        ;
+
+        /** @var DepartmentPermission[]|ArrayCollection $permissions */
+        $permissions = new ArrayCollection($qb->getQuery()->getResult());
+        /** @var Department[]|ArrayCollection $departments */
+        $departments = $permissions->map(function (DepartmentPermission $permission) {
+            return $permission->getDepartment();
+        });
+
+        // add also parent nodes
+        foreach ($departments as $department) {
+            foreach ($department->getAllParents() as $parent) {
+                $departments->add($parent);
             }
-        );
-    }
-
-    /**
-     * @param Person $person
-     *
-     * @return mixed
-     */
-    public function loadAllowedDownloadCategories(Person $person)
-    {
-        return $this->generateAndCache(
-            [
-                'loadAllowedDownloadCategories',
-                $person,
-            ],
-            function () use ($person) {
-                return $person->getPermissionsManager()->DownloadCategories->getAllowedCategories();
-            }
-        );
-    }
-
-    /**
-     * @param $usergroupIds
-     *
-     * @return mixed|null
-     */
-    protected function getUsergroupsPermissions($usergroupIds)
-    {
-        return $this->generateAndCache(
-            [
-                'getUsergroupsPermissions',
-                $usergroupIds,
-            ],
-            function () use ($usergroupIds) {
-                $usergroupIds = array_fill_keys($usergroupIds, true);
-
-                $result = [];
-                foreach ($this->getAllPermissions() as $id => $permission) {
-                    if (isset($usergroupIds[$id])) {
-                        $result[$id] = $permission;
-                    }
-                }
-
-                return $result;
-            }
-        );
-    }
-
-    /**
-     * @return mixed|null
-     */
-    protected function getAllPermissions()
-    {
-        return $this->generateAndCache(
-            [
-                'getAllPermissions',
-            ],
-            function () {
-                return $this->connection->fetchAllGrouped(
-                    '
-                    SELECT usergroup_id, name, value
-                    FROM permissions
-                    WHERE person_id IS NULL
-                    ',
-                    [],
-                    'usergroup_id'
-                );
-            }
-        );
-    }
-
-    /**
-     * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable
-     * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
-     *
-     * @return mixed|null
-     */
-    protected function generateAndCache($params, $callable)
-    {
-        return $this->getCache()->get($this->generateHash($params), $callable);
-    }
-
-    /**
-     * @return ConvenientCache
-     */
-    protected function getCache()
-    {
-        if (null === $this->cache) {
-            $this->cache = new ConvenientCache(new SimpleArrayCache());
         }
 
-        return $this->cache;
-    }
+        // remove empty parent nodes
+        foreach ($departments as $department) {
+            if ($department->isLeaf()) {
+                continue;
+            }
 
-    /**
-     * @param mixed $input
-     *
-     * @return string
-     */
-    protected function generateHash($input)
-    {
-        if (null === $this->hash_generator) {
-            $this->hash_generator = new ArbitraryHasher();
+            $foundAllowedChild = false;
+            foreach ($department->getAllChildren() as $child) {
+                if ($child->isLeaf() && $departments->contains($child)) {
+                    $foundAllowedChild = true;
+                }
+            }
+
+            if (!$foundAllowedChild) {
+                $departments->removeElement($department);
+            }
         }
 
-        return $this->hash_generator->generateHash($input);
+        $result = [];
+        foreach ($departments as $department) {
+            /** @var DepartmentPermission[]|ArrayCollection $departmentPermissions */
+            $departmentPermissions = $permissions->filter(function (DepartmentPermission $permission) use ($department) {
+                return $permission->getDepartment() === $department;
+            });
+
+            // get own permissions
+            foreach ($departmentPermissions as $permission) {
+                $result[$department->getId()][$permission->getName()] = 1;
+            }
+
+            // if it's a parent department then get permissions from its children
+            if (!$department->isLeaf()) {
+                foreach ($department->getAllChildren() as $child) {
+                    if ($departments->contains($child)) {
+                        /** @var DepartmentPermission[] $childPermissions */
+                        $childPermissions = $permissions->filter(function (DepartmentPermission $permission) use ($child) {
+                            return $permission->getDepartment() === $child;
+                        });
+
+                        foreach ($childPermissions as $permission) {
+                            $result[$department->getId()][$permission->getName()] = 1;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $result;
     }
 }
