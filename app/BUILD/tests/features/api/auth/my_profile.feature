@@ -2,7 +2,7 @@
 Feature: Person profile
 
   Background:
-    And I'm authenticated as admin
+    Given I'm authenticated as admin
 
   Scenario: I get profile
     When I send a GET request to "/api/v2/me/profile"

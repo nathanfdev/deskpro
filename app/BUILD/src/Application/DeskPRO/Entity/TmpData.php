@@ -69,7 +69,7 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * @var \DateTime
@@ -88,7 +88,7 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
      *
      * @return \Application\DeskPRO\Entity\TmpData
      */
-    public static function create($type, array $data = array(), $expire = '+1 week', $name = null)
+    public static function create($type, array $data = [], $expire = '+1 week', $name = null)
     {
         $tmpdata = new self();
         $tmpdata->setType($type);
@@ -207,10 +207,10 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
 
         $parts[0] = Util::baseDecode($parts[0], Util::LETTERS_ALPHABET);
 
-        return array(
+        return [
             'id'   => $parts[0],
             'auth' => $parts[1],
-        );
+        ];
     }
 
     ############################################################################
