@@ -149,7 +149,7 @@
 <div ng-if="expandedOrg && result === expandedOrg && expandedOrg.members_data && expandedOrg.members_data.length">
     <article ng-repeat="person in result.members_data" class="row-item single-row sub-item" route-notabreload="1" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '{{ person.id }}'})|raw }}">
         <div class="top-row">
-            <div class="top-row-left">
+            <div class="top-row-left" style="width: auto;">
                 <h3>
                     <a class="name click-through">
                         <span class="with-icon" style="background-image: url('{{ ng_var('person.picture_url_16') }}');">
@@ -160,6 +160,11 @@
                         &lt;{{ ng_var('(person.primary_email || {}).email') }}&gt;
                     </span>
                 </h3>
+				<span class="sub-items-link" style="right: 5px; top: -17px;"
+					  data-route="page:{{ path('agent_ticket_new', {person_id: '0000'})|replace({'0000': '{{ person.id }}'})|raw }}"
+				>
+					+ Ticket
+				</span>
             </div>
         </div>
     </article>
