@@ -151,14 +151,20 @@ class TextSnippet extends AbstractEntityRepository
                 and l1.prop_name = "title"
                 and l2.prop_name = "snippet"
                 and l1.ref_id = l2.ref_id
-            where l1.value like :title
-            limit %d, %d
-        ', --$page * $per_page, $per_page);
-        $params = array('title' => '%'.$search.'%');
+            where 1
+        ');
+        $params = array();
+        if ($search) {
+            $sql .= ' and l1.value like :title';
+            $params['title'] = '%'.$search.'%';
+        }
         if ($language_id) {
             $sql .= ' and language_id = :language_id';
             $params['language_id'] = $language_id;
         }
+        $sql .= ' limit %d, %d';
+        $sql = sprintf($sql, --$page * $per_page, $per_page);
+
         $ids = array();
         $map = array();
         foreach ($conn->fetchAll($sql, $params) as $row) {

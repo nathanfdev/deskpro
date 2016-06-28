@@ -294,7 +294,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 					_b = $.trim($(b).text()).toLowerCase();
 				if (0 === parseInt($(a).data('category-id'))) return -1;
 				if (0 === parseInt($(b).data('category-id'))) return 1;
-				return _a > _b ? 1 : -1;
+				return _a.localeCompare(_b);
 			}).remove();
 			catList.append($sorted);
 		};
@@ -978,9 +978,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
     var $sorted = this.getEl('editsnippet_category_select').children().sort(function(a, b){
       var _a = $.trim($(a).text()).toLowerCase(),
           _b = $.trim($(b).text()).toLowerCase();
-      if (0 === $(a).data('category-id')) return -1;
-      if (0 === $(b).data('category-id')) return 1;
-      return _a > _b ? 1 : -1;
+      return _a.localeCompare(_b);
     }).remove();
     this.getEl('editsnippet_category_select').append($sorted);
 
