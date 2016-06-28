@@ -63,6 +63,9 @@ use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Entity\TicketWorkflow;
 use Application\DeskPRO\Entity\Usergroup;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAttachment;
@@ -220,6 +223,9 @@ class ObjectsManager
             'Article'                => [Factory\SimpleFactory::class, 'create', Article::class],
             'ArticleCategory'        => [Factory\SimpleFactory::class, 'create', ArticleCategory::class],
             'Chat'                   => [Factory\SimpleFactory::class, 'create', ChatConversation::class],
+            'AgentChat'              => [Factory\SimpleFactory::class, 'create', AgentChat::class],
+            'AgentChatParticipant'   => [Factory\SimpleFactory::class, 'create', AgentChatParticipant::class],
+            'AgentChatMessage'       => [Factory\SimpleFactory::class, 'create', AgentChatMessage::class],
             'CustomDefOrganization'  => [Factory\CommonFactories::class, 'customDef', 'organization'],
             'CustomDefTicket'        => [Factory\CommonFactories::class, 'customDef', 'ticket'],
             'CustomDefPerson'        => [Factory\CommonFactories::class, 'customDef', 'person'],
@@ -292,6 +298,7 @@ class ObjectsManager
             'Language'               => [$this, 'find', Language::class],
             'DataStore'              => [$this, 'find', DataStore::class],
             'EmailAccount'           => [$this, 'find', EmailAccount::class],
+            'AgentChatMessage'       => [$this, 'find', AgentChatMessage::class],
         ];
     }
 }
