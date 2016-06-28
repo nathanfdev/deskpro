@@ -219,7 +219,7 @@ class ObjectsManager
     private function initTypeFactories()
     {
         $this->typeFactories = [
-            'AgentTeam'              => [Factory\SimpleFactory::class, 'create', AgentTeam::class],
+            'AgentTeam'              => [Factory\CommonFactories::class, 'agentTeam'],
             'Article'                => [Factory\SimpleFactory::class, 'create', Article::class],
             'ArticleCategory'        => [Factory\SimpleFactory::class, 'create', ArticleCategory::class],
             'Chat'                   => [Factory\SimpleFactory::class, 'create', ChatConversation::class],
@@ -298,6 +298,8 @@ class ObjectsManager
             'Language'               => [$this, 'find', Language::class],
             'DataStore'              => [$this, 'find', DataStore::class],
             'EmailAccount'           => [$this, 'find', EmailAccount::class],
+            'AgentChat'              => [$this, 'find', AgentChat::class],
+            'AgentChatParticipant'   => [$this, 'find', AgentChatParticipant::class],
             'AgentChatMessage'       => [$this, 'find', AgentChatMessage::class],
         ];
     }

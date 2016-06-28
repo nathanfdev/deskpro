@@ -98,5 +98,7 @@ class SimpleFactory
             throw new \Exception(
                 "Can't set '{$prop}' on {$class} via {$setter}(), {$add}(), {$camelCaseProp}, {$prop}");
         }
+
+        return $object;
     }
 }

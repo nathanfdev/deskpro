@@ -246,7 +246,17 @@ class DataContext extends BaseContext
 
             // Resolve references to other objects
             foreach ($data as &$value) {
-                if (self::isReference($value)) {
+                if (self::isArray($value)) {
+                    $arrayValue = [];
+                    foreach (self::transformToArray($value) as $item) {
+                        if (self::isReference($item)) {
+                            $arrayValue[] = self::resolveReference($item);
+                        } else {
+                            $arrayValue[] = $item;
+                        }
+                    }
+                    $value = $arrayValue;
+                } elseif (self::isReference($value)) {
                     $value = self::resolveReference($value);
                 }
             }
@@ -314,6 +324,28 @@ class DataContext extends BaseContext
     private static function isReference($string)
     {
         return is_string($string) && (preg_match('/^{[\w-@.]+}$/', $string) || preg_match('/^~[\w-@.]+~$/', $string));
+    }
+
+    /**
+     * @param $string
+     *
+     * @return bool
+     */
+    private static function isArray($string)
+    {
+        return is_string($string) && preg_match('/^\[.+\]$/', $string);
+    }
+
+    /**
+     * @param $string
+     *
+     * @return mixed
+     */
+    private static function transformToArray($string)
+    {
+        $string = trim($string, '[]');
+
+        return explode(',', $string);
     }
 
     /**
