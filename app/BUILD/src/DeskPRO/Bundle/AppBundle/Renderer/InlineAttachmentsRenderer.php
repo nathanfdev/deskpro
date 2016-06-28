@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Renderer;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -102,6 +103,10 @@ class InlineAttachmentsRenderer
         $blob_auth_id = $m[2];
         $filename     = $m[3];
 
+        if (substr($filename, strtolower(-5) === '.tiff')) {
+            $attach_type = 'url';
+        }
+
         $download_url = $this->router->generate(
             'serve_blob',
             array('blob_auth_id' => $blob_auth_id, 'filename' => $filename),
@@ -136,7 +141,7 @@ class InlineAttachmentsRenderer
                 break;
 
             case 'url':
-                $replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout '.$marker_class_a.'" %s>%s</a>', $download_url, $extra, $filename);
+                $replace = sprintf('<a href="%s" target="_blank" class="dragout '.$marker_class_a.'" %s>%s</a>', $download_url, $extra, $filename);
                 break;
 
             case 'link':

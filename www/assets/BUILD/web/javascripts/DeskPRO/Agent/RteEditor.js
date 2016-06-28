@@ -259,7 +259,9 @@ DeskPRO.Agent.RteEditor = {
 						var blobData = event.originalEvent.dataTransfer.getData('blobData');
 						if (blobData) {
 							blobData = JSON.parse(blobData);
-							$.proxy(api.imageUploadCallback, api)(blobData);
+              blobData.is_image
+                ? $.proxy(api.imageUploadCallback, api)(blobData)
+                : $.proxy(api.opts.imageUploadErrorCallback, api)(api, {error: 'Invalid image'});
 						}
 
 						return;
