@@ -540,7 +540,7 @@ class MainController extends AbstractController
             return [
                 'id'      => $org->id,
                 'name'    => $org->name,
-                'members' => $counts[$org->id],
+                'members' => isset($counts[$org->id]) ? $counts[$org->getId()] : 0,
             ];
         };
 
