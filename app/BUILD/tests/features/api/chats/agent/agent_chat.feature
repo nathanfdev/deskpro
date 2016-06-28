@@ -89,5 +89,3 @@ Feature: /agent_chats endpoint
     And the response status code should be 200
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to "{agent-agent-chat}"
-
-
