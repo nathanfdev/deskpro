@@ -62,7 +62,8 @@ class KbController extends AbstractController
 
     public function viewArticleAction($article_id)
     {
-        $isPdf   = $this->in->getBool('pdf');
+        $isPdf = $this->in->getBool('pdf');
+        /** @var Article $article */
         $article = $this->em->find(Article::class, $article_id);
         if (!$article) {
             throw $this->createNotFoundException("Unknown article $article_id");
@@ -104,7 +105,7 @@ class KbController extends AbstractController
 
         $rated_searches = $this->em->getRepository(SearchLog::class)->getRatedSearchesFor('article', $article['id'], 'counted');
 
-        $article_categories = $this->em->getRepository(ArticleCategory::class)->getInHierarchy();
+        $article_categories = $this->getFilteredCategory($article->getPrimaryCategory()->getBrand()->getId());
         $article_products   = $this->em->getRepository(Product::class)->getInHierarchy();
 
         $perms = [
@@ -636,15 +637,7 @@ class KbController extends AbstractController
 
     public function ajaxGetCategoriesByBrandAction($brand_id)
     {
-        $categories = $this->em->getRepository(ArticleCategory::class)->getInHierarchy();
-
-        $filteredCategories = [];
-
-        foreach ($categories as $c) {
-            if ($brand_id == $c['brand_id']) {
-                $filteredCategories[] = $c;
-            }
-        }
+        $categories = $this->getFilteredCategory($brand_id);
 
         return $this->render('AgentBundle:Common:select-standard.html.twig', [
             'name'             => 'newarticle[category_id]',
@@ -653,7 +646,7 @@ class KbController extends AbstractController
             'add_attr'         => '',
             'with_blank'       => 0,
             'blank_title'      => '',
-            'categories'       => $filteredCategories,
+            'categories'       => $categories,
             'allow_parent_sel' => true,
         ]);
     }
@@ -876,17 +869,7 @@ class KbController extends AbstractController
             $tpl = 'AgentBundle:Kb:filter-page.html.twig';
         }
 
-        $brandId = $category->getBrand()->getId();
-
-        $unFilteredCategories = $this->em->getRepository(ArticleCategory::class)->getInHierarchy();
-
-        $articleCategories = [];
-
-        foreach ($unFilteredCategories as $c) {
-            if ($brandId == $c['brand_id']) {
-                $articleCategories[] = $c;
-            }
-        }
+        $articleCategories = $this->getFilteredCategory($category->getBrand()->getId());
 
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
@@ -975,24 +958,16 @@ class KbController extends AbstractController
 
     public function newArticleAction()
     {
-        $articleCategories = $this->em->getRepository(ArticleCategory::class)->getInHierarchy();
-
         $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
 
-        $rootCategories = [];
-
-        foreach ($articleCategories as $c) {
-            if ($brandId == $c['brand_id']) {
-                $rootCategories[] = $c;
-            }
-        }
+        $articleCategories = $this->getFilteredCategory($brandId);
 
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.newarticle', $this->person->id);
 
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
         return $this->render('AgentBundle:Kb:newarticle.html.twig', [
-            'article_categories' => $rootCategories,
+            'article_categories' => $articleCategories,
             'state'              => $state,
             'brands'             => $brands,
         ]);
@@ -1048,5 +1023,25 @@ class KbController extends AbstractController
                 'success' => false,
             ]);
         }
+    }
+
+    /**
+     * @param int $brandId
+     *
+     * @return array
+     */
+    private function getFilteredCategory($brandId)
+    {
+        $unFilteredCategories = $this->em->getRepository(ArticleCategory::class)->getInHierarchy();
+
+        $articleCategories = [];
+
+        foreach ($unFilteredCategories as $c) {
+            if ($brandId == $c['brand_id']) {
+                $articleCategories[] = $c;
+            }
+        }
+
+        return $articleCategories;
     }
 }

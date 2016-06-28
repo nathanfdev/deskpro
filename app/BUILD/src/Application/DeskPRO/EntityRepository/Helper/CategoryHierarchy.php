@@ -35,8 +35,11 @@
 namespace Application\DeskPRO\EntityRepository\Helper;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Util\Arrays;
@@ -138,6 +141,8 @@ class CategoryHierarchy
 
     /**
      * Get all root nodes.
+     *
+     * @param int $brandId
      *
      * @return array
      */
@@ -490,14 +495,34 @@ class CategoryHierarchy
             return [];
         }
 
-        $conn    = App::getDb();
-        $tbl     = $conn->quoteIdentifier($permission_table_name);
-        $cat_ids = $conn->fetchAllCol("
-            SELECT category_id
-            FROM {$tbl}
-            WHERE usergroup_id IN (?)
-            GROUP BY category_id
-        ", [$usergroup_ids], [Connection::PARAM_INT_ARRAY]);
+        $conn = App::getDb();
+        $qb   = $conn->createQueryBuilder();
+
+        $tbl = $conn->quoteIdentifier($permission_table_name);
+        $qb->select('category_id');
+        $qb->from($tbl, 't');
+        $qb->andWhere($qb->expr()->in('usergroup_id', $usergroup_ids));
+        $qb->groupBy('category_id');
+
+        $brandRelatedCategories = [
+            ArticleCategory::class,
+            DownloadCategory::class,
+            NewsCategory::class,
+        ];
+
+        if (in_array($this->class->name, $brandRelatedCategories)) {
+            /** @var BrandStack $brandStack */
+            $brandStack = App::get('brand_stack');
+
+            $currentBrand = $brandStack->getActive()->getBrand();
+
+            $table_name = $this->repos->getTableName();
+
+            $qb->innerJoin('t', $table_name, 'c', 'c.id = t.category_id');
+            $qb->andWhere($qb->expr()->eq('c.brand_id', $currentBrand->getId()));
+        }
+
+        $cat_ids = $conn->fetchAllCol($qb->getSQL());
 
         return $cat_ids;
     }

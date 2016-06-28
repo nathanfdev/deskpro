@@ -38,7 +38,6 @@ use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\RelatedContent;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\ArrayAdapter;
@@ -56,22 +55,15 @@ class DownloadsDataService extends AbstractDataService
     protected $permissions_manager;
 
     /**
-     * @var BrandStack
-     */
-    protected $brandStack;
-
-    /**
      * Constructor.
      *
      * @param EntityManager      $em
      * @param PermissionsManager $permissionsManager
-     * @param BrandStack         $brandStack
      */
-    public function __construct(EntityManager $em, PermissionsManager $permissionsManager, BrandStack $brandStack)
+    public function __construct(EntityManager $em, PermissionsManager $permissionsManager)
     {
         parent::__construct($em);
         $this->permissions_manager = $permissionsManager;
-        $this->brandStack          = $brandStack;
     }
 
     /**
@@ -178,14 +170,11 @@ class DownloadsDataService extends AbstractDataService
                     $person
                 )->getAllowedDownloadCategories();
 
-                $activeBrand = $that->brandStack->getActive();
-
                 if (!$category) { // get root categories
                     $result = $that->getDownloadCategoriesRepo()
                         ->findBy([
                             'parent' => null,
                             'id'     => $allowed_ids,
-                            'brand'  => $activeBrand->getBrand(),
                         ]);
                 } else {
                     if (!$category instanceof DownloadCategory) { // if not already category, try to make it one

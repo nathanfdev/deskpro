@@ -927,25 +927,24 @@ class PublishController extends AbstractController
 
     public function addCategoryFormSaveAction($type)
     {
-        $entity_name = null;
+        $class = null;
         switch ($type) {
             case 'article':
-                $entity_name = ArticleCategory::class;
+                $class = ArticleCategory::class;
                 break;
             case 'download':
-                $entity_name = DownloadCategory::class;
+                $class = DownloadCategory::class;
                 break;
             case 'news':
-                $entity_name = NewsCategory::class;
+                $class = NewsCategory::class;
                 break;
         }
 
-        if (!$entity_name) {
+        if (!$class) {
             return $this->createJsonResponse(['Invalid type']);
         }
 
-        $class      = App::getEntityClass($entity_name);
-        $repos      = $this->em->getRepository($entity_name);
+        $repos      = $this->em->getRepository($class);
         $perm_table = $repos->getPermissionTableName();
 
         #------------------------------

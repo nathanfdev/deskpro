@@ -54,6 +54,7 @@ class DownloadsController extends AbstractController
 
     public function viewAction($download_id)
     {
+        /** @var Download $download */
         $download = $this->em->find(Download::class, $download_id);
 
         if (!$download) {
@@ -71,7 +72,7 @@ class DownloadsController extends AbstractController
 
         $rated_searches = $this->em->getRepository(SearchLog::class)->getRatedSearchesFor('download', $download['id'], 'counted');
 
-        $download_categories = $this->em->getRepository(DownloadCategory::class)->getInHierarchy();
+        $download_categories = $this->getFilteredCategory($download->getCategory()->getBrand()->getId());
 
         $perms = [
             'can_edit'   => $this->person->PermissionsManager->PublishChecker->canEdit($download),
@@ -344,15 +345,7 @@ class DownloadsController extends AbstractController
 
     public function ajaxGetCategoriesByBrandAction($brand_id)
     {
-        $categories = $this->em->getRepository(DownloadCategory::class)->getInHierarchy();
-
-        $filteredCategories = [];
-
-        foreach ($categories as $c) {
-            if ($brand_id == $c['brand_id']) {
-                $filteredCategories[] = $c;
-            }
-        }
+        $categories = $this->getFilteredCategory($brand_id);
 
         return $this->render('AgentBundle:Common:select-standard.html.twig', [
             'name'             => 'newdownload[category_id]',
@@ -361,7 +354,7 @@ class DownloadsController extends AbstractController
             'add_attr'         => '',
             'with_blank'       => 0,
             'blank_title'      => '',
-            'categories'       => $filteredCategories,
+            'categories'       => $categories,
             'allow_parent_sel' => true,
         ]);
     }
@@ -428,17 +421,7 @@ class DownloadsController extends AbstractController
             $tpl = 'AgentBundle:Downloads:filter-page.html.twig';
         }
 
-        $brandId = $category->getBrand()->getId();
-
-        $unFilteredCategories = $this->em->getRepository(DownloadCategory::class)->getInHierarchy();
-
-        $downloadCategories = [];
-
-        foreach ($unFilteredCategories as $c) {
-            if ($brandId == $c['brand_id']) {
-                $downloadCategories[] = $c;
-            }
-        }
+        $downloadCategories = $this->getFilteredCategory($category->getBrand()->getId());
 
         $commentCounts = [];
         if ($results) {
@@ -487,17 +470,9 @@ class DownloadsController extends AbstractController
 
     public function newDownloadAction()
     {
-        $downloadCategories = $this->em->getRepository(DownloadCategory::class)->getInHierarchy();
-
         $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
 
-        $rootCategories = [];
-
-        foreach ($downloadCategories as $c) {
-            if ($brandId == $c['brand_id']) {
-                $rootCategories[] = $c;
-            }
-        }
+        $rootCategories = $this->getFilteredCategory($brandId);
 
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.newdownload', $this->person->id);
 
@@ -551,5 +526,25 @@ class DownloadsController extends AbstractController
                 'success' => false,
             ]);
         }
+    }
+
+    /**
+     * @param int $brandId
+     *
+     * @return array
+     */
+    private function getFilteredCategory($brandId)
+    {
+        $unFilteredCategories = $this->em->getRepository(DownloadCategory::class)->getInHierarchy();
+
+        $downloadCategories = [];
+
+        foreach ($unFilteredCategories as $c) {
+            if ($brandId == $c['brand_id']) {
+                $downloadCategories[] = $c;
+            }
+        }
+
+        return $downloadCategories;
     }
 }

@@ -38,7 +38,6 @@ use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\RelatedContent;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\ArrayAdapter;
@@ -52,18 +51,12 @@ class ArticlesDataService extends AbstractDataService
      */
     protected $permissionsManager;
 
-    /**
-     * @var BrandStack
-     */
-    protected $brandStack;
-
-    public function __construct(EntityManager $em, PermissionsManager $permissionsManager, BrandStack $brandStack)
+    public function __construct(EntityManager $em, PermissionsManager $permissionsManager)
     {
         parent::__construct($em);
 
         $this->em                 = $em;
         $this->permissionsManager = $permissionsManager;
-        $this->brandStack         = $brandStack;
     }
 
     /**
@@ -213,14 +206,11 @@ class ArticlesDataService extends AbstractDataService
                     $person
                 )->getAllowedArticleCategories();
 
-                $activeBrand = $that->brandStack->getActive();
-
                 if (!$category) { // get root categories
                     $result = $that->getArticleCategoriesRepo()
                         ->findBy([
                             'parent' => null,
                             'id'     => $allowedIds,
-                            'brand'  => $activeBrand->getBrand(),
                         ]);
                 } else {
                     if (!$category instanceof ArticleCategory) { // if not already category, try to make it one

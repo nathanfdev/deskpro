@@ -55,6 +55,7 @@ class NewsController extends AbstractController
 
     public function viewAction($news_id)
     {
+        /** @var News $news */
         $news = $this->em->find(News::class, $news_id);
 
         if (!$news) {
@@ -71,7 +72,7 @@ class NewsController extends AbstractController
         $sticky_search_words = $this->em->getRepository(SearchStickyResult::class)->getWordsForObject($news);
         $rated_searches      = $this->em->getRepository(SearchLog::class)->getRatedSearchesFor('news', $news['id'], 'counted');
 
-        $news_categories = $this->em->getRepository(NewsCategory::class)->getInHierarchy();
+        $news_categories = $this->getFilteredCategory($news->getCategory()->getBrand()->getId());
 
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
@@ -286,15 +287,7 @@ class NewsController extends AbstractController
 
     public function ajaxGetCategoriesByBrandAction($brand_id)
     {
-        $categories = $this->em->getRepository(NewsCategory::class)->getInHierarchy();
-
-        $filteredCategories = [];
-
-        foreach ($categories as $c) {
-            if ($brand_id == $c['brand_id']) {
-                $filteredCategories[] = $c;
-            }
-        }
+        $categories = $this->getFilteredCategory($brand_id);
 
         return $this->render('AgentBundle:Common:select-standard.html.twig', [
             'name'             => 'newnews[category_id]',
@@ -303,7 +296,7 @@ class NewsController extends AbstractController
             'add_attr'         => '',
             'with_blank'       => 0,
             'blank_title'      => '',
-            'categories'       => $filteredCategories,
+            'categories'       => $categories,
             'allow_parent_sel' => true,
         ]);
     }
@@ -369,17 +362,8 @@ class NewsController extends AbstractController
             $tpl = 'AgentBundle:News:filter-page.html.twig';
         }
 
-        $brandId = $category->getBrand()->getId();
-
-        $unFilteredCategories = $this->em->getRepository(NewsCategory::class)->getInHierarchy();
-
-        $newsCategories = [];
-
-        foreach ($unFilteredCategories as $c) {
-            if ($brandId == $c['brand_id']) {
-                $newsCategories[] = $c;
-            }
-        }
+        $brandId        = $category->getBrand()->getId();
+        $newsCategories = $this->getFilteredCategory($brandId);
 
         $commentCounts = [];
         if ($results) {
@@ -427,17 +411,9 @@ class NewsController extends AbstractController
 
     public function newNewsAction()
     {
-        $newsCategories = $this->em->getRepository(NewsCategory::class)->getInHierarchy();
-
         $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
 
-        $rootCategories = [];
-
-        foreach ($newsCategories as $c) {
-            if ($brandId == $c['brand_id']) {
-                $rootCategories[] = $c;
-            }
-        }
+        $rootCategories = $this->getFilteredCategory($brandId);
 
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.newnews', $this->person->id);
 
@@ -491,5 +467,25 @@ class NewsController extends AbstractController
                 'success' => false,
             ]);
         }
+    }
+
+    /**
+     * @param $brandId
+     *
+     * @return array
+     */
+    private function getFilteredCategory($brandId)
+    {
+        $unFilteredCategories = $this->em->getRepository(NewsCategory::class)->getInHierarchy();
+
+        $newsCategories = [];
+
+        foreach ($unFilteredCategories as $c) {
+            if ($brandId == $c['brand_id']) {
+                $newsCategories[] = $c;
+            }
+        }
+
+        return $newsCategories;
     }
 }

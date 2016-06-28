@@ -18,11 +18,11 @@ services:
 
   data.articles:
     class: DeskPRO\Bundle\AppBundle\DataService\ArticlesDataService
-    arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager", "@brand_stack"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]
 
   data.news:
     class: DeskPRO\Bundle\AppBundle\DataService\NewsDataService
-    arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager", "@brand_stack"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]
 
   data.email:
     class: DeskPRO\Bundle\AppBundle\DataService\EmailDataService
@@ -30,7 +30,7 @@ services:
 
   data.downloads:
     class: DeskPRO\Bundle\AppBundle\DataService\DownloadsDataService
-    arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager", "@brand_stack"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]
 
   data.feedback:
     class: DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService
