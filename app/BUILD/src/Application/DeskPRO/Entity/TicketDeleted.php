@@ -35,13 +35,14 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * A log of deleted tickets.
  */
-class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
+class TicketDeleted extends DomainObject
 {
     /**
      * @var int
@@ -65,7 +66,7 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var int
-     * @var \Application\DeskPRO\Entity\Person
+     * @var Person
      */
     protected $by_person;
 
@@ -79,6 +80,9 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $reason;
 
+    /**
+     * TicketDeleted constructor.
+     */
     public function __construct()
     {
         $this['date_created'] = new \DateTime();
@@ -92,6 +96,25 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * @return int
+     */
+    public function getTicketId()
+    {
+        return $this->ticket_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReason()
+    {
+        return $this->reason;
+    }
+
+    /**
+     * @return int
+     */
     public function getByPersonId()
     {
         if ($this->by_person) {
@@ -101,6 +124,9 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
         return 0;
     }
 
+    /**
+     * @param $id
+     */
     public function setByPersonId($id)
     {
         if ($id) {
@@ -114,6 +140,11 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
     # Doctrine Metadata
     ############################################################################
 
+    /**
+     * @param ClassMetadata $metadata
+     *
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     */
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
