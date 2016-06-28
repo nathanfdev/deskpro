@@ -824,17 +824,17 @@ class KbController extends AbstractController
             $category = $this->em->find(ArticleCategory::class, $category_id);
         }
 
-        $show_all = false;
+        $showAll = false;
         if (!$category) {
-            $show_all = $this->in->getBool('all');
+            $showAll = $this->in->getBool('all');
         }
 
-        $is_trans_view = false;
-        $trans_lang_id = null;
+        $isTransView = false;
+        $transLangId = null;
 
         if ($this->in->getBool('pending_translate')) {
-            $is_trans_view = true;
-            $trans_lang_id = $this->in->getUInt('language_id');
+            $isTransView = true;
+            $transLangId = $this->in->getUInt('language_id');
 
             $brandId = $this->in->getUInt('brand_id');
 
@@ -842,15 +842,15 @@ class KbController extends AbstractController
                 $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
             }
 
-            $result_helper = ArticleResults::newFromRequest($this, [
+            $resultHelper = ArticleResults::newFromRequest($this, [
                 'pending_translate'      => true,
                 'pending_translate_lang' => $this->in->getUInt('language_id'),
                 'brand_id'               => $brandId,
             ]);
         } else {
-            $result_helper = ArticleResults::newFromRequest($this, [
+            $resultHelper = ArticleResults::newFromRequest($this, [
                 'category' => $category,
-                'show_all' => $show_all,
+                'show_all' => $showAll,
             ]);
         }
 
@@ -859,16 +859,16 @@ class KbController extends AbstractController
             $page = 1;
         }
 
-        $results      = $result_helper->getArticlesForPage($page);
-        $result_cache = $result_helper->getResultCache();
+        $results     = $resultHelper->getArticlesForPage($page);
+        $resultCache = $resultHelper->getResultCache();
 
-        $total_results = count($result_helper->getArticleIds());
-        $num_pages     = ceil($total_results / 50);
-        $showing_to    = min(($page) * 50, $total_results);
+        $totalResults = count($resultHelper->getArticleIds());
+        $numPages     = ceil($totalResults / 50);
+        $showingTo    = min(($page) * 50, $totalResults);
 
-        $display_fields = $this->person->getPref('agent.ui.kb-filter-display-fields.0');
-        if (!$display_fields) {
-            $display_fields = ['author', 'date_created'];
+        $displayFields = $this->person->getPref('agent.ui.kb-filter-display-fields.0');
+        if (!$displayFields) {
+            $displayFields = ['author', 'date_created'];
         }
 
         $tpl = 'AgentBundle:Kb:filter.html.twig';
@@ -876,13 +876,23 @@ class KbController extends AbstractController
             $tpl = 'AgentBundle:Kb:filter-page.html.twig';
         }
 
-        $article_categories = $this->em->getRepository(ArticleCategory::class)->getInHierarchy();
+        $brandId = $category->getBrand()->getId();
+
+        $unFilteredCategories = $this->em->getRepository(ArticleCategory::class)->getInHierarchy();
+
+        $articleCategories = [];
+
+        foreach ($unFilteredCategories as $c) {
+            if ($brandId == $c['brand_id']) {
+                $articleCategories[] = $c;
+            }
+        }
 
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
-        $comment_counts = [];
+        $commentCounts = [];
         if ($results) {
-            $comment_counts = $this->db->fetchAllKeyValue('
+            $commentCounts = $this->db->fetchAllKeyValue('
                 SELECT article_id, COUNT(*)
                 FROM article_comments
                 WHERE article_id IN (?)
@@ -890,43 +900,43 @@ class KbController extends AbstractController
             ', [array_keys($results)], [Connection::PARAM_INT_ARRAY]);
         }
 
-        $cat_usergroups     = [];
-        $cat_structure_data = [];
+        $catUserGroups    = [];
+        $catStructureData = [];
         if ($category) {
-            $cat_usergroups = $this->db->fetchAllCol('
+            $catUserGroups = $this->db->fetchAllCol('
                 SELECT usergroup_id
                 FROM article_category2usergroup
                 WHERE category_id = ?
             ', [$category->getId()]);
 
-            $cat_structure_data = $article_categories;
-            $cat_structure_data = Arrays::removeButKey($cat_structure_data, ['id', 'title', 'children'], true, true);
-            $cat_structure_data = Arrays::multiRenameKey($cat_structure_data, 'title', 'label');
-            $cat_structure_data = Arrays::assocToNumericArray($cat_structure_data, 'children');
+            $catStructureData = $articleCategories;
+            $catStructureData = Arrays::removeButKey($catStructureData, ['id', 'title', 'children'], true, true);
+            $catStructureData = Arrays::multiRenameKey($catStructureData, 'title', 'label');
+            $catStructureData = Arrays::assocToNumericArray($catStructureData, 'children');
         }
 
         return $this->render($tpl, [
             'results'        => $results,
-            'result_id'      => $result_cache['id'],
-            'display_fields' => $display_fields,
-            'comment_counts' => $comment_counts,
+            'result_id'      => $resultCache['id'],
+            'display_fields' => $displayFields,
+            'comment_counts' => $commentCounts,
 
-            'is_trans_view' => $is_trans_view,
-            'trans_lang_id' => $trans_lang_id,
+            'is_trans_view' => $isTransView,
+            'trans_lang_id' => $transLangId,
 
-            'total_results' => $total_results,
-            'num_pages'     => $num_pages,
+            'total_results' => $totalResults,
+            'num_pages'     => $numPages,
             'cur_page'      => $page,
-            'showing_to'    => $showing_to,
+            'showing_to'    => $showingTo,
 
-            'search_form'        => ['terms' => $result_cache['criteria']['terms']],
-            'cache'              => $result_cache,
-            'terms_summary'      => $result_cache['extra']['summary'],
+            'search_form'        => ['terms' => $resultCache['criteria']['terms']],
+            'cache'              => $resultCache,
+            'terms_summary'      => $resultCache['extra']['summary'],
             'category'           => $category,
-            'cat_usergroups'     => $cat_usergroups,
-            'cat_structure_data' => $cat_structure_data,
+            'cat_usergroups'     => $catUserGroups,
+            'cat_structure_data' => $catStructureData,
 
-            'article_categories' => $article_categories,
+            'article_categories' => $articleCategories,
             'brands'             => $brands,
         ]);
     }

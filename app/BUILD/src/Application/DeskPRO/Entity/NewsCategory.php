@@ -119,6 +119,14 @@ class NewsCategory extends CategoryAbstract
         }
     }
 
+    /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

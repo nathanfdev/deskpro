@@ -194,6 +194,14 @@ class ArticleCategory extends CategoryAbstract
     }
 
     /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
      * Remove all user groups.
      *
      * @return $this

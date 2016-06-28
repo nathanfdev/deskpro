@@ -396,14 +396,14 @@ class DownloadsController extends AbstractController
             $category = $this->em->find(DownloadCategory::class, $category_id);
         }
 
-        $show_all = false;
+        $showAll = false;
         if (!$category) {
-            $show_all = $this->in->getBool('all');
+            $showAll = $this->in->getBool('all');
         }
 
         $result_helper = DownloadResults::newFromRequest($this, [
             'category' => $category,
-            'show_all' => $show_all,
+            'show_all' => $showAll,
         ]);
 
         $page = $this->in->getUInt('p');
@@ -411,16 +411,16 @@ class DownloadsController extends AbstractController
             $page = 1;
         }
 
-        $results      = $result_helper->getDownloadsForPage($page);
-        $result_cache = $result_helper->getResultCache();
+        $results     = $result_helper->getDownloadsForPage($page);
+        $resultCache = $result_helper->getResultCache();
 
-        $total_results = count($result_helper->getDownloadIds());
-        $num_pages     = ceil($total_results / 50);
-        $showing_to    = min(($page) * 50, $total_results);
+        $totalResults = count($result_helper->getDownloadIds());
+        $numPages     = ceil($totalResults / 50);
+        $showingTo    = min(($page) * 50, $totalResults);
 
-        $display_fields = $this->person->getPref('agent.ui.download-filter-display-fields.0');
-        if (!$display_fields) {
-            $display_fields = ['author', 'date_created'];
+        $displayFields = $this->person->getPref('agent.ui.download-filter-display-fields.0');
+        if (!$displayFields) {
+            $displayFields = ['author', 'date_created'];
         }
 
         $tpl = 'AgentBundle:Downloads:filter.html.twig';
@@ -428,11 +428,21 @@ class DownloadsController extends AbstractController
             $tpl = 'AgentBundle:Downloads:filter-page.html.twig';
         }
 
-        $brands = $this->em->getRepository(Brand::class)->findAll();
+        $brandId = $category->getBrand()->getId();
 
-        $comment_counts = [];
+        $unFilteredCategories = $this->em->getRepository(DownloadCategory::class)->getInHierarchy();
+
+        $downloadCategories = [];
+
+        foreach ($unFilteredCategories as $c) {
+            if ($brandId == $c['brand_id']) {
+                $downloadCategories[] = $c;
+            }
+        }
+
+        $commentCounts = [];
         if ($results) {
-            $comment_counts = $this->db->fetchAllKeyValue('
+            $commentCounts = $this->db->fetchAllKeyValue('
                 SELECT download_id, COUNT(*)
                 FROM download_comments
                 WHERE download_id IN (?)
@@ -440,35 +450,34 @@ class DownloadsController extends AbstractController
             ', [array_keys($results)], [Connection::PARAM_INT_ARRAY]);
         }
 
-        $cat_usergroups     = [];
-        $cat_structure_data = [];
+        $catUserGroups    = [];
+        $catStructureData = [];
         if ($category) {
-            $cat_usergroups = $this->db->fetchAllCol('
+            $catUserGroups = $this->db->fetchAllCol('
                 SELECT usergroup_id
                 FROM download_category2usergroup
                 WHERE category_id = ?
             ', [$category->getId()]);
 
-            $cat_structure_data = $this->em->getRepository(DownloadCategory::class)->getInHierarchy();
-            $cat_structure_data = Arrays::removeButKey($cat_structure_data, ['id', 'title', 'children'], true, true);
-            $cat_structure_data = Arrays::multiRenameKey($cat_structure_data, 'title', 'label');
-            $cat_structure_data = Arrays::assocToNumericArray($cat_structure_data, 'children');
+            $catStructureData = $downloadCategories;
+            $catStructureData = Arrays::removeButKey($catStructureData, ['id', 'title', 'children'], true, true);
+            $catStructureData = Arrays::multiRenameKey($catStructureData, 'title', 'label');
+            $catStructureData = Arrays::assocToNumericArray($catStructureData, 'children');
         }
 
         return $this->render($tpl, [
             'results'            => $results,
-            'comment_counts'     => $comment_counts,
-            'result_id'          => $result_cache['id'],
-            'cache'              => $result_cache,
-            'display_fields'     => $display_fields,
+            'comment_counts'     => $commentCounts,
+            'result_id'          => $resultCache['id'],
+            'cache'              => $resultCache,
+            'display_fields'     => $displayFields,
             'category'           => $category,
-            'cat_usergroups'     => $cat_usergroups,
-            'cat_structure_data' => $cat_structure_data,
-            'total_results'      => $total_results,
-            'num_pages'          => $num_pages,
+            'cat_usergroups'     => $catUserGroups,
+            'cat_structure_data' => $catStructureData,
+            'total_results'      => $totalResults,
+            'num_pages'          => $numPages,
             'cur_page'           => $page,
-            'showing_to'         => $showing_to,
-            'brands'             => $brands,
+            'showing_to'         => $showingTo,
         ]);
     }
 

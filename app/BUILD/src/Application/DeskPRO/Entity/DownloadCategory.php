@@ -106,6 +106,14 @@ class DownloadCategory extends CategoryAbstract
     }
 
     /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
      * @param \Application\DeskPRO\Entity\Usergroup $usergroup
      */
     public function addUsergroup(Usergroup $usergroup)

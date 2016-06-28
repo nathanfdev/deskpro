@@ -333,17 +333,18 @@ class NewsController extends AbstractController
     {
         $category = null;
         if ($category_id) {
+            /** @var NewsCategory $category */
             $category = $this->em->find(NewsCategory::class, $category_id);
         }
 
-        $show_all = false;
+        $showAll = false;
         if (!$category) {
-            $show_all = $this->in->getBool('all');
+            $showAll = $this->in->getBool('all');
         }
 
-        $result_helper = NewsResults::newFromRequest($this, [
+        $resultHelper = NewsResults::newFromRequest($this, [
             'category' => $category,
-            'show_all' => $show_all,
+            'show_all' => $showAll,
         ]);
 
         $page = $this->in->getUInt('p');
@@ -351,16 +352,16 @@ class NewsController extends AbstractController
             $page = 1;
         }
 
-        $results      = $result_helper->getNewsForPage($page);
-        $result_cache = $result_helper->getResultCache();
+        $results     = $resultHelper->getNewsForPage($page);
+        $resultCache = $resultHelper->getResultCache();
 
-        $total_results = count($result_helper->getNewsIds());
-        $num_pages     = ceil($total_results / 50);
-        $showing_to    = min(($page) * 50, $total_results);
+        $totalResults = count($resultHelper->getNewsIds());
+        $numPages     = ceil($totalResults / 50);
+        $showingTo    = min(($page) * 50, $totalResults);
 
-        $display_fields = $this->person->getPref('agent.ui.news-filter-display-fields.0');
-        if (!$display_fields) {
-            $display_fields = ['author', 'date_created'];
+        $displayFields = $this->person->getPref('agent.ui.news-filter-display-fields.0');
+        if (!$displayFields) {
+            $displayFields = ['author', 'date_created'];
         }
 
         $tpl = 'AgentBundle:News:filter.html.twig';
@@ -368,11 +369,21 @@ class NewsController extends AbstractController
             $tpl = 'AgentBundle:News:filter-page.html.twig';
         }
 
-        $brands = $this->em->getRepository(Brand::class)->findAll();
+        $brandId = $category->getBrand()->getId();
 
-        $comment_counts = [];
+        $unFilteredCategories = $this->em->getRepository(NewsCategory::class)->getInHierarchy();
+
+        $newsCategories = [];
+
+        foreach ($unFilteredCategories as $c) {
+            if ($brandId == $c['brand_id']) {
+                $newsCategories[] = $c;
+            }
+        }
+
+        $commentCounts = [];
         if ($results) {
-            $comment_counts = $this->db->fetchAllKeyValue('
+            $commentCounts = $this->db->fetchAllKeyValue('
                 SELECT article_id, COUNT(*)
                 FROM article_comments
                 WHERE article_id IN (?)
@@ -380,33 +391,33 @@ class NewsController extends AbstractController
             ', [array_keys($results)], [Connection::PARAM_INT_ARRAY]);
         }
 
-        $cat_usergroups     = [];
-        $cat_structure_data = [];
+        $catUserGroups    = [];
+        $catStructureData = [];
         if ($category) {
-            $cat_usergroups = $this->db->fetchAllCol('
+            $catUserGroups = $this->db->fetchAllCol('
                 SELECT usergroup_id
                 FROM news_category2usergroup
                 WHERE category_id = ?
             ', [$category->getId()]);
 
-            $cat_structure_data = $this->em->getRepository(NewsCategory::class)->getInHierarchy();
-            $cat_structure_data = Arrays::removeButKey($cat_structure_data, ['id', 'title', 'children'], true, true);
-            $cat_structure_data = Arrays::multiRenameKey($cat_structure_data, 'title', 'label');
-            $cat_structure_data = Arrays::assocToNumericArray($cat_structure_data, 'children');
+            $catStructureData = $newsCategories;
+            $catStructureData = Arrays::removeButKey($catStructureData, ['id', 'title', 'children'], true, true);
+            $catStructureData = Arrays::multiRenameKey($catStructureData, 'title', 'label');
+            $catStructureData = Arrays::assocToNumericArray($catStructureData, 'children');
         }
 
         return $this->render($tpl, [
             'results'            => $results,
-            'result_id'          => $result_cache['id'],
-            'comment_counts'     => $comment_counts,
-            'display_fields'     => $display_fields,
+            'result_id'          => $resultCache['id'],
+            'comment_counts'     => $commentCounts,
+            'display_fields'     => $displayFields,
             'category'           => $category,
-            'cat_usergroups'     => $cat_usergroups,
-            'cat_structure_data' => $cat_structure_data,
-            'total_results'      => $total_results,
-            'num_pages'          => $num_pages,
+            'cat_usergroups'     => $catUserGroups,
+            'cat_structure_data' => $catStructureData,
+            'total_results'      => $totalResults,
+            'num_pages'          => $numPages,
             'cur_page'           => $page,
-            'showing_to'         => $showing_to,
+            'showing_to'         => $showingTo,
         ]);
     }
 
