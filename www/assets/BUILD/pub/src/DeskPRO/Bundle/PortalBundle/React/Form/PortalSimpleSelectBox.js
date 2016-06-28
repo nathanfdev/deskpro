@@ -341,6 +341,7 @@ export class PortalSimpleSelectBox extends React.Component {
               onKeyUp={this.filterChange}
             />
           }
+          <i className="fa fa-caret-down" />
         </div>
       </div>
     );
