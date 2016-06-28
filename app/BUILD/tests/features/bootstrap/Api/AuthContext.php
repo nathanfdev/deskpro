@@ -31,7 +31,6 @@ namespace DpBehat\Api;
 use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\TmpData;
 use Behat\Behat\Hook\Scope\BeforeFeatureScope;
@@ -351,17 +350,5 @@ class AuthContext extends BaseContext
         DataContext::setReference('apiKey', $key);
 
         return $key;
-    }
-
-    /**
-     * @param string $email
-     *
-     * @return Person|null
-     */
-    private function findPersonByEmail($email)
-    {
-        $email = $this->repository(PersonEmail::class)->findOneBy(compact('email'));
-
-        return $email ? $email->getPerson() : null;
     }
 }

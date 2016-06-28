@@ -31,17 +31,18 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Model\DeviceSetupToken;
 use DeskPRO\Bundle\ApiBundle\Model\Me;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class MeController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/me")
  */
 class MeController extends BaseController
 {
@@ -58,7 +59,7 @@ class MeController extends BaseController
      *     output="DeskPRO\Bundle\ApiBundle\Model\Me"
      * )
      * @ApiUserContext("user")
-     * @Rest\Get("/me")
+     * @Rest\Get("")
      */
     public function meAction()
     {
@@ -79,23 +80,16 @@ class MeController extends BaseController
      *     }
      * )
      *
-     * @Rest\Get("/me/device-setup-token")
+     * @Rest\Get("/device-setup-token")
      */
     public function getDeviceSetupTokenAction()
     {
-        $tmpData = TmpData::create(
-            'device_setup_token',
-            ['agent_id' => $this->getUser()->getId()],
-            '+10 minutes'
-        );
+        $tmpData = TmpData::create('device_setup_token', ['agent_id' => $this->getUser()->getId()], '+10 minutes');
         $this->getManager()->persist($tmpData);
         $this->getManager()->flush();
 
-        $url = $this->generateUrl('api_authenticate_device', ['auth' => $tmpData->auth], true);
+        $url = $this->generateUrl('api_authenticate_device', ['auth' => $tmpData->getAuth()], true);
 
-        return View::create(
-            $this->wrap(['setup_token' => 'dp_device_setup:'.$url]),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap(new DeviceSetupToken($url)));
     }
 }
