@@ -12,25 +12,25 @@ import { connect } from 'react-redux';
 }))
 export class ActionMenuContainer extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    options: PropTypes.array.isRequired,
-    setParams: PropTypes.func.isRequired,
+    dispatch:          PropTypes.func.isRequired,
+    options:           PropTypes.array.isRequired,
+    setParams:         PropTypes.func.isRequired,
     resetSingleAction: PropTypes.func.isRequired,
-    currentParams: PropTypes.object
+    currentParams:     PropTypes.object
   };
 
-  setLabelsParam = (params)=> {
-    const {setParams, dispatch } = this.props;
+  setLabelsParam = (params) => {
+    const { setParams, dispatch } = this.props;
     dispatch(setParams({ [params.param]: params.value }));
   };
 
-  unsetLabelsParam = (param)=> {
-    const {resetSingleAction, dispatch } = this.props;
+  unsetLabelsParam = (param) => {
+    const { resetSingleAction, dispatch } = this.props;
     dispatch(resetSingleAction(param));
   };
 
   stateValue = (param) => {
-    const {currentParams} = this.props;
+    const { currentParams } = this.props;
     if (currentParams) {
       if (param instanceof Array) {
         const result = [];
@@ -38,7 +38,7 @@ export class ActionMenuContainer extends Component {
           let value = currentParams.get(item);
           if (Immutable.Iterable.isIterable(value)) {
             value = value.toJS();
-            value.map(item1=> {
+            value.map(item1 => {
               result.push(item1);
             });
           }
@@ -53,28 +53,30 @@ export class ActionMenuContainer extends Component {
     }
   };
 
-  choiceOtherAction = (option, key)=> {
-    const {setParams, currentParams, resetSingleAction } = this.props;
+  choiceOtherAction = (option, key) => {
+    const { setParams, currentParams, resetSingleAction } = this.props;
 
     if (option.param === 'add_labels' || option.param === 'remove_labels') {
       return (
         <LabelsFilter key={key}
-                      filter={option}
-                      icon={option.icon || 'tags'}
-                      label={option.label}
-                      currentParams={currentParams.toJS()}
-                      stateValue={this.stateValue}
-                      setParam={this.setLabelsParam}
-                      unsetParam={this.unsetLabelsParam}/>
+          filter={option}
+          icon={option.icon || 'tags'}
+          label={option.label}
+          currentParams={currentParams.toJS()}
+          stateValue={this.stateValue}
+          setParam={this.setLabelsParam}
+          unsetParam={this.unsetLabelsParam}
+        />
       );
     } else if (option.type === 'set_action') {
       return (
         <SingleChoiceFilter key={key}
-                            filter={option}
-                            state={currentParams}
-                            stateValue={this.stateValue}
-                            setParamsAction={setParams}
-                            unsetParams={resetSingleAction}/>
+          filter={option}
+          state={currentParams}
+          stateValue={this.stateValue}
+          setParamsAction={setParams}
+          unsetParams={resetSingleAction}
+        />
       );
     }
   };

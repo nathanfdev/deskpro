@@ -10,15 +10,15 @@ import { isBootstrappedSelector } from '../Selectors/bootstrap';
 
 @connect(state => ({
   isBootstrapped: isBootstrappedSelector(state),
-  coverShown: coverShownSelector(state)
+  coverShown:     coverShownSelector(state)
 }))
 export class DpAppRouteContainer extends React.Component {
 
   static propTypes = {
-    children: PropTypes.node.isRequired,
+    children:       PropTypes.node.isRequired,
     isBootstrapped: PropTypes.bool.isRequired,
-    coverShown: PropTypes.bool.isRequired,
-    dispatch: PropTypes.func.isRequired
+    coverShown:     PropTypes.bool.isRequired,
+    dispatch:       PropTypes.func.isRequired
   };
 
   render() {
@@ -35,9 +35,9 @@ export class DpAppRouteContainer extends React.Component {
         </DpApp>
 
         {coverShown && <div className="cover"></div>}
-        <NotificationServiceContainer/>
-        <IMContainer/>
-        <PreferencesContainer positionTarget={document.body}/>
+        <NotificationServiceContainer />
+        <IMContainer />
+        <PreferencesContainer positionTarget={document.body} />
       </div>
     );
   }

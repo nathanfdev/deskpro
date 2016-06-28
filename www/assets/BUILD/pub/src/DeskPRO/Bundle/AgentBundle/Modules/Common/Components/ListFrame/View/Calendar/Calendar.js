@@ -15,7 +15,7 @@ export class Calendar extends React.Component {
 
   onChangeDate = date => {
     this.setState({
-      date: date
+      date
     });
   };
 

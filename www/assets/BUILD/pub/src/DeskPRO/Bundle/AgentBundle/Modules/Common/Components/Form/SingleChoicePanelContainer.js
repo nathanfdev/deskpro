@@ -41,7 +41,7 @@ export class SingleChoicePanelContainer extends Component {
                           param={option.param}
                           label={option.label}
                           onClick={this.onClick}
-                          />
+                        />
           )}
         </ul>
       );
@@ -69,7 +69,7 @@ export class SingleChoicePanelContainer extends Component {
                                         label={option.label}
                                         param={item.param}
                                         onClick={this.onClick}
-                                        >
+                                      >
                                         {renderNested(option.nested)}
                                       </RadioOption>
                   )}

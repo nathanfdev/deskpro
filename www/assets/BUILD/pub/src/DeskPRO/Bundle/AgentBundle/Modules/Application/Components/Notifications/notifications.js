@@ -203,7 +203,7 @@ class UndoableActionNotification extends BaseCountdownNotification {
   renderOther() {
     return (
       <div className="dpwd--notication--growl-undo-button">
-        <a href="#" onClick={e => {e.preventDefault(); this.props.undo();}}><i className="fa fa-undo" /> Undo</a>
+        <a href="#" onClick={e => { e.preventDefault(); this.props.undo(); }}><i className="fa fa-undo" /> Undo</a>
       </div>
     );
   }

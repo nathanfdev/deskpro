@@ -27,7 +27,7 @@ export class ViewField extends Component {
 
     return (
       <span className="dpw-navigation-dropdown-column-list-status">
-        <i className="fa fa-check"/>
+        <i className="fa fa-check" />
       </span>
     );
   }
@@ -47,7 +47,7 @@ export class ViewField extends Component {
         <a className={anchorClasses}>
           {this.renderStatus()}
           <span className="dpw-navigation-dropdown-column-list-move">
-            <i className={moveIconClass}/>
+            <i className={moveIconClass} />
           </span>
           <span className="dpw-navigation-dropdown-column-list-title">{field.get('title')}</span>
         </a>

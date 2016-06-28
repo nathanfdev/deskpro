@@ -24,8 +24,8 @@ export class LanguageChangerWidget extends PageWidget {
 
     const component = React.createElement(LanguageChanger, {
       active_lang_code: portalWindow.lang,
-      enabled_langs: portalWindow.enabled_langs,
-      clickLanguage: this.clickLanguage.bind(this)
+      enabled_langs:    portalWindow.enabled_langs,
+      clickLanguage:    this.clickLanguage.bind(this)
     });
 
     ReactDOM.render(component, this.$rElement.get(0));

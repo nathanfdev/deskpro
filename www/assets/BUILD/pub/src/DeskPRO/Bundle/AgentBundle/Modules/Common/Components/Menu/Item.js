@@ -1,17 +1,17 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { BaseItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/BaseItem';
 
 export class Item extends Component {
   static propTypes = {
-    icon: PropTypes.string,
-    itemType: PropTypes.string,
+    icon:        PropTypes.string,
+    itemType:    PropTypes.string,
     widgetClass: PropTypes.string,
-    checked: PropTypes.bool,
-    children: PropTypes.any,
-    listItem: PropTypes.bool,
-    closeMenu: PropTypes.func,
-    activeItem: PropTypes.object,
-    isActive: PropTypes.bool
+    checked:     PropTypes.bool,
+    children:    PropTypes.any,
+    listItem:    PropTypes.bool,
+    closeMenu:   PropTypes.func,
+    activeItem:  PropTypes.object,
+    isActive:    PropTypes.bool
   };
 
   render() {

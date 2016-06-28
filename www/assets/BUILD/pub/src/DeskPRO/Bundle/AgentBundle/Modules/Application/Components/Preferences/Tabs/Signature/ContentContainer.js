@@ -5,13 +5,13 @@ import { loadFromApi, isLoadedCollectionSelectorFactory, collectionSelectorFacto
   from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
-  settings: collectionSelectorFactory('Settings', 'my')(state),
+  settings:       collectionSelectorFactory('Settings', 'my')(state),
   settingsLoaded: isLoadedCollectionSelectorFactory('Settings', 'my')(state)
 }))
 export class ContentContainer extends React.Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    settings: PropTypes.object.isRequired,
+    dispatch:       PropTypes.func.isRequired,
+    settings:       PropTypes.object.isRequired,
     settingsLoaded: PropTypes.bool.isRequired
   };
 

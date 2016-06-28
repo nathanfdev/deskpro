@@ -20,7 +20,7 @@ export class SaveTaskButton extends React.Component {
           <span>Save Task</span>
         </div>
 
-        <Loader loaded={!submit} color="white" opacity={0} width={2}/>
+        <Loader loaded={!submit} color="white" opacity={0} width={2} />
       </div>
     );
   }

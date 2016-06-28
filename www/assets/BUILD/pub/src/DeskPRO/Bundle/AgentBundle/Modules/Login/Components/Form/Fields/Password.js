@@ -5,8 +5,8 @@ import { Simple } from 'DeskPRO/Component/Positioned/Simple';
 export class Password extends React.Component {
 
   static propTypes = {
-    errors: PropTypes.object,
-    value: PropTypes.string,
+    errors:   PropTypes.object,
+    value:    PropTypes.string,
     onChange: PropTypes.func.isRequired
   };
 
@@ -28,7 +28,8 @@ export class Password extends React.Component {
           isOpen={this.isCapsLockWarningOpen()}
           positionTarget={this}
           positionAt="left top"
-          positionMy="right center">
+          positionMy="right center"
+        >
 
           <div className="dpw-login-form-warning-container warning-container">
             <i className="fa fa-arrow-circle-o-up"></i> <span>Looks like caps lock is on?</span>

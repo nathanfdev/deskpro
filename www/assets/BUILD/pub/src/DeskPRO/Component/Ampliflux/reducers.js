@@ -1,4 +1,4 @@
-import { handleActions } from "redux-actions";
+import { handleActions } from 'redux-actions';
 import { combineReducers as reduxCombineReducers } from 'redux';
 
 export class Reducer {
@@ -12,10 +12,10 @@ export class Reducer {
 
     hint = hint.join(', ');
     if (hint.length > 100) {
-      hint = hint.substring(0, 100) + "...";
+      hint = hint.substring(0, 100) + '...';
     }
 
-    console.debug("Ampliflux/reducers.js Reducer is deprecated (" + hint + ")");
+    console.debug('Ampliflux/reducers.js Reducer is deprecated (' + hint + ')');
   }
 
   // Compiles the reducer class into a bunch of handlers.
@@ -34,7 +34,7 @@ export class Reducer {
 
   r(action, handler) {
     let action_type = action;
-    if(typeof action == 'function' || typeof action == 'object') {
+    if (typeof action == 'function' || typeof action == 'object') {
       action_type = action.actionType;
     }
 
@@ -46,13 +46,13 @@ export class Reducer {
   setPayload(property, payload_prop = null) {
     return (state, action) => {
       let data = action.payload;
-      if(payload_prop) {
+      if (payload_prop) {
         data = action.payload[payload_prop];
       }
       return {
         ...state,
         [property]: data,
-      }
+      };
     };
   }
 
@@ -63,16 +63,16 @@ export class Reducer {
 
 export function combineReducers(reducers) {
   let processed_reducers = {};
-  for(let k in reducers) {
+  for (let k in reducers) {
     try {
-      if(reducers[k].isAmplifluxReducer && reducers[k].isAmplifluxReducer()) {
+      if (reducers[k].isAmplifluxReducer && reducers[k].isAmplifluxReducer()) {
         let reducer = new reducers[k]();
         processed_reducers[k] = reducer.compile();
       } else {
         processed_reducers[k] = reducers[k];
       }
     }
-    catch(err) {
+    catch (err) {
       processed_reducers[k] = reducers[k];
     }
   }

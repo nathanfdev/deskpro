@@ -21,10 +21,12 @@ export class SubmitButton extends Component {
     return (
       <li>
         <span
-          className="dpwd-navigation-dropdown-top-row-action-button dpwd-navigation-dropdown-top-row-action-button-flat">
+          className="dpwd-navigation-dropdown-top-row-action-button dpwd-navigation-dropdown-top-row-action-button-flat"
+        >
           <a href="" className={classes} onClick={this.clickHandler}>
             <span
-              className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">
+              className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey"
+            >
               {label}
             </span>
           </a>

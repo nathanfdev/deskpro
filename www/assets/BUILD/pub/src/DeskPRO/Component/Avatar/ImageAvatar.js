@@ -3,9 +3,9 @@ import React, { PropTypes } from 'react';
 export class ImageAvatar extends React.Component {
 
   static propTypes = {
-    children: PropTypes.node,
-    size: PropTypes.number,
-    url: PropTypes.string,
+    children:   PropTypes.node,
+    size:       PropTypes.number,
+    url:        PropTypes.string,
     urlPattern: PropTypes.string
   };
 
@@ -22,8 +22,8 @@ export class ImageAvatar extends React.Component {
       ...childProps,
 
       imageUrl: this.getUrl(),
-      width: size,
-      height: size
+      width:    size,
+      height:   size
     });
   }
 }

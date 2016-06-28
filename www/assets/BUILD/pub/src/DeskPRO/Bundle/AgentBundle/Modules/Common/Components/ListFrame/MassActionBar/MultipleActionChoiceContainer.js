@@ -37,7 +37,8 @@ export class MultipleActionChoiceContainer extends Component {
         values={values}
         label={option.label}
         value={option.value}
-        onClick={this.handleClick.bind(this, item.param, option.value, values)} />
+        onClick={this.handleClick.bind(this, item.param, option.value, values)}
+      />
     );
   }
 

@@ -5,8 +5,8 @@ export class Language extends React.Component {
 
   static propTypes = {
     languages: PropTypes.object.isRequired,
-    value: PropTypes.number,
-    onChange: PropTypes.func.isRequired
+    value:     PropTypes.number,
+    onChange:  PropTypes.func.isRequired
   };
 
   render() {
@@ -23,7 +23,8 @@ export class Language extends React.Component {
           value={value}
           options={options}
           clearable={false}
-          onChange={onChange} />
+          onChange={onChange}
+        />
       </div>
     );
   }

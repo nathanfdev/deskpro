@@ -5,8 +5,8 @@ import jQuery from 'jquery';
 export class PrimaryEmail extends React.Component {
 
   static propTypes = {
-    emails: PropTypes.array.isRequired,
-    value: PropTypes.string,
+    emails:   PropTypes.array.isRequired,
+    value:    PropTypes.string,
     onChange: PropTypes.func.isRequired
   };
 
@@ -26,7 +26,8 @@ export class PrimaryEmail extends React.Component {
           options={options}
           searchable={false}
           clearable={false}
-          onChange={onChange} />
+          onChange={onChange}
+        />
       </div>
     );
   }

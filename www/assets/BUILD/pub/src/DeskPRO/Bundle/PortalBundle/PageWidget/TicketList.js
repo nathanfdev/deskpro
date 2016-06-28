@@ -17,7 +17,7 @@ class ColumnControlWidget extends PageWidget {
     const tableId = $table.data('id');
     const table = tablesData[tableId];
 
-    $colControlButton.click(function(e) {
+    $colControlButton.click(function (e) {
       e.preventDefault();
       e.stopPropagation();
       if ($popup.is(':visible')) {
@@ -27,7 +27,7 @@ class ColumnControlWidget extends PageWidget {
       }
     });
 
-    $(document).click(function(e) {
+    $(document).click(function (e) {
       // if not a part of the popup, close it
       if (!$(e.target).closest('.popup-tiny').length) {
         $popup.hide();
@@ -52,7 +52,7 @@ class ColumnControlWidget extends PageWidget {
         activeFilterLink.attr('href', updateQueryStringParameter(activeFilterLink.attr('href'), table.active_columns_param, newCols));
       }
 
-      $displayTable.find('[data-col]').each(function() {
+      $displayTable.find('[data-col]').each(function () {
         const $this = $(this);
         if ($.inArray($this.data('col'), activeColIds) < 0) {
           $this.hide();
@@ -61,7 +61,7 @@ class ColumnControlWidget extends PageWidget {
         }
 
         // setup pagination links, they need the updated selected cols
-        var updateLinks = function() {
+        var updateLinks = function () {
           $(this).attr('href', updateQueryStringParameter($(this).attr('href'), table.active_columns_param, newCols));
         };
 
@@ -74,7 +74,7 @@ class ColumnControlWidget extends PageWidget {
       const tlf = $('#ticket_list_search_form');
 
       let found = false;
-      tlf.find('input[type=hidden]').each(function() {
+      tlf.find('input[type=hidden]').each(function () {
         const $i = $(this);
         if ($i.attr('name') === table.active_columns.param) {
           $i.val(newCols);
@@ -92,8 +92,8 @@ class ColumnControlWidget extends PageWidget {
 
     this.$rElement = $('<div class="dp-react-widget"></div>').appendTo($popup);
     ReactDOM.render(React.createElement(ColumnControl, {
-      columns: table.columns,
-      active_ids: table.active_columns,
+      columns:          table.columns,
+      active_ids:       table.active_columns,
       updateActiveCols: sync_table_with_active_col_ids
     }), this.$rElement.get(0));
   }

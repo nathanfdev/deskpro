@@ -109,22 +109,25 @@ export class TranscriptContainer extends React.Component {
         })}
 
         <Simple isOpen={this.state.formOpened}
-                positionTarget={this.refs.button}
-                positionAt="center+40 bottom"
-                positionMy="center top"
-                zIndex={1000}>
+          positionTarget={this.refs.button}
+          positionAt="center+40 bottom"
+          positionMy="center top"
+          zIndex={1000}
+        >
 
           <ClickOut onClickOut={this.onCloseForm}
-                    context={[parent.document, window.widgetFrame.document]}
-                    additionalNodes={['.dpdesignportal-button']}>
+            context={[parent.document, window.widgetFrame.document]}
+            additionalNodes={['.dpdesignportal-button']}
+          >
 
             <TranscriptPopup onClose={this.onCloseForm}>
               {sent
                 ? <TranscriptSent email={authorEmail} />
                 : <TranscriptForm name={authorName}
-                                  email={authorEmail}
-                                  disabledEmail={emailValidation || requireLogin}
-                                  onSubmit={this.onSubmit} />
+                  email={authorEmail}
+                  disabledEmail={emailValidation || requireLogin}
+                  onSubmit={this.onSubmit}
+                />
               }
             </TranscriptPopup>
           </ClickOut>

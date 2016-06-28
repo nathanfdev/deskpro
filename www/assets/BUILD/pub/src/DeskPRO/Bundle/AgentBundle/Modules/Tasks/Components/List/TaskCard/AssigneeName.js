@@ -3,9 +3,9 @@ import React, { PropTypes } from 'react';
 export class AssigneeName extends React.Component {
 
   static propTypes = {
-    task: PropTypes.object.isRequired,
-    agents: PropTypes.object,
-    agentTeams: PropTypes.object,
+    task:        PropTypes.object.isRequired,
+    agents:      PropTypes.object,
+    agentTeams:  PropTypes.object,
     departments: PropTypes.object
   };
 

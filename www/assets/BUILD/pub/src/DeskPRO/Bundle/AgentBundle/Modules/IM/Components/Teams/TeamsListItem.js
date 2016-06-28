@@ -4,7 +4,7 @@ import { AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compo
 
 export class TeamsListItem extends React.Component {
   static propTypes = {
-    team: PropTypes.object.isRequired,
+    team:     PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
@@ -16,8 +16,8 @@ export class TeamsListItem extends React.Component {
     return (
       <li>
         <a href="#"
-           onClick={this.startChat.bind(null, this.props.team.get('id'), 'team')}
-          >
+          onClick={this.startChat.bind(null, this.props.team.get('id'), 'team')}
+        >
           <AgentTeamAvatar agentTeam={this.props.team} size={22} />
           <span className="agent">{this.props.team.get('name')}</span>
         </a>

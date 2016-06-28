@@ -56,8 +56,8 @@ export class NavFrameHeaderContainer extends React.Component {
 export class NavFrameHeader extends React.Component {
 
   static propTypes = {
-    children: PropTypes.any.isRequired,
-    icon: PropTypes.string.isRequired,
+    children:   PropTypes.any.isRequired,
+    icon:       PropTypes.string.isRequired,
     currentApp: PropTypes.string.isRequired
   };
 
@@ -68,7 +68,7 @@ export class NavFrameHeader extends React.Component {
     return (
       <div>
         <div className="dpw-sidebar-main-title">
-          <h1 style={{borderBottomColor: constants.APP_COLOURS[currentApp]}}>{children}</h1>
+          <h1 style={{ borderBottomColor: constants.APP_COLOURS[currentApp] }}>{children}</h1>
 
           <div className="dpw-sidebar-main-title-active-app-icon">
             <div className={iconClass}></div>

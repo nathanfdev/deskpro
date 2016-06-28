@@ -5,7 +5,7 @@ import { DepartmentAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Comp
 export class DepartmentsListItem extends React.Component {
   static propTypes = {
     department: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired
+    dispatch:   PropTypes.func.isRequired
   };
 
   startChat = (id, type) => {
@@ -16,8 +16,8 @@ export class DepartmentsListItem extends React.Component {
     return (
       <li>
         <a href="#"
-           onClick={this.startChat.bind(null, this.props.department.get('id'), 'department')}
-          >
+          onClick={this.startChat.bind(null, this.props.department.get('id'), 'department')}
+        >
           <DepartmentAvatar department={this.props.department} size={22} />
           <span className="agent">{this.props.department.get('title')}</span>
         </a>

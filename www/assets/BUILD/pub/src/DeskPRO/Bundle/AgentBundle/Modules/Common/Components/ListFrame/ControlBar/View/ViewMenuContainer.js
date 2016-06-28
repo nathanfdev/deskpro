@@ -64,5 +64,3 @@ export class ViewMenuContainer extends Component {
   }
 }
 
-
-

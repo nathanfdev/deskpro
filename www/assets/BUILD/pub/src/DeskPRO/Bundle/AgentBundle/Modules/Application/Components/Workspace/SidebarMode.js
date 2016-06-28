@@ -4,7 +4,7 @@ import { ChangeModeButton } from './ChangeModeButton';
 export class SidebarMode extends React.Component {
 
   static propTypes = {
-    currentMode: PropTypes.string.isRequired,
+    currentMode:  PropTypes.string.isRequired,
     onChangeMode: PropTypes.func.isRequired
   };
 
@@ -20,9 +20,10 @@ export class SidebarMode extends React.Component {
 
         <div className="dpw-workspace-state">
           <ChangeModeButton type={'static'}
-                            title={'Static Mode'}
-                            activeType={currentMode}
-                            onChange={onChangeMode}>
+            title={'Static Mode'}
+            activeType={currentMode}
+            onChange={onChangeMode}
+          >
 
             <span className="workspace-state-item state-sidebar active"></span>
             <span className="workspace-state-item left-column"></span>
@@ -30,9 +31,10 @@ export class SidebarMode extends React.Component {
           </ChangeModeButton>
 
           <ChangeModeButton type={'hover'}
-                            title={'Hover Mode'}
-                            activeType={currentMode}
-                            onChange={onChangeMode}>
+            title={'Hover Mode'}
+            activeType={currentMode}
+            onChange={onChangeMode}
+          >
 
             <span className="workspace-state-item state-sidebar state-sidebar-hover active">
               <i className="fa fa-asterisk"></i>

@@ -9,8 +9,8 @@ import { Simple } from 'DeskPRO/Component/Positioned/Simple';
 export class PreferencesContainer extends React.Component {
 
   static propTypes = {
-    dpWindow: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired,
+    dpWindow:       PropTypes.object.isRequired,
+    dispatch:       PropTypes.func.isRequired,
     positionTarget: PropTypes.any.isRequired
   };
 
@@ -19,9 +19,10 @@ export class PreferencesContainer extends React.Component {
 
     return (
       <Simple isOpen={dpWindow.get('isPreferencesOpen')}
-              positionTarget={positionTarget}
-              positionAt="center center"
-              postionMy="center center">
+        positionTarget={positionTarget}
+        positionAt="center center"
+        postionMy="center center"
+      >
 
         <Preferences dispatch={dispatch} dpWindow={dpWindow} />
       </Simple>

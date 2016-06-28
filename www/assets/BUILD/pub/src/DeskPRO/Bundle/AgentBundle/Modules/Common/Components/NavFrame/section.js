@@ -48,8 +48,8 @@ export class SectionHeader extends React.Component {
 export class SectionGroupedHeader extends React.Component {
 
   static propTypes = {
-    label: PropTypes.string.isRequired,
-    count: PropTypes.number.isRequired,
+    label:    PropTypes.string.isRequired,
+    count:    PropTypes.number.isRequired,
     callback: PropTypes.func.isRequired,
     children: PropTypes.node
   };

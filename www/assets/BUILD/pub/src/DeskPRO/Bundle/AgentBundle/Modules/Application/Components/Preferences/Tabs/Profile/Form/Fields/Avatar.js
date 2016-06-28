@@ -10,18 +10,18 @@ export class Avatar extends React.Component {
 
   static propTypes = {
     personName: PropTypes.string,
-    value: PropTypes.string,
-    onChange: PropTypes.func.isRequired
+    value:      PropTypes.string,
+    onChange:   PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      tmpFile: null,
+      tmpFile:     null,
       tmpFilePath: null,
       croppedPath: null,
-      edit: false,
-      error: null
+      edit:        false,
+      error:       null
     };
   }
 
@@ -33,9 +33,9 @@ export class Avatar extends React.Component {
     const reader = new FileReader();
     reader.onloadend = () => {
       this.setState({
-        tmpFile: file,
+        tmpFile:     file,
         tmpFilePath: reader.result,
-        error: null
+        error:       null
       });
     };
 
@@ -45,11 +45,11 @@ export class Avatar extends React.Component {
 
   onDiscard = () => {
     this.setState({
-      tmpFile: null,
+      tmpFile:     null,
       tmpFilePath: null,
       croppedPath: null,
-      edit: false,
-      error: null
+      edit:        false,
+      error:       null
     });
   };
 
@@ -92,8 +92,8 @@ export class Avatar extends React.Component {
     this.setState({
       tmpFile: null,
       tmpPath: null,
-      edit: false,
-      error: null
+      edit:    false,
+      error:   null
     });
 
     this.props.onChange(response.data.blob_auth_id);
@@ -194,8 +194,8 @@ export class Avatar extends React.Component {
     const tmpPath = this.state.tmpFilePath;
     const error = this.state.error;
     const djsConfig = {
-      autoQueue: false,
-      maxFiles: 1,
+      autoQueue:         false,
+      maxFiles:          1,
       previewsContainer: false
     };
 
@@ -223,14 +223,15 @@ export class Avatar extends React.Component {
           {(this.getImagePath() && !tmpFile) && ((<img src={this.getImagePath()} />))}
 
           <DropzoneComponent className={tmpFile && 'hidden'}
-                             ref="dropzoneComponent"
-                             config={componentConfig}
-                             eventHandlers={{
-                               thumbnail: this.onCropThumbnail,
-                               success: this.onSuccess,
-                               error: this.onError
-                             }}
-                             djsConfig={djsConfig}>
+            ref="dropzoneComponent"
+            config={componentConfig}
+            eventHandlers={{
+              thumbnail: this.onCropThumbnail,
+              success:   this.onSuccess,
+              error:     this.onError
+            }}
+            djsConfig={djsConfig}
+          >
             <div className="dz-message">
               {this.getImagePath()
                 ? (<a href="#" className="crop" onClick={this.onSave}>Upload &amp; a new avatar</a>)
@@ -244,7 +245,8 @@ export class Avatar extends React.Component {
               src={tmpPath}
               minCropBoxWidth={120}
               minCropBoxHeight={120}
-              aspectRatio={1 / 1} />
+              aspectRatio={1 / 1}
+            />
           )}
         </div>
 
@@ -262,12 +264,14 @@ export class Avatar extends React.Component {
             size={24}
             color="#CDD2D4"
             urlPattern={this.getImagePath()}
-            text={this.getPersonInitials()} />
+            text={this.getPersonInitials()}
+          />
           Manage Avatar
         </a>
         <ClickOut onClickOut={this.onCloseEdit}
-                  additionalNodes={[this.refs.editButton]}
-                  ignoreNodes={[jQuery('.dz-hidden-input')[0]]}>
+          additionalNodes={[this.refs.editButton]}
+          ignoreNodes={[jQuery('.dz-hidden-input')[0]]}
+        >
 
           {this.renderUploaderPopup()}
         </ClickOut>

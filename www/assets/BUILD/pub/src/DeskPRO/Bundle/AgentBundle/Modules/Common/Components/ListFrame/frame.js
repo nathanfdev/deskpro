@@ -4,7 +4,7 @@ import classNames from 'classnames';
 export class ListFrameContainer extends React.Component {
 
   static propTypes = {
-    children: PropTypes.node,
+    children:  PropTypes.node,
     className: PropTypes.string
   };
 

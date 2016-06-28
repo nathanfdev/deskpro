@@ -4,7 +4,7 @@ export class Gravatar extends React.Component {
 
   static propTypes = {
     children: PropTypes.node,
-    size: PropTypes.number,
+    size:     PropTypes.number,
     gravatar: PropTypes.string
   };
 
@@ -12,7 +12,7 @@ export class Gravatar extends React.Component {
     const { gravatar, size } = this.props;
     const delimiter = gravatar.indexOf('?') === -1 ? '?' : '&';
 
-    return gravatar + delimiter + 'default=blank' + (size ? '&s=' + size : '');
+    return `${gravatar}${delimiter}default=blank${size ? `&s=${size}` : ''}`;
   }
 
   render() {
@@ -23,8 +23,8 @@ export class Gravatar extends React.Component {
       ...childProps,
 
       imageUrl: this.getUrl(),
-      width: size,
-      height: size
+      width:    size,
+      height:   size
     });
   }
 }

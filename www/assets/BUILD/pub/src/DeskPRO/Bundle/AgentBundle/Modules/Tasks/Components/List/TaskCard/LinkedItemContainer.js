@@ -5,9 +5,9 @@ import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStor
 import { LinkedItem } from './LinkedItem';
 
 @connect(state => ({
-  tickets: allSelectorFactory('Ticket')(state),
+  tickets:  allSelectorFactory('Ticket')(state),
   articles: allSelectorFactory('Article')(state),
-  chats: allSelectorFactory('UserChat')(state)
+  chats:    allSelectorFactory('UserChat')(state)
 }))
 
 export class LinkedItemContainer extends React.Component {

@@ -44,12 +44,12 @@ export class TaskCardNew extends React.Component {
         teams:       [],
         departments: []
       }),
-      links:    Immutable.fromJS({
+      links: Immutable.fromJS({
         linked_tickets:  [],
         linked_chats:    [],
         linked_articles: []
       }),
-      project:  null
+      project: null
     };
     this.defaultDate = this.state.due;
   }
@@ -63,12 +63,12 @@ export class TaskCardNew extends React.Component {
         teams:       [],
         departments: []
       }),
-      links:    Immutable.fromJS({
+      links: Immutable.fromJS({
         linked_tickets:  [],
         linked_chats:    [],
         linked_articles: []
       }),
-      project:  null
+      project: null
     });
     this.defaultDate = this.state.due;
   }

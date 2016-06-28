@@ -27,8 +27,8 @@ export class Tab extends React.Component {
     let dropdownCats = this.props.available.getStatusCategoriesForStatus(this.props.id);
     let canRenderDropdown = dropdownCats.length > 0;
     return (
-      <div className={"quick-jump" + (canRenderDropdown ? "" : " no-dropdown")} ref="quickJump">
-        <span className={this.props.active ? "link active" : "link"}>
+      <div className={'quick-jump' + (canRenderDropdown ? '' : ' no-dropdown')} ref="quickJump">
+        <span className={this.props.active ? 'link active' : 'link'}>
           {this.props.label}
           {this.renderActiveCats()}
           {canRenderDropdown ? <span><i className="fa fa-caret-down" /></span> : null}
@@ -42,9 +42,9 @@ export class Tab extends React.Component {
     return (
       <div className={"quick-jump no-dropdown"} ref="quickJump">
         <a href={'/feedback/browse/' + this.props.id + '/' + this.props.types}
-           className={this.props.active ? "active" : ""}
-           onClick={this.clickTab.bind(this)}
-           onTouchStart={this.clickTab.bind(this)}
+          className={this.props.active ? 'active' : ''}
+          onClick={this.clickTab.bind(this)}
+          onTouchStart={this.clickTab.bind(this)}
         >
           {this.props.label}
         </a>

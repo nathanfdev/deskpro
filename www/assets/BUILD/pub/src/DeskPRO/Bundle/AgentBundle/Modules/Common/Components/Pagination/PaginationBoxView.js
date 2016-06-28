@@ -1,44 +1,44 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
-import {PaginationListView} from './PaginationListView';
+import { PaginationListView } from './PaginationListView';
 
 export class PaginationBoxView extends Component {
 
   static propTypes = {
-    currentPage: PropTypes.number.isRequired,
-    pageNum: PropTypes.number.isRequired,
-    pageRangeDisplayed: PropTypes.number.isRequired,
-    marginPagesDisplayed: PropTypes.number.isRequired,
-    previousLabel: PropTypes.node,
-    nextLabel: PropTypes.node,
-    breakLabel: PropTypes.node,
-    clickCallback: PropTypes.func,
-    forceSelected: PropTypes.number,
-    containerClassName: PropTypes.string,
+    currentPage:           PropTypes.number.isRequired,
+    pageNum:               PropTypes.number.isRequired,
+    pageRangeDisplayed:    PropTypes.number.isRequired,
+    marginPagesDisplayed:  PropTypes.number.isRequired,
+    previousLabel:         PropTypes.node,
+    nextLabel:             PropTypes.node,
+    breakLabel:            PropTypes.node,
+    clickCallback:         PropTypes.func,
+    forceSelected:         PropTypes.number,
+    containerClassName:    PropTypes.string,
     subContainerClassName: PropTypes.string,
-    pageClassName: PropTypes.string,
-    pageLinkClassName: PropTypes.string,
-    activeClassName: PropTypes.string,
-    previousClassName: PropTypes.string,
-    nextClassName: PropTypes.string,
+    pageClassName:         PropTypes.string,
+    pageLinkClassName:     PropTypes.string,
+    activeClassName:       PropTypes.string,
+    previousClassName:     PropTypes.string,
+    nextClassName:         PropTypes.string,
     previousLinkClassName: PropTypes.string,
-    nextLinkClassName: PropTypes.string,
-    disabledClassName: PropTypes.string
+    nextLinkClassName:     PropTypes.string,
+    disabledClassName:     PropTypes.string
   };
 
   static defaultProps = {
-    currentPage: 1,
-    pageRangeDisplayed: 2,
-    marginPagesDisplayed: 3,
-    previousClassName: 'previous',
-    nextClassName: 'next',
-    previousLabel: 'Previous',
-    nextLabel: 'Next',
-    breakLabel: '...',
-    disabledClassName: 'disabled',
-    containerClassName: 'pages-list',
+    currentPage:           1,
+    pageRangeDisplayed:    2,
+    marginPagesDisplayed:  3,
+    previousClassName:     'previous',
+    nextClassName:         'next',
+    previousLabel:         'Previous',
+    nextLabel:             'Next',
+    breakLabel:            '...',
+    disabledClassName:     'disabled',
+    containerClassName:    'pages-list',
     subContainerClassName: 'pages-list',
-    activeClassName: 'current-page',
+    activeClassName:       'current-page',
 
   };
 
@@ -56,7 +56,7 @@ export class PaginationBoxView extends Component {
   handlePageSelected(selected, event) {
     event.stopPropagation();
     event.preventDefault();
-    const { currentPage, clickCallback} = this.props;
+    const { currentPage, clickCallback } = this.props;
 
     if (currentPage === selected + 1) {
       // Toggle the dropdown list
@@ -88,8 +88,8 @@ export class PaginationBoxView extends Component {
   }
 
   render() {
-    const {disabledClassName, previousClassName, nextClassName, containerClassName, subContainerClassName, pageClassName, pageLinkClassName, activeClassName } = this.props;
-    const {currentPage, pageNum, pageRangeDisplayed, marginPagesDisplayed, breakLabel } = this.props;
+    const { disabledClassName, previousClassName, nextClassName, containerClassName, subContainerClassName, pageClassName, pageLinkClassName, activeClassName } = this.props;
+    const { currentPage, pageNum, pageRangeDisplayed, marginPagesDisplayed, breakLabel } = this.props;
     const previousClasses = classNames(previousClassName, { [disabledClassName]: this.props.currentPage === 1 });
     const nextClasses = classNames(nextClassName, { [disabledClassName]: this.props.currentPage === this.props.pageNum });
 
@@ -100,22 +100,23 @@ export class PaginationBoxView extends Component {
             <a href=""><i className="fa fa-caret-left"></i></a>
           </li>
           <li>
-            <hr/>
+            <hr />
           </li>
           <PaginationListView onPageSelected={this.handlePageSelected.bind(this)}
-                              currentPage={currentPage}
-                              pageNum={pageNum}
-                              pageRangeDisplayed={pageRangeDisplayed}
-                              marginPagesDisplayed={marginPagesDisplayed}
-                              breakLabel={breakLabel}
-                              subContainerClassName={subContainerClassName}
-                              pageClassName={pageClassName}
-                              pageLinkClassName={pageLinkClassName}
-                              activeClassName={activeClassName}
-                              disabledClassName={disabledClassName}
-                              dropdown={this.state.dropdown}/>
+            currentPage={currentPage}
+            pageNum={pageNum}
+            pageRangeDisplayed={pageRangeDisplayed}
+            marginPagesDisplayed={marginPagesDisplayed}
+            breakLabel={breakLabel}
+            subContainerClassName={subContainerClassName}
+            pageClassName={pageClassName}
+            pageLinkClassName={pageLinkClassName}
+            activeClassName={activeClassName}
+            disabledClassName={disabledClassName}
+            dropdown={this.state.dropdown}
+          />
           <li>
-            <hr/>
+            <hr />
           </li>
           <li onClick={this.handleNextPage.bind(this)} className={nextClasses}>
             <a href=""><i className="fa fa-caret-right"></i></a>

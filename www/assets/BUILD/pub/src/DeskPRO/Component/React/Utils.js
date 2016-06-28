@@ -5,8 +5,8 @@ export function createActions(actionObj) {
   const baseId = uniqueId();
 
   return _.zipObject(_.map(actionObj, (actionCreator, key) => {
-    const actionId = `${baseId}-${key}`;
-    const asyncTypes = ['BEGIN', 'OK', 'FAIL'].map( (state) => `${actionId}-${state}`);
+    const actionId   = `${baseId}-${key}`;
+    const asyncTypes = ['BEGIN', 'OK', 'FAIL'].map((state) => `${actionId}-${state}`);
 
     const method = (...args) => {
       const result = actionCreator(...args);
@@ -14,7 +14,7 @@ export function createActions(actionObj) {
       if (result instanceof Promise) {
         // Promise (async)
         return {
-          types: asyncTypes,
+          types:   asyncTypes,
           promise: result,
         };
       } else if (typeof result === 'function') {
@@ -35,7 +35,7 @@ export function createActions(actionObj) {
     };
 
     if (actionCreator._async === true) {
-      const [ begin, success, failure ] = asyncTypes;
+      const [begin, success, failure] = asyncTypes;
       method._id = {
         begin,
         success,
@@ -47,11 +47,7 @@ export function createActions(actionObj) {
 
     return [key, method];
   }));
-};
-
-export function getActionIds(actionCreators) {
-  return _.mapValues(actionCreators, (value, key) => return value._id);
-};
+}
 
 export function createStore(initialState, handlers) {
   return (state = initialState, action = {}) => {
@@ -59,8 +55,8 @@ export function createStore(initialState, handlers) {
       return handlers[action.type](state, action);
     }
     return state;
-  }
-};
+  };
+}
 
 export function promiseMiddleware() {
   return (next) => (action) => {
@@ -72,8 +68,8 @@ export function promiseMiddleware() {
     const [BEGIN, OK, FAIL] = types;
     next({ ...rest, type: BEGIN });
     return promise.then(
-      (result) => next({ ...rest, result, type: OK   }),
-      (error)  => next({ ...rest, error,  type: FAIL })
+      (result) => next({ ...rest, result, type: OK }),
+      (error) => next({ ...rest, error, type: FAIL })
     );
   };
 }

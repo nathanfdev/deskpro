@@ -1,24 +1,24 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 
 export class PageView extends Component {
 
   static propTypes = {
-    dropdown: PropTypes.bool,
-    currentPage: PropTypes.number.isRequired,
-    page: PropTypes.number.isRequired,
-    pageNum: PropTypes.number.isRequired,
-    onClick: PropTypes.func,
+    dropdown:        PropTypes.bool,
+    currentPage:     PropTypes.number.isRequired,
+    page:            PropTypes.number.isRequired,
+    pageNum:         PropTypes.number.isRequired,
+    onClick:         PropTypes.func,
     activeClassName: PropTypes.string
   };
 
   renderCaret(active) {
     if (active) {
-      return (<i className="fa fa-caret-down"/>);
+      return (<i className="fa fa-caret-down" />);
     }
   }
 
   renderDropdownOption(page) {
-    const {currentPage, onClick} = this.props;
+    const { currentPage, onClick } = this.props;
     const className = currentPage === page ? 'active' : '';
     return (
       <li key={page}>

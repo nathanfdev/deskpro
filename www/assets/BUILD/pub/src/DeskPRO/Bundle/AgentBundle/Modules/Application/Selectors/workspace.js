@@ -17,8 +17,8 @@ export const workspaceSelector = createSelector(
       // appPane is wrapper around appNavPane and appListPane
       // we dont ever turn it completely off because the UI for at least
       // the nav pane can still be visible by hoving mouse
-      appPane: true,
-      appNavPane: true,
+      appPane:     true,
+      appNavPane:  true,
       appListPane: true,
 
       // Width of the appPane
@@ -46,7 +46,7 @@ export const workspaceDimsSelector = createSelector(
   (info, workspace) => {
     const dims = {
       appPaneSize: 0,
-      appNavSize: 0,
+      appNavSize:  0,
       appListSize: 0,
       tabPaneSize: 0
     };

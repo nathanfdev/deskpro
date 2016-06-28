@@ -5,19 +5,19 @@ import $ from 'jquery';
 export class Frame extends React.Component {
 
   static propTypes = {
-    name: PropTypes.string,
-    frameStyles: PropTypes.object,
+    name:            PropTypes.string,
+    frameStyles:     PropTypes.object,
     containerStyles: PropTypes.object,
-    isVisible: PropTypes.bool,
-    positionMode: PropTypes.string,
-    children: PropTypes.node
+    isVisible:       PropTypes.bool,
+    positionMode:    PropTypes.string,
+    children:        PropTypes.node
   };
 
   constructor(props) {
     super(props);
     this.state = {
       dimensions: {
-        width: 0,
+        width:  0,
         height: 0
       }
     };
@@ -50,28 +50,28 @@ export class Frame extends React.Component {
     let position;
     switch (positionMode) {
       case 'top.left':
-        position = {left: 0, top: 0};
+        position = { left: 0, top: 0 };
         break;
       case 'top.right':
-        position = {right: 0, top: 0};
+        position = { right: 0, top: 0 };
         break;
       case 'bottom.left':
-        position = {left: 0, bottom: 0};
+        position = { left: 0, bottom: 0 };
         break;
       case 'bottom.right':
       default:
-        position = {right: 0, bottom: 0};
+        position = { right: 0, bottom: 0 };
         break;
     }
 
     return {
-      border: 'none',
+      border:     'none',
       background: 'transparent',
-      zIndex: 99999,
-      width: dimensions.width,
-      height: dimensions.height,
-      position: 'fixed',
-      display: isVisible ? 'block' : 'none',
+      zIndex:     99999,
+      width:      dimensions.width,
+      height:     dimensions.height,
+      position:   'fixed',
+      display:    isVisible ? 'block' : 'none',
 
       ...frameStyles,
       ...position
@@ -121,7 +121,7 @@ export class Frame extends React.Component {
         const $styles = $(document).find('style').clone();
         const $links = $(document).find('link').clone();
         const $container = $('<div/>', {
-          id: 'react_frame_container',
+          id:  'react_frame_container',
           css: frameContainerStyles
         });
 
@@ -149,8 +149,9 @@ export class Frame extends React.Component {
   render() {
     return (
       <iframe ref="iframe"
-              name={this.props.name}
-              style={this.getFrameStyles()} />
+        name={this.props.name}
+        style={this.getFrameStyles()}
+      />
     );
   }
 }

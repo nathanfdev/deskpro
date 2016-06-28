@@ -68,18 +68,21 @@ export class EndChatContainer extends React.Component {
         })}
 
         <Simple isOpen={this.state.confirmPopup}
-                positionTarget={this.refs.button}
-                positionAt={`right ${positionAt}`}
-                positionMy={`right ${positionMy}`}
-                zIndex={1000}>
+          positionTarget={this.refs.button}
+          positionAt={`right ${positionAt}`}
+          positionMy={`right ${positionMy}`}
+          zIndex={1000}
+        >
 
           <ClickOut onClickOut={this.onClosePopup}
-                    context={[parent.document, window.widgetFrame.document]}>
+            context={[parent.document, window.widgetFrame.document]}
+          >
 
             <EndChatConfirmPopup positionAt={positionAt}
-                                 locked={locked}
-                                 onConfirm={this.onEndChat}
-                                 onCancel={this.onClosePopup} />
+              locked={locked}
+              onConfirm={this.onEndChat}
+              onCancel={this.onClosePopup}
+            />
           </ClickOut>
         </Simple>
       </span>

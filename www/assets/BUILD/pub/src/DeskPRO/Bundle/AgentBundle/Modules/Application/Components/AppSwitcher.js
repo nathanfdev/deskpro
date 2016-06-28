@@ -7,7 +7,7 @@ import classNames from 'classnames';
 export class AppSwitcher extends React.Component {
 
   static propTypes = {
-    switchApp: PropTypes.func.isRequired,
+    switchApp:  PropTypes.func.isRequired,
     currentApp: PropTypes.string.isRequired
   };
 
@@ -45,14 +45,15 @@ export class AppSwitcher extends React.Component {
     return (
       <li>
         <Link className={linkClass}
-              activeClassName="active"
-              to={`${DP_BASE_URL_RELATIVE}/${DP_AGENT_INTERFACE_PATH_NAMESPACE}/${appId}`}
-              onClick={clickHandler}>
+          activeClassName="active"
+          to={`${DP_BASE_URL_RELATIVE}/${DP_AGENT_INTERFACE_PATH_NAMESPACE}/${appId}`}
+          onClick={clickHandler}
+        >
           {notificationCount > 0 ? (<span className="dpw-app-bar-notification">{notificationCount}</span>) : null}
           <div className="dpw-app-bar-icon">
             <div className={iconClassNames}></div>
           </div>
-          {this.state.expandedSwitcher ? (<span className="dps-app-bar-title">{title}</span>) : null }
+          {this.state.expandedSwitcher ? (<span className="dps-app-bar-title">{title}</span>) : null}
         </Link>
       </li>
     );
@@ -64,7 +65,7 @@ export class AppSwitcher extends React.Component {
 
     return (
       <nav className="dp-app-switcher" onMouseEnter={this.hoverSwitcher} onMouseLeave={this.cancelSwitcher}>
-        <div className={classes} style={{borderRightColor: constants.APP_COLOURS[currentApp]}}>
+        <div className={classes} style={{ borderRightColor: constants.APP_COLOURS[currentApp] }}>
           <ul className="app-list">
             {this.renderAppIcon('tickets', 'Tickets', 'dpw-app-bar-item-1', 'icon-dp-streamline-mail-2', 15)}
             {this.renderAppIcon('crm', 'CRM', 'dpw-app-bar-item-2', 'icon-dp-streamline-connection-2')}

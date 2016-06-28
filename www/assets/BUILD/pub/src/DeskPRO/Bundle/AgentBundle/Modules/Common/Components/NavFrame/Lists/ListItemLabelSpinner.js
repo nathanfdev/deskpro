@@ -8,11 +8,12 @@ export class ListItemLabelSpinner extends React.Component {
       <span>
         &nbsp;
         <Loader scale={0.35}
-                left="22px"
-                top="12px"
-                color="green"
-                width={3}
-                component="span" />
+          left="22px"
+          top="12px"
+          color="green"
+          width={3}
+          component="span"
+        />
       </span>
     );
   }

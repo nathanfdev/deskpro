@@ -6,17 +6,17 @@ import { async } from 'Ampliflux/reducers/handlers';
 import jQuery from 'jquery';
 
 const initialState = {
-  activeAppId: 'tickets',
-  collapseNav: localStorage.getItem('dpWindow.sidebarMode') === 'hover',
-  taskView: constants.VIEW_MODE_CARD,
-  columnMode: localStorage.getItem('dpWindow.columnMode') || 'column',
-  columnDimensions: parseInt(localStorage.getItem('dpWindow.columnDimensions'), 10) || 40,
-  sidebarMode: localStorage.getItem('dpWindow.sidebarMode') || 'static',
-  winDims: { width: 800, height: 600 },
-  isWorkspaceOpen: false,
+  activeAppId:       'tickets',
+  collapseNav:       localStorage.getItem('dpWindow.sidebarMode') === 'hover',
+  taskView:          constants.VIEW_MODE_CARD,
+  columnMode:        localStorage.getItem('dpWindow.columnMode') || 'column',
+  columnDimensions:  parseInt(localStorage.getItem('dpWindow.columnDimensions'), 10) || 40,
+  sidebarMode:       localStorage.getItem('dpWindow.sidebarMode') || 'static',
+  winDims:           { width: 800, height: 600 },
+  isWorkspaceOpen:   false,
   isPreferencesOpen: false,
-  preferenceTab: 'profile',
-  coverShown: false
+  preferenceTab:     'profile',
+  coverShown:        false
 };
 
 /**
@@ -47,15 +47,15 @@ export default createReducer(initialState, {
     triggerDpLayoutResize();
     return state.set('collapseNav', false);
   },
-  [actions.toggleView]: setFullPayload('taskView'),
+  [actions.toggleView]:      setFullPayload('taskView'),
   [actions.toggleWorkspace]: state => {
     return state.merge({
-      isWorkspaceOpen: !state.get('isWorkspaceOpen'),
+      isWorkspaceOpen:   !state.get('isWorkspaceOpen'),
       isPreferencesOpen: false
     });
   },
   [actions.closeWorkspace]: setValue('isWorkspaceOpen', false),
-  [actions.setColumnMode]: (state, payload) => {
+  [actions.setColumnMode]:  (state, payload) => {
     localStorage.setItem('dpWindow.columnMode', payload);
     return state.set('columnMode', payload);
   },
@@ -73,15 +73,15 @@ export default createReducer(initialState, {
     const isOpen = !state.get('isPreferencesOpen');
 
     return state.merge({
-      isWorkspaceOpen: false,
+      isWorkspaceOpen:   false,
       isPreferencesOpen: isOpen,
-      coverShown: isOpen
+      coverShown:        isOpen
     });
   },
   [actions.closePreferences]: state => {
     return state.merge({
       isPreferencesOpen: false,
-      coverShown: false
+      coverShown:        false
     });
   },
   [actions.changePreferenceTab]: setFullPayload('preferenceTab')

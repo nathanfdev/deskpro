@@ -6,7 +6,7 @@ export class HtmlLinkToPostWidget extends PageWidget {
   renderWidget() {
     const $postLinks = this.$element.find('a.post-link');
 
-    $postLinks.each(function() {
+    $postLinks.each(function () {
       const $link = $(this);
 
       $link.click((e) => {

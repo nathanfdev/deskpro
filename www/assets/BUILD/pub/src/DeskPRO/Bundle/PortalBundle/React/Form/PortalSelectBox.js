@@ -31,7 +31,7 @@ export class LevelSelectActionStore extends FormActionStore {
       options.push({
         id:       $optEl.data('id'),
         title:    $optEl.data('title') || $optEl.data('name') || $optEl.text(),
-        parent:   parent,
+        parent,
         children: []
       });
     });

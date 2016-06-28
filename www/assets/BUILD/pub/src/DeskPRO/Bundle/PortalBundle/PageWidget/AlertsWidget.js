@@ -72,7 +72,7 @@ export class AlertsWidget extends PageWidget {
     let isAny = false;
     const self = this;
 
-    $alerts.each(function() {
+    $alerts.each(function () {
       const $alert       = $(this);
       const alertId      = $alert.data('alert-id');
       const alertVersion = parseInt($alert.data('alert-version'), 10) || 0;

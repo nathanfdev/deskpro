@@ -39,7 +39,8 @@ export class Button extends Component {
       <span className="dpwd-navigation-dropdown-top-row-action-button">
         <a href="" className={classes} onClick={onClick}>
           <span
-            className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">
+            className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey"
+          >
               {this.renderContent()}
           </span>
           <span className="top-row-action-button-link-extra">

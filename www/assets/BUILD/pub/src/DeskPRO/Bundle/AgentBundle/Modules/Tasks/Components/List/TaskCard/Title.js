@@ -7,8 +7,8 @@ import { CardWidget } from './CardWidget';
 export class Title extends CardWidget {
 
   static propTypes = {
-    value: PropTypes.string,
-    isDone: PropTypes.bool,
+    value:    PropTypes.string,
+    isDone:   PropTypes.bool,
     onChange: PropTypes.func,
     onSubmit: PropTypes.func
   };
@@ -17,7 +17,7 @@ export class Title extends CardWidget {
     super(props);
     this.state = {
       isOpen: false,
-      value: props.value,
+      value:  props.value,
       isDone: props.isDone
     };
   }
@@ -25,7 +25,7 @@ export class Title extends CardWidget {
   componentWillReceiveProps(props) {
     this.setState({
       isOpen: false,
-      value: props.value,
+      value:  props.value,
       isDone: props.isDone
     });
   }
@@ -60,8 +60,9 @@ export class Title extends CardWidget {
       <div className="card-title">
         <div className={classNames(
           'dpwd--card-title',
-          {'strikethrough': this.props.isDone && !this.state.isOpen}
-        )}>
+          { 'strikethrough': this.props.isDone && !this.state.isOpen }
+        )}
+        >
 
           {this.state.isOpen ? this.renderForm() : this.renderHeader()}
         </div>

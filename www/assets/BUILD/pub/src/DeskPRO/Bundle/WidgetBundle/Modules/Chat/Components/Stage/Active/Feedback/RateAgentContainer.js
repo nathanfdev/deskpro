@@ -51,8 +51,9 @@ export class RateAgentContainer extends React.Component {
       case 'dialog':
         return (
           <RateAgentDialog agentName={agentName}
-                           onClickHelpful={this.onClickHelpful}
-                           onClickNotHelpful={this.onClickNotHelpful} />
+            onClickHelpful={this.onClickHelpful}
+            onClickNotHelpful={this.onClickNotHelpful}
+          />
         );
       default:
         return null;

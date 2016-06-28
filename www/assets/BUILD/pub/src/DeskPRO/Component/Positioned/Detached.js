@@ -1,12 +1,11 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import $ from 'jquery';
 import { Abstract } from './Abstract';
 
 export class Detached extends Abstract {
 
   static propTypes = {
-    context: PropTypes.any
+    context: React.PropTypes.any
   };
 
   componentWillUnmount() {
@@ -31,7 +30,6 @@ export class Detached extends Abstract {
       ReactDOM.unstable_renderSubtreeIntoContainer(this, this.props.children, this.cont);
       onOpen && onOpen();
       this.updatePosition();
-
     } else {
       if (this.cont) {
         this.props.children && ReactDOM.unmountComponentAtNode(this.cont);

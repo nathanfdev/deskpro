@@ -11,7 +11,7 @@ export class PusherClient extends AbstractClient {
     const that = this;
 
     if (this.options.debug) {
-      Pusher.log = function(message) {
+      Pusher.log = message => {
         if (window.console && window.console.log) {
           window.console.log(message);
         }
@@ -19,18 +19,18 @@ export class PusherClient extends AbstractClient {
     }
 
     this.client = new Pusher(that.options.appKey, {
-      encrypted: true,
-      authEndpoint: that.options.authEndpoint,
+      encrypted:     true,
+      authEndpoint:  that.options.authEndpoint,
       authTransport: that.options.authTransport
     });
   }
 
   getDefaultOptions() {
     return {
-      authEndpoint: '/api/v2/pusher/auth',
+      authEndpoint:  '/api/v2/pusher/auth',
       authTransport: 'rest',
-      appKey: '',
-      me: 0
+      appKey:        '',
+      me:            0
     };
   }
 
@@ -61,7 +61,7 @@ export class PusherClient extends AbstractClient {
               data = JSON.parse(xhr.responseText);
               parsed = true;
             } catch (e) {
-              callback(true, 'JSON returned from webapp was invalid, yet status code was 200. Data was: ' + xhr.responseText);
+              callback(true, `JSON returned from webapp was invalid, yet status code was 200. Data was: ${xhr.responseText}`);
             }
 
             if (parsed) { // prevents double execution.
@@ -74,7 +74,7 @@ export class PusherClient extends AbstractClient {
         }
       };
 
-      xhr.send(JSON.stringify({socket_id: socketId, channel_name: channelName, user_id: that.options.me}));
+      xhr.send(JSON.stringify({ socket_id: socketId, channel_name: channelName, user_id: that.options.me }));
       return xhr;
     };
 

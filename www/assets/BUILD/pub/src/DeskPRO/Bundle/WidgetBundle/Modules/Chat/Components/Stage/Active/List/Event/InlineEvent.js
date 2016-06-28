@@ -17,9 +17,10 @@ export class InlineEvent extends React.Component {
       <div className="dpdesignportal-event">
         <div className="dpdesignportal-event-content">
           <TimeAgo className="dpdesignportal-event-time"
-                   formatter={timeAgoFormatter}
-                   minPeriod={60000}
-                   date={moment(message.get('date_created'))} />
+            formatter={timeAgoFormatter}
+            minPeriod={60000}
+            date={moment(message.get('date_created'))}
+          />
           <hr />
           <span className="dpdesignportal-event-title">
             {children}

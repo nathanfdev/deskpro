@@ -16,6 +16,6 @@ export function openFullImage(imageNode, maxWidth = 800, maxHeight = 800) {
     'Image',
 
     `width=${width},height=${height},left=${left},top=${top},` +
-    `resizable=1,directories=0,titlebar=0,location=0,status=0,toolbar=0,menubar=0`
+    'resizable=1,directories=0,titlebar=0,location=0,status=0,toolbar=0,menubar=0'
   );
 }

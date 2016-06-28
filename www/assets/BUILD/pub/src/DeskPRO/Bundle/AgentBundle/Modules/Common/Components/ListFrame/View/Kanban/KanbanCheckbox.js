@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class KanbanCheckbox extends React.Component {
 
   static propTypes = {
-    onClick: PropTypes.func,
+    onClick:  PropTypes.func,
     selected: PropTypes.bool
   };
 

@@ -4,23 +4,23 @@ import { connect } from 'react-redux';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 @connect((state, props) => {
-  let loaded = props.selector
+  const loaded = props.selector
     ? !props.selector(state)
     : props.loaded;
   return {
     activeAppId: state.Application.dpWindow.get('activeAppId'),
-    loaded: loaded
+    loaded
   };
 })
 export class LoadIndicator extends Component {
 
   static propTypes = {
-    activeAppId: PropTypes.string,
-    top: PropTypes.string,
-    left: PropTypes.string,
-
+    activeAppId:    PropTypes.string,
+    top:            PropTypes.string,
+    left:           PropTypes.string,
+    loaded:         PropTypes.boolean,
     onStartLoading: PropTypes.func,
-    onStopLoading: PropTypes.func
+    onStopLoading:  PropTypes.func
   };
 
   constructor(props) {
@@ -43,15 +43,17 @@ export class LoadIndicator extends Component {
 
   render() {
     const { activeAppId } = this.props;
-    const top = this.props.top || '50%';
+    const top  = this.props.top || '50%';
     const left = this.props.left || '50%';
 
     return (
-      <Loader color={constants.APP_COLOURS[activeAppId]}
-              width={3}
-              left={left}
-              top={top}
-        {...this.props} />
+      <Loader
+        color={constants.APP_COLOURS[activeAppId]}
+        width={3}
+        left={left}
+        top={top}
+        {...this.props}
+      />
     );
   }
 }

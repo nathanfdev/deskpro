@@ -5,8 +5,8 @@ export class Timezone extends React.Component {
 
   static propTypes = {
     timezones: PropTypes.object.isRequired,
-    value: PropTypes.string,
-    onChange: PropTypes.func.isRequired
+    value:     PropTypes.string,
+    onChange:  PropTypes.func.isRequired
   };
 
   render() {
@@ -23,7 +23,8 @@ export class Timezone extends React.Component {
           value={value}
           options={options}
           clearable={false}
-          onChange={onChange} />
+          onChange={onChange}
+        />
       </div>
     );
   }

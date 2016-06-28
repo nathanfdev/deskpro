@@ -7,19 +7,19 @@ import { ChatHelper } from '../../../Services/Helpers/ChatHelper';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 
 @connect(state => ({
-  current: state.IM.chats.get('current'),
-  chating: state.IM.chats.get('chating'),
+  current:      state.IM.chats.get('current'),
+  chating:      state.IM.chats.get('chating'),
   overlayShown: state.IM.chats.get('overlayShown'),
-  user: meSelector(state)
+  user:         meSelector(state)
 }))
 export class IMContainer extends React.Component {
 
   static propTypes = {
-    current: PropTypes.object.isRequired,
-    chating: PropTypes.bool.isRequired,
+    current:      PropTypes.object.isRequired,
+    chating:      PropTypes.bool.isRequired,
     overlayShown: PropTypes.bool.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    user: PropTypes.object.isRequired
+    dispatch:     PropTypes.func.isRequired,
+    user:         PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -35,8 +35,8 @@ export class IMContainer extends React.Component {
         collision="none"
         positionTarget={document.getElementById('im-button')}
         isOpen={this.props.overlayShown}
-        >
-        <IMOverlay dispatch={this.props.dispatch}/>
+      >
+        <IMOverlay dispatch={this.props.dispatch} />
       </Simple>
     );
   };
@@ -59,8 +59,8 @@ export class IMContainer extends React.Component {
   render() {
     return (
      <div id="im-container">
-       { this.renderOverlay() }
-       { this.renderChat() }
+       {this.renderOverlay()}
+       {this.renderChat()}
      </div>
     );
   }

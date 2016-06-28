@@ -72,7 +72,7 @@ export class TaskCardEditContainer extends React.Component {
   onToggleSelected = () => {
     const { dispatch } = this.props;
     const { task } = this.state;
-    this.setState({selected: !this.state.selected});
+    this.setState({ selected: !this.state.selected });
     dispatch(toggleSelectedAction(task.get('id')));
   };
 
@@ -103,11 +103,11 @@ export class TaskCardEditContainer extends React.Component {
         linked_chats:    value.get('linked_chats').toArray()
       };
     } else {
-      params = {[prop]: value};
+      params = { [prop]: value };
       task = task.set(prop, value);
     }
 
-    this.setState({task});
+    this.setState({ task });
     dispatch(addToCollection('Task', 'all', Immutable.List([task])));
     dispatch(editTask(task.get('id'), params));
   };

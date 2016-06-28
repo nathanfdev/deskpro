@@ -63,7 +63,7 @@ export class DateTimePicker extends React.Component {
     return (
       <div className={className}>
         <label>{label}</label>
-        <input type="text" ref="input" onFocus={this.onOpen} value={valueString} readOnly/>
+        <input type="text" ref="input" onFocus={this.onOpen} value={valueString} readOnly />
         <Detached
           isOpen={this.state.isOpen}
           positionTarget={this}
@@ -72,7 +72,7 @@ export class DateTimePicker extends React.Component {
           zIndex={1002}
         >
           <ClickOut onClickOut={this.onClose} ignoreNodes={[this.refs.input]}>
-            <HiddenDateTimePicker value={value} onDone={this.onChange}/>
+            <HiddenDateTimePicker value={value} onDone={this.onChange} />
           </ClickOut>
         </Detached>
       </div>

@@ -5,9 +5,9 @@ import intlTelInput from 'intl-tel-input';
 export class PhoneNumber extends React.Component {
 
   static propTypes = {
-    number: PropTypes.string,
+    number:    PropTypes.string,
     extension: PropTypes.string,
-    onChange: PropTypes.func.isRequired
+    onChange:  PropTypes.func.isRequired
   };
 
   componentDidMount() {
@@ -15,11 +15,11 @@ export class PhoneNumber extends React.Component {
     const { number, extension } = this.props;
 
     $input.intlTelInput({
-      utilsScript: DP_PHONE_UTIL_PATH,
+      utilsScript:     DP_PHONE_UTIL_PATH,
       autoPlaceholder: true,
-      autoFormat: true,
+      autoFormat:      true,
       allowExtensions: true,
-      nationalMode: true
+      nationalMode:    true
     });
 
     $input.intlTelInput('utilsLoaded');
@@ -38,8 +38,9 @@ export class PhoneNumber extends React.Component {
   render() {
     return (
       <input ref="phone"
-             type="text"
-             placeholder="Your phone number" />
+        type="text"
+        placeholder="Your phone number"
+      />
     );
   }
 }

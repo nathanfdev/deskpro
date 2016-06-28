@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class CheckboxListItem extends React.Component {
 
   static propTypes = {
-    value: PropTypes.any,
+    value:   PropTypes.any,
     checked: PropTypes.bool
   };
 
@@ -11,7 +11,7 @@ export class CheckboxListItem extends React.Component {
     super(props);
     this.state = {
       checked: !!props.checked
-    }
+    };
   }
 
   componentWillReceiveProps(props) {

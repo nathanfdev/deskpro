@@ -63,7 +63,7 @@ export class NestedList extends React.Component {
         }
       }
 
-      this.setState({expanded});
+      this.setState({ expanded });
     };
   }
 

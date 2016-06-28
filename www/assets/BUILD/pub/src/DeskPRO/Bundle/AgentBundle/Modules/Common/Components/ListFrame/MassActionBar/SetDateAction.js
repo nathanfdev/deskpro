@@ -16,7 +16,7 @@ export class SetDateAction extends Component {
     return (
       <div
         className="dpw-navigation-dropdown-panel dpw-navigation-date-picker-panel dpw-navigation-dropdown-panel-corner-left"
-        >
+      >
         <div className="dpw-date-picker">
 
           <div className="dpw-date-picker-panel-container">
@@ -26,7 +26,7 @@ export class SetDateAction extends Component {
                 className="dpw-date-picker-left"
                 value={currentParams.get(param)}
                 onChange={value => dispatch(setParams({ [param]: value }))}
-                />
+              />
             </form>
           </div>
         </div>

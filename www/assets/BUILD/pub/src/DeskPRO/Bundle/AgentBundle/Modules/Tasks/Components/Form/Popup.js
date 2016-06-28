@@ -14,7 +14,7 @@ export class Popup extends React.Component {
 
     return (
       <div className={classNames('sidebar-hover', additionalClassNames, { 'hide-indicator': indicator === 'none' })}>
-        { children }
+        {children}
       </div>
     );
   }

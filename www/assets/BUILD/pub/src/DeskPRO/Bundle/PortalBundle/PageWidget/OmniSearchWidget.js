@@ -19,7 +19,7 @@ export class OmniSearchWidget extends PageWidget {
     const $button = this.$element.find('button.search-btn');
     const $x = this.$element.find('.search-clear');
 
-    $button.on('click', function() {
+    $button.on('click', function () {
       if (!$input.val()) {
         $input.focus();
         return false;

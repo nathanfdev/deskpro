@@ -7,11 +7,11 @@ import moment from 'moment';
 export class CalendarCellContentItem extends React.Component {
 
   static propTypes = {
-    item: PropTypes.object.isRequired,
-    dateField: PropTypes.string.isRequired,
+    item:        PropTypes.object.isRequired,
+    dateField:   PropTypes.string.isRequired,
     elementName: PropTypes.string.isRequired,
-    card: PropTypes.node.isRequired,
-    draggable: PropTypes.shape({
+    card:        PropTypes.node.isRequired,
+    draggable:   PropTypes.shape({
       source: PropTypes.node.isRequired
     })
   };
@@ -56,23 +56,26 @@ export class CalendarCellContentItem extends React.Component {
 
     return (
       <li className={classNames(
-        {'urgent': moment(item.get(dateField)).isBefore(moment(), 'day')}
-      )}>
+        { 'urgent': moment(item.get(dateField)).isBefore(moment(), 'day') }
+      )}
+      >
 
         <a href="#" ref="button" onClick={this.onOpenCard} onDoubleClick={this.onDoubleClick}>
-          {React.cloneElement(draggable.source, {...sourceCardProps, [elementName]: item})}
+          {React.cloneElement(draggable.source, { ...sourceCardProps, [elementName]: item })}
         </a>
 
         <Detached isOpen={this.state.cardOpened}
-                  positionTarget={this.refs.button}
-                  positionAt="left top-5"
-                  collision="fit"
-                  zIndex={1001}>
+          positionTarget={this.refs.button}
+          positionAt="left top-5"
+          collision="fit"
+          zIndex={1001}
+        >
 
           <ClickOut onClickOut={this.onCloseTaskCard}
-                    additionalNodes={[this.refs.button, '.assign-form']}>
+            additionalNodes={[this.refs.button, '.assign-form']}
+          >
 
-            {React.cloneElement(card, {...cardProps, [elementName]: item})}
+            {React.cloneElement(card, { ...cardProps, [elementName]: item })}
           </ClickOut>
         </Detached>
       </li>

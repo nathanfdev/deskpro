@@ -23,8 +23,9 @@ export class ControlItem extends React.Component {
 
     return (
       <a href="#"
-         className={classNames('dpdesignportal-chat-header-control-item', { disabled })}
-         onClick={this.onClick}>
+        className={classNames('dpdesignportal-chat-header-control-item', { disabled })}
+        onClick={this.onClick}
+      >
 
         {children}
       </a>

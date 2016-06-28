@@ -39,12 +39,12 @@ export class Abstract extends React.Component {
     const { isOpen = false, positionCalc, positionTarget, positionMy, positionAt, collision, zIndex } = newProps;
     const position = positionCalc ? positionCalc() || {} : {};
     const placement = newProps.position ||
-      {
-        my:        positionMy || 'left top',
-        at:        positionAt || 'right bottom',
-        of:        null,
-        collision: collision || 'none'
-      };
+    {
+      my:        positionMy || 'left top',
+      at:        positionAt || 'right bottom',
+      of:        null,
+      collision: collision || 'none'
+    };
 
     if (positionTarget) {
       placement.of = positionTarget;
@@ -61,14 +61,14 @@ export class Abstract extends React.Component {
     }
 
     this.setState({
-      isOpen:    isOpen,
+      isOpen,
       top:       position.top,
       left:      position.left,
       my:        placement.my,
       at:        placement.at,
       of:        placement.of,
       collision: placement.collision,
-      zIndex:    zIndex
+      zIndex
     });
   }
 
@@ -78,7 +78,7 @@ export class Abstract extends React.Component {
    */
   updatePosition() {
     const $node = $(this.cont || ReactDOM.findDOMNode(this));
-    invariant($node.length, 'Positioned expects a DOMNode to be available.')
+    invariant($node.length, 'Positioned expects a DOMNode to be available.');
 
     $node.css('position', 'absolute');
     const { top, left, my, at, of, collision, zIndex } = this.state;
@@ -88,10 +88,10 @@ export class Abstract extends React.Component {
       ;
     } else {
       $node.position({
-        my:        my,
-        at:        at,
-        of:        of,
-        collision: collision
+        my,
+        at,
+        of,
+        collision
       });
     }
 

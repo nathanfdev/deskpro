@@ -4,8 +4,8 @@ export class CalendarCellDropdown extends React.Component {
 
   static propTypes = {
     additionalPrefix: PropTypes.string,
-    dayDate: PropTypes.object.isRequired,
-    children: PropTypes.node
+    dayDate:          PropTypes.object.isRequired,
+    children:         PropTypes.node
   };
 
   render() {

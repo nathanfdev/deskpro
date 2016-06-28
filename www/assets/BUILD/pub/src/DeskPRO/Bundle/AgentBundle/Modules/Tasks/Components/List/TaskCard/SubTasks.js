@@ -4,7 +4,7 @@ export class SubTasks extends React.Component {
 
   static propTypes = {
     current: PropTypes.number,
-    total: PropTypes.number
+    total:   PropTypes.number
   };
 
   render() {
@@ -13,7 +13,7 @@ export class SubTasks extends React.Component {
     return (
       <span className="dpwd--card-line-item">
         <div>
-          <span className="dpw--card-disc"/> {current}/{total} <i className="fa fa-folder-open"/>
+          <span className="dpw--card-disc" /> {current}/{total} <i className="fa fa-folder-open" />
         </div>
       </span>
     );

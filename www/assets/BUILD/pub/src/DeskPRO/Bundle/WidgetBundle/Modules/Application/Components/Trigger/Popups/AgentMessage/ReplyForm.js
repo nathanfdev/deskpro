@@ -23,8 +23,9 @@ export class ReplyForm extends React.Component {
         <button className="send-btn" style={{
           backgroundColor,
           color: textColor
-        }}>
-          <i className="fa fa-chevron-right" aria-hidden="true"/>
+        }}
+        >
+          <i className="fa fa-chevron-right" aria-hidden="true" />
         </button>
       </form>
     );

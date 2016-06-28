@@ -43,11 +43,11 @@ export class ControlBarContainer extends Component {
           label: 'Date',
           icon:  'calendar'
         },
-        agent:        {
+        agent: {
           label: 'Agent',
           icon:  'calendar'
         },
-        department:   {
+        department: {
           label: 'Department',
           icon:  'calendar-o'
         }
@@ -56,7 +56,7 @@ export class ControlBarContainer extends Component {
       view: {
         options: {
 
-          [constants.VIEW_MODE_CARD]:  {
+          [constants.VIEW_MODE_CARD]: {
             label:  'Card View',
             icon:   'list',
             fields: cardFields
@@ -69,10 +69,10 @@ export class ControlBarContainer extends Component {
           }
         },
 
-        viewMode:              this.props.viewMode,
-        viewModeAction:        (mode) => updateRoutingState('list', 'view', mode),
-        toggleFieldVisibility: toggleFieldVisibility,
-        changeFieldOrder:      changeFieldOrder
+        viewMode:       this.props.viewMode,
+        viewModeAction: (mode) => updateRoutingState('list', 'view', mode),
+        toggleFieldVisibility,
+        changeFieldOrder
       }
     };
 

@@ -3,8 +3,8 @@ import * as actions from '../Actions/navActions';
 import { async, mergeFullPayload, setValue } from 'Ampliflux/reducers/handlers';
 
 const initialState = {
-  groups: [],
-  agents: [],
+  groups:   [],
+  agents:   [],
   projects: [],
 
   async: {

@@ -32,7 +32,7 @@ export const editProject = createAction(
     const projects   = collectionSelectorFactory('Project', 'all')(getState());
     const oldProject = projects.get(id);
     const promise    = api.sendPut(`DP_API/task_projects/${id}`, data);
-    updates[id]      = promise;
+    updates[id] = promise;
 
     // todo show errors (alert?)
     promise.success(() => {

@@ -26,7 +26,6 @@ export class FilterOptions {
           result = st_id;
         }
       });
-
     });
     return result;
   }

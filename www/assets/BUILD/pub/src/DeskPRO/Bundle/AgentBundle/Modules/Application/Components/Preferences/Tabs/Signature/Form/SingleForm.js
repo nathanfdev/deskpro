@@ -34,15 +34,15 @@ export class SingleForm extends React.Component {
     let promise;
 
     if (settings && settings.get('signature')) {
-      promise = repository('PersonSetting').update({name: 'signature', value: this.state.signature});
+      promise = repository('PersonSetting').update({ name: 'signature', value: this.state.signature });
     } else {
-      promise = repository('PersonSetting').create({name: 'signature', value: this.state.signature});
+      promise = repository('PersonSetting').create({ name: 'signature', value: this.state.signature });
     }
 
     promise
       .success(response => {
         dispatch(releaseCollection('Settings', 'my'));
-        dispatch(setCollection('Settings', 'my', {[response.data.id]: response.data}));
+        dispatch(setCollection('Settings', 'my', { [response.data.id]: response.data }));
       });
   };
 
@@ -55,8 +55,9 @@ export class SingleForm extends React.Component {
           <form>
             <div className="textarea-tagalong"></div>
               <textarea placeholder="Your Signature"
-                        value={this.state.signature}
-                        onChange={this.onChange} />
+                value={this.state.signature}
+                onChange={this.onChange}
+              />
 
             <input type="submit" value="Save Signature" onClick={this.onSubmit} />
           </form>

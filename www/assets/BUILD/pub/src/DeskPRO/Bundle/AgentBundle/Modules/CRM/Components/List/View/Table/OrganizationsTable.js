@@ -43,7 +43,7 @@ export class OrganizationsTable extends Component {
     switch (fieldId) {
 
       case 'id':
-        return <TdId key={fieldId}>{element.get(fieldId)}</TdId>
+        return <TdId key={fieldId}>{element.get(fieldId)}</TdId>;
 
       case 'date_created':
         return (

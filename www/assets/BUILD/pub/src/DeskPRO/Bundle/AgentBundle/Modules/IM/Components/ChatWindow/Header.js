@@ -87,7 +87,7 @@ export class Header extends React.Component {
               <a href="#" onClick={this.props.onClose}><i className="fa fa-times"></i></a>
             </span>
         </div>
-        { this.renderHeader() }
+        {this.renderHeader()}
       </header>
     );
   }

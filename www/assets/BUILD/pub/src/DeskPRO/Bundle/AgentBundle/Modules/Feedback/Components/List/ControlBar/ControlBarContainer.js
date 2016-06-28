@@ -57,7 +57,7 @@ export class ControlBarContainer extends Component {
 
     if (!this.props.isComments) {
       Object.assign(sorting, {
-        num_ratings:  {
+        num_ratings: {
           label: 'Votes',
           icon:  'calendar'
         },
@@ -91,8 +91,8 @@ export class ControlBarContainer extends Component {
 
         viewMode:       this.props.viewMode,
         viewModeAction: (mode) => updateRoutingState('list', 'view', mode),
-                        toggleFieldVisibility,
-                        changeFieldOrder
+        toggleFieldVisibility,
+        changeFieldOrder
       }
     };
 

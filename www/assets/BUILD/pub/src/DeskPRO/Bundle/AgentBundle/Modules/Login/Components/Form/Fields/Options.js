@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class Options extends React.Component {
 
   static propTypes = {
-    checked: PropTypes.bool,
+    checked:  PropTypes.bool,
     onChange: PropTypes.func.isRequired
   };
 

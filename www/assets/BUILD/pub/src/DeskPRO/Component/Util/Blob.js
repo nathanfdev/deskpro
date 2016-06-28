@@ -1,5 +1,5 @@
 export function getImageDataUrl(imgUrl, callback) {
-  var img = new Image();
+  const img = new Image();
 
   img.setAttribute('crossOrigin', 'anonymous');
   img.onload = () => {

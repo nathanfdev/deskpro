@@ -15,7 +15,7 @@ export class ControlBar extends Component {
         icon:  PropTypes.string.isRequired
       })
     ),
-    filters:       PropTypes.arrayOf(PropTypes.oneOfType([
+    filters: PropTypes.arrayOf(PropTypes.oneOfType([
       PropTypes.shape({
         type:      PropTypes.oneOf(['date']).isRequired,
         label:     PropTypes.string.isRequired,
@@ -40,11 +40,11 @@ export class ControlBar extends Component {
         }))
       })
     ])),
-    view:          PropTypes.shape({
-      options:                 PropTypes.objectOf(PropTypes.shape({
-        label:                 PropTypes.string.isRequired,
-        icon:                  PropTypes.string.isRequired,
-        fields:                PropTypes.object.isRequired
+    view: PropTypes.shape({
+      options: PropTypes.objectOf(PropTypes.shape({
+        label:  PropTypes.string.isRequired,
+        icon:   PropTypes.string.isRequired,
+        fields: PropTypes.object.isRequired
       })).isRequired,
       viewMode:                PropTypes.string.isRequired,
       viewModeAction:          PropTypes.func.isRequired,

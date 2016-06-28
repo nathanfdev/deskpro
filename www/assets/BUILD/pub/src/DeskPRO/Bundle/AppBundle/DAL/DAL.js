@@ -101,5 +101,5 @@ function createRepositoryFromFactory(config, record) {
  * @returns {{}}
  */
 function normalizeConfig(config) {
-  return typeof config === 'string' ? {type: config} : config;
+  return typeof config === 'string' ? { type: config } : config;
 }

@@ -44,9 +44,9 @@ export function createAction(actionType, actionFn, metaFn) {
 
   const finalActionFn = (...args) => {
     const action = {
-      type: type,
+      type,
       error: false,
-      meta: {}
+      meta:  {}
     };
 
     try {

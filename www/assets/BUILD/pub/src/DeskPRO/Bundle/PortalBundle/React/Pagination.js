@@ -5,8 +5,8 @@ class PaginationLink extends React.Component {
 
   static propTypes = {
     onClick: PropTypes.func,
-    page: PropTypes.number,
-    text: PropTypes.string
+    page:    PropTypes.number,
+    text:    PropTypes.string
   };
 
   onClick() {
@@ -39,33 +39,35 @@ export class Pagination extends React.Component {
 
     let nextLink = (<li className="inactive"><a href="#">Next</a></li>);
     if (current < pages) {
-      nextLink = (<PaginationLink onClick={this.props.pageClick} page={current+1} text="Next"/>);
+      nextLink = (<PaginationLink onClick={this.props.pageClick} page={current + 1} text="Next" />);
     }
 
     let prevLink = (<li className="inactive"><a href="#">Back</a></li>);
     if (current > 1) {
-      prevLink = (<PaginationLink onClick={this.props.pageClick} page={current-1} text="Back"/>);
+      prevLink = (<PaginationLink onClick={this.props.pageClick} page={current - 1} text="Back" />);
     }
 
     let prevPaddings = [];
     if (current > 1) {
-      prevPaddings.push((<PaginationLink key={'prev'+(current-1)} onClick={this.props.pageClick} page={current - 1}
-                                         text={current - 1}/>));
+      prevPaddings.push((<PaginationLink key={'prev' + (current - 1)} onClick={this.props.pageClick} page={current - 1}
+        text={current - 1}
+      />));
       if (current > 2) {
-
-        prevPaddings.unshift((<PaginationLink key={'prev'+(current-2)} onClick={this.props.pageClick} page={current - 2}
-                                              text={current - 2}/>));
+        prevPaddings.unshift((<PaginationLink key={'prev' + (current - 2)} onClick={this.props.pageClick} page={current - 2}
+          text={current - 2}
+        />));
       }
     }
 
     let nextPaddings = [];
     if (current < pages) {
-      nextPaddings.push((<PaginationLink key={'next'+(current+1)} onClick={this.props.pageClick} page={current + 1}
-                                         text={current + 1}/>));
+      nextPaddings.push((<PaginationLink key={'next' + (current + 1)} onClick={this.props.pageClick} page={current + 1}
+        text={current + 1}
+      />));
       if ((current + 1) < pages) {
-
-        nextPaddings.push((<PaginationLink key={'next'+(current+2)} onClick={this.props.pageClick} page={current + 2}
-                                           text={current + 2}/>));
+        nextPaddings.push((<PaginationLink key={'next' + (current + 2)} onClick={this.props.pageClick} page={current + 2}
+          text={current + 2}
+        />));
       }
     }
 

@@ -90,7 +90,7 @@ export class List extends React.Component {
             agents={agents}
             departments={departments}
             dispatch={dispatch}
-            />
+          />
         )}
       </Loader>
     );

@@ -71,11 +71,11 @@ export class DatePeriodFilter extends Component {
     const value     = currentParams[filter.param];
     if (value) {
       if (typeof value === 'string') {
-        filterType  = '';
+        filterType = '';
         filterValue = value;
       } else {
         Object.keys(value).forEach(property => {
-          filterType  = property;
+          filterType = property;
           filterValue = value[property];
         });
       }

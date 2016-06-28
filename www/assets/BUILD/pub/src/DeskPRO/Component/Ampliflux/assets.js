@@ -5,7 +5,7 @@
  * @return string the full path to the asset
  */
 export function bundleUrl(bundle_name, ...path) {
-  return "/pub/static/" + bundle_name + "/" + path.join('/');
+  return '/pub/static/' + bundle_name + '/' + path.join('/');
 }
 
 /**

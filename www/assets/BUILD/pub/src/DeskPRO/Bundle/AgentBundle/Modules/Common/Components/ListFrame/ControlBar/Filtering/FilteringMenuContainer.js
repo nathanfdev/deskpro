@@ -8,9 +8,9 @@ import { FilteringMenu } from './FilteringMenu';
 export class FilteringMenuContainer extends Component {
   static propTypes = {
     onMenuUnmount: PropTypes.func,
-    filters: PropTypes.array.isRequired,
-    unsetParam: PropTypes.func.isRequired,
-    setParam: PropTypes.func.isRequired,
+    filters:       PropTypes.array.isRequired,
+    unsetParam:    PropTypes.func.isRequired,
+    setParam:      PropTypes.func.isRequired,
     currentParams: PropTypes.object.isRequired
   };
 
@@ -28,7 +28,7 @@ export class FilteringMenuContainer extends Component {
       if (filter.hasOwnProperty('param')) {
         const params = [filter.param];
         if (filter.hasOwnProperty('options')) {
-          filter.options.map(option=> {
+          filter.options.map(option => {
             if (option.hasOwnProperty('nested')) {
               option.nested.map(opt => {
                 params.push(opt.param);
@@ -65,7 +65,7 @@ export class FilteringMenuContainer extends Component {
         if (Immutable.Iterable.isIterable(value)) {
           value = value.toJS();
           if (value.isArray) {
-            value.map(item1=> {
+            value.map(item1 => {
               result.push(item1);
             });
           } else {
@@ -97,22 +97,26 @@ export class FilteringMenuContainer extends Component {
     return (
       <li ref="menuItem">
         <Button isActive={this.state.expanded}
-                ref="button"
-                title="Filter by:"
-                icon={null}
-                label={this.getButtonLabel()}
-                onClick={this.toggleExpanded}/>
+          ref="button"
+          title="Filter by:"
+          icon={null}
+          label={this.getButtonLabel()}
+          onClick={this.toggleExpanded}
+        />
         <Detached isOpen={this.state.expanded}
-                  positionAt="left bottom"
-                  positionTarget={this.refs.button}>
+          positionAt="left bottom"
+          positionTarget={this.refs.button}
+        >
           <ClickOut onClickOut={this.collapse}
-                    ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list', '.dpw-item-label', '.anytime-picker']}
-                    additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
+            ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list', '.dpw-item-label', '.anytime-picker']}
+            additionalNodes={['.dpw-navigation-dropdown-item-clear']}
+          >
             <FilteringMenu filters={filters}
-                           currentParams={currentParams}
-                           unsetParam={unsetParam}
-                           onMenuUnmount={onMenuUnmount}
-                           setParam={setParam}/>
+              currentParams={currentParams}
+              unsetParam={unsetParam}
+              onMenuUnmount={onMenuUnmount}
+              setParam={setParam}
+            />
           </ClickOut>
         </Detached>
       </li>

@@ -57,21 +57,21 @@ export function createCodeHtml(code) {
 
 export function replaceSmileCodes(content, inverse = false) {
   let text = String(content);
-  let num;
 
-  for (num in smiles) {
-    if (smiles.hasOwnProperty(num)) {
-      const codes = smiles[num];
-      const arrayCodes = Array.isArray(codes) ? codes : [codes];
-      const image = createEmotionImage(codes);
+  Object.keys(smiles).forEach((key) => {
+    const codes      = smiles[key];
+    const arrayCodes = Array.isArray(codes) ? codes : [codes];
+    const image      = createEmotionImage(codes);
 
-      if (inverse) {
-        text = text.replace(image, createCodeHtml(arrayCodes[0]));
-      } else {
-        arrayCodes.forEach(code => text = text.replace(createCodeHtml(code), image));
-      }
+    if (inverse) {
+      text = text.replace(image, createCodeHtml(arrayCodes[0]));
+    } else {
+      arrayCodes.forEach(code => {
+        text = text.replace(createCodeHtml(code), image);
+        return null;
+      });
     }
-  }
+  });
 
   return text;
 }

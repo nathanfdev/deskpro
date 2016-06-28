@@ -18,7 +18,7 @@ export class TableView extends React.Component {
   constructor(props) {
     super(props);
     const groups = props.taskGroups || Immutable.fromJS([]);
-    this.state   = { groups: groups.filter(taskGroup => taskGroup.get('elements').size) };
+    this.state = { groups: groups.filter(taskGroup => taskGroup.get('elements').size) };
   }
 
   componentWillReceiveProps(props) {

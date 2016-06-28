@@ -7,7 +7,7 @@ export class DepartmentAvatar extends React.Component {
 
   static propTypes = {
     department: PropTypes.object.isRequired,
-    size: PropTypes.any
+    size:       PropTypes.any
   };
 
   getDepartmentFallbackText() {
@@ -25,10 +25,10 @@ export class DepartmentAvatar extends React.Component {
 
     const props = {
       size,
-      color: chooseColor(department.get('id')),
-      url: avatar.get('url'),
+      color:      chooseColor(department.get('id')),
+      url:        avatar.get('url'),
       urlPattern: avatar.get('url_pattern'),
-      text: this.getDepartmentFallbackText()
+      text:       this.getDepartmentFallbackText()
     };
 
     return (

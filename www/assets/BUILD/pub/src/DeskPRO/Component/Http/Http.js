@@ -15,7 +15,7 @@ export class Http {
       DELETE: {}
     };
 
-    this.interceptors    = [];
+    this.interceptors = [];
     this.resultResolvers = [];
     this.init();
   }
@@ -138,7 +138,7 @@ export class Http {
         if (config.jsonPayload) {
           config.contentType = 'application/json';
           config.processData = false;
-          config.data        = JSON.stringify(config.data || {});
+          config.data = JSON.stringify(config.data || {});
         }
       }
       if (config.crossDomain && config.dataType === 'json') {

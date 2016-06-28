@@ -13,8 +13,8 @@ class LanguageChoice extends React.Component {
       <li>
         <a onClick={this.onClick.bind(this)}>
           <img src={portalUrlGenerator.getFlagPath(this.props.getLangFlag(this.props.langCode))}
-               alt={this.props.getLangTitle(this.props.langCode)}
-            />
+            alt={this.props.getLangTitle(this.props.langCode)}
+          />
           <span className="text">
             {this.props.getLangTitle(this.props.langCode)}
           </span>
@@ -65,7 +65,7 @@ export class LanguageChanger extends React.Component {
     return (
       <div className="language-changer-widget" onMouseOver={this.updateTopPos}>
         <a href="#" className="button-small button-language">
-          <img src={portalUrlGenerator.getFlagPath(this.getLangFlag(active_lang_code))} alt=""/>
+          <img src={portalUrlGenerator.getFlagPath(this.getLangFlag(active_lang_code))} alt="" />
           {this.getLangTitle(active_lang_code)} <i className="fa fa-caret-down"></i>
         </a>
 
@@ -80,14 +80,14 @@ export class LanguageChanger extends React.Component {
 
   renderDropdown() {
     return _.map(_.filter(this.props.enabled_langs, (lang) => lang.code != this.props.active_lang_code), (lang) => {
-        return (
+      return (
           <LanguageChoice
             key={lang.code}
             clickLanguage={this.clickLanguage.bind(this)}
             getLangTitle={this.getLangTitle.bind(this)}
             getLangFlag={this.getLangFlag.bind(this)}
             langCode={lang.code}
-            />
+          />
         );
     });
   }

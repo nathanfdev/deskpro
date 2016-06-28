@@ -50,7 +50,7 @@ export class CommentsRepository {
  * @return {string}
  */
 function getCountsEndpoint(target) {
-  return getEndpoint(target) + '/counts'
+  return getEndpoint(target) + '/counts';
 }
 
 /**

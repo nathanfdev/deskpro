@@ -70,13 +70,13 @@ export function promiseMiddleware({ dispatch }) {
 
       const createSeqAction = (sequence, payload, isError = false) => ({
         ...action,
-        payload: payload,
+        payload,
         error: isError === true,
-        meta: {
+        meta:  {
           ...actionMeta,
-          sequenceId: sequenceId,
-          sequence: sequence,
-          sequenceType: 'promise',
+          sequenceId,
+          sequence,
+          sequenceType:    'promise',
           previousPayload: action.payload
         }
       });
