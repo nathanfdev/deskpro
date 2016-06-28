@@ -49,18 +49,6 @@ pageMeta.baseId = '{{ baseId }}';
 							} %}
 						</td>
 					</tr>
-					{% if brands|length > 1 %}
-						<tr id="new_category_brand">
-							<th width="100">{{ phrase('agent.general.brand') }}</th>
-							<td>
-								<select name="category[brand_id]">
-									{% for brand in brands %}
-										<option value="{{ brand.id }}">{{ brand.name }}</option>
-									{% endfor %}
-								</select>
-							</td>
-						</tr>
-					{% endif %}
 					<tr>
 						<th width="80">{{ phrase('agent.general.permissions') }}</th>
 						<td>
@@ -87,6 +75,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</article>
 	</section>
 </div>
+<input type="hidden" name="category[brand_id]" value="{{ brand_id }}">
 
 </form>
 </article>

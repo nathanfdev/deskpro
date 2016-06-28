@@ -913,7 +913,9 @@ class PublishController extends AbstractController
             return $this->createJsonResponse(['Invalid type']);
         }
 
-        $all_categories = $this->em->getRepository($entity_name)->getInHierarchy();
+        $brandId = $this->in->getUint('brand_id');
+
+        $all_categories = $this->getFilteredCategory($entity_name, $brandId);
 
         /** @var Brand[] $brands */
         $brands = $this->em->getRepository(Brand::class)->findAll();
@@ -922,6 +924,7 @@ class PublishController extends AbstractController
             'type'           => $type,
             'all_categories' => $all_categories,
             'brands'         => $brands,
+            'brand_id'       => $brandId,
         ]);
     }
 
@@ -1167,5 +1170,26 @@ class PublishController extends AbstractController
             'object_id'   => $object_id,
             'view_action' => $view_action,
         ]);
+    }
+
+    /**
+     * @param     $entityName
+     * @param int $brandId
+     *
+     * @return array
+     */
+    private function getFilteredCategory($entityName, $brandId)
+    {
+        $unFilteredCategories = $this->em->getRepository($entityName)->getInHierarchy();
+
+        $categories = [];
+
+        foreach ($unFilteredCategories as $c) {
+            if ($brandId == $c['brand_id']) {
+                $categories[] = $c;
+            }
+        }
+
+        return $categories;
     }
 }

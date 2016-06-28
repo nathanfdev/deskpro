@@ -73,7 +73,7 @@
 				<ul class="nav-list nav-list-small nav-list-tree">
 					{% include 'AgentBundle:Publish:kb-cat-list.html.twig' with {'cats': kb_cats, 'counts': kb_cats_counts, 'depth': 0 } %}
 					<li class="new-cat-trigger new-cat">
-						<div class="item" data-route="poppage:{{ path('agent_publish_cats_newform', {type: 'article'}) }}">
+						<div class="item" data-route="poppage:{{ path('agent_publish_cats_newform', {type: 'article', brand_id: selected_brand_id}) }}">
 							<i class="icon-folder-close-alt"></i>
 							<h3>{{ phrase('agent.publish.add_new_category') }}</h3>
 						</div>
@@ -123,7 +123,7 @@
 				<ul class="nav-list nav-list-small nav-list-tree">
 					{% include 'AgentBundle:Publish:news-cat-list.html.twig' with {'cats': news_cats, 'counts': news_cats_counts, 'depth': 0 } %}
 					<li class="new-cat-trigger new-cat">
-						<div class="item" data-route="poppage:{{ path('agent_publish_cats_newform', {type: 'news'}) }}">
+						<div class="item" data-route="poppage:{{ path('agent_publish_cats_newform', {type: 'news', brand_id: selected_brand_id}) }}">
 							<i class="icon-folder-close-alt"></i>
 							<h3>{{ phrase('agent.publish.add_new_category') }}</h3>
 						</div>
@@ -145,7 +145,7 @@
 				<ul class="nav-list nav-list-small nav-list-tree">
 					{% include 'AgentBundle:Publish:downloads-cat-list.html.twig' with {'cats': download_cats, 'counts': download_cats_counts, 'depth': 0 } %}
 					<li class="new-cat-trigger new-cat">
-						<div class="item" data-route="poppage:{{ path('agent_publish_cats_newform', {type: 'download'}) }}">
+						<div class="item" data-route="poppage:{{ path('agent_publish_cats_newform', {type: 'download', brand_id: selected_brand_id}) }}">
 							<i class="icon-folder-close-alt"></i>
 							<h3>{{ phrase('agent.publish.add_new_category') }}</h3>
 						</div>
