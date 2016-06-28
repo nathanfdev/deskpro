@@ -1751,6 +1751,12 @@ $collection->create('agent_kb_ajax_labels_save', [
     'requirements' => ['article_id' => '\\d+'],
 ]);
 
+$collection->create('agent_kb_ajax_get_categories', [
+    'path'         => '/kb/article/categories/brand/{brand_id}',
+    'controller'   => 'AgentBundle:Kb:ajaxGetCategoriesByBrand',
+    'requirements' => ['brand_id' => '\\d+'],
+]);
+
 $collection->create('agent_kb_comparerevs', [
     'path'       => '/kb/compare-revs/{rev_old_id}/{rev_new_id}',
     'controller' => 'AgentBundle:Kb:compareRevisions',
@@ -1877,6 +1883,12 @@ $collection->create('agent_news_comparerevs', [
     'controller' => 'AgentBundle:News:compareRevisions',
 ]);
 
+$collection->create('agent_news_ajax_get_categories', [
+    'path'         => '/news/categories/brand/{brand_id}',
+    'controller'   => 'AgentBundle:News:ajaxGetCategoriesByBrand',
+    'requirements' => ['brand_id' => '\\d+'],
+]);
+
 $collection->create('agent_downloads_list', [
     'path'       => '/downloads/list/{category_id}',
     'controller' => 'AgentBundle:Downloads:list',
@@ -1934,6 +1946,12 @@ $collection->create('agent_downloads_new', [
 $collection->create('agent_downloads_comparerevs', [
     'path'       => '/downloads/compare-revs/{rev_old_id}/{rev_new_id}',
     'controller' => 'AgentBundle:Downloads:compareRevisions',
+]);
+
+$collection->create('agent_downloads_ajax_get_categories', [
+    'path'         => '/downloads/categories/brand/{brand_id}',
+    'controller'   => 'AgentBundle:Downloads:ajaxGetCategoriesByBrand',
+    'requirements' => ['brand_id' => '\\d+'],
 ]);
 
 $collection->create('agent_feedback_category', [

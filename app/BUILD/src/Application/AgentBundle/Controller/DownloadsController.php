@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\DownloadResults;
@@ -138,7 +134,7 @@ class DownloadsController extends AbstractController
         $download = $this->em->find(Download::class, $download_id);
 
         if (!$download || !$this->person->PermissionsManager->PublishChecker->canEdit($download)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
@@ -184,7 +180,7 @@ class DownloadsController extends AbstractController
         $rev      = null;
 
         if (!$download) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $action = $this->in->getString('action');
@@ -251,7 +247,7 @@ class DownloadsController extends AbstractController
 
                 $rev = ContentRevisionUtil::findOrCreate($download, ['blob', 'title'], $this->person);
 
-                if ($this->in->getUint('download.attach') && $blob = $this->em->getRepository(Blob::class)->find($this->in->getUint('download.attach'))) {
+                if ($this->in->getUInt('download.attach') && $blob = $this->em->getRepository(Blob::class)->find($this->in->getUInt('download.attach'))) {
                     $download->blob = $blob;
 
                     $title = $this->in->getString('download.title');
@@ -322,7 +318,7 @@ class DownloadsController extends AbstractController
                 break;
 
             case 'category':
-                $cat                  = $this->em->find(DownloadCategory::class, $this->in->getUint('category_id'));
+                $cat                  = $this->em->find(DownloadCategory::class, $this->in->getUInt('category_id'));
                 $download['category'] = $cat;
                 $data['category_id']  = $cat['id'];
                 break;
@@ -344,6 +340,30 @@ class DownloadsController extends AbstractController
         }
 
         return $this->createJsonResponse($data);
+    }
+
+    public function ajaxGetCategoriesByBrandAction($brand_id)
+    {
+        $categories = $this->em->getRepository(DownloadCategory::class)->getInHierarchy();
+
+        $filteredCategories = [];
+
+        foreach ($categories as $c) {
+            if ($brand_id == $c['brand_id']) {
+                $filteredCategories[] = $c;
+            }
+        }
+
+        return $this->render('AgentBundle:Common:select-standard.html.twig', [
+            'name'             => 'newdownload[category_id]',
+            'id'               => '_cat',
+            'add_classname'    => 'category_id',
+            'add_attr'         => '',
+            'with_blank'       => 0,
+            'blank_title'      => '',
+            'categories'       => $filteredCategories,
+            'allow_parent_sel' => true,
+        ]);
     }
 
     ############################################################################
@@ -386,7 +406,7 @@ class DownloadsController extends AbstractController
             'show_all' => $show_all,
         ]);
 
-        $page = $this->in->getUint('p');
+        $page = $this->in->getUInt('p');
         if (!$page) {
             $page = 1;
         }
@@ -458,12 +478,26 @@ class DownloadsController extends AbstractController
 
     public function newDownloadAction()
     {
-        $download_categories = $this->em->getRepository(DownloadCategory::class)->getInHierarchy();
-        $state               = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.newdownload', $this->person->id);
+        $downloadCategories = $this->em->getRepository(DownloadCategory::class)->getInHierarchy();
+
+        $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+
+        $rootCategories = [];
+
+        foreach ($downloadCategories as $c) {
+            if ($brandId == $c['brand_id']) {
+                $rootCategories[] = $c;
+            }
+        }
+
+        $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.newdownload', $this->person->id);
+
+        $brands = $this->em->getRepository(Brand::class)->findAll();
 
         return $this->render('AgentBundle:Downloads:newdownload.html.twig', [
-            'download_categories' => $download_categories,
+            'download_categories' => $rootCategories,
             'state'               => $state,
+            'brands'              => $brands,
         ]);
     }
 

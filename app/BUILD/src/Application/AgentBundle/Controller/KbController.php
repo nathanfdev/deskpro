@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\ArticleResults;
@@ -69,7 +65,7 @@ class KbController extends AbstractController
         $isPdf   = $this->in->getBool('pdf');
         $article = $this->em->find(Article::class, $article_id);
         if (!$article) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown article $article_id");
+            throw $this->createNotFoundException("Unknown article $article_id");
         }
 
         if ($this->in->getBool('do_validate') and $article['status_code'] == 'hidden.unpublished' && $this->person->hasPerm('agent_publish.validate')) {
@@ -188,7 +184,7 @@ class KbController extends AbstractController
     {
         $article = $this->em->find(Article::class, $article_id);
         if (!$article) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown article $article_id");
+            throw $this->createNotFoundException("Unknown article $article_id");
         }
 
         $article_revisions = $article->getRevisions();
@@ -202,7 +198,7 @@ class KbController extends AbstractController
     public function ajaxSaveLabelsAction($article_id)
     {
         if (!$article = $this->em->find(Article::class, $article_id)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
@@ -352,7 +348,7 @@ class KbController extends AbstractController
         $article = $this->em->find(Article::class, $article_id);
 
         if (!$article) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $rev = null;
@@ -424,7 +420,7 @@ class KbController extends AbstractController
                 break;
 
             case 'auto-unpub':
-                $date   = date_create('@'.$this->in->getUint('end_timestamp'));
+                $date   = date_create('@'.$this->in->getUInt('end_timestamp'));
                 $action = $this->in->getString('end_action');
 
                 $article->date_end   = $date;
@@ -432,7 +428,7 @@ class KbController extends AbstractController
                 break;
 
             case 'auto-pub':
-                $date = date_create('@'.$this->in->getUint('pub_timestamp'));
+                $date = date_create('@'.$this->in->getUInt('pub_timestamp'));
 
                 $article->date_published = $date;
                 break;
@@ -460,7 +456,7 @@ class KbController extends AbstractController
             case 'remove-blob':
 
                 foreach ($article->attachments as $k => $attach) {
-                    if ($attach->blob['id'] == $this->in->getUint('blob_id')) {
+                    if ($attach->blob['id'] == $this->in->getUInt('blob_id')) {
                         $article->attachments->remove($k);
                         $this->em->remove($attach);
                         break;
@@ -509,7 +505,7 @@ class KbController extends AbstractController
                 $content  = $article->content;
                 $content  = $glossary->processText($content);
 
-                if ($lang_id = $this->in->getUint('language_id')) {
+                if ($lang_id = $this->in->getUInt('language_id')) {
                     $lang = $this->container->getLanguageData()->get($lang_id);
                     if ($lang) {
                         $article->language = $lang;
@@ -576,11 +572,11 @@ class KbController extends AbstractController
         $article = $this->em->find(Article::class, $article_id);
 
         if (!$article) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $this->em->beginTransaction();
@@ -613,7 +609,7 @@ class KbController extends AbstractController
         $article = $this->em->find(Article::class, $article_id);
 
         if (!$article) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $comment = new ArticleComment();
@@ -635,6 +631,30 @@ class KbController extends AbstractController
 
         return $this->render('AgentBundle:Kb:view-comment.html.twig', [
             'comment' => $comment,
+        ]);
+    }
+
+    public function ajaxGetCategoriesByBrandAction($brand_id)
+    {
+        $categories = $this->em->getRepository(ArticleCategory::class)->getInHierarchy();
+
+        $filteredCategories = [];
+
+        foreach ($categories as $c) {
+            if ($brand_id == $c['brand_id']) {
+                $filteredCategories[] = $c;
+            }
+        }
+
+        return $this->render('AgentBundle:Common:select-standard.html.twig', [
+            'name'             => 'newarticle[category_id]',
+            'id'               => '_cat',
+            'add_classname'    => 'category_id',
+            'add_attr'         => '',
+            'with_blank'       => 0,
+            'blank_title'      => '',
+            'categories'       => $filteredCategories,
+            'allow_parent_sel' => true,
         ]);
     }
 
@@ -687,8 +707,8 @@ class KbController extends AbstractController
         $pending_article         = new ArticlePendingCreate();
         $pending_article->person = $this->person;
 
-        if ($this->in->getUint('ticket_id')) {
-            $ticket = $this->em->find(Ticket::class, $this->in->getUint('ticket_id'));
+        if ($this->in->getUInt('ticket_id')) {
+            $ticket = $this->em->find(Ticket::class, $this->in->getUInt('ticket_id'));
             if ($ticket) {
                 $pending_article->ticket = $ticket;
             }
@@ -715,7 +735,7 @@ class KbController extends AbstractController
         $pending_article = $this->em->find(ArticlePendingCreate::class, $pending_article_id);
 
         if (!$pending_article) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
         if (!$this->person->PermissionsManager->PublishChecker->canValidate($pending_article)) {
             return $this->createJsonResponse(['success' => false]);
@@ -814,7 +834,7 @@ class KbController extends AbstractController
 
         if ($this->in->getBool('pending_translate')) {
             $is_trans_view = true;
-            $trans_lang_id = $this->in->getUint('language_id');
+            $trans_lang_id = $this->in->getUInt('language_id');
 
             $brandId = $this->in->getUInt('brand_id');
 
@@ -824,7 +844,7 @@ class KbController extends AbstractController
 
             $result_helper = ArticleResults::newFromRequest($this, [
                 'pending_translate'      => true,
-                'pending_translate_lang' => $this->in->getUint('language_id'),
+                'pending_translate_lang' => $this->in->getUInt('language_id'),
                 'brand_id'               => $brandId,
             ]);
         } else {
@@ -834,7 +854,7 @@ class KbController extends AbstractController
             ]);
         }
 
-        $page = $this->in->getUint('p');
+        $page = $this->in->getUInt('p');
         if (!$page) {
             $page = 1;
         }
@@ -931,11 +951,11 @@ class KbController extends AbstractController
 
     public function compareRevisionsAction($rev_old_id, $rev_new_id)
     {
-        $diff_info = ContentRevisionUtil::compareRevisions(ArticleRevision::class, $rev_old_id, $rev_new_id);
+        $diffInfo = ContentRevisionUtil::compareRevisions(ArticleRevision::class, $rev_old_id, $rev_new_id);
 
         return $this->render('AgentBundle:Kb:compare-revs.html.twig', [
-            'rendered_content_diff' => $diff_info['rendered_content_diff'],
-            'rendered_title_diff'   => $diff_info['rendered_title_diff'],
+            'rendered_content_diff' => $diffInfo['rendered_content_diff'],
+            'rendered_title_diff'   => $diffInfo['rendered_title_diff'],
         ]);
     }
 
@@ -945,22 +965,35 @@ class KbController extends AbstractController
 
     public function newArticleAction()
     {
-        $article_categories = $this->em->getRepository(ArticleCategory::class)->getInHierarchy();
+        $articleCategories = $this->em->getRepository(ArticleCategory::class)->getInHierarchy();
+
+        $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+
+        $rootCategories = [];
+
+        foreach ($articleCategories as $c) {
+            if ($brandId == $c['brand_id']) {
+                $rootCategories[] = $c;
+            }
+        }
 
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.newarticle', $this->person->id);
 
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
         return $this->render('AgentBundle:Kb:newarticle.html.twig', [
-            'article_categories' => $article_categories,
+            'article_categories' => $rootCategories,
             'state'              => $state,
+            'brands'             => $brands,
         ]);
     }
 
     public function newArticleSaveAction()
     {
-        $newarticle = new \Application\AgentBundle\Form\Model\NewArticle($this->person);
+        $newArticle = new \Application\AgentBundle\Form\Model\NewArticle($this->person);
 
         $formType = new \Application\AgentBundle\Form\Type\NewArticle();
-        $form     = $this->get('form.factory')->create($formType, $newarticle);
+        $form     = $this->get('form.factory')->create($formType, $newArticle);
 
         $this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newarticle' AND person_id = ?", [$this->person->id]);
 
@@ -969,19 +1002,19 @@ class KbController extends AbstractController
             $form->isValid();
 
             $validator = new \Application\AgentBundle\Validator\NewArticleValidator();
-            if (!$validator->isValid($newarticle)) {
+            if (!$validator->isValid($newArticle)) {
                 return $this->createJsonResponse([
                     'error'       => true,
                     'error_codes' => $validator->getErrorGroups(),
                 ]);
             }
 
-            $newarticle->save();
+            $newArticle->save();
 
-            $article = $newarticle->getArticle();
+            $article = $newArticle->getArticle();
 
-            if ($this->in->getUint('pending_article_id')) {
-                $pending_article = $this->em->find(ArticlePendingCreate::class, $this->in->getUint('pending_article_id'));
+            if ($this->in->getUInt('pending_article_id')) {
+                $pending_article = $this->em->find(ArticlePendingCreate::class, $this->in->getUInt('pending_article_id'));
                 if ($pending_article) {
                     $this->em->remove($pending_article);
                     $this->em->flush();

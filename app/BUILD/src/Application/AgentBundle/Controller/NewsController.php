@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\NewsResults;
@@ -77,6 +73,8 @@ class NewsController extends AbstractController
 
         $news_categories = $this->em->getRepository(NewsCategory::class)->getInHierarchy();
 
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
         $perms = [
             'can_edit'   => $this->person->PermissionsManager->PublishChecker->canEdit($news),
             'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($news),
@@ -91,6 +89,7 @@ class NewsController extends AbstractController
             'sticky_search_words' => $sticky_search_words,
             'rated_searches'      => $rated_searches,
             'perms'               => $perms,
+            'brands'              => $brands,
         ]);
     }
 
@@ -109,7 +108,7 @@ class NewsController extends AbstractController
         $news = $this->em->find(News::class, $news_id);
 
         if (!$news) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
         if (!$this->person->PermissionsManager->PublishChecker->canEdit($news)) {
             return $this->createJsonResponse(['success' => 0]);
@@ -158,7 +157,7 @@ class NewsController extends AbstractController
         $rev  = null;
 
         if (!$news) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $action = $this->in->getString('action');
@@ -230,7 +229,7 @@ class NewsController extends AbstractController
                 break;
 
             case 'category':
-                $cat                 = $this->em->find(NewsCategory::class, $this->in->getUint('category_id'));
+                $cat                 = $this->em->find(NewsCategory::class, $this->in->getUInt('category_id'));
                 $news['category']    = $cat;
                 $data['category_id'] = $cat['id'];
                 break;
@@ -244,7 +243,7 @@ class NewsController extends AbstractController
                 break;
 
             case 'auto-unpub':
-                $date   = date_create('@'.$this->in->getUint('end_timestamp'));
+                $date   = date_create('@'.$this->in->getUInt('end_timestamp'));
                 $action = $this->in->getString('end_action');
 
                 $news->date_end   = $date;
@@ -257,7 +256,7 @@ class NewsController extends AbstractController
                 break;
 
             case 'auto-pub':
-                $date = date_create('@'.$this->in->getUint('pub_timestamp'));
+                $date = date_create('@'.$this->in->getUInt('pub_timestamp'));
 
                 $news->date_published = $date;
                 break;
@@ -283,6 +282,30 @@ class NewsController extends AbstractController
         }
 
         return $this->createJsonResponse($data);
+    }
+
+    public function ajaxGetCategoriesByBrandAction($brand_id)
+    {
+        $categories = $this->em->getRepository(NewsCategory::class)->getInHierarchy();
+
+        $filteredCategories = [];
+
+        foreach ($categories as $c) {
+            if ($brand_id == $c['brand_id']) {
+                $filteredCategories[] = $c;
+            }
+        }
+
+        return $this->render('AgentBundle:Common:select-standard.html.twig', [
+            'name'             => 'newnews[category_id]',
+            'id'               => '_cat',
+            'add_classname'    => 'category_id',
+            'add_attr'         => '',
+            'with_blank'       => 0,
+            'blank_title'      => '',
+            'categories'       => $filteredCategories,
+            'allow_parent_sel' => true,
+        ]);
     }
 
     ############################################################################
@@ -323,7 +346,7 @@ class NewsController extends AbstractController
             'show_all' => $show_all,
         ]);
 
-        $page = $this->in->getUint('p');
+        $page = $this->in->getUInt('p');
         if (!$page) {
             $page = 1;
         }
@@ -393,22 +416,35 @@ class NewsController extends AbstractController
 
     public function newNewsAction()
     {
-        $news_categories = $this->em->getRepository(NewsCategory::class)->getInHierarchy();
+        $newsCategories = $this->em->getRepository(NewsCategory::class)->getInHierarchy();
+
+        $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+
+        $rootCategories = [];
+
+        foreach ($newsCategories as $c) {
+            if ($brandId == $c['brand_id']) {
+                $rootCategories[] = $c;
+            }
+        }
 
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.newnews', $this->person->id);
 
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
         return $this->render('AgentBundle:News:newnews.html.twig', [
-            'news_categories' => $news_categories,
+            'news_categories' => $rootCategories,
             'state'           => $state,
+            'brands'          => $brands,
         ]);
     }
 
     public function newNewsSaveAction()
     {
-        $newnews = new \Application\AgentBundle\Form\Model\NewNews($this->person);
+        $newNews = new \Application\AgentBundle\Form\Model\NewNews($this->person);
 
         $formType = new \Application\AgentBundle\Form\Type\NewNews();
-        $form     = $this->get('form.factory')->create($formType, $newnews);
+        $form     = $this->get('form.factory')->create($formType, $newNews);
 
         $this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newnews' AND person_id = ?", [$this->person->id]);
 
@@ -417,15 +453,15 @@ class NewsController extends AbstractController
             $form->isValid();
 
             $validator = new \Application\AgentBundle\Validator\NewNewsValidator();
-            if (!$validator->isValid($newnews)) {
+            if (!$validator->isValid($newNews)) {
                 return $this->createJsonResponse([
                     'error'       => true,
                     'error_codes' => $validator->getErrorGroups(),
                 ]);
             }
-            $newnews->save();
+            $newNews->save();
 
-            $news = $newnews->getNews();
+            $news = $newNews->getNews();
 
             $rev = ContentRevisionUtil::findOrCreate($news, ['title', 'content'], $this->person);
             if ($rev) {

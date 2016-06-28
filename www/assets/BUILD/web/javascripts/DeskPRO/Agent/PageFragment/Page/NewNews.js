@@ -38,6 +38,10 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 		});
 		this.ownObject(this.stateSaver);
 
+		$('#new_news_brand_id').on('change', function() {
+			self.updateCategories();
+		});
+
 		window.setTimeout(function() {
 			if (self.OBJ_DESTROYED) return;
 
@@ -168,6 +172,22 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 			val = val.replace(/-{2,}/g, '-');
 
 			self.getEl('slug').val(val);
+		});
+	},
+
+	updateCategories: function() {
+		var brand_select = $('#new_news_brand_id');
+		var brand_id = brand_select.val();
+		var categories_select = $(brand_select.parents('.cat-section')[0]).find('select.category_id');
+		$.ajax({
+			url: BASE_URL + 'agent/news/categories/brand/'+brand_id,
+			type: 'GET',
+			context: this,
+			success: function(result) {
+				categories_select.children().remove();
+				categories_select.append($(result).find('option'));
+				categories_select.select2("val", '');
+			}
 		});
 	},
 

@@ -36,6 +36,10 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 		});
 		this.ownObject(this.stateSaver);
 
+		$('#new_article_brand_id').on('change', function() {
+			self.updateCategories();
+		});
+
 		window.setTimeout(function() {
 			if (self.OBJ_DESTROYED) return;
 
@@ -181,6 +185,22 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 		$('.person-name', infoWrap).text(data.person_name);
 
 		infoWrap.show();
+	},
+
+	updateCategories: function() {
+		var brand_select = $('#new_article_brand_id');
+		var brand_id = brand_select.val();
+		var categories_select = $(brand_select.parents('.cat-section')[0]).find('select.category_id');
+		$.ajax({
+			url: BASE_URL + 'agent/kb/article/categories/brand/'+brand_id,
+			type: 'GET',
+			context: this,
+			success: function(result) {
+				categories_select.children().remove();
+				categories_select.append($(result).find('option'));
+				categories_select.select2("val", '');
+			}
+		});
 	},
 
 	//#################################################################

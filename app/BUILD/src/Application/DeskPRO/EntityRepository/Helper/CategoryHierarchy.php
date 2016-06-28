@@ -166,6 +166,10 @@ class CategoryHierarchy
 
     /**
      * Get a plain hierarchy array.
+     *
+     * @param bool $reset
+     *
+     * @return array|null
      */
     public function getInHierarchy($reset = false)
     {
