@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\ObjectTranslatable;
@@ -274,22 +275,59 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         return $this;
     }
 
+    /**
+     * @param ArticleCategory $cat
+     *
+     * @return bool
+     */
+    public function isInCategory(ArticleCategory $cat)
+    {
+        return $this->categories->contains($cat);
+    }
+
+    /**
+     * @param ArticleCategory $cat
+     *
+     * @return $this
+     */
     public function addToCategory(ArticleCategory $cat)
     {
         $this->categories->add($cat);
+
+        return $this;
     }
 
+    /**
+     * @param ArticleCategory $cat
+     *
+     * @return $this
+     */
     public function removeFromCategory(ArticleCategory $cat)
     {
         $this->categories->removeElement($cat);
+
+        return $this;
     }
 
+    /**
+     * @param array $cats
+     *
+     * @return $this
+     */
     public function setCategories(array $cats)
     {
         $helper = new \Application\DeskPRO\ORM\CollectionHelper($this, 'categories');
         $helper->setCollection($cats);
+
+        return $this;
     }
 
+    /**
+     * @param string $sep
+     * @param bool   $full
+     *
+     * @return mixed
+     */
     public function getCategoryNames($sep = ', ', $full = true)
     {
         $cats = [];
@@ -309,6 +347,9 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         return implode($sep, $cats);
     }
 
+    /**
+     * @return array
+     */
     public function getCategoryIds()
     {
         $ids = [];
@@ -321,6 +362,11 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         return $ids;
     }
 
+    /**
+     * @param int $index
+     *
+     * @return array
+     */
     public function getCategoryPath($index = 0)
     {
         $path = [];
@@ -335,6 +381,9 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         return $path;
     }
 
+    /**
+     * @return ArticleCategory|mixed|null|void
+     */
     public function getPrimaryCategory()
     {
         if (!$this->categories) {
@@ -367,12 +416,22 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         return $this;
     }
 
+    /**
+     * @param ArticleAttachment $attach
+     */
     public function addAttachment(ArticleAttachment $attach)
     {
         $this->attachments->add($attach);
         $attach['article'] = $this;
     }
 
+    /**
+     * @param bool  $primary
+     * @param bool  $deep
+     * @param array $visited
+     *
+     * @return array
+     */
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
@@ -418,6 +477,11 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         }
     }
 
+    /**
+     * @param $old_slug
+     *
+     * @return ArticleSlugHistory
+     */
     protected function addSlugHistory($old_slug)
     {
         $history = new ArticleSlugHistory($this, $old_slug);
@@ -430,11 +494,17 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     # Doctrine Metadata
     ############################################################################
 
+    /**
+     * @return ObjectTranslatable
+     */
     public function getObjectTranslatable()
     {
         return ObjectTranslatable::loadObjectTranslatable($this);
     }
 
+    /**
+     * @return array
+     */
     public static function loadObjectTranslatableMetadata()
     {
         return [
@@ -443,6 +513,11 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         ];
     }
 
+    /**
+     * @param ClassMetadata $metadata
+     *
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     */
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
@@ -749,6 +824,9 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         ObjectTranslatable::loadEntityMetadata($metadata);
     }
 
+    /**
+     * @return array
+     */
     protected function getUpdateFields()
     {
         $fields   = parent::getUpdateFields();
