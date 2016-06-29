@@ -54,6 +54,8 @@ class NewTicketController extends AbstractController
     /**
      * @Route("/new-ticket", name="portal_new_ticket")
      * @Route("/new-ticket", name="user_tickets_new")
+     * @Route("/new-ticket/{department_id}", requirements={"department_id": "\d+"})
+     *
      * @Security("is_granted('USE_TICKETS')")
      * @PageHttpCache()
      *
@@ -64,17 +66,23 @@ class NewTicketController extends AbstractController
      */
     public function newTicketAction(Request $request, $visitor_id)
     {
-        $ticket         = $this->getNewTicketService()->createNewTicket($request, $visitor_id, $this->getCurrentPerson(), Ticket::CREATED_WEB_PERSON_PORTAL);
-        $person         = $ticket->getPerson();
-        $ticket_message = $ticket->messages[0];
+        $ticket        = $this->getNewTicketService()->createNewTicket($request, $visitor_id, $this->getCurrentPerson(), Ticket::CREATED_WEB_PERSON_PORTAL);
+        $person        = $ticket->getPerson();
+        $ticketMessage = $ticket->messages[0];
 
         $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, [
             'ticket_view_context'   => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'     => TicketWithLayoutsContext::VISIBILITY_NEW,
             'person'                => $person,
             'action'                => $this->generateUrl('portal_new_ticket'),
-            'department_id'         => $request->query->getInt('department_id'),
             'saved_form_subrequest' => $this->isSavedFormSubRequest($request),
+
+            // we can get pre-defined department id from the request
+            // if we get it from query params then we should just pre-select the department option
+            // if we get it from route path (/new-ticket/{department_id}) then we should make department field hidden
+            'department_id'         => $request->attributes->getInt('department_id') ?: $request->query->getInt('department_id'),
+            'hide_department_field' => (bool) $request->attributes->getInt('department_id'),
+
             // next to allow extra fields if its saved form because name/email etc will be on origin form,
             // but not this one now that the user is logged-in
             'allow_extra_fields' => true,
@@ -102,8 +110,8 @@ class NewTicketController extends AbstractController
 
                             // since the guest is set on the form, we need to update all of the associations
                             $ticket->setPerson($person);
-                            $ticket_message->setPerson($person);
-                            foreach ($ticket_message->getAttachments() as $attachment) {
+                            $ticketMessage->setPerson($person);
+                            foreach ($ticketMessage->getAttachments() as $attachment) {
                                 $attachment->setPerson($person);
                             }
 
@@ -152,10 +160,9 @@ class NewTicketController extends AbstractController
             }
         }
 
-        $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [
+        $formFull = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [
             'person'              => $person,
             'action'              => $this->generateUrl('portal_new_ticket'),
-            'department_id'       => $request->query->getInt('department_id'),
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
         ]);
@@ -168,7 +175,7 @@ class NewTicketController extends AbstractController
         $show_ticket_suggestions = (bool) $this->getBrandSetting('core.show_ticket_suggestions');
 
         $formView     = $form->createView();
-        $formFullView = $form_full->createView();
+        $formFullView = $formFull->createView();
 
         if (isset($formView->children['captcha_captcha_auto_added'])) {
             $formFullView->children['captcha_captcha_auto_added'] = $formView->children['captcha_captcha_auto_added'];

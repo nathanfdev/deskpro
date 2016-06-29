@@ -127,7 +127,7 @@ class MinkContext extends \Behat\MinkExtension\Context\MinkContext
         $name  = DataContext::replace($name);
         $value = DataContext::replace($value);
 
-        $node = $this->getSession()->getPage()->find('css', 'input[name="'.$name.'"]');
+        $node = $this->getSession()->getPage()->find('css', 'input[type="hidden"][name="'.$name.'"]');
         if (null === $node) {
             throw new \Exception("Field $name not found");
         }
