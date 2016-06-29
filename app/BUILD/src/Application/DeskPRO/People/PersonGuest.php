@@ -43,6 +43,9 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class PersonGuest extends Person
 {
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->id             = 0;
@@ -52,19 +55,28 @@ class PersonGuest extends Person
         $this->custom_data    = new ArrayCollection();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getUsergroups()
     {
-        return array();
+        return [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isGuest()
     {
         return true;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getRoles()
     {
-        return array('ROLE_GUEST');
+        return ['ROLE_GUEST'];
     }
 
     public function noPersist()

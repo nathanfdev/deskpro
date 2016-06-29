@@ -66,11 +66,10 @@ class NewTicketController extends AbstractController
      */
     public function newTicketAction(Request $request, $visitor_id)
     {
-        $ticket        = $this->getNewTicketService()->createNewTicket($request, $visitor_id, $this->getCurrentPerson(), Ticket::CREATED_WEB_PERSON_PORTAL);
-        $person        = $ticket->getPerson();
-        $ticketMessage = $ticket->messages[0];
+        $ticket = $this->getNewTicketService()->createNewTicket($request, $visitor_id, $this->getCurrentPerson(), Ticket::CREATED_WEB_PERSON_PORTAL);
+        $person = $ticket->getPerson();
 
-        $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, [
+        $formOptions = [
             'ticket_view_context'   => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'     => TicketWithLayoutsContext::VISIBILITY_NEW,
             'person'                => $person,
@@ -86,7 +85,9 @@ class NewTicketController extends AbstractController
             // next to allow extra fields if its saved form because name/email etc will be on origin form,
             // but not this one now that the user is logged-in
             'allow_extra_fields' => true,
-        ]);
+        ];
+
+        $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, $formOptions);
         $form->handleRequest($request);
 
         $rerendering       = $form->has('rerender_form');
@@ -98,9 +99,9 @@ class NewTicketController extends AbstractController
                 if (!$rerendering && !$rerendering_saved) {
                     // deal with guests via negotiating with PersonFactory
                     if ($person instanceof PersonGuest) {
-                        try {
-                            $personGuest = $person;
+                        $guestForm = $this->createForm(TicketWithLayoutsWebType::class, $ticket, $formOptions);
 
+                        try {
                             $this->getPersonFactory()->checkGuestForValidation(
                                 $person,
                                 $this->isSavedFormSubRequest($request)
@@ -112,20 +113,9 @@ class NewTicketController extends AbstractController
 
                             // since the guest is set on the form, we need to update all of the associations
                             $ticket->setPerson($person);
-                            $ticketMessage->setPerson($person);
-                            foreach ($ticketMessage->getAttachments() as $attachment) {
-                                $attachment->setPerson($person);
-                            }
 
-                            // reset old custom data for submitted fields
-                            foreach ($personGuest->getCustomData() as $customData) {
-                                $person->removeCustomDataForField($customData->getRootField());
-                            }
-                            // add new custom data
-                            foreach ($personGuest->getCustomData() as $customData) {
-                                $person->addCustomData($customData);
-                            }
-
+                            // submit the form again with proper user
+                            $guestForm->handleRequest($request);
                             $new_ticket = $this->getNewTicketService()->acceptNewTicket($ticket, $request);
 
                             return $this->onSavedTicket($new_ticket, $request);
@@ -157,7 +147,7 @@ class NewTicketController extends AbstractController
                                 return $this->redirectToRoute('portal_thanks_verify');
                             } else {
                                 // this is a guest that we are accepting
-                                $new_ticket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $request);
+                                $new_ticket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $request, $guestForm);
 
                                 return $this->onSavedTicket($new_ticket, $request);
                             }
