@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line;
 
 use Application\DeskPRO\Entity\Person;
@@ -49,7 +50,7 @@ class TicketReOpenedLine implements LineInterface
      * @param Person    $who
      * @param \DateTime $when
      */
-    public function __construct(Person $who = null, \DateTime $when)
+    public function __construct(\DateTime $when, Person $who = null)
     {
         $this->who  = $who;
         $this->when = $when;

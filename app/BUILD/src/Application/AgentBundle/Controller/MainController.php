@@ -33,10 +33,21 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Chat\UserChat\AvailableTrigger;
+use Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService;
+use Application\DeskPRO\DependencyInjection\SystemServices\OrganizationDataService;
+use Application\DeskPRO\DependencyInjection\SystemServices\UsergroupDataService;
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TextSnippetCategory;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketDeleted;
+use Application\DeskPRO\EntityRepository\DataStore as DataStoreRepository;
+use Application\DeskPRO\EntityRepository\Organization as OrganizationRepository;
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
+use Application\DeskPRO\EntityRepository\TextSnippetCategory as TextSnippetCategoryRepository;
 use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\People\PrefNoticeSet;
 use DeskPRO\Component\Filesystem\SafeFile;
@@ -44,12 +55,19 @@ use Doctrine\DBAL\Connection;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MainController extends AbstractController
 {
     protected $deleted_tickets = [];
 
+    /**
+     * @param string     $action
+     * @param array|null $arguments
+     *
+     * @return bool
+     */
     public function requireRequestToken($action, $arguments = null)
     {
         if ($action == 'indexAction') {
@@ -59,6 +77,9 @@ class MainController extends AbstractController
         return parent::requireRequestToken($action, $arguments);
     }
 
+    /**
+     * @return Response
+     */
     public function indexAction()
     {
         $this->person->loadPrefGroup('agent.ui');
@@ -74,54 +95,43 @@ class MainController extends AbstractController
         }
 
         // Used in some header menus for search options
-        $titles                  = [];
-        $titles['organizations'] = $this->container->getDataService('Organization')->getOrganizationNames();
-        $titles['usergroups']    = $this->container->getDataService('Usergroup')->getUsergroupNames();
+        $titles = [];
+        /** @var OrganizationDataService $organizationDataService */
+        /* @var UsergroupDataService $usergroupDataService */
+        $organizationDataService = $this->container->getDataService('Organization');
+        $usergroupDataService    = $this->container->getDataService('Usergroup');
+        $titles['organizations'] = $organizationDataService->getOrganizationNames();
+        $titles['usergroups']    = $usergroupDataService->getUsergroupNames();
 
-        if ($this->container->getDataService('Language')->isMultiLang()) {
-            $titles['languages'] = $this->container->getDataService('Language')->getTitles();
+        /** @var LanguageDataService $languageDataService */
+        $languageDataService = $this->container->getDataService('Language');
+        if ($languageDataService->isMultiLang()) {
+            $titles['languages'] = $languageDataService->getTitles();
         }
-
-        // Person menu needs these
-        //$people_fields = $this->container->getSystemService('person_fields_manager')->getDisplayArray();
-        //$org_fields    = $this->container->getSystemService('org_fields_manager')->getDisplayArray();
 
         // Ticket options for search pane of tickets menu
         $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
         // Agent info
-        $agents      = $this->em->getRepository('DeskPRO:Person')->getAgents();
-        $agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
-        // Countr code
-        //$phone_country_info = \Orb\Data\CountryCallingCodes::getData();
-
-        // Auto-load chats in tabs if assigned to an agent
-        //$open_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getOpenChatsForAgent($this->person);
+        /** @var PersonRepository $personRepository */
+        $personRepository = $this->em->getRepository(Person::class);
+        $agents           = $personRepository->getAgents();
+        $agent_teams      = $this->em->getRepository(AgentTeam::class)->findAll();
 
         $ticket_field_defs                      = App::getApi('custom_fields.tickets')->getEnabledFields();
         $custom_fields                          = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
         $ticket_options['custom_ticket_fields'] = $custom_fields;
 
         // People stuff
-        $ticket_options['people_organizations'] = $this->em->getRepository('DeskPRO:Organization')->getOrganizationNames();
+        $ticket_options['people_organizations'] = $organizationDataService->getOrganizationNames();
         $people_field_defs                      = App::getApi('custom_fields.people')->getEnabledFields();
         $ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
 
         $people_options                         = $titles;
         $people_options['custom_people_fields'] = $ticket_options['custom_people_fields'];
 
-        //$org_options = array(
-        //  'custom_org_fields' => $this->container->getSystemService('org_fields_manager')->getDisplayArray(),
-        //);
-
         $cutoff = date('Y-m-d H:i:s', time() - $this->container->getSetting('core_chat.agent_timeout'));
-        //online_agent_ids = $this->db->fetchAllCol('
-        //    SELECT p.id
-        //    FROM sessions s
-        //    JOIN people AS p ON p.id = s.person_id
-        //    WHERE p.is_agent = true AND s.date_last > ?
-        //', array($cutoff));
 
         $online_chat_agent_ids = $this->db->fetchAllCol('
             SELECT p.id
@@ -182,10 +192,12 @@ class MainController extends AbstractController
             $has_raw_assets = false;
         }
 
-        \Application\DeskPRO\Chat\UserChat\AvailableTrigger::update();
+        AvailableTrigger::update();
 
-        $ticket_snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('tickets', $this->person);
-        $chat_snippet_cats   = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('chat', $this->person);
+        /** @var TextSnippetCategoryRepository $textSnippetCategoryRepository */
+        $textSnippetCategoryRepository = $this->em->getRepository(TextSnippetCategory::class);
+        $ticket_snippet_cats           = $textSnippetCategoryRepository->getCatsForAgent('tickets', $this->person);
+        $chat_snippet_cats             = $textSnippetCategoryRepository->getCatsForAgent('chat', $this->person);
 
         return $this->render('AgentBundle:Main:index.html.twig', [
             'has_raw_assets'      => $has_raw_assets,
@@ -203,6 +215,11 @@ class MainController extends AbstractController
         ]);
     }
 
+    /**
+     * @param int $id
+     *
+     * @return Response
+     */
     public function loadVersionNoticeAction($id)
     {
         $id         = preg_replace('#[^a-zA-Z0-9_\-]#', 'x', $id);
@@ -237,6 +254,11 @@ class MainController extends AbstractController
         return $this->createResponse($html);
     }
 
+    /**
+     * @param int $id
+     *
+     * @return Response
+     */
     public function dismissVersionNoticeAction($id)
     {
         $version_notices = new PrefNoticeSet(
@@ -258,6 +280,9 @@ class MainController extends AbstractController
         return $this->createJsonResponse(['success' => true]);
     }
 
+    /**
+     * @return Response
+     */
     public function getCombinedSectionDataAction()
     {
         $data = [];
@@ -292,10 +317,6 @@ class MainController extends AbstractController
                     $data[$name] = json_decode($this->forward('AgentBundle:Task:getSectionData')->getContent());
                     break;
 
-                case 'twitter_section':
-                    $data[$name] = json_decode($this->forward('AgentBundle:Twitter:getSectionData')->getContent());
-                    break;
-
                 case 'agent_chat_section':
                     $data[$name] = json_decode($this->forward('AgentBundle:AgentChat:getSectionData')->getContent());
                     break;
@@ -305,6 +326,9 @@ class MainController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
+    /**
+     * @return Response
+     */
     public function loadRecentTabsAction()
     {
         $recent_tabs = $this->db->fetchColumn("
@@ -332,6 +356,9 @@ class MainController extends AbstractController
         return $this->createJsonResponse(array_values($recent_tabs));
     }
 
+    /**
+     * @return Response
+     */
     public function quickSearchAction()
     {
         $q    = $this->in->getString('q');
@@ -377,6 +404,12 @@ class MainController extends AbstractController
         }
     }
 
+    /**
+     * @param string      $q
+     * @param string|null $sort
+     *
+     * @return Response
+     */
     private function searchInElasticsearch($q, $sort = null)
     {
         $elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');
@@ -405,8 +438,10 @@ class MainController extends AbstractController
             $group['results'] = $this->renderSearchResults($group['type'], $group['results']);
         }
 
-        $es_status = $this->em->getRepository('DeskPRO:DataStore')->getByName('sys.es_indexer', false);
-        $timecut   = new \DateTime('-10 minutes');
+        /** @var DataStoreRepository $dataStoryRepository */
+        $dataStoryRepository = $this->em->getRepository(DataStore::class);
+        $es_status           = $dataStoryRepository->getByName('sys.es_indexer', false);
+        $timecut             = new \DateTime('-10 minutes');
         if ($es_status && $es_status->getData('status') == 'running' && $es_status->getData('date_last') && $es_status->getData('date_last') > $timecut) {
             $index_running = true;
         } else {
@@ -422,6 +457,11 @@ class MainController extends AbstractController
         ]);
     }
 
+    /**
+     * @param string $q
+     *
+     * @return Response
+     */
     private function searchInDB($q)
     {
         $doctrine = $this->container->get('deskpro.search_manager.doctrine');
@@ -459,6 +499,11 @@ class MainController extends AbstractController
         ]);
     }
 
+    /**
+     * @param string $query
+     *
+     * @return array
+     */
     protected function getDeletedTicketResults($query)
     {
         $res = [
@@ -469,17 +514,17 @@ class MainController extends AbstractController
 
         if ($sub = preg_replace('/[^\d]/', '', $query)) {
             /** @var $deleted TicketDeleted */
-            if ($deleted = $this->em->find('DeskPRO:TicketDeleted', $sub)) {
+            if ($deleted = $this->em->find(TicketDeleted::class, $sub)) {
                 if (isset($this->deleted_tickets[$deleted['ticket_id']])) {
                     $res['results'][] = [
-                        'id'     => $deleted->ticket_id,
-                        'reason' => $this->deleted_tickets[$deleted->ticket_id]->title,
+                        'id'     => $deleted->getTicketId(),
+                        'reason' => $this->deleted_tickets[$deleted->getTicketId()]->title,
                     ];
                     unset($this->deleted_tickets[$deleted['ticket_id']]);
                 } else {
                     $res['results'][] = [
-                        'id'     => $deleted->ticket_id,
-                        'reason' => $deleted->reason,
+                        'id'     => $deleted->getTicketId(),
+                        'reason' => $deleted->getReason(),
                     ];
                 }
             }
@@ -487,8 +532,8 @@ class MainController extends AbstractController
 
         foreach ($this->deleted_tickets as $deleted) {
             $res['results'][] = [
-                'id'     => $deleted->id,
-                'reason' => $deleted->title,
+                'id'     => $deleted->getId(),
+                'reason' => $deleted->getReason(),
             ];
         }
         $this->deleted_tickets = [];
@@ -538,9 +583,9 @@ class MainController extends AbstractController
 
         $render_org = function (Organization $org, array $counts = []) {
             return [
-                'id'      => $org->id,
-                'name'    => $org->name,
-                'members' => $counts[$org->id],
+                'id'      => $org->getId(),
+                'name'    => $org->getName(),
+                'members' => isset($counts[$org->getId()]) ? $counts[$org->getId()] : 0,
             ];
         };
 
@@ -578,7 +623,9 @@ class MainController extends AbstractController
                 break;
 
             case 'person':
-                $counts = $this->em->getRepository('DeskPRO:Ticket')->getTicketCountsForPeople($results);
+                /** @var TicketRepository $ticketRepository */
+                $ticketRepository = $this->em->getRepository(Ticket::class);
+                $counts           = $ticketRepository->getTicketCountsForPeople($results);
                 foreach ($results as $r) {
                     $rows[] = $render_person($r, $counts);
                 }
@@ -608,7 +655,9 @@ class MainController extends AbstractController
                 break;
 
             case 'organization':
-                $counts = $this->em->getRepository('DeskPRO:Organization')->countMembers($results);
+                /** @var OrganizationRepository $organizationRepository */
+                $organizationRepository = $this->em->getRepository('DeskPRO:Organization');
+                $counts                 = $organizationRepository->countMembers($results);
                 foreach ($results as $r) {
                     $rows[] = $render_org($r, $counts);
                 }
@@ -629,9 +678,14 @@ class MainController extends AbstractController
         return $rows;
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function getPersonTicketsAction(Request $request)
     {
-        if (!$person = $this->em->find('DeskPRO:Person', $request->get('person_id'))) {
+        if (!$person = $this->em->find(Person::class, $request->get('person_id'))) {
             throw new NotFoundHttpException();
         }
 
@@ -641,7 +695,7 @@ class MainController extends AbstractController
         }
 
         /** @var TicketRepository $rep */
-        $rep     = $this->em->getRepository('DeskPRO:Ticket');
+        $rep     = $this->em->getRepository(Ticket::class);
         $limit   = $request->get('all') ? null : 15;
         $tickets = $rep->getPersonTickets($person, $limit, $sort);
 
@@ -650,14 +704,19 @@ class MainController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function getOrgMembersAction(Request $request)
     {
-        if (!$org = $this->em->find('DeskPRO:Organization', $request->get('org_id'))) {
+        if (!$org = $this->em->find(Organization::class, $request->get('org_id'))) {
             throw new NotFoundHttpException();
         }
 
-        /** @var \Application\DeskPRO\EntityRepository\Organization $rep */
-        $rep     = $this->em->getRepository('DeskPRO:Organization');
+        /** @var OrganizationRepository $rep */
+        $rep     = $this->em->getRepository(Organization::class);
         $limit   = $request->get('all') ? null : 15;
         $members = $rep->getOrgMembers($org, $limit);
 

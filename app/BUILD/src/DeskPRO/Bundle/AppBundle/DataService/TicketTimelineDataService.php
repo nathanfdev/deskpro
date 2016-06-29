@@ -34,7 +34,11 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLog;
+use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\EntityRepository\TicketLog as TicketLogRepository;
+use Application\DeskPRO\EntityRepository\TicketMessage as TicketMessageRepository;
 use DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line;
+use DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\LineInterface;
 use DeskPRO\Bundle\AppBundle\Ticket\Timeline\TicketTimeline;
 use DeskPRO\Component\Util\MapUtils;
 
@@ -43,7 +47,7 @@ class TicketTimelineDataService extends AbstractDataService
     /**
      * @param Ticket $ticket
      *
-     * @return TicketTimeline|Line\LineInterface[]
+     * @return LineInterface[]
      */
     public function getUserTimeline(Ticket $ticket, $page = 1, $per_page = 50)
     {
@@ -81,7 +85,7 @@ class TicketTimelineDataService extends AbstractDataService
                         $have_messages[$l->id_after] = true;
 
                         $m = $messages[$l->id_after];
-                        if ($m->person->is_agent && $m->person !== $ticket->person) {
+                        if ($m->person && $m->person->is_agent && $m->person !== $ticket->person) {
                             $timeline->addLine(new Line\AgentMessageLine($m));
                         } else {
                             $timeline->addLine(new Line\UserMessageLine($m));
@@ -94,9 +98,9 @@ class TicketTimelineDataService extends AbstractDataService
                     $new_type = $this->getStatusType($l->details['new_status']);
                     if ($old_type != $new_type && $old_type != 'hidden') {
                         if ($new_type == 'open') {
-                            $timeline->addLine(new Line\TicketReOpenedLine($l->person, $l->date_created));
+                            $timeline->addLine(new Line\TicketReOpenedLine($l->date_created, $l->person));
                         } else {
-                            $timeline->addLine(new Line\TicketClosedLine($l->person, $l->date_created));
+                            $timeline->addLine(new Line\TicketClosedLine($l->date_created, $l->person));
                         }
                     }
                     break;
@@ -112,9 +116,11 @@ class TicketTimelineDataService extends AbstractDataService
      * E.g., to account for bugs or processes which might not result in a log line
      * such as a mass import, we need to make sure messages are actually in the timeline!
      *
-     * @param Ticket                                      $ticekt
-     * @param \Application\DeskPRO\Entity\TicketLog[]     $logs
-     * @param \Application\DeskPRO\Entity\TicketMessage[] $messages
+     * @param Ticket          $ticket
+     * @param TicketLog[]     $logs
+     * @param TicketMessage[] $messages
+     *
+     * @return array
      */
     private function procLogLines(Ticket $ticket, array $logs, array $messages)
     {
@@ -194,18 +200,18 @@ class TicketTimelineDataService extends AbstractDataService
     }
 
     /**
-     * @return \Application\DeskPRO\EntityRepository\TicketMessage
+     * @return TicketMessageRepository
      */
     protected function getTicketMessageRepo()
     {
-        return $this->em->getRepository('DeskPRO:TicketMessage');
+        return $this->em->getRepository(TicketMessage::class);
     }
 
     /**
-     * @return \Application\DeskPRO\EntityRepository\TicketLog
+     * @return TicketLogRepository
      */
     protected function getTicketLogRepo()
     {
-        return $this->em->getRepository('DeskPRO:TicketLog');
+        return $this->em->getRepository(TicketLog::class);
     }
 }
