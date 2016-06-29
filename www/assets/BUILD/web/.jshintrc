@@ -1,0 +1,14 @@
+{
+  "laxbreak": true,
+  "asi": true,
+  "strict": true,
+  "node": true,
+  "noempty": true,
+  "noarg": true,
+  "eqeqeq": true,
+  "bitwise": true,
+  "curly": true,
+  "undef": true,
+  "nonew": true,
+  "forin": true
+}
