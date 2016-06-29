@@ -114,7 +114,7 @@ class PublishController extends AbstractController
         /** @var BrandAwareSettingsResolver $brandSettingsResolver */
         $brandSettingsResolver = $this->get('brand_aware_settings_resolver');
 
-        $selectedBrandId = $this->in->getUint('brand_id');
+        $selectedBrandId = $this->in->getUInt('brand_id');
 
         if (!$selectedBrandId) {
             $selectedBrandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
@@ -231,7 +231,7 @@ class PublishController extends AbstractController
     {
         $perPage = 25;
 
-        $currentPage = $this->in->getUint('page');
+        $currentPage = $this->in->getUInt('page');
         if (!$currentPage) {
             $currentPage = 1;
         }
@@ -504,7 +504,7 @@ class PublishController extends AbstractController
 
         $perPage = 25;
 
-        $currentPage = $this->in->getUint('page');
+        $currentPage = $this->in->getUInt('page');
         if (!$currentPage) {
             $currentPage = 1;
         }
@@ -563,7 +563,7 @@ class PublishController extends AbstractController
     {
         $perPage = 25;
 
-        $currentPage = $this->in->getUint('page');
+        $currentPage = $this->in->getUInt('page');
         if (!$currentPage) {
             $currentPage = 1;
         }
@@ -753,7 +753,7 @@ class PublishController extends AbstractController
         #------------------------------
 
         $save_category = [
-            'id'         => $this->in->getUint('category.id'),
+            'id'         => $this->in->getUInt('category.id'),
             'title'      => $this->in->getString('category.title'),
             'usergroups' => $this->in->getCleanValueArray('category.usergroups', 'uint', 'discard'),
         ];
@@ -764,12 +764,6 @@ class PublishController extends AbstractController
         }
         if (!$save_structure) {
             $save_structure = [];
-        }
-
-        $save_category['brand_id'] = $this->in->getUint('category.brand_id');
-        if (!$save_category['brand_id']) {
-            $save_category['brand_id'] = $this->get('settings_resolver')->getGlobalSettings()
-                ->get('portal.default_brand');
         }
 
         #------------------------------
@@ -913,7 +907,7 @@ class PublishController extends AbstractController
             return $this->createJsonResponse(['Invalid type']);
         }
 
-        $brandId = $this->in->getUint('brand_id');
+        $brandId = $this->in->getUInt('brand_id');
 
         $all_categories = $this->getFilteredCategory($entity_name, $brandId);
 
@@ -956,9 +950,10 @@ class PublishController extends AbstractController
 
         $save_category = [
             'id'         => 0,
-            'parent_id'  => $this->in->getUint('category.parent_id'),
+            'parent_id'  => $this->in->getUInt('category.parent_id'),
             'title'      => $this->in->getString('category.title') ?: 'Untitled',
             'usergroups' => $this->in->getCleanValueArray('category.usergroups', 'uint', 'discard'),
+            'brand_id'   => $this->in->getUInt('category.brand_id'),
         ];
 
         $parent_cat = null;
@@ -966,8 +961,16 @@ class PublishController extends AbstractController
             $parent_cat = $repos->find($save_category['parent_id']);
         }
 
+        $brand = null;
+        if ($save_category['brand_id']) {
+            $brand = $this->em->getRepository(Brand::class)->find($save_category['brand_id']);
+        }
+
         $cat        = new $class();
         $cat->title = $save_category['title'];
+        if ($brand) {
+            $cat->brand = $brand;
+        }
         if ($parent_cat) {
             $cat->parent = $parent_cat;
         }
@@ -1003,6 +1006,8 @@ class PublishController extends AbstractController
     {
         $cat = PublishCategoryEdit::addCategory($type, $this->in->getString('title'));
 
+        $url = '';
+
         switch ($type) {
             case 'articles':
                 $url = $this->generateUrl('agent_kb_list', ['category_id' => $cat->id]);
@@ -1028,19 +1033,19 @@ class PublishController extends AbstractController
     public function deleteCategoryAction($type)
     {
         try {
-            PublishCategoryEdit::deleteCategory($type, $this->in->getUint('category_id'));
+            PublishCategoryEdit::deleteCategory($type, $this->in->getUInt('category_id'));
         } catch (\OutOfBoundsException $e) {
             return $this->createJsonResponse([
                 'error'       => true,
                 'error_code'  => 'not_empty',
-                'category_id' => $this->in->getUint('category_id'),
+                'category_id' => $this->in->getUInt('category_id'),
                 'type'        => $type,
             ]);
         }
 
         return $this->createJsonResponse([
             'success'     => true,
-            'category_id' => $this->in->getUint('category_id'),
+            'category_id' => $this->in->getUInt('category_id'),
             'type'        => $type,
         ]);
     }
@@ -1051,7 +1056,8 @@ class PublishController extends AbstractController
 
     public function searchAction()
     {
-        $type = $this->in->getString('content_type');
+        $type     = $this->in->getString('content_type');
+        $brand_id = $this->in->getUInt('brand_id');
         switch ($type) {
             case 'articles':
                 $searcher = new ArticleSearch();
@@ -1086,8 +1092,8 @@ class PublishController extends AbstractController
         }
 
         $result_cache = false;
-        if ($this->in->getUint('cache_id')) {
-            $result_cache = $this->em->getRepository(ResultCache::class)->find($this->in->getUint('cache_id'));
+        if ($this->in->getUInt('cache_id')) {
+            $result_cache = $this->em->getRepository(ResultCache::class)->find($this->in->getUInt('cache_id'));
             if (!$result_cache or $result_cache['person_id'] != $this->person['id']) {
                 $result_cache = false;
             }
@@ -1097,6 +1103,7 @@ class PublishController extends AbstractController
         $query      = $this->in->getString('query');
 
         if (!$result_cache) {
+            $searcher->addTerm('brand', 'is', $brand_id);
             $cats = Arrays::removeFalsey($cats);
             if ($cats) {
                 $searcher->addTerm('category', 'is', $cats);
@@ -1109,9 +1116,16 @@ class PublishController extends AbstractController
 
             $results = $searcher->getMatches();
 
-            $result_cache                = new ResultCache();
-            $result_cache['person']      = $this->person;
-            $result_cache['criteria']    = ['terms' => $searcher->getTerms(), 'type' => $type, 'cats' => $cats, 'query' => $query, 'query_type' => $query_type];
+            $result_cache             = new ResultCache();
+            $result_cache['person']   = $this->person;
+            $result_cache['criteria'] = [
+                'terms'      => $searcher->getTerms(),
+                'type'       => $type,
+                'cats'       => $cats,
+                'query'      => $query,
+                'query_type' => $query_type,
+                'brand_id'   => $brand_id,
+            ];
             $result_cache['results']     = $results;
             $result_cache['num_results'] = count($results);
 
@@ -1119,7 +1133,7 @@ class PublishController extends AbstractController
             $this->em->flush();
         }
 
-        $page = $this->in->getUint('p');
+        $page = $this->in->getUInt('p');
         if (!$page || $page < 1) {
             $page = 1;
         }

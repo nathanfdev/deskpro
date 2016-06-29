@@ -72,7 +72,12 @@ class DownloadsController extends AbstractController
 
         $rated_searches = $this->em->getRepository(SearchLog::class)->getRatedSearchesFor('download', $download['id'], 'counted');
 
-        $download_categories = $this->getFilteredCategory($download->getCategory()->getBrand()->getId());
+        if ($download->getCategory() && $download->getCategory()->getBrand()) {
+            $brandId = $download->getCategory()->getBrand()->getId();
+        } else {
+            $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+        }
+        $download_categories = $this->getFilteredCategory($brandId);
 
         $perms = [
             'can_edit'   => $this->person->PermissionsManager->PublishChecker->canEdit($download),

@@ -395,9 +395,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 
     /**
      * Run the search and return an array of matching ID's.
-     *
-     * @param int $limit
-     *
+     * 
      * @return array
      */
     abstract public function getMatches();
@@ -408,12 +406,14 @@ abstract class SearcherAbstract implements PersonContextInterface
      * $choice should be an array, first value date1 and second is date2.
      * If not datetime objects, they're considered to mean "seconds in the past" and will be calculated.
      *
-     * @param                $field
-     * @param                $op
-     * @param \DateTime|null $date1
-     * @param \DateTime|null $date2
+     * @param $field
+     * @param $op
+     * @param $choice
      *
      * @return string
+     *
+     * @internal param \DateTime|null $date1
+     * @internal param \DateTime|null $date2
      */
     protected function _dateMatch($field, $op, $choice)
     {

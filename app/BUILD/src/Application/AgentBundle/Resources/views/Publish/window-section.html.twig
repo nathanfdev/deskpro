@@ -51,7 +51,7 @@
 
 	{% if (brands|length) > 1 %}
 		<section>
-			<select class="dp-select-widget-simple content_type" name="brand_id" id="publish_brand_id">
+			<select class="dp-select-widget-simple brand_id" name="brand_id" id="publish_brand_id" style="width: 100%">
 				{% for brand in brands %}
 					<option value="{{ brand.id }}" {% if selected_brand_id == brand.id %}selected="selected"{% endif %}>
 						{{ brand.name }}

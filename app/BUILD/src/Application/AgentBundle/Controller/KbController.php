@@ -105,7 +105,15 @@ class KbController extends AbstractController
 
         $rated_searches = $this->em->getRepository(SearchLog::class)->getRatedSearchesFor('article', $article['id'], 'counted');
 
-        $article_categories = $this->getFilteredCategory($article->getPrimaryCategory()->getBrand()->getId());
+        if (!$category = $article->getPrimaryCategory()) {
+            $category = current($article->getCategories());
+        }
+        if ($category && $category->getBrand()) {
+            $brandId = $category->getBrand()->getId();
+        } else {
+            $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+        }
+        $article_categories = $this->getFilteredCategory($brandId);
         $article_products   = $this->em->getRepository(Product::class)->getInHierarchy();
 
         $perms = [

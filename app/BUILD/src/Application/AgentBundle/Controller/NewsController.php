@@ -72,7 +72,12 @@ class NewsController extends AbstractController
         $sticky_search_words = $this->em->getRepository(SearchStickyResult::class)->getWordsForObject($news);
         $rated_searches      = $this->em->getRepository(SearchLog::class)->getRatedSearchesFor('news', $news['id'], 'counted');
 
-        $news_categories = $this->getFilteredCategory($news->getCategory()->getBrand()->getId());
+        if ($news->getCategory() && $news->getCategory()->getBrand()) {
+            $brandId = $news->getCategory()->getBrand()->getId();
+        } else {
+            $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+        }
+        $news_categories = $this->getFilteredCategory($brandId);
 
         $brands = $this->em->getRepository(Brand::class)->findAll();
 

@@ -155,7 +155,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			$('#' + this.selected_id).addClass('nav-selected');
 		}
 
-		$('#publish_brand_id').on('change', function() {
+		$('#publish_brand_id').select2().on('change', function() {
 			self.reload();
 		});
 
@@ -222,6 +222,13 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		if (searchPane[0]) {
 			this.searchForm = new DeskPRO.Agent.SourcePane.SearchForm(searchPane);
 		}
+
+		var self = this;
+
+		searchPane.find('.brand_id').on('change', function(e) {
+			$('#publish_brand_id').select2('val', $(e.target).val());
+			self.reload();
+		});
 
 		var catSelectTypes = searchPane.find('.cat-select-type');
 		searchPane.find('.content_type').on('change', function() {
