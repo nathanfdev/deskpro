@@ -1,5 +1,4 @@
 function getInstInfo(helpdeskUrl, window, document, instId = 'def') {
-
   helpdeskUrl = helpdeskUrl.replace(/\/+$/, '');
 
   const loadKey = '_dp_instinfoload_';
@@ -11,21 +10,21 @@ function getInstInfo(helpdeskUrl, window, document, instId = 'def') {
 
   const loaderState = window[loadKey] || {
 
-      cbs: [],
-      hasSent: false,
-      handler: function (instInfo) {
-        if (instInfo) {
-          const alreadyHas = hasVersionInfo();
-          updateVersionInfo(instInfo.assetUrl);
+    cbs:     [],
+    hasSent: false,
+    handler(instInfo) {
+      if (instInfo) {
+        const alreadyHas = hasVersionInfo();
+        updateVersionInfo(instInfo.assetUrl);
 
-          if (!alreadyHas) {
-            for (let i = 0; i < window[loadKey]['cbs'].length; i++) {
-              window[loadKey]['cbs'][i](getVersionInfo(), window, document, instId);
-            }
+        if (!alreadyHas) {
+          for (let i = 0; i < window[loadKey]['cbs'].length; i++) {
+            window[loadKey]['cbs'][i](getVersionInfo(), window, document, instId);
           }
         }
       }
-    };
+    }
+  };
 
   if (typeof window[loadKey] == 'undefined') {
     window[loadKey] = loaderState;
@@ -47,9 +46,9 @@ function getInstInfo(helpdeskUrl, window, document, instId = 'def') {
   const getVersionInfo = function () {
     return {
       assetUrl: getAssetUrl(),
-      helpdeskUrl: helpdeskUrl,
-      instId: instId
-    }
+      helpdeskUrl,
+      instId
+    };
   };
 
   const hasVersionInfo = function () {
@@ -92,21 +91,21 @@ function getInstInfo(helpdeskUrl, window, document, instId = 'def') {
 
   if (hasVersionInfo()) {
     return {
-      then: function (cb) {
+      then(cb) {
         cb(getVersionInfo(), window, document, instId);
       }
-    }
+    };
   } else {
     loadVersionInfo();
     return {
-      then: function (cb) {
-        window[loadKey]['cbs'].push(function(instInfo) {
+      then(cb) {
+        window[loadKey]['cbs'].push(function (instInfo) {
           cb(instInfo, window, document, instId);
         });
       }
-    }
+    };
   }
-};
+}
 
 function onReadyState(loadFn, window, document) {
   if (document.readyState && (document.readyState === 'complete' || document.readyState === 'interactive')) {

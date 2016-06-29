@@ -100,7 +100,7 @@ export class CardProject extends CardWidget {
                 <div className="dpw-navigation-dropdown-panel-content-line">
                   <div className="dpw-navigation-dropdown-panel-content-full">
                     <div className="dpw-departments-long-list">
-                      <QuickFilter onChange={this.filterProjects}/>
+                      <QuickFilter onChange={this.filterProjects} />
                       <div className="dpw--popup-item-collection">
                         <ul>
                           {projects.entrySeq().map(([id, item]) =>

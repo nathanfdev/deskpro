@@ -7,10 +7,10 @@ export class HttpResponse {
    * @param {*}      data
    */
   constructor(xhr, status, config, data = null) {
-    this.xhr = xhr;
+    this.xhr    = xhr;
     this.status = status;
     this.config = config;
-    this.data = data;
+    this.data   = data;
   }
 
   /**
@@ -95,7 +95,8 @@ export class HttpResponse {
    * @returns {Boolean}
    */
   isErrorStatus() {
-    return this.status === 'error' || this.status === 'timeout' || this.status === 'abort' || this.status === 'parsererror';
+    const statuses = ['error', 'timeout', 'abort', 'parsererror'];
+    return statuses.indexOf(this.status) !== -1;
   }
 
   /**
@@ -104,7 +105,7 @@ export class HttpResponse {
    * @returns {Boolean}
    */
   isErrorResponse() {
-    let c = this.getResponseCode();
+    const c = this.getResponseCode();
     return !c || !(c >= 200 && c < 300);
   }
 }

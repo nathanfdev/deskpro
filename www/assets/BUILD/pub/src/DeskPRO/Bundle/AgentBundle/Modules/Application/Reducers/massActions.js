@@ -8,9 +8,9 @@ const massActionsInitialState = {
 };
 
 export default createReducer(massActionsInitialState, {
-  [massActions.toggleMassAction]: handleMassAction(),
+  [massActions.toggleMassAction]:     handleMassAction(),
   [massActions.toggleSelectedAction]: togglePayloadInCollection('selected'),
-  [massActions.cancelMassActions]: state => state.set('params', Immutable.fromJS({})),
+  [massActions.cancelMassActions]:    state => state.set('params', Immutable.fromJS({})),
   [massActions.setMassActionsParams]: mergeFullPayload('params'),
-  [massActions.resetParam]: (state, payload) => state.deleteIn(['params', payload])
-})
+  [massActions.resetParam]:           (state, payload) => state.deleteIn(['params', payload])
+});

@@ -11,7 +11,7 @@ export class CustomPerFieldEdit extends PageWidget {
     const allow_edit = $per_field.data('allow-edit');
     const multiple = $per_field.data('multiple');
     const expanded = $per_field.data('expanded');
-    let input_name = $per_field.data('input-name') + "[data]";
+    let input_name = $per_field.data('input-name') + '[data]';
     const id = $per_field.data('id');
     const $choice_widget = $per_field.find('.deskpro-choice-widget');
     const type = 'per_user';
@@ -59,9 +59,9 @@ export class CustomPerFieldEdit extends PageWidget {
           let response_choice = r.data.data.new;
 
           id_incrementer++;
-          let new_id = 'dyanmic_id_new_custom_per'+(id_incrementer * 250);
+          let new_id = 'dyanmic_id_new_custom_per' + (id_incrementer * 250);
           if (multiple) {
-            input_name += "[]";
+            input_name += '[]';
             if (expanded) { // CHECKBOX
               let $checkbox = $('<input type="checkbox" id="' + new_id + '" value="' + response_choice.id + '" name="' + input_name + '" /><label for="' + new_id + '">' + response_choice.title + '</label>');
               $choice_widget.prepend($checkbox);
@@ -82,11 +82,9 @@ export class CustomPerFieldEdit extends PageWidget {
               $('#' + new_id).prop('selected', true);
             }
           }
-
-
         }, (r) => {
           markError();
-      });
+        });
     });
 
     $choice_widget.append($addGroup);

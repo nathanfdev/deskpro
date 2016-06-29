@@ -52,7 +52,7 @@ class PortalPhrases {
 
     // Special object representing HTML in react
     // https://facebook.github.io/react/tips/dangerously-set-inner-html.html
-    return {__html: phrase};
+    return { __html: phrase };
   }
 }
 

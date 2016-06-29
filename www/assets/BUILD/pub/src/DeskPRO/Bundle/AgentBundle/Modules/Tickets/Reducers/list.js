@@ -56,6 +56,6 @@ export default createReducer(ticketsListInitialState, {
     .setIn(['fields', type, from], toField)
     .setIn(['fields', type, to], fromField);
   },
-  [actions.setViewMode]: setFullPayload('viewMode'),
+  [actions.setViewMode]:   setFullPayload('viewMode'),
   [actions.loadIndicator]: setValue('async.done', false)
 });

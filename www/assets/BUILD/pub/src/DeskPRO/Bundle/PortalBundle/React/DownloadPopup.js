@@ -6,21 +6,21 @@ import classNames from 'classnames';
 export class DownloadPopup extends React.Component {
 
   static propTypes = {
-    filename: PropTypes.string,
-    filesize: PropTypes.string,
+    filename:     PropTypes.string,
+    filesize:     PropTypes.string,
     dateUploaded: PropTypes.string,
-    downloadUrl: PropTypes.string,
-    voteUrl: PropTypes.string,
-    voteCount: PropTypes.number,
-    $button: PropTypes.object,
-    $voteWidget: PropTypes.object
+    downloadUrl:  PropTypes.string,
+    voteUrl:      PropTypes.string,
+    voteCount:    PropTypes.number,
+    $button:      PropTypes.object,
+    $voteWidget:  PropTypes.object
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      opened: false,
-      voted: false,
+      opened:    false,
+      voted:     false,
       voteCount: props.voteCount || 0
     };
   }
@@ -55,7 +55,7 @@ export class DownloadPopup extends React.Component {
     }
 
     this.setState({
-      voted: true,
+      voted:     true,
       voteCount: this.state.voteCount + 1
     });
 
@@ -75,16 +75,16 @@ export class DownloadPopup extends React.Component {
         <ClickOut onClickOut={this.onClose} additionalNodes={$button}>
           <div className="popup popup-file-download">
             <a href="#" className="cancel" onClick={this.onClose}>
-              Cancel download <i className="fa fa-times"/>
+              Cancel download <i className="fa fa-times" />
             </a>
 
             <div className="file-icon">
-              <i className="fa fa-file"/>
-              <hr/>
+              <i className="fa fa-file" />
+              <hr />
 
               <div className="cudos-wrapper">
-                <a className={classNames('cudos', {'with-voted': this.state.voted})} onClick={this.onVote}>
-                  <i className="fa fa-thumbs-up"/> {this.state.voteCount}
+                <a className={classNames('cudos', { 'with-voted': this.state.voted })} onClick={this.onVote}>
+                  <i className="fa fa-thumbs-up" /> {this.state.voteCount}
                 </a>
               </div>
             </div>

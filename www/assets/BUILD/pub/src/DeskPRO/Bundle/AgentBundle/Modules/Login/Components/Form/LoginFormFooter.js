@@ -5,13 +5,13 @@ export class LoginFormFooter extends React.Component {
   render() {
     return (
       <div className="dpw-login-panels-footer">
-        <hr style={{width: '20px'}} />
+        <hr style={{ width: '20px' }} />
 
           <span className="meta">
             <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
           </span>
 
-        <hr style={{width: '140px'}} />
+        <hr style={{ width: '140px' }} />
 
           <span className="deskpro-mark">
             <a href="https://www.deskpro.com/" target="_blank">
@@ -20,7 +20,7 @@ export class LoginFormFooter extends React.Component {
             </a>
           </span>
 
-        <hr style={{width: '260px'}} />
+        <hr style={{ width: '260px' }} />
 
           <span className="social-media">
             <a href="#"><i className="fa fa-facebook"></i></a>
@@ -28,7 +28,7 @@ export class LoginFormFooter extends React.Component {
             <a href="#"><i className="fa fa-google-plus"></i></a>
           </span>
 
-        <hr style={{width: '20px'}} />
+        <hr style={{ width: '20px' }} />
       </div>
     );
   }

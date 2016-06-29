@@ -5,7 +5,9 @@
     ["react-intl", {"messagesDir": "./build/messages/"}],
     ["namespace", {
       "namespaces": {
-        "DeskPRO": "src/DeskPRO/"
+        "DeskPRO": "src/DeskPRO/",
+        "Ampliflux": "src/DeskPRO/Component/Ampliflux/",
+        "Helpers": "src/tests/Helpers/"
       }
     }]
   ]

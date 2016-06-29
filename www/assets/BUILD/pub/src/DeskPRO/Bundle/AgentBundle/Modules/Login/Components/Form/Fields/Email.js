@@ -4,8 +4,8 @@ import { FieldWrapper } from './FieldWrapper';
 export class Email extends React.Component {
 
   static propTypes = {
-    errors: PropTypes.object,
-    value: PropTypes.string,
+    errors:   PropTypes.object,
+    value:    PropTypes.string,
     onChange: PropTypes.func.isRequired
   };
 

@@ -6,5 +6,5 @@ const initialState = {
   setup_token: ''
 };
 export default createReducer(initialState, {
-  [loadQrCode]: async({success: setFullPayload('setup_token')})
+  [loadQrCode]: async({ success: setFullPayload('setup_token') })
 });

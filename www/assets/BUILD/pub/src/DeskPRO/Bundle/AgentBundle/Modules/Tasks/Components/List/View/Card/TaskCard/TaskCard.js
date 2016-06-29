@@ -98,15 +98,15 @@ export class TaskCard extends BaseTaskCard {
 
     return (
       <Card moving={moving} minimized={this.isMinimized()} type="task">
-        <MarkDoneButton isDone={task.get('is_done')} onToggle={value => onChange('is_done', value)}/>
-        <CardCheckbox selected={selected} onClick={onToggleSelected}/>
+        <MarkDoneButton isDone={task.get('is_done')} onToggle={value => onChange('is_done', value)} />
+        <CardCheckbox selected={selected} onClick={onToggleSelected} />
         <div className="title-line">
 
           <Title value={task.get('title')} isDone={task.get('is_done')} onSubmit={value => onChange('title', value)} />
 
           <div className="icon-block">
             {task.get('is_done')
-              ? <ShowDetailsButton expanded={this.state.expanded} onToggleExpand={this.onToggleExpand}/>
+              ? <ShowDetailsButton expanded={this.state.expanded} onToggleExpand={this.onToggleExpand} />
               : this.renderField(assignee)
             }
           </div>

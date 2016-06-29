@@ -9,7 +9,7 @@ export class Comments extends React.Component {
   render() {
     return (
       <span className="dpwd--card-line-item">
-        {Number(this.props.count) || 0} <i className="fa fa-comment"/>
+        {Number(this.props.count) || 0} <i className="fa fa-comment" />
       </span>
     );
   }

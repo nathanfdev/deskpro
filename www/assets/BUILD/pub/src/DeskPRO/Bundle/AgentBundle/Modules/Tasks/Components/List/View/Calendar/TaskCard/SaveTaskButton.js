@@ -6,7 +6,7 @@ export class SaveTaskButton extends React.Component {
 
   static propTypes = {
     onClick: PropTypes.func,
-    submit: PropTypes.bool
+    submit:  PropTypes.bool
   };
 
   render() {
@@ -14,10 +14,11 @@ export class SaveTaskButton extends React.Component {
 
     return (
       <div className="dpw--single-card-mark-done hovered"
-           onClick={onClick}>
+        onClick={onClick}
+      >
 
         <div>
-          <i className="fa fa-save"/>
+          <i className="fa fa-save" />
           <span>Save Task</span>
         </div>
       </div>

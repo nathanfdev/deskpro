@@ -10,7 +10,7 @@ import { setupTokenSelector } from '../../../../Selectors/preferences';
 export class ContentContainer extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    token: PropTypes.string.isRequired
+    token:    PropTypes.string.isRequired
   };
 
   componentDidMount() {

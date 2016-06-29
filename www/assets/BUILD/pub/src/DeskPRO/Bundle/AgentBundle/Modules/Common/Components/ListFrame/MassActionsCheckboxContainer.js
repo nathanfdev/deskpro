@@ -51,7 +51,7 @@ export class MassActionsCheckboxContainer extends Component {
         <div className={divClasses} onClick={this.handleClick}>
           <i className={checkboxClasses}></i>
         </div>
-        {count > 0 && <CheckboxCounter count={count}/>}
+        {count > 0 && <CheckboxCounter count={count} />}
       </div>
     );
   }

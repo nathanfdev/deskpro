@@ -6,7 +6,7 @@ import { ListContainer } from './List/ListContainer';
 export class CrmApp extends React.Component {
   render = () =>
     <AppPane>
-      <NavPane><NavContainer/></NavPane>
-      <ListPane><ListContainer/></ListPane>
+      <NavPane><NavContainer /></NavPane>
+      <ListPane><ListContainer /></ListPane>
     </AppPane>
 }

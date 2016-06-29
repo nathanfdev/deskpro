@@ -6,23 +6,24 @@ import { hasErrors, getLastError } from 'DeskPRO/Component/Form/FormErrors';
 export class FieldWrapper extends React.Component {
 
   static propTypes = {
-    label: PropTypes.string.isRequired,
+    label:     PropTypes.string.isRequired,
     iconClass: PropTypes.string.isRequired,
-    children: PropTypes.node,
-    field: PropTypes.string,
-    errors: PropTypes.object
+    children:  PropTypes.node,
+    field:     PropTypes.string,
+    errors:    PropTypes.object
   };
 
   render() {
     const { label, iconClass, children, field, errors } = this.props;
 
     return (
-      <div className={classNames('dpw-login-form-container', {'error': hasErrors(errors, field)})}>
+      <div className={classNames('dpw-login-form-container', { 'error': hasErrors(errors, field) })}>
         <Simple
           isOpen={hasErrors(errors, field)}
           positionTarget={this}
           positionAt="right top"
-          positionMy="left center">
+          positionMy="left center"
+        >
 
           <div className="dpw-login-form-warning-container error-container">
             <i className="fa fa-exclamation-triangle"></i> <span>{getLastError(errors, field)}</span>

@@ -8,8 +8,8 @@ export class NotificationService {
   constructor(props) {
     Object.assign(this,
       {
-        options: {},
-        clients: [],
+        options:            {},
+        clients:            [],
         heartbeat_disabled: false,
         heartbeat_interval: null
       }
@@ -21,9 +21,9 @@ export class NotificationService {
 
   createEmitter() {
     this.eventEmitter = new EventEmitter2({
-      wildcard: false,
-      delimiter: '::',
-      newListener: false,
+      wildcard:     false,
+      delimiter:    '::',
+      newListener:  false,
       maxListeners: 10
     });
   }

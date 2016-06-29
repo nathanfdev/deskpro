@@ -5,9 +5,9 @@ import $ from 'jquery';
 class SimpleCheckbox extends React.Component {
 
   static propTypes = {
-    active: PropTypes.bool,
-    label: PropTypes.any,
-    data: PropTypes.any,
+    active:         PropTypes.bool,
+    label:          PropTypes.any,
+    data:           PropTypes.any,
     toggleColumnId: PropTypes.func
   };
 
@@ -21,7 +21,7 @@ class SimpleCheckbox extends React.Component {
 
     return (
       <div onClick={this.onClick} className="checkbox-container">
-        <span className={classNames('checkbox', {'checked': active})}>
+        <span className={classNames('checkbox', { 'checked': active })}>
           <i className="fa fa-check"></i>
         </span>
         {label}
@@ -33,15 +33,15 @@ class SimpleCheckbox extends React.Component {
 export class ColumnControl extends React.Component {
 
   static propTypes = {
-    columns: PropTypes.array,
-    active_ids: PropTypes.array,
+    columns:          PropTypes.array,
+    active_ids:       PropTypes.array,
     updateActiveCols: PropTypes.func
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      columns: props.columns,
+      columns:    props.columns,
       active_ids: props.active_ids
     };
   }
@@ -58,7 +58,7 @@ export class ColumnControl extends React.Component {
 
     this.setState({
       active_ids: newActiveIds,
-      columns: this.state.columns
+      columns:    this.state.columns
     });
 
     this.props.updateActiveCols(newActiveIds);
@@ -66,15 +66,16 @@ export class ColumnControl extends React.Component {
 
   render() {
     return (
-      <div style={{width: '100%', height: '100%'}}>
+      <div style={{ width: '100%', height: '100%' }}>
         <h1>Show Columns</h1>
         <ul>
           {this.state.columns.map(col =>
             <li key={col.id}>
               <SimpleCheckbox data={col.id}
-                              label={col.label}
-                              active={$.inArray(col.id, this.state.active_ids) >= 0}
-                              toggleColumnId={this.toggleColumnId.bind(this)} />
+                label={col.label}
+                active={$.inArray(col.id, this.state.active_ids) >= 0}
+                toggleColumnId={this.toggleColumnId.bind(this)}
+              />
             </li>
           )}
         </ul>

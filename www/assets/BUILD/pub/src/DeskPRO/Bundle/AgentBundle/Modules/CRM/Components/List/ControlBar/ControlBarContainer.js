@@ -20,12 +20,12 @@ import { constants } from '../../../../../Constants/Constants';
 import { ControlBar } from '../../../../../Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 
 @connect(state => ({
-    content:       currentContentSelector(state),
-    filters:       listFiltersSelector(state),
-    currentParams: currentListParamsSelector(state),
-    viewMode:      currentViewModeSelector(state),
-    peopleFields:  peopleFieldsSelector(state),
-    orgFields:     orgFieldsSelector(state)
+  content:       currentContentSelector(state),
+  filters:       listFiltersSelector(state),
+  currentParams: currentListParamsSelector(state),
+  viewMode:      currentViewModeSelector(state),
+  peopleFields:  peopleFieldsSelector(state),
+  orgFields:     orgFieldsSelector(state)
 }), {
   togglePeopleFieldVisibility,
   toggleOrgFieldVisibility,
@@ -58,11 +58,11 @@ export class ControlBarContainer extends Component {
       filters,
 
       sorting: {
-        date_created:    {
+        date_created: {
           label: 'Created',
           icon:  'calendar'
         },
-        name:            {
+        name: {
           label: 'Name',
           icon:  'sort-alpha-asc'
         },
@@ -70,7 +70,7 @@ export class ControlBarContainer extends Component {
           label: 'Last login',
           icon:  'calendar'
         },
-        organization:    {
+        organization: {
           label: 'Organization',
           icon:  'building-o'
         }
@@ -112,7 +112,7 @@ export class ControlBarContainer extends Component {
           label: 'Created',
           icon:  'calendar'
         },
-        name:         {
+        name: {
           label: 'Name',
           icon:  'sort-alpha-asc'
         }

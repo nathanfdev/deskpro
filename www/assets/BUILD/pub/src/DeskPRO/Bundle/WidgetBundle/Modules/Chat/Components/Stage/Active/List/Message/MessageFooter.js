@@ -20,7 +20,7 @@ export class MessageFooter extends React.Component {
 
     return (
       <div className="dpdesignportal-message-footer">
-        {/* temporary disabled */ false &&
+        {false &&
           <a href="#" className="dpdesignportal-message-footer-assets-link">
             <i className="fa fa-copy" /> Chat Assets (4)
           </a>
@@ -29,13 +29,14 @@ export class MessageFooter extends React.Component {
         <div className={classNames({ right: isUser })}>
           {date &&
             <TimeAgo className="dpdesignportal-message-footer-timer"
-                     formatter={timeAgoFormatter}
-                     minPeriod={60000}
-                     date={moment(date)} />
+              formatter={timeAgoFormatter}
+              minPeriod={60000}
+              date={moment(date)}
+            />
           }
           {notDelivered &&
             <span className="dpdesignportal-message-footer-not-delivered">
-              <i className="fa fa-warning"/> {portalPhrases.get('portal.chat.asset_not_delivered')}
+              <i className="fa fa-warning" /> {portalPhrases.get('portal.chat.asset_not_delivered')}
             </span>
           }
         </div>

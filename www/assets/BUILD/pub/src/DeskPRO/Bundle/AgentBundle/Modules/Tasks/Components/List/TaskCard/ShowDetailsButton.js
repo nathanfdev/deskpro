@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class ShowDetailsButton extends React.Component {
 
   static propTypes = {
-    expanded: PropTypes.bool,
+    expanded:       PropTypes.bool,
     onToggleExpand: PropTypes.func.isRequired
   };
 
@@ -16,7 +16,7 @@ export class ShowDetailsButton extends React.Component {
     return (
       <div className="dpw--card-expand">
         <a href="#" onClick={this.onClick}>
-          {this.props.expanded ? 'Collapse' : 'Expand'} <i className="fa fa-navicon"/>
+          {this.props.expanded ? 'Collapse' : 'Expand'} <i className="fa fa-navicon" />
         </a>
       </div>
     );

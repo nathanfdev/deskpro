@@ -8,7 +8,7 @@ import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStor
 export class TaskCardPreviewContainer extends React.Component {
 
   static propTypes = {
-    item:     PropTypes.shape({
+    item: PropTypes.shape({
       id:    PropTypes.number.isRequired,
       width: PropTypes.number
     }),

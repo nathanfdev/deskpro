@@ -15,7 +15,7 @@ export class MuteButton extends React.Component {
 
     return (
       <ControlItem className="dpdesignportal-chat-header-control-mute" onClick={onClick}>
-        <i className={classNames('fa', {'fa-volume-up': !mute, 'fa-volume-off': mute})} />{portalPhrases.get('portal.chat.mute_button')}
+        <i className={classNames('fa', { 'fa-volume-up': !mute, 'fa-volume-off': mute })} />{portalPhrases.get('portal.chat.mute_button')}
       </ControlItem>
     );
   }

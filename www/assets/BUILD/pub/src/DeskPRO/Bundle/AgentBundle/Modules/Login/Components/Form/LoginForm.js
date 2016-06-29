@@ -10,9 +10,9 @@ import classNames from 'classnames';
 export class LoginForm extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    submit: PropTypes.bool,
-    errors: PropTypes.object,
+    dispatch:     PropTypes.func.isRequired,
+    submit:       PropTypes.bool,
+    errors:       PropTypes.object,
     onSubmitForm: PropTypes.func
   };
 
@@ -20,10 +20,10 @@ export class LoginForm extends React.Component {
     super(props);
 
     this.state = {
-      email: null,
-      password: null,
+      email:      null,
+      password:   null,
       rememberMe: null,
-      errors: null
+      errors:     null
     };
   }
 
@@ -37,7 +37,7 @@ export class LoginForm extends React.Component {
 
   onChangeEmail = event => {
     this.setState({
-      email: event.target.value,
+      email:  event.target.value,
       errors: null
     });
   };
@@ -45,14 +45,14 @@ export class LoginForm extends React.Component {
   onChangePassword = event => {
     this.setState({
       password: event.target.value,
-      errors: null
+      errors:   null
     });
   };
 
   onChangeRememberMe = () => {
     this.setState({
       rememberMe: !this.state.rememberMe,
-      errors: null
+      errors:     null
     });
   };
 
@@ -64,7 +64,7 @@ export class LoginForm extends React.Component {
 
     const { dispatch } = this.props;
     const promise = dispatch(login({
-      email: this.state.email,
+      email:    this.state.email,
       password: this.state.password
     }));
 
@@ -93,7 +93,7 @@ export class LoginForm extends React.Component {
 
   render() {
     return (
-      <div className={classNames('dpw-login', {'error': !!this.state.errors})}>
+      <div className={classNames('dpw-login', { 'error': !!this.state.errors })}>
 
         <WarningMajorWrapper />
 
@@ -114,11 +114,12 @@ export class LoginForm extends React.Component {
             <Options checked={this.state.rememberMe} onChange={this.onChangeRememberMe} />
 
             <input type="submit"
-                   value="Log in to DeskPRO"
-                   className={classNames({'locked': this.state.submit})}
-                   onClick={this.onSubmitForm} />
+              value="Log in to DeskPRO"
+              className={classNames({ 'locked': this.state.submit })}
+              onClick={this.onSubmitForm}
+            />
 
-            {this.state.submit && <div className="dpw-spinner"><i/></div>}
+            {this.state.submit && <div className="dpw-spinner"><i /></div>}
           </form>
         </div>
 

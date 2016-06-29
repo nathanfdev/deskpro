@@ -72,9 +72,9 @@ export const listFiltersSelector = createSelector(
     if (currentContent === 'people') {
       const userGroupsOptions = userGroups.toArray()
         .map(group => ({
-               label: group.get('title'),
-               value: group.get('id')
-             })
+          label: group.get('title'),
+          value: group.get('id')
+        })
       );
 
       filterSelector.push({
@@ -87,9 +87,9 @@ export const listFiltersSelector = createSelector(
 
       const organizationsOptions = organizations.toArray()
         .map(org => ({
-               label: org.get('name'),
-               value: org.get('id')
-             }));
+          label: org.get('name'),
+          value: org.get('id')
+        }));
 
       const compare = (a, b) => {
         if (a.label < b.label) {

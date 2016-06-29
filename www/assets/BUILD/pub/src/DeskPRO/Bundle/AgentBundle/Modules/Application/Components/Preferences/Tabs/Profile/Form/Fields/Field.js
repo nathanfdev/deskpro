@@ -4,10 +4,10 @@ import { FieldErrors } from 'DeskPRO/Component/Form/FormErrors';
 export class Field extends React.Component {
 
   static propTypes = {
-    name: PropTypes.string,
-    label: PropTypes.string,
+    name:     PropTypes.string,
+    label:    PropTypes.string,
     children: PropTypes.any.isRequired,
-    errors: PropTypes.array
+    errors:   PropTypes.array
   };
 
   renderErrors() {

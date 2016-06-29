@@ -19,7 +19,8 @@ export class Message extends React.Component {
           'agent-message': !isUser,
           'user-message':  isUser,
           'user-typing':   typing
-        })}>
+        })}
+      >
 
         {children}
       </div>

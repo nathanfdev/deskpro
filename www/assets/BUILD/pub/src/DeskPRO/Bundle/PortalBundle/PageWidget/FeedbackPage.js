@@ -16,6 +16,6 @@ export class FeedbackPage extends PageWidget {
     $interactiveFilterSection.hide();
 
     this.$rElement = $('<div class="dp-react-widget"></div>').insertAfter($interactiveFilterSection);
-    ReactDOM.render(React.createElement(FeedbackFilter, {filter_data: window.FEEDBACK_FILTER_STATE}), this.$rElement.get(0));
+    ReactDOM.render(React.createElement(FeedbackFilter, { filter_data: window.FEEDBACK_FILTER_STATE }), this.$rElement.get(0));
   }
 }

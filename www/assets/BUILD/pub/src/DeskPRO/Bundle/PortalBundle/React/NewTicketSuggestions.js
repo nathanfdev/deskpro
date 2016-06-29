@@ -19,8 +19,8 @@ class SuggestionRow extends React.Component {
           className="related-article-link"
           href={this.props.result.object.url}
           target="_blank"
-          >
-          <span dangerouslySetInnerHTML={{__html: icon}}></span>
+        >
+          <span dangerouslySetInnerHTML={{ __html: icon }}></span>
           <span className="item-title">{this.props.result.object.name}</span>
         </a>
       </li>
@@ -39,8 +39,8 @@ class SuggestionMore extends React.Component {
         <a
           onClick={this.props.showAll}
           className="show-more-content"
-          >
-          {portalPhrases.get('portal.general.show_x_more', {num: this.props.count})}
+        >
+          {portalPhrases.get('portal.general.show_x_more', { num: this.props.count })}
         </a>
       </li>
     );
@@ -58,7 +58,7 @@ class SuggestionLess extends React.Component {
         <a
           onClick={this.props.showLess}
           className="show-less-content"
-          >
+        >
           {portalPhrases.get('portal.general.show_less')}
         </a>
       </li>
@@ -108,7 +108,7 @@ class Suggestions extends React.Component {
         {
           _.map(visible_results, (result, idx) => {
             return (
-              <SuggestionRow key={result.type + result.object.id} alt={idx % 2 === 0} result={result}/>
+              <SuggestionRow key={result.type + result.object.id} alt={idx % 2 === 0} result={result} />
             );
           })
         }
@@ -130,9 +130,9 @@ export class NewTicketSuggestions extends React.Component {
     this.state = {
       doSpin: false,
       $input: $(props.input),
-      data: {
+      data:   {
         results: [],
-        words: []
+        words:   []
       },
       search_query: {
         content: ''
@@ -149,7 +149,7 @@ export class NewTicketSuggestions extends React.Component {
 
   doSearch(queryModifications) {
     const lastQuery = this.state.search_query || {};
-    const search_query = {...lastQuery, ...queryModifications};
+    const search_query = { ...lastQuery, ...queryModifications };
     this.setState({
       search_query
     });
@@ -167,7 +167,7 @@ export class NewTicketSuggestions extends React.Component {
     portalHttp.sendGet('DP_URL/search/similar/article', { data: search_query }).then((r) => {
       if (!r.isError()) {
         this.setState({
-          data: r.data.data,
+          data:   r.data.data,
           search_query,
           doSpin: false
         });
@@ -175,12 +175,12 @@ export class NewTicketSuggestions extends React.Component {
     });
   }
 
-	render() {
-    const data = this.state.data || [];
-    const results = data.results || [];
+	                                                                                                                        render() {
+  const data = this.state.data || [];
+  const results = data.results || [];
 
-    return (
-      <div style={{display: (this.state.search_query.content.length >= 3 && results.length > 0 ? ' block' : 'none')}}>
+  return (
+      <div style={{ display: (this.state.search_query.content.length >= 3 && results.length > 0 ? ' block' : 'none') }}>
         <div className="ticket-related-articles">
           <header>
             <h1>{portalPhrases.get('portal.tickets.related_articles_title')}</h1>
@@ -190,5 +190,5 @@ export class NewTicketSuggestions extends React.Component {
         </div>
       </div>
     );
-  }
+}
 }

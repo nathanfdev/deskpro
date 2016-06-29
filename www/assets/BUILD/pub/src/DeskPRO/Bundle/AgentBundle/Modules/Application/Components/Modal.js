@@ -20,25 +20,25 @@ import { Detached } from 'DeskPRO/Component/Detached';
 export class Modal extends React.Component {
 
   static propTypes = {
-    title: PropTypes.string,
-    onConfirm: PropTypes.func,
-    onCancel: PropTypes.func,
-    confirmTitle: PropTypes.string,
-    cancelTitle: PropTypes.string,
+    title:          PropTypes.string,
+    onConfirm:      PropTypes.func,
+    onCancel:       PropTypes.func,
+    confirmTitle:   PropTypes.string,
+    cancelTitle:    PropTypes.string,
     confirmVisible: PropTypes.bool,
-    cancelVisible: PropTypes.bool,
-    isMini: PropTypes.bool,
-    zIndex: PropTypes.number
+    cancelVisible:  PropTypes.bool,
+    isMini:         PropTypes.bool,
+    zIndex:         PropTypes.number
   };
 
   static defaultProps = {
-    title: 'cowabunga!',
-    confirmTitle: 'Save',
-    cancelTitle: 'Cancel',
+    title:          'cowabunga!',
+    confirmTitle:   'Save',
+    cancelTitle:    'Cancel',
     confirmVisible: true,
-    cancelVisible: true,
-    isMini: true,
-    zIndex: 1005
+    cancelVisible:  true,
+    isMini:         true,
+    zIndex:         1005
   };
 
   constructor(props) {
@@ -51,25 +51,25 @@ export class Modal extends React.Component {
 
   open() {
     if (this.state.isOpen) return;
-    this.setState({isOpen: true});
+    this.setState({ isOpen: true });
   }
 
   close() {
     if (!this.state.isOpen) return;
-    this.setState({isOpen: false});
+    this.setState({ isOpen: false });
   }
 
   confirmClick = (event) => {
     event.preventDefault();
     if (!this.state.isOpen) return;
-    this.setState({isOpen: false});
+    this.setState({ isOpen: false });
     this.props.onConfirm && this.props.onConfirm();
   };
 
   cancelClick = (event) => {
     event.preventDefault();
     if (!this.state.isOpen) return;
-    this.setState({isOpen: false});
+    this.setState({ isOpen: false });
     this.props.onCancel && this.props.onCancel();
   };
 
@@ -133,7 +133,7 @@ export class Modal extends React.Component {
 
     return (
       <div className="popup-footer">
-        <hr/>
+        <hr />
         {this.renderButton('confirm')}
         {this.renderButton('cancel')}
       </div>

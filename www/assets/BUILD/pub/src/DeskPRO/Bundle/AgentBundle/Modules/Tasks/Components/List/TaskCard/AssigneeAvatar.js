@@ -6,8 +6,8 @@ import { collectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/Ap
 import Immutable from 'immutable';
 
 @connect(state => ({
-  agents: agentsSelector(state),
-  agentTeams: allSelectorFactory('AgentTeam')(state),
+  agents:      agentsSelector(state),
+  agentTeams:  allSelectorFactory('AgentTeam')(state),
   departments: collectionSelectorFactory('Department', 'all_tickets')(state)
 }))
 export class AssigneeAvatar extends React.Component {

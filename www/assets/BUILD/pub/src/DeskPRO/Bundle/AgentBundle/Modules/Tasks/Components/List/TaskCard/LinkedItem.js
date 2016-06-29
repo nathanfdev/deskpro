@@ -17,11 +17,11 @@ export class LinkedItem extends CardWidget {
     value: PropTypes.object,
 
     openBySingleClick: PropTypes.bool,
-    onSetEditing: PropTypes.func,
-    onChange: PropTypes.func,
+    onSetEditing:      PropTypes.func,
+    onChange:          PropTypes.func,
 
-    tickets: PropTypes.object,
-    chats: PropTypes.object,
+    tickets:  PropTypes.object,
+    chats:    PropTypes.object,
     articles: PropTypes.object,
 
     dispatch: PropTypes.func.isRequired
@@ -32,25 +32,25 @@ export class LinkedItem extends CardWidget {
     const empty = Immutable.fromJS({});
     this.state = {
       isOpen: props.isOpen,
-      value: this.convertLinkedItems(props.value)
+      value:  this.convertLinkedItems(props.value)
     };
     this.fallback = {
-      linked_tickets: {},
+      linked_tickets:  {},
       linked_articles: {},
-      linked_chats: {}
+      linked_chats:    {}
     };
     this.update = {
-      linked_tickets: [],
+      linked_tickets:  [],
       linked_articles: [],
-      linked_chats: []
+      linked_chats:    []
     };
   }
 
   convertLinkedItems(task) {
     return Immutable.Map({
-      linked_tickets: task.get('linked_tickets').toSet(),
+      linked_tickets:  task.get('linked_tickets').toSet(),
       linked_articles: task.get('linked_articles').toSet(),
-      linked_chats: task.get('linked_chats').toSet()
+      linked_chats:    task.get('linked_chats').toSet()
     });
   }
 
@@ -106,22 +106,21 @@ export class LinkedItem extends CardWidget {
     }
 
     this.update = {
-      linked_tickets: [],
+      linked_tickets:  [],
       linked_articles: [],
-      linked_chats: []
+      linked_chats:    []
     };
   }
 
   getOptions = (input, callback) => {
     const type = ['ticket', 'article', 'chat_conversation'];
-    this.props.dispatch(quickSearchAction({type: type, query: input})).then((res) => {
-
+    this.props.dispatch(quickSearchAction({ type, query: input })).then((res) => {
       invariant(res.data && res.data.data && res.data.data.grouped_results, 'Malformed QuickSearch response');
 
       let options = [];
 
       for (let group of res.data.data.grouped_results) {
-        let option = {label: '', options: []};
+        let option = { label: '', options: [] };
         options.push(option);
 
         if (group.type === 'ticket') {
@@ -133,30 +132,29 @@ export class LinkedItem extends CardWidget {
         }
 
         for (let result of group.results) {
-
           if (group.type === 'ticket') {
             option.options.push({
               label: result.subject,
               value: 'linked_tickets.' + result.id,
-              data: result
+              data:  result
             });
-          } else  if (group.type === 'chat') {
+          } else if (group.type === 'chat') {
             option.options.push({
               label: result.subject,
               value: 'linked_chats.' + result.id,
-              data: result
+              data:  result
             });
-          } else  if (group.type === 'article') {
+          } else if (group.type === 'article') {
             option.options.push({
               label: result.title,
               value: 'linked_articles.' + result.id,
-              data: result
+              data:  result
             });
           }
         }
       }
 
-      callback(null, {options: options});
+      callback(null, { options });
     });
   };
 
@@ -172,7 +170,7 @@ export class LinkedItem extends CardWidget {
   };
 
   render() {
-    const prop = {[this.props.openBySingleClick ? 'onClick' : 'onDoubleClick']: this.onOpen};
+    const prop = { [this.props.openBySingleClick ? 'onClick' : 'onDoubleClick']: this.onOpen };
     const linked_tickets = this.state.value.get('linked_tickets')
       , linked_articles = this.state.value.get('linked_articles')
       , linked_chats = this.state.value.get('linked_chats')
@@ -183,7 +181,7 @@ export class LinkedItem extends CardWidget {
     const getItemTitle = this.getItemTitle;
 
     if (1 === count) {
-      switch(1) {
+      switch (1) {
         case linked_tickets.size:
           title = 'Linked ticket: ' + getItemTitle('linked_tickets', linked_tickets.first());
           break;
@@ -201,19 +199,22 @@ export class LinkedItem extends CardWidget {
     return (
       <div>
         <div className="dpwd--card-line-item" {...prop}
-             style={{display: 'inline-block', position: 'relative', paddingLeft: 20, overflow: 'hidden', width: '100%'}}>
-          <i className="fa fa-link" style={{position: 'absolute', left: 2, top: 2}} />
+          style={{ display: 'inline-block', position: 'relative', paddingLeft: 20, overflow: 'hidden', width: '100%' }}
+        >
+          <i className="fa fa-link" style={{ position: 'absolute', left: 2, top: 2 }} />
           <span title={title}>{title}</span>
         </div>
 
         <Positioned isOpen={this.state.isOpen}
-                    positionTarget={this}
-                    positionAt="right+5 top-23"
-                    collision="fit"
-                    zIndex={1002}>
+          positionTarget={this}
+          positionAt="right+5 top-23"
+          collision="fit"
+          zIndex={1002}
+        >
 
           <ClickOut onClickOut={this.onClose}
-                    additionalNodes={[this.refs.button, '.fa-times']}>
+            additionalNodes={[this.refs.button, '.fa-times']}
+          >
             <div className="dpw-navigation-dropdown-panel">
               <div className="dpw-navigation-dropdown-panel-content">
                 <div className="dpw-navigation-dropdown-panel-content-line">
@@ -224,36 +225,39 @@ export class LinkedItem extends CardWidget {
                       <ul className="dpw-label-list">
                         {linked_tickets.map((id) => {
                           const item = tickets.get(id);
-                          return <li key={`linked_ticket.${id}`}>
+                          return (<li key={`linked_ticket.${id}`}>
                             <span className="dpw-item-label">
-                              <i className="fa fa-times" style={{cursor: 'pointer'}}
-                                 onClick={this.deleteLinkedItem.bind(this, 'linked_tickets', id)}>
+                              <i className="fa fa-times" style={{ cursor: 'pointer' }}
+                                onClick={this.deleteLinkedItem.bind(this, 'linked_tickets', id)}
+                              >
                               </i>
                               {item ? item.get('subject') : getItemTitle('linked_tickets', id)}
                             </span>
-                          </li>
+                          </li>);
                         })}
                         {linked_articles.map((id) => {
                           const item = articles.get(id);
-                          return <li key={`linked_article.${id}`}>
+                          return (<li key={`linked_article.${id}`}>
                             <span className="dpw-item-label">
-                              <i className="fa fa-times" style={{cursor: 'pointer'}}
-                                 onClick={this.deleteLinkedItem.bind(this, 'linked_articles', id)}>
+                              <i className="fa fa-times" style={{ cursor: 'pointer' }}
+                                onClick={this.deleteLinkedItem.bind(this, 'linked_articles', id)}
+                              >
                               </i>
                               {item ? item.get('title') : getItemTitle('linked_articles', id)}
                             </span>
-                          </li>
+                          </li>);
                         })}
                         {linked_chats.map((id) => {
                           const item = chats.get(id);
-                          return <li key={`linked_chat.${id}`}>
+                          return (<li key={`linked_chat.${id}`}>
                             <span className="dpw-item-label">
-                              <i className="fa fa-times" style={{cursor: 'pointer'}}
-                                 onClick={this.deleteLinkedItem.bind(this, 'linked_chats', id)}>
+                              <i className="fa fa-times" style={{ cursor: 'pointer' }}
+                                onClick={this.deleteLinkedItem.bind(this, 'linked_chats', id)}
+                              >
                               </i>
                               {item ? item.get('subject_line') : getItemTitle('linked_chats', id)}
                             </span>
-                          </li>
+                          </li>);
                         })}
                       </ul>
                     </div> || null}
@@ -264,7 +268,8 @@ export class LinkedItem extends CardWidget {
                       loadOptions={this.getOptions}
                       placeholder="Link items..."
                       clearable={false}
-                      onChange={this.onSelectItem} />
+                      onChange={this.onSelectItem}
+                    />
 
                   </div>
                 </div>

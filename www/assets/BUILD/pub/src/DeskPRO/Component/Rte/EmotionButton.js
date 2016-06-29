@@ -68,9 +68,9 @@ export class EmotionButton extends React.Component {
         // Range.createContextualFragment() would be useful here but is
         // only relatively recently standardized and is not supported in
         // some browsers (IE9, for one)
-        const el = document.createElement('div');
+        const el     = document.createElement('div');
         el.innerHTML = html;
-        const frag = document.createDocumentFragment();
+        const frag   = document.createDocumentFragment();
 
         let node;
         let lastNode;
@@ -111,10 +111,12 @@ export class EmotionButton extends React.Component {
 
     return (
       <span className={className}>
-        <a href="#"
-           className="dpdesignportal-chat-form-button dpdesignportal-chat-form-button-row-emoticons"
-           title="Chat Emoticons"
-           onClick={this.onSelectEmoticon}>
+        <a
+          href="#"
+          className="dpdesignportal-chat-form-button dpdesignportal-chat-form-button-row-emoticons"
+          title="Chat Emoticons"
+          onClick={this.onSelectEmoticon}
+        >
 
           <span className={buttonClassName} ref="emotionsButton" />
         </a>
@@ -124,12 +126,14 @@ export class EmotionButton extends React.Component {
           positionTarget={this.refs.emotionsButton}
           positionAt={popupPositionAt}
           positionMy={popupPositionMy}
-          zIndex={1000}>
+          zIndex={1000}
+        >
 
           <ClickOut
             onClickOut={this.onCloseEmotionsPopup}
             context={context}
-            additionalNodes={['.dpdesignportal-chat-form-button-row-emoticons']}>
+            additionalNodes={['.dpdesignportal-chat-form-button-row-emoticons']}
+          >
 
             <EmotionsPopup onClick={this.onSelectEmotion} />
           </ClickOut>

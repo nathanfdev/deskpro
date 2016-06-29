@@ -13,8 +13,8 @@ export class ApiRepository {
    * @returns {void}
    */
   constructor(api, url, supportsLoadAll = false) {
-    this.api             = api;
-    this.url             = url.replace(/^\/+/, '');
+    this.api = api;
+    this.url = url.replace(/^\/+/, '');
     this.supportsLoadAll = supportsLoadAll;
   }
 

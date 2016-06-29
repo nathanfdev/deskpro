@@ -25,7 +25,7 @@ export class RateAgentDialog extends React.Component {
     return (
       <div className="dpdesignportal-agent-rating">
         <div></div>
-        <h1><span>{portalPhrases.get('portal.chat.rate_agent_title', {'{agentName}': agentName})}</span></h1>
+        <h1><span>{portalPhrases.get('portal.chat.rate_agent_title', { '{agentName}': agentName })}</span></h1>
 
         <div className="dpdesignportal-agent-rating-buttons">
           <a href="#" className="dpdesignportal-button" onClick={this.onClickHelpful}>

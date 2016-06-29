@@ -41,7 +41,7 @@ export class TaskCardNew extends React.Component {
         teams:       [],
         departments: []
       }),
-      project:  null
+      project: null
     };
   }
 
@@ -54,7 +54,7 @@ export class TaskCardNew extends React.Component {
         teams:       [],
         departments: []
       }),
-      project:  null
+      project: null
     };
     if (this.props.isChanged) {
       this.props.isChanged(false);

@@ -19,8 +19,9 @@ export class Menu extends React.Component {
     const clickHandler = () => dispatch(AppActions.changePreferenceTab(name));
 
     return (
-      <li className={classNames({'active': dpWindow.get('preferenceTab') === name})}
-          onClick={clickHandler}>
+      <li className={classNames({ 'active': dpWindow.get('preferenceTab') === name })}
+        onClick={clickHandler}
+      >
 
         {children}
       </li>

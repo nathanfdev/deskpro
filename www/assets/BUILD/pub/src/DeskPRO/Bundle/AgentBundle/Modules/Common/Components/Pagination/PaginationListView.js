@@ -1,39 +1,40 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import createFragment from 'react-addons-create-fragment';
-import {PageView} from './PageView';
+import { PageView } from './PageView';
 
 export class PaginationListView extends Component {
 
   static propTypes = {
-    dropdown: PropTypes.bool,
+    dropdown:              PropTypes.bool,
     subContainerClassName: PropTypes.string,
-    pageClassName: PropTypes.string,
-    pageLinkClassName: PropTypes.string,
-    activeClassName: PropTypes.string,
-    breakLabel: PropTypes.node,
-    currentPage: PropTypes.number.isRequired,
-    pageNum: PropTypes.number.isRequired,
-    pageRangeDisplayed: PropTypes.number.isRequired,
-    marginPagesDisplayed: PropTypes.number.isRequired,
-    onPageSelected: PropTypes.func.isRequired
+    pageClassName:         PropTypes.string,
+    pageLinkClassName:     PropTypes.string,
+    activeClassName:       PropTypes.string,
+    breakLabel:            PropTypes.node,
+    currentPage:           PropTypes.number.isRequired,
+    pageNum:               PropTypes.number.isRequired,
+    pageRangeDisplayed:    PropTypes.number.isRequired,
+    marginPagesDisplayed:  PropTypes.number.isRequired,
+    onPageSelected:        PropTypes.func.isRequired
   };
 
   render() {
-    const {pageNum, pageRangeDisplayed, marginPagesDisplayed, onPageSelected, currentPage, breakLabel, dropdown } = this.props;
-    const {subContainerClassName, pageClassName, pageLinkClassName, activeClassName } = this.props;
+    const { pageNum, pageRangeDisplayed, marginPagesDisplayed, onPageSelected, currentPage, breakLabel, dropdown } = this.props;
+    const { subContainerClassName, pageClassName, pageLinkClassName, activeClassName } = this.props;
     const items = {};
 
     if (pageNum <= pageRangeDisplayed) {
       for (let index = 0; index < pageNum; index++) {
         items['key' + index] = (
           <PageView onClick={onPageSelected}
-                    dropdown={dropdown}
-                    currentPage={currentPage}
-                    pageNum={pageNum}
-                    pageClassName={pageClassName}
-                    pageLinkClassName={pageLinkClassName}
-                    activeClassName={activeClassName}
-                    page={index + 1}/>
+            dropdown={dropdown}
+            currentPage={currentPage}
+            pageNum={pageNum}
+            pageClassName={pageClassName}
+            pageLinkClassName={pageLinkClassName}
+            activeClassName={activeClassName}
+            page={index + 1}
+          />
         );
       }
     } else {
@@ -56,13 +57,14 @@ export class PaginationListView extends Component {
 
         const pageView = (
           <PageView onClick={onPageSelected}
-                    dropdown={dropdown}
-                    currentPage={currentPage}
-                    pageClassName={pageClassName}
-                    pageLinkClassName={pageLinkClassName}
-                    activeClassName={activeClassName}
-                    pageNum={pageNum}
-                    page={index + 1}/>
+            dropdown={dropdown}
+            currentPage={currentPage}
+            pageClassName={pageClassName}
+            pageLinkClassName={pageLinkClassName}
+            activeClassName={activeClassName}
+            pageNum={pageNum}
+            page={index + 1}
+          />
         );
 
         if (page <= marginPagesDisplayed) {

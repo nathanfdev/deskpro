@@ -4,9 +4,9 @@ import classNames from 'classnames';
 export class MenuFooterOptions extends React.Component {
 
   static propTypes = {
-    options: React.PropTypes.array,
-    active: React.PropTypes.string,
-    onClick: React.PropTypes.func,
+    options:  React.PropTypes.array,
+    active:   React.PropTypes.string,
+    onClick:  React.PropTypes.func,
     children: React.PropTypes.node
   };
 
@@ -19,7 +19,7 @@ export class MenuFooterOptions extends React.Component {
     return (
       <span className={classes} key={option.id}>
         <a href="#" onClick={option.onClick}>
-          <span className="dpwd-radio-button-disc"/>
+          <span className="dpwd-radio-button-disc" />
           <span className="radio-button-title">{option.label}</span>
         </a>
       </span>

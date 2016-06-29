@@ -120,7 +120,7 @@ export class MessageList extends React.Component {
     let previous = false;
     return (
       <ul ref="list" className="chat-message-list">
-        { this.controls() }
+        {this.controls()}
         {
           msg.map((message, index) => {
             const result = (
@@ -161,7 +161,7 @@ export class MessageList extends React.Component {
     const loaded = !this.props.loadingMessages || msg.size > 0;
     return (
        <Loader loaded={loaded}>
-         { msg.size > 0 ? this.renderList(msg) : this.renderEmpty()}
+         {msg.size > 0 ? this.renderList(msg) : this.renderEmpty()}
       </Loader>
     );
   }

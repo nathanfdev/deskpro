@@ -38,7 +38,7 @@
       }
     ],
     "no-multi-spaces": [
-      2,
+      0,
       {
         "exceptions": {
           "VariableDeclarator": true
@@ -61,7 +61,7 @@
         "SwitchCase": 1
       }
     ],
-    "valid-jsdoc": 2
+    "valid-jsdoc": 0
   },
   "plugins": [
     "react",

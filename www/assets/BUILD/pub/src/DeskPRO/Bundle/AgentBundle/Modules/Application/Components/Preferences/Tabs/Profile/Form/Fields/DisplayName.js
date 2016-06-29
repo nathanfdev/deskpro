@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class DisplayName extends React.Component {
 
   static propTypes = {
-    value: PropTypes.string,
+    value:    PropTypes.string,
     onChange: PropTypes.func.isRequired
   };
 
@@ -32,9 +32,10 @@ export class DisplayName extends React.Component {
     return (
       <div className="bucket-column">
         <input type="text"
-               placeholder="Your display name"
-               value={this.props.value}
-               onChange={this.onChange} />
+          placeholder="Your display name"
+          value={this.props.value}
+          onChange={this.onChange}
+        />
       </div>
     );
   }
@@ -45,8 +46,9 @@ export class DisplayName extends React.Component {
         <div className="bucket short">
           <label className="simple-label">
             <input type="checkbox"
-                   checked={this.state.checked}
-                   onChange={this.onToggle} />
+              checked={this.state.checked}
+              onChange={this.onToggle}
+            />
 
             Override default name?
           </label>

@@ -146,7 +146,7 @@ export class PortalSimpleSelectBox extends React.Component {
     }
 
     this.setState({
-      value: val,
+      value:    val,
       expanded: this.props.multiple
     });
     this.props.onChange(val);
@@ -211,7 +211,7 @@ export class PortalSimpleSelectBox extends React.Component {
     this.setState({
       ['visibleOptions']: visibleOptions,
       ['selectedOption']: selectedOption,
-      filterText: this.refs.filterInput.value
+      filterText:         this.refs.filterInput.value
     });
   };
 
@@ -279,7 +279,7 @@ export class PortalSimpleSelectBox extends React.Component {
 
   toggleExpanded() {
     this.setState({
-      expanded: !this.state.expanded,
+      expanded:       !this.state.expanded,
       selectedOption: null,
       visibleOptions: this.state.options
     });
@@ -391,7 +391,7 @@ export class PortalSimpleSelectBox extends React.Component {
               disabled
               isFocused={false}
               key={0}
-              option={ { title: `No matches found for ${this.state.filterText}`, id: 0 } }
+              option={{ title: `No matches found for ${this.state.filterText}`, id: 0 }}
               multiple={!!this.props.multiple}
               active={false}
             />

@@ -70,7 +70,7 @@ export class SearchResultsPage extends PageWidget {
     const $searchResultsPage = this.$element;
     const collection = new SearchResultCollection();
 
-    $searchResultsPage.find('ul.dpx-dynamic-search-results').each(function() {
+    $searchResultsPage.find('ul.dpx-dynamic-search-results').each(function () {
       const $ul = $(this);
       collection.add(new DynamicSearchResults(
         $ul,

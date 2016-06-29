@@ -18,16 +18,16 @@ export class FeedbackVoteWidget extends PageWidget {
       $counter.text(_.parseInt($counter.text()) + 1);
       $iAgreeBox.addClass('agreed');
       $.ajax({
-        url: action,
-        method: 'POST',
+        url:         action,
+        method:      'POST',
         contentType: 'application/json'
-      }).success(function(data) {
+      }).success(function (data) {
         if (!data.success) {
           $iAgreeBox.find('div').text(data.error);
           $counter.text(_.parseInt($counter.text()) - 1);
           $iAgreeBox.removeClass('agreed');
         }
-      }).fail(function(){
+      }).fail(function () {
         $counter.text(_.parseInt($counter.text()) - 1);
         $iAgreeBox.removeClass('agreed');
       });

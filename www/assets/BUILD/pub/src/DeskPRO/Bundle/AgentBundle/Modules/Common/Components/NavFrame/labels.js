@@ -19,7 +19,7 @@ export class LabelsDictionary extends React.Component {
     // count BC both for Immutable and JS objects
     count = labels.count() ? labels.count() : labels.size;
     for (let index = 0, label, letter; index < count; index++) {
-      label  = Immutable.Iterable.isIterable(labels) ? labels.get(index) : labels[index];
+      label = Immutable.Iterable.isIterable(labels) ? labels.get(index) : labels[index];
       letter = label.get('label')[0];
       if (!letter) {
         continue;

@@ -46,7 +46,8 @@ export class WidgetContent extends React.Component {
           'chat-bubble':   isBubble,
           mobile:          !isBubble,
           'position-left': widgetPosition === 'bottom.left' && !isBubble
-        })}>
+        })}
+      >
 
         {children}
       </div>

@@ -35,7 +35,7 @@ export class Workspace extends React.Component {
           columnDimensions={dpWindow.get('columnDimensions')}
           onChangeDimensions={setColumnDimensions}
         />
-        <SidebarMode currentMode={dpWindow.get('sidebarMode')} onChangeMode={setSidebarMode}/>
+        <SidebarMode currentMode={dpWindow.get('sidebarMode')} onChangeMode={setSidebarMode} />
 
         <div className="dpw-top-bar-dropdown-footer">
           <a href="#" className="dpw-top-bar-dropdown-button" onClick={saveWorkspace}>Save Workspace</a>

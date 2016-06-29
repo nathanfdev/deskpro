@@ -5,11 +5,11 @@ import { Modal } from './Modal';
 export class Notification extends Modal {
 
   static defaultProps = {
-    confirmTitle: 'Confirm & Continue',
-    cancelTitle: 'Cancel this action',
+    confirmTitle:   'Confirm & Continue',
+    cancelTitle:    'Cancel this action',
     confirmVisible: true,
-    cancelVisible: true,
-    zIndex: 1005
+    cancelVisible:  true,
+    zIndex:         1005
   };
 
   renderBody() {

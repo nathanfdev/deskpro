@@ -131,19 +131,19 @@ const isTaskMatch = (task, state) => {
         break;
 
       case 'assigned_agent':      // me or other agent
-      {
-        const set = v.toSet();
-        const me  = meSelector(state);
-        if (set.has('me') && task.get('agents').toSet().has(me.get('id'))) {
-          return true;
-        }
-        for (const i of task.get('agents')) {
-          if (set.has(i)) {
+        {
+          const set = v.toSet();
+          const me  = meSelector(state);
+          if (set.has('me') && task.get('agents').toSet().has(me.get('id'))) {
             return true;
           }
+          for (const i of task.get('agents')) {
+            if (set.has(i)) {
+              return true;
+            }
+          }
+          break;
         }
-        break;
-      }
 
       case 'not_assigned_agent':      // only other agent
         if (!v.toSet().has('me')) {
@@ -158,26 +158,26 @@ const isTaskMatch = (task, state) => {
         break;
 
       case 'assigned_team':       // my teams
-      {
-        const teams = myAgentTeamsSelector(state);
-        for (const i of task.get('teams')) {
-          if (teams.has(i)) {
-            return true;
+        {
+          const teams = myAgentTeamsSelector(state);
+          for (const i of task.get('teams')) {
+            if (teams.has(i)) {
+              return true;
+            }
           }
+          break;
         }
-        break;
-      }
 
       case 'assigned_department':      // my departments
-      {
-        const deps = myTicketsDepartmentsSelector(state);
-        for (const i of task.get('departments')) {
-          if (deps.has(i)) {
-            return true;
+        {
+          const deps = myTicketsDepartmentsSelector(state);
+          for (const i of task.get('departments')) {
+            if (deps.has(i)) {
+              return true;
+            }
           }
+          break;
         }
-        break;
-      }
 
       default:
         break;
@@ -212,7 +212,7 @@ export const editTask = createAction(
     const oldTask = tasks.get(id);
 
     const promise = api.sendPut(`DP_API/tasks/${id}`, data);
-    updates[id]   = promise;
+    updates[id] = promise;
 
     // todo show errors (alert?)
     promise.success(() => {

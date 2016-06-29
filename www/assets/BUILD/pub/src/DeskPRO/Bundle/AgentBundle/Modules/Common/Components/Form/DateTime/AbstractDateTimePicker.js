@@ -4,11 +4,11 @@ import Picker from 'anytime';
 import Moment from 'moment';
 import createButton from 'anytime/src/lib/create-button';
 
-Picker.prototype.renderFooter = function(footerEl) {
+Picker.prototype.renderFooter = function (footerEl) {
   // 'Done' button
   var doneBtn = createButton(this.options.doneText, ['anytime-picker__button', 'anytime-picker__button--done']);
   footerEl.appendChild(doneBtn);
-  doneBtn.addEventListener('click', function() {
+  doneBtn.addEventListener('click', function () {
     this.hide();
     this.emit('done', null);
   }.bind(this));
@@ -16,7 +16,7 @@ Picker.prototype.renderFooter = function(footerEl) {
   // 'Clear' button
   var clearBtn = createButton(this.options.clearText, ['anytime-picker__button', 'anytime-picker__button--clear']);
   footerEl.appendChild(clearBtn);
-  clearBtn.addEventListener('click', function() {
+  clearBtn.addEventListener('click', function () {
     this.update(null);
     this.hide();
   }.bind(this));

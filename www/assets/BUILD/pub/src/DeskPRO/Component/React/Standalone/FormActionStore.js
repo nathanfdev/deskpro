@@ -26,7 +26,7 @@ export class FormActionStore {
       const oldValue = this.value;
       const value = this.readValueFromForm();
 
-      this.emit('formChanged', { event: event, value: value, oldValue: oldValue });
+      this.emit('formChanged', { event, value, oldValue });
     });
 
     // Component notifying us (via setValue)
@@ -95,7 +95,7 @@ export class FormActionStore {
   setValue(value) {
     const oldValue = this.value;
     this.value = value;
-    this.emit('valueChanged', { value: value, oldValue: oldValue });
+    this.emit('valueChanged', { value, oldValue });
   }
 
   /**

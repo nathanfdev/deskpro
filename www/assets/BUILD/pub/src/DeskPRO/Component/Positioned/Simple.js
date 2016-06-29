@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import { Abstract } from './Abstract';
 
 export class Simple extends Abstract {
@@ -8,7 +7,7 @@ export class Simple extends Abstract {
    * @inheritDoc
    */
   static propTypes = {
-    isOpen: PropTypes.bool.isRequired,
+    isOpen:   PropTypes.bool.isRequired,
     children: PropTypes.any
   };
 
@@ -28,6 +27,6 @@ export class Simple extends Abstract {
     const { isOpen, children } = this.props;
 
     // Render the component with react, or don't if the prop changes
-    return isOpen ? <div className="positioned-element">{children}</div> : <div/>;
+    return isOpen ? <div className="positioned-element">{children}</div> : <div />;
   }
 }

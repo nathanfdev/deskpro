@@ -5,7 +5,7 @@ import { CardWidget } from './CardWidget';
 export class TitleForm extends CardWidget {
 
   static propTypes = {
-    value: PropTypes.string,
+    value:    PropTypes.string,
     onChange: PropTypes.func,
     onSubmit: PropTypes.func
   };
@@ -16,7 +16,7 @@ export class TitleForm extends CardWidget {
 
   onChange = event => {
     const val = event.target.value;
-    this.setState({value: val});
+    this.setState({ value: val });
     this.props.onChange && this.props.onChange(val);
   };
 
@@ -30,10 +30,11 @@ export class TitleForm extends CardWidget {
     return (
       <form className="inline-form" onSubmit={this.onSubmit}>
         <input type="text"
-               ref="input"
-               name="title"
-               value={value}
-               onChange={this.onChange} />
+          ref="input"
+          name="title"
+          value={value}
+          onChange={this.onChange}
+        />
       </form>
     );
   }

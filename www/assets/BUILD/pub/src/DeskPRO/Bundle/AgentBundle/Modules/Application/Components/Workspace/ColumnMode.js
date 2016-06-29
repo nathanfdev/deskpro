@@ -5,9 +5,9 @@ import { ColumnSlider } from './ColumnSlider';
 export class ColumnMode extends React.Component {
 
   static propTypes = {
-    currentMode: PropTypes.string.isRequired,
-    columnDimensions: PropTypes.number.isRequired,
-    onChangeMode: PropTypes.func.isRequired,
+    currentMode:        PropTypes.string.isRequired,
+    columnDimensions:   PropTypes.number.isRequired,
+    onChangeMode:       PropTypes.func.isRequired,
     onChangeDimensions: PropTypes.func.isRequired
   };
 
@@ -24,9 +24,10 @@ export class ColumnMode extends React.Component {
 
         <div className="dpw-workspace-state">
           <ChangeModeButton type={'column'}
-                            title={'Column Mode'}
-                            activeType={currentMode}
-                            onChange={onChangeMode}>
+            title={'Column Mode'}
+            activeType={currentMode}
+            onChange={onChangeMode}
+          >
 
             <span className="workspace-state-item state-sidebar"></span>
             <span className="workspace-state-item left-column active"></span>
@@ -34,9 +35,10 @@ export class ColumnMode extends React.Component {
           </ChangeModeButton>
 
           <ChangeModeButton type={'focus'}
-                            title={'Focus Mode'}
-                            activeType={currentMode}
-                            onChange={onChangeMode}>
+            title={'Focus Mode'}
+            activeType={currentMode}
+            onChange={onChangeMode}
+          >
 
             <span className="workspace-state-item state-sidebar"></span>
             <span className="workspace-state-item full-width-column active"></span>

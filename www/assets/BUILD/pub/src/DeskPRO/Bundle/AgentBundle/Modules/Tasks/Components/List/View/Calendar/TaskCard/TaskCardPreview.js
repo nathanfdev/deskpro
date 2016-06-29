@@ -5,7 +5,6 @@ import Immutable from 'immutable';
 export class TaskCardPreview extends React.Component {
 
   render() {
-
     const fields = Immutable.List();
 
     return (

@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class Email extends React.Component {
 
   static propTypes = {
-    emails: PropTypes.array.isRequired,
+    emails:   PropTypes.array.isRequired,
     onChange: PropTypes.func.isRequired
   };
 
@@ -20,9 +20,10 @@ export class Email extends React.Component {
     return (
       <div className="bucket-column">
         <input type="text"
-               placeholder="Your email"
-               value={emails.join(',')}
-               onChange={this.onChange} />
+          placeholder="Your email"
+          value={emails.join(',')}
+          onChange={this.onChange}
+        />
 
         <span className="small field-note">Separate multiple email addresses with a comma.</span>
       </div>

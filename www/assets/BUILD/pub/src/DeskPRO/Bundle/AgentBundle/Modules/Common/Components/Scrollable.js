@@ -11,11 +11,11 @@ import classNames from 'classnames';
 export class Scrollable extends React.Component {
 
   static propTypes = {
-    children: PropTypes.node,
-    both: PropTypes.bool,
+    children:   PropTypes.node,
+    both:       PropTypes.bool,
     horizontal: PropTypes.bool,
-    vertical: PropTypes.bool,
-    className: PropTypes.string
+    vertical:   PropTypes.bool,
+    className:  PropTypes.string
   };
 
   // @todo how can we determine if current platform supports scrollbars?
@@ -43,13 +43,15 @@ export class Scrollable extends React.Component {
         className,
         {
           'as-horizontal': horizontal || both,
-          'as-vertical': vertical || both
+          'as-vertical':   vertical || both
         }
-      )}>
+      )}
+      >
         <ScrollArea className="dpscrollarea"
-                    contentClassName="dpscrollarea"
-                    horizontal={horizontal || both}
-                    vertical={vertical || both}>
+          contentClassName="dpscrollarea"
+          horizontal={horizontal || both}
+          vertical={vertical || both}
+        >
 
           {children}
         </ScrollArea>
@@ -67,9 +69,10 @@ export class Scrollable extends React.Component {
         className,
         {
           'as-horizontal': horizontal || both,
-          'as-vertical': vertical || both
+          'as-vertical':   vertical || both
         }
-      )}>
+      )}
+      >
         {children}
       </div>
     );

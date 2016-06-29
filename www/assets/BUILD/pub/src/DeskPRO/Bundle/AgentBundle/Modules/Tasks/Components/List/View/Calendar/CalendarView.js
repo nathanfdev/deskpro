@@ -57,11 +57,11 @@ export class CalendarView extends React.Component {
                             <TaskCard calendarFields={Immutable.List()} />
                           </TaskCardEditContainer>
                         ),
-      draggable:        {
+      draggable: {
         source: <TaskDragCard />,
         target: <TaskCardDragTarget onChangeGroup={onChangeGroup} />
       },
-      onDoubleClick:    (date, event) => {
+      onDoubleClick: (date, event) => {
         this.createNewTask(date, event.target);
       }
     };

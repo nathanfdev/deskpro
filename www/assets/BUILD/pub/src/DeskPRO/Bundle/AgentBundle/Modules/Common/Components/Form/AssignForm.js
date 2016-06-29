@@ -6,7 +6,7 @@ import { QuickFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Component
 export class AssignForm extends Component {
 
   static propTypes = {
-    title: PropTypes.string,
+    title:    PropTypes.string,
     children: PropTypes.any
   };
 

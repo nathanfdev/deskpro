@@ -4,22 +4,22 @@ import uuid from 'node-uuid';
 import { async } from 'Ampliflux/reducers/handlers';
 
 const initialState = {
-  notifications: [],
-  actionAlerts: {},
+  notifications:     [],
+  actionAlerts:      {},
   actionAlertsSetup: true
 };
 
 function addNotification(type) {
   return (state, payload) =>
-    state.set('notifications', state.get('notifications').push({...payload, id: uuid(), type}));
+    state.set('notifications', state.get('notifications').push({ ...payload, id: uuid(), type }));
 }
 
 export default createReducer(initialState, {
-  [actions.infoNotification]: addNotification('info'),
-  [actions.errorNotification]: addNotification('error'),
-  [actions.delayedActionNotification]: addNotification('delayed'),
+  [actions.infoNotification]:           addNotification('info'),
+  [actions.errorNotification]:          addNotification('error'),
+  [actions.delayedActionNotification]:  addNotification('delayed'),
   [actions.undoableActionNotification]: addNotification('undoable'),
-  [actions.destroyNotification]: (state, payload) => state.set(
+  [actions.destroyNotification]:        (state, payload) => state.set(
     'notifications',
     state.get('notifications').filter(notification => notification.id !== payload)
   ),

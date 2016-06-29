@@ -56,16 +56,16 @@ export class TicketForm extends PageWidget {
     $('#ticket_message_message_html', this.$formEl).attr('data-blob-path', 'ticket[attachments]');
 
     this.dynamicForm = new DynamicForm({
-      formEl: $formEl,
-      tplEl: $tplEl,
+      formEl:       $formEl,
+      tplEl:        $tplEl,
       alwaysFields: ['department', 'subject', 'message', 'submit', 'displayed_fields'],
-      onInit: () => {
+      onInit:       () => {
         // only render ticket deflection if a .dpx-with-ticket-deflection is present on the form
         if ($formEl.hasClass('dpx-with-ticket-deflection')) {
           const $subject = $('#ticket_subject', $formEl);
           const $rElement = $('<div class="dp-react-widget"></div>').insertAfter($subject);
 
-          ReactDOM.render(React.createElement(NewTicketSuggestions, {input: $subject}), $rElement.get(0));
+          ReactDOM.render(React.createElement(NewTicketSuggestions, { input: $subject }), $rElement.get(0));
         }
       },
       fieldFilter: fields => {
@@ -100,7 +100,7 @@ export class TicketForm extends PageWidget {
       }
     });
 
-    updateHitter = _.throttle(()=> this.dynamicForm.update(), 250);
+    updateHitter = _.throttle(() => this.dynamicForm.update(), 250);
     allFormFields.on('change', () => setTimeout(() => updateHitter(), 0));
   }
 }

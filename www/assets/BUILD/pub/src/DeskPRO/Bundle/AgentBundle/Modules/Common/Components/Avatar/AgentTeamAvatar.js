@@ -7,7 +7,7 @@ export class AgentTeamAvatar extends React.Component {
 
   static propTypes = {
     agentTeam: PropTypes.object.isRequired,
-    size: PropTypes.any
+    size:      PropTypes.any
   };
 
   getAgentTeamFallbackText() {
@@ -25,10 +25,10 @@ export class AgentTeamAvatar extends React.Component {
 
     const props = {
       size,
-      color: chooseColor(agentTeam.get('id')),
-      url: avatar.get('url'),
+      color:      chooseColor(agentTeam.get('id')),
+      url:        avatar.get('url'),
       urlPattern: avatar.get('url_pattern'),
-      text: this.getAgentTeamFallbackText()
+      text:       this.getAgentTeamFallbackText()
     };
 
     return (

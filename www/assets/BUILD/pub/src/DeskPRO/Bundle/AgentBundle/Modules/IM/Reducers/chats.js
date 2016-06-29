@@ -1,5 +1,5 @@
-import {createReducer} from 'Ampliflux';
-import {async} from 'Ampliflux/reducers/handlers';
+import { createReducer } from 'Ampliflux';
+import { async } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/chatsActions';
 
 const initialState = {

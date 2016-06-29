@@ -41,10 +41,11 @@ export class TabFrame extends React.Component {
 
     return (
       <section className={classNames('dp-tab-frame', {
-        'expanded': dpWindow.get('expandedSwitcher'),
-        'collapsed-nav': dpWindow.get('collapseNav'),
+        'expanded':       dpWindow.get('expandedSwitcher'),
+        'collapsed-nav':  dpWindow.get('collapseNav'),
         'collapsed-list': dpWindow.get('columnMode') === 'focus'
-      })}>
+      })}
+      >
 
         <div className="dp-tabbar-container"><TabStrip tabs={[]} /></div>
         <div className="dp-tabbody">

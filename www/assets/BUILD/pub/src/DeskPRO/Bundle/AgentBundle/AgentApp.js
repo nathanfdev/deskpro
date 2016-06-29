@@ -22,7 +22,7 @@ import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
  */
 window.DP_LOCALE = 'en';
 window.DP_LANG = {
-  'feedback.nav.title': 'Feedback',
+  'feedback.nav.title':       'Feedback',
   'feedback.nav.tabs.status': 'Status'
 };
 // ---------------------------------------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ export class AgentApp {
   static createStore() {
     // This builder calls compile on old-style reducers
     // created via the Reducer class
-    const legacyReducerBuilder = function(reducer) {
+    const legacyReducerBuilder = function (reducer) {
       if (reducer.isAmplifluxReducer) {
         const rInst = new reducer();
         return rInst.compile();

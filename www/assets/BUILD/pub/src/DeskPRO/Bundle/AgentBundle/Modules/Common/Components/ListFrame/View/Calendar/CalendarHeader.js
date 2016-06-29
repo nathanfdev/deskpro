@@ -22,9 +22,10 @@ export class CalendarHeader extends React.Component {
         <tr>
           {items.map(weekday =>
             <td key={weekday.isoWeekday()}
-                className={classNames({
-                  'dpwd-calendar-header-today': weekday.isSame(today, 'day')
-                })}>
+              className={classNames({
+                'dpwd-calendar-header-today': weekday.isSame(today, 'day')
+              })}
+            >
 
               {weekday.format('dddd')}
             </td>

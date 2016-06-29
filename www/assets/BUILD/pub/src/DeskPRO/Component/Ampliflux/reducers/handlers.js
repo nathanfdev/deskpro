@@ -21,7 +21,7 @@ function verifyActionError(actionObj) {
     return;
   }
 
-  console.error('Error with action ' + action.type, action.payload);
+  console.error(`Error with action ${action.type}`, action.payload);
   throw action.payload;
 }
 

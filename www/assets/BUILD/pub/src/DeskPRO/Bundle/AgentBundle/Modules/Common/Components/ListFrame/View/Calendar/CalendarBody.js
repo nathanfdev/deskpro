@@ -42,8 +42,9 @@ export class CalendarBody extends React.Component {
           <tr key={index}>
             {week.map(day =>
               <CalendarCell key={day.day()}
-                            dayDate={day}
-                            date={date} {...this.props}>
+                dayDate={day}
+                date={date} {...this.props}
+              >
 
                 <CalendarCellContent dayDate={day} {...this.props} />
               </CalendarCell>

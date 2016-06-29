@@ -21,8 +21,8 @@ export class DynamicForm {
   constructor(options) {
     options = _.defaults(options, {
       widgetClassName: 'deskpro-form-widget',
-      runInitUpdate: true,
-      alwaysFields: []
+      runInitUpdate:   true,
+      alwaysFields:    []
     });
 
     this.$formEl = $(options.formEl);
@@ -75,7 +75,7 @@ export class DynamicForm {
       this.update();
     }
 
-    this.ee.emit('init', {inst: this});
+    this.ee.emit('init', { inst: this });
   }
 
   /**
@@ -119,7 +119,7 @@ export class DynamicForm {
    * @param {Array} fields
    */
   setFieldSet(fields) {
-    let evData = {inst: this, cancel: false, fields: fields};
+    let evData = { inst: this, cancel: false, fields };
     this.ee.emit('preFieldsUpdated', evData);
     if (evData.cancel) return;
 
@@ -144,7 +144,7 @@ export class DynamicForm {
       }
     });
 
-    evData = {inst: this};
+    evData = { inst: this };
     this.ee.emit('fieldsUpdated', evData);
   }
 
@@ -203,21 +203,21 @@ export class DynamicForm {
   }
 
   _firePreUpdate() {
-    const evData = {inst: this, cancel: false};
+    const evData = { inst: this, cancel: false };
     this.ee.emit('preUpdate', evData);
 
     return evData;
   }
 
   _firePostUpdate(didChange) {
-    const evData = {inst: this, didChange: didChange};
+    const evData = { inst: this, didChange };
     this.ee.emit('postUpdate', evData);
 
     return evData;
   }
 
   _fireUpdateFields(newFields) {
-    const evData = {inst: this, cancel: false, newFields: newFields, currentFields: this.currentFields};
+    const evData = { inst: this, cancel: false, newFields, currentFields: this.currentFields };
     this.ee.emit('updateFields', evData);
 
     return evData;

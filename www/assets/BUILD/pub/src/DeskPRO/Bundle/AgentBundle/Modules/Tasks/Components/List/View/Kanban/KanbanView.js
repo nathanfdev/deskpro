@@ -8,7 +8,7 @@ import { CustomCardDragLayer } from '../../CustomCardDragLayer';
 export class KanbanView extends React.Component {
 
   static propTypes = {
-    taskGroups: PropTypes.object,
+    taskGroups:    PropTypes.object,
     onChangeGroup: PropTypes.func
   };
 

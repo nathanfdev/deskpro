@@ -58,22 +58,22 @@ export class ControlBarContainer extends React.Component {
     const { cardFields, tableFields, kanbanFields, calendarFields } = this.props;
 
     const config = {
-      applyParams:   this.props.applyFilters,
-      currentParams: currentParams,
-      sorting:       {
-        list:         {
+      applyParams: this.props.applyFilters,
+      currentParams,
+      sorting:     {
+        list: {
           label: 'List',
           icon:  'list'
         },
-        project:      {
+        project: {
           label: 'Project',
           icon:  'briefcase'
         },
-        date_due:     {
+        date_due: {
           label: 'Due Date',
           icon:  'calendar'
         },
-        date_done:    {
+        date_done: {
           label: 'Done Date',
           icon:  'calendar'
         },
@@ -81,12 +81,12 @@ export class ControlBarContainer extends React.Component {
           label: 'Created Date',
           icon:  'calendar'
         },
-        assignee:     {
+        assignee: {
           label: 'Assignee',
           icon:  'user'
         }
       },
-      filters:       [
+      filters: [
         {
           label:     'Date Created',
           type:      'date',
@@ -129,19 +129,19 @@ export class ControlBarContainer extends React.Component {
           labels:    labels.map(label => label.get('label'))
         }
       ],
-      view:          {
+      view: {
         options: {
-          [constants.VIEW_MODE_CARD]:     {
+          [constants.VIEW_MODE_CARD]: {
             label:  'Card View',
             icon:   'list',
             fields: cardFields
           },
-          [constants.VIEW_MODE_TABLE]:    {
+          [constants.VIEW_MODE_TABLE]: {
             label:  'Table View',
             icon:   'table',
             fields: tableFields
           },
-          [constants.VIEW_MODE_KANBAN]:   {
+          [constants.VIEW_MODE_KANBAN]: {
             label:  'Kanban View',
             icon:   'sticky-note-o',
             fields: kanbanFields
@@ -153,7 +153,7 @@ export class ControlBarContainer extends React.Component {
           }
         },
 
-                               viewMode,
+        viewMode,
         viewModeAction:        value => updateRoutingState('list', 'view', value),
         toggleFieldVisibility: this.props.toggleFieldVisibility,
         changeFieldOrder:      this.props.changeFieldOrder

@@ -45,7 +45,7 @@ export class FilterEditPopupContainer extends Component {
 
     if (grouping.get(String(filterId))) {
       groupBy = grouping.get(String(filterId)).get('main_grouping');
-      id      = grouping.get(String(filterId)).get('id');
+      id = grouping.get(String(filterId)).get('id');
     }
 
     return (

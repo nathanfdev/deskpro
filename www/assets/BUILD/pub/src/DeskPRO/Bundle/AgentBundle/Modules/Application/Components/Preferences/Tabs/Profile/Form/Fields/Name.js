@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class Name extends React.Component {
 
   static propTypes = {
-    value: PropTypes.string,
+    value:    PropTypes.string,
     onChange: PropTypes.func.isRequired
   };
 
@@ -15,9 +15,10 @@ export class Name extends React.Component {
     return (
       <div className="bucket-column">
         <input type="text"
-               placeholder="Your name"
-               value={this.props.value}
-               onChange={this.onChange} />
+          placeholder="Your name"
+          value={this.props.value}
+          onChange={this.onChange}
+        />
       </div>
     );
   }

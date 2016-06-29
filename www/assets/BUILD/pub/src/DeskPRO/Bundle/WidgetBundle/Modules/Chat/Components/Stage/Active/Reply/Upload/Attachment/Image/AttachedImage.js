@@ -30,8 +30,9 @@ export class AttachedImage extends React.Component {
               </div>
           }
           <div className="dpdesignportal-chat-form-attached-image-thumb"
-               onClick={this.openFullImage}
-               style={{ backgroundImage: `url(${downloadUrl})` }}></div>
+            onClick={this.openFullImage}
+            style={{ backgroundImage: `url(${downloadUrl})` }}
+          ></div>
 
           <img src={downloadUrl} ref="image" className="hidden" />
         </div>

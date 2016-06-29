@@ -4,9 +4,9 @@ export class TextAvatar extends React.Component {
 
   static propTypes = {
     children: PropTypes.node,
-    size: PropTypes.number,
-    text: PropTypes.string,
-    color: PropTypes.string
+    size:     PropTypes.number,
+    text:     PropTypes.string,
+    color:    PropTypes.string
   };
 
   render() {
@@ -18,7 +18,7 @@ export class TextAvatar extends React.Component {
 
       text,
       color,
-      width: size,
+      width:  size,
       height: size
     });
   }

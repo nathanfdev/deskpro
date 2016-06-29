@@ -5,8 +5,8 @@ import Loader from 'react-loader';
 export class Content extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    settings: PropTypes.object.isRequired,
+    dispatch:       PropTypes.func.isRequired,
+    settings:       PropTypes.object.isRequired,
     settingsLoaded: PropTypes.object.isRequired
   };
 
@@ -15,8 +15,9 @@ export class Content extends React.Component {
 
     return (
       <Loader loaded={settingsLoaded}
-              opacity={0}
-              width={3}>
+        opacity={0}
+        width={3}
+      >
 
         <div className="user-signature-settings">
           <h1>Signature</h1>

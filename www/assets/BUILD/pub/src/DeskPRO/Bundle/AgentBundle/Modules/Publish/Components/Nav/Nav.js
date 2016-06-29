@@ -11,19 +11,19 @@ import { ToDoTab } from './Tabs/ToDoTab';
 export class Nav extends Component {
 
   static propTypes = {
-    isLoaded:         PropTypes.bool.isRequired,
-    articles:         PropTypes.object.isRequired,
-    news:             PropTypes.object.isRequired,
-    downloads:        PropTypes.object.isRequired,
-    todo:             PropTypes.object.isRequired,
-    grouping:         PropTypes.object.isRequired,
-    setMine:          PropTypes.func.isRequired
+    isLoaded:  PropTypes.bool.isRequired,
+    articles:  PropTypes.object.isRequired,
+    news:      PropTypes.object.isRequired,
+    downloads: PropTypes.object.isRequired,
+    todo:      PropTypes.object.isRequired,
+    grouping:  PropTypes.object.isRequired,
+    setMine:   PropTypes.func.isRequired
   };
 
   toggle(event) {
     event.preventDefault();
     this.setState({ expanded: !this.state.expanded });
-  };
+  }
 
   close() {
     this.setState({ expanded: false });

@@ -11,7 +11,7 @@ export class CalendarCell extends React.Component {
     children:      PropTypes.node,
     onDoubleClick: PropTypes.func,
     draggable:     PropTypes.shape({
-      target:      PropTypes.node.isRequired
+      target: PropTypes.node.isRequired
     })
   };
 
@@ -30,7 +30,7 @@ export class CalendarCell extends React.Component {
     const lastDayOfMonth = moment(date).endOf('month');
 
     const draggableChildren = (
-      <div className={classNames('dpwd-calendar-day', {'dpwd-calendar-day-today': today.isSame(dayDate, 'day')})}>
+      <div className={classNames('dpwd-calendar-day', { 'dpwd-calendar-day-today': today.isSame(dayDate, 'day') })}>
         <span className="dpwd-calendar-day-mark">{dayDate.date()}</span>
         <div className="dpwd-calendar-tasks">
           {children}

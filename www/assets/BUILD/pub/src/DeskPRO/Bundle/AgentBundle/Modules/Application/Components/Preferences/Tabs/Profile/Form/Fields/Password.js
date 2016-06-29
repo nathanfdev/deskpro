@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class Password extends React.Component {
 
   static propTypes = {
-    value: PropTypes.object,
+    value:    PropTypes.object,
     onChange: PropTypes.func.isRequired
   };
 
@@ -40,13 +40,15 @@ export class Password extends React.Component {
     return (
       <div>
           <input type="password"
-                 placeholder="Password"
-                 value={first}
-                 onChange={this.onChangeValue} />
+            placeholder="Password"
+            value={first}
+            onChange={this.onChangeValue}
+          />
           <input type="password"
-                 placeholder="Confirm password"
-                 value={second}
-                 onChange={this.onChangeConfirmValue} />
+            placeholder="Confirm password"
+            value={second}
+            onChange={this.onChangeConfirmValue}
+          />
       </div>
     );
   }

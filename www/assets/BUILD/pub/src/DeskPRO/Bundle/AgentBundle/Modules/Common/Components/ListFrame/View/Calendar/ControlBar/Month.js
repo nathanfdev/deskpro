@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class Month extends React.Component {
 
   static propTypes = {
-    date: PropTypes.object.isRequired,
+    date:     PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired
   };
 

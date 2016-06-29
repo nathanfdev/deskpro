@@ -8,9 +8,9 @@ export class MenuFooter extends React.Component {
    * @type {Object}
    */
   static propTypes = {
-    widgetClass: React.PropTypes.string,
+    widgetClass:         React.PropTypes.string,
     overrideWidgetClass: React.PropTypes.bool,
-    children: React.PropTypes.node
+    children:            React.PropTypes.node
   };
 
   /**

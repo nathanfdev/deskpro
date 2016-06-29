@@ -13,14 +13,14 @@ export class DownloadPopupWidget extends PageWidget {
     this.$rElement = $('<div class="dp-react-widget as-dpui"></div>').appendTo($el.closest('body'));
 
     const component = React.createElement(DownloadPopup, {
-      filename: $el.data('filename'),
-      filesize: $el.data('filesize'),
-      dateUploaded: $el.data('date-uploaded'),
-      downloadUrl: $el.attr('href'),
-      voteUrl: $el.data('vote-url'),
-      voteCount: $el.data('vote-count'),
-      $voteWidget: $parent.find('.as-vote-widget'),
-      $button: this.$element,
+      filename:      $el.data('filename'),
+      filesize:      $el.data('filesize'),
+      dateUploaded:  $el.data('date-uploaded'),
+      downloadUrl:   $el.attr('href'),
+      voteUrl:       $el.data('vote-url'),
+      voteCount:     $el.data('vote-count'),
+      $voteWidget:   $parent.find('.as-vote-widget'),
+      $button:       this.$element,
       widgetOptions: this.options
     });
 

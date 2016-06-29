@@ -113,7 +113,7 @@ export class ProjectForm extends Component {
               <div className="dpw--popup-form-container">
                 <input type="text" placeholder="Example Project" value={title}
                   onChange={(event) => this.onChange('title', event.target.value)}
-                  />
+                />
               </div>
             </div>
           </div>
@@ -121,15 +121,15 @@ export class ProjectForm extends Component {
           <AssignForm title="Project Permissions">
             <AssignAgentContainer selected={agents}
               onChange={(value) => this.onChange('agents', value)}
-              />
+            />
 
             <AssignTeamContainer selected={teams}
               onChange={(value) => this.onChange('teams', value)}
-              />
+            />
 
             <AssignDepartmentContainer selected={departments}
               onChange={(value) => this.onChange('departments', value)}
-              />
+            />
           </AssignForm>
 
           <div className="dpw--popup-content-line">
@@ -140,7 +140,7 @@ export class ProjectForm extends Component {
               {!isNew ?
                 <a href="#" className="dpw--popup-button" onClick={this.onDeletePrompt}
                   style={{ minWidth: 175, background: '#ff5460' }}
-                  >
+                >
                   Delete project and all tasks
                 </a>
                 : null}

@@ -18,16 +18,16 @@ import { addMessage } from '../../Actions/messagesActions';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 
 @connect(state => ({
-  me: meSelector(state),
+  me:       meSelector(state),
   messages: state.IM.messages,
-  current: state.IM.chats.get('current'),
-  agents: agentsSelector(state)
+  current:  state.IM.chats.get('current'),
+  agents:   agentsSelector(state)
 }))
 export class Chat extends React.Component {
   static propTypes = {
-    me: PropTypes.object.isRequired,
-    current: PropTypes.object.isRequired,
-    agents: PropTypes.object.isRequired,
+    me:       PropTypes.object.isRequired,
+    current:  PropTypes.object.isRequired,
+    agents:   PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
@@ -49,7 +49,7 @@ export class Chat extends React.Component {
     if (this.isAgentChat()) {
       const { agents, current, me } = this.props;
       if (agents && agents.size > 0) {
-        const filteredAgents = current.agents.filter(agent => agent !== me.get('id') );
+        const filteredAgents = current.agents.filter(agent => agent !== me.get('id'));
         const notMe = filteredAgents[0];
         online = agents.getIn([notMe, 'online']);
       }
@@ -59,9 +59,9 @@ export class Chat extends React.Component {
 
   messageList = () => {
     return (
-      <div style={{minHeight: 75}}>
+      <div style={{ minHeight: 75 }}>
         <Loader loaded={this.props.current.id > 0} opacity={0} width={3} top="45%">
-          <MessageList current={this.props.current} searchQuery={this.state.searchQuery}/>
+          <MessageList current={this.props.current} searchQuery={this.state.searchQuery} />
         </Loader>
       </div>
     );
@@ -118,7 +118,8 @@ export class Chat extends React.Component {
         handleClear={this.handleClear.bind(this)}
         handleType={this.handleType}
         handleSearch={this.handleSearch}
-        searching={this.state.searchTyped}/>
+        searching={this.state.searchTyped}
+      />
       : null;
   }
 
@@ -128,7 +129,7 @@ export class Chat extends React.Component {
 
   offline() {
     if (this.isAgentChat()) {
-      return <Offline online={this.isOnline()}/>;
+      return <Offline online={this.isOnline()} />;
     }
   }
 
@@ -137,13 +138,13 @@ export class Chat extends React.Component {
     <ClickOut
       onClickOut={this.handleOnClose}
       additionalNodes={['#active-chat-search-clear', '.emoticon']}
-      >
+    >
       <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
-        <Header toggleSearch={this.toggleSearch} onClose={this.handleOnClose} online={this.isOnline()}/>
-        { this.searchForm() }
-        { this.messageList() }
-        { this.offline() }
-        <Footer handleAddMessage={this.handleAddMessage}/>
+        <Header toggleSearch={this.toggleSearch} onClose={this.handleOnClose} online={this.isOnline()} />
+        {this.searchForm()}
+        {this.messageList()}
+        {this.offline()}
+        <Footer handleAddMessage={this.handleAddMessage} />
       </div>
     </ClickOut>
 

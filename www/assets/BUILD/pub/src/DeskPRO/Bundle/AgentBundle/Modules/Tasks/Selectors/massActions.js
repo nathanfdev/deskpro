@@ -9,31 +9,31 @@ export const massActionsSelector = createSelector(
     // Project options
     const projectOptions = projects.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
     massActions.push({
-      label: 'Project',
-      type: 'set_action',
-      param: 'set_project',
+      label:       'Project',
+      type:        'set_action',
+      param:       'set_project',
       quickFilter: true,
-      options: projectOptions
+      options:     projectOptions
     });
 
     // Assign options
     massActions.push({
-      label: 'Assign',
-      type: 'assign_action',
-      param: 'assign',
+      label:       'Assign',
+      type:        'assign_action',
+      param:       'assign',
       quickFilter: true
     });
 
     // Due date options
     massActions.push({
       label: 'Due date',
-      type: 'set_date',
+      type:  'set_date',
       param: 'set_due_date'
     });
 
     // Status options
     massActions.push({
-      label: 'Status', type: 'set_action', param: 'set_status',
+      label:   'Status', type:    'set_action', param:   'set_status',
       options: [{ value: 1, label: 'Complete' }, { value: 0, label: 'Incomplete' }]
     });
 
@@ -42,9 +42,9 @@ export const massActionsSelector = createSelector(
       { label: 'Delete', param: 'delete' }
     ];
     massActions.push({
-      icon: 'fa-asterisk',
-      type: 'select_action',
-      param: 'other',
+      icon:    'fa-asterisk',
+      type:    'select_action',
+      param:   'other',
       options: otherOptions
     });
 

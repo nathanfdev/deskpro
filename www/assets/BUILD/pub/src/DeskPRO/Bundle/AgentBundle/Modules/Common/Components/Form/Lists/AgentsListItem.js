@@ -23,7 +23,7 @@ export class AgentsListItem extends RadioListItem {
     let img;
     if (pattern) {
       img = pattern.replace(/\{\{IMG_SIZE}}/, size);
-    } else if(gravatar) {
+    } else if (gravatar) {
       img = gravatar;
     }
 

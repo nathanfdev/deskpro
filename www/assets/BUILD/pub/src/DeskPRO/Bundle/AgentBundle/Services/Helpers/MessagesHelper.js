@@ -13,7 +13,7 @@ export class MessagesHelper {
         }
       });
       if (changed) {
-        return newState.setIn(this.getPath(state, payload.chatId), {...chat});
+        return newState.setIn(this.getPath(state, payload.chatId), { ...chat });
       }
     }
     return newState;

@@ -62,7 +62,7 @@ export class AssignDepartment extends Component {
       <CollectionField title={this.renderTitle()}>
         <DepartmentsListContainer selected={selected} filter={filter} showOnlySelected={showOnlySelected}
           onChange={this.onChange}
-          />
+        />
       </CollectionField>
     );
   }

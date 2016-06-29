@@ -32,7 +32,7 @@ export class AppPane extends React.Component {
     const classes = getWorkspaceClasses(workspace, ['app-frame-container', 'app-active']);
 
     return (
-      <div className="dp-panes-app" style={{width: workspaceDims.appPaneSize}}>
+      <div className="dp-panes-app" style={{ width: workspaceDims.appPaneSize }}>
         <div className={classes.join(' ')}>
           {this.props.children}
         </div>

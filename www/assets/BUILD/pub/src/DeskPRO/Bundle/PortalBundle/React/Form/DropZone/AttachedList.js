@@ -5,9 +5,9 @@ import { UploadingFile } from './UploadingFile';
 export class AttachedList extends React.Component {
 
   static propTypes = {
-    onDelete: PropTypes.func,
+    onDelete:  PropTypes.func,
     inputName: PropTypes.string,
-    files: PropTypes.array.isRequired
+    files:     PropTypes.array.isRequired
   };
 
   render() {

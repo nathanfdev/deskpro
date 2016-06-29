@@ -2,14 +2,14 @@ import 'babel-polyfill';
 import $ from 'jquery';
 import factory from 'iframe-resizer';
 
-const runEmbed = function(helpdeskUrl, options, containerEl) {
+const runEmbed = function (helpdeskUrl, options, containerEl) {
   const { language = 'en' } = options;
 
   const node = document.createElement('iframe');
-  node.frameborder       = 0;
-  node.framespacing      = 0;
-  node.marginheight      = 0;
-  node.marginwidth       = 0;
+  node.frameborder = 0;
+  node.framespacing = 0;
+  node.marginheight = 0;
+  node.marginwidth = 0;
   node.allowtransparency = 'true';
 
   (node.frameElement || node).style.cssText = 'border: none; margin: 0; padding: 0;';
@@ -18,7 +18,7 @@ const runEmbed = function(helpdeskUrl, options, containerEl) {
 
   node.src = helpdeskUrl + (`/frame-embed/${langSeg}`).replace(/\/$/, '');
 
-  const calculatedWidth = function() {
+  const calculatedWidth = function () {
     if (options.width && parseInt(options.width) !== 0 && !isNaN(parseInt(options.width))) {
       return options.width;
     }
@@ -26,19 +26,19 @@ const runEmbed = function(helpdeskUrl, options, containerEl) {
     return $(containerEl).width() || 500;
   };
 
-  const updateWidth = function() {
+  const updateWidth = function () {
     const w = calculatedWidth();
     node.width = w;
     node.style.width = w + 'px';
   };
 
   if (!(options.width && options.width !== 0)) {
-    window.setInterval(function() {
+    window.setInterval(function () {
       updateWidth();
     }, 5000);
     $(window).on('load resize', function () {
       updateWidth();
-    })
+    });
   }
 
   updateWidth();
@@ -46,9 +46,9 @@ const runEmbed = function(helpdeskUrl, options, containerEl) {
 
   containerEl.appendChild(node);
   factory.iframeResizer({
-    log: true,
+    log:         true,
     checkOrigin: false,
-    sizeHeight: true
+    sizeHeight:  true
   }, node);
 };
 

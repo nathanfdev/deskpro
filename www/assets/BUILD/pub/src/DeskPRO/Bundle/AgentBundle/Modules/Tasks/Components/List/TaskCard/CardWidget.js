@@ -6,7 +6,7 @@ export class CardWidget extends React.Component {
     super(props);
     this.state = {
       isOpen: props.isOpen,
-      value: props.value
+      value:  props.value
     };
   }
 
@@ -25,19 +25,19 @@ export class CardWidget extends React.Component {
   }
 
   onChange = (val) => {
-    this.setState({value: val});
+    this.setState({ value: val });
     this.props.onChange && this.props.onChange(val);
   };
 
   onOpen = () => {
     if (this.state.isOpen) return;
-    this.setState({isOpen: true});
+    this.setState({ isOpen: true });
     this.props.onSetEditing && this.props.onSetEditing(true);
   };
 
   onClose = event => {
     if (!this.state.isOpen) return;
-    this.setState({isOpen: false});
+    this.setState({ isOpen: false });
     this.props.onSetEditing && this.props.onSetEditing(false);
   };
 }

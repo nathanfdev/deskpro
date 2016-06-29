@@ -5,18 +5,18 @@ import { ActionAlertsHandler } from 'DeskPRO/Bundle/AgentBundle/Services/ActionA
 import { connect } from 'react-redux';
 
 @connect(state => ({
-  user: meSelector(state),
-  actionAlerts: state.Application.notifications.get('actionAlerts'),
+  user:              meSelector(state),
+  actionAlerts:      state.Application.notifications.get('actionAlerts'),
   actionAlertsSetup: state.Application.notifications.get('actionAlertsSetup'),
-  state: state
+  state
 }))
 export class NotificationServiceContainer extends React.Component {
 
   static propTypes = {
-    user: PropTypes.object.isRequired,
-    state: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    actionAlerts: PropTypes.object.isRequired,
+    user:              PropTypes.object.isRequired,
+    state:             PropTypes.object.isRequired,
+    dispatch:          PropTypes.func.isRequired,
+    actionAlerts:      PropTypes.object.isRequired,
     actionAlertsSetup: PropTypes.bool.isRequired
   };
 
@@ -41,10 +41,10 @@ export class NotificationServiceContainer extends React.Component {
   }
 
   setupPolling() {
-    const { user, dispatch, actionAlerts, actionAlertsSetup} = this.props;
+    const { user, dispatch, actionAlerts, actionAlertsSetup } = this.props;
 
     if (!actionAlertsSetup && !this.started) {
-      const aah = new ActionAlertsHandler({dispatch: dispatch, me: user.get('id')});
+      const aah = new ActionAlertsHandler({ dispatch, me: user.get('id') });
 
       this.ns = new NotificationService({ user, clients: actionAlerts.clients, actionAlertsHandler: aah });
       this.ns.startPolling();
@@ -53,6 +53,6 @@ export class NotificationServiceContainer extends React.Component {
   }
 
   render() {
-    return <span/>;
+    return <span />;
   }
 }

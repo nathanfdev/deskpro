@@ -102,7 +102,7 @@ export class TaskCard extends BaseTaskCard {
       <Card statusBars={false} type="task" moving={moving} additionalClasses="calendar-task-card">
 
         <div className="title-line">
-          <Title value={task.get('title')} isDone={task.get('is_done')} onSubmit={val => onChange('title', val)}/>
+          <Title value={task.get('title')} isDone={task.get('is_done')} onSubmit={val => onChange('title', val)} />
           {this.renderField(assignee)}
         </div>
 

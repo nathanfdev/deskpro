@@ -5,7 +5,7 @@ import classNames from 'classnames';
 export class YearDropdown extends React.Component {
 
   static propTypes = {
-    date: PropTypes.object.isRequired,
+    date:     PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired
   };
 
@@ -32,8 +32,9 @@ export class YearDropdown extends React.Component {
           {years.map(year =>
             <li key={year}>
               <a href="#"
-                 className={classNames({'active': selectedYear === year})}
-                 onClick={event => this.onChange.bind(this, event, year)()}>
+                className={classNames({ 'active': selectedYear === year })}
+                onClick={event => this.onChange.bind(this, event, year)()}
+              >
 
                 {year}
               </a>
