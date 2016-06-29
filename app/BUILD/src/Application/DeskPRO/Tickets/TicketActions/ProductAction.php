@@ -41,9 +41,9 @@ class ProductAction extends AbstractAction implements PermissionableAction
     /** @var int */
     protected $product_id;
 
-    public function __construct($product_id)
+    public function __construct($product)
     {
-        $this->product_id = $product_id;
+        $this->product_id = $product;
     }
 
     /**
