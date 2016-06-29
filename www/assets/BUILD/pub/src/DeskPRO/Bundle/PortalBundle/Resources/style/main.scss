@@ -1104,6 +1104,7 @@ button, .button, input[type="submit"] {
   position: relative;
   text-align: $text-right;
   display: table;
+  width: 100%;
 
   .logo {
     max-height: 100px;
@@ -1115,6 +1116,8 @@ button, .button, input[type="submit"] {
     text-align: $text-left;
     margin-top: 10px;
     padding: 0;
+    display: block;
+
     .brand {
       padding: 5px;
       // border-bottom: 1px solid $hr-border;
@@ -1158,7 +1161,8 @@ button, .button, input[type="submit"] {
   .brand {
     display: table-cell;
     vertical-align: bottom;
-    float: $float-left;
+    min-width: 50%;
+    text-align: $float-left;
 
     a {
       color: inherit;
@@ -1166,6 +1170,7 @@ button, .button, input[type="submit"] {
     }
 
     @media screen and (max-width: 760px) {
+      min-width: initial;
       float: none;
       display: block;
     }
@@ -1174,7 +1179,7 @@ button, .button, input[type="submit"] {
   ul {
     display: table-cell;
     vertical-align: bottom;
-    width: 100%;
+    width: 50%;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -1220,6 +1225,13 @@ button, .button, input[type="submit"] {
 
     .item-logout {
       margin-left: 6px;
+      @media screen and (max-width: 760px) {
+        margin-left: 0;
+
+        a {
+          margin-right: 0;
+        }
+      }
     }
 
     li {
