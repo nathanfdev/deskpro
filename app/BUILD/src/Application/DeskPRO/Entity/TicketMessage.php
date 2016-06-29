@@ -527,7 +527,7 @@ class TicketMessage extends DomainObject
                 $sc_code = null;
             }
 
-            if (substr($m[3], strtolower(-5) === '.tiff')) {
+            if (substr(strtolower($m[3]), -5) === '.tiff') {
                 $m[1] = 'url';
             }
 
@@ -575,7 +575,6 @@ class TicketMessage extends DomainObject
                     );
                 }
             } else {
-                $a       = 1;
                 $replace = sprintf(
                     '<a href="%s" target="_blank" class="dragout '.$marker_class_a.'" %s>%s</a>',
                     $download_url,

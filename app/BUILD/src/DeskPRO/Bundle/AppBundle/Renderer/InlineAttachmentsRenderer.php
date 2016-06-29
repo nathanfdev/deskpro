@@ -103,7 +103,7 @@ class InlineAttachmentsRenderer
         $blob_auth_id = $m[2];
         $filename     = $m[3];
 
-        if (substr($filename, strtolower(-5) === '.tiff')) {
+        if (substr(strtolower($filename), -5) === '.tiff') {
             $attach_type = 'url';
         }
 
