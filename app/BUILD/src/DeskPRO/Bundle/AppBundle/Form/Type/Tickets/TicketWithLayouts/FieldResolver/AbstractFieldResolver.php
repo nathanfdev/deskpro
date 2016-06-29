@@ -248,7 +248,7 @@ abstract class AbstractFieldResolver
         $def = $this->fieldManager->getCustomPersonFieldById($field->getFieldId());
 
         $field = $this->createCustomField($context, 'person.custom_data', $def);
-        $field->setOption('owner_form', $context->getForm()->get(FormFields::PERSON));
+//        $field->setOption('owner_form', $context->getForm()->get(FormFields::PERSON));
 
         return $field;
     }
