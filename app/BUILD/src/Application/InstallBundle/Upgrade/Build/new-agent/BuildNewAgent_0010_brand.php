@@ -44,7 +44,7 @@ class BuildNewAgent_0010_brand extends AbstractBuild
 
         $this->execMutateSql("
             INSERT INTO `theme_sets` (`id`, `theme_id`, `options`)
-            VALUES (1, 'standard', '{}'), (2, 'sidebar', '{}'), (3, 'sidebar', '{}')
+            VALUES (1, 'standard', '{}'), (2, 'sidebar', '{}'), (3, 'standard', '{}')
         ");
 
         #------------------------------
