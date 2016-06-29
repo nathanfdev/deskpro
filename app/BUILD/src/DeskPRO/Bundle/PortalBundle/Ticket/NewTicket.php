@@ -159,6 +159,8 @@ class NewTicket
         $person         = $ticket->getPerson();
         $ticket_message = $ticket->messages[0];
 
+        $personGuest = $person;
+
         $exist_person = $this->person_factory->getPersonByEmail($person->getEmailAddress());
         if ($exist_person) {
             $person = $exist_person;
@@ -173,6 +175,15 @@ class NewTicket
         $ticket_message->setPerson($person);
         foreach ($ticket_message->getAttachments() as $attachment) {
             $attachment->setPerson($person);
+        }
+
+        // reset old custom data for submitted fields
+        foreach ($personGuest->getCustomData() as $customData) {
+            $person->removeCustomDataForField($customData->getRootField());
+        }
+        // add new custom data
+        foreach ($personGuest->getCustomData() as $customData) {
+            $person->addCustomData($customData);
         }
 
         return $this->acceptNewTicket($ticket, $request);

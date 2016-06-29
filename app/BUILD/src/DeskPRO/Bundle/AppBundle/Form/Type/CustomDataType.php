@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -142,26 +143,32 @@ class CustomDataType extends AbstractType
         // we need to track and re-generate the form if custom data owner has changed
         $viewData  = null;
         $ownerForm = $config->getOption('owner_form');
-        if ($ownerForm && $eventName === FormEvents::SUBMIT) {
-            $owner = $ownerForm->getData();
-            $data  = $owner->custom_data;
 
-            $viewData = $form->get('data')->getViewData();
+        // if we have owner form and it's mapped then we change custom data on submit
+        if ($ownerForm instanceof Form && $eventName === FormEvents::SUBMIT) {
+            if (!$ownerForm->getConfig()->getInheritData()) {
+                $owner = $ownerForm->getData();
+                $data  = $owner->custom_data;
 
-            $form->setData($data);
-            $form->remove('data');
+                $viewData = $form->get('data')->getViewData();
+
+                $form->setData($data);
+                $form->remove('data');
+            }
         } else {
-            $data = $event->getData();
+            $data = $event->getData() ?: new ArrayCollection();
         }
 
-        // child field is not mapped so the form tries to get data from the options
-        // so we should pass stored value via its options
-        $options['data'] = $this->getFormData($data, $customDef);
+        if (isset($data)) {
+            // child field is not mapped so the form tries to get data from the options
+            // so we should pass stored value via its options
+            $options['data'] = $this->getFormData($data, $customDef);
 
-        $form->add('data', $field->getType(), $options);
+            $form->add('data', $field->getType(), $options);
 
-        if ($ownerForm && $eventName === FormEvents::SUBMIT) {
-            $form->get('data')->submit($viewData);
+            if ($ownerForm && $eventName === FormEvents::SUBMIT) {
+                $form->get('data')->submit($viewData);
+            }
         }
     }
 

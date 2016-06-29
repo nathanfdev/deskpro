@@ -99,6 +99,8 @@ class NewTicketController extends AbstractController
                     // deal with guests via negotiating with PersonFactory
                     if ($person instanceof PersonGuest) {
                         try {
+                            $personGuest = $person;
+
                             $this->getPersonFactory()->checkGuestForValidation(
                                 $person,
                                 $this->isSavedFormSubRequest($request)
@@ -113,6 +115,15 @@ class NewTicketController extends AbstractController
                             $ticketMessage->setPerson($person);
                             foreach ($ticketMessage->getAttachments() as $attachment) {
                                 $attachment->setPerson($person);
+                            }
+
+                            // reset old custom data for submitted fields
+                            foreach ($personGuest->getCustomData() as $customData) {
+                                $person->removeCustomDataForField($customData->getRootField());
+                            }
+                            // add new custom data
+                            foreach ($personGuest->getCustomData() as $customData) {
+                                $person->addCustomData($customData);
                             }
 
                             $new_ticket = $this->getNewTicketService()->acceptNewTicket($ticket, $request);

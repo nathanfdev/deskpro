@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,10 +31,12 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * A website visitor when we have no information about them.
@@ -44,9 +46,10 @@ class PersonGuest extends Person
     public function __construct()
     {
         $this->id             = 0;
-        $this->_usergroup_ids = array();
-        $this->usergroups     = array();
+        $this->_usergroup_ids = [];
+        $this->usergroups     = [];
         $this->timezone       = App::getSetting('core.default_timezone');
+        $this->custom_data    = new ArrayCollection();
     }
 
     public function getUsergroups()
