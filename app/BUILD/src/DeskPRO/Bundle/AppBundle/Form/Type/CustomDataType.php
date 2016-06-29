@@ -447,6 +447,23 @@ class CustomDataType extends AbstractType
 
                     $customDefData->add($defaultCustomData);
                 }
+            } else {
+                $defaultIds = (array) $customDef->getDefaultValue();
+                foreach ($defaultIds as $defaultId) {
+                    $choiceDef = $customDef->getChildById($defaultId);
+                    if (!$choiceDef) {
+                        continue;
+                    }
+
+                    $defaultCustomData = $customDef->createCustomData();
+                    $defaultCustomData
+                        ->setField($choiceDef)
+                        ->setRootField($customDef)
+                        ->setValue(1)
+                    ;
+
+                    $customDefData->add($defaultCustomData);
+                }
             }
         }
 
