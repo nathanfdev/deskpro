@@ -301,7 +301,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				var setel;
 				if (!options) options = {};
-
+        options.pasteZone = null;
 				if (options.page) {
 					options.namespace = options.page.OBJ_ID + '_fileupload';
 				}
@@ -460,7 +460,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 						$(el).find('.error').remove();
 						$(el).find('.files').append('<li class="error">The file you are trying to upload is too big.</li>');
 					}
-				})
+				});
 
 				// drop could have an auth, which we handle manually (ie not fileupload jquery plugin)
 				$el.on('drop', function(event) {
