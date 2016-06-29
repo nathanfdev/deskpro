@@ -28,7 +28,7 @@ Feature: New ticket form
       | ticket[department] |
       | ticket[subject]    |
 
-  Scenario:  I check that field is on form on page load
+  Scenario: I check that field is on form on page load
     Given the only default ticket layout exists with fields:
       | user_layout | user_layout_options                                                                                                                                 |
       | cc          | {"on_editticket": true, "criteria":{"version":1,"mode":"all","terms":[{"type":"CheckDepartment","op":"is","options":{"department_ids":["~d2~"]}}]}} |
@@ -37,5 +37,16 @@ Feature: New ticket form
     Then I should see ".form-ticket" form fields in following order:
       | name               |
       | ticket[cc]         |
+      | ticket[department] |
+      | ticket[subject]    |
+
+  Scenario: I check that department fields is on the form even it doesn't match criteria
+    Given the only default ticket layout exists with fields:
+      | user_layout | user_layout_options                                                                                                                                 |
+      | department  | {"on_editticket": true, "criteria":{"version":1,"mode":"all","terms":[{"type":"CheckDepartment","op":"is","options":{"department_ids":["~d1~"]}}]}} |
+
+    When I go to "/tickets/ref/edit"
+    Then I should see ".form-ticket" form fields in following order:
+      | name               |
       | ticket[department] |
       | ticket[subject]    |

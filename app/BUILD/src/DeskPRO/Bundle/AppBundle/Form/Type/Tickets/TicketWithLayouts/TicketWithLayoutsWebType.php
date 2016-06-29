@@ -149,8 +149,7 @@ class TicketWithLayoutsWebType extends AbstractType
         $hasNotSubmitted = false;
         $displayedFields = isset($data['displayed_fields']) ? array_flip(explode(',', $data['displayed_fields'])) : [];
 
-        $fields = TicketLayoutHelper::getLayoutFields($context);
-        foreach ($fields as $field) {
+        foreach (TicketLayoutHelper::getLayoutFields($context) as $field) {
             // the form was already updated via the form manipulator pre submit callback
             // so check if the field should be rendered based on the rendered form
             if (!$form->has($field->getId())) {

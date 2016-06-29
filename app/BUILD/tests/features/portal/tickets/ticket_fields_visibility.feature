@@ -94,3 +94,14 @@ Feature: New ticket form
 
     When I go to "/portal/api/tickets/new"
     Then the response should not contain "<input type=\\"text\\" id=\\"ticket_cc\\" name=\\"ticket[cc]\\""
+
+  Scenario: I check that department field is on the form even it's not visible
+    Given the only default ticket layout exists with fields:
+      | user_layout | user_layout_options     |
+      | department  | {"on_newticket": false} |
+
+    When I go to "/new-ticket"
+    Then I should see ".form-ticket" form fields in following order:
+      | name               |
+      | ticket[department] |
+      | ticket[subject]    |
