@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use Doctrine\ORM\EntityManager;
@@ -86,6 +87,12 @@ abstract class AbstractGenerator implements MessageGeneratorInterface
      */
     public function getUser()
     {
-        return $this->token_storage->getToken()->getUser();
+        if ($this->token_storage->getToken()) {
+            return $this->token_storage->getToken()->getUser();
+        }
+        // todo actually this is just a stub to handle
+        $user = new PersonGuest();
+
+        return $user->setIsAgent(true)->setName('System');
     }
 }

@@ -28,6 +28,7 @@
 
 namespace DpBehat\Data\Factory;
 
+use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefFeedback;
@@ -64,9 +65,8 @@ class CommonFactories
         }
 
         $person = new Person();
-        SimpleFactory::provide($person, $data);
 
-        return $person;
+        return SimpleFactory::provide($person, $data);
     }
 
     /**
@@ -88,9 +88,7 @@ class CommonFactories
 
         Helper::pick($data, 'subject', $ticket, 'setSubject', uniqid('Ticket_'));
 
-        SimpleFactory::provide($ticket, $data);
-
-        return $ticket;
+        return SimpleFactory::provide($ticket, $data);
     }
 
     /**
@@ -103,9 +101,7 @@ class CommonFactories
         $department = new Department();
         Helper::pick($data, 'title', $department, 'setRealTitle', uniqid('Department_'));
 
-        SimpleFactory::provide($department, $data);
-
-        return $department;
+        return SimpleFactory::provide($department, $data);
     }
 
     /**
@@ -164,9 +160,7 @@ class CommonFactories
         Helper::pick($data, 'handler_class', $def, 'setHandlerClass');
 
         // Provide rest of the $data properties
-        SimpleFactory::provide($def, $data);
-
-        return $def;
+        return SimpleFactory::provide($def, $data);
     }
 
     /**
@@ -179,9 +173,7 @@ class CommonFactories
         $task = new Task();
         Helper::pick($data, 'title', $task, 'setTitle', uniqid('Task_'));
 
-        SimpleFactory::provide($task, $data);
-
-        return $task;
+        return SimpleFactory::provide($task, $data);
     }
 
     /**
@@ -194,9 +186,7 @@ class CommonFactories
         $product = new Product();
         Helper::pick($data, 'title', $product, 'setTitle', uniqid('Product_'));
 
-        SimpleFactory::provide($product, $data);
-
-        return $product;
+        return SimpleFactory::provide($product, $data);
     }
 
     /**
@@ -214,8 +204,29 @@ class CommonFactories
         Helper::pick($data, 'title', $sla, 'setTitle', uniqid('Sla_'));
         Helper::pick($data, 'type', $sla, 'setSlaType', uniqid('type_'));
 
-        SimpleFactory::provide($sla, $data);
+        return SimpleFactory::provide($sla, $data);
+    }
 
-        return $sla;
+    /**
+     * @param array $data
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Exception
+     *
+     * @return object
+     */
+    public static function agentTeam(array $data)
+    {
+        $team = new AgentTeam();
+        if (isset($data['members'])) {
+            foreach ($data['members'] as $member) {
+                $team->addPerson($member);
+            }
+            unset($data['members']);
+        }
+
+        return SimpleFactory::provide($team, $data);
     }
 }

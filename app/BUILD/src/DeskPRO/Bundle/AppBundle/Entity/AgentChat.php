@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -164,10 +165,14 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
 
     /**
      * @param string $type
+     * 
+     * @return $this
      */
     public function setType($type)
     {
         $this->type = $type;
+
+        return $this;
     }
 
     /**
