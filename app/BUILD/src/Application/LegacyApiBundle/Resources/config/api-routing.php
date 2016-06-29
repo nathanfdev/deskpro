@@ -179,9 +179,10 @@ $collection->create(
 $collection->create(
     'api_labels_definitions',
     [
-        'path'       => '/labels/definitions',
+        'path'       => '/labels/definitions/{type}',
         'controller' => 'LegacyApiBundle:Labels:listDefinitions',
         'methods'    => ['GET'],
+        'defaults'   => ['type' => null],
     ]
 );
 
