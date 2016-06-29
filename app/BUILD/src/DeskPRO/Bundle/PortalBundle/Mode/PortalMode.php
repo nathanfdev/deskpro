@@ -93,13 +93,13 @@ class PortalMode
 
     public function __sleep()
     {
-        return array(
+        return [
             'mode',
             'original_path',
             'internal_path',
             'mode_path',
             'data',
-        );
+        ];
     }
 
     public function isAdmin()

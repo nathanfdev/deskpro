@@ -26,16 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
-namespace DeskPRO\Bundle\AppBundle\EventListener;
+namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
 use DeskPRO\Bundle\AppBundle\Request\UrlCorrector;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Component\Util\DebugUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -63,17 +60,44 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
     private $brandStack;
 
     /**
+     * @var PortalModeStorage
+     */
+    private $portalModeStorage;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
 
-    public function __construct(InterfaceInfo $interfaceInfo, BrandStack $brandStack, LoggerInterface $logger)
+    /**
+     * Constructor.
+     *
+     * @param InterfaceInfo     $interfaceInfo
+     * @param BrandStack        $brandStack
+     * @param PortalModeStorage $portalModeStorage
+     * @param LoggerInterface   $logger
+     */
+    public function __construct(InterfaceInfo $interfaceInfo, BrandStack $brandStack, PortalModeStorage $portalModeStorage, LoggerInterface $logger)
     {
-        $this->interfaceInfo = $interfaceInfo;
-        $this->brandStack    = $brandStack;
-        $this->logger        = $logger;
+        $this->interfaceInfo     = $interfaceInfo;
+        $this->brandStack        = $brandStack;
+        $this->portalModeStorage = $portalModeStorage;
+        $this->logger            = $logger;
     }
 
+    /**
+     * @return array
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            KernelEvents::CONTROLLER => ['onController', 125],
+        ];
+    }
+
+    /**
+     * @param FilterControllerEvent $event
+     */
     public function onController(FilterControllerEvent $event)
     {
         if ($this->isExcludedEvent($event)) {
@@ -168,7 +192,6 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
 
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
-
         if ($DP_ENV->getConfig('settings.disable_url_corrections')) {
             $this->logger->info('[UrlCorrector] Skip: settings.disable_url_corrections');
 
@@ -191,7 +214,14 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
         if (!$brand->getSetting('core.setup_initial')) {
             $this->logger->info('[UrlCorrector] Skip: Not set up yet');
 
-            return;
+            return true;
+        }
+
+        $portalMode = $this->portalModeStorage->getMode();
+        if ($portalMode && $portalMode->isFocusWindow()) {
+            $this->logger->info('[UrlCorrector] Skip: Portal is in focus-window mode');
+
+            return true;
         }
 
         return false;
@@ -214,15 +244,5 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
         }
 
         return self::MODE_REDIRECT;
-    }
-
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
-    {
-        return array(
-            KernelEvents::CONTROLLER => array('onController', 125),
-        );
     }
 }
