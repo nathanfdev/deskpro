@@ -136,3 +136,9 @@ services:
     arguments: ["@session"]
     tags:
       - { name: kernel.event_subscriber }
+
+  url_corrector.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\UrlCorrectorEventListener
+    arguments: ["@deskpro.interface_info", "@brand_stack", "@portal_mode_storage", "@logger"]
+    tags:
+      - { name: kernel.event_subscriber }

@@ -51,12 +51,6 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
-  url_corrector.listener:
-    class: DeskPRO\Bundle\AppBundle\EventListener\UrlCorrectorEventListener
-    arguments: ["@deskpro.interface_info", "@brand_stack", "@logger"]
-    tags:
-      - { name: kernel.event_subscriber }
-
   meta_generato.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\MetaGeneratorListener
     tags:
