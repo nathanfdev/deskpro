@@ -98,7 +98,7 @@ class TicketLayoutHelper
     {
         $fields = [];
         foreach ($context->getActiveLayout()->all() as $field) {
-            if ($context->hasValidVisibility($field)) {
+            if (self::shouldBeAlwaysOnTheForm($field) || $context->hasValidVisibility($field)) {
                 $fields[$field->getId()] = $field;
             }
         }
@@ -133,7 +133,7 @@ class TicketLayoutHelper
         $fieldRenderer->addField($context, $personField, $fieldResolver->createFormField($context, $personField));
 
         foreach (self::getLayoutFields($context) as $field) {
-            if ($field->hasCriteria() && !$matchedCriteria($field)) {
+            if (!self::shouldBeAlwaysOnTheForm($field) && $field->hasCriteria() && !$matchedCriteria($field)) {
                 continue;
             }
 
@@ -149,5 +149,18 @@ class TicketLayoutHelper
                 }
             }
         }
+    }
+
+    /**
+     * We should ignore visibility and criteria validation for some fields to make sure they are always on the form.
+     * We need this if layout configuration is not correct for some reason.
+     *
+     * @param LayoutField $field
+     *
+     * @return bool
+     */
+    public static function shouldBeAlwaysOnTheForm(LayoutField $field)
+    {
+        return in_array($field->getId(), [FormFields::DEPARTMENT]);
     }
 }
