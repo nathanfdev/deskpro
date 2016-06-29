@@ -395,7 +395,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
                 $field->setOptionsFromArray([
                     'on_editticket'      => true,
                     'on_viewticket'      => true,
-                    'on_viewticket_mode' => 'value',
+                    'on_viewticket_mode' => 'always',
                     'on_newticket'       => true,
                 ]);
                 $userLayout->add($field, 'message');
@@ -410,7 +410,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
                 $field->setOptionsFromArray([
                     'on_editticket'      => true,
                     'on_viewticket'      => true,
-                    'on_viewticket_mode' => 'value',
+                    'on_viewticket_mode' => 'always',
                     'on_newticket'       => true,
                 ]);
                 $agentLayout->add($field, 'message');
