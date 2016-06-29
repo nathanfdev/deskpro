@@ -26,12 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
+use DeskPRO\Bundle\AppBundle\Form\Type\EntityHeirarchyType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -46,7 +43,7 @@ class TicketProductType extends AbstractType
      */
     public function getParent()
     {
-        return 'entity_hierarchy';
+        return EntityHeirarchyType::class;
     }
 
     /**

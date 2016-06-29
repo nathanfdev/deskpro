@@ -48,33 +48,3 @@ Feature: Guests can submit new tickets
     And I press "Login"
     Then the url should match "/thank-you/[a-zA-Z0-9\-]+"
     And I should see a success flash message with the phrase "portal.flashes.ticket_created"
-
-  Scenario: Submitting an invalid form
-    Given I go to "/new-ticket"
-    And I select "Sales" from "Department"
-    And I fill in "Subject" with "This is a subject"
-    And I fill in "Message" with "Here is my ticket message"
-    And I press "Submit"
-    Then I should be on "/new-ticket"
-    And I should see a form error list with the phrase "portal.forms.error_invalid_email"
-
-  Scenario: Submitting an invalid form
-    Given I go to "/new-ticket"
-    And I press "Submit"
-    Then I should be on "/new-ticket"
-    And I should see a form error with the phrase "portal.forms.error_required"
-
-  Scenario: Submitting an invalid form
-    Given I go to "/new-ticket"
-    And I select "Sales" from "Department"
-    And I press "Submit"
-    Then I should be on "/new-ticket"
-    And I should see a form error with the phrase "portal.forms.error_required"
-
-  Scenario: Submitting an invalid form
-    Given I go to "/new-ticket"
-    And I select "Sales" from "Department"
-    And I fill in "Subject" with "This is a subject"
-    And I press "Submit"
-    Then I should be on "/new-ticket"
-    And I should see a form error with the phrase "portal.forms.error_required"

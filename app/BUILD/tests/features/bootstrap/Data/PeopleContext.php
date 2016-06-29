@@ -40,7 +40,7 @@ use DpBehat\Data\Factory\SimpleFactory;
 class PeopleContext extends BaseContext
 {
     /**
-     * @Given everyone user group exits
+     * @Given default everyone user group exits
      *
      * @return Usergroup
      */
@@ -50,7 +50,7 @@ class PeopleContext extends BaseContext
     }
 
     /**
-     * @Given registered user group exits
+     * @Given default registered user group exits
      *
      * @return Usergroup
      */
@@ -60,7 +60,7 @@ class PeopleContext extends BaseContext
     }
 
     /**
-     * @Given all safe permissions agent group exists
+     * @Given default all safe permissions agent group exists
      *
      * @return Usergroup
      */
@@ -70,7 +70,7 @@ class PeopleContext extends BaseContext
     }
 
     /**
-     * @Given all permissions agent group exists
+     * @Given default all permissions agent group exists
      *
      * @return Usergroup
      */

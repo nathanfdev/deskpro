@@ -181,22 +181,6 @@ abstract class AbstractFieldResolver
     /**
      * @return FormField
      */
-    protected function createSubject()
-    {
-        $options = [
-            'label'       => $this->phrase('portal.forms.label_subject'),
-            'required'    => true,
-            'constraints' => [
-                new Assert\Length(['min' => 5]),
-            ],
-        ];
-
-        return new FormField('text', $options);
-    }
-
-    /**
-     * @return FormField
-     */
     protected function createUserTimezone()
     {
         return new FormField('timezone', [
@@ -337,6 +321,9 @@ abstract class AbstractFieldResolver
         return new FormField(TicketCategoryType::class, [
             'label'       => $this->phrase('portal.forms.label_category'),
             'placeholder' => '',
+            'constraints' => [
+                new Assert\NotBlank(),
+            ],
         ]);
     }
 
@@ -361,6 +348,9 @@ abstract class AbstractFieldResolver
         return new FormField(TicketPriorityType::class, [
             'label'       => $this->phrase('portal.forms.label_priority'),
             'placeholder' => '',
+            'constraints' => [
+                new Assert\NotNull(),
+            ],
         ]);
     }
 
@@ -387,7 +377,10 @@ abstract class AbstractFieldResolver
         }
 
         return new FormField(TicketWorkflowType::class, [
-            'label' => $this->phrase('portal.forms.label_workflow'),
+            'label'       => $this->phrase('portal.forms.label_workflow'),
+            'constraints' => [
+                new Assert\NotNull(),
+            ],
         ]);
     }
 
@@ -411,6 +404,9 @@ abstract class AbstractFieldResolver
 
         return new FormField(TicketProductType::class, [
             'placeholder' => '',
+            'constraints' => [
+                new Assert\NotNull(),
+            ],
         ]);
     }
 
@@ -432,6 +428,11 @@ abstract class AbstractFieldResolver
             'ticket_message' => $context->getMessage(),
         ]);
     }
+
+    /**
+     * @return FormField
+     */
+    abstract protected function createSubject();
 
     /**
      * @param TicketWithLayoutsContext $context

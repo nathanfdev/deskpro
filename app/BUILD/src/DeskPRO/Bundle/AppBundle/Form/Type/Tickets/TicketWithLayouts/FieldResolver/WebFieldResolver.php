@@ -124,6 +124,21 @@ class WebFieldResolver extends AbstractFieldResolver
     }
 
     /**
+     * @return FormField
+     */
+    protected function createSubject()
+    {
+        return new FormField(TextType::class, [
+            'label'       => $this->phrase('portal.forms.label_subject'),
+            'required'    => true,
+            'constraints' => [
+                new Assert\NotBlank(),
+                new Assert\Length(['min' => 5]),
+            ],
+        ]);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function createMessage(TicketWithLayoutsContext $context)
@@ -161,7 +176,6 @@ class WebFieldResolver extends AbstractFieldResolver
             'custom_def'      => $def,
             'property_path'   => $propertyPath,
             'agent_interface' => $context->isAgentView(),
-            'required'        => $def->isRequired($context->isAgentView()),
             'inline'          => false,
             'ticket'          => $context->getTicket(),
         ];
@@ -217,8 +231,11 @@ class WebFieldResolver extends AbstractFieldResolver
             'options' => [
                 'property_path' => 'person.primary_email',
                 'label'         => $this->phrase('portal.forms.label_email'),
+
                 // ignore the "unique entity" constraint here
-                'constraints' => [
+                'constraints'       => [],
+                'email_constraints' => [
+                    new Assert\NotBlank(),
                     new Assert\Email(),
                 ],
             ],

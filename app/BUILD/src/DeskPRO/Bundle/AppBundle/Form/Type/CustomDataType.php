@@ -245,8 +245,7 @@ class CustomDataType extends AbstractType
                 }
             }
         } else {
-            // Get value from the form or default value if empty
-            $data = $form->get('data')->getData() ?: $customDef->getDefaultValue();
+            $data = $form->get('data')->getData();
 
             if ($customDefData->count()) {
                 $customData = $customDefData->first();
@@ -352,6 +351,9 @@ class CustomDataType extends AbstractType
                 },
                 'fully_hidden' => function (Options $options) {
                     return $options['custom_def']->getType() === CustomDefAbstract::TYPE_HIDDEN;
+                },
+                'required' => function (Options $options) {
+                    return $options['custom_def']->isRequired($options['agent_interface']);
                 },
                 'inline'            => false,
                 'owner_form'        => false,
