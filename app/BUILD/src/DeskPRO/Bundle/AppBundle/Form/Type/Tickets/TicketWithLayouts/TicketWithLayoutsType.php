@@ -28,9 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
-use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -49,13 +49,20 @@ class TicketWithLayoutsType extends AbstractType
     private $em;
 
     /**
+     * @var HierarchyGenerator
+     */
+    private $hierarchyGenerator;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager      $em
+     * @param HierarchyGenerator $hierarchyGenerator
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, HierarchyGenerator $hierarchyGenerator)
     {
-        $this->em = $em;
+        $this->em                 = $em;
+        $this->hierarchyGenerator = $hierarchyGenerator;
     }
 
     /**
@@ -117,7 +124,13 @@ class TicketWithLayoutsType extends AbstractType
         $config = $event->getForm()->getConfig();
 
         if ($config->getOption('department_id')) {
-            $data->setDepartment($this->em->getRepository(Department::class)->find($config->getOption('department_id')));
+            $hierarchy  = $this->hierarchyGenerator->generateTicketDepartmentsHierarchy($config->getOption('person'));
+            $choiceList = $hierarchy->getChoiceList();
+
+            $choice = current($choiceList->getChoicesForValues([$config->getOption('department_id')]));
+            if ($choice) {
+                $data->setDepartment($choice->getData());
+            }
         }
     }
 }
