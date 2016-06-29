@@ -26,17 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Avatar\AvatarOwner;
+use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Entity\PersonList;
@@ -59,6 +54,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property int                          $display_order
  * @property Department                   $parent
  * @property Department[]|ArrayCollection $children
+ * @property Brand[]                      $brands
  */
 class Department extends DomainObject implements HasPhraseName, PersonList, AvatarOwner
 {
@@ -115,6 +111,11 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
      * @var Blob
      */
     protected $avatar;
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $brands;
 
     /**
      * @var ProjectMember[]|ArrayCollection
@@ -283,7 +284,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     public function setParentId($id)
     {
         if ($id) {
-            $this->parent = App::getEntityRepository('DeskPRO:Department')->find($id);
+            $this->parent = App::getEntityRepository(self::class)->find($id);
         } else {
             $this->parent = null;
         }
@@ -553,6 +554,14 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
         return $this->is_tickets_enabled;
     }
 
+    /**
+     * @return Brand[]
+     */
+    public function getBrands()
+    {
+        return $this->brands;
+    }
+
     ############################################################################
     # Validation Metadata
     ############################################################################
@@ -571,32 +580,38 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('title', new NotBlank());
-        $metadata->addConstraint(new Callback(array(
-            'methods' => array('_validateParent'),
-        )));
+        $metadata->addConstraint(new Callback([
+            'methods' => ['_validateParent'],
+        ]));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data               = parent::toApiData($primary, $deep, $visited);
         $data['user_title'] = $this->getRealUserTitle();
+        if (true || $deep) {
+            $data['brands'] = [];
+            foreach ($this->brands as $brand) {
+                $data['brands'][] = $brand->getId();
+            }
+        }
 
         if ($this->parent) {
             $data['title_full']       = $this->parent->title.' > '.$this->title;
             $data['parent_id']        = $this->parent->getId();
-            $data['parent_ids']       = array($this->parent->getId());
-            $data['title_parts']      = array($this->parent->title, $this->title);
-            $data['user_title_parts'] = array($this->parent->getUserTitle(), $this->getUserTitle());
+            $data['parent_ids']       = [$this->parent->getId()];
+            $data['title_parts']      = [$this->parent->title, $this->title];
+            $data['user_title_parts'] = [$this->parent->getUserTitle(), $this->getUserTitle()];
             $data['has_children']     = false;
         } else {
             $data['title_full']       = $this->title;
             $data['parent_id']        = null;
-            $data['parent_ids']       = array();
-            $data['title_parts']      = array($this->title);
-            $data['user_title_parts'] = array($this->getUserTitle());
+            $data['parent_ids']       = [];
+            $data['title_parts']      = [$this->title];
+            $data['user_title_parts'] = [$this->getUserTitle()];
             $data['has_children']     = count($this->children) != 0;
         }
 
@@ -625,105 +640,105 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Department';
+        $metadata->customRepositoryClassName = DepartmentRepository::class;
         $metadata->setPrimaryTable(['name' => 'departments']);
 
         $metadata->mapField(
             [
-                 'fieldName'  => 'id',
-                 'type'       => 'integer',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'id',
-                 'id'         => true,
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
             ]
         );
         $metadata->mapField(
             [
-                 'fieldName'  => 'title',
-                 'type'       => 'string',
-                 'length'     => 255,
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'title',
+                'fieldName'  => 'title',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'title',
             ]
         );
         $metadata->mapField(
             [
-                 'fieldName'  => 'user_title',
-                 'type'       => 'string',
-                 'length'     => 255,
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'user_title',
+                'fieldName'  => 'user_title',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'user_title',
             ]
         );
         $metadata->mapField(
             [
-                 'fieldName'  => 'is_tickets_enabled',
-                 'type'       => 'boolean',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'is_tickets_enabled',
+                'fieldName'  => 'is_tickets_enabled',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_tickets_enabled',
             ]
         );
         $metadata->mapField(
             [
-                 'fieldName'  => 'is_chat_enabled',
-                 'type'       => 'boolean',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'is_chat_enabled',
+                'fieldName'  => 'is_chat_enabled',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_chat_enabled',
             ]
         );
         $metadata->mapField(
             [
-                 'fieldName'  => 'display_order',
-                 'type'       => 'integer',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'display_order',
+                'fieldName'  => 'display_order',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'display_order',
             ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
             [
-                 'fieldName'    => 'parent',
-                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
-                 'mappedBy'     => null,
-                 'inversedBy'   => 'children',
-                 'fetch'        => ClassMetadataInfo::FETCH_EAGER,
-                 'joinColumns'  => [
-                     0 => [
-                         'name'                 => 'parent_id',
-                         'referencedColumnName' => 'id',
-                         'nullable'             => true,
-                         'onDelete'             => 'cascade',
-                         'columnDefinition'     => null,
-                     ],
-                 ],
+                'fieldName'    => 'parent',
+                'targetEntity' => self::class,
+                'mappedBy'     => null,
+                'inversedBy'   => 'children',
+                'fetch'        => ClassMetadataInfo::FETCH_EAGER,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'parent_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ],
+                ],
             ]
         );
         $metadata->mapOneToMany(
             [
-                 'fieldName'    => 'children',
-                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
-                 'mappedBy'     => 'parent',
-                 'orderBy'      => ['display_order' => 'ASC'],
-                 'indexBy'      => 'id',
+                'fieldName'    => 'children',
+                'targetEntity' => self::class,
+                'mappedBy'     => 'parent',
+                'orderBy'      => ['display_order' => 'ASC'],
+                'indexBy'      => 'id',
             ]
         );
 
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'project_members',
-                'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember',
+                'targetEntity' => ProjectMember::class,
                 'mappedBy'     => 'department',
             ]
         );
@@ -738,7 +753,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
 
         $metadata->mapManyToOne([
             'fieldName'    => 'avatar',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+            'targetEntity' => Blob::class,
             'mappedBy'     => null,
             'inversedBy'   => null,
             'fetch'        => ClassMetadataInfo::FETCH_EAGER,
@@ -753,5 +768,38 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
             ],
             'dpApi' => true,
         ]);
+
+        $metadata->mapManyToMany(
+            [
+                'fieldName'    => 'brands',
+                'targetEntity' => Brand::class,
+                'cascade'      => [
+                    'persist',
+                    'merge',
+                ],
+                'joinTable' => [
+                    'name'        => 'department_to_brand',
+                    'schema'      => null,
+                    'joinColumns' => [
+                        0 => [
+                            'name'                 => 'department_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => true,
+                            'columnDefinition'     => null,
+                            'onDelete'             => 'cascade',
+                        ],
+                    ],
+                    'inverseJoinColumns' => [
+                        0 => [
+                            'name'                 => 'brand_id',
+                            'onDelete'             => 'cascade',
+                            'nullable'             => true,
+                            'columnDefinition'     => null,
+                            'referencedColumnName' => 'id',
+                        ],
+                    ],
+                ],
+            ]
+        );
     }
 }

@@ -73,6 +73,7 @@ define [
         @usergroups  = data.usergroups
         @agentgroups = data.agentgroups
         @agents      = data.agents
+        @brands      = data.brands
 
         @email_accounts  = data.email_accounts
         @dep_parent_list = data.dep_parent_list
@@ -293,6 +294,10 @@ define [
           @$scope.uploading = false
       )
 
+
+    handleBrand: (brandId) ->
+      index = @form.brands.indexOf brandId
+      if index == -1 then @form.brands.unshift brandId else @form.brands.splice(index, 1)
 
 
     changeAllPerms: (group, perm) =>

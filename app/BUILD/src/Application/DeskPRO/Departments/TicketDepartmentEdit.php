@@ -42,12 +42,12 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 class TicketDepartmentEdit implements HasValidationMetadataInterface
 {
     /**
-     * @var \Application\DeskPRO\Entity\Department
+     * @var Department
      */
     public $department;
 
     /**
-     * @var \Application\DeskPRO\Entity\Department
+     * @var Department
      */
     public $move_department;
 
@@ -57,7 +57,7 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
     public $permissions;
 
     /**
-     * @var \Application\DeskPRO\Entity\Department|null
+     * @var Department|null
      */
     private $old_parent;
 
@@ -81,14 +81,14 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
         // No parent, nothing to verify
         if (!$new) {
             return false;
-        // Not changed, nothing to verify
+            // Not changed, nothing to verify
         } elseif (($old && $new && $old == $new) || (!$old && !$new)) {
             return false;
-        // New enabled
+            // New enabled
         } elseif (!$old && $new) {
             return true;
 
-        // Changed
+            // Changed
         } elseif ($old != $new) {
             return true;
         }
@@ -122,18 +122,18 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
         // Make sure parent doesnt have a trigger
         // and doesnt that the parent doesnt contain tickets
         if ($this->department->parent) {
-            $em->getConnection()->delete('ticket_triggers', array('department_id' => $this->department->parent->id));
+            $em->getConnection()->delete('ticket_triggers', ['department_id' => $this->department->parent->id]);
 
             if ($is_new) {
                 $em->getConnection()->update(
                     'tickets',
-                    array('department_id' => $this->department->id),
-                    array('department_id' => $this->department->parent->id)
+                    ['department_id' => $this->department->id],
+                    ['department_id' => $this->department->parent->id]
                 );
                 $em->getConnection()->update(
                     'tickets_search_active',
-                    array('department_id' => $this->department->id),
-                    array('department_id' => $this->department->parent->id)
+                    ['department_id' => $this->department->id],
+                    ['department_id' => $this->department->parent->id]
                 );
             }
         }
@@ -160,7 +160,7 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
             SELECT trigger
             FROM DeskPRO:TicketTrigger trigger
             WHERE trigger.department = ?0
-        ')->setParameters(array($this->department))->execute();
+        ')->setParameters([$this->department])->execute();
 
         foreach ($triggers as $t) {
             $em->remove($t);
@@ -188,8 +188,8 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
         // Symfony\Component\Validator\Exception\ConstraintDefinitionException:
         // The constraint Symfony\Component\Validator\Constraints\Callback cannot be put on properties or getters
 
-        $metadata->addConstraint(new Callback(array(
-            'methods' => array('validateParent'),
-        )));
+        $metadata->addConstraint(new Callback([
+            'methods' => ['validateParent'],
+        ]));
     }
 }

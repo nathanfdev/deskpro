@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
@@ -65,7 +66,7 @@ abstract class DomainObject extends BasicDomainObject
     /**
      * @var array
      */
-    public $_presave_state = array();
+    public $_presave_state = [];
 
     /**
      * @return \Doctrine\ORM\EntityRepository
@@ -199,14 +200,14 @@ abstract class DomainObject extends BasicDomainObject
      *
      * @return array
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $repository = static::getRepository();
         if (!method_exists($repository, 'getFieldMappings')) {
-            return array();
+            return [];
         }
 
-        $values    = array();
+        $values    = [];
         $visited[] = $this;
 
         foreach ($repository->getFieldMappings() as $name => $field) {
@@ -240,11 +241,11 @@ abstract class DomainObject extends BasicDomainObject
                 $values[$name] = $val;
 
                 if ($this instanceof HasPhraseName && ($name == 'title' || $name == 'name') && App::$container->getLanguageData()->isMultiLang()) {
-                    $translated = array();
+                    $translated = [];
                     foreach (App::$container->getLanguageData()->getAll() as $l) {
                         $p = App::getTranslator()->getPhraseObject($this, $name, $l, false);
                         if ($p && $p != $val) {
-                            $translated[] = array('language_id' => $l->id, 'language' => $l->sys_name, $name => $p);
+                            $translated[] = ['language_id' => $l->id, 'language' => $l->sys_name, $name => $p];
                         }
                     }
                     if ($translated) {
@@ -274,7 +275,7 @@ abstract class DomainObject extends BasicDomainObject
                 if ($val instanceof self) {
                     $values[$name] = $val->toApiData(false, $subDeep, $visited);
                 } elseif (is_array($val) || $val instanceof \Traversable) {
-                    $output = array();
+                    $output = [];
 
                     foreach ($val as $key => $sub) {
                         if ($sub instanceof \Application\DeskPRO\Domain\DomainObject) {
@@ -299,10 +300,10 @@ abstract class DomainObject extends BasicDomainObject
     {
         $repository = static::getRepository();
         if (!method_exists($repository, 'getFieldMappings')) {
-            return array();
+            return [];
         }
 
-        $values = array();
+        $values = [];
 
         foreach ($repository->getFieldMappings() as $name => $field) {
             $val = $this[$name];

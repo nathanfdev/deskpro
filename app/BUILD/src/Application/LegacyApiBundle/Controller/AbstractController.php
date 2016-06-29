@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -161,9 +162,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     {
         if (!$this->apikey && !$this->api_token) {
             $response = $this->createApiErrorResponse('invalid_auth', 'Please provide a valid API key or token', 401);
-            $response->headers->add(array(
+            $response->headers->add([
                 'WWW-Authenticate' => 'Basic realm="API"',
-            ));
+            ]);
 
             return $response;
         }
@@ -194,24 +195,24 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             }
 
             // Ping the 'last' date of the session
-            $this->container->getDb()->update('sessions', array(
+            $this->container->getDb()->update('sessions', [
                 'date_last' => date('Y-m-d H:i:s'),
-            ), array('id' => $this->api_user->session->id));
+            ], ['id' => $this->api_user->session->id]);
 
             // Increase lifetime of the session token
-            $this->container->getDb()->update('api_token', array(
+            $this->container->getDb()->update('api_token', [
                 'date_expires' => date('Y-m-d H:i:s', strtotime('+1 hour')),
-            ), array('id' => $this->api_token->id));
+            ], ['id' => $this->api_token->id]);
         }
 
         if ($this instanceof ProtectedControllerInterface) {
             $perm_strategy = $this->getPermissionStrategy();
-            $context_info  = array(
+            $context_info  = [
                 'controller' => $this,
                 'action'     => $action,
                 'arguments'  => $arguments,
                 'type'       => $action,
-            );
+            ];
             if (!$perm_strategy->userHasPermission($this->api_user, $context_info)) {
                 return $this->createApiErrorResponse('no_permission', 'You do not have permission to use this resource', 403);
             }
@@ -265,10 +266,10 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      */
     public function createApiErrorResponse($error_code, $error_message, $status = 400)
     {
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'error_code'    => $error_code,
             'error_message' => $error_message,
-        ), $status);
+        ], $status);
     }
 
     /**
@@ -283,11 +284,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      */
     public function createApiErrorInfoResponse($error_code, $error_message, array $error_info, $status = 400)
     {
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'error_code'    => $error_code,
             'error_message' => $error_message,
             'error_info'    => $error_info,
-        ), $status);
+        ], $status);
     }
 
     /**
@@ -298,10 +299,10 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      */
     public function createApiMultipleErrorResponse(array $errors, $status = 400)
     {
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'error_code' => 'multiple',
             'errors'     => $errors,
-        ), $status);
+        ], $status);
     }
 
     /**
@@ -335,9 +336,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      *
      * @return Response
      */
-    public function createSuccessResponse(array $extra = array(), $status = 200)
+    public function createSuccessResponse(array $extra = [], $status = 200)
     {
-        return $this->createApiResponse(array('success' => true) + $extra, $status);
+        return $this->createApiResponse(['success' => true] + $extra, $status);
     }
 
     /**
@@ -348,23 +349,23 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      *
      * @return Response
      */
-    public function createApiSuccessResponse(array $extra = array(), $status = 200)
+    public function createApiSuccessResponse(array $extra = [], $status = 200)
     {
-        return $this->createApiResponse(array('success' => true) + $extra, $status);
+        return $this->createApiResponse(['success' => true] + $extra, $status);
     }
 
     /**
      * Create API response for after anew resource was created.
      *
      * @param array $data
-     * @param $url
+     * @param       $url
      *
      * @return Response
      */
     public function createApiCreateResponse(array $data, $url)
     {
         $response = $this->createApiResponse($data, 201);
-        $response->headers->add(array('Location' => $url));
+        $response->headers->add(['Location' => $url]);
 
         return $response;
     }
@@ -377,9 +378,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      *
      * @return Response
      */
-    public function createApiDeleteResponse(array $extra = array(), $status = 200)
+    public function createApiDeleteResponse(array $extra = [], $status = 200)
     {
-        return $this->createApiResponse(array('success' => true) + $extra, $status);
+        return $this->createApiResponse(['success' => true] + $extra, $status);
     }
 
     /**
@@ -406,11 +407,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             $info = $renderer->renderCombinedViolationList($errors);
         }
 
-        $data = array(
+        $data = [
             'error_code'    => 'validation_error',
             'error_message' => 'One or more validation errors occurred. Your request was not processed.',
             'errors'        => $info,
-        );
+        ];
 
         if ($extra) {
             $data = array_merge($data, $extra);
@@ -433,11 +434,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         $renderer = new ViolationApiRenderer();
         $info     = $renderer->renderFormErrorList($form);
 
-        $data = array(
+        $data = [
             'error_code'    => 'validation_error',
             'error_message' => 'One or more validation errors occurred. Your request was not processed.',
             'errors'        => $info,
-        );
+        ];
 
         if ($extra) {
             $data = array_merge($data, $extra);
@@ -449,7 +450,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     public function getApiData($input, $deep = true)
     {
         if (is_array($input) || $input instanceof \Traversable) {
-            $output = array();
+            $output = [];
             foreach ($input as $key => $value) {
                 if ($value instanceof \Application\DeskPRO\Domain\DomainObject) {
                     $output[$key] = $value->toApiData(false, $deep);
@@ -481,7 +482,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      */
     public function getFormValidationErrorsString($form)
     {
-        $result = array();
+        $result = [];
         $errors = $this->get('validator')->validate($form);
 
         if (sizeof($errors) > 0) {
@@ -515,9 +516,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
                 $form_data   = $form->get($keys)->all();
                 $requestData = array_intersect_key($requestData[$keys], $form_data);
 
-                return array($keys => $requestData);
+                return [$keys => $requestData];
             } else {
-                $result = array();
+                $result = [];
 
                 foreach ($keys as $key) {
                     $form_data = $form->get($key)->all();
@@ -545,7 +546,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
                 SELECT r
                 FROM DeskPRO:ResultCache r
                 WHERE r.id = ?0
-            ')->setParameters(array($cache_id))->getOneOrNullResult();
+            ')->setParameters([$cache_id])->getOneOrNullResult();
             if ($result_cache) {
                 if ($result_cache->person->id != $this->person->id || $result_cache->results_type !== $type) {
                     $result_cache = null;
@@ -585,9 +586,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
     public function getCustomFieldInput($input_name = 'field')
     {
-        $custom_fields = $this->in->getArrayValue($input_name) ?: array();
+        $custom_fields = $this->in->getArrayValue($input_name) ?: [];
 
-        $output = array();
+        $output = [];
         foreach ($custom_fields as $key => $value) {
             if (is_numeric($key)) {
                 $output['field_'.$key] = $value;
@@ -608,9 +609,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             } else {
                 $message->setTo($comment->getUserEmail());
             }
-            $message->setTemplate('DeskPRO:emails_user:comment-approved.html.twig', array(
+            $message->setTemplate('DeskPRO:emails_user:comment-approved.html.twig', [
                 'comment' => $comment,
-            ));
+            ]);
             $this->container->getMailer()->send($message);
         }
 
@@ -630,9 +631,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             } else {
                 $message->setTo($comment->getUserEmail());
             }
-            $message->setTemplate('DeskPRO:emails_user:comment-deleted.html.twig', array(
+            $message->setTemplate('DeskPRO:emails_user:comment-deleted.html.twig', [
                 'comment' => $comment,
-            ));
+            ]);
             $this->container->getMailer()->send($message);
         }
     }
@@ -646,41 +647,41 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     {
         if ($e instanceof ValidationException) {
             return $this->createApiResponse(
-                array(
+                [
                     'error_code'    => 'validation_error',
                     'error_message' => 'There was a validation error while processing your request.',
-                    'detail'        => array(
+                    'detail'        => [
                         'code'      => $e->getCode(),
                         'code_name' => $e->getCodeName(),
                         'message'   => $e->getMessage(),
-                    ),
-                ),
+                    ],
+                ],
                 400
             );
         } elseif ($e instanceof NotFoundHttpException) {
-            return $this->createApiResponse(array(
+            return $this->createApiResponse([
                 'error_code'    => 404,
                 'error_message' => $e->getMessage() ?: 'Not Found',
-            ), 404);
+            ], 404);
         } elseif ($e instanceof AccessDeniedHttpException) {
-            return $this->createApiResponse(array(
+            return $this->createApiResponse([
                 'error_code'    => 403,
                 'error_message' => $e->getMessage() ?: 'Access Denied',
-            ), 403);
+            ], 403);
         } elseif ($e instanceof AccessDeniedException) {
-            return $this->createApiResponse(array(
+            return $this->createApiResponse([
                 'error_code'    => 403,
                 'error_message' => $e->getMessage() ?: 'Access Denied',
-            ), 403);
+            ], 403);
         } else {
             SystemErrorHandler::logException($e);
 
-            return $this->createApiResponse(array(
+            return $this->createApiResponse([
                 'error_code'     => 500,
                 'error_message'  => $e->getMessage(),
                 'exception_code' => $e->getCode(),
                 'exception_type' => get_class($e),
-            ), 500);
+            ], 500);
         }
 
         return;

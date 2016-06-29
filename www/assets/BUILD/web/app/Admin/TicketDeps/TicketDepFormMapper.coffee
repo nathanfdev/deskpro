@@ -6,7 +6,7 @@ define [
   Util
 ) ->
   class TicketDepFormMapper
-    getFormFromModel: (dep, trigger, layouts, depPerms, agents, agentgroups, usergroups, email_accounts) ->
+    getFormFromModel: (dep, trigger, layouts, depPerms, agents, brands, agentgroups, usergroups, email_accounts) ->
       form = {
         title: '',
         user_title: '',
@@ -14,6 +14,7 @@ define [
         enable_user_title: false,
         default_layout: {},
         custom_layout: {},
+        brands: [],
         use_custom_layout: false,
         trigger_actions: {
           SetEmailAccount: {
@@ -30,6 +31,7 @@ define [
 
       if dep.id
         form.title = dep.title
+        form.brands = dep.brands
 
         if not Util.isBlank(dep.user_title)
           form.user_title = dep.user_title
@@ -37,7 +39,9 @@ define [
 
         if not Util.isBlank(dep.parent_id)
           form.parent_id = dep.parent_id+''
-
+      else
+        for brand in brands
+          form.brands.push(brand.id)
 
       if email_accounts.length
         form.trigger_actions.SetEmailAccount.options.email_account_id = email_accounts[0].id+''
@@ -119,6 +123,7 @@ define [
       depData.email_gateway   = formModel.email_gateway_id || "0"
       depData.move_tickets_to = 'self'
       depData.avatar          = formModel.avatar
+      depData.brands          = formModel.brands
 
       if Util.isBlank(depData.parent)
         depData.parent = null

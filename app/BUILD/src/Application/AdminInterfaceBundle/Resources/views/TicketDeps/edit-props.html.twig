@@ -34,11 +34,27 @@
 				</div>
 			</div>
 		</div>
-        <div class="form-group">
-            <div class="col-lg-3">
-                <h3>Department Avatar</h3>
-            </div>
-            <div class="col-lg-9">
+		<div class="form-group" ng-if="!EditCtrl.dep.has_children">
+			<div class="col-lg-3">
+				<h3>{{ phrase('agent.general.brands') }}</h3>
+			</div>
+			<div class="col-lg-9">
+				<ul class="dp-item-list checkbox-list" ng-model="EditCtrl.form.brands"
+					style="overflow-y: auto; max-height: {{ 20 * 24 }}px;min-width: 250px;max-width:400px;">
+					<li ng-repeat="brand in EditCtrl.brands">
+						<label style="width: 100%;padding-left:20px;position: relative;white-space: nowrap;">
+							<input type="checkbox" value="{{ ng_var('brand.id') }}" ng-click="EditCtrl.handleBrand(brand.id)" ng-checked="EditCtrl.form.brands.indexOf(brand.id) > -1" />
+							{{ ng_var('brand.name') }}
+						</label>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>Department Avatar</h3>
+			</div>
+			<div class="col-lg-9">
 				<div class="inner-group">
 					<label>
 						<input type="checkbox" ng-model="EditCtrl.form.enable_avatar" />
@@ -56,8 +72,8 @@
 					</a>
 					<i class="spinner-flat" ng-show="uploading"></i>
 				</div>
-            </div>
-        </div>
+			</div>
+		</div>
 		<div class="form-group" ng-if="!EditCtrl.dep.has_children">
 			<div class="col-md-3">
 				<h3>{{ phrase('agent.general.parent') }}</h3>

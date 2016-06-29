@@ -34,5 +34,20 @@ class Build1466087195 extends AbstractBuild
     {
         $this->out('Url in brands');
         $this->execDbQuery('default', 'ALTER TABLE brands ADD url VARCHAR(255)');
+        $this->execDbQuery('default', 'ALTER TABLE article_categories ADD brand_id INT DEFAULT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE article_categories ADD CONSTRAINT FK_62A97E944F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE SET NULL');
+        $this->execDbQuery('default', 'CREATE INDEX IDX_62A97E944F5D008 ON article_categories (brand_id)');
+        $this->execDbQuery('default', 'ALTER TABLE download_categories ADD brand_id INT DEFAULT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE download_categories ADD CONSTRAINT FK_3317F1544F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE SET NULL');
+        $this->execDbQuery('default', 'CREATE INDEX IDX_3317F1544F5D008 ON download_categories (brand_id)');
+        $this->execDbQuery('default', 'ALTER TABLE news_categories ADD brand_id INT DEFAULT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE news_categories ADD CONSTRAINT FK_D68C911144F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE SET NULL');
+        $this->execDbQuery('default', 'CREATE INDEX IDX_D68C911144F5D008 ON news_categories (brand_id)');
+        $this->execDbQuery('default', 'CREATE TABLE department_to_brand (department_id INT NOT NULL, brand_id INT NOT NULL, INDEX IDX_2ED0D242AE80F5DF (department_id), INDEX IDX_2ED0D24244F5D008 (brand_id), PRIMARY KEY(department_id, brand_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
+        $this->execDbQuery('default', 'ALTER TABLE department_to_brand ADD CONSTRAINT FK_2ED0D242AE80F5DF FOREIGN KEY (department_id) REFERENCES departments (id) ON DELETE CASCADE');
+        $this->execDbQuery('default', 'ALTER TABLE department_to_brand ADD CONSTRAINT FK_2ED0D24244F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE CASCADE');
+        $this->execDbQuery('default', 'ALTER TABLE feedback_categories DROP FOREIGN KEY FK_66FE683244F5D008');
+        $this->execDbQuery('default', 'DROP INDEX IDX_66FE683244F5D008 ON feedback_categories');
+        $this->execDbQuery('default', 'ALTER TABLE feedback_categories DROP brand_id');
     }
 }
