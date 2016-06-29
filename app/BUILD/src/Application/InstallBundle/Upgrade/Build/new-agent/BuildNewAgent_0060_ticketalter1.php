@@ -47,7 +47,7 @@ class BuildNewAgent_0060_ticketalter1 extends AbstractBuild
         }
 
         $instructions[] = 'DROP person_email_validating_id, DROP validating';
-        $this->execSlowAlterTable('tickets', implode(', ', $instructions), false);
+        $this->execSlowAlterTable('tickets', implode(', ', $instructions));
     }
 }
 

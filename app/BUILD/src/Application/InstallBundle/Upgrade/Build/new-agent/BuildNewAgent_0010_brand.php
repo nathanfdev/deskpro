@@ -44,7 +44,7 @@ class BuildNewAgent_0010_brand extends AbstractBuild
 
         $this->execMutateSql("
             INSERT INTO `theme_sets` (`id`, `theme_id`, `options`)
-            VALUES (1, 'standard', '{}'), (2, 'sidebar', '{}')
+            VALUES (1, 'standard', '{}'), (2, 'sidebar', '{}'), (3, 'sidebar', '{}')
         ");
 
         #------------------------------
@@ -54,9 +54,10 @@ class BuildNewAgent_0010_brand extends AbstractBuild
         $site_name = $this->readSetting('core.deskpro_name');
 
         $brand = [
-            'id'           => 1,
-            'name'         => $site_name,
-            'theme_set_id' => 1,
+            'id'                => 1,
+            'name'              => $site_name,
+            'theme_set_id'      => 1,
+            'edit_theme_set_id' => 3,
         ];
 
         $db->insert('brands', $brand);

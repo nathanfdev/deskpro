@@ -308,7 +308,7 @@ abstract class AbstractBuild
         } else {
             if ($smart) {
                 $count = $this->container->getDb()->fetchColumn("SELECT COUNT(*) FROM `$table` LIMIT 20000");
-                if ($count < 20000) {
+                if ($count < 10000) {
                     $do_smart = false;
                 }
             }
@@ -484,8 +484,13 @@ abstract class AbstractBuild
                         throw new \Exception('Could not create backup directory at '.$dir);
                     }
                 }
+                $backupPath = $dir.DIRECTORY_SEPARATOR.$tpl['id'].'--'.str_replace(':', '_', $tpl['name']);
+                $this->out(sprintf('Error recompiling %s %s', $tpl['id'], $tpl['name']));
+                $this->out('  '.$e->getMessage());
+                $this->out('  Backup: '.$backupPath);
+
                 @file_put_contents(
-                    $dir.$tpl['id'].'--'.str_replace(':', '_', $tpl['name']),
+                    $backupPath,
                     $tpl['template_code']
                 );
                 $this->container->getDb()->delete('templates', array('id' => $tpl['id']));
