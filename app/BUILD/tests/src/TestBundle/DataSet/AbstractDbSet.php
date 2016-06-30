@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -264,7 +265,7 @@ abstract class AbstractDbSet implements DataSetInterface
             );
         } else {
             $cmd = sprintf(
-                '%s -h%s -u%s %s < %s',
+                '%s -h %s -u %s %s < %s',
                 $this->mysql_bin_path,
                 escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.host')),
                 escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.user')),
@@ -308,7 +309,7 @@ abstract class AbstractDbSet implements DataSetInterface
             $this->installFromCache();
         } else {
             $this->installSet();
-            
+
             if ($this->cache_dir) {
                 $this->dumpToCache();
             }

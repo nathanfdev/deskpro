@@ -527,6 +527,10 @@ class TicketMessage extends DomainObject
                 $sc_code = null;
             }
 
+            if (substr(strtolower($m[3]), -5) === '.tiff') {
+                $m[1] = 'url';
+            }
+
             if ($m[1] === 'signature_image') {
                 $url = App::getRouter()->generate(
                     'serve_blob',
@@ -572,7 +576,7 @@ class TicketMessage extends DomainObject
                 }
             } else {
                 $replace = sprintf(
-                    '<a href="%s" target="_blank" class="dp-is-image dragout '.$marker_class_a.'" %s>%s</a>',
+                    '<a href="%s" target="_blank" class="dragout '.$marker_class_a.'" %s>%s</a>',
                     $download_url,
                     $extra,
                     $m[3]
