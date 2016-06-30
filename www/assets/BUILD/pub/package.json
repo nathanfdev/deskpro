@@ -169,6 +169,7 @@
   "private": true,
   "scripts": {
     "eslint": "eslint src || true",
+    "eslint-pre-commit": "eslint",
     "eslint-fix": "eslint --fix",
     "gulp": "gulp",
     "gulp-dev-agent": "gulp dev:agent",

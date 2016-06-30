@@ -5,6 +5,7 @@
     "autoprefixer": "^6.3.6",
     "bower": "^1.5.2",
     "coffee-script": "1.9.1",
+    "coffeelint": "^1.15.7",
     "del": "1.1.1",
     "gulp": "3.9.0",
     "gulp-cached": "1.0.2",
@@ -25,6 +26,7 @@
     "gulp-util": "3.0.3",
     "gulp-watch": "4.1.1",
     "gulp-watch-less": "0.2.1",
+    "jshint": "^2.9.2",
     "karma": "0.12.24",
     "karma-chrome-launcher": "0.1.5",
     "karma-jasmine": "0.2.3",
@@ -39,6 +41,8 @@
   },
   "scripts": {
     "bower-install": "bower install --config.interactive=false --allow-root",
+    "coffeelint": "coffeelint",
+    "jshint": "jshint",
     "gulp-prod": "gulp prod",
     "gulp": "gulp",
     "sassdoc": "gulp sassdoc"
