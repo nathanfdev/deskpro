@@ -11,6 +11,7 @@ export const massActionsSelector = createSelector(
   ],
   (languages, categories, products, workflows, agents) => {
     const massActions = [];
+
     // Status options
     massActions.push({
       label:       'Status',

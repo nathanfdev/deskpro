@@ -12,7 +12,6 @@ import { selectedSelector } from '../../../../../Application/Selectors/massActio
   selected: selectedSelector(state),
   fields:   cardFieldsSelector(state)
 }))
-
 export class ListCardViewContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,

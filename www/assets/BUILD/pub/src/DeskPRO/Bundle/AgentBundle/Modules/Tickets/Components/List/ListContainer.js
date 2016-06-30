@@ -1,14 +1,12 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { List } from './List';
 import { currentViewModeSelector, paginationSelector, listParamsSelector, fieldsSelector } from '../../Selectors/list';
-import {
-  isLoadedCollectionSelectorFactory, releaseCollection, setCollection
-}
+import { isLoadedCollectionSelectorFactory, releaseCollection, setCollection }
   from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { selectedSelector } from '../../../Application/Selectors/massActions';
 import { applyListParams } from '../../Actions/listActions';
 
-import { connect } from 'react-redux';
 @connect(state => ({
   isLoaded:          isLoadedCollectionSelectorFactory('Person', 'tickets')(state),
   currentListParams: listParamsSelector(state),

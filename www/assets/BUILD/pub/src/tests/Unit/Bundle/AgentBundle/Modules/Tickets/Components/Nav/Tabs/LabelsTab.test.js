@@ -15,7 +15,7 @@ describe('Tickets Navigation: LabelsTab component', () => {
     return renderInTicketsApp({}, <LabelsTab labels={['A', 'B']} />);
   }
 
-  it('should render LabelsTab', () => {
+  it('should render LabelsDictionary', () => {
     spyOn(LabelsDictionary.prototype, 'render');
     render();
     expect(LabelsDictionary.prototype.render).toHaveBeenCalled();

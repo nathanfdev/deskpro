@@ -7,7 +7,6 @@ import { applyListParams } from '../../../Actions/listActions';
 @connect(state => ({
   starsCount: starsCountSelector(state)
 }))
-
 export class StarsTabContainer extends Component {
   static propTypes = {
     dispatch:   PropTypes.func.isRequired,

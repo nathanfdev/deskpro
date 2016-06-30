@@ -43,6 +43,7 @@ export default createReducer(ticketsListInitialState, {
   TICKETS_LIST_SET_ELEMENTS:    setFullPayload('elements'),
 
   // Public (control bar) ----------------------------------------------------------------------------------------------
+
   [actions.toggleFieldVisibility]: (state, { type, index }) => {
     const old = state.getIn(['fields', type, index, 'visible']);
     if (undefined === old) return state;

@@ -27,6 +27,7 @@ describe('Tickets Navigation: NavContainer component', () => {
     spyOn(actions, 'initialLoad').and.callThrough();
 
     render();
+
     expect(actions.initialLoad).toHaveBeenCalled();
   });
 });

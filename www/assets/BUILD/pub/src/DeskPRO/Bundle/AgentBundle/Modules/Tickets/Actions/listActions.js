@@ -1,7 +1,7 @@
 import { createAction } from 'Ampliflux';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { listParamsSelector } from '../Selectors/list';
-import { setCollection, releaseCollection } from '../../../../AppBundle/Modules/RecordsStore';
+import { setCollection, releaseCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 // Private -------------------------------------------------------------------------------------------------------------
 
@@ -25,6 +25,7 @@ const loadList = createAction(
 );
 
 // Public --------------------------------------------------------------------------------------------------------------
+
 export const loadIndicator   = createAction('TICKET_LIST_LOAD_INDICATOR');
 export const unload          = createAction('TICKETS_LIST_UNLOAD');
 export const applyListParams = createAction(

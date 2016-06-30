@@ -14,15 +14,19 @@ describe('Tickets Navigation: StarsTab component', () => {
 
   function render() {
     const props = {
-      starsCount: toImmutable([{ count: 0, title: 'Test Star' }])
+      starsCount: toImmutable([
+        {count: 0, title: 'Star #1'},
+        {count: 1, title: 'Star #2'},
+        {count: 5, title: 'Star #3'}
+      ])
     };
 
     return renderInTicketsApp({}, <StarsTab {...props} />);
   }
 
-  it('should render NestedList', () => {
+  it('should render ListItemContainer three times when there are three counts', () => {
     spyOn(ListItemContainer.prototype, 'render');
     render();
-    expect(ListItemContainer.prototype.render).toHaveBeenCalled();
+    expect(ListItemContainer.prototype.render).toHaveBeenCalledTimes(3);
   });
 });

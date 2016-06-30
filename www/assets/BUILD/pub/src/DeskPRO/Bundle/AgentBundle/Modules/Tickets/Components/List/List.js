@@ -1,8 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import {
-  ListFrameContainer, ListFrameContents, SaveAsCsv
-}
+import { ListFrameContainer, ListFrameContents, SaveAsCsv }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { PaginationBoxView } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Pagination/PaginationBoxView';
 import { ControlBarContainer } from './ControlBarContainer';
