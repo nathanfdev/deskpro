@@ -29,7 +29,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Form\Type\EntityHeirarchyType;
+use DeskPRO\Bundle\AppBundle\Form\Type\EntityHierarchyType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -62,6 +62,6 @@ class FeedbackCategoryType extends AbstractType
      */
     public function getParent()
     {
-        return EntityHeirarchyType::class;
+        return EntityHierarchyType::class;
     }
 }

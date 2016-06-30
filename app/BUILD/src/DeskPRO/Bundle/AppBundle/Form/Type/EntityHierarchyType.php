@@ -26,36 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\HierarchyNodeTransformer;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class EntityHeirarchyType.
+ * Class EntityHierarchyType.
  */
-class EntityHeirarchyType extends AbstractType
+class EntityHierarchyType extends AbstractType
 {
     /**
      * @var HierarchyGenerator
      */
-    private $hierarchy_generator;
+    private $hierarchyGenerator;
 
     /**
      * Constructor.
      *
-     * @param HierarchyGenerator $hierarchy_generator
+     * @param HierarchyGenerator $hierarchyGenerator
      */
-    public function __construct(HierarchyGenerator $hierarchy_generator)
+    public function __construct(HierarchyGenerator $hierarchyGenerator)
     {
-        $this->hierarchy_generator = $hierarchy_generator;
+        $this->hierarchyGenerator = $hierarchyGenerator;
     }
 
     /**
@@ -69,17 +66,9 @@ class EntityHeirarchyType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return 'entity_hierarchy';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getParent()
     {
-        return 'choice';
+        return ChoiceType::class;
     }
 
     /**
@@ -90,7 +79,7 @@ class EntityHeirarchyType extends AbstractType
         $resolver
             ->setRequired('choice_list')
             ->setDefaults([
-                'hierarchy_generator' => $this->hierarchy_generator,
+                'hierarchy_generator' => $this->hierarchyGenerator,
             ])
         ;
     }
