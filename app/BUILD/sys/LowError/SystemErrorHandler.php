@@ -111,8 +111,7 @@ class SystemErrorHandler
      *
      * @param \Exception $exception
      */
-    public static function handleException(/*Throwable*/
-        $exception)
+    public static function handleException($exception)
     {
         if (self::$isHandlingException || !self::shouldLog($exception)) {
             return;
@@ -125,7 +124,8 @@ class SystemErrorHandler
 
         self::$isHandlingException = false;
 
-        // uncaught means we should exit
+        header('Status: 400');
+        echo 'An error occurred. Please, try again later';
         exit(255);
     }
 
