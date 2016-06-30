@@ -11,3 +11,10 @@
 {% else %}
 	{{ phrase('agent.emails.notice_login_attempt') }}<br />
 {% endif %}
+<ul>
+	<li>{{ phrase('agent.emails.user_ip') }}: {{ request.getClientIp() }}</li>
+	<li>{{ phrase('agent.emails.user_agent') }}: {{ request.headers.get('User-Agent') }}</li>
+	<li>{{ phrase('agent.emails.landing_page') }}: {{ request.getRequestUri() }}</li>
+	<li>{{ phrase('agent.emails.referer_page') }}: {{ request.headers.get('Referer') }}</li>
+	<li>{{ phrase('agent.emails.first_seen') }}: {{ firstSeen.format('D, jS M Y g:ia') }}</li>
+</ul>

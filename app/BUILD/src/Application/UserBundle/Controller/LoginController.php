@@ -489,11 +489,10 @@ HTML;
         $this->session->save();
 
         App::setCurrentPerson($person);
-
         if ($person->isAgent() && !isset($GLOBALS['DP_LOGIN_VIA_TOKEN'])) {
             // Announce if its an agent
             $this->setAgentIsAvailable($person);
-            $this->sendLoginAlert($person);
+            $this->sendLoginAlert($person, $request);
             $this->loginLog($request, $person);
             $this->broadcastAgentIsOnline($person);
         }
@@ -588,14 +587,18 @@ HTML;
      * @param Person $person
      * @param bool   $success
      */
-    protected function sendLoginAlert(Person $person, $success = true)
+    protected function sendLoginAlert(Person $person, Request $request, $success = true)
     {
         $prefName = sprintf('agent_notif.login_attempt%s.email', $success ? '' : '_fail');
         if ($person->getPref($prefName) && !$person->isDeleted()) {
             $message = $this->container->getMailer()->createMessage();
             $message->setTemplate(
                 'DeskPRO:emails_agent:login-alert.html.twig',
-                ['success' => $success, 'session' => $this->session->getEntity()]
+                [
+                    'success'   => $success,
+                    'firstSeen' => $this->session->getEntity()->getDateCreated(),
+                    'request'   => $request,
+                ]
             );
             $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
             $this->container->getMailer()->send($message);
@@ -656,7 +659,7 @@ HTML;
         $personRepository = $this->em()->getRepository(Person::class);
         $attemptPerson    = $personRepository->findOneByEmail($this->in->getString('email'));
         if ($attemptPerson) {
-            $this->sendLoginAlert($attemptPerson, false);
+            $this->sendLoginAlert($attemptPerson, $request, false);
             $this->loginLog($request, $attemptPerson, false);
         }
     }
