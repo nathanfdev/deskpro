@@ -86,6 +86,7 @@ final class ErrorsCodes
     const NOT_USER                    = 'person_not_user';
     const NUMERIC                     = 'numeric';
     const NOT_CHECKED                 = 'not_checked';
+    const REGEX                       = 'regex';
 
     /** Term Engine Specific */
     const TERM_TYPE_DOES_NOT_EXIST = 'term_type_does_not_exist';
