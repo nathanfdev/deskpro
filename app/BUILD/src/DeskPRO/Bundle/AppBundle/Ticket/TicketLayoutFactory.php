@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Ticket;
 
 use Application\DeskPRO\Entity\Department;
@@ -49,69 +45,23 @@ class TicketLayoutFactory
     /**
      * @var \Doctrine\ORM\EntityManager
      */
-    private $entity_manager;
+    private $em;
 
     /**
      * @var CaptchaDecider
      */
-    private $catpcha_decider;
+    private $captchaDecider;
 
     /**
      * Constructor.
      *
-     * @param EntityManager  $entity_manager
-     * @param CaptchaDecider $catpcha_decider
+     * @param EntityManager  $em
+     * @param CaptchaDecider $captchaDecider
      */
-    public function __construct(EntityManager $entity_manager, CaptchaDecider $catpcha_decider = null)
+    public function __construct(EntityManager $em, CaptchaDecider $captchaDecider = null)
     {
-        $this->entity_manager  = $entity_manager;
-        $this->catpcha_decider = $catpcha_decider;
-    }
-
-    /**
-     * @return TicketLayout
-     */
-    public function getInitialLayout()
-    {
-        return $this
-            ->getBaseTicketLayoutQueryBuilder()
-            ->where('l.department IS NULL')
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-
-    /**
-     * @param mixed $department
-     *
-     * @return TicketLayout|null
-     */
-    public function getLayout($department = null)
-    {
-        $layout = null;
-        // Note: I removed the following condition, we still definitely want to do this is $dep is a Dep entity.
-        //if ($department && !($department instanceof Department)) {
-        if ($department) {
-            $layout = $this
-                ->getBaseTicketLayoutQueryBuilder()
-                ->where('l.department = :department')
-                ->setParameter('department', $department)
-                ->getQuery()
-                ->getOneOrNullResult()
-            ;
-        }
-
-        if (!$layout) {
-            $layout = $this->getInitialLayout();
-        }
-
-        if ($layout) {
-            $layout = clone $layout;
-        } else {
-            $layout = new TicketLayout();
-        }
-
-        return $layout;
+        $this->em             = $em;
+        $this->captchaDecider = $captchaDecider;
     }
 
     /**
@@ -148,8 +98,10 @@ class TicketLayoutFactory
 
         if (!$forApi) {
             $this->checkAntiAbuseCaptcha($layout->getUserLayout());
-            //$this->checkAntiAbuseCaptcha($layout->getAgentLayout()); purposely not checking for agent interface
         }
+
+        // sort the layout fields
+        $this->sortTicketLayoutFormFields($layout);
 
         return $layout;
     }
@@ -183,8 +135,10 @@ class TicketLayoutFactory
 
         if (!$forApi) {
             $this->checkAntiAbuseCaptcha($layout->getUserLayout());
-            //$this->checkAntiAbuseCaptcha($layout->getAgentLayout()); purposely not checking for agent interface
         }
+
+        // sort the layout fields
+        $this->sortTicketLayoutFormFields($layout);
 
         return $layout;
     }
@@ -195,7 +149,7 @@ class TicketLayoutFactory
      */
     public function verifyRequiredFields(Layout $layout, $forApi = false)
     {
-        $required_fields = [
+        $requiredFields = [
             FormFields::DEPARTMENT => 0,
             FormFields::SUBJECT    => 0,
             FormFields::MESSAGE    => 0,
@@ -203,13 +157,13 @@ class TicketLayoutFactory
 
         /** @var \Application\DeskPRO\TicketLayout\LayoutField $layout_field */
         foreach ($layout as $layout_field) {
-            if (array_key_exists($layout_field->getFieldType(), $required_fields)) {
-                ++$required_fields[$layout_field->getFieldType()];
+            if (array_key_exists($layout_field->getFieldType(), $requiredFields)) {
+                ++$requiredFields[$layout_field->getFieldType()];
             }
         }
 
         // if any are still 0, add them to the layout
-        foreach ($required_fields as $field_type => $count) {
+        foreach ($requiredFields as $field_type => $count) {
             if (0 === $count) {
                 $new = new LayoutField($field_type);
                 $new->enableOnNew();
@@ -244,10 +198,11 @@ class TicketLayoutFactory
      *
      * @param LayoutCollection $layouts
      */
-    public function checkAntiAbuseCaptchaForMultipleLayouts(LayoutCollection $layouts)
+    public function prepareUserMultipleLayouts(LayoutCollection $layouts)
     {
         foreach ($layouts as $layout) {
             $this->checkAntiAbuseCaptcha($layout);
+            $this->sortUserLayoutCollection($layout);
         }
     }
 
@@ -263,12 +218,12 @@ class TicketLayoutFactory
      */
     private function checkAntiAbuseCaptcha(Layout $layout)
     {
-        if (!$this->catpcha_decider) {
+        if (!$this->captchaDecider) {
             // only in the PortalKernel will this service be set, ignore it all others.
             return;
         }
 
-        if ($this->catpcha_decider->shouldRequireTicketCaptchaForCurrentPerson()) {
+        if ($this->captchaDecider->shouldRequireTicketCaptchaForCurrentPerson()) {
             $exists_in_layout = false;
             /** @var \Application\DeskPRO\TicketLayout\LayoutField $layout_field */
             foreach ($layout as $layout_field) {
@@ -293,10 +248,72 @@ class TicketLayoutFactory
     private function getBaseTicketLayoutQueryBuilder()
     {
         return $this
-            ->entity_manager
+            ->em
             ->createQueryBuilder()
             ->select('l')
-            ->from('DeskPRO:TicketLayout', 'l')
+            ->from(TicketLayout::class, 'l')
         ;
+    }
+
+    /**
+     * @return TicketLayout
+     */
+    private function getInitialLayout()
+    {
+        return $this
+            ->getBaseTicketLayoutQueryBuilder()
+            ->where('l.department IS NULL')
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
+
+    /**
+     * @param mixed $department
+     *
+     * @return TicketLayout|null
+     */
+    private function getLayout($department = null)
+    {
+        $layout = null;
+        // Note: I removed the following condition, we still definitely want to do this is $dep is a Dep entity.
+        //if ($department && !($department instanceof Department)) {
+        if ($department) {
+            $layout = $this
+                ->getBaseTicketLayoutQueryBuilder()
+                ->where('l.department = :department')
+                ->setParameter('department', $department)
+                ->getQuery()
+                ->getOneOrNullResult()
+            ;
+        }
+
+        if (!$layout) {
+            $layout = $this->getInitialLayout();
+        }
+
+        if ($layout) {
+            $layout = clone $layout;
+        } else {
+            $layout = new TicketLayout();
+        }
+
+        return $layout;
+    }
+
+    /**
+     * @param TicketLayout $layout
+     */
+    private function sortTicketLayoutFormFields(TicketLayout $layout)
+    {
+        $this->sortUserLayoutCollection($layout->getUserLayout());
+    }
+
+    /**
+     * @param Layout $layout
+     */
+    private function sortUserLayoutCollection(Layout $layout)
+    {
+        $layout->moveField(FormFields::ATTACHMENTS, FormFields::MESSAGE);
     }
 }

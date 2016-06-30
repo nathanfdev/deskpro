@@ -55,14 +55,14 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
      *
      * @var LayoutField[]
      */
-    private $fields = array();
+    private $fields = [];
 
     /**
      * @param array $fields
      */
     public function setAll(array $fields)
     {
-        $this->fields = array();
+        $this->fields = [];
         foreach ($fields as $f) {
             $this->add($f);
         }
@@ -102,12 +102,12 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 
         $did_add = false;
         if ($before_field) {
-            $pos = Arrays::findKey($this->fields, function ($v) use ($before_field) {
+            $pos = Arrays::findKey($this->fields, function (LayoutField $v) use ($before_field) {
                 return $v->getId() == $before_field;
             });
             if ($pos !== null) {
                 $all_fields   = $this->fields;
-                $this->fields = array();
+                $this->fields = [];
                 foreach ($all_fields as $k => $v) {
                     if ($k == $before_field) {
                         $did_add           = true;
@@ -121,6 +121,44 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 
         if (!$did_add) {
             $this->fields[$id] = $field;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $id
+     * @param string $toId
+     * @param bool   $append
+     *
+     * @return $this
+     */
+    public function moveField($id, $toId, $append = true)
+    {
+        if (isset($this->fields[$id]) && isset($this->fields[$toId])) {
+            $moveField = $this->fields[$id];
+            unset($this->fields[$id]);
+
+            $oldFields    = $this->fields;
+            $this->fields = [];
+
+            foreach ($oldFields as $k => $field) {
+                // prepend field
+                if (!$append) {
+                    if ($field->getId() === $toId) {
+                        $this->fields[$id] = $moveField;
+                    }
+                }
+
+                $this->fields[$k] = $field;
+
+                // append field
+                if ($append) {
+                    if ($field->getId() === $toId) {
+                        $this->fields[$id] = $moveField;
+                    }
+                }
+            }
         }
 
         return $this;
@@ -223,7 +261,7 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         $js = "(function () {\n";
         $js .= "\tvar fields = [\n";
 
-        $fields_js = array();
+        $fields_js = [];
         foreach ($this->fields as $field) {
             if ($field->hasCriteria()) {
                 $check_fn = trim(Strings::modifyLines($field->compileJsCheck(), "\t\t\t\t"));
@@ -267,10 +305,10 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
      */
     public function exportToArray()
     {
-        $data = array();
+        $data = [];
 
         $data['version'] = 1;
-        $data['fields']  = array();
+        $data['fields']  = [];
         foreach ($this->fields as $f) {
             $data['fields'][] = $f->exportToArray();
         }
@@ -343,7 +381,7 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
      */
     public function getIdsOfFieldType($type)
     {
-        $ret = array();
+        $ret = [];
         foreach ($this->fields as $field) {
             if ($type === $field->getFieldType()) {
                 $ret[] = $field->getFieldId();

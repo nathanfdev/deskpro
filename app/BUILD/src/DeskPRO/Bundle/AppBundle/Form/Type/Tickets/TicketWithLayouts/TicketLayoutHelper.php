@@ -132,7 +132,8 @@ class TicketLayoutHelper
         $personField = new LayoutField(FormFields::PERSON);
         $fieldRenderer->addField($context, $personField, $fieldResolver->createFormField($context, $personField));
 
-        foreach (self::getLayoutFields($context) as $field) {
+        $fields = self::getLayoutFields($context);
+        foreach ($fields as $field) {
             if (!self::shouldBeAlwaysOnTheForm($field) && $field->hasCriteria() && !$matchedCriteria($field)) {
                 continue;
             }
