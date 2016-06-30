@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -126,6 +126,7 @@ final class Tickets extends AbstractParser
             ->setOid($ticket->getId())
             ->setRef($ticket->getRef())
 
+            ->setBrand($ticket->brand ? $ticket->brand->getName() : null)
             ->setDepartment($ticket->department ? $ticket->department->getRealTitle() : null)
             ->setPersonEmail($ticket->person ? $ticket->person->getPrimaryEmail()->email : null)
             ->setAgentEmail($ticket->agent ? $ticket->agent->getPrimaryEmail()->email : null)

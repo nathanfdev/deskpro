@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,6 +44,11 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
      * @var int
      */
     private $ref;
+
+    /**
+     * @var string
+     */
+    private $brand;
 
     /**
      * @var string
@@ -133,12 +138,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     /**
      * @var string[]
      */
-    private $participants = array();
+    private $participants = [];
 
     /**
      * @var string[]
      */
-    private $labels = array();
+    private $labels = [];
 
     /**
      * @var Collection
@@ -188,6 +193,26 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     public function setRef($ref)
     {
         $this->ref = $ref;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param string $brand
+     *
+     * @return Ticket
+     */
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
 
         return $this;
     }
@@ -297,7 +322,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
      */
     public function isStatusValid()
     {
-        $statuses = array(
+        $statuses = [
             DeskPROEntity\Ticket::STATUS_AWAITING_AGENT,
             DeskPROEntity\Ticket::STATUS_AWAITING_USER,
             DeskPROEntity\Ticket::STATUS_RESOLVED,
@@ -306,7 +331,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
             DeskPROEntity\Ticket::STATUS_HIDDEN.'.'.DeskPROEntity\Ticket::HIDDEN_STATUS_SPAM,
             DeskPROEntity\Ticket::STATUS_HIDDEN.'.'.DeskPROEntity\Ticket::HIDDEN_STATUS_DELETED,
-        );
+        ];
 
         return in_array($this->status, $statuses, true);
     }
@@ -669,7 +694,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
             throw new \Exception('Date created is not set up');
         }
 
-        return array(
+        return [
             'oid'            => $this->oid,
             'import_map_key' => $this->import_map_key,
             'ref'            => $this->ref,
@@ -695,7 +720,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
             'messages'       => $this->messages->entitiesToArray(),
             'custom_fields'  => $this->custom_fields->entitiesToArray(),
             'log_message'    => $this->log_message,
-        );
+        ];
     }
 
     /**
@@ -707,25 +732,19 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
 
         $metadata
             ->addPropertyConstraint('ref', new Constraints\NotBlank())
-
             ->addPropertyConstraint('person_email', new Constraints\NotBlank())
             ->addPropertyConstraint('person_email', new Constraints\Email())
-
             ->addPropertyConstraint('agent_email', new Constraints\Email())
             ->addPropertyConstraint('subject', new Constraints\NotBlank())
             ->addPropertyConstraint('status', new Constraints\NotBlank())
-
-            ->addPropertyConstraint('participants', new Constraints\All(array(
-                'constraints' => array(
+            ->addPropertyConstraint('participants', new Constraints\All([
+                'constraints' => [
                     new Constraints\NotBlank(),
                     new Constraints\Email(),
-                ),
-            )))
-
+                ],
+            ]))
             ->addGetterConstraint('statusValid', new Constraints\True())
-
             ->addPropertyConstraint('messages', new Constraints\Valid())
-            ->addPropertyConstraint('custom_fields', new Constraints\Valid())
-        ;
+            ->addPropertyConstraint('custom_fields', new Constraints\Valid());
     }
 }

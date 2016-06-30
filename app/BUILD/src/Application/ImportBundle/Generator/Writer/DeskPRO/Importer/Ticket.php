@@ -90,6 +90,7 @@ final class Ticket extends AbstractImporter
             ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
             ->setOrganization($this->findOrCreateOrganization($entity->getOrganization()))
             ->setDepartment($this->findOrCreateTicketDepartment($entity->getDepartment()))
+            ->setBrand($this->findOrDefaultBrand($entity->getBrand()))
             ->setPriority($this->findOrCreateTicketPriority($entity->getPriority()))
             ->setCategory($this->findOrCreateTicketCategory($entity->getCategory()))
             ->setStatus($entity->getStatus())
@@ -316,6 +317,25 @@ final class Ticket extends AbstractImporter
         return $department;
     }
 
+    private function findOrDefaultBrand($name)
+    {
+        $brand = null;
+        if ($name) {
+            $brand = $this->getBrandMapper()->findOneByName($name, false);
+            if ($brand) {
+                $this->logDebug(sprintf(
+                    'Found existing brand `%d` with title `%s`',
+                    $brand->getId(), $brand->getTitle()
+                ));
+            } else {
+                $brand = $this->getBrandMapper()->getDefaultBrand();
+                $this->logNotice(sprintf('Use default Brand `%s`', $brand->getName()));
+            }
+        }
+
+        return $brand;
+    }
+
     /**
      * Returns a ticket priority by title
      * Creates a new ticket priority if not found.
@@ -423,5 +443,15 @@ final class Ticket extends AbstractImporter
     private function getTicketMessageMapper()
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET_MESSAGE);
+    }
+
+    /**
+     * Return the brand mapper.
+     * 
+     * @return Mapper\Brand
+     */
+    private function getBrandMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_BRAND);
     }
 }

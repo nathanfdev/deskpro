@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -60,6 +60,8 @@ class DeskProWriterFactory extends AbstractWriterFactory
         $article_label_repository = $entity_manager->getRepository('DeskPRO:LabelArticle');
         /** @var EntityRepository\ArticleComment $article_comment_repository */
         $article_comment_repository = $entity_manager->getRepository('DeskPRO:ArticleComment');
+        /** @var EntityRepository\Brand $brand_repository */
+        $brand_repository = $entity_manager->getRepository('DeskPRO:Brand');
         /** @var EntityRepository\CustomDefPerson $custom_def_person_repository */
         $custom_def_person_repository = $entity_manager->getRepository('DeskPRO:CustomDefPerson');
         /** @var EntityRepository\CustomDefTicket $custom_def_ticket_repository */
@@ -125,6 +127,8 @@ class DeskProWriterFactory extends AbstractWriterFactory
         /** @var EntityRepository\ImportMap $import_map_repository */
         $import_map_repository = $entity_manager->getRepository('DeskPRO:ImportMap');
 
+        $default_brand_id = $this->container->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+
         $email_account_manager = $this->container->getEmailAccountManager();
 
         $mappers = new Importer\Mapper\Collection();
@@ -133,6 +137,7 @@ class DeskProWriterFactory extends AbstractWriterFactory
             ->attach(new Importer\Mapper\ArticleCategory($article_category_repository))
             ->attach(new Importer\Mapper\ArticleLabel($article_label_repository))
             ->attach(new Importer\Mapper\ArticleComment($article_comment_repository, $entity_manager))
+            ->attach(new Importer\Mapper\Brand($brand_repository, $default_brand_id))
             ->attach(new Importer\Mapper\CustomDefPerson($custom_def_person_repository, $import_map_repository))
             ->attach(new Importer\Mapper\CustomDefTicket($custom_def_ticket_repository, $import_map_repository))
             ->attach(new Importer\Mapper\CustomDefFeedback($custom_def_feedback_repository, $import_map_repository))
