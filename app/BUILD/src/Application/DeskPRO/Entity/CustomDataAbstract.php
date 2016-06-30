@@ -181,7 +181,10 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      */
     public function setData($data)
     {
-        if (is_int($data)) {
+        if (!$data) {
+            $this->setModelField('value', 0);
+            $this->setModelField('input', '');
+        } elseif (is_int($data)) {
             $this->setModelField('value', $data);
         } else {
             $this->setModelField('input', (string) $data);

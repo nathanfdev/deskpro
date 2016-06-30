@@ -135,7 +135,7 @@ class TicketLayoutValidator extends ConstraintValidator
                         $value,
                         'product',
                         $this->ticket_field_settings->canProductBeDisplayed(),
-                        $this->ticket_field_settings->isProductRequired()
+                        $this->ticket_field_settings->isProductRequired($constraint->isAgent())
                     );
                     break;
                 case FormFields::CATEGORY:
@@ -143,7 +143,7 @@ class TicketLayoutValidator extends ConstraintValidator
                         $value,
                         'category',
                         $this->ticket_field_settings->canCategoryBeDisplayed(),
-                        $this->ticket_field_settings->isCategoryRequired()
+                        $this->ticket_field_settings->isCategoryRequired($constraint->isAgent())
                     );
                     break;
                 case FormFields::PRIORITY:
@@ -151,7 +151,7 @@ class TicketLayoutValidator extends ConstraintValidator
                         $value,
                         'priority',
                         $this->ticket_field_settings->canPriorityBeDisplayed(),
-                        $this->ticket_field_settings->isPriorityRequired()
+                        $this->ticket_field_settings->isPriorityRequired($constraint->isAgent())
                     );
                     break;
                 case FormFields::WORKFLOW:
@@ -159,7 +159,7 @@ class TicketLayoutValidator extends ConstraintValidator
                         $value,
                         'workflow',
                         $this->ticket_field_settings->canWorkflowBeDisplayed(),
-                        $this->ticket_field_settings->isWorkflowRequired()
+                        $this->ticket_field_settings->isWorkflowRequired($constraint->isAgent())
                     );
                     break;
                 case FormFields::TICKET_FIELD:

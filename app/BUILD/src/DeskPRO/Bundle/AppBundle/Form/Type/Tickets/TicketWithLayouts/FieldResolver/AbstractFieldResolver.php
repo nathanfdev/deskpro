@@ -181,22 +181,6 @@ abstract class AbstractFieldResolver
     /**
      * @return FormField
      */
-    protected function createSubject()
-    {
-        $options = [
-            'label'       => $this->phrase('portal.forms.label_subject'),
-            'required'    => true,
-            'constraints' => [
-                new Assert\Length(['min' => 5]),
-            ],
-        ];
-
-        return new FormField('text', $options);
-    }
-
-    /**
-     * @return FormField
-     */
     protected function createUserTimezone()
     {
         return new FormField('timezone', [
@@ -334,9 +318,17 @@ abstract class AbstractFieldResolver
             }
         }
 
+        $isRequired  = $this->fieldSettings->isCategoryRequired($context->isAgentView());
+        $constraints = [];
+        if ($isRequired) {
+            $constraints[] = new Assert\NotBlank();
+        }
+
         return new FormField(TicketCategoryType::class, [
             'label'       => $this->phrase('portal.forms.label_category'),
             'placeholder' => '',
+            'required'    => $isRequired,
+            'constraints' => $constraints,
         ]);
     }
 
@@ -358,9 +350,17 @@ abstract class AbstractFieldResolver
             }
         }
 
+        $isRequired  = $this->fieldSettings->isPriorityRequired($context->isAgentView());
+        $constraints = [];
+        if ($isRequired) {
+            $constraints[] = new Assert\NotBlank();
+        }
+
         return new FormField(TicketPriorityType::class, [
             'label'       => $this->phrase('portal.forms.label_priority'),
             'placeholder' => '',
+            'required'    => $isRequired,
+            'constraints' => $constraints,
         ]);
     }
 
@@ -386,8 +386,16 @@ abstract class AbstractFieldResolver
             }
         }
 
+        $isRequired  = $this->fieldSettings->isWorkflowRequired($context->isAgentView());
+        $constraints = [];
+        if ($isRequired) {
+            $constraints[] = new Assert\NotBlank();
+        }
+
         return new FormField(TicketWorkflowType::class, [
-            'label' => $this->phrase('portal.forms.label_workflow'),
+            'label'       => $this->phrase('portal.forms.label_workflow'),
+            'required'    => $isRequired,
+            'constraints' => $constraints,
         ]);
     }
 
@@ -409,8 +417,16 @@ abstract class AbstractFieldResolver
             }
         }
 
+        $isRequired  = $this->fieldSettings->isProductRequired($context->isAgentView());
+        $constraints = [];
+        if ($isRequired) {
+            $constraints[] = new Assert\NotBlank();
+        }
+
         return new FormField(TicketProductType::class, [
             'placeholder' => '',
+            'required'    => $isRequired,
+            'constraints' => $constraints,
         ]);
     }
 
@@ -432,6 +448,11 @@ abstract class AbstractFieldResolver
             'ticket_message' => $context->getMessage(),
         ]);
     }
+
+    /**
+     * @return FormField
+     */
+    abstract protected function createSubject();
 
     /**
      * @param TicketWithLayoutsContext $context

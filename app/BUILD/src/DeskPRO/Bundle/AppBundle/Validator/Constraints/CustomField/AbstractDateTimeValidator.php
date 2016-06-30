@@ -92,6 +92,9 @@ abstract class AbstractDateTimeValidator extends AbstractSingleValueValidator
     protected function getCustomDataValue(CustomDataAbstract $custom_data)
     {
         $value = parent::getCustomDataValue($custom_data);
+        if (!$value) {
+            return '';
+        }
 
         try {
             $value = new \DateTime('@'.$value);

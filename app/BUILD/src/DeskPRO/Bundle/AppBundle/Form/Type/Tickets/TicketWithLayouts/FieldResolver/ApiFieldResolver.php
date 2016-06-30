@@ -35,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -101,13 +102,24 @@ class ApiFieldResolver extends AbstractFieldResolver
     }
 
     /**
+     * @return FormField
+     */
+    protected function createSubject()
+    {
+        return new FormField(TextType::class, [
+            'constraints' => [
+                new Assert\Length(['min' => 5]),
+            ],
+        ]);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function createMessage(TicketWithLayoutsContext $context)
     {
         return new FormField(TicketDescriptionType::class, [
             'mapped'         => false,
-            'label'          => false,
             'person'         => $context->getPerson(),
             'ticket'         => $context->getTicket(),
             'ticket_message' => $context->getMessage(),
@@ -134,7 +146,6 @@ class ApiFieldResolver extends AbstractFieldResolver
             'custom_def'      => $def,
             'property_path'   => $propertyPath,
             'agent_interface' => $context->isAgentView(),
-            'required'        => $def->isRequired($context->isAgentView()),
             'inline'          => true,
             'ticket'          => $context->getTicket(),
         ];

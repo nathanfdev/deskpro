@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Form\Type\EntityHierarchyType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -47,7 +48,7 @@ class TicketDepartmentChoiceType extends AbstractType
      */
     public function getParent()
     {
-        return 'entity_hierarchy';
+        return EntityHierarchyType::class;
     }
 
     /**

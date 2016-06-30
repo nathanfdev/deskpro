@@ -83,10 +83,10 @@ services:
       - { name: form.type, alias: deskpro_person_email_choice }
 
   form.entity_hierarchy:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\EntityHeirarchyType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\EntityHierarchyType
     arguments: ["@form_hierarchy_generator"]
     tags:
-      - { name: form.type, alias: entity_hierarchy }
+      - { name: form.type }
 
   form.custom_data:
     class: DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType

@@ -81,6 +81,7 @@ class ValidatorErrorCodeFactory
         Assert\Url::INVALID_URL_ERROR            => ErrorsCodes::INVALID_URL,
         Assert\GreaterThanOrEqual::TOO_LOW_ERROR => ErrorsCodes::TOO_LOW,
         Assert\IsTrue::NOT_TRUE_ERROR            => ErrorsCodes::NOT_CHECKED,
+        Assert\Regex::REGEX_FAILED_ERROR         => ErrorsCodes::REGEX,
     ];
 
     /**

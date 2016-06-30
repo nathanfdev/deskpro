@@ -67,23 +67,6 @@ class MinkContext extends \Behat\MinkExtension\Context\MinkContext
     }
 
     /**
-     * @Then I should see the :locator field
-     *
-     * @param string $locator
-     *
-     * @throws \Exception
-     */
-    public function iShouldSeeField($locator)
-    {
-        $locator = DataContext::replace($locator);
-        $field   = $this->getSession()->getPage()->findField($locator);
-
-        if (null === $field) {
-            throw new \Exception("Field $locator not found");
-        }
-    }
-
-    /**
      * @override
      *
      * @param string $name

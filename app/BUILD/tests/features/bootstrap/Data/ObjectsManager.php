@@ -28,7 +28,6 @@
 
 namespace DpBehat\Data;
 
-use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Blob;
@@ -54,6 +53,7 @@ use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketCategory;
@@ -274,8 +274,12 @@ class ObjectsManager
             'Ticket'                 => [$this, 'find', Ticket::class],
             'TicketLayout'           => [$this, 'find', TicketLayout::class],
             'TicketMessage'          => [$this, 'find', TicketMessage::class],
+            'TicketPriority'         => [$this, 'find', TicketPriority::class],
+            'TicketWorkflow'         => [$this, 'find', TicketWorkflow::class],
+            'TicketCategory'         => [$this, 'find', TicketCategory::class],
             'SLA'                    => [$this, 'find', Sla::class],
             'Organization'           => [$this, 'find', Organization::class],
+            'Product'                => [$this, 'find', Product::class],
             'Chat'                   => [$this, 'find', ChatConversation::class],
             'Department'             => [$this, 'find', Department::class],
             'CustomDefTicket'        => [$this, 'find', CustomDefTicket::class],

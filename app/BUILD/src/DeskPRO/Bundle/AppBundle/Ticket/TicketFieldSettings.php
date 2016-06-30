@@ -82,11 +82,15 @@ class TicketFieldSettings
     }
 
     /**
+     * @param bool $agent
+     *
      * @return bool
      */
-    public function isProductRequired()
+    public function isProductRequired($agent = false)
     {
-        return $this->hasSetting('core_tickets.field_validation_ticket_prod_agent_required');
+        $prefix = $agent ? 'agent' : 'user';
+
+        return $this->hasSetting("core_tickets.field_validation_ticket_prod_{$prefix}_required");
     }
 
     /**
@@ -105,11 +109,15 @@ class TicketFieldSettings
     }
 
     /**
+     * @param bool $agent
+     *
      * @return bool
      */
-    public function isPriorityRequired()
+    public function isPriorityRequired($agent = false)
     {
-        return $this->hasSetting('core_tickets.field_validation_ticket_pri_agent_required');
+        $prefix = $agent ? 'agent' : 'user';
+
+        return $this->hasSetting("core_tickets.field_validation_ticket_pri_{$prefix}_required");
     }
 
     /**
@@ -128,11 +136,15 @@ class TicketFieldSettings
     }
 
     /**
+     * @param bool $agent
+     *
      * @return bool
      */
-    public function isCategoryRequired()
+    public function isCategoryRequired($agent = false)
     {
-        return $this->hasSetting('core_tickets.field_validation_ticket_cat_agent_required');
+        $prefix = $agent ? 'agent' : 'user';
+
+        return $this->hasSetting("core_tickets.field_validation_ticket_cat_{$prefix}_required");
     }
 
     /**
@@ -151,11 +163,15 @@ class TicketFieldSettings
     }
 
     /**
+     * @param bool $agent
+     *
      * @return bool
      */
-    public function isWorkflowRequired()
+    public function isWorkflowRequired($agent = false)
     {
-        return $this->hasSetting('core_tickets.field_validation_ticket_work_agent_required');
+        $prefix = $agent ? 'agent' : 'user';
+
+        return $this->hasSetting("core_tickets.field_validation_ticket_work_{$prefix}_required");
     }
 
     /**
