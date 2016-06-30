@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\CustomDataTicket as CustomDataTicketRepository;
 use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDataChangeListener;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -147,19 +148,11 @@ class CustomDataTicket extends CustomDataAbstract
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDataTicket';
+        $metadata->customRepositoryClassName = CustomDataTicketRepository::class;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
             [
-                'name'    => 'custom_data_ticket',
-                'indexes' => [
-                    'field_id_idx' => [
-                        'columns' => [
-                            0 => 'field_id',
-                            1 => 'ticket_id',
-                        ],
-                    ],
-                ],
+                'name'              => 'custom_data_ticket',
                 'uniqueConstraints' => [
                     'unique_idx' => [
                         'columns' => [
@@ -207,13 +200,13 @@ class CustomDataTicket extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'ticket',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
+                'targetEntity' => Ticket::class,
                 'inversedBy'   => 'custom_data',
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'ticket_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
@@ -223,12 +216,12 @@ class CustomDataTicket extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefTicket',
+                'targetEntity' => CustomDefTicket::class,
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
@@ -238,12 +231,12 @@ class CustomDataTicket extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'root_field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefTicket',
+                'targetEntity' => CustomDefTicket::class,
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'root_field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],

@@ -50,7 +50,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      *
      * @var int
      */
-    protected $id = null;
+    protected $id;
 
     /**
      * User numeric data.
@@ -120,28 +120,12 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      */
     public function getData()
     {
-        $type = !empty($this->field) ? $this->field->getTypeName() : 'text';
-
-        switch ($type) {
+        switch ($this->field->getTypeName()) {
             case 'toggle':
                 return $this->value;
             default:
                 return $this->value ? $this->value : $this->input;
         }
-    }
-
-    /**
-     * @return int
-     */
-    public function fetchFieldId()
-    {
-        if ($this->field) {
-            return $this->field->getId();
-        } elseif ($this->root_field) {
-            return $this->root_field->getId();
-        }
-
-        return 0;
     }
 
     /**
@@ -208,13 +192,8 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     {
         $data = parent::toApiData($primary, $deep, $visited);
 
-        // record isn't useful without these, so always include them
-        if ($this->field) {
-            $data['field'] = $this->field->toApiData(false, false, $visited);
-        }
-        if ($this->root_field) {
-            $data['root_field'] = $this->root_field->toApiData(false, false, $visited);
-        }
+        $data['field']      = $this->field->toApiData(false, false, $visited);
+        $data['root_field'] = $this->root_field->toApiData(false, false, $visited);
 
         return $data;
     }
@@ -227,8 +206,8 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
         return sprintf(
             '[#%s -- %s:%s] %s',
             $this->id ?: '?',
-            $this->field ? $this->field->id : '?',
-            $this->field ? $this->field->getTypeName() : 'unknown',
+            $this->field->id,
+            $this->field->getTypeName(),
             $this->getData()
         );
     }

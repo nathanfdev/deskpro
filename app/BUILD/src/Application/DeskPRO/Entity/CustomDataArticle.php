@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\Basic;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -43,19 +44,19 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class CustomDataArticle extends CustomDataAbstract
 {
     /**
-     * @var \Application\DeskPRO\Entity\Article
+     * @var Article
      */
     protected $article;
 
     /**
      * @var CustomDefArticle
      */
-    protected $field = null;
+    protected $field;
 
     /**
      * @var CustomDefArticle
      */
-    protected $root_field = null;
+    protected $root_field;
 
     /**
      * @return int
@@ -109,19 +110,11 @@ class CustomDataArticle extends CustomDataAbstract
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
+        $metadata->customRepositoryClassName = Basic::class;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
             [
-                'name'    => 'custom_data_article',
-                'indexes' => [
-                    'field_id_idx' => [
-                        'columns' => [
-                            0 => 'field_id',
-                            1 => 'article_id',
-                        ],
-                    ],
-                ],
+                'name'              => 'custom_data_article',
                 'uniqueConstraints' => [
                     'unique_idx' => [
                         'columns' => [
@@ -169,13 +162,13 @@ class CustomDataArticle extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'article',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Article',
+                'targetEntity' => Article::class,
                 'inversedBy'   => 'custom_data',
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'article_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
@@ -185,12 +178,12 @@ class CustomDataArticle extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefArticle',
+                'targetEntity' => CustomDefArticle::class,
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
@@ -200,12 +193,12 @@ class CustomDataArticle extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'root_field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefArticle',
+                'targetEntity' => CustomDefArticle::class,
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'root_field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],

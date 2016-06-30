@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\Basic;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -43,19 +44,19 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class CustomDataProduct extends CustomDataAbstract
 {
     /**
-     * @var \Application\DeskPRO\Entity\Product
+     * @var Product
      */
     protected $product;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefProduct
+     * @var CustomDefProduct
      */
-    protected $field = null;
+    protected $field;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefProduct
+     * @var CustomDefProduct
      */
-    protected $root_field = null;
+    protected $root_field;
 
     public function getProductId()
     {
@@ -78,19 +79,11 @@ class CustomDataProduct extends CustomDataAbstract
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
+        $metadata->customRepositoryClassName = Basic::class;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
             [
-                'name'    => 'custom_data_product',
-                'indexes' => [
-                    'field_id_idx' => [
-                        'columns' => [
-                            0 => 'field_id',
-                            1 => 'product_id',
-                        ],
-                    ],
-                ],
+                'name'              => 'custom_data_product',
                 'uniqueConstraints' => [
                     'unique_idx' => [
                         'columns' => [
@@ -138,13 +131,13 @@ class CustomDataProduct extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'product',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Product',
+                'targetEntity' => Product::class,
                 'inversedBy'   => 'custom_data',
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'product_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
@@ -154,12 +147,12 @@ class CustomDataProduct extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefProduct',
+                'targetEntity' => CustomDefProduct::class,
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
@@ -169,12 +162,12 @@ class CustomDataProduct extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'root_field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefProduct',
+                'targetEntity' => CustomDefProduct::class,
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'root_field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],

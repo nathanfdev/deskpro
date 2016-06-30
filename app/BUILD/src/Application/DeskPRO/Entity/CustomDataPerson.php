@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\CustomDataPerson as CustomDataPersonEntityRepository;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -51,12 +52,12 @@ class CustomDataPerson extends CustomDataAbstract
     /**
      * @var \Application\DeskPRO\Entity\CustomDefPerson
      */
-    protected $field = null;
+    protected $field;
 
     /**
      * @var \Application\DeskPRO\Entity\CustomDefPerson
      */
-    protected $root_field = null;
+    protected $root_field;
 
     /**
      * Set related person entity.
@@ -124,19 +125,11 @@ class CustomDataPerson extends CustomDataAbstract
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDataPerson';
+        $metadata->customRepositoryClassName = CustomDataPersonEntityRepository::class;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
             [
-                'name'    => 'custom_data_person',
-                'indexes' => [
-                    'field_id_idx' => [
-                        'columns' => [
-                            0 => 'field_id',
-                            1 => 'person_id',
-                        ],
-                    ],
-                ],
+                'name'              => 'custom_data_person',
                 'uniqueConstraints' => [
                     'unique_idx' => [
                         'columns' => [
@@ -184,13 +177,13 @@ class CustomDataPerson extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'person',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'targetEntity' => Person::class,
                 'inversedBy'   => 'custom_data',
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'person_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
@@ -200,12 +193,12 @@ class CustomDataPerson extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefPerson',
+                'targetEntity' => CustomDefPerson::class,
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
@@ -215,12 +208,12 @@ class CustomDataPerson extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'root_field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefPerson',
+                'targetEntity' => CustomDefPerson::class,
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'root_field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],

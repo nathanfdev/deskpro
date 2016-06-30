@@ -45,19 +45,19 @@ class CustomDataChat extends CustomDataAbstract
     /**
      * The conversation the message belongs to.
      *
-     * @var \Application\DeskPRO\Entity\ChatConversation
+     * @var ChatConversation
      */
     protected $conversation;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefChat
+     * @var CustomDefChat
      */
-    protected $field = null;
+    protected $field;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefChat
+     * @var CustomDefChat
      */
-    protected $root_field = null;
+    protected $root_field;
 
     public function getConversationId()
     {
@@ -80,19 +80,11 @@ class CustomDataChat extends CustomDataAbstract
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDataChat';
+        $metadata->customRepositoryClassName = self::class;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
             [
-                'name'    => 'custom_data_chat',
-                'indexes' => [
-                    'field_id_idx' => [
-                        'columns' => [
-                            0 => 'field_id',
-                            1 => 'conversation_id',
-                        ],
-                    ],
-                ],
+                'name'              => 'custom_data_chat',
                 'uniqueConstraints' => [
                     'unique_idx' => [
                         'columns' => [
@@ -140,13 +132,13 @@ class CustomDataChat extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'conversation',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation',
+                'targetEntity' => ChatConversation::class,
                 'inversedBy'   => 'custom_data',
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'conversation_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
@@ -156,14 +148,14 @@ class CustomDataChat extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefChat',
+                'targetEntity' => CustomDefChat::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
@@ -173,14 +165,14 @@ class CustomDataChat extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'root_field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefChat',
+                'targetEntity' => CustomDefChat::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'root_field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
