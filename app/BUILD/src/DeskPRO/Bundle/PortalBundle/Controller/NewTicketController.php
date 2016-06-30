@@ -66,8 +66,14 @@ class NewTicketController extends AbstractController
      */
     public function newTicketAction(Request $request, $visitor_id)
     {
-        $ticket = $this->getNewTicketService()->createNewTicket($request, $visitor_id, $this->getCurrentPerson(), Ticket::CREATED_WEB_PERSON_PORTAL);
-        $person = $ticket->getPerson();
+        $ticket = $this->getNewTicketService()->createNewTicket(
+            $request,
+            $visitor_id,
+            $this->getCurrentPerson(),
+            $this->getBrandContainer()->getBrand(),
+            Ticket::CREATED_WEB_PERSON_PORTAL
+        );
+        $person         = $ticket->getPerson();
 
         $formOptions = [
             'ticket_view_context'   => TicketWithLayoutsContext::VIEW_USER,

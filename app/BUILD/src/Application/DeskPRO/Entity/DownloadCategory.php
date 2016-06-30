@@ -201,7 +201,7 @@ class DownloadCategory extends CategoryAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'parent',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory',
+                'targetEntity' => self::class,
                 'mappedBy'     => null,
                 'inversedBy'   => 'children',
                 'joinColumns'  => [
@@ -217,7 +217,7 @@ class DownloadCategory extends CategoryAbstract
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'children',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory',
+                'targetEntity' => self::class,
                 'mappedBy'     => 'parent',
                 'orderBy'      => ['display_order' => 'ASC'],
             ]
@@ -225,7 +225,7 @@ class DownloadCategory extends CategoryAbstract
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'usergroups',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+                'targetEntity' => Usergroup::class,
                 'cascade'      => ['persist', 'merge'],
                 'joinTable'    => [
                     'name'        => 'download_category2usergroup',
@@ -255,16 +255,16 @@ class DownloadCategory extends CategoryAbstract
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'downloads',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Download',
+                'targetEntity' => Download::class,
                 'mappedBy'     => 'category',
             ]
         );
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'brand',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Brand',
+                'targetEntity' => Brand::class,
                 'mappedBy'     => null,
-                'inversedBy'   => 'download_categories',
+                'inversedBy'   => null,
                 'joinColumns'  => [
                     [
                         'name'                 => 'brand_id',

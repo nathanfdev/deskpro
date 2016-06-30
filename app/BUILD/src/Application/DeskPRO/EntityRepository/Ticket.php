@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -56,10 +57,15 @@ class Ticket extends AbstractEntityRepository
         $this->_em->flush();
     }
 
-    public function saveNewTicket(Entity\Ticket $ticket, Entity\TicketMessage $message, Entity\Person $person)
-    {
+    public function saveNewTicket(
+        Entity\Ticket $ticket,
+        Entity\TicketMessage $message,
+        Entity\Person $person,
+        Entity\Brand $brand
+    ) {
         $ticket->addMessage($message);
         $ticket->setPerson($person);
+        $ticket->setBrand($brand);
 
         $this->_em->persist($ticket);
         $this->_em->persist($message);

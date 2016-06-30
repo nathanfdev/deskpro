@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,27 +33,32 @@ class SearchContext implements SearchContextInterface
     /**
      * @var array
      */
-    private $article_category_ids = array();
+    private $article_category_ids = [];
 
     /**
      * @var array
      */
-    private $download_category_ids = array();
+    private $download_category_ids = [];
 
     /**
      * @var array
      */
-    private $news_category_ids = array();
+    private $news_category_ids = [];
 
     /**
      * @var array
      */
-    private $feedback_category_ids = array();
+    private $feedback_category_ids = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Person
      */
     private $person;
+
+    /**
+     * @var \Application\DeskPRO\Entity\Brand
+     */
+    private $brand;
 
     /**
      * @return \Application\DeskPRO\Entity\Person
@@ -69,6 +74,22 @@ class SearchContext implements SearchContextInterface
     public function setPerson($person)
     {
         $this->person = $person;
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param \Application\DeskPRO\Entity\Brand $brand
+     */
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
     }
 
     /**

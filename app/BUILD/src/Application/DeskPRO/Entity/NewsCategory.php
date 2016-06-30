@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\NewsCategory as NewsCategoryRepository;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -134,7 +135,7 @@ class NewsCategory extends CategoryAbstract
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\NewsCategory';
+        $metadata->customRepositoryClassName = NewsCategoryRepository::class;
         $metadata->setPrimaryTable(['name' => 'news_categories']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
@@ -205,7 +206,7 @@ class NewsCategory extends CategoryAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'parent',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsCategory',
+                'targetEntity' => self::class,
                 'mappedBy'     => null,
                 'inversedBy'   => 'children',
                 'joinColumns'  => [
@@ -221,7 +222,7 @@ class NewsCategory extends CategoryAbstract
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'children',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsCategory',
+                'targetEntity' => self::class,
                 'mappedBy'     => 'parent',
                 'orderBy'      => ['display_order' => 'ASC'],
             ]
@@ -229,7 +230,7 @@ class NewsCategory extends CategoryAbstract
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'usergroups',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+                'targetEntity' => Usergroup::class,
                 'cascade'      => ['persist', 'merge'],
                 'joinTable'    => [
                     'name'        => 'news_category2usergroup',
@@ -259,16 +260,16 @@ class NewsCategory extends CategoryAbstract
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'articles',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\News',
+                'targetEntity' => News::class,
                 'mappedBy'     => 'category',
             ]
         );
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'brand',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Brand',
+                'targetEntity' => Brand::class,
                 'mappedBy'     => null,
-                'inversedBy'   => 'news_categories',
+                'inversedBy'   => null,
                 'joinColumns'  => [
                     [
                         'name'                 => 'brand_id',

@@ -32,3 +32,4 @@ services:
       - "@person_factory"
       - "@anti_abuse"
       - "@router"
+      - "@brand_stack"

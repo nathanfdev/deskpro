@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Ticket;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
@@ -43,6 +44,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Person\PersonFactory;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\Form;
@@ -91,6 +93,11 @@ class NewTicket
     private $urlGenerator;
 
     /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
      * Constructor.
      *
      * @param EntityManager         $em
@@ -100,6 +107,7 @@ class NewTicket
      * @param PersonFactory         $person_factory
      * @param AntiAbuse             $anti_abuse
      * @param UrlGeneratorInterface $urlGenerator
+     * @param BrandStack            $brandStack
      */
     public function __construct(
         EntityManager         $em,
@@ -108,7 +116,8 @@ class NewTicket
         LanguageManager       $language_manager,
         PersonFactory         $person_factory,
         AntiAbuse             $anti_abuse,
-        UrlGeneratorInterface $urlGenerator
+        UrlGeneratorInterface $urlGenerator,
+        BrandStack            $brandStack
     ) {
         $this->em                       = $em;
         $this->ticket_manager           = $ticket_manager;
@@ -117,23 +126,32 @@ class NewTicket
         $this->person_factory           = $person_factory;
         $this->anti_abuse               = $anti_abuse;
         $this->urlGenerator             = $urlGenerator;
+        $this->brandStack               = $brandStack;
     }
 
     /**
      * @param Request     $request
      * @param string      $visitor_id
      * @param Person      $person
+     * @param Brand       $brand
      * @param string|null $creationSystem
      *
      * @return Ticket
      */
-    public function createNewTicket(Request $request, $visitor_id, Person $person = null, $creationSystem = null)
-    {
+    public function createNewTicket(
+        Request $request,
+        $visitor_id,
+        Person $person = null,
+        Brand $brand = null,
+        $creationSystem = null
+    ) {
         $language = $this->language_manager->getLanguageStack()->getActiveOrDefault();
         $person   = $person ?: new PersonGuest();
+        $brand    = $brand ?: $this->brandStack->getActive()->getBrand();
 
         $ticket = $this->ticket_manager->createTicket();
         $ticket->setPerson($person);
+        $ticket->setBrand($brand);
         $ticket->setLanguage($language);
 
         if ($creationSystem) {

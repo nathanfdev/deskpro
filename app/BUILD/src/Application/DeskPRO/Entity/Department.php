@@ -562,6 +562,22 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
         return $this->brands;
     }
 
+    /**
+     * @param Brand $searchBrand
+     *
+     * @return bool
+     */
+    public function hasBrand(Brand $searchBrand)
+    {
+        foreach ($this->brands as $brand) {
+            if ($brand->getId() == $searchBrand->getId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     ############################################################################
     # Validation Metadata
     ############################################################################

@@ -322,7 +322,7 @@ class ArticleCategory extends CategoryAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'parent',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory',
+                'targetEntity' => self::class,
                 'mappedBy'     => null,
                 'inversedBy'   => 'children',
                 'joinColumns'  => [
@@ -338,7 +338,7 @@ class ArticleCategory extends CategoryAbstract
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'children',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory',
+                'targetEntity' => self::class,
                 'mappedBy'     => 'parent',
                 'orderBy'      => ['display_order' => 'ASC'],
             ]
@@ -346,7 +346,7 @@ class ArticleCategory extends CategoryAbstract
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'usergroups',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+                'targetEntity' => Usergroup::class,
                 'cascade'      => ['persist', 'merge'],
                 'joinTable'    => [
                     'name'        => 'article_category2usergroup',
@@ -376,16 +376,16 @@ class ArticleCategory extends CategoryAbstract
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'articles',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Article',
+                'targetEntity' => Article::class,
                 'mappedBy'     => 'categories',
             ]
         );
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'brand',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Brand',
+                'targetEntity' => Brand::class,
                 'mappedBy'     => null,
-                'inversedBy'   => 'article_categories',
+                'inversedBy'   => null,
                 'joinColumns'  => [
                     [
                         'name'                 => 'brand_id',

@@ -291,6 +291,10 @@ class UserSearch implements UserSearchInterface
             $person->add($qb->expr()->eq('tickets_participants.person', '?'.$paramsIndex));
         }
         $params[$paramsIndex++] = (int) $context->getPerson()->getId();
+
+        $brand                  = $qb->expr()->eq('tickets.brand', '?'.$paramsIndex);
+        $params[$paramsIndex++] = (int) $context->getBrand()->getId();
+
         if ($context->getPerson()->organization && $context->getPerson()->organization_manager) {
             $person->add($qb->expr()->eq('tickets.organization', '?'.$paramsIndex));
             $params[$paramsIndex] = (int) $context->getPerson()->organization->getId();
@@ -308,6 +312,7 @@ class UserSearch implements UserSearchInterface
             )
             ->andWhere($searchPlaces)
             ->andWhere($person)
+            ->andWhere($brand)
             ->orderBy('tickets.date_status', 'DESC')
             ->addOrderBy('tickets.date_created', 'DESC')
             ->setMaxResults($limit)
