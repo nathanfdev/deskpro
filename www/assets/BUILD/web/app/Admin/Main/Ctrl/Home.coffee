@@ -15,6 +15,8 @@ define [
       @offline_agents = []
       @$scope.new_agent = {}
       @$scope.hide_admin_upgrade_notice = window.hide_admin_upgrade_notice || false
+      @$scope.readable_config = false
+      @$scope.missconfigure_web_root = false
 
       @online_agents  = []
       @offline_agents = []
@@ -141,8 +143,12 @@ define [
         cache: false
       }).success((res) =>
         return if not res or res.success
-        if typeof res is 'string' and res.indexOf('<?') != -1 and res.indexOf('define') != -1 and res.indexOf('DESKPRO_PONG') != -1
+        if typeof res is 'string' and res.indexOf('DESKPRO_PONG') != -1 and res.indexOf('<!--') != -1
           @$scope.readable_config = true
+        if typeof res is 'string' and res.indexOf('OK') != 0
+          @$scope.missconfigured_web_root = true
+      ).error( =>
+        @$scope.missconfigured_web_root = true
       )
 
     loadMethodTests: ->

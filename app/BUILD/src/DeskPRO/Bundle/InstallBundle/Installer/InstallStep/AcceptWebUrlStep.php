@@ -146,7 +146,7 @@ class AcceptWebUrlStep extends AbstractStep
             $url.'/../app/run/test_ping.html',
         ] as $test) {
             $res = $this->loadUrl($test);
-            if ($res && strpos($res, 'DESKPRO_PONG') !== false) {
+            if ($res && (strpos($res, 'DESKPRO_PONG') !== false || strpos($res, 'OK') !== 0)) {
                 $this->writeln('<error>It seems like you have put DeskPRO files within the web root. This is a major security issue. You must only put the www/ directory within the web root.</error>');
 
                 return false;
