@@ -1763,7 +1763,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * @return CustomDataTicket[]
+     * @return CustomDataPerson[]|ArrayCollection
      */
     public function getCustomData()
     {

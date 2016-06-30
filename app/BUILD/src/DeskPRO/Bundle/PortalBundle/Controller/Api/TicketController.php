@@ -88,7 +88,7 @@ class TicketController extends AbstractApiController
         $person         = $ticket->getPerson();
         $ticket_message = $ticket->messages[0];
 
-        $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, [
+        $formOptions = [
             'person'                        => $person,
             'action'                        => $this->generateUrl('portal_api_ticket_new'),
             'csrf_protection'               => false,
@@ -99,23 +99,22 @@ class TicketController extends AbstractApiController
             'hide_department_field'         => $request->query->getBoolean('hide_department_field'),
             'ticket_view_context'           => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'             => TicketWithLayoutsContext::VISIBILITY_NEW,
-        ]);
+        ];
 
+        $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, $formOptions);
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $email  = $person->getPrimaryEmail();
-            $person = $this->get('data.person')->getPersonForEmail($email->getEmail());
+            $email     = $person->getPrimaryEmail();
+            $person    = $this->get('data.person')->getPersonForEmail($email->getEmail());
+            $guestForm = $this->createForm(TicketWithLayoutsWebType::class, $ticket, $formOptions);
 
             if ($person) {
                 $ticket->setPerson($person);
-                $ticket_message->setPerson($person);
-                foreach ($ticket_message->getAttachments() as $attachment) {
-                    $attachment->setPerson($person);
-                }
+                $guestForm->handleRequest($request);
 
                 $ticket_service->acceptNewTicket($ticket, $request);
             } else {
-                $ticket_service->acceptNewTicketForGuest($ticket, $request);
+                $ticket_service->acceptNewTicketForGuest($ticket, $request, $guestForm);
             }
 
             // check if ticket was created and then return success response

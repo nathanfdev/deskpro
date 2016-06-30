@@ -108,6 +108,7 @@ class HierarchyGenerator
         return $this->generateAndCache(
             [
                 'generateForCustomFormField',
+                get_class($field),
                 $field,
             ],
             function () use ($field) {

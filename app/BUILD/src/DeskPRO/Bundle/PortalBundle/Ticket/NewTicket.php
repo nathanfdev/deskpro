@@ -45,6 +45,7 @@ use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\Person\PersonFactory;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -151,13 +152,13 @@ class NewTicket
     /**
      * @param Ticket  $ticket
      * @param Request $request
+     * @param Form    $guestForm
      *
      * @return Ticket
      */
-    public function acceptNewTicketForGuest(Ticket $ticket, Request $request)
+    public function acceptNewTicketForGuest(Ticket $ticket, Request $request, Form $guestForm)
     {
-        $person         = $ticket->getPerson();
-        $ticket_message = $ticket->messages[0];
+        $person = $ticket->getPerson();
 
         $exist_person = $this->person_factory->getPersonByEmail($person->getEmailAddress());
         if ($exist_person) {
@@ -170,10 +171,7 @@ class NewTicket
         }
 
         $ticket->setPerson($person);
-        $ticket_message->setPerson($person);
-        foreach ($ticket_message->getAttachments() as $attachment) {
-            $attachment->setPerson($person);
-        }
+        $guestForm->handleRequest($request);
 
         return $this->acceptNewTicket($ticket, $request);
     }
