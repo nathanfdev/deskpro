@@ -40,51 +40,32 @@ Feature: New ticket form validation
     Then "ticket[department]" form field should have error with the phrase "This value is required"
     And "ticket[department]" form field should have 1 error
 
-  Scenario: I check empty product
-    Given  the setting "core.use_product" is set to 1
-    And only the following Product records exist:
-      | #  | Title     |
-      | p1 | Product 1 |
-      | p2 | Product 2 |
+  Scenario Outline: I check required common field validation
+    Given  the setting "core.<use_setting_name>" is set to 1
+    And only the following <entity_type> records exist:
+      | #  | Title   |
+      | p1 | Title 1 |
+      | p2 | Title 2 |
     And the only default ticket layout exists with fields:
-      | user_layout |
-      | product     |
+      | user_layout  |
+      | <field_name> |
 
-    When I go to "/new-ticket"
+    When the setting "core_tickets.field_validation_ticket_<validation_setting_name>_user_required" is set to 0
+    And I go to "/new-ticket"
     And I press "Submit"
-    Then "ticket[product]" form field should have error with the phrase "This value is required"
-    And "ticket[product]" form field should have 1 error
+    And "ticket[<field_name>]" form field should have 0 errors
 
-  Scenario: I check empty priority
-    Given  the setting "core.use_ticket_priority" is set to 1
-    And only the following TicketPriority records exist:
-      | #  | Title      |
-      | p1 | Priority 1 |
-      | p2 | Priority 2 |
-    And the only default ticket layout exists with fields:
-      | user_layout |
-      | priority    |
-
-    When I go to "/new-ticket"
+    When the setting "core_tickets.field_validation_ticket_<validation_setting_name>_user_required" is set to 1
+    And I go to "/new-ticket"
     And I press "Submit"
-    Then "ticket[priority]" form field should have error with the phrase "This value is required"
-    And "ticket[priority]" form field should have 1 error
+    Then "ticket[<field_name>]" form field should have error with the phrase "This value is required"
+    And "ticket[<field_name>]" form field should have 1 error
 
-  Scenario: I check empty category
-    Given  the setting "core.use_ticket_category" is set to 1
-    And only the following TicketCategory records exist:
-      | #  | Title      |
-      | c1 | Category 1 |
-      | c2 | Category 2 |
-
-    And the only default ticket layout exists with fields:
-      | user_layout |
-      | category    |
-
-    When I go to "/new-ticket"
-    And I press "Submit"
-    Then "ticket[category]" form field should have error with the phrase "This value is required"
-    And "ticket[category]" form field should have 1 error
+    Examples:
+      | entity_type    | field_name | use_setting_name    | validation_setting_name |
+      | Product        | product    | use_product         | prod                    |
+      | TicketPriority | priority   | use_ticket_priority | pri                     |
+      | TicketCategory | category   | use_ticket_category | cat                     |
 
   Scenario: I check person empty name
     When I go to "/new-ticket"

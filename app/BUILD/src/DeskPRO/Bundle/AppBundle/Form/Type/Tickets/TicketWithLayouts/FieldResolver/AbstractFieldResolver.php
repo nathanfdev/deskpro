@@ -318,12 +318,17 @@ abstract class AbstractFieldResolver
             }
         }
 
+        $isRequired  = $this->fieldSettings->isCategoryRequired($context->isAgentView());
+        $constraints = [];
+        if ($isRequired) {
+            $constraints[] = new Assert\NotBlank();
+        }
+
         return new FormField(TicketCategoryType::class, [
             'label'       => $this->phrase('portal.forms.label_category'),
             'placeholder' => '',
-            'constraints' => [
-                new Assert\NotBlank(),
-            ],
+            'required'    => $isRequired,
+            'constraints' => $constraints,
         ]);
     }
 
@@ -345,12 +350,17 @@ abstract class AbstractFieldResolver
             }
         }
 
+        $isRequired  = $this->fieldSettings->isPriorityRequired($context->isAgentView());
+        $constraints = [];
+        if ($isRequired) {
+            $constraints[] = new Assert\NotBlank();
+        }
+
         return new FormField(TicketPriorityType::class, [
             'label'       => $this->phrase('portal.forms.label_priority'),
             'placeholder' => '',
-            'constraints' => [
-                new Assert\NotNull(),
-            ],
+            'required'    => $isRequired,
+            'constraints' => $constraints,
         ]);
     }
 
@@ -376,11 +386,16 @@ abstract class AbstractFieldResolver
             }
         }
 
+        $isRequired  = $this->fieldSettings->isWorkflowRequired($context->isAgentView());
+        $constraints = [];
+        if ($isRequired) {
+            $constraints[] = new Assert\NotBlank();
+        }
+
         return new FormField(TicketWorkflowType::class, [
             'label'       => $this->phrase('portal.forms.label_workflow'),
-            'constraints' => [
-                new Assert\NotNull(),
-            ],
+            'required'    => $isRequired,
+            'constraints' => $constraints,
         ]);
     }
 
@@ -402,11 +417,16 @@ abstract class AbstractFieldResolver
             }
         }
 
+        $isRequired  = $this->fieldSettings->isProductRequired($context->isAgentView());
+        $constraints = [];
+        if ($isRequired) {
+            $constraints[] = new Assert\NotBlank();
+        }
+
         return new FormField(TicketProductType::class, [
             'placeholder' => '',
-            'constraints' => [
-                new Assert\NotNull(),
-            ],
+            'required'    => $isRequired,
+            'constraints' => $constraints,
         ]);
     }
 
