@@ -655,6 +655,9 @@ HTML;
      */
     protected function handleLoginAttempt(Request $request)
     {
+        if (!isset($GLOBALS['DP_LOGIN_VIA_TOKEN'])) {
+            return;
+        }
         /** @var PersonRepository $personRepository */
         $personRepository = $this->em()->getRepository(Person::class);
         $attemptPerson    = $personRepository->findOneByEmail($this->in->getString('email'));
