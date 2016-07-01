@@ -142,13 +142,18 @@ class AdvancedEditsManager
      */
     public function getMainScss()
     {
-        $blob = $this->findBlob(self::MAIN_SCSS_ASSET_NAME, $this->edit_theme_set);
+        $blob      = $this->findBlob(self::MAIN_SCSS_ASSET_NAME, $this->edit_theme_set);
+        $failedStr = '';
 
         if ($blob) {
-            return $this->bs->copyBlobRecordToString($blob);
+            try {
+                return $this->bs->copyBlobRecordToString($blob);
+            } catch (\Exception $e) {
+                $failedStr = sprintf('/* Failed to load custom CSS from blob %s */', $blob->getId())."\n\n";
+            }
         }
 
-        return file_get_contents($this->mainScssPath);
+        return $failedStr.file_get_contents($this->mainScssPath);
     }
 
     /**
@@ -159,7 +164,11 @@ class AdvancedEditsManager
         $blob = $this->findBlob(self::CUSTOM_SCSS_ASSET_NAME, $this->edit_theme_set);
 
         if ($blob) {
-            return $this->bs->copyBlobRecordToString($blob);
+            try {
+                return $this->bs->copyBlobRecordToString($blob);
+            } catch (\Exception $e) {
+                return sprintf('/* Failed to load custom CSS from blob %s */', $blob->getId());
+            }
         }
 
         $scss = <<<CODE
@@ -184,7 +193,11 @@ CODE;
     {
         $blob = $this->findBlob(self::CUSTOM_JS_ASSET_NAME, $this->edit_theme_set);
 
-        return $blob ? $this->bs->copyBlobRecordToString($blob) : '';
+        try {
+            return $blob ? $this->bs->copyBlobRecordToString($blob) : '';
+        } catch (\Exception $e) {
+            return '// Failed to load custom JS';
+        }
     }
 
     /**
@@ -194,7 +207,11 @@ CODE;
     {
         $blob = $this->findBlob(self::CUSTOM_JS_ASSET_NAME, $this->theme_set);
 
-        return $blob ? $this->bs->copyBlobRecordToString($blob) : '';
+        try {
+            return $blob ? $this->bs->copyBlobRecordToString($blob) : '';
+        } catch (\Exception $e) {
+            return '// Failed to load custom JS';
+        }
     }
 
     /**
