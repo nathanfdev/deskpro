@@ -66,7 +66,7 @@ Feature: I want to check hidden department field if there is just one selectable
       | #  | Parent | Title        | Is Tickets Enabled | Is Chat Enabled |
       | d1 |        | Department 1 | 1                  | 0               |
       | d2 |        | Department 2 | 1                  | 0               |
-      | d3 |        | Department 3 | 1                  | 1               |
+      | d3 |        | Department 3 | 0                  | 1               |
     And I grant the "{d1}" department permission of tickets app for usergroup registered
     And I grant the "{d2}" department permission of tickets app for usergroup registered
     And I grant the "{d3}" department permission of chat app for usergroup registered
@@ -93,7 +93,7 @@ Feature: I want to check hidden department field if there is just one selectable
       | #  | Parent | Title        | Is Tickets Enabled | Is Chat Enabled |
       | d1 |        | Department 1 | 1                  | 0               |
       | d2 |        | Department 2 | 1                  | 0               |
-      | d3 |        | Department 3 | 1                  | 1               |
+      | d3 |        | Department 3 | 0                  | 1               |
     And I grant the "{d1}" department permission of tickets app for usergroup registered
     And I grant the "{d2}" department permission of tickets app for usergroup registered
     And I grant the "{d3}" department permission of chat app for usergroup registered
