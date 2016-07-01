@@ -38,6 +38,8 @@ use Application\DeskPRO\Monolog\NullLogger;
 use DeskPRO\Component\Util\MapUtils;
 use Doctrine\DBAL\Connection;
 use DpRun\LowUtil;
+use Orb\Data\ContentTypes;
+use Orb\Util\Strings;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\Process;
 
@@ -598,5 +600,120 @@ abstract class AbstractBuild
         $db = $this->container->getDb();
         $db->deleteIn('settings', $names, 'name');
         $db->batchInsert('settings', $settings_batch);
+    }
+
+    /**
+     * This is an upgrade-safe method of reading blobs.
+     *
+     * @param string $blobId
+     *
+     * @return null|string String data on success or null if the blob doesnt exist or couldnt be read
+     */
+    public function downloadBlob($blobId)
+    {
+        $db = $this->getDbConnection('default');
+
+        $blob = $db->fetchAll('
+            SELECT id, file_url, storage_loc, save_path, filesize
+            FROM blob
+            WHERE id = ?
+        ', [$blobId]);
+
+        if (!$blob) {
+            return;
+        }
+
+        if (!empty($blob['file_url'])) {
+            $data = @file_get_contents($blob['file_url']);
+            if ($data === false || (empty($data) && $blob['filesize'])) {
+                return;
+            } else {
+                return $data;
+            }
+        }
+
+        switch ($blob['storage_loc']) {
+            case 'db':
+                return implode('', $db->fetchAllCol('SELECT data FROM blobs_storage WHERE blob_id = ? ORDER BY id ASC', [$blobId]));
+                break;
+            case 'fs':
+                /* \DpRun\DpEnv */
+                global $DP_ENV;
+                $path = $DP_ENV->getUserFilesDir().'/'.$blob['save_path'];
+
+                if (!file_exists($path)) {
+                    return;
+                }
+
+                return file_get_contents($path);
+                break;
+            default:
+                // we cant handle anything else
+                return;
+        }
+    }
+
+    /**
+     * This is an upgrade-safe method of saving blobs.
+     *
+     * It always uploads blobs to the database, the is currently no way to
+     * upload to any other adapter.
+     *
+     * @param string      $data
+     * @param string      $filename
+     * @param string|null $contentType
+     *
+     * @throws \Exception
+     *
+     * @return int Blob ID
+     */
+    public function saveBlob($data, $filename, $contentType = null)
+    {
+        static $maxPacketSize;
+
+        $db = $this->getDbConnection('default');
+
+        if ($maxPacketSize === null) {
+            $result        = $db->fetchAssoc("SHOW variables LIKE 'max_allowed_packet'");
+            $maxPacketSize = $result['Value'] ?: 5242880;
+        }
+
+        $filesize = strlen($data);
+        $db->beginTransaction();
+
+        if (!$contentType) {
+            $contentType = ContentTypes::getContentTypeFromFilename($filename) ?: 'application/octet-stream';
+        }
+
+        $db->insert('blobs', [
+            'storage_loc'  => 'db',
+            'filename'     => $filename,
+            'filesize'     => $filesize,
+            'content_type' => $contentType,
+            'blob_hash'    => md5($data),
+            'date_created' => date('Y-m-d H:i:s'),
+        ]);
+        $blobId = $db->lastInsertId();
+
+        $batch    = (int) (($blobId - 1) / 1000) + 1;
+        $authcode = $blobId.Strings::random(15, Strings::CHARS_KEY_ALPHA).'0';
+        $path     = $batch.'/'.$authcode;
+
+        $db->update('blobs', [
+            'authcode'  => $authcode,
+            'save_path' => $path,
+        ], ['id' => $blobId]);
+
+        $data = str_split($data, $maxPacketSize / 2);
+        foreach ($data as $part) {
+            $db->insert('blobs_storage', [
+                'blob_id' => $blobId,
+                'data'    => $part,
+            ]);
+        }
+
+        $db->commit();
+
+        return $blobId;
     }
 }
