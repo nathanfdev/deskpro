@@ -26,11 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments;
 
 use Application\DeskPRO\Attachments\AcceptAttachment;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -40,6 +36,7 @@ use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\EntityRepository\Blob as BlobRepo;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -85,7 +82,7 @@ class TicketMessageInlineAttachmentType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('blob_auth', 'hidden', [
+        $builder->add('blob_auth', HiddenType::class, [
             'property_path'  => 'blob.authcode',
             'error_bubbling' => false,
         ]);
@@ -177,16 +174,8 @@ class TicketMessageInlineAttachmentType extends AbstractType
             }
 
             $ticketMessage->addAttachment($attachment);
-            $attachment->is_inline = true;
+            $attachment->setIsInline(true);
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ticket_message_inline_attachment';
     }
 
     /**

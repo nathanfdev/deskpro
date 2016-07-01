@@ -26,11 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments;
 
 use Application\DeskPRO\Attachments\AcceptAttachment;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -40,6 +36,9 @@ use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\EntityRepository\Blob as BlobRepo;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -57,30 +56,30 @@ class TicketMessageAttachmentType extends AbstractType
     /**
      * @var \Application\DeskPRO\BlobStorage\DeskproBlobStorage
      */
-    private $blob_storage;
+    private $blobStorage;
 
     /**
      * @var BlobRepo
      */
-    private $blob_repo;
+    private $blobRepo;
 
     /**
      * @var AcceptAttachment
      */
-    private $attachment_accepter;
+    private $acceptAttachment;
 
     /**
      * Constructor.
      *
-     * @param DeskproBlobStorage $blob_storage
-     * @param BlobRepo           $blob_repo
-     * @param AcceptAttachment   $attachment_accepter
+     * @param DeskproBlobStorage $blobStorage
+     * @param BlobRepo           $blobRepo
+     * @param AcceptAttachment   $acceptAttachment
      */
-    public function __construct(DeskproBlobStorage $blob_storage, BlobRepo $blob_repo, AcceptAttachment $attachment_accepter)
+    public function __construct(DeskproBlobStorage $blobStorage, BlobRepo $blobRepo, AcceptAttachment $acceptAttachment)
     {
-        $this->blob_storage        = $blob_storage;
-        $this->blob_repo           = $blob_repo;
-        $this->attachment_accepter = $attachment_accepter;
+        $this->blobStorage      = $blobStorage;
+        $this->blobRepo         = $blobRepo;
+        $this->acceptAttachment = $acceptAttachment;
     }
 
     /**
@@ -142,7 +141,7 @@ class TicketMessageAttachmentType extends AbstractType
 
                 $blob = $attachment->getBlob();
                 if ($blob) {
-                    $this->blob_storage->deleteBlobRecord($blob);
+                    $this->blobStorage->deleteBlobRecord($blob);
                 }
 
                 $event->setData(null);
@@ -151,7 +150,7 @@ class TicketMessageAttachmentType extends AbstractType
             }
 
             // find for existing blob by auth code
-            $blob = $this->blob_repo->getByAuthCode($data['blob_auth']);
+            $blob = $this->blobRepo->getByAuthCode($data['blob_auth']);
 
             // or just set empty blob to correct setting of form fields and form validation
             if (!$blob) {
@@ -167,22 +166,22 @@ class TicketMessageAttachmentType extends AbstractType
 
             $file = isset($data['upload']) ? $data['upload'] : null;
             if ($file instanceof UploadedFile) {
-                $error = $this->attachment_accepter->getError($file, 'user');
+                $error = $this->acceptAttachment->getError($file, 'user');
 
                 // Unable to accept, generate error
                 if ($error) {
-                    $error_code = $error['error_code'];
-                    $params     = [];
+                    $errorCode = $error['error_code'];
+                    $params    = [];
 
-                    $error_detail = $error['error_detail'];
-                    if ($error_detail) {
-                        $params = ['detail' => $error_detail];
+                    $errorDetail = $error['error_detail'];
+                    if ($errorDetail) {
+                        $params = ['detail' => $errorDetail];
                     }
 
-                    $phrase = sprintf('portal.forms.error_accept_%s', $error_code);
+                    $phrase = sprintf('portal.forms.error_accept_%s', $errorCode);
                     $form->get('upload')->addError(new FormError($phrase, $phrase, $params));
                 } else {
-                    $blob = $this->attachment_accepter->accept($file, true);
+                    $blob = $this->acceptAttachment->accept($file, true);
                     $attachment->setBlob($blob);
 
                     $this->setAttachmentFieldsOnForm($form);
@@ -231,14 +230,6 @@ class TicketMessageAttachmentType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return 'ticket_message_attachment';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
@@ -262,7 +253,7 @@ class TicketMessageAttachmentType extends AbstractType
      */
     private function setUploadFieldOnForm(FormInterface $form)
     {
-        $form->add('upload', 'file', [
+        $form->add('upload', FileType::class, [
             'mapped'      => false,
             'required'    => false,
             'label'       => false,
@@ -295,18 +286,18 @@ class TicketMessageAttachmentType extends AbstractType
         }
 
         if (!$form->has('blob_auth')) {
-            $form->add('blob_auth', 'hidden', [
+            $form->add('blob_auth', HiddenType::class, [
                 'property_path'  => 'blob.authcode',
                 'error_bubbling' => false,
             ]);
         }
         if (!$form->has('is_inline')) {
-            $form->add('is_inline', 'checkbox', [
+            $form->add('is_inline', CheckboxType::class, [
                 'required' => false,
             ]);
         }
         if (!$form->has('delete')) {
-            $form->add('delete', 'checkbox', [
+            $form->add('delete', CheckboxType::class, [
                 'mapped'   => false,
                 'required' => false,
             ]);
