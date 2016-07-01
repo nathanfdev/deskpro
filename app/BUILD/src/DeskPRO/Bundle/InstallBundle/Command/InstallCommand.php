@@ -210,7 +210,6 @@ class InstallCommand extends ContainerAwareCommand
             new InstallStep\InstallTablesStep($context),
             new InstallStep\InstallConfigStep($context),
             new InstallStep\InstallFixturesStep($context),
-            new InstallStep\DataSyncStep($context),
             new InstallStep\InstallCronCommand($context),
             new InstallStep\AdminAccountStep($context),
             new InstallStep\DoneStep($context),
