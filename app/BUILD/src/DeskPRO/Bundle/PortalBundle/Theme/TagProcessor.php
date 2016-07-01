@@ -30,8 +30,9 @@ namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
+use DpSys\LowError\SystemErrorHandler;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Zend\Json\Server\Exception\HttpException;
 
 /**
  * Class TagProcessor.
@@ -82,8 +83,14 @@ class TagProcessor
         try {
             $response = $handler->handle($tag, $tagRequest);
         } catch (AccessDeniedException $e) {
+            // permission errors
             $response = '';
         } catch (HttpException $e) {
+            // http errors like 404
+            $response = '';
+        } catch (\Exception $e) {
+            // Any other exception is unexpected. Log it.
+            SystemErrorHandler::logException($e);
             $response = '';
         }
 
