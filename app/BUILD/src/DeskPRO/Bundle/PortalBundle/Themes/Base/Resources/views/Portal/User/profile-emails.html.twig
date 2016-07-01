@@ -106,28 +106,30 @@
 
             {% endif %}
 
-            <div class="titled-header minor" style="margin-top: 25px;">
-                <h1>{{ phrase('portal.account.email-add') }}</h1>
-            </div>
-
-            <section class="padded">
-                <p style="margin: 15px 0;">
-                    {{ phrase('portal.account.email-add-description') }}
-                </p>
-
-                <div class="column-half">
-                    {{ form_start(add_email_form, { attr: { class: 'form-ticket' } }) }}
-                    {{ form_errors(add_email_form) }}
-                    {{ form_row(add_email_form.email) }}
-                    {{ form_rest(add_email_form) }}
-                    <div class="column-full">
-                        <div class="bucket">
-                            <button class="button" type="submit">{{ phrase('portal.forms.label_save') }}</button>
-                        </div>
-                    </div>
-                    {{ form_end(add_email_form) }}
+            {% if add_email_form %}
+                <div class="titled-header minor" style="margin-top: 25px;">
+                    <h1>{{ phrase('portal.account.email-add') }}</h1>
                 </div>
-            </section>
+
+                <section class="padded">
+                    <p style="margin: 15px 0;">
+                        {{ phrase('portal.account.email-add-description') }}
+                    </p>
+
+                    <div class="column-half">
+                        {{ form_start(add_email_form, { attr: { class: 'form-ticket' } }) }}
+                        {{ form_errors(add_email_form) }}
+                        {{ form_row(add_email_form.email) }}
+                        {{ form_rest(add_email_form) }}
+                        <div class="column-full">
+                            <div class="bucket">
+                                <button class="button" type="submit">{{ phrase('portal.forms.label_save') }}</button>
+                            </div>
+                        </div>
+                        {{ form_end(add_email_form) }}
+                    </div>
+                </section>
+            {% endif %}
         </section>
     </section>
 {% endblock inner_content %}
