@@ -10,10 +10,26 @@ export class DpxAttach extends PageWidget {
     this.$element.hide();
     this.$rElement = $('<div class="dp-react-widget as-dpui"></div>').insertAfter(this.$element);
 
+    const files = [];
+    $(this.$element).find('.attach-row').each((i, file) => {
+      const $file = $(file);
+      files.push({
+        info: {
+          id:        $file.data('blob-id'),
+          authcode:  $file.data('blob-auth'),
+          filename:  $file.data('blob-filename'),
+          url:       $file.data('blob-thumb-url'),
+          size:      $file.data('blob-filesize'),
+          icon_html: $file.data('blob-icon-html')
+        }
+      });
+    });
+
     const $input = this.$element.find('input[type=file]');
     const inputName = $input.attr('name').replace('[0][upload]', '');
     const component = React.createElement(PortalAttach, {
       widgetOptions: this.options,
+      files,
       $input,
       inputName
     });
