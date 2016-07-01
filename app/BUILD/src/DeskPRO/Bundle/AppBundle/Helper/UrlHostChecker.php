@@ -35,51 +35,76 @@ namespace DeskPRO\Bundle\AppBundle\Helper;
  */
 class UrlHostChecker
 {
-    public function isMatch($check_url, $verified_host, $verified_port)
+    /**
+     * @param string $checkUrl
+     * @param string $verifiedHost
+     * @param string $verifiedPort
+     * @param bool   $allowSchemeSwitch If the ports are standard (80/443), this allows the reverse.
+     *                                  E.g. consider host:80 a match to host:443.
+     *
+     * @return bool
+     */
+    public function isMatch($checkUrl, $verifiedHost, $verifiedPort, $allowSchemeSwitch = true)
     {
         // no schemaless urls
-        if (substr($check_url, 0, 2) == '//') {
+        if (substr($checkUrl, 0, 2) === '//') {
             return false;
         }
 
-        $check_scheme = parse_url($check_url, PHP_URL_SCHEME) ?: 'http';
-        $check_host   = parse_url($check_url, PHP_URL_HOST);
-        $check_port   = parse_url($check_url, PHP_URL_PORT);
-        if (!$check_port) {
-            $check_port = $check_scheme === 'https' ? 443 : 80;
+        $checkScheme = parse_url($checkUrl, PHP_URL_SCHEME) ?: 'http';
+        $checkHost   = parse_url($checkUrl, PHP_URL_HOST);
+        $checkPort   = parse_url($checkUrl, PHP_URL_PORT);
+        if (!$checkPort) {
+            $checkPort = $checkScheme === 'https' ? 443 : 80;
         }
 
         if (
-            null === $check_host
-            && substr($check_url, 0, 1) === '/'
+            null === $checkHost
+            && substr($checkUrl, 0, 1) === '/'
         ) {
             return true; // url does not contain host info, so it is an absolute url redirect (example: "/news")
         }
 
-        if (null !== $check_host && substr($check_host, 0, 1) === '/') {
+        if (null !== $checkHost && substr($checkHost, 0, 1) === '/') {
             return true; // url does not contain host info, so it is an absolute url redirect (example: "/news")
         }
 
-        return $check_host === $verified_host && (int) $check_port === (int) $verified_port;
-    }
-
-    public function isMatchUrl($check_url, $verified_url)
-    {
-        if ($check_url === $verified_url) {
+        if ($checkHost === $verifiedHost && (int) $checkPort === (int) $verifiedPort) {
             return true;
         }
 
-        $scheme = parse_url($verified_url, PHP_URL_SCHEME) ?: 'http';
+        // Dont care abou tports if $allowSchemeSwitch and ports are standard
+        if ($allowSchemeSwitch && in_array($checkPort, [80, 443]) && in_array($verifiedPort, [80, 443])) {
+            return $checkHost === $verifiedHost;
+        }
 
-        if (!$host = parse_url($verified_url, PHP_URL_HOST)) {
+        return false;
+    }
+
+    /**
+     * @param string $checkUrl
+     * @param string $verifiedUrl
+     * @param bool   $allowSchemeSwitch
+     *
+     * @return bool
+     */
+    public function isMatchUrl($checkUrl, $verifiedUrl, $allowSchemeSwitch = true)
+    {
+        if ($checkUrl === $verifiedUrl) {
+            return true;
+        }
+
+        $scheme = parse_url($verifiedUrl, PHP_URL_SCHEME) ?: 'http';
+
+        if (!$host = parse_url($verifiedUrl, PHP_URL_HOST)) {
             return false;
         }
 
-        $port = parse_url($verified_url, PHP_URL_PORT);
+        $port = parse_url($verifiedUrl, PHP_URL_PORT);
         if (!$port) {
             $port = $scheme === 'https' ? 443 : 80;
         }
 
-        return $this->isMatch($check_url, $host, $port);
+        return $this->isMatch($checkUrl, $host, $port, $allowSchemeSwitch);
     }
 }

@@ -72,9 +72,6 @@ class RedirectProtectionListener implements EventSubscriberInterface, SkipLowReq
 
     public function onResponse(FilterResponseEvent $event)
     {
-        // todo fixme https://trello.com/c/KRgESk80
-        return;
-
         $response = $event->getResponse();
         $request  = $event->getRequest();
 
