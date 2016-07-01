@@ -200,6 +200,20 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
+     * @param CustomDataFeedback[] $data
+     */
+    public function setCustomData($data)
+    {
+        $this->custom_data = $data;
+        foreach ($data as $datum) {
+            /* @var CustomDataFeedback $datum */
+            $datum->feedback = $this;
+        }
+
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+    }
+
+    /**
      * Reset custom data
      * todo add onPropertyChanged() if change tracking is needed.
      *
