@@ -8,6 +8,7 @@ import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 export class PortalAttach extends React.Component {
 
   static propTypes = {
+    files:         PropTypes.array,
     widgetOptions: PropTypes.object,
     $input:        PropTypes.object,
     inputName:     PropTypes.string
@@ -17,7 +18,7 @@ export class PortalAttach extends React.Component {
     super(props);
     this.uploader = null;
     this.state = {
-      files: []
+      files: this.props.files || []
     };
   }
 

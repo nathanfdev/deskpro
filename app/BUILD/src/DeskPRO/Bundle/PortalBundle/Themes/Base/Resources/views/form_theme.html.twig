@@ -324,6 +324,8 @@
             data-blob-auth="{{ form.vars.data.blob.authcode }}"
             data-blob-filename="{{ form.vars.data.blob.filename }}"
             data-blob-download-url="{{ form.vars.data.blob.downloadUrl }}"
+            data-blob-filesize="{{ form.vars.data.blob.readableFilesize }}"
+            data-blob-icon-html="{{ file_icon(form.vars.data.blob) }}"
             {% if form.vars.data.blob.is_image %}data-blob-thumb-url="{{ form.vars.data.blob.thumbnailUrl }}"{% endif %}
             >
             <a href="{{ form.vars.data.blob.downloadUrl }}">
