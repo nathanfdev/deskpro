@@ -87,6 +87,7 @@ final class ErrorsCodes
     const NUMERIC                     = 'numeric';
     const NOT_CHECKED                 = 'not_checked';
     const REGEX                       = 'regex';
+    const NO_UPLOADED_FILE            = 'no_uploaded_file';
 
     /** Term Engine Specific */
     const TERM_TYPE_DOES_NOT_EXIST = 'term_type_does_not_exist';

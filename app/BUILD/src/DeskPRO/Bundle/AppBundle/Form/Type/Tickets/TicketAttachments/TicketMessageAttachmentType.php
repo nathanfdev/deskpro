@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\EntityRepository\Blob as BlobRepo;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -212,18 +213,22 @@ class TicketMessageAttachmentType extends AbstractType
      */
     public function onSetRelations(FormEvent $event)
     {
-        $form           = $event->getForm();
-        $config         = $form->getConfig();
-        $person         = $config->getOption('person');
-        $ticket_message = $config->getOption('ticket_message');
-        $attachment     = $event->getData();
+        $form       = $event->getForm();
+        $config     = $form->getConfig();
+        $person     = $config->getOption('person');
+        $message    = $config->getOption('ticket_message');
+        $attachment = $event->getData();
 
         if ($attachment instanceof TicketAttachment) {
             if ($attachment->getPerson() !== $person) {
                 $attachment->setPerson($person);
             }
 
-            $ticket_message->addAttachment($attachment);
+            $message->addAttachment($attachment);
+
+            if (!$attachment->getBlob()->getId()) {
+                $form->addError(new FormError(ErrorsCodes::NO_UPLOADED_FILE));
+            }
         }
     }
 

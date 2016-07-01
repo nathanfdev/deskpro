@@ -33,7 +33,12 @@ export class AttachedFile extends React.Component {
   render() {
     const { file, inputName } = this.props;
     const blob = file.info;
+    const errors = file.errors;
     const formName = `${inputName}[${blob.id}][blob_auth]`;
+
+    if (errors) {
+      return <div dangerouslySetInnerHTML={{ __html: errors }}></div>;
+    }
 
     return (
       <li>
@@ -45,7 +50,7 @@ export class AttachedFile extends React.Component {
           <i className="fa fa-times" />{portalPhrases.get('portal.general.delete')}
         </a>
 
-        {blob.is_image && <img src={blob.url} ref="image" style={{ display: 'none' }} />}
+        {blob.is_image && <img role="presentation" src={blob.url} ref="image" style={{ display: 'none' }} />}
       </li>
     );
   }

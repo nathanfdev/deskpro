@@ -20,9 +20,12 @@ export class DpxAttach extends PageWidget {
           filename:  $file.data('blob-filename'),
           url:       $file.data('blob-thumb-url'),
           size:      $file.data('blob-filesize'),
-          icon_html: $file.data('blob-icon-html')
-        }
+          icon_html: $file.find('.attach-row-icon').html()
+        },
+        errors: $file.find('.attach-row-errors').html().trim()
       });
+
+      $file.remove();
     });
 
     const $input = this.$element.find('input[type=file]');
