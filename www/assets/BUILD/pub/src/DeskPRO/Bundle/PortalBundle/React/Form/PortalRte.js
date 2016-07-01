@@ -150,7 +150,8 @@ export class PortalRte extends React.Component {
               relativeContainer:      $toolbarContainer.get(0)
             },
             targetBlank:  true,
-            buttonLabels: 'fontawesome'
+            buttonLabels: 'fontawesome',
+            placeholder:  false
           }}
         />
 
