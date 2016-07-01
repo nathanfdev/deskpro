@@ -36,3 +36,9 @@ Feature: User Profile
     When I fill in "Email" with "bad_email.com"
     And I press "Save"
     Then I should see a form error with the phrase "portal.forms.error_invalid_email"
+
+  Scenario: I try to save empty email
+    And I am on "/profile/emails"
+    When I fill in "Email" with ""
+    And I press "Save"
+    Then I should see a form error with the phrase "portal.forms.error_required"

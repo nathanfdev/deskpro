@@ -233,11 +233,7 @@ class WebFieldResolver extends AbstractFieldResolver
                 'label'         => $this->phrase('portal.forms.label_email'),
 
                 // ignore the "unique entity" constraint here
-                'constraints'       => [],
-                'email_constraints' => [
-                    new Assert\NotBlank(),
-                    new Assert\Email(),
-                ],
+                'constraints' => [],
             ],
         ];
     }
