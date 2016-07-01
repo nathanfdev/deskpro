@@ -223,8 +223,6 @@ class TicketController extends AbstractController
         $agents      = $this->container->getAgentData()->getAgents();
         $agent_teams = $this->container->getDataService('AgentTeam')->getTeams();
 
-        $brands = $this->em->getRepository(Brand::class)->findAll();
-
         #------------------------------
         # Linked tasks
         #------------------------------
@@ -406,7 +404,6 @@ class TicketController extends AbstractController
             'agent_teams' => $agent_teams,
             'agent_map'   => $agent_map,
             'tasks'       => $tasks,
-            'brands'      => $brands,
 
             'ticket_perms'               => $this->_getTicketPerms($ticket),
             'ticket'                     => $ticket,
@@ -527,7 +524,7 @@ class TicketController extends AbstractController
 
     public function loadTicketLogsAction($ticket_id)
     {
-        $page       = $this->in->getUint('page') ?: 1;
+        $page       = $this->in->getUInt('page') ?: 1;
         $filter     = $this->in->getString('filter');
         $up_to_page = $this->in->getBool('up_to_page');
 
@@ -829,18 +826,18 @@ class TicketController extends AbstractController
         $tcheck = $this->person->PermissionsManager->TicketChecker;
 
         if ($this->in->checkIsset('department') && $tcheck->canModify($ticket, 'department')) {
-            $ticket['department_id'] = $this->in->getUint('department');
+            $ticket['department_id'] = $this->in->getUInt('department');
         }
 
         if ($tcheck->canModify($ticket, 'fields')) {
             if ($this->in->checkIsset('category')) {
-                $ticket['category_id'] = $this->in->getUint('category');
+                $ticket['category_id'] = $this->in->getUInt('category');
             }
             if ($this->in->checkIsset('product')) {
-                $ticket['product_id'] = $this->in->getUint('product');
+                $ticket['product_id'] = $this->in->getUInt('product');
             }
             if ($this->in->checkIsset('priority')) {
-                $ticket['priority_id'] = $this->in->getUint('priority');
+                $ticket['priority_id'] = $this->in->getUInt('priority');
             }
         }
 
@@ -869,7 +866,7 @@ class TicketController extends AbstractController
             }
 
             if ($agent) {
-                $ticket['agent_id'] = $this->in->getUint('agent');
+                $ticket['agent_id'] = $this->in->getUInt('agent');
             }
         }
         if ($this->in->checkIsset('agent_team')) {
@@ -881,7 +878,7 @@ class TicketController extends AbstractController
             }
 
             if ($team) {
-                $ticket['agent_team_id'] = $this->in->getUint('agent_team');
+                $ticket['agent_team_id'] = $this->in->getUInt('agent_team');
             }
         }
 
@@ -910,8 +907,8 @@ class TicketController extends AbstractController
         $ticket_perms = $this->_getTicketPerms($ticket);
 
         $person = null;
-        if ($this->in->getUint('person_id')) {
-            $person = $this->em->find(Person::class, $this->in->getUint('person_id'));
+        if ($this->in->getUInt('person_id')) {
+            $person = $this->em->find(Person::class, $this->in->getUInt('person_id'));
         } elseif ($email_address = $this->in->getString('email_address')) {
             if (!\Orb\Validator\StringEmail::isValueValid($email_address)) {
                 return $this->createJsonResponse([
@@ -1025,7 +1022,7 @@ class TicketController extends AbstractController
             return $this->createPermissionErrorResponse('You do not have permission to modify CCs');
         }
 
-        $person = $this->em->find(Person::class, $this->in->getUint('person_id'));
+        $person = $this->em->find(Person::class, $this->in->getUInt('person_id'));
 
         if ($person) {
             $part = $this->em->createQuery('
@@ -1323,8 +1320,8 @@ class TicketController extends AbstractController
         }
 
         // havent persisted the messag yet, it was just for dupe checking
-        if ((App::getSetting('core_tickets.enable_billing') || App::getSetting('core_tickets.enable_timelog')) && $this->in->getUint('charge_time')) {
-            $charge = $ticket->addCharge($this->person, $this->in->getUint('charge_time'));
+        if ((App::getSetting('core_tickets.enable_billing') || App::getSetting('core_tickets.enable_timelog')) && $this->in->getUInt('charge_time')) {
+            $charge = $ticket->addCharge($this->person, $this->in->getUInt('charge_time'));
         } else {
             $charge = false;
         }
@@ -1428,11 +1425,11 @@ class TicketController extends AbstractController
 
             if ($this->in->getInt('options.agent_id') != -1 && $this->in->getBool('options.do_assign_agent')) {
                 $changed_agent      = true;
-                $ticket['agent_id'] = $this->in->getUint('options.agent_id');
+                $ticket['agent_id'] = $this->in->getUInt('options.agent_id');
             }
             if ($this->in->getInt('options.agent_team_id') != -1 && $this->in->getBool('options.do_assign_team')) {
                 $changed_team            = true;
-                $ticket['agent_team_id'] = $this->in->getUint('options.agent_team_id');
+                $ticket['agent_team_id'] = $this->in->getUInt('options.agent_team_id');
             }
 
             if (!$message['is_agent_note'] || $macro) {
@@ -1478,11 +1475,11 @@ class TicketController extends AbstractController
         }
 
         $client_messages = false;
-        if ($this->in->getUint('client_messages_since') > 0) {
+        if ($this->in->getUInt('client_messages_since') > 0) {
             $client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
                 $this->person,
                 $this->session,
-                $this->in->getUint('client_messages_since')
+                $this->in->getUInt('client_messages_since')
             );
         }
 
@@ -1490,7 +1487,7 @@ class TicketController extends AbstractController
 
         $data = $this->_getMessageBlockInfo(
             $ticket,
-            $this->in->getUint('message_page')
+            $this->in->getUInt('message_page')
         );
 
         // New reply box
@@ -1606,7 +1603,7 @@ class TicketController extends AbstractController
 
         $data = $this->_getMessageBlockInfo(
             $ticket,
-            $this->in->getUint('message_page')
+            $this->in->getUInt('message_page')
         );
 
         // New reply box
@@ -1991,7 +1988,7 @@ class TicketController extends AbstractController
 
         $was_hidden = $ticket->status == 'hidden';
 
-        $macro_id = $this->in->getUint('macro_id');
+        $macro_id = $this->in->getUInt('macro_id');
         if ($macro_id) {
             /** @var $macro Entity\TicketMacro */
             $macro = $this->em->getRepository(TicketMacro::class)->find($macro_id);
@@ -2018,7 +2015,7 @@ class TicketController extends AbstractController
 
                 foreach (['category_id', 'priority_id', 'product_id', 'workflow_id'] as $f) {
                     if ($this->in->checkIsset("actions.$f")) {
-                        $newticket->{$f} = $this->in->getUint("actions.$f");
+                        $newticket->{$f} = $this->in->getUInt("actions.$f");
                     }
                 }
                 if (isset($_REQUEST['custom_fields'])) {
@@ -2164,11 +2161,11 @@ class TicketController extends AbstractController
         $data['labels']         = $ticket->getLabelManager()->getLabelsArray();
 
         $client_messages = false;
-        if ($this->in->getUint('client_messages_since')) {
+        if ($this->in->getUInt('client_messages_since')) {
             $client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
                 $this->person,
                 $this->session,
-                $this->in->getUint('client_messages_since')
+                $this->in->getUInt('client_messages_since')
             );
         }
 
@@ -2379,7 +2376,7 @@ class TicketController extends AbstractController
     {
         $ticket = $this->getTicketOr404($ticket_id, 'modify_fields');
 
-        $email_id = $this->in->getUint('email_id');
+        $email_id = $this->in->getUInt('email_id');
 
         $new_email = $ticket->person->getEmailId($email_id);
         if ($new_email) {
@@ -2405,7 +2402,7 @@ class TicketController extends AbstractController
 
         $GLOBALS['DP_ACTIVE_TICKET'] = $ticket;
 
-        $macro_id = $this->in->getUint('macro_id');
+        $macro_id = $this->in->getUInt('macro_id');
 
         /** @var $macro \Application\DeskPRO\Entity\TicketMacro */
         $macro = $this->em->getRepository(TicketMacro::class)->find($macro_id);
@@ -2630,9 +2627,9 @@ class TicketController extends AbstractController
         } else {
             $amount = null;
             $time   = (
-                3600 * $this->in->getUint('hours')
-                + 60 * $this->in->getUint('minutes')
-                + $this->in->getUint('seconds')
+                3600 * $this->in->getUInt('hours')
+                + 60 * $this->in->getUInt('minutes')
+                + $this->in->getUInt('seconds')
             );
         }
 
@@ -2786,9 +2783,9 @@ class TicketController extends AbstractController
         $amount = $this->in->getFloat('amount');
 
         $time = (
-            3600 * $this->in->getUint('hours')
-            + 60 * $this->in->getUint('minutes')
-            + $this->in->getUint('seconds')
+            3600 * $this->in->getUInt('hours')
+            + 60 * $this->in->getUInt('minutes')
+            + $this->in->getUInt('seconds')
         );
 
         if ($charge->charge_time) {
@@ -2932,7 +2929,7 @@ class TicketController extends AbstractController
         $tm     = $this->container->getTicketManager();
         $tm->markAsManaged($ticket);
 
-        $sla = $this->em->getRepository(Sla::class)->find($this->in->getUint('sla_id'));
+        $sla = $this->em->getRepository(Sla::class)->find($this->in->getUInt('sla_id'));
         if (!$sla || $sla->apply_type != 'manual') {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
@@ -2962,11 +2959,11 @@ class TicketController extends AbstractController
         }
 
         $client_messages = false;
-        if ($this->in->getUint('client_messages_since')) {
+        if ($this->in->getUInt('client_messages_since')) {
             $client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
                 $this->person,
                 $this->session,
-                $this->in->getUint('client_messages_since')
+                $this->in->getUInt('client_messages_since')
             );
         }
 
@@ -3001,11 +2998,11 @@ class TicketController extends AbstractController
         ];
 
         $client_messages = false;
-        if ($this->in->getUint('client_messages_since')) {
+        if ($this->in->getUInt('client_messages_since')) {
             $client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
                 $this->person,
                 $this->session,
-                $this->in->getUint('client_messages_since')
+                $this->in->getUInt('client_messages_since')
             );
         }
 
@@ -3197,7 +3194,7 @@ class TicketController extends AbstractController
 
         $old_person = $ticket->person;
 
-        $new_person_id = $this->in->getUint('new_person_id');
+        $new_person_id = $this->in->getUInt('new_person_id');
         if ($new_person_id) {
             $new_person = $this->em->find(Person::class, $new_person_id);
             if (!$new_person) {
@@ -3794,16 +3791,18 @@ class TicketController extends AbstractController
         $agents      = $personRep->getAgents();
         $agent_teams = $this->em->getRepository(AgentTeam::class)->findAll();
 
+        $brands = $this->getAgentBrands();
+
         #------------------------------
         # Custom fields
         #------------------------------
 
-        if ($this->in->getUint('ticket_id')) {
-            $ticket = $this->getTicketOr404($this->in->getUint('ticket_id'));
+        if ($this->in->getUInt('ticket_id')) {
+            $ticket = $this->getTicketOr404($this->in->getUInt('ticket_id'));
 
             $message = null;
-            if ($this->in->getUint('message_id')) {
-                $message = $this->em->getRepository(TicketMessage::class)->find($this->in->getUint('message_id'));
+            if ($this->in->getUInt('message_id')) {
+                $message = $this->em->getRepository(TicketMessage::class)->find($this->in->getUInt('message_id'));
             }
             if (!$message || $message->ticket != $ticket) {
                 $message = $this->em->getRepository(TicketMessage::class)->getFirstTicketMessage($ticket);
@@ -3907,6 +3906,7 @@ class TicketController extends AbstractController
             'open_problems'        => $open_problems,
             'custom_person_fields' => $custom_person_fields,
             'custom_org_fields'    => $custom_org_fields,
+            'brands'               => $brands,
         ]);
     }
 
@@ -3916,22 +3916,22 @@ class TicketController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        $newticket = new \Application\AgentBundle\Form\Model\NewTicket(
+        $newTicket = new \Application\AgentBundle\Form\Model\NewTicket(
             $this->em,
             $this->person
         );
-        $newticket->setBlobInlineIds($this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard'));
+        $newTicket->setBlobInlineIds($this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard'));
 
         if (!$this->in->getBool('options.notify_user')) {
-            $newticket->suppress_user_notify = true;
+            $newTicket->suppress_user_notify = true;
         }
 
         $formType = new \Application\AgentBundle\Form\Type\NewTicket();
-        $form     = $this->get('form.factory')->create($formType, $newticket);
+        $form     = $this->get('form.factory')->create($formType, $newTicket);
 
         if ($request->getMethod() === 'POST') {
             if ($request->get('is_note')) {
-                $newticket->is_note = true;
+                $newTicket->is_note = true;
             }
 
             $action_type = $this->in->getString('options.action');
@@ -3978,7 +3978,7 @@ class TicketController extends AbstractController
             $errors = [];
 
             // Person
-            $person_id = $this->in->getUint('newticket.person.id');
+            $person_id = $this->in->getUInt('newticket.person.id');
             if ($person_id) {
                 $check_person = $this->em->find(Person::class, $person_id);
                 if (!$check_person) {
@@ -3992,7 +3992,7 @@ class TicketController extends AbstractController
                 $new_email = $this->in->getString('newticket.person.email_address');
                 if (!$new_email) {
                     $new_email                        = $this->in->getString('newticket.person_input_choice');
-                    $newticket->person->email_address = $new_email;
+                    $newTicket->person->email_address = $new_email;
                 }
 
                 if (!$new_email && !$this->in->getString('newticket.person.name')) {
@@ -4009,11 +4009,20 @@ class TicketController extends AbstractController
                 }
             }
 
-            if (!$newticket->subject) {
+            if (!$newTicket->subject) {
                 $errors['subject'] = true;
             }
-            if (!$newticket->message) {
+            if (!$newTicket->message) {
                 $errors['message'] = true;
+            }
+            if (!$newTicket->brand_id) {
+                $brands = $this->getAgentBrands();
+                if (count($brands) == 1) {
+                    $brand               = current($brands);
+                    $newTicket->brand_id = $brand->getId();
+                } else {
+                    $errors['brand_id'] = true;
+                }
             }
             if (!$this->in->getString('newticket.department_id')) {
                 $errors['department_id'] = true;
@@ -4027,21 +4036,21 @@ class TicketController extends AbstractController
 
             // Validate based on department...
             $validator = new \Application\AgentBundle\Validator\NewTicketValidator();
-            $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
+            $layout    = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newTicket->department_id);
 
-            $layout                   = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
-            $newticket->ticket_fields = $this->request->request->get('custom_fields', []);
+            $layout                   = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newTicket->getMockTicket());
+            $newTicket->ticket_fields = $this->request->request->get('custom_fields', []);
 
             if (isset($check_person) && $check_person) {
-                $newticket->setValuesFromTicket(null, $check_person, $check_person->organization);
+                $newTicket->setValuesFromTicket(null, $check_person, $check_person->organization);
             }
 
-            $newticket->post_custom_person_fields = $this->request->request->get('custom_person_fields', []);
-            $newticket->post_custom_org_fields    = $this->request->request->get('custom_org_fields', []);
-            $newticket->billing_fields            = $this->request->request->get('billing_fields', []);
-            $newticket->status                    = $set_status;
+            $newTicket->post_custom_person_fields = $this->request->request->get('custom_person_fields', []);
+            $newTicket->post_custom_org_fields    = $this->request->request->get('custom_org_fields', []);
+            $newTicket->billing_fields            = $this->request->request->get('billing_fields', []);
+            $newTicket->status                    = $set_status;
             $validator->setLayout($layout);
-            $newticket->setLayout($layout);
+            $newTicket->setLayout($layout);
 
             $all_billing_errors = [];
             if ($post_billing_fields = $request->get('billing_fields', [])) {
@@ -4060,7 +4069,7 @@ class TicketController extends AbstractController
                 }
             }
 
-            if (!$validator->isValid($newticket) || $all_billing_errors) {
+            if (!$validator->isValid($newTicket) || $all_billing_errors) {
                 $free = [];
                 foreach ($validator->getErrorsInfo() as $info) {
                     $free[] = $info['message'];
@@ -4078,7 +4087,7 @@ class TicketController extends AbstractController
 
             try {
                 $comment_type   = $this->in->getString('for_comment_type');
-                $comment_id     = $this->in->getUint('for_comment_id');
+                $comment_id     = $this->in->getUInt('for_comment_id');
                 $comment_action = $this->in->getString('comment_action');
                 $comment        = null;
 
@@ -4088,7 +4097,7 @@ class TicketController extends AbstractController
                 }
 
                 if ($comment) {
-                    $newticket->setPreSaveCallback(function (\Application\DeskPRO\Entity\Ticket $ticket) use ($comment, $comment_type, $comment_id, $comment_action) {
+                    $newTicket->setPreSaveCallback(function (\Application\DeskPRO\Entity\Ticket $ticket) use ($comment, $comment_type, $comment_id, $comment_action) {
                         $ticket->getTicketLogger()->recordExtra('created_via_comment', [
                             'comment_type'          => $comment_type,
                             'comment_id'            => $comment_id,
@@ -4099,16 +4108,16 @@ class TicketController extends AbstractController
                     });
                 }
 
-                $newticket->add_cc_person    = $this->in->getCleanValueArray('newticket.add_cc_person', 'uint');
-                $newticket->add_cc_newperson = $this->in->getCleanValueArray('newticket.add_cc_newperson', 'raw', 'discard');
+                $newTicket->add_cc_person    = $this->in->getCleanValueArray('newticket.add_cc_person', 'uint');
+                $newTicket->add_cc_newperson = $this->in->getCleanValueArray('newticket.add_cc_newperson', 'raw', 'discard');
 
-                $newticket->save();
-                $ticket = $newticket->getTicket();
+                $newTicket->save();
+                $ticket = $newTicket->getTicket();
 
                 $this->em->persist($ticket);
 
-                if ($this->in->getUint('parent_ticket_id')) {
-                    $parent_ticket = $this->em->find(Ticket::class, $this->in->getUint('parent_ticket_id'));
+                if ($this->in->getUInt('parent_ticket_id')) {
+                    $parent_ticket = $this->em->find(Ticket::class, $this->in->getUInt('parent_ticket_id'));
                     if ($parent_ticket) {
                         $ticket->parent_ticket = $parent_ticket;
                     }
@@ -4140,9 +4149,9 @@ class TicketController extends AbstractController
                     } else {
                         $amount = null;
                         $time   = (
-                            3600 * $this->in->getUint('hours')
-                            + 60 * $this->in->getUint('minutes')
-                            + $this->in->getUint('seconds')
+                            3600 * $this->in->getUInt('hours')
+                            + 60 * $this->in->getUInt('minutes')
+                            + $this->in->getUInt('seconds')
                         );
                     }
 
@@ -4246,7 +4255,7 @@ class TicketController extends AbstractController
                 # Related chat
                 #------------------------------
 
-                $chat_id = $this->in->getUint('for_chat_id');
+                $chat_id = $this->in->getUInt('for_chat_id');
                 $chat    = null;
                 if ($chat_id) {
                     $chat = $this->em->find(ChatConversation::class, $chat_id);
@@ -4380,8 +4389,8 @@ class TicketController extends AbstractController
 
     public function newticketGetPersonRowAction($person_id)
     {
-        if (!$person_id && $this->in->getUint('person_id')) {
-            $person_id = $this->in->getUint('person_id');
+        if (!$person_id && $this->in->getUInt('person_id')) {
+            $person_id = $this->in->getUInt('person_id');
         }
 
         $person = false;
@@ -4393,8 +4402,8 @@ class TicketController extends AbstractController
         }
 
         $session = null;
-        if ($this->in->getUint('session_id')) {
-            $session = $this->em->find(Session::class, $this->in->getUint('session_id'));
+        if ($this->in->getUInt('session_id')) {
+            $session = $this->em->find(Session::class, $this->in->getUInt('session_id'));
         }
         if ($session && $session->person) {
             $person = $session;
@@ -4875,7 +4884,7 @@ CSS;
 
             case 'child':
             case 'sibling':
-                $linked_ticket = $this->em->find(Ticket::class, $this->in->getUint('link_ticket_id'));
+                $linked_ticket = $this->em->find(Ticket::class, $this->in->getUInt('link_ticket_id'));
                 break;
         }
 
@@ -4911,11 +4920,11 @@ CSS;
         $this->em->flush($problem);
 
         $data = [];
-        if ($this->in->getUint('client_messages_since')) {
+        if ($this->in->getUInt('client_messages_since')) {
             if ($client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
                 $this->person,
                 $this->session,
-                $this->in->getUint('client_messages_since')
+                $this->in->getUInt('client_messages_since')
             )
             ) {
                 $data['client_messages'] = $client_messages;
@@ -4946,11 +4955,11 @@ CSS;
         $this->em->flush($problem);
 
         $data = [];
-        if ($this->in->getUint('client_messages_since')) {
+        if ($this->in->getUInt('client_messages_since')) {
             if ($client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
                 $this->person,
                 $this->session,
-                $this->in->getUint('client_messages_since')
+                $this->in->getUInt('client_messages_since')
             )
             ) {
                 $data['client_messages'] = $client_messages;
@@ -4958,5 +4967,47 @@ CSS;
         }
 
         return $this->createJsonResponse($data);
+    }
+
+    public function ajaxGetDepartmentsAction($brandId)
+    {
+        /** @var Brand $brand */
+        $brand       = $this->em->getRepository(Brand::class)->find($brandId);
+        $departments = $this->container->getDataService('Department')
+            ->getPersonDepartments($this->person, 'tickets', [], 'assign', $brand);
+
+        return $this->render('AgentBundle:Common:select-department.html.twig', [
+            'name'        => 'newticket[department_id]',
+            'id'          => 'dep',
+            'departments' => $departments,
+            'add_attr'    => 'data-style-type="icons" data-select-icon-size="22"',
+            'with_blank'  => true,
+        ]);
+    }
+
+    /**
+     * @return Entity\Brand[]
+     */
+    protected function getAgentBrands()
+    {
+        /** @var Entity\Department[] $departments */
+        $departments = $this->container->getDataService('Department')
+            ->getPersonDepartments($this->person, 'tickets', [], 'assign');
+        /** @var Brand[] $brands */
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+        foreach ($brands as $key => $brand) {
+            $department_found = false;
+            foreach ($departments as $department) {
+                if ($department->hasBrand($brand)) {
+                    $department_found = true;
+                    break;
+                }
+            }
+            if (!$department_found) {
+                unset($brands[$key]);
+            }
+        }
+
+        return $brands;
     }
 }

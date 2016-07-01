@@ -2173,6 +2173,24 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @param int $id
+     *
+     * @return $this
+     */
+    public function setBrandId($id)
+    {
+        if ($id) {
+            /** @var Brand $brand */
+            $brand = App::getOrm()->getRepository(Brand::class)->find($id);
+            $this->setBrand($brand);
+        } else {
+            $this->setBrand(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * @return int|mixed
      */
     public function getDepartmentId()

@@ -161,6 +161,14 @@ class Brand extends DomainObject
     }
 
     /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getDepartments()
+    {
+        return $this->departments;
+    }
+
+    /**
      * @param Department $department
      *
      * @return $this
@@ -188,7 +196,11 @@ class Brand extends DomainObject
         $builder->mapString('url');
         $builder->createOneToOne('theme_set', ThemeSet::class)->cascadePersist()->build();
         $builder->createOneToOne('edit_theme_set', ThemeSet::class)->build();
-        $builder->createOneToOne('logo_blob', Blob::class)->addJoinColumn('logo_blob_id', 'id', true, false, 'cascade');
-        $builder->createManyToMany('departments', Department::class)->setJoinTable('department_to_brand');
+        $builder->createOneToOne('logo_blob', Blob::class)
+            ->addJoinColumn('logo_blob_id', 'id', true, false, 'cascade');
+        $builder->createManyToMany('departments', Department::class)
+            ->setJoinTable('department_to_brand')
+            ->addInverseJoinColumn('department_id', 'id', true, false, 'cascade')
+            ->addJoinColumn('brand_id', 'id', true, false, 'cascade')->build();
     }
 }

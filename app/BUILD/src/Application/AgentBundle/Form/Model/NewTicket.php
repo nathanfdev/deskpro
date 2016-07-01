@@ -57,6 +57,8 @@ class NewTicket
     /** @var bool */
     public $is_html_reply;
     /** @var int */
+    public $brand_id;
+    /** @var int */
     public $department_id;
     /** @var string */
     public $status;
@@ -87,15 +89,15 @@ class NewTicket
     public $billing_comment = '';
 
     /** @var array */
-    public $add_cc_person = array();
+    public $add_cc_person = [];
     /** @var array */
-    public $add_cc_newpeople = array();
+    public $add_cc_newpeople = [];
     /** @var array */
-    public $add_cc_newperson = array();
+    public $add_cc_newperson = [];
     /** @var array */
-    public $attach = array();
+    public $attach = [];
     /** @var array */
-    public $ticket_fields = array();
+    public $ticket_fields = [];
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -135,7 +137,7 @@ class NewTicket
     /**
      * @var array
      */
-    protected $_blob_inline_ids = array();
+    protected $_blob_inline_ids = [];
 
     /**
      * @var bool
@@ -145,14 +147,14 @@ class NewTicket
     /**
      * @var array
      */
-    public $custom_person_fields      = array();
-    public $post_custom_person_fields = array();
+    public $custom_person_fields      = [];
+    public $post_custom_person_fields = [];
 
     /**
      * @var array
      */
-    public $custom_org_fields      = array();
-    public $post_custom_org_fields = array();
+    public $custom_org_fields      = [];
+    public $post_custom_org_fields = [];
 
     /**
      * @var bool
@@ -185,6 +187,9 @@ class NewTicket
     {
         $t = new Ticket();
 
+        if ($this->brand_id) {
+            $t->setBrandId($this->brand_id);
+        }
         if ($this->department_id) {
             $t->setDepartmentId($this->department_id);
         }
@@ -211,6 +216,7 @@ class NewTicket
     {
         if ($ticket) {
             $this->exist_ticket  = $ticket;
+            $this->brand_id      = $ticket->getBrandId();
             $this->department_id = $ticket->getDepartmentId();
             $this->workflow_id   = $ticket->getWorkflowId();
             $this->product_id    = $ticket->getProductId();
@@ -329,10 +335,10 @@ class NewTicket
                 $add_cc_people[] = $check_exist;
             } else {
                 // New person, coming right up
-                $new_cc_person = Person::newContactPerson(array(
+                $new_cc_person = Person::newContactPerson([
                     'email' => $info['email'],
                     'name'  => !empty($info['name']) ? $info['name'] : '',
-                ));
+                ]);
                 $this->_em->persist($new_cc_person);
 
                 $add_cc_people[] = $new_cc_person;
@@ -371,11 +377,11 @@ class NewTicket
             $ticket->person_email = $this->_email;
         }
 
-        $standard = array(
-            'subject', 'status', 'agent_id', 'agent_team_id',
+        $standard = [
+            'subject', 'status', 'agent_id', 'agent_team_id', 'brand_id',
             'department_id', 'category_id', 'priority_id', 'workflow_id',
             'product_id', 'notify_template',
-        );
+        ];
         if (!$this->status) {
             $this->status = 'awaiting_agent';
         }
@@ -403,7 +409,7 @@ class NewTicket
         $formatter    = new SnippetFormatter(App::getContainer()->get('twig'));
         $message_text = $formatter->formatText($message_text, $ticket);
 
-        $notify_agent_ids = array();
+        $notify_agent_ids = [];
         if ($this->is_html_reply) {
             preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $message_text, $matches, PREG_SET_ORDER);
             foreach ($matches as $match) {
@@ -417,12 +423,12 @@ class NewTicket
             $message->setMessageText($message_text);
         }
 
-        $notify_chat = array();
+        $notify_chat = [];
         $agent_chat  = null;
         if ($notify_agent_ids && $message->is_agent_note) {
             $agent_chat = new \Application\DeskPRO\Chat\AgentChat($message->person, App::getSession()->getEntity());
             $agent_chat->disableOfflineEmailAlert(); // we'll handle offline notifs as part of normal notifications
-            $notify_email     = array();
+            $notify_email     = [];
             $notify_agent_ids = array_unique($notify_agent_ids);
 
             foreach ($notify_agent_ids as $agent_id) {
@@ -488,7 +494,7 @@ class NewTicket
         $this->_em->persist($ticket);
 
         if ($this->_pre_save_callback) {
-            call_user_func_array($this->_pre_save_callback, array($ticket, $message, $person));
+            call_user_func_array($this->_pre_save_callback, [$ticket, $message, $person]);
         }
 
         $field_manager      = App::getSystemService('ticket_fields_manager');
@@ -506,7 +512,7 @@ class NewTicket
         }
 
         $manager                   = App::$container->getPersonFieldManager();
-        $post_custom_person_fields = array();
+        $post_custom_person_fields = [];
         $custom_person_fields      = $person->isNewPerson() ? $this->post_custom_person_fields : $this->custom_person_fields;
         foreach ($custom_person_fields as $k => $v) {
             $id = Strings::extractRegexMatch('#(\d+)$#', $k);
@@ -522,7 +528,7 @@ class NewTicket
 
         if ($person->organization) {
             $manager                = App::$container->getOrgFieldManager();
-            $post_custom_org_fields = array();
+            $post_custom_org_fields = [];
             foreach ($this->custom_org_fields as $k => $v) {
                 $id = Strings::extractRegexMatch('#(\d+)$#', $k);
                 if (!$this->layout || $this->layout->hasActiveField('org_field_'.$id, $ticket)) {
@@ -552,10 +558,10 @@ class NewTicket
         # per-person and per-org fields
         #------------------------------
         $new_field_manager = App::$container->getCustomFieldManager();
-        $new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $this->layout, array('allow_edit' => true));
+        $new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $this->layout, ['allow_edit' => true]);
         if ($org = $ticket->person->organization) {
             $new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner(
-                $ticket, $org, $this->layout, array('allow_edit' => true)
+                $ticket, $org, $this->layout, ['allow_edit' => true]
             ));
         }
         $new_custom_fields->handleRequest(App::$container->getRequest());

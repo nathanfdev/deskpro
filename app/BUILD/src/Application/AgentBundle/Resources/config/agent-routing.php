@@ -1210,6 +1210,12 @@ $collection->create('agent_ticket_unlink', [
     'methods'    => ['POST'],
 ]);
 
+$collection->create('agent_ticket_departments_by_brand', [
+    'path'       => '/tickets/new/get-departments/{brandId}',
+    'controller' => 'AgentBundle:Ticket:ajaxGetDepartments',
+    'methods'    => ['GET'],
+]);
+
 $collection->create('agent_twitter_new', [
     'path'       => '/twitter/new',
     'controller' => 'AgentBundle:Twitter:newTweet',

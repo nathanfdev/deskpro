@@ -618,6 +618,7 @@ return [
     'agent.general.search'                                  => 'Search',
     'agent.general.search_terms'                            => 'Search Terms',
     'agent.general.seconds'                                 => 'seconds',
+    'agent.general.select_a_brand'                          => 'Select a brand',
     'agent.general.select_a_department'                     => 'Select a department',
     'agent.general.select_agent'                            => 'Select an Agent',
     'agent.general.select_your_region'                      => 'Select your region',
