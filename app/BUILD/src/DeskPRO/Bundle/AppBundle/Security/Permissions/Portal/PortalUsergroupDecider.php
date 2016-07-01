@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Permissions\Portal;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
@@ -68,6 +64,11 @@ class PortalUsergroupDecider
      */
     private $em;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         $this->conn = $em->getConnection();
@@ -83,38 +84,34 @@ class PortalUsergroupDecider
      */
     public function getUsergroupIdsForPerson(Person $person)
     {
-        $that = $this;
-        $conn = $this->conn;
-        $em   = $this->em;
-
         return $this->generateAndCache(
-            array(
+            [
                 'getUsergroupIdsForPerson',
                 $person,
-            ),
-            function () use ($that, $conn, $em, $person) {
-                $ids = $conn->fetchAllCol(
+            ],
+            function () use ($person) {
+                $ids = $this->conn->fetchAllCol(
                     '
             SELECT person2usergroups.usergroup_id
             FROM person2usergroups
             LEFT JOIN usergroups ON usergroups.id = person2usergroups.usergroup_id
-            WHERE person2usergroups.person_id = ? AND usergroups.is_enabled = 1
+            WHERE person2usergroups.person_id = ? AND usergroups.is_enabled = 1 AND usergroups.is_agent_group = 0
             ',
-                    array($person['id'])
+                    [$person['id']]
                 );
 
-                if ($everyoneGroups = $that->getGroupsThatApplyToEveryone()) {
+                if ($everyoneGroups = $this->getGroupsThatApplyToEveryone()) {
                     $ids = array_merge($ids, $everyoneGroups);
                 }
 
                 // if a user is logged in and agent confirmed, they also get the "regsitered" perm.
-                $registeredGroup = $em->getRepository('DeskPRO:Usergroup')->findOneBy(array('sys_name' => 'registered'));
+                $registeredGroup = $this->em->getRepository('DeskPRO:Usergroup')->findOneBy(['sys_name' => 'registered']);
                 if ($registeredGroup && $registeredGroup->is_enabled && $person->getId()) {
                     $ids[] = $registeredGroup->id;
                 }
 
-                if ($person->organization) {
-                    if ($org_usergroup_ids = $that->getOrganizationUsergroups($person->organization['id'])) {
+                if ($person->getOrganization()) {
+                    if ($org_usergroup_ids = $this->getOrganizationUsergroups($person->getOrganization()->getId())) {
                         $ids = array_merge($ids, $org_usergroup_ids);
                     }
                 }
@@ -141,22 +138,20 @@ class PortalUsergroupDecider
      */
     public function getOrganizationUsergroups($organizationId)
     {
-        $conn = $this->conn;
-
         return $this->generateAndCache(
-            array(
+            [
                 'getOrganizationUsergroups',
                 $organizationId,
-            ),
-            function () use ($conn, $organizationId) {
-                return $conn->fetchAllCol(
+            ],
+            function () use ($organizationId) {
+                return $this->conn->fetchAllCol(
                     '
             SELECT organization2usergroups.usergroup_id
             FROM organization2usergroups
             JOIN usergroups ON usergroups.id = organization2usergroups.usergroup_id
             WHERE organization2usergroups.organization_id = ? AND usergroups.is_enabled = 1
             ',
-                    array($organizationId)
+                    [$organizationId]
                 );
             }
         );
@@ -169,20 +164,18 @@ class PortalUsergroupDecider
      */
     public function getGroupsThatApplyToEveryone()
     {
-        $em = $this->em;
-
         return $this->generateAndCache(
-            array(
+            [
                 'getGroupsThatApplyToEveryone',
-            ),
-            function () use ($em) {
+            ],
+            function () {
                 // everyone gets the everyone group if it exists and is enabled
-                $everyoneGroup = $em->getRepository('DeskPRO:Usergroup')->findOneBy(array('sys_name' => 'everyone'));
+                $everyoneGroup = $this->em->getRepository('DeskPRO:Usergroup')->findOneBy(['sys_name' => 'everyone']);
                 if ($everyoneGroup && $everyoneGroup->is_enabled) {
-                    return array($everyoneGroup->id);
+                    return [$everyoneGroup->id];
                 }
 
-                return array();
+                return [];
             }
         );
     }

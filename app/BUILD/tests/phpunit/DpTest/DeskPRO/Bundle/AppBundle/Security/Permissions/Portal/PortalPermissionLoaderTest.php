@@ -1,0 +1,364 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DpTest\DeskPRO\Bundle\AppBundle\Security\Permissions;
+
+use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\DepartmentPermission;
+use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\Entity\Usergroup;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsLoader;
+use DpTest\PortalTestCase;
+
+/**
+ * Class PortalPermissionLoaderTest.
+ */
+class PortalPermissionLoaderTest  extends PortalTestCase
+{
+    /**
+     * @var PortalPermissionsLoader
+     */
+    private $permissionLoader;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setUp()
+    {
+        $this->installDataSet('empty', true, true);
+        $this->permissionLoader = $this->getContainer()->get('portal_permissions_loader');
+
+        $em = $this->getEntityManager();
+
+        $everyone = new Usergroup();
+        $everyone->setSysName(Usergroup::EVERYONE);
+        $everyone->setTitle(Usergroup::EVERYONE);
+        $em->persist($everyone);
+
+        $registered = new Usergroup();
+        $registered->setSysName(Usergroup::REGISTERED);
+        $registered->setTitle(Usergroup::REGISTERED);
+        $em->persist($registered);
+        $em->flush();
+    }
+
+    /**
+     * @test
+     * @dataProvider loadAllCategoriesProvider
+     */
+    public function load_all_categories($entityClass, $method)
+    {
+        $em = $this->getEntityManager();
+
+        $everyone   = $this->getUsergroup(Usergroup::EVERYONE);
+        $registered = $this->getUsergroup(Usergroup::REGISTERED);
+
+        /** @var FeedbackCategory|NewsCategory|ArticleCategory|DownloadCategory $category1 */
+        $category1 = new $entityClass();
+        $category1->setTitle('feedbackCategory 1');
+        $category1->addUsergroup($everyone);
+        $em->persist($category1);
+
+        /** @var FeedbackCategory|NewsCategory|ArticleCategory|DownloadCategory $category2 */
+        $category2 = new $entityClass();
+        $category2->setTitle('feedbackCategory 2');
+        $category2->addUsergroup($registered);
+        $em->persist($category2);
+
+        /** @var FeedbackCategory|NewsCategory|ArticleCategory|DownloadCategory $category3 */
+        $category3 = new $entityClass();
+        $category3->setTitle('feedbackCategory 3');
+        $category3->addUsergroup($everyone);
+        $em->persist($category3);
+        $em->flush();
+
+        $this->assertEquals(
+            [
+                $category1->getId(),
+                $category2->getId(),
+                $category3->getId(),
+            ],
+            $this->permissionLoader->$method([$everyone->getId(), $registered->getId()])
+        );
+
+        $this->assertEquals(
+            [
+                $category1->getId(),
+                $category3->getId(),
+            ],
+            $this->permissionLoader->$method([$everyone->getId()])
+        );
+
+        // everyone group should be added automatically to usergroup ids list
+        $this->assertEquals(
+            [
+                $category1->getId(),
+                $category2->getId(),
+                $category3->getId(),
+            ],
+            $this->permissionLoader->$method([$registered->getId()])
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function loadAllCategoriesProvider()
+    {
+        return [
+            [FeedbackCategory::class, 'getAllowedFeedbackCategories'],
+            [NewsCategory::class, 'getAllowedNewsCategories'],
+            [ArticleCategory::class, 'getAllowedArticleCategories'],
+            [DownloadCategory::class, 'getAllowedDownloadCategories'],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider getAllowedDepartmentsProvider
+     */
+    public function get_allowed_departments($app, $method)
+    {
+        $em = $this->getEntityManager();
+
+        $everyone   = $this->getUsergroup(Usergroup::EVERYONE);
+        $registered = $this->getUsergroup(Usergroup::REGISTERED);
+
+        $department1 = new Department();
+        $department1->setRealTitle('department 1');
+        $em->persist($department1);
+
+        $department2 = new Department();
+        $department2->setRealTitle('department 2');
+        $em->persist($department2);
+
+        $department3 = new Department();
+        $department3->setRealTitle('department 3');
+        $em->persist($department3);
+
+        $em->persist($this->createPermission($department1, $everyone, 'full', $app));
+        $em->persist($this->createPermission($department2, $registered, 'full', $app));
+
+        $em->flush();
+
+        $this->assertEquals(
+            [
+                $department1->getId() => [
+                    'full' => 1,
+                ],
+                $department2->getId() => [
+                    'full' => 1,
+                ],
+            ],
+            $this->permissionLoader->$method([$everyone, $registered])
+        );
+
+        $this->assertEquals(
+            [
+                $department1->getId() => [
+                    'full' => 1,
+                ],
+            ],
+            $this->permissionLoader->$method([$everyone])
+        );
+
+        $this->assertEquals(
+            [
+                $department2->getId() => [
+                    'full' => 1,
+                ],
+            ],
+            $this->permissionLoader->$method([$registered])
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function prepare_department_tree()
+    {
+        $em       = $this->getEntityManager();
+        $everyone = $this->getUsergroup(Usergroup::EVERYONE);
+
+        $department1 = new Department();
+        $department1->setRealTitle('department 1');
+        $em->persist($department1);
+
+        $department1a = new Department();
+        $department1a->setRealTitle('department 1a');
+        $department1a->setParent($department1);
+        $em->persist($department1a);
+
+        $department2 = new Department();
+        $department2->setRealTitle('department 2');
+        $em->persist($department2);
+
+        $department2a = new Department();
+        $department2a->setRealTitle('department 2a');
+        $department2a->setParent($department2);
+        $em->persist($department2a);
+
+        $em->persist($this->createPermission($department1, $everyone, 'view'));
+        $em->persist($this->createPermission($department2a, $everyone, 'full'));
+
+        $em->flush();
+        $em->refresh($department1);
+        $em->refresh($department1a);
+        $em->refresh($department2);
+        $em->refresh($department2a);
+
+        $this->assertEquals(
+            [
+                $department2->getId() => [
+                    'full' => 1,
+                ],
+                $department2a->getId() => [
+                    'full' => 1,
+                ],
+            ],
+            $this->permissionLoader->getAllowedTicketDepartments([$everyone])
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function get_child_department_permissions()
+    {
+        $em       = $this->getEntityManager();
+        $everyone = $this->getUsergroup(Usergroup::EVERYONE);
+
+        $department1 = new Department();
+        $department1->setRealTitle('department 1');
+        $em->persist($department1);
+
+        $department1a = new Department();
+        $department1a->setRealTitle('department 1a');
+        $department1a->setParent($department1);
+        $em->persist($department1a);
+
+        $department1aa = new Department();
+        $department1aa->setRealTitle('department 1aa');
+        $department1aa->setParent($department1a);
+        $em->persist($department1aa);
+
+        $department1ab = new Department();
+        $department1ab->setRealTitle('department 1ab');
+        $department1ab->setParent($department1a);
+        $em->persist($department1ab);
+
+        $department1b = new Department();
+        $department1b->setRealTitle('department 1b');
+        $department1b->setParent($department1);
+        $em->persist($department1b);
+
+        $em->persist($this->createPermission($department1, $everyone, 'dep1'));
+        $em->persist($this->createPermission($department1a, $everyone, 'dep1a'));
+        $em->persist($this->createPermission($department1aa, $everyone, 'dep1aa'));
+        $em->persist($this->createPermission($department1ab, $everyone, 'dep1ab'));
+        $em->persist($this->createPermission($department1b, $everyone, 'dep1b'));
+
+        $em->flush();
+        $em->refresh($department1);
+        $em->refresh($department1a);
+        $em->refresh($department1aa);
+        $em->refresh($department1ab);
+        $em->refresh($department1b);
+
+        $this->assertEquals(
+            [
+                $department1->getId() => [
+                    'dep1'   => 1,
+                    'dep1a'  => 1,
+                    'dep1aa' => 1,
+                    'dep1ab' => 1,
+                    'dep1b'  => 1,
+                ],
+                $department1a->getId() => [
+                    'dep1a'  => 1,
+                    'dep1aa' => 1,
+                    'dep1ab' => 1,
+                ],
+                $department1aa->getId() => [
+                    'dep1aa' => 1,
+                ],
+                $department1ab->getId() => [
+                    'dep1ab' => 1,
+                ],
+                $department1b->getId() => [
+                    'dep1b' => 1,
+                ],
+            ],
+            $this->permissionLoader->getAllowedTicketDepartments([$everyone])
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllowedDepartmentsProvider()
+    {
+        return [
+            [DepartmentPermission::APP_TICKETS, 'getAllowedTicketDepartments'],
+            [DepartmentPermission::APP_CHAT, 'getAllowedChatDepartments'],
+        ];
+    }
+
+    /**
+     * @param string $sysName
+     *
+     * @return Usergroup
+     */
+    private function getUsergroup($sysName)
+    {
+        return $this->getEntityManager()->getRepository(Usergroup::class)->findOneBy(['sys_name' => $sysName]);
+    }
+
+    /**
+     * @param Department $department
+     * @param Usergroup  $userGroup
+     * @param string     $name
+     * @param string     $app
+     *
+     * @return DepartmentPermission
+     */
+    private function createPermission(Department $department, Usergroup $userGroup, $name, $app = DepartmentPermission::APP_TICKETS)
+    {
+        $permission = new DepartmentPermission();
+        $permission->setName($name);
+        $permission->setValue(1);
+        $permission->setUsergroup($userGroup);
+        $permission->setDepartment($department);
+        $permission->setApp($app);
+
+        return $permission;
+    }
+}

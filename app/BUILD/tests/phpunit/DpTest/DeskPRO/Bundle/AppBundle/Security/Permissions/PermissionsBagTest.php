@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,11 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DpTest\DeskPRO\Bundle\AppBundle\Security\Permissions;
 
+use Application\DeskPRO\Entity\Permission;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
 use DpTest\DeskProTestCase;
 
@@ -48,13 +46,19 @@ class PermissionsBagTest extends DeskProTestCase
 
     public function testGetWillReturnABoolIfHasPermissionFalseOtherwise()
     {
-        $inputArray = array(
-            'key'           => '1',
-            'setting'       => 1,
-            'extra_setting' => 0,
-        );
+        $perm1 = new Permission();
+        $perm1->setName('key');
+        $perm1->setValue('1');
 
-        $bag = new PermissionsBag($inputArray);
+        $perm2 = new Permission();
+        $perm2->setName('setting');
+        $perm2->setValue(1);
+
+        $perm3 = new Permission();
+        $perm3->setName('extra_setting');
+        $perm3->setValue(0);
+
+        $bag = new PermissionsBag([$perm1, $perm2, $perm3]);
 
         $this->assertEquals(true, $bag->get('key'));
         $this->assertEquals(true, $bag->get('setting'));
@@ -72,33 +76,58 @@ class PermissionsBagTest extends DeskProTestCase
         $this->assertTrue($bag->has('key'));
         $this->assertFalse($bag->has('non_existant-key'));
 
-        $this->assertSame($inputArray, $bag->toArray(), 'can get the settings as an array');
+        $this->assertSame(
+            [
+                'key'           => 1,
+                'setting'       => 1,
+                'extra_setting' => 0,
+            ],
+            $bag->toArray()
+        );
     }
 
     public function testAllowedDepartmentIds()
     {
         // the input of the dep ids is array(dep_id => extra_array_of_permission_levels)
-        $ticket_dep_perms = array(
-            5 => array(
+        $ticket_dep_perms = [
+            5 => [
                 'full' => 1,
-            ),
-            6 => array(
+            ],
+            6 => [
                 'full' => 1,
-            ),
-        );
-        $chat_dep_perms = array(
-            4 => array(
+            ],
+        ];
+        $chat_dep_perms = [
+            4 => [
                 'full' => 1,
-            ),
-        );
-        $bag = new PermissionsBag(array(), $ticket_dep_perms, $chat_dep_perms);
-        $this->assertEquals(array(5, 6), $bag->getAllowedTicketDepartmentIds());
-        $this->assertEquals(array(4), $bag->getAllowedChatDepartmentIds());
+            ],
+        ];
+        $bag = new PermissionsBag([], $ticket_dep_perms, $chat_dep_perms);
+        $this->assertEquals([5, 6], $bag->getAllowedTicketDepartmentIds());
+        $this->assertEquals([4], $bag->getAllowedChatDepartmentIds());
 
         $bag2 = new PermissionsBag();
         $bag2->setAllowedTicketDepartmentIds($ticket_dep_perms);
         $bag2->setAllowedChatDepartmentIds($chat_dep_perms);
-        $this->assertEquals(array(5, 6), $bag2->getAllowedTicketDepartmentIds());
-        $this->assertEquals(array(4), $bag2->getAllowedChatDepartmentIds());
+        $this->assertEquals([5, 6], $bag2->getAllowedTicketDepartmentIds());
+        $this->assertEquals([4], $bag2->getAllowedChatDepartmentIds());
+    }
+
+    public function testPermissionOverride()
+    {
+        $perm1 = new Permission();
+        $perm1->setName('key');
+        $perm1->setValue('0');
+
+        $perm2 = new Permission();
+        $perm2->setName('key');
+        $perm2->setValue('2');
+
+        $perm3 = new Permission();
+        $perm3->setName('key');
+        $perm3->setValue('1');
+
+        $bag = new PermissionsBag([$perm1, $perm2, $perm3]);
+        $this->assertSame(['key' => 2], $bag->toArray());
     }
 }

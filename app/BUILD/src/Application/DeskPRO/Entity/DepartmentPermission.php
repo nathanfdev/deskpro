@@ -140,6 +140,70 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param Department $department
+     *
+     * @return $this
+     */
+    public function setDepartment($department)
+    {
+        $this->setModelField('department', $department);
+
+        return $this;
+    }
+
+    /**
+     * @return Department
+     */
+    public function getDepartment()
+    {
+        return $this->department;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->setModelField('name', $name);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param int $value
+     *
+     * @return $this
+     */
+    public function setValue($value)
+    {
+        $this->setModelField('value', $value);
+
+        return $this;
+    }
+
+    /**
+     * @param string $app
+     *
+     * @return $this
+     */
+    public function setApp($app)
+    {
+        $this->setModelField('app', $app);
+
+        return $this;
+    }
+
+    /**
      * A name that identifies this permission (eg could be used as an map key).
      *
      * @return string

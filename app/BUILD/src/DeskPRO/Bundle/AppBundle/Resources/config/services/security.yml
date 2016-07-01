@@ -14,10 +14,7 @@ services:
 
   permissions_manager:
     class: DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager
-    arguments: ["@portal_permissions_manager", "@agent_permissions_manager"]
-
-  agent_permissions_manager:
-    class: DeskPRO\Bundle\AppBundle\Security\Permissions\Agent\AgentPermissionsManager
+    arguments: ["@portal_permissions_manager"]
 
   portal_permissions_manager:
     class: DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager
@@ -30,7 +27,7 @@ services:
 
   portal_permissions_loader:
     class: DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsLoader
-    arguments: ["@doctrine.dbal.default_connection"]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   portal_usergroup_decider:
     class: DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalUsergroupDecider
