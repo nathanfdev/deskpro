@@ -110,7 +110,7 @@ class BuildNewAgent_0100_theme extends AbstractBuild
 
         if ($blobRow) {
             try {
-                $logoDat = $this->container->getBlobStorage()->copyBlobRowToString($blobRow);
+                $logoDat = $this->downloadBlob($blobRow['id']);
 
                 if ($logoDat) {
                     $ins = [];
@@ -119,18 +119,13 @@ class BuildNewAgent_0100_theme extends AbstractBuild
 
                     foreach ($brands as $brand) {
                         foreach ([$brand['theme_set_id'], $brand['edit_theme_set_id']] as $themeSetId) {
-                            $logoBlob = $this->container->getBlobStorage()->createBlobRowFromString(
-                                $logoDat,
-                                $blobRow['filename'],
-                                $blobRow['content_type'],
-                                ['tag' => 'brand_asset.custom_logo']
-                            );
+                            $logoBlobId = $this->saveBlob($logoDat, $blobRow['filename'], $blobRow['content_type']);
 
                             $this->out(sprintf('Brand %s, Theme %s, Logo Blob %s', $brand['id'], $themeSetId, $logoBlob['id']));
                             $ins[] = [
                                 'theme_set_id' => $themeSetId,
-                                'blob_id'      => $logoBlob['id'],
-                                'name'         => $logoBlob['filename'],
+                                'blob_id'      => $logoBlobId,
+                                'name'         => $blobRow['filename'],
                                 'tags'         => 'custom_logo',
                                 'date_created' => date('Y-m-d H:i:s'),
                                 'date_updated' => date('Y-m-d H:i:s'),
