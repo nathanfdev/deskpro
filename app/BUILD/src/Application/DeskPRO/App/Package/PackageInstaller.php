@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\App\Package;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -416,5 +415,38 @@ class PackageInstaller
         $asset->tag  = $tag;
 
         return $asset;
+    }
+
+    public function dumpPackage(AppPackage $package, $path)
+    {
+        file_put_contents($path.'/manifest.json', json_encode($package->getManifest()));
+
+        foreach ($package->assets as $asset) {
+            $parts = explode('.', $asset->tag);
+            $tag   = $parts[0];
+
+            switch ($tag) {
+                case 'icons':
+                    $filename = $path.'/res/icons/'.$asset->name;
+                    break;
+                case 'readme':
+                case 'app_js':
+                case 'module_js':
+                    $filename = $path.'/'.$asset->name;
+                    break;
+                case 'js':
+                case 'css':
+                case 'html':
+                case 'res':
+                    $filename = $path.'/'.$tag.'/'.$asset->name;
+                    break;
+                default:
+                    $filename = $path.'/'.$asset->name;
+            }
+
+            $dir = pathinfo($filename, PATHINFO_DIRNAME);
+            !file_exists($dir) && mkdir($dir, 0777, true);
+            $this->blob_storage->copyBlobRecordToFile($filename, $asset->blob);
+        }
     }
 }
