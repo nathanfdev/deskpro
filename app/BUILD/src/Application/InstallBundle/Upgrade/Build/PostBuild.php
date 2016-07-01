@@ -30,7 +30,6 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\App\Native\NativeAppsSync;
 use Application\DeskPRO\App\Package\PackageInstaller;
-use Application\DeskPRO\DataSync\AbstractDataSync;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Languages\LangPackInfo;
@@ -48,8 +47,6 @@ class PostBuild extends AbstractBuild
     public function run()
     {
         $this->out('Post upgrade begin');
-
-        AbstractDataSync::syncAllBaseToLive();
 
         // Update lang titles and has_agent flags
         $langPacks = new LangPackInfo();
