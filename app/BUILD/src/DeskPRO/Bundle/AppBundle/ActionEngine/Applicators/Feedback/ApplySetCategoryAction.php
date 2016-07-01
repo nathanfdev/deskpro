@@ -53,6 +53,7 @@ class ApplySetCategoryAction extends AbstractActionApplicator implements ActionI
         $customCategory = new CustomDataFeedback();
         $customCategory->setInput($this->options['set_category']);
         $customCategory->setField($this->customDef);
+        $customCategory->setRootField($this->customDef);
         $feedback->addCustomData($customCategory);
     }
 }
