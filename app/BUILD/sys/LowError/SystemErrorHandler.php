@@ -30,6 +30,7 @@ namespace DpSys\LowError;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -124,9 +125,13 @@ class SystemErrorHandler
 
         self::$isHandlingException = false;
 
-        header('Status: 400');
-        echo 'An error occurred. Please, try again later';
-        exit(255);
+        if (php_sapi_name() === 'cli') {
+            exit(255);
+        } else {
+            http_response_code(Response::HTTP_BAD_REQUEST);
+            echo 'An error occurred. Please, try again later';
+            exit(0);
+        }
     }
 
     /**
