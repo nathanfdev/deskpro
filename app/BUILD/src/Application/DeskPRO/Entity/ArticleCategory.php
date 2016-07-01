@@ -202,6 +202,18 @@ class ArticleCategory extends CategoryAbstract
     }
 
     /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
+    public function setBrand($brand)
+    {
+        $this->setModelField('brand', $brand);
+
+        return $this;
+    }
+
+    /**
      * Remove all user groups.
      *
      * @return $this

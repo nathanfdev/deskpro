@@ -127,7 +127,7 @@ pageMeta.lang = {{ {
 	<div class="row title first" id="{{ baseId }}_layout_header_first">
 		<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="10" nowrap="nowrap">
 			<div class="id-number" id="{{ baseId }}_idref_switch">
-				<span id="{{ baseId }}_id_num" title="Ticket ID">
+				<span id="{{ baseId }}_id_num" title="{{ phrase('agent.general.ticket_id') }}">
 					<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.id }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="icon-paste"></i></span></span>
 					{{ phrase('agent.general.id') }}: {{ ticket.id }}
 				</span>
@@ -136,7 +136,17 @@ pageMeta.lang = {{ {
 					{{ phrase('agent.general.id') }}: {{ ticket.ref }}
 				</span>
 			</div>
-		</td><td>
+		</td>
+				{% if brands|length > 1 %}
+				<td width="10">
+					<div class="id-number">
+						<span id="{{baseId}}_brandname" title="{{ phrase('agent.general.brand') }}">
+							{{ ticket.brand.name }}
+						</span>
+					</div>
+				</td>
+				{% endif %}
+				<td>
 			<h1>
 				<span id="{{baseId}}_showname">{{ ticket.subject }}</span>
 				<span id="{{baseId}}_editname" style="display: none"><input type="text" placeholder="Enter subject" name="name" value="{{ ticket.subject }}" /></span>

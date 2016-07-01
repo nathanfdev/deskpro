@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\Article;
@@ -228,8 +224,9 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
                 $values['is_agent'] = rand(0, 1);
                 $values['is_book']  = rand(0, 1);
             }
-            $values  = $this->setTitleAndSlug($values, 3);
-            $batch[] = $values;
+            $values             = $this->setTitleAndSlug($values, 3);
+            $values['brand_id'] = $this->getReference('brand')->getId();
+            $batch[]            = $values;
         }
         $this->db->batchInsert($categoryTable, $batch, true);
         $this->content[$content]['categories'] = $this->fetchIds($categoryTable);

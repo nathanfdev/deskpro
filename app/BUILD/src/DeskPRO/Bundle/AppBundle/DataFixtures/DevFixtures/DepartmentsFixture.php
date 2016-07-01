@@ -26,11 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -57,10 +55,15 @@ class DepartmentsFixture extends DeskProAbstractFixture implements OrderedFixtur
         $cnt  = 0;
         $deps = [];
 
+        /** @var Brand $brand */
+        $brand = $this->getReference('brand');
+
         $dep1                     = new Department();
         $dep1->is_tickets_enabled = true;
         $dep1->title              = 'Widgets';
         $dep1->display_order      = $cnt++;
+        $dep1->addBrand($brand);
+        $brand->addDepartment($dep1);
 
         $deps[] = $dep1;
 
@@ -82,6 +85,8 @@ class DepartmentsFixture extends DeskProAbstractFixture implements OrderedFixtur
         $dep2_a->title              = 'Regulation';
         $dep2_a->parent             = $dep2;
         $dep2_a->display_order      = $cnt++;
+        $dep2_a->addBrand($brand);
+        $brand->addDepartment($dep2_a);
 
         $deps[] = $dep2_a;
 
@@ -93,6 +98,8 @@ class DepartmentsFixture extends DeskProAbstractFixture implements OrderedFixtur
         $dep2_b->title              = 'Control';
         $dep2_b->parent             = $dep2;
         $dep2_b->display_order      = $cnt++;
+        $dep2_b->addBrand($brand);
+        $brand->addDepartment($dep2_b);
 
         $deps[] = $dep2_b;
 
@@ -103,11 +110,15 @@ class DepartmentsFixture extends DeskProAbstractFixture implements OrderedFixtur
         $dep3->is_tickets_enabled = true;
         $dep3->title              = 'Hotdogs';
         $dep3->display_order      = $cnt++;
+        $dep3->addBrand($brand);
+        $brand->addDepartment($dep3);
 
         $deps[] = $dep3;
 
         $this->addReference('department.hotdogs', $dep3);
         $manager->persist($dep3);
+
+        $manager->persist($brand);
 
         $manager->flush();
 

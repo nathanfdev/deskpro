@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\Entity\Department;
@@ -54,6 +51,9 @@ class DepartmentsFixture extends DeskProAbstractFixture implements OrderedFixtur
         /** @var \Application\DeskPRO\Translate\Translate $tr */
         $tr = $this->container->get('deskpro.core.translate');
 
+        /** @var Brand $brand */
+        $brand = $this->getReference('brand');
+
         foreach ([true, false] as $is_ticket) {
             foreach ([
                      'support' => 'user.defaults.department_support',
@@ -63,6 +63,8 @@ class DepartmentsFixture extends DeskProAbstractFixture implements OrderedFixtur
                 $dep->title              = $tr->phrase($phraseId);
                 $dep->is_tickets_enabled = $is_ticket;
                 $dep->is_chat_enabled    = !$is_ticket;
+                $dep->addBrand($brand);
+                $brand->addDepartment($dep);
                 $manager->persist($dep);
 
                 if ($is_ticket) {
@@ -72,6 +74,7 @@ class DepartmentsFixture extends DeskProAbstractFixture implements OrderedFixtur
                 }
             }
         }
+        $manager->persist($brand);
 
         $manager->flush();
     }

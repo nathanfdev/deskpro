@@ -128,6 +128,18 @@ class NewsCategory extends CategoryAbstract
         return $this->brand;
     }
 
+    /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
+    public function setBrand($brand)
+    {
+        $this->setModelField('brand', $brand);
+
+        return $this;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

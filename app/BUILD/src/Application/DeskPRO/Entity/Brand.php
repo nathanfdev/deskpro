@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\EntityRepository\Brand as BrandRepository;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -76,6 +77,11 @@ class Brand extends DomainObject
      * @var Blob
      */
     protected $logo_blob;
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $departments;
 
     public function getId()
     {
@@ -154,6 +160,18 @@ class Brand extends DomainObject
         return $data;
     }
 
+    /**
+     * @param Department $department
+     *
+     * @return $this
+     */
+    public function addDepartment(Department $department)
+    {
+        $this->departments[] = $department;
+
+        return $this;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -161,15 +179,16 @@ class Brand extends DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
-        $builder->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\Brand');
+        $builder->setCustomRepositoryClass(BrandRepository::class);
         $builder->setChangeTrackingPolicyNotify();
         $builder->setTable('brands');
 
         $builder->mapId();
         $builder->mapString('name');
         $builder->mapString('url');
-        $builder->createOneToOne('theme_set', 'DeskPRO\Bundle\AppBundle\Entity\ThemeSet')->cascadePersist()->build();
-        $builder->createOneToOne('edit_theme_set', 'DeskPRO\Bundle\AppBundle\Entity\ThemeSet')->build();
-        $builder->createOneToOne('logo_blob', 'Application\DeskPRO\Entity\Blob')->addJoinColumn('logo_blob_id', 'id', true, false, 'cascade');
+        $builder->createOneToOne('theme_set', ThemeSet::class)->cascadePersist()->build();
+        $builder->createOneToOne('edit_theme_set', ThemeSet::class)->build();
+        $builder->createOneToOne('logo_blob', Blob::class)->addJoinColumn('logo_blob_id', 'id', true, false, 'cascade');
+        $builder->createManyToMany('departments', Department::class)->setJoinTable('department_to_brand');
     }
 }

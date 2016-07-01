@@ -578,6 +578,18 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
         return false;
     }
 
+    /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
+    public function addBrand(Brand $brand)
+    {
+        $this->brands[] = $brand;
+
+        return $this;
+    }
+
     ############################################################################
     # Validation Metadata
     ############################################################################

@@ -114,6 +114,18 @@ class DownloadCategory extends CategoryAbstract
     }
 
     /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
+    public function setBrand($brand)
+    {
+        $this->setModelField('brand', $brand);
+
+        return $this;
+    }
+
+    /**
      * @param \Application\DeskPRO\Entity\Usergroup $usergroup
      */
     public function addUsergroup(Usergroup $usergroup)
