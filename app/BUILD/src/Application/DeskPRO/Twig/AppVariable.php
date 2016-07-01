@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -302,8 +302,8 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
         return $this->container->get('templating.globals')->isAppAllowed($name);
     }
 
-    public function canResetDemo()
+    public function canResetHelpdesk()
     {
-        return $this->container->get('templating.globals')->canResetDemo();
+        return $this->container->get('templating.globals')->canResetHelpdesk();
     }
 }

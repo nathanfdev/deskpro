@@ -245,9 +245,9 @@ define(function() {
   //###
   routes.push({
     id: 'setup.reset_demo',
-    url: '/reset-demo',
-    templateName: 'Settings/reset-demo.html',
-    controller: 'Admin_Settings_Ctrl_ResetDemo'
+    url: '/reset-helpdesk',
+    templateName: 'Settings/reset-helpdesk.html',
+    controller: 'Admin_Settings_Ctrl_ResetHelpdesk'
   });
 
 	//###

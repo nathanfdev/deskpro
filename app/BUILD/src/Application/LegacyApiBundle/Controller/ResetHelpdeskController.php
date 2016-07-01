@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,11 +36,12 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * @ApiModes("all")
  */
-class ResetDemoController extends AbstractController implements ProtectedControllerInterface
+class ResetHelpdeskController extends AbstractController implements ProtectedControllerInterface
 {
     public static $types = array(
         'users',
@@ -76,6 +77,10 @@ class ResetDemoController extends AbstractController implements ProtectedControl
 
     public function runAction(Request $request)
     {
+        if (!$this->container->get('templating.globals')->canResetHelpdesk()) {
+            throw new BadRequestHttpException('Can\'t reset helpdesk');
+        }
+
         $queue = $this->container->getJobQueue();
         if (!$data = json_decode($request->getContent(), 1)) {
             return $this->statusAction();

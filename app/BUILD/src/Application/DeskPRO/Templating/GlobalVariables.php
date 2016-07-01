@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\Templating;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use Application\DeskPRO\Service\JIRA;
 use DpSys\License;
@@ -393,8 +394,16 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         return '[app]';
     }
 
-    public function canResetDemo()
+    public function canResetHelpdesk()
     {
-        return true;
+        $query = $this
+            ->container
+            ->get('doctrine.orm.default_entity_manager')
+            ->createQuery('SELECT COUNT(t.id) FROM DeskPRO:Ticket t');
+        $count            = $query->getSingleScalarResult();
+        $settingsResolver = $this->container->get('settings_resolver');
+        $installTime      = $settingsResolver->getGlobalSettings()->get('core.install_timestamp');
+
+        return $count < 500 && $installTime && $installTime > time() - 90 * 60 * 60 * 24;
     }
 }
