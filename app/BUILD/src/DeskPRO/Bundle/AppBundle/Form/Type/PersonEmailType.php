@@ -69,6 +69,7 @@ class PersonEmailType extends AbstractType
                 new FreeEmailConstraint(),
             ],
             'email_constraints' => [
+                new Assert\NotBlank(),
                 new Assert\Email(),
             ],
         ]);
