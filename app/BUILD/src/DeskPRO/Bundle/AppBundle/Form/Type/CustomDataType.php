@@ -421,7 +421,7 @@ class CustomDataType extends AbstractType
     protected function filterCustomDefData(Collection $allCustomData, CustomDefAbstract $customDef)
     {
         $customDefData = $allCustomData->filter(function (CustomDataAbstract $custom_data) use ($customDef) {
-            return $custom_data->root_field === $customDef;
+            return $custom_data->root_field === $customDef && null !== $custom_data->field;
         });
 
         if (!$customDefData->count()) {

@@ -16,9 +16,6 @@ dp_routes:
 dpkernel_routes:
     resource: "@DeskPRO/Resources/config/dp-routing.php"
 
-gregwar_captcha_routing:
-    resource: "@GregwarCaptchaBundle/Resources/config/routing/routing.yml"
-
 # any URL that isn't caught from the above config AND ends in "/"
 # we do this to redirect to the same URL without the trailing slash
 # For example, normally visiting /kb/ would be a 404. With this, it

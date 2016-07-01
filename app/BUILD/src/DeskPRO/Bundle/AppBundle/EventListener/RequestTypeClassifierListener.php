@@ -59,7 +59,11 @@ class RequestTypeClassifierListener implements EventSubscriberInterface
         $request = $event->getRequest();
 
         if (!$request->attributes->has(self::LOW_REQUEST_ATTR)) {
-            if (preg_match('#^(dp/|favicon\.ico|sitemap\.xml|robots\.txt)#', ltrim($request->getPathInfo(), '/')) || preg_match('#^/[a-z]{2}(?:_[A-Z]{2})?/dp/#', $request->getPathInfo())) {
+            if (
+                preg_match('#^(dp/|favicon\.ico|sitemap\.xml|robots\.txt)#', ltrim($request->getPathInfo(), '/'))
+                || preg_match('#^/[a-z]{2}(?:_[A-Z]{2})?/dp/#', $request->getPathInfo())
+                || preg_match('#^/app/run/test_ping.html#', $request->getPathInfo())
+            ) {
                 $request->attributes->set(self::LOW_REQUEST_ATTR, true);
             }
         }

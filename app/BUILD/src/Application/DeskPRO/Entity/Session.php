@@ -186,6 +186,14 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
         return $id_enc.'-'.$this->auth;
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
     public function setAuth($auth_code)
     {
         $this->setModelField('auth', substr($auth_code, 0, 15));

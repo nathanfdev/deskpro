@@ -139,11 +139,10 @@ class DepartmentDataService extends AbstractDataService
     {
         // department data service is used both for the portal and api
         // so we can't rely on portal permission bag and use legacy permission manager
-        $allowedDepartmentIds = $person->getPermissionsManager()->Departments->getAllAllowed();
-        $allowedDepartmentIds = array_merge(
-            isset($allowedDepartmentIds['tickets']) ? array_keys($allowedDepartmentIds['tickets']) : [],
-            isset($allowedDepartmentIds['chat']) ? array_keys($allowedDepartmentIds['chat']) : []
-        );
+        $allowedDepartments = $person->getPermissionsManager()->Departments->getAllAllowed();
+
+        $chatDepartments   = isset($allowedDepartments['chat']) ? array_keys($allowedDepartments['chat']) : [];
+        $ticketDepartments = isset($allowedDepartments['tickets']) ? array_keys($allowedDepartments['tickets']) : [];
 
         $qb = $this->em
             ->getRepository(Department::class)
@@ -151,17 +150,19 @@ class DepartmentDataService extends AbstractDataService
             ->select('d')
             ->where('d.id IN (:allowed_department_ids)')
             ->orderBy('d.display_order', 'ASC')
-            ->setParameter('allowed_department_ids', $allowedDepartmentIds)
         ;
 
         switch ($type) {
             case 'chat':
                 $qb->andWhere('d.is_chat_enabled = 1');
+                $qb->setParameter('allowed_department_ids', $chatDepartments);
                 break;
             case 'ticket':
                 $qb->andWhere('d.is_tickets_enabled = 1');
+                $qb->setParameter('allowed_department_ids', $ticketDepartments);
                 break;
             default:
+                $qb->setParameter('allowed_department_ids', array_merge($chatDepartments, $ticketDepartments));
                 break;
         }
 

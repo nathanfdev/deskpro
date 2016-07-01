@@ -91,7 +91,7 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
                 $attempt_person = $this->person_repo->findOneByEmail($token->getUser());
             }
             if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email') && !$attempt_person->is_deleted) {
-                $this->portal_mailer->sendLoginAlert($attempt_person, false);
+                $this->portal_mailer->sendLoginAlert($attempt_person, $request, false);
             }
         }
 

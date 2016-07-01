@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\PortalBundle\Model\EmailTo;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -201,13 +202,16 @@ class PortalEmailSender
         );
     }
 
-    public function sendLoginAlert(Person $person, $success)
+    public function sendLoginAlert(Person $person, Request $request, $success)
     {
+        $created = new \DateTime('@'.$request->getSession()->getMetadataBag()->getCreated());
         $this->sendTo(
             new EmailTo($person),
             'DeskPRO:emails_user:login-alert.html.twig',
             [
-                'success' => $success,
+                'request'   => $request,
+                'firstSeen' => $created,
+                'success'   => $success,
             ]
         );
     }

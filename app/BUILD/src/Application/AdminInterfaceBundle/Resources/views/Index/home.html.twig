@@ -94,29 +94,53 @@
 		<a href="{{ ng_href('agents.login_log') }}">View login logs &rarr;</a>
 	</div>
 
-  <div style="margin: 15px 15px 0 15px" ng-if="readable_config">
-    <div class="alert alert-danger" style="margin-bottom: 0; position: relative; border-width: 10px; border-color: #f00;">
-      <div style="float:left">
-        <i class="fa fa-exclamation-circle" style="font-size: 40px;"></i>
-      </div>
-      <div style="margin-left: 50px;">
-        <h3 style="margin-top: 8px;">
-          <span style="display: inline-block; border-bottom: 2px dotted #f00;">
-            DANGER: Your web root contains DeskPRO source files
-          </span>
-        </h3>
-        <p>
-          Your web server is not configured properly. We have detected source files that are world-readable.
-        </p>
-        <p>
-          This is a CRITICAL vulnerability in the way your web server is configured. This could result in leaking of very important details such as your database host and password, log files and other sensitive information like emails or attachments.
-        </p>
-        <p>
-          Do not ignore this notice. This requires IMMEDIATE attention from an administrator.
-        </p>
-      </div>
-    </div>
-  </div>
+	<div style="margin: 15px 15px 0 15px" ng-if="readable_config">
+		<div class="alert alert-danger" style="margin-bottom: 0; position: relative; border-width: 10px; border-color: #f00;">
+			<div style="float:left">
+				<i class="fa fa-exclamation-circle" style="font-size: 40px;"></i>
+			</div>
+			<div style="margin-left: 50px;">
+				<h3 style="margin-top: 8px;">
+				  <span style="display: inline-block; border-bottom: 2px dotted #f00;">
+					DANGER: Your web root contains DeskPRO source files
+				  </span>
+				</h3>
+				<p>
+				  Your web server is not configured properly. We have detected source files that are world-readable.
+				</p>
+				<p>
+				  This is a CRITICAL vulnerability in the way your web server is configured. This could result in leaking of very important details such as your database host and password, log files and other sensitive information like emails or attachments.
+				</p>
+				<p>
+				  Do not ignore this notice. This requires IMMEDIATE attention from an administrator.
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<div style="margin: 15px 15px 0 15px" ng-if="missconfigured_web_root">
+		<div class="alert alert-danger" style="margin-bottom: 0; position: relative; border-width: 10px; border-color: #f00;">
+			<div style="float:left">
+				<i class="fa fa-exclamation-circle" style="font-size: 40px;"></i>
+			</div>
+			<div style="margin-left: 50px;">
+				<h3 style="margin-top: 8px;">
+				  <span style="display: inline-block; border-bottom: 2px dotted #f00;">
+					DANGER: You have missconfigured web root
+				  </span>
+				</h3>
+				<p>
+					Your web server is not configured properly. We have detected that you our test url is not handled by helpdesk system.
+				</p>
+				<p>
+					This is a CRITICAL vulnerability in the way your web server is configured. This could result in leaking of very important details such as your database host and password, log files and other sensitive information like emails or attachments.
+				</p>
+				<p>
+					Do not ignore this notice. This requires IMMEDIATE attention from an administrator.
+				</p>
+			</div>
+		</div>
+	</div>
 
 	<div style="margin: 15px 15px 0 15px" ng-if="http_method_errors">
 		<div class="alert alert-danger" style="margin-bottom: 0; position: relative;">
