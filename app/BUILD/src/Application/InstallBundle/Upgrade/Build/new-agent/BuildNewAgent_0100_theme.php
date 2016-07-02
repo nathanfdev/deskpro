@@ -91,7 +91,7 @@ class BuildNewAgent_0100_theme extends AbstractBuild
             foreach ($backupTemplates as $tpl) {
                 $backupPath = $dir.DIRECTORY_SEPARATOR.$tpl['id'].'--'.str_replace(':', '_', $tpl['name']);
                 @file_put_contents(
-                    $backupTemplates,
+                    $backupPath,
                     $tpl['template_code']
                 );
                 $this->out(sprintf('Backup %s to %s', $tpl['name'], $backupPath));
