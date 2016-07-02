@@ -31,11 +31,11 @@
  */
 namespace Application\EmailBundle\Mail\RawMessage;
 
+use Application\EmailBundle\Mail\RawMessage\Mail\Part;
 use Orb\Util\Arrays;
 use Zend\Mail\Header\AbstractAddressList;
 use Zend\Mail\Header\Subject;
 use Zend\Mail\Storage\Exception\InvalidArgumentException;
-use Zend\Mail\Storage\Part;
 use Zend\Mime\Decode;
 
 /**
