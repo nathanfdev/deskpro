@@ -88,6 +88,11 @@ export const widgetRawPositionSelector = createSelector(
   options => options.get('position')
 );
 
+export const widgetEnabledSelector = createSelector(
+  widgetBaseOptionsSelector,
+  options => options.get('enabled')
+);
+
 export const widgetPositionSelector = createSelector(
   widgetRawPositionSelector,
   position => `bottom.${position || 'right'}`

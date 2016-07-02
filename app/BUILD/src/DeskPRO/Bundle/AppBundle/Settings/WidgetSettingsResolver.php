@@ -58,6 +58,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     const CHAT_EMAIL_VALIDATION = 'portal.chat.email_validation';
     const CHAT_ENABLED          = 'portal.chat.enabled';
     const ENABLED_ON_PORTAL     = 'portal.widget.enabled';
+    const ENABLED               = 'widget.enabled';
 
     /**
      * @var EntityManager
@@ -206,8 +207,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getWidgetGlobalOptions()
     {
         $model = new WidgetGlobalSettings();
-
-        $chat = $model->getChat();
+        $chat  = $model->getChat();
         $chat
             ->setEnabled($this->isChatEnabled())
             ->setEmailValidation($this->isChatEmailValidation())

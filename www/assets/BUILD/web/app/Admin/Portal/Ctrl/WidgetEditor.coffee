@@ -308,6 +308,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       @startSpinner('saving')
       @$q.all(promises).then( =>
         @stopSpinner('saving')
+        @$scope.remote_settings = angular.copy(@getWidgetSaveData())
         localStorage.removeItem 'dpWidgetSettings'
         @Growl.success "Settings saved"
       , (info) =>

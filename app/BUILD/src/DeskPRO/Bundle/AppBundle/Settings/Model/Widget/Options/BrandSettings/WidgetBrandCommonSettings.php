@@ -67,6 +67,13 @@ class WidgetBrandCommonSettings
     private $agentPollingTimeout;
 
     /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $enabled = true;
+
+    /**
      * @return string
      */
     public function getType()
@@ -122,6 +129,26 @@ class WidgetBrandCommonSettings
     public function setAgentPollingTimeout($agentPollingTimeout)
     {
         $this->agentPollingTimeout = $agentPollingTimeout;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param bool $enabled
+     *
+     * @return $this
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = (bool) $enabled;
 
         return $this;
     }
