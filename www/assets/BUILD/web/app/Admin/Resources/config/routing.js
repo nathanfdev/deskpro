@@ -1601,7 +1601,7 @@ define(function() {
     id: 'portal.portal_editor',
     url: '/portal_editor',
     templateName: 'Portal/portal-editor.html',
-    controller: 'Admin_Portal_Ctrl_PortalEditor'
+    controller: 'AdminPortalCtrlPortalEditor'
   });
 
   //###
