@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle;
 
 use DeskPRO\Bundle\AppBundle\Command\Configure\ConfigElasticCommand;
 use DeskPRO\Bundle\AppBundle\Command\ServerInfo\WebServerInfoCommand;
+use DeskPRO\Bundle\AppBundle\Command\Utility\RecompileTemplatesCommand;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\AppExtension;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DbalConnectionPass;
@@ -92,6 +94,7 @@ class AppBundle extends Bundle
     {
         $application->add(new WebServerInfoCommand());
         $application->add(new ConfigElasticCommand());
+        $application->add(new RecompileTemplatesCommand());
     }
 
     /**

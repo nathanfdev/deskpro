@@ -99,8 +99,6 @@ class BuildNewAgent_0100_theme extends AbstractBuild
             }
         }
 
-        $this->recompileCustomTemplates();
-
         #----------------------------------------
         # copy logo blob
         #----------------------------------------

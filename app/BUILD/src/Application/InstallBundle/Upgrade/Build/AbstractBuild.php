@@ -448,58 +448,6 @@ abstract class AbstractBuild
         return $val[0];
     }
 
-    public function recompileCustomTemplates()
-    {
-        $templates = $this->container->getDb()->fetchAll('
-            SELECT id, name, template_code
-            FROM templates
-        ');
-
-        foreach ($templates as $tpl) {
-            $this->out("Recompile template #{$tpl['id']}: {$tpl['name']}");
-            $name         = $tpl['name'];
-            $compile_code = $tpl['template_code'];
-
-            try {
-                if (strpos($name, 'DeskPRO:emails_') !== false || strpos($name, 'DeskPRO:custom_emails_') !== false) {
-                    $proc         = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
-                    $compile_code = $proc->process($compile_code, $name);
-                    $twig         = $this->container->get('templating.email.twig');
-                } elseif (strpos($name, 'Theme:') !== false) {
-                    $twig = $this->container->get('twig');
-                } else {
-                    // skip, we dont know what type of template it is
-                    // so we dont know which engine to use
-                    continue;
-                }
-
-                $compile_code = preg_replace('#\{%\s*include\s+(.*?)\s*%\}#', '{% include $1 ignore missing %}', $compile_code);
-                $compiled     = $twig->compileSource($compile_code, $name);
-
-                $this->container->getDb()->update('templates', array(
-                    'template_compiled' => $compiled,
-                ), array('id' => $tpl['id']));
-            } catch (\Exception $e) {
-                $dir = $this->getBackupDir().DIRECTORY_SEPARATOR.'tpl-backups'.DIRECTORY_SEPARATOR.date('Y-m-d');
-                if (!is_dir($dir)) {
-                    if (!mkdir($dir, 0777, true)) {
-                        throw new \Exception('Could not create backup directory at '.$dir);
-                    }
-                }
-                $backupPath = $dir.DIRECTORY_SEPARATOR.$tpl['id'].'--'.str_replace(':', '_', $tpl['name']);
-                $this->out(sprintf('Error recompiling %s %s', $tpl['id'], $tpl['name']));
-                $this->out('  '.$e->getMessage());
-                $this->out('  Backup: '.$backupPath);
-
-                @file_put_contents(
-                    $backupPath,
-                    $tpl['template_code']
-                );
-                $this->container->getDb()->delete('templates', array('id' => $tpl['id']));
-            }
-        }
-    }
-
     public function getDefaultCollation()
     {
         try {

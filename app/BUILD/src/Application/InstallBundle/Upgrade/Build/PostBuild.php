@@ -38,6 +38,7 @@ use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
 use DpSys\LowError\SystemErrorHandler;
 use Leafo\ScssPhp\Exception\ParserException;
+use Symfony\Component\Process\Process;
 
 class PostBuild extends AbstractBuild
 {
@@ -137,9 +138,23 @@ class PostBuild extends AbstractBuild
         # Recompile tempaltes
         #------------------------------
 
-        $this->out('Recompiling templates');
-        $this->recompileCustomTemplates();
-        $this->out('.. done rRecompiling templates');
+        $phpPath = $this->container->get('deskpro.app_env')->getConfig('paths.php_path');
+        $proc    = new Process(
+            sprintf('%s bin/console dp:utility:recompile-templates', escapeshellarg($phpPath)),
+            $this->container->get('deskpro.app_env')->getAppDir()
+        );
+        $proc->setTimeout(900);
+        $proc->run(function ($type, $dat) {
+            if ($type === Process::OUT) {
+                $this->out($dat);
+            } else {
+                $this->out('ERR: '.$dat);
+            }
+        });
+
+        if (!$proc->isSuccessful()) {
+            $this->out('!!! ERROR: Compiling templates returned FAILURE');
+        }
 
         #------------------------------
         # Compile Custom Scss
