@@ -40,6 +40,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class WidgetSettingsController.
@@ -214,6 +215,44 @@ class WidgetSettingsController extends BaseController
         $settingRepo->updateSetting(WidgetSettingsResolver::CHAT_ENABLED, true);
 
         return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="Widget sample online agents",
+     *     resourceDescription="Operations about widget setup",
+     *     description="get widget sample online agent",
+     *     statusCodes={
+     *         204="Returned if request was successful",
+     *     },
+     *)
+     *
+     * @Rest\Post("/widget/send-instructions")
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function sendInstructionsAction(Request $request)
+    {
+        $email = $request->request->get('email');
+        if (!$email) {
+            throw new BadRequestHttpException('You should provide an email!');
+        }
+        $message = $this->container->get('mailer')->createMessage();
+        $message->setTemplate(
+            'DeskPRO:emails_common:chat-instructions.html.twig'
+        );
+        $message->setTo($email);
+        $attach = \Swift_Attachment::newInstance(
+            $this->get('widget_loader_code_renderer')->getWidgetCode(true),
+            'deskpro-widget.txt',
+            'text/plain'
+        );
+        $message->attach($attach);
+        $this->container->get('mailer')->send($message);
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
     /**

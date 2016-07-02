@@ -1,6 +1,6 @@
 define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], (Admin_Ctrl_Base, Functions) ->
-  class Admin_Portal_Ctrl_WidgetEditor extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_Portal_Ctrl_WidgetEditor'
+  class AdminPortalCtrlWidgetEditor extends Admin_Ctrl_Base
+    @CTRL_ID = 'AdminPortalCtrlWidgetEditor'
     @CTRL_AS = 'Ctrl'
     @DEPS    = ['$http', '$location']
 
@@ -30,13 +30,14 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       @$scope.formErrors = {}
       @$scope.flag_has_changed = false
       @$scope.section = 'button_settings'
+      @$scope.emailSendInstructions = ''
 
       @chatFieldsSortOptions = {
         axis: 'y',
         handle: '.drag-handle',
         update: (ev, data) =>
           @$scope.$apply =>
-            displayOrder = 0;
+            displayOrder = 0
             $('.chat-custom-fields').children().each (i, item) =>
               for field in @$scope.chat_custom_fields
                 if field.id == parseInt($(item).data('id'))
@@ -69,8 +70,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
         data = response.data.data
         @$scope.remote_settings = JSON.parse(JSON.stringify(data.settings))
 
-        @$scope.url = data.url;
-        @$scope.company = data.company;
+        @$scope.url = data.url
+        @$scope.company = data.company
         if !reset
           if savedSettings
             savedSettings = JSON.parse savedSettings
@@ -79,12 +80,12 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
         if savedSettings && savedSettings.global? && !jQuery.isEmptyObject savedSettings.global
           @$scope.global_settings = savedSettings.global
         else
-          @$scope.global_settings = data.settings.global;
+          @$scope.global_settings = data.settings.global
         if savedSettings && savedSettings.brand? && !jQuery.isEmptyObject savedSettings.brand
           @$scope.brand_settings = savedSettings.brand
         else
-          @$scope.brand_settings = data.settings.brand;
-        @$scope.enabled_on_portal = data.enabled_on_portal;
+          @$scope.brand_settings = data.settings.brand
+        @$scope.enabled_on_portal = data.enabled_on_portal
 
         @$scope.saving_code = true
         @loadCode().then (codeResponse) =>
@@ -127,7 +128,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
             if permission.name == 'chat.use'
               @$scope.user_group_permission[group.id] = permission.value and permission.is_active
 
-          @$scope.remote_user_group_permission = @$scope.user_group_permission.slice();
+          @$scope.remote_user_group_permission = @$scope.user_group_permission.slice()
       promises.push(promise)
 
       @$q.all(promises).then =>
@@ -220,12 +221,12 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       reg = @$scope.reg_group.id
       if group.id == everyone && !@$scope.user_group_permission[group.id]
         for id,g of @$scope.user_group_permission
-          if `id != everyone`
+          if id != everyone
             @$scope.user_group_permission[id] = true
         return true
       if group.id == reg && !@$scope.user_group_permission[group.id]
         for id,g of @$scope.user_group_permission
-          if `id != everyone && id != reg`
+          if id != everyone && id != reg
             @$scope.user_group_permission[id] = true
         return true
       return true
@@ -319,30 +320,39 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
         if (event.data?.type == 'widgetStatus')
           @$scope.$apply =>
             @$scope.widgetLoaded = true
-            @getDpWidget().dispatchCustomEvent('setLiveDemoSampleState', @$scope.sample_state);
+            @getDpWidget().dispatchCustomEvent('setLiveDemoSampleState', @$scope.sample_state)
             @updateLiveDemo()
         else if (event.data?.type == 'widgetDemoStage')
           @$scope.$apply =>
             @$scope.demo_state = event.data?.options
-      , false);
+      , false)
 
       @loadCode(true).then (codeResponse) =>
         code = codeResponse.data.replace(/widget": {/, "widget\": {\n\"live_demo\": true,")
 
-        demoDocument = @getLiveDemoDocument();
-        demoDocument.write("<body>#{code}</body>");
-        demoDocument.close();
+        demoDocument = @getLiveDemoDocument()
+        demoDocument.write("<body>#{code}</body>")
+        demoDocument.close()
 
-        @getFrameNode().contentWindow.addEventListener('message', (event) =>
+        @getFrameNode().contentWindow.addEventListener('message', (event) ->
           parent.window.postMessage(event.data, '*')
-        , false);
+        , false)
 
     updateLiveDemo: () ->
       @$scope.flag_has_changed = @hasChanged()
       localStorage.setItem 'dpWidgetSettings', JSON.stringify(@getWidgetSaveData())
       if (@getDpWidget())
-        @getDpWidget().dispatchCustomEvent('reloadOptions', @getOptions(true));
-        @getDpWidget().dispatchCustomEvent('reloadSettings', @$scope.global_settings);
-        @getDpWidget().dispatchCustomEvent('setLiveDemoChatCustomFields', JSON.parse(angular.toJson(@$scope.chat_custom_fields)));
+        @getDpWidget().dispatchCustomEvent('reloadOptions', @getOptions(true))
+        @getDpWidget().dispatchCustomEvent('reloadSettings', @$scope.global_settings)
+        @getDpWidget().dispatchCustomEvent('setLiveDemoChatCustomFields', JSON.parse(angular.toJson(@$scope.chat_custom_fields)))
 
-  Admin_Portal_Ctrl_WidgetEditor.EXPORT_CTRL()
+    sendInstructions: () ->
+      @Api2
+        .sendPostJson('/widget/send-instructions', { email: @$scope.emailSendInstructions })
+        .success () =>
+          @Growl.success "Email sent successfully"
+          @$scope.emailSendInstructions = ''
+        .error () =>
+          @Growl.error("An error occurred while sending instructions. Try again.")
+
+  AdminPortalCtrlWidgetEditor.EXPORT_CTRL()

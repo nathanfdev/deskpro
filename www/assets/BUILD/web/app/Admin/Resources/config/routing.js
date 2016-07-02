@@ -356,8 +356,7 @@ define(function() {
 
   routes.push({
     id: 'agents.usersources.install',
-    url: '/install/{name:\\w+}'
-    ,
+    url: '/install/{name:\\w+}',
     templateName: 'Apps/package-install.html',
     controller: 'Admin_Apps_Ctrl_PackageInstall'
   });
@@ -1622,7 +1621,7 @@ define(function() {
 		id: 'portal.widget_editor',
 		url: '/widget_editor',
 		templateName: 'Portal/widget-editor.html',
-		controller: 'Admin_Portal_Ctrl_WidgetEditor'
+		controller: 'AdminPortalCtrlWidgetEditor'
 	});
 
 	//###

@@ -569,10 +569,10 @@
                             we'll send them the code and setup instructions.</p>
                         <div class="inline fields">
                             <div class="ui ten wide field">
-                                <input type="email" placeholder="Email address">
+                                <input type="email" ng-model="emailSendInstructions" placeholder="Email address">
                             </div>
                             <div class="ui six wide field">
-                                <button class="ui button">Send Instructions</button>
+                                <button class="ui button" ng-click="Ctrl.sendInstructions()">Send Instructions</button>
                             </div>
                         </div>
                     </div>
