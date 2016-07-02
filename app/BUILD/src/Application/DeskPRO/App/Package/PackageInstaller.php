@@ -445,7 +445,9 @@ class PackageInstaller
             }
 
             $dir = pathinfo($filename, PATHINFO_DIRNAME);
-            !file_exists($dir) && mkdir($dir, 0777, true);
+            if (!file_exists($dir)) {
+                mkdir($dir, 0777, true);
+            }
             $this->blob_storage->copyBlobRecordToFile($filename, $asset->blob);
         }
     }
