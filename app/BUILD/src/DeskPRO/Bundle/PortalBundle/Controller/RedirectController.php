@@ -26,17 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Controller;
+namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-class MiscController extends AbstractController
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
+/**
+ * Class RedirectController.
+ */
+class RedirectController extends AbstractController
 {
-    public function emptyAction()
+    /**
+     * @Route("/billing")
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function goToBillingAction()
     {
-        return $this->createResponse('');
-    }
-
-    public function notFoundAction()
-    {
-        throw $this->createNotFoundException();
+        return $this->redirect($this->generateUrl('admin').'#/license');
     }
 }
