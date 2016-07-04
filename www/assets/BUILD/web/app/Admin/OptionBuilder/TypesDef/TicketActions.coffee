@@ -411,8 +411,8 @@ define [
           $scope.calculateCharacterLength = ->
             tmp_string = $scope.model.message
 
-            matches = tmp_string.match(/(\{\{.*?\}\})/gi);
-            countable_string = tmp_string.replace(/(\{\{.*?\}\})/gi, '!');
+            matches = tmp_string.match(/(\{\{.*?\}\})/gi)
+            countable_string = tmp_string.replace(/(\{\{.*?\}\})/gi, '!')
 
             if (matches)
               proposed_length = countable_string.length - matches.length
@@ -507,7 +507,7 @@ define [
 
     loadDataOptions: ->
       if not @loadDataPromise
-        @loadDataPromise = @$q.defer();
+        @loadDataPromise = @$q.defer()
 
         @Api.sendDataGet({
           agents:             '/agents'
@@ -967,7 +967,7 @@ define [
 
     getTicketLogText: (options = {}) ->
       options.propName = 'message'
-      options.placeholder = 'Enter text here to add to the ticket log';
+      options.placeholder = 'Enter text here to add to the ticket log'
       def = @getStandardInput(options)
       return def
 
@@ -992,7 +992,7 @@ define [
                   templateName: ->
                     return null
                 }
-              }).result.then( (info) =>
+              }).result.then( (info) ->
                 if info.templateName
                   title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
                   tpl = {
@@ -1090,7 +1090,7 @@ define [
 
           $scope.$watch(
             () -> $scope.model.agent_ids.all_agents
-            (newVal, oldVal) =>
+            (newVal, oldVal) ->
               return if !newVal
               for own k, v of $scope.model.agent_ids
                 continue if 'all_agents' == k
@@ -1108,7 +1108,7 @@ define [
                   templateName: ->
                     return null
                 }
-              }).result.then( (info) =>
+              }).result.then( (info) ->
                 if info.templateName
                   title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
                   tpl = {
@@ -1219,7 +1219,7 @@ define [
                 templateName: ->
                   return null
               }
-            }).result.then( (info) =>
+            }).result.then( (info) ->
               if info.templateName
                 title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
                 tpl = {
@@ -1326,7 +1326,7 @@ define [
 
         getData: ->
           defer = me.$q.defer()
-          me.loadDataOptions().then(=>
+          me.loadDataOptions().then( ->
             options = []
             for sla in me.options_data['ticket_slas']
               options.push({
@@ -1443,7 +1443,7 @@ define [
 
         getData: ->
           defer = me.$q.defer()
-          me.loadDataOptions().then(=>
+          me.loadDataOptions().then(->
             options = []
             for sla in me.options_data['ticket_slas']
               options.push({

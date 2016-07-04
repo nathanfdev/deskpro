@@ -459,7 +459,7 @@ define [
     getFilterSla: (options = {}) ->
       options.propName = 'sla_id'
       options.dataName = 'ticket_slas'
-      options.optionsFormatter = (res) =>
+      options.optionsFormatter = (res) ->
         (res.slas || []).map (item) -> {title: item.title, value: item.id}
       @getStandardSelect(options)
 
@@ -471,7 +471,7 @@ define [
 
         getData: ->
           defer = me.$q.defer()
-          me.loadDataOptions().then =>
+          me.loadDataOptions().then ->
             options = []
             for sla in me.options_data.ticket_slas?.slas
               options.push

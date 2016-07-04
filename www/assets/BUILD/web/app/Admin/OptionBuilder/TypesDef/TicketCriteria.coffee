@@ -627,7 +627,7 @@ define [
       options.propName = 'person_ids'
       options.dataName = 'agents'
       options.operators = ['contains', 'notcontains']
-      options.template = 'OptionBuilder/type-criteria-performer.html';
+      options.template = 'OptionBuilder/type-criteria-performer.html'
       def = @getStandardSelect(options)
       return def
 
@@ -834,7 +834,7 @@ define [
 
         getData: ->
           defer = me.$q.defer()
-          me.loadDataOptions().then(=>
+          me.loadDataOptions().then(->
             options = []
             for sla in me.options_data['ticket_slas']
               options.push({
