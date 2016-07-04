@@ -87,7 +87,8 @@ export class TranscriptForm extends React.Component {
             </FormItem>
 
             <FormItem label={portalPhrases.get('portal.chat.label-email')} field="email" errors={this.state.errors}>
-              <input type="text"
+              <input
+                type="text"
                 value={this.state.email}
                 onChange={this.onChangeEmail}
                 disabled={disabledEmail}
@@ -97,7 +98,9 @@ export class TranscriptForm extends React.Component {
             <div className="label button-label">
               {this.state.submit
                 ? <div className="spinner"><i /></div>
-                : <input type="submit"
+                :
+                <input
+                  type="submit"
                   value={portalPhrases.get('portal.chat.transcript_action')}
                   className="dpdesignportal-button"
                   onClick={this.onSubmit}

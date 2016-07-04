@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Message } from '../Message/Message';
 import { MessageAvatar } from '../Message/MessageAvatar';
 import { AvatarResolver } from 'DeskPRO/Component/Avatar';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class TypingEvent extends React.Component {
 
@@ -19,7 +20,8 @@ export class TypingEvent extends React.Component {
           <MessageAvatar />
         </AvatarResolver>
         <div className="dpdesignportal-message-content">
-          <span className="dpdesignportal-user-typing">{agentName} is typing a message
+          <span className="dpdesignportal-user-typing">
+            {portalPhrases.get('portal.chat.agent_typing_message', { '{agentName}': agentName })}
             <span className="dot1">.</span>
             <span className="dot2">.</span>
             <span className="dot3">.</span>

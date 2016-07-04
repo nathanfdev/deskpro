@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class WaitingLoader extends React.Component {
 
@@ -7,10 +8,12 @@ export class WaitingLoader extends React.Component {
   };
 
   render() {
+    const { agentName } = this.props;
+
     return (
       <div>
-        <h1>{this.props.agentName} seems to have been disconnected</h1>
-        <h2>We're looking for a new agent.</h2>
+        <h1>{portalPhrases.get('portal.chat.agent_disconnected', { '{agentName}': agentName })}</h1>
+        <h2>{portalPhrases.get('portal.chat.looking_for_another_agent')}</h2>
         <div className="search-dots">
           <div className="dot-1"></div>
           <div className="dot-2"></div>

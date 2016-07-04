@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class TranscriptSent extends React.Component {
 
@@ -7,9 +8,11 @@ export class TranscriptSent extends React.Component {
   };
 
   render() {
+    const { email } = this.props;
+
     return (
       <div className="dpdesignportal-popover-request-transcript-sent-message">
-        A transcript has already been sent to <b>{this.props.email}</b>
+        {portalPhrases.get('portal.chat.transcript_already_sent', { '{email}': email })}
       </div>
     );
   }

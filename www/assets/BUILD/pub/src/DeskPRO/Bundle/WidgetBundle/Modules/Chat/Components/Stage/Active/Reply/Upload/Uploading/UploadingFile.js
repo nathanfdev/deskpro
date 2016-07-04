@@ -11,13 +11,6 @@ export class UploadingFile extends React.Component {
     onRemove: PropTypes.func
   };
 
-  onRepeat = event => {
-    event.preventDefault();
-
-    const { file, onRepeat } = this.props;
-    onRepeat(file);
-  };
-
   onRemove = event => {
     event.preventDefault();
 
@@ -37,14 +30,13 @@ export class UploadingFile extends React.Component {
           {filenameMaxLength(file.name, isFailed ? 20 : 30)}
           {isFailed && <span className="failed-status">({portalPhrases.get('portal.chat.asset_failed')})</span>}
           {isFailed
-            ? <div>
-                <a className="dpdesignportal-chat-form-attached-file-remove" onClick={this.onRemove}>
-                  <i className="fa fa-times-circle" />
-                </a>
-              </div>
-            : <div className="spinner dpdesignportal-chat-form-attached-file-spinner">
-                <i />
-              </div>
+            ?
+            <div>
+              <a className="dpdesignportal-chat-form-attached-file-remove" onClick={this.onRemove}>
+                <i className="fa fa-times-circle" />
+              </a>
+            </div>
+            : <div className="spinner dpdesignportal-chat-form-attached-file-spinner"><i /></div>
           }
         </div>
       </div>

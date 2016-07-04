@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { openFullImage } from 'DeskPRO/Component/Util/FullImage';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class MessageImage extends React.Component {
 
@@ -21,7 +22,7 @@ export class MessageImage extends React.Component {
         <ul>
           <li className="dpdesignportal-message-asset">
             <div className="dpdesignportal-message-asset attachement-screen">
-              <img ref="image" src={downloadUrl} onClick={this.openFullImage} />
+              <img role="presentation" ref="image" src={downloadUrl} onClick={this.openFullImage} />
 
               <div className="dpdesignportal-message-asset-screen-controls">
                 <a href="#"><i className="fa fa-save" /></a>
@@ -30,10 +31,10 @@ export class MessageImage extends React.Component {
               </div>
 
               <p className="dpdesignportal-message-asset-info">
-                {authorName} attached this photo
+                {portalPhrases.get('portal.chat.attached_photo', { '{authorName}': authorName })}
               </p>
               <p className="dpdesignportal-message-asset-cta" onClick={this.openFullImage}>
-                Click here to see the full image
+                {portalPhrases.get('portal.chat.see_full_image')}
               </p>
             </div>
           </li>

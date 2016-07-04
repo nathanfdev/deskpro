@@ -31,25 +31,34 @@ export class RateAgentForm extends React.Component {
 
     return (
       <div className="dpdesignportal-agent-rating">
-        <h1 dangerouslySetInnerHTML={portalPhrases.getHtml('portal.chat.feedback_not_helpful_title', { '{agentName}': agentName, '{notHelpful}': portalPhrases.get('portal.chat.not_helpful') })} />
-
+        <h1
+          dangerouslySetInnerHTML={portalPhrases.getHtml('portal.chat.feedback_not_helpful_title', {
+            '{agentName}':  agentName,
+            '{notHelpful}': portalPhrases.get('portal.chat.not_helpful')
+          })}
+        />
         <div className="dpdesignportal-agent-rating-form">
           <form className="dpdesignportal-form" onSubmit={this.onSubmit}>
             <label>
-              <span className="dpdesignportal-form-item-label-title">{portalPhrases.get('portal.chat.feedback_label')}</span>
-              <textarea placeholder={portalPhrases.get('portal.chat.feedback_enter_message')}
+              <span className="dpdesignportal-form-item-label-title">
+                {portalPhrases.get('portal.chat.feedback_label')}
+              </span>
+              <textarea
+                placeholder={portalPhrases.get('portal.chat.feedback_enter_message')}
                 value={this.state.comment}
                 onChange={this.onChangeComment}
               />
             </label>
-
             <div className="label button-label">
-              <input type="submit" className="dpdesignportal-button" value={portalPhrases.get('portal.chat.feedback_action')} />
+              <input
+                type="submit"
+                className="dpdesignportal-button"
+                value={portalPhrases.get('portal.chat.feedback_action')}
+              />
             </div>
-
-            </form>
-          </div>
+          </form>
         </div>
+      </div>
     );
   }
 }

@@ -7,6 +7,7 @@ import { FieldErrors, hasErrors } from 'DeskPRO/Component/Form/FormErrors';
 import classNames from 'classnames';
 import $ from 'jquery';
 import { history } from '../../../../../Services/history';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 @connect(state => ({
   chatId: chatIdSelector(state)
@@ -114,10 +115,10 @@ export class ChatEmailValidationContainer extends React.Component {
     return (
       <div className={classNames('dpdesignportal-chat-email-validation', { error: hasError })}>
         <span className="description">
-          <p>We require you to validate your email address.</p>
+          <p>{portalPhrases.get('portal.chat.require_validate_email')}</p>
           <br />
-          <p>We sent you an email with a validation code.</p>
-          <p>Check your email then enter the code below</p>
+          <p>{portalPhrases.get('portal.chat.sent_validation_code')}</p>
+          <p>{portalPhrases.get('portal.chat.check_validation_code')}</p>
         </span>
 
         <form onSubmit={this.onSubmit}>
@@ -127,15 +128,19 @@ export class ChatEmailValidationContainer extends React.Component {
           {this.state.submit
             ? <div className="spinner"><i /></div>
             :
-              <span>
-                <a href="#" className="email-code-submit" onClick={this.onSubmit}>
-                  Start Chat <i className="fa fa-chevron-right" />
-                </a>
-                <a href="#" className="email-code-resend" onClick={this.onRegenerateCode}>Send me another email</a>
-                {this.state.anotherEmailSent
-                  && <span className="another-email-sent">Another email was successfully sent.</span>
-                }
-              </span>
+            <span>
+              <a href="#" className="email-code-submit" onClick={this.onSubmit}>
+                Start Chat <i className="fa fa-chevron-right" />
+              </a>
+              <a href="#" className="email-code-resend" onClick={this.onRegenerateCode}>
+                {portalPhrases.get('portal.chat.send_another_validation_email')}
+              </a>
+              {this.state.anotherEmailSent &&
+                <span className="another-email-sent">
+                  {portalPhrases.get('portal.chat.validation_email_was_sent')}
+                </span>
+              }
+            </span>
           }
         </form>
       </div>
