@@ -36,6 +36,8 @@ interface DbVerifyInterface
      * @param string $filename
      *
      * @throws DbBackupException
+     *
+     * @return true This method always returns true, else an exception is thrown
      */
     public function verifyBackup($filename);
 }

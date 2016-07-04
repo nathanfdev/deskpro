@@ -59,7 +59,8 @@ class DownloadBuildCommand extends ContainerAwareCommand
         $sysTmpDir = $this->getContainer()->get('deskpro.app_env')->getUserTmpDir();
 
         if (!is_writable($sysTmpDir)) {
-            $output->writeln('<error>The temp directory is not writable: '.$targetZip.'</error>');
+            $logger->error('temp dir not writable: '.$sysTmpDir);
+            $output->writeln('<error>The temp directory is not writable: '.$sysTmpDir.'</error>');
 
             return 1;
         }

@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\UpgradeBundle\DbBackup;
 
+use DeskPRO\Component\Util\Timer;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -37,6 +38,12 @@ use Psr\Log\NullLogger;
  */
 class DbVerify implements DbVerifyInterface, LoggerAwareInterface
 {
+    /**
+     * The min size of any DB dump is 8 MB which is just the schema and
+     * initial records.
+     */
+    const MIN_SIZE = 8388608;
+
     /**
      * @var LoggerInterface
      */
@@ -60,30 +67,52 @@ class DbVerify implements DbVerifyInterface, LoggerAwareInterface
      */
     public function verifyBackup($filename)
     {
+        $t = Timer::start();
+
         if (!file_exists($filename)) {
             $this->logger->critical(sprintf('Database dump not found, path %s', $filename));
-            throw new DbBackupException('Database dump not found', DbBackupException::DUMP_ERROR);
+            throw new DbBackupException('Database dump not found', DbBackupException::DUMP_ERROR_NOTFOUND);
         }
+
+        $this->logger->debug('Verify: File does exist');
+
+        $size = filesize($filename);
+        if ($size < self::MIN_SIZE) {
+            $this->logger->critical(sprintf('Database dump filesize is too small, path: %s. Got: %d, expected at least: %d.', $filename, $size, self::MIN_SIZE));
+            throw new DbBackupException('Database dump too small to be successful', DbBackupException::DUMP_ERROR_TOOSMALL);
+        }
+
+        $this->logger->debug('Verify: File size OK');
 
         $fp = @fopen($filename, 'r');
         if (!$fp) {
             $this->logger->critical(sprintf('Could not open dump file for reading, path %s', $filename));
-            throw new DbBackupException('Could not open dump file for reading', DbBackupException::DUMP_ERROR);
+            throw new DbBackupException('Could not open dump file for reading', DbBackupException::DUMP_ERROR_OPEN_FAILED);
         }
+
+        $this->logger->debug('Verify: File open OK');
 
         @fseek($fp, -250000, SEEK_END);
         $chunk = @stream_get_contents($fp);
+        @fclose($fp);
 
         if (!$chunk) {
             $this->logger->critical(sprintf('Could not read dump file for reading, path %s', $filename));
-            throw new DbBackupException('Could not read dump file', DbBackupException::DUMP_ERROR);
+            throw new DbBackupException('Could not read dump file', DbBackupException::DUMP_ERROR_READ_FAILED);
         }
+
+        $this->logger->debug('Verify: File read OK');
 
         $chunk = str_replace('`', '', $chunk);
 
         if (strpos($chunk, 'CREATE TABLE worker_jobs') === false) {
             $this->logger->critical('Database dump seems invalid');
-            throw new DbBackupException('Database dump seems invalid', DbBackupException::DUMP_ERROR);
+            throw new DbBackupException('Database dump seems invalid', DbBackupException::DUMP_ERROR_MISSING_TABLE);
         }
+
+        $this->logger->debug('Verify: File table check OK');
+        $this->logger->debug('Verify: Done in '.$t->getTotalTime());
+
+        return true;
     }
 }

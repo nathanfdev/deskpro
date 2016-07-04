@@ -57,14 +57,26 @@ class CmdBuilder implements CmdBuilderInterface
      */
     public function getDumpCmd($filename, array $dbInfo)
     {
-        $cmd = '';
-
-        return implode(' ', array(
+        $cmd = [
             escapeshellarg($this->mysqldumpPath),
-            '',
-            $this->getUser(),
-            $this->getPassword(),
-            $this->getDumpDestination($filename),
-        ));
+        ];
+
+        if ($dbInfo['unix_socket']) {
+            $cmd[] = '--protocol=socket';
+            $cmd[] = '-S '.escapeshellarg($dbInfo['unix_socket']);
+        } else {
+            $cmd[] = '-h '.$dbInfo['host'];
+            $cmd[] = '--port '.$dbInfo['port'];
+        }
+
+        $cmd = array_merge($cmd, [
+            '-u '.escapeshellarg($dbInfo['user']),
+            '-p'.escapeshellarg($dbInfo['password']),
+            '--opt', '-Q', '--hex-blob', '--lock-tables=false', '--single-transaction',
+            $dbInfo['dbname'],
+            '>', escapeshellarg($filename),
+        ]);
+
+        return implode(' ', $cmd);
     }
 }

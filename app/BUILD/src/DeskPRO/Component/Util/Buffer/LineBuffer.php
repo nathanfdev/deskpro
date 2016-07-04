@@ -69,7 +69,7 @@ class LineBuffer
      */
     public function flush()
     {
-        if ($this->buf) {
+        if ($this->buf !== '') {
             call_user_func($this->fn, $this->buf);
             $this->buf = '';
         }

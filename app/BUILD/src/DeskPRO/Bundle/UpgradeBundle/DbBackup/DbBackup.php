@@ -28,9 +28,11 @@
 
 namespace DeskPRO\Bundle\UpgradeBundle\DbBackup;
 
-use Eloquent\Pathogen\Path;
+use DeskPRO\Component\Util\Buffer\LineBuffer;
+use DeskPRO\Component\Util\Timer;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
 class DbBackup implements DbBackupInterface, LoggerAwareInterface
@@ -38,7 +40,17 @@ class DbBackup implements DbBackupInterface, LoggerAwareInterface
     /**
      * @var CmdBuilderInterface
      */
-    private $cmd_builder;
+    private $cmdBuilder;
+
+    /**
+     * @var DbVerifyInterface
+     */
+    private $verifier;
+
+    /**
+     * @var Filesystem
+     */
+    private $fs;
 
     /**
      * @var LoggerInterface
@@ -46,13 +58,17 @@ class DbBackup implements DbBackupInterface, LoggerAwareInterface
     private $logger;
 
     /**
-     * Constructor.
+     * DbBackup constructor.
      *
-     * @param CmdBuilderInterface $cmd_builder
+     * @param CmdBuilderInterface $cmdBuilder
+     * @param DbVerifyInterface   $verifier
      */
-    public function __construct(CmdBuilderInterface $cmd_builder)
+    public function __construct(CmdBuilderInterface $cmdBuilder, DbVerifyInterface $verifier)
     {
-        $this->cmd_builder = $cmd_builder;
+        $this->cmdBuilder = $cmdBuilder;
+        $this->verifier   = $verifier;
+
+        $this->fs = new Filesystem();
     }
 
     /**
@@ -66,46 +82,51 @@ class DbBackup implements DbBackupInterface, LoggerAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function backupDatabase(Path $filename)
+    public function backupDatabase($targetPath, array $dbInfo)
     {
-        $this->logDebug(sprintf('Backup directory:  %s', $filename->getOriginalPath()));
-        $this->logDebug(sprintf('Backup command:    %s', $this->cmd_builder->getDumpLogCmd($filename)));
+        $targetDir = dirname($targetPath);
+        $this->fs->mkdir($targetDir);
 
-        $process = new Process($this->cmd_builder->getDumpCmd($filename));
-        $process->run();
+        $cmd = $this->cmdBuilder->getDumpCmd($targetPath, $dbInfo);
+
+        $this->logger->info(sprintf('Backup target:  %s', $targetPath));
+        $this->logger->info(sprintf('Backup command: %s', str_replace($dbInfo['password'], '***', $cmd)));
+
+        $t      = Timer::start();
+        $logger = $this->logger;
+        $buf    = new LineBuffer(function ($dat) use ($logger) {
+            $logger->debug($dat);
+        });
+
+        $process = new Process($cmd);
+        $process->run(function ($type, $dat) use ($buf) {
+            $buf->append($dat);
+        });
+        $buf->flush();
+
+        $this->logger->debug('Command done in '.$t->formatTotalTime());
 
         if (!$process->isSuccessful()) {
-            $this->logCritical(sprintf('Backup error: Command exited with error status: %s', $process->getErrorOutput()));
-            $this->logCritical('-> '.$process->getErrorOutput());
+            $this->logger->critical(sprintf('Backup error: Command exited with error status: %s', $process->getErrorOutput()));
+            $this->logger->critical('-> '.$process->getErrorOutput());
 
             throw new DbBackupException(
                 sprintf('Command exited with error status: %s', $process->getExitCode()),
                 DbBackupException::DUMP_ERROR
             );
         }
-    }
 
-    /**
-     * Logs info messages.
-     *
-     * @param string $message
-     */
-    private function logDebug($message)
-    {
-        if ($this->logger) {
-            $this->logger->debug($message);
+        $this->logger->info(sprintf('File size: %d bytes', @filesize($targetPath)));
+        $this->logger->debug('Verifying dump with: '.get_class($this->verifier));
+        try {
+            $this->verifier->verifyBackup($targetPath);
+            $this->logger->info('Backup verified OK');
+        } catch (\Exception $e) {
+            $this->logger->critical('Verification failed with message: '.$e->getMessage());
+            $this->logger->debug('Exception: '.get_class($e));
+            throw $e;
         }
-    }
 
-    /**
-     * Logs critical messages.
-     *
-     * @param string $message
-     */
-    private function logCritical($message)
-    {
-        if ($this->logger) {
-            $this->logger->critical($message);
-        }
+        $this->logger->info('Done DB backup');
     }
 }

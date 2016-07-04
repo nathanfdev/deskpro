@@ -1,4 +1,9 @@
 services:
+
+  ######################################################################################################################
+  # Distro
+  ######################################################################################################################
+
   dp.upgrader.distro.downloader:
     class: DeskPRO\Bundle\UpgradeBundle\Distro\DistroDownloader
     factory: [DeskPRO\Bundle\UpgradeBundle\Distro\DistroDownloader, create]
@@ -30,3 +35,26 @@ services:
       - "@=service('deskpro.app_env').getBuildDirRoot()"
       - "@=service('deskpro.app_env').getWwwRoot()"
       - "@=service('deskpro.app_env').getKernelCacheDirRoot()"
+
+  ######################################################################################################################
+  # Backups
+  ######################################################################################################################
+
+  dp.upgrader.backup.cmd_builder:
+    class: DeskPRO\Bundle\UpgradeBundle\DbBackup\CmdBuilder
+    arguments:
+      - "@=service('deskpro.app_env').getConfig('paths.mysql_path')"
+      - "@=service('deskpro.app_env').getConfig('paths.mysqldump_path')"
+
+  dp.upgrader.backup.db_backup_verifier:
+    class: DeskPRO\Bundle\UpgradeBundle\DbBackup\DbVerify
+    calls:
+      - [setLogger, ["@monolog.logger.upgrader.general"]]
+
+  dp.upgrader.backup.db_backup:
+    class: DeskPRO\Bundle\UpgradeBundle\DbBackup\DbBackup
+    arguments:
+      - "@dp.upgrader.backup.cmd_builder"
+      - "@dp.upgrader.backup.db_backup_verifier"
+    calls:
+      - [setLogger, ["@monolog.logger.upgrader.general"]]

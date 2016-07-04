@@ -28,14 +28,13 @@
 
 namespace DeskPRO\Bundle\UpgradeBundle\DbBackup;
 
-use Eloquent\Pathogen\Path;
-
 interface DbBackupInterface
 {
     /**
-     * @param Path $filename
+     * @param string $targetPath
+     * @param array  $dbInfo
      *
      * @throws DbBackupException
      */
-    public function backupDatabase(Path $filename);
+    public function backupDatabase($targetPath, array $dbInfo);
 }
