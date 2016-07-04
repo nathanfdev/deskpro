@@ -34,7 +34,7 @@ framework:
     trusted_hosts:   ~
     session:
         handler_id:      session.handler.dbal
-        name:            dpsid
+        name:            dpsid-portal
         cookie_httponly: true
     fragments:       ~
     http_method_override: true

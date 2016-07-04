@@ -26,17 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
@@ -47,23 +45,28 @@ use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class CommonController.
+ */
 class CommonController extends AbstractController
 {
     /**
      * @Tag(name="agent_bar", esi=true)
      */
-    public function agentBarAction(TagRequest $tag_request)
+    public function agentBarAction()
     {
         //
         // AGENT IMPERSONATION
         //
-        $agent            = null;
-        $impersonation_on = false;
-        if ($token = $this->get('security.token_storage')->getToken()) {
+        $agent           = null;
+        $impersonationOn = false;
+
+        $token = $this->get('security.token_storage')->getToken();
+        if ($token) {
             if ($token instanceof AgentImpersonateToken) {
-                $agent_id         = $token->getAttribute(AgentImpersonateToken::ATTR_AGENT_IMPERSONATE);
-                $agent            = $this->getPersonDataService()->getPerson($agent_id);
-                $impersonation_on = true;
+                $agentId         = $token->getAttribute(AgentImpersonateToken::ATTR_AGENT_IMPERSONATE);
+                $agent           = $this->getPersonDataService()->getPerson($agentId);
+                $impersonationOn = true;
             } else {
                 $agent = $this->getCurrentPerson();
             }
@@ -77,7 +80,7 @@ class CommonController extends AbstractController
         //
         // TEMPORARY: brand dropdown info - this wil be replaced with something more robust
         //
-        $brands = $this->getEm()->getRepository('DeskPRO:Brand')->findAll();
+        $brands = $this->getEm()->getRepository(Brand::class)->findAll();
         /** @var \Application\DeskPRO\Entity\Brand $brand */
         $b = [];
         foreach ($brands as $brand) {
@@ -91,38 +94,40 @@ class CommonController extends AbstractController
 
         return $this->renderThemeView(
             'Theme:Common:agent_bar.html.twig',
-            array(
+            [
                 'impersonator'     => $agent,
-                'impersonation_on' => $impersonation_on,
+                'impersonation_on' => $impersonationOn,
                 'user'             => $this->getCurrentPerson(),
                 'brands'           => $b,
                 'active_brand_id'  => $this->getBrandContainer()->getBrand()->getId(),
-            )
+            ]
         );
     }
 
     /**
      * @Tag(name="alerts", esi=true)
      */
-    public function alertsAction(TagRequest $tag_request)
+    public function alertsAction()
     {
         $user = $this->getUser();
 
         //
         // DIFFERENT LANG
         //
-        $person    = $this->getCurrentPerson();
-        $lang_diff = false;
+        $person   = $this->getCurrentPerson();
+        $langDiff = false;
         if (!$person instanceof PersonGuest) {
             // user can click "dismiss" and we store a session var
             if (!$this->getSession()->get('ignore_language_warning', false)) {
-                $active_lang = $this->get('language_stack')->getActiveOrDefault();
-                if ($person_lang = $person->getLanguage()) {
-                    if ($person_lang->getId() != $active_lang->getId()) {
-                        $lang_diff = array(
-                            'active_lang' => $active_lang,
-                            'person_lang' => $person_lang,
-                        );
+                $activeLang = $this->get('language_stack')->getActiveOrDefault();
+                $personLang = $person->getLanguage();
+
+                if ($personLang) {
+                    if ($personLang->getId() != $activeLang->getId()) {
+                        $langDiff = [
+                            'active_lang' => $activeLang,
+                            'person_lang' => $personLang,
+                        ];
                     }
                 }
             }
@@ -131,45 +136,51 @@ class CommonController extends AbstractController
         //
         // SAVED FORMS
         //
-        $saved_forms = array();
+        $saved_forms = [];
         if ($user && $all_saved = $this->getFormSaver()->getSavedForms($user)) {
             foreach ($all_saved as $saved) {
                 // We don't want people to validate their email address without going through their mailbox
                 if ($saved->getIntentionType() == SavedForm::INTENTION_VERIFY_EMAIL) {
                     continue;
                 }
-                $saved_forms[] = array(
+                $saved_forms[] = [
                     'message' => $this->getFormSaver()->getMessage($saved),
-                    'link'    => $this->generateUrl('saved_form_auto_submit', array('auth_code' => $saved->getExternalCode())),
-                );
+                    'link'    => $this->generateUrl('saved_form_auto_submit', ['auth_code' => $saved->getExternalCode()]),
+                ];
             }
         }
 
         //
         // TICKETS AWAITING REPLY
         //
-        $tickets_awaiting_reply = [];
+        $ticketsAwaitingReply = [];
         if (!$person instanceof PersonGuest) {
-            $tickets_awaiting_reply = $this->getRepo('DeskPRO:Ticket')->getWaitingForReplyForPerson($person, 3);
+            /** @var \Application\DeskPRO\EntityRepository\Ticket $ticketRepo */
+            $ticketRepo           = $this->getRepo(Ticket::class);
+            $ticketsAwaitingReply = $ticketRepo->getWaitingForReplyForPerson($person, 3);
         }
 
-        $should_display = count($saved_forms) || $lang_diff || count($tickets_awaiting_reply);
+        $should_display = count($saved_forms) || $langDiff || count($ticketsAwaitingReply);
 
-        return $this->renderThemeView('Theme:Common:alerts.html.twig', array(
+        return $this->renderThemeView('Theme:Common:alerts.html.twig', [
             'user'                   => $user,
             'saved_forms'            => $saved_forms,
             'display_alerts'         => $should_display,
-            'lang_diff'              => $lang_diff,
-            'tickets_awaiting_reply' => $tickets_awaiting_reply,
-        ));
+            'lang_diff'              => $langDiff,
+            'tickets_awaiting_reply' => $ticketsAwaitingReply,
+        ]);
     }
 
     /**
      * @Tag(name="flashes", esi=true)
+     *
+     * @param TagRequest $tag_request
+     *
+     * @return Response
      */
     public function flashesAction(TagRequest $tag_request)
     {
-        $flashes = array();
+        $flashes = [];
         $session = $tag_request->getSession();
         if (null !== $session && $session->isStarted()) {
             $flashes = $session->getFlashBag()->all();
@@ -177,9 +188,9 @@ class CommonController extends AbstractController
 
         return $this->renderThemeView(
             'Theme:Common:flashes.html.twig',
-            array(
+            [
                 'flashes' => $flashes,
-            )
+            ]
         );
     }
 
@@ -192,6 +203,10 @@ class CommonController extends AbstractController
      *      allowed_types={"content_type":"string", "content_id":{"string","int"}},
      *      allowed_values={"content_type":{"article","news","download","feedback"}}
      * )
+     *
+     * @param array $options
+     *
+     * @return Response
      */
     public function relatedContentAction(TagRequest $tag_request, array $options)
     {
@@ -210,13 +225,13 @@ class CommonController extends AbstractController
             $count += count($related);
         }
 
-        return $this->render('Theme:Common:related_content.html.twig', array(
+        return $this->render('Theme:Common:related_content.html.twig', [
             'content_type'    => $content_type,
             'content_id'      => $content_id,
             'content'         => $content,
             'related_count'   => $count,
             'related_content' => $related_content,
-        ));
+        ]);
     }
 
     /**
