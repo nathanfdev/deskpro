@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,9 +31,12 @@
  */
 namespace Application\AdminInterfaceBundle\Controller;
 
+use Application\DeskPRO\App\Package\PackageInstaller;
+use Application\DeskPRO\Entity\AppPackage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class AppsController extends AbstractController
@@ -52,6 +55,7 @@ class AppsController extends AbstractController
     public function downloadPackageAction(Request $request, $name)
     {
         $rep = $this->em->getRepository('DeskPRO:AppPackage');
+        /** @var AppPackage $package */
         if (!$package = $rep->findOneBy(array('name' => $name, 'native_name' => null))) {
             throw new NotFoundHttpException();
         }
@@ -61,20 +65,14 @@ class AppsController extends AbstractController
             throw new \Exception('Failed to create extraction directory');
         }
 
-        $path    = realpath($tmpdir);
-        $storage = $this->container->getBlobStorage();
+        $path      = realpath($tmpdir);
+        $installer = new PackageInstaller(
+            $this->container->getEm(),
+            $this->container->getBlobStorage(),
+            $this->container->getImagine()
+        );
 
-        // copy package files
-        foreach ($package->assets as $asset) {
-            /* @var $asset AppAsset */
-            $filename = $path.'/'.$asset['name'];
-            $dir      = pathinfo($filename, PATHINFO_DIRNAME);
-            !file_exists($dir) && mkdir($dir, 0777, true);
-            $storage->copyBlobRecordToFile($filename, $asset->blob);
-        }
-
-        // create manifest.json
-        file_put_contents($path.'/manifest.json', json_encode($package->getManifest()));
+        $installer->dumpPackage($package, $path);
 
         // compress
         /** @var \Orb\Zip\Zip $zipper */
