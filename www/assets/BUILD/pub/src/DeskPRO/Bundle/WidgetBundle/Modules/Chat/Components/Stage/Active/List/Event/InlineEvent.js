@@ -1,7 +1,5 @@
 import React, { PropTypes } from 'react';
-import TimeAgo from 'react-timeago';
 import moment from 'moment';
-import { timeAgoFormatter } from '../../../../../../../Services/timeago';
 
 export class InlineEvent extends React.Component {
 
@@ -16,11 +14,9 @@ export class InlineEvent extends React.Component {
     return (
       <div className="dpdesignportal-event">
         <div className="dpdesignportal-event-content">
-          <TimeAgo className="dpdesignportal-event-time"
-            formatter={timeAgoFormatter}
-            minPeriod={60000}
-            date={moment(message.get('date_created'))}
-          />
+          <span className="dpdesignportal-event-time">
+            {moment(message.get('date_created')).format('HH:mm')}
+          </span>
           <hr />
           <span className="dpdesignportal-event-title">
             {children}

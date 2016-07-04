@@ -13,15 +13,13 @@ export class Message extends React.Component {
     const { isUser, typing, children } = this.props;
 
     return (
-      <div className={classNames(
-        'dpdesignportal-message',
-        {
+      <div
+        className={classNames('dpdesignportal-message', {
           'agent-message': !isUser,
           'user-message':  isUser,
           'user-typing':   typing
         })}
       >
-
         {children}
       </div>
     );
