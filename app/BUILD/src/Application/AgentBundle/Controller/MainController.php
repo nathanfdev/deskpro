@@ -513,7 +513,6 @@ class MainController extends AbstractController
         ];
 
         if ($sub = preg_replace('/[^\d]/', '', $query)) {
-            /** @var $deleted TicketDeleted */
             if ($deleted = $this->em->find(TicketDeleted::class, $sub)) {
                 if (isset($this->deleted_tickets[$deleted['ticket_id']])) {
                     $res['results'][] = [
@@ -531,10 +530,17 @@ class MainController extends AbstractController
         }
 
         foreach ($this->deleted_tickets as $deleted) {
-            $res['results'][] = [
-                'id'     => $deleted->getId(),
-                'reason' => $deleted->getReason(),
-            ];
+            if ($deleted instanceof Ticket) {
+                $res['results'][] = [
+                    'id'     => $deleted->getId(),
+                    'reason' => $deleted->getTitle(),
+                ];
+            } elseif ($deleted instanceof TicketDeleted) {
+                $res['results'][] = [
+                    'id'     => $deleted->getTicketId(),
+                    'reason' => $deleted->getReason(),
+                ];
+            }
         }
         $this->deleted_tickets = [];
 
