@@ -313,7 +313,7 @@ class CustomFieldManager
                 );
 
             default:
-                throw new \InvalidArgumentException('invalid field. cannot find handler for type: '.$def->getType());
+                throw new \InvalidArgumentException("Invalid field #{$def->getId()}. Cannot find handler for type \"{$def->getType()}\".");
         }
     }
 
