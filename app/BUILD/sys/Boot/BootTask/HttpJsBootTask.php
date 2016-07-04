@@ -29,6 +29,7 @@
 namespace DpSys\Boot\BootTask;
 
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -64,6 +65,19 @@ class HttpJsBootTask implements BootTaskInterface
         $this->request = $request;
 
         $path = $request->getPathInfo();
+
+        // Some very old embeds might have this in an iframe
+        if (preg_match('#^/tickets/new-simple(?:/(?P<depId>\d+))?#', $path, $m)) {
+            if (!empty($m['depId'])) {
+                $res = new RedirectResponse($request->getUriForPath('/focus-win/new-ticket/'.$m['depId']), 301);
+            } else {
+                $res = new RedirectResponse($request->getUriForPath('/focus-win/new-ticket/'.$m['depId']), 301);
+            }
+
+            $res->sendHeaders();
+            $res->sendContent();
+            exit;
+        }
 
         if ($legacyWidget = $this->getLegacyAsset($path)) {
             $this->serveLegacyWidget($legacyWidget);
