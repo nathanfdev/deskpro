@@ -182,7 +182,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         while ($next_id = $manager->getNextBuildId()) {
             $logger->debug("Build #$next_id");
 
-            $cmd = dp_get_php_command('bin/console', "dp:upgrade --dobuildrun=$next_id");
+            $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand("dp:upgrade --dobuildrun=$next_id");
             $logger->debug("Command: $cmd");
             $ret = null;
             passthru($cmd, $ret);
@@ -205,7 +205,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         #------------------------------
 
         $logger->info('Running post scripts');
-        $cmd = dp_get_php_command('bin/console', 'dp:upgrade --runsync');
+        $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:upgrade --runsync');
         $logger->debug("Command: $cmd");
         $ret = null;
         passthru($cmd, $ret);

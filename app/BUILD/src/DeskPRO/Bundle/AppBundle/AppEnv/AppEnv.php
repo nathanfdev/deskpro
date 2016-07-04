@@ -171,6 +171,24 @@ class AppEnv implements AppEnvInterface
     /**
      * {@inheritdoc}
      */
+    public function getConsolePhpCommand($params)
+    {
+        if (is_array($params)) {
+            $params = array_map('escapeshellarg', $params);
+            $params = implode(' ', $params);
+        }
+
+        $cmd = $this->getConfig('paths.php_path').' '
+            .escapeshellarg($this->getAppDir().DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'console').' '
+            .(defined('DP_PHP_BIN_ARGS') ? DP_PHP_BIN_ARGS.' ' : '')
+            .$params;
+
+        return $cmd;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getEnvId()
     {
         return $this->dpEnv->getEnvId();

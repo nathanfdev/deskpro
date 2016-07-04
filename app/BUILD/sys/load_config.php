@@ -79,7 +79,7 @@ function dp_get_php_path()
 }
 
 /**
- * @deprecated
+ * @deprecated Use deskpro.app_env service getConsolePhpCommand()
  *
  * @param string $script
  * @param string $params
