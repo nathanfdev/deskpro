@@ -399,11 +399,14 @@ class TicketController extends AbstractController
             }
         }
 
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
         $vars = [
             'agents'      => $agents,
             'agent_teams' => $agent_teams,
             'agent_map'   => $agent_map,
             'tasks'       => $tasks,
+            'brands'      => $brands,
 
             'ticket_perms'               => $this->_getTicketPerms($ticket),
             'ticket'                     => $ticket,

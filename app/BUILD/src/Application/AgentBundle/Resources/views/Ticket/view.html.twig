@@ -137,16 +137,16 @@ pageMeta.lang = {{ {
 				</span>
 			</div>
 		</td>
-				{% if brands|length > 1 %}
-				<td width="10">
-					<div class="id-number">
-						<span id="{{baseId}}_brandname" title="{{ phrase('agent.general.brand') }}">
-							{{ ticket.brand.name }}
-						</span>
-					</div>
-				</td>
-				{% endif %}
-				<td>
+		{% if brands|length > 1 %}
+		<td width="10">
+			<div class="id-number">
+				<span id="{{baseId}}_brandname" title="{{ phrase('agent.general.brand') }}">
+					{{ ticket.brand.name }}
+				</span>
+			</div>
+		</td>
+		{% endif %}
+		<td>
 			<h1>
 				<span id="{{baseId}}_showname">{{ ticket.subject }}</span>
 				<span id="{{baseId}}_editname" style="display: none"><input type="text" placeholder="Enter subject" name="name" value="{{ ticket.subject }}" /></span>

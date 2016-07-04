@@ -108,6 +108,11 @@ define [
       options = []
 
       options.push({
+        title: 'Brand',
+        value: 'CheckBrand'
+      })
+
+      options.push({
         title: 'Department',
         value: 'CheckDepartment'
       })
@@ -496,6 +501,7 @@ define [
         @loadDataPromise = @Api.sendDataGet({
           agents:             '/agents'
           agent_teams:        '/agent_teams'
+          ticket_brands:      '/ticket_brands'
           ticket_deps:        '/ticket_deps'
           ticket_cats:        '/ticket_cats'
           ticket_prods:       '/ticket_prods'
@@ -519,6 +525,7 @@ define [
           options_data = {}
           options_data['agents']            = data.agents.agents
           options_data['agent_teams']       = data.agent_teams.agent_teams
+          options_data['ticket_brands']     = data.ticket_brands.brands
           options_data['ticket_deps']       = data.ticket_deps.departments
           options_data['ticket_cats']       = data.ticket_cats.categories
           options_data['ticket_pris']       = data.ticket_pris.priorities
@@ -588,6 +595,13 @@ define [
       options.extraOptions = [
         {title: 'None', value: 0}
       ]
+      def = @getStandardSelect(options)
+      return def
+
+    getCheckBrand: (options = {}) ->
+      options.propName = 'brand_ids'
+      options.dataName = 'ticket_brands'
+      options.operators = ['is', 'not', 'touched', 'nottouched', 'changed', 'changed_to', 'changed_from']
       def = @getStandardSelect(options)
       return def
 

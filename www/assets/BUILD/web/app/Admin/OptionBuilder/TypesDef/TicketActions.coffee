@@ -55,6 +55,11 @@ define [
       })
 
       options.push({
+        title: 'Set Brand',
+        value: 'SetBrand'
+      })
+
+      options.push({
         title: 'Set Department',
         value: 'SetDepartment'
       })
@@ -507,6 +512,7 @@ define [
         @Api.sendDataGet({
           agents:             '/agents'
           agent_teams:        '/agent_teams'
+          ticket_brands:      '/ticket_brands'
           ticket_deps:        '/ticket_deps'
           ticket_cats:        '/ticket_cats'
           ticket_prods:       '/ticket_prods'
@@ -531,6 +537,7 @@ define [
           options_data = {}
           options_data['agents']           = data.agents.agents
           options_data['agent_teams']      = data.agent_teams.agent_teams
+          options_data['ticket_brands']    = data.ticket_brands.brands
           options_data['ticket_deps']      = data.ticket_deps.departments
           options_data['ticket_cats']      = data.ticket_cats.categories
           options_data['ticket_pris']      = data.ticket_pris.priorities
@@ -717,6 +724,12 @@ define [
     getSetStatus: (options = {}) ->
       options.propName = 'status'
       options.template = 'OptionBuilder/type-actions-status.html'
+      def = @getStandardSelect(options)
+      return def
+
+    getSetBrand: (options = {}) ->
+      options.propName = 'brand_id'
+      options.dataName = 'ticket_brands'
       def = @getStandardSelect(options)
       return def
 

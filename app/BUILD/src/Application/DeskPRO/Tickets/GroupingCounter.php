@@ -839,6 +839,8 @@ class GroupingCounter
                 return $term;
             case TicketSearch::TERM_URGENCY:
                 return ['type' => $groupvar, 'op' => 'is', 'options' => [$groupchoice]];
+            case TicketSearch::TERM_BRAND:
+                return ['type' => 'brand_id', 'op' => 'is', 'options' => ['brand_id' => $groupchoice]];
             case 'person':
                 return ['type' => 'person_id', 'op' => 'is', 'options' => ['person_id' => $groupchoice]];
             default:

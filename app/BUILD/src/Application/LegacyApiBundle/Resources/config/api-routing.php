@@ -7290,4 +7290,17 @@ $collection->create('api_billing_fields_update_order', [
     'methods'    => ['POST'],
 ]);
 
+########################################################################################################################
+# Brands
+########################################################################################################################
+
+$collection->create(
+    'api_ticket_brands',
+    [
+        'path'       => '/ticket_brands',
+        'controller' => 'LegacyApiBundle:TicketBrands:list',
+        'methods'    => ['GET'],
+    ]
+);
+
 return $collection;

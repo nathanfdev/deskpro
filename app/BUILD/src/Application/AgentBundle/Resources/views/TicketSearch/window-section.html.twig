@@ -37,6 +37,9 @@
 										<div class="select-value"><label id="nav_filter_group_label_{{ filter.id }}"></label> <i class="icon-caret-down"></i></div>
 										<select class="dpe_select invisible-trigger filter_grouping_select" data-filter-id="{{ filter.id }}" data-label-bound="#nav_filter_group_label_{{ filter.id }}" data-dropdown-css-class="invisible-trigger small filter-list" data-select-width="165">
 											<option value="">{{ phrase('agent.tickets.select_group_var') }}</option>
+											{% if brands|length > 1 %}
+											<option {% if initial_inbox_grouping[filter.id] == "brand" %}selected="selected"{% endif %} value="brand">{{ phrase('agent.general.brand') }}</option>
+											{% endif %}
 											<option {% if initial_inbox_grouping[filter.id] == "department" %}selected="selected"{% endif %} value="department">{{ phrase('agent.general.department') }}</option>
 											{% if app.getSetting('core.use_product') %}<option {% if initial_inbox_grouping[filter.id] == "product" %}selected="selected"{% endif %} value="product">{{ phrase('agent.general.product') }}</option>{% endif %}
 											{% if app.getSetting('core.use_ticket_category') %}<option {% if initial_inbox_grouping[filter.id] == "category" %}selected="selected"{% endif %} value="category">{{ phrase('agent.general.category') }}</option>{% endif %}
@@ -87,6 +90,9 @@
 										<div class="select-value"><label id="nav_filter_group_label_{{ filter.id }}"></label> <i class="icon-caret-down"></i></div>
 										<select class="dpe_select invisible-trigger filter_grouping_select" data-filter-id="{{ filter.id }}" data-label-bound="#nav_filter_group_label_{{ filter.id }}" data-dropdown-css-class="invisible-trigger small filter-list" data-select-width="165">
 											<option value="">{{ phrase('agent.tickets.select_group_var') }}</option>
+											{% if brands|length > 1 %}
+												<option {% if initial_inbox_grouping[filter.id] == "brand" %}selected="selected"{% endif %} value="brand">{{ phrase('agent.general.brand') }}</option>
+											{% endif %}
 											<option {% if initial_inbox_grouping[filter.id] == "department" %}selected="selected"{% endif %} value="department">{{ phrase('agent.general.department') }}</option>
 											{% if app.getSetting('core.use_product') %}<option {% if initial_inbox_grouping[filter.id] == "product" %}selected="selected"{% endif %} value="product">{{ phrase('agent.general.product') }}</option>{% endif %}
 											{% if app.getSetting('core.use_ticket_category') %}<option {% if initial_inbox_grouping[filter.id] == "category" %}selected="selected"{% endif %} value="category">{{ phrase('agent.general.category') }}</option>{% endif %}
