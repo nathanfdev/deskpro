@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Exception\ValidationException;
@@ -110,37 +111,35 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         /*
          * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
-        $feedback_types = $this->container->getSystemService('feedback_types');
+        $feedbackTypes = $this->container->getSystemService('feedback_types');
 
         if ($id) {
-            $feedback_type = $feedback_types->getById($id);
+            $feedbackType = $feedbackTypes->getById($id);
 
-            if (!$feedback_type) {
+            if (!$feedbackType) {
                 throw $this->createNotFoundException();
             }
         } else {
-            $feedback_type = $feedback_types->createNew();
+            $feedbackType = $feedbackTypes->createNew();
         }
 
         $postData = $this->in->getAll('post');
 
-        $feedback_type_edit = new FeedbackTypeEdit($feedback_type);
+        $feedback_type_edit = new FeedbackTypeEdit($feedbackType);
 
-        $form = $this->createForm(new FeedbackTypeType(), $feedback_type_edit, array('cascade_validation' => true));
+        $form = $this->createForm(FeedbackTypeType::class, $feedback_type_edit, ['cascade_validation' => true]);
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_type'), true);
 
         if ($form->isValid()) {
             $feedback_type_edit->save($this->em);
         } else {
-            return $this->createApiValidationErrorResponse($this->container->getValidator()->validate($feedback_type));
+            return $this->createApiValidationErrorResponse($this->container->getValidator()->validate($feedbackType));
         }
 
-        return $this->createApiResponse(
-            array(
-                 'success' => true,
-                 'id'      => $feedback_type->getId(),
-            )
-        );
+        return $this->createApiResponse([
+             'success' => true,
+             'id'      => $feedbackType->getId(),
+        ]);
     }
 
     ####################################################################################################################
