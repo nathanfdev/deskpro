@@ -164,8 +164,8 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                     }
                 }
                 // can we carry over an agent session in the user interface?
-            } elseif (!empty($_COOKIE['dpsid']) && (DP_INTERFACE == 'agent' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {
-                $sid = $_COOKIE['dpsid'];
+            } elseif (!empty($_COOKIE['dpsid-portal']) && (DP_INTERFACE == 'agent' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {
+                $sid = $_COOKIE['dpsid-portal'];
                 if ($sid) {
                     $agent_session = App::getDb()->fetchAssoc(
                         '

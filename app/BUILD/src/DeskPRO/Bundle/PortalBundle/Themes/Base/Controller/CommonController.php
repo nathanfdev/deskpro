@@ -208,7 +208,7 @@ class CommonController extends AbstractController
      *
      * @return Response
      */
-    public function relatedContentAction(array $options)
+    public function relatedContentAction(TagRequest $tag_request, array $options)
     {
         $content_id   = $options['content_id'];
         $content_type = $options['content_type'];

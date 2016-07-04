@@ -173,7 +173,7 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         // this is a request listener that runs before the security firewall
         // the only way to detect language this early (needed for routing)
         // is to manually fetch the sess_data and find the person_id
-        if ($session_id = $request->cookies->get('dpsid', null)) {
+        if ($session_id = $request->cookies->get('dpsid-portal', null)) {
             $query = $this->em->getConnection()->executeQuery(
                 'SELECT person_id FROM sess_data WHERE sess_id = :sess_id',
                 array('sess_id' => $session_id),
