@@ -202,26 +202,16 @@ services:
       - "@term_to_json_converter"
 
   form.ticket_message_attachment:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageAttachmentType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageAttachmentType
     arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]
     tags:
-      - { name: form.type, alias: ticket_message_attachment }
+      - { name: form.type }
 
   form.ticket_message_inline_attachment:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageInlineAttachmentType
-      arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]
-      tags:
-        - { name: form.type, alias: ticket_message_inline_attachment }
-
-  form.ticket_message_attachment_collection:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageAttachmentCollectionType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageInlineAttachmentType
+    arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]
     tags:
-      - { name: form.type, alias: ticket_message_attachment_collection }
-
-  form.ticket_message_inline_attachment_collection:
-      class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageInlineAttachmentCollectionType
-      tags:
-        - { name: form.type, alias: ticket_message_inline_attachment_collection }
+      - { name: form.type }
 
   form.ticket_with_layouts:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType

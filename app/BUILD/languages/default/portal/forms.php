@@ -94,6 +94,7 @@ return [
     'portal.forms.error_person_not_found'           => 'Person with identifier "{{ value }}" not found.',
     'portal.forms.error_person_not_agent'           => 'Person with identifier {{ value }} is not agent.',
     'portal.forms.error_person_not_user'            => 'Person with identifier {{ value }} is not user.',
+    'portal.forms.error_no_uploaded_file'           => 'Uploaded file was not found. Please try again.',
 
     'portal.forms.error_password_min_length'            => 'Minimum of {{count}} character|Minimum of {{count}} characters',
     'portal.forms.error_password_require_num_uppercase' => 'At least {{count}} uppercase character|At least {{count}} uppercase characters',

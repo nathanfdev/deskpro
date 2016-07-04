@@ -170,6 +170,18 @@ class TicketAttachment extends DomainObject
         }
     }
 
+    /**
+     * @param bool $isInline
+     *
+     * @return $this
+     */
+    public function setIsInline($isInline)
+    {
+        $this->setModelField('is_inline', $isInline);
+
+        return $this;
+    }
+
     public function prePersist()
     {
         if (!$this->message->ticket) {

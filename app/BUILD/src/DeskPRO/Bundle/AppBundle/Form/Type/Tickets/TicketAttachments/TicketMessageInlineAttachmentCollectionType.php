@@ -26,17 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketMessage;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -63,7 +60,7 @@ class TicketMessageInlineAttachmentCollectionType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'entry_type'    => 'ticket_message_inline_attachment',
+                'entry_type'    => TicketMessageInlineAttachmentType::class,
                 'entry_options' => function (Options $options) {
                     return [
                         'ticket_message' => $options['ticket_message'],
@@ -92,15 +89,7 @@ class TicketMessageInlineAttachmentCollectionType extends AbstractType
      */
     public function getParent()
     {
-        return 'collection';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ticket_message_inline_attachment_collection';
+        return CollectionType::class;
     }
 
     /**

@@ -36,6 +36,8 @@ use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HiddenType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageAttachmentCollectionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageInlineAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
