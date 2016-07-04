@@ -525,4 +525,14 @@ abstract class AbstractFieldResolver
 
         return $hierarchy->countSelectable() <= 1;
     }
+
+    /**
+     * @param CustomDefAbstract|null $def
+     *
+     * @return bool
+     */
+    protected function canRenderCustomDef(CustomDefAbstract $def = null)
+    {
+        return $def && $def->isEnabled() && $def->getType();
+    }
 }

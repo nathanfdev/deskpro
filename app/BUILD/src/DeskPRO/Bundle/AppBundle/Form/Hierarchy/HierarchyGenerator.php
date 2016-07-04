@@ -70,74 +70,82 @@ class HierarchyGenerator
     /**
      * @var \DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService
      */
-    private $department_data_service;
+    private $departmentDataService;
 
     /**
      * @var FeedbackDataService
      */
-    private $feedback_data_service;
+    private $feedbackDataService;
 
     /**
      * @var LanguageManager
      */
-    private $language_manager;
+    private $languageManager;
 
     /**
      * Constructor.
      *
      * @param EntityManager         $em
-     * @param DepartmentDataService $department_data_service
-     * @param FeedbackDataService   $feedback_data_service
-     * @param LanguageManager       $language_manager
+     * @param DepartmentDataService $departmentDataService
+     * @param FeedbackDataService   $feedbackDataService
+     * @param LanguageManager       $languageManager
      */
-    public function __construct(EntityManager $em, DepartmentDataService $department_data_service, FeedbackDataService $feedback_data_service, LanguageManager $language_manager)
+    public function __construct(EntityManager $em, DepartmentDataService $departmentDataService, FeedbackDataService $feedbackDataService, LanguageManager $languageManager)
     {
-        $this->em                      = $em;
-        $this->department_data_service = $department_data_service;
-        $this->feedback_data_service   = $feedback_data_service;
-        $this->language_manager        = $language_manager;
+        $this->em                    = $em;
+        $this->departmentDataService = $departmentDataService;
+        $this->feedbackDataService   = $feedbackDataService;
+        $this->languageManager       = $languageManager;
     }
 
     /**
-     * @param CustomDefAbstract $field
+     * @param CustomDefAbstract $def
      *
      * @return mixed
      */
-    public function generateForCustomFormField(CustomDefAbstract $field)
+    public function generateForCustomFormField(CustomDefAbstract $def)
     {
         return $this->generateAndCache(
             [
                 'generateForCustomFormField',
-                get_class($field),
-                $field,
+                get_class($def),
+                $def,
             ],
-            function () use ($field) {
-                $root_nodes = [];
-                foreach ($field->children as $field_child) {
+            function () use ($def) {
+                $rootNodes = [];
+                foreach ($def->getChildren() as $child) {
                     // fields with a parent_id are dealt with below
-                    if (!$field_child->getOption('parent_id')) {
-                        $root_nodes[] = new HierarchyNode($field_child, 0, HierarchyGenerator::reverseDisplayOrder($field_child->display_order));
+                    if (!$child->getOption('parent_id')) {
+                        $rootNodes[] = new HierarchyNode($child, 0, HierarchyGenerator::reverseDisplayOrder($child->getDisplayOrder()));
                     }
                 }
 
-                $expanded = $field->getOption('expanded');
+                $expanded = $def->getOption('expanded');
                 if ($expanded) {
-                    $formatter = new ParentListLanguageAwareFormatter($this->language_manager);
+                    $formatter = new ParentListLanguageAwareFormatter($this->languageManager);
                 } else {
-                    $formatter = new FlatListLanguageAwareFormatter($this->language_manager);
+                    $formatter = new FlatListLanguageAwareFormatter($this->languageManager);
                 }
 
-                $hierarchy = new Hierarchy($root_nodes, $formatter);
+                $hierarchy = new Hierarchy($rootNodes, $formatter);
                 $hierarchy->markOnlyLeafSelections();
 
-                foreach ($field->children as $field_child) {
-                    $parent_id = $field_child->getOption('parent_id');
-                    if ($parent_id) {
-                        $parent = $parent_node = $hierarchy->findNodeById($parent_id);
-                        if ($parent) {
-                            $parent->addChild(new HierarchyNode($field_child, $parent->getDepth() + 1, HierarchyGenerator::reverseDisplayOrder($field_child->display_order)));
-                        }
+                $iterator = function (HierarchyNode $parentNode) use ($def, &$iterator) {
+                    $subChoices = $def->getSubChoices($parentNode->getData());
+                    foreach ($subChoices as $subChoiceDef) {
+                        $subChoiceNode = new HierarchyNode(
+                            $subChoiceDef,
+                            $parentNode->getDepth() + 1,
+                            HierarchyGenerator::reverseDisplayOrder($subChoiceDef->getDisplayOrder())
+                        );
+
+                        $parentNode->addChild($subChoiceNode);
+                        $iterator($subChoiceNode);
                     }
+                };
+
+                foreach ($hierarchy as $parentNode) {
+                    $iterator($parentNode);
                 }
 
                 return $hierarchy;
@@ -168,9 +176,9 @@ class HierarchyGenerator
 
                 $expanded = $field->getOption('expanded');
                 if ($expanded) {
-                    $formatter = new ParentListLanguageAwareFormatter($this->language_manager);
+                    $formatter = new ParentListLanguageAwareFormatter($this->languageManager);
                 } else {
-                    $formatter = new FlatListLanguageAwareFormatter($this->language_manager);
+                    $formatter = new FlatListLanguageAwareFormatter($this->languageManager);
                 }
 
                 $hierarchy = new Hierarchy($root_nodes, $formatter);
@@ -203,7 +211,7 @@ class HierarchyGenerator
                     $root_nodes[] = new HierarchyNode($product, 0, HierarchyGenerator::reverseDisplayOrder($product->display_order));
                 }
 
-                $hierarchy = new Hierarchy($root_nodes, new FlatListLanguageAwareFormatter($this->language_manager));
+                $hierarchy = new Hierarchy($root_nodes, new FlatListLanguageAwareFormatter($this->languageManager));
                 $hierarchy->markOnlyLeafSelections();
 
                 $recursive = function (Product $prod, HierarchyNode $parent, $depth) use (&$recursive) {
@@ -233,7 +241,7 @@ class HierarchyGenerator
      */
     public function generateTicketDepartmentsHierarchy(Person $person, Ticket $ticket = null)
     {
-        $department_data_service = $this->department_data_service;
+        $department_data_service = $this->departmentDataService;
 
         return $this->generateAndCache(
             [
@@ -291,7 +299,7 @@ class HierarchyGenerator
                     );
                 }
 
-                $hierarchy = new Hierarchy($rootNodes, new FlatListLanguageAwareFormatter($this->language_manager, 'user'));
+                $hierarchy = new Hierarchy($rootNodes, new FlatListLanguageAwareFormatter($this->languageManager, 'user'));
                 $hierarchy->markOnlyLeafSelections();
 
                 $recursive = function (Department $dep, HierarchyNode $parent, $depth) use (&$recursive,
@@ -339,7 +347,7 @@ class HierarchyGenerator
                     $root_nodes[] = new HierarchyNode($product, 0, HierarchyGenerator::reverseDisplayOrder($product->display_order));
                 }
 
-                $hierarchy = new Hierarchy($root_nodes, new FlatListLanguageAwareFormatter($this->language_manager));
+                $hierarchy = new Hierarchy($root_nodes, new FlatListLanguageAwareFormatter($this->languageManager));
                 $hierarchy->markOnlyLeafSelections();
 
                 $recursive = function (TicketCategory $prod, HierarchyNode $parent, $depth) use (&$recursive) {
@@ -365,7 +373,7 @@ class HierarchyGenerator
      */
     public function generateForFeedbackCategories(Person $person)
     {
-        $feedback_data_service = $this->feedback_data_service;
+        $feedback_data_service = $this->feedbackDataService;
 
         return $this->generateAndCache(
             [
@@ -384,7 +392,7 @@ class HierarchyGenerator
                     $root_nodes[] = new HierarchyNode($category, 0, HierarchyGenerator::reverseDisplayOrder($category->display_order));
                 }
 
-                $hierarchy = new Hierarchy($root_nodes, new FlatListLanguageAwareFormatter($this->language_manager));
+                $hierarchy = new Hierarchy($root_nodes, new FlatListLanguageAwareFormatter($this->languageManager));
                 $hierarchy->markOnlyLeafSelections();
 
                 $recursive = function (FeedbackCategory $cat, HierarchyNode $parent, $depth) use (&$recursive) {

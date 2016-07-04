@@ -343,6 +343,25 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @param CustomDefAbstract $parentChoice
+     *
+     * @return ArrayCollection
+     */
+    public function getSubChoices(CustomDefAbstract $parentChoice)
+    {
+        $subChoices = new ArrayCollection();
+        if ($this->children->contains($parentChoice)) {
+            foreach ($this->children as $child) {
+                if ($child->getOption('parent_id') === $parentChoice->getId()) {
+                    $subChoices->add($child);
+                }
+            }
+        }
+
+        return $subChoices;
+    }
+
+    /**
      * @return bool
      */
     public function hasChildren()
@@ -1045,9 +1064,20 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         }
     }
 
+    /**
+     * @return string
+     */
     public function getType()
     {
         return strtolower(substr($this->handler_class, strrpos($this->handler_class, '\\') + 1));
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
     }
 
     /**
@@ -1087,7 +1117,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data              = parent::toApiData($primary, $deep, $visited);
         $data['type_name'] = $this->getTypeName();
