@@ -203,9 +203,9 @@ class RecompileTemplatesCommand extends ContainerAwareCommand
                 throw new \InvalidArgumentException();
         }
 
-        $phpPath = $this->getContainer()->get('deskpro.app_env')->getConfig('paths.php_path');
-        $proc    = new Process(
-            sprintf('%s bin/console --kernel %s dp:utility:recompile-templates %s', escapeshellarg($phpPath), $kernel, $type),
+        $cmd  = dp_get_php_command('bin/console', sprintf('--kernel %s dp:utility:recompile-templates %s', $kernel, $type));
+        $proc = new Process(
+            $cmd,
             $this->getContainer()->get('deskpro.app_env')->getAppDir()
         );
         $proc->setTimeout(900);
