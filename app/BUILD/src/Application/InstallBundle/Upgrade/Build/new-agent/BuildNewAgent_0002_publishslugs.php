@@ -93,15 +93,27 @@ class BuildNewAgent_0002_publishslugs extends AbstractBuild
             $dupe_map = [];
 
             foreach ($titles as $id => $t) {
+                $origT = $t;
+
                 $t = Strings::slugifyTitle($t);
+                $t = substr($t, 0, 90);
+                $t = trim($t, '-');
+
+                if (empty($t)) {
+                    $t = $content_table.'-'.$id;
+                }
+
                 if (isset($dupe_map[$t])) {
                     $t .= '-'.$id;
                     if (isset($dupe_map[$t])) {
                         $t .= '-'.mt_rand(1000, 9999);
                     }
+                }
 
+                if ($origT !== $t) {
                     $db->update($content_table, ['slug' => $t], ['id' => $id]);
                 }
+
                 $dupe_map[$t] = true;
             }
         }
