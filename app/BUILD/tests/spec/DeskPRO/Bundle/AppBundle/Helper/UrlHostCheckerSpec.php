@@ -35,14 +35,16 @@ class UrlHostCheckerSpec extends ObjectBehavior
     public function it_fails_if_port_does_not_match()
     {
         $this->isMatch('http://site.com:80', 'site.com', '81')->shouldReturn(false);
-        $this->isMatch('http://site.com:80', 'site.com', '443')->shouldReturn(false);
+        $this->isMatch('http://site.com:80', 'site.com', '443', false)->shouldReturn(false);
+        $this->isMatch('http://site.com:80', 'site.com', '443', true)->shouldReturn(true);
     }
 
     public function it_defaults_to_port_80()
     {
         $this->isMatch('http://site.com', 'site.com', '80')->shouldReturn(true);
         $this->isMatch('http://site.com', 'site.com', '81')->shouldReturn(false);
-        $this->isMatch('http://site.com', 'site.com', '443')->shouldReturn(false);
+        $this->isMatch('http://site.com', 'site.com', '443', false)->shouldReturn(false);
+        $this->isMatch('http://site.com', 'site.com', '443', true)->shouldReturn(true);
     }
 
     public function it_requires_a_scheme_for_urls()
@@ -81,7 +83,8 @@ class UrlHostCheckerSpec extends ObjectBehavior
         $this->isMatchUrl('https://samesite.com/fooB', 'https://samesite.com/')->shouldReturn(true);
         $this->isMatchUrl('https://samesite.com:8043/fooX', 'https://samesite.com:8043/')->shouldReturn(true);
         $this->isMatchUrl('https://samesite.com:8043/fooD', 'https://samesite.com/')->shouldReturn(false);
-        $this->isMatchUrl('http://samesite.com/fooE', 'https://samesite.com/')->shouldReturn(false);
+        $this->isMatchUrl('http://samesite.com/fooE', 'https://samesite.com/', false)->shouldReturn(false);
+        $this->isMatchUrl('http://samesite.com/fooE', 'https://samesite.com/', true)->shouldReturn(true);
         $this->isMatchUrl('http://site.com:443/fooF', 'http://site.com:443/')->shouldReturn(true);
         $this->isMatchUrl('/news', 'http://site.com:443')->shouldReturn(true);
     }

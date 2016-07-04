@@ -63,8 +63,8 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
 
         $csp = [
             'default-src' => 'self',
-            'script-src'  => ['*', 'unsafe-inline', 'unsafe-eval'],
-            'style-src'   => ['*', 'unsafe-inline'],
+            'script-src'  => ['*', 'data:', 'unsafe-inline', 'unsafe-eval'],
+            'style-src'   => ['*', 'data:', 'unsafe-inline'],
             'img-src'     => ['*', 'data:'],
             'font-src'    => ['*', 'data:'],
             'connect-src' => '*',
@@ -89,11 +89,6 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
             $csp['form-action'] = 'self';
             $csp['child-src']   = 'self';
             $csp['referrer']    = 'no-referrer';
-        }
-
-        if ($request->isSecure()) {
-            $csp['upgrade-insecure-requests'] = true;
-            $csp['block-all-mixed-content']   = true;
         }
 
         $response->headers->add(['Content-Security-Policy' => $this->buildCspString($csp)]);

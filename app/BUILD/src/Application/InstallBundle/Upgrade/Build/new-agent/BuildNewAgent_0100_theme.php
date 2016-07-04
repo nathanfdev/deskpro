@@ -34,6 +34,8 @@ class BuildNewAgent_0100_theme extends AbstractBuild
     {
         $db = $this->getDbConnection('default');
 
+        $brands = $db->fetchAll('SELECT id, theme_set_id, edit_theme_set_id FROM brands LIMIT 1');
+
         #----------------------------------------
         # rename common tpls
         #----------------------------------------
@@ -45,7 +47,27 @@ class BuildNewAgent_0100_theme extends AbstractBuild
         ];
 
         foreach ($renames as $oldName => $newName) {
-            $db->update('templates', ['name' => $newName], ['name' => $oldName]);
+            $templateCode = $db->fetchColumn('
+                SELECT template_code
+                FROM templates
+                WHERE theme_set_id IS NULL AND name = ? LIMIT 1
+            ', [$oldName]);
+
+            if ($templateCode) {
+                foreach ($brands as $brand) {
+                    foreach ([$brand['theme_set_id'], $brand['edit_theme_set_id']] as $themeSetId) {
+                        $this->out(sprintf('Brand %s, Theme %s, Template %s', $brand['id'], $themeSetId, $newName));
+                        $db->insert('templates', [
+                            'theme_set_id'      => $themeSetId,
+                            'name'              => $newName,
+                            'template_code'     => $templateCode,
+                            'template_compiled' => '', // will be reset in the next step below
+                            'date_created'      => date('Y-m-d H:i:s'),
+                            'date_updated'      => date('Y-m-d H:i:s'),
+                        ]);
+                    }
+                }
+            }
         }
 
         #----------------------------------------
@@ -67,15 +89,15 @@ class BuildNewAgent_0100_theme extends AbstractBuild
             }
 
             foreach ($backupTemplates as $tpl) {
+                $backupPath = $dir.DIRECTORY_SEPARATOR.$tpl['id'].'--'.str_replace(':', '_', $tpl['name']);
                 @file_put_contents(
-                    $dir.$tpl['id'].'--'.str_replace(':', '_', $tpl['name']),
+                    $backupPath,
                     $tpl['template_code']
                 );
+                $this->out(sprintf('Backup %s to %s', $tpl['name'], $backupPath));
                 $this->container->getDb()->delete('templates', array('id' => $tpl['id']));
             }
         }
-
-        $this->recompileCustomTemplates();
 
         #----------------------------------------
         # copy logo blob
@@ -85,15 +107,36 @@ class BuildNewAgent_0100_theme extends AbstractBuild
         $blobRow = $db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', [$blobId]);
 
         if ($blobRow) {
-            $themeSetId = $db->fetchColumn('SELECT theme_set_id FROM brands LIMIT 1');
-            $db->insert('theme_set_assets', [
-                'theme_set_id' => $themeSetId,
-                'blob_id'      => $blobRow['id'],
-                'name'         => $blobRow['filename'],
-                'tags'         => 'custom_logo',
-                'date_created' => date('Y-m-d H:i:s'),
-                'date_updated' => date('Y-m-d H:i:s'),
-            ]);
+            try {
+                $logoDat = $this->downloadBlob($blobRow['id']);
+
+                if ($logoDat) {
+                    $ins = [];
+
+                    $this->out(sprintf('Copying logo %s %s %sbytes', $blobRow['id'], $blobRow['filename'], $blobRow['filesize']));
+
+                    foreach ($brands as $brand) {
+                        foreach ([$brand['theme_set_id'], $brand['edit_theme_set_id']] as $themeSetId) {
+                            $logoBlobId = $this->saveBlob($logoDat, $blobRow['filename'], $blobRow['content_type']);
+
+                            $this->out(sprintf('Brand %s, Theme %s, Logo Blob %s', $brand['id'], $themeSetId, $logoBlob['id']));
+                            $ins[] = [
+                                'theme_set_id' => $themeSetId,
+                                'blob_id'      => $logoBlobId,
+                                'name'         => $blobRow['filename'],
+                                'tags'         => 'custom_logo',
+                                'date_created' => date('Y-m-d H:i:s'),
+                                'date_updated' => date('Y-m-d H:i:s'),
+                            ];
+                        }
+                    }
+
+                    if ($ins) {
+                        $db->batchInsert('theme_set_assets', $ins, true);
+                    }
+                }
+            } catch (\Exception $e) {
+            }
         }
     }
 }
