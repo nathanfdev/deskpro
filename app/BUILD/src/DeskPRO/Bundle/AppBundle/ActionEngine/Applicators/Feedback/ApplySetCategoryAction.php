@@ -33,27 +33,59 @@ use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
+/**
+ * Class ApplySetCategoryAction.
+ */
 class ApplySetCategoryAction extends AbstractActionApplicator implements ActionInitializationInterface
 {
-    /** @var  CustomDefFeedback */
+    /**
+     * @var CustomDefFeedback
+     */
     private $customDef;
 
+    /**
+     * @var CustomDefFeedback
+     */
+    private $choiceDef;
+
+    /**
+     * {@inheritdoc}
+     */
     public function init()
     {
         $this->customDef = $this->em->getRepository(CustomDefFeedback::class)->findOneBy(['title' => 'Category']);
+        if ($this->customDef) {
+            $this->choiceDef = $this->customDef->getChildById($this->options['set_category']);
+        }
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @param Feedback $feedback
      */
     public function apply($feedback)
     {
-        $feedback->resetCustomData();
-        $customCategory = new CustomDataFeedback();
-        $customCategory->setInput($this->options['set_category']);
-        $customCategory->setField($this->customDef);
-        $customCategory->setRootField($this->customDef);
-        $feedback->addCustomData($customCategory);
+        if (!$this->choiceDef) {
+            return;
+        }
+
+        /** @var CustomDataFeedback[]|ArrayCollection $customData */
+        $customData = $feedback->getCustomData()->filter(function (CustomDataFeedback $customData) {
+            return $customData->getRootField() === $this->customDef;
+        });
+
+        /* @var CustomDataFeedback $item */
+        if ($customData->count()) {
+            $item = $customData->first();
+        } else {
+            $item = $this->customDef->createCustomData();
+            $feedback->addCustomData($item);
+        }
+
+        $item->setField($this->choiceDef);
+        $item->setValue(1);
     }
 }

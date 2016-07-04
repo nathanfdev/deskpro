@@ -77,6 +77,14 @@ class CustomDataFeedback extends CustomDataAbstract
     }
 
     /**
+     * @return CustomDefAbstract
+     */
+    public function getField()
+    {
+        return $this->field;
+    }
+
+    /**
      * Set a root field.
      *
      * @param CustomDefFeedback $field
@@ -88,6 +96,14 @@ class CustomDataFeedback extends CustomDataAbstract
         $this->setModelField('root_field', $field);
 
         return $this;
+    }
+
+    /**
+     * @return CustomDefAbstract
+     */
+    public function getRootField()
+    {
+        return $this->root_field;
     }
 
     /**

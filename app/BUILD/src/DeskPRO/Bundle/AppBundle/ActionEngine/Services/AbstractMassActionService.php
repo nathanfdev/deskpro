@@ -65,9 +65,11 @@ abstract class AbstractMassActionService implements MassActionServiceInterface
             foreach ($actionCollection->getApplicators() as $applicator) {
                 $applicator->apply($object);
             }
+
             $this->validateObject($object);
             $this->saveObject($object);
         }
+
         $this->em->flush();
     }
 

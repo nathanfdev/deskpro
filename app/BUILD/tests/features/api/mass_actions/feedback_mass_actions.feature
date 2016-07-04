@@ -97,7 +97,7 @@ Feature: /mass_actions/feedback endpoint
 {
   "ids": [1],
   "params":{
-     "set_category": "Linux",
+     "set_category": 4,
      "set_status_category": 1,
      "set_type": 1,
      "add_labels": ["first", "second"]
@@ -106,7 +106,6 @@ Feature: /mass_actions/feedback endpoint
     """
     Then the response status code should be 200
 
-  Scenario: I check if all mass actions was applied to feedback with ID=1
     When I send a GET request to "/api/v2/feedback/1"
     Then the response status code should be 200
     And the response should be in JSON
@@ -114,6 +113,7 @@ Feature: /mass_actions/feedback endpoint
     And the JSON node "data.id" should be equal to 1
     And the JSON node "data.category" should be equal to 1
     And the JSON node "data.status_category" should be equal to 1
+    And the JSON node "data.fields.1.value[0]" should be equal to 4
     And the JSON node "data.labels[0]" should be equal to "first"
     And the JSON node "data.labels[3]" should be equal to "second"
 
@@ -131,7 +131,6 @@ Feature: /mass_actions/feedback endpoint
     """
     Then the response status code should be 200
 
-  Scenario: I check if all mass actions was applied to feedback with ID=1
     When I send a GET request to "/api/v2/feedback/1"
     Then the response status code should be 200
     And the response should be in JSON
