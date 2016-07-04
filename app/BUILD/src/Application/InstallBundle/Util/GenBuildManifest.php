@@ -58,7 +58,8 @@ class GenBuildManifest
     {
         $builds_path = $this->builds_path;
 
-        $finder    = Finder::create()->in($builds_path)->files()->name('/^Build.*?(\\d+)(.*?)\.php$/');
+        $finder = Finder::create()->in($builds_path)->files()->name('/^Build.*?(\\d+)(.*?)\.php$/');
+        $finder->sortByName();
         $start_ids = [];
 
         $builds = [];
