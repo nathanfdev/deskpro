@@ -1202,7 +1202,6 @@ var RLANG = {
 
 		pasteHtmlAtCaret: function (html)
 		{
-			console.log(this.$el, this.$editor);
 			var sel, range;
 			if (this.document.getSelection)
 			{
@@ -1211,9 +1210,6 @@ var RLANG = {
 				{
 					range = sel.getRangeAt(0);
 					range.deleteContents();
-					if(range.startOffset === 0 && range.collapsed && this.$editor[0].textContent != '') {
-						range.setStartAfter(this.$editor[0].lastChild);
-					}
 					var el = this.document.createElement("div");
 					el.innerHTML = html;
 					var frag = this.document.createDocumentFragment(), node, lastNode;
@@ -1227,7 +1223,7 @@ var RLANG = {
 					{
 						range = range.cloneRange();
 						range.setStartAfter(lastNode);
-						range.collapse(false);
+						range.collapse(true);
 						sel.removeAllRanges();
 						sel.addRange(range);
 					}
