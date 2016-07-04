@@ -73,7 +73,7 @@ class CmdBuilder implements CmdBuilderInterface
             '-u '.escapeshellarg($dbInfo['user']),
             '-p'.escapeshellarg($dbInfo['password']),
             '--opt', '-Q', '--hex-blob', '--lock-tables=false', '--single-transaction',
-            $dbInfo['dbname'],
+            escapeshellarg($dbInfo['dbname']),
             '>', escapeshellarg($filename),
         ]);
 

@@ -51,7 +51,7 @@ class CmdBuilderTest extends DeskProTestCase
         ]);
 
         $this->assertEquals(
-            "'/usr/bin/mysqldump' -h localhost --port 3306 -u 'deskpro' -p'p@ass' --opt -Q --hex-blob --lock-tables=false --single-transaction dpdb > '/example/dump.sql'",
+            "'/usr/bin/mysqldump' -h localhost --port 3306 -u 'deskpro' -p'p@ass' --opt -Q --hex-blob --lock-tables=false --single-transaction 'dpdb' > '/example/dump.sql'",
             $cmdBuilder->getDumpCmd('/example/dump.sql', $dbInfo)
         );
     }
@@ -71,7 +71,7 @@ class CmdBuilderTest extends DeskProTestCase
         ]);
 
         $this->assertEquals(
-            "'C:\\mysql\\bin\\mysqldump' -h localhost --port 3306 -u 'deskpro' -p'p@ass' --opt -Q --hex-blob --lock-tables=false --single-transaction dpdb > 'C:\\Program Files\\Deskpro\\backups\\example.sql'",
+            "'C:\\mysql\\bin\\mysqldump' -h localhost --port 3306 -u 'deskpro' -p'p@ass' --opt -Q --hex-blob --lock-tables=false --single-transaction 'dpdb' > 'C:\\Program Files\\Deskpro\\backups\\example.sql'",
             $cmdBuilder->getDumpCmd('C:\\Program Files\\Deskpro\\backups\\example.sql', $dbInfo)
         );
     }
@@ -90,7 +90,7 @@ class CmdBuilderTest extends DeskProTestCase
         ]);
 
         $this->assertEquals(
-            "'/usr/bin/mysqldump' -h localhost --port 14406 -u 'deskpro' -p'p@ass' --opt -Q --hex-blob --lock-tables=false --single-transaction dpdb > '/example/dump.sql'",
+            "'/usr/bin/mysqldump' -h localhost --port 14406 -u 'deskpro' -p'p@ass' --opt -Q --hex-blob --lock-tables=false --single-transaction 'dpdb' > '/example/dump.sql'",
             $cmdBuilder->getDumpCmd('/example/dump.sql', $dbInfo)
         );
     }
@@ -109,7 +109,7 @@ class CmdBuilderTest extends DeskProTestCase
         ]);
 
         $this->assertEquals(
-            "'/usr/bin/mysqldump' --protocol=socket -S '/var/run/mysqld/mysqld.sock' -u 'deskpro' -p'p@ass' --opt -Q --hex-blob --lock-tables=false --single-transaction dpdb > '/example/dump.sql'",
+            "'/usr/bin/mysqldump' --protocol=socket -S '/var/run/mysqld/mysqld.sock' -u 'deskpro' -p'p@ass' --opt -Q --hex-blob --lock-tables=false --single-transaction 'dpdb' > '/example/dump.sql'",
             $cmdBuilder->getDumpCmd('/example/dump.sql', $dbInfo)
         );
     }
@@ -128,7 +128,7 @@ class CmdBuilderTest extends DeskProTestCase
         ]);
 
         $this->assertEquals(
-            "'/usr/bin/mysqldump' -h localhost --port 3306 -u 'deskpro' -p'pass\"word!@£$.,,<>--'\\''\\' --opt -Q --hex-blob --lock-tables=false --single-transaction dpdb > '/example/dump.sql'",
+            "'/usr/bin/mysqldump' -h localhost --port 3306 -u 'deskpro' -p'pass\"word!@£$.,,<>--'\\''\\' --opt -Q --hex-blob --lock-tables=false --single-transaction 'dpdb' > '/example/dump.sql'",
             $cmdBuilder->getDumpCmd('/example/dump.sql', $dbInfo)
         );
     }
