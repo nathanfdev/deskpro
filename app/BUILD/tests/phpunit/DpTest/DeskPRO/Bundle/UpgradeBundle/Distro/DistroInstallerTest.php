@@ -163,9 +163,6 @@ class DistroInstallerTest extends DeskProTestCase
         $this->assertTrue(is_file($tmpDir.'/www/assets/15742.0/web/file.txt'), 'Check that web dir was copied');
         $this->assertTrue(is_file($tmpDir.'/app/15742.0/sys/Resources/deskpro.zip'), 'Check that deskpro.zip was 
         copied');
-
-        $inst->enableRunFromBuild('15742.0');
-        $this->assertTrue(is_file($tmpDir.'/app/run/new_file.txt'), 'Check that run dir was enabled');
     }
 
     /**

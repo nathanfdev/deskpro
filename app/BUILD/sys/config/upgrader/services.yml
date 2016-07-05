@@ -58,3 +58,46 @@ services:
       - "@dp.upgrader.backup.db_backup_verifier"
     calls:
       - [setLogger, ["@monolog.logger.upgrader.general"]]
+
+  ######################################################################################################################
+  # Activator
+  ######################################################################################################################
+
+  dp.upgrader.activate.build_activator:
+    class: DeskPRO\Bundle\UpgradeBundle\BuildActivate\BuildActivator
+    arguments:
+      - "@dp.upgrader.activate.hd_state"
+      - "@dp.upgrader.activate.req_checker"
+      - "@dp.upgrader.activate.upgrade_runner"
+      - "@dp.upgrader.activate.run_activator"
+    calls:
+      - [setLogger, ["@monolog.logger.upgrader.general"]]
+
+  dp.upgrader.activate.hd_state:
+    class: DeskPRO\Bundle\UpgradeBundle\BuildActivate\HelpdeskState\HelpdeskStateModifier
+    arguments:
+      - "@deskpro.low_dp_env"
+    calls:
+      - [setLogger, ["@monolog.logger.upgrader.general"]]
+
+  dp.upgrader.activate.req_checker:
+    class: DeskPRO\Bundle\UpgradeBundle\BuildActivate\ReqCheck\ReqCheck
+    arguments:
+      - "@=service('deskpro.app_env').getConfig('paths.php_path')"
+    calls:
+      - [setLogger, ["@monolog.logger.upgrader.general"]]
+
+  dp.upgrader.activate.upgrade_runner:
+    class: DeskPRO\Bundle\UpgradeBundle\BuildActivate\UpgradeRunner\UpgradeRunner
+    arguments:
+      - "@=service('deskpro.app_env').getConfig('paths.php_path')"
+    calls:
+      - [setLogger, ["@monolog.logger.upgrader.general"]]
+
+  dp.upgrader.activate.run_activator:
+    class: DeskPRO\Bundle\UpgradeBundle\BuildActivate\RunActivator\RunActivator
+    arguments:
+      - "@deskpro.zippy"
+      - "@=service('deskpro.app_env').getUserTmpDir()"
+    calls:
+      - [setLogger, ["@monolog.logger.upgrader.general"]]

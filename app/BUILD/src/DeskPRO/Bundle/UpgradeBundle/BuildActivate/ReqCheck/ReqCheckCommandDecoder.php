@@ -26,55 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Component\Util\Buffer;
+namespace DeskPRO\Bundle\UpgradeBundle\BuildActivate\ReqCheck;
 
-/**
- * Buffers streams of data and will call a callback when a full line is made.
- */
-class LineBuffer
+class ReqCheckCommandDecoder
 {
     /**
-     * @var string
+     * @param string $commandOutput
+     *
+     * @throws ReqCheckException
+     *
+     * @return array
      */
-    private $buf = '';
-
-    /**
-     * @var callable
-     */
-    private $fn;
-
-    /**
-     * @param callable $fn Called after each line is received
-     */
-    public function __construct($fn)
+    public function decodeResults($commandOutput)
     {
-        $this->fn = $fn;
-    }
-
-    public function append($str)
-    {
-        // Normalise lf
-        $str = str_replace("\r\n", "\n", $str);
-
-        $this->buf .= $str;
-        do {
-            $pos = strpos($this->buf, "\n");
-            if ($pos !== false) {
-                $line = substr($this->buf, 0, $pos);
-                call_user_func($this->fn, $line);
-                $this->buf = substr($this->buf, $pos + 1);
-            }
-        } while ($pos !== false);
-    }
-
-    /**
-     * Flushes the buffer.
-     */
-    public function flush()
-    {
-        if ($this->buf !== '') {
-            call_user_func($this->fn, $this->buf);
-            $this->buf = '';
+        if (!preg_match('#\-{10,}BEGIN\-{10,}(.*?)\-{10,}END\-{10,}#s', $commandOutput, $match)) {
+            throw ReqCheckException::createCommandException('Requirements checker returned unexpected output');
         }
+
+        $results = @json_decode(trim($match[1]), true);
+
+        if (!is_array($results)) {
+            throw ReqCheckException::createCommandException('Requirements checker returned invalid output that could not be decoded');
+        }
+
+        if (!isset($results['failed_requirements']) || !isset($results['failed_recommendations'])) {
+            throw ReqCheckException::createCommandException('Requirements checker returned unexpected results');
+        }
+
+        return $results;
     }
 }

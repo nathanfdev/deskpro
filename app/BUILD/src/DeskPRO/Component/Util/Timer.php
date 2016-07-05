@@ -32,15 +32,22 @@ class Timer
 {
     const START = '@start';
     const END   = '@end';
+    const LAST  = '@last';
 
     /**
      * @var array
      */
     private $ticks = [];
 
+    /**
+     * @var string
+     */
+    private $lastTick = null;
+
     private function __construct()
     {
         $this->ticks[self::START] = microtime(true);
+        $this->lastTick           = self::START;
     }
 
     /**
@@ -63,6 +70,7 @@ class Timer
         }
 
         $this->ticks[$name] = microtime(true);
+        $this->lastTick     = $name;
 
         return $this;
     }
@@ -78,6 +86,20 @@ class Timer
     }
 
     /**
+     * @param string $name
+     *
+     * @return int
+     */
+    public function getTick($name)
+    {
+        if ($name === self::LAST) {
+            return $this->getTick($this->lastTick);
+        }
+
+        return isset($this->ticks[$name]) ? $this->ticks[$name] : 0;
+    }
+
+    /**
      * @return $this
      */
     public function end()
@@ -88,22 +110,40 @@ class Timer
     }
 
     /**
-     * @param string|null $tick
+     * Get the time since $tick (last tick if unspecified).
+     *
+     * @param string|null $sinceTick
      *
      * @return float
      */
-    public function getTime($tick = null)
+    public function getTimeSinceTick($sinceTick = self::LAST)
     {
-        if ($tick === null) {
-            $ts = microtime(true);
-        } else {
-            if (!isset($this->ticks[$tick])) {
-                throw new \InvalidArgumentException("Unknown tick: $tick");
-            }
-            $ts = $this->ticks[$tick];
+        $ts = microtime(true);
+
+        return $ts - $this->getTick($sinceTick);
+    }
+
+    /**
+     * Get the time between $forTick and the one before it.
+     *
+     * @param string $forTick
+     *
+     * @return float
+     */
+    public function getTime($forTick = self::LAST)
+    {
+        if ($forTick === self::LAST) {
+            $forTick = $this->lastTick;
         }
 
-        return $ts - $this->ticks[self::START];
+        $names = array_keys($this->ticks);
+        $idx   = array_search($forTick, $names, true);
+
+        if (!$idx || empty($names[$idx - 1])) {
+            return 0.0;
+        }
+
+        return $this->getTimeBetween($names[$idx - 1], $names[$idx]);
     }
 
     /**
@@ -152,18 +192,29 @@ class Timer
     }
 
     /**
-     * @param string|null $tick
+     * @param string|null $forTick
      * @param string      $format
      *
      * @return string
      */
-    public function formatTime($tick = null, $format = '%.3fs')
+    public function formatTime($forTick = null, $format = '%.3fs')
     {
-        return sprintf($format, $this->getTime($tick));
+        return sprintf($format, $this->getTime($forTick));
     }
 
     /**
-     * Gets total time from start to now. This will end
+     * @param string|null $sinceTick
+     * @param string      $format
+     *
+     * @return string
+     */
+    public function formatTimeSincetick($sinceTick = null, $format = '%.3fs')
+    {
+        return sprintf($format, $this->getTimeSinceTick($sinceTick));
+    }
+
+    /**
+     * Gets total time from start to end. This will end
      * the timer if it isn't already.
      *
      * @return float
@@ -174,7 +225,7 @@ class Timer
             $this->tick(self::END);
         }
 
-        return $this->getTime(self::END);
+        return $this->getTimeBetween(self::START, self::END);
     }
 
     /**

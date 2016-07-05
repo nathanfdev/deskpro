@@ -1,5 +1,9 @@
 services:
 
+  deskpro.low_dp_env:
+    class: DpRun\DpEnv
+    factory: [DeskPRO\Bundle\AppBundle\AppEnv\LowDpEnvGetter, getDpEnv]
+
   deskpro.app_env:
     class: DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface
     factory: [DeskPRO\Bundle\AppBundle\AppEnv\AppEnvFactory, create]

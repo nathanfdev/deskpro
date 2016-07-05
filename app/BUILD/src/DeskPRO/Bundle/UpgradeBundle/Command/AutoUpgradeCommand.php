@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\UpgradeBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class AutoUpgradeCommand extends ContainerAwareCommand
@@ -38,12 +37,9 @@ class AutoUpgradeCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('dp:auto-upgrade')
+            ->setName('dp:upgrade:auto-upgrade')
             ->setDescription('Checks for updates, downloads, and then installs them if they exists')
-            ->addOption('as', null, InputOption::VALUE_REQUIRED, 'Save the build as a different build ID')
-            ->addOption('sha256', null, InputOption::VALUE_REQUIRED, 'Compare the checksum of the file to this expected value after downloading. This is provided automatically when specying a build from the manifest.')
-            ->addOption('skip-existing', null, InputOption::VALUE_NONE, 'Do nothing if the build exists (returns a success code). See also --update-existing.')
-            ->addOption('update-existing', null, InputOption::VALUE_NONE, 'Update the build if it exists. The default behaviour is to return an error status. See also --skip-existing.');
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

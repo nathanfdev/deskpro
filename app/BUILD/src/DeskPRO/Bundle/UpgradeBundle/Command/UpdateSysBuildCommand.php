@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\UpgradeBundle\Command;
 
+use DeskPRO\Bundle\UpgradeBundle\Instance\BuildInstance;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -40,8 +41,7 @@ class UpdateSysBuildCommand extends ContainerAwareCommand
         $this
             ->setName('dp:upgrade:update-sys-build')
             ->setDescription('Activates new system bootstrapping files from a new build')
-            ->addOption('buildId', null, InputOption::VALUE_REQUIRED, 'The build to activate. If not provided, the 
-            current build will be used.')
+            ->addOption('buildId', null, InputOption::VALUE_REQUIRED, 'The build to activate. If not provided, the current build will be used.')
         ;
     }
 
@@ -60,9 +60,18 @@ class UpdateSysBuildCommand extends ContainerAwareCommand
             $logger->info(sprintf('Activating current build: %s', $buildId));
         }
 
+        $appEnv = $this->getContainer()->get('deskpro.app_env');
+
+        $build = new BuildInstance(
+            $buildId,
+            $appEnv->getBuildDirRoot().DIRECTORY_SEPARATOR.$buildId,
+            $appEnv->getWwwRoot().DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.$buildId,
+            $appEnv->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$buildId
+        );
+
         $output->writeln('Activating sys files for build: '.$buildId);
-        $distroInstall = $this->getContainer()->get('dp.upgrader.distro.installer');
-        $distroInstall->enableRunFromBuild($buildId);
+        $distroInstall = $this->getContainer()->get('dp.upgrader.activate.run_activator');
+        $distroInstall->activateRunDir($build);
 
         $output->writeln('<info>Done</info>');
         $logger->info('Finished activating new sys build');

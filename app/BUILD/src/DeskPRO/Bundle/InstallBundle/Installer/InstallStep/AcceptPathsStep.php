@@ -202,7 +202,7 @@ class AcceptPathsStep extends AbstractStep
         $res   = $proc->getOutput();
         $match = 0;
 
-        if (!preg_match('#\-{10,}BEGIN\-{10}(.*?)\-{10,}END\-{10}#s', $res, $match)) {
+        if (!preg_match('#\-{10,}BEGIN\-{10,}(.*?)\-{10,}END\-{10,}#s', $res, $match)) {
             $this->throwCmdVerifyError($proc);
         }
 

@@ -130,6 +130,9 @@ if ($build_num && $build_num !== '0.0') {
     );
 
     file_put_contents($DP_DIR.'/app/BUILD/sys/config/build-num.txt', $build_num);
+
+    // record the build of the sys run files
+    file_put_contents($DP_DIR.'/app/run/build-num.txt', $build_num);
 }
 
 ########################################################################################################################
