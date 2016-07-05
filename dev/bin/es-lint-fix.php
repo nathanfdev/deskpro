@@ -13,7 +13,7 @@ $filename_pattern = '/\.js$/';
 chdir($dir);
 
 foreach ($output as $file) {
-    if (substr($file, 0, 21) === $dir) {
+    if (strpos($file, $dir) === 0) {
         $file = str_replace($dir, '', $file);
         if (!(preg_match($filename_pattern, $file) && file_exists($file))) {
             continue;
