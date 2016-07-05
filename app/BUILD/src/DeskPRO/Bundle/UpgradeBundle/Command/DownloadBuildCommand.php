@@ -203,6 +203,8 @@ class DownloadBuildCommand extends ContainerAwareCommand
         $output->writeln('Done');
 
         $output->writeln('<info>Build was installed successfully.</info>');
+
+        return 0;
     }
 
     /**
