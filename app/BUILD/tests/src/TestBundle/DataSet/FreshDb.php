@@ -32,7 +32,9 @@
 
 namespace DpTestSrc\TestBundle\DataSet;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\Usergroup;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpTestSrc\TestBundle\UserDetailsRepo;
@@ -181,7 +183,7 @@ class FreshDb extends AbstractDbSet
 
         $this->getDb()->batchInsert('department_permissions', $perms, true);
 
-        $USERGROUP_EVERYONE = $em->getRepository('DeskPRO:Usergroup')->findOneBy(['sys_name' => 'everyone']);
+        $USERGROUP_EVERYONE = $em->getRepository(Usergroup::class)->findOneBy(['sys_name' => 'everyone']);
         $em->flush();
 
         if (!empty($USERGROUP_EVERYONE)) {

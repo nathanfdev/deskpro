@@ -30,6 +30,7 @@ namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelDef;
@@ -110,6 +111,12 @@ class ApiDb extends AbstractDbSet
             true
         );
 
+        // we need a brand here, but the other db's use data.php which has all the brands
+        $brand = new Brand();
+        $brand->setName('default');
+        $this->getEm()->persist($brand);
+        $this->getEm()->flush();
+
         // Default language --------------------------------------------------------------------------------------------
         $this->getDb()->exec(
             <<<SQL
@@ -129,10 +136,13 @@ SQL
         // we need some deps, and some other entities
         $dep1        = Department::createTicketDepartment();
         $dep1->title = 'sales';
+        $dep1->addBrand($brand);
         $dep2        = Department::createTicketDepartment();
         $dep2->title = 'support';
+        $dep2->addBrand($brand);
         $dep3        = Department::createChatDepartment();
         $dep3->title = 'support';
+        $dep3->addBrand($brand);
 
         $team       = new AgentTeam();
         $team->name = 'test team';
@@ -222,6 +232,10 @@ SQL
         $unassignedTask->setCreator($admin);
         $unassignedTask->setTitle('An unassigned task');
 
+        $articleCategory = new ArticleCategory();
+        $articleCategory->setTitle('Category');
+        $articleCategory->setBrand($brand);
+
         // Create a new knowledge base article
         $article               = new Article();
         $article->slug         = 'test';
@@ -233,6 +247,7 @@ SQL
         $article->num_ratings  = 0;
         $article->status       = 'published';
         $article->date_created = new \DateTime();
+        $article->addToCategory($articleCategory);
 
         // Persist them in the entity manager
         $em->persist($team);
@@ -244,7 +259,9 @@ SQL
         $em->persist($task);
         $em->persist($taskAssignment);
         $em->persist($unassignedTask);
+        $em->persist($articleCategory);
         $em->persist($article);
+        $em->persist($brand);
         $em->flush();
 
         $this->getDb()->insert('permissions', ['person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1]);
@@ -382,12 +399,6 @@ SQL
             "
         );
 
-        // we need a brand here, but the other db's use data.php which has all the brands
-        $brand = new Brand();
-        $brand->setName('default');
-        $this->getEm()->persist($brand);
-        $this->getEm()->flush();
-
         $this->getDb()->exec(
             "
             REPLACE INTO `settings` (`name`, `value`)
@@ -446,16 +457,18 @@ SQL
         $ticket1->setLanguageId(1);
         $ticket1->setSubject('Ticket #1');
         $ticket1->setRef('DIDXGBLWRL-201622485');
+        $ticket1->setBrand($brand);
         $em->persist($ticket1);
         $ticket2 = new Ticket();
         $ticket2->disableAutoTicketProcess();
         $ticket2->setPersonId(3);
         $ticket2->agent = $agent2;
         $ticket2->setDepartmentId(1);
-        $ticket1->setOrganization($organization2);
-        $ticket1->setLanguageId(1);
+        $ticket2->setOrganization($organization2);
+        $ticket2->setLanguageId(1);
         $ticket2->setSubject('Ticket #2');
-        $ticket1->setAgentTeamId(1);
+        $ticket2->setAgentTeamId(1);
+        $ticket2->setBrand($brand);
         $em->persist($ticket2);
         $ticket3 = new Ticket();
         $ticket3->disableAutoTicketProcess();
@@ -463,8 +476,9 @@ SQL
         $ticket3->agent = $agent1;
         $ticket3->setDepartmentId(2);
         $ticket3->setSubject('Ticket #3');
+        $ticket3->setAgentTeamId(2);
+        $ticket3->setBrand($brand);
         $em->persist($ticket3);
-        $ticket1->setAgentTeamId(2);
         $em->flush();
 
         // Add a blue flag on the first ticket.
