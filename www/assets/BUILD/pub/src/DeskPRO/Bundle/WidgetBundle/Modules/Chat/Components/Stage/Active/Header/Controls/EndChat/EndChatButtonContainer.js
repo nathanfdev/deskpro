@@ -17,15 +17,14 @@ export class EndChatButtonContainer extends React.Component {
 
   render() {
     return this.props.isEnded
-      ? (
-        <ReopenChatContainer>
-          <ReopenChatButton />
-        </ReopenChatContainer>
-      )
-      : (
-        <EndChatContainer confirmPosition="bottom">
-          <EndChatButton />
-        </EndChatContainer>
-      );
+      ?
+      <ReopenChatContainer>
+        <ReopenChatButton />
+      </ReopenChatContainer>
+      :
+      <EndChatContainer confirmPosition="bottom">
+        <EndChatButton />
+      </EndChatContainer>
+    ;
   }
 }

@@ -22,11 +22,11 @@ export class ControlItem extends React.Component {
     const { disabled, children } = this.props;
 
     return (
-      <a href="#"
+      <a
+        href="#"
         className={classNames('dpdesignportal-chat-header-control-item', { disabled })}
         onClick={this.onClick}
       >
-
         {children}
       </a>
     );

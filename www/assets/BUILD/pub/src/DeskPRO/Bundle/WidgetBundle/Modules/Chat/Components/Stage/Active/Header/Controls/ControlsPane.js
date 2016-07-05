@@ -18,7 +18,7 @@ export class ControlsPane extends React.Component {
         <ul>
           {false /* disabled for now */ &&
             <li>
-             <AssetsContainer />
+              <AssetsContainer />
             </li>
           }
           <li>

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class FindAnotherAgent extends React.Component {
 
@@ -13,13 +14,15 @@ export class FindAnotherAgent extends React.Component {
   };
 
   render() {
+    const { agentName } = this.props;
+
     return (
       <div>
-        <h1>{this.props.agentName} seems to have been disconnected</h1>
-        <h2>If they don't return soon, we'll find another agent for you.</h2>
+        <h1>{portalPhrases.get('portal.chat.agent_disconnected', { '{agentName}': agentName })}</h1>
+        <h2>{portalPhrases.get('portal.chat.find_another_agent')}</h2>
         <p>
           <a href="#" onClick={this.onClick}>
-            Find another agent now
+            {portalPhrases.get('portal.chat.find_agent_now')}
           </a>
         </p>
       </div>

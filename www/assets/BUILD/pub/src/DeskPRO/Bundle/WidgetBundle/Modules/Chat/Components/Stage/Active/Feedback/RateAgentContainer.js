@@ -50,7 +50,8 @@ export class RateAgentContainer extends React.Component {
         return <RateAgentForm agentName={agentName} onSubmit={this.onSubmitForm} />;
       case 'dialog':
         return (
-          <RateAgentDialog agentName={agentName}
+          <RateAgentDialog
+            agentName={agentName}
             onClickHelpful={this.onClickHelpful}
             onClickNotHelpful={this.onClickNotHelpful}
           />
