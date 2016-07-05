@@ -1292,6 +1292,20 @@ class ChatConversation extends DomainObject
         return $this;
     }
 
+    /**
+     * @param CustomDataChat[] $data
+     */
+    public function setCustomData($data)
+    {
+        $this->custom_data = $data;
+        foreach ($data as $datum) {
+            /* @var CustomDataChat $datum */
+            $datum->setConversation($this);
+        }
+
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
