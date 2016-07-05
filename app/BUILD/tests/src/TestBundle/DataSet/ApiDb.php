@@ -30,7 +30,6 @@ namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelDef;
@@ -232,10 +231,6 @@ SQL
         $unassignedTask->setCreator($admin);
         $unassignedTask->setTitle('An unassigned task');
 
-        $articleCategory = new ArticleCategory();
-        $articleCategory->setTitle('Category');
-        $articleCategory->setBrand($brand);
-
         // Create a new knowledge base article
         $article               = new Article();
         $article->slug         = 'test';
@@ -247,7 +242,6 @@ SQL
         $article->num_ratings  = 0;
         $article->status       = 'published';
         $article->date_created = new \DateTime();
-        $article->addToCategory($articleCategory);
 
         // Persist them in the entity manager
         $em->persist($team);
@@ -259,7 +253,6 @@ SQL
         $em->persist($task);
         $em->persist($taskAssignment);
         $em->persist($unassignedTask);
-        $em->persist($articleCategory);
         $em->persist($article);
         $em->persist($brand);
         $em->flush();
@@ -927,9 +920,7 @@ SQL
             ;
 
             INSERT INTO `article_categories`
-                (`id`, `brand_id`, `parent_id`, `is_agent`, `is_book`, `template_suffix`, `title`, `slug`, 
-                `display_order`, 
-                `depth`)
+                (`id`, `brand_id`, `parent_id`, `is_agent`, `is_book`, `template_suffix`, `title`, `slug`, `display_order`, `depth`)
             VALUES
                 (1, 1, NULL, 1, 1, NULL, 'Test Category #1', '1', 1, 1),
                 (2, 1, NULL, 0, 0, NULL, 'Test Category #2', '2', 2, 1),

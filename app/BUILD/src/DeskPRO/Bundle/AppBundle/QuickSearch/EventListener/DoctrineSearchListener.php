@@ -29,9 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
@@ -98,7 +101,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
         $qb = $this->em->createQueryBuilder();
         $qb
             ->select('t.id')
-            ->from('DeskPRO:Ticket', 't')
+            ->from(Ticket::class, 't')
             ->setMaxResults($request->getLimit())
             ->orderBy('t.id', 'desc')
             ->where('t.id >= :after_id')
@@ -243,7 +246,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
         }
 
         /** @var \Application\DeskPRO\EntityRepository\Organization $repository */
-        $repository    = $this->em->getRepository('DeskPRO:Organization');
+        $repository    = $this->em->getRepository(Organization::class);
         $organizations = $repository->search($request->getQuery(), 25);
 
         foreach ($organizations as $organization) {
@@ -313,7 +316,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
         $qb = $this->em->createQueryBuilder();
         $qb
             ->select('t.id')
-            ->from('DeskPRO:Ticket', 't')
+            ->from(Ticket::class, 't')
             ->setMaxResults(1)
             ->setFirstResult(10000)
         ;
