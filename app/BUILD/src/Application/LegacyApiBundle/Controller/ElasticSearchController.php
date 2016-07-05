@@ -200,6 +200,9 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 
     protected function checkVersion($url)
     {
+        // todo throw exception on 1.x versions
+        return;
+
         if (!$url) {
             return;
         }
