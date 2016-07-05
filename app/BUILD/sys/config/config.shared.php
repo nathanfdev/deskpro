@@ -682,7 +682,7 @@ $container->loadFromExtension(
                         'mappings' => array(
                             'name'          => array('type' => 'string', 'analyzer' => 'name_analyzer'),
                             'email_domains' => array('type' => 'string', 'analyzer' => 'email_analyzer'),
-                            'labels'        => array('type' => 'string'),
+                            'labels'        => array('analyzer' => 'title_content_analyzer'),
                             'date_created'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
                             'date_active'   => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
                         ),
@@ -699,7 +699,7 @@ $container->loadFromExtension(
                     'chat_conversation' => array(
                         'mappings' => array(
                             'subject'       => array(),
-                            'labels'        => array(),
+                            'labels'        => array('analyzer' => 'title_content_analyzer'),
                             'department_id' => array('type' => 'integer'),
                             'is_agent'      => array('type' => 'boolean'),
                             'agent_id'      => array('type' => 'integer'),
@@ -722,7 +722,7 @@ $container->loadFromExtension(
                             'name'          => array('type' => 'string', 'analyzer' => 'name_analyzer'),
                             'first_name'    => array('type' => 'string', 'analyzer' => 'name_analyzer'),
                             'last_name'     => array('type' => 'string', 'analyzer' => 'name_analyzer'),
-                            'labels'        => array('type' => 'string'),
+                            'labels'        => array('analyzer' => 'title_content_analyzer'),
                             'emails'        => array('type' => 'string', 'analyzer' => 'email_analyzer'),
                             'phone_numbers' => array('type' => 'string', 'analyzer' => 'phone_analyzer'),
                             'date_created'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
@@ -747,7 +747,7 @@ $container->loadFromExtension(
                             'agent_team'      => array('type' => 'integer'),
                             'organization_id' => array('type' => 'integer'),
                             'person_id'       => array('type' => 'integer'),
-                            'labels'          => array(),
+                            'labels'          => array('analyzer' => 'title_content_analyzer'),
                             'participants'    => array(),
                             'messages'        => array(),
                             'date_created'    => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
