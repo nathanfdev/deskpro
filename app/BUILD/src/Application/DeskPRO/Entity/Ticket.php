@@ -3296,17 +3296,17 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function findEmailForPerson(Person $person)
     {
-        if ($this->person == $person) {
+        if ($this->person === $person) {
             if ($this->person_email) {
                 return $this->person_email;
             } else {
                 return $this->person->primary_email;
             }
-        } elseif ($this->agent == $person) {
+        } elseif ($this->agent === $person) {
             return $this->agent->primary_email;
         } else {
             foreach ($this->participants as $part) {
-                if ($part->person == $person) {
+                if ($part->person === $person) {
                     if ($part->person_email) {
                         return $part->person_email;
                     } else {
