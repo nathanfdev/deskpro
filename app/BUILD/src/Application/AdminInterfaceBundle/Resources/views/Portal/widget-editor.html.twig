@@ -3,8 +3,14 @@
     <form class="ui form widget-editor admin-next">
         <div class="ui grid">
             <div class="seven wide column">
-                <h3><i class="icon setting"></i>{{ phrase('admin.widget.settings_heading') }}</h3>
-                <div class="ui styled fluid accordion">
+                <h3>
+                    <i class="icon setting"></i>{{ phrase('admin.widget.settings_heading') }}
+                    <div class="ui toggle checkbox">
+                        <input type="checkbox" id="enabled" ng-model="brand_settings.widget.enabled" class="hidden right">
+                        <label for="enabled">&nbsp;</label>
+                    </div>
+                </h3>
+                <div class="ui styled fluid accordion" ng-hide="!brand_settings.widget.enabled">
                     <div class="element">
                         <div class="title" ng-class="{'active': section == 'button_settings'}">
                             <i class="dropdown icon"></i>
@@ -484,7 +490,7 @@
             <div class="nine wide column">
                 <div class="ui segments">
                     <div class="ui segment embed-help-title" ng-click="show_embed_help = !show_embed_help"
-                        ng-class="{'open': show_embed_help}">
+                        ng-class="{'open': show_embed_help || !brand_settings.widget.enabled}">
                         <img class="circular-plus" src="{{ asset('images/admin/chat-widget/green-circular-plus.svg') }}" />
                         <div class="title-content">
                             <h3>Add widget &amp; chat to your site</h3>
@@ -492,7 +498,7 @@
                         </div>
                         <img class="big-arrow" src="{{ asset('images/admin/chat-widget/green-arrow.svg') }}" />
                     </div>
-                    <div class="ui segment" ng-show="show_embed_help">
+                    <div class="ui segment" ng-show="show_embed_help || !brand_settings.widget.enabled">
                         <label>Embed code</label>
                         <div class="inline fields">
                             <div class="ui twelve wide field">
@@ -562,21 +568,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class="ui segment" ng-show="show_embed_help">
+                    <div class="ui segment" ng-show="show_embed_help || !brand_settings.widget.enabled">
                         <h3>Need more help?</h3>
                         <p>Use the form below and we'll email a member of your team who manages the technical side of
                             things,
                             we'll send them the code and setup instructions.</p>
                         <div class="inline fields">
                             <div class="ui ten wide field">
-                                <input type="email" placeholder="Email address">
+                                <input type="email" ng-model="emailSendInstructions" placeholder="Email address">
                             </div>
                             <div class="ui six wide field">
-                                <button class="ui button">Send Instructions</button>
+                                <button class="ui button" ng-click="Ctrl.sendInstructions()">Send Instructions</button>
                             </div>
                         </div>
                     </div>
-                    <div class="ui segment" ng-show="show_embed_help">
+                    <div class="ui segment" ng-show="show_embed_help || !brand_settings.widget.enabled">
                         <h3>Advanced settings and overrides.</h3>
                         <p>If you'd like more control over how your widget works and it's appearance on different pages,
                             brands
@@ -600,7 +606,7 @@
                     </div>
                 </div>
 
-                <div class="preview" ng-hide="show_embed_help">
+                <div class="preview" ng-hide="show_embed_help || !brand_settings.widget.enabled">
                     <div class="ui inline field" ng-if="false">
                         <label>Preview</label>
                         <div class="ui labeled action input">

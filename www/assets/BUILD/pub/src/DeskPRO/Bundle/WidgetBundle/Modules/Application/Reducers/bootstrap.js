@@ -7,7 +7,8 @@ const initialState = {
   session:  {},
   settings: {
     chat:    {},
-    company: {}
+    company: {},
+    enabled: false
   },
   loaded: false
 };

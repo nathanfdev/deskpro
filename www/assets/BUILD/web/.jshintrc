@@ -1,4 +1,5 @@
 {
+  "predef" : ["define"],
   "laxbreak": true,
   "asi": true,
   "strict": true,

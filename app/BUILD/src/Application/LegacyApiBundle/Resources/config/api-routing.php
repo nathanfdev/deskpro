@@ -7225,8 +7225,8 @@ $collection->create(
 $collection->create(
     'api_reset_demo_run',
     [
-        'path'       => '/reset-demo',
-        'controller' => 'LegacyApiBundle:ResetDemo:run',
+        'path'       => '/reset-helpdesk',
+        'controller' => 'LegacyApiBundle:ResetHelpdesk:run',
         'methods'    => ['POST'],
     ]
 );
@@ -7234,8 +7234,8 @@ $collection->create(
 $collection->create(
     'api_reset_demo_status',
     [
-        'path'       => '/reset-demo/status',
-        'controller' => 'LegacyApiBundle:ResetDemo:status',
+        'path'       => '/reset-helpdesk/status',
+        'controller' => 'LegacyApiBundle:ResetHelpdesk:status',
         'methods'    => ['GET'],
     ]
 );

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Firewall;
 
 use Application\DeskPRO\Auth\LoginProcessor;
@@ -127,6 +128,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
     {
         $anti_abuse  = $this->container->get('anti_abuse');
         $abuse_check = new LoginAbuseCheck($request->get('username'), $request->getClientIp());
+        $request->getSession()->set('last_username', $request->get('username'));
         $abuse_check->setResponse(new RedirectResponse($this->container->get('router')->generate('portal_login')));
         $anti_abuse->check($abuse_check);
         if ($abuse_check->isCaptchaRecommended()) {

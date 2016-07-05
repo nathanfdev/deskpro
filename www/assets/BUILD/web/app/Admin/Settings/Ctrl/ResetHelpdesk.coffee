@@ -1,6 +1,6 @@
 define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-  class Admin_Settings_Ctrl_ResetDemo extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Settings_Ctrl_ResetDemo'
+  class Admin_Settings_Ctrl_ResetHelpdesk extends Admin_Ctrl_Base
+    @CTRL_ID   = 'Admin_Settings_Ctrl_ResetHelpdesk'
     @CTRL_AS   = 'Ctrl'
     @DEPS      = ['$interval']
 
@@ -11,14 +11,14 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
     initialLoad: ->
-      @Api.sendGet('/reset-demo/status').then (res) => @status(res.data)
+      @Api.sendGet('/reset-helpdesk/status').then (res) => @status(res.data)
 
 
 
     status: (data) ->
       @$scope.status = data
       if data.waiting && !@interval
-        refresh = => @Api.sendGet('/reset-demo/status').then (res) => @status(res.data)
+        refresh = => @Api.sendGet('/reset-helpdesk/status').then (res) => @status(res.data)
         @interval = @$interval refresh, 5000
       if !data.waiting && @interval
         @$interval.cancel(@interval)
@@ -30,8 +30,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       return if !@$scope.form_props || @$scope.form_props.$invalid
       post = @$scope.form
       @$scope.form = {}
-      @Api.sendPostJson('/reset-demo', post).then (res) => @status(res.data)
+      @Api.sendPostJson('/reset-helpdesk', post).then (res) => @status(res.data)
 
 
 
-  Admin_Settings_Ctrl_ResetDemo.EXPORT_CTRL()
+  Admin_Settings_Ctrl_ResetHelpdesk.EXPORT_CTRL()

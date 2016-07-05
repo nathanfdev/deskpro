@@ -161,21 +161,18 @@ export class HelpButtonContainer extends React.Component {
 
   render() {
     const { triggerPopupOpened } = this.props;
-
-    return (
-      <div>
-        {triggerPopupOpened &&
-          <OnlineAgentsContainer>
-            {this.renderPopup()}
-          </OnlineAgentsContainer>
-        }
-        <HelpButton
-          {...this.props}
-          ref="button"
-          locationPath={this.state.locationPath}
-          onClick={this.onClick}
-        />
-      </div>
-    );
+    return (<div>
+      {triggerPopupOpened &&
+        <OnlineAgentsContainer>
+          {this.renderPopup()}
+        </OnlineAgentsContainer>
+      }
+      <HelpButton
+        {...this.props}
+        ref="button"
+        locationPath={this.state.locationPath}
+        onClick={this.onClick}
+      />
+    </div>);
   }
 }

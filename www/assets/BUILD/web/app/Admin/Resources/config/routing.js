@@ -245,9 +245,9 @@ define(function() {
   //###
   routes.push({
     id: 'setup.reset_demo',
-    url: '/reset-demo',
-    templateName: 'Settings/reset-demo.html',
-    controller: 'Admin_Settings_Ctrl_ResetDemo'
+    url: '/reset-helpdesk',
+    templateName: 'Settings/reset-helpdesk.html',
+    controller: 'Admin_Settings_Ctrl_ResetHelpdesk'
   });
 
 	//###
@@ -356,8 +356,7 @@ define(function() {
 
   routes.push({
     id: 'agents.usersources.install',
-    url: '/install/{name:\\w+}'
-    ,
+    url: '/install/{name:\\w+}',
     templateName: 'Apps/package-install.html',
     controller: 'Admin_Apps_Ctrl_PackageInstall'
   });
@@ -1602,7 +1601,7 @@ define(function() {
     id: 'portal.portal_editor',
     url: '/portal_editor',
     templateName: 'Portal/portal-editor.html',
-    controller: 'Admin_Portal_Ctrl_PortalEditor'
+    controller: 'AdminPortalCtrlPortalEditor'
   });
 
   //###
@@ -1622,7 +1621,7 @@ define(function() {
 		id: 'portal.widget_editor',
 		url: '/widget_editor',
 		templateName: 'Portal/widget-editor.html',
-		controller: 'Admin_Portal_Ctrl_WidgetEditor'
+		controller: 'AdminPortalCtrlWidgetEditor'
 	});
 
 	//###

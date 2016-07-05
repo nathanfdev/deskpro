@@ -32,17 +32,17 @@ class SelectOption extends React.Component {
     return (
       <li
         ref="row"
-        className={classNames({ focused: isFocused, ['select-option-disabled']: disabled })}
+        className={classNames({ focused: isFocused, 'select-option-disabled': disabled })}
       >
         <a
           onClick={this.onClickOption}
-          className={classNames({ ['active']: active, [`display-depth-${displayDepth}`]: displayDepth > 0 })}
+          className={classNames({ active, [`display-depth-${displayDepth}`]: displayDepth > 0 })}
         >
 
           {multiple && !disabled
             ? <span className={classNames('checkbox', { checked: active })}>
-                <i className="fa fa-check" />
-              </span>
+              <i className="fa fa-check" />
+            </span>
             : null
           }
           <span className="option-title">{option.title}</span>
@@ -206,12 +206,14 @@ export class PortalSimpleSelectBox extends React.Component {
     this.openMenu();
     const visibleOptions = this.getFitleredOptions(this.refs.filterInput.value, this.state.options);
     // current selection if its still visible, or the first result (or nothing if list is empty)
-    const selectedOption = visibleOptions.indexOf(this.state.selectedOption) !== -1 ? this.state.selectedOption : visibleOptions[0] || null;
+    const selectedOption = visibleOptions.indexOf(this.state.selectedOption) !== -1
+      ? this.state.selectedOption
+      : visibleOptions[0] || null;
 
     this.setState({
-      ['visibleOptions']: visibleOptions,
-      ['selectedOption']: selectedOption,
-      filterText:         this.refs.filterInput.value
+      visibleOptions,
+      selectedOption,
+      filterText: this.refs.filterInput.value
     });
   };
 
@@ -317,7 +319,7 @@ export class PortalSimpleSelectBox extends React.Component {
               : this.state.value.title || <span>&nbsp;</span>
             }
           </span>
-          <i className="fa fa-caret-down" />
+          <i className={classNames('fa', 'fa-caret-down', `caret-down_${this.state.id}`)} />
         </div>
       );
     }
@@ -328,7 +330,11 @@ export class PortalSimpleSelectBox extends React.Component {
           {options && options.length > 0
             ? <input
               type="text"
-              placeholder={options.length > 8 ? portalPhrases.get('portal.general.select_search_placeholder') : portalPhrases.get('portal.general.select_placeholder')}
+              placeholder={
+                options.length > 8
+                ? portalPhrases.get('portal.general.select_search_placeholder')
+                : portalPhrases.get('portal.general.select_placeholder')
+              }
               ref="filterInput"
               onKeyDown={this.filterNav}
               onKeyUp={this.filterChange}
@@ -341,7 +347,7 @@ export class PortalSimpleSelectBox extends React.Component {
               onKeyUp={this.filterChange}
             />
           }
-          <i className="fa fa-caret-down" />
+          <i className={classNames('fa', 'fa-caret-down', `caret-down_${this.state.id}`)} />
         </div>
       </div>
     );
@@ -409,7 +415,7 @@ export class PortalSimpleSelectBox extends React.Component {
       <div className={classNames('multiselect', widgetOptions.widgetClassName || null, `level-${this.state.level}`)}>
         <ClickOut
           onClickOut={this.onClickOut}
-          additionalNodes={[`.multiselect-title_${this.state.id}`]}
+          additionalNodes={[`.multiselect-title_${this.state.id}`, `.caret-down_${this.state.id}`]}
           context={context}
         >
           {this.renderStaticHeader()}

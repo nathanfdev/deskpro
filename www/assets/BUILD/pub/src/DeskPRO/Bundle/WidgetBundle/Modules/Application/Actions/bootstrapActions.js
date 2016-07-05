@@ -12,7 +12,7 @@ import {
   widgetSessionChatIdSelector
 } from '../Selectors/bootstrap';
 
-import { liveDemoSelector, noFetchOptionsSelector } from '../Selectors/dpWindow';
+import { liveDemoSelector, noFetchOptionsSelector, widgetEnabledSelector } from '../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
@@ -181,26 +181,29 @@ export const bootstrapWidget = createAction(
       }
 
       Promise.all(promises).then(response => {
-        // possibly reload translations with proper user's lang
-        // do it again when user's session is loaded
-        dispatch(loadPortalPhraseTranslations());
+        const enabled = widgetEnabledSelector(state);
+        if (enabled) {
+          // possibly reload translations with proper user's lang
+          // do it again when user's session is loaded
+          dispatch(loadPortalPhraseTranslations());
 
-        // try to resume chat
-        const onFinish = () => {
-          resolve(response);
-        };
+          // try to resume chat
+          const onFinish = () => {
+            resolve(response);
+          };
 
-        const onError = data => {
-          // Remove from local storage broken chat id
-          if (data && data.code === 400 && data.message === 'wrong_session_code') {
-            dispatch(unsetChatId());
-          }
+          const onError = data => {
+            // Remove from local storage broken chat id
+            if (data && data.code === 400 && data.message === 'wrong_session_code') {
+              dispatch(unsetChatId());
+            }
 
-          onFinish();
-        };
+            onFinish();
+          };
 
-        const promise = dispatch(chatResume());
-        promise.then(onFinish, onError);
+          const promise = dispatch(chatResume());
+          promise.then(onFinish, onError);
+        }
       });
     }
   })

@@ -1,12 +1,13 @@
 define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-  class Admin_Portal_Ctrl_PortalEditor extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_Portal_Ctrl_PortalEditor'
+  class AdminPortalCtrlPortalEditor extends Admin_Ctrl_Base
+    @CTRL_ID = 'AdminPortalCtrlPortalEditor'
     @CTRL_AS = 'Portal'
     @DEPS    = ['$http', '$scope', '$timeout', '$upload', '$modal', 'Growl']
 
     init: =>
       @open_panels = ['theme', 'colors', 'advanced', 'expert']
       @recompiling = false
+      @commiting = false
       @savingMulti = false
       @advanced = {header: '', footer: '', main_scss: '', custom_scss: '', javascript: ''}
       @available_themes = [
@@ -17,7 +18,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         title: '',
         message: ''
       }
-      @welcome_box = angular.copy(@$scope.welcome_box);
+      @welcome_box = angular.copy(@$scope.welcome_box)
 
       @$scope.values = {}
       @values = angular.copy(@$scope.values)
@@ -37,7 +38,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @preview_as = 'myself'
       @preview_as_email = null
       @selected_theme = null
-      @theme_set = null;
+      @theme_set = null
       @refreshPreviewUrl()
 
     save: =>
@@ -109,19 +110,20 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     commit: () =>
       @showConfirm('Are you sure you want to apply this changes to the portal?', 'Confirm save').result.then(
         () =>
+          @commiting = true
           if @isDirtyState()
-            promises = [@saveValues(), @editWelcomeBox()];
+            promises = [@saveValues(), @editWelcomeBox()]
           else
             promises = [true]
           all = @$q.all(promises)
           all.then (
             () =>
               @$http.get('/portal/api/style/edit-theme-set/commit').then(
-                () => @success('Changes were applied to the portal'),
-                () => @serverError(); @recompiling = false
-              );
-          );
-      );
+                () => @success('Changes were applied to the portal'); @commiting = false,
+                () => @serverError(); @commiting = false
+              )
+          )
+      )
 
     discard: () =>
       @showConfirm('Are you sure you want to discard all changes you\'ve made?', 'Confirm discard').result.then(
@@ -133,7 +135,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           all.then(
             () => new Promise( (resolve) => resolve(@refreshPreviewUrl())).then(() => @success('Changes were discarded'); @recompiling = false),
             () => @serverError(); @recompiling = false
-          );
+          )
       )
 
     initialLoad: =>
@@ -253,8 +255,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @css_template_info = false
 
     saveCssEditor: =>
-      data = {};
-      data[@css_template_info.type] = @css_template_info.code;
+      data = {}
+      data[@css_template_info.type] = @css_template_info.code
       @recompiling = true
 
       req = @$http({
@@ -304,7 +306,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
     upload: (files) =>
       for file in files
-        @uploading_files_count++;
+        @uploading_files_count++
         @$upload.upload({
           url: '/portal/api/style/edit-theme-set/assets',
           file: file
@@ -314,7 +316,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
             @asset_files.unshift(response.data.data)
           ,
           () => @error('Server error occurred. Unable to upload files.')
-        );
+        )
 
     uploadLogo: (files) =>
       @$upload
@@ -322,7 +324,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         .then(
           (response) => @custom_logo = response.data.data.url,
           () => @error('Server error occurred. Unable to upload files.')
-        );
+        )
 
     copyUrl: (file) =>
       window.prompt('Copy this:', file.url)
@@ -335,7 +337,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       return false
 
     notifyUrlCopied: () =>
-      @Growl.success('File URL was copied to your clipboard');
+      @Growl.success('File URL was copied to your clipboard')
       return
 
     delete: (file) =>
@@ -355,7 +357,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     expandAdvanced: () => @is_advanced_expanded = true
 
     canPreview: =>
-      !@recompiling and !@savingMulti and (@preview_as is 'guest' or @preview_as is 'myself' or @preview_as_email)
+      !@commiting and !@recompiling and !@savingMulti and (@preview_as is 'guest' or @preview_as is 'myself' or @preview_as_email)
 
     previewAs: (mode) =>
       @preview_as = mode
@@ -368,7 +370,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       modalInstance = @$modal.open({
         templateUrl: @getTemplatePath('Portal/Editor/email-modal.html'),
         controller: ['$scope', '$modalInstance', '$http', 'preview_as', ($scope, $modalInstance, $http, preview_as) ->
-          $scope.email = '';
+          $scope.email = ''
           $scope.preview_as = preview_as
           $scope.ok = () -> $modalInstance.close(@email)
           $scope.cancel = () -> $modalInstance.dismiss('cancel')
@@ -379,11 +381,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         resolve: {
           preview_as: () => @preview_as
         }
-      });
+      })
       modalInstance.result.then((email) => @preview_as_email = email; @refreshPreviewUrl())
 
     error: (message) => @showAlert(message, 'Changes were not applied')
     success: (message) => @showAlert(message, 'Changes were applied')
     serverError: (message) => @error('Server error occurred. Unable to save data (' + message.message + ').')
 
-  Admin_Portal_Ctrl_PortalEditor.EXPORT_CTRL()
+  AdminPortalCtrlPortalEditor.EXPORT_CTRL()

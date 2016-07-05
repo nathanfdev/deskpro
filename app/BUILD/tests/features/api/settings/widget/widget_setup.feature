@@ -20,6 +20,7 @@ Feature: Widget Setup
     And the JSON node "data.settings.global.chat.email_validation" should be equal to 0
 
     And the JSON node "data.settings.brand.widget.type" should be equal to the string "column"
+    And the JSON node "data.settings.brand.widget.enabled" should be equal to true
     And the JSON node "data.settings.brand.widget.position" should be equal to the string "right"
     And the JSON node "data.settings.brand.widget.agent_polling_timeout" should be equal to 0
     And the JSON node "data.settings.brand.button.size" should be equal to the string "medium"
@@ -62,7 +63,8 @@ Feature: Widget Setup
     "widget": {
       "type": "bubble",
       "position": "left",
-      "agent_polling_timeout": 400
+      "agent_polling_timeout": 400,
+      "enabled": true
     },
     "button": {
       "translations": [
@@ -118,6 +120,7 @@ Feature: Widget Setup
     And the JSON node "data.enabled_on_portal" should be equal to 0
 
     And the JSON node "data.settings.brand.widget.type" should be equal to the string "bubble"
+    And the JSON node "data.settings.brand.widget.enabled" should be equal to true
     And the JSON node "data.settings.brand.widget.position" should be equal to the string "left"
     And the JSON node "data.settings.brand.widget.agent_polling_timeout" should be equal to 400
     And the JSON node "data.settings.brand.button.translations[0].language" should be equal to 1
@@ -155,7 +158,8 @@ Feature: Widget Setup
     "widget": {
       "type": "column",
       "position": "right",
-      "agent_polling_timeout": 400
+      "agent_polling_timeout": 400,
+      "enabled": true
     },
     "button": {
       "translations": [
@@ -200,6 +204,7 @@ Feature: Widget Setup
     And the JSON node "data.enabled_on_portal" should be equal to 1
 
     And the JSON node "data.settings.brand.widget.type" should be equal to the string "column"
+    And the JSON node "data.settings.brand.widget.enabled" should be equal to true
     And the JSON node "data.settings.brand.widget.position" should be equal to the string "right"
     And the JSON node "data.settings.brand.widget.agent_polling_timeout" should be equal to 400
     And the JSON node "data.settings.brand.button.translations[0].name" should be equal to the string "Help (edited)"
