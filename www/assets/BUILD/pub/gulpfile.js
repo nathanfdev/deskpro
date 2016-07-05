@@ -1,19 +1,26 @@
-const gulp = require('gulp');
-const gutil = require('gulp-util');
-const webpack = require('webpack');
-const express = require('express');
-const cors = require('cors');
-const del = require('del');
-const runSeq = require('run-sequence');
-const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const gulp                  = require('gulp');
+const gutil                 = require('gulp-util');
+const webpack               = require('webpack');
+const express               = require('express');
+const cors                  = require('cors');
+const del                   = require('del');
+const runSeq                = require('run-sequence');
+const path                  = require('path');
+const ExtractTextPlugin     = require('extract-text-webpack-plugin');
 const WebpackNotifierPlugin = require('webpack-notifier');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const babel = require('babel-core');
-const uglify = require('uglify-js');
-const fs = require('fs');
-const sass = require('node-sass');
-const reducerRefresh = require('./build-tools/app-reducer-gen/loader').refreshBundle;
+const CopyWebpackPlugin     = require('copy-webpack-plugin');
+const babel                 = require('babel-core');
+const uglify                = require('uglify-js');
+const fs                    = require('fs');
+const sass                  = require('node-sass');
+const reducerRefresh        = require('./build-tools/app-reducer-gen/loader').refreshBundle;
+const slate                 = require('gulp-slate');
+const spawn                 = require('child_process').spawn;
+const webpackDevMiddleware  = require('webpack-dev-middleware');
+const webpackHotMiddleware  = require('webpack-hot-middleware');
+
+const bowerDir       = path.resolve(__dirname, './bower_components');
+const nodeModulesDir = path.resolve(__dirname, './node_modules');
 
 // ######################################################################################################################
 // # Task Runners
@@ -69,66 +76,59 @@ gulp.task('priv:start-prod', () => {
 });
 
 // ######################################################################################################################
-// # Bundler
+// # Helpers
 // ######################################################################################################################
 
 function refreshWidgetLoader(loaderFilename) {
-  const loaderFilePath = '/' + loaderFilename + '.js';
-  const minLoaderFilePath = '/' + loaderFilename + '.min.js';
+  const loaderFilePath    = `/${loaderFilename}.js`;
+  const minLoaderFilePath = `/${loaderFilename}.min.js`;
+  const widgetBundlePath  = path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle');
+  const utilCode          = fs.readFileSync(`${widgetBundlePath}/deskpro_loader_util.js`).toString();
+  const buildDir          = path.join(__dirname, 'build');
 
-  var loaderCode = fs.readFileSync(path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle') + loaderFilePath).toString();
-  var utilCode   = fs.readFileSync(path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle') + '/deskpro_loader_util.js').toString();
+  if (!fs.existsSync(buildDir)) {
+    fs.mkdirSync(buildDir);
+  }
+  console.log(`Writing ${loaderFilePath}`);
 
-  loaderCode = loaderCode.replace('// #include deskpro_loader_utils.js', utilCode);
+  const loaderCode = fs.readFileSync(widgetBundlePath + loaderFilePath).toString()
+    .replace('// #include deskpro_loader_utils.js', utilCode);
 
-  console.log('Writing ' + loaderFilePath);
-  loaderCode = babel.transform(
+  const transformedLoaderCode = babel.transform(
     loaderCode,
-    { 'presets': ['es2015', 'react', 'stage-0'] }
+    { presets: ['es2015', 'react', 'stage-0'] }
   ).code;
+  fs.writeFileSync(buildDir + loaderFilePath, transformedLoaderCode);
 
   try {
-    var loaderCodemin = uglify.minify(loaderCode, {
-      'fromString': true
-    }).code;
+    const loaderCodemin = uglify.minify(transformedLoaderCode, { fromString: true }).code;
+    fs.writeFileSync(path.join(__dirname, 'build') + minLoaderFilePath, loaderCodemin);
   } catch (e) {
     console.log('Trying to minify:\n');
-    console.log(loaderCode);
+    console.log(transformedLoaderCode);
     console.log('\n\n');
     console.error(e);
     return;
   }
 
-  var buildDir = path.join(__dirname, 'build');
-
-  if (!fs.existsSync(buildDir)) {
-    fs.mkdirSync(buildDir);
-  }
-
-  fs.writeFileSync(buildDir + loaderFilePath, loaderCode);
-  fs.writeFileSync(path.join(__dirname, 'build') + minLoaderFilePath, loaderCodemin);
-  console.log('.. done writing ' + loaderFilename);
+  console.log(`... done writing ${loaderFilename}`);
 
   // Refresh precompiled-fontawesome
   console.log('Writing precompiled-fontawesome.css:');
-  const faInPath  = __dirname + '/src/DeskPRO/Bundle/PortalBundle/Resources/style/precompiled-fontawesome.scss';
-  const faOutPath = __dirname + '/src/DeskPRO/Bundle/PortalBundle/Resources/style/precompiled-fontawesome.css';
-  const faResult = sass.renderSync({
-    file: faInPath,
-    outFile: faOutPath,
-    includePaths: [
-      path.resolve(__dirname, './bower_components'),
-      path.resolve(__dirname, './node_modules')
-    ]
+  const faInPath  = `${__dirname}/src/DeskPRO/Bundle/PortalBundle/Resources/style/precompiled-fontawesome.scss`;
+  const faOutPath = `${__dirname}/src/DeskPRO/Bundle/PortalBundle/Resources/style/precompiled-fontawesome.css`;
+  const faResult  = sass.renderSync({
+    file:         faInPath,
+    outFile:      faOutPath,
+    includePaths: [bowerDir, nodeModulesDir]
   });
   fs.writeFileSync(faOutPath, faResult.css);
-  console.log('.. done writing ' + faOutPath);
+  console.log(`... done writing ${faOutPath}`);
 }
 
 function refreshPortalDesignerVariables() {
-  var spawn = require('child_process').spawn;
   process.chdir('../web');
-  var child = spawn('gulp', ['sassdoc']);
+  const child = spawn('gulp', ['sassdoc']);
 
   // Print output from Gulpfile
   child.stdout.on('data', data => {
@@ -139,6 +139,249 @@ function refreshPortalDesignerVariables() {
 
   process.chdir('../pub');
 }
+/**
+ * @param {String}  mode          all, agent, portal
+ * @param {Boolean} isProd        To add settings for prod such as uglify and source maps
+ * @returns {Object}
+ */
+function getWebpackConfig(mode, isProd) {
+  const config = {
+    cache:   true,
+    entry:   {},
+    devtool: isProd ? 'source-map' : 'eval',
+
+    output: {
+      path:              path.join(__dirname, 'build/'),
+      publicPath:        isProd ? '/pub/build/' : 'http://localhost:9666/pub/build/',
+      filename:          '[name].js',
+      sourceMapFilename: '[name].map'
+    },
+
+    resolve: {
+      root: [
+        path.join(__dirname, 'src'),
+        path.join(__dirname, 'src/DeskPRO/Component'),
+        path.join(__dirname, 'src/DeskPRO/Dev'),
+        path.join(__dirname, 'built-tools')
+      ],
+
+      alias: {
+        invariant:              'fbjs/lib/invariant',
+        warning:                'fbjs/lib/warning',
+        'jquery.ui':            'jquery-ui',
+        'jquery.ui.widget':     'jquery.ui.widget/jquery.ui.widget',
+        'jquery.serializejson': 'jquery-serializejson/jquery.serializejson'
+      }
+    },
+
+    resolveLoader: {
+      modulesDirectories: ['web_loaders', 'web_modules', 'node_loaders', 'node_modules', 'build-tools']
+    },
+
+    module: {
+      preLoaders: [
+        {
+          test:    /\/Reducers\/.*?\.js$/,
+          loader:  'app-reducer-gen',
+          include: [
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/AppBundle/Modules'),
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Modules'),
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle/Modules')
+          ]
+        }
+      ],
+
+      loaders: [
+        {
+          test:    /\.js$/,
+          loader:  'babel?cacheDirectory',
+          include: [
+            path.resolve(__dirname, 'src/DeskPRO')
+          ],
+          exclude: [
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Legacy')
+          ]
+        },
+        {
+          test:    /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg|mp3|ogg|wav)(\?|$)/,
+          loader:  'file-loader?context=src&name=[path][name].[ext]',
+          include: [
+            path.resolve(__dirname, 'src/DeskPRO'),
+            path.resolve(__dirname, 'node_modules/bourbon'),
+            path.resolve(__dirname, 'node_modules/bourbon-neat'),
+            path.resolve(__dirname, 'node_modules/font-awesome'),
+            path.resolve(__dirname, 'node_modules/intl-tel-input'),
+            path.resolve(__dirname, 'node_modules/cropper')
+          ]
+        },
+        {
+          test:    /\.scss$/,
+          include: [
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Resources/style'),
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/PortalBundle/Resources/style'),
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/AppBundle/Resources/style'),
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle')
+          ],
+
+          loader: ExtractTextPlugin.extract('style-loader',
+            `css-loader?sourceMap!sass-loader?sourceMap&outputStyle=expanded&includePaths[]=${bowerDir}&includePaths[]=${nodeModulesDir}`,
+            { publicPath: './' }
+          )
+        },
+        {
+          test:   /\.json/,
+          loader: 'json-loader'
+        }
+      ],
+      noParse: [/\.min\.js/]
+    },
+
+    plugins: [
+      new WebpackNotifierPlugin(),
+      new ExtractTextPlugin('[name].css'),
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': (isProd ? '"production"' : '"development"'),
+        __DEV__:                !isProd
+      }),
+      new webpack.ProvidePlugin({
+        $:      'jquery',
+        jQuery: 'jquery'
+      }),
+      new CopyWebpackPlugin([
+        { from: path.resolve(__dirname, 'src/DeskPRO/Bundle/PortalBundle'), to: 'DeskPRO/Bundle/PortalBundle' }
+      ])
+    ]
+  };
+
+  if (mode === 'all' || mode === 'portal') {
+    config.entry.widget_loader               = ['./src/DeskPRO/Bundle/WidgetBundle/widget_loader.js'];
+    config.entry.widget_loader.min           = [path.join(__dirname, 'build/widget_loader.min.js')];
+    config.entry.embed_loader                = ['./src/DeskPRO/Bundle/WidgetBundle/embed_loader.js'];
+    config.entry.iframeResizer_contentWindow = ['./node_modules/iframe-resizer/js/iframeResizer.contentWindow.js'];
+    config.entry.DeskPRO_PortalBundle        = ['./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle'];
+
+    config.entry.DeskPRO_PortalBundle_style     = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-ltr-style.scss'];
+    config.entry.DeskPRO_PortalBundle_rtl_style = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-rtl-style.scss'];
+
+    config.entry.DeskPRO_PortalBundle_vendors_style = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/vendors-style.scss'];
+
+    config.entry.DeskPRO_PortalBundle_iestyle  = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie-overrides.scss'];
+    config.entry.DeskPRO_PortalBundle_ie8style = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie8-overrides.scss'];
+    config.entry.DeskPRO_PortalBundle_ie9style = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie9-overrides.scss'];
+
+    config.entry.api_message_style = ['./src/DeskPRO/Bundle/AppBundle/Resources/style/api/message.scss'];
+
+    config.entry.DeskPRO_PortalBundle_print_style = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/print-style.scss'];
+  }
+  if (mode === 'all' || mode === 'widget') {
+    config.entry.DeskPRO_WidgetBundle        = ['./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_WidgetBundle'];
+    config.entry.DeskPRO_WidgetBundle_style  = ['./src/DeskPRO/Bundle/WidgetBundle/Resources/style/widget-style.scss'];
+    config.entry.DeskPRO_EmbedFormBundle     = ['./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_EmbedFormBundle'];
+    config.entry.DeskPRO_EmbedHelpdeskBundle = ['./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_EmbedHelpdeskBundle'];
+  }
+  if (mode === 'all' || mode === 'agent') {
+    config.entry.phonenumber_utils         = ['./node_modules/intl-tel-input/lib/libphonenumber/build/utils'];
+    config.entry.DeskPRO_AgentBundle       = ['./src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle'];
+    config.entry.DeskPRO_AgentBundle_style = ['./src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss'];
+  }
+
+  //---
+  // Prod settings
+  //---
+
+  if (isProd) {
+    config.plugins.push(new webpack.optimize.UglifyJsPlugin({
+      exclude: [/(node_modules|bower_components)/]
+    }));
+  } else {
+    //---
+    // Dev server stuff
+    //---
+    config.debug           = true;
+    config.output.pathinfo = true;
+    config.plugins.push(new webpack.HotModuleReplacementPlugin());
+    config.plugins.push(new webpack.NoErrorsPlugin());
+
+    // .js loader
+    config.module.loaders[0].loaders = ['react-hot-loader', 'babel-loader?stage=0'];
+
+    if (config.entry.DeskPRO_AgentBundle) {
+      config.entry.DeskPRO_AgentBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
+    }
+    if (config.entry.DeskPRO_WidgetBundle) {
+      config.entry.DeskPRO_WidgetBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
+    }
+  }
+
+  return config;
+}
+// ######################################################################################################################
+// # Bundler
+// ######################################################################################################################
+
+/**
+ * @param {Object} config
+ * @param {Function} callback
+ */
+function runWebpackBundle(config, callback) {
+  webpack(config, (err, stats) => {
+    if (err) {
+      throw new gutil.PluginError('bundle', err);
+    }
+
+    gutil.log('[bundle]', stats.toString({
+      colors: true
+    }));
+    callback();
+  });
+}
+
+/**
+ * @param {Object} config
+ * @return {express}
+ */
+function startWebpackServer(config) {
+  const app      = express();
+  const compiler = webpack(config);
+  app.use(webpackDevMiddleware(compiler, {
+    publicPath:         config.output.publicPath,
+    hot:                true,
+    historyApiFallback: true,
+    stats:              {
+      colors:       true,
+      chunks:       true,
+      source:       false,
+      chunkOrigins: false,
+      reasons:      false,
+      cached:       false,
+      hash:         false,
+      assets:       false,
+      version:      false
+    }
+  }));
+
+  app.use(webpackHotMiddleware(compiler));
+  app.use(cors());
+  app.listen(9666, '0.0.0.0', (err) => {
+    if (err) {
+      throw new gutil.PluginError('webpack-dev-server', err);
+    }
+
+    gutil.log('[webpack-dev-server]', 'http://localhost:9666/');
+    gutil.log('[webpack-dev-server]', 'In your config.paths.php, ensure these lines exists: ');
+    gutil.log('[webpack-dev-server]', '\r\n$PATHS_CONFIG[\'asset_paths\'][\'app_assets\'] = [' +
+      '\r\n    \'type\' => \'url\',' +
+      '\r\n    \'value\' => \'http://localhost:9666/pub/build/\'' +
+      '\r\n];'
+    );
+  });
+
+  return app;
+}
+
+// ######################################################################################################################
+// # Task Runners
+// ######################################################################################################################
 
 gulp.task('refresh-reducers', () => {
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
@@ -205,275 +448,29 @@ gulp.task('bundle:dev-server:widget', () => {
   startWebpackServer(getWebpackConfig('widget', false));
 });
 
-var slate = require('gulp-slate');
 
-gulp.task('slate', function() {
-
-  return new Promise(function(resolve, reject) {
-    var options = {
-      scss: '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/slate.scss',
-      style: 'androidstudio',
-      logo: 'static/Common/deskpro-logo_2x.png',
+gulp.task('slate', () => new Promise(
+  (resolve, reject) => {
+    const options = {
+      scss:     '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/slate.scss',
+      style:    'androidstudio',
+      logo:     'static/Common/deskpro-logo_2x.png',
       template: '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/layouts/layout.html'
     };
     gulp.src(
       [
         '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/source/index.html.twig.md'
       ]
-      )
+    )
       .pipe(slate(options))
       .on('erorr', reject)
       .pipe(gulp.dest('build/apidocs'))
-      .on('end', function() {
+      .on('end', () => {
         gulp.src(['build/apidocs/index.html.twig'])
           .pipe(gulp.dest(
             '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/views/apidocs/'
           ))
           .on('end', resolve);
       });
-  });
-});
-
-// ######################################################################################################################
-// # Helpers
-// ######################################################################################################################
-
-/**
- * @param {String}  mode          all, agent, portal
- * @param {Boolean} isProd        To add settings for prod such as uglify and source maps
- * @returns {Object}
- */
-function getWebpackConfig(mode, isProd) {
-  var isDevServer = !isProd;
-
-  var config = {
-    cache: true,
-    entry: {},
-    output: {
-      path: path.join(__dirname, 'build/'),
-      publicPath: '/pub/build/',
-      filename: '[name].js',
-      sourceMapFilename: '[name].map'
-    },
-    resolve: {
-      root: [
-        path.join(__dirname, 'src'),
-        path.join(__dirname, 'src/DeskPRO/Component'),
-        path.join(__dirname, 'src/DeskPRO/Dev'),
-        path.join(__dirname, 'built-tools')
-      ],
-      alias: {
-        'invariant': 'fbjs/lib/invariant',
-        'warning': 'fbjs/lib/warning',
-        'jquery.ui': 'jquery-ui',
-        'jquery.ui.widget': 'jquery.ui.widget/jquery.ui.widget',
-        'jquery.serializejson': 'jquery-serializejson/jquery.serializejson'
-      }
-    },
-    resolveLoader: {
-      modulesDirectories: ['web_loaders', 'web_modules', 'node_loaders', 'node_modules', 'build-tools']
-    },
-    devtool: 'eval',
-    module: {
-      preLoaders: [
-        {
-          test: /\/Reducers\/.*?\.js$/,
-          include: [
-            path.resolve(__dirname, 'src/DeskPRO/Bundle/AppBundle/Modules'),
-            path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Modules'),
-            path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle/Modules')
-          ],
-          loader: 'app-reducer-gen'
-        }
-      ],
-      loaders: [
-        {
-          test: /\.js$/,
-          include: [
-            path.resolve(__dirname, 'src/DeskPRO')
-          ],
-          exclude: [
-            path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Legacy')
-          ],
-          loader: 'babel'
-        },
-        {
-          test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg|mp3|ogg|wav)(\?|$)/,
-          loader: 'file-loader?context=src&name=[path][name].[ext]',
-          include: [
-            path.resolve(__dirname, 'src/DeskPRO'),
-            path.resolve(__dirname, 'node_modules/bourbon'),
-            path.resolve(__dirname, 'node_modules/bourbon-neat'),
-            path.resolve(__dirname, 'node_modules/font-awesome'),
-            path.resolve(__dirname, 'node_modules/intl-tel-input'),
-            path.resolve(__dirname, 'node_modules/cropper')
-          ]
-        },
-        {
-          test: /\.scss$/,
-          include: [
-            path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Resources/style'),
-            path.resolve(__dirname, 'src/DeskPRO/Bundle/PortalBundle/Resources/style'),
-            path.resolve(__dirname, 'src/DeskPRO/Bundle/AppBundle/Resources/style'),
-            path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle')
-          ],
-          loader: ExtractTextPlugin.extract('style-loader',
-            'css-loader?sourceMap!sass-loader?sourceMap&outputStyle=expanded&' +
-            'includePaths[]=' + (path.resolve(__dirname, './bower_components')) + '&' +
-            'includePaths[]=' + (path.resolve(__dirname, './node_modules')),
-            { 'publicPath': './' }
-          )
-        },
-        {
-          test: /\.json/,
-          loader: 'json-loader'
-        }
-      ],
-      noParse: []
-    },
-    plugins: [
-      new WebpackNotifierPlugin(),
-      new ExtractTextPlugin('[name].css'),
-      new webpack.DefinePlugin({
-        'process.env.NODE_ENV': (isProd ? '\"production\"' : '\"development\"'),
-        '__DEV__': !isProd
-      }),
-      new webpack.ProvidePlugin({
-        $: 'jquery',
-        jQuery: 'jquery'
-      }),
-      new CopyWebpackPlugin([
-        { from: path.resolve(__dirname, 'src/DeskPRO/Bundle/PortalBundle'), to: 'DeskPRO/Bundle/PortalBundle' }
-      ])
-    ]
-  };
-
-  if (mode === 'all' || mode === 'portal') {
-    config.entry['widget_loader'] = ['./src/DeskPRO/Bundle/WidgetBundle/widget_loader.js'];
-    config.entry['widget_loader.min'] = [path.join(__dirname, 'build/widget_loader.min.js')];
-    config.entry['embed_loader'] = ['./src/DeskPRO/Bundle/WidgetBundle/embed_loader.js'];
-    config.entry['iframeResizer_contentWindow'] = ['./node_modules/iframe-resizer/js/iframeResizer.contentWindow.js'];
-    config.entry['DeskPRO_PortalBundle'] = ['./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle'];
-
-    config.entry['DeskPRO_PortalBundle_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-ltr-style.scss'];
-    config.entry['DeskPRO_PortalBundle_rtl_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-rtl-style.scss'];
-
-    config.entry['DeskPRO_PortalBundle_vendors_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/vendors-style.scss'];
-
-    config.entry['DeskPRO_PortalBundle_iestyle'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie-overrides.scss'];
-    config.entry['DeskPRO_PortalBundle_ie8style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie8-overrides.scss'];
-    config.entry['DeskPRO_PortalBundle_ie9style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie9-overrides.scss'];
-
-    config.entry['api_message_style'] = ['./src/DeskPRO/Bundle/AppBundle/Resources/style/api/message.scss'];
-
-    config.entry['DeskPRO_PortalBundle_print_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/print-style.scss'];
-  }
-  if (mode === 'all' || mode === 'widget') {
-    config.entry['DeskPRO_WidgetBundle'] = ['./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_WidgetBundle'];
-    config.entry['DeskPRO_WidgetBundle_style'] = ['./src/DeskPRO/Bundle/WidgetBundle/Resources/style/widget-style.scss'];
-    config.entry['DeskPRO_EmbedFormBundle'] = ['./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_EmbedFormBundle'];
-    config.entry['DeskPRO_EmbedHelpdeskBundle'] = ['./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_EmbedHelpdeskBundle'];
-  }
-  if (mode === 'all' || mode === 'agent') {
-    config.entry['phonenumber_utils'] = ['./node_modules/intl-tel-input/lib/libphonenumber/build/utils'];
-    config.entry['DeskPRO_AgentBundle'] = ['./src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle'];
-    config.entry['DeskPRO_AgentBundle_style'] = ['./src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss'];
-  }
-
-  //---
-  // Prod settings
-  //---
-
-  if (isProd) {
-    config.devtool = 'source-map';
-    config.plugins.push(new webpack.optimize.UglifyJsPlugin({
-      exclude: [/(node_modules|bower_components)/]
-    }));
-  }
-
-  //---
-  // Dev server stuff
-  //---
-
-  if (isDevServer) {
-    config.debug = true;
-
-    config.output.publicPath = 'http://localhost:9666/pub/build/';
-
-    config.plugins.push(new webpack.HotModuleReplacementPlugin());
-    config.plugins.push(new webpack.NoErrorsPlugin());
-
-    // .js loader
-    config.module.loaders[0].loaders = ['react-hot-loader', 'babel-loader?stage=0'];
-
-    if (config.entry['DeskPRO_AgentBundle']) {
-      config.entry['DeskPRO_AgentBundle'].unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
-    }
-    if (config.entry['DeskPRO_WidgetBundle']) {
-      config.entry['DeskPRO_WidgetBundle'].unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
-    }
-  }
-
-  return config;
-}
-
-/**
- * @param {Object} config
- * @param {Function} callback
- */
-function runWebpackBundle(config, callback) {
-  webpack(config, (err, stats) => {
-    if (err) {
-      throw new gutil.PluginError('bundle', err);
-    }
-
-    gutil.log('[bundle]', stats.toString({
-      colors: true
-    }));
-    callback();
-  });
-}
-
-/**
- * @param {Object} config
- * @return {express}
- */
-function startWebpackServer(config) {
-  var app = express();
-  var compiler = webpack(config);
-
-  app.use(require('webpack-dev-middleware')(compiler, {
-    publicPath: config.output.publicPath,
-    hot: true,
-    historyApiFallback: true,
-    stats: {
-      colors: true,
-      chunks: true,
-      source: false,
-      chunkOrigins: false,
-      reasons: false,
-      cached: false,
-      hash: false,
-      assets: false,
-      version: false
-    }
-  }));
-
-  app.use(require('webpack-hot-middleware')(compiler));
-  app.use(cors());
-  app.listen(9666, '0.0.0.0', (err) => {
-    if (err) {
-      throw new gutil.PluginError('webpack-dev-server', err);
-    }
-
-    gutil.log('[webpack-dev-server]', 'http://localhost:9666/');
-    gutil.log('[webpack-dev-server]', 'In your config.paths.php, ensure these lines exists: ');
-    gutil.log('[webpack-dev-server]', '\r\n$PATHS_CONFIG[\'asset_paths\'][\'app_assets\'] = [' +
-      '\r\n    \'type\' => \'url\',' +
-      '\r\n\    \'value\' => \'http://localhost:9666/pub/build/\'' +
-      '\r\n];'
-    );
-  });
-
-  return app;
-}
+  })
+);
