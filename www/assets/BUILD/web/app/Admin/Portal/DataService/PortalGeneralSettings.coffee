@@ -35,17 +35,17 @@ define ['DeskPRO/Util/Util'], (Util)  ->
       d = @$q.defer()
 
       if @settingPromise[@brandId]
-        @settingPromise[@brandId].then((r) =>
+        @settingPromise[@brandId].then((r) ->
           d.resolve(Util.clone(r, true))
-        , (r, s) =>
+        , (r, s) ->
           d.reject(r, s)
         )
       else if @settings && @settings.brand == @brandId
         d.resolve(Util.clone(@settings, true))
       else
-        @_loadSettings().then((r) =>
+        @_loadSettings().then((r) ->
           d.resolve(Util.clone(r.data.data, true))
-        , (r, s) =>
+        , (r, s) ->
           d.reject(r, s)
         )
 
@@ -82,19 +82,19 @@ define ['DeskPRO/Util/Util'], (Util)  ->
     updateSettings: (settings) ->
       d = @$q.defer()
 
-      data = angular.copy(settings);
+      data = angular.copy(settings)
 
       # Virtual value we don't want to save it
-      delete data.portal_mode;
-      delete data.enable_brand_logo;
+      delete data.portal_mode
+      delete data.enable_brand_logo
 
-      @Api2.sendPostJson('/settings/brands/'+@brandId+'/portal/general', data).then((res) =>
-        @_loadSettings().then(=>
+      @Api2.sendPostJson('/settings/brands/'+@brandId+'/portal/general', data).then((res) ->
+        @_loadSettings().then(->
           d.resolve(res.data.data)
-        , =>
+        , ->
           d.resolve(res.data.data)
         )
-      , (res, status) =>
+      , (res, status) ->
         d.reject(res, status)
       )
 
