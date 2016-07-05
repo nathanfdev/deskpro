@@ -28,6 +28,8 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use DpSys\LowError\SystemErrorHandler;
+
 class Build1467654103 extends AbstractBuild
 {
     public function run()
@@ -123,7 +125,12 @@ SQL;
                 $changeSQL .= ', DROP INDEX '.$index->getName();
             }
 
-            $this->execSlowAlterTable($parameters['data_table'], $changeSQL);
+            try {
+                $this->execSlowAlterTable($parameters['data_table'], $changeSQL);
+            } catch (\Exception $e) {
+                $this->out('!!! Warning: Alter failed: '.$e->getMessage());
+                SystemErrorHandler::logException($e);
+            }
         }
     }
 }
