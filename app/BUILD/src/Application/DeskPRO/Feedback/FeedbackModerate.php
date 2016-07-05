@@ -104,12 +104,15 @@ class FeedbackModerate implements PersonContextInterface
      */
     public function approveFeedback(Feedback $feedback)
     {
-        $feedback->setIsReviewed(true);
+        $becameReviewed = false;
         if ($feedback->getStatus() === Feedback::STATUS_HIDDEN) {
             $statusCategory = $this->feedbackDataService->getFeedbackFirstStatusCategoryByType();
             $feedback
                 ->setStatus(Feedback::STATUS_ACTIVE)
                 ->setStatusCategory($statusCategory);
+        } else {
+            $becameReviewed = true;
+            $feedback->setIsReviewed(true);
         }
 
         $this->em->getConnection()->beginTransaction();
@@ -122,24 +125,26 @@ class FeedbackModerate implements PersonContextInterface
             throw $e;
         }
 
-        $agent  = $this->personContext;
-        $mailer = $this->mailer;
+        if ($becameReviewed) {
+            $agent  = $this->personContext;
+            $mailer = $this->mailer;
 
-        $this->translator->setTemporaryLanguage(
-            $feedback->getPerson()->getLanguage(),
-            function () use ($mailer, $feedback, $agent) {
-                $vars = [
-                    'feedback' => $feedback,
-                    'agent'    => $agent,
-                ];
+            $this->translator->setTemporaryLanguage(
+                $feedback->getPerson()->getLanguage(),
+                function () use ($mailer, $feedback, $agent) {
+                    $vars = [
+                        'feedback' => $feedback,
+                        'agent'    => $agent,
+                    ];
 
-                $message = $mailer->createMessage();
-                $message->setToPerson($feedback->getPerson());
-                $message->setTemplate('DeskPRO:emails_user:feedback-approved.html.twig', $vars);
+                    $message = $mailer->createMessage();
+                    $message->setToPerson($feedback->getPerson());
+                    $message->setTemplate('DeskPRO:emails_user:feedback-approved.html.twig', $vars);
 
-                $mailer->send($message);
-            }
-        );
+                    $mailer->send($message);
+                }
+            );
+        }
     }
 
     /**

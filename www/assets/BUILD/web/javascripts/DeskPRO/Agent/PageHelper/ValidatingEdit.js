@@ -44,22 +44,18 @@ DeskPRO.Agent.PageHelper.ValidatingEdit = new Orb.Class({
 				type: 'POST',
 				context: this,
 				dataType: 'json',
-				success: function(info) {
-					if (info.next_url) {
-						DeskPRO_Window.runPageRoute('page:' + info.next_url);
-					}
-
+				success: function() {
 					DeskPRO_Window.getMessageBroker().sendMessage('publish.validating.list-remove', {
 						typename: this.options.typename,
 						contentId: this.options.contentId
 					});
 
-					DeskPRO_Window.removePage(this.page);
-
 					if (DeskPRO_Window.sections.feedback_section) {
 						DeskPRO_Window.sections.feedback_section.reload();
 					}
 					this.triggers.inAction = false;
+					DeskPRO_Window.removePage(this.page);
+					DeskPRO_Window.runPageRoute('page:' + this.page.meta.url);
 				}
 			});
 		}
