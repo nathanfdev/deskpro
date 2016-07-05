@@ -236,3 +236,12 @@ www/assets/BUILD/pub/bin/chromedriver
 www/assets/BUILD/pub/bin/selenium.jar
 www/assets/BUILD/pub/src/tests/E2E/config.js
 www/assets/BUILD/pub/nightwatch.conf.js
+
+# Ignore other builds
+/app/*
+!/app/bin
+!/app/BUILD
+!/app/run
+/www/assets/*
+!/www/assets/index.html
+!/www/assets/BUILD
