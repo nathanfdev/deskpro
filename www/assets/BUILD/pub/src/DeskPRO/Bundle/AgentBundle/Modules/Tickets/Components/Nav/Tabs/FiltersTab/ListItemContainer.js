@@ -1,8 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {
-  ListItem, ListItemLabelSpinner, ListItemStatefulContainer
-}
+import { ListItem, ListItemLabelSpinner, ListItemStatefulContainer }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { routingStateSelector } from '../../../../../Application/Selectors/routing';
 import { startFilterEditing } from '../../../../Actions/navActions';
@@ -15,7 +13,6 @@ import { urlSanitize } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Serv
   hash:           routingStateSelector(state),
   notDoneFilters: loadingFilterIdsSelector(state)
 }))
-
 export class ListItemContainer extends Component {
   static propTypes = {
     dispatch:       PropTypes.func.isRequired,

@@ -169,6 +169,10 @@
     left: 4px;
   }
 
+  a {
+    text-decoration: none;
+  }
+
   // Single icon
   /* .sidebar-title-settings {
     float: right;
@@ -441,6 +445,10 @@
       border-bottom: 0;
     }
     position: relative;
+
+    a {
+      text-decoration: none;
+    }
   }
 
   ul {

@@ -1,4 +1,4 @@
- misc files
+misc files
 .DS_Store
 .idea
 nbproject
@@ -228,3 +228,8 @@ npm-debug.log
 
 pub/.jest-cache
 app/tests/phantomjsdriver.log
+www/assets/BUILD/pub/src/tests/E2E/reports/*
+www/assets/BUILD/pub/bin/chromedriver
+www/assets/BUILD/pub/bin/selenium.jar
+www/assets/BUILD/pub/src/tests/E2E/config.js
+

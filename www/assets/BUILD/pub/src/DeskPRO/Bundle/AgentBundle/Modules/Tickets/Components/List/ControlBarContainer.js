@@ -12,9 +12,7 @@ import {
 }
   from '../../Selectors/list';
 import { updateRoutingState } from '../../../Application/Actions/routingActions';
-import {
-  toggleFieldVisibility, changeFieldOrder, applyListParams
-}
+import { toggleFieldVisibility, changeFieldOrder, applyListParams }
   from '../../Actions/listActions';
 import { labelsSelector } from '../../Selectors/nav';
 import { listFiltersSelector } from '../../Selectors/filters';
@@ -32,7 +30,6 @@ import { listFiltersSelector } from '../../Selectors/filters';
   toggleFieldVisibility,
   changeFieldOrder
 })
-
 export class ControlBarContainer extends Component {
   static propTypes = {
     orderBy:               PropTypes.string.isRequired,

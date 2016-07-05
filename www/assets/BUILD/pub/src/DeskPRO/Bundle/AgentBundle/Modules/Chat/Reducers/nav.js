@@ -23,12 +23,11 @@ const initialState = {
 
 export default createReducer(initialState, {
 
-  [actions.initialLoad]: async(
-    {
-      success: mergeFullPayload(),
-      start:   setValue('async.done', false),
-      done:    setValue('async.done', true)
-    }),
+  [actions.initialLoad]: async({
+    success: mergeFullPayload(),
+    start:   setValue('async.done', false),
+    done:    setValue('async.done', true)
+  }),
 
   [actions.loadCounts]: async({
     success: (state, payload) => state.set(payload.list, Immutable.fromJS(payload.counts)),

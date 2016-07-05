@@ -20,10 +20,7 @@ export class AllChats extends Component {
     this.setState({ expanded: false });
   };
 
-  toggle = (event) => {
-    event.preventDefault();
-    this.setState({ expanded: !this.state.expanded });
-  };
+  toggle = () => this.setState({ expanded: !this.state.expanded });
 
   renderItem = (item, index) => {
     const groupBy = item.get('type');
@@ -48,15 +45,8 @@ export class AllChats extends Component {
 
     return (
       <Section ref="allSection">
-        <SectionHeader>
+        <SectionHeader callback={this.toggle} count={all.get('count')}>
           All Chats
-          <div className="list-counter-bucket">
-            <a className="list-counter-dropdown active" href="#" onClick={this.toggle}>
-              <span>&nbsp;</span>
-              <i className="fa fa-angle-down" />
-            </a>
-            <a className="list-counter active" href="#">{all.get('count')}</a>
-          </div>
         </SectionHeader>
 
         <ul>

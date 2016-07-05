@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppPane, NavPane, ListPane } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/panes';
+import { AppPane, NavPaneContainer, ListPane } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/panes';
 import { NavContainer } from './Nav/NavContainer';
 import { ListContainer } from './List/ListContainer';
 
@@ -7,7 +7,7 @@ export class TasksApp extends React.Component {
   render() {
     return (
       <AppPane>
-        <NavPane><NavContainer /></NavPane>
+        <NavPaneContainer><NavContainer /></NavPaneContainer>
         <ListPane><ListContainer /></ListPane>
       </AppPane>
     );

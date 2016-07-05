@@ -3,9 +3,8 @@ import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { editedFilterIdSelector } from '../Selectors/nav';
 import { filterSetGroupingsSettingsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Selectors/settings';
-import {
-  setAgentSettings, updateFilterGrouping
-} from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
+import { setAgentSettings, updateFilterGrouping }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 /**

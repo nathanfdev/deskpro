@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
-import { NestedListContainer } from './NestedListContainer';
+import { NestedList } from './NestedList';
 
 export class FiltersTab extends Component {
   static propTypes = {
@@ -25,7 +25,7 @@ export class FiltersTab extends Component {
           <div key={count.get('id')}>
             <SectionHeader>{count.get('title')}</SectionHeader>
 
-            <NestedListContainer items={this.getFilterSetCounts(count)} alwaysExpanded />
+            <NestedList items={this.getFilterSetCounts(count)} alwaysExpanded />
           </div>
         ))}
       </div>

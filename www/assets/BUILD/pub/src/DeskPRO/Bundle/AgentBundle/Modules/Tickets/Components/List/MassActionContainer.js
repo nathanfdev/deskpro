@@ -11,7 +11,6 @@ import { connect } from 'react-redux';
   selected: selectedSelector(state),
   actions:  massActionsSelector(state)
 }))
-
 export class MassActionContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,

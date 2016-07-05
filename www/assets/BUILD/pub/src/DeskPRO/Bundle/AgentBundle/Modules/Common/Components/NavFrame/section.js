@@ -33,41 +33,36 @@ export class Section extends React.Component {
 export class SectionHeader extends React.Component {
 
   static propTypes = {
-    children: PropTypes.node
-  };
-
-  render() {
-    return (
-      <div className="list-sidebar-title">
-        {this.props.children}
-      </div>
-    );
-  }
-}
-
-export class SectionGroupedHeader extends React.Component {
-
-  static propTypes = {
-    label:    PropTypes.string.isRequired,
-    count:    PropTypes.number.isRequired,
-    callback: PropTypes.func.isRequired,
+    label: PropTypes.string,
+    count: PropTypes.number,
+    callback: PropTypes.func,
     children: PropTypes.node
   };
 
   render() {
     const { count, callback, label, children } = this.props;
 
+    const groupingControl = !callback ? '' : (
+      <a className="list-counter-dropdown active" href="#" onClick={e => {e.preventDefault(); callback()}}>
+        <span>&nbsp;</span>
+        <i className="fa fa-angle-down"></i>
+      </a>
+    );
+    const countLabel = !count ? '' : (
+      <a className="list-counter active">{count}</a>
+    );
+    const controls = !callback && !count ? '' : (
+      <div className="list-counter-bucket">
+        {groupingControl}
+        {countLabel}
+      </div>
+    );
+
     return (
       <div className="list-sidebar-title">
         {label}
         {children}
-        <div className="list-counter-bucket">
-          <a className="list-counter-dropdown active" href="#" onClick={callback}>
-            <span>&nbsp;</span>
-            <i className="fa fa-angle-down"></i>
-          </a>
-          <a className="list-counter active" href="#">{count}</a>
-        </div>
+        {controls}
       </div>
     );
   }

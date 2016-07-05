@@ -27,6 +27,7 @@ export const listFiltersSelector = createSelector(
         ]
       }
     ];
+
     // Labels options
     if (!currentListParams.get('label')) {
       const labelsFilter = {
@@ -40,5 +41,6 @@ export const listFiltersSelector = createSelector(
       filterSelector
         .push(labelsFilter);
     }
+
     return filterSelector;
   });

@@ -1,11 +1,12 @@
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 import { IntlProvider } from 'react-intl';
+import { fakeState } from './state';
 
 export function renderInRedux(state, jsx, dispatch = null) {
   const { Provider } = require('react-redux');
   const createStore = require('redux').createStore;
-  const store = createStore(() => state, state);
+  const store = createStore(s => s, fakeState(state));
 
   if (dispatch) {
     store.dispatch = dispatch;

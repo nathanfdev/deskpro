@@ -1,5 +1,5 @@
 export { NavFrame, NavFrameHeaderContainer, NavFrameBody } from './frame';
-export { SectionsPane, Section, SectionHeader, SectionGroupedHeader } from './section';
+export { SectionsPane, Section, SectionHeader } from './section';
 export { TabsPane, TabsPaneStatefulContainer, Tab } from './tabs';
 export { ListSection } from './Lists/ListSection';
 export { ListItem } from './Lists/ListItem';

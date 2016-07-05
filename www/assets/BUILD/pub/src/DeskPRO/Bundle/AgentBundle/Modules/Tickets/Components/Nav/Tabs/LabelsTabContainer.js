@@ -4,7 +4,9 @@ import { labelsSelector } from '../../../Selectors/nav';
 import { LabelsTab } from './LabelsTab';
 import { applyListParams } from '../../../Actions/listActions';
 
-@connect(state => ({ labels: labelsSelector(state) }))
+@connect(state => ({
+  labels: labelsSelector(state)
+}))
 export class LabelsTabContainer extends Component {
   static propTypes = {
     labels:   PropTypes.object.isRequired,

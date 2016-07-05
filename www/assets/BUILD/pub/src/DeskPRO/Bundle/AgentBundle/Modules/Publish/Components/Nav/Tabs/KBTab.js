@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  SectionsPane, Section, SectionGroupedHeader, ButtonsPane, Button
+  SectionsPane, Section, SectionHeader, ButtonsPane, Button
 }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { NestedList } from '../NestedList';
@@ -29,7 +29,7 @@ export class KBTab extends Component {
       <div>
         <SectionsPane>
           <Section>
-            <SectionGroupedHeader
+            <SectionHeader
               label="Knowledgebase"
               ref="articles"
               count={articles.get('count')}
