@@ -29,7 +29,9 @@
 namespace DeskPRO\Bundle\UpgradeBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class AutoUpgradeCommand extends ContainerAwareCommand
@@ -38,11 +40,56 @@ class AutoUpgradeCommand extends ContainerAwareCommand
     {
         $this
             ->setName('dp:upgrade:auto-upgrade')
+            ->addOption('session-id', null, InputOption::VALUE_REQUIRED, '(internal)')
             ->setDescription('Checks for updates, downloads, and then installs them if they exists')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        set_time_limit(0);
+
+        #------------------------------
+
+        $command = $this->getApplication()->find('dp:upgrade:status');
+        $args    = new ArgvInput('dp:upgrade:status');
+        if ($ret = $command->run($args, $output)) {
+            return $ret;
+        }
+
+        #------------------------------
+
+        $command = $this->getApplication()->find('dp:distro:download-build');
+        $args    = new ArgvInput([
+            'dp:distro:download-build',
+            '--skip-existing',
+            'latest',
+        ]);
+
+        if ($ret = $command->run($args, $output)) {
+            return $ret;
+        }
+
+        #------------------------------
+
+        $command = $this->getApplication()->find('dp:database-backup');
+        $args    = new ArgvInput([
+            'dp:database-backup',
+        ]);
+
+        if ($ret = $command->run($args, $output)) {
+            return $ret;
+        }
+
+        #------------------------------
+
+        $command = $this->getApplication()->find('dp:upgrade:activate-build');
+        $args    = new ArgvInput([
+            'dp:upgrade:activate-build',
+        ]);
+
+        if ($ret = $command->run($args, $output)) {
+            return $ret;
+        }
     }
 }

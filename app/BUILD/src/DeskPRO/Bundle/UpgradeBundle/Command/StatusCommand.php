@@ -43,6 +43,7 @@ class StatusCommand extends ContainerAwareCommand
         $this
             ->setName('dp:upgrade:status')
             ->setDescription('Check the status of your installation and see if there are updates.')
+            ->addOption('session-id', null, InputOption::VALUE_REQUIRED, '(internal)')
         ;
     }
 

@@ -42,6 +42,7 @@ class ActivateBuildCommand extends ContainerAwareCommand
         $this
             ->setName('dp:upgrade:activate-build')
             ->setDescription('Activate an installed build')
+            ->addOption('session-id', null, InputOption::VALUE_REQUIRED, '(internal)')
             ->addArgument('buildId', InputArgument::REQUIRED, 'The build ID or the string "latest" to auto-detect the latest build.')
         ;
     }

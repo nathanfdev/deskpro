@@ -101,3 +101,8 @@ services:
       - "@=service('deskpro.app_env').getUserTmpDir()"
     calls:
       - [setLogger, ["@monolog.logger.upgrader.general"]]
+
+  dp.upgrader.session_manager_factory:
+    class: DeskPRO\Bundle\UpgradeBundle\Session\UpgradeSessionManagerFactory
+    arguments:
+      - "@=service('deskpro.app_env').getUserTmpDir()"

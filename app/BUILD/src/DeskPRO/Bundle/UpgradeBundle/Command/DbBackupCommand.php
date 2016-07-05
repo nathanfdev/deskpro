@@ -43,6 +43,7 @@ class DbBackupCommand extends ContainerAwareCommand
         $this
             ->setName('dp:database-backup')
             ->setDescription('Wraps mysqldump utility to help make backups of your DeskPRO database.')
+            ->addOption('session-id', null, InputOption::VALUE_REQUIRED, '(internal)')
             ->addArgument('targetPath', InputArgument::OPTIONAL, 'The the target dump file. E.g. /mypath/db.sql. Use BACKUPS_DIR as placeholder for the backups dir. If not specified, a random name will be created based on the current time.')
         ;
     }

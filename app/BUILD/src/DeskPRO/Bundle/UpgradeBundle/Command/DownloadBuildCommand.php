@@ -48,6 +48,7 @@ class DownloadBuildCommand extends ContainerAwareCommand
             ->addOption('sha256', null, InputOption::VALUE_REQUIRED, 'Compare the checksum of the file to this expected value after downloading. This is provided automatically when specying a build from the manifest.')
             ->addOption('skip-existing', null, InputOption::VALUE_NONE, 'Do nothing if the build exists (returns a success code). See also --update-existing.')
             ->addOption('update-existing', null, InputOption::VALUE_NONE, 'Update the build if it exists. The default behaviour is to return an error status. See also --skip-existing.')
+            ->addOption('session-id', null, InputOption::VALUE_REQUIRED, '(internal)')
         ;
     }
 
