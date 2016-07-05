@@ -5,139 +5,110 @@
 jest.dontMock('~List/List');
 
 import React from 'react';
-import { renderInFeedbackApp } from '../../feedback.test-helper';
 import { toImmutable } from 'Helpers';
+import sd from 'skin-deep';
+
+let tree;
 
 describe('Feedback: List', () => {
-  const ListFrameContainer     = require('~ListFrame/frame').ListFrameContainer;
-  const ListFrameMenu          = require('~ListFrame/ListFrameMenu').ListFrameMenu;
-  const ListFrameContents      = require('~ListFrame/ListFrameContents').ListFrameContents;
-  const List                   = require('~List/List').List;
-  const PaginationBoxView      = require('~Pagination/PaginationBoxView').PaginationBoxView;
-  const ControlBarContainer    = require('~List/ControlBar/ControlBarContainer').ControlBarContainer;
-  const MassActionContainer    = require('~List/ControlBar/MassActionContainer').MassActionContainer;
-  const FeedbackCardsContainer = require('~List/View/Card/FeedbackCardsContainer').FeedbackCardsContainer;
-  const CommentCardsContainer  = require('~List/View/Card/CommentCardsContainer').CommentCardsContainer;
-  const FeedbackTableContainer = require('~List/View/Table/FeedbackTableContainer').FeedbackTableContainer;
-  const CommentTableContainer  = require('~List/View/Table/CommentTableContainer').CommentTableContainer;
-  const fakeState              = {};
-
-  const renderList = (viewMode = 'card', selected = toImmutable([]), isComments = false, pagination = null) => {
-    const emptyList = toImmutable([]);
-    const func      = () => {
-    };
-    renderInFeedbackApp(
-      fakeState,
-      <List
-        currentListParams={toImmutable({})}
-        elements={emptyList}
-        selected={selected}
-        currentViewMode={viewMode}
-        isComments={isComments}
-        pagination={pagination}
-        fields={toImmutable({ feedback: { card: [1, 2], table: [3, 4] }, comments: { card: [1, 2], table: [3, 4] } })}
-        toggleSelected={func}
-        handlePageClick={func}
-        isLoaded
-      />
-    );
+  const List      = require('~List/List').List;
+  const emptyList = toImmutable([]);
+  const func      = () => {
   };
 
-  it('should render ListFrameContainer', () => {
-    spyOn(ListFrameContainer.prototype, 'render').and.callThrough();
-    renderList();
-    expect(ListFrameContainer.prototype.render).toHaveBeenCalled();
+  const props = {
+    selected:          emptyList,
+    isComments:        false,
+    pagination:        emptyList,
+    currentListParams: emptyList,
+    elements:          emptyList,
+    currentViewMode:   'card',
+    fields:            toImmutable({
+      feedback: { card: [1, 2], table: [3, 4] },
+      comments: { card: [1, 2], table: [3, 4] }
+    }),
+
+    toggleSelected:  func,
+    handlePageClick: func,
+    isLoaded:        true
+  };
+  beforeEach(() => {
+    tree = sd.shallowRender(<List {...props} />);
   });
 
-  it('should render ListFrameMenu', () => {
-    spyOn(ListFrameMenu.prototype, 'render').and.callThrough();
-    renderList();
-    expect(ListFrameMenu.prototype.render).toHaveBeenCalled();
+  it('should contain ListFrameContainer', () => {
+    expect(tree.subTree('ListFrameMenu')).toBeTruthy();
   });
 
-  it('should render its control bar if selected is empty', () => {
-    spyOn(ControlBarContainer.prototype, 'render').and.callThrough();
-    spyOn(MassActionContainer.prototype, 'render').and.callThrough();
-    renderList();
-    expect(ControlBarContainer.prototype.render).toHaveBeenCalled();
-    expect(MassActionContainer.prototype.render).not.toHaveBeenCalled();
+  it('should contain ListFrameContents', () => {
+    expect(tree.subTree('ListFrameContents')).toBeTruthy();
   });
 
-  it('should render its mass actions bar if selected is not empty', () => {
-    spyOn(ControlBarContainer.prototype, 'render').and.callThrough();
-    spyOn(MassActionContainer.prototype, 'render').and.callThrough();
-    renderList('card', toImmutable([1, 2]));
-    expect(MassActionContainer.prototype.render).toHaveBeenCalled();
-    expect(ControlBarContainer.prototype.render).not.toHaveBeenCalled();
+  it('should contain ControlBarContainer and should not contain MassActionContainer if selected is empty', () => {
+    expect(tree.subTree('ListFrameMenu').subTree('Connect(ControlBarContainer)')).toBeTruthy();
+    expect(tree.subTree('ListFrameMenu').subTree('Connect(MassActionContainer)')).toBeFalsy();
   });
 
-  it('should render ListFrameContents', () => {
-    spyOn(ListFrameContents.prototype, 'render').and.callThrough();
-    renderList();
-    expect(ListFrameContents.prototype.render).toHaveBeenCalled();
+  it('should contain SaveAsCsv', () => {
+    expect(tree.subTree('ListFrameContents').subTree('SaveAsCsv')).toBeTruthy();
   });
 
-  it('should render FeedbackCardsContainer when the passed viewMode is "card" and isComments is false', () => {
-    spyOn(FeedbackCardsContainer.prototype, 'render').and.callThrough();
-    spyOn(FeedbackTableContainer.prototype, 'render').and.callThrough();
-
-    renderList('card');
-
-    expect(FeedbackCardsContainer.prototype.render).toHaveBeenCalled();
-    expect(FeedbackTableContainer.prototype.render).not.toHaveBeenCalled();
+  it('should not contain ControlBarContainer and should contain MassActionContainer if selected is not empty', () => {
+    const newProps = Object.assign({}, props, { selected: toImmutable([1, 2, 3]) });
+    tree.reRender(<List {...newProps} />);
+    expect(tree.subTree('ListFrameMenu').subTree('Connect(MassActionContainer)')).toBeTruthy();
+    expect(tree.subTree('ListFrameMenu').subTree('Connect(ControlBarContainer)')).toBeFalsy();
   });
 
-  it('should render ListTableViewContainer when the passed viewMode is "table"', () => {
-    spyOn(FeedbackCardsContainer.prototype, 'render').and.callThrough();
-    spyOn(FeedbackTableContainer.prototype, 'render').and.callThrough();
-
-    renderList('table');
-
-    expect(FeedbackTableContainer.prototype.render).toHaveBeenCalled();
-    expect(FeedbackCardsContainer.prototype.render).not.toHaveBeenCalled();
+  it('should contain FeedbackCardsContainer and should not contain FeedbackTableContainer if currentViewMode is card', () => {
+    const newProps = Object.assign({}, props, { currentViewMode: 'card', elements: toImmutable([1, 2]) });
+    tree.reRender(<List {...newProps} />);
+    expect(tree.subTree('ListFrameContents').subTree('Connect(FeedbackCardsContainer)')).toBeTruthy();
+    expect(tree.subTree('ListFrameContents').subTree('Connect(InjectIntl(FeedbackTableContainer))')).toBeFalsy();
   });
 
-  it('should render FeedbackCommentsCardsContainer when the passed viewMode is "card" and isComments is true', () => {
-    spyOn(CommentCardsContainer.prototype, 'render').and.callThrough();
-    spyOn(FeedbackTableContainer.prototype, 'render').and.callThrough();
-
-    renderList('card', toImmutable([]), true);
-
-    expect(CommentCardsContainer.prototype.render).toHaveBeenCalled();
-    expect(FeedbackTableContainer.prototype.render).not.toHaveBeenCalled();
+  it('should not contain FeedbackCardsContainer and should contain FeedbackTableContainer if currentViewMode is table', () => {
+    const newProps = Object.assign({}, props, { currentViewMode: 'table', elements: toImmutable([1, 2]) });
+    tree.reRender(<List {...newProps} />);
+    expect(tree.subTree('ListFrameContents').subTree('Connect(InjectIntl(FeedbackTableContainer))')).toBeTruthy();
+    expect(tree.subTree('ListFrameContents').subTree('Connect(FeedbackCardsContainer)')).toBeFalsy();
   });
 
-  it('should render FeedbackCommentTableContainer when the passed viewMode is "table"  and isComments is true', () => {
-    spyOn(CommentCardsContainer.prototype, 'render').and.callThrough();
-    spyOn(CommentTableContainer.prototype, 'render').and.callThrough();
-
-    renderList('table', toImmutable([]), true);
-
-    expect(CommentTableContainer.prototype.render).toHaveBeenCalled();
-    expect(CommentCardsContainer.prototype.render).not.toHaveBeenCalled();
+  it('should contain CommentCardsContainer and should not contain CommentTableContainer if currentViewMode is card and isComments is true', () => {
+    const newProps = Object.assign({}, props, {
+      currentViewMode: 'card',
+      isComments:      true,
+      elements:        toImmutable([1, 2])
+    });
+    tree.reRender(<List {...newProps} />);
+    expect(tree.subTree('ListFrameContents').subTree('Connect(CommentCardsContainer)')).toBeTruthy();
+    expect(tree.subTree('ListFrameContents').subTree('Connect(InjectIntl(CommentTableContainer))')).toBeFalsy();
   });
 
-  it('shouldn\'t render PaginationBoxView when the pagination not passed', () => {
-    spyOn(PaginationBoxView.prototype, 'render').and.callThrough();
-
-    renderList();
-
-    expect(PaginationBoxView.prototype.render).not.toHaveBeenCalled();
+  it('should not contain CommentCardsContainer and should contain CommentTableContainer if currentViewMode is table and isComments is true', () => {
+    const newProps = Object.assign({}, props, {
+      currentViewMode: 'table',
+      isComments:      true,
+      elements:        toImmutable([1, 2])
+    });
+    tree.reRender(<List {...newProps} />);
+    expect(tree.subTree('ListFrameContents').subTree('Connect(InjectIntl(CommentTableContainer))')).toBeTruthy();
+    expect(tree.subTree('ListFrameContents').subTree('Connect(CommentCardsContainer)')).toBeFalsy();
   });
 
-  it('shouldn\'t render PaginationBoxView when the pagination passed with total_pages === 1', () => {
-    spyOn(PaginationBoxView.prototype, 'render').and.callThrough();
-
-    renderList('card', toImmutable([]), false, toImmutable({ total_pages: 1 }));
-
-    expect(PaginationBoxView.prototype.render).not.toHaveBeenCalled();
+  it('should contain PaginationBoxView if the pagination passed with total_pages > 1', () => {
+    const newProps = Object.assign({}, props, { pagination: toImmutable({ total_pages: 2 }) });
+    tree.reRender(<List {...newProps} />);
+    expect(tree.subTree('ListFrameContents').subTree('PaginationBoxView')).toBeTruthy();
   });
 
-  it('should render PaginationBoxView when the pagination passed with total_pages > 1', () => {
-    spyOn(PaginationBoxView.prototype, 'render').and.callThrough();
+  it('should not contain PaginationBoxView if pagination is not passed', () => {
+    expect(tree.subTree('ListFrameContents').subTree('PaginationBoxView')).toBeFalsy();
+  });
 
-    renderList('card', toImmutable([]), false, toImmutable({ total_pages: 2 }));
-
-    expect(PaginationBoxView.prototype.render).toHaveBeenCalled();
+  it('should not contain PaginationBoxView if the pagination passed with total_pages === 1', () => {
+    const newProps = Object.assign({}, props, { pagination: toImmutable({ total_pages: 1 }) });
+    tree.reRender(<List {...newProps} />);
+    expect(tree.subTree('ListFrameContents').subTree('PaginationBoxView')).toBeFalsy();
   });
 });

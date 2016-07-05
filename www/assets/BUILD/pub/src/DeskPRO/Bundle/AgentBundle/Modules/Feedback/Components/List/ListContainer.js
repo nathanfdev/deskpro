@@ -29,7 +29,7 @@ type Props={
   isComments: boolean,
   isLoaded: boolean
 };
-type State={enabled:boolean};
+type State={};
 
 @connect(
   state => ({

@@ -62,8 +62,7 @@ export const List = (props:{
   return (
     <ListFrameContainer>
       <ListFrameMenu>
-        {!selected.size && <ControlBarContainer key="1" />}
-        {selected.size && <MassActionContainer key="2" />}
+        {selected.size === 0 ? <ControlBarContainer key="1" /> : <MassActionContainer key="2" />}
       </ListFrameMenu>
       <ListFrameContents isLoaded={isLoaded}>
         <SaveAsCsv

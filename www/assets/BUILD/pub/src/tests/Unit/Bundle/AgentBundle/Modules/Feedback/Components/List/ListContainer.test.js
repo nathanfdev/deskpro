@@ -1,17 +1,20 @@
 // #define ~Components DeskPRO/Bundle/AgentBundle/Modules/Feedback/Components/List
 
-jest.dontMock('~Components/ListContainer');
+jest.disableAutomock();
 
 import React from 'react';
 import { renderInFeedbackApp } from '../../feedback.test-helper';
+import TestUtils from 'react-addons-test-utils';
 
 describe('Feedback: ListContainer', () => {
   const ListContainer = require('~Components/ListContainer').ListContainer;
-  const List          = require('~Components/List').List;
 
-  it('should render List component', () => {
-    spyOn(List.prototype, 'render').and.callThrough();
-    renderInFeedbackApp(0, <ListContainer />);
-    expect(List.prototype.render).toHaveBeenCalled();
+  it('<ListContainer />', () => {
+    const component = renderInFeedbackApp(0, <ListContainer />);
+    const items     = TestUtils.findAllInRenderedTree(
+      component,
+      element => TestUtils.isCompositeComponentWithType(element, ListContainer)
+    );
+    expect(items.length).toEqual(1);
   });
 });
