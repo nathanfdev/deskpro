@@ -1,3 +1,4 @@
+// @flow
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
@@ -26,7 +27,7 @@ export class FeedbackCardsContainer extends Component {
     feedbackTypes:            PropTypes.object.isRequired,
     feedbackStatusCategories: PropTypes.object,
     toggleSelected:           PropTypes.func.isRequired,
-    elements:                 PropTypes.object.isRequired
+    elements:                 PropTypes.array.isRequired
   };
 
   render() {

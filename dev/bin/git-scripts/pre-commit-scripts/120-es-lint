@@ -4,7 +4,7 @@
 $output      = [];
 $return      = 0;
 $exit_status = 0;
-$dir = 'www/assets/BUILD/pub/';
+$dir = 'www/assets/BUILD/pub/src/DeskPRO';
 
 exec('git rev-parse --verify HEAD 2> /dev/null', $output, $return);
 $against = $return == 0 ? 'HEAD' : '4b825dc642cb6eb9a060e54bf8d69288fbee4904'; // 4b825dc642cb6eb9a060e54bf8d69288fbee4904 = special "emtpy tree" sha1

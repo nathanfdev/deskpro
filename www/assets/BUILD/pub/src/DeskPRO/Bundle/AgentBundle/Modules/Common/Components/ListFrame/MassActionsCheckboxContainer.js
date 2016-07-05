@@ -1,10 +1,15 @@
-import React, { Component, PropTypes } from 'react';
+// @flow
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+import { List } from 'immutable';
 import { currentAppStateSelector } from '../../../Application/Selectors/dpWindow';
 import { selectedSelector } from '../../../Application/Selectors/massActions';
 import { toggleMassAction } from '../../../Application/Actions/massActions';
-import Immutable from 'immutable';
+
+type DefaultProps={};
+type Props={selected:List, dispatch: ()=>void, elements: Array<number>};
+type State={enabled:boolean};
 
 @connect(state => {
   const currentAppState = currentAppStateSelector(state);
@@ -14,27 +19,29 @@ import Immutable from 'immutable';
     selected: selectedSelector(state)
   };
 })
+export class MassActionsCheckboxContainer extends React.Component<DefaultProps, Props, State> {
+  static defaultProps:{};
 
-export class MassActionsCheckboxContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    elements: PropTypes.object,
+    elements: PropTypes.array,
     selected: PropTypes.object
   };
 
-  constructor(props) {
+  constructor(props:Props) {
     super(props);
-    this.state = {
-      enabled: props.selected.count()
-    };
+    this.state = { enabled: Boolean(props.selected.count()) };
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({ enabled: nextProps.selected.count() });
-    return nextProps;
+  state:State;
+
+  componentWillReceiveProps(nextProps:Props) {
+    this.setState({ enabled: Boolean(nextProps.selected.count()) });
   }
 
-  handleClick = (e) => {
+  props:Props;
+
+  handleClick:Function = (e:Event):void => {
     e.preventDefault();
     const { dispatch, elements } = this.props;
     dispatch(toggleMassAction({ select: !this.state.enabled, elements }));
@@ -42,14 +49,14 @@ export class MassActionsCheckboxContainer extends Component {
 
   render() {
     const { selected } = this.props;
-    const count = selected.count();
-    const divClasses = classNames('dpwd-navigation-top-row-mass-action-checkbox', { active: this.state.enabled });
+    const count           = selected.count();
+    const divClasses      = classNames('dpwd-navigation-top-row-mass-action-checkbox', { active: this.state.enabled });
     const checkboxClasses = classNames('fa', { 'fa-check': this.state.enabled });
 
     return (
       <div className="dpwd-navigation-top-row-mass-action-checkbox-container">
         <div className={divClasses} onClick={this.handleClick}>
-          <i className={checkboxClasses}></i>
+          <i className={checkboxClasses} />
         </div>
         {count > 0 && <CheckboxCounter count={count} />}
       </div>
@@ -57,17 +64,10 @@ export class MassActionsCheckboxContainer extends Component {
   }
 }
 
-export class CheckboxCounter extends Component {
-  static propTypes = {
-    count: PropTypes.number
-  };
+export const CheckboxCounter = ({ count }:{count: number}) =>
+  <div className="dpwd-navigation-top-row-mass-action-checkbox-count">
+    <span>{count}</span>
+  </div>;
 
-  render() {
-    const { count } = this.props;
-    return (
-      <div className="dpwd-navigation-top-row-mass-action-checkbox-count">
-        <span>{count}</span>
-      </div>
-    );
-  }
-}
+CheckboxCounter.propTypes = { count: PropTypes.number };
+

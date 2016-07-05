@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import jQuery from 'jquery';
-import Immutable from 'immutable';
+import { fromJS } from 'immutable';
 import {
   Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem,
   CardCheckbox, CardDisc, CardTitle, CardUser, CardLabel, CardComments
@@ -83,7 +83,7 @@ export class FeedbackCard extends Component {
 
   render() {
     const { feedback, author, selected, toggleSelected, fields } = this.props;
-    const type              = this.props.type || Immutable.fromJS({});
+    const type              = this.props.type || fromJS({});
     const containerWidth    = jQuery('.dp-list-frame-contents').innerWidth();
     const feedbackMarkWidth = jQuery('.dpw--feedback-card-mark').innerWidth();
     const cardWidth         = containerWidth - feedbackMarkWidth - 20;
@@ -129,7 +129,7 @@ export class FeedbackCard extends Component {
             <CardDisc />
             <CardLineItem icon="fa-book">{type.get('title')}</CardLineItem>
           </CardLineLeft>
-          {this.renderField(labelsField)}
+          {labelsField && this.renderField(labelsField)}
           <CardLineRight>
             <CardComments commentsCounter={feedback.get('num_comments')} />
           </CardLineRight>
