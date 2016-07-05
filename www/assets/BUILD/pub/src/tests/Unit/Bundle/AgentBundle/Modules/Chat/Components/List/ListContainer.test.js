@@ -4,7 +4,7 @@
 jest.dontMock('~Components/ListContainer');
 
 import React from 'react';
-import { renderChatsInRedux } from '../../chats.test-helper';
+import { renderInChatApp } from '../../chat.test-helper';
 
 describe('ListContainer', () => {
   const ListContainer = require('~Components/ListContainer').ListContainer;
@@ -15,7 +15,7 @@ describe('ListContainer', () => {
     spyOn(Selectors, 'viewModeSelector');
     spyOn(Selectors, 'paginationSelector');
 
-    renderChatsInRedux(0, <ListContainer />);
+    renderInChatApp({}, <ListContainer />);
 
     expect(Selectors.viewModeSelector).toHaveBeenCalled();
     expect(Selectors.paginationSelector).toHaveBeenCalled();
@@ -23,7 +23,7 @@ describe('ListContainer', () => {
 
   it('should render List component', () => {
     spyOn(List.prototype, 'render').and.callThrough();
-    renderChatsInRedux(0, <ListContainer />);
+    renderInChatApp({}, <ListContainer />);
     expect(List.prototype.render).toHaveBeenCalled();
   });
 });

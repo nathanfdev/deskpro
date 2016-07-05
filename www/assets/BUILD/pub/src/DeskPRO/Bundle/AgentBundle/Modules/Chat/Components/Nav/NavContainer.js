@@ -1,43 +1,29 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { pureRender } from 'DeskPRO/Component/Ampliflux';
-import * as actions from '../../Actions/chatNavActions';
-import { isLoadedSelector, myChatsSelector, allChatsSelector } from '../../Selectors/nav';
+import { initialLoad, changeCountGrouping } from '../../Actions/navActions';
+import { isLoadedSelector, countsSelector } from '../../Selectors/nav';
 import { Nav } from './Nav';
 
 @connect(state => ({
   isLoaded: isLoadedSelector(state),
-  my:       myChatsSelector(state),
-  all:      allChatsSelector(state)
+  counts:   countsSelector(state)
 }))
 @pureRender
 export class NavContainer extends Component {
-
   static propTypes = {
     dispatch: PropTypes.func.isRequired
   };
 
-  componentDidMount = () => {
-    this.props.dispatch(actions.initialLoad());
+  componentDidMount() {
+    this.props.dispatch(initialLoad());
   };
 
-  componentWillUnmount = () => {
-    this.props.dispatch(actions.unmount());
+  changeCountGroupingCallbackFactory = (countId) => (groupBy) => {
+    this.props.dispatch(changeCountGrouping(countId, groupBy));
   };
 
-  toggleGroupingVisibility = listName => e => {
-    e.preventDefault();
-    this.props.dispatch(actions.toggleListGroupingVisibility(listName));
-  };
-
-  render = () => {
-    const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName);
-
-    return (
-      <Nav
-        {...this.props}
-        toggleGroupingVisibility={toggleGroupingVisibility}
-      />
-    );
+  render() {
+    return <Nav {...this.props} changeCountGroupingCallbackFactory={this.changeCountGroupingCallbackFactory} />;
   }
 }
