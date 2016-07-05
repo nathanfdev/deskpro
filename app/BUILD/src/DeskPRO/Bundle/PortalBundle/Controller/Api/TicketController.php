@@ -33,6 +33,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayou
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
+use DeskPRO\Bundle\PortalBundle\Ticket\NewTicket;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -83,9 +84,17 @@ class TicketController extends AbstractApiController
             ]);
         }
 
+        /** @var NewTicket $ticket_service */
         $ticketService = $this->get('tickets.new_ticket');
-        $ticket        = $ticketService->createNewTicket($request, $visitor_id, $this->getUser(), Ticket::CREATED_WEB_PERSON_WIDGET);
-        $person        = $ticket->getPerson();
+        $ticket        = $ticketService->createNewTicket(
+            $request,
+            $visitor_id,
+            $this->getUser(),
+            $this->getBrandContainer()->getBrand(),
+            Ticket::CREATED_WEB_PERSON_WIDGET
+        );
+
+        $person = $ticket->getPerson();
 
         $formOptions = [
             'person'                        => $person,

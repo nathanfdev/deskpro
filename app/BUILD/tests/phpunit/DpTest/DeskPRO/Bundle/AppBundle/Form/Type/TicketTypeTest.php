@@ -54,8 +54,8 @@ class TicketTypeTest extends PortalTestCase
     }
 
     /**
-     * This sets up brand and request stacks that some forms need. They are initialized automaitcally in
-     * in the HttpKernel requests (listeners) but if we don't use the http kerenel and test it directly, we
+     * This sets up brand and request stacks that some forms need. They are initialized automatically in
+     * in the HttpKernel requests (listeners) but if we don't use the http kernel and test it directly, we
      * need to set those up ourselves.
      *
      * @throws \Doctrine\ORM\ORMException

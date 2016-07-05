@@ -29,6 +29,7 @@
 namespace DpTest\DeskPRO\Bundle\AppBundle\Security\Permissions;
 
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Entity\DownloadCategory;
@@ -68,6 +69,10 @@ class PortalPermissionLoaderTest  extends PortalTestCase
         $registered->setTitle(Usergroup::REGISTERED);
         $em->persist($registered);
         $em->flush();
+
+        $brand       = $this->getBrand();
+        $brand_stack = $this->get('brand_stack');
+        $brand_stack->push($brand);
     }
 
     /**
@@ -85,18 +90,27 @@ class PortalPermissionLoaderTest  extends PortalTestCase
         $category1 = new $entityClass();
         $category1->setTitle('feedbackCategory 1');
         $category1->addUsergroup($everyone);
+        if (property_exists($category1, 'brand')) {
+            $category1->setBrand($this->getBrand());
+        }
         $em->persist($category1);
 
         /** @var FeedbackCategory|NewsCategory|ArticleCategory|DownloadCategory $category2 */
         $category2 = new $entityClass();
         $category2->setTitle('feedbackCategory 2');
         $category2->addUsergroup($registered);
+        if (property_exists($category2, 'brand')) {
+            $category2->setBrand($this->getBrand());
+        }
         $em->persist($category2);
 
         /** @var FeedbackCategory|NewsCategory|ArticleCategory|DownloadCategory $category3 */
         $category3 = new $entityClass();
         $category3->setTitle('feedbackCategory 3');
         $category3->addUsergroup($everyone);
+        if (property_exists($category3, 'brand')) {
+            $category3->setBrand($this->getBrand());
+        }
         $em->persist($category3);
         $em->flush();
 
@@ -340,6 +354,11 @@ class PortalPermissionLoaderTest  extends PortalTestCase
     private function getUsergroup($sysName)
     {
         return $this->getEntityManager()->getRepository(Usergroup::class)->findOneBy(['sys_name' => $sysName]);
+    }
+
+    private function getBrand()
+    {
+        return $this->getRepository(Brand::class)->find(1);
     }
 
     /**
