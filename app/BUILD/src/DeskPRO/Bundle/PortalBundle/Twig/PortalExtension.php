@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\PersonGuest;
+use Application\DeskPRO\Publish\GlossaryHandler;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -218,7 +219,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      */
     public function makeGlossaryJs($article)
     {
-        $glossary       = new \Application\DeskPRO\Publish\GlossaryHandler($this->container->get('doctrine.orm.default_entity_manager'));
+        $brand          = $this->container->get('brand_stack')->getActive()->getBrand();
+        $glossary       = new GlossaryHandler($this->container->get('doctrine.orm.default_entity_manager'), $brand);
         $glossary_words = $glossary->findWords($article->content);
         $word_defs      = $glossary->getWordDefs($glossary_words);
 

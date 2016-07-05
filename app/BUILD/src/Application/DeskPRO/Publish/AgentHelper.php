@@ -168,11 +168,13 @@ class AgentHelper implements PersonContextInterface
     /**
      * Get an array of glossary words, sorted into an alphabetically-indexed array.
      *
+     * @param int $brandId
+     *
      * @return array
      */
-    public function getGlossaryWordsIndex()
+    public function getGlossaryWordsIndex($brandId = 0)
     {
-        $glossary_words = App::getEntityRepository(GlossaryWord::class)->getWords();
+        $glossary_words = App::getEntityRepository(GlossaryWord::class)->getWords($brandId);
         $glossary_words = Arrays::sortIntoAlphabeticalIndex($glossary_words, null, true, true);
 
         return $glossary_words;

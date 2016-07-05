@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -78,6 +78,7 @@ class GlossaryFixture extends DeskProAbstractFixture
             $batch[] = [
                 'definition_id' => $this->faker->randomElement($this->definitions),
                 'word'          => $this->faker->realText(15),
+                'brand_id'      => $this->getReference('brand')->getId(),
             ];
         }
         $this->db->batchInsert(self::TABLE_GLOSSARY_WORDS, $batch, true);

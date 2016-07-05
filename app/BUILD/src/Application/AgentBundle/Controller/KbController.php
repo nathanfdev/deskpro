@@ -44,6 +44,7 @@ use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Entity\SearchStickyResult;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Publish\GlossaryHandler;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use Doctrine\DBAL\Connection;
 use Orb\Data\ContentTypes;
@@ -95,10 +96,6 @@ class KbController extends AbstractController
         $related_finder  = new RelatedContentFinder($this->person, $article);
         $related_content = $related_finder->getRelatedEntities(true);
 
-        $glossary       = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
-        $content        = $article->content;
-        $glossary_words = $glossary->findWords($content);
-
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.editarticle.'.$article->getId(), $this->person->id);
 
         $sticky_search_words = $this->em->getRepository(SearchStickyResult::class)->getWordsForObject($article);
@@ -139,7 +136,7 @@ class KbController extends AbstractController
 
         $trans_data = $this->container->getObjectLangRepository()->getLoadedRecs($article);
 
-        if (!count($article->categories)) {
+        if (!count($article->getCategories())) {
             $first = Arrays::getFirstKey($article_categories);
             $cat   = $this->em->getRepository(ArticleCategory::class)->find($first);
             $article->addToCategory($cat);
@@ -147,7 +144,7 @@ class KbController extends AbstractController
             $this->em->flush($article);
         }
 
-        $glossary       = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
+        $glossary       = new GlossaryHandler($this->em, $category->getBrand());
         $glossary_words = $glossary->findWords($article->content);
         $word_defs      = $glossary->getWordDefs($glossary_words);
 
@@ -158,7 +155,7 @@ class KbController extends AbstractController
             'custom_fields'       => $custom_fields,
             'sticky_search_words' => $sticky_search_words,
             'rated_searches'      => $rated_searches,
-            'content'             => $content,
+            'content'             => $article->content,
             'article_comments'    => $article_comments,
             'article_revisions'   => $article_revisions,
             'related_content'     => $related_content,

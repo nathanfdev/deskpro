@@ -408,6 +408,10 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			name: 'definition',
 			value: $('textarea.definition', this.addDlg.elements.wrapperOuter).val().trim()
 		});
+		data.push({
+			name: 'brand_id',
+			value: $('#publish_brand_id').val()
+		});
 
 		$.ajax({
 			url: BASE_URL + 'agent/glossary/new-word.json',
@@ -443,6 +447,10 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		data.push({
 			name: 'definition',
 			value: $('textarea.definition', this.editDlg.elements.wrapperOuter).val().trim()
+		});
+		data.push({
+			name: 'brand_id',
+			value: $('#publish_brand_id').val()
 		});
 
 		$.ajax({

@@ -178,7 +178,7 @@ class PublishController extends AbstractController
         # Glossary
         #------------------------------
 
-        $glossary_words = $this->publish_helper->getGlossaryWordsIndex();
+        $glossary_words = $this->publish_helper->getGlossaryWordsIndex($selectedBrandId);
         $glossary_count = Arrays::countMulti($glossary_words);
 
         #------------------------------

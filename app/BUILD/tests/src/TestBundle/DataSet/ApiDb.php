@@ -1096,10 +1096,10 @@ SQL
 
 
             INSERT INTO `glossary_words`
-                (`id`, `definition_id`, `word`)
+                (`id`, `definition_id`, `word`, `brand_id`)
             VALUES
-                (1, 1, 'Word 1'),
-                (2, 1, 'Word 2')
+                (1, 1, 'Word 1', 1),
+                (2, 1, 'Word 2', 1)
             ;
         "
         );
