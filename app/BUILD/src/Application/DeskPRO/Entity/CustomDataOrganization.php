@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\Basic;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -50,12 +51,12 @@ class CustomDataOrganization extends CustomDataAbstract
     /**
      * @var \Application\DeskPRO\Entity\CustomDefOrganization
      */
-    protected $field = null;
+    protected $field;
 
     /**
      * @var \Application\DeskPRO\Entity\CustomDefOrganization
      */
-    protected $root_field = null;
+    protected $root_field;
 
     public function getOrganizationId()
     {
@@ -106,19 +107,11 @@ class CustomDataOrganization extends CustomDataAbstract
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
+        $metadata->customRepositoryClassName = Basic::class;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
             [
-                'name'    => 'custom_data_organizations',
-                'indexes' => [
-                    'field_id_idx' => [
-                        'columns' => [
-                            0 => 'field_id',
-                            1 => 'organization_id',
-                        ],
-                    ],
-                ],
+                'name'              => 'custom_data_organizations',
                 'uniqueConstraints' => [
                     'unique_idx' => [
                         'columns' => [
@@ -166,13 +159,13 @@ class CustomDataOrganization extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'organization',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
+                'targetEntity' => Organization::class,
                 'inversedBy'   => 'custom_data',
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'organization_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
@@ -182,12 +175,12 @@ class CustomDataOrganization extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefOrganization',
+                'targetEntity' => CustomDefOrganization::class,
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
@@ -197,12 +190,12 @@ class CustomDataOrganization extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'root_field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefOrganization',
+                'targetEntity' => CustomDefOrganization::class,
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'root_field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],

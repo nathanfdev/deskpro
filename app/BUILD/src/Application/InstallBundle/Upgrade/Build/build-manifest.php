@@ -1743,4 +1743,8 @@ return array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/07/Build1467639200.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1467639200',
     ),
+    1467654103 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/07/Build1467654103.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1467654103',
+    ),
 );

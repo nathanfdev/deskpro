@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\Basic;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -50,12 +51,12 @@ class CustomDataFeedback extends CustomDataAbstract
     /**
      * @var CustomDefFeedback
      */
-    protected $field = null;
+    protected $field;
 
     /**
      * @var CustomDefFeedback
      */
-    protected $root_field = null;
+    protected $root_field;
 
     public function getFeedbackId()
     {
@@ -106,19 +107,11 @@ class CustomDataFeedback extends CustomDataAbstract
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
+        $metadata->customRepositoryClassName = Basic::class;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
             [
-                'name'    => 'custom_data_feedback',
-                'indexes' => [
-                    'field_id_idx' => [
-                        'columns' => [
-                            0 => 'field_id',
-                            1 => 'feedback_id',
-                        ],
-                    ],
-                ],
+                'name'              => 'custom_data_feedback',
                 'uniqueConstraints' => [
                     'unique_idx' => [
                         'columns' => [
@@ -166,13 +159,13 @@ class CustomDataFeedback extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'feedback',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
+                'targetEntity' => Feedback::class,
                 'inversedBy'   => 'custom_data',
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'feedback_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
@@ -182,14 +175,14 @@ class CustomDataFeedback extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefFeedback',
+                'targetEntity' => CustomDefFeedback::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
@@ -199,14 +192,14 @@ class CustomDataFeedback extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'root_field',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefFeedback',
+                'targetEntity' => CustomDefFeedback::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'root_field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],

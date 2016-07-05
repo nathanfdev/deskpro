@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\Basic;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -43,19 +44,19 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class CustomDataBilling extends CustomDataAbstract
 {
     /**
-     * @var \Application\DeskPRO\Entity\TicketCharge
+     * @var TicketCharge
      */
     protected $ticket_charge;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefBilling
+     * @var CustomDefBilling
      */
-    protected $field = null;
+    protected $field;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefBilling
+     * @var CustomDefBilling
      */
-    protected $root_field = null;
+    protected $root_field;
 
     /**
      * @return int
@@ -109,19 +110,11 @@ class CustomDataBilling extends CustomDataAbstract
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
+        $metadata->customRepositoryClassName = Basic::class;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
             [
-                'name'    => 'custom_data_billing',
-                'indexes' => [
-                    'field_id_idx' => [
-                        'columns' => [
-                            'field_id',
-                            'ticket_charge_id',
-                        ],
-                    ],
-                ],
+                'name'              => 'custom_data_billing',
                 'uniqueConstraints' => [
                     'unique_idx' => [
                         'columns' => [
@@ -175,7 +168,7 @@ class CustomDataBilling extends CustomDataAbstract
                     0 => [
                         'name'                 => 'ticket_charge_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
@@ -190,7 +183,7 @@ class CustomDataBilling extends CustomDataAbstract
                     0 => [
                         'name'                 => 'field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
@@ -205,7 +198,7 @@ class CustomDataBilling extends CustomDataAbstract
                     0 => [
                         'name'                 => 'root_field_id',
                         'referencedColumnName' => 'id',
-                        'nullable'             => true,
+                        'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
                     ],
