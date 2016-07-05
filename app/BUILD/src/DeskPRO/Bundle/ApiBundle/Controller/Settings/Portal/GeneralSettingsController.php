@@ -60,6 +60,7 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
         $this->model = $this->get('portal_settings_resolver')->getGeneralSettings();
 
         $this->model->setBrand($this->brand);
+        $this->model->setBrandLogo($this->brand->getLogoBlob());
 
         return $this->model;
     }
@@ -163,6 +164,15 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
             $brand = $this->getBrand($brandId);
             $brand->setUrl($urlHostChecker->simplifyUrl($url));
             $brand->setName($url = $this->model->getDeskproName());
+
+            $em = $this->getManager();
+            $em->persist($brand);
+            $em->flush();
+        }
+
+        if ($this->model->getBrandLogo()) {
+            $brand = $this->getBrand($brandId);
+            $brand->setLogoBlob($this->model->getBrandLogo());
 
             $em = $this->getManager();
             $em->persist($brand);

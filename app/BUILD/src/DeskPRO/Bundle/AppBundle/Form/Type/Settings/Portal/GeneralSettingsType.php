@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal;
 
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GeneralSettings;
@@ -61,6 +62,9 @@ class GeneralSettingsType extends AbstractType
             ->add('publish_comments', ApiBooleanType::class)
             ->add('brand', 'entity', [
                 'class' => Brand::class,
+            ])
+            ->add('brand_logo', 'entity', [
+                'class' => Blob::class,
             ])
         ;
     }

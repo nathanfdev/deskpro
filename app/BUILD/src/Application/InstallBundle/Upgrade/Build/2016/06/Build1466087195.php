@@ -50,5 +50,8 @@ class Build1466087195 extends AbstractBuild
         $this->execDbQuery('default', 'ALTER TABLE tickets ADD CONSTRAINT FK_54469DF444F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE SET NULL');
         $this->execDbQuery('default', 'CREATE INDEX IDX_54469DF444F5D008 ON tickets (brand_id)');
         $this->execDbQuery('default', 'ALTER TABLE tickets_search_active ADD brand_id INT DEFAULT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE brands ADD logo_blob_id INT DEFAULT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE brands ADD CONSTRAINT FK_7EA24434D91464D5 FOREIGN KEY (logo_blob_id) REFERENCES blobs (id) ON DELETE CASCADE');
+        $this->execDbQuery('default', 'CREATE UNIQUE INDEX UNIQ_7EA24434D91464D5 ON brands (logo_blob_id)');
     }
 }

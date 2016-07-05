@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\Portal;
 
+use Application\DeskPRO\Entity\Blob;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use JMS\Serializer\Annotation as JMS;
 
@@ -149,6 +150,13 @@ class GeneralSettings extends AbstractBrandAwareSettings
      * @JMS\Type("boolean")
      */
     private $publishComments;
+
+    /**
+     * @var Blob
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Blob>")
+     */
+    private $brandLogo;
 
     /**
      * @return string
@@ -421,6 +429,26 @@ class GeneralSettings extends AbstractBrandAwareSettings
     public function setPublishComments($publishComments)
     {
         $this->publishComments = $publishComments;
+
+        return $this;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getBrandLogo()
+    {
+        return $this->brandLogo;
+    }
+
+    /**
+     * @param Blob $brandLogo
+     *
+     * @return GeneralSettings
+     */
+    public function setBrandLogo($brandLogo)
+    {
+        $this->brandLogo = $brandLogo;
 
         return $this;
     }

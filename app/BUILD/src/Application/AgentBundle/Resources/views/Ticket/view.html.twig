@@ -141,7 +141,11 @@ pageMeta.lang = {{ {
 		<td width="10">
 			<div class="id-number">
 				<span id="{{baseId}}_brandname" title="{{ phrase('agent.general.brand') }}">
-					{{ ticket.brand.name }}
+					{% if not ticket.brand.hasLogo() %}
+						{{ ticket.brand.name }}
+					{% else %}
+						<span id="{{ baseId }}_brand_icon" {% if not ticket.brand.hasLogo() %}style="display: none;"{% endif %} title="{{ ticket.brand.name }}"><img src="{{ ticket.brand.getLogoUrl(22) }}"/></span>
+					{% endif %}
 				</span>
 			</div>
 		</td>

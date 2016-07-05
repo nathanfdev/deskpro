@@ -12,9 +12,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @Api2.sendGet('brands/default').then (res) =>
         @$scope.default_brand = res.data.data
 
-      @$scope.$watch('Ctrl.portalSettings.version', =>
-#        @portalSettings.getSettings().then((s) => @settings = s)
-      )
+      @$scope.$on 'icon.selected', (e, path) => @selectIcon path
 
       @$scope.$watch('brand_id', =>
         @portalSettings.setBrandId(@$scope.brand_id)
@@ -38,6 +36,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @portalSettings.setBrandId(@$scope.brand_id)
         @portalSettings.getSettings().then((s) =>
           @settings = s
+          if (@settings.brand_logo)
+            @Api2.sendGet('/brands/' + @settings.brand).then (res) =>
+              @setAvatar res.data.data.logo_blob
+              @settings.enable_brand_logo == !!res.data.data.logo_blob
+
         )
 
     saveSettings: ->
@@ -67,5 +70,49 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @Api2.sendDelete('brands/' + @$scope.brand_id).then  =>
           @Growl.success("Brand deleted")
           @$state.go 'portal', {brandId: @$scope.default_brand.id}
+
+
+
+    setAvatar: (blob) =>
+      @settings.brand_logo = blob.id
+      if !blob?
+        @$scope.icon_image = null
+        @settings.enable_brand_logo = false
+      else
+        @$scope.icon_image = blob.download_url
+        @settings.enable_brand_logo = true
+
+
+
+    onFileSelect: (files) ->
+      @$scope.uploading = false
+      file = files[0]
+
+      @$upload.upload({
+        url: @$http.formatApiUrl('/misc/upload'),
+        data: { is_image: true },
+        file: file
+      }).success( (data) =>
+        @$scope.uploading = false
+        @setAvatar data.blob
+      ).error( (data) =>
+        @$scope.uploading = false
+        @Growl.error data?.error_message || 'Error'
+      )
+
+
+
+    selectIcon: (image) =>
+      setAvatar null if !image?
+
+
+      @$scope.uploading = true
+      @Api.sendPostJson('/misc/upload', {path: image, is_image: true}).then(
+        (data) =>
+          @$scope.uploading = false
+          @setAvatar data.data.blob
+        () =>
+          @$scope.uploading = false
+      )
 
   Admin_Portal_Ctrl_Setup.EXPORT_CTRL()
