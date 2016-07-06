@@ -1,4 +1,4 @@
-Feature: Subscriptions
+Feature: Downloads Subscriptions
   Users can subscribe to downloads and downloads categories
 
   Background: Fresh database

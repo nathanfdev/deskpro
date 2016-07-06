@@ -45,9 +45,27 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\EmailBundle\Entity\SendmailSource;
 use Application\EmailBundle\EntityRepository\SendmailSourceRepository;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use DpBehat\Api\BrandContext;
 
 class GenericContext extends BasePortalContext
 {
+    /**
+     * @var BrandContext
+     */
+    private $brandContext;
+
+    /**
+     * @BeforeScenario
+     *
+     * @param BeforeScenarioScope $scope
+     */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $environment        = $scope->getEnvironment();
+        $this->brandContext = $environment->getContext(BrandContext::class);
+    }
+
     /**
      * @Then I should not see the agent bar
      */
@@ -211,6 +229,7 @@ class GenericContext extends BasePortalContext
                 $cat         = $em->getRepository(DownloadCategory::class)->findOneBy(['title' => $cat_name]);
                 $cat or $cat = new DownloadCategory();
                 $cat->setTitle($cat_name);
+                $cat->setBrand($this->brandContext->getDefaultBrand());
 
                 $content = new Download();
                 $content->setTitle($content_name);
@@ -374,5 +393,9 @@ class GenericContext extends BasePortalContext
             case 'feedback':
                 return Feedback::class;
         }
+    }
+
+    protected function getDefaultBrand()
+    {
     }
 }

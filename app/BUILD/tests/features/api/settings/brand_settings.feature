@@ -3,14 +3,15 @@ Feature: Brand Settings Setup
 
   Background:
     Given I'm authenticated as admin
+    And I remember default brand id
 
   Scenario: I get default brand settings
-    When I send a GET request to "/api/v2/settings/brands/1/portal/general"
+    When I send a GET request to "/api/v2/settings/brands/{defaultBrandId}/portal/general"
     Then the response should be in JSON
     And the response status code should be 200
 
   Scenario: I update default brand settings
-    When I send a POST request to "/api/v2/settings/brands/1/portal/general" with body:
+    When I send a POST request to "/api/v2/settings/brands/{defaultBrandId}/portal/general" with body:
     """
 {
   "brand": "1",
@@ -32,7 +33,7 @@ Feature: Brand Settings Setup
 
 
   Scenario: I check updated default brand settings
-    When I send a GET request to "/api/v2/settings/brands/1/portal/general"
+    When I send a GET request to "/api/v2/settings/brands/{defaultBrandId}/portal/general"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.deskpro_name" should be equal to "Test site"
@@ -102,7 +103,7 @@ Feature: Brand Settings Setup
     And the JSON node "data.url" should be equal to "otherbrand.com"
 
   Scenario: I check that the default brand settings remain the same
-    When I send a GET request to "/api/v2/settings/brands/1/portal/general"
+    When I send a GET request to "/api/v2/settings/brands/{defaultBrandId}/portal/general"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.deskpro_name" should be equal to "Test site"
