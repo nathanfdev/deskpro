@@ -4,11 +4,12 @@ Feature: New ticket form
 
   Background:
     Given I'm authenticated as user
+    And I remember default brand
     And a user with "user_1@deskpro.dev" email exists
     And only the following Department records exist:
-      | #  | Parent | Title        | Is Tickets Enabled |
-      | d1 |        | Department 1 | 1                  |
-      | d2 |        | Department 2 | 1                  |
+      | #  | Parent | Title        | Brand          | Is Tickets Enabled |
+      | d1 |        | Department 1 | {defaultBrand} | 1                  |
+      | d2 |        | Department 2 | {defaultBrand} | 1                  |
     And I grant the "{d1}" department permission of tickets app for usergroup registered
     And I grant the "{d2}" department permission of tickets app for usergroup registered
     And only the following Ticket records exist:

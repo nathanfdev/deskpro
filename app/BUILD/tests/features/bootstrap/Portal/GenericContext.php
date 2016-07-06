@@ -394,8 +394,4 @@ class GenericContext extends BasePortalContext
                 return Feedback::class;
         }
     }
-
-    protected function getDefaultBrand()
-    {
-    }
 }

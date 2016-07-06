@@ -4,11 +4,12 @@ Feature: New ticket form
 
   Background:
     Given I'm authenticated as user
+    And I remember default brand
     And I disable anti-abuse rate limiting
     And only the following Department records exist:
-      | #  | Title        | Is Tickets Enabled |
-      | d1 | Department 1 | 1                  |
-      | d2 | Department 2 | 1                  |
+      | #  | Title        | Is Tickets Enabled | Brand          |
+      | d1 | Department 1 | 1                  | {defaultBrand} |
+      | d2 | Department 2 | 1                  | {defaultBrand} |
     And I grant the "{d1}" department permission of tickets app for usergroup registered
     And I grant the "{d2}" department permission of tickets app for usergroup registered
     And only the following custom person fields exist:
