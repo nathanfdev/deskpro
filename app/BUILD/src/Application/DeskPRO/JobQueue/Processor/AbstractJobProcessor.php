@@ -359,7 +359,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
         $data_array = json_decode($job['data'], true);
 
         $resolver = new OptionsResolver();
-        $this->setDataOptions($resolver);
+        $this->configureOptions($resolver);
 
         return $resolver->resolve($data_array);
     }
