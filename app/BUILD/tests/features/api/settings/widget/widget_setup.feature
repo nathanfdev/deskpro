@@ -5,7 +5,7 @@ Feature: Widget Setup
     And my request is authenticated
 
   Scenario: I get initial widget configuration
-    When I send a GET request to "/api/v2/widget/setup"
+    When I send a GET request to "/api/v2/settings/brands/1/widget/setup"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.url.widget_loader" should exist
@@ -144,7 +144,7 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.ticket.select_department" should be equal to the string "custom"
 
   Scenario: I apply chat widget to the portal
-    When I send a POST request to "/api/v2/widget/portal/apply" with body:
+    When I send a POST request to "/api/v2/settings/brands/1/widget/portal/apply" with body:
     """
 {
   "global": {
@@ -216,10 +216,10 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.ticket.default_department" should be equal to 2
 
   Scenario: I apply chat widget to the portal
-    When I send a POST request to "/api/v2/widget/portal/remove"
+    When I send a POST request to "/api/v2/settings/brands/1/widget/portal/remove"
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/widget/setup"
+    When I send a GET request to "/api/v2/settings/brands/1/widget/setup"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.enabled_on_portal" should be equal to 0
