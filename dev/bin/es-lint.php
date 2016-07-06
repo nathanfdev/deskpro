@@ -12,6 +12,9 @@ exec("git diff-index --cached --name-only {$against}", $output);
 $filename_pattern = '/\.js$/';
 chdir($dir);
 
+$dryRun = isset($argv[1]) && $argv[1] === 'dry-run';
+$cmd    = $dryRun ? 'eslint-pre-commit' : 'eslint-fix';
+
 foreach ($output as $file) {
     if (strpos($file, $dir) === 0) {
         $file = str_replace($dir, '', $file);
@@ -19,8 +22,8 @@ foreach ($output as $file) {
             continue;
         }
         $lint_output = [];
-        echo "$file ES lint fixing...";
-        exec("npm run-script eslint-fix ".escapeshellarg($file), $lint_output, $return);
+        echo "$file ES linting...";
+        exec('npm run-script '.$cmd.' '.escapeshellarg($file), $lint_output, $return);
         if ($return == 0) {
             echo 'OK'.PHP_EOL;
         } else {
