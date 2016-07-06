@@ -33,9 +33,10 @@
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class GlossaryFixture extends DeskProAbstractFixture
+class GlossaryFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
     const NUM_WORDS            = 20;
     const NUM_WORD_DEFINITIONS = 10;
@@ -44,6 +45,14 @@ class GlossaryFixture extends DeskProAbstractFixture
      * @var int[]
      */
     private $definitions;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 10;
+    }
 
     /**
      * Load data fixtures with the passed EntityManager.

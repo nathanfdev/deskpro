@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;

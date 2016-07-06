@@ -42,6 +42,7 @@ use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpTestSrc\TestBundle\Mock\Usersource\CallbackAdapterMock;
@@ -113,6 +114,18 @@ class ApiDb extends AbstractDbSet
         // we need a brand here, but the other db's use data.php which has all the brands
         $brand = new Brand();
         $brand->setName('default');
+
+        $themeSet = new ThemeSet();
+        $themeSet->setThemeId('standard');
+        $this->getEm()->persist($themeSet);
+
+        $editThemeSet = new ThemeSet();
+        $editThemeSet->setThemeId('standard');
+        $this->getEm()->persist($editThemeSet);
+
+        $brand->setThemeSet($themeSet);
+        $brand->setEditThemeSet($editThemeSet);
+
         $this->getEm()->persist($brand);
         $this->getEm()->flush();
 

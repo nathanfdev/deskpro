@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\Entity\Brand;
@@ -45,7 +46,7 @@ class BrandFixture extends DeskProAbstractFixture implements OrderedFixtureInter
      */
     public function getOrder()
     {
-        return 10;
+        return 5;
     }
 
     /**
