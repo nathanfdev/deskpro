@@ -28,6 +28,9 @@
 
 namespace DeskPRO\Bundle\UpgradeBundle\Command;
 
+use DeskPRO\Bundle\UpgradeBundle\Logger\LogKeyEvent;
+use DeskPRO\Component\Util\RandUtils;
+use DeskPRO\Component\Util\Timer;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -48,48 +51,171 @@ class AutoUpgradeCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         set_time_limit(0);
+        $t = Timer::start();
 
-        #------------------------------
+        $sessionId = $input->getOption('session-id');
+        if (!$sessionId) {
+            $sessionId = RandUtils::randomStringFormat('%40An');
+        }
+
+        $smf = $this->getContainer()->get('dp.upgrader.session_manager_factory');
+        $smf->enableSessionId($sessionId);
+
+        $logger = $this->getContainer()->get('monolog.logger.upgrader.general');
+        $logger->info(
+            '[Auto-Upgrade] Starting session: '.$sessionId,
+            ['keyEvent' => LogKeyEvent::create('AutoUpgrade.start')]
+        );
+
+        try {
+            if ($ret = $this->doExecute($sessionId, $input, $output)) {
+                $logger = $this->getContainer()->get('monolog.logger.upgrader.general');
+                $logger->info(
+                    '[Auto-Upgrade] Done with error',
+                    ['keyEvent' => LogKeyEvent::create('AutoUpgrade.error', ['exitCode' => $ret])]
+                );
+            } else {
+                $logger = $this->getContainer()->get('monolog.logger.upgrader.general');
+                $logger->info(
+                    '[Auto-Upgrade] Done success',
+                    ['keyEvent' => LogKeyEvent::create('AutoUpgrade.success')]
+                );
+            }
+
+            $output->writeln('Upgrade complete in '.$t->formatTotalTime());
+        } catch (\Exception $e) {
+            $logger->info(
+                '[Auto-Upgrade] Exception',
+                ['keyEvent' => LogKeyEvent::createForException('AutoUpgrade.error', $e)]
+            );
+        }
+    }
+
+    /**
+     * @param string          $sessionId
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @throws \Symfony\Component\Console\Exception\ExceptionInterface
+     *
+     * @return int
+     */
+    private function doExecute($sessionId, InputInterface $input, OutputInterface $output)
+    {
+        $logger = $this->getContainer()->get('monolog.logger.upgrader.general');
+
+        $logger->info(
+            '[Auto-Upgrade] dp:upgrade:status - start',
+            ['keyEvent' => LogKeyEvent::create('AutoUpgrade.status.start')]
+        );
 
         $command = $this->getApplication()->find('dp:upgrade:status');
-        $args    = new ArgvInput('dp:upgrade:status');
+        $args    = new ArgvInput(['dp:upgrade:status', '--session-id', $sessionId]);
         if ($ret = $command->run($args, $output)) {
+            $logger->info(
+                '[Auto-Upgrade] dp:upgrade:status - error',
+                ['keyEvent' => LogKeyEvent::create('AutoUpgrade.status.error', ['exitCode' => $ret])]
+            );
+
             return $ret;
+        }
+
+        $logger->info(
+            '[Auto-Upgrade] dp:upgrade:status - done ok',
+            ['keyEvent' => LogKeyEvent::create('AutoUpgrade.status.success')]
+        );
+
+        // This is the only hard-coded event we need to handle in here,
+        // to handle when we need to early exit
+        $smf     = $this->getContainer()->get('dp.upgrader.session_manager_factory');
+        $session = $smf->getManager()->getSession();
+        if (!$session->getStatusStep()->doesRequireUpdate()) {
+            return 0;
         }
 
         #------------------------------
 
+        $logger->info(
+            '[Auto-Upgrade] dp:distro:download-build - start',
+            ['keyEvent' => LogKeyEvent::create('AutoUpgrade.download.start')]
+        );
+
         $command = $this->getApplication()->find('dp:distro:download-build');
         $args    = new ArgvInput([
             'dp:distro:download-build',
+            '--session-id', $sessionId,
             '--skip-existing',
             'latest',
         ]);
 
         if ($ret = $command->run($args, $output)) {
+            $logger->info(
+                '[Auto-Upgrade] dp:distro:download-build - error',
+                ['keyEvent' => LogKeyEvent::create('AutoUpgrade.download.error', ['exitCode' => $ret])]
+            );
+
             return $ret;
         }
 
+        $logger->info(
+            '[Auto-Upgrade] dp:distro:download-build - done ok',
+            ['keyEvent' => LogKeyEvent::create('AutoUpgrade.download.success')]
+        );
+
         #------------------------------
+
+        $logger->info(
+            '[Auto-Upgrade] dp:database-backup - start',
+            ['keyEvent' => LogKeyEvent::create('AutoUpgrade.db_backup.start')]
+        );
 
         $command = $this->getApplication()->find('dp:database-backup');
         $args    = new ArgvInput([
             'dp:database-backup',
+            '--session-id', $sessionId,
         ]);
 
         if ($ret = $command->run($args, $output)) {
+            $logger->info(
+                '[Auto-Upgrade] dp:database-backup - error',
+                ['keyEvent' => LogKeyEvent::create('AutoUpgrade.db_backup.error', ['exitCode' => $ret])]
+            );
+
             return $ret;
         }
 
+        $logger->info(
+            '[Auto-Upgrade] dp:database-backup - done ok',
+            ['keyEvent' => LogKeyEvent::create('AutoUpgrade.db_backup.success')]
+        );
+
         #------------------------------
+
+        $logger->info(
+            '[Auto-Upgrade] dp:upgrade:activate-build - done ok',
+            ['keyEvent' => LogKeyEvent::create('AutoUpgrade.activate.start')]
+        );
 
         $command = $this->getApplication()->find('dp:upgrade:activate-build');
         $args    = new ArgvInput([
             'dp:upgrade:activate-build',
+            '--session-id', $sessionId,
         ]);
 
         if ($ret = $command->run($args, $output)) {
+            $logger->info(
+                '[Auto-Upgrade] dp:upgrade:activate-build - error',
+                ['keyEvent' => LogKeyEvent::create('AutoUpgrade.activate.error', ['exitCode' => $ret])]
+            );
+
             return $ret;
         }
+
+        $logger->info(
+            '[Auto-Upgrade] dp:upgrade:activate-build - done ok',
+            ['keyEvent' => LogKeyEvent::create('AutoUpgrade.activate.success')]
+        );
+
+        return 0;
     }
 }

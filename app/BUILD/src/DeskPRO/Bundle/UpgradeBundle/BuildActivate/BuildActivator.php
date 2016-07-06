@@ -33,6 +33,7 @@ use DeskPRO\Bundle\UpgradeBundle\BuildActivate\ReqCheck\ReqCheckInterface;
 use DeskPRO\Bundle\UpgradeBundle\BuildActivate\RunActivator\RunActivatorInterface;
 use DeskPRO\Bundle\UpgradeBundle\BuildActivate\UpgradeRunner\UpgradeRunnerInterface;
 use DeskPRO\Bundle\UpgradeBundle\Instance\BuildInstance;
+use DeskPRO\Bundle\UpgradeBundle\Logger\LogKeyEvent;
 use DeskPRO\Component\Util\Timer;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -97,7 +98,10 @@ class BuildActivator implements LoggerAwareInterface
     {
         $t = Timer::start();
 
-        $this->logger->info('Activating build '.$build->getBuildId());
+        $this->logger->info(
+            'Activating build '.$build->getBuildId(),
+            ['keyEvent' => LogKeyEvent::create('BuildActivator.start')]
+        );
         $this->logger->debug('appPath: '.$build->getAppPath());
         $this->logger->debug('webPath: '.$build->getWebPath());
         $this->logger->debug('kernelCachePath: '.$build->getKernelCachePath());
@@ -107,14 +111,23 @@ class BuildActivator implements LoggerAwareInterface
         #----------------------------------------
 
         $t->tick();
-        $this->logger->debug('[reqCheck] type: '.get_class($this->reqChecker));
+        $this->logger->debug(
+            '[reqCheck] type: '.get_class($this->reqChecker),
+            ['keyEvent' => LogKeyEvent::create('BuildActivator.reqCheck.start')]
+        );
 
         try {
             $this->reqChecker->assertValidRequirements($build);
-            $this->logger->info('[reqCheck] finished ok');
+            $this->logger->info(
+                '[reqCheck] finished ok',
+                ['keyEvent' => LogKeyEvent::create('BuildActivator.reqCheck.success')]
+            );
         } catch (\Exception $e) {
-            $this->logger->error('[reqCheck] finished with error: '.$e->getMessage());
-            // TODO
+            $this->logger->error(
+                '[reqCheck] finished with error: '.$e->getMessage(),
+                ['keyEvent' => LogKeyEvent::createForException('BuildActivator.reqCheck.error', $e)]
+            );
+            throw $e;
         } finally {
             $t->tick();
             $this->logger->debug('[reqCheck] took '.$t->formatTime());
@@ -124,29 +137,47 @@ class BuildActivator implements LoggerAwareInterface
         # Turn helpdesk off
         #----------------------------------------
 
-        $this->logger->debug('[helpdeskState] type: '.get_class($this->helpdeskState));
+        $this->logger->debug(
+            '[helpdeskState] type: '.get_class($this->helpdeskState),
+            ['keyEvent' => LogKeyEvent::create('BuildActivator.helpdeskState.off.start')]
+        );
 
         try {
             $this->helpdeskState->disableHelpdeskForUpdate();
-            $this->logger->info('[helpdeskState] finished ok');
+            $this->logger->info(
+                '[helpdeskState] finished ok',
+                ['keyEvent' => LogKeyEvent::create('BuildActivator.helpdeskState.off.success')]
+            );
         } catch (\Exception $e) {
-            $this->logger->error('[helpdeskState] finished with error: '.$e->getMessage());
-            // TODO
+            $this->logger->error(
+                '[helpdeskState] finished with error: '.$e->getMessage(),
+                ['keyEvent' => LogKeyEvent::createForException('BuildActivator.helpdeskState.off.error', $e)]
+            );
+            throw $e;
         }
 
         #----------------------------------------
         # Run upgrader
         #----------------------------------------
 
-        $this->logger->debug('[upgradeRunner] type: '.get_class($this->upgradeRunner));
+        $this->logger->debug(
+            '[upgradeRunner] type: '.get_class($this->upgradeRunner),
+            ['keyEvent' => LogKeyEvent::create('BuildActivator.upgradeRunner.start')]
+        );
         $t->tick();
 
         try {
             $this->upgradeRunner->runUpgrade($build);
-            $this->logger->info('[upgradeRunner] finished ok');
+            $this->logger->info(
+                '[upgradeRunner] finished ok',
+                ['keyEvent' => LogKeyEvent::create('BuildActivator.upgradeRunner.success')]
+            );
         } catch (\Exception $e) {
-            $this->logger->critical('[upgradeRunner] finished with error: '.$e->getMessage());
-            // TODO
+            $this->logger->critical(
+                '[upgradeRunner] finished with error: '.$e->getMessage(),
+                ['keyEvent' => LogKeyEvent::createForException('BuildActivator.upgradeRunner.error', $e)]
+            );
+            throw $e;
         } finally {
             $t->tick();
             $this->logger->debug('[upgradeRunner] took '.$t->formatTime());
@@ -156,31 +187,51 @@ class BuildActivator implements LoggerAwareInterface
         # Activate run
         #----------------------------------------
 
-        $this->logger->debug('[runActivator] type: '.get_class($this->runActivator));
+        $this->logger->debug(
+            '[runActivator] type: '.get_class($this->runActivator),
+            ['keyEvent' => LogKeyEvent::create('BuildActivator.runActivator.start')]
+        );
         $t->tick();
 
         try {
             $this->runActivator->activateRunDir($build);
-            $this->logger->warning('[runActivator] finished ok');
+            $this->logger->warning(
+                '[runActivator] finished ok',
+                ['keyEvent' => LogKeyEvent::create('BuildActivator.runActivator.success')]
+            );
         } catch (\Exception $e) {
-            $this->logger->warning('[runActivator] finished with error: '.$e->getMessage());
-            // TODO
+            // No throw, its only a warning
+            $this->logger->warning(
+                '[runActivator] finished with error: '.$e->getMessage(),
+                ['keyEvent' => LogKeyEvent::createForException('BuildActivator.runActivator.warning', $e)]
+            );
         } finally {
             $t->tick();
             $this->logger->debug('[runActivator] took '.$t->formatTime());
         }
 
         #----------------------------------------
-        # Turn helpdesk off
+        # Turn helpdesk back on
         #----------------------------------------
+
+        $this->logger->debug(
+            '[helpdeskState] enable the helpdesk on the new build',
+            ['keyEvent' => LogKeyEvent::create('BuildActivator.helpdeskState.enable.start')]
+        );
 
         try {
             $this->helpdeskState->enableHelpdeskFromUpdate();
             $this->helpdeskState->setHelpdeskBuild($build);
-            $this->logger->info('[helpdeskState] re-enabled and set build ok');
+            $this->logger->info(
+                '[helpdeskState] re-enabled and set build ok',
+                ['keyEvent' => LogKeyEvent::create('BuildActivator.helpdeskState.enable.success')]
+            );
         } catch (\Exception $e) {
-            $this->logger->error('[helpdeskState] failed to re-enable/set build with error: '.$e->getMessage());
-            // TODO
+            $this->logger->error(
+                '[helpdeskState] failed to re-enable/set build with error: '.$e->getMessage(),
+                ['keyEvent' => LogKeyEvent::createForException('BuildActivator.helpdeskState.enable.error', $e)]
+            );
+            throw $e;
         }
 
         #----------------------------------------
@@ -188,5 +239,9 @@ class BuildActivator implements LoggerAwareInterface
         #----------------------------------------
 
         $this->logger->info('BuildActivator done all in '.$t->formatTotalTime());
+        $this->logger->info(
+            'BuildActivator done all in '.$t->formatTotalTime(),
+            ['keyEvent' => LogKeyEvent::create('BuildActivator.success')]
+        );
     }
 }

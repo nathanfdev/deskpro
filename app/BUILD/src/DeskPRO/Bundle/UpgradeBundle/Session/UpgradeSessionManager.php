@@ -87,7 +87,7 @@ class UpgradeSessionManager
 
         if (!file_exists($filePath)) {
             $session = new UpgradeSession();
-            $this->saveSession($session);
+            $this->syncSession();
         } else {
             $session = @file_get_contents($filePath);
             if (!$session) {
@@ -115,7 +115,7 @@ class UpgradeSessionManager
     /**
      * Updates the session data based on the filesystem.
      */
-    public function syncSession()
+    private function syncSession()
     {
         $this->session->merge($this->loadSession());
     }
@@ -125,6 +125,45 @@ class UpgradeSessionManager
      */
     public function flushSession()
     {
-        $this->fs->dumpFile($this->getSessionFilePath(), serialize($this->session), 0777);
+        $fp = @fopen($this->getSessionFilePath(), 'a');
+        if (!$fp) {
+            throw new IOException('Could not open for writing');
+        }
+
+        @flock($fp, LOCK_EX);
+
+        $writeStatus = fwrite($fp, serialize($this->session));
+
+        @flock($fp, LOCK_EX);
+        @fclose($fp);
+
+        if (!$writeStatus) {
+            throw new IOException('Could not write');
+        }
+    }
+
+    /**
+     * Use this to make changes to the upgrade session.
+     *
+     * If your function returns exactly FALSE, then we'll
+     * consider it a noop and no write will take plce.
+     *
+     * @param callable $callable
+     */
+    public function mutateSession($callable)
+    {
+        $this->syncSession();
+
+        if (call_user_func($callable, $this->session) === false) {
+            return;
+        }
+
+        for ($i = 0; $i < 3; ++$i) {
+            try {
+                $this->flushSession();
+                break;
+            } catch (\Exception $e) {
+            }
+        }
     }
 }

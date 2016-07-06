@@ -71,6 +71,44 @@ class DebugUtils
     }
 
     /**
+     * @param \Exception $e
+     *
+     * @return string
+     */
+    public static function getExceptionSummary(\Exception $e)
+    {
+        $lines = [];
+
+        while ($e) {
+            $code = $e->getCode();
+            if ($lines) {
+                $prefix = '|'.str_repeat('--', count($lines)).' ';
+            }
+
+            if ($code === 0 || $code === null || $code === false || $code === '0' || $code === '') {
+                $lines[] = sprintf(
+                    '%s<%s> %s',
+                    $prefix,
+                    get_class($e),
+                    $e->getMessage()
+                );
+            } else {
+                $lines[] = sprintf(
+                    '%s<%s> [%s] %s',
+                    $prefix,
+                    get_class($e),
+                    $e->getCode(),
+                    $e->getMessage()
+                );
+            }
+
+            $e = $e->getPrevious();
+        }
+
+        return implode("\n", $e);
+    }
+
+    /**
      * @param mixed $var
      *
      * @return string

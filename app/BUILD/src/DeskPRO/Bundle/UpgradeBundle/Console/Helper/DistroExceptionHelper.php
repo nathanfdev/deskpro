@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\UpgradeBundle\Console\Helper;
 
 use DeskPRO\Bundle\UpgradeBundle\Distro\DistroManifestLoader;
+use DeskPRO\Component\Util\DebugUtils;
 use DeskPRO\Component\Util\TypeUtils;
 use Orb\Util\Strings;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -50,38 +51,86 @@ class DistroExceptionHelper
         $this->output = $output;
     }
 
+    /**
+     * @param \Exception           $e
+     * @param DistroManifestLoader $distroLoader
+     *
+     * @return string
+     */
+    public function getManifestFailureDescription(\Exception $e, DistroManifestLoader $distroLoader)
+    {
+        $lines   = [];
+        $lines[] = 'Could not load version data from the DeskPRO distribution server.';
+        $lines[] = 'The two most common reasons for this error are:';
+        $lines[] = '  * You have a firewall that is preventing the network connection to the server.';
+        $lines[] = '  * The distribution server is temporarily unavailable.';
+        $lines[] = '';
+        $lines[] = 'This is the URL the system is trying to access:';
+        $lines[] = '  '.$distroLoader->getApiUrl().DistroManifestLoader::MANIFEST_ENDPOINT;
+        $lines[] = '';
+        $lines[] = 'Here is the error message returned:';
+        $lines[] = DebugUtils::getExceptionSummary($e);
+
+        return implode("\n", $lines);
+    }
+
+    /**
+     * @param \Exception           $e
+     * @param DistroManifestLoader $distroLoader
+     */
     public function renderManifestFailure(\Exception $e, DistroManifestLoader $distroLoader)
     {
         $output = $this->output;
 
-        $output->writeln('<error>Could not load version data from the DeskPRO distribution server.</error>');
-        $output->writeln('The two most common reasons for this error are:');
-        $output->writeln('  * You have a firewall that is preventing the network connection to the server.');
-        $output->writeln('  * The distribution server is temporarily unavailable.');
-        $output->writeln('');
-        $output->writeln('This is the URL the system is trying to access:');
-        $output->writeln('  '.$distroLoader->getApiUrl().DistroManifestLoader::MANIFEST_ENDPOINT);
-        $output->writeln('');
-
-        $output->writeln('Here is the error message returned:');
-        $this->renderException($e);
+        $lines = explode("\n", $this->getManifestFailureDescription($e, $distroLoader));
+        foreach ($lines as $idx => $l) {
+            if ($idx === 0) {
+                $output->writeln('<error>'.$l.'</error>');
+            } else {
+                $output->writeln($l);
+            }
+        }
     }
 
+    /**
+     * @param \Exception $e
+     * @param string     $zipUrl
+     *
+     * @return string
+     */
+    public function getDownloadFailureDescription(\Exception $e, $zipUrl)
+    {
+        $lines   = [];
+        $lines[] = '<error>Could not load download the DeskPRO ZIP file.</error>';
+        $lines[] = 'The two most common reasons for this error are:';
+        $lines[] = '  * You have a firewall that is preventing the network connection to the server.';
+        $lines[] = '  * The distribution server is temporarily unavailable.';
+        $lines[] = '';
+        $lines[] = 'This is the URL the system is trying to access:';
+        $lines[] = '  '.$zipUrl;
+        $lines[] = '';
+        $lines[] = 'Here is the error message returned:';
+        $lines[] = DebugUtils::getExceptionSummary($e);
+
+        return implode("\n", $lines);
+    }
+
+    /**
+     * @param \Exception $e
+     * @param string     $zipUrl
+     */
     public function renderDownloadFailure(\Exception $e, $zipUrl)
     {
         $output = $this->output;
 
-        $output->writeln('<error>Could not load download the DeskPRO ZIP file.</error>');
-        $output->writeln('The two most common reasons for this error are:');
-        $output->writeln('  * You have a firewall that is preventing the network connection to the server.');
-        $output->writeln('  * The distribution server is temporarily unavailable.');
-        $output->writeln('');
-        $output->writeln('This is the URL the system is trying to access:');
-        $output->writeln('  '.$zipUrl);
-        $output->writeln('');
-
-        $output->writeln('Here is the error message returned:');
-        $this->renderException($e);
+        $lines = explode("\n", $this->getDownloadFailureDescription($e, $zipUrl));
+        foreach ($lines as $idx => $l) {
+            if ($idx === 0) {
+                $output->writeln('<error>'.$l.'</error>');
+            } else {
+                $output->writeln($l);
+            }
+        }
     }
 
     /**

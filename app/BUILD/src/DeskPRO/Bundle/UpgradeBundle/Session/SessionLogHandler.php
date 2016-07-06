@@ -28,14 +28,31 @@
 
 namespace DeskPRO\Bundle\UpgradeBundle\Session;
 
+use DeskPRO\Bundle\UpgradeBundle\BuildActivate\ReqCheck\ReqCheckException;
+use DeskPRO\Bundle\UpgradeBundle\Logger\LogKeyEvent;
+use DeskPRO\Bundle\UpgradeBundle\Session\SessionStep\SessionStep;
+use DeskPRO\Bundle\UpgradeBundle\Session\SessionStep\StatusStep;
+use DeskPRO\Component\Util\DebugUtils;
 use Monolog\Handler\AbstractHandler;
 use Monolog\Logger;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class SessionLogHandler extends AbstractHandler
 {
-    public function __construct()
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * SessionLogHandler constructor.
+     *
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
     {
         parent::__construct(Logger::DEBUG, true);
+        $this->container = $container;
     }
 
     /**
@@ -43,5 +60,365 @@ class SessionLogHandler extends AbstractHandler
      */
     public function handle(array $record)
     {
+        if (empty($record['context']['keyEvent'])) {
+            return false;
+        }
+
+        $this->handleKeyEvent($record, $record['context']['keyEvent']);
+
+        return false === $this->bubble;
+    }
+
+    /**
+     * @param array       $record
+     * @param LogKeyEvent $keyEvent
+     */
+    private function handleKeyEvent(array $record, LogKeyEvent $keyEvent)
+    {
+        if (!$this->container->has('dp.upgrader.session_manager_factory')) {
+            return;
+        }
+
+        $smf = $this->container->get('dp.upgrader.session_manager_factory');
+        if (!$smf->isEnabled()) {
+            return;
+        }
+
+        $manager = $smf->getManager();
+
+        // abc.e.f.success
+        // eventNs: abc, eventName: e.f, eventFlag: succcess
+
+        $eventId   = $keyEvent->getId();
+        $parts     = explode('.', $eventId);
+        $eventFlag = array_pop($parts);
+        $eventNs   = array_shift($parts);
+        $eventName = implode('.', $parts) ?: 'default';
+
+        switch ($eventNs) {
+            case 'AutoUpgrade':
+                $manager->mutateSession(function (UpgradeSession $session) use ($keyEvent) {
+                    return $this->handleAutoUpgradeEvent($session, $keyEvent);
+                });
+                break;
+
+            case 'StatusCheck':
+            case 'DistroManifestLoader':
+                $manager->mutateSession(function (UpgradeSession $session) use ($keyEvent) {
+                    $step = $session->getStatusStep();
+
+                    return $this->handleDbBackupEvent($step, $keyEvent);
+                });
+                break;
+
+            case 'DbBackup':
+                $manager->mutateSession(function (UpgradeSession $session) use ($keyEvent) {
+                    $step = $session->getStep(UpgradeSession::STEP_BACKUP);
+
+                    return $this->handleDbBackupEvent($step, $keyEvent);
+                });
+                break;
+
+            case 'DistroDownload':
+                $manager->mutateSession(function (UpgradeSession $session) use ($keyEvent) {
+                    $step = $session->getStep(UpgradeSession::STEP_DOWNLOAD_DISTRO);
+
+                    return $this->handleDistroDownloadEvent($step, $keyEvent);
+                });
+                break;
+
+            case 'DistroInstaller':
+                $manager->mutateSession(function (UpgradeSession $session) use ($keyEvent) {
+                    $step = $session->getStep(UpgradeSession::STEP_EXTRACT_DISTRO);
+
+                    return $this->handleDistroInstallEvent($step, $keyEvent);
+                });
+                break;
+
+            case 'BuildActivator':
+                $manager->mutateSession(function (UpgradeSession $session) use ($keyEvent) {
+                    return $this->handleBuildActivateEvent($session, $keyEvent);
+                });
+                break;
+        }
+    }
+
+    /**
+     * @param UpgradeSession $session
+     * @param LogKeyEvent    $keyEvent
+     *
+     * @return bool
+     */
+    private function handleAutoUpgradeEvent(UpgradeSession $session, LogKeyEvent $keyEvent)
+    {
+        switch ($keyEvent->getId()) {
+            case 'AutoUpgrade.start':
+                $session->start();
+                break;
+
+            case 'AutoUpgrade.success':
+                $session->finished('success');
+                break;
+
+            case 'AutoUpgrade.error':
+                if ($keyEvent->has('exception')) {
+                    /** @var \Exception $e */
+                    $e = $keyEvent->get('exception');
+                    $session->finishedWithError('An unexpected error occurred', 'An exception was raised: '.DebugUtils::getExceptionSummary($e));
+                    $session->setException($e);
+                } else {
+                    $session->finishedWithError('An upgrade process returned with an error status');
+                }
+                break;
+
+            default:
+                return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param StatusStep  $step
+     * @param LogKeyEvent $keyEvent
+     *
+     * @return bool
+     */
+    private function handleStatusCheckEvent(StatusStep $step, LogKeyEvent $keyEvent)
+    {
+        switch ($keyEvent->getId()) {
+            case 'StatusCheck.start':
+                $step->start();
+                break;
+
+            case 'StatusCheck.outdated':
+                $step->finished('success', 'DeskPRO needs to be updated');
+                break;
+
+            case 'StatusCheck.not_outdated':
+                $step->finished('success', 'DeskPRO does not need to be updated');
+                break;
+
+            case 'StatusCheck.error':
+                if ($keyEvent->has('exception')) {
+                    /** @var \Exception $e */
+                    $e = $keyEvent->get('exception');
+
+                    $step->finishedWithError('We could not connect with the DeskPRO version server', $keyEvent->get('message', DebugUtils::getExceptionSummary($e)));
+                    $step->setException($e);
+                } else {
+                    $step->finishedWithError('We could not connect with the DeskPRO version server', $keyEvent->get('message', ''));
+                }
+                break;
+
+            default:
+                return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param SessionStep $step
+     * @param LogKeyEvent $keyEvent
+     *
+     * @return bool
+     */
+    private function handleDbBackupEvent(SessionStep $step, LogKeyEvent $keyEvent)
+    {
+        switch ($keyEvent->getId()) {
+            case 'DbBackup.start':
+                $step->start();
+                break;
+
+            case 'DbBackup.success':
+                $step->finished('Database backup completed successfully');
+                break;
+
+            case 'StatusCheck.error':
+                if ($keyEvent->has('exception')) {
+                    /** @var \Exception $e */
+                    $e = $keyEvent->get('exception');
+
+                    $step->finishedWithError('Failed to make database backup', $keyEvent->get('message', DebugUtils::getExceptionSummary($e)));
+                    $step->setException($e);
+                } else {
+                    $step->finishedWithError('Failed to make database backup', $keyEvent->get('message', ''));
+                }
+                break;
+
+            default:
+                return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param SessionStep $step
+     * @param LogKeyEvent $keyEvent
+     *
+     * @return bool
+     */
+    private function handleDistroDownloadEvent(SessionStep $step, LogKeyEvent $keyEvent)
+    {
+        switch ($keyEvent->getId()) {
+            case 'DistroDownload.start':
+                $step->start();
+                break;
+
+            case 'DistroDownload.success':
+                $step->finished('Downloaded DeskPRO distribution successfully');
+                break;
+
+            case 'DistroDownload.error':
+                if ($keyEvent->has('exception')) {
+                    /** @var \Exception $e */
+                    $e = $keyEvent->get('exception');
+
+                    $step->finishedWithError('Failed to download DeskPRO distribution', $keyEvent->get('message', DebugUtils::getExceptionSummary($e)));
+                    $step->setException($e);
+                } else {
+                    $step->finishedWithError('Failed to download DeskPRO distribution', $keyEvent->get('message', ''));
+                }
+                break;
+
+            default:
+                return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param SessionStep $step
+     * @param LogKeyEvent $keyEvent
+     *
+     * @return bool
+     */
+    private function handleDistroInstallEvent(SessionStep $step, LogKeyEvent $keyEvent)
+    {
+        switch ($keyEvent->getId()) {
+            case 'DistroInstaller.start':
+                $step->start();
+                break;
+
+            case 'DistroInstaller.success':
+                $step->finished('Downloaded DeskPRO distribution successfully');
+                break;
+
+            case 'DistroInstaller.reqCheck.error':
+                $problems = $keyEvent->get('problems');
+                $step->finishedWithError(
+                    'Failed to download DeskPRO distribution',
+                    "We discovered the following problems:\n- ".implode("\n - ", $problems)
+                );
+                break;
+
+            case 'DistroInstaller.error':
+                if ($keyEvent->has('exception')) {
+                    /** @var \Exception $e */
+                    $e = $keyEvent->get('exception');
+
+                    $step->finishedWithError('Failed to download DeskPRO distribution', $keyEvent->get('message', DebugUtils::getExceptionSummary($e)));
+                    $step->setException($e);
+                } else {
+                    $step->finishedWithError('Failed to download DeskPRO distribution', $keyEvent->get('message', ''));
+                }
+                break;
+
+            default:
+                return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param UpgradeSession $session
+     * @param LogKeyEvent    $keyEvent
+     *
+     * @return bool
+     */
+    private function handleBuildActivateEvent(UpgradeSession $session, LogKeyEvent $keyEvent)
+    {
+        $reqCheckStep = $session->getStep(UpgradeSession::STEP_REQ_CHECK);
+        $hdOffStep    = $session->getStep(UpgradeSession::STEP_DISABLE_SITE);
+        $hdOnStep     = $session->getStep(UpgradeSession::STEP_ENABLE_SITE);
+        $updateStep   = $session->getStep(UpgradeSession::STEP_UPGRADE);
+
+        switch ($keyEvent->getId()) {
+            case 'BuildActivator.reqCheck.success':
+                $reqCheckStep->finished('Requirements OK');
+                break;
+
+            case 'BuildActivator.reqCheck.error':
+                $e = $keyEvent->get('exception');
+                if ($e && $e instanceof ReqCheckException) {
+                    $desc = [];
+                    foreach ($e->getFailedRequirements() as $info) {
+                        $desc[] = "- {$info['description']}\n\n{$info['help']}\n\n\n";
+                    }
+
+                    $reqCheckStep->finishedWithError(
+                        'The new build has updated requirements that your server does not meet',
+                        trim(implode('', $desc))
+                    );
+                } else {
+                    $reqCheckStep->finishedWithError(
+                        'The new build has updated requirements that your server does not meet',
+                        'An unknonw problem occurred while checking server requirements'
+                    );
+                }
+                break;
+
+            case 'BuildActivator.helpdeskState.off.success':
+                $hdOffStep->finished('Turned helpdesk off');
+                break;
+
+            case 'BuildActivator.helpdeskState.off.error':
+                $hdOffStep->finishedWithError('Failed to disable helpdesk');
+                break;
+
+            case 'BuildActivator.upgradeRunner.start':
+                $updateStep->start();
+                break;
+
+            case 'BuildActivator.upgradeRunner.success':
+                $updateStep->finished('Upgrade finished');
+                break;
+
+            case 'BuildActivator.upgradeRunner.error':
+                $updateStep->finishedWithError('Upgrade failed');
+                break;
+
+            case 'BuildActivator.runActivator.start':
+                $hdOnStep->start();
+                break;
+
+            case 'BuildActivator.helpdeskState.enable.success':
+                $hdOnStep->finished('Re-enabled helpdesk');
+                break;
+
+            case 'BuildActivator.helpdeskState.enable.error':
+                if ($keyEvent->has('exception')) {
+                    /** @var \Exception $e */
+                    $e = $keyEvent->get('exception');
+
+                    $step->finishedWithError('Failed to activate the new build', $keyEvent->get('message', DebugUtils::getExceptionSummary($e)));
+                    $step->setException($e);
+                } else {
+                    $step->finishedWithError('Failed to activate the new build', $keyEvent->get('message', ''));
+                }
+                break;
+
+            case 'BuildActivator.runActivator.warning':
+                break;
+
+            default:
+                return false;
+        }
+
+        return true;
     }
 }

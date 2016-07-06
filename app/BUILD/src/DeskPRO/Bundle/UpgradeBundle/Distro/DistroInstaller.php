@@ -30,7 +30,10 @@ namespace DeskPRO\Bundle\UpgradeBundle\Distro;
 
 use Alchemy\Zippy\Zippy;
 use DeskPRO\Bundle\UpgradeBundle\Instance\InstanceReader;
+use DeskPRO\Bundle\UpgradeBundle\Logger\LogKeyEvent;
 use DeskPRO\Component\Filesystem\TmpDir;
+use DeskPRO\Component\Util\Timer;
+use DeskPRO\Component\Util\TypeUtils;
 use DpRun\BuildScanner;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
@@ -112,6 +115,18 @@ class DistroInstaller implements LoggerAwareInterface
                 $this->instanceStatus->getAssetsBasePath());
         }
 
+        if (!empty($problems)) {
+            $this->logger->info(
+                'Detected problems',
+                ['keyEvent' => LogKeyEvent::create('DistroInstaller.reqCheck.error', ['problems' => $problems])]
+            );
+        } else {
+            $this->logger->info(
+                'Detected problems',
+                ['keyEvent' => LogKeyEvent::create('DistroInstaller.reqCheck.success')]
+            );
+        }
+
         return $problems;
     }
 
@@ -124,15 +139,26 @@ class DistroInstaller implements LoggerAwareInterface
      */
     public function installFromZip($zipPath, $asBuild = null)
     {
-        $ts = microtime(true);
-        $this->logger->debug(sprintf('Installing files -- begin at %s', date('Y-m-d H:i:s')));
+        $t = Timer::start();
+        $this->logger->debug(
+            "Installing files from $zipPath",
+            ['keyEvent' => LogKeyEvent::create('DistroInstaller.start')]
+        );
 
         try {
             $this->doInstallFromZip($zipPath, $asBuild);
+            $this->logger->debug(
+                'Done installing files',
+                ['keyEvent' => LogKeyEvent::create('DistroInstaller.success')]
+            );
         } catch (\Exception $e) {
+            $this->logger->error(
+                sprintf('[%s:%s] %s', TypeUtils::getBaseTypeName($e), $e->getCode(), $e->getMessage()),
+                ['keyEvent' => LogKeyEvent::createForException('DistroInstaller.error', $e)]
+            );
             throw $e;
         } finally {
-            $this->logger->debug(sprintf('Installing files -- finished at %s (%.3fs)', date('Y-m-d H:i:s'), microtime(true) - $ts));
+            $this->logger->debug('Finished installFromZip in '.$t->formatTotalTime());
         }
     }
 

@@ -30,6 +30,8 @@ namespace DeskPRO\Bundle\UpgradeBundle\Distro;
 
 use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroRelease;
 use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroReleaseCollection;
+use DeskPRO\Bundle\UpgradeBundle\Logger\LogKeyEvent;
+use DeskPRO\Component\Util\Timer;
 use DeskPRO\Component\Util\TypeUtils;
 use GuzzleHttp;
 use GuzzleHttp\ClientInterface;
@@ -117,17 +119,22 @@ class DistroManifestLoader implements LoggerAwareInterface
      */
     public function loadReleases()
     {
-        $ts = microtime(true);
-        $this->logger->debug(sprintf('loadReleases -- begin at %s', date('Y-m-d H:i:s')));
+        $t = Timer::start();
+        $this->logger->debug('loadReleases -- begin', ['keyEvent' => LogKeyEvent::create('DistroManifestLoader.start')]);
 
         try {
-            return $this->doLoadReleases();
+            $res = $this->doLoadReleases();
+            $this->logger->info('Loaded releases OK', ['keyEvent' => LogKeyEvent::create('DistroManifestLoader.success')]);
+
+            return $res;
         } catch (\Exception $e) {
-            $this->logger->error(sprintf('[%s:%s] %s', TypeUtils::getBaseTypeName($e), $e->getCode(), $e->getMessage()));
+            $this->logger->error(
+                sprintf('[%s:%s] %s', TypeUtils::getBaseTypeName($e), $e->getCode(), $e->getMessage()),
+                ['keyEvent' => LogKeyEvent::createForException('DistroManifestLoader.error', $e)]
+            );
             throw $e;
         } finally {
-            $this->logger->debug(sprintf('loadReleases -- done at %s (%.3fs)', date('Y-m-d H:i:s'), microtime(true) -
-                $ts));
+            $this->logger->debug(sprintf('loadReleases -- done in %s', $t->formatTotalTime()));
         }
     }
 

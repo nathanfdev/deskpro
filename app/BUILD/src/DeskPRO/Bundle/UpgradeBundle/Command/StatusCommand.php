@@ -30,10 +30,13 @@ namespace DeskPRO\Bundle\UpgradeBundle\Command;
 
 use DeskPRO\Bundle\UpgradeBundle\Console\Helper\DistroExceptionHelper;
 use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroReleaseCollection;
+use DeskPRO\Bundle\UpgradeBundle\Logger\LogKeyEvent;
+use DeskPRO\Component\Util\DebugUtils;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class StatusCommand extends ContainerAwareCommand
@@ -50,7 +53,10 @@ class StatusCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = $this->getContainer()->get('monolog.logger.upgrader.general');
-        $logger->info('********** dp:upgrade:status **********');
+        $logger->info(
+            '********** dp:upgrade:status **********',
+            ['keyEvent' => LogKeyEvent::create('StatusCheck.start')]
+        );
 
         $instanceReader = $this->getContainer()->get('dp.upgrader.instance_reader');
         $distroLoader   = $this->getContainer()->get('dp.upgrader.distro.manifest_loader');
@@ -61,6 +67,13 @@ class StatusCommand extends ContainerAwareCommand
         } catch (\Exception $e) {
             $exHelper = new DistroExceptionHelper($output);
             $exHelper->renderManifestFailure($e, $distroLoader);
+
+            $logger->error(
+                DebugUtils::getExceptionSummary($e),
+                ['keyEvent' => LogKeyEvent::createForException('StatusCheck.error', $e, [
+                    'message' => $exHelper->getManifestFailureDescription($e, $distroLoader),
+                ])]
+            );
 
             $output->writeln('');
             $output->writeln('');
@@ -75,10 +88,22 @@ class StatusCommand extends ContainerAwareCommand
         $table->addRow(['Current Build', sprintf('%-10s from %s', $instanceStatus->getCurrentRelease()->getId(), $instanceStatus->getCurrentRelease()->getDate()->format('Y-m-d'))]);
         $table->addRow(['Newest Build', sprintf('%-10s from %s', $instanceStatus->getLatestRelease()->getId(), $instanceStatus->getLatestRelease()->getDate()->format('Y-m-d'))]);
 
+        // dupe data in the log
+        $logger->info(sprintf('Current: %s %s', $instanceStatus->getCurrentRelease()->getId(), $instanceStatus->getCurrentRelease()->getDate()->format('Y-m-d')));
+        $logger->info(sprintf('Newest: %s %s', $instanceStatus->getCurrentRelease()->getId(), $instanceStatus->getCurrentRelease()->getDate()->format('Y-m-d')));
+
         $table->addRow(new TableSeparator());
         if ($instanceStatus->isOutdated()) {
+            $logger->info(
+                'Helpdesk is outdated',
+                ['keyEvent' => LogKeyEvent::create('StatusCheck.outdated')]
+            );
             $table->addRow(['Status', sprintf('Your helpdesk is behind by %d versions. Your version is %d days old.', $instanceStatus->getNumBetween(), $instanceStatus->getDaysOld())]);
         } else {
+            $logger->info(
+                'Helpdesk is up to date',
+                ['keyEvent' => LogKeyEvent::create('StatusCheck.not_outdated')]
+            );
             $table->addRow(['Status', 'Your helpdesk is up to date.']);
         }
 

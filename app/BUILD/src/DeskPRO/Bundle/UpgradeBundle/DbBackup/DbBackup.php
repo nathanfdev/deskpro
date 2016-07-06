@@ -28,8 +28,10 @@
 
 namespace DeskPRO\Bundle\UpgradeBundle\DbBackup;
 
+use DeskPRO\Bundle\UpgradeBundle\Logger\LogKeyEvent;
 use DeskPRO\Component\Util\Buffer\LineBuffer;
 use DeskPRO\Component\Util\Timer;
+use DeskPRO\Component\Util\TypeUtils;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -83,6 +85,32 @@ class DbBackup implements DbBackupInterface, LoggerAwareInterface
      * {@inheritdoc}
      */
     public function backupDatabase($targetPath, array $dbInfo)
+    {
+        $t = Timer::start();
+        $this->logger->debug('backupDatabase -- begin', ['keyEvent' => LogKeyEvent::create('DbBackup.start')]);
+
+        try {
+            $this->doBackupDatabase($targetPath, $dbInfo);
+            $this->logger->info('Database backup OK', ['keyEvent' => LogKeyEvent::create('DbBackup.success')]);
+        } catch (\Exception $e) {
+            $this->logger->error(
+                sprintf('[%s:%s] %s', TypeUtils::getBaseTypeName($e), $e->getCode(), $e->getMessage()),
+                ['keyEvent' => LogKeyEvent::createForException('DbBackup.error', $e)]
+            );
+            throw $e;
+        } finally {
+            $this->logger->debug(sprintf('backupDatabase -- done in %s', $t->formatTotalTime()));
+        }
+    }
+
+    /**
+     * @param       $targetPath
+     * @param array $dbInfo
+     *
+     * @throws DbBackupException
+     * @throws \Exception
+     */
+    private function doBackupDatabase($targetPath, array $dbInfo)
     {
         $targetDir = dirname($targetPath);
         $this->fs->mkdir($targetDir);

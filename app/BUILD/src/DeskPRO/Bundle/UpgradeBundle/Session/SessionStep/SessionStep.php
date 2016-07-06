@@ -26,9 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\UpgradeBundle\Session;
-
-use DeskPRO\Component\Util\TypeUtils;
+namespace DeskPRO\Bundle\UpgradeBundle\Session\SessionStep;
 
 class SessionStep implements \JsonSerializable
 {
@@ -58,6 +56,11 @@ class SessionStep implements \JsonSerializable
      * @var string
      */
     private $summaryText = '';
+
+    /**
+     * @var array
+     */
+    protected $data = [];
 
     /**
      * @return $this
@@ -176,14 +179,23 @@ class SessionStep implements \JsonSerializable
     }
 
     /**
-     * @return string
+     * @param \Exception $e
      */
-    public function getStepId()
+    public function setException(\Exception $e)
     {
-        return TypeUtils::getBaseTypeName($this);
+        $this->data['exception'] = $e;
     }
 
     /**
+     * @return \Exception
+     */
+    public function getException()
+    {
+        return $this->data['exception'];
+    }
+
+    /**
+     /**
      * {@inheritdoc}
      */
     public function jsonSerialize()
@@ -193,8 +205,17 @@ class SessionStep implements \JsonSerializable
         $dat['finishedStatus'] = $this->isFinished() ? $this->finishStatus : null;
         $dat['summary']        = $this->summaryText;
         $dat['details']        = $this->details;
+        $dat['data']           = $this->data;
 
         return $dat;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
     }
 
     /**
@@ -215,5 +236,7 @@ class SessionStep implements \JsonSerializable
         } elseif ($step->isRunning()) {
             $this->start();
         }
+
+        $this->data = array_merge($this->data, $step->getData());
     }
 }

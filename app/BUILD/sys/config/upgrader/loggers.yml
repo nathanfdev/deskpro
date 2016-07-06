@@ -35,3 +35,4 @@ monolog:
 services:
   dp.upgrader.session_log_handler:
     class: DeskPRO\Bundle\UpgradeBundle\Session\SessionLogHandler
+    arguments: ["@service_container"]

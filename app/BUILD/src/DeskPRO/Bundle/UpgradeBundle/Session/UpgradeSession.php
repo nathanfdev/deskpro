@@ -28,6 +28,9 @@
 
 namespace DeskPRO\Bundle\UpgradeBundle\Session;
 
+use DeskPRO\Bundle\UpgradeBundle\Session\SessionStep\SessionStep;
+use DeskPRO\Bundle\UpgradeBundle\Session\SessionStep\StatusStep;
+
 /**
  * This keeps track of the current status of an automatic upgrade process.
  *
@@ -40,7 +43,7 @@ namespace DeskPRO\Bundle\UpgradeBundle\Session;
  */
 class UpgradeSession extends SessionStep
 {
-    const STEP_LOAD_MANIFEST   = 'load_manifest';
+    const STEP_STATUS          = 'status';
     const STEP_DOWNLOAD_DISTRO = 'download_distro';
     const STEP_EXTRACT_DISTRO  = 'extract_distro';
     const STEP_BACKUP          = 'backup';
@@ -57,7 +60,7 @@ class UpgradeSession extends SessionStep
     public function __construct()
     {
         $this->steps = [
-            self::STEP_LOAD_MANIFEST   => new SessionStep(),
+            self::STEP_STATUS          => new StatusStep(),
             self::STEP_DOWNLOAD_DISTRO => new SessionStep(),
             self::STEP_EXTRACT_DISTRO  => new SessionStep(),
             self::STEP_BACKUP          => new SessionStep(),
@@ -66,6 +69,14 @@ class UpgradeSession extends SessionStep
             self::STEP_UPGRADE         => new SessionStep(),
             self::STEP_ENABLE_SITE     => new SessionStep(),
         ];
+    }
+
+    /**
+     * @return StatusStep
+     */
+    public function getStatusStep()
+    {
+        return $this->getStep(self::STEP_STATUS);
     }
 
     /**

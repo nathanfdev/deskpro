@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\UpgradeBundle\Distro;
 
 use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroRelease;
+use DeskPRO\Bundle\UpgradeBundle\Logger\LogKeyEvent;
 use GuzzleHttp;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7;
@@ -167,8 +168,15 @@ class DistroDownloader implements LoggerAwareInterface
      */
     public function download(DistroRelease $releaseDetail, $targetPath)
     {
+        $this->logger->info(
+            "Downloading distro: {$releaseDetail->getId()} from {$releaseDetail->getZipUrl()}",
+            ['keyEvent' => LogKeyEvent::create('DistroDownload.start')]
+        );
+
         try {
             if ($this->doesTargetExist($targetPath, $releaseDetail->getSha256())) {
+                $this->logger->info('Got existing file OK', ['keyEvent' => LogKeyEvent::create('DistroDownload.success')]);
+
                 return;
             }
 
@@ -180,8 +188,12 @@ class DistroDownloader implements LoggerAwareInterface
             fclose($targetFp);
 
             $this->verifyFile($targetPath, $releaseDetail->getSha256());
+            $this->logger->info('Got file OK', ['keyEvent' => LogKeyEvent::create('DistroDownload.success')]);
         } catch (\Exception $e) {
-            $this->logger->error(sprintf('[%s:%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
+            $this->logger->error(
+                sprintf('[%s:%s] %s', get_class($e), $e->getCode(), $e->getMessage()),
+                ['keyEvent' => LogKeyEvent::createForException('DistroDownload.error', $e)]
+            );
             throw $e;
         }
     }
@@ -198,8 +210,15 @@ class DistroDownloader implements LoggerAwareInterface
      */
     public function downloadUrl($zipUrl, $targetPath, $checksum = null)
     {
+        $this->logger->info(
+            "Downloading ZIP: $zipUrl",
+            ['keyEvent' => LogKeyEvent::create('DistroDownload.start')]
+        );
+
         try {
             if ($this->doesTargetExist($targetPath, $checksum)) {
+                $this->logger->info('Got existing file OK', ['keyEvent' => LogKeyEvent::create('DistroDownload.success')]);
+
                 return;
             }
 
@@ -211,8 +230,12 @@ class DistroDownloader implements LoggerAwareInterface
             fclose($targetFp);
 
             $this->verifyFile($targetPath, $checksum);
+            $this->logger->info('Got file OK', ['keyEvent' => LogKeyEvent::create('DistroDownload.success')]);
         } catch (\Exception $e) {
-            $this->logger->error(sprintf('[%s:%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
+            $this->logger->error(
+                sprintf('[%s:%s] %s', get_class($e), $e->getCode(), $e->getMessage()),
+                ['keyEvent' => LogKeyEvent::createForException('DistroDownload.error', $e)]
+            );
             throw $e;
         }
     }
@@ -229,8 +252,15 @@ class DistroDownloader implements LoggerAwareInterface
      */
     public function downloadLocalFile($zipPath, $targetPath, $checksum = null)
     {
+        $this->logger->info(
+            "Copying local file $zipPath",
+            ['keyEvent' => LogKeyEvent::create('DistroDownload.start')]
+        );
+
         try {
             if ($this->doesTargetExist($targetPath, $checksum)) {
+                $this->logger->info('Got existing file OK', ['keyEvent' => LogKeyEvent::create('DistroDownload.success')]);
+
                 return;
             }
 
@@ -238,8 +268,12 @@ class DistroDownloader implements LoggerAwareInterface
             $fs->copy($zipPath, $targetPath, true);
 
             $this->verifyFile($targetPath, $checksum);
+            $this->logger->info('Got file OK', ['keyEvent' => LogKeyEvent::create('DistroDownload.success')]);
         } catch (\Exception $e) {
-            $this->logger->error(sprintf('[%s:%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
+            $this->logger->error(
+                sprintf('[%s:%s] %s', get_class($e), $e->getCode(), $e->getMessage()),
+                ['keyEvent' => LogKeyEvent::createForException('DistroDownload.error', $e)]
+            );
             throw $e;
         }
     }
