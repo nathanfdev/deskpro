@@ -1,12 +1,18 @@
 {
   "max_line_length" : {
     "value": 120,
-    "level" : "ignore"
+    "level" : "warn"
   },
   "indentation" : {
-    "level" : "ignore"
+    "level" : "warn"
+  },
+  "camel_case_classes":{
+    "level": "warn"
   },
   "no_tabs" : {
-    "level" : "ignore"
+    "level" : "warn"
+  },
+  "no_trailing_semicolons": {
+    "level": "warn"
   }
 }

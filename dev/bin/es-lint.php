@@ -4,7 +4,7 @@
 $output      = [];
 $return      = 0;
 $exit_status = 0;
-$dir = 'www/assets/BUILD/web/';
+$dir         = 'www/assets/BUILD/pub/';
 
 exec('git rev-parse --verify HEAD 2> /dev/null', $output, $return);
 $against = $return == 0 ? 'HEAD' : '4b825dc642cb6eb9a060e54bf8d69288fbee4904'; // 4b825dc642cb6eb9a060e54bf8d69288fbee4904 = special "emtpy tree" sha1
@@ -12,15 +12,18 @@ exec("git diff-index --cached --name-only {$against}", $output);
 $filename_pattern = '/\.js$/';
 chdir($dir);
 
+$dryRun = isset($argv[1]) && $argv[1] === 'dry-run';
+$cmd    = $dryRun ? 'eslint-pre-commit' : 'eslint-fix';
+
 foreach ($output as $file) {
-    if (substr($file, 0, 21) === $dir) {
+    if (strpos($file, $dir) === 0) {
         $file = str_replace($dir, '', $file);
         if (!(preg_match($filename_pattern, $file) && file_exists($file))) {
             continue;
         }
         $lint_output = [];
-        echo "linting $file...";
-        exec("npm run-script jshint ".escapeshellarg($file), $lint_output, $return);
+        echo "$file ES linting...";
+        exec('npm run-script '.$cmd.' '.escapeshellarg($file), $lint_output, $return);
         if ($return == 0) {
             echo 'OK'.PHP_EOL;
         } else {
