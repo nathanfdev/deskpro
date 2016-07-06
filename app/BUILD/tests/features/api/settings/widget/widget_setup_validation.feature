@@ -1,5 +1,5 @@
 @new
-Feature: Widget Setup
+Feature: Widget Setup123
 
   Background:
     Given I'm authenticated as admin
@@ -71,8 +71,6 @@ Feature: Widget Setup
 
     And the JSON node "errors.fields.brand.fields.ticket.fields.select_department.errors[0].code" should be equal to "bad_choice"
     And the JSON node "errors.fields.brand.fields.ticket.fields.select_department.errors[0].message" should be equal to "One or more of the given values is invalid."
-    And the JSON node "errors.fields.brand.fields.ticket.fields.default_department.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.brand.fields.ticket.fields.default_department.errors[0].message" should be equal to "This value should not be blank."
 
   Scenario: I check tickets default department
     When I send a POST request to "/api/v2/settings/brands/1/widget/setup" with body:
