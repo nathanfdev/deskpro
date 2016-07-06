@@ -348,6 +348,8 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
             throw new InvalidFormException($form);
         }
 
+        $this->persistModel($model, $brandId);
+
         // Save brand settings
         $dataStore = $this->getOrCreateWidgetBrandSettings($brandId);
         $dataStore->setData('brand_settings', $model->getBrand());
