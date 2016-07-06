@@ -38,3 +38,21 @@ export function fakeState(additional = {}) {
 export function fakeRecordsStore(store) {
   return {RecordsStore: {store}};
 }
+
+export function fakeRecordsStoreRequest(recordName, requestName, records, status = {isDone: true}) {
+  const recordsMap = {};
+  records.forEach(record => recordsMap[record.id] = record);
+
+  return {
+    RecordsStore: {
+      store: {
+        [recordName]: {
+          records: recordsMap,
+
+          collections: { [requestName]: Object.keys(recordsMap) },
+          statuses:    { [requestName]: status }
+        }
+      }
+    }
+  };
+}
