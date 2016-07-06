@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Language;
-use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonTranslation;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupTranslation;
@@ -43,6 +42,7 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\Widget
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetUrlSettings;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -86,14 +86,20 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     private $permissionsManager;
 
     /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
      * Constructor.
      *
      * @param BrandAwareSettingsResolver $settingsResolver
      * @param EntityManager              $em
      * @param Packages                   $assetPackages
      * @param RouterInterface            $router
-     * @param TokenStorageInterface      $tokenStorage,
+     * @param TokenStorageInterface      $tokenStorage       ,
      * @param PortalPermissionsManager   $permissionsManager
+     * @param BrandStack                 $brandStack
      */
     public function __construct(
         BrandAwareSettingsResolver $settingsResolver,
@@ -101,17 +107,17 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         Packages                   $assetPackages,
         RouterInterface            $router,
         TokenStorageInterface      $tokenStorage,
-        PortalPermissionsManager   $permissionsManager
+        PortalPermissionsManager   $permissionsManager,
+        BrandStack                 $brandStack
     ) {
         parent::__construct($settingsResolver);
-
-        $router = RouterUtils::unwrapDecoratedRouter($router);
 
         $this->em                 = $em;
         $this->assetPackages      = $assetPackages;
         $this->router             = $router;
         $this->tokenStorage       = $tokenStorage;
         $this->permissionsManager = $permissionsManager;
+        $this->brandStack         = $brandStack;
     }
 
     /**
@@ -226,7 +232,8 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getWidgetBrandOptions()
     {
         $model     = null;
-        $dataStore = $this->em->getRepository(DataStore::class)->findOneBy(['name' => 'widget.brand_settings']);
+        $brandId   = $this->brandStack->getActive()->getBrand()->getId();
+        $dataStore = $this->em->getRepository(DataStore::class)->findOneBy(['name' => 'widget.brand_settings.'.$brandId]);
         if ($dataStore) {
             $model = $dataStore->getData('brand_settings');
         }

@@ -5,7 +5,7 @@ Feature: Widget Setup
     Given I'm authenticated as admin
 
   Scenario: I send empty request
-    When I send a POST request to "/api/v2/widget/setup"
+    When I send a POST request to "/api/v2/settings/brands/1/widget/setup"
     Then the response status code should be 400
 
     And the JSON node "errors.fields.brand.fields.widget.fields.type.errors[0].code" should be equal to "required"
@@ -28,7 +28,7 @@ Feature: Widget Setup
     And the JSON node "errors.fields.brand.fields.ticket.fields.default_department.errors[0].code" should not exist
 
   Scenario: I check not valid values
-    When I send a POST request to "/api/v2/widget/setup" with body:
+    When I send a POST request to "/api/v2/settings/brands/1/widget/setup" with body:
     """
     {
       "brand": {
@@ -75,7 +75,7 @@ Feature: Widget Setup
     And the JSON node "errors.fields.brand.fields.ticket.fields.default_department.errors[0].message" should be equal to "This value should not be blank."
 
   Scenario: I check tickets default department
-    When I send a POST request to "/api/v2/widget/setup" with body:
+    When I send a POST request to "/api/v2/settings/brands/1/widget/setup" with body:
     """
 {
   "brand": {
@@ -89,7 +89,7 @@ Feature: Widget Setup
     And the JSON node "errors.fields.brand.fields.ticket.fields.default_department.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.brand.fields.ticket.fields.default_department.errors[0].message" should be equal to "This value should not be blank."
 
-    When I send a POST request to "/api/v2/widget/setup" with body:
+    When I send a POST request to "/api/v2/settings/brands/1/widget/setup" with body:
     """
 {
   "brand": {
@@ -102,7 +102,7 @@ Feature: Widget Setup
     Then the JSON node "errors.fields.brand.fields.ticket.fields.default_department.errors[0].code" should not exist
 
   Scenario: I validate is numeric check
-    When I send a POST request to "/api/v2/widget/setup" with body:
+    When I send a POST request to "/api/v2/settings/brands/1/widget/setup" with body:
     """
 {
   "brand": {
@@ -122,7 +122,7 @@ Feature: Widget Setup
     And the JSON node "errors.fields.brand.fields.chat.fields.waiting_timeout.errors[0].message" should be equal to "Please enter a number, with no other characters."
 
   Scenario: I validate duplicate translations
-    When I send a POST request to "/api/v2/widget/setup" with body:
+    When I send a POST request to "/api/v2/settings/brands/1/widget/setup" with body:
     """
 {
   "brand": {

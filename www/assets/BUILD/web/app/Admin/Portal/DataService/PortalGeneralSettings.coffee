@@ -63,7 +63,6 @@ define ['DeskPRO/Util/Util'], (Util)  ->
       if @brandId
         p = @Api2.sendGet('/settings/brands/'+@brandId+'/portal/general').success((res) =>
           @settings = res.data
-#          @version += 1
           d.resolve(@settings)
           @settingPromise[@brandId] = null
         ).error((data, status) =>

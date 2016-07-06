@@ -40,7 +40,7 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.ticket.default_department" should be equal to 0
 
   Scenario: I get initial widget code
-    When I send a GET request to "/api/v2/widget/code"
+    When I send a GET request to "/api/v2/settings/brands/1/widget/code"
     And the response status code should be 200
     And the response should contain "DESKPRO_WIDGET_LOADER::BEGIN"
     And the response should contain "DESKPRO_WIDGET_LOADER::END"
@@ -49,7 +49,7 @@ Feature: Widget Setup
     And the response should contain "helpdeskUrl"
 
   Scenario: I update global widget configuration
-    When I send a POST request to "/api/v2/widget/setup" with body:
+    When I send a POST request to "/api/v2/settings/brands/1/widget/setup" with body:
     """
 {
   "global": {
@@ -111,7 +111,7 @@ Feature: Widget Setup
     Then the response status code should be 204
     And the response should be empty
 
-    When I send a GET request to "/api/v2/widget/setup"
+    When I send a GET request to "/api/v2/settings/brands/1/widget/setup"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.settings.global.chat.enabled" should be equal to 1
@@ -195,7 +195,7 @@ Feature: Widget Setup
     """
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/widget/setup"
+    When I send a GET request to "/api/v2/settings/brands/1/widget/setup"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.settings.global.chat.enabled" should be equal to 0
