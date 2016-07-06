@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  *
  * Class Brand
  */
-final class Brand implements MapperInterface, MapperByTitleInterface
+final class Brand implements MapperInterface
 {
     /**
      * @var EntityRepository\Brand
