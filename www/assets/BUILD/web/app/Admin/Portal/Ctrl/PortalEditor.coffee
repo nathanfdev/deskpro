@@ -62,7 +62,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     editTheme: =>
       request = @$http({
         method: 'PUT',
-        url: '/brand-'+@$scope.brand_id+'/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/info',
+        url: '/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/info',
         data: {
           theme_id: @selected_theme
         }
