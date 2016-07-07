@@ -65,9 +65,9 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('portal_css_url', array($this, 'getPortalCssUrl')),
-            new \Twig_SimpleFunction('portal_custom_js', array($this, 'getPortalCustomJs')),
-            new \Twig_SimpleFunction('portal_custom_logo', array($this, 'getPortalCustomLogo')),
+            new \Twig_SimpleFunction('portal_css_url', [$this, 'getPortalCssUrl']),
+            new \Twig_SimpleFunction('portal_custom_js', [$this, 'getPortalCustomJs']),
+            new \Twig_SimpleFunction('portal_custom_logo', [$this, 'getPortalCustomLogo']),
         ];
     }
 
@@ -103,7 +103,7 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
                     'blob_auth_id' => $blob->getAuthId(),
                     'local'        => true,
                 ],
-                RouterInterface::ABSOLUTE_URL
+                RouterInterface::ABSOLUTE_PATH
             );
         } else {
             if ($text_direction === 'RTL') {
