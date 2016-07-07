@@ -185,11 +185,12 @@ class SessionLogHandler extends AbstractHandler
                 $step->start();
                 break;
 
-            case 'StatusCheck.outdated':
+            case 'StatusCheck.updates_available':
                 $step->finished('DeskPRO needs to be updated');
+                $step->setRequiresUpdate();
                 break;
 
-            case 'StatusCheck.not_outdated':
+            case 'StatusCheck.no_updates_available':
                 $step->finished('DeskPRO does not need to be updated');
                 break;
 

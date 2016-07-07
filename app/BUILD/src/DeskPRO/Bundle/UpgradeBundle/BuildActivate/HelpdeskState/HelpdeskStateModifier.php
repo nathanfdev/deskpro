@@ -67,7 +67,7 @@ class HelpdeskStateModifier implements HelpdeskStateModifierInterface, LoggerAwa
             throw new HelpdeskStateException('Failed to set helpdesk-offline trigger file. Helpdesk cannot be turned off.', HelpdeskStateException::SET_OFFLINE_FAILED);
         }
 
-        $this->logger->error('[HelpdeskStateModifier] successfully created helpdesk-offline trigger file');
+        $this->logger->info('[HelpdeskStateModifier] successfully created helpdesk-offline trigger file');
     }
 
     /**
@@ -75,12 +75,15 @@ class HelpdeskStateModifier implements HelpdeskStateModifierInterface, LoggerAwa
      */
     public function enableHelpdeskFromUpdate()
     {
-        if (!$this->dpEnv->getDatManager()->disableTrigger(self::OFFLINE_TRIGGER_NAME)) {
+        if (
+            $this->dpEnv->getDatManager()->hasTrigger(self::OFFLINE_TRIGGER_NAME)
+            && !$this->dpEnv->getDatManager()->disableTrigger(self::OFFLINE_TRIGGER_NAME)
+        ) {
             $this->logger->error('[HelpdeskStateModifier] failed to delete helpdesk-offline trigger file');
             throw new HelpdeskStateException('Failed to unset helpdesk-offline trigger file. Helpdesk is stuck in offline mode.', HelpdeskStateException::SET_OFFLINE_FAILED);
         }
 
-        $this->logger->error('[HelpdeskStateModifier] successfully deleted helpdesk-offline trigger file');
+        $this->logger->info('[HelpdeskStateModifier] successfully deleted helpdesk-offline trigger file');
     }
 
     /**
@@ -95,7 +98,7 @@ class HelpdeskStateModifier implements HelpdeskStateModifierInterface, LoggerAwa
         // Only if both fail does this step fail
 
         if (!@unlink($filepath)) {
-            $this->logger->error('[HelpdeskStateModifier] failed to delete active build file: '.$filepath);
+            $this->logger->info('[HelpdeskStateModifier] failed to delete active build file: '.$filepath);
 
             if (!@file_put_contents($filepath, $build->getBuildId())) {
                 $this->logger->error('[HelpdeskStateModifier] failed to write active build file: '.$filepath);
@@ -104,6 +107,6 @@ class HelpdeskStateModifier implements HelpdeskStateModifierInterface, LoggerAwa
             }
         }
 
-        $this->logger->error('[HelpdeskStateModifier] successfully reset active build file: '.$filepath);
+        $this->logger->info('[HelpdeskStateModifier] successfully reset active build file: '.$filepath);
     }
 }

@@ -30,6 +30,8 @@ namespace DeskPRO\Bundle\UpgradeBundle\Command;
 
 use DeskPRO\Bundle\UpgradeBundle\Instance\BuildInstance;
 use DpRun\BuildScanner;
+use Monolog\Logger;
+use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -61,7 +63,7 @@ class ActivateBuildCommand extends ContainerAwareCommand
 
         if ($buildId === 'latest') {
             $scanner = new BuildScanner($DP_ENV->getBuildDirRoot());
-            $buildId = dirname($scanner->getLatestBuildDir());
+            $buildId = $scanner->getLatestBuildDir();
 
             $logger->debug('Detected latest build as: '.$buildId);
         }
@@ -89,6 +91,11 @@ class ActivateBuildCommand extends ContainerAwareCommand
         }
 
         $activator = $this->getContainer()->get('dp.upgrader.activate.build_activator');
+
+        if ($output->getVerbosity() !== OutputInterface::VERBOSITY_QUIET && $logger instanceof Logger) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
+            $logger->pushHandler(new ConsoleHandler($output));
+        }
 
         try {
             $activator->activateBuild($build);

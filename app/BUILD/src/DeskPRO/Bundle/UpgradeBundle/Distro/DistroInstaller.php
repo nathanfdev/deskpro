@@ -43,6 +43,10 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class DistroInstaller implements LoggerAwareInterface
 {
+    const SKIP_EXIST    = 'skip_existing';
+    const REPLACE_EXIST = 'replace_existing';
+    const FAIL_EXIST    = 'fail_existing';
+
     /**
      * @var Zippy
      */
@@ -133,11 +137,12 @@ class DistroInstaller implements LoggerAwareInterface
     /**
      * @param string $zipPath
      * @param string $asBuild
+     * @param string $existHandling
      *
      * @throws \Exception
      * @throws IOException
      */
-    public function installFromZip($zipPath, $asBuild = null)
+    public function installFromZip($zipPath, $asBuild = null, $existHandling = self::FAIL_EXIST)
     {
         $t = Timer::start();
         $this->logger->debug(
@@ -146,7 +151,7 @@ class DistroInstaller implements LoggerAwareInterface
         );
 
         try {
-            $this->doInstallFromZip($zipPath, $asBuild);
+            $this->doInstallFromZip($zipPath, $asBuild, $existHandling);
             $this->logger->debug(
                 'Done installing files',
                 ['keyEvent' => LogKeyEvent::create('DistroInstaller.success')]
@@ -165,10 +170,11 @@ class DistroInstaller implements LoggerAwareInterface
     /**
      * @param string $zipPath
      * @param string $asBuild
+     * @param string $existHandling
      *
      * @throws IOException
      */
-    private function doInstallFromZip($zipPath, $asBuild = null)
+    private function doInstallFromZip($zipPath, $asBuild = null, $existHandling = self::FAIL_EXIST)
     {
         $fs = new Filesystem();
 
@@ -207,9 +213,33 @@ class DistroInstaller implements LoggerAwareInterface
             "$scratchDir/app/run" => $this->instanceStatus->getKernelCachePath($asBuild).'/dp_run',
         ];
 
+        $backupScratchDir = null;
+
         foreach ($moves as $from => $to) {
             $this->logger->debug(sprintf('Rename: %s => %s', $from, $to));
-            $fs->rename($from, $to);
+            $doRename = true;
+
+            if (file_exists($to)) {
+                $this->logger->debug(sprintf('Target %s already exists', $to));
+                switch ($existHandling) {
+                    case self::SKIP_EXIST:
+                        $this->logger->info(sprintf('Skipping %s because of skip_existing mode', $from));
+                        $doRename = false;
+                        break;
+                    case self::REPLACE_EXIST:
+                        if (!$backupScratchDir) {
+                            $backupScratchDir = TmpDir::makeTmpDir($this->tmpDir);
+                        }
+                        $backupTo = $scratchDir.DIRECTORY_SEPARATOR.md5($to);
+                        $this->logger->info(sprintf('Moving existing %s to backup dir %s', $to, $backupTo));
+                        $fs->rename($to, $backupTo);
+                        break;
+                }
+            }
+
+            if ($doRename) {
+                $fs->rename($from, $to);
+            }
         }
     }
 }

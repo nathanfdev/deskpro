@@ -84,7 +84,7 @@ class AutoUpgradeStatusCommand extends ContainerAwareCommand
         }
 
         while (1) {
-            $session = $smf->getManager()->getSession();
+            $session = $smf->getManager()->reloadSession();
             if ($lastTick === $session->getTick()) {
                 if ($prog) {
                     $prog->advance();

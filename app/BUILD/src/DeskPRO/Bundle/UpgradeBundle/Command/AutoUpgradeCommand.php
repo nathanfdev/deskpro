@@ -31,10 +31,12 @@ declare (ticks = 100);
 namespace DeskPRO\Bundle\UpgradeBundle\Command;
 
 use DeskPRO\Bundle\UpgradeBundle\Logger\LogKeyEvent;
+use DeskPRO\Component\Util\DebugUtils;
 use DeskPRO\Component\Util\RandUtils;
 use DeskPRO\Component\Util\Timer;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -117,8 +119,9 @@ class AutoUpgradeCommand extends ContainerAwareCommand
                 define('DP_DID_END_OK', true);
             }
         } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
             $logger->error(
-                '[Auto-Upgrade] Exception',
+                '[Auto-Upgrade] Exception: '.DebugUtils::getExceptionSummary($e),
                 ['keyEvent' => LogKeyEvent::createForException('AutoUpgrade.error', $e)]
             );
             if (!defined('DP_DID_END_OK')) {
@@ -146,7 +149,10 @@ class AutoUpgradeCommand extends ContainerAwareCommand
         );
 
         $command = $this->getApplication()->find('dp:upgrade:status');
-        $args    = new ArgvInput(['dp:upgrade:status', '--session-id', $sessionId]);
+        $args    = new ArrayInput([
+            'command'      => 'dp:upgrade:status',
+            '--session-id' => $sessionId,
+        ]);
         if ($ret = $command->run($args, $output)) {
             $logger->info(
                 '[Auto-Upgrade] dp:upgrade:status - error',
@@ -164,7 +170,7 @@ class AutoUpgradeCommand extends ContainerAwareCommand
         // This is the only hard-coded event we need to handle in here,
         // to handle when we need to early exit
         $smf     = $this->getContainer()->get('dp.upgrader.session_manager_factory');
-        $session = $smf->getManager()->getSession();
+        $session = $smf->getManager()->reloadSession();
         if (!$session->getStatusStep()->doesRequireUpdate()) {
             return 0;
         }
@@ -177,11 +183,11 @@ class AutoUpgradeCommand extends ContainerAwareCommand
         );
 
         $command = $this->getApplication()->find('dp:distro:download-build');
-        $args    = new ArgvInput([
-            'dp:distro:download-build',
-            '--session-id', $sessionId,
-            '--skip-existing',
-            'latest',
+        $args    = new ArrayInput([
+            'command'            => 'dp:distro:download-build',
+            '--session-id'       => $sessionId,
+            '--replace-existing' => true,
+            'zip'                => 'latest',
         ]);
 
         if ($ret = $command->run($args, $output)) {
@@ -206,9 +212,9 @@ class AutoUpgradeCommand extends ContainerAwareCommand
         );
 
         $command = $this->getApplication()->find('dp:database-backup');
-        $args    = new ArgvInput([
-            'dp:database-backup',
-            '--session-id', $sessionId,
+        $args    = new ArrayInput([
+            'command'      => 'dp:database-backup',
+            '--session-id' => $sessionId,
         ]);
 
         if ($ret = $command->run($args, $output)) {
@@ -228,14 +234,15 @@ class AutoUpgradeCommand extends ContainerAwareCommand
         #------------------------------
 
         $logger->info(
-            '[Auto-Upgrade] dp:upgrade:activate-build - done ok',
+            '[Auto-Upgrade] dp:upgrade:activate-build - start',
             ['keyEvent' => LogKeyEvent::create('AutoUpgrade.activate.start')]
         );
 
         $command = $this->getApplication()->find('dp:upgrade:activate-build');
-        $args    = new ArgvInput([
-            'dp:upgrade:activate-build',
-            '--session-id', $sessionId,
+        $args    = new ArrayInput([
+            'command'      => 'dp:upgrade:activate-build',
+            '--session-id' => $sessionId,
+            'buildId'      => 'latest',
         ]);
 
         if ($ret = $command->run($args, $output)) {

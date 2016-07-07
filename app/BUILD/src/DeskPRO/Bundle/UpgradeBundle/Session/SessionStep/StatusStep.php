@@ -52,6 +52,6 @@ class StatusStep extends SessionStep
      */
     public function doesRequireUpdate()
     {
-        return $this->data['requiresUpdate'];
+        return (bool) $this->data['requiresUpdate'];
     }
 }

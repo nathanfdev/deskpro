@@ -123,7 +123,7 @@ class UpgradeSession extends SessionStep
                 }
                 $nextIsUp = true;
             } elseif ($step->isRunning()) {
-                return $step;
+                return $stepId;
             } elseif ($nextIsUp) {
                 return $stepId;
             }

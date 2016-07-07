@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\UpgradeBundle\Command;
 
 use DeskPRO\Bundle\UpgradeBundle\Console\Helper\DistroExceptionHelper;
+use DeskPRO\Bundle\UpgradeBundle\Distro\DistroInstaller;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -47,7 +48,7 @@ class DownloadBuildCommand extends ContainerAwareCommand
             ->addOption('as', null, InputOption::VALUE_REQUIRED, 'Save the build as a different build ID')
             ->addOption('sha256', null, InputOption::VALUE_REQUIRED, 'Compare the checksum of the file to this expected value after downloading. This is provided automatically when specying a build from the manifest.')
             ->addOption('skip-existing', null, InputOption::VALUE_NONE, 'Do nothing if the build exists (returns a success code). See also --update-existing.')
-            ->addOption('update-existing', null, InputOption::VALUE_NONE, 'Update the build if it exists. The default behaviour is to return an error status. See also --skip-existing.')
+            ->addOption('replace-existing', null, InputOption::VALUE_NONE, 'Update the build if it exists. The default behaviour is to return an error status. See also --skip-existing.')
             ->addOption('session-id', null, InputOption::VALUE_REQUIRED, '(internal)')
         ;
     }
@@ -72,6 +73,14 @@ class DownloadBuildCommand extends ContainerAwareCommand
         $zipUrl   = null;
         $checksum = $input->getOption('sha256') ?: null;
         $release  = null;
+
+        if ($input->getOption('skip-existing')) {
+            $existMode = DistroInstaller::SKIP_EXIST;
+        } elseif ($input->getOption('replace-existing')) {
+            $existMode = DistroInstaller::REPLACE_EXIST;
+        } else {
+            $existMode = DistroInstaller::FAIL_EXIST;
+        }
 
         #----------------------------------------
         # Get the ZIP option
@@ -199,7 +208,7 @@ class DownloadBuildCommand extends ContainerAwareCommand
 
         $output->writeln('Extracting and installing files');
 
-        $distroInstall->installFromZip($targetZip, $asBuild);
+        $distroInstall->installFromZip($targetZip, $asBuild, $existMode);
 
         $output->writeln('Done');
 

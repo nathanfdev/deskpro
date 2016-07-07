@@ -95,14 +95,14 @@ class StatusCommand extends ContainerAwareCommand
         $table->addRow(new TableSeparator());
         if ($instanceStatus->isOutdated()) {
             $logger->info(
-                'Helpdesk is outdated',
-                ['keyEvent' => LogKeyEvent::create('StatusCheck.outdated')]
+                'Helpdesk needs update',
+                ['keyEvent' => LogKeyEvent::create('StatusCheck.updates_available')]
             );
             $table->addRow(['Status', sprintf('Your helpdesk is behind by %d versions. Your version is %d days old.', $instanceStatus->getNumBetween(), $instanceStatus->getDaysOld())]);
         } else {
             $logger->info(
                 'Helpdesk is up to date',
-                ['keyEvent' => LogKeyEvent::create('StatusCheck.not_outdated')]
+                ['keyEvent' => LogKeyEvent::create('StatusCheck.no_updates_available')]
             );
             $table->addRow(['Status', 'Your helpdesk is up to date.']);
         }

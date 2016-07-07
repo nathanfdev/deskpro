@@ -106,7 +106,17 @@ class UpgradeSessionManager
      */
     public function getSession()
     {
-        $this->syncSession();
+        return $this->session;
+    }
+
+    /**
+     * Reloads the session and then returns it.
+     *
+     * @return UpgradeSession
+     */
+    public function reloadSession()
+    {
+        $this->session = $this->loadSession();
 
         return $this->session;
     }
