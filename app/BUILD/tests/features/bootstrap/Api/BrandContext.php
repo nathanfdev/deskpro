@@ -41,9 +41,8 @@ class BrandContext extends BaseContext
      */
     public function iHaveSeveralBrand()
     {
-        $brand = $this->findOtherBrand();
-
-        expect($brand)->notToBe(null);
+        $brand = $this->createNewBrand();
+        DataContext::setPlaceholder('otherBrandId', $brand->getId());
     }
 
     /**
@@ -59,29 +58,6 @@ class BrandContext extends BaseContext
 
         DataContext::setReference('defaultBrand', $brand);
         DataContext::setPlaceholder('defaultBrandId', $brand->getId());
-
-        return $brand;
-    }
-
-    /**
-     * @return Brand
-     */
-    protected function findOtherBrand()
-    {
-        /** @var Brand[] $brands */
-        $brands = $this->repository(Brand::class)->findAll();
-
-        foreach ($brands as $brand) {
-            if ($brand->getId() != $this->getDefaultBrandId()) {
-                DataContext::setPlaceholder('otherBrandId', $brand->getId());
-
-                return $brand;
-            }
-        }
-
-        $brand = $this->createNewBrand();
-
-        DataContext::setPlaceholder('otherBrandId', $brand->getId());
 
         return $brand;
     }
