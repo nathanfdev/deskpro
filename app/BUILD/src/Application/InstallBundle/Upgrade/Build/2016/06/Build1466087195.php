@@ -34,6 +34,7 @@ class Build1466087195 extends AbstractBuild
     {
         $this->out('Url in brands');
         $this->execDbQuery('default', 'ALTER TABLE brands ADD url VARCHAR(255)');
+        $this->execDbQuery('default', 'CREATE UNIQUE INDEX UNIQ_7EA24434F47645AE ON brands (url)');
         $this->execDbQuery('default', 'ALTER TABLE article_categories ADD brand_id INT DEFAULT NULL');
         $this->execDbQuery('default', 'ALTER TABLE article_categories ADD CONSTRAINT FK_62A97E944F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE SET NULL');
         $this->execDbQuery('default', 'CREATE INDEX IDX_62A97E944F5D008 ON article_categories (brand_id)');

@@ -40,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\BrandType;
+use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\PortalBundle\Designer\ThemeSetCopyingService;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -124,6 +125,11 @@ class BrandsController extends CrudController
         $form = $this->createForm(BrandType::class, $brand);
         $form->submit($request->request->all());
 
+        /** @var UrlHostChecker $urlHostChecker */
+        $urlHostChecker = $this->get('url_host_checker');
+
+        $brand->setUrl($urlHostChecker->simplifyUrl($brand->getUrl()));
+
         $themeSet = new ThemeSet();
         $themeSet->setThemeId('standard');
         $this->persistModel($themeSet);
@@ -195,5 +201,45 @@ class BrandsController extends CrudController
 
         $themeSetCopyingService->drop($themeSet);
         $themeSetCopyingService->drop($editThemeSet);
+    }
+
+    /**
+     * Get resource with provided id.
+     *
+     * @ApiDoc(
+     *      description="Get a brand by url",
+     *      requirements={
+     *          {
+     *              "name"="url",
+     *              "requirement"=".+",
+     *              "description"="The url of the brand",
+     *              "dataType"="string"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="We will return such status in case we found your entity",
+     *          404="Not Found error will returned in case we can't find entity with specified ID"
+     *      }
+     * )
+     * @Rest\Get("/url/{url}", requirements={"url"=".+"})
+     *
+     * @param Request $request
+     * @param string  $url
+     *
+     * @return View
+     */
+    public function getByUrlAction(Request $request, $url)
+    {
+        /** @var UrlHostChecker $urlHostChecker */
+        $urlHostChecker = $this->get('url_host_checker');
+
+        $url = $urlHostChecker->simplifyUrl($url);
+
+        /** @var Brand $brand */
+        $brand = $this->getRepository(Brand::class)->findOneBy(['url' => $url]);
+        if ($brand) {
+            return parent::getAction($request, $brand->getId());
+        }
+        throw $this->createNotFoundException();
     }
 }

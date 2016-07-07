@@ -38,12 +38,15 @@ use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use JMS\Serializer\Annotation as JMS;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @property int    $id
  * @property string $name
  * @property string $theme_id
  * @property Blob   $logo_blob
+ *
+ * @UniqueEntity("url")
  *
  * @JMS\ExclusionPolicy("ALL")
  */
@@ -255,7 +258,7 @@ class Brand extends DomainObject
 
         $builder->mapId();
         $builder->mapString('name');
-        $builder->mapString('url');
+        $builder->mapString('url', 255, true, true);
         $builder->createOneToOne('theme_set', ThemeSet::class)->cascadePersist()->build();
         $builder->createOneToOne('edit_theme_set', ThemeSet::class)->build();
         $builder->createOneToOne('logo_blob', Blob::class)

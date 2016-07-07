@@ -56,13 +56,20 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         name: @settings.deskpro_name,
         url: @settings.deskpro_url
       }
-      @Api2.sendPostJson('brands', brand).then (res) =>
-        @Growl.success("Brand created")
-        @brandId = res.data.data.id
-        @portalSettings.setBrandId(res.data.data.id)
-        @saveSettings().then(=>
-          @$state.go 'portal.setup', {brandId: @brandId}
-        )
+      me = @
+      @Api2.sendGet('/brands/url/' + encodeURIComponent(@settings.deskpro_url))
+      .then (res) =>
+        me.Growl.error("Each brand need to have a different url")
+        $('#helpdesk_url').focus()
+      .catch (err) ->
+        me.Api2.sendPostJson('brands', brand).then (res) =>
+          me.Growl.success("Brand created")
+          me.brandId = res.data.data.id
+          me.portalSettings.setBrandId(res.data.data.id)
+          me.saveSettings().then(=>
+            me.$state.go 'portal.setup', {brandId: me.brandId}
+          )
+
 
 
     deleteBrand: ->
