@@ -99,11 +99,17 @@ class AssetsManager
     /**
      * @param ThemeSetAsset $asset
      */
-    public function deleteEditThemeSetAsset(ThemeSetAsset $asset)
+    public function deleteEditThemeSetAsset(ThemeSetAsset $asset = null)
     {
+        // the asset could be already deleted, skipping
+        if (!$asset) {
+            return;
+        }
+
         if ($asset->getBlob()) {
             $this->bs->deleteBlobRecord($asset->getBlob());
         }
+
         $this->em->remove($asset);
         $this->em->flush();
     }
