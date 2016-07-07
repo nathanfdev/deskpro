@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\UpdateBundle\Command;
 
+use DeskPRO\Component\Util\DebugUtils;
 use DeskPRO\Component\Util\Timer;
 use Orb\Util\Numbers;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -105,9 +106,7 @@ class DbBackupCommand extends ContainerAwareCommand
 
             $table = new Table($output);
             $table->addRow(['Status', 'Backup failed']);
-            $table->addRow(['Message', $e->getMessage()]);
-            $table->addRow(['Code', $e->getCode()]);
-            $table->addRow(['Type', get_class($e)]);
+            $table->addRow(['Message', DebugUtils::getExceptionSummary($e)]);
             $table->render();
 
             $logger->error(sprintf('Backup failed: %s (Code: %s, Type: %s)', $e->getMessage(), $e->getCode(), get_class($e)));

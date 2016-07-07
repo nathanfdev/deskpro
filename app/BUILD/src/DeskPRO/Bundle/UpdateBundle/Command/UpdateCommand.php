@@ -56,7 +56,6 @@ class UpdateCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         set_time_limit(0);
-        $t = Timer::start();
 
         $sessionId = $input->getOption('session-id');
         if (!$sessionId) {
@@ -141,6 +140,8 @@ class UpdateCommand extends ContainerAwareCommand
      */
     private function doExecute($sessionId, InputInterface $input, OutputInterface $output)
     {
+        $t = Timer::start();
+
         $logger = $this->getContainer()->get('monolog.logger.updater.general');
 
         $logger->info(
@@ -179,16 +180,17 @@ class UpdateCommand extends ContainerAwareCommand
 
         if ($input->isInteractive()) {
             $output->writeln('A new update is available. Do you want to download and install it now?');
-            $helper = $this->getHelper('question');
+            $helper   = $this->getHelper('question');
             $question = new ConfirmationQuestion('[y/N]> ', false);
 
             if (!$helper->ask($input, $output, $question)) {
                 $logger->debug('User answered "no" to confirmation');
+
                 return 0;
             }
 
             $output->writeln('Do you want to perform a database backup before installing database updates?');
-            $helper = $this->getHelper('question');
+            $helper   = $this->getHelper('question');
             $question = new ConfirmationQuestion('[Y/n]> ', true);
 
             if (!$helper->ask($input, $output, $question)) {

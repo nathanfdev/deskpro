@@ -120,6 +120,48 @@ class DbBackup implements DbBackupInterface, LoggerAwareInterface
         $this->logger->info(sprintf('Backup target:  %s', $targetPath));
         $this->logger->info(sprintf('Backup command: %s', str_replace($dbInfo['password'], '***', $cmd)));
 
+        $freeSpace = disk_free_space(dirname($targetPath));
+        if (!$freeSpace) {
+            $this->logger->critical(sprintf('Could not determine free disk space'));
+            throw new DbBackupException(
+                'Could not determine free disk space',
+                DbBackupException::DISK_SPACE_UNKNOWN
+            );
+        }
+
+        try {
+            $pdo    = \DpRun\LowUtil::getPdoFromMysqlInfo($dbInfo);
+            $dbSize = $pdo->query("
+                SELECT SUM(data_length + index_length) AS 'size'
+                FROM information_schema.TABLES
+                WHERE table_schema = '{$dbInfo['dbname']}'
+            ")->fetchColumn(0);
+
+            if (!$dbSize || $dbSize < 9000000) {
+                $this->logger->critical(sprintf('Could not determine how much disk space is required'));
+                throw new DbBackupException(
+                    'Could not determine how much disk space is required because query returned an unexpected result',
+                    DbBackupException::DISK_SPACE_UNKNOWN
+                );
+            }
+        } catch (\Exception $e) {
+            $this->logger->critical(sprintf('Could not determine how much disk space is required'));
+            throw new DbBackupException(
+                'Could not determine how much disk space is required because PDO failed',
+                DbBackupException::DISK_SPACE_UNKNOWN,
+                $e
+            );
+        }
+
+        if ($freeSpace < ($dbSize * 2.5)) {
+            $msg = sprintf('Detected insufficient disk space. Free disk space: %s, Database size: %s', $freeSpace, $dbSize);
+            $this->logger->critical($msg);
+            throw new DbBackupException(
+                $msg,
+                DbBackupException::DISK_SPACE_INSUFFICIENT
+            );
+        }
+
         $t      = Timer::start();
         $logger = $this->logger;
         $buf    = new LineBuffer(function ($dat) use ($logger) {

@@ -32,6 +32,8 @@ class DbBackupException extends \Exception
 {
     const NO_MYSQLDUMP             = 100;
     const FILE_EXISTS              = 200;
+    const DISK_SPACE_UNKNOWN       = 210;
+    const DISK_SPACE_INSUFFICIENT  = 220;
     const DUMP_ERROR               = 300;
     const DUMP_ERROR_NOTFOUND      = 301;
     const DUMP_ERROR_TOOSMALL      = 302;
