@@ -807,23 +807,20 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
                 ],
                 'joinTable' => [
                     'name'        => 'department_to_brand',
-                    'schema'      => null,
                     'joinColumns' => [
                         0 => [
                             'name'                 => 'department_id',
                             'referencedColumnName' => 'id',
                             'nullable'             => true,
-                            'columnDefinition'     => null,
                             'onDelete'             => 'cascade',
                         ],
                     ],
                     'inverseJoinColumns' => [
                         0 => [
                             'name'                 => 'brand_id',
-                            'onDelete'             => 'cascade',
-                            'nullable'             => true,
-                            'columnDefinition'     => null,
                             'referencedColumnName' => 'id',
+                            'nullable'             => true,
+                            'onDelete'             => 'cascade',
                         ],
                     ],
                 ],

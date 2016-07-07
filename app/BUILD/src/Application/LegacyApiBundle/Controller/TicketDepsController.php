@@ -36,6 +36,7 @@ use Application\DeskPRO\Departments\Form\Type\TicketDepartmentType;
 use Application\DeskPRO\Departments\TicketDepartmentEdit;
 use Application\DeskPRO\Departments\TicketDepartmentEditor;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Settings\SettingHandler\TicketDepartment as TicketDepartmentHandler;
@@ -236,6 +237,17 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 
         $data = $this->in->getAll('post');
         $form->submit($data, true);
+
+        /** @var Brand[] $brands */
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
+        foreach ($brands as $brand) {
+            if ($brand->hasDepartment($dep) && !$dep_edit->department->hasBrand($brand)) {
+                if (count($brand->getDepartments()) == 1) {
+                    return $this->createApiErrorResponse(500, 'Brand '.$brand.' needs at least one department');
+                }
+            }
+        }
 
         if ($form->isValid() || 1) {
             if ($avatar_blob_id = $this->in->getUInt('department.avatar')) {

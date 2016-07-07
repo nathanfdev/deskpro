@@ -5235,7 +5235,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'problems',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Problem',
+                'targetEntity' => Problem::class,
                 'inversedBy'   => 'tickets',
                 'cascade'      => ['persist', 'merge'],
                 'joinTable'    => [

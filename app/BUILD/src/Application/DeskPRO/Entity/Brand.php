@@ -173,6 +173,22 @@ class Brand extends DomainObject
     }
 
     /**
+     * @param Department $searchDepartment
+     *
+     * @return bool
+     */
+    public function hasDepartment(Department  $searchDepartment)
+    {
+        foreach ($this->departments as $department) {
+            if ($department->getId() == $searchDepartment->getId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return Blob
      */
     public function getLogoBlob()
@@ -202,6 +218,11 @@ class Brand extends DomainObject
         return $this->logo_blob->getThumbnailUrl($size);
     }
 
+    public function __toString()
+    {
+        return $this->getName();
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data              = parent::toApiData($primary, $deep, $visited);
@@ -228,5 +249,35 @@ class Brand extends DomainObject
         $builder->createOneToOne('edit_theme_set', ThemeSet::class)->build();
         $builder->createOneToOne('logo_blob', Blob::class)
             ->addJoinColumn('logo_blob_id', 'id', true, false, 'cascade')->build();
+
+        $metadata->mapManyToMany(
+            [
+                'fieldName'    => 'departments',
+                'targetEntity' => Department::class,
+                'cascade'      => [
+                    'persist',
+                    'merge',
+                ],
+                'joinTable' => [
+                    'name'        => 'department_to_brand',
+                    'joinColumns' => [
+                        0 => [
+                            'name'                 => 'brand_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => true,
+                            'onDelete'             => 'cascade',
+                        ],
+                    ],
+                    'inverseJoinColumns' => [
+                        0 => [
+                            'name'                 => 'department_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => true,
+                            'onDelete'             => 'cascade',
+                        ],
+                    ],
+                ],
+            ]
+        );
     }
 }

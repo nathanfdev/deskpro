@@ -283,7 +283,7 @@ class Problem extends DomainObject
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'tickets',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
+                'targetEntity' => Ticket::class,
                 'cascade'      => ['persist', 'merge'],
                 'mappedBy'     => 'problems',
                 'joinTable'    => [
