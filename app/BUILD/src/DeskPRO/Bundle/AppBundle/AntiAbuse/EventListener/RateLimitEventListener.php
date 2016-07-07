@@ -135,17 +135,6 @@ class RateLimitEventListener implements EventSubscriberInterface
             $event->stopPropagation();
             $event->markLockoutRecommended($estimated);
         }
-
-        // We should save attempt only AFTER check was performed. Because if the maximum
-        // attempts is set to 1 then it will be failed just while checking, that's not right.
-        if (!$event->isCheckOnly()) {
-            $this->saveRateLimitAction(
-                $event->getType(),
-                $event->getPerson(),
-                $event->getIp(),
-                $event->isLockoutRecommended()
-            );
-        }
     }
 
     /**
@@ -294,19 +283,6 @@ class RateLimitEventListener implements EventSubscriberInterface
     protected function getSetting($setting, $default = null)
     {
         return $this->settings_resolver->getGlobalSettings()->get($setting, $default);
-    }
-
-    /**
-     * @param string $action
-     * @param Person $person
-     * @param string $ip
-     * @param bool   $lockedOut
-     */
-    protected function saveRateLimitAction($action, Person $person, $ip, $lockedOut)
-    {
-        /** @var RateLimitLogRepository $rep */
-        $rep = $this->em->getRepository(RateLimitLog::class);
-        $rep->save($action, $person, $ip, $lockedOut);
     }
 
     /**
