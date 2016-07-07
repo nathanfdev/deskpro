@@ -34,6 +34,9 @@ use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DpBehat\BaseContext;
 use DpBehat\Data\DataContext;
 
+/**
+ * Class BrandContext.
+ */
 class BrandContext extends BaseContext
 {
     /**
@@ -82,15 +85,5 @@ class BrandContext extends BaseContext
         $this->em()->flush();
 
         return $brand;
-    }
-
-    /**
-     * @param int $brandId
-     *
-     * @return Brand
-     */
-    protected function findBrand($brandId)
-    {
-        return $this->repository(Brand::class)->find($brandId);
     }
 }
