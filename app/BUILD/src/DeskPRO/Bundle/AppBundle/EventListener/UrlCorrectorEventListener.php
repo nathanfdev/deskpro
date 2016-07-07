@@ -236,7 +236,7 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
         }
 
         $portalMode = $this->portalModeStorage->getMode();
-        if ($portalMode && $portalMode->isFocusWindow()) {
+        if ($portalMode && ($portalMode->isFocusWindow() || $portalMode->isBrand() || $portalMode->isAdminPreview())) {
             return self::MODE_ATTR;
         }
 

@@ -138,9 +138,9 @@ class RouterWithDynamicContext implements RouterInterface, RouterDecorator, Requ
     /**
      * {@inheritdoc}
      */
-    public function match($pathinfo)
+    public function match($pathInfo)
     {
-        return $this->router->match($pathinfo);
+        return $this->router->match($pathInfo);
     }
 
     /**
