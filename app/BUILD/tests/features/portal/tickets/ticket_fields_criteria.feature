@@ -7,9 +7,9 @@ Feature: New ticket form
     And I have default brand
     And a user with "user_1@deskpro.dev" email exists
     And only the following Department records exist:
-      | #  | Parent | Title        | Brand          | Is Tickets Enabled |
-      | d1 |        | Department 1 | {defaultBrand} | 1                  |
-      | d2 |        | Department 2 | {defaultBrand} | 1                  |
+      | #  | Title        | Is Tickets Enabled |
+      | d1 | Department 1 | 1                  |
+      | d2 | Department 2 | 1                  |
     And I grant the "{d1}" department permission of tickets app for usergroup registered
     And I grant the "{d2}" department permission of tickets app for usergroup registered
     And only the following Ticket records exist:

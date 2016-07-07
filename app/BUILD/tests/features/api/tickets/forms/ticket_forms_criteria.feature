@@ -7,9 +7,9 @@ Feature: /ticket_forms endpoint
     And I have default brand
     And a user with "user_1@deskpro.dev" email exists
     And only the following Department records exist:
-      | #  | Parent | Title        | Brand          | Is Tickets Enabled |
-      | d1 |        | Department 1 | {defaultBrand} | 1                  |
-      | d2 |        | Department 2 | {defaultBrand} | 1                  |
+      | #  | Title        | Is Tickets Enabled |
+      | d1 | Department 1 | 1                  |
+      | d2 | Department 2 | 1                  |
 
   Scenario: I check field is present on the form on department criteria
     Given the only default ticket layout exists with fields:

@@ -7,8 +7,8 @@ Feature: New ticket form
     And I have default brand
     And I disable anti-abuse rate limiting
     And only the following Department records exist:
-      | #  | Title        | Brand          | Is Tickets Enabled |
-      | d1 | Department 1 | {defaultBrand} | 1                  |
+      | #  | Title        | Is Tickets Enabled |
+      | d1 | Department 1 | 1                  |
     And I grant the "{d1}" department permission of tickets app for usergroup registered
 
   Scenario: I check all fields are visible
