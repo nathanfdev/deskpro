@@ -174,7 +174,19 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = GlossaryWordRepository::class;
-        $metadata->setPrimaryTable(['name' => 'glossary_words']);
+        $metadata->setPrimaryTable(
+            [
+                'name'              => 'glossary_words',
+                'uniqueConstraints' => [
+                    'prop_ref' => [
+                        'columns' => [
+                            'word',
+                            'brand_id',
+                        ],
+                    ],
+                ],
+            ]
+        );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             [
@@ -192,7 +204,6 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
                 'fieldName'  => 'word',
                 'type'       => 'string',
                 'length'     => 255,
-                'unique'     => true,
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
