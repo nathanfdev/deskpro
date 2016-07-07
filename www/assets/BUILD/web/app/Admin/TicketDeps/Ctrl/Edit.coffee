@@ -295,9 +295,19 @@ define [
       )
 
 
-    handleBrand: (brandId) ->
+    handleBrand: (brandId, e) ->
       index = @form.brands.indexOf brandId
-      if index == -1 then @form.brands.unshift brandId else @form.brands.splice(index, 1)
+      if index == -1
+        @form.brands.unshift brandId
+      else
+        if (@form.brands.length > 1)
+          @form.brands.splice(index, 1)
+        else
+          alert "Departments need to be linked to at least one Brand"
+          $(e.target).prop("checked", true)
+          return true
+
+
 
 
     changeAllPerms: (group, perm) =>
