@@ -194,7 +194,27 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     public function updateSlug()
     {
         $this->slug = Strings::slugifyTitle($this->title);
+        $this->checkExistingSkug();
         $this->setModelField('slug', $this->slug);
+    }
+
+    protected function checkExistingSkug()
+    {
+        $index = false;
+        if (preg_match('/-(\d+)$/', $this->slug, $match)) {
+            $index = $match[1];
+        }
+        /** @var CategoryAbstract $existing */
+        $existing = $this->getRepository()->findOneBy(['slug' => $this->slug]);
+        if ($existing && $existing->getId() != $this->getId() && property_exists($this, 'brand')) {
+            $this->slug = Strings::slugifyTitle($this->title);
+            if ($this->getBrand() && (!$index || $index != $this->getBrand->getId())) {
+                $this->slug .= '-'.$this->getBrand()->getId();
+            } else {
+                $this->slug .= '-'.($index + 1);
+            }
+            $this->checkExistingSkug();
+        }
     }
 
     public function setTitle($title)

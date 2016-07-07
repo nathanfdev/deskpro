@@ -297,6 +297,17 @@ class TicketDepsController extends AbstractController implements ProtectedContro
             throw $this->createNotFoundException();
         }
 
+        /** @var Brand[] $brands */
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
+        foreach ($brands as $brand) {
+            if ($brand->hasDepartment($dep)) {
+                if (count($brand->getDepartments()) == 1) {
+                    return $this->createApiErrorResponse(500, 'Brand '.$brand.' needs at least one department');
+                }
+            }
+        }
+
         $move_to = $this->container->getSystemService('ticket_departments')->getById($this->in->getUint('move_to'));
         if (!$move_to) {
             throw ValidationException::create('department.remove.move_tickets', 'You must select a department to move existing tickets into');
