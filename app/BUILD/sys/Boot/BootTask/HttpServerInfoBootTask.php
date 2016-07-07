@@ -164,6 +164,19 @@ class HttpServerInfoBootTask implements BootTaskInterface
                 }
                 exit;
 
+            case 'logs/updater':
+                header('Content-Type: text/plain');
+
+                $path = $logsPath.'/updater.log';
+                echo "Path: $path\n\n";
+
+                if (file_exists($path)) {
+                    echo file_get_contents($path);
+                } else {
+                    echo '(does not exist)';
+                }
+                exit;
+
             case 'logs/php-errors':
                 header('Content-Type: text/plain');
 

@@ -1150,24 +1150,24 @@ return [
     # auto upgrader
     ####################################################################################################################
 
-    /**
+    /*
      * Enable/disable the automatic upgrader
      */
-    'auto_updater.enabled' => true,
+    'auto_updater_enabled' => true,
 
-    /**
+    /*
      * How often to check/install updates
      */
-    'auto_updater.interval_days' => 1,
+    'auto_updater_interval_days' => 1,
 
-    /**
+    /*
      * When to install updates
      */
-    'auto_updater.time_of_day' => '01:00',
-    'auto_updater.time_of_day_tz' => 'UTC',
+    'auto_updater_time_of_day'    => '01:00',
+    'auto_updater_time_of_day_tz' => 'UTC',
 
-    /**
+    /*
      * Date and time of next scheduled check
      */
-    'auto_updater.next_check' => 0,
+    'auto_updater_next_check' => null,
 ];

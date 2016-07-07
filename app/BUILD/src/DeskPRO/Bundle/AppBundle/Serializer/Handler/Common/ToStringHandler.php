@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Common;
 
 use Application\DeskPRO\Entity\Labels\Label;
@@ -65,6 +66,12 @@ class ToStringHandler implements SubscribingHandlerInterface
      */
     public function serialize(JsonSerializationVisitor $visitor, $entity)
     {
-        return (string) $entity;
+        switch (get_class($entity)) {
+            case 'DateTimeZone':
+                /* @var \DateTimeZone $entity */
+                return $entity->getName();
+            default:
+                return (string) $entity;
+        }
     }
 }
