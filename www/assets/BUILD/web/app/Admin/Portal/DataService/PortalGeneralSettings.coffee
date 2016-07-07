@@ -60,14 +60,16 @@ define ['DeskPRO/Util/Util'], (Util)  ->
       d = @$q.defer()
       @settingPromise[@brandId] = d.promise
 
+      me = @
+
       if @brandId
-        p = @Api2.sendGet('/settings/brands/'+@brandId+'/portal/general').success((res) =>
-          @settings = res.data
-          d.resolve(@settings)
-          @settingPromise[@brandId] = null
-        ).error((data, status) =>
+        p = @Api2.sendGet('/settings/brands/'+@brandId+'/portal/general').success((res) ->
+          me.settings = res.data
+          d.resolve(me.settings)
+          me.settingPromise[me.brandId] = null
+        ).error((data, status) ->
           d.reject(data, status)
-          @settingPromise[@brandId] = null
+          me.settingPromise[me.brandId] = null
         )
       else
         p = @$q.when({})
@@ -83,12 +85,14 @@ define ['DeskPRO/Util/Util'], (Util)  ->
 
       data = angular.copy(settings)
 
+      me = @
+
       # Virtual value we don't want to save it
       delete data.portal_mode
       delete data.enable_brand_logo
 
       @Api2.sendPostJson('/settings/brands/'+@brandId+'/portal/general', data).then((res) ->
-        @_loadSettings().then(->
+        me._loadSettings().then(->
           d.resolve(res.data.data)
         , ->
           d.resolve(res.data.data)
