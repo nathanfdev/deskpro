@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -47,12 +47,12 @@ class ParentListFormatterSpec extends ObjectBehavior
         $cat3->setTitle('More Specific');
 
         $node1->getData()->willReturn($cat1);
-        $node1->getParents()->willReturn(array());
+        $node1->getParents()->willReturn([]);
 
         $node2->getData()->willReturn($cat2);
 
         $node3->getData()->willReturn($cat3);
-        $node3->getParents()->willReturn(array($node2));
+        $node3->getParents()->willReturn([$node2]);
     }
 
     public function it_formats_plain_when_no_parents(

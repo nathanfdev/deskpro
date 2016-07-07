@@ -3,6 +3,7 @@ Feature: Brand Setup
 
   Background:
     Given I'm authenticated as admin
+    And I have default brand
 
   Scenario: I get default brand
     When I send a GET request to "/api/v2/brands/default"
@@ -11,7 +12,7 @@ Feature: Brand Setup
     And the JSON node "data.name" should be equal to "default"
 
   Scenario: I can not delete the default brand
-    When I send a DELETE request to "/api/v2/brands/1"
+    When I send a DELETE request to "/api/v2/brands/{defaultBrandId}"
     Then the response status code should be 403
 
   Scenario: I create a new brand

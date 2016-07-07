@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,13 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
-use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
@@ -43,17 +40,17 @@ class ProfileVoter extends AbstractVoter
     const EDIT_PROFILE = 'EDIT_PROFILE';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function supports($attribute, $subject)
     {
         return $subject instanceof Person && in_array($attribute, [
-            self::EDIT_PROFILE
+            self::EDIT_PROFILE,
         ]);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function voteOnAttribute($attribute, $object, TokenInterface $token)
     {

@@ -44,7 +44,7 @@ class BrandContext extends BaseContext
      */
     public function iHaveSeveralBrand()
     {
-        $brand = $this->createNewBrand();
+        $brand = $this->createNewBrand('Other Brand');
         DataContext::setPlaceholder('otherBrandId', $brand->getId());
     }
 
@@ -53,7 +53,7 @@ class BrandContext extends BaseContext
      */
     public function iHaveDefaultBrand()
     {
-        $brand = $this->createNewBrand();
+        $brand = $this->createNewBrand('default');
 
         /** @var \Application\DeskPRO\EntityRepository\Setting $settingRepo */
         $settingRepo = $this->em()->getRepository(Setting::class);
@@ -66,21 +66,26 @@ class BrandContext extends BaseContext
     }
 
     /**
+     * @param string $name
+     *
      * @return Brand
      */
-    protected function createNewBrand()
+    protected function createNewBrand($name)
     {
         $brand = new Brand();
 
         $themeSet = new ThemeSet();
-        $themeSet->setThemeId('Standard');
+        $themeSet->setThemeId('standard');
         $this->em()->persist($themeSet);
 
         $editThemeSet = new ThemeSet();
-        $editThemeSet->setThemeId('Standard');
+        $editThemeSet->setThemeId('standard');
         $this->em()->persist($editThemeSet);
 
-        $brand->setName('Other brand');
+        $brand->setName($name);
+        $brand->setThemeSet($themeSet);
+        $brand->setEditThemeSet($editThemeSet);
+
         $this->em()->persist($brand);
         $this->em()->flush();
 

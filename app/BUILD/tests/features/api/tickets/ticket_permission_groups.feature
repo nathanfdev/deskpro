@@ -3,7 +3,10 @@ Feature: Ticket permission groups
 
   Background:
     Given I'm authenticated as agent
-    And I have a Department record referenced as d1
+    And I have default brand
+    And only the following Department records exist:
+      | #  | Title      | Brands           | Is Tickets Enabled |
+      | d1 | Department | [{defaultBrand}] | 1                  |
     And I have the following Ticket records:
       | #  | Agent   | Department |
       | t1 | {agent} | {d1}       |

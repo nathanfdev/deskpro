@@ -224,20 +224,24 @@ class PortalPermissionLoaderTest  extends PortalTestCase
 
         $department1 = new Department();
         $department1->setRealTitle('department 1');
+        $department1->addBrand($this->getBrand());
         $em->persist($department1);
 
         $department1a = new Department();
         $department1a->setRealTitle('department 1a');
         $department1a->setParent($department1);
+        $department1a->addBrand($this->getBrand());
         $em->persist($department1a);
 
         $department2 = new Department();
         $department2->setRealTitle('department 2');
+        $department2->addBrand($this->getBrand());
         $em->persist($department2);
 
         $department2a = new Department();
         $department2a->setRealTitle('department 2a');
         $department2a->setParent($department2);
+        $department2a->addBrand($this->getBrand());
         $em->persist($department2a);
 
         $em->persist($this->createPermission($department1, $everyone, 'view'));
@@ -272,26 +276,31 @@ class PortalPermissionLoaderTest  extends PortalTestCase
 
         $department1 = new Department();
         $department1->setRealTitle('department 1');
+        $department1->addBrand($this->getBrand());
         $em->persist($department1);
 
         $department1a = new Department();
         $department1a->setRealTitle('department 1a');
         $department1a->setParent($department1);
+        $department1a->addBrand($this->getBrand());
         $em->persist($department1a);
 
         $department1aa = new Department();
         $department1aa->setRealTitle('department 1aa');
         $department1aa->setParent($department1a);
+        $department1aa->addBrand($this->getBrand());
         $em->persist($department1aa);
 
         $department1ab = new Department();
         $department1ab->setRealTitle('department 1ab');
         $department1ab->setParent($department1a);
+        $department1ab->addBrand($this->getBrand());
         $em->persist($department1ab);
 
         $department1b = new Department();
         $department1b->setRealTitle('department 1b');
         $department1b->setParent($department1);
+        $department1b->addBrand($this->getBrand());
         $em->persist($department1b);
 
         $em->persist($this->createPermission($department1, $everyone, 'dep1'));
@@ -356,6 +365,9 @@ class PortalPermissionLoaderTest  extends PortalTestCase
         return $this->getEntityManager()->getRepository(Usergroup::class)->findOneBy(['sys_name' => $sysName]);
     }
 
+    /**
+     * @return Brand
+     */
     private function getBrand()
     {
         return $this->getRepository(Brand::class)->find(1);

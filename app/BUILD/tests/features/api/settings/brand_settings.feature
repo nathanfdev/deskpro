@@ -3,6 +3,7 @@ Feature: Brand Settings Setup
 
   Background:
     Given I'm authenticated as admin
+    And no Brand records exist
     And I have default brand
 
   Scenario: I get default brand settings
@@ -14,7 +15,7 @@ Feature: Brand Settings Setup
     When I send a POST request to "/api/v2/settings/brands/{defaultBrandId}/portal/general" with body:
     """
 {
-  "brand": "1",
+  "brand": ~defaultBrandId~,
   "deskpro_name":"Test site",
   "deskpro_url":"http://testsite.com",
   "apps_feedback":true,
@@ -31,8 +32,6 @@ Feature: Brand Settings Setup
     Then the response should be in JSON
     And the response status code should be 204
 
-
-  Scenario: I check updated default brand settings
     When I send a GET request to "/api/v2/settings/brands/{defaultBrandId}/portal/general"
     Then the response should be in JSON
     And the response status code should be 200
@@ -48,7 +47,6 @@ Feature: Brand Settings Setup
     And the JSON node "data.show_ratings_min_votes" should be equal to "6"
     And the JSON node "data.publish_comments" should be true
 
-  Scenario: I create a new brand and update its settings
     When I send a POST request to "/api/v2/brands" with body:
     """
 {
@@ -78,7 +76,6 @@ Feature: Brand Settings Setup
     Then the response should be in JSON
     And the response status code should be 204
 
-  Scenario: I check updated brand settings
     When I send a GET request to "/api/v2/settings/brands/{lastCreatedId}/portal/general"
     Then the response should be in JSON
     And the response status code should be 200
@@ -94,15 +91,12 @@ Feature: Brand Settings Setup
     And the JSON node "data.show_ratings_min_votes" should be equal to "8"
     And the JSON node "data.publish_comments" should be true
 
-
-  Scenario: I check that the name and url are saved in the brand
     When I send a GET request to "/api/v2/brands/{lastCreatedId}"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.name" should be equal to "Other Brand"
     And the JSON node "data.url" should be equal to "otherbrand.com"
 
-  Scenario: I check that the default brand settings remain the same
     When I send a GET request to "/api/v2/settings/brands/{defaultBrandId}/portal/general"
     Then the response should be in JSON
     And the response status code should be 200

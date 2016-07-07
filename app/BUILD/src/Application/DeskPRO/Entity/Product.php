@@ -70,9 +70,24 @@ class Product extends CategoryAbstract implements HasPhraseName
      */
     protected $children;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->custom_data = new ArrayCollection();
+    }
+
+    /**
+     * @param $title
+     *
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->setModelField('title', $title);
+
+        return $this;
     }
 
     /**

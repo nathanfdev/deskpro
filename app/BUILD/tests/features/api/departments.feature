@@ -11,11 +11,11 @@ Feature: /(ticket|chat)_departments endpoint
 
   Scenario: I retrieve a list of departments
     Given only the following Department records exist:
-      | #  | Title               | Is Tickets Enabled | Is Chat Enabled |
-      | d1 | Ticket Department 1 | 1                  | 0               |
-      | d2 | Ticket Department 2 | 1                  | 0               |
-      | d3 | Chat Department 1   | 0                  | 1               |
-      | d4 | Chat Department 2   | 0                  | 1               |
+      | #  | Title               | Brands           | Is Tickets Enabled | Is Chat Enabled |
+      | d1 | Ticket Department 1 | [{defaultBrand}] | 1                  | 0               |
+      | d2 | Ticket Department 2 | [{defaultBrand}] | 1                  | 0               |
+      | d3 | Chat Department 1   | [{defaultBrand}] | 0                  | 1               |
+      | d4 | Chat Department 2   | [{defaultBrand}] | 0                  | 1               |
 
     When I send a GET request to "/api/v2/ticket_departments"
     Then the response status code should be 200

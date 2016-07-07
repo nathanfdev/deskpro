@@ -86,17 +86,18 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     /**
      * @var bool
      */
-    protected $is_tickets_enabled = true;
+    protected $is_tickets_enabled = false;
 
     /**
      * @var bool
      */
-    protected $is_chat_enabled = true;
+    protected $is_chat_enabled = false;
 
     /**
      * @var null|array
      */
     protected $_usergroups = null;
+
     /**
      * @var null|array
      */
@@ -152,11 +153,12 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     }
 
     /**
-     *
+     * Constructor.
      */
     public function __construct()
     {
-        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->children = new ArrayCollection();
+        $this->brands   = new ArrayCollection();
     }
 
     /**
@@ -582,13 +584,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
      */
     public function hasBrand(Brand $searchBrand)
     {
-        foreach ($this->brands as $brand) {
-            if ($brand->getId() == $searchBrand->getId()) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->brands->contains($searchBrand);
     }
 
     /**
@@ -598,7 +594,12 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
      */
     public function addBrand(Brand $brand)
     {
-        $this->brands[] = $brand;
+        if (!$this->brands->contains($brand)) {
+            $this->brands->add($brand);
+            $brand->addDepartment($this);
+
+            $this->_onPropertyChanged('brands', null, $this->brands);
+        }
 
         return $this;
     }

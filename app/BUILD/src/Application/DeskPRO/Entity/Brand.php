@@ -74,7 +74,12 @@ class Brand extends DomainObject
     protected $name;
 
     /**
-     * @var string the brand url
+     * The brand url.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
      */
     protected $url;
 

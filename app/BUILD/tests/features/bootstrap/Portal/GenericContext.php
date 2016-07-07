@@ -229,7 +229,7 @@ class GenericContext extends BasePortalContext
                 $cat         = $em->getRepository(DownloadCategory::class)->findOneBy(['title' => $cat_name]);
                 $cat or $cat = new DownloadCategory();
                 $cat->setTitle($cat_name);
-                $cat->setBrand($this->brandContext->getDefaultBrand());
+                $cat->setBrand($this->brandContext->iHaveDefaultBrand());
 
                 $content = new Download();
                 $content->setTitle($content_name);

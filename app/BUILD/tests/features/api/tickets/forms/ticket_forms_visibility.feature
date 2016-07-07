@@ -8,9 +8,9 @@ Feature: /ticket_forms endpoint
     And a user with "user_1@deskpro.dev" email exists
     And a user with "user_2@deskpro.dev" email exists
     And only the following Department records exist:
-      | #  | Title        | Is Tickets Enabled |
-      | d1 | Department 1 | 1                  |
-      | d2 | Department 2 | 1                  |
+      | #  | Title        | Brands           | Is Tickets Enabled |
+      | d1 | Department 1 | [{defaultBrand}] | 1                  |
+      | d2 | Department 2 | [{defaultBrand}] | 1                  |
 
   Scenario: I check that all fields present on the form on create a new ticket
     Given the only default ticket layout exists with fields:

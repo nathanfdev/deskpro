@@ -70,6 +70,8 @@ abstract class DomainObject extends BasicDomainObject
 
     /**
      * @return \Doctrine\ORM\EntityRepository
+     *
+     * @deprecated
      */
     public static function getRepository()
     {

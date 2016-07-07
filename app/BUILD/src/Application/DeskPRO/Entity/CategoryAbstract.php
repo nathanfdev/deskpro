@@ -194,16 +194,19 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     public function updateSlug()
     {
         $this->slug = Strings::slugifyTitle($this->title);
-        $this->checkExistingSkug();
+        $this->checkExistingSlug();
         $this->setModelField('slug', $this->slug);
     }
 
-    protected function checkExistingSkug()
+    protected function checkExistingSlug()
     {
         $index = false;
         if (preg_match('/-(\d+)$/', $this->slug, $match)) {
             $index = $match[1];
         }
+
+        // todo don't use getRepository inside entity setters, need to refactor that
+
         /** @var CategoryAbstract $existing */
         $existing = $this->getRepository()->findOneBy(['slug' => $this->slug]);
         if ($existing && $existing->getId() != $this->getId() && property_exists($this, 'brand')) {
@@ -213,7 +216,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
             } else {
                 $this->slug .= '-'.($index + 1);
             }
-            $this->checkExistingSkug();
+            $this->checkExistingSlug();
         }
     }
 
