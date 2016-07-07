@@ -258,7 +258,8 @@ class Brand extends DomainObject
                     'persist',
                     'merge',
                 ],
-                'joinTable' => [
+                'inversedBy' => 'brands',
+                'joinTable'  => [
                     'name'        => 'department_to_brand',
                     'joinColumns' => [
                         0 => [

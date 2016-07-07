@@ -805,6 +805,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
                     'persist',
                     'merge',
                 ],
+                'mappedBy'  => 'departments',
                 'joinTable' => [
                     'name'        => 'department_to_brand',
                     'joinColumns' => [
