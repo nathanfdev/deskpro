@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\EntityRepository\Brand as BrandRepository;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use JMS\Serializer\Annotation as JMS;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -97,6 +98,17 @@ class Brand extends DomainObject
      */
     protected $departments;
 
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->departments = new ArrayCollection();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getId()
     {
         return $this->id;
@@ -181,7 +193,9 @@ class Brand extends DomainObject
      */
     public function addDepartment(Department $department)
     {
-        $this->departments[] = $department;
+        if (!$this->departments->contains($department)) {
+            $this->departments[] = $department;
+        }
 
         return $this;
     }
@@ -191,15 +205,9 @@ class Brand extends DomainObject
      *
      * @return bool
      */
-    public function hasDepartment(Department  $searchDepartment)
+    public function hasDepartment(Department $searchDepartment)
     {
-        foreach ($this->departments as $department) {
-            if ($department->getId() == $searchDepartment->getId()) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->departments->contains($searchDepartment);
     }
 
     /**

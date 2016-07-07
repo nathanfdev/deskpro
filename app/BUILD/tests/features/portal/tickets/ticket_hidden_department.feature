@@ -3,7 +3,7 @@ Feature: I want to check hidden department field if there is just one selectable
 
   Background:
     Given I'm authenticated as user
-    And I remember default brand
+    And I have default brand
     And I set permission "tickets.use" = 1 for "registered" usergroup
     And there are no Department records
     And the only default ticket layout exists with fields:

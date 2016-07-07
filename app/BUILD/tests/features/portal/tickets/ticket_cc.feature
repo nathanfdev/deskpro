@@ -5,7 +5,7 @@ Feature: Add and edit ticket participants
     Given no Person records exist
     And I'm authenticated as user
     And I disable anti-abuse rate limiting
-    And I remember default brand
+    And I have default brand
     And a user with "user_1@deskpro.dev" email exists
     And a user with "user_2@deskpro.dev" email exists
     And an agent with "agent@deskpro.dev" email exists

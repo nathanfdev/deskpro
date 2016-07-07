@@ -30,6 +30,7 @@ namespace DpBehat\Data;
 
 use Application\DeskPRO\Entity\Ticket;
 use Behat\Gherkin\Node\TableNode;
+use Doctrine\Common\Collections\ArrayCollection;
 use DpBehat\BaseContext;
 use DpBehat\Data\Factory\SimpleFactory;
 
@@ -73,6 +74,9 @@ class DataContext extends BaseContext
      */
     public static function setReference($name, $object)
     {
+        if (!is_object($object)) {
+            throw new \Exception('Unable to set reference of non object');
+        }
         if (!$object->getId()) {
             throw new \Exception('Unable to set reference of not persisted object');
         }
@@ -273,7 +277,8 @@ class DataContext extends BaseContext
                             $arrayValue[] = $item;
                         }
                     }
-                    $value = $arrayValue;
+
+                    $value = new ArrayCollection($arrayValue);
                 } elseif (self::isReference($value)) {
                     $value = self::resolveReference($value);
                 }

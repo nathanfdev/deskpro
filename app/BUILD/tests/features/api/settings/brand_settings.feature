@@ -3,7 +3,7 @@ Feature: Brand Settings Setup
 
   Background:
     Given I'm authenticated as admin
-    And I remember default brand id
+    And I have default brand
 
   Scenario: I get default brand settings
     When I send a GET request to "/api/v2/settings/brands/{defaultBrandId}/portal/general"

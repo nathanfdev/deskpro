@@ -4,7 +4,7 @@ Feature: New ticket form
 
   Background:
     Given I'm authenticated as user
-    And I remember default brand
+    And I have default brand
     And I disable anti-abuse rate limiting
     And only the following Department records exist:
       | #  | Title        | Brand          | Is Tickets Enabled |

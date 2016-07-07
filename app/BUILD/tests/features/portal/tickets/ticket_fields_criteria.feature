@@ -4,7 +4,7 @@ Feature: New ticket form
 
   Background:
     Given I'm authenticated as user
-    And I remember default brand
+    And I have default brand
     And a user with "user_1@deskpro.dev" email exists
     And only the following Department records exist:
       | #  | Parent | Title        | Brand          | Is Tickets Enabled |

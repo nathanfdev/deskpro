@@ -29,6 +29,7 @@
 namespace DpBehat\Api;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Setting;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DpBehat\BaseContext;
 use DpBehat\Data\DataContext;
@@ -46,26 +47,18 @@ class BrandContext extends BaseContext
     }
 
     /**
-     * @Then I remember default brand id
+     * @Then I have default brand
      */
-    public function getDefaultBrandId()
+    public function iHaveDefaultBrand()
     {
-        $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
-        DataContext::setPlaceholder('defaultBrandId', $brandId);
+        $brand = $this->createNewBrand();
 
-        return $brandId;
-    }
-
-    /**
-     * @Then I remember default brand
-     */
-    public function getDefaultBrand()
-    {
-        $brandId = $this->getDefaultBrandId();
-
-        $brand = $this->findBrand($brandId);
+        /** @var \Application\DeskPRO\EntityRepository\Setting $settingRepo */
+        $settingRepo = $this->em()->getRepository(Setting::class);
+        $settingRepo->updateSetting('portal.default_brand', $brand->getId());
 
         DataContext::setReference('defaultBrand', $brand);
+        DataContext::setPlaceholder('defaultBrandId', $brand->getId());
 
         return $brand;
     }
