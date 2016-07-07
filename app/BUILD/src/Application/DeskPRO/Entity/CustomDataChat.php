@@ -59,6 +59,26 @@ class CustomDataChat extends CustomDataAbstract
      */
     protected $root_field;
 
+    /**
+     * @return ChatConversation
+     */
+    public function getConversation()
+    {
+        return $this->conversation;
+    }
+
+    /**
+     * @param ChatConversation $conversation
+     *
+     * @return $this
+     */
+    public function setConversation($conversation)
+    {
+        $this->setModelField('conversation', $conversation);
+
+        return $this;
+    }
+
     public function getConversationId()
     {
         return $this->conversation->getId();
