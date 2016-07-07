@@ -250,11 +250,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         }
       )
 
-    cancelCssEditor: =>
+    cancelCssEditor: () =>
       @css_template_selected = false
       @css_template_info = false
 
-    saveCssEditor: =>
+    saveCssEditor: () =>
       data = {}
       data[@css_template_info.type] = @css_template_info.code
       @recompiling = true
