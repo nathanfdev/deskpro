@@ -39,7 +39,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class DepartmentsController.
  */
-abstract class DepartmentsController extends CrudController
+abstract class AbstractDepartmentsController extends CrudController
 {
     public static $entity    = Department::class;
     public static $type      = DepartmentType::class;

@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\DepartmentsController;
+use DeskPRO\Bundle\ApiBundle\Controller\AbstractDepartmentsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -46,7 +46,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @Rest\Route("/ticket_departments")
  * @ApiDoc(target="all", section="Departments", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Department")
  */
-class TicketDepartmentsController extends DepartmentsController
+class TicketDepartmentsController extends AbstractDepartmentsController
 {
     public static $entity    = Department::class;
     public static $type      = DepartmentType::class;
