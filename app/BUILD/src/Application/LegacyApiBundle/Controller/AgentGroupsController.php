@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Usergroup;
@@ -272,9 +273,9 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
                     continue;
                 }
                 if ($p['full']) {
-                    $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1);
+                    $set_perms[] = ['department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1, 'is_active' => 1];
                 } elseif ($p['assign']) {
-                    $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1, 'is_active' => 1);
+                    $set_perms[] = ['department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1, 'is_active' => 1];
                 }
             }
             foreach ($this->in->getArrayValue('dep_perms.chat') as $did => $p) {
@@ -282,7 +283,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
                     continue;
                 }
                 if ($p['full']) {
-                    $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'chat', 'name' => 'full', 'value' => 1, 'is_active' => 1);
+                    $set_perms[] = ['department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'chat', 'name' => 'full', 'value' => 1, 'is_active' => 1];
                 }
             }
 
