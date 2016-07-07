@@ -98,6 +98,38 @@ Feature: /(ticket|chat)_departments endpoint
       | ticket |
       | chat   |
 
+  Scenario Outline: I filter by brand
+    Given only the following Brand records exist:
+      | #  | Name    |
+      | b1 | Brand 1 |
+      | b2 | Brand 2 |
+      | b3 | Brand 3 |
+    And only the following Department records exist:
+      | #  | Title        | Brands      | Is Tickets Enabled | Is Chat Enabled |
+      | d1 | Department 1 | [{b1},{b2}] | 1                  | 1               |
+      | d2 | Department 2 | [{b2}]      | 1                  | 1               |
+      | d3 | Department 2 | [{b3}]      | 1                  | 1               |
+
+    When I send a GET request to "/api/v2/<type>_departments"
+    Then the response status code should be 200
+    And the JSON node "data" should have 3 elements
+
+    When I send a GET request to "/api/v2/<type>_departments?brands={b2}"
+    Then the response status code should be 200
+    And the JSON node "data" should have 2 elements
+    And the JSON node "data[0].id" should be equal to "{d1}"
+    And the JSON node "data[1].id" should be equal to "{d2}"
+
+    When I send a GET request to "/api/v2/<type>_departments?brands={b3}"
+    Then the response status code should be 200
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].id" should be equal to "{d3}"
+
+    Examples:
+      | type   |
+      | ticket |
+      | chat   |
+
   Scenario Outline: I try to create a new ticket department with empty request
     When I send a POST request to "/api/v2/<type>_departments"
     Then the response status code should be 400
