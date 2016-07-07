@@ -34,6 +34,9 @@ namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Ticket;
 use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -678,10 +681,11 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
     protected function _loadTicket($i)
     {
         if (!isset($this->_data_cache['ticket_departments'])) {
-            $this->_data_cache['ticket_departments'] = App::getEntityRepository('DeskPRO:Department')->getChildDepartments('ticket');
+            $this->_data_cache['ticket_departments'] =
+                App::getEntityRepository(Department::class)->getChildDepartments('ticket');
         }
         if (!isset($this->_data_cache['ticket_fields'])) {
-            $this->_data_cache['ticket_fields'] = App::getEntityRepository('DeskPRO:CustomDefTicket')->findAll();
+            $this->_data_cache['ticket_fields'] = App::getEntityRepository(CustomDefTicket::class)->findAll();
         }
 
         $date_created = $this->_getRandomDate();
@@ -692,7 +696,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             'person_id'       => $this->_getRandomPersonId(),
             'department_id'   => $this->_getRandomFromCache('ticket_departments', 'id'),
             'creation_system' => Entity\Ticket::CREATED_WEB_API,
-            'ref'             => App::getRefGenerator()->generateReference('DeskPRO:Ticket'),
+            'ref'             => App::getRefGenerator()->generateReference(Ticket::class),
         );
         if (mt_rand(0, 2) == 0) {
             $rand = $this->_getRandomAgent();

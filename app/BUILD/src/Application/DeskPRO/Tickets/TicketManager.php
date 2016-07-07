@@ -198,7 +198,7 @@ class TicketManager
         // This will cause less locking if we are outside of a transaction
         $ref_gen = $this->container->getRefGenerator();
         try {
-            $ticket->ref = $ref_gen->generateReference('DeskPRO:Ticket');
+            $ticket->ref = $ref_gen->generateReference(Ticket::class);
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
             $ref         = DpStrings::random(4, Strings::CHARS_ALPHA_IU).'-'.DpStrings::random(4, Strings::CHARS_NUM).'-'.DpStrings::random(4, Strings::CHARS_ALPHA_IU).'-'.date('ymd');

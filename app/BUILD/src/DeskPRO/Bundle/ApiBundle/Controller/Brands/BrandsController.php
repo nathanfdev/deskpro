@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Brands;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -133,6 +134,14 @@ class BrandsController extends CrudController
 
         $brand->setThemeSet($themeSet);
         $brand->setEditThemeSet($editThemeSet);
+
+        /** @var Department[] $departments */
+        $departments = $this->getRepository(Department::class)->getChildDepartments('both');
+        foreach ($departments as $department) {
+            $brand->addDepartment($department);
+            $department->addBrand($brand);
+            $this->persistModel($department);
+        }
 
         $this->persistModel($brand);
 

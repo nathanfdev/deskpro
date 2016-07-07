@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\RefGenerator;
 
 interface RefGeneratorInterface
@@ -37,11 +38,11 @@ interface RefGeneratorInterface
      * Generates a new reference number for the supplied object type.
      * Reference numbers must be at MOST 25 characters, and must be unique.
      *
-     * @param  $object_type
+     * @param  $class
      *
      * @return string
      */
-    public function generateReference($object_type);
+    public function generateReference($class);
 
     /**
      * Check if a string is a valid ref format. This only checks
