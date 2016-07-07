@@ -245,3 +245,9 @@ www/assets/BUILD/pub/nightwatch.conf.js
 /www/assets/*
 !/www/assets/index.html
 !/www/assets/BUILD
+
+/app/BUILD/sys/config/build-time.txt
+/app/BUILD/sys/config/build-time.php
+/app/BUILD/sys/config/build-num.php
+/app/BUILD/sys/config/build-num.txt
+/app/run/build-num.txt

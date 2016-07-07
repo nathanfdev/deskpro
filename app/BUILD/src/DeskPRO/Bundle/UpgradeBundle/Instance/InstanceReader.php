@@ -193,7 +193,7 @@ class InstanceReader
         }
 
         $numBetween = -1;
-        foreach ($releases as $r) {
+        foreach ($releases->getReleases() as $r) {
             if ($r->getId() === $currentRelease->getId()) {
                 $numBetween = 0;
             } elseif ($numBetween >= 0) {

@@ -29,9 +29,8 @@
 namespace DeskPRO\Bundle\UpgradeBundle\Distro\Manifest;
 
 use DeskPRO\Component\Util\ListUtils;
-use Doctrine\MongoDB\ArrayIterator;
 
-class DistroReleaseCollection implements \Countable, \IteratorAggregate
+class DistroReleaseCollection implements \Countable
 {
     /**
      * @var DistroRelease[]
@@ -80,11 +79,11 @@ class DistroReleaseCollection implements \Countable, \IteratorAggregate
     }
 
     /**
-     * {@inheritdoc}
+     * @return DistroRelease[]
      */
-    public function getIterator()
+    public function getReleases()
     {
-        return new ArrayIterator($this->releases);
+        return $this->releases;
     }
 
     /**
