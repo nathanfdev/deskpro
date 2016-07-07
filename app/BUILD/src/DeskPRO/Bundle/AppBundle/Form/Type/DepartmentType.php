@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
-use DeskPRO\Bundle\AppBundle\Settings\BrandSettingsResolver;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -47,18 +47,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class DepartmentType extends AbstractType
 {
     /**
-     * @var BrandSettingsResolver
+     * @var BrandStack
      */
-    private $brandSettingsResolver;
+    private $brandStack;
 
     /**
      * Constructor.
      *
-     * @param BrandSettingsResolver $brandSettingsResolver
+     * @param BrandStack $brandStack
      */
-    public function __construct(BrandSettingsResolver $brandSettingsResolver)
+    public function __construct(BrandStack $brandStack)
     {
-        $this->brandSettingsResolver = $brandSettingsResolver;
+        $this->brandStack = $brandStack;
     }
 
     /**
@@ -131,7 +131,7 @@ class DepartmentType extends AbstractType
         }
 
         if (!count($data->getBrands())) {
-            $defaultBrand = $this->brandSettingsResolver->getDefaultBrand();
+            $defaultBrand = $this->brandStack->getDefaultBrand();
             if ($defaultBrand) {
                 $data->getBrands()->add($defaultBrand);
             }
