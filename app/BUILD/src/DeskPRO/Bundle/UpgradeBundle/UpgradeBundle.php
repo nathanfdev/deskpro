@@ -40,6 +40,9 @@ class UpgradeBundle extends Bundle
 {
     public function registerCommands(Application $application)
     {
+        $application->add(new UpgradeCommand\ActivateBuildCommand());
+        $application->add(new UpgradeCommand\AutoUpgradeCommand());
+        $application->add(new UpgradeCommand\AutoUpgradeStatusCommand());
         $application->add(new UpgradeCommand\DbBackupCommand());
         $application->add(new UpgradeCommand\DownloadBuildCommand());
         $application->add(new UpgradeCommand\StatusCommand());

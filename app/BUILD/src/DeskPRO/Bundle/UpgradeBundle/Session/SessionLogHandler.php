@@ -86,14 +86,9 @@ class SessionLogHandler extends AbstractHandler
 
         $manager = $smf->getManager();
 
-        // abc.e.f.success
-        // eventNs: abc, eventName: e.f, eventFlag: succcess
-
-        $eventId   = $keyEvent->getId();
-        $parts     = explode('.', $eventId);
-        $eventFlag = array_pop($parts);
-        $eventNs   = array_shift($parts);
-        $eventName = implode('.', $parts) ?: 'default';
+        $eventId = $keyEvent->getId();
+        $parts   = explode('.', $eventId);
+        $eventNs = array_shift($parts);
 
         switch ($eventNs) {
             case 'AutoUpgrade':
@@ -107,7 +102,7 @@ class SessionLogHandler extends AbstractHandler
                 $manager->mutateSession(function (UpgradeSession $session) use ($keyEvent) {
                     $step = $session->getStatusStep();
 
-                    return $this->handleDbBackupEvent($step, $keyEvent);
+                    return $this->handleStatusCheckEvent($step, $keyEvent);
                 });
                 break;
 
@@ -157,7 +152,7 @@ class SessionLogHandler extends AbstractHandler
                 break;
 
             case 'AutoUpgrade.success':
-                $session->finished('success');
+                $session->finished('Upgrade process is complete.');
                 break;
 
             case 'AutoUpgrade.error':
@@ -165,7 +160,6 @@ class SessionLogHandler extends AbstractHandler
                     /** @var \Exception $e */
                     $e = $keyEvent->get('exception');
                     $session->finishedWithError('An unexpected error occurred', 'An exception was raised: '.DebugUtils::getExceptionSummary($e));
-                    $session->setException($e);
                 } else {
                     $session->finishedWithError('An upgrade process returned with an error status');
                 }
@@ -192,11 +186,11 @@ class SessionLogHandler extends AbstractHandler
                 break;
 
             case 'StatusCheck.outdated':
-                $step->finished('success', 'DeskPRO needs to be updated');
+                $step->finished('DeskPRO needs to be updated');
                 break;
 
             case 'StatusCheck.not_outdated':
-                $step->finished('success', 'DeskPRO does not need to be updated');
+                $step->finished('DeskPRO does not need to be updated');
                 break;
 
             case 'StatusCheck.error':
@@ -205,7 +199,6 @@ class SessionLogHandler extends AbstractHandler
                     $e = $keyEvent->get('exception');
 
                     $step->finishedWithError('We could not connect with the DeskPRO version server', $keyEvent->get('message', DebugUtils::getExceptionSummary($e)));
-                    $step->setException($e);
                 } else {
                     $step->finishedWithError('We could not connect with the DeskPRO version server', $keyEvent->get('message', ''));
                 }
@@ -241,7 +234,6 @@ class SessionLogHandler extends AbstractHandler
                     $e = $keyEvent->get('exception');
 
                     $step->finishedWithError('Failed to make database backup', $keyEvent->get('message', DebugUtils::getExceptionSummary($e)));
-                    $step->setException($e);
                 } else {
                     $step->finishedWithError('Failed to make database backup', $keyEvent->get('message', ''));
                 }
@@ -277,7 +269,6 @@ class SessionLogHandler extends AbstractHandler
                     $e = $keyEvent->get('exception');
 
                     $step->finishedWithError('Failed to download DeskPRO distribution', $keyEvent->get('message', DebugUtils::getExceptionSummary($e)));
-                    $step->setException($e);
                 } else {
                     $step->finishedWithError('Failed to download DeskPRO distribution', $keyEvent->get('message', ''));
                 }
@@ -321,7 +312,6 @@ class SessionLogHandler extends AbstractHandler
                     $e = $keyEvent->get('exception');
 
                     $step->finishedWithError('Failed to download DeskPRO distribution', $keyEvent->get('message', DebugUtils::getExceptionSummary($e)));
-                    $step->setException($e);
                 } else {
                     $step->finishedWithError('Failed to download DeskPRO distribution', $keyEvent->get('message', ''));
                 }
@@ -405,10 +395,9 @@ class SessionLogHandler extends AbstractHandler
                     /** @var \Exception $e */
                     $e = $keyEvent->get('exception');
 
-                    $step->finishedWithError('Failed to activate the new build', $keyEvent->get('message', DebugUtils::getExceptionSummary($e)));
-                    $step->setException($e);
+                    $hdOnStep->finishedWithError('Failed to activate the new build', $keyEvent->get('message', DebugUtils::getExceptionSummary($e)));
                 } else {
-                    $step->finishedWithError('Failed to activate the new build', $keyEvent->get('message', ''));
+                    $hdOnStep->finishedWithError('Failed to activate the new build', $keyEvent->get('message', ''));
                 }
                 break;
 

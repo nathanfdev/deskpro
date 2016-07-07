@@ -83,6 +83,8 @@ class DebugUtils
             $code = $e->getCode();
             if ($lines) {
                 $prefix = '|'.str_repeat('--', count($lines)).' ';
+            } else {
+                $prefix = '';
             }
 
             if ($code === 0 || $code === null || $code === false || $code === '0' || $code === '') {
@@ -105,7 +107,7 @@ class DebugUtils
             $e = $e->getPrevious();
         }
 
-        return implode("\n", $e);
+        return implode("\n", $lines);
     }
 
     /**

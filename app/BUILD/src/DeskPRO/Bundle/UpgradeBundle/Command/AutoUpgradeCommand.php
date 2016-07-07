@@ -26,6 +26,8 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+declare (ticks = 100);
+
 namespace DeskPRO\Bundle\UpgradeBundle\Command;
 
 use DeskPRO\Bundle\UpgradeBundle\Logger\LogKeyEvent;
@@ -55,8 +57,10 @@ class AutoUpgradeCommand extends ContainerAwareCommand
 
         $sessionId = $input->getOption('session-id');
         if (!$sessionId) {
-            $sessionId = RandUtils::randomStringFormat('%40An');
+            $sessionId = date('YmdHis').RandUtils::randomStringFormat('%8An');
         }
+
+        $output->writeln('Starting automatic upgrade (SessionID: '.$sessionId.')');
 
         $smf = $this->getContainer()->get('dp.upgrader.session_manager_factory');
         $smf->enableSessionId($sessionId);
@@ -66,6 +70,32 @@ class AutoUpgradeCommand extends ContainerAwareCommand
             '[Auto-Upgrade] Starting session: '.$sessionId,
             ['keyEvent' => LogKeyEvent::create('AutoUpgrade.start')]
         );
+
+        register_shutdown_function(function () use ($logger) {
+            if (!defined('DP_DID_END_OK')) {
+                $e = new \OutOfBoundsException('Auto-upgrader ended unexpectedly');
+                $logger->error(
+                    '[Auto-Upgrade] finished unexpectedly',
+                    ['keyEvent' => LogKeyEvent::createForException('AutoUpgrade.error', $e)]
+                );
+            }
+        });
+
+        if (function_exists('pcntl_signal')) {
+            $unexpectedFinishHandler = function ($sig) use ($logger) {
+                $e = new \OutOfBoundsException("Auto-upgrader ended unexpectedly with signal $sig");
+                $logger->error(
+                    '[Auto-Upgrade] finished unexpectedly with signal '.$sig,
+                    ['keyEvent' => LogKeyEvent::createForException('AutoUpgrade.error', $e)]
+                );
+                if (!defined('DP_DID_END_OK')) {
+                    define('DP_DID_END_OK', true);
+                }
+                exit(1);
+            };
+            pcntl_signal(\SIGINT, $unexpectedFinishHandler);
+            pcntl_signal(\SIGTERM, $unexpectedFinishHandler);
+        }
 
         try {
             if ($ret = $this->doExecute($sessionId, $input, $output)) {
@@ -83,11 +113,17 @@ class AutoUpgradeCommand extends ContainerAwareCommand
             }
 
             $output->writeln('Upgrade complete in '.$t->formatTotalTime());
+            if (!defined('DP_DID_END_OK')) {
+                define('DP_DID_END_OK', true);
+            }
         } catch (\Exception $e) {
-            $logger->info(
+            $logger->error(
                 '[Auto-Upgrade] Exception',
                 ['keyEvent' => LogKeyEvent::createForException('AutoUpgrade.error', $e)]
             );
+            if (!defined('DP_DID_END_OK')) {
+                define('DP_DID_END_OK', true);
+            }
         }
     }
 

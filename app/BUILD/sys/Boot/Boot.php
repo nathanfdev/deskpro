@@ -89,7 +89,25 @@ class Boot
     }
 
     /**
+     * This just sets up the basic env (e.g. sets up autoloader).
+     *
+     * @param \DpRun\DpEnv $env
+     */
+    public static function bootBasicEnv(\DpRun\DpEnv $env)
+    {
+        $tasks = [
+            'Loader',
+            'Lib',
+            'PreparePaths',
+        ];
+
+        self::runBootTasks($env, $tasks);
+    }
+
+    /**
      * Boot a web request.
+     *
+     * @param \DpRun\DpEnv $env
      */
     public static function bootWeb(\DpRun\DpEnv $env)
     {
@@ -254,6 +272,8 @@ class Boot
 
     /**
      * Boot cron app.
+     *
+     * @param \DpRun\DpEnv $env
      */
     public static function bootCron(\DpRun\DpEnv $env)
     {

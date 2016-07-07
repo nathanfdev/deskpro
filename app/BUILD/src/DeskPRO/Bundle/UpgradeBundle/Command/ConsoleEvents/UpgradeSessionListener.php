@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\UpgradeBundle\Command\ConsoleEvents;
 
+use DeskPRO\Bundle\UpgradeBundle\Command\AutoUpgradeCommand;
+use DeskPRO\Bundle\UpgradeBundle\Command\AutoUpgradeStatusCommand;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -62,6 +64,14 @@ class UpgradeSessionListener implements EventSubscriberInterface
 
     public function onCommand(ConsoleCommandEvent $event)
     {
+        // These two command manage the sid state manually
+        if (
+            $event->getCommand() instanceof AutoUpgradeStatusCommand
+            || $event->getCommand() instanceof AutoUpgradeCommand
+        ) {
+            return;
+        }
+
         $input = $event->getInput();
         if ($input->hasOption('session_id')) {
             $sessionId      = $input->hasOption('session_id');

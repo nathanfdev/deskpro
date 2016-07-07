@@ -73,7 +73,7 @@ class UpgradeSessionManager
      */
     public function getSessionFilePath()
     {
-        return $this->tmpPath.DIRECTORY_SEPARATOR.'upgrade-session.'.$this->sessionId.'.json';
+        return $this->tmpPath.DIRECTORY_SEPARATOR.'upgrade-session.'.$this->sessionId.'.dat';
     }
 
     /**
@@ -87,7 +87,6 @@ class UpgradeSessionManager
 
         if (!file_exists($filePath)) {
             $session = new UpgradeSession();
-            $this->syncSession();
         } else {
             $session = @file_get_contents($filePath);
             if (!$session) {
@@ -125,7 +124,7 @@ class UpgradeSessionManager
      */
     public function flushSession()
     {
-        $fp = @fopen($this->getSessionFilePath(), 'a');
+        $fp = @fopen($this->getSessionFilePath(), 'w');
         if (!$fp) {
             throw new IOException('Could not open for writing');
         }
@@ -133,6 +132,7 @@ class UpgradeSessionManager
         @flock($fp, LOCK_EX);
 
         $writeStatus = fwrite($fp, serialize($this->session));
+        @fflush($fp);
 
         @flock($fp, LOCK_EX);
         @fclose($fp);
@@ -149,6 +149,8 @@ class UpgradeSessionManager
      * consider it a noop and no write will take plce.
      *
      * @param callable $callable
+     *
+     * @throws \Exception
      */
     public function mutateSession($callable)
     {
@@ -158,11 +160,17 @@ class UpgradeSessionManager
             return;
         }
 
+        $this->session->touch();
+
         for ($i = 0; $i < 3; ++$i) {
             try {
+                $e = null;
                 $this->flushSession();
                 break;
             } catch (\Exception $e) {
+                if ($i === 2) {
+                    throw $e;
+                }
             }
         }
     }

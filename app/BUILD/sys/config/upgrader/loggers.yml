@@ -17,7 +17,7 @@ monolog:
       type: stream
       path: '%kernel.logs_dir%/upgrader.log'
       channels: [upgrader]
-      formatter: deskpro.logging.line_formatter
+      formatter: dp.upgrader.logger_line_formatter
 
     logger.upgrader.general:
       min_level: debug
@@ -36,3 +36,8 @@ services:
   dp.upgrader.session_log_handler:
     class: DeskPRO\Bundle\UpgradeBundle\Session\SessionLogHandler
     arguments: ["@service_container"]
+
+  dp.upgrader.logger_line_formatter:
+    class: DeskPRO\Bundle\AppBundle\Logging\Formatter\CleanLineFormatter
+    arguments:
+      - "[%%datetime%%] <%%channel%%.%%level_name%%> %%message%%\n"

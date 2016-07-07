@@ -40,6 +40,11 @@ class SessionStep implements \JsonSerializable
     /**
      * @var string
      */
+    private $title;
+
+    /**
+     * @var string
+     */
     private $status = self::WAITING;
 
     /**
@@ -63,6 +68,21 @@ class SessionStep implements \JsonSerializable
     protected $data = [];
 
     /**
+     * SessionStep constructor.
+     *
+     * @param string $title
+     */
+    public function __construct($title)
+    {
+        $this->title = $title;
+        $this->init();
+    }
+
+    protected function init()
+    {
+    }
+
+    /**
      * @return $this
      */
     public function start()
@@ -80,6 +100,7 @@ class SessionStep implements \JsonSerializable
      */
     public function finished($summaryText, $details = '')
     {
+        $this->status      = self::FINISHED;
         $this->summaryText = $summaryText;
         $this->details     = $details;
 
@@ -108,10 +129,18 @@ class SessionStep implements \JsonSerializable
      */
     public function finishedWithError($summaryText, $details = '')
     {
-        $this->finishStatus = self::WARN;
+        $this->finishStatus = self::ERROR;
         $this->finished($summaryText, $details);
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
     }
 
     /**
@@ -179,22 +208,6 @@ class SessionStep implements \JsonSerializable
     }
 
     /**
-     * @param \Exception $e
-     */
-    public function setException(\Exception $e)
-    {
-        $this->data['exception'] = $e;
-    }
-
-    /**
-     * @return \Exception
-     */
-    public function getException()
-    {
-        return $this->data['exception'];
-    }
-
-    /**
      /**
      * {@inheritdoc}
      */
@@ -228,7 +241,7 @@ class SessionStep implements \JsonSerializable
         if ($step->isFinished()) {
             if ($step->isError()) {
                 $this->finishedWithError($step->getSummary(), $step->getDetails());
-            } elseif ($step->isWaiting()) {
+            } elseif ($step->isWarning()) {
                 $this->finishedWithWarning($step->getSummary(), $step->getDetails());
             } else {
                 $this->finished($step->getSummary(), $step->getDetails());

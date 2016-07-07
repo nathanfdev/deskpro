@@ -59,15 +59,17 @@ class UpgradeSession extends SessionStep
 
     public function __construct()
     {
+        parent::__construct('Upgrader');
+
         $this->steps = [
-            self::STEP_STATUS          => new StatusStep(),
-            self::STEP_DOWNLOAD_DISTRO => new SessionStep(),
-            self::STEP_EXTRACT_DISTRO  => new SessionStep(),
-            self::STEP_BACKUP          => new SessionStep(),
-            self::STEP_REQ_CHECK       => new SessionStep(),
-            self::STEP_DISABLE_SITE    => new SessionStep(),
-            self::STEP_UPGRADE         => new SessionStep(),
-            self::STEP_ENABLE_SITE     => new SessionStep(),
+            self::STEP_STATUS          => new StatusStep('Check For Updates'),
+            self::STEP_DOWNLOAD_DISTRO => new SessionStep('Download Updates'),
+            self::STEP_EXTRACT_DISTRO  => new SessionStep('Extract Updates'),
+            self::STEP_BACKUP          => new SessionStep('Backup Database'),
+            self::STEP_REQ_CHECK       => new SessionStep('Check Requirements'),
+            self::STEP_DISABLE_SITE    => new SessionStep('Disable Helpdesk'),
+            self::STEP_UPGRADE         => new SessionStep('Upgrade Helpdesk'),
+            self::STEP_ENABLE_SITE     => new SessionStep('Re-enable Helpdesk'),
         ];
     }
 
@@ -113,17 +115,40 @@ class UpgradeSession extends SessionStep
             return;
         }
 
+        $nextIsUp = false;
         foreach ($this->steps as $stepId => $step) {
             if ($step->isFinished()) {
                 if ($step->isError()) {
                     return $stepId;
                 }
-            } else {
+                $nextIsUp = true;
+            } elseif ($step->isRunning()) {
+                return $step;
+            } elseif ($nextIsUp) {
                 return $stepId;
             }
         }
 
         return;
+    }
+
+    /**
+     * @return $this
+     */
+    public function touch()
+    {
+        $this->data['lastWrite'] = date('Y-m-d H:i:s');
+        $this->data['tick']      = microtime(true);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTick()
+    {
+        return $this->data['tick'] ?: microtime(true);
     }
 
     /**
@@ -144,14 +169,16 @@ class UpgradeSession extends SessionStep
     /**
      * {@inheritdoc}
      */
-    public function merge(UpgradeSession $session)
+    public function merge(SessionStep $session)
     {
         parent::merge($session);
 
-        foreach ($session->getStepIds() as $stepId) {
-            $theirStep = $session->getStep($stepId);
-            $myStep    = $this->getStep($stepId);
-            $myStep->merge($theirStep);
+        if ($session instanceof self) {
+            foreach ($session->getStepIds() as $stepId) {
+                $theirStep = $session->getStep($stepId);
+                $myStep    = $this->getStep($stepId);
+                $myStep->merge($theirStep);
+            }
         }
     }
 }

@@ -36,6 +36,7 @@ use Monolog\Formatter\LineFormatter;
 class CleanLineFormatter extends LineFormatter
 {
     const SIMPLE_FORMAT = "[%datetime%] <%channel%.%level_name%> %message% %context% %extra%\n";
+    const BASIC_FORMAT  = "[%datetime%] <%channel%.%level_name%> %message%\n";
 
     /**
      * {@inheritdoc}

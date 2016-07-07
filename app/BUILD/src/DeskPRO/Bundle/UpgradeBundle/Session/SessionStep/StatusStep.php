@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\UpgradeBundle\Session\SessionStep;
 
 class StatusStep extends SessionStep
 {
-    public function __construct()
+    protected function init()
     {
         $this->data = array_merge($this->data, [
             'requiresUpdate' => false,
