@@ -66,7 +66,7 @@ class Brand extends DomainObject
      * The brand name.
      *
      * @JMS\Expose()
-     * @JMS\Type("integer")
+     * @JMS\Type("string")
      *
      * @var string
      */
