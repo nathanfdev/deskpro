@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\DataStore;
@@ -97,7 +93,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
      * @param EntityManager              $em
      * @param Packages                   $assetPackages
      * @param RouterInterface            $router
-     * @param TokenStorageInterface      $tokenStorage       ,
+     * @param TokenStorageInterface      $tokenStorage
      * @param PortalPermissionsManager   $permissionsManager
      * @param BrandStack                 $brandStack
      */

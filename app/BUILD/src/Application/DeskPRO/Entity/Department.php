@@ -54,7 +54,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property int                          $display_order
  * @property Department                   $parent
  * @property Department[]|ArrayCollection $children
- * @property Brand[]                      $brands
+ * @property Brand[]|ArrayCollection      $brands
  */
 class Department extends DomainObject implements HasPhraseName, PersonList, AvatarOwner
 {
@@ -555,11 +555,20 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     }
 
     /**
-     * @return Brand[]
+     * @return Brand[]|ArrayCollection
      */
     public function getBrands()
     {
         return $this->brands;
+    }
+
+    /**
+     * @param ArrayCollection $brands
+     */
+    public function setBrands($brands)
+    {
+        $this->brands = $brands;
+        $this->_onPropertyChanged('brands', null, $this->brands);
     }
 
     /**

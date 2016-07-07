@@ -26,13 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
+use DeskPRO\Bundle\AppBundle\Settings\BrandSettingsResolver;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -49,6 +47,21 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class DepartmentType extends AbstractType
 {
     /**
+     * @var BrandSettingsResolver
+     */
+    private $brandSettingsResolver;
+
+    /**
+     * Constructor.
+     *
+     * @param BrandSettingsResolver $brandSettingsResolver
+     */
+    public function __construct(BrandSettingsResolver $brandSettingsResolver)
+    {
+        $this->brandSettingsResolver = $brandSettingsResolver;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -60,21 +73,25 @@ class DepartmentType extends AbstractType
                 'class'         => Department::class,
                 'required'      => false,
                 'query_builder' => function (EntityRepository $er) use ($options) {
-                    $type_property = $options['type'] === 'tickets' ? 'is_tickets_enabled' : 'is_chat_enabled';
+                    $typeProperty = $options['type'] === 'tickets' ? 'is_tickets_enabled' : 'is_chat_enabled';
 
                     return $er
                         ->createQueryBuilder('d')
-                        ->where("d.$type_property = true AND d.parent IS NULL")
+                        ->where("d.$typeProperty = true AND d.parent IS NULL")
                         ->orderBy('d.display_order', 'ASC')
                     ;
                 },
             ])
-            ->add('avatar', 'auth_blob')
+            ->add('avatar', BlobAuthType::class)
             ->add('display_order', IntegerType::class, [
                 'empty_data' => '0',
             ])
             ->add('is_tickets_enabled', ApiBooleanType::class)
             ->add('is_chat_enabled', ApiBooleanType::class)
+            ->add('brands', EntityType::class, [
+                'class'    => Brand::class,
+                'multiple' => true,
+            ])
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetType']);
@@ -111,6 +128,13 @@ class DepartmentType extends AbstractType
             $data->is_tickets_enabled = true;
         } else {
             $data->is_chat_enabled = true;
+        }
+
+        if (!count($data->getBrands())) {
+            $defaultBrand = $this->brandSettingsResolver->getDefaultBrand();
+            if ($defaultBrand) {
+                $data->getBrands()->add($defaultBrand);
+            }
         }
     }
 }

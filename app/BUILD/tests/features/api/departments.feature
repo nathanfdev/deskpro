@@ -16,6 +16,7 @@ Feature: /(ticket|chat)_departments endpoint
     And the JSON node "data[0].title" should be equal to "sales"
     And the JSON node "data[1].id" should be equal to 2
     And the JSON node "data[1].title" should be equal to "support"
+    And the JSON node "data[1].brands" should have 1 element
 
   Scenario: I retrieve a list of chat departments
     When I send a GET request to "/api/v2/chat_departments"
@@ -64,6 +65,7 @@ Feature: /(ticket|chat)_departments endpoint
     And the JSON node "data.display_order" should be equal to 0
     And the JSON node "data.is_tickets_enabled" should be equal to 1
     And the JSON node "data.is_chat_enabled" should be equal to 0
+    And the JSON node "data.brands" should have 1 element
 
   Scenario: I edit ticket department
     When I send a PUT request to "/api/v2/ticket_departments/4" with body:

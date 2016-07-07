@@ -36,6 +36,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\EntityRepository\Brand as BrandRepository;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 /**
@@ -43,18 +44,28 @@ use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
  * @property string $name
  * @property string $theme_id
  * @property Blob   $logo_blob
+ *
+ * @JMS\ExclusionPolicy("ALL")
  */
 class Brand extends DomainObject
 {
     /**
      * The unique ID.
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
-     * @var string the brand name
+     * The brand name.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
+     * @var string
      */
     protected $name;
 

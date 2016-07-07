@@ -280,3 +280,10 @@ services:
     arguments: ["@doctrine.orm.default_entity_manager", "@data.departments"]
     tags:
       - { name: form.type }
+
+  form.department:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType
+    arguments:
+      - "@brand_settings_resolver"
+    tags:
+      - { name: form.type }
