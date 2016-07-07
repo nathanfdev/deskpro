@@ -30,11 +30,11 @@
  * DeskPRO.
  */
 
-namespace DpTest\DeskPRO\Bundle\UpgradeBundle\Distro;
+namespace DpTest\DeskPRO\Bundle\UpdateBundle\Distro;
 
 use Alchemy\Zippy\Zippy;
-use DeskPRO\Bundle\UpgradeBundle\Distro\DistroInstaller;
-use DeskPRO\Bundle\UpgradeBundle\Instance\InstanceReader;
+use DeskPRO\Bundle\UpdateBundle\Distro\DistroInstaller;
+use DeskPRO\Bundle\UpdateBundle\Instance\InstanceReader;
 use DeskPRO\Component\Filesystem\TmpDir;
 use DpTest\DeskProTestCase;
 use org\bovigo\vfs\vfsStream;

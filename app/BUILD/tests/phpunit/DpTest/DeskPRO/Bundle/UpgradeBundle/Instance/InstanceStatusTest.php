@@ -30,12 +30,12 @@
  * DeskPRO.
  */
 
-namespace DpTest\DeskPRO\Bundle\UpgradeBundle\Distro;
+namespace DpTest\DeskPRO\Bundle\UpdateBundle\Distro;
 
-use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroRelease;
-use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroReleaseCollection;
-use DeskPRO\Bundle\UpgradeBundle\Instance\InstanceReader;
-use DeskPRO\Bundle\UpgradeBundle\Instance\InstanceStatus;
+use DeskPRO\Bundle\UpdateBundle\Distro\Manifest\DistroRelease;
+use DeskPRO\Bundle\UpdateBundle\Distro\Manifest\DistroReleaseCollection;
+use DeskPRO\Bundle\UpdateBundle\Instance\InstanceReader;
+use DeskPRO\Bundle\UpdateBundle\Instance\InstanceStatus;
 use DpTest\DeskProTestCase;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;

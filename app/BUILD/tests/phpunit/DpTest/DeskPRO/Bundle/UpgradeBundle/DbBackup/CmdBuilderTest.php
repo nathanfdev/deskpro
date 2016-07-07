@@ -30,9 +30,9 @@
  * DeskPRO.
  */
 
-namespace DpTest\DeskPRO\Bundle\UpgradeBundle\DbBackup;
+namespace DpTest\DeskPRO\Bundle\UpdateBundle\DbBackup;
 
-use DeskPRO\Bundle\UpgradeBundle\DbBackup\CmdBuilder;
+use DeskPRO\Bundle\UpdateBundle\DbBackup\CmdBuilder;
 use DpTest\DeskProTestCase;
 
 class CmdBuilderTest extends DeskProTestCase

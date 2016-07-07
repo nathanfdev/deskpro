@@ -30,9 +30,9 @@
  * DeskPRO.
  */
 
-namespace DpTest\DeskPRO\Bundle\UpgradeBundle\BuildActivate\ReqCheck;
+namespace DpTest\DeskPRO\Bundle\UpdateBundle\BuildActivate\ReqCheck;
 
-use DeskPRO\Bundle\UpgradeBundle\BuildActivate\ReqCheck\ReqCheckCommandDecoder;
+use DeskPRO\Bundle\UpdateBundle\BuildActivate\ReqCheck\ReqCheckCommandDecoder;
 use DpTest\DeskProTestCase;
 
 class ReqCheckCommandDecoderTest extends DeskProTestCase
@@ -97,8 +97,8 @@ JSON;
 
     /**
      * @test
-     * @expectedException \DeskPRO\Bundle\UpgradeBundle\BuildActivate\ReqCheck\ReqCheckException
-     * @expectedExceptionCode \DeskPRO\Bundle\UpgradeBundle\BuildActivate\ReqCheck\ReqCheckException::CMD_ERROR
+     * @expectedException \DeskPRO\Bundle\UpdateBundle\BuildActivate\ReqCheck\ReqCheckException
+     * @expectedExceptionCode \DeskPRO\Bundle\UpdateBundle\BuildActivate\ReqCheck\ReqCheckException::CMD_ERROR
      */
     public function it_requires_known_shape()
     {
@@ -119,8 +119,8 @@ JSON;
 
     /**
      * @test
-     * @expectedException \DeskPRO\Bundle\UpgradeBundle\BuildActivate\ReqCheck\ReqCheckException
-     * @expectedExceptionCode \DeskPRO\Bundle\UpgradeBundle\BuildActivate\ReqCheck\ReqCheckException::CMD_ERROR
+     * @expectedException \DeskPRO\Bundle\UpdateBundle\BuildActivate\ReqCheck\ReqCheckException
+     * @expectedExceptionCode \DeskPRO\Bundle\UpdateBundle\BuildActivate\ReqCheck\ReqCheckException::CMD_ERROR
      */
     public function it_requires_known_shape2()
     {
@@ -136,8 +136,8 @@ JSON;
 
     /**
      * @test
-     * @expectedException \DeskPRO\Bundle\UpgradeBundle\BuildActivate\ReqCheck\ReqCheckException
-     * @expectedExceptionCode \DeskPRO\Bundle\UpgradeBundle\BuildActivate\ReqCheck\ReqCheckException::CMD_ERROR
+     * @expectedException \DeskPRO\Bundle\UpdateBundle\BuildActivate\ReqCheck\ReqCheckException
+     * @expectedExceptionCode \DeskPRO\Bundle\UpdateBundle\BuildActivate\ReqCheck\ReqCheckException::CMD_ERROR
      */
     public function it_requires_valid_json()
     {
@@ -155,8 +155,8 @@ JSON;
 
     /**
      * @test
-     * @expectedException \DeskPRO\Bundle\UpgradeBundle\BuildActivate\ReqCheck\ReqCheckException
-     * @expectedExceptionCode \DeskPRO\Bundle\UpgradeBundle\BuildActivate\ReqCheck\ReqCheckException::CMD_ERROR
+     * @expectedException \DeskPRO\Bundle\UpdateBundle\BuildActivate\ReqCheck\ReqCheckException
+     * @expectedExceptionCode \DeskPRO\Bundle\UpdateBundle\BuildActivate\ReqCheck\ReqCheckException::CMD_ERROR
      */
     public function it_requires_delims()
     {

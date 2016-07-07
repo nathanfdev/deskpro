@@ -141,6 +141,16 @@ define(function() {
   });
 
   //###
+  //# Automatic Upgrader
+  //###
+  routes.push({
+    id: 'setup.updater',
+    url: '/updater',
+    templateName: 'Settings/updater.html',
+    controller: 'Admin_Settings_Ctrl_UpdaterSettings'
+  });
+
+  //###
   //# Advanced Settings
   //###
   routes.push({

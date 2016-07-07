@@ -30,10 +30,10 @@
  * DeskPRO.
  */
 
-namespace DpTest\DeskPRO\Bundle\UpgradeBundle\Distro;
+namespace DpTest\DeskPRO\Bundle\UpdateBundle\Distro;
 
-use DeskPRO\Bundle\UpgradeBundle\Distro\DistroManifestLoader;
-use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroRelease;
+use DeskPRO\Bundle\UpdateBundle\Distro\DistroManifestLoader;
+use DeskPRO\Bundle\UpdateBundle\Distro\Manifest\DistroRelease;
 use DpTest\DeskProTestCase;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7;

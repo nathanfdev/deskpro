@@ -142,6 +142,7 @@ define([
   'Admin/Settings/Ctrl/RegSettings',
   'Admin/Settings/Ctrl/PasswordSettings',
   'Admin/Settings/Ctrl/ServerSettings',
+  'Admin/Settings/Ctrl/UpdaterSettings',
   'Admin/Settings/Ctrl/ResetHelpdesk',
   'Admin/UserGroups/Ctrl/List',
   'Admin/UserGroups/Ctrl/Edit',

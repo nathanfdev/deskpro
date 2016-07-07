@@ -30,11 +30,11 @@
  * DeskPRO.
  */
 
-namespace DpTest\DeskPRO\Bundle\UpgradeBundle\BuildActivate\ReqCheck;
+namespace DpTest\DeskPRO\Bundle\UpdateBundle\BuildActivate\ReqCheck;
 
 use Alchemy\Zippy\Zippy;
-use DeskPRO\Bundle\UpgradeBundle\BuildActivate\RunActivator\RunActivator;
-use DeskPRO\Bundle\UpgradeBundle\Instance\BuildInstance;
+use DeskPRO\Bundle\UpdateBundle\BuildActivate\RunActivator\RunActivator;
+use DeskPRO\Bundle\UpdateBundle\Instance\BuildInstance;
 use DpTest\DeskProTestCase;
 use org\bovigo\vfs\vfsStream;
 

@@ -30,9 +30,9 @@
  * DeskPRO.
  */
 
-namespace DpTest\DeskPRO\Bundle\UpgradeBundle\DbBackup;
+namespace DpTest\DeskPRO\Bundle\UpdateBundle\DbBackup;
 
-use DeskPRO\Bundle\UpgradeBundle\DbBackup\DbVerify;
+use DeskPRO\Bundle\UpdateBundle\DbBackup\DbVerify;
 use DpTest\DeskProTestCase;
 
 class DbVerifyTest extends DeskProTestCase
@@ -68,8 +68,8 @@ class DbVerifyTest extends DeskProTestCase
 
     /**
      * @test
-     * @expectedException \DeskPRO\Bundle\UpgradeBundle\DbBackup\DbBackupException
-     * @expectedExceptionCode  \DeskPRO\Bundle\UpgradeBundle\DbBackup\DbBackupException::DUMP_ERROR_MISSING_TABLE
+     * @expectedException \DeskPRO\Bundle\UpdateBundle\DbBackup\DbBackupException
+     * @expectedExceptionCode  \DeskPRO\Bundle\UpdateBundle\DbBackup\DbBackupException::DUMP_ERROR_MISSING_TABLE
      */
     public function it_rejects_missing_worker_jobs()
     {
@@ -88,8 +88,8 @@ class DbVerifyTest extends DeskProTestCase
 
     /**
      * @test
-     * @expectedException \DeskPRO\Bundle\UpgradeBundle\DbBackup\DbBackupException
-     * @expectedExceptionCode  \DeskPRO\Bundle\UpgradeBundle\DbBackup\DbBackupException::DUMP_ERROR_NOTFOUND
+     * @expectedException \DeskPRO\Bundle\UpdateBundle\DbBackup\DbBackupException
+     * @expectedExceptionCode  \DeskPRO\Bundle\UpdateBundle\DbBackup\DbBackupException::DUMP_ERROR_NOTFOUND
      */
     public function it_rejects_missing_file()
     {
@@ -98,8 +98,8 @@ class DbVerifyTest extends DeskProTestCase
 
     /**
      * @test
-     * @expectedException \DeskPRO\Bundle\UpgradeBundle\DbBackup\DbBackupException
-     * @expectedExceptionCode  \DeskPRO\Bundle\UpgradeBundle\DbBackup\DbBackupException::DUMP_ERROR_TOOSMALL
+     * @expectedException \DeskPRO\Bundle\UpdateBundle\DbBackup\DbBackupException
+     * @expectedExceptionCode  \DeskPRO\Bundle\UpdateBundle\DbBackup\DbBackupException::DUMP_ERROR_TOOSMALL
      */
     public function it_rejects_small_file()
     {
