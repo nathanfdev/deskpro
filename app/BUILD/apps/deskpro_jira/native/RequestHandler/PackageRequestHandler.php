@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace deskpro_jira\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
@@ -40,6 +41,7 @@ use Application\DeskPRO\JIRA\OAuthWrapper;
 use Application\DeskPRO\Service\JIRA;
 use Guzzle\Http\Exception\BadResponseException;
 use Guzzle\Http\Exception\CurlException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
@@ -60,37 +62,39 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
      * check api link connection.
      *
      * @param DeskproContainer $container
+     *
+     * @return array|null
      */
     protected function checkErrors(DeskproContainer $container)
     {
-        $error = array();
+        $error = [];
 
         /** @var JIRA $js */
         $js   = $container->get(JIRA::NAME);
-        $back = $container->getRouter()->generateUrl('jira_token');
+        $back = $container->getRouter()->generate('jira_token', [], UrlGeneratorInterface::ABSOLUTE_URL);
         try {
             $oauth = new OAuthWrapper($js, $back);
             $oauth->requestTempCredentials();
         } catch (\Exception $e) {
-            $error = array(
+            $error = [
                 'type'    => 'other',
                 'code'    => $e->getCode(),
                 'message' => $e->getMessage(),
-            );
+            ];
 
             if ($e instanceof CurlException) {
-                $error = array(
+                $error = [
                     'type'    => 'curl',
                     'code'    => $e->getErrorNo(),
                     'message' => $e->getError(),
-                );
+                ];
             } elseif ($e instanceof BadResponseException) {
-                $error = array(
+                $error = [
                     'type'       => 'jira',
                     'code'       => $e->getResponse()->getStatusCode(),
                     'message'    => $e->getResponse()->getReasonPhrase(),
                     'additional' => $e->getResponse()->getBody(1),
-                );
+                ];
             } elseif ($e->getCode() >= 1000) {
                 $error['type'] = 'app';
             }
