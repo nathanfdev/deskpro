@@ -465,6 +465,13 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return Strings::linkifyHtml($text, true);
     }
 
+    /**
+     * @param $html
+     *
+     * @return mixed
+     *
+     * @todo ensure we stacked the proper brand before calling
+     */
     public function linkAgentShortCodeHtml($html)
     {
         $id_map = [
@@ -478,7 +485,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             'tw' => ['Tweet', 'agent/#app.twitter,tw.o:'],
         ];
 
-        $url = App::getSetting('core.deskpro_url');
+        $url = App::getContainer()->getBrandSetting('core.deskpro_url');
 
         foreach ($id_map as $prefix => $info) {
             $html = preg_replace(
@@ -1015,9 +1022,16 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $this->container->get('router')->generate($name, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
+    /**
+     * @param $path
+     *
+     * @return string
+     *
+     * @todo ensure we stacked the proper brand before calling
+     */
     public function helpdeskUrl($path)
     {
-        return App::getSetting('core.deskpro_url').ltrim($path, '/');
+        return App::getContainer()->getBrandSetting('core.deskpro_url').ltrim($path, '/');
     }
 
     public function isHelpdeskPath($path)
@@ -1200,13 +1214,22 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return md5($string);
     }
 
+    /**
+     * @param $location
+     *
+     * @throws \Throwable
+     *
+     * @return string
+     *
+     * @todo ensure we stacked the proper brand before calling
+     */
     public function assetFull($location)
     {
         $assetHelper = App::$container->get('templating.helper.assets');
         $assetUrl    = $assetHelper->getUrl($location, $packageName);
 
         if (!preg_match('#^https?://#', $assetUrl)) {
-            $url      = App::getSetting('core.deskpro_url');
+            $url      = App::getContainer()->getBrandSetting('core.deskpro_url');
             $url      = trim(str_replace('/index.php', '', $url), '/');
             $assetUrl = $url.$assetUrl;
         }

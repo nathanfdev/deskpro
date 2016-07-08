@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Service;
 
 use Application\DeskPRO\App;
@@ -39,11 +40,11 @@ class ErrorReporter
     private static function getBasicData($send_all_stats = false)
     {
         if (isset($GLOBALS['DP_DISABLE_SENDREPORTS'])) {
-            return array();
+            return [];
         }
 
         if (!defined('DP_BUILD_NUM')) {
-            return array();
+            return [];
         }
 
         $reduced_lic_reports = false;
@@ -61,11 +62,11 @@ class ErrorReporter
         }
 
         if ($reduced_lic_reports) {
-            $info = array(
+            $info = [
                 'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
                 'build'             => DP_BUILD_TIME,
                 'build_num'         => DP_BUILD_NUM,
-            );
+            ];
         } else {
             if (class_exists('Application\\DeskPRO\\App')) {
                 try {
@@ -76,24 +77,24 @@ class ErrorReporter
                 $stats_fetcher = new \Application\InstallBundle\Data\ServerStats($db);
                 $all_stats     = $stats_fetcher->getStats();
             } else {
-                $all_stats = array();
+                $all_stats = [];
             }
 
-            $info = array(
-                'root'              => defined('DP_ROOT')                 ? DP_ROOT : '',
-                'os'                => isset($all_stats['server_os'])     ? $all_stats['server_os'] : '',
-                'web_server'        => isset($all_stats['web_server'])    ? $all_stats['web_server'] : '',
-                'php_version'       => isset($all_stats['php_version'])   ? $all_stats['php_version'] : '',
-                'apc_version'       => isset($all_stats['apc_version'])   ? $all_stats['apc_version'] : '',
+            $info = [
+                'root'              => defined('DP_ROOT') ? DP_ROOT : '',
+                'os'                => isset($all_stats['server_os']) ? $all_stats['server_os'] : '',
+                'web_server'        => isset($all_stats['web_server']) ? $all_stats['web_server'] : '',
+                'php_version'       => isset($all_stats['php_version']) ? $all_stats['php_version'] : '',
+                'apc_version'       => isset($all_stats['apc_version']) ? $all_stats['apc_version'] : '',
                 'mysql_version'     => isset($all_stats['mysql_version']) ? $all_stats['mysql_version'] : '',
-                'server_ip'         => isset($_SERVER['SERVER_ADDR'])     ? $_SERVER['SERVER_ADDR'] : '',
-                'client_ip'         => isset($_SERVER['REMOTE_ADDR'])     ? $_SERVER['REMOTE_ADDR'] : '',
-                'client_referrer'   => isset($_SERVER['HTTP_REFERER'])    ? $_SERVER['HTTP_REFERER'] : '',
+                'server_ip'         => isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '',
+                'client_ip'         => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
+                'client_referrer'   => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '',
                 'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
-                'client_request'    => isset($_REQUEST)                   ? implode(', ', array_keys($_REQUEST)) : '',
+                'client_request'    => isset($_REQUEST) ? implode(', ', array_keys($_REQUEST)) : '',
                 'build'             => DP_BUILD_TIME,
                 'build_num'         => DP_BUILD_NUM,
-            );
+            ];
 
             if ($send_all_stats && $all_stats) {
                 $info = array_merge($info, $all_stats);
@@ -166,12 +167,12 @@ class ErrorReporter
         }
 
         $data['setting_elastica_enabled'] = App::getSetting('elastica.enabled');
-        $data['setting_core_deskpro_url'] = App::getSetting('core.deskpro_url');
+        $data['setting_core_deskpro_url'] = App::getContainer()->getBrandSetting('core.deskpro_url');
         $data['db_id_hash']               = md5($DP_ENV->getConfig('database.host').$DP_ENV->getConfig('database.dbnae').$DP_ENV->getConfig('database.user'));
         $data['license_code']             = App::getSetting('core.license');
 
         try {
-            $client = new \Zend\Http\Client(null, array('timeout' => 20, 'strictredirects' => true, 'sslverifypeer' => false));
+            $client = new \Zend\Http\Client(null, ['timeout' => 20, 'strictredirects' => true, 'sslverifypeer' => false]);
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
             $client->setUri(\DpSys\License::getSecureLicServer().'/api/heartbeat.json');
             $client->getRequest()->getPost()->fromArray($data);
@@ -193,17 +194,17 @@ class ErrorReporter
      */
     public static function sendSupportMessage($subject, $message, $name, $email_address)
     {
-        $data = array(
+        $data = [
             'message' => $message,
             'name'    => $name,
             'email'   => $email_address,
-            'url'     => App::getSetting('core.deskpro_url'),
+            'url'     => App::getContainer()->getBrandSetting('core.deskpro_url'),
             'lic_id'  => License::getLicense()->getLicenseId(),
             'subject' => $subject,
-        );
+        ];
 
         try {
-            $client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true, 'sslverifypeer' => false));
+            $client = new \Zend\Http\Client(null, ['timeout' => 5, 'strictredirects' => true, 'sslverifypeer' => false]);
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
             $client->setUri(\DpSys\License::getSecureLicServer().'/api/data-submit/submit-feedback.json');
             $client->getRequest()->getPost()->fromArray($data);

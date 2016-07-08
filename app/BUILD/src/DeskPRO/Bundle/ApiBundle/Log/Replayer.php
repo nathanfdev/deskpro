@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,9 +28,9 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Log;
 
-use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\ApiBundle\Log\Helper\LogComposer;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -57,22 +57,26 @@ class Replayer
     private $factory;
 
     /**
-     * @var SettingsResolver
+     * @var BrandStack
      */
-    private $resolver;
+    private $brandStack;
 
     /**
      * @param Kernel            $kernel
      * @param LogComposer       $composer
      * @param LogServiceFactory $factory
-     * @param SettingsResolver  $resolver
+     * @param BrandStack        $brandStack
      */
-    public function __construct(Kernel $kernel, LogComposer $composer, LogServiceFactory $factory, SettingsResolver $resolver)
+    public function __construct(
+        Kernel $kernel,
+        LogComposer $composer,
+        LogServiceFactory $factory,
+        BrandStack $brandStack)
     {
-        $this->kernel   = $kernel;
-        $this->composer = $composer;
-        $this->factory  = $factory;
-        $this->resolver = $resolver;
+        $this->kernel     = $kernel;
+        $this->composer   = $composer;
+        $this->factory    = $factory;
+        $this->brandStack = $brandStack;
     }
 
     /**
@@ -138,7 +142,7 @@ class Replayer
     {
         // wont work with :8080 ie
         $client = new \GuzzleHttp\Client([
-            'base_uri'        => $this->resolver->getGlobalSettings()->get('core.deskpro_url'),
+            'base_uri'        => $this->brandStack->getActive()->getSetting('core.deskpro_url'),
             'allow_redirects' => true,
         ]);
 

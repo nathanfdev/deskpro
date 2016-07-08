@@ -67,7 +67,8 @@ class WebServerInfoCommand extends Command
             if ($dbConfig) {
                 $dbInfo = LowUtil::getMysqlInfoFromConfigArray($dbConfig);
                 try {
-                    $pdo     = LowUtil::getPdoFromMysqlInfo($dbInfo);
+                    $pdo = LowUtil::getPdoFromMysqlInfo($dbInfo);
+                    /* @TODO retrieve this value from settings_brand */
                     $baseUrl = $pdo->query("SELECT value FROM settings WHERE name = 'core.deskpro_url'")->fetchColumn();
                 } catch (\Exception $e) {
                     $baseUrl = null;

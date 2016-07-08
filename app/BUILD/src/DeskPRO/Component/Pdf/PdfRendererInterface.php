@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Component\Pdf;
 
-use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Symfony\Component\HttpFoundation\Response;
 
 interface PdfRendererInterface
@@ -36,9 +36,9 @@ interface PdfRendererInterface
     /**
      * PdfRendererInterface constructor.
      *
-     * @param SettingsResolver $resolver
+     * @param BrandStack $brandStack
      */
-    public function __construct($resolver);
+    public function __construct($brandStack);
 
     /**
      * @param string $contentHtml

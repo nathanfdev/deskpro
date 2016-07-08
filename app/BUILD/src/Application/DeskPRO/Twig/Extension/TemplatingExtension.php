@@ -472,7 +472,7 @@ class TemplatingExtension extends \Twig_Extension
             'tw' => ['Tweet', 'agent/#app.twitter,tw.o:'],
         ];
 
-        $url = App::getSetting('core.deskpro_url');
+        $url = App::getContainer()->getBrandSetting('core.deskpro_url');
 
         foreach ($id_map as $prefix => $info) {
             $html = preg_replace(
@@ -921,7 +921,7 @@ class TemplatingExtension extends \Twig_Extension
 
     public function helpdeskUrl($path)
     {
-        return App::getSetting('core.deskpro_url').ltrim($path, '/');
+        return App::getContainer()->getBrandSetting('core.deskpro_url').ltrim($path, '/');
     }
 
     public function isHelpdeskPath($path)
@@ -1110,7 +1110,7 @@ class TemplatingExtension extends \Twig_Extension
         $assetUrl    = $assetHelper->getUrl($location, $packageName);
 
         if (!preg_match('#^https?://#', $assetUrl)) {
-            $url      = App::getSetting('core.deskpro_url');
+            $url      = App::getContainer()->getBrandSetting('core.deskpro_url');
             $url      = trim(str_replace('/index.php', '', $url), '/');
             $assetUrl = $url.$assetUrl;
         }

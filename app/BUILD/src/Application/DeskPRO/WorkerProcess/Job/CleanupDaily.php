@@ -155,7 +155,7 @@ class CleanupDaily extends AbstractJob
         #------------------------------
 
         if (!defined('DPC_IS_CLOUD')) {
-            $url    = rtrim(App::getSetting('core.deskpro_url'), '/').'/config.php';
+            $url    = rtrim(App::getContainer()->getBrandSetting('core.deskpro_url'), '/').'/config.php';
             $config = @file_get_contents(
                 $url,
                 false,

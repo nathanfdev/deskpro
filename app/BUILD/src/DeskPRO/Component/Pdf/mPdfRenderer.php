@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Component\Pdf;
 
-use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Symfony\Component\HttpFoundation\Response;
 
 class mPdfRenderer implements PdfRendererInterface
@@ -39,13 +39,13 @@ class mPdfRenderer implements PdfRendererInterface
     private $object;
 
     /**
-     * @var SettingsResolver
+     * @var BrandStack
      */
-    private $resolver;
+    private $brandStack;
 
-    public function __construct($resolver)
+    public function __construct($brandStack)
     {
-        $this->resolver = $resolver;
+        $this->brandStack = $brandStack;
 
         $this->object = new \mPDF(
             'utf-8', // Language/Character set
@@ -61,7 +61,7 @@ class mPdfRenderer implements PdfRendererInterface
             'P' // Orientation
         );
 
-        $this->object->SetBasePath($this->resolver->getGlobalSettings()->get('core.deskpro_url').'/');
+        $this->object->SetBasePath($this->brandStack->getActive()->getSetting('core.deskpro_url').'/');
         $this->object->shrink_tables_to_fit = 0;
     }
 

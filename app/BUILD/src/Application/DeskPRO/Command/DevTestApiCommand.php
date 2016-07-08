@@ -127,7 +127,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 $baseUrl = 'http://'.$baseUrl;
             }
         } else {
-            $baseUrl = trim(App::getSetting('core.deskpro_url'), '/')."/api$apiPath";
+            $baseUrl = trim(App::getContainer()->getBrandSetting('core.deskpro_url'), '/')."/api$apiPath";
         }
         $path = trim($input->getArgument('path'), '/');
 

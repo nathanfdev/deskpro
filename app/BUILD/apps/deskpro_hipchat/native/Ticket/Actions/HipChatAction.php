@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category HipChat
  */
+
 namespace deskpro_hipchat\Ticket\Actions;
 
 use Application\DeskPRO\Entity\AppInstance;
@@ -121,7 +122,7 @@ class HipChatAction extends AbstractContainerAwareAction implements ActionInterf
     {
         $statechange = $ticket->getStateChangeRecorder();
 
-        $message = '#'.$ticket->id.' <a href="'.$this->getContainer()->getSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id.'">';
+        $message = '#'.$ticket->id.' <a href="'.$this->getContainer()->getBrandSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id.'">';
         $message .= htmlspecialchars($ticket->subject);
         $message .= '</a><br/>';
 

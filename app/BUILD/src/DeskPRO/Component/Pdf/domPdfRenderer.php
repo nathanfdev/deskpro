@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Component\Pdf;
 
-use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Dompdf\Dompdf;
 
 /**
@@ -45,13 +45,13 @@ class domPdfRenderer implements PdfRendererInterface
     private $object;
 
     /**
-     * @var SettingsResolver
+     * @var BrandStack
      */
-    private $resolver;
+    private $brandStack;
 
-    public function __construct($resolver)
+    public function __construct($brandStack)
     {
-        $this->resolver = $resolver;
+        $this->brandStack = $brandStack;
 
         $this->object = new Dompdf();
 
@@ -62,7 +62,7 @@ class domPdfRenderer implements PdfRendererInterface
         $this->object->setOptions($options);
         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
         $this->object->setProtocol($protocol);
-        $full_path = $this->resolver->getGlobalSettings()->get('core.deskpro_url');
+        $full_path = $this->brandStack->getActive()->getSetting('core.deskpro_url');
         if (preg_match('|^https?://([^/]+)/?$|', $full_path, $matches)) {
             $host = $matches[1];
             $this->object->setBaseHost($host);
