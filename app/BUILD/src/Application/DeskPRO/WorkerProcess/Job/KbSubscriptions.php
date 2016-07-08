@@ -29,14 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Publish\Structure;
 use Orb\Util\Arrays;
+use Orb\Util\Util;
 
 /**
  * Sends article and category notifications to users with subscriptions.
@@ -47,14 +48,14 @@ class KbSubscriptions extends AbstractJob
 
     public function run()
     {
-        $lastTime = App::getSetting('user.kb_subscriptions_last');
+        $lastTime = $this->getContainer()->getSetting('user.kb_subscriptions_last');
 
-        App::getDb()->replace('settings', [
+        $this->getContainer()->getDb()->replace('settings', [
             'name'  => 'user.kb_subscriptions_last',
             'value' => time(),
         ]);
 
-        if (!App::getSetting('user.kb_subscriptions')) {
+        if (!$this->getCrossBrandSetting('user.kb_subscriptions')) {
             return;
         }
 
@@ -69,7 +70,7 @@ class KbSubscriptions extends AbstractJob
         #------------------------------
 
         /** @var Article[] $published */
-        $published = App::getOrm()->createQuery("
+        $published = $this->getContainer()->getEm()->createQuery("
             SELECT a
             FROM DeskPRO:Article a INDEX BY a.id
             LEFT JOIN a.categories cat
@@ -78,7 +79,7 @@ class KbSubscriptions extends AbstractJob
         ")->setMaxResults(250)->execute(['date' => $lastDate]);
 
         /** @var Article[] $updated */
-        $updated = App::getOrm()->createQuery("
+        $updated = $this->getContainer()->getEm()->createQuery("
             SELECT a
             FROM DeskPRO:Article a INDEX BY a.id
             LEFT JOIN a.categories cat
@@ -96,7 +97,7 @@ class KbSubscriptions extends AbstractJob
         #------------------------------
 
         /** @var Structure $structure */
-        $structure = App::getContainer()->getSystemService('publish_structure');
+        $structure = $this->getContainer()->getSystemService('publish_structure');
         $helper    = $structure->getArticleCategoryHelper();
 
         $categoryIds = [];
@@ -132,13 +133,13 @@ class KbSubscriptions extends AbstractJob
             $categoryIds = array_merge($categoryIds, $add_ids);
             $categoryIds = array_unique($categoryIds);
 
-            $catSubs = App::getDb()->fetchAllGrouped('
+            $catSubs = $this->getContainer()->getDb()->fetchAllGrouped('
                 SELECT person_id, category_id
                 FROM kb_subscriptions
                 WHERE category_id IN (?)
             ', [$categoryIds], 'person_id', null, 'category_id', [Connection::PARAM_INT_ARRAY]);
 
-            $rootSubs = App::getDb()->fetchAllGrouped('
+            $rootSubs = $this->getContainer()->getDb()->fetchAllGrouped('
                 SELECT person_id
                 FROM kb_subscriptions
                 WHERE root_category = 1
@@ -146,7 +147,7 @@ class KbSubscriptions extends AbstractJob
         }
 
         if ($articleIds) {
-            $articleSubs = App::getDb()->fetchAllGrouped('
+            $articleSubs = $this->getContainer()->getDb()->fetchAllGrouped('
                 SELECT person_id, article_id
                 FROM kb_subscriptions
                 WHERE article_id IN (?)
@@ -202,13 +203,13 @@ class KbSubscriptions extends AbstractJob
         # Verify permissions
         #------------------------------
 
-        $userGroupMembers = App::getDb()->fetchAllGrouped('
+        $userGroupMembers = $this->getContainer()->getDb()->fetchAllGrouped('
             SELECT person_id, usergroup_id
             FROM person2usergroups
             WHERE person_id IN (?)
         ', [array_keys($userToArticles)], 'person_id', null, 'usergroup_id', [Connection::PARAM_INT_ARRAY]);
 
-        $catGroups = App::getDb()->fetchAllGrouped('
+        $catGroups = $this->getContainer()->getDb()->fetchAllGrouped('
             SELECT category_id, usergroup_id
             FROM article_category2usergroup
         ', [], 'category_id', null, 'usergroup_id');
@@ -248,7 +249,7 @@ class KbSubscriptions extends AbstractJob
 
         foreach ($userToArticles as $personId => $articles) {
             /** @var Person $person */
-            $person = App::getOrm()->find('DeskPRO:Person', $personId);
+            $person = $this->getContainer()->getEm()->find(Person::class, $personId);
             if (!$person) {
                 continue;
             }
@@ -264,20 +265,21 @@ class KbSubscriptions extends AbstractJob
                 }
             }
 
-            $message = App::getMailer()->createMessage();
+            $message = $this->getContainer()->getMailer()->createMessage();
             $message->setToPerson($person);
             $message->setTemplate('DeskPRO:emails_user:kb-subscription.html.twig', [
                 'person'           => $person,
                 'new_articles'     => $newArticles,
                 'updated_articles' => $updatedArticles,
-                'unsub_auth'       => \Orb\Util\Util::generateStaticSecurityToken(App::getSetting('core.app_secret')
-                    .$person->getId().$person->secret_string),
+                'unsub_auth'       => Util::generateStaticSecurityToken(
+                    $this->getContainer()->getSetting('core.app_secret').$person->getId().$person->secret_string
+                ),
             ]);
 
-            App::getMailer()->send($message);
+            $this->getContainer()->getMailer()->send($message);
 
             // Saves mem
-            App::getOrm()->detach($person);
+            $this->getContainer()->getEm()->detach($person);
         }
 
         if ($userToArticles) {

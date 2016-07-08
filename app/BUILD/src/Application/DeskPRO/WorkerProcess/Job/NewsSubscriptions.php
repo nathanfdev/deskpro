@@ -32,7 +32,6 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Person;
@@ -48,14 +47,14 @@ class NewsSubscriptions extends AbstractJob
 
     public function run()
     {
-        $lastTime = App::getSetting('user.news_subscriptions_last');
+        $lastTime = $this->getContainer()->getSetting('user.news_subscriptions_last');
 
-        App::getDb()->replace('settings', [
+        $this->getContainer()->getDb()->replace('settings', [
             'name'  => 'user.news_subscriptions_last',
             'value' => time(),
         ]);
 
-        if (!App::getSetting('user.news_subscriptions')) {
+        if (!$this->getCrossBrandSetting('user.news_subscriptions')) {
             return;
         }
 
@@ -70,7 +69,7 @@ class NewsSubscriptions extends AbstractJob
         #------------------------------
 
         /** @var News[] $published */
-        $published = App::getOrm()->createQuery("
+        $published = $this->getContainer()->getEm()->createQuery("
             SELECT n
             FROM DeskPRO:News n INDEX BY n.id
             JOIN n.category c
@@ -79,9 +78,8 @@ class NewsSubscriptions extends AbstractJob
         ")->setMaxResults(250)->execute(['date' => $lastDate]);
 
         // news does not update
-        $updated = [];
         /** @var News[] $updated */
-        $updated = App::getOrm()->createQuery("
+        $updated = $this->getContainer()->getEm()->createQuery("
             SELECT n
             FROM DeskPRO:News n INDEX BY n.id
             JOIN n.category c
@@ -100,7 +98,7 @@ class NewsSubscriptions extends AbstractJob
         #------------------------------
 
         /** @var Structure $structure */
-        $structure = App::getContainer()->getSystemService('publish_structure');
+        $structure = $this->getContainer()->getSystemService('publish_structure');
         $helper    = $structure->getNewsCategoryHelper();
 
         $categoryIds = [];
@@ -134,13 +132,13 @@ class NewsSubscriptions extends AbstractJob
             $categoryIds = array_merge($categoryIds, $addIds);
             $categoryIds = array_unique($categoryIds);
 
-            $catSubs = App::getDb()->fetchAllGrouped('
+            $catSubs = $this->getContainer()->getDb()->fetchAllGrouped('
                 SELECT person_id, category_id
                 FROM news_subscriptions
                 WHERE category_id IN (?)
             ', [$categoryIds], 'person_id', null, 'category_id', [Connection::PARAM_INT_ARRAY]);
 
-            $rootSubs = App::getDb()->fetchAllGrouped('
+            $rootSubs = $this->getContainer()->getDb()->fetchAllGrouped('
                 SELECT person_id
                 FROM news_subscriptions
                 WHERE root_category = 1
@@ -148,7 +146,7 @@ class NewsSubscriptions extends AbstractJob
         }
 
         if ($newsIds) {
-            $articleSubs = App::getDb()->fetchAllGrouped('
+            $articleSubs = $this->getContainer()->getDb()->fetchAllGrouped('
                 SELECT person_id, news_id
                 FROM news_subscriptions
                 WHERE news_id IN (?)
@@ -203,13 +201,13 @@ class NewsSubscriptions extends AbstractJob
         # Verify permissions
         #------------------------------
 
-        $userGroupMembers = App::getDb()->fetchAllGrouped('
+        $userGroupMembers = $this->getContainer()->getDb()->fetchAllGrouped('
             SELECT person_id, usergroup_id
             FROM person2usergroups
             WHERE person_id IN (?)
         ', [array_keys($userToNews)], 'person_id', null, 'usergroup_id', [Connection::PARAM_INT_ARRAY]);
 
-        $catGroups = App::getDb()->fetchAllGrouped('
+        $catGroups = $this->getContainer()->getDb()->fetchAllGrouped('
             SELECT category_id, usergroup_id
             FROM news_category2usergroup
         ', [], 'category_id', null, 'usergroup_id');
@@ -247,7 +245,7 @@ class NewsSubscriptions extends AbstractJob
 
         foreach ($userToNews as $personId => $articles) {
             /** @var Person $person */
-            $person = App::getOrm()->find('DeskPRO:Person', $personId);
+            $person = $this->getContainer()->getEm()->find(Person::class, $personId);
             if (!$person) {
                 continue;
             }
@@ -263,7 +261,7 @@ class NewsSubscriptions extends AbstractJob
                 }
             }
 
-            $message = App::getMailer()->createMessage();
+            $message = $this->getContainer()->getMailer()->createMessage();
             $message->setToPerson($person);
             $message->setTemplate('DeskPRO:emails_user:news-subscription.html.twig', [
                     'person'           => $person,
@@ -271,10 +269,10 @@ class NewsSubscriptions extends AbstractJob
                     'updated_articles' => $updatedArticles, ]
             );
 
-            App::getMailer()->send($message);
+            $this->getContainer()->getMailer()->send($message);
 
             // Saves mem
-            App::getOrm()->detach($person);
+            $this->getContainer()->getEm()->detach($person);
         }
 
         if ($userToNews) {

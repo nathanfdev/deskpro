@@ -32,7 +32,6 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Person;
@@ -48,14 +47,14 @@ class DownloadsSubscriptions extends AbstractJob
 
     public function run()
     {
-        $lastTime = App::getSetting('user.download_subscriptions_last');
+        $lastTime = $this->getContainer()->getSetting('user.download_subscriptions_last');
 
-        App::getDb()->replace('settings', [
+        $this->getContainer()->getDb()->replace('settings', [
             'name'  => 'user.download_subscriptions_last',
             'value' => time(),
         ]);
 
-        if (!App::getSetting('user.downloads_subscriptions')) {
+        if (!$this->getCrossBrandSetting('user.downloads_subscriptions')) {
             return;
         }
 
@@ -70,7 +69,7 @@ class DownloadsSubscriptions extends AbstractJob
         #------------------------------
 
         /** @var Download[] $published */
-        $published = App::getOrm()->createQuery("
+        $published = $this->getContainer()->getEm()->createQuery("
             SELECT n
             FROM DeskPRO:Download n INDEX BY n.id
             JOIN n.category c
@@ -79,7 +78,7 @@ class DownloadsSubscriptions extends AbstractJob
         ")->setMaxResults(250)->execute(['date' => $lastDate]);
 
         /** @var Download[] $updated */
-        $updated = App::getOrm()->createQuery("
+        $updated = $this->getContainer()->getEm()->createQuery("
             SELECT n
             FROM DeskPRO:Download n INDEX BY n.id
             JOIN n.category c
@@ -97,7 +96,7 @@ class DownloadsSubscriptions extends AbstractJob
         #------------------------------
 
         /** @var Structure $structure */
-        $structure = App::getContainer()->getSystemService('publish_structure');
+        $structure = $this->getContainer()->getSystemService('publish_structure');
         $helper    = $structure->getDownloadCategoryHelper();
 
         $categoryIds  = [];
@@ -131,13 +130,13 @@ class DownloadsSubscriptions extends AbstractJob
             $categoryIds = array_merge($categoryIds, $addIds);
             $categoryIds = array_unique($categoryIds);
 
-            $catSubs = App::getDb()->fetchAllGrouped('
+            $catSubs = $this->getContainer()->getDb()->fetchAllGrouped('
                 SELECT person_id, category_id
                 FROM download_subscriptions
                 WHERE category_id IN (?)
             ', [$categoryIds], 'person_id', null, 'category_id', [Connection::PARAM_INT_ARRAY]);
 
-            $rootSubs = App::getDb()->fetchAllGrouped('
+            $rootSubs = $this->getContainer()->getDb()->fetchAllGrouped('
                 SELECT person_id
                 FROM download_subscriptions
                 WHERE root_category = 1
@@ -145,7 +144,7 @@ class DownloadsSubscriptions extends AbstractJob
         }
 
         if ($downloadsIds) {
-            $articleSubs = App::getDb()->fetchAllGrouped('
+            $articleSubs = $this->getContainer()->getDb()->fetchAllGrouped('
                 SELECT person_id, download_id
                 FROM download_subscriptions
                 WHERE download_id IN (?)
@@ -200,13 +199,13 @@ class DownloadsSubscriptions extends AbstractJob
         # Verify permissions
         #------------------------------
 
-        $userGroupMembers = App::getDb()->fetchAllGrouped('
+        $userGroupMembers = $this->getContainer()->getDb()->fetchAllGrouped('
             SELECT person_id, usergroup_id
             FROM person2usergroups
             WHERE person_id IN (?)
         ', [array_keys($userToDownloads)], 'person_id', null, 'usergroup_id', [Connection::PARAM_INT_ARRAY]);
 
-        $catGroups = App::getDb()->fetchAllGrouped('
+        $catGroups = $this->getContainer()->getDb()->fetchAllGrouped('
             SELECT category_id, usergroup_id
             FROM download_category2usergroup
         ', [], 'category_id', null, 'usergroup_id');
@@ -245,7 +244,7 @@ class DownloadsSubscriptions extends AbstractJob
         foreach ($userToDownloads as $personId => $downloads) {
 
             /** @var Person $person */
-            $person = App::getOrm()->find('DeskPRO:Person', $personId);
+            $person = $this->getContainer()->getEm()->find(Person::class, $personId);
             if (!$person) {
                 continue;
             }
@@ -261,7 +260,7 @@ class DownloadsSubscriptions extends AbstractJob
                 }
             }
 
-            $message = App::getMailer()->createMessage();
+            $message = $this->getContainer()->getMailer()->createMessage();
             $message->setToPerson($person);
             $message->setTemplate('DeskPRO:emails_user:download-subscription.html.twig', [
                 'person'            => $person,
@@ -269,10 +268,10 @@ class DownloadsSubscriptions extends AbstractJob
                 'updated_downloads' => $updatedDownloads,
             ]);
 
-            App::getMailer()->send($message);
+            $this->getContainer()->getMailer()->send($message);
 
             // Saves mem
-            App::getOrm()->detach($person);
+            $this->getContainer()->getEm()->detach($person);
         }
 
         if ($userToDownloads) {

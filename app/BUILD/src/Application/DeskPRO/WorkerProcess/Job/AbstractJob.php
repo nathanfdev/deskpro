@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,7 +33,9 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Log\Logger;
+use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 
 /**
  * A job completes some specific processing task.
@@ -97,5 +99,41 @@ abstract class AbstractJob
     public function getLogger()
     {
         return $this->logger;
+    }
+
+    /**
+     * @param string $setting
+     *
+     * @return bool
+     */
+    public function getCrossBrandSetting($setting)
+    {
+        static $brands   = [];
+        static $settings = [];
+
+        if (isset($settings[$setting])) {
+            return $settings[$setting];
+        }
+        if (empty($brands)) {
+            /** @var Brand[] $brands */
+            $brands = $this->getContainer()->getEm()->getRepository(Brand::class)->findAll();
+        }
+
+        $brandStack = $this->getContainer()->getBrandStack();
+
+        /** @var BrandAwareSettingsResolver $brandSettingsResolver */
+        $brandSettingsResolver = $this->getContainer()->get('brand_aware_settings_resolver');
+
+        $value = false;
+
+        foreach ($brands as $brand) {
+            $brandStack->push($brand);
+            $value = $value || $brandSettingsResolver->getSetting($setting);
+            $brandStack->pop();
+        }
+
+        $settings[$setting] = $value;
+
+        return $value;
     }
 }

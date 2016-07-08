@@ -32,7 +32,6 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
@@ -47,14 +46,14 @@ class FeedbackSubscriptions extends AbstractJob
 
     public function run()
     {
-        $lastTime = App::getSetting('user.feedback_subscriptions_last');
+        $lastTime = $this->getContainer()->getSetting('user.feedback_subscriptions_last');
 
-        App::getDb()->replace('settings', [
+        $this->getContainer()->getDb()->replace('settings', [
             'name'  => 'user.feedback_subscriptions_last',
             'value' => time(),
         ]);
 
-        if (!App::getSetting('user.feedback_subscriptions')) {
+        if (!$this->getCrossBrandSetting('user.feedback_subscriptions')) {
             return;
         }
 
@@ -69,7 +68,7 @@ class FeedbackSubscriptions extends AbstractJob
         #------------------------------
 
         /** @var Feedback[] $published */
-        $published = App::getOrm()->createQuery('
+        $published = $this->getContainer()->getEm()->createQuery('
             SELECT f
             FROM DeskPRO:Feedback f INDEX BY f.id
             WHERE f.status IN (:statuses) AND f.date_published > :date
@@ -80,7 +79,7 @@ class FeedbackSubscriptions extends AbstractJob
         ]]);
 
         /** @var Feedback[] $updated */
-        $updated = App::getOrm()->createQuery('
+        $updated = $this->getContainer()->getEm()->createQuery('
             SELECT f
             FROM DeskPRO:Feedback f INDEX BY f.id
             WHERE f.status IN (:statuses) AND (f.date_updated > :date OR f.date_last_comment > :date)
@@ -116,7 +115,7 @@ class FeedbackSubscriptions extends AbstractJob
         $feedbackSubs = [];
 
         if ($publishedFeedbackIds) {
-            $rootSubs = App::getDb()->fetchAllGrouped('
+            $rootSubs = $this->getContainer()->getDb()->fetchAllGrouped('
                 SELECT person_id
                 FROM feedback_subscriptions
                 WHERE root_category = 1
@@ -124,7 +123,7 @@ class FeedbackSubscriptions extends AbstractJob
         }
 
         if ($updatedFeedbackIds) {
-            $feedbackSubs = App::getDb()->fetchAllGrouped('
+            $feedbackSubs = $this->getContainer()->getDb()->fetchAllGrouped('
                 SELECT person_id, feedback_id
                 FROM feedback_subscriptions
                 WHERE feedback_id IN (?)
@@ -164,13 +163,13 @@ class FeedbackSubscriptions extends AbstractJob
         # Verify permissions
         #------------------------------
 
-        $userGroupMembers = App::getDb()->fetchAllGrouped('
+        $userGroupMembers = $this->getContainer()->getDb()->fetchAllGrouped('
             SELECT person_id, usergroup_id
             FROM person2usergroups
             WHERE person_id IN (?)
         ', [array_keys($userToFeedback)], 'person_id', null, 'usergroup_id', [Connection::PARAM_INT_ARRAY]);
 
-        $catGroups = App::getDb()->fetchAllGrouped('
+        $catGroups = $this->getContainer()->getDb()->fetchAllGrouped('
             SELECT category_id, usergroup_id
             FROM feedback_category2usergroup
         ', [], 'category_id', null, 'usergroup_id');
@@ -208,7 +207,7 @@ class FeedbackSubscriptions extends AbstractJob
 
         foreach ($userToFeedback as $personId => $feedbacks) {
             /** @var Person $person */
-            $person = App::getOrm()->find('DeskPRO:Person', $personId);
+            $person = $this->getContainer()->getEm()->find(Person::class, $personId);
             if (!$person) {
                 continue;
             }
@@ -219,17 +218,17 @@ class FeedbackSubscriptions extends AbstractJob
                 $updatedItems[] = $feedback;
             }
 
-            $message = App::getMailer()->createMessage();
+            $message = $this->getContainer()->getMailer()->createMessage();
             $message->setToPerson($person);
             $message->setTemplate('DeskPRO:emails_user:feedback-subscription.html.twig', [
                 'person'        => $person,
                 'updated_items' => $updatedItems,
             ]);
 
-            App::getMailer()->send($message);
+            $this->getContainer()->getMailer()->send($message);
 
             // Saves mem
-            App::getOrm()->detach($person);
+            $this->getContainer()->getEm()->detach($person);
         }
 
         if ($userToFeedback) {
