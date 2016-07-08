@@ -36,8 +36,10 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\RateLimitLog;
 use Application\DeskPRO\EntityRepository\RateLimitLog as RateLimitLogRepository;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuseConfig;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuseConfigSet;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\AntiAbuseEvent;
 use DeskPRO\Component\Util\StringUtils;
 use Doctrine\ORM\EntityManager;
@@ -146,28 +148,37 @@ class RateLimitEventListener implements EventSubscriberInterface
      */
     private function isCaptchaRequired(AntiAbuseEvent $event)
     {
-        $action = $event->getType();
-        $person = $event->getPerson();
-        $config = $this->getConfig($action, $person);
-        if (!$config->isValid()) {
-            throw new \Exception('Invalid rate limit action');
+        $action    = $event->getType();
+        $person    = $event->getPerson();
+        $configSet = $this->getConfig($action, $person);
+
+        $required = false;
+        foreach ($configSet->getConfigCollection() as $config) {
+            if (!$config->isValid()) {
+                throw new \Exception('Invalid rate limit action');
+            }
+            $captchaResponse = $config->getResponse() === AntiAbuseConfig::RESPONSE_CAPTCHA;
+
+            if (!$config->isEnabled() || !$captchaResponse) {
+                // no need to count, break early
+                continue;
+            }
+
+            $event->setConfig($config);
+
+            /** @var RateLimitLogRepository $rep */
+            $rep = $this->em->getRepository(RateLimitLog::class);
+            $res = $rep->count($config, $event->getIp());
+
+            $required = $required || (
+                $res >= (int) $config->getLimit()
+                    ? $captchaResponse
+                    : false
+                )
+            ;
         }
-        $captchaResponse = $config->getResponse() === AntiAbuseConfig::RESPONSE_CAPTCHA;
 
-        if (!$config->isEnabled() || !$captchaResponse) {
-            // leave early, we don't want to count anything
-            return false;
-        }
-
-        $event->setConfig($config);
-
-        /** @var RateLimitLogRepository $rep */
-        $rep = $this->em->getRepository(RateLimitLog::class);
-        $res = $rep->count($config, $event->getIp());
-
-        return $res >= (int) $config->getLimit()
-            ? $captchaResponse
-            : false;
+        return $required;
     }
 
     /**
@@ -179,35 +190,45 @@ class RateLimitEventListener implements EventSubscriberInterface
      */
     private function isLockoutRequired(AntiAbuseEvent $event)
     {
-        $action = $event->getType();
-        $person = $event->getPerson();
-        $config = $this->getConfig($action, $person);
-        if (!$config->isValid()) {
-            throw new \Exception('Invalid rate limit action');
+        $action    = $event->getType();
+        $person    = $event->getPerson();
+        $configSet = $this->getConfig($action, $person);
+
+        $required = false;
+        foreach ($configSet->getConfigCollection() as $config) {
+            if (!$config->isValid()) {
+                throw new \Exception('Invalid rate limit action');
+            }
+
+            $lockoutResponse = $config->getResponse() === AntiAbuseConfig::RESPONSE_LOCKOUT;
+
+            if (!$config->isEnabled() || !$lockoutResponse) {
+                // no need to count, break early
+                continue;
+            }
+
+            $event->setConfig($config);
+
+            /** @var RateLimitLogRepository $rep */
+            $rep = $this->em->getRepository(RateLimitLog::class);
+
+            // at first let's decide if we are in lockout
+            $lastLockoutAttempt = $rep->getLastLockedOutAttempt($event->getConfig(), $event->getIp());
+            if ($lockoutResponse && $lastLockoutAttempt && $lastLockoutAttempt + $config->getLockoutTime() > time()) {
+                return true; // we are in lockout already so it's required
+            }
+
+            $res = $rep->count($config, $event->getIp());
+
+            $required = $required || (
+                $res >= $config->getLimit()
+                    ? $lockoutResponse
+                    : false
+                )
+            ;
         }
 
-        $lockoutResponse = $config->getResponse() === AntiAbuseConfig::RESPONSE_LOCKOUT;
-
-        if (!$config->isEnabled() || !$lockoutResponse) {
-            return false;
-        }
-
-        $event->setConfig($config);
-
-        /** @var RateLimitLogRepository $rep */
-        $rep = $this->em->getRepository(RateLimitLog::class);
-
-        // at first let's decide if we are in lockout
-        $lastLockoutAttempt = $rep->getLastLockedOutAttempt($event->getConfig(), $event->getIp());
-        if ($lockoutResponse && $lastLockoutAttempt && $lastLockoutAttempt + $config->getLockoutTime() > time()) {
-            return true; // we are in lockout already so it's required
-        }
-
-        $res = $rep->count($config, $event->getIp());
-
-        return $res >= $config->getLimit()
-            ? $lockoutResponse
-            : false;
+        return $required;
     }
 
     /**
@@ -239,9 +260,26 @@ class RateLimitEventListener implements EventSubscriberInterface
      * @param string $action
      * @param Person $person
      *
-     * @return AntiAbuseConfig
+     * @return AntiAbuseConfigSet
      */
     protected function getConfig($action, Person $person)
+    {
+        $configSet = new AntiAbuseConfigSet();
+        if ($action === AntiAbuse::ACTION_LOGIN && !$person->isGuest()) {
+            $configSet->addConfig($this->getConfigInternal($action, new PersonGuest()));
+        }
+        $configSet->addConfig($this->getConfigInternal($action, $person));
+
+        return $configSet;
+    }
+
+    /**
+     * @param string $action
+     * @param Person $person
+     *
+     * @return AntiAbuseConfig
+     */
+    protected function getConfigInternal($action, Person $person)
     {
         $config = new AntiAbuseConfig($person, $action);
         foreach (['limit', 'time', 'response', 'enabled', 'lockout_time'] as $key) {
