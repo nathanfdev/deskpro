@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
@@ -591,7 +592,7 @@ class Runner
             $message->getHeaders()->addTextHeader('Auto-Submitted', 'auto-generated');
             $message->getHeaders()->addTextHeader('X-Auto-Response-Suppress', 'All');
             $message->getHeaders()->addTextHeader('X-DeskPRO-Build', DP_BUILD_TIME); // used if this were to come back to us, prevents loops
-            $hd_url       = App::getSetting('core.deskpro_url');
+            $hd_url       = App::getContainer()->getBrandSetting('core.deskpro_url');
             $download_url = $source->blob->getDownloadUrl(true);
             $to_list      = implode(', ', array_map(function ($t) {
                 return trim($t->getNameUtf8().' <'.$t->getRealEmail().'>');

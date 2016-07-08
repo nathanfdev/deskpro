@@ -166,9 +166,9 @@ class Message extends \Orb\Mail\Message
             $this->template_vars['person_timezone'] = $this->set_to_person ? $this->set_to_person->getDateTimezone(
             ) : App::getContainer()->getSettingsHandler()->getDefaultTimezone();
 
-            $this->template_vars['site_url']    = App::getSetting('core.site_url');
-            $this->template_vars['site_name']   = App::getSetting('core.site_name');
-            $this->template_vars['deskpro_url'] = App::getSetting('core.deskpro_url');
+            $this->template_vars['site_url']    = App::getContainer()->getBrandSetting('core.site_url');
+            $this->template_vars['site_name']   = App::getContainer()->getBrandSetting('core.site_name');
+            $this->template_vars['deskpro_url'] = App::getContainer()->getBrandSetting('core.deskpro_url');
 
             $content = $this->template_engine->render($this->template, $this->template_vars);
 

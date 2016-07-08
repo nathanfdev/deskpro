@@ -942,7 +942,7 @@ JS;
 
         if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
             $adapter->setCallbackUrl(
-                rtrim($this->container->getSetting('core.deskpro_url'), '/').
+                rtrim($this->container->getBrandSetting('core.deskpro_url'), '/').
                 $this->generateUrl('user_login_callback', ['usersource_id' => $usersource['id']], false)
             );
         }

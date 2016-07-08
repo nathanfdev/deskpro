@@ -1877,8 +1877,8 @@ HTML;
         $vars = [
             'performer'     => $context->getPersonContext(),
             'ticket'        => $ticket,
-            'helpdesk_name' => $this->getContainer()->getSetting('core.deskpro_name'),
-            'site_name'     => $this->getContainer()->getSetting('core.site_name'),
+            'helpdesk_name' => $this->getContainer()->getBrandSetting('core.deskpro_name'),
+            'site_name'     => $this->getContainer()->getBrandSetting('core.site_name'),
             'user_vars'     => $context->getUserVars(),
         ];
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -61,7 +62,7 @@ class TaskReminders extends AbstractJob
         # Figure out which agents the current time is for
         #------------------------------
 
-        $for_agents = array();
+        $for_agents = [];
         foreach (App::getDataService('Agent')->getAgents() as $agent) {
             /* @var $agent \Application\DeskPRO\Entity\Person */
 
@@ -93,7 +94,7 @@ class TaskReminders extends AbstractJob
             $agent->loadHelper('Agent');
             $team_ids = $agent->Agent->getTeamIds();
             if (!$team_ids) {
-                $team_ids = array(0);
+                $team_ids = [0];
             }
 
             $today = $agent->getDateTime();
@@ -115,8 +116,8 @@ class TaskReminders extends AbstractJob
                     AND tasks.date_due >= ? AND tasks.date_due <= ?
                     AND task_reminder_logs.id IS NULL
             ',
-                array($agent['id'], $team_ids, $agent['id'], $today_utc->format('Y-m-d H:i:s'), $today_end_utc->format('Y-m-d H:i:s')),
-                array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT, \PDO::PARAM_STR, \PDO::PARAM_STR));
+                [$agent['id'], $team_ids, $agent['id'], $today_utc->format('Y-m-d H:i:s'), $today_end_utc->format('Y-m-d H:i:s')],
+                [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT, \PDO::PARAM_STR, \PDO::PARAM_STR]);
 
             if (!$task_ids) {
                 continue;
@@ -126,18 +127,18 @@ class TaskReminders extends AbstractJob
 
             foreach ($tasks as $task) {
                 if (in_array($agent->id, $online_ids) && $agent->getPref('agent_notif.task_due.alert')) {
-                    $tpl_line = App::getTemplating()->render('AgentBundle:Task:notify-row-reminder.html.twig', array(
+                    $tpl_line = App::getTemplating()->render('AgentBundle:Task:notify-row-reminder.html.twig', [
                         'task'   => $task,
                         'person' => $agent,
-                    ));
+                    ]);
 
                     $cm = new \Application\DeskPRO\Entity\ClientMessage();
-                    $cm->fromArray(array(
+                    $cm->fromArray([
                         'channel'           => 'agent-notify.tasks',
-                        'data'              => array('row' => $tpl_line),
+                        'data'              => ['row' => $tpl_line],
                         'for_person'        => $agent,
                         'created_by_client' => 'sys',
-                    ));
+                    ]);
                     App::getOrm()->persist($cm);
                     App::getOrm()->flush();
 
@@ -150,22 +151,22 @@ class TaskReminders extends AbstractJob
 
                 if ($from_email && $agent->getPref('agent_notif.task_due.email')) {
                     $message = App::getMailer()->createMessage();
-                    $message->setTemplate('DeskPRO:emails_agent:task-due-reminder.html.twig', array(
+                    $message->setTemplate('DeskPRO:emails_agent:task-due-reminder.html.twig', [
                         'task'   => $task,
                         'person' => $agent,
-                    ));
+                    ]);
                     $message->setToPerson($agent);
-                    $message->setFrom($from_email, App::getSetting('core.deskpro_name'));
+                    $message->setFrom($from_email, App::getContainer()->getBrandSetting('core.deskpro_name'));
                     App::getMailer()->send($message);
 
                     ++$emails;
                 }
 
-                App::getDb()->insert('task_reminder_logs', array(
+                App::getDb()->insert('task_reminder_logs', [
                     'task_id'   => $task->getId(),
                     'person_id' => $agent->getId(),
                     'date_sent' => date('Y-m-d H:i:s'),
-                ));
+                ]);
             }
         }
 

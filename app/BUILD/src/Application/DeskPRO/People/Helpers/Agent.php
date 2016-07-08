@@ -333,9 +333,9 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
         if ($sig_html) {
             $fn = function ($m) {
                 /*
-                 * @Todo get context based setting for the url 
+                 * @Todo ensure the proper brand is stacked here
                  */
-                $url = App::getSetting('core.deskpro_url');
+                $url = App::getContainer()->getBrandSetting('core.deskpro_url');
                 $url .= ltrim(App::getRouter()->generate('serve_blob', array('blob_auth_id' => $m[1], 'filename' => $m[2]), RouterInterface::ABSOLUTE_PATH), '/');
 
                 return sprintf('<img src="%s" title="%s" class="dp-signature-image" alt="%s" />',

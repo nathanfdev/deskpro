@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Routing\Generator;
 
 use Application\DeskPRO\App;
@@ -54,7 +55,7 @@ class UrlGenerator extends BaseUrlGenerator
     public function setContext(RequestContext $context)
     {
         if (php_sapi_name() === 'cli' && !$this->getDpEnv()->hasRuntimeVar('is_building')) {
-            $deskpro_url = rtrim(App::getSetting('core.deskpro_url'), '/');
+            $deskpro_url = rtrim(App::getContainer()->getBrandSetting('core.deskpro_url'), '/');
 
             $info = parse_url($deskpro_url);
             $context->setScheme($info['scheme']);
@@ -93,7 +94,7 @@ class UrlGenerator extends BaseUrlGenerator
         $url = $this->generatePath($name, $parameters, false);
 
         // Make sure index.php is in links
-        $deskpro_url = rtrim(App::getSetting('core.deskpro_url'), '/');
+        $deskpro_url = rtrim(App::getContainer()->getBrandSetting('core.deskpro_url'), '/');
 
         return $deskpro_url.$url;
     }
