@@ -130,6 +130,30 @@ Feature: /(ticket|chat)_departments endpoint
       | ticket |
       | chat   |
 
+  Scenario Outline: I sideload brands
+    Given only the following Brand records exist:
+      | #  | Name    |
+      | b1 | Brand 1 |
+      | b2 | Brand 2 |
+      | b3 | Brand 3 |
+    And only the following Department records exist:
+      | #  | Title        | Brands | Is Tickets Enabled | Is Chat Enabled |
+      | d1 | Department 1 | [{b1}] | 1                  | 1               |
+      | d2 | Department 2 | [{b2}] | 1                  | 1               |
+      | d3 | Department 2 | [{b3}] | 1                  | 1               |
+
+    When I send a GET request to "/api/v2/<type>_departments?include=brand"
+    Then the response status code should be 200
+    And the JSON node "linked.brand" should have 3 elements
+    And the JSON node "linked.brand.{b1}.name" should be equal to the string "Brand 1"
+    And the JSON node "linked.brand.{b2}.name" should be equal to the string "Brand 2"
+    And the JSON node "linked.brand.{b3}.name" should be equal to the string "Brand 3"
+
+    Examples:
+      | type   |
+      | ticket |
+      | chat   |
+
   Scenario Outline: I try to create a new ticket department with empty request
     When I send a POST request to "/api/v2/<type>_departments"
     Then the response status code should be 400
