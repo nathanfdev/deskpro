@@ -26,11 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
-namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Content\Categories;
 
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\DownloadCategory;

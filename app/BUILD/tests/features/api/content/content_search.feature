@@ -112,3 +112,34 @@ Feature: /articles, /news, /downloads endpoints
       | articles  | ArticleCategory  | Article  | To Category   |
       | news      | NewsCategory     | News     | Category      |
       | downloads | DownloadCategory | Download | Category      |
+
+  Scenario Outline: I filter categories by brand
+    Given only the following Brand records exist:
+      | #  | Name    |
+      | b1 | Brand 1 |
+      | b2 | Brand 2 |
+      | b3 | Brand 3 |
+    And only the following <category_entity> records exist:
+      | #  | Title      | Brand |
+      | c1 | Category 1 | {b1}  |
+      | c2 | Category 2 | {b1}  |
+      | c3 | Category 3 | {b2}  |
+      | c4 | Category 3 | NULL  |
+
+    When I send a GET request to "/api/v2/<endpoint>_categories"
+    Then the response status code should be 200
+    And the JSON node "data" should have 4 elements
+
+    When I send a GET request to "/api/v2/<endpoint>_categories?brands[]={b1}"
+    Then the response status code should be 200
+    And the JSON node "data" should have 2 elements
+
+    When I send a GET request to "/api/v2/<endpoint>_categories?brands[]={b1}&brands[]={b2}"
+    Then the response status code should be 200
+    And the JSON node "data" should have 3 elements
+
+    Examples:
+      | endpoint | category_entity  |
+      | article  | ArticleCategory  |
+      | news     | NewsCategory     |
+      | download | DownloadCategory |
