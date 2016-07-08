@@ -129,6 +129,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         $anti_abuse  = $this->container->get('anti_abuse');
         $abuse_check = new LoginAbuseCheck($request->get('username'), $request->getClientIp());
         $request->getSession()->set('last_username', $request->get('username'));
+        $abuse_check->markAsCheckOnly(true);
         $abuse_check->setResponse(new RedirectResponse($this->container->get('router')->generate('portal_login')));
         $anti_abuse->check($abuse_check);
         if ($abuse_check->isCaptchaRecommended()) {
@@ -149,6 +150,8 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                 ]));
             }
         }
+        $abuse_check->markAsCheckOnly(false);
+        $anti_abuse->check($abuse_check);
 
         return;
     }

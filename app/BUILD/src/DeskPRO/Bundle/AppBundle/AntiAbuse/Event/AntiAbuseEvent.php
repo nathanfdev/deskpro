@@ -303,11 +303,13 @@ abstract class AntiAbuseEvent extends Event
      * used to calculate whether or not there is abuse. For this reason, tests will use an event that is
      * "check only" so that it can verify the state of the anti-abuse system.
      *
+     * @param bool $checkOnly
+     *
      * @return $this
      */
-    public function markAsCheckOnly()
+    public function markAsCheckOnly($checkOnly = true)
     {
-        $this->checkOnly = true;
+        $this->checkOnly = (bool) $checkOnly;
 
         return $this;
     }
