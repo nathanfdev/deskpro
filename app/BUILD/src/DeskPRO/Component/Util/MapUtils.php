@@ -147,7 +147,11 @@ class MapUtils
         foreach ($array as $k => $v) {
             $set_k = call_user_func($fn, $v, $k);
             if ($set_k !== null) {
-                $new[$set_k] = $v;
+                if (is_array($set_k)) {
+                    $new = self::setIn($new, $set_k, $v);
+                } else {
+                    $new[$set_k] = $v;
+                }
             }
         }
 
@@ -215,7 +219,11 @@ class MapUtils
                 throw new \InvalidArgumentException('Invalid return value');
             }
 
-            $return[$user_return[0]] = $user_return[1];
+            if (is_array($user_return[0])) {
+                $return = self::setIn($return, $user_return[0], $user_return[1]);
+            } else {
+                $return[$user_return[0]] = $user_return[1];
+            }
         }
 
         return $return;
@@ -319,7 +327,7 @@ class MapUtils
      * @param \Traversable|array|string $path  An array of keys, or a string where keys are separated by dots
      * @param mixed                     $value
      *
-     * @return mixed
+     * @return array
      */
     public static function setIn($array, $path, $value)
     {
