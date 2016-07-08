@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -133,7 +133,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
     {
         if ($this->perms === null) {
             if (!$this->usergroup_ids && !$this->person_id) {
-                $this->perms = array();
+                $this->perms = [];
             } else {
                 if ($this->person_id) {
                     $perms = App::getSystemService('PermissionsLoader')->getUsergroupPermissions($this->usergroup_ids);
@@ -141,13 +141,13 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
                         $overrides = App::getSystemService('PermissionsLoader')->getAgentOverridePermissions($this->person_id);
                         if ($overrides) {
                             $this->with_overrides = true;
-                            $perms                = array_merge($perms, array(-1 => $overrides));
+                            $perms                = array_merge($perms, [-1 => $overrides]);
                         }
                     }
                 } else {
                     $perms = App::getSystemService('PermissionsLoader')->getUsergroupPermissions($this->usergroup_ids);
                 }
-                $perm_result = array();
+                $perm_result = [];
                 foreach ($perms as $p_group) {
                     foreach ($p_group as $p) {
                         $perm_result[] = $p;
@@ -159,7 +159,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
         }
 
         if ($this->dynamic_perms === null) {
-            $this->dynamic_perms = array();
+            $this->dynamic_perms = [];
             $agent_groups        = App::$container->getAgentGroups();
             foreach ($this->usergroup_ids as $ugid) {
                 if ($agent_groups->groupExists($ugid)) {
@@ -183,7 +183,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
      */
     protected function serializeData()
     {
-        return array('perms' => $this->perms);
+        return ['perms' => $this->perms];
     }
 
     /**
@@ -203,7 +203,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
      */
     protected static function loadDynamicPerms(Entity\Usergroup $g)
     {
-        static $set_perms_by_group = array();
+        static $set_perms_by_group = [];
 
         if (!$g->sys_name) {
             return;
@@ -213,7 +213,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
             return $set_perms_by_group[$g->sys_name];
         }
 
-        $set_perms = array();
+        $set_perms = [];
         if ($g->sys_name == 'agent_all_perms' || $g->sys_name == 'agent_all_safe_perms') {
             $loader = App::$container->getSystemService('AgentPermissionNamesLoader');
             if ($g->sys_name == 'agent_all_perms') {

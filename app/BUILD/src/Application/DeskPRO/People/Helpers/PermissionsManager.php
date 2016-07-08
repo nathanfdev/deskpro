@@ -35,10 +35,14 @@
 namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\PermissionCache;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PermissionLoader\Usergroups;
 use Application\DeskPRO\People\PersonContextInterface;
+use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
+use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Orb\Util\Util;
 
 /**
@@ -77,26 +81,26 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
      *
      * @param array
      */
-    protected $queued_types = array();
+    protected $queued_types = [];
 
     /**
      * Initialized loaders.
      *
      * @var \Application\DeskPRO\People\PermissionLoader\AbstractLoader[]
      */
-    protected $loaders = array();
+    protected $loaders = [];
 
     /**
      * Initialized checkers.
      *
      * @var \Application\DeskPRO\People\PermissionChecker\AbstractChecker[]
      */
-    protected $checkers = array();
+    protected $checkers = [];
 
     /**
      * @var array
      */
-    protected $dirty_caches = array();
+    protected $dirty_caches = [];
 
     /**
      * @var bool
@@ -131,7 +135,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
                 FROM person2usergroups
                 LEFT JOIN usergroups ON usergroups.id = person2usergroups.usergroup_id
                 WHERE person2usergroups.person_id = ? AND usergroups.is_enabled = 1
-            ', array($this->person['id']));
+            ', [$this->person['id']]);
         }
 
         $everyone_ug = App::$container->getUserGroups()->getEveryoneGroup();
@@ -147,14 +151,14 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         }
 
         // And org ones...
-        $this->org_usergroup_ids = array();
+        $this->org_usergroup_ids = [];
         if ($this->person->organization) {
             $this->org_usergroup_ids = App::getDb()->fetchAllCol('
                 SELECT organization2usergroups.usergroup_id
                 FROM organization2usergroups
                 JOIN usergroups ON usergroups.id = organization2usergroups.usergroup_id
                 WHERE organization2usergroups.organization_id = ? AND usergroups.is_enabled = 1
-            ', array($this->person->organization['id']));
+            ', [$this->person->organization['id']]);
 
             if ($this->org_usergroup_ids) {
                 $this->usergroup_ids = array_merge($this->usergroup_ids, $this->org_usergroup_ids);
@@ -170,7 +174,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
             $this->usergroups_key = $this->usergroups_key.'-person-'.$this->person->id;
         }
 
-        \DpShutdown::add(array($this, 'flushCache'));
+        \DpShutdown::add([$this, 'flushCache']);
     }
 
     /**
@@ -247,7 +251,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         #-------------------------
 
         if (!$this->is_loaded && $this->enable_caching) {
-            $caches = App::getEntityRepository('DeskPRO:PermissionCache')->loadPermissionTypes($this->usergroups_key, $this->person->getId());
+            $caches = App::getEntityRepository(PermissionCache::class)->loadPermissionTypes($this->usergroups_key, $this->person->getId());
 
             foreach ($caches as $cache) {
                 $loader = $cache;
@@ -275,7 +279,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         #-------------------------
 
         $queued_types       = $this->queued_types;
-        $this->queued_types = array();
+        $this->queued_types = [];
 
         foreach ($queued_types as $name) {
             if (isset($this->loaders[strtolower($name)])) {
@@ -358,34 +362,36 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
      */
     public function hasPerm($name)
     {
-        static $god_mode_names = array(
+        static $god_mode_names = [
             'articles.use'  => true,
             'feedback.use'  => true,
             'downloads.use' => true,
             'news.use'      => true,
             'chat.use'      => true,
-        );
+        ];
+
+        $crossBrandAppSettings = $this->getBrandAppSettings();
 
         if ($this->admin_god_mode && isset($god_mode_names[$name])) {
             return true;
         }
 
         if ($name == 'agent_tickets.create') {
-            if (!App::getDataService('Department')->getPersonDepartments($this->person, 'tickets', array(), 'assign')) {
+            if (!App::getDataService('Department')->getPersonDepartments($this->person, 'tickets', [], 'assign')) {
                 return false;
             }
         }
 
-        if ($name == 'articles.use' && !App::getSetting('core.apps_kb')) {
+        if ($name == 'articles.use' && !$crossBrandAppSettings['core.apps_kb']) {
             return false;
         }
-        if ($name == 'feedback.use' && !App::getSetting('core.apps_feedback')) {
+        if ($name == 'feedback.use' && !$crossBrandAppSettings['core.apps_feedback']) {
             return false;
         }
-        if ($name == 'downloads.use' && !App::getSetting('core.apps_downloads')) {
+        if ($name == 'downloads.use' && !$crossBrandAppSettings['core.apps_downloads']) {
             return false;
         }
-        if ($name == 'news.use' && !App::getSetting('core.apps_news')) {
+        if ($name == 'news.use' && !$crossBrandAppSettings['core.apps_news']) {
             return false;
         }
         if ($name == 'chat.use' || $name == 'agent_chat.use') {
@@ -398,7 +404,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
             }
         }
         if ($name == 'articles.comment' || $name == 'downloads.comment' || $name == 'news.comment') {
-            if (!App::getSetting('user.publish_comments')) {
+            if (!$crossBrandAppSettings['user.publish_comments']) {
                 return false;
             }
         }
@@ -420,12 +426,12 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
         try {
             foreach ($this->dirty_caches as $c) {
-                $insert_cache = array(
+                $insert_cache = [
                     'name'          => $c->getName(),
                     'usergroup_key' => $c->getUsergroupKey(),
                     'usergroup_ids' => implode(',', $c->getUsergroupIds()),
                     'perms'         => serialize($c->getPerms()),
-                );
+                ];
 
                 App::getDb()->replace('permissions_cache', $insert_cache);
             }
@@ -434,7 +440,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
             \DpSys\LowError\SystemErrorHandler::logErrorInfo($info);
         }
 
-        $this->dirty_caches = array();
+        $this->dirty_caches = [];
     }
 
     /**
@@ -451,12 +457,12 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
     public function getShortCallableNames()
     {
-        return array(
+        return [
             'getPermissionsManager' => '_getthis',
             'getPermsLoader'        => 'get',
             'hasPerm'               => 'hasPerm',
             'has_perm'              => 'hasPerm',
-        );
+        ];
     }
 
     public function _getthis()
@@ -467,5 +473,41 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
     public function clear()
     {
         $this->person = null;
+    }
+
+    protected function getBrandAppSettings()
+    {
+        static $appSettings = [];
+
+        if (!empty($appSettings)) {
+            return $appSettings;
+        }
+
+        $appSettings = [
+            PortalSettingsResolver::APPS_KB          => false,
+            PortalSettingsResolver::APPS_DOWNLOADS   => false,
+            PortalSettingsResolver::APPS_NEWS        => false,
+            PortalSettingsResolver::APPS_FEEDBACK    => false,
+            PortalSettingsResolver::PUBLISH_COMMENTS => false,
+        ];
+
+        /** @var Brand[] $brands */
+        $brands = App::getEntityRepository(Brand::class)->findAll();
+
+        /** @var BrandStack $brandStack */
+        $brandStack = App::get('brand_stack');
+
+        /** @var BrandAwareSettingsResolver $brandSettingsResolver */
+        $brandSettingsResolver = App::get('brand_aware_settings_resolver');
+
+        foreach ($brands as $brand) {
+            $brandStack->push($brand);
+            foreach ($appSettings as $key => &$setting) {
+                $setting = $setting || $brandSettingsResolver->getSetting($key);
+            }
+            $brandStack->pop();
+        }
+
+        return $appSettings;
     }
 }

@@ -742,6 +742,7 @@ class MainController extends AbstractController
             PortalSettingsResolver::APPS_KB        => false,
             PortalSettingsResolver::APPS_DOWNLOADS => false,
             PortalSettingsResolver::APPS_NEWS      => false,
+            PortalSettingsResolver::APPS_FEEDBACK  => false,
         ];
 
         /** @var Brand[] $brands */
@@ -753,20 +754,12 @@ class MainController extends AbstractController
         /** @var BrandAwareSettingsResolver $brandSettingsResolver */
         $brandSettingsResolver = $this->get('brand_aware_settings_resolver');
 
-        $selectedBrandId = $this->in->getUInt('brand_id');
-
-        if (!$selectedBrandId) {
-            $selectedBrandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
-        }
-
         foreach ($brands as $brand) {
-            if ($brand->getId() == $selectedBrandId) {
-                $brandStack->push($brand);
-                foreach ($appSettings as $key => &$setting) {
-                    $setting = $setting || $brandSettingsResolver->getSetting($key);
-                }
-                $brandStack->pop();
+            $brandStack->push($brand);
+            foreach ($appSettings as $key => &$setting) {
+                $setting = $setting || $brandSettingsResolver->getSetting($key);
             }
+            $brandStack->pop();
         }
 
         return $appSettings;
