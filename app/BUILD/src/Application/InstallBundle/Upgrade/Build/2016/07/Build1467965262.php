@@ -46,7 +46,7 @@ class Build1467965262 extends AbstractBuild
         $settings = $portalSettingsResolver->getConstants();
 
         /** @var BrandStack $brandStack */
-        $brandStack = $this->container->get('brand_stack');
+        $brandStack = $this->container->getBrandStack();
 
         $brand = $brandStack->getActive()->getBrand();
 

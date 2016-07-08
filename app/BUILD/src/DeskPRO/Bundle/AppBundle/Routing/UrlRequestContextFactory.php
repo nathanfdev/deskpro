@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Routing;
 
+use Application\DeskPRO\Entity\Brand;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
@@ -80,6 +81,7 @@ class UrlRequestContextFactory
      */
     private function createContextForSettingsUrl(RequestContext $defaultContext)
     {
+        /** @var Brand $brand */
         $brand = $this->container->get('brand_stack')->getActive()->getBrand();
 
         if (isset($this->absContextToBrand[$brand->getId()])) {

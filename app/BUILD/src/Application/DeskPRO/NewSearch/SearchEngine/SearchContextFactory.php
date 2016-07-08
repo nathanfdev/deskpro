@@ -61,7 +61,7 @@ class SearchContextFactory
             $context->setPerson($person);
         }
 
-        $context->setBrand($this->container->get('brand_stack')->getActive()->getBrand());
+        $context->setBrand($this->container->getBrandStack()->getActive()->getBrand());
 
         if ($person->hasPerm('articles.use')) {
             $ids = $person->PermissionsManager->ArticleCategories->getAllowedCategories();

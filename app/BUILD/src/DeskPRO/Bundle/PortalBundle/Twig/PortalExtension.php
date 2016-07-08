@@ -64,7 +64,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      */
     public function getBrandStack()
     {
-        return $this->container->get('brand_stack');
+        return $this->container->getBrandStack();
     }
 
     /**
@@ -220,7 +220,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      */
     public function makeGlossaryJs($article)
     {
-        $brand          = $this->container->get('brand_stack')->getActive()->getBrand();
+        $brand          = $this->container->getBrandStack()->getActive()->getBrand();
         $glossary       = new GlossaryHandler($this->container->getEm(), $brand);
         $glossary_words = $glossary->findWords($article->content);
         $word_defs      = $glossary->getWordDefs($glossary_words);

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,6 +38,7 @@ use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
 use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
 
@@ -59,7 +60,7 @@ class TicketEmail
     /**
      * @var \Application\DeskPRO\Email\EmailAccount\EmailAccountManager
      */
-    private $email_accounts;
+    private $emailAccounts;
 
     /**
      * @var \Application\DeskPRO\Translate\Translate
@@ -74,42 +75,47 @@ class TicketEmail
     /**
      * @var \Application\DeskPRO\CustomFields\TicketFieldManager
      */
-    private $ticket_field_manager;
+    private $ticketFieldManager;
 
     /**
      * @var \Application\DeskPRO\CustomFields\PersonFieldManager
      */
-    private $user_field_manager;
+    private $userFieldManager;
 
     /**
      * @var \Application\DeskPRO\TicketLayout\TicketLayoutManager
      */
-    private $ticket_layout_manager;
+    private $ticketLayoutManager;
+
+    /**
+     * @var BrandStack
+     */
+    private $brandStack;
 
     /**
      * @var \Application\DeskPRO\Entity\Person
      */
-    private $to_person;
+    private $toPerson;
 
     /**
      * @var string
      */
-    private $sent_to_email;
+    private $sentToEmail;
 
     /**
      * @var string
      */
-    private $sent_to_name;
+    private $sentToName;
 
     /**
      * @var string[]
      */
-    private $sent_with_ccs;
+    private $sentWithCcs;
 
     /**
      * @var int
      */
-    private $sendmail_source_id;
+    private $sendmailSourceId;
 
     /**
      * @var \Application\DeskPRO\Entity\Ticket
@@ -119,37 +125,37 @@ class TicketEmail
     /**
      * @var string
      */
-    private $user_mode;
+    private $userMode;
 
     /**
      * @var string
      */
-    private $template_name;
+    private $templateName;
 
     /**
      * @var string|null
      */
-    private $from_name;
+    private $fromName;
 
     /**
      * @var \Application\DeskPRO\Entity\EmailAccount
      */
-    private $from_email_account;
+    private $fromEmailAccount;
 
     /**
      * @var bool
      */
-    private $is_auto;
+    private $isAuto;
 
     /**
      * @var bool
      */
-    private $do_cc_users = true;
+    private $doCcUsers = true;
 
     /**
      * @var int
      */
-    private $max_attach_size = 0;
+    private $maxAttachSize = 0;
 
     /**
      * @var \Monolog\Logger
@@ -180,7 +186,8 @@ class TicketEmail
             'ticket',
             'to_person',
             'user_mode',
-            'template_name'
+            'template_name',
+            'brand_stack'
         );
         $opt->addValidNames(
             'ticket_field_manager',
@@ -197,32 +204,33 @@ class TicketEmail
         $opt->setAll($options);
         $opt->ensureRequired();
 
-        $this->to_person     = $opt->get('to_person');
-        $this->ticket        = $opt->get('ticket');
-        $this->template_name = $opt->get('template_name');
-        $this->from_name     = $opt->get('from_name', '');
+        $this->toPerson     = $opt->get('to_person');
+        $this->ticket       = $opt->get('ticket');
+        $this->templateName = $opt->get('template_name');
+        $this->fromName     = $opt->get('from_name', '');
 
-        $this->settings              = $opt->get('settings');
-        $this->mailer                = $opt->get('mailer');
-        $this->email_accounts        = $opt->get('email_accounts');
-        $this->translate             = $opt->get('translate');
-        $this->em                    = $opt->get('em');
-        $this->ticket_field_manager  = $opt->get('ticket_field_manager');
-        $this->user_field_manager    = $opt->get('user_field_manager');
-        $this->ticket_layout_manager = $opt->get('ticket_layout_manager');
-        $this->from_email_account    = $opt->get('from_email_account', null);
+        $this->settings            = $opt->get('settings');
+        $this->mailer              = $opt->get('mailer');
+        $this->emailAccounts       = $opt->get('email_accounts');
+        $this->translate           = $opt->get('translate');
+        $this->em                  = $opt->get('em');
+        $this->ticketFieldManager  = $opt->get('ticket_field_manager');
+        $this->userFieldManager    = $opt->get('user_field_manager');
+        $this->ticketLayoutManager = $opt->get('ticket_layout_manager');
+        $this->brandStack          = $opt->get('brand_stack');
+        $this->fromEmailAccount    = $opt->get('from_email_account', null);
 
-        $this->do_cc_users     = $opt->get('cc_users', false);
-        $this->is_auto         = $opt->get('is_auto', false);
-        $this->max_attach_size = $opt->get('max_attach_size', 0);
+        $this->doCcUsers     = $opt->get('cc_users', false);
+        $this->isAuto        = $opt->get('is_auto', false);
+        $this->maxAttachSize = $opt->get('max_attach_size', 0);
 
-        $this->user_mode = $opt->get('user_mode');
-        $this->headers   = $opt->get('headers', array());
+        $this->userMode = $opt->get('user_mode');
+        $this->headers  = $opt->get('headers', []);
 
         if ($opt->get('user_mode') == 'user') {
-            $this->user_mode = 'user';
+            $this->userMode = 'user';
         } elseif ($opt->get('user_mode') == 'agent') {
-            $this->user_mode = 'agent';
+            $this->userMode = 'agent';
         }
 
         if ($opt->has('logger')) {
@@ -231,11 +239,11 @@ class TicketEmail
             $this->logger = new NullLogger();
         }
 
-        if ($this->do_cc_users && $this->user_mode == self::MODE_AGENT) {
+        if ($this->doCcUsers && $this->userMode == self::MODE_AGENT) {
             throw new \InvalidArgumentException('CC Users does not work on agent emails');
         }
 
-        if ($this->user_mode == self::MODE_AGENT && !$this->to_person->is_agent) {
+        if ($this->userMode == self::MODE_AGENT && !$this->toPerson->is_agent) {
             throw new \InvalidArgumentException('Agent mode but person is not an agent');
         }
     }
@@ -245,7 +253,7 @@ class TicketEmail
      */
     public function getUserMode()
     {
-        return $this->user_mode;
+        return $this->userMode;
     }
 
     /**
@@ -253,7 +261,7 @@ class TicketEmail
      */
     public function getFromEmailAccount()
     {
-        return $this->from_email_account;
+        return $this->fromEmailAccount;
     }
 
     /**
@@ -261,7 +269,7 @@ class TicketEmail
      */
     public function getFromName()
     {
-        return $this->from_name;
+        return $this->fromName;
     }
 
     /**
@@ -269,7 +277,7 @@ class TicketEmail
      */
     public function getDoCcUsers()
     {
-        return $this->do_cc_users;
+        return $this->doCcUsers;
     }
 
     /**
@@ -277,7 +285,7 @@ class TicketEmail
      */
     public function getTemplateName()
     {
-        return $this->template_name;
+        return $this->templateName;
     }
 
     /**
@@ -293,41 +301,45 @@ class TicketEmail
      */
     public function getToPerson()
     {
-        return $this->to_person;
+        return $this->toPerson;
     }
 
     /**
      * @param array $vars
      */
-    public function send(array $vars = array())
+    public function send(array $vars = [])
     {
         $mailer = $this->mailer;
 
         $translator = $this->translate;
         $em         = $this->em;
 
-        $ticketdisplay = new TicketDisplay($this->ticket, $this->to_person);
-        $ticketdisplay->setPersonContext($this->to_person, $this->user_mode);
+        $ticketDisplay = new TicketDisplay($this->ticket, $this->toPerson);
+        $ticketDisplay->setPersonContext($this->toPerson, $this->userMode);
 
-        if ($this->to_person && $this->to_person->is_agent) {
-            $this->to_person->loadHelper('Agent');
-            $this->to_person->loadHelper('AgentTeam');
+        if ($this->toPerson && $this->toPerson->is_agent) {
+            $this->toPerson->loadHelper('Agent');
+            $this->toPerson->loadHelper('AgentTeam');
         }
 
         $vars['ticket']        = $this->ticket;
-        $vars['person']        = $this->to_person;
-        $vars['ticketdisplay'] = $ticketdisplay;
-        $vars['messages']      = $ticketdisplay->getMessages();
-        $vars['is_auto']       = $this->is_auto;
+        $vars['person']        = $this->toPerson;
+        $vars['ticketdisplay'] = $ticketDisplay;
+        $vars['messages']      = $ticketDisplay->getMessages();
+        $vars['is_auto']       = $this->isAuto;
+
+        if ($this->ticket->getBrand()) {
+            $this->brandStack->push($this->ticket->getBrand());
+        }
 
         // If we have a speciifc 'new message', then we need to trim
         // messages array down (which is ALL the latest messages, may be too many if we are re-sending)
         if (isset($vars['new_message'])) {
-            $got     = false;
-            $new_arr = array();
+            $got    = false;
+            $newArr = [];
 
             foreach (array_reverse($vars['messages']) as $m) {
-                $new_arr[] = $m;
+                $newArr[] = $m;
                 if ($vars['new_message'] === $m) {
                     $got = true;
                     break;
@@ -335,60 +347,60 @@ class TicketEmail
             }
 
             if ($got) {
-                $vars['messages'] = array_reverse($new_arr);
+                $vars['messages'] = array_reverse($newArr);
             }
         }
 
-        if ($this->ticket_layout_manager) {
-            $layout_id = $this->ticket->department ? $this->ticket->department->id : null;
+        if ($this->ticketLayoutManager) {
+            $layoutId = $this->ticket->department ? $this->ticket->department->id : null;
 
-            if ($this->user_mode == self::MODE_AGENT) {
-                $layout = $this->ticket_layout_manager->getAgentLayouts()->getLayout($layout_id);
+            if ($this->userMode == self::MODE_AGENT) {
+                $layout = $this->ticketLayoutManager->getAgentLayouts()->getLayout($layoutId);
                 $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $this->ticket);
             } else {
-                $layout = $this->ticket_layout_manager->getUserLayouts()->getLayout($layout_id);
+                $layout = $this->ticketLayoutManager->getUserLayouts()->getLayout($layoutId);
                 $layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $this->ticket);
             }
 
-            if ($this->ticket_field_manager) {
-                $custom_fields = $this->ticket_field_manager->getDisplayArrayForObject($this->ticket);
+            if ($this->ticketFieldManager) {
+                $customFields = $this->ticketFieldManager->getDisplayArrayForObject($this->ticket);
             } else {
-                $custom_fields = array();
+                $customFields = [];
             }
 
-            if ($this->user_field_manager) {
-                $custom_user_fields = $this->user_field_manager->getDisplayArrayForObject($this->ticket->person);
+            if ($this->userFieldManager) {
+                $customUserFields = $this->userFieldManager->getDisplayArrayForObject($this->ticket->person);
             } else {
-                $custom_user_fields = array();
+                $customUserFields = [];
             }
 
             $vars['ticket_layout']      = $layout;
-            $vars['custom_fields']      = $custom_fields;
-            $vars['custom_user_fields'] = $custom_user_fields;
+            $vars['custom_fields']      = $customFields;
+            $vars['custom_user_fields'] = $customUserFields;
         }
 
-        $this->logger->info(sprintf('[TicketEmail] Template: %s -- Mode: %s', $this->template_name, $this->user_mode));
+        $this->logger->info(sprintf('[TicketEmail] Template: %s -- Mode: %s', $this->templateName, $this->userMode));
 
-        $to_name = $this->to_person->getDisplayName();
+        $toName = $this->toPerson->getDisplayName();
 
-        $state              = $this->ticket->getStateChangeRecorder();
-        $ticket_attachments = array();
-        if ($state->hasNewReply() && !$this->is_auto) {
-            $last_message = Arrays::getFirstItem($vars['messages']);
+        $state             = $this->ticket->getStateChangeRecorder();
+        $ticketAttachments = [];
+        if ($state->hasNewReply() && !$this->isAuto) {
+            $lastMessage = Arrays::getFirstItem($vars['messages']);
 
             // This check is because theoretically, the entire thread
             // could be agent notes (e.g., first message was turned into a note).
             // So if this is an email to a user, messages array will be empty
             // and this check will prevent warnings about trying to use a null $last_message.
 
-            if ($last_message) {
-                $this->logger->info(sprintf('[TicketEmail] New reply on #%d checking for attachments <= %d', $last_message->id, $this->max_attach_size));
-                if (count($last_message->attachments)) {
-                    $this->logger->info(sprintf('[TicketEmail] Message has %d attachments', count($last_message->attachments)));
-                    foreach ($last_message->attachments as $a) {
-                        if ($a->blob->filesize <= $this->max_attach_size) {
+            if ($lastMessage) {
+                $this->logger->info(sprintf('[TicketEmail] New reply on #%d checking for attachments <= %d', $lastMessage->id, $this->maxAttachSize));
+                if (count($lastMessage->attachments)) {
+                    $this->logger->info(sprintf('[TicketEmail] Message has %d attachments', count($lastMessage->attachments)));
+                    foreach ($lastMessage->attachments as $a) {
+                        if ($a->blob->filesize <= $this->maxAttachSize) {
                             $this->logger->info(sprintf('[TicketEmail] Adding attachment %s', $a->blob->filename));
-                            $ticket_attachments[$a->id] = $a;
+                            $ticketAttachments[$a->id] = $a;
                         } else {
                             $this->logger->info(sprintf('[TicketEmail] Skipping attachment %s', $a->blob->filename));
                         }
@@ -398,59 +410,59 @@ class TicketEmail
                 }
             }
 
-            if ($this->settings->get('core_tickets.enable_feedback') && $this->user_mode == 'user' && $last_message && $last_message->person->is_agent && !$last_message->is_agent_note) {
+            if ($this->settings->get('core_tickets.enable_feedback') && $this->userMode == 'user' && $lastMessage && $lastMessage->person->is_agent && !$lastMessage->is_agent_note) {
                 $vars['show_rating_link'] = true;
             }
         }
 
         // To user - use the selected email address on the ticket
-        if ($this->user_mode == self::MODE_USER) {
-            if ($this->ticket->person_email && $this->ticket->person_email->person === $this->to_person) {
-                $to_email = $this->ticket->person_email->email;
-                $this->logger->info(sprintf('[TicketEmail] to_email(1): %s', $to_email));
-            } elseif ($this->to_person->primary_email) {
-                $to_email = $this->to_person->primary_email->email;
-                $this->logger->info(sprintf('[TicketEmail] to_email(3): %s', $to_email));
+        if ($this->userMode == self::MODE_USER) {
+            if ($this->ticket->person_email && $this->ticket->person_email->person === $this->toPerson) {
+                $toEmail = $this->ticket->person_email->email;
+                $this->logger->info(sprintf('[TicketEmail] to_email(1): %s', $toEmail));
+            } elseif ($this->toPerson->primary_email) {
+                $toEmail = $this->toPerson->primary_email->email;
+                $this->logger->info(sprintf('[TicketEmail] to_email(3): %s', $toEmail));
             } else {
                 $this->logger->info(sprintf('[TicketEmail] to_email(4): no email'));
                 throw new \RuntimeException('no email address');
             }
 
-        // To agent
+            // To agent
         } else {
-            if (!$this->to_person || !$this->to_person->primary_email) {
+            if (!$this->toPerson || !$this->toPerson->primary_email) {
                 throw new \RuntimeException('No agent email to send to');
             }
 
-            $to_email = $this->to_person->primary_email->email;
+            $toEmail = $this->toPerson->primary_email->email;
         }
 
         $tac = null;
-        if ($this->user_mode == self::MODE_AGENT) {
-            $tac = TicketUtil::getTacForPerson($this->ticket, $this->to_person);
+        if ($this->userMode == self::MODE_AGENT) {
+            $tac = TicketUtil::getTacForPerson($this->ticket, $this->toPerson);
         }
         $vars['tac'] = $tac;
 
-        $this->sent_to_name  = $to_name;
-        $this->sent_to_email = $to_email;
-        $this->sent_with_ccs = array();
+        $this->sentToName  = $toName;
+        $this->sentToEmail = $toEmail;
+        $this->sentWithCcs = [];
 
         $message = $mailer->createMessage();
-        $this->logger->info(sprintf('[TicketEmail] To: %s -- Name: %s', $to_email, $to_name));
-        $message->setTo(array($to_email => $to_name));
+        $this->logger->info(sprintf('[TicketEmail] To: %s -- Name: %s', $toEmail, $toName));
+        $message->setTo([$toEmail => $toName]);
         $message->setContextId('ticket_gateway');
 
-        if ($ticket_attachments) {
-            $vars['attached_blobs'] = $ticket_attachments;
-            foreach ($ticket_attachments as $a) {
-                $ticketdisplay->setIgnoreAttachment($a);
+        if ($ticketAttachments) {
+            $vars['attached_blobs'] = $ticketAttachments;
+            foreach ($ticketAttachments as $a) {
+                $ticketDisplay->setIgnoreAttachment($a);
                 $message->attachBlob($a->blob, $a->blob->getDownloadUrl(true), $a->is_inline);
             }
         }
 
-        $message->setTemplate($this->template_name, $vars);
+        $message->setTemplate($this->templateName, $vars);
 
-        if ($this->user_mode == self::MODE_USER && $this->do_cc_users) {
+        if ($this->userMode == self::MODE_USER && $this->doCcUsers) {
             foreach ($this->ticket->getUserParticipants() as $p) {
                 if ($p->getPrimaryEmailAddress()) {
                     $cc_email = $p->getPrimaryEmailAddress();
@@ -459,12 +471,12 @@ class TicketEmail
                         continue;
                     }
 
-                    if ($this->is_auto && $p->disable_autoresponses) {
+                    if ($this->isAuto && $p->disable_autoresponses) {
                         $this->logger->info(sprintf('[TicketEmail] CC skipped because autoresponder: %s -- Name: %s', $cc_email, $cc_name));
                         continue;
                     }
 
-                    $this->sent_with_ccs[] = $cc_email;
+                    $this->sentWithCcs[] = $cc_email;
 
                     $message->addCc($cc_email, $cc_name);
                     $this->logger->info(sprintf('[TicketEmail] CC: %s -- Name: %s', $cc_email, $cc_name));
@@ -472,20 +484,20 @@ class TicketEmail
             }
         }
 
-        if (!$this->from_email_account || !$this->from_email_account->outgoing_account) {
-            $this->from_email_account = $this->email_accounts->getAccountForTicket($this->ticket);
+        if (!$this->fromEmailAccount || !$this->fromEmailAccount->outgoing_account) {
+            $this->fromEmailAccount = $this->emailAccounts->getAccountForTicket($this->ticket);
         }
 
-        if (!$this->from_email_account) {
+        if (!$this->fromEmailAccount) {
             $this->logger->warning(sprintf('[TicketEmail] No from email to send mail from!'));
             throw new \RuntimeException('No from email to send mail from');
         }
 
-        $from_email = $this->from_email_account->getUseEmailAddress();
-        $from_name  = $this->from_name;
+        $fromEmail = $this->fromEmailAccount->getUseEmailAddress();
+        $fromName  = $this->fromName;
 
-        $this->logger->info(sprintf('[TicketEmail] From: %s -- Name: %s', $from_email, $from_name));
-        $message->setFrom($from_email, $from_name);
+        $this->logger->info(sprintf('[TicketEmail] From: %s -- Name: %s', $fromEmail, $fromName));
+        $message->setFrom($fromEmail, $fromName);
 
         if ($tac) {
             $message->getHeaders()->get('Message-ID')->setId($tac->getUniqueEmailMessageId());
@@ -502,10 +514,10 @@ class TicketEmail
             $this->logger->info(sprintf('[TicketEmail] Is auto'));
         }
 
-        if ($this->user_mode == self::MODE_USER) {
-            $lang = $this->ticket->getRealLanguage() ?: $this->to_person->getLanguage();
+        if ($this->userMode == self::MODE_USER) {
+            $lang = $this->ticket->getRealLanguage() ?: $this->toPerson->getLanguage();
         } else {
-            $lang = $this->to_person->getLanguage();
+            $lang = $this->toPerson->getLanguage();
         }
 
         $this->logger->info(sprintf('[TicketEmail] Language: %s', $lang->sys_name));
@@ -526,10 +538,15 @@ class TicketEmail
             $id = $mailer->queueMessage($message);
             if ($id) {
                 $this->logger->info(sprintf('[TicketEmail] SendmailSource ID #%d', $id));
-                $this->sendmail_source_id = $id;
+                $this->sendmailSourceId = $id;
             }
         } else {
             $mailer->send($message);
+        }
+
+        /* If we added a brand in the stack we remove it */
+        if ($this->ticket->getBrand()) {
+            $this->brandStack->pop();
         }
 
         $this->logger->info(sprintf('[TicketEmail] Send took %.3fs', microtime(true) - $start));
@@ -540,7 +557,7 @@ class TicketEmail
      */
     public function getSentToEmail()
     {
-        return $this->sent_to_email;
+        return $this->sentToEmail;
     }
 
     /**
@@ -548,7 +565,7 @@ class TicketEmail
      */
     public function getSentToName()
     {
-        return $this->sent_to_name;
+        return $this->sentToName;
     }
 
     /**
@@ -556,7 +573,7 @@ class TicketEmail
      */
     public function getSentWithCcs()
     {
-        return $this->sent_with_ccs;
+        return $this->sentWithCcs;
     }
 
     /**
@@ -564,6 +581,6 @@ class TicketEmail
      */
     public function getSendmailSourceId()
     {
-        return $this->sendmail_source_id;
+        return $this->sendmailSourceId;
     }
 }

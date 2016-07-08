@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Person;
 use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -566,6 +567,7 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function date($date, $format = 'fulltime', $timezone = null)
     {
+        /** @var BrandContainer $brand */
         $brand = $this->container->get('brand_stack')->getActive();
         switch ($format) {
             case 'full':
@@ -719,7 +721,7 @@ class PortalSupportExtension extends \Twig_Extension
      */
     private function getActiveTheme()
     {
-        $brand_container = $this->container->get('brand_stack')->getActive();
+        $brand_container = $this->container->getBrandStack()->getActive();
         $brand_theme     = $this->container->get('portal_brand_theme_loader')->getPortalBrandTheme($brand_container->getBrand());
         $theme           = $brand_theme->getActiveTheme();
 
@@ -731,7 +733,7 @@ class PortalSupportExtension extends \Twig_Extension
      */
     private function getActiveThemeSet()
     {
-        $brand_container = $this->container->get('brand_stack')->getActive();
+        $brand_container = $this->container->getBrandStack()->getActive();
         $brand_theme     = $this->container->get('portal_brand_theme_loader')->getPortalBrandTheme($brand_container->getBrand());
         $themeSet        = $brand_theme->getActiveThemeSet();
 

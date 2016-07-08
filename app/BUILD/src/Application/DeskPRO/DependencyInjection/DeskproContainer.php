@@ -36,6 +36,7 @@ namespace Application\DeskPRO\DependencyInjection;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\App\AgentAppPermissions;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\Container;
@@ -728,6 +729,18 @@ class DeskproContainer extends Container
     }
 
     /**
+     * Get the BrandStack.
+     *
+     * @throws \Throwable
+     *
+     * @return BrandStack
+     */
+    public function getBrandStack()
+    {
+        return $this->get('brand_stack');
+    }
+
+    /**
      * Get the value of a brand setting.
      *
      * @param string $name    The name of the setting to get
@@ -755,7 +768,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the settings resolver system serivce.
+     * Get the settings resolver system service.
      *
      * @return \Application\DeskPRO\NewSettings\SettingsResolver
      */

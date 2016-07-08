@@ -86,7 +86,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      */
     public function getBrandStack()
     {
-        return $this->container->get('brand_stack');
+        return $this->container->getBrandStack();
     }
 
     /**
