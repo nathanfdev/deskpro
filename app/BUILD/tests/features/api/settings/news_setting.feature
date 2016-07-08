@@ -3,17 +3,19 @@ Feature: News brand settings Setup
 
   Background:
     Given I'm authenticated as admin
+    And no Brand records exist
+    And I have default brand
 
   Scenario: I get default brand settings
-    When I send a GET request to "/api/v2/settings/brands/1/portal/news"
+    When I send a GET request to "/api/v2/settings/brands/{defaultBrandId}/portal/news"
     Then the response should be in JSON
     And the response status code should be 200
 
   Scenario: I update default brand settings
-    When I send a POST request to "/api/v2/settings/brands/1/portal/news" with body:
+    When I send a POST request to "/api/v2/settings/brands/{defaultBrandId}/portal/news" with body:
     """
 {
-  "brand": "1",
+  "brand": "~defaultBrandId~",
   "enabled":true,
   "tab_enabled":false,
   "subscriptions":true
@@ -22,16 +24,13 @@ Feature: News brand settings Setup
     Then the response should be in JSON
     And the response status code should be 204
 
-
-  Scenario: I check updated default brand settings
-    When I send a GET request to "/api/v2/settings/brands/1/portal/news"
+    When I send a GET request to "/api/v2/settings/brands/{defaultBrandId}/portal/news"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.enabled" should be true
     And the JSON node "data.tab_enabled" should be false
     And the JSON node "data.subscriptions" should be true
 
-  Scenario: I create a new brand and update its settings
     When I send a POST request to "/api/v2/brands" with body:
     """
 {
@@ -53,7 +52,6 @@ Feature: News brand settings Setup
     Then the response should be in JSON
     And the response status code should be 204
 
-  Scenario: I check updated brand settings
     When I send a GET request to "/api/v2/settings/brands/{lastCreatedId}/portal/news"
     Then the response should be in JSON
     And the response status code should be 200
@@ -61,8 +59,7 @@ Feature: News brand settings Setup
     And the JSON node "data.tab_enabled" should be true
     And the JSON node "data.subscriptions" should be false
 
-  Scenario: I check that the default brand settings remain the same
-    When I send a GET request to "/api/v2/settings/brands/1/portal/news"
+    When I send a GET request to "/api/v2/settings/brands/{defaultBrandId}/portal/news"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.enabled" should be true
