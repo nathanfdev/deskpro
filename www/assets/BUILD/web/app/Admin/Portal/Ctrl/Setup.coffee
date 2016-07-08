@@ -52,6 +52,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       )
 
     createBrand: ->
+      if (!@settings.deskpro_name || !@settings.deskpro_url)
+        @Growl.error("You must specify a name and a url")
+        $('#helpdesk_name').focus()
+        return false
       brand = {
         name: @settings.deskpro_name,
         url: @settings.deskpro_url

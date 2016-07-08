@@ -64,6 +64,9 @@ define ['DeskPRO/Util/Util'], (Util)  ->
 
       if @brandId
         p = @Api2.sendGet('/settings/brands/'+@brandId+'/portal/general').success((res) ->
+          if me.brandId == 'new'
+            res.data.deskpro_url = ''
+            res.data.deskpro_name = ''
           me.settings = res.data
           d.resolve(me.settings)
           me.settingPromise[me.brandId] = null

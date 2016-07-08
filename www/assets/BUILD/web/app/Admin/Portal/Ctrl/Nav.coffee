@@ -39,10 +39,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     changeBrand: ->
       if @$scope.brandId == '-1'
-        if confirm "Do you want to create a new brand?"
-          @$state.go 'portal.setup', {brandId: 'new'}
-        else
-          @$scope.brandId = @$stateParams.brandId
+        @$state.go 'portal.setup', {brandId: 'new'}
       else if @$scope.brandId
         @$state.go 'portal.setup', {brandId: @$scope.brandId}
 

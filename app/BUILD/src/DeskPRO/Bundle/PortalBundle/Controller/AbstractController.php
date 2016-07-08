@@ -75,6 +75,8 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @param Person $person
+     *
      * @return \DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag
      */
     protected function getPermissionBag(Person $person = null)
@@ -163,16 +165,16 @@ class AbstractController extends BaseController
      *
      * @return \DeskPRO\Bundle\PortalBundle\Theme\ThemeView
      */
-    public function createThemeView(array $options = array())
+    public function createThemeView(array $options = [])
     {
         return $this->getThemeViewFactory()->createView($options);
     }
 
-    public function renderThemeView($template_name, array $options = array())
+    public function renderThemeView($template_name, array $options = [])
     {
-        $page_vars = array(
+        $page_vars = [
             'page' => $this->createThemeView($options),
-        );
+        ];
 
         // since "page" is a reserved template var, we need to rename it on the way in.
         // Templates use "pg" instead of "page" for that option name.
@@ -199,7 +201,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @param $setting
+     * @param      $setting
      * @param null $default
      *
      * @return mixed
@@ -258,7 +260,7 @@ class AbstractController extends BaseController
      *
      * @return RedirectResponse
      */
-    protected function redirectToRoute($route, array $parameters = array(), $status = 302)
+    protected function redirectToRoute($route, array $parameters = [], $status = 302)
     {
         return $this->redirect($this->generateUrl($route, $parameters), $status);
     }
@@ -431,19 +433,19 @@ class AbstractController extends BaseController
      * Leave language null unless you need a specific lang. The user's lang should already be in the
      * LanguageStack.
      *
-     * @param $phrase
+     * @param          $phrase
      * @param array    $vars
      * @param Language $lang
      *
      * @return string
      */
-    protected function phrase($phrase, array $vars = array(), Language $lang = null)
+    protected function phrase($phrase, array $vars = [], Language $lang = null)
     {
         return $this->get('language_manager')->phrase($phrase, $vars, $lang);
     }
 
     /**
-     * @param $object
+     * @param               $object
      * @param null          $property
      * @param Language|null $lang
      *
@@ -456,7 +458,7 @@ class AbstractController extends BaseController
 
     protected function makeJsonResponse(array $array)
     {
-        $response = new JsonResponse(array('data' => $array));
+        $response = new JsonResponse(['data' => $array]);
 
         // if its 5.4+ make the results pretty
         if (constant('JSON_PRETTY_PRINT')) {
@@ -512,7 +514,7 @@ class AbstractController extends BaseController
 
     /**
      * @param ContentAbstract $content
-     * @param $visitor_id
+     * @param                 $visitor_id
      *
      * @return \Application\DeskPRO\Entity\Rating|null
      */
@@ -548,6 +550,6 @@ class AbstractController extends BaseController
             }
         }
 
-        return array($show_rating_counts, $rating_counts);
+        return [$show_rating_counts, $rating_counts];
     }
 }

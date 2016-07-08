@@ -56,7 +56,7 @@
                     <div class="bucket-third">
                         <div class="inline-input">
                             <label>{{ phrase('admin.setup.helpdesk_name') }}:</label>
-                            <input type="text" placeholder="{{ phrase('admin.setup.helpdesk_name') }}" ng-model="Ctrl.settings.deskpro_name" />
+                            <input id="helpdesk_name" type="text" placeholder="{{ phrase('admin.setup.helpdesk_name') }}" ng-model="Ctrl.settings.deskpro_name" />
                         </div>
                     </div>
 
@@ -85,8 +85,17 @@
                 <div class="row" ng-show="brand_id != 'new'">
                     <div class="bucket-third">
                         <div class="inline-input">
+                            <label>{{ phrase('admin.setup.view_brand') }}:</label>
+                            <a class="btn btn-primary" href="/brand-{{ ng_var('brand_id') }}" target="_blank">Portal</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" ng-show="brand_id != 'new'">
+                    <div class="bucket-third">
+                        <div class="inline-input">
                             <label>{{ phrase('admin.setup.brand_logo') }}:</label>
-                            <input type="checkbox" ng-model="Ctrl.settings.enable_brand_logo" />{{ phrase('admin.setup.enable_brand_logo') }}
+                            <input type="checkbox" ng-model="Ctrl.settings.enable_brand_logo" />&nbsp;{{ phrase('admin.setup.enable_brand_logo') }}
                         </div>
                         <div class="inline-input" ng-show="Ctrl.settings.enable_brand_logo">
                             <label></label>

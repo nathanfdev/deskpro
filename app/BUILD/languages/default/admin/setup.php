@@ -53,6 +53,7 @@ return [
     'admin.setup.helpdesk_name_help'                => 'This is the name of your helpdesk.',
     'admin.setup.helpdesk_url'                      => 'Helpdesk URL',
     'admin.setup.helpdesk_url_help'                 => 'This is the URL to your helpdesk.',
+    'admin.setup.view_brand'                        => 'View brand portal',
     'admin.setup.helpdesk_portal'                   => 'Helpdesk Portal',
     'admin.setup.brand_logo'                        => 'Brand logo',
     'admin.setup.brand_logo_help'                   => 'This is the logo of your brand that will be shown in the agent section',
