@@ -1,17 +1,17 @@
-define ['toastr'], (toastr) ->
+define ['toastr', 'underscore'], (toastr, _) ->
   class DeskPRO_Main_Service_Growl
     constructor: (options) ->
       toastr.options = _.defaults(options || {}, {
-        closeButton:     true,
-        positionClass:  'toast-bottom-right',
-        showDuration:    250,
-        hideDuration:    500,
-        timeOut:         3000,
+        closeButton: true,
+        positionClass: 'toast-bottom-right',
+        showDuration: 250,
+        hideDuration: 500,
+        timeOut: 3000,
         extendedTimeOut: 600,
-        showEasing:      "swing",
-        hideEasing:      "linear",
-        showMethod:      "slideDown",
-        hideMethod:      "fadeOut"
+        showEasing: "swing",
+        hideEasing: "linear",
+        showMethod: "slideDown",
+        hideMethod: "fadeOut"
       })
 
 
@@ -22,7 +22,7 @@ define ['toastr'], (toastr) ->
     ###
     _getContent: (content) ->
       if _.isObject(content)
-        title   = content.title   || null
+        title = content.title || null
         message = content.message || null
       else
         title   = null

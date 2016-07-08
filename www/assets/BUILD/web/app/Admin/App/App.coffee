@@ -1,5 +1,6 @@
 define [
   'angular',
+  'moment',
   'Admin/App/AdminModule',
 
   'Admin/App/SetupDataServices',
@@ -13,6 +14,7 @@ define [
   'DeskPRO/Util/Util'
 ], (
   angular,
+  moment,
   AdminModule,
 
   SetupDataServices,
