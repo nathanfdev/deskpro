@@ -56,6 +56,7 @@ class ArticleCategory extends CategoryAbstract
     protected $parent;
 
     /**
+     * @JMS\Expose()
      * @JMS\Groups("articles_categories")
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\ArticleCategory>>")
      */
@@ -64,6 +65,7 @@ class ArticleCategory extends CategoryAbstract
     /**
      * Articles belongs this category.
      *
+     * @JMS\Expose()
      * @JMS\Groups("articles_categories")
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Article>>")
      *
@@ -74,6 +76,7 @@ class ArticleCategory extends CategoryAbstract
     /**
      * Usergroups that has access to this category.
      *
+     * @JMS\Expose()
      * @JMS\Groups("articles_categories")
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Usergroup>>")
      *
@@ -84,6 +87,7 @@ class ArticleCategory extends CategoryAbstract
     /**
      * Brand linked to the category.
      *
+     * @JMS\Expose()
      * @JMS\Groups("articles_categories")
      * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
      *
@@ -96,6 +100,7 @@ class ArticleCategory extends CategoryAbstract
      * are considered agent KB articles and wont be displayed in
      * the user interface.
      *
+     * @JMS\Expose()
      * @JMS\Groups("articles_categories")
      * @JMS\Type("boolean")
      *
@@ -107,6 +112,7 @@ class ArticleCategory extends CategoryAbstract
      * If this is true, then all the articles and categories under this category
      * is treated as a book (aka manual).
      *
+     * @JMS\Expose()
      * @JMS\Groups("articles_categories")
      * @JMS\Type("boolean")
      *
@@ -118,6 +124,7 @@ class ArticleCategory extends CategoryAbstract
      * The template suffix to use when rendering the category, and articles within
      * the category.
      *
+     * @JMS\Expose()
      * @JMS\Groups("articles_categories")
      * @JMS\Type("string")
      *

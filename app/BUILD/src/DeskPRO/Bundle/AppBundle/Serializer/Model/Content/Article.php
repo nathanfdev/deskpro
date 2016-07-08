@@ -26,36 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
-use Application\DeskPRO\Entity\Article;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ArticleCsv;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Content as ContentModel;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Application\DeskPRO\Entity\Article as ArticleEntity;
+use Application\DeskPRO\Entity\ArticleCategory;
+use JMS\Serializer\Annotation as JMS;
 
-class ArticleHandler extends AbstractEntityHandler
+/**
+ * Class Article.
+ */
+class Article extends ContentAbstract
 {
     /**
-     * {@inheritdoc}
+     * Content category.
      *
-     * @param Article $entity
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\ArticleCategory>>")
+     *
+     * @var ArticleCategory[]
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
-    {
-        $serializerClass = $context->getMappedClass(get_class($entity));
-
-        if ($serializerClass === ArticleCsv::class) {
-            return new ArticleCsv($entity);
-        }
-
-        return new ContentModel($entity);
-    }
+    protected $categories;
 
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * @param ArticleEntity $entity
      */
-    public static function getClassNames()
+    public function __construct(ArticleEntity $entity)
     {
-        return [Article::class];
+        parent::__construct($entity);
+        $this->categories = $entity->getCategories();
     }
 }

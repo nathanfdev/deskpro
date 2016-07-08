@@ -28,56 +28,32 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
-use Application\DeskPRO\Entity\ContentAbstract;
-use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\News as NewsEntity;
+use Application\DeskPRO\Entity\NewsCategory;
 use JMS\Serializer\Annotation as JMS;
 
-class ContentCsv extends ContentAbstract
+/**
+ * Class News.
+ */
+class News extends ContentAbstract
 {
-    /**
-     * Person created this content first time.
-     *
-     * @JMS\Type("string")
-     */
-    protected $person;
-
-    /**
-     * Person created this content first time.
-     *
-     * @JMS\Type("string")
-     */
-    protected $language;
-
     /**
      * Content category.
      *
-     * @JMS\Type("string")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\NewsCategory>")
+     *
+     * @var NewsCategory
      */
     protected $category;
 
     /**
      * Constructor.
      *
-     * @param \Application\DeskPRO\Entity\ContentAbstract $entity
+     * @param NewsEntity $entity
      */
-    public function __construct(ContentAbstract $entity)
+    public function __construct(NewsEntity $entity)
     {
         parent::__construct($entity);
-
-        $this->person   = $entity->getPerson() ? $entity->getPerson()->getName() : '';
-        $this->language = $entity->getLanguage() ? $entity->getLanguage()->getTitle() : '';
-        $this->content  = mb_substr($entity->getContentPlain(), 0, 50);
-        $this->category = $this->getCategory($entity);
-    }
-
-    /**
-     * @param ContentAbstract|News|Download $entity
-     *
-     * @return string
-     */
-    protected function getCategory($entity)
-    {
-        return $entity->getCategory() ? $entity->getCategory()->getTitle() : '';
+        $this->category = $entity->getCategory();
     }
 }

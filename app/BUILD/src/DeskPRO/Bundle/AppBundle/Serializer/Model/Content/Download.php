@@ -26,38 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
-use Application\DeskPRO\Entity\ContentAbstract;
-use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\News;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Content as ContentModel;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentCsv;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Application\DeskPRO\Entity\Download as DownloadEntity;
+use Application\DeskPRO\Entity\DownloadCategory;
+use JMS\Serializer\Annotation as JMS;
 
-class ContentHandler extends AbstractEntityHandler
+/**
+ * Class Download.
+ */
+class Download extends ContentAbstract
 {
     /**
-     * {@inheritdoc}
-     * 
-     * @param ContentAbstract $entity
+     * Content category.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\DownloadCategory>")
+     *
+     * @var DownloadCategory
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
-    {
-        $serializerClass = $context->getMappedClass(get_class($entity));
-
-        if ($serializerClass === ContentCsv::class) {
-            return new ContentCsv($entity);
-        }
-
-        return new ContentModel($entity);
-    }
+    protected $category;
 
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * @param DownloadEntity $entity
      */
-    public static function getClassNames()
+    public function __construct(DownloadEntity $entity)
     {
-        return [News::class, Download::class];
+        parent::__construct($entity);
+        $this->category = $entity->getCategory();
     }
 }
