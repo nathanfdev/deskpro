@@ -38,6 +38,7 @@ use Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService;
 use Application\DeskPRO\DependencyInjection\SystemServices\OrganizationDataService;
 use Application\DeskPRO\DependencyInjection\SystemServices\UsergroupDataService;
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -50,6 +51,9 @@ use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\EntityRepository\TextSnippetCategory as TextSnippetCategoryRepository;
 use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\People\PrefNoticeSet;
+use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
+use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Doctrine\DBAL\Connection;
 use DpSys\LowError\SystemErrorHandler;
@@ -212,6 +216,7 @@ class MainController extends AbstractController
             'agent_chat_depmap'   => $agent_chat_depmap,
             'ticket_snippet_cats' => $ticket_snippet_cats,
             'chat_snippet_cats'   => $chat_snippet_cats,
+            'brand_app_settings'  => $this->getBrandAppSettings(),
         ]);
     }
 
@@ -729,5 +734,41 @@ class MainController extends AbstractController
         return $this->createJsonResponse([
             'results' => $this->renderSearchResults('person', $members),
         ]);
+    }
+
+    protected function getBrandAppSettings()
+    {
+        $appSettings = [
+            PortalSettingsResolver::APPS_KB        => false,
+            PortalSettingsResolver::APPS_DOWNLOADS => false,
+            PortalSettingsResolver::APPS_NEWS      => false,
+        ];
+
+        /** @var Brand[] $brands */
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
+        /** @var BrandStack $brandStack */
+        $brandStack = $this->get('brand_stack');
+
+        /** @var BrandAwareSettingsResolver $brandSettingsResolver */
+        $brandSettingsResolver = $this->get('brand_aware_settings_resolver');
+
+        $selectedBrandId = $this->in->getUInt('brand_id');
+
+        if (!$selectedBrandId) {
+            $selectedBrandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+        }
+
+        foreach ($brands as $brand) {
+            if ($brand->getId() == $selectedBrandId) {
+                $brandStack->push($brand);
+                foreach ($appSettings as $key => &$setting) {
+                    $setting = $setting || $brandSettingsResolver->getSetting($key);
+                }
+                $brandStack->pop();
+            }
+        }
+
+        return $appSettings;
     }
 }

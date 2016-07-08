@@ -30,7 +30,7 @@
 				</li>
 			{% endif %}
 
-			{% if app.getSetting('core.apps_kb') or app.getSetting('core.apps_news') or app.getSetting('core.apps_downloads') %}
+			{% if brand_app_settings['core.apps_kb'] or brand_app_settings['core.apps_news'] or brand_app_settings['core.apps_downloads'] %}
 				<li id="publish_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Publish">
 					<span class="count-badge" style="display: none"><span></span></span>
 					<a title="{{ phrase('agent.chrome.nav_publish') }}"><i class="app-icon app-icon-publish"></i></a>
