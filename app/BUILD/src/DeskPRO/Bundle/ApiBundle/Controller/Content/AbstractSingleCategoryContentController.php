@@ -45,6 +45,13 @@ abstract class AbstractSingleCategoryContentController extends AbstractContentCo
     {
         parent::applyListFilters($qb, $alias, $request);
         ListHelper::applyInListFilter(new RequestQueryContext($qb, $alias, $request), 'category');
+
+        $brands = $request->query->get('brands');
+        if ($brands) {
+            $qb->join("$alias.category", 'category');
+            $qb->andWhere('category.brand IN (:brand_ids)');
+            $qb->setParameter('brand_ids', $brands);
+        }
     }
 
     /**

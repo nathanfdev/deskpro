@@ -71,3 +71,44 @@ Feature: /articles, /news, /downloads endpoints
       | articles  | article_category  |
       | news      | news_category     |
       | downloads | download_category |
+
+  Scenario Outline: I filter by category brand
+    Given only the following Brand records exist:
+      | #  | Name    |
+      | b1 | Brand 1 |
+      | b2 | Brand 2 |
+      | b3 | Brand 3 |
+    And only the following <category_entity> records exist:
+      | #  | Title      | Brand |
+      | c1 | Category 1 | {b1}  |
+      | c2 | Category 2 | {b1}  |
+      | c3 | Category 3 | {b2}  |
+      | c4 | Category 3 | NULL  |
+    And only the following <entity> records exist:
+      | #  | Title   | <category_prop> |
+      | a1 | Title 1 | {c1}            |
+      | a2 | Title 2 | {c1}            |
+      | a3 | Title 3 | {c1}            |
+      | a4 | Title 4 | NULL            |
+      | a5 | Title 5 | {c2}            |
+      | a6 | Title 6 | {c2}            |
+      | a7 | Title 7 | {c3}            |
+      | a8 | Title 8 | {c4}            |
+
+    When I send a GET request to "/api/v2/<endpoint>"
+    Then the response status code should be 200
+    And the JSON node "data" should have 8 elements
+
+    When I send a GET request to "/api/v2/<endpoint>?brands[]={b1}&brands[]={b2}"
+    Then the response status code should be 200
+    And the JSON node "data" should have 6 elements
+
+    When I send a GET request to "/api/v2/<endpoint>?brands[]={b3}"
+    Then the response status code should be 200
+    And the JSON node "data" should have 0 elements
+
+    Examples:
+      | endpoint  | category_entity  | entity   | category_prop |
+      | articles  | ArticleCategory  | Article  | To Category   |
+      | news      | NewsCategory     | News     | Category      |
+      | downloads | DownloadCategory | Download | Category      |

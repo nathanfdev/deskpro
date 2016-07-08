@@ -129,6 +129,9 @@ class ArticleCategory extends CategoryAbstract
      */
     protected $template_suffix = '';
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->articles   = new ArrayCollection();
