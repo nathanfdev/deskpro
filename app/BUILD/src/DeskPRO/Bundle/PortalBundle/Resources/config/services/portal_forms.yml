@@ -107,7 +107,7 @@ services:
   form.request_password_reset:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PasswordResetRequestType
     tags:
-      - { name: form.type, alias: request_password_reset }
+      - { name: form.type }
     arguments:
       - "@captcha_decider"
       - "@language_manager"
