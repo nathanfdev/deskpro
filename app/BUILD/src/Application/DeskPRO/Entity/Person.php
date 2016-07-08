@@ -3158,11 +3158,19 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         }
     }
 
+    /**
+     * @return \DateTime
+     */
     public function getDateTime()
     {
         return new \DateTime('now', $this->getDateTimezone());
     }
 
+    /**
+     * @param $time
+     *
+     * @return \DateTime
+     */
     public function getDateForTime($time)
     {
         return new \DateTime($time, $this->getDateTimezone());
