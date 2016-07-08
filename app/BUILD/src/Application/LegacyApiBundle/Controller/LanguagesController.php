@@ -577,7 +577,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
         return $this->createJsonResponse(array(
             'phrase_groups' => array(
                 'object' => $object_groups,
-                'user'   => array_merge($phrase_groups['user'], $phrase_groups['portal']),
+                'user'   => $phrase_groups['portal'],
                 'agent'  => $phrase_groups['agent'],
                 'admin'  => $phrase_groups['admin'],
             ),

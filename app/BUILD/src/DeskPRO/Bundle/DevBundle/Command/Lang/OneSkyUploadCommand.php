@@ -33,8 +33,10 @@
 namespace DeskPRO\Bundle\DevBundle\Command\Lang;
 
 use Application\DeskPRO\Languages\LangPackInfo;
+use DeskPRO\Bundle\DevBundle\Language\LangPhpFileCompiler;
 use DeskPRO\Bundle\DevBundle\Language\OneSky;
 use DeskPRO\Bundle\DevBundle\Language\PhraseProject;
+use DeskPRO\Component\Filesystem\TmpDir;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -96,6 +98,8 @@ class OneSkyUploadCommand extends ContainerAwareCommand
         $output->writeln(sprintf('<info>Uploading %s (%s)</info>', $lang['title'], $locale));
         $output->writeln(sprintf("Path: %s\n", $langDir, $locale));
 
+        $compiler = new LangPhpFileCompiler();
+
         foreach ($projectNames as $projectName) {
             $projectId = $onesky->getProjectId($projectName);
             $output->writeln(sprintf('<info>Uploading files in project: %s (%s)</info>', $projectName, $projectId));
@@ -106,18 +110,30 @@ class OneSkyUploadCommand extends ContainerAwareCommand
                 $projectName
             );
 
+            $tmpDir = TmpDir::create($this->getContainer()->get('deskpro.app_env')->getUserTmpDir());
+
             foreach ($project->getFiles() as $f) {
                 $friendlyPath = str_replace($langDir.'/', '', str_replace('\\', '/', $f->getRealPath()));
-                $output->write(sprintf('Uploading %-40s ... ', $friendlyPath));
-                $upStartTime = microtime(true);
-                $onesky->files('upload', [
-                    'project_id'             => $projectId,
-                    'file'                   => $f->getRealPath(),
-                    'file_format'            => 'PHP',
-                    'locale'                 => $locale,
-                    'is_keeping_all_strings' => !$cleanup,
-                ]);
-                $output->writeln(sprintf('Done in %.3fs', microtime(true) - $upStartTime));
+                $output->write(sprintf('Processing %-40s ... ', $friendlyPath));
+
+                $fileId         = $f->getBasename('.php');
+                $groupedPhrases = $project->groupPhrasesFromFile($f);
+
+                foreach ($groupedPhrases as $group => $phrases) {
+                    $output->write(sprintf('           %-40s ... ', $friendlyPath));
+                    $filePath = $tmpDir.DIRECTORY_SEPARATOR."{$fileId}_{$group}.php";
+                    file_put_contents($filePath, $compiler->compilePhpCode($phrases));
+
+                    $upStartTime = microtime(true);
+                    $onesky->files('upload', [
+                        'project_id'             => $projectId,
+                        'file'                   => $filePath,
+                        'file_format'            => 'PHP',
+                        'locale'                 => $locale,
+                        'is_keeping_all_strings' => !$cleanup,
+                    ]);
+                    $output->writeln(sprintf('Done in %.3fs', microtime(true) - $upStartTime));
+                }
             }
 
             $output->writeln(sprintf("All files in project done in %.3fs\n", microtime(true) - $projectStartTime));

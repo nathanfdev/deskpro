@@ -32,6 +32,16 @@ use DeskPRO\Component\Util\MapUtils;
 
 class LangPhpFileCompiler
 {
+    private static $groupFileMap = [
+        'adm'     => 'admin.php',
+        'admin'   => 'admin.php',
+        'api'     => 'api.php',
+        'agent'   => 'agent.php',
+        'general' => 'general.php',
+        'portal'  => 'portal.php',
+        'user'    => 'portal.php',
+    ];
+
     /**
      * Given a phrase name, get the filename it should be included in.
      *
@@ -45,7 +55,7 @@ class LangPhpFileCompiler
     {
         $parts = explode('.', $phraseName, 3);
 
-        return $parts[0].'/'.$parts[1].'.php';
+        return isset(self::$groupFileMap[$parts[0]]) ? self::$groupFileMap[$parts[0]] : self::$groupFileMap['general'];
     }
 
     /**

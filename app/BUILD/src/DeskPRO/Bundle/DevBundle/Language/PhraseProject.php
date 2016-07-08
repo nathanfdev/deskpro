@@ -47,47 +47,25 @@ class PhraseProject
     {
         $projectIds = (array) $projectId;
 
-        $dirs = [];
-
         foreach ($projectIds as $projectId) {
             switch ($projectId) {
                 case 'portal':
                 case 'user': // user is old alias for portal
-                    $dirs = array_merge($dirs, [
-                        $langDir.'/portal',
-                        $langDir.'/user',
-                    ]);
+                    $files = Finder::create()->in($langDir)->files()->name('portal.php');
                     break;
 
                 case 'agent':
-                    $dirs = array_merge($dirs, [
-                        $langDir.'/agent',
-                    ]);
+                    $files = Finder::create()->in($langDir)->files()->name('agent.php');
                     break;
 
                 case 'other':
-                    $dirs = array_merge($dirs, [
-                        $langDir.'/adm',
-                        $langDir.'/admin',
-                        $langDir.'/api',
-                    ]);
+                    $files = Finder::create()->in($langDir)->files()->name('/(admin|api|general)\.php/');
                     break;
 
                 default:
                     throw new \InvalidArgumentException();
             }
         }
-
-        $dirs = array_filter($dirs, function ($v) { return is_dir($v); });
-
-        if (!$dirs) {
-            return new self([]);
-        }
-
-        $files = Finder::create()
-            ->in($dirs)
-            ->files()
-            ->name('*.php');
 
         return new self(iterator_to_array($files));
     }
@@ -108,6 +86,28 @@ class PhraseProject
     public function getFiles()
     {
         return $this->files;
+    }
+
+    /**
+     * @param \SplFileInfo $file
+     *
+     * @return array
+     */
+    public function groupPhrasesFromFile(\SplFileInfo $file)
+    {
+        $grouped = [];
+
+        $phrases = require $file->getRealPath();
+        foreach ($phrases as $phraseId => $phrase) {
+            $parts = explode('.', $phraseId);
+            if (!isset($grouped[$parts[1]])) {
+                $grouped[$parts[1]] = [];
+            }
+
+            $grouped[$parts[1]][$phraseId] = $phrase;
+        }
+
+        return $grouped;
     }
 
     /**
@@ -147,8 +147,8 @@ class PhraseProject
      *
      * @return string
      */
-    public static function getPathFileId(\SplFileInfo $file)
+    private static function getPathFileId(\SplFileInfo $file)
     {
-        return basename($file->getPath()).'/'.$file->getFilename();
+        return $file->getFilename();
     }
 }

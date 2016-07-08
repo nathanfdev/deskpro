@@ -37,7 +37,6 @@ use DeskPRO\Bundle\DevBundle\Language\LangPhpFileCompiler;
 use DeskPRO\Bundle\DevBundle\Language\OneSky;
 use DeskPRO\Component\Util\DebugUtils;
 use DeskPRO\Component\Util\ListUtils;
-use DeskPRO\Component\Util\MapUtils;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -142,6 +141,8 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
             $locale  = $lang['locale'];
             $langDir = str_replace('\\', '/', $langPacks->getLangDir().'/'.$langId);
 
+            $groupedPhrases = [];
+
             $output->writeln(sprintf('******************** Language: %s (%s) ********************', $langId, $locale));
 
             foreach ($projectNames as $projectName) {
@@ -169,15 +170,13 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
                             if (!$phrases) {
                                 $output->writeln('Empty file');
                             } else {
-                                $targetFileName = $langFileCompiler->getFilenameFromPhraseName(MapUtils::firstKey($phrases));
-                                $phpCode        = $langFileCompiler->compilePhpCode($phrases);
-
-                                $targetDir = basename($langDir.'/'.$targetFileName);
-                                if (!is_dir($targetDir)) {
-                                    mkdir($targetDir, 0755);
+                                foreach ($phrases as $phraseId => $phrase) {
+                                    $fileId = $langFileCompiler->getFilenameFromPhraseName($phraseId);
+                                    if (!isset($groupedPhrases[$fileId])) {
+                                        $groupedPhrases[$fileId] = [];
+                                    }
+                                    $groupedPhrases[$fileId][$phraseId] = $phrase;
                                 }
-
-                                file_put_contents($langDir.'/'.$targetFileName, $phpCode);
                                 $output->writeln('Done');
                             }
                         }
@@ -189,6 +188,19 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
                 }
 
                 $output->writeln(sprintf("All files in project done in %.3fs\n", microtime(true) - $projectStartTime));
+            }
+
+            $output->writeln('Writing lang files to filesystem...');
+
+            foreach ($groupedPhrases as $targetFileName => $phrases) {
+                $phpCode = $langFileCompiler->compilePhpCode($phrases);
+
+                $targetDir = basename($langDir.'/'.$targetFileName);
+                if (!is_dir($targetDir)) {
+                    mkdir($targetDir, 0755);
+                }
+
+                file_put_contents($langDir.'/'.$targetFileName, $phpCode);
             }
         }
 
