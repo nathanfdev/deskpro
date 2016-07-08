@@ -175,6 +175,9 @@ class Boot
 
         $proxies     = [];
         $proxyConfig = $env->getConfig('env.trust_proxy_data', []);
+        if (empty($proxyConfig)) {
+            $proxyConfig = $env->getConfig('settings.trust_proxy_data', []);
+        }
         foreach ($proxyConfig as $item) {
 
             // Config can contain file paths to read proxies from e.g. @/etc/proxy_list.php
