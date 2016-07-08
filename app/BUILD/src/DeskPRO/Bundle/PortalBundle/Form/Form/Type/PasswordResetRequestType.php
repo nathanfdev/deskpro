@@ -35,6 +35,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class PasswordResetRequestType.
@@ -69,7 +70,11 @@ class PasswordResetRequestType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('email', EmailType::class, [
-            'label' => $this->languageManager->phrase('portal.forms.label_email'),
+            'label'       => $this->languageManager->phrase('portal.forms.label_email'),
+            'constraints' => [
+                new Assert\NotBlank(),
+                new Assert\Email(),
+            ],
         ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
