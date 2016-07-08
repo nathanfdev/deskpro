@@ -1,1 +1,1 @@
-../../vendor/bin/phpcov
+../../vendor/phpunit/phpcov/phpcov

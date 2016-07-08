@@ -100,7 +100,7 @@
     "behat/mink-selenium2-driver": "^1.2",
     "vipsoft/code-coverage-extension": "*@dev",
     "sensiolabs/behat-page-object-extension": "2.0.*@dev",
-    "fabpot/php-cs-fixer": "^1.10",
+    "friendsofphp/php-cs-fixer": "^1.11",
     "behat/mink-goutte-driver": "^1.2",
     "onesky/api-library-php5": "^1.0"
   },
