@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Statement;
 
 use Application\DeskPRO\App;
@@ -174,6 +175,7 @@ class Display
         'ban_emails'                  => 'DeskPRO:BanEmail',
         'ban_ips'                     => 'DeskPRO:BanIp',
         'blobs'                       => 'DeskPRO:Blob',
+        'brands'                      => 'DeskPRO:Brand',
         'chat_conversations'          => 'DeskPRO:ChatConversation',
         'chat_messages'               => 'DeskPRO:ChatMessage',
         'custom_data_article'         => 'DeskPRO:CustomDataArticle',
