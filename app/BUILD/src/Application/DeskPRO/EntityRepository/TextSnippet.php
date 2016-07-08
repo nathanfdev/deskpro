@@ -247,15 +247,19 @@ class TextSnippet extends AbstractEntityRepository
             );
 
             foreach ($translation as $langId => $values) {
+                if (empty($langLocales[$langId])) {
+                    // old records from a deleted lang
+                    continue;
+                }
                 $data['title'][] = array(
                     'language_id' => $langId,
                     'locale'      => $langLocales[$langId],
-                    'value'       => @$values['title'],
+                    'value'       => $values['title'],
                 );
                 $data['snippet'][] = array(
                     'language_id' => $langId,
                     'locale'      => $langLocales[$langId],
-                    'value'       => @$values['snippet'],
+                    'value'       => $values['snippet'],
                 );
             }
 
