@@ -1,13 +1,13 @@
-@new
 Feature: /ticket_filters_counts endpoint
   To legacy ticket filters grouping count
   As an API user
   I want to check endpoint
 
   Background:
-    Given I'm authenticated as admin
+    Given I install the api data set
+    And there are no Person records
+    And I'm authenticated as admin
     And there are no Ticket records
-    And I re-fill ticket search table
 
   Scenario: I retrieve list of ticket filters counts
     Given I have a Ticket record referenced as ticket_1
