@@ -3,7 +3,7 @@ var webpack = require('webpack');
 
 module.exports = {
   devtool: 'eval',
-  entry:   './compiled/Admin/AdminApp.js',
+  entry:   './es6/Admin/AdminApp.js',
   output:  {
     path:              './webpack/',
     filename:          'app.bundle.js',
@@ -12,7 +12,8 @@ module.exports = {
   module:  {
     loaders: [
       { test: /[\/]angular\.js$/, loader: "exports?angular!imports?jquery" },
-      { test: /jquery\.min\.js$/, loader: 'expose?jQuery!expose?$' }
+      { test: /jquery\.min\.js$/, loader: 'expose?jQuery!expose?$' },
+      { test: path.join(__dirname, 'es6'), loader: 'babel-loader' }
     ]
   },
   plugins: [
