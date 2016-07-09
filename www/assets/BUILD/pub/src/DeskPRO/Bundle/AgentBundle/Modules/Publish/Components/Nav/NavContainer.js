@@ -1,38 +1,30 @@
 import React, { Component, PropTypes } from 'react';
-import * as actions from '../../Actions/publishNavActions';
-import { Nav } from './Nav';
 import { connect } from 'react-redux';
+import { initialLoad, setMine } from '../../Actions/publishNavActions';
+import { Nav } from './Nav';
 
 @connect(state => ({
   isLoaded:  state.Publish.nav.getIn(['async', 'done']),
   articles:  state.Publish.nav.get('articles'),
   news:      state.Publish.nav.get('news'),
   downloads: state.Publish.nav.get('downloads'),
-  todo:      state.Publish.nav.get('todo'),
-  grouping:  state.Publish.nav.get('grouping')
+  todo:      state.Publish.nav.get('todo')
 }))
-
 export class NavContainer extends Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    grouping: PropTypes.object.isRequired
+    dispatch: PropTypes.func.isRequired
   };
 
-  componentDidMount = () => {
-    const { dispatch } = this.props;
-    dispatch(actions.initialLoad());
+  componentDidMount() {
+    this.props.dispatch(initialLoad());
   };
 
   setMine = isMine => {
-    this.props.dispatch(actions.setMine(isMine));
+    this.props.dispatch(setMine(isMine));
   };
 
-  render = () =>
-    (<Nav
-      {...this.props}
-      grouping={this.props.grouping}
-      setMine={this.setMine}
-    />);
-
+  render() {
+    return <Nav {...this.props} setMine={this.setMine} />;
+  }
 }
