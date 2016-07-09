@@ -48,16 +48,24 @@ class CaptchaEventListenerTest extends PortalTestCase
 {
     protected function getRateLimitMaxAttempts($type)
     {
-        return $this->get('settings_resolver')->getGlobalSettings()->get(
-            'rate_limit.'.$type.'.limit'
-        );
+        if ($type === AntiAbuse::ACTION_LOGIN) {
+            $key = 'rate_limit.'.$type.'.guest.limit';
+        } else {
+            $key = 'rate_limit.'.$type.'.limit';
+        }
+
+        return $this->get('settings_resolver')->getGlobalSettings()->get($key);
     }
 
     protected function getRateLimitResponse($type)
     {
-        return $this->get('settings_resolver')->getGlobalSettings()->get(
-            'rate_limit.'.$type.'.response'
-        );
+        if ($type === AntiAbuse::ACTION_LOGIN) {
+            $key = 'rate_limit.'.$type.'.guest.response';
+        } else {
+            $key = 'rate_limit.'.$type.'.response';
+        }
+
+        return $this->get('settings_resolver')->getGlobalSettings()->get($key);
     }
 
     public function getRateLimitChecks()
@@ -84,8 +92,14 @@ class CaptchaEventListenerTest extends PortalTestCase
         $this->installDataSet('fresh', true);
         $this->get('test_factory.person')->createNewInvalidUser('foo@bar.com', 'Foo Bar', 'password123');
 
-        $settingName = AntiAbuse::KEY.'.'.$type.'.response';
+        if ($type === AntiAbuse::ACTION_LOGIN) {
+            $settingName = AntiAbuse::KEY.'.'.$type.'.guest.response';
+        } else {
+            $settingName = AntiAbuse::KEY.'.'.$type.'.response';
+        }
+
         $this->get('settings_resolver')->setSetting($settingName, RateLimitGroup::RESPONSE_CAPTCHA);
+
         $lessThanMaxAttempts = $this->getRateLimitMaxAttempts($type);
         for ($i = 0; $i < $lessThanMaxAttempts; ++$i) {
             // should not be recommending anything
