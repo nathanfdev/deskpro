@@ -145,6 +145,7 @@
       "react",
       "/node_modules/",
       "/tests/Helpers/",
+      "/tests/DemoState/",
       "/Selectors/",
       "/Actions/",
       "/Reducers/",
