@@ -1200,6 +1200,46 @@ var RLANG = {
 			this.syncCode();
 		},
 
+		insertSnippetHtml: function(html)
+		{
+			this.focusEnd();
+			this.pasteHtmlAtCaret(html);
+			this.observeImages();
+			this.syncCode();
+		},
+
+		prepareFocusContent: function()
+		{
+			var node = this.$editor[0];
+			var $p = $('p', node);
+
+			if (!$p.length || node.innerHTML === '<p><br></p>') {
+				node.innerHTML = '<p></p>';
+			}
+		},
+
+		focusEnd: function()
+		{
+			var doc, node, $p;
+			doc = this.document;
+			node = this.$editor[0];
+			this.prepareFocusContent();
+
+			$p = $('p', node);
+
+			if (doc.getSelection) {
+				var range = doc.createRange();
+				range.selectNodeContents($p.last().get(0));
+				range.collapse(false);
+
+				var sel = doc.getSelection();
+				sel.removeAllRanges();
+				sel.addRange(range);
+			}
+
+			$(node).focus();
+		},
+
 		pasteHtmlAtCaret: function (html)
 		{
 			var sel, range;
