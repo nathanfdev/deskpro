@@ -114,13 +114,9 @@ class HttpJsBootTask implements BootTaskInterface
             return 'inst_info.js';
         }
 
+        // everything is going through dyn-assets, when it's set in DESKPRO_ASSETS_URL
         if (substr($path, 0, 12) === '/dyn-assets/') {
-            if (
-                strpos($path, 'widget_loader.js') || strpos($path, 'widget_loader.min.js')
-                || strpos($path, 'embed_loader.js') || strpos($path, 'embed_loader.min.js')
-            ) {
-                return preg_replace('#^/dyn\-assets/#', '', $path);
-            }
+            return preg_replace('#^/dyn\-assets/#', '', $path);
         }
 
         return;
