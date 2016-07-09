@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Th } from '../../../../../Common/Components/ListFrame';
-import { collectionSelectorFactory } from '../../../../../../../AppBundle/Modules/RecordsStore';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { Table, Th } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
+import { selectedSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/massActions';
+import { toggleSelectedAction } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/massActions';
 import { listOrderBySelector, listOrderDirSelector, tableFieldsSelector } from '../../../../Selectors/list';
-import { selectedSelector } from '../../../../../Application/Selectors/massActions';
-import { toggleSelectedAction } from '../../../../../Application/Actions/massActions';
 import { applyListParams } from '../../../../Actions/listActions';
 import { TicketRow } from './TicketRow';
 

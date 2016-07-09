@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Td, TdId, TdTitle, TableCheckbox } from '../../../../../Common/Components/ListFrame';
+import { Td, TdId, TdTitle, TableCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 
 export class TicketRow extends Component {
   static propTypes = {
