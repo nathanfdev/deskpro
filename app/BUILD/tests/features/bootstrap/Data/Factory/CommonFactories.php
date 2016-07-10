@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Sla;
@@ -215,7 +216,7 @@ class CommonFactories
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Exception
      *
-     * @return object
+     * @return AgentTeam
      */
     public static function agentTeam(array $data)
     {
@@ -228,5 +229,21 @@ class CommonFactories
         }
 
         return SimpleFactory::provide($team, $data);
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return Feedback
+     */
+    public static function feedback(array $data)
+    {
+        $feedback = new Feedback();
+        if (isset($data['date_created'])) {
+            $feedback->date_created = new \DateTime($data['date_created']);
+            unset($data['date_created']);
+        }
+
+        return SimpleFactory::provide($feedback, $data);
     }
 }
