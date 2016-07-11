@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -46,7 +46,6 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\MemoryUsageProcessor;
-use Orb\Util\Env;
 use Orb\Util\OptionsArray;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -211,20 +210,6 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function executeUnattendedRun(InputInterface $input, OutputInterface $output)
     {
-        $out = $this->checkPhpInfo();
-        if ($out !== true) {
-            $output->write('<error>Could not find path to PHP (Detected PHP appears different than running PHP)</error>');
-
-            return 1;
-        }
-
-        $out = $this->checkRequirements();
-        if ($out !== true) {
-            $output->write('<error>PHP sub-command binary fails server checks: '.$out.'</error>');
-
-            return 1;
-        }
-
         $arguments = array_map(function ($argument) { return escapeshellarg($argument); }, $_SERVER['argv']);
         $arguments[] = '-b';
 
@@ -236,10 +221,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             $arguments[] = '--dpc-site-id '.DPC_SITE_ID;
         }
 
+        $appEnv = $this->getContainer()->get('deskpro.app_env');
+
         $cmd = sprintf('%s %s', dp_get_php_path(), implode(' ', $arguments));
 
         do {
-            $process = new Process($cmd, realpath(DP_ROOT.'/../'));
+            $process = new Process($cmd, realpath($appEnv->getDpRoot()));
             $process->setTimeout(18000);
             $process->run(function ($type, $data) use ($output) {
                 $output->write($data);
@@ -609,52 +596,5 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function getContainer()
     {
         return parent::getContainer();
-    }
-
-    /**
-     * Check PHP info.
-     *
-     * @return bool
-     */
-    protected function checkPhpInfo()
-    {
-        if (defined('DPC_SITE_ID')) {
-            return true;
-        }
-
-        if (dp_is_php_path_guessed()) {
-            $cmd = sprintf('%s %s', dp_get_php_path(), escapeshellarg('bin/phpinfo.php'));
-
-            $process = new Process($cmd, realpath(DP_ROOT));
-            $process->run();
-
-            return $process->isSuccessful() && Env::isSamePhpInfo(Env::getPhpInfo(), $process->getOutput());
-        }
-
-        return true;
-    }
-
-    /**
-     * Make sure we have passes requirements.
-     *
-     * @return bool|string
-     */
-    protected function checkRequirements()
-    {
-        if (defined('DPC_SITE_ID')) {
-            return true;
-        }
-
-        $cmd = sprintf('%s %s', dp_get_php_path(), escapeshellarg('bin/check-req.php'));
-
-        $process = new Process($cmd, realpath(DP_ROOT));
-        $process->run();
-
-        $output = $process->getOutput();
-        if (!$process->isSuccessful() || strpos($output, 'OKAY') === false) {
-            return $output;
-        }
-
-        return true;
     }
 }

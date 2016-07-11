@@ -42,7 +42,7 @@
       "oid": 0,
       "person_email": "user@example.com",
       "content": "Comment 1",
-      "status": "validating",
+      "status": "visible",
       "is_reviewed": false,
       "validating": "",
       "date_created": "2015-01-15 00:00:00"

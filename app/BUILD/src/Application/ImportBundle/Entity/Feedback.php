@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -215,7 +215,6 @@ final class Feedback extends AbstractContentEntity
     public function isStatusValid()
     {
         $feedback_statuses = array(
-            DeskPRO\Entity\Feedback::STATUS_NEW,
             DeskPRO\Entity\Feedback::STATUS_ACTIVE,
             DeskPRO\Entity\Feedback::STATUS_CLOSED,
             DeskPRO\Entity\Feedback::STATUS_HIDDEN,
