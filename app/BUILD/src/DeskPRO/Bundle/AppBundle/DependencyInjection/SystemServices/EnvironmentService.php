@@ -31,8 +31,8 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices;
 
-use Orb\GeoIp\GeoIpPhp;
 use Symfony\Component\HttpFoundation\RequestStack;
+use GeoIp2\Database\Reader;
 
 class EnvironmentService
 {
@@ -40,6 +40,8 @@ class EnvironmentService
      * @param RequestStack $token_storage
      */
     private $request;
+
+    protected $geo_reader;
 
     public function __construct(RequestStack $requestStack)
     {
@@ -53,12 +55,25 @@ class EnvironmentService
 
     public function getGeoIp()
     {
-        $geoIp = new GeoIpPhp();
-        $geoIp->addDatabase(\GEOIP_COUNTRY_EDITION, DP_ROOT.'/vendor-src/geoip-db/GeoIP.dat');
+        if (!$this->geo_reader) {
+            $this->geo_reader = new Reader(DP_ROOT . '/vendor-src/geoip-db/GeoLite2-City.mmdb');
+        }
 
         $ip = $this->getUserIp();
+        $record = $this->geo_reader->city($ip);
 
-        return $geoIp->lookup($ip);
+        $result = array(
+            'continent_code' => $record->continent->code,
+            'country_code'   => $record->country->isoCode,
+        );
+
+        if ($record->city->name) {
+            $result['city']       = $record->city;
+            $result['latitude']   = $record->location->latitude;
+            $result['longitutde'] = $record->location->longitude;
+        }
+
+        return $result;
     }
 
     private function getRemoteHost()
@@ -68,6 +83,7 @@ class EnvironmentService
 
     private function getUserIp()
     {
+        return '191.114.232.101';
         return $this->request->getClientIp();
     }
 }
