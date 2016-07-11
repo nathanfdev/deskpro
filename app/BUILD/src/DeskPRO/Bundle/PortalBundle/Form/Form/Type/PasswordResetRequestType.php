@@ -26,79 +26,62 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class PasswordResetRequestType.
+ */
 class PasswordResetRequestType extends AbstractType
 {
     /**
      * @var CaptchaDecider
      */
-    private $captcha_decider;
+    private $captchaDecider;
 
     /**
      * @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager
      */
-    private $language_manager;
+    private $languageManager;
 
     /**
-     * PasswordResetRequestType constructor.
+     * Constructor.
      *
-     * @param CaptchaDecider  $captcha_decider
-     * @param LanguageManager $language_manager
+     * @param CaptchaDecider  $captchaDecider
+     * @param LanguageManager $languageManager
      */
-    public function __construct(CaptchaDecider $captcha_decider, LanguageManager $language_manager)
+    public function __construct(CaptchaDecider $captchaDecider, LanguageManager $languageManager)
     {
-        $this->captcha_decider  = $captcha_decider;
-        $this->language_manager = $language_manager;
+        $this->captchaDecider  = $captchaDecider;
+        $this->languageManager = $languageManager;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('email', 'email', [
-            'label' => $this->phrase('portal.forms.label_email'),
+        $builder->add('email', EmailType::class, [
+            'label'       => $this->languageManager->phrase('portal.forms.label_email'),
+            'constraints' => [
+                new Assert\NotBlank(),
+                new Assert\Email(),
+            ],
         ]);
 
-        $builder->addEventListener(
-            FormEvents::PRE_SET_DATA,
-            function (FormEvent $event) {
-                $form = $event->getForm();
-
-                if ($this->captcha_decider->shouldRequireForgotPasswordCaptchaForCurrentPerson()) {
-                    $form->add('captcha', 'deskpro_captcha');
-                }
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $form = $event->getForm();
+            if ($this->captchaDecider->shouldRequireForgotPasswordCaptchaForCurrentPerson()) {
+                $form->add('captcha', CaptchaType::class);
             }
-        );
-    }
-
-    /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
-     */
-    public function getName()
-    {
-        return 'request_password_reset';
-    }
-
-    /**
-     * @param string $name
-     * @param array  $vars
-     *
-     * @return string
-     */
-    private function phrase($name, array $vars = [])
-    {
-        return $this->language_manager->phrase($name, $vars);
+        });
     }
 }

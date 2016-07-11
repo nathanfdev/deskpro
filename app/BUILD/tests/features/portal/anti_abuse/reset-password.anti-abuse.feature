@@ -11,7 +11,7 @@ Feature: To prevent password resetting abuse
     Given I set "reset_password" rate limit to 1 attempt within 15 minutes with "lockout" response and 15 minutes lockout time
     And I am on "/login/reset-password"
 
-    When I fill in "request_password_reset_email" with "111"
+    When I fill in "password_reset_request[email]" with "111"
 
     And I press "Reset Password"
     Given I am on "/login/reset-password"
@@ -20,7 +20,7 @@ Feature: To prevent password resetting abuse
   Scenario: Checking captcha response
     Given I set "reset_password" rate limit to 1 attempt within 15 minutes with "captcha" response
     And I am on "/login/reset-password"
-    When I fill in "request_password_reset_email" with "111"
+    When I fill in "password_reset_request[email]" with "111"
     And I press "Reset Password"
     Given I am on "/login/reset-password"
-    Then I should see an "#request_password_reset_captcha_captcha" element
+    Then I should see an "#password_reset_request_captcha_captcha" element

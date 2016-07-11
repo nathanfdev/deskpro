@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PasswordResetRequestType;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -62,8 +63,7 @@ class PasswordController extends AbstractController
             return $this->redirectToRoute('portal_home');
         }
 
-        $form = $this->createForm('request_password_reset', array('email' => $request->get('email', '')));
-
+        $form = $this->createForm(PasswordResetRequestType::class, ['email' => $request->get('email', '')]);
         $form->handleRequest($request);
 
         $render_error = false;
