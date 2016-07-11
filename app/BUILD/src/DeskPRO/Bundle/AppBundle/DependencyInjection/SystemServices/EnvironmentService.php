@@ -83,7 +83,6 @@ class EnvironmentService
 
     private function getUserIp()
     {
-        return '191.114.232.101';
         return $this->request->getClientIp();
     }
 }
