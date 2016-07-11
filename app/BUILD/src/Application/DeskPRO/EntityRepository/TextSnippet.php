@@ -233,9 +233,11 @@ class TextSnippet extends AbstractEntityRepository
 
         $res = array();
         foreach ($snippets as $snippet) {
-            if (!$translation = @$langDataMap[$snippet['id']]) {
+            if (isset($langDataMap[$snippet['id']])) {
                 continue;
             }
+
+            $translation = $langDataMap[$snippet['id']];
 
             $data = array(
                 'id'            => $snippet['id'],
