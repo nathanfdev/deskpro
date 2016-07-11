@@ -54,6 +54,10 @@ class TaskCompleteNotification extends AbstractAgentNotification
             return false;
         }
 
+        if (!$this->task->person) {
+            return false;
+        }
+
         if ($this->task->person->getId() == $agent->id && $agent->getPref('agent_notif.task_complete.alert')) {
             return true;
         }
@@ -64,6 +68,10 @@ class TaskCompleteNotification extends AbstractAgentNotification
     public function shouldSendEmailNotification(Person $agent)
     {
         if (App::getCurrentPerson()->id == $agent->id && !$agent->getPref('agent_notify_override.all.email')) {
+            return false;
+        }
+
+        if (!$this->task->person) {
             return false;
         }
 
