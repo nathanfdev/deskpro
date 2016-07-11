@@ -2,7 +2,8 @@
 Feature: Add and edit ticket participants
 
   Background:
-    Given I'm authenticated as user
+    Given no Person records exist
+    And I'm authenticated as user
     And I disable anti-abuse rate limiting
     And a user with "user_1@deskpro.dev" email exists
     And a user with "user_2@deskpro.dev" email exists
@@ -35,17 +36,3 @@ Feature: Add and edit ticket participants
     And I fill in "Cc" with "user_1@deskpro.dev,user_2@deskpro.dev"
     When I press "Submit"
     Then the "Cc" field should contain "user_1@deskpro.dev,user_2@deskpro.dev"
-
-  Scenario: I check ticket cc validation (not user)
-    Given I go to "/new-ticket"
-    And I fill in "Cc" with "agent@deskpro.dev"
-    When I press "Submit"
-    Then the "Cc" field should contain "agent@deskpro.dev"
-    And I should see a form error with the phrase "Person with identifier \"agent@deskpro.dev\" is not user."
-
-  Scenario: I check ticket cc validation (not found)
-    Given I go to "/new-ticket"
-    And I fill in "Cc" with "unkkwon_agent@deskpro.dev"
-    When I press "Submit"
-    Then the "Cc" field should contain "unkkwon_agent@deskpro.dev"
-    And I should see a form error with the phrase "Person with identifier \"unkkwon_agent@deskpro.dev\" not found."

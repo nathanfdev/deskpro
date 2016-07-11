@@ -32,6 +32,23 @@ Feature: /ticket_forms validation
     Then the response status code should be 400
     And the JSON node "errors.fields.department.errors[0].code" should be equal to "invalid_data_type"
 
+  Scenario: I try to select leaf department
+    Given only the following Department records exist:
+      | #  | Parent | Title        | Is Tickets Enabled |
+      | d1 | NULL   | Department 1 | 1                  |
+      | d2 | {d1}   | Department 2 | 1                  |
+      | d3 | {d1}   | Department 3 | 1                  |
+
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": ~d1~
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.department.errors" should have 1 element
+    And the JSON node "errors.fields.department.errors[0].code" should be equal to "not_assignable_ticket_department"
+
   Scenario: I check layout extra fields
     Given only the following custom ticket fields exist:
       | #   | Type | Title      |
@@ -63,7 +80,6 @@ Feature: /ticket_forms validation
   }
 }
     """
-    Then the response status code should be 400
     Then the response status code should be 400
     And the JSON node "errors.fields.fields.errors[0].code" should be equal to "extra_fields"
     And the JSON node "errors.fields.fields.errors[0].message" should not contain "{ta1}"

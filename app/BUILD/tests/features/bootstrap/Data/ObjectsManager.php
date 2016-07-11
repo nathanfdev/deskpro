@@ -49,9 +49,9 @@ use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
-use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\LabelFeedback;
+use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
@@ -266,6 +266,7 @@ class ObjectsManager
             'User'                   => [Factory\CommonFactories::class, 'person', 'user'],
             'Agent'                  => [Factory\CommonFactories::class, 'person', 'agent'],
             'Admin'                  => [Factory\CommonFactories::class, 'person', 'admin'],
+            'PersonEmail'            => [Factory\SimpleFactory::class, 'create', PersonEmail::class],
             'LabelTicket'            => [Factory\SimpleFactory::class, 'create', LabelTicket::class],
             'LabelDef'               => [Factory\SimpleFactory::class, 'create', LabelDef::class],
             'LabelFeedback'          => [Factory\SimpleFactory::class, 'create', LabelFeedback::class],
