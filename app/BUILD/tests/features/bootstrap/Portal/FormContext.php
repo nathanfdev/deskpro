@@ -162,9 +162,12 @@ class FormContext extends BasePortalContext
      */
     public function theFormShouldHaveElementsCount($locator, $expectedCount)
     {
-        $form  = $this->getSession()->getPage()->find('css', $locator);
-        $nodes = $form->findAll('css', 'input, textarea, select');
+        $form = $this->getSession()->getPage()->find('css', $locator);
+        if (!$form) {
+            throw new \Exception("Form $locator not found");
+        }
 
+        $nodes = $form->findAll('css', 'input, textarea, select');
         $count = count($nodes);
         if ($count !== $expectedCount) {
             throw new \Exception("Form should have $expectedCount element but it has {$count}");

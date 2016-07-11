@@ -178,30 +178,6 @@ Feature: /tickets/{id}/messages endpoint
     When I send a GET request to "/api/v2/tickets/{ticket}/messages/{lastCreatedId}"
     Then the response status code should be 404
 
-  Scenario: I check sideloading of form errors
-    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
-    """
-{
-  "department": 2
-}
-    """
-    Then the response status code should be 201
-
-  Scenario: I add ticket messages
-    When I send a POST request to "/api/v2/tickets/{lastCreatedId}/messages?with_ticket_validation=1" with body:
-    """
-{
-  "message": "my message"
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "errors.fields.ticket.fields.fields.fields.fields_6.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.ticket.fields.fields.fields.fields_6.errors[0].message" should contain "This value should not be blank."
-    And the JSON node "errors.fields.ticket.fields.organization_fields.fields.organization_fields_6.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.ticket.fields.organization_fields.fields.organization_fields_6.errors[0].message" should contain "This value should not be blank."
-    And the JSON node "errors.fields.ticket.fields.user_fields.fields.user_fields_6.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.ticket.fields.user_fields.fields.user_fields_6.errors[0].message" should contain "This value should not be blank."
-
   Scenario Outline: I check ios purify
     Given I add "x-deskpro-api-clienttype" header equal to "<client_type>"
     When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:

@@ -172,6 +172,8 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
         if (!$data) {
             $this->setModelField('value', 0);
             $this->setModelField('input', '');
+        } elseif ($this->field->getType() === CustomDefAbstract::TYPE_TOGGLE) {
+            $this->setModelField('value', (int) $data);
         } elseif (is_int($data)) {
             $this->setModelField('value', $data);
         } else {

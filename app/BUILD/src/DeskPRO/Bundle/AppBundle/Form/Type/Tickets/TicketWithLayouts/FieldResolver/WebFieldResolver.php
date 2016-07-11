@@ -156,10 +156,6 @@ class WebFieldResolver extends AbstractFieldResolver
             'data'           => $context->getMessage(),
             'format'         => 'html',
             'required'       => true,
-            'constraints'    => [
-                new Assert\NotBlank(),
-                new Assert\Length(['min' => 10]),
-            ],
         ]);
     }
 
@@ -236,5 +232,13 @@ class WebFieldResolver extends AbstractFieldResolver
                 'constraints' => [],
             ],
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getSubmittedPerson(TicketWithLayoutsContext $context)
+    {
+        return $context->getTicket()->getPerson();
     }
 }

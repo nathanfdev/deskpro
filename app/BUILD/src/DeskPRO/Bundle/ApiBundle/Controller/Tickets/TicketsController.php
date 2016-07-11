@@ -84,7 +84,7 @@ class TicketsController extends AbstractTicketsController
      */
     public function postAction(Request $request)
     {
-        $this->get('logger')->warning("POST /tickets is deprecated, use /ticket_forms to create tickets");
+        $this->get('logger')->warning('POST /tickets is deprecated, use /ticket_forms to create tickets');
 
         return parent::postAction($request);
     }
@@ -244,10 +244,9 @@ class TicketsController extends AbstractTicketsController
      */
     protected function handleForm($model, Request $request, array $options = [])
     {
-        $options = array_merge($options,
-            [
-                'agent_interface' => true,
-            ]);
+        $options = array_merge($options, [
+            'agent_interface' => true,
+        ]);
 
         return parent::handleForm($model, $request, $options);
     }

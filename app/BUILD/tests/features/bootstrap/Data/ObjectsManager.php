@@ -49,6 +49,7 @@ use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
+use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\LabelFeedback;
 use Application\DeskPRO\Entity\Language;
@@ -60,6 +61,7 @@ use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMessage;
@@ -255,6 +257,7 @@ class ObjectsManager
             'TicketCategory'         => [Factory\SimpleFactory::class, 'create', TicketCategory::class],
             'TicketWorkflow'         => [Factory\SimpleFactory::class, 'create', TicketWorkflow::class],
             'TicketParticipant'      => [Factory\SimpleFactory::class, 'create', TicketParticipant::class],
+            'TicketAttachment'       => [Factory\SimpleFactory::class, 'create', TicketAttachment::class],
             'Sla'                    => [Factory\CommonFactories::class, 'sla'],
             'SLA'                    => [Factory\CommonFactories::class, 'sla'],
             'Usergroup'              => [Factory\SimpleFactory::class, 'create', Usergroup::class],
@@ -263,6 +266,7 @@ class ObjectsManager
             'User'                   => [Factory\CommonFactories::class, 'person', 'user'],
             'Agent'                  => [Factory\CommonFactories::class, 'person', 'agent'],
             'Admin'                  => [Factory\CommonFactories::class, 'person', 'admin'],
+            'LabelTicket'            => [Factory\SimpleFactory::class, 'create', LabelTicket::class],
             'LabelDef'               => [Factory\SimpleFactory::class, 'create', LabelDef::class],
             'LabelFeedback'          => [Factory\SimpleFactory::class, 'create', LabelFeedback::class],
         ];
@@ -285,6 +289,8 @@ class ObjectsManager
             'TicketPriority'         => [$this, 'find', TicketPriority::class],
             'TicketWorkflow'         => [$this, 'find', TicketWorkflow::class],
             'TicketCategory'         => [$this, 'find', TicketCategory::class],
+            'TicketParticipant'      => [$this, 'find', TicketParticipant::class],
+            'TicketAttachment'       => [$this, 'find', TicketAttachment::class],
             'SLA'                    => [$this, 'find', Sla::class],
             'Organization'           => [$this, 'find', Organization::class],
             'Product'                => [$this, 'find', Product::class],
@@ -320,6 +326,7 @@ class ObjectsManager
             'FeedbackComment'        => [$this, 'find', FeedbackComment::class],
             'LabelDef'               => [$this, 'find', LabelDef::class],
             'LabelFeedback'          => [$this, 'find', LabelFeedback::class],
+            'LabelTicket'            => [$this, 'find', LabelTicket::class],
         ];
     }
 }

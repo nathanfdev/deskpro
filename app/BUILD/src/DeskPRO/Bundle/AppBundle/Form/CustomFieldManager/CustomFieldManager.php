@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFieldChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -203,11 +204,11 @@ class CustomFieldManager
 
     /**
      * @param CustomDefAbstract $def
-     * @param bool              $is_inline
+     * @param bool              $isInline
      *
      * @return FormField
      */
-    public function createCustomField(CustomDefAbstract $def, $is_inline = false)
+    public function createCustomField(CustomDefAbstract $def, $isInline = false)
     {
         switch ($def->getType()) {
             case CustomDefAbstract::TYPE_TEXT:
@@ -215,6 +216,10 @@ class CustomFieldManager
             case CustomDefAbstract::TYPE_TEXTAREA:
                 return new FormField(TextareaType::class, $this->getGeneralOptionsForField($def, []));
             case CustomDefAbstract::TYPE_TOGGLE:
+                if ($isInline) {
+                    return new FormField(ApiBooleanType::class);
+                }
+
                 $options = [
                     'checkbox_label' => $def->getOption('label_text') ?: '',
                     'force_boolean'  => true,
@@ -250,7 +255,7 @@ class CustomFieldManager
                 );
 
             case CustomDefAbstract::TYPE_DATE:
-                if ($is_inline) {
+                if ($isInline) {
                     $options = [
                         'input'  => 'timestamp',
                         'widget' => 'single_text',
@@ -271,7 +276,7 @@ class CustomFieldManager
                 );
 
             case CustomDefAbstract::TYPE_DATETIME:
-                if ($is_inline) {
+                if ($isInline) {
                     $options = [
                         'input'  => 'timestamp',
                         'widget' => 'single_text',

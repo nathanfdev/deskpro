@@ -37,7 +37,6 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -103,18 +102,14 @@ class CustomDataType extends AbstractType
         if ($options['inline']) {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetInlineData']);
         }
-        if ($options['owner_form']) {
-            $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onGenerateFields'], 100);
-        }
     }
 
     /**
      * Generate form fields.
      *
      * @param FormEvent $event
-     * @param string    $eventName
      */
-    public function onGenerateFields(FormEvent $event, $eventName)
+    public function onGenerateFields(FormEvent $event)
     {
         $form   = $event->getForm();
         $config = $form->getConfig();
@@ -140,36 +135,10 @@ class CustomDataType extends AbstractType
             ]);
         }
 
-        // we need to track and re-generate the form if custom data owner has changed
-        $viewData  = null;
-        $ownerForm = $config->getOption('owner_form');
-
-        // if we have owner form and it's mapped then we change custom data on submit
-        if ($ownerForm instanceof Form && $eventName === FormEvents::SUBMIT) {
-            if (!$ownerForm->getConfig()->getInheritData()) {
-                $owner = $ownerForm->getData();
-                $data  = $owner->custom_data;
-
-                $viewData = $form->get('data')->getViewData();
-
-                $form->setData($data);
-                $form->remove('data');
-            }
-        } else {
-            $data = $event->getData() ?: new ArrayCollection();
-        }
-
-        if (isset($data)) {
-            // child field is not mapped so the form tries to get data from the options
-            // so we should pass stored value via its options
-            $options['data'] = $this->getFormData($data, $customDef);
-
-            $form->add('data', $field->getType(), $options);
-
-            if ($ownerForm && $eventName === FormEvents::SUBMIT) {
-                $form->get('data')->submit($viewData);
-            }
-        }
+        // child field is not mapped so the form tries to get data from the options
+        // so we should pass stored value via its options
+        $options['data'] = $this->getFormData($event->getData() ?: new ArrayCollection(), $customDef);
+        $form->add('data', $field->getType(), $options);
     }
 
     /**
@@ -356,7 +325,6 @@ class CustomDataType extends AbstractType
                     return $options['custom_def']->isRequired($options['agent_interface']);
                 },
                 'inline'            => false,
-                'owner_form'        => false,
                 'error_bubbling'    => false,
                 'ignore_validation' => false,
                 'ticket'            => false,

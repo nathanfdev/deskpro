@@ -30,13 +30,13 @@ api:
                 - DpBehat\Api\ApiLimitsContext
                 - DpBehat\Api\NotificationsContext
                 - DpBehat\Portal\GenericContext
-                - DpBehat\BlobContext
                 - DpBehat\System\Alerts\IncidentsContext
                 - DpBehat\TicketLogsContext
                 - DpBehat\Data\DataContext
                 - DpBehat\Data\PeopleContext
                 - DpBehat\Data\CustomDataContext
                 - DpBehat\Data\TicketLayoutContext
+                - DpBehat\Data\BlobContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:

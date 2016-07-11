@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,11 +40,11 @@ class HierarchySpec extends ObjectBehavior
         HierarchyNode $node1,
         HierarchyNode $node2
     ) {
-        $node1->getData()->willReturn(array('id' => 11));
+        $node1->getData()->willReturn(['id' => 11]);
         $node1->getOrder()->willReturn(10);
         $node1->setHierarchy(Argument::any())->shouldBeCalled();
 
-        $node2->getData()->willReturn(array('id' => 22));
+        $node2->getData()->willReturn(['id' => 22]);
         $node2->getOrder()->willReturn(50);
         $node2->setHierarchy(Argument::any())->shouldBeCalled();
 
@@ -59,7 +59,7 @@ class HierarchySpec extends ObjectBehavior
         HierarchyNode $node2
     ) {
         $this->getFormatter()->shouldReturn($formatter);
-        $this->getRootNodes()->shouldBe(array($node2, $node1));
+        $this->getRootNodes()->shouldBe([$node2, $node1]);
     }
 
     public function it_is_countable()

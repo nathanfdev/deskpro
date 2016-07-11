@@ -121,10 +121,41 @@ class JsonContext extends \Sanpi\Behatch\Context\JsonContext
     /**
      * @override
      */
+    public function theJsonNodeShouldContain($node, $text)
+    {
+        $node = DataContext::replace($node);
+        $text = DataContext::replace($text);
+
+        parent::theJsonNodeShouldContain($node, $text);
+    }
+
+    /**
+     * @override
+     */
+    public function theJsonNodeShouldNotContain($node, $text)
+    {
+        $node = DataContext::replace($node);
+        $text = DataContext::replace($text);
+
+        parent::theJsonNodeShouldNotContain($node, $text);
+    }
+
+    /**
+     * @override
+     */
     public function theJsonNodeShouldExist($name)
     {
         $name = DataContext::replace($name);
         parent::theJsonNodeShouldExist($name);
+    }
+
+    /**
+     * @override
+     */
+    public function theJsonNodeShouldHaveElements($node, $count)
+    {
+        $node = DataContext::replace($node);
+        parent::theJsonNodeShouldHaveElements($node, $count);
     }
 
     /**

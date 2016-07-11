@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\LayoutField;
-use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDisableAutoProcessListener;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\FieldRendererInterface;
@@ -139,20 +138,8 @@ class TicketWithLayoutsManipulatorType extends AbstractType
      */
     public function onPreSubmit(FormEvent $event)
     {
-        /* @var \Application\DeskPRO\Entity\Ticket $ticket */
-        $form   = $event->getForm();
-        $ticket = $form->getData();
-        $data   = $event->getData();
-
-        if ($ticket->getDepartment() && isset($data[FormFields::DEPARTMENT])) {
-            if ($ticket->getDepartment()->getId() != $data[FormFields::DEPARTMENT]) {
-                // if department was changed, we need to clear its related data
-                $ticket->resetCustomData();
-            }
-        }
-
         $context   = TicketWithLayoutsContext::createOnPreSubmit($event);
-        $extracted = TicketLayoutHelper::getExtractedData($data, $context);
+        $extracted = TicketLayoutHelper::getExtractedData($event->getData(), $context);
 
         TicketLayoutHelper::renderFormFields($context, function (LayoutField $field) use ($extracted) {
             return $field->getCriteria()->isSubmittedDataMatch($extracted);

@@ -83,6 +83,7 @@ return [
     'api.error_codes.link_itself'                 => 'The object should not link itself.',
     'api.error_codes.numeric'                     => 'Please enter a number, with no other characters.',
     'api.error_codes.not_checked'                 => 'The field is not checked.',
+    'api.error_codes.no_uploaded_file'            => 'Uploaded file was not found.',
     # Term Engine Specific
     'api.error_codes.op_not_supported'         => 'Op "{{ op }}" not supported. Supported ops are: {{ ops }}',
     'api.error_codes.term_type_does_not_exist' => 'You tried to create a term with the type code "{{ type }}", but it does not exist. Please check your term types.',

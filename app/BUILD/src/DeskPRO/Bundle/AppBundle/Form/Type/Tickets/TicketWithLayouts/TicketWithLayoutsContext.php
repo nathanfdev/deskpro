@@ -79,6 +79,11 @@ class TicketWithLayoutsContext
     private $form;
 
     /**
+     * @var mixed|null
+     */
+    private $submittedData;
+
+    /**
      * @param FormEvent $event
      *
      * @return $this
@@ -107,7 +112,7 @@ class TicketWithLayoutsContext
         $options   = $form->getConfig()->getOptions();
         $submitted = $event->getData();
 
-        $context = new self($form, $data, $options['layout_factory']($data->getDepartment()));
+        $context = new self($form, $data, $options['layout_factory']($data->getDepartment()), $event->getData());
 
         if ($form->has(FormFields::DEPARTMENT) && isset($submitted[FormFields::DEPARTMENT])) {
             $context->setNewLayout($options['layout_factory']($submitted[FormFields::DEPARTMENT]));
@@ -122,13 +127,15 @@ class TicketWithLayoutsContext
      * @param FormInterface $form
      * @param Ticket        $ticket
      * @param TicketLayout  $layout
+     * @param mixed         $submittedData
      */
-    public function __construct(FormInterface $form, Ticket $ticket, TicketLayout $layout)
+    public function __construct(FormInterface $form, Ticket $ticket, TicketLayout $layout, $submittedData = null)
     {
         $this->form           = $form;
         $this->ticket         = $ticket;
         $this->layout         = $layout;
         $this->previousLayout = $layout;
+        $this->submittedData  = $submittedData;
     }
 
     /**
@@ -323,5 +330,13 @@ class TicketWithLayoutsContext
     public function getVisibility()
     {
         return $this->getOption('ticket_visibility');
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getSubmittedData()
+    {
+        return $this->submittedData;
     }
 }
