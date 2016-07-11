@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -477,7 +478,7 @@ SQL
         $em->persist($ticket3);
         $em->flush();
 
-// Feedback
+//// Feedback
 
         $this->getDb()->exec(
             "
@@ -643,7 +644,6 @@ SQL
         // end of "/user_chats" endpoint test data
 
         // Labels endpoints test data ----------------------------------------------------------------------------------
-        $feedbackType     = LabelDef::TYPE_FEEDBACK;
         $organizationType = LabelDef::TYPE_ORGS;
         $peopleType       = LabelDef::TYPE_PEOPLE;
         $ticketType       = LabelDef::TYPE_TICKETS;
@@ -653,9 +653,6 @@ SQL
             INSERT INTO `label_defs`
                 (`label_type`, `label`, `color`, `total`)
             VALUES
-                ('$feedbackType', 'AAA-feedback', 'red', 0),
-                ('$feedbackType', 'BBB-feedback', 'white', 0),
-                ('$feedbackType', 'CCC-feedback', 'red', 0),
                 ('$organizationType', 'AAA-org', 'red', 1),
                 ('$organizationType', 'BBB-org', 'blue', 2),
                 ('$organizationType', 'CCC-org', 'green', 42),

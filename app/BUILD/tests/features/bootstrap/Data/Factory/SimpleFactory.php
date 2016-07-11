@@ -57,6 +57,8 @@ class SimpleFactory
      * @param array  $data
      *
      * @throws \Exception
+     *
+     * @return object
      */
     public static function provide($object, array $data = [])
     {

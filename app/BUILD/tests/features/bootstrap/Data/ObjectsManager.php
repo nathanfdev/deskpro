@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
@@ -44,9 +45,12 @@ use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
+use Application\DeskPRO\Entity\LabelDef;
+use Application\DeskPRO\Entity\LabelFeedback;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
@@ -231,12 +235,14 @@ class ObjectsManager
             'CustomDefPerson'        => [Factory\CommonFactories::class, 'customDef', 'person'],
             'CustomDefChat'          => [Factory\CommonFactories::class, 'customDef', 'conversation'],
             'CustomDefFeedback'      => [Factory\CommonFactories::class, 'customDef', 'feedback'],
+            'CustomDataFeedback'     => [Factory\SimpleFactory::class, 'create', CustomDataFeedback::class],
             'Department'             => [Factory\CommonFactories::class, 'department'],
             'Download'               => [Factory\SimpleFactory::class, 'create', Download::class],
             'DownloadCategory'       => [Factory\SimpleFactory::class, 'create', DownloadCategory::class],
-            'Feedback'               => [Factory\SimpleFactory::class, 'create', Feedback::class],
+            'Feedback'               => [Factory\CommonFactories::class, 'feedback'],
             'FeedbackCategory'       => [Factory\SimpleFactory::class, 'create', FeedbackCategory::class],
             'FeedbackStatusCategory' => [Factory\SimpleFactory::class, 'create', FeedbackStatusCategory::class],
+            'FeedbackComment'        => [Factory\SimpleFactory::class, 'create', FeedbackComment::class],
             'GlossaryWord'           => [Factory\SimpleFactory::class, 'create', GlossaryWord::class],
             'Task'                   => [Factory\CommonFactories::class, 'task'],
             'GlossaryWordDefinition' => [Factory\SimpleFactory::class, 'create', GlossaryWordDefinition::class],
@@ -257,6 +263,8 @@ class ObjectsManager
             'User'                   => [Factory\CommonFactories::class, 'person', 'user'],
             'Agent'                  => [Factory\CommonFactories::class, 'person', 'agent'],
             'Admin'                  => [Factory\CommonFactories::class, 'person', 'admin'],
+            'LabelDef'               => [Factory\SimpleFactory::class, 'create', LabelDef::class],
+            'LabelFeedback'          => [Factory\SimpleFactory::class, 'create', LabelFeedback::class],
         ];
     }
 
@@ -287,6 +295,7 @@ class ObjectsManager
             'CustomDefPerson'        => [$this, 'find', CustomDefPerson::class],
             'CustomDefChat'          => [$this, 'find', CustomDefChat::class],
             'CustomDefFeedback'      => [$this, 'find', CustomDefFeedback::class],
+            'CustomDataFeedback'     => [$this, 'find', CustomDataFeedback::class],
             'Task'                   => [$this, 'find', Task::class],
             'TaskAttachment'         => [$this, 'find', TaskAttachment::class],
             'Article'                => [$this, 'find', Article::class],
@@ -305,6 +314,12 @@ class ObjectsManager
             'AgentChat'              => [$this, 'find', AgentChat::class],
             'AgentChatParticipant'   => [$this, 'find', AgentChatParticipant::class],
             'AgentChatMessage'       => [$this, 'find', AgentChatMessage::class],
+            'Feedback'               => [$this, 'find', Feedback::class],
+            'FeedbackStatusCategory' => [$this, 'find', FeedbackStatusCategory::class],
+            'FeedbackCategory'       => [$this, 'find', FeedbackCategory::class],
+            'FeedbackComment'        => [$this, 'find', FeedbackComment::class],
+            'LabelDef'               => [$this, 'find', LabelDef::class],
+            'LabelFeedback'          => [$this, 'find', LabelFeedback::class],
         ];
     }
 }
