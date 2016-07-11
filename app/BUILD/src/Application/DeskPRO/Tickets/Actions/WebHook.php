@@ -126,7 +126,10 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
             );
             $ticket->getStateChangeRecorder()->recordData('webhook', $data);
         } catch (\Exception $e) {
-            SystemErrorHandler::logException($e, false, 'webhook_'.md5($this->getActionOption('url')));
+            // todo send to system alerts
+            // https://trello.com/c/TcxTmRRE
+//            SystemErrorHandler::logException($e, false, 'webhook_'.md5($this->getActionOption('url')));
+
             $data = array(
                 'url'     => $url,
                 'reason'  => $e->getMessage(),
