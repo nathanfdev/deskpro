@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Serializer\EventListener;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -77,7 +78,7 @@ class SideloadListener implements EventSubscriberInterface
                 'method'   => 'sideload',
                 'class'    => ApiWrapper::class,
                 'format'   => 'json',
-                'priority' => 32,
+                'priority' => 16,
             ],
         ];
     }

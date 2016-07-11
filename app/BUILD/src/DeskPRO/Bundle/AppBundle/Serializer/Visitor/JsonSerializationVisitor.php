@@ -31,10 +31,16 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Visitor;
 use DpSys\LowError\SystemErrorHandler;
 use JMS\Serializer\JsonSerializationVisitor as BaseVisitor;
 
+/**
+ * Class JsonSerializationVisitor.
+ */
 class JsonSerializationVisitor extends BaseVisitor
 {
     private $options;
 
+    /**
+     * {@inheritdoc}
+     */
     public function getResult()
     {
         $result = @json_encode($this->getRoot(), $this->options);
@@ -45,10 +51,13 @@ class JsonSerializationVisitor extends BaseVisitor
 
             case JSON_ERROR_UTF8:
                 $root = $this->getRoot();
-                trigger_error('Failed to serialize value: '.SystemErrorHandler::varToString($root), E_USER_NOTICE);
+
                 array_walk_recursive($root, function (&$item) { $item = iconv('UTF-8', 'UTF-8//IGNORE', $item);});
                 $result = @json_encode($root, $this->options);
+
                 if (json_last_error() === JSON_ERROR_UTF8) {
+                    trigger_error('Failed to serialize value: '.SystemErrorHandler::varToString($root), E_USER_NOTICE);
+
                     return '';
                 } else {
                     return $result;
@@ -58,11 +67,17 @@ class JsonSerializationVisitor extends BaseVisitor
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getOptions()
     {
         return $this->options;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setOptions($options)
     {
         $this->options = (integer) $options;
