@@ -752,9 +752,12 @@ ORDER BY COUNT() DESC',
         /* @var ReportBuilderRepository $repo */
         $ids      = array_keys($this->data);
         $em       = $this->getEm();
-        $repo     = $em->getRepository(ReportBuilder::class);
-        $schedule = $repo->findBy(['is_custom' => 0]);
-        $updated  = $existing  = [];
+        $schedule = $em->createQuery('
+            SELECT r
+            FROM DeskPRO:ReportBuilder r
+            WHERE r.unique_key IS NOT NULL
+        ')->execute();
+        $updated = $existing = [];
 
         foreach ($schedule as $report) {
             /* @var ReportBuilder $report */
@@ -767,7 +770,8 @@ ORDER BY COUNT() DESC',
                     ->setQuery($data['query'])
                     ->setCategory($data['category'])
                     ->setDisplayOrder($data['display_order'])
-                    ->setDescription($data['description']);
+                    ->setDescription($data['description'])
+                    ->setIsCustom(false);
                 $em->persist($report);
             } else {
                 $em->remove($report);
@@ -785,7 +789,8 @@ ORDER BY COUNT() DESC',
                 ->setQuery($data['query'])
                 ->setCategory($data['category'])
                 ->setDisplayOrder($data['display_order'])
-                ->setDescription($data['description']);
+                ->setDescription($data['description'])
+                ->setIsCustom(false);
             $em->persist($report);
         }
 

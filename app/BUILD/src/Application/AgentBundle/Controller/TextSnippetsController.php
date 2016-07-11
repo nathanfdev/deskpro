@@ -133,13 +133,13 @@ class TextSnippetsController extends AbstractController
     public function filterSnippetsAction($typename)
     {
         $category_id   = $this->in->getUint('category_id') ?: null;
-        $filter_string = $this->in->getString('filter_string');
-        $language_id   = $this->in->getUint('language_id');
+        $filter_string = $this->in->getString('filter_string') ?: null;
+        $language_id   = $this->in->getUint('language_id') ?: null;
 
         /** @var \Application\DeskPRO\EntityRepository\TextSnippet $rep */
         $rep = $this->em->getRepository('DeskPRO:TextSnippet');
 
-        $results = $rep->filterSnippetsForAgent($filter_string, $typename, $this->person, 1, 500, $category_id, $language_id);
+        $results = $rep->filterSnippetsForAgent($filter_string, $typename, $this->person, 1, 1000, $category_id, $language_id);
 
         return $this->createJsonResponse(array('snippets' => $results));
     }
