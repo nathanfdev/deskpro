@@ -270,6 +270,7 @@ class ObjectsManager
             'LabelTicket'            => [Factory\SimpleFactory::class, 'create', LabelTicket::class],
             'LabelDef'               => [Factory\SimpleFactory::class, 'create', LabelDef::class],
             'LabelFeedback'          => [Factory\SimpleFactory::class, 'create', LabelFeedback::class],
+            'LabelTicket'            => [Factory\SimpleFactory::class, 'create', LabelTicket::class],
         ];
     }
 

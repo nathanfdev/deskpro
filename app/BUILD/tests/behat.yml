@@ -36,6 +36,7 @@ api:
                 - DpBehat\Data\PeopleContext
                 - DpBehat\Data\CustomDataContext
                 - DpBehat\Data\TicketLayoutContext
+                - DpBehat\Data\OrganizationContext
                 - DpBehat\Data\BlobContext
     extensions:
         Sanpi\Behatch\Extension: ~
