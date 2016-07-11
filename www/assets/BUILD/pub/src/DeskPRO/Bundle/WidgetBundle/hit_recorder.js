@@ -31,11 +31,11 @@
 
     const imgSrc = `${helpdeskUrl}/dp/hit/${pageType}/${pageId}.gif?${dataQs}`;
     const img    = document.createElement('img');
-    img.src = imgSrc;
-    img.role = 'presentation';
-    img.width = 1;
-    img.height = 1;
-    img.style = 'position:absolute;bottom:0;left:0;width:1px;height:1px;overflow:hidden;';
+    img.setAttribute('src', imgSrc);
+    img.setAttribute('role', 'presentation');
+    img.setAttribute('width', 1);
+    img.setAttribute('height', 1);
+    img.setAttribute('style', 'position:absolute;bottom:0;left:0;width:1px;height:1px;overflow:hidden;');
 
     document.body.appendChild(img);
   };

@@ -103,15 +103,6 @@
       const frameWin = node.contentWindow;
       const frameDoc = frameWin.document;
 
-      frameWin.DP_HELPDESK_URL = helpdeskUrl.replace(/\/$/, '') + '/';
-      frameWin.DP_OPTIONS = options;
-
-      // Portal page widget config
-      frameWin.DESKPRO_BASE_URL = helpdeskUrl.replace(/\/$/, '') + '/portal/api/';
-
-      // Asset URLs
-      frameWin.DESKPRO_APP_ASSETS_URL = instInfo.assetUrl;
-
       let doc;
       let docDomain;
 
@@ -119,23 +110,33 @@
         doc = frameDoc;
       } catch (c) {
         docDomain = document.domain;
-        node.src = 'javascript:var d=document.open();d.domain="' + docDomain + '";void(0);';
+        node.setAttribute('src ', `javascript:var d=document.open();d.domain="${docDomain}";void(0);`);
         doc = frameDoc;
       }
 
-      // After onload, we load the script source for real
+      // After onload, we load the script source for real and setting constants
       doc.open()._load = () => {
+        frameWin.DP_HELPDESK_URL = helpdeskUrl.replace(/\/$/, '') + '/';
+        frameWin.DP_OPTIONS = options;
+        // Portal page widget config
+        frameWin.DESKPRO_BASE_URL = helpdeskUrl.replace(/\/$/, '') + '/portal/api/';
+        // Asset URLs
+        frameWin.DESKPRO_APP_ASSETS_URL = instInfo.assetUrl;
+
         const linkNode = document.createElement('link');
-        linkNode.type = 'text/css';
-        linkNode.rel = 'stylesheet';
-        linkNode.href = frameWin.DESKPRO_APP_ASSETS_URL + '/pub/build/DeskPRO_WidgetBundle_style.css';
+        linkNode.setAttribute('type', 'text/css');
+        linkNode.setAttribute('rel', 'stylesheet');
+
+
+
+        linkNode.setAttribute('href', `${frameWin.DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO_WidgetBundle_style.css`);
 
         doc.body.appendChild(linkNode);
 
         const appNode = doc.createElement('script');
-        appNode.charset = 'UTF8';
-        appNode.type = 'application/javascript';
-        appNode.src = appSrc;
+        appNode.setAttribute('charset', 'UTF8');
+        appNode.setAttribute('type', 'application/javascript');
+        appNode.setAttribute('src', appSrc);
 
         if (docDomain) {
           doc.domain = docDomain;

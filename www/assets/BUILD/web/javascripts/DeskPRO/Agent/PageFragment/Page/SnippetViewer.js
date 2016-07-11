@@ -931,7 +931,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			var text = '{{ ' + varSel.val() + ' }}';
 
 			if (textarea.data('redactor')) {
-				textarea.data('redactor').insertHtml(DP.convertTextToWysiwygHtml(text, false));
+				textarea.data('redactor').insertSnippetHtml(DP.convertTextToWysiwygHtml(text, false));
 			} else {
 				var pos = textarea.getCaretPosition();
 				if (!pos) {
