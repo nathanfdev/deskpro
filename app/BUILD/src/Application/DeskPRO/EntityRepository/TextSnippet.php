@@ -190,9 +190,8 @@ class TextSnippet extends AbstractEntityRepository
             $qb->setParameter('text_snippets.category_id IN (:catIds)', (array) $filterCatIds, Connection::PARAM_INT_ARRAY);
         }
         if ($filterLangIds) {
-            $qb->leftJoin('text_snippets', 'object_lang', 'l', '(l.ref_id = text_snippets.id AND l.ref_type = "text_snippets" AND l.language_id IN (:langIds))')
-               ->setParameter(':langIds', $filterLangIds, Connection::PARAM_INT_ARRAY)
-               ->andWhere('l.id IS NOT NULL');
+            $qb->innerJoin('text_snippets', 'object_lang', 'l', '(l.ref_id = text_snippets.id AND l.ref_type = "text_snippets" AND l.language_id IN (:langIds))')
+               ->setParameter(':langIds', $filterLangIds, Connection::PARAM_INT_ARRAY);
         }
         if ($matchingIds) {
             $qb->andWhere('text_snippets.id IN (:ids)')->setParameter(':ids', $matchingIds, Connection::PARAM_INT_ARRAY);
