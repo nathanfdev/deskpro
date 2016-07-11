@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -198,6 +198,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         // it is not an option in the new settings resolver to SET settings directly. This is left for BC.
         //
         $this->db->beginTransaction();
+
         try {
             if ($value !== null) {
                 if ($value === true) {
@@ -206,14 +207,9 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
                     $value = '0';
                 }
 
-                $this->db->executeUpdate('
-                    REPLACE INTO settings
-                        (name, value)
-                    VALUES
-                        (?, ?)
-                ', array($setting, $value));
+                $this->db->executeUpdate('REPLACE INTO settings (name, value) VALUES (?, ?)', [$setting, $value]);
             } else {
-                $this->db->delete('settings', array('name' => $setting));
+                $this->db->delete('settings', ['name' => $setting]);
             }
 
             $this->db->commit();

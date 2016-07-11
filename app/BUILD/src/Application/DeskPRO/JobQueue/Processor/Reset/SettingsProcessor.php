@@ -52,33 +52,44 @@ class SettingsProcessor extends Base
      */
     protected function doProcess(array $data)
     {
-        $enc = $this->connection->fetchColumn(
-            'select value from settings where name = :name',
-            ['name' => self::NAMES]
-        );
-        if (!$settings = json_decode($enc, 1)) {
-            throw new \Exception('Settings backup not found');
-        }
-        foreach ($this->skip as $k) {
-            $settings[$k] = null;
-        }
-        $settings[self::NAMES] = $enc;
+        $this->connection->beginTransaction();
 
-        $this->connection->executeUpdate(
-            'delete from settings where name not in (:names)',
-            ['names' => array_keys($settings)],
-            ['names' => Connection::PARAM_STR_ARRAY]
-        );
-
-        foreach ($this->skip as $k) {
-            unset($settings[$k]);
-        }
-
-        foreach ($settings as $k => $v) {
-            $this->connection->executeUpdate(
-                'replace into settings values (:name, :value)',
-                ['name' => $k, 'value' => $v]
+        try {
+            $enc = $this->connection->fetchColumn(
+                'select value from settings where name = :name',
+                ['name' => self::NAMES]
             );
+            if (!$settings = json_decode($enc, 1)) {
+                throw new \Exception('Settings backup not found');
+            }
+
+            foreach ($this->skip as $k) {
+                $settings[$k] = null;
+            }
+
+            $settings[self::NAMES] = $enc;
+
+            $this->connection->executeUpdate(
+                'delete from settings where name not in (:names)',
+                ['names' => array_keys($settings)],
+                ['names' => Connection::PARAM_STR_ARRAY]
+            );
+
+            foreach ($this->skip as $k) {
+                unset($settings[$k]);
+            }
+
+            foreach ($settings as $k => $v) {
+                $this->connection->executeUpdate(
+                    'replace into settings values (:name, :value)',
+                    ['name' => $k, 'value' => $v]
+                );
+            }
+
+            $this->connection->commit();
+        } catch (\Exception $e) {
+            $this->connection->rollBack();
+            throw $e;
         }
     }
 

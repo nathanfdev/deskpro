@@ -190,11 +190,15 @@ class SettingsController extends AbstractController implements ProtectedControll
 
     public function saveGeneralSettingsAction()
     {
-        $general_settings = new GeneralSettings($this->settings);
-        $general_settings->setArray($this->in->getArrayValue('general_settings'));
-        $general_settings->saveSettings();
+        try {
+            $settings = new GeneralSettings($this->settings);
+            $settings->setArray($this->in->getArrayValue('general_settings'));
+            $settings->saveSettings();
 
-        return $this->createSuccessResponse();
+            return $this->createSuccessResponse();
+        } catch (\Exception $e) {
+            return $this->createApiErrorResponse('settings_not_saved', 'Settings were not saved.');
+        }
     }
 
     ####################################################################################################################
@@ -216,11 +220,15 @@ class SettingsController extends AbstractController implements ProtectedControll
 
     public function savePortalSettingsAction()
     {
-        $portal_settings = new GeneralPortalSettings($this->settings);
-        $portal_settings->setArray($this->in->getArrayValue('portal_settings'));
-        $portal_settings->saveSettings();
+        try {
+            $settings = new GeneralPortalSettings($this->settings);
+            $settings->setArray($this->in->getArrayValue('portal_settings'));
+            $settings->saveSettings();
 
-        return $this->createSuccessResponse();
+            return $this->createSuccessResponse();
+        } catch (\Exception $e) {
+            return $this->createApiErrorResponse('settings_not_saved', 'Settings were not saved.');
+        }
     }
 
     public function saveCustomFaviconAction($blob_id, $blob_auth)
