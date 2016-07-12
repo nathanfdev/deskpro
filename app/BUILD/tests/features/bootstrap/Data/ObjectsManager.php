@@ -77,6 +77,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAttachment;
+use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -249,6 +250,7 @@ class ObjectsManager
             'FeedbackComment'        => [Factory\SimpleFactory::class, 'create', FeedbackComment::class],
             'GlossaryWord'           => [Factory\SimpleFactory::class, 'create', GlossaryWord::class],
             'Task'                   => [Factory\CommonFactories::class, 'task'],
+            'TaskProject'            => [Factory\SimpleFactory::class, 'create', TaskProject::class],
             'GlossaryWordDefinition' => [Factory\SimpleFactory::class, 'create', GlossaryWordDefinition::class],
             'News'                   => [Factory\SimpleFactory::class, 'create', News::class],
             'NewsCategory'           => [Factory\SimpleFactory::class, 'create', NewsCategory::class],
@@ -310,6 +312,7 @@ class ObjectsManager
             'CustomDefFeedback'      => [$this, 'find', CustomDefFeedback::class],
             'CustomDataFeedback'     => [$this, 'find', CustomDataFeedback::class],
             'Task'                   => [$this, 'find', Task::class],
+            'TaskProject'            => [$this, 'find', TaskProject::class],
             'TaskAttachment'         => [$this, 'find', TaskAttachment::class],
             'Article'                => [$this, 'find', Article::class],
             'News'                   => [$this, 'find', News::class],
