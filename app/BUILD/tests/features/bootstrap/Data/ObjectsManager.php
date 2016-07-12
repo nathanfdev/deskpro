@@ -77,6 +77,9 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAttachment;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
 use DeskPRO\Bundle\AppBundle\Entity\TaskList;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
 use Doctrine\ORM\EntityManager;
@@ -253,6 +256,9 @@ class ObjectsManager
             'Task'                   => [Factory\CommonFactories::class, 'task'],
             'TaskProject'            => [Factory\SimpleFactory::class, 'create', TaskProject::class],
             'TaskList'               => [Factory\SimpleFactory::class, 'create', TaskList::class],
+            'TaskLinkedArticle'      => [Factory\SimpleFactory::class, 'create', TaskLinkedArticle::class],
+            'TaskLinkedTicket'       => [Factory\SimpleFactory::class, 'create', TaskLinkedTicket::class],
+            'TaskLinkedChat'         => [Factory\SimpleFactory::class, 'create', TaskLinkedChat::class],
             'GlossaryWordDefinition' => [Factory\SimpleFactory::class, 'create', GlossaryWordDefinition::class],
             'News'                   => [Factory\SimpleFactory::class, 'create', News::class],
             'NewsCategory'           => [Factory\SimpleFactory::class, 'create', NewsCategory::class],
@@ -317,6 +323,9 @@ class ObjectsManager
             'TaskProject'            => [$this, 'find', TaskProject::class],
             'TaskList'               => [$this, 'find', TaskList::class],
             'TaskAttachment'         => [$this, 'find', TaskAttachment::class],
+            'TaskLinkedArticle'      => [$this, 'find', TaskLinkedArticle::class],
+            'TaskLinkedTicket'       => [$this, 'find', TaskLinkedTicket::class],
+            'TaskLinkedChat'         => [$this, 'find', TaskLinkedChat::class],
             'Article'                => [$this, 'find', Article::class],
             'News'                   => [$this, 'find', News::class],
             'NewsCategory'           => [$this, 'find', NewsCategory::class],
