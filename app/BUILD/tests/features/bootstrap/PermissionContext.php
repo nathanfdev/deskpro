@@ -116,6 +116,35 @@ class PermissionContext extends BaseContext
     }
 
     /**
+     * @Given I set only :permissionName = :value for :sysName usergroup
+     *
+     * @param string $permissionName
+     * @param string $value
+     * @param string $sysName
+     */
+    public function iSetOnlyUserGroupPermission($permissionName, $value, $sysName)
+    {
+        $this->iClearUserGroupPermissions($sysName);
+        $this->iSetUserGroupPermission($permissionName, $value, $sysName);
+    }
+
+    /**
+     * @Given I clear usergroup :sysName permissions
+     *
+     * @param string $sysName
+     */
+    public function iClearUserGroupPermissions($sysName)
+    {
+        AuthContext::scheduleCleanup();
+        $connection = $this->em()->getConnection();
+        $group_ids  = $connection->fetchAllCol('SELECT id FROM usergroups WHERE sys_name = ?', [$sysName]);
+        foreach ($group_ids as $gid) {
+            $connection->executeUpdate('DELETE FROM permissions WHERE usergroup_id = ?', [$gid]);
+        }
+        $connection->executeUpdate('DELETE FROM permissions_cache');
+    }
+
+    /**
      * @Given I grant the :departmentId department permission of :app app for :who
      *
      * @param string $who
