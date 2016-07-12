@@ -59,18 +59,31 @@ class EnvironmentService
             $this->geo_reader = new Reader(DP_ROOT . '/vendor-src/geoip-db/GeoLite2-City.mmdb');
         }
 
-        $ip = $this->getUserIp();
-        $record = $this->geo_reader->city($ip);
-
         $result = array(
-            'continent_code' => $record->continent->code,
-            'country_code'   => $record->country->isoCode,
+            'continent_code' => null,
+            'country_code'   => null,
+            'region'         => null,
+            'city'           => null,
+            'latitude'       => null,
+            'longitude'      => null,
         );
 
-        if ($record->city->name) {
+        $ip = $this->getUserIp();
+        try {
+            $record = $this->geo_reader->city($ip);
+        } catch (\Exception $e) {
+            return $result;
+        }
+
+        if ($record->country && $record->continent) {
+            $result['continent_code'] = $record->continent->code;
+            $result['country_code']   = $record->country->isoCode;
+        }
+
+        if ($record->city && $record->city->name) {
             $result['city']       = $record->city;
             $result['latitude']   = $record->location->latitude;
-            $result['longitutde'] = $record->location->longitude;
+            $result['longitude']  = $record->location->longitude;
         }
 
         return $result;
