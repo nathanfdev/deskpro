@@ -51,6 +51,7 @@ use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\LabelFeedback;
+use Application\DeskPRO\Entity\LabelTask;
 use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\News;
@@ -273,6 +274,7 @@ class ObjectsManager
             'LabelDef'               => [Factory\SimpleFactory::class, 'create', LabelDef::class],
             'LabelFeedback'          => [Factory\SimpleFactory::class, 'create', LabelFeedback::class],
             'LabelTicket'            => [Factory\SimpleFactory::class, 'create', LabelTicket::class],
+            'LabelTask'              => [Factory\SimpleFactory::class, 'create', LabelTask::class],
         ];
     }
 
@@ -332,6 +334,7 @@ class ObjectsManager
             'LabelDef'               => [$this, 'find', LabelDef::class],
             'LabelFeedback'          => [$this, 'find', LabelFeedback::class],
             'LabelTicket'            => [$this, 'find', LabelTicket::class],
+            'LabelTask'              => [$this, 'find', LabelTask::class],
         ];
     }
 }
