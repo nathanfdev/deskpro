@@ -29,14 +29,8 @@ export class AdminLoad {
 }
 
 export const start = () => {
-  require('../../compiled/Admin/Main/Ctrl/MainBody');
-  require('../../compiled/Admin/Main/Ctrl/MainPage');
-  require('../../compiled/Admin/Main/Ctrl/Home');
-  require('../../compiled/Admin/Main/Ctrl/Nav');
-  require('../../compiled/Admin/App/App');
-  require('../../compiled/Admin/Agents/Ctrl/Import');
-  require('../../compiled/Admin/Agents/Ctrl/List');
-  require('../../compiled/Admin/Agents/Ctrl/Edit');
+  require('./CtrlList');
+  
   let loadingEl = document.getElementById('dp_loading');
   loadingEl.parentNode.removeChild(loadingEl);
   loadingEl = null;
