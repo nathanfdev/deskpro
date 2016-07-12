@@ -1054,7 +1054,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
                 'fieldName'    => 'employees',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
                 'mappedBy'     => 'organization',
-                'fetch'        => 'EXTRA_LAZY',
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );
 
@@ -1063,7 +1063,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
                 'fieldName'    => 'tickets',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
                 'mappedBy'     => 'organization',
-                'fetch'        => 'EXTRA_LAZY',
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );
     }

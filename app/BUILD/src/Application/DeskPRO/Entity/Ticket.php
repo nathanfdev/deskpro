@@ -4773,7 +4773,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             'fieldName'    => 'children_tickets',
             'targetEntity' => self::class,
             'mappedBy'     => 'parent_ticket',
-            'fetch'        => 'EXTRA_LAZY',
+            'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
         ]);
         $metadata->mapManyToOne(
             [
@@ -4962,13 +4962,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         );
         $metadata->mapOneToMany(
             [
-                'fieldName'    => 'attachments',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAttachment',
-                'cascade'      => ['remove', 'persist', 'merge'],
-                'mappedBy'     => 'ticket',
-                'fetch'        => 'EXTRA_LAZY',
-                'dpApi'        => true,
-                'dpApiDeep'    => true,
+                'fieldName'     => 'attachments',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\TicketAttachment',
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'mappedBy'      => 'ticket',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'orphanRemoval' => true,
+                'dpApi'         => true,
+                'dpApiDeep'     => true,
             ]
         );
         $metadata->mapOneToMany(
@@ -4986,19 +4987,20 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 'targetEntity'  => 'Application\\DeskPRO\\Entity\\TicketMessage',
                 'cascade'       => ['remove', 'persist', 'merge'],
                 'mappedBy'      => 'ticket',
-                'fetch'         => 'EXTRA_LAZY',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
                 'orderBy'       => ['date_created' => 'ASC'],
                 'orphanRemoval' => true,
             ]
         );
         $metadata->mapOneToMany(
             [
-                'fieldName'    => 'sms_messages',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketSms',
-                'cascade'      => ['remove', 'persist', 'merge'],
-                'mappedBy'     => 'ticket',
-                'fetch'        => 'EXTRA_LAZY',
-                'orderBy'      => ['date_created' => 'ASC'],
+                'fieldName'     => 'sms_messages',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\TicketSms',
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'mappedBy'      => 'ticket',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'orderBy'       => ['date_created' => 'ASC'],
+                'orphanRemoval' => true,
             ]
         );
         $metadata->mapOneToMany(

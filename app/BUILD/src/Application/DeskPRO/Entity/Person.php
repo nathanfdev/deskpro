@@ -4242,19 +4242,21 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         );
         $metadata->mapOneToMany(
             [
-                'fieldName'    => 'assigned_tasks',
-                'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TaskAssignment',
-                'mappedBy'     => 'person',
-                'fetch'        => 'EXTRA_LAZY',
+                'fieldName'     => 'assigned_tasks',
+                'targetEntity'  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TaskAssignment',
+                'mappedBy'      => 'person',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'orphanRemoval' => true,
             ]
         );
 
         $metadata->mapOneToMany(
             [
-                'fieldName'    => 'tickets',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketParticipant',
-                'mappedBy'     => 'person',
-                'fetch'        => 'EXTRA_LAZY',
+                'fieldName'     => 'tickets',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\TicketParticipant',
+                'mappedBy'      => 'person',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'orphanRemoval' => true,
             ]
         );
 
@@ -4278,7 +4280,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 'mappedBy'     => 'participants',
                 'dpApi'        => true,
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation',
-                'fetch'        => 'EXTRA_LAZY',
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );
 
