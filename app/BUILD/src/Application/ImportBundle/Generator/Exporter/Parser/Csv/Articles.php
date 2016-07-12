@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -104,34 +104,32 @@ final class Articles extends AbstractParser
      */
     protected function exportArticle(array $data, $num)
     {
-        $formatted = $this->formatter->format($data, array(
-            'id'          => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+        $formatted = $this->formatter->format($data, [
+            'id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, [
                 'default' => 'num_'.$num,
-            )),
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => self::ARTICLE_PREFIX,
-                'ref'     => 'id',
-            )),
+            ]),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => self::ARTICLE_PREFIX,
+                'ref'    => 'id',
+            ]),
             'person'       => TransformerInterface::TYPE_STRING,
             'title'        => TransformerInterface::TYPE_STRING,
             'content'      => TransformerInterface::TYPE_STRING,
-            'slug'         => TransformerInterface::TYPE_STRING,
             'language'     => TransformerInterface::TYPE_STRING,
             'status'       => TransformerInterface::TYPE_STRING,
             'category'     => TransformerInterface::TYPE_STRING,
             'label'        => TransformerInterface::TYPE_STRING,
             'date_created' => TransformerInterface::TYPE_DATE,
-        ));
+        ]);
 
-            $entity = new Entity\Article();
-            $entity
+        $entity = new Entity\Article();
+        $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])
             ->setOid($formatted['id'])
             ->setPersonEmail($formatted['person'])
             ->setTitle($formatted['title'])
             ->setContent($formatted['content'])
-            ->setSlug($formatted['slug'])
             ->setLanguage($formatted['language'])
             ->setDateCreated($formatted['date_created'])
             ->setStatus($formatted['status'])
@@ -140,17 +138,17 @@ final class Articles extends AbstractParser
         // Set import key if it's real oid only
         if (strpos($entity->getOid(), 'num_') !== 0) {
             $entity->setImportMapKey(DeskPROEntity\ImportMap::TYPE_CSV_ARTICLE);
-            }
+        }
 
         if ($formatted['label']) {
             $entity->addLabel($formatted['label']);
         }
         if ($formatted['category']) {
             $entity->addCategory($formatted['category']);
-            }
-
-            return $entity;
         }
+
+        return $entity;
+    }
 
     /**
      * Returns a collection of articles custom field data.

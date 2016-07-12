@@ -122,7 +122,7 @@ final class Ticket extends AbstractImporter
             }
         } else {
             foreach ($entity->getMessages() as $message) {
-                $exist_message = $this->getTicketMessageMapper()->findOneBy(array('entity' => $message), false);
+                $exist_message = $this->getTicketMessageMapper()->findOneBy(['entity' => $message], false);
                 if ($exist_message) {
                     $this->logDebug(sprintf('Found existing ticket message by oid=`%d`', $message->getOid()));
                     $this->updateTicketMessage($message, $exist_message);
@@ -159,14 +159,14 @@ final class Ticket extends AbstractImporter
      */
     private function findOrCreateTicket(Entity\Ticket $entity, $entity_id)
     {
-        $ticket = $this->getTicketMapper()->findOneBy(array('ref' => $entity->getRef()), false);
+        $ticket = $this->getTicketMapper()->findOneBy(['ref' => $entity->getRef()], false);
         if ($ticket) {
             $this->logDebug(sprintf(
                 'Found existing ticket by ref, id=`%d` with ref `%s`',
                 $ticket->getId(), $ticket->getRef()
             ));
         } else {
-            $ticket = $this->getTicketMapper()->findOneBy(array('id' => $entity_id), false);
+            $ticket = $this->getTicketMapper()->findOneBy(['id' => $entity_id], false);
             if ($ticket) {
                 $this->logDebug(sprintf(
                     'Found existing ticket by import map, id=`%d` with ref `%s`',
@@ -183,9 +183,9 @@ final class Ticket extends AbstractImporter
             $ticket_log
                 ->setTicket($ticket)
                 ->setActionType('free')
-                ->setDetails(array(
+                ->setDetails([
                     'message' => $entity->getLogMessage() ?: sprintf('Imported (old ticket ID #%s)', $entity->getOid()),
-                ))
+                ])
             ;
 
             $this->records->addRelatedEntity($ticket_log);

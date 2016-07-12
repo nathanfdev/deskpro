@@ -58,7 +58,7 @@ final class Feedback extends AbstractContentEntity
     /**
      * @var array
      */
-    private $labels = array();
+    private $labels = [];
 
     /**
      * @var Collection
@@ -214,11 +214,11 @@ final class Feedback extends AbstractContentEntity
      */
     public function isStatusValid()
     {
-        $feedback_statuses = array(
+        $feedback_statuses = [
             DeskPRO\Entity\Feedback::STATUS_ACTIVE,
             DeskPRO\Entity\Feedback::STATUS_CLOSED,
             DeskPRO\Entity\Feedback::STATUS_HIDDEN,
-        );
+        ];
 
         return in_array($this->status, $feedback_statuses, true) || parent::isStatusValid();
     }
@@ -232,14 +232,13 @@ final class Feedback extends AbstractContentEntity
             throw new \Exception('Date created is not set up');
         }
 
-        return array(
+        return [
             'oid'            => $this->oid,
             'import_map_key' => $this->import_map_key,
             'person'         => $this->person_email,
             'language'       => $this->language,
             'title'          => $this->title,
             'content'        => $this->content,
-            'slug'           => $this->slug,
             'popularity'     => $this->popularity,
             'status'         => $this->status,
             'total_rating'   => $this->total_rating,
@@ -252,7 +251,7 @@ final class Feedback extends AbstractContentEntity
             'date_published' => $this->date_published ? $this->date_published->format('Y-m-d H:i:s') : null,
             'attachments'    => $this->attachments->entitiesToArray(),
             'custom_fields'  => $this->custom_fields->entitiesToArray(),
-        );
+        ];
     }
 
     /**

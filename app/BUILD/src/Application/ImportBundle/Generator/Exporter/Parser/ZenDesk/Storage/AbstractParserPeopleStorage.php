@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -58,13 +58,13 @@ abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Gen
         $request_ids = $this->storage->getNotContainsIds($ids);
         $result      = $this->reader->getPeopleByIds($request_ids);
 
-        $people = array();
+        $people = [];
         foreach ($result as $person) {
             if (!isset($person['email']) || !$person['email']) {
-                $person = array_merge($person, array(
+                $person = array_merge($person, [
                     'email'      => sprintf('imported.user.%s@example.com', $person['id']),
                     'is_deleted' => true,
-                ));
+                ]);
             }
 
             $people[$person['id']] = $person;
@@ -77,11 +77,11 @@ abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Gen
         $created_at  = new \DateTime();
         $created_at  = $created_at->format('c');
 
-        $people = array();
+        $people = [];
         foreach ($deleted_ids as $id) {
             $person = $this->reader->getPersonById($id);
             if (!$person) {
-                $person = array(
+                $person = [
                     'id'         => $id,
                     'name'       => 'User '.$id,
                     'created_at' => $created_at,
@@ -89,13 +89,13 @@ abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Gen
                     'locale'     => 'en-US',
                     'time_zone'  => 'UTC',
                     'role'       => People::ROLE_END_USER,
-                );
+                ];
             }
 
-            $people[$id] = array_merge($person, array(
+            $people[$id] = array_merge($person, [
                 'email'      => sprintf('imported.user.%s@example.com', $id),
                 'is_deleted' => true,
-            ));
+            ]);
         }
 
         $this->storage->addPeople($people);

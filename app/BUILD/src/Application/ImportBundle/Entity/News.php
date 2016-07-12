@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -50,7 +50,7 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
     /**
      * @var string[]
      */
-    private $labels = array();
+    private $labels = [];
 
     /**
      * {@inheritdoc}
@@ -129,12 +129,11 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
             throw new \Exception('Date created is not set up');
         }
 
-        return array(
+        return [
             'oid'            => $this->oid,
             'import_map_key' => $this->import_map_key,
             'person'         => $this->person_email,
             'language'       => $this->language,
-            'slug'           => $this->slug,
             'title'          => $this->title,
             'content'        => $this->content,
             'view_count'     => $this->view_count,
@@ -146,7 +145,7 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
             'date_published' => $this->date_published ? $this->date_published->format('Y-m-d H:i:s') : null,
             'category'       => $this->category,
             'labels'         => $this->labels,
-        );
+        ];
     }
 
     /**

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -53,7 +53,7 @@ final class PeopleFields extends AbstractFields
         $fields = $this->getClient()->findAll();
         foreach ($fields->user_fields as $field) {
             try {
-                $this->getClient()->delete(array('id' => $field->id));
+                $this->getClient()->delete(['id' => $field->id]);
                 $this->logInfo(sprintf('User field `%s` deleted successfully', $field->title));
             } catch (ResponseException $e) {
                 $this->handleResponseException($this->getEntityType());

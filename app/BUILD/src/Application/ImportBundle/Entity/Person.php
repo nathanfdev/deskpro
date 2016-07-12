@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -130,17 +130,17 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
     /**
      * @var array
      */
-    private $emails = array();
+    private $emails = [];
 
     /**
      * @var string[]
      */
-    private $labels = array();
+    private $labels = [];
 
     /**
      * @var string[]
      */
-    private $user_groups = array();
+    private $user_groups = [];
 
     /**
      * @var ContactData[]
@@ -756,7 +756,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             throw new \Exception('Date created is not set up');
         }
 
-        return array(
+        return [
             'oid'                   => $this->oid,
             'import_map_key'        => $this->import_map_key,
             'is_agent'              => $this->is_agent,
@@ -780,7 +780,7 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             'user_groups'           => $this->user_groups,
             'contact_data'          => $this->contact_data->entitiesToArray(),
             'custom_fields'         => $this->custom_fields->entitiesToArray(),
-        );
+        ];
     }
 
     /**
@@ -796,18 +796,18 @@ final class Person extends AbstractEntity implements LabelAwareInterface, Langua
             ->addPropertyConstraint('date_created', new Constraints\NotBlank())
             ->addPropertyConstraint('date_created', new Constraints\DateTime())
 
-            ->addPropertyConstraint('emails', new Constraints\All(array(
-                'constraints' => array(
+            ->addPropertyConstraint('emails', new Constraints\All([
+                'constraints' => [
                     new Constraints\NotBlank(),
                     new Constraints\Email(),
-                ),
-            )))
+                ],
+            ]))
 
-            ->addPropertyConstraint('user_groups', new Constraints\All(array(
-                'constraints' => array(
+            ->addPropertyConstraint('user_groups', new Constraints\All([
+                'constraints' => [
                     new Constraints\NotBlank(),
-                ),
-            )))
+                ],
+            ]))
 
             ->addGetterConstraint('firstEmail', new Constraints\NotBlank())
             ->addGetterConstraint('firstEmail', new Constraints\Email())

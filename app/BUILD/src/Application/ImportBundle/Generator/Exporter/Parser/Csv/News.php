@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -84,37 +84,34 @@ final class News extends AbstractParser
      */
     protected function exportNews(array $data, $num)
     {
-        $formatted = $this->formatter->format($data, array(
-            'id'          => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+        $formatted = $this->formatter->format($data, [
+            'id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, [
                 'default' => 'num_'.$num,
-            )),
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => 'news_',
-                'ref'     => 'id',
-            )),
+            ]),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => 'news_',
+                'ref'    => 'id',
+            ]),
             'person'         => TransformerInterface::TYPE_STRING,
             'title'          => TransformerInterface::TYPE_STRING,
             'content'        => TransformerInterface::TYPE_STRING,
-            'slug'           => TransformerInterface::TYPE_STRING,
             'language'       => TransformerInterface::TYPE_STRING,
             'status'         => TransformerInterface::TYPE_STRING,
             'date_created'   => TransformerInterface::TYPE_DATE,
             'date_published' => TransformerInterface::TYPE_DATE,
             'category'       => TransformerInterface::TYPE_STRING,
             'label'          => TransformerInterface::TYPE_STRING,
-        ));
+        ]);
 
-            $entity = new Entity\News();
-            $entity
+        $entity = new Entity\News();
+        $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])
             ->setOid($formatted['id'])
             ->setPersonEmail($formatted['person'])
             ->setLanguage($formatted['language'])
-            ->setSlug($formatted['slug'])
             ->setTitle($formatted['title'])
             ->setContent($formatted['content'])
-            ->setSlug($formatted['slug'])
             ->setStatus($formatted['status'])
             ->setDateCreated($formatted['date_created'])
             ->setCategory($formatted['category'])
@@ -123,8 +120,8 @@ final class News extends AbstractParser
 
         if ($formatted['label']) {
             $entity->addLabel($formatted['label']);
-            }
-
-            return $entity;
         }
+
+        return $entity;
+    }
 }

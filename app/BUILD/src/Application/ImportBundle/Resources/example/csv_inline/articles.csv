@@ -1,3 +1,3 @@
-id,person,title,content,slug,language,status,category,label,date_created,custom "Text field",custom "Radio button field"
-1001,testing@deskpro.com,Article 1,Content 1,slug-article-1,english,published,Category 1,Label 1,2015-01-15,some text 1,Choice 1
-1001,testing@deskpro.com,Article 2,Content 2,,english,published,Category 1,Label 1,,some text 2,Choice 2
+id,person,title,content,language,status,category,label,date_created,custom "Text field",custom "Radio button field"
+1001,testing@deskpro.com,Article 1,Content 1,english,published,Category 1,Label 1,2015-01-15,some text 1,Choice 1
+1001,testing@deskpro.com,Article 2,Content 2,english,published,Category 1,Label 1,,some text 2,Choice 2

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,8 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPRO\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\ImportBundle\Entity\CustomField;
+use Application\ImportBundle\Entity\ObjectLang;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\Writer\DeskPRO\Importer\Mapper\AbstractCustomDefMapper;
 
@@ -188,23 +190,23 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      * Returns custom def person entity.
      *
      * @param AbstractCustomDefMapper          $mapper
-     * @param Entity\CustomField               $entity
+     * @param CustomField                      $entity
      * @param DeskPROEntity\CustomDataAbstract $custom_field
      *
      * @throws ImporterException
      *
      * @return DeskPROEntity\CustomDataTicket|null
      */
-    protected function createCustomData(AbstractCustomDefMapper $mapper, Entity\CustomField $entity, DeskPROEntity\CustomDataAbstract $custom_field)
+    protected function createCustomData(AbstractCustomDefMapper $mapper, CustomField $entity, DeskPROEntity\CustomDataAbstract $custom_field)
     {
-        $custom_field_def = $mapper->findOneBy(array(
+        $custom_field_def = $mapper->findOneBy([
             'title'  => $entity->getKey(),
             'parent' => null,
-        ));
+        ]);
 
         switch ($custom_field_def->getTypeName()) {
-            case Entity\CustomField::FIELD_TYPE_TEXT:
-            case Entity\CustomField::FIELD_TYPE_TEXTAREA:
+            case CustomField::FIELD_TYPE_TEXT:
+            case CustomField::FIELD_TYPE_TEXTAREA:
                 if (!$entity->getValue()) {
                     return;
                 }
@@ -217,7 +219,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
 
                 break;
 
-            case Entity\CustomField::FIELD_TYPE_TOGGLE:
+            case CustomField::FIELD_TYPE_TOGGLE:
                 $custom_field
                     ->setField($custom_field_def)
                     ->setRootField($custom_field_def)
@@ -225,8 +227,8 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
 
                 break;
 
-            case Entity\CustomField::FIELD_TYPE_DATE:
-            case Entity\CustomField::FIELD_TYPE_DATETIME:
+            case CustomField::FIELD_TYPE_DATE:
+            case CustomField::FIELD_TYPE_DATETIME:
                 if (!$entity->getValue()) {
                     return;
                 }
@@ -239,7 +241,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
 
                 break;
 
-            case Entity\CustomField::FIELD_TYPE_CHOICE:
+            case CustomField::FIELD_TYPE_CHOICE:
                 if (!$entity->getValue()) {
                     return;
                 }
@@ -260,8 +262,8 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
 
                 break;
 
-            case Entity\CustomField::FIELD_TYPE_DISPLAY:
-            case Entity\CustomField::FIELD_TYPE_HIDDEN:
+            case CustomField::FIELD_TYPE_DISPLAY:
+            case CustomField::FIELD_TYPE_HIDDEN:
                 return;
 
             default:
@@ -274,12 +276,12 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     /**
      * Creates object lang.
      *
-     * @param Entity\ObjectLang $translation
-     * @param mixed             $record
+     * @param ObjectLang $translation
+     * @param mixed      $record
      *
      * @throws Mapper\MapperException
      */
-    protected function addObjectLang(Entity\ObjectLang $translation, $record)
+    protected function addObjectLang(ObjectLang $translation, $record)
     {
         $language    = $this->getLanguageMapper()->findOneByTitle($translation->getLanguage());
         $object_lang = DeskPROEntity\ObjectLang::createObjectLang($language, $record, $translation->getProperty(), $translation->getValue());

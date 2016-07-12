@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -71,12 +71,12 @@ final class Sections extends AbstractFixture
         $category = $this->category_loader->getRandomCategory();
 
         $helper   = new Section($this->client);
-        $response = $helper->create(array(
+        $response = $helper->create([
             'id'      => $category['id'],
-            'section' => array(
+            'section' => [
                 'name' => $category['name'].': Section'.$num,
-            ),
-        ));
+            ],
+        ]);
 
         $this->logger->info('Section created successfully');
         $this->logger->debug(json_encode($response->section));

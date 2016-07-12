@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -57,33 +57,33 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
      */
     public function checkConfig()
     {
-        $files = array(
-            self::FILE_ARTICLE_CATEGORIES => array(),
-            self::FILE_ARTICLES           => array(
+        $files = [
+            self::FILE_ARTICLE_CATEGORIES => [],
+            self::FILE_ARTICLES           => [
                 self::FILE_ARTICLE_CUSTOM_FIELDS,
-            ),
-            self::FILE_DOWNLOADS => array(
+            ],
+            self::FILE_DOWNLOADS => [
                 self::FILE_DOWNLOAD_ATTACHMENTS,
-            ),
-            self::FILE_FEEDBACK => array(
+            ],
+            self::FILE_FEEDBACK => [
                 self::FILE_FEEDBACK_ATTACHMENTS,
                 self::FILE_FEEDBACK_CUSTOM_FIELDS,
-            ),
-            self::FILE_NEWS   => array(),
-            self::FILE_PEOPLE => array(
+            ],
+            self::FILE_NEWS   => [],
+            self::FILE_PEOPLE => [
                 self::FILE_PEOPLE_CONTACT_DATA,
                 self::FILE_PEOPLE_CUSTOM_FIELDS,
-            ),
-            self::FILE_TICKETS => array(
+            ],
+            self::FILE_TICKETS => [
                 self::FILE_TICKET_MESSAGES,
                 self::FILE_TICKET_ATTACHMENTS,
                 self::FILE_TICKET_CUSTOM_FIELDS,
-            ),
-            self::FILE_ORGANIZATIONS => array(
+            ],
+            self::FILE_ORGANIZATIONS => [
                 self::FILE_ORGANIZATION_CONTACT_DATA,
                 self::FILE_ORGANIZATION_CUSTOM_FIELDS,
-            ),
-        );
+            ],
+        ];
 
         if (!is_dir($this->config->getPath())) {
             throw new \RuntimeException(sprintf('`%s` is not a directory.', $this->config->getPath()));
@@ -153,7 +153,7 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
         $iterator = $this->getIterator($entity_file);
 
         $header = null;
-        $data   = array();
+        $data   = [];
         foreach ($iterator as $row) {
             if (!$this->isValidRow($row)) {
                 continue;
@@ -162,7 +162,7 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
             if ($header === null) {
                 $header = $row;
             } else {
-                $record = array();
+                $record = [];
                 foreach ($header as $num => $key) {
                     if (array_key_exists($num, $row) === false) {
                         throw new CsvReaderException(sprintf(
@@ -232,7 +232,7 @@ class CsvReader extends AbstractReader implements CsvReaderInterface
      */
     private function detectDelimiter($entity_file)
     {
-        $delimiters = array_diff(array(';', ','), array($this->config->getDelimiter()));
+        $delimiters = array_diff([';', ','], [$this->config->getDelimiter()]);
 
         while (true) {
             $iterator = $this->getIterator($entity_file);

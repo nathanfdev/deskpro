@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,7 +30,6 @@ namespace Application\ImportBundle\Entity;
 
 use Application\DeskPRO\Entity\ContentAbstract;
 use DateTime;
-use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -50,11 +49,6 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
      * @var string
      */
     protected $content;
-
-    /**
-     * @var string
-     */
-    protected $slug;
 
     /**
      * @var string
@@ -135,28 +129,6 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     /**
      * {@inheritdoc}
      */
-    public function getSlug()
-    {
-        if ($this->slug) {
-            return $this->slug;
-        }
-
-        return Strings::slugifyTitle($this->title);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setSlug($slug)
-    {
-        $this->slug = $slug;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getLanguage()
     {
         return $this->language;
@@ -203,7 +175,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     {
         $hidden_prefix = 'hidden.';
 
-        return array(
+        return [
             ContentAbstract::STATUS_PUBLISHED,
             ContentAbstract::STATUS_ARCHIVED,
             ContentAbstract::STATUS_HIDDEN,
@@ -212,7 +184,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
             $hidden_prefix.ContentAbstract::HIDDEN_STATUS_DELETED,
             $hidden_prefix.ContentAbstract::HIDDEN_STATUS_SPAM,
             $hidden_prefix.ContentAbstract::HIDDEN_STATUS_DRAFT,
-        );
+        ];
     }
 
     /**
@@ -345,14 +317,9 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
             ->addPropertyConstraint('content', new Constraints\NotBlank())
             ->addPropertyConstraint('language', new Constraints\NotBlank())
 
-            ->addGetterConstraint('slug', new Constraints\NotBlank())
-            ->addGetterConstraint('slug', new Constraints\Regex(array(
-                'pattern' => '/^[a-z0-9-]+$/',
-            )))
-
-            ->addGetterConstraint('statusValid', new Constraints\True(array(
+            ->addGetterConstraint('statusValid', new Constraints\True([
                 'message' => sprintf('Value is not valid, use one of (%s): ', implode(', ', self::getValidStatuses())),
-            )))
+            ]))
         ;
     }
 }

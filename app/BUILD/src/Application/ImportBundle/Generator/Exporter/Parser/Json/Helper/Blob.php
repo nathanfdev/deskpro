@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -59,18 +59,18 @@ class Blob extends AbstractParserFormatterHelper
             return;
         }
 
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'oid'         => TransformerInterface::TYPE_STRING,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => 'blob_',
-                'ref'     => 'oid',
-            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => 'blob_',
+                'ref'    => 'oid',
+            ]),
             'blob_data'    => TransformerInterface::TYPE_STRING,
             'blob_url'     => TransformerInterface::TYPE_STRING,
             'blob_path'    => TransformerInterface::TYPE_STRING,
             'file_name'    => TransformerInterface::TYPE_STRING,
             'content_type' => TransformerInterface::TYPE_STRING,
-        ));
+        ]);
 
         $entity = new Entity\Blob();
         $entity

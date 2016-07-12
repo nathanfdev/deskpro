@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -51,7 +51,7 @@ class Request
     /**
      * @var array
      */
-    private $params = array();
+    private $params = [];
 
     /**
      * Constructor.
@@ -61,7 +61,7 @@ class Request
      * @param string $method
      * @param array  $params
      */
-    public function __construct($api_group, $entity_type, $method, array $params = array())
+    public function __construct($api_group, $entity_type, $method, array $params = [])
     {
         $this->api_group   = $api_group;
         $this->entity_type = $entity_type;
@@ -123,7 +123,7 @@ class Request
      *
      * @return Request
      */
-    public static function createFromString($helper_string, array $params = array())
+    public static function createFromString($helper_string, array $params = [])
     {
         if (preg_match('/^(\w+)\x5c(\w+)::(\w+)$/', $helper_string, $matches)) {
             return new self($matches[1], $matches[2], $matches[3], $params);
@@ -141,7 +141,7 @@ class Request
      *
      * @return Request
      */
-    public static function createCoreAPI($entity_type, $method, array $params = array())
+    public static function createCoreAPI($entity_type, $method, array $params = [])
     {
         return new self('CoreAPI', $entity_type, $method, $params);
     }
@@ -155,7 +155,7 @@ class Request
      *
      * @return Request
      */
-    public static function createHelpCenter($entity_type, $method, array $params = array())
+    public static function createHelpCenter($entity_type, $method, array $params = [])
     {
         return new self('HelpCenter', $entity_type, $method, $params);
     }

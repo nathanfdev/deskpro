@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -70,7 +70,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
      * @param array           $options
      * @param LoggerInterface $logger
      */
-    public function __construct(API\Client $client, array $options = array(), LoggerInterface $logger = null)
+    public function __construct(API\Client $client, array $options = [], LoggerInterface $logger = null)
     {
         $this->client  = $client;
         $this->options = $options;
@@ -188,7 +188,7 @@ final class RequestClientAdapter implements RequestAdapterInterface
     private function retry(Request $request, $retry_attempt, Exception $exception, $timeout = 0)
     {
         // Retry attempt timeouts (in seconds)
-        $retry_timeouts = array(2, 5, 10, 30);
+        $retry_timeouts = [2, 5, 10, 30];
 
         if ($this->was_request && $retry_attempt++ < 10) {
             if ($timeout < 1) {

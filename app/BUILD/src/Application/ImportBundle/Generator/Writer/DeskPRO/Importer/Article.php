@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -47,12 +47,12 @@ final class Article extends AbstractImporter
      * Constructor.
      *
      * @param Mapper\Collection    $mappers
-     * @param BlobAdapterInterface $blob_adapter
+     * @param BlobAdapterInterface $blobAdapter
      */
-    public function __construct(Mapper\Collection $mappers, BlobAdapterInterface $blob_adapter)
+    public function __construct(Mapper\Collection $mappers, BlobAdapterInterface $blobAdapter)
     {
         parent::__construct($mappers);
-        $this->blob_adapter = $blob_adapter;
+        $this->blob_adapter = $blobAdapter;
     }
 
     /**
@@ -65,10 +65,6 @@ final class Article extends AbstractImporter
 
     /**
      * {@inheritdoc}
-     *
-     * todo add referred objects
-     * $record['total_rating'] = $kbval->total_rating;
-     * $record['num_ratings']  = $kbval->num_ratings;
      */
     public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
@@ -80,7 +76,6 @@ final class Article extends AbstractImporter
         $article
             ->setTitle($entity->getTitle())
             ->setContent($entity->getContent())
-            ->setSlug($entity->getSlug())
             ->setStatus($entity->getStatus())
             ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
             ->setLanguage($this->findLanguage($entity->getLanguage()))
@@ -88,9 +83,8 @@ final class Article extends AbstractImporter
             ->setDatePublished($entity->getDatePublished())
             ->setDateEnd($entity->getDateEnd())
             ->setEndAction($entity->getEndAction())
-            ->setViewsCount($entity->getViewCount())
+            ->setViewCount($entity->getViewCount())
             ->resetCustomData()
-            ->resetLabels()
             ->resetCategories()
             ->resetAttachments()
         ;
@@ -129,7 +123,7 @@ final class Article extends AbstractImporter
      */
     protected function findOrCreateArticle($entity_id)
     {
-        $article = $this->getArticleMapper()->findOneBy(array('id' => $entity_id), false);
+        $article = $this->getArticleMapper()->findOneBy(['id' => $entity_id], false);
         if ($article) {
             $this->logDebug(sprintf('Found existing article `%s`', $article->getRealTitle()));
 

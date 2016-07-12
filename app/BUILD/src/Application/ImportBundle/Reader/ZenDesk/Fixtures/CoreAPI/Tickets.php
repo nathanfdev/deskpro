@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -79,25 +79,25 @@ final class Tickets extends AbstractFixture
      */
     protected function createItem($num, DateTime $initial_time, DateTime $end_time)
     {
-        $types      = array('problem', 'incident', 'question', 'task');
-        $priorities = array('urgent', 'high', 'normal', 'low');
-        $statuses   = array('open', 'pending', 'hold', 'solved', 'closed', 'deleted');
+        $types      = ['problem', 'incident', 'question', 'task'];
+        $priorities = ['urgent', 'high', 'normal', 'low'];
+        $statuses   = ['open', 'pending', 'hold', 'solved', 'closed', 'deleted'];
 
         $type   = $types[rand(0, count($types) - 1)];
-        $params = array(
+        $params = [
             'subject' => 'Fake ticket '.$num,
-            'comment' => array(
+            'comment' => [
                 'type'   => 'Comment',
                 'body'   => 'Thanks for your help!',
                 'public' => true,
-            ),
+            ],
             'type'          => $type,
             'priority'      => $priorities[rand(0, count($priorities) - 1)],
             'status'        => $statuses[rand(0, count($statuses) - 1)],
             'requester_id'  => $this->people_loader->getRandomPersonId(),
             'submitter_id'  => $this->people_loader->getRandomPersonId(),
             'custom_fields' => $this->ticket_fields_loader->getRandomFieldsValues(),
-        );
+        ];
 
         if ($type === 'task') {
             $params['due_at'] = $this->getRandomDateTime($initial_time, $end_time)->format('Y-m-d');
@@ -109,14 +109,14 @@ final class Tickets extends AbstractFixture
 
         for ($i = 1; $i <= 100; ++$i) {
             try {
-                $comment = $this->client->tickets()->update(array(
+                $comment = $this->client->tickets()->update([
                     'id'      => $response->ticket->id,
-                    'comment' => array(
+                    'comment' => [
                         'type'   => 'Comment',
                         'body'   => 'Reply #'.$i,
                         'public' => true,
-                    ),
-                ));
+                    ],
+                ]);
 
                 $this->logger->info('Ticket comment created successfully');
                 $this->logger->debug(json_encode($comment));

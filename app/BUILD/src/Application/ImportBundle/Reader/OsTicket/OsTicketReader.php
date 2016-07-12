@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -69,7 +69,7 @@ class OsTicketReader extends AbstractReader implements OsTicketReaderInterface
     /**
      * @var array
      */
-    private $timezones = array();
+    private $timezones = [];
 
     /**
      * @var bool
@@ -79,7 +79,7 @@ class OsTicketReader extends AbstractReader implements OsTicketReaderInterface
     /**
      * @var array
      */
-    private $ticket_priorities = array();
+    private $ticket_priorities = [];
 
     /**
      * @var bool
@@ -113,14 +113,14 @@ class OsTicketReader extends AbstractReader implements OsTicketReaderInterface
             throw new OsTicketReaderException('Unable to get a list of tables', $stmt->errorCode(), $stmt->errorInfo());
         }
 
-        $tables = array();
+        $tables = [];
         $result = $stmt->fetchAll(PDO::FETCH_NUM);
 
         foreach ($result as $table_info) {
             $tables[] = $table_info[0];
         }
 
-        $check_tables = array(
+        $check_tables = [
             'ost_staff',
             'ost_user',
             'ost_ticket',
@@ -134,7 +134,7 @@ class OsTicketReader extends AbstractReader implements OsTicketReaderInterface
             'ost_file_chunk',
             'ost_timezone',
             'ost_ticket_priority',
-        );
+        ];
 
         $exist_tables = array_intersect($tables, $check_tables);
 
@@ -499,7 +499,7 @@ class OsTicketReader extends AbstractReader implements OsTicketReaderInterface
             throw new OsTicketReaderException('Unable to find timezones', $stmt->errorCode(), $stmt->errorInfo());
         }
 
-        $this->timezones = array();
+        $this->timezones = [];
         $rows            = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($rows as $row) {
             $this->timezones[(int) $row['id']] = $row;
@@ -520,7 +520,7 @@ class OsTicketReader extends AbstractReader implements OsTicketReaderInterface
             throw new OsTicketReaderException('Unable to find ticket priorities', $stmt->errorCode(), $stmt->errorInfo());
         }
 
-        $this->ticket_priorities = array();
+        $this->ticket_priorities = [];
         $rows                    = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($rows as $row) {
             $this->ticket_priorities[(int) $row['priority_id']] = $row;

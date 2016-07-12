@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -83,13 +83,13 @@ final class Organizations extends AbstractParser
      */
     protected function exportOrganization(array $data)
     {
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'oid'            => TransformerInterface::TYPE_STRING,
             'import_map_key' => TransformerInterface::TYPE_STRING,
-            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'     => 'organization_',
-                'ref'        => 'oid',
-            )),
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => 'organization_',
+                'ref'    => 'oid',
+            ]),
             'name'          => TransformerInterface::TYPE_STRING,
             'picture'       => TransformerInterface::TYPE_ARRAY,
             'importance'    => TransformerInterface::TYPE_STRING,
@@ -97,7 +97,7 @@ final class Organizations extends AbstractParser
             'contact_data'  => TransformerInterface::TYPE_ARRAY,
             'custom_fields' => TransformerInterface::TYPE_ARRAY,
             'labels'        => TransformerInterface::TYPE_ARRAY,
-        ));
+        ]);
 
         $entity = new Entity\Organization();
         $entity

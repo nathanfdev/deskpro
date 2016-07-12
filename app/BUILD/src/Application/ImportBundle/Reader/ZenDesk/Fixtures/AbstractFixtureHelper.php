@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -99,7 +99,7 @@ abstract class AbstractFixtureHelper
     protected function getRandomBool()
     {
         $rand   = rand(0, 1);
-        $values = array(true, false);
+        $values = [true, false];
 
         return $values[$rand];
     }
@@ -112,7 +112,7 @@ abstract class AbstractFixtureHelper
     protected function getRandomBoolString()
     {
         $rand   = rand(0, 1);
-        $values = array('true', 'false');
+        $values = ['true', 'false'];
 
         return $values[$rand];
     }
@@ -127,9 +127,9 @@ abstract class AbstractFixtureHelper
     protected function getRandomUploadFile($as_curl = true)
     {
         $dp_root = str_replace('/app', '/', DP_ROOT);
-        $files   = array(
+        $files   = [
             '/web/images/big-tick.png',
-        );
+        ];
 
         $file = $files[rand(0, count($files) - 1)];
         $file = $dp_root.$file;

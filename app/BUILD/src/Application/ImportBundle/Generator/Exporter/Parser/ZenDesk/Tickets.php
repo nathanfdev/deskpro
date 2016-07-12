@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -131,12 +131,12 @@ final class Tickets extends AbstractParser
     protected function exportTicket(array $data)
     {
         $entity    = new Entity\Ticket();
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'id'          => TransformerInterface::TYPE_STRING,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => $entity->getDestinationPrefix(),
-                'ref'     => 'id',
-            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => $entity->getDestinationPrefix(),
+                'ref'    => 'id',
+            ]),
             'requester_id'     => TransformerInterface::TYPE_STRING,
             'assignee_id'      => TransformerInterface::TYPE_STRING,
             'collaborator_ids' => TransformerInterface::TYPE_ARRAY,
@@ -149,7 +149,7 @@ final class Tickets extends AbstractParser
             'custom_fields'    => TransformerInterface::TYPE_ARRAY,
             'tags'             => TransformerInterface::TYPE_ARRAY,
             'comments'         => TransformerInterface::TYPE_ARRAY,
-        ));
+        ]);
 
         $person_email = $this->tickets_people->getPersonEmail($formatted['requester_id']);
         $agent_email  = $this->tickets_people->getPersonEmail($formatted['assignee_id']);
@@ -216,12 +216,12 @@ final class Tickets extends AbstractParser
      */
     private function exportPriority($priority)
     {
-        $mapping = array(
+        $mapping = [
             self::PRIORITY_URGENT => 10,
             self::PRIORITY_HIGH   => 5,
             self::PRIORITY_NORMAL => 2,
             self::PRIORITY_LOW    => 1,
-        );
+        ];
 
         if ($priority) {
             if (in_array($priority, array_keys($mapping), true)) {
@@ -272,18 +272,18 @@ final class Tickets extends AbstractParser
     protected function exportMessage(array $data)
     {
         $entity    = new Entity\TicketMessage();
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'id'          => TransformerInterface::TYPE_STRING,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => $entity->getDestinationPrefix(),
-                'ref'     => 'id',
-            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => $entity->getDestinationPrefix(),
+                'ref'    => 'id',
+            ]),
             'author_id'   => TransformerInterface::TYPE_STRING,
             'body'        => TransformerInterface::TYPE_STRING,
             'public'      => TransformerInterface::TYPE_BOOLEAN,
             'created_at'  => TransformerInterface::TYPE_DATE,
             'attachments' => TransformerInterface::TYPE_ARRAY,
-        ));
+        ]);
 
         if (empty($formatted['author_id'])) {
             throw new SkippingException('Comment without author_id, skipping', $formatted);
@@ -343,14 +343,14 @@ final class Tickets extends AbstractParser
     protected function exportCustomField(array $data)
     {
         $entity    = new Entity\CustomField();
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'id'          => TransformerInterface::TYPE_STRING,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => $entity->getDestinationPrefix(),
-                'ref'     => 'id',
-            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => $entity->getDestinationPrefix(),
+                'ref'    => 'id',
+            ]),
             'value' => TransformerInterface::TYPE_STRING,
-        ));
+        ]);
 
         $custom_def = $this->getCustomDefById($formatted['id']);
         if (!empty($custom_def['custom_field_options'])) {
@@ -412,7 +412,7 @@ final class Tickets extends AbstractParser
     {
         $this->logDebugTimeStart('getTickets', 'Reading tickets batch');
 
-        $tickets    = array();
+        $tickets    = [];
         $start_time = $this->getBatchConfig()->getTicketsEndTime();
 
         if ($start_time < new DateTime('-5 minutes')) {
@@ -472,7 +472,7 @@ final class Tickets extends AbstractParser
      */
     private function getStatus($status)
     {
-        $map = array(
+        $map = [
             self::STATUS_NEW     => DeskPROEntity\Ticket::STATUS_AWAITING_AGENT,
             self::STATUS_OPEN    => DeskPROEntity\Ticket::STATUS_AWAITING_AGENT,
             self::STATUS_PENDING => DeskPROEntity\Ticket::STATUS_AWAITING_USER,
@@ -480,7 +480,7 @@ final class Tickets extends AbstractParser
             self::STATUS_SOLVED  => DeskPROEntity\Ticket::STATUS_RESOLVED,
             self::STATUS_CLOSED  => DeskPROEntity\Ticket::STATUS_ARCHIVED,
             self::STATUS_DELETED => DeskPROEntity\Ticket::STATUS_HIDDEN.'.'.DeskPROEntity\Ticket::HIDDEN_STATUS_DELETED,
-        );
+        ];
 
         if (isset($map[$status])) {
             return $map[$status];

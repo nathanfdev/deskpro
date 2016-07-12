@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -98,7 +98,7 @@ abstract class AbstractHelper implements ClientHelperInterface
     protected function doIncrementalExportRequest($type, array $params, $api_group = '')
     {
         if (!$params['start_time']) {
-            throw new MissingParametersException(__METHOD__, array('start_time'));
+            throw new MissingParametersException(__METHOD__, ['start_time']);
         }
 
         $request_url = rtrim($api_group, '/').'/'.sprintf('incremental/%s.json?start_time=%s', $type, $params['start_time']);
@@ -121,10 +121,10 @@ abstract class AbstractHelper implements ClientHelperInterface
     protected function doPostRequest($end_point, array $params, $content_type = 'application/json')
     {
         $response      = Http::send($this->client, $end_point, $params, 'POST', $content_type);
-        $success_codes = array(
+        $success_codes = [
             Response::HTTP_OK,
             Response::HTTP_CREATED,
-        );
+        ];
 
         if (!is_object($response) || !in_array($this->client->getDebug()->lastResponseCode, $success_codes)) {
             throw new ResponseException($end_point);
@@ -147,10 +147,10 @@ abstract class AbstractHelper implements ClientHelperInterface
     protected function doDeleteRequest($end_point)
     {
         $response      = Http::send($this->client, $end_point, null, 'DELETE');
-        $success_codes = array(
+        $success_codes = [
             Response::HTTP_OK,
             Response::HTTP_NO_CONTENT,
-        );
+        ];
 
         if (!in_array($this->client->getDebug()->lastResponseCode, $success_codes)) {
             throw new ResponseException($end_point);

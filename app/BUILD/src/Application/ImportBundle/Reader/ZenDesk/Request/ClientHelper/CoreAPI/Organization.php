@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,7 +42,7 @@ final class Organization extends AbstractHelper implements ClientHelperFindInter
     /**
      * {@inheritdoc}
      */
-    public function find(array $params = array())
+    public function find(array $params = [])
     {
         return $this->client->organizations()->find($params);
     }
@@ -50,7 +50,7 @@ final class Organization extends AbstractHelper implements ClientHelperFindInter
     /**
      * {@inheritdoc}
      */
-    public function findAll(array $params = array())
+    public function findAll(array $params = [])
     {
         return $this->client->organizations()->findAll($params);
     }

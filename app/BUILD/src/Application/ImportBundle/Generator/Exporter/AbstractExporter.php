@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -129,7 +129,7 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      */
     public static function getOrderedTypes()
     {
-        return array(
+        return [
             Entity\EntityInterface::TYPE_ORGANIZATION_CUSTOM_DEF,
             Entity\EntityInterface::TYPE_TICKET_CUSTOM_DEF,
             Entity\EntityInterface::TYPE_PERSON_CUSTOM_DEF,
@@ -143,6 +143,6 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
             Entity\EntityInterface::TYPE_FEEDBACK,
             Entity\EntityInterface::TYPE_NEWS,
             Entity\EntityInterface::TYPE_PERSON,
-        );
+        ];
     }
 }

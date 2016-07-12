@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use JMS\Serializer\Annotation as JMS;
@@ -377,9 +378,16 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
+    /**
+     * @param Person|null $person
+     *
+     * @return $this
+     */
     public function setPerson(Person $person = null)
     {
         $this->setModelField('person', $person);
+
+        return $this;
     }
 
     /**

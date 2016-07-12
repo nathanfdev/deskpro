@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -90,15 +90,15 @@ final class Articles extends AbstractFixture
         $article_attachment_helper  = new ArticleAttachment($this->client);
         $article_translation_helper = new ArticleTranslation($this->client);
 
-        $response = $article_helper->create(array(
+        $response = $article_helper->create([
             'id'      => $this->section_loader->getRandomSectionId(),
-            'article' => array(
+            'article' => [
                 'title'       => 'Fake article '.$num,
                 'body'        => 'Fake article content',
                 'author_id'   => $this->people_loader->getRandomPersonId(),
-                'label_names' => array('label 1', 'label 2'),
-            ),
-        ));
+                'label_names' => ['label 1', 'label 2'],
+            ],
+        ]);
 
         $article = $response->article;
 
@@ -107,14 +107,14 @@ final class Articles extends AbstractFixture
 
         for ($i = 1; $i <= 10; ++$i) {
             try {
-                $response = $article_comment_helper->create(array(
+                $response = $article_comment_helper->create([
                     'id'      => $article->id,
-                    'comment' => array(
+                    'comment' => [
                         'author_id' => $this->people_loader->getRandomPersonId(),
                         'body'      => 'Comment #'.$i,
                         'locale'    => 'en-us',
-                    ),
-                ));
+                    ],
+                ]);
 
                 $this->logger->info('Article comment created successfully');
                 $this->logger->debug(json_encode($response->comment));
@@ -125,11 +125,11 @@ final class Articles extends AbstractFixture
 
         for ($i = 1; $i <= 2; ++$i) {
             try {
-                $response = $article_attachment_helper->create(array(
+                $response = $article_attachment_helper->create([
                     'id'     => $article->id,
                     'file'   => $this->getRandomUploadFile(),
                     'inline' => $this->getRandomBoolString(),
-                ));
+                ]);
 
                 $this->logger->info('Article attachment created successfully');
                 $this->logger->debug(json_encode($response->article_attachment));
@@ -142,14 +142,14 @@ final class Articles extends AbstractFixture
 
         foreach ($locales as $locale) {
             try {
-                $response = $article_translation_helper->create(array(
+                $response = $article_translation_helper->create([
                     'id'          => $article->id,
-                    'translation' => array(
+                    'translation' => [
                         'locale' => $locale,
                         'title'  => 'Translation title '.$locale,
                         'body'   => 'Translation body '.$locale,
-                    ),
-                ));
+                    ],
+                ]);
 
                 $this->logger->info('Article translation created successfully');
                 $this->logger->debug(json_encode($response->translation));

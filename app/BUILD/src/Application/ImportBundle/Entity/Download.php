@@ -62,7 +62,7 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     /**
      * @var array
      */
-    private $labels = array();
+    private $labels = [];
 
     /**
      * {@inheritdoc}
@@ -189,14 +189,13 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
             throw new \Exception('Date created is not set up');
         }
 
-        return array(
+        return [
             'oid'            => $this->oid,
             'person'         => $this->person_email,
             'import_map_key' => $this->import_map_key,
             'title'          => $this->title,
             'content'        => $this->content,
             'language'       => $this->language,
-            'slug'           => $this->slug,
             'total_rating'   => $this->total_rating,
             'num_comments'   => $this->num_comments,
             'num_ratings'    => $this->num_ratings,
@@ -208,7 +207,7 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
             'date_created'   => $this->date_created->format('Y-m-d H:i:s'),
             'date_published' => $this->date_published ? $this->date_published->format('Y-m-d H:i:s') : null,
             'labels'         => $this->labels,
-        );
+        ];
     }
 
     /**

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,10 +44,10 @@ final class SectionAccessPolicy extends AbstractHelper implements ClientHelperFi
      *
      * @see https://developer.zendesk.com/rest_api/docs/help_center/access_policies#show-access-policy
      */
-    public function find(array $params = array())
+    public function find(array $params = [])
     {
         if (!isset($params['id'])) {
-            throw new MissingParametersException(__METHOD__, array('id'));
+            throw new MissingParametersException(__METHOD__, ['id']);
         }
 
         return $this->doGetRequest(sprintf('help_center/sections/%d/access_policy.json', $params['id']));

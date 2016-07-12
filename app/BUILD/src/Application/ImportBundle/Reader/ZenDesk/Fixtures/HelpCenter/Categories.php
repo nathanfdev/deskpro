@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -75,7 +75,7 @@ final class Categories extends AbstractFixture implements FixtureDeleteInterface
         try {
             $categories = $this->category_loader->getFakeCategories();
             foreach ($categories as $category) {
-                $helper->delete(array('id' => $category['id']));
+                $helper->delete(['id' => $category['id']]);
                 $this->logInfo(sprintf('Category `%s` deleted successfully', $category['name']));
             }
         } catch (ResponseException $e) {
@@ -93,12 +93,12 @@ final class Categories extends AbstractFixture implements FixtureDeleteInterface
                 $this->logInfo('Importing primary category');
 
                 $helper   = new Category($this->client);
-                $response = $helper->create(array(
-                    'category' => array(
+                $response = $helper->create([
+                    'category' => [
                         'name'        => 'Primary Category',
                         'description' => 'Primary Category description',
-                    ),
-                ));
+                    ],
+                ]);
 
                 $this->logInfo('Primary category imported successfully');
                 $this->logger->debug(json_encode($response->category));
@@ -116,12 +116,12 @@ final class Categories extends AbstractFixture implements FixtureDeleteInterface
     protected function createItem($num, DateTime $initial_time, DateTime $end_time)
     {
         $helper   = new Category($this->client);
-        $response = $helper->create(array(
-            'category' => array(
+        $response = $helper->create([
+            'category' => [
                 'name'        => CategoryLoader::FAKE_PREFIX.' '.$num,
                 'description' => CategoryLoader::FAKE_PREFIX.' description '.$num,
-            ),
-        ));
+            ],
+        ]);
 
         $this->logger->info('Category created successfully');
         $this->logger->debug(json_encode($response->category));

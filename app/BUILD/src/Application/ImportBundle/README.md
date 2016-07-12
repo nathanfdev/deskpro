@@ -272,7 +272,6 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | person                     | means a person email                                                                    |
 | title                      |                                                                                         |
 | content                    |                                                                                         |
-| slug                       | could be empty (generated from title)                                                   |
 | language                   |                                                                                         |
 | status                     |                                                                                         |
 | category                   | could be empty                                                                          |
@@ -305,7 +304,6 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | person                     | means a person email                                                                    |
 | title                      |                                                                                         |
 | content                    |                                                                                         |
-| slug                       | could be empty (generated from title)                                                   |
 | language                   |                                                                                         |
 | category                   | could be empty                                                                          |
 | status                     |                                                                                         |
@@ -328,7 +326,6 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | person                     | means a person email                                                                    |
 | title                      |                                                                                         |
 | content                    |                                                                                         |
-| slug                       | could be empty (generated from title)                                                   |
 | language                   |                                                                                         |
 | category                   | could be empty                                                                          |
 | popularity                 |                                                                                         |
@@ -367,7 +364,6 @@ Example: `app/src/Application/ImportBundle/Resources/example/csv`
 | person                     | means a person email                                                                    |
 | title                      |                                                                                         |
 | content                    |                                                                                         |
-| slug                       | could be empty (generated from title)                                                   |
 | language                   |                                                                                         |
 | status                     |                                                                                         |
 | date_created               | created could be empty (current time)                                                   |
@@ -683,7 +679,6 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
   "content": "Content 1",
   "language": "english",
   "end_action": null,
-  "slug": "slug-article-1",
   "total_rating": 0,
   "num_comments": 0,
   "num_ratings": 0,
@@ -773,7 +768,6 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
   "title": "Download 1",
   "content": "Download Content 1",
   "language": "english",
-  "slug": "download-slug-1",
   "total_rating": 0,
   "num_comments": 0,
   "num_ratings": 0,
@@ -806,7 +800,6 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
   "language": "english",
   "title": "Feedback 1",
   "content": "Feedback Content 1",
-  "slug": "feedback-slug-1",
   "popularity": 10,
   "status": "published",
   "total_rating": 0,
@@ -840,7 +833,6 @@ Example: `app/src/Application/ImportBundle/Resources/example/json`
   "oid": 1,
   "person": "user@example.com",
   "language": "english",
-  "slug": "news-slug-1",
   "title": "News Title 1",
   "content": "News Content 1",
   "view_count": 0,

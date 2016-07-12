@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -113,11 +113,11 @@ final class ArticleComment extends AbstractEntity
      */
     public static function getValidStatuses()
     {
-        return array(
+        return [
             DeskPROEntity\ArticleComment::STATUS_VISIBLE,
             DeskPROEntity\ArticleComment::STATUS_DELETED,
             DeskPROEntity\ArticleComment::STATUS_AGENT,
-        );
+        ];
     }
 
     /**
@@ -213,14 +213,14 @@ final class ArticleComment extends AbstractEntity
      */
     public function toArray()
     {
-        return array(
+        return [
             'oid'          => $this->oid,
             'person_email' => $this->person_email,
             'content'      => $this->content,
             'status'       => $this->status,
             'is_reviewed'  => $this->is_reviewed,
             'date_created' => $this->date_created ? $this->date_created->format('Y-m-d H:i:s') : null,
-        );
+        ];
     }
 
     /**
@@ -235,9 +235,9 @@ final class ArticleComment extends AbstractEntity
             ->addPropertyConstraint('person_email', new Constraints\NotBlank())
             ->addPropertyConstraint('status', new Constraints\NotBlank())
 
-            ->addGetterConstraint('statusValid', new Constraints\True(array(
+            ->addGetterConstraint('statusValid', new Constraints\True([
                 'message' => sprintf('Value is not valid, use one of (%s): ', implode(', ', self::getValidStatuses())),
-            )))
+            ]))
         ;
     }
 }

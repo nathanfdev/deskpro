@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -77,21 +77,21 @@ final class Tickets extends AbstractParser
         ;
 
         $collection    = $this->exportCollection($config);
-        $messages   = $this->exportMessages();
+        $messages      = $this->exportMessages();
         $custom_fields = $this->exportTicketCustomFields();
 
         foreach ($collection as $ticket) {
             /* @var Entity\Ticket $ticket */
                     foreach ($messages as $message_entity) {
-                if ($ticket->getDestination() === $message_entity->getDestination()) {
-                    $ticket->addMessage($message_entity);
-                }
-            }
+                        if ($ticket->getDestination() === $message_entity->getDestination()) {
+                            $ticket->addMessage($message_entity);
+                        }
+                    }
             foreach ($custom_fields as $custom_field_entity) {
                 if ($ticket->getDestination() === $custom_field_entity->getDestination()) {
                     $ticket->addCustomField($custom_field_entity);
-                        }
-                    }
+                }
+            }
 
             $inline_custom_fields = $this->getInlineCustomFieldsParser()->export($ticket->getDestination(), $ticket->getRawData());
             foreach ($inline_custom_fields as $custom_field_entity) {
@@ -112,27 +112,27 @@ final class Tickets extends AbstractParser
      */
     protected function exportTicket(array $data, $num)
     {
-        $formatted = $this->formatter->format($data, array(
-            'id'          => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+        $formatted = $this->formatter->format($data, [
+            'id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, [
                 'default' => 'num_'.$num,
-            )),
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => self::TICKET_PREFIX,
-                'ref'     => 'id',
-            )),
+            ]),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => self::TICKET_PREFIX,
+                'ref'    => 'id',
+            ]),
             'subject'      => TransformerInterface::TYPE_STRING,
             'user'         => TransformerInterface::TYPE_STRING,
             'agent'        => TransformerInterface::TYPE_STRING,
             'status'       => TransformerInterface::TYPE_STRING,
             'date_created' => TransformerInterface::TYPE_DATE,
-        ));
+        ]);
 
-            $entity = new Entity\Ticket();
-            $entity
+        $entity = new Entity\Ticket();
+        $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])
             ->setOid($formatted['id'])
-                ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
+            ->setRef(Strings::random(10, Strings::CHARS_ALPHANUM_IU))
             ->setSubject($formatted['subject'])
             ->setPersonEmail($formatted['user'])
             ->setAgentEmail($formatted['agent'])
@@ -167,11 +167,11 @@ final class Tickets extends AbstractParser
         $attachments = $this->exportTicketAttachments();
 
         foreach ($collection as $message) {
-                    foreach ($attachments as $attachment) {
+            foreach ($attachments as $attachment) {
                 if ($attachment->getDestination() === self::MESSAGE_PREFIX.$message->getOid()) {
                     $message->addAttachment($attachment);
-                        }
-                    }
+                }
+            }
         }
 
         return $collection;
@@ -187,22 +187,22 @@ final class Tickets extends AbstractParser
      */
     protected function exportMessage(array $data, $num)
     {
-        $formatted = $this->formatter->format($data, array(
-            'ticket_id'   => TransformerInterface::TYPE_STRING,
-            'message_id'  => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+        $formatted = $this->formatter->format($data, [
+            'ticket_id'  => TransformerInterface::TYPE_STRING,
+            'message_id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, [
                 'default' => 'num_'.$num,
-            )),
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => self::TICKET_PREFIX,
-                'ref'     => 'ticket_id',
-            )),
+            ]),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => self::TICKET_PREFIX,
+                'ref'    => 'ticket_id',
+            ]),
             'message_text' => TransformerInterface::TYPE_STRING,
             'user'         => TransformerInterface::TYPE_STRING,
             'date_created' => TransformerInterface::TYPE_DATE,
-        ));
+        ]);
 
-            $entity = new Entity\TicketMessage();
-            $entity
+        $entity = new Entity\TicketMessage();
+        $entity
             ->setRawData($data)
             ->setDestination($formatted['destination'])
             ->setOid($formatted['message_id'])
@@ -211,8 +211,8 @@ final class Tickets extends AbstractParser
             ->setDateCreated($formatted['date_created'])
         ;
 
-            return $entity;
-        }
+        return $entity;
+    }
 
     /**
      * Returns a collection of ticket attachments.

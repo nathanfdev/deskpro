@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -183,12 +183,12 @@ final class People extends AbstractParser
      */
     protected function exportStaff(array $data)
     {
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'staff_id'    => TransformerInterface::TYPE_INT,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => 'staff_',
-                'ref'     => 'staff_id',
-            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => 'staff_',
+                'ref'    => 'staff_id',
+            ]),
             'firstname'   => TransformerInterface::TYPE_STRING,
             'lastname'    => TransformerInterface::TYPE_STRING,
             'timezone_id' => TransformerInterface::TYPE_INT,
@@ -196,7 +196,7 @@ final class People extends AbstractParser
             'email'       => TransformerInterface::TYPE_STRING,
             'isadmin'     => TransformerInterface::TYPE_BOOLEAN,
             'group_id'    => TransformerInterface::TYPE_INT,
-        ));
+        ]);
 
         $entity = new Entity\Person();
         $entity
@@ -270,17 +270,17 @@ final class People extends AbstractParser
      */
     protected function exportUser(array $data)
     {
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'user_id'     => TransformerInterface::TYPE_INT,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => 'user_',
-                'ref'     => 'user_id',
-            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => 'user_',
+                'ref'    => 'user_id',
+            ]),
             'name'    => TransformerInterface::TYPE_STRING,
             'org_id'  => TransformerInterface::TYPE_INT,
             'created' => TransformerInterface::TYPE_DATE,
             'address' => TransformerInterface::TYPE_STRING,
-        ));
+        ]);
 
         $entity = new Entity\Person();
         $entity
@@ -306,7 +306,7 @@ final class People extends AbstractParser
      */
     protected function getPeopleByPrefix($prefix)
     {
-        $filtered = array();
+        $filtered = [];
         foreach ($this->people_storage->getPeople() as $key => $person) {
             if (strpos($key, $prefix) === 0) {
                 $filtered[] = $person;

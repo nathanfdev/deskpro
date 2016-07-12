@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -67,7 +67,7 @@ abstract class AbstractCustomDefImporter extends AbstractImporter
         } else {
             // Create and update children
             foreach ($entity->getChildren() as $child_entity) {
-                $exist_child = $this->getCustomDefMapper()->findOneBy(array('entity' => $child_entity), false);
+                $exist_child = $this->getCustomDefMapper()->findOneBy(['entity' => $child_entity], false);
                 if ($exist_child) {
                     $this->setCustomDef($exist_child, $child_entity);
                 } else {

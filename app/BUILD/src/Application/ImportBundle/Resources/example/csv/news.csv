@@ -1,3 +1,3 @@
-person;title;content;language;slug;status;date_created;date_published;category;label
-some@email.tld;News Title 1;News Content 1;english;news-slug-1;published;;;News Category 1;News Label 1
-some@email.tld;News Title 2;News Content 2;english;;published;;;News Category 1;News Label 1
+person;title;content;language;status;date_created;date_published;category;label
+some@email.tld;News Title 1;News Content 1;english;published;;;News Category 1;News Label 1
+some@email.tld;News Title 2;News Content 2;english;published;;;News Category 1;News Label 1

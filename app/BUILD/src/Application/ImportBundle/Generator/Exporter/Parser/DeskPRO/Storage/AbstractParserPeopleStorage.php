@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -63,7 +63,7 @@ abstract class AbstractParserPeopleStorage extends \Application\ImportBundle\Gen
 
         /** @var Entity\Person[] $result */
         $result = $this->reader->findUsersByCriteria($criteria);
-        $people = array();
+        $people = [];
 
         foreach ($result as $person) {
             $people[$person->getId()] = $person;

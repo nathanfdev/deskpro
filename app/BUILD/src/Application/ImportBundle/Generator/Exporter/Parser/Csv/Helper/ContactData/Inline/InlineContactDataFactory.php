@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -46,34 +46,34 @@ class InlineContactDataFactory
     {
         $contact_types = new ContactType\Collection();
         $contact_types
-            ->attach(new ContactType\Mapping(ContactData::TYPE_ADDRESS, array(
+            ->attach(new ContactType\Mapping(ContactData::TYPE_ADDRESS, [
                 'address' => 'address',
                 'city'    => 'city',
                 'state'   => 'state',
                 'zip'     => 'post_code',
                 'country' => 'country',
-            )))
-            ->attach(new ContactType\Mapping(ContactData::TYPE_FACEBOOK, array(
+            ]))
+            ->attach(new ContactType\Mapping(ContactData::TYPE_FACEBOOK, [
                 'profile_url' => 'facebook',
-            )))
-            ->attach(new ContactType\Mapping(ContactData::TYPE_INSTANT_MESSAGE, array(
+            ]))
+            ->attach(new ContactType\Mapping(ContactData::TYPE_INSTANT_MESSAGE, [
                 'username' => 'im',
-            )))
-            ->attach(new ContactType\Mapping(ContactData::TYPE_LINKED_IN, array(
+            ]))
+            ->attach(new ContactType\Mapping(ContactData::TYPE_LINKED_IN, [
                 'profile_url' => 'linkedin',
-            )))
+            ]))
             ->attach(new ContactType\Value(ContactData::TYPE_MOBILE, 'mobile', 'parseNumberToEntity'))
             ->attach(new ContactType\Value(ContactData::TYPE_FAX, 'fax', 'parseNumberToEntity'))
             ->attach(new ContactType\Value(ContactData::TYPE_PHONE, 'phone', 'parseNumberToEntity'))
-            ->attach(new ContactType\Mapping(ContactData::TYPE_SKYPE, array(
+            ->attach(new ContactType\Mapping(ContactData::TYPE_SKYPE, [
                 'username' => 'skype',
-            )))
-            ->attach(new ContactType\Mapping(ContactData::TYPE_TWITTER, array(
+            ]))
+            ->attach(new ContactType\Mapping(ContactData::TYPE_TWITTER, [
                 'username' => 'twitter',
-            )))
-            ->attach(new ContactType\Mapping(ContactData::TYPE_WEBSITE, array(
+            ]))
+            ->attach(new ContactType\Mapping(ContactData::TYPE_WEBSITE, [
                 'url' => 'website',
-            )))
+            ]))
         ;
 
         return new InlineContactData($contact_types);

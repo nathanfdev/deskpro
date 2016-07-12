@@ -1,2 +1,2 @@
-id;person;title;content;slug;language;popularity;status;category;label;date_created;date_published
-1;some@email.tld;Feedback 1;Feedback Content 1;feedback-slug-1;english;10;published;Feedback Category 1;Feedback Label 1;;
+id;person;title;content;language;popularity;status;category;label;date_created;date_published
+1;some@email.tld;Feedback 1;Feedback Content 1;english;10;published;Feedback Category 1;Feedback Label 1;;

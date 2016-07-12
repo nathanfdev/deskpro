@@ -143,13 +143,13 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             $input->setArgument('script', $is->getCurrentName());
         }
 
-        $allowed = array(
+        $allowed = [
             ExporterInterface::TYPE_CSV,
             ExporterInterface::TYPE_JSON,
             ExporterInterface::TYPE_OS_TICKET,
             ExporterInterface::TYPE_ZENDESK,
             ExporterInterface::TYPE_DESKPRO,
-        );
+        ];
 
         if (!in_array($input->getArgument('script'), $allowed)) {
             throw new RuntimeException(sprintf(
@@ -191,7 +191,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
         if ($this->getContainer()->getSetting('elastica.enabled')) {
             $command = $this->getApplication()->find('fos:elastica:populate');
-            $input   = new ArrayInput(array(''));
+            $input   = new ArrayInput(['']);
             $output  = new NullOutput();
             $command->run($input, $output);
         }
@@ -357,7 +357,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function setParamsByDeskProConfig(GeneratorConfig $config)
     {
-        $import_config = new OptionsArray($this->getContainer()->get('deskpro.app_env')->getConfig('import', array()));
+        $import_config = new OptionsArray($this->getContainer()->get('deskpro.app_env')->getConfig('import', []));
         $config
             ->setOutputPath($import_config->get('output_path'))
             ->setLogPath($import_config->get('log_path', dp_get_log_dir().'/export.log'))

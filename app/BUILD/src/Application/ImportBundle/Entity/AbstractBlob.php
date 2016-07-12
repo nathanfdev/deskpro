@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -188,14 +188,14 @@ abstract class AbstractBlob extends AbstractEntity
      */
     public function toArray()
     {
-        return array(
+        return [
             'oid'          => $this->oid,
             'blob_data'    => $this->blob_data,
             'blob_url'     => $this->blob_url,
             'blob_path'    => $this->blob_path,
             'file_name'    => $this->file_name,
             'content_type' => $this->content_type,
-        );
+        ];
     }
 
     /**

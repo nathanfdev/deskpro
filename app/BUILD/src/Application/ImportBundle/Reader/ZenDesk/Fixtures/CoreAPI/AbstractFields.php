@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -62,23 +62,23 @@ abstract class AbstractFields extends AbstractFixture implements FixtureDeleteIn
      */
     protected function createParams($num)
     {
-        $types = array('text', 'checkbox', 'date', 'integer', 'decimal', 'regexp', 'tagger');
+        $types = ['text', 'checkbox', 'date', 'integer', 'decimal', 'regexp', 'tagger'];
         $type  = $types[rand(0, count($types) - 1)];
 
-        $params = array(
+        $params = [
             'type'        => $type,
             'title'       => 'Field '.$num,
             'description' => 'Field description '.$num,
             'required'    => $this->getRandomBool(),
-        );
+        ];
 
         if ($type === 'tagger') {
             for ($i = 0; $i < 5; ++$i) {
                 $offset                           = $num + $i;
-                $params['custom_field_options'][] = array(
+                $params['custom_field_options'][] = [
                     'name'  => 'Option '.$offset,
                     'value' => 'value_'.$offset,
-                );
+                ];
             }
         }
         if ($type === 'regexp') {

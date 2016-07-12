@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -83,17 +83,16 @@ final class Articles extends AbstractParser
      */
     protected function exportArticle(array $data)
     {
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'oid'            => TransformerInterface::TYPE_STRING,
             'import_map_key' => TransformerInterface::TYPE_STRING,
-            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
                 'prefix' => 'article_',
                 'ref'    => 'oid',
-            )),
+            ]),
             'person'         => TransformerInterface::TYPE_STRING,
             'title'          => TransformerInterface::TYPE_STRING,
             'content'        => TransformerInterface::TYPE_STRING,
-            'slug'           => TransformerInterface::TYPE_STRING,
             'language'       => TransformerInterface::TYPE_STRING,
             'end_action'     => TransformerInterface::TYPE_STRING,
             'total_rating'   => TransformerInterface::TYPE_STRING,
@@ -102,22 +101,22 @@ final class Articles extends AbstractParser
             'view_count'     => TransformerInterface::TYPE_INT,
             'status'         => TransformerInterface::TYPE_STRING,
             'date_created'   => TransformerInterface::TYPE_DATE,
-            'date_published' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
+            'date_published' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, [
                 'null' => true,
-            )),
-            'date_updated' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
+            ]),
+            'date_updated' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, [
                 'null' => true,
-            )),
-            'date_end' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
+            ]),
+            'date_end' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, [
                 'null' => true,
-            )),
+            ]),
             'categories'    => TransformerInterface::TYPE_ARRAY,
             'labels'        => TransformerInterface::TYPE_ARRAY,
             'custom_fields' => TransformerInterface::TYPE_ARRAY,
             'comments'      => TransformerInterface::TYPE_ARRAY,
             'attachments'   => TransformerInterface::TYPE_ARRAY,
             'translations'  => TransformerInterface::TYPE_ARRAY,
-        ));
+        ]);
 
         $entity = new Entity\Article();
         $entity
@@ -128,7 +127,6 @@ final class Articles extends AbstractParser
             ->setPersonEmail($formatted['person'])
             ->setTitle($formatted['title'])
             ->setContent($formatted['content'])
-            ->setSlug($formatted['slug'])
             ->setLanguage($formatted['language'])
             ->setEndAction($formatted['end_action'])
             ->setViewCount($formatted['view_count'])
@@ -201,19 +199,19 @@ final class Articles extends AbstractParser
      */
     protected function exportComment(array $data)
     {
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'oid'         => TransformerInterface::TYPE_STRING,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
                 'prefix' => 'article_comment_',
                 'ref'    => 'oid',
-            )),
+            ]),
             'person_email' => TransformerInterface::TYPE_STRING,
             'content'      => TransformerInterface::TYPE_STRING,
             'status'       => TransformerInterface::TYPE_STRING,
             'is_reviewed'  => TransformerInterface::TYPE_BOOLEAN,
             'validating'   => TransformerInterface::TYPE_STRING,
             'date_created' => TransformerInterface::TYPE_DATE,
-        ));
+        ]);
 
         $entity = new Entity\ArticleComment();
         $entity

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -124,12 +124,12 @@ final class ObjectLang extends AbstractEntity
      */
     public function toArray()
     {
-        return array(
+        return [
             'oid'      => $this->oid,
             'language' => $this->language,
             'property' => $this->property,
             'value'    => $this->value,
-        );
+        ];
     }
 
     /**
@@ -142,7 +142,7 @@ final class ObjectLang extends AbstractEntity
     public static function getUniqueCollection(Collection $translations)
     {
         $unique_entities = new Collection();
-        $unique_keys     = array();
+        $unique_keys     = [];
 
         foreach ($translations as $translation) {
             /* @var ObjectLang $translation */

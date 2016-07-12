@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -63,12 +63,12 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     /**
      * @var array
      */
-    private $categories = array();
+    private $categories = [];
 
     /**
      * @var array
      */
-    private $labels = array();
+    private $labels = [];
 
     /**
      * @var CustomField[]
@@ -159,10 +159,10 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     public function isEndActionValid()
     {
         if ($this->end_action) {
-            $actions = array(
+            $actions = [
                 DeskPRO\Entity\Article::END_ACTION_ARCHIVE,
                 DeskPRO\Entity\Article::END_ACTION_DELETE,
-            );
+            ];
 
             return in_array($this->end_action, $actions, true);
         }
@@ -373,7 +373,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
             throw new \Exception('Date created is not set up');
         }
 
-        return array(
+        return [
             'oid'            => $this->oid,
             'import_map_key' => $this->import_map_key,
             'person'         => $this->person_email,
@@ -381,7 +381,6 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
             'content'        => $this->content,
             'language'       => $this->language,
             'end_action'     => $this->end_action,
-            'slug'           => $this->slug,
             'total_rating'   => $this->total_rating,
             'num_comments'   => $this->num_comments,
             'num_ratings'    => $this->num_ratings,
@@ -397,7 +396,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
             'attachments'    => $this->attachments->entitiesToArray(),
             'comments'       => $this->comments->entitiesToArray(),
             'translations'   => $this->translations->entitiesToArray(),
-        );
+        ];
     }
 
     /**

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -83,13 +83,13 @@ final class People extends AbstractParser
      */
     protected function exportPerson(array $data)
     {
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'oid'            => TransformerInterface::TYPE_STRING,
             'import_map_key' => TransformerInterface::TYPE_STRING,
-            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'     => 'person_',
-                'ref'        => 'oid',
-            )),
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => 'person_',
+                'ref'    => 'oid',
+            ]),
             'is_agent'              => TransformerInterface::TYPE_BOOLEAN,
             'is_user'               => TransformerInterface::TYPE_BOOLEAN,
             'is_disabled'           => TransformerInterface::TYPE_BOOLEAN,
@@ -111,10 +111,10 @@ final class People extends AbstractParser
             'user_groups'           => TransformerInterface::TYPE_ARRAY,
             'contact_data'          => TransformerInterface::TYPE_ARRAY,
             'custom_fields'         => TransformerInterface::TYPE_ARRAY,
-        ));
+        ]);
 
-            $entity = new Entity\Person();
-            $entity
+        $entity = new Entity\Person();
+        $entity
             ->setRawData($data)
             ->setOid($formatted['oid'])
             ->setImportMapKey($formatted['import_map_key'])
@@ -138,14 +138,14 @@ final class People extends AbstractParser
         ;
 
         foreach ($formatted['emails'] as $email) {
-                $entity->addEmail($email);
-            }
+            $entity->addEmail($email);
+        }
         foreach ($formatted['labels'] as $label) {
-                $entity->addLabel($label);
-            }
+            $entity->addLabel($label);
+        }
         foreach ($formatted['user_groups'] as $user_group) {
-                $entity->addUserGroup($user_group);
-            }
+            $entity->addUserGroup($user_group);
+        }
 
         $contact_data = $this->getContactDataParser()->export($formatted['contact_data']);
         foreach ($contact_data as $contact) {
@@ -153,10 +153,10 @@ final class People extends AbstractParser
         }
 
         $custom_fields = $this->getCustomFieldsParser()->export($formatted['custom_fields']);
-            foreach ($custom_fields as $custom_field) {
-                $entity->addCustomField($custom_field);
-            }
-
-            return $entity;
+        foreach ($custom_fields as $custom_field) {
+            $entity->addCustomField($custom_field);
         }
+
+        return $entity;
+    }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -109,18 +109,17 @@ final class Feedback extends AbstractParser
      */
     protected function exportFeedback(array $data, $num)
     {
-        $formatted = $this->formatter->format($data, array(
-            'id'          => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+        $formatted = $this->formatter->format($data, [
+            'id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, [
                 'default' => 'num_'.$num,
-            )),
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => self::FEEDBACK_PREFIX,
-                'ref'     => 'id',
-            )),
+            ]),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => self::FEEDBACK_PREFIX,
+                'ref'    => 'id',
+            ]),
             'person'         => TransformerInterface::TYPE_STRING,
             'title'          => TransformerInterface::TYPE_STRING,
             'content'        => TransformerInterface::TYPE_STRING,
-            'slug'           => TransformerInterface::TYPE_STRING,
             'language'       => TransformerInterface::TYPE_STRING,
             'popularity'     => TransformerInterface::TYPE_STRING,
             'status'         => TransformerInterface::TYPE_STRING,
@@ -128,7 +127,7 @@ final class Feedback extends AbstractParser
             'label'          => TransformerInterface::TYPE_STRING,
             'date_created'   => TransformerInterface::TYPE_DATE,
             'date_published' => TransformerInterface::TYPE_DATE,
-        ));
+        ]);
 
         $entity = new Entity\Feedback();
         $entity
@@ -139,7 +138,6 @@ final class Feedback extends AbstractParser
             ->setLanguage($formatted['language'])
             ->setTitle($formatted['title'])
             ->setContent($formatted['content'])
-            ->setSlug($formatted['slug'])
             ->setPopularity($formatted['popularity'])
             ->setStatus($formatted['status'])
             ->setCategory($formatted['category'])

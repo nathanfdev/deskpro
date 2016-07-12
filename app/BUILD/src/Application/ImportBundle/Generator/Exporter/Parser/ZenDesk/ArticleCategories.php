@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -111,14 +111,14 @@ final class ArticleCategories extends AbstractParser
      */
     protected function exportCategory(array $data)
     {
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'id'          => TransformerInterface::TYPE_INT,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => 'article_category_',
-                'ref'     => 'id',
-            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => 'article_category_',
+                'ref'    => 'id',
+            ]),
             'name' => TransformerInterface::TYPE_STRING,
-        ));
+        ]);
 
         $entity = new Entity\ArticleCategory();
         $entity
@@ -160,24 +160,24 @@ final class ArticleCategories extends AbstractParser
      */
     protected function exportSection(array $data)
     {
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'id'          => TransformerInterface::TYPE_INT,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => 'article_category_',
-                'ref'     => 'category_id',
-            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => 'article_category_',
+                'ref'    => 'category_id',
+            ]),
             'name'          => TransformerInterface::TYPE_STRING,
             'category_id'   => TransformerInterface::TYPE_INT,
             'access_policy' => TransformerInterface::TYPE_ARRAY,
-        ));
+        ]);
 
-        $access = $this->formatter->format($formatted['access_policy'], array(
+        $access = $this->formatter->format($formatted['access_policy'], [
             'viewable_by'                    => TransformerInterface::TYPE_STRING,
             'manageable_by'                  => TransformerInterface::TYPE_STRING,
             'restricted_to_group_ids'        => TransformerInterface::TYPE_ARRAY,
             'restricted_to_organization_ids' => TransformerInterface::TYPE_ARRAY,
             'required_tags'                  => TransformerInterface::TYPE_ARRAY,
-        ));
+        ]);
 
         $entity = new Entity\ArticleCategory();
         $entity

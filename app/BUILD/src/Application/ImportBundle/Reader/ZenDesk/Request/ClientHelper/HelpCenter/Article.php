@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -45,10 +45,10 @@ final class Article extends AbstractHelper implements ClientHelperCreateInterfac
      *
      * @see https://developer.zendesk.com/rest_api/docs/help_center/articles#create-article
      */
-    public function create(array $params = array())
+    public function create(array $params = [])
     {
         if (!isset($params['id'])) {
-            throw new MissingParametersException(__METHOD__, array('id'));
+            throw new MissingParametersException(__METHOD__, ['id']);
         }
 
         $section_id = $params['id'];
@@ -62,11 +62,11 @@ final class Article extends AbstractHelper implements ClientHelperCreateInterfac
      *
      * @see https://developer.zendesk.com/rest_api/docs/help_center/articles#list-articles
      */
-    public function incrementalExport(array $params = array())
+    public function incrementalExport(array $params = [])
     {
-        $params = array(
+        $params = [
             'start_time' => $params['start_time'],
-        );
+        ];
 
         return $this->doIncrementalExportRequest('articles', $params, 'help_center');
     }

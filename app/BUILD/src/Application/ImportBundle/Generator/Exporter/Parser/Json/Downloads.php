@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -83,17 +83,16 @@ final class Downloads extends AbstractParser
      */
     protected function exportDownload(array $data)
     {
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'oid'            => TransformerInterface::TYPE_STRING,
             'import_map_key' => TransformerInterface::TYPE_STRING,
-            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'     => 'download_',
-                'ref'        => 'oid',
-            )),
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => 'download_',
+                'ref'    => 'oid',
+            ]),
             'person'         => TransformerInterface::TYPE_STRING,
             'title'          => TransformerInterface::TYPE_STRING,
             'content'        => TransformerInterface::TYPE_STRING,
-            'slug'           => TransformerInterface::TYPE_STRING,
             'language'       => TransformerInterface::TYPE_STRING,
             'total_rating'   => TransformerInterface::TYPE_STRING,
             'num_comments'   => TransformerInterface::TYPE_INT,
@@ -103,12 +102,12 @@ final class Downloads extends AbstractParser
             'category'       => TransformerInterface::TYPE_STRING,
             'status'         => TransformerInterface::TYPE_STRING,
             'date_created'   => TransformerInterface::TYPE_DATE,
-            'date_published' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
-                'null'       => true,
-            )),
+            'date_published' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, [
+                'null' => true,
+            ]),
             'attachment' => TransformerInterface::TYPE_ARRAY,
             'labels'     => TransformerInterface::TYPE_ARRAY,
-        ));
+        ]);
 
         $entity = new Entity\Download();
         $entity
@@ -119,7 +118,6 @@ final class Downloads extends AbstractParser
             ->setPersonEmail($formatted['person'])
             ->setTitle($formatted['title'])
             ->setContent($formatted['content'])
-            ->setSlug($formatted['slug'])
             ->setLanguage($formatted['language'])
             ->setTotalRating($formatted['total_rating'])
             ->setNumComments($formatted['num_comments'])

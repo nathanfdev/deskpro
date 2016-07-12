@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -47,12 +47,12 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
      * Constructor.
      *
      * @param Mapper\Collection    $mappers
-     * @param BlobAdapterInterface $blob_adapter
+     * @param BlobAdapterInterface $blobAdapter
      */
-    public function __construct(Mapper\Collection $mappers, BlobAdapterInterface $blob_adapter)
+    public function __construct(Mapper\Collection $mappers, BlobAdapterInterface $blobAdapter)
     {
         parent::__construct($mappers);
-        $this->blob_adapter = $blob_adapter;
+        $this->blob_adapter = $blobAdapter;
     }
 
     /**
@@ -65,11 +65,6 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
 
     /**
      * {@inheritdoc}
-     *
-     * todo add referred objects
-     * 'total_rating'   => $dval->total_rating,
-     * 'num_comments'   => $dval->num_comments,
-     * 'num_ratings'    => $dval->num_ratings,
      */
     public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
@@ -81,14 +76,13 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
         $download
             ->setTitle($entity->getTitle())
             ->setContent($entity->getContent())
-            ->setSlug($entity->getSlug())
             ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
             ->setLanguage($this->findLanguage($entity->getLanguage()))
             ->setBlob($this->blob_adapter->createByBlob($entity->getAttachment()))
             ->setCategory($this->findOrCreateDownloadCategory($entity->getCategory()))
             ->setDateCreated($entity->getDateCreated())
             ->setDatePublished($entity->getDatePublished())
-            ->setViewsCount($entity->getViewCount())
+            ->setViewCount($entity->getViewCount())
             ->setNumDownloads($entity->getNumDownloads())
         ;
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -84,12 +84,12 @@ final class TicketCustomDef extends AbstractCustomDefParser
     protected function exportCustomDef(array $data)
     {
         $entity    = $this->getDefaultCustomDefEntity();
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'id'          => TransformerInterface::TYPE_STRING,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => $entity->getDestinationPrefix(),
-                'ref'     => 'id',
-            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => $entity->getDestinationPrefix(),
+                'ref'    => 'id',
+            ]),
             'type'                  => TransformerInterface::TYPE_STRING,
             'title'                 => TransformerInterface::TYPE_STRING,
             'raw_title'             => TransformerInterface::TYPE_STRING,
@@ -109,11 +109,11 @@ final class TicketCustomDef extends AbstractCustomDefParser
             'custom_field_options'  => TransformerInterface::TYPE_ARRAY,
             'created_at'            => TransformerInterface::TYPE_DATE,
             'updated_at'            => TransformerInterface::TYPE_DATE,
-        ));
+        ]);
 
-        $options = $this->configureOptions($formatted, array(
+        $options = $this->configureOptions($formatted, [
             'required' => $formatted['required_in_portal'],
-        ));
+        ]);
 
         $entity
             ->setRawData($data)
@@ -132,7 +132,7 @@ final class TicketCustomDef extends AbstractCustomDefParser
         $custom_options = $this->exportCustomFieldOptions($formatted['custom_field_options']);
         $system_options = $this->exportCustomFieldOptions($formatted['system_field_options']);
 
-        foreach (array($custom_options, $system_options) as $options) {
+        foreach ([$custom_options, $system_options] as $options) {
             /** @var Entity\TicketCustomDef $option */
             foreach ($options as $num => $option) {
                 $option->setImportMapKey(ImportMap::TYPE_ZENDESK_TICKET_FIELD);

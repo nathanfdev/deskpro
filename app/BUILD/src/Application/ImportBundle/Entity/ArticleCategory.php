@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -56,7 +56,7 @@ final class ArticleCategory extends AbstractEntity
     /**
      * @var string[]
      */
-    private $user_groups = array();
+    private $user_groups = [];
 
     /**
      * @var ArticleCategory[]|Collection
@@ -210,7 +210,7 @@ final class ArticleCategory extends AbstractEntity
      */
     public function toArray()
     {
-        return array(
+        return [
             'oid'            => $this->oid,
             'import_map_key' => $this->import_map_key,
             'title'          => $this->title,
@@ -218,7 +218,7 @@ final class ArticleCategory extends AbstractEntity
             'is_book'        => $this->is_book,
             'user_groups'    => $this->user_groups,
             'categories'     => $this->categories->entitiesToArray(),
-        );
+        ];
     }
 
     /**
@@ -232,11 +232,11 @@ final class ArticleCategory extends AbstractEntity
             ->addPropertyConstraint('title', new Constraints\NotBlank())
             ->addPropertyConstraint('categories', new Constraints\Valid())
 
-            ->addPropertyConstraint('user_groups', new Constraints\All(array(
-                'constraints' => array(
+            ->addPropertyConstraint('user_groups', new Constraints\All([
+                'constraints' => [
                     new Constraints\NotBlank(),
-                ),
-            )))
+                ],
+            ]))
         ;
     }
 }

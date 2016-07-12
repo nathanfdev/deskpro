@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -147,10 +147,10 @@ final class ArticleCategories extends AbstractParser
             $category
                 ->setOid($this->auto_generate_num)
                 ->setDestination('article_category_'.$this->auto_generate_num)
-                ->setRawData(array(
+                ->setRawData([
                     'title'          => $title,
                     'auto_generated' => true,
-                ))
+                ])
                 ->setTitle($title)
                 ->setAsAgent(false)
                 ->setAsBook(false)
@@ -177,18 +177,18 @@ final class ArticleCategories extends AbstractParser
      */
     protected function exportCategory(array $data, $num)
     {
-        $formatted = $this->formatter->format($data, array(
-            'id'          => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+        $formatted = $this->formatter->format($data, [
+            'id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, [
                 'default' => 'num_'.$num,
-            )),
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => 'article_category_',
-                'ref'     => 'id',
-            )),
+            ]),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => 'article_category_',
+                'ref'    => 'id',
+            ]),
             'title'    => TransformerInterface::TYPE_STRING,
             'is_book'  => TransformerInterface::TYPE_BOOLEAN,
             'is_agent' => TransformerInterface::TYPE_BOOLEAN,
-        ));
+        ]);
 
         $entity = new Entity\ArticleCategory();
         $entity

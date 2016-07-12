@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,7 +42,7 @@ final class Person extends AbstractHelper implements ClientHelperFindInterface, 
     /**
      * {@inheritdoc}
      */
-    public function find(array $params = array())
+    public function find(array $params = [])
     {
         return $this->client->users()->find($params);
     }
@@ -50,10 +50,10 @@ final class Person extends AbstractHelper implements ClientHelperFindInterface, 
     /**
      * {@inheritdoc}
      */
-    public function incrementalExport(array $params = array())
+    public function incrementalExport(array $params = [])
     {
-        return $this->doIncrementalExportRequest('users', array(
+        return $this->doIncrementalExportRequest('users', [
             'start_time' => $params['start_time'],
-        ));
+        ]);
     }
 }

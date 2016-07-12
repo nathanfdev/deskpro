@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -50,9 +50,9 @@ class PeopleLoader extends AbstractFixtureLoader
     public function load()
     {
         $initial_time = new DateTime('-2 years');
-        $response     = $this->request_adapter->doRequest(Request::createCoreAPI('Person', 'incrementalExport', array(
+        $response     = $this->request_adapter->doRequest(Request::createCoreAPI('Person', 'incrementalExport', [
             'start_time' => $initial_time->getTimestamp(),
-        )));
+        ]));
 
         $this->people = new ArrayCollection($this->toArray($response->users));
     }

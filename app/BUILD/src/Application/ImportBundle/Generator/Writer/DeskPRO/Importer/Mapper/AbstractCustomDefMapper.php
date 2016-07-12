@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -78,10 +78,10 @@ abstract class AbstractCustomDefMapper extends AbstractImportMapMapper
             $choice_chain = explode('>', $choice_chain);
             $choice_chain = array_map('trim', $choice_chain);
 
-            return $this->findOneBy(array(
+            return $this->findOneBy([
                 'title'  => array_pop($choice_chain),
                 'parent' => $parent,
-            ));
+            ]);
         }
 
         return;

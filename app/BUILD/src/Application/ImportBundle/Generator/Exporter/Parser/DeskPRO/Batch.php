@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -58,10 +58,10 @@ final class Batch extends AbstractBatchSizeParser
      */
     public function parse(array $data)
     {
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'users_min_id'   => TransformerInterface::TYPE_INT,
             'tickets_min_id' => TransformerInterface::TYPE_INT,
-        ));
+        ]);
 
         /** @var BatchConfig $batch_config */
         $batch_config = parent::parse($data);

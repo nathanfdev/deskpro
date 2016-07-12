@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -70,8 +70,8 @@ final class TicketDepartment implements MapperInterface, MapperByTitleInterface
         $record = $this->repository->findOneBy($criteria);
         if (!$record) {
             if ($throw_exception) {
-            throw new MapperException('Ticket department not found', $criteria);
-        }
+                throw new MapperException('Ticket department not found', $criteria);
+            }
 
             return;
         }
@@ -87,6 +87,6 @@ final class TicketDepartment implements MapperInterface, MapperByTitleInterface
      */
     public function findOneByTitle($title, $throw_exception = true)
     {
-        return $this->findOneBy(array('title' => $title), $throw_exception);
+        return $this->findOneBy(['title' => $title], $throw_exception);
     }
 }

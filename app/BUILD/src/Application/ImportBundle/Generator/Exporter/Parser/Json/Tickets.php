@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -83,13 +83,13 @@ final class Tickets extends AbstractParser
      */
     protected function exportTicket(array $data)
     {
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'oid'            => TransformerInterface::TYPE_STRING,
             'import_map_key' => TransformerInterface::TYPE_STRING,
-            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'     => 'ticket_',
-                'ref'        => 'oid',
-            )),
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => 'ticket_',
+                'ref'    => 'oid',
+            ]),
             'ref'           => TransformerInterface::TYPE_STRING,
             'department'    => TransformerInterface::TYPE_STRING,
             'person'        => TransformerInterface::TYPE_STRING,
@@ -97,12 +97,12 @@ final class Tickets extends AbstractParser
             'agent_team'    => TransformerInterface::TYPE_STRING,
             'status'        => TransformerInterface::TYPE_STRING,
             'date_created'  => TransformerInterface::TYPE_DATE,
-            'date_resolved' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
-                'null'      => true,
-            )),
-            'date_archived' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
-                'null'      => true,
-            )),
+            'date_resolved' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, [
+                'null' => true,
+            ]),
+            'date_archived' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, [
+                'null' => true,
+            ]),
             'subject'       => TransformerInterface::TYPE_STRING,
             'priority'      => TransformerInterface::TYPE_ARRAY,
             'language'      => TransformerInterface::TYPE_STRING,
@@ -117,7 +117,7 @@ final class Tickets extends AbstractParser
             'labels'        => TransformerInterface::TYPE_ARRAY,
             'custom_fields' => TransformerInterface::TYPE_ARRAY,
             'log_message'   => TransformerInterface::TYPE_STRING,
-        ));
+        ]);
 
         $entity = new Entity\Ticket();
         $entity
@@ -179,15 +179,15 @@ final class Tickets extends AbstractParser
             return;
         }
 
-        $configuration = array(
+        $configuration = [
             'oid'         => TransformerInterface::TYPE_STRING,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => 'priority_',
-                'ref'     => 'oid',
-            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => 'priority_',
+                'ref'    => 'oid',
+            ]),
             'title' => TransformerInterface::TYPE_STRING,
             'value' => TransformerInterface::TYPE_STRING,
-        );
+        ];
 
         $formatted = $this->formatter->format($data, $configuration);
         $entity    = new Entity\TicketPriority();
@@ -231,19 +231,19 @@ final class Tickets extends AbstractParser
      */
     protected function exportMessage(array $data)
     {
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'oid'         => TransformerInterface::TYPE_STRING,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => 'message_',
-                'ref'     => 'oid',
-            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => 'message_',
+                'ref'    => 'oid',
+            ]),
             'person'       => TransformerInterface::TYPE_STRING,
             'date_created' => TransformerInterface::TYPE_DATE,
             'message_text' => TransformerInterface::TYPE_STRING,
             'message_html' => TransformerInterface::TYPE_STRING,
             'is_note'      => TransformerInterface::TYPE_BOOLEAN,
             'attachments'  => TransformerInterface::TYPE_ARRAY,
-        ));
+        ]);
 
         $entity = new Entity\TicketMessage();
         $entity

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -48,11 +48,6 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
 
     /**
      * {@inheritdoc}
-     *
-     * todo add referred objects
-     * 'total_rating'   => $nval->total_rating,
-     * 'num_comments'   => $nval->num_comments,
-     * 'num_ratings'    => $nval->num_ratings,
      */
     public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
@@ -64,13 +59,12 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
         $news
             ->setTitle($entity->getTitle())
             ->setContent($entity->getContent())
-            ->setSlug($entity->getSlug())
             ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
             ->setLanguage($this->findLanguage($entity->getLanguage()))
             ->setCategory($this->findOrCreateNewsCategory($entity->getCategory()))
             ->setDateCreated($entity->getDateCreated())
             ->setDatePublished($entity->getDatePublished())
-            ->setViewsCount($entity->getViewCount())
+            ->setViewCount($entity->getViewCount())
         ;
 
         $this->records->setPrimaryEntity($news);

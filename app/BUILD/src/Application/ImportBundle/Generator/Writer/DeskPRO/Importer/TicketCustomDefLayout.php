@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -51,7 +51,7 @@ final class TicketCustomDefLayout extends AbstractImporter
      */
     public function prepare(Entity\EntityInterface $entity, $entity_id = null)
     {
-        $custom_def = $this->getTicketCustomDefMapper()->findOneBy(array('id' => $entity_id));
+        $custom_def = $this->getTicketCustomDefMapper()->findOneBy(['id' => $entity_id]);
         $layouts    = $this->getTicketLayoutMapper()->findAll();
 
         foreach ($layouts as $layout) {
@@ -62,12 +62,12 @@ final class TicketCustomDefLayout extends AbstractImporter
 
             if (!$user_layout->has($custom_def->getId())) {
                 $field = new LayoutField('ticket_field', $custom_def->getId());
-                $field->setOptionsFromArray(array(
+                $field->setOptionsFromArray([
                     'on_editticket'      => true,
                     'on_viewticket'      => true,
                     'on_viewticket_mode' => 'value',
                     'on_newticket'       => true,
-                ));
+                ]);
 
                 $user_layout->add($field, 'message');
                 $change = true;
@@ -75,12 +75,12 @@ final class TicketCustomDefLayout extends AbstractImporter
 
             if (!$user_layout->has($custom_def->getId())) {
                 $field = new LayoutField('ticket_field', $custom_def->getId());
-                $field->setOptionsFromArray(array(
+                $field->setOptionsFromArray([
                     'on_editticket'      => true,
                     'on_viewticket'      => true,
                     'on_viewticket_mode' => 'value',
                     'on_newticket'       => true,
-                ));
+                ]);
 
                 $agent_layout->add($field, 'message');
                 $change = true;

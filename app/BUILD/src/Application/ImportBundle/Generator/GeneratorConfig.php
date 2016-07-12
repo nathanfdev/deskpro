@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -116,12 +116,12 @@ class GeneratorConfig
             throw new Exception('Exporter type is not defined');
         }
 
-        $batch_exporters = array(
+        $batch_exporters = [
             ExporterInterface::TYPE_JSON,
             ExporterInterface::TYPE_OS_TICKET,
             ExporterInterface::TYPE_ZENDESK,
             ExporterInterface::TYPE_DESKPRO,
-        );
+        ];
 
         return in_array($this->exporter_type, $batch_exporters, true);
     }
@@ -257,7 +257,7 @@ class GeneratorConfig
      */
     public function getEntityTypes()
     {
-        return array(
+        return [
             Entity\EntityInterface::TYPE_ORGANIZATION,
             Entity\EntityInterface::TYPE_ORGANIZATION_CUSTOM_DEF,
             Entity\EntityInterface::TYPE_TICKET,
@@ -271,7 +271,7 @@ class GeneratorConfig
             Entity\EntityInterface::TYPE_FEEDBACK,
             Entity\EntityInterface::TYPE_FEEDBACK_CUSTOM_DEF,
             Entity\EntityInterface::TYPE_NEWS,
-        );
+        ];
     }
 
     /**
@@ -310,10 +310,10 @@ class GeneratorConfig
             throw new Exception('Exporter type is not defined');
         }
 
-        $types = array(
+        $types = [
             Exporter\ExporterInterface::TYPE_CSV,
             Exporter\ExporterInterface::TYPE_JSON,
-        );
+        ];
 
         return in_array($this->exporter_type, $types, true);
     }

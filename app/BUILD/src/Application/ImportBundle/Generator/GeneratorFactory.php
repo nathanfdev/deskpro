@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -107,13 +107,13 @@ class GeneratorFactory
      */
     private static function createExporter(DeskproContainer $container, GeneratorConfig $config)
     {
-        $factories = array(
+        $factories = [
             ExporterInterface::TYPE_CSV       => 'Application\ImportBundle\Generator\Exporter\CsvFactory',
             ExporterInterface::TYPE_JSON      => 'Application\ImportBundle\Generator\Exporter\JsonFactory',
             ExporterInterface::TYPE_OS_TICKET => 'Application\ImportBundle\Generator\Exporter\OsTicketFactory',
             ExporterInterface::TYPE_ZENDESK   => 'Application\ImportBundle\Generator\Exporter\ZenDeskFactory',
             ExporterInterface::TYPE_DESKPRO   => 'Application\ImportBundle\Generator\Exporter\DeskPROFactory',
-        );
+        ];
 
         if (!isset($factories[$config->getExporterType()])) {
             throw new \RuntimeException(sprintf('Invalid exporter type `%s`', $config->getExporterType()));
@@ -144,10 +144,10 @@ class GeneratorFactory
      */
     private static function createWriter(DeskproContainer $container, GeneratorConfig $config)
     {
-        $factories = array(
+        $factories = [
             WriterInterface::TYPE_DESK_PRO => 'Application\ImportBundle\Generator\Writer\DeskPRO\DeskProWriterFactory',
             WriterInterface::TYPE_JSON     => 'Application\ImportBundle\Generator\Writer\Json\JsonWriterFactory',
-        );
+        ];
 
         if (!$config->getWriterType()) {
             return;

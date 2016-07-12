@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -68,25 +68,25 @@ class DeskPROReaderFactory implements ReaderFactoryInterface
         }
 
         $em = $this->container->getEm()->create(
-            DriverManager::getConnection(array(
+            DriverManager::getConnection([
                 'dbname'   => $config->getDatabase(),
                 'user'     => $config->getUser(),
                 'password' => $config->getPassword(),
                 'host'     => $config->getHost(),
                 'driver'   => 'pdo_mysql',
-            )),
+            ]),
             $this->container->getEm()->getConfiguration()
         );
 
         $blob_storage = new DeskproBlobStorage($em);
-        $db_adapter   = new DatabaseStorage(array(
+        $db_adapter   = new DatabaseStorage([
             'db'                   => $em->getConnection(),
             'table'                => 'blobs_storage',
             'field_name.data'      => 'data',
             'field_name.path'      => 'blob_id',
             'field_name.order'     => 'id',
             'metadata_id_property' => 'blob_id',
-        ));
+        ]);
 
         $blob_storage->addAdapter('db', $db_adapter);
 

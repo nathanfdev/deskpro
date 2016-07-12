@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -82,7 +82,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
     {
         $query = 'SELECT count(id) FROM people WHERE id > :min_id ORDER BY id ASC';
 
-        return $this->em->getConnection()->fetchColumn($query, array('min_id' => $min_id));
+        return $this->em->getConnection()->fetchColumn($query, ['min_id' => $min_id]);
     }
 
     /**
@@ -92,7 +92,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
     {
         $query = 'SELECT count(id) FROM tickets WHERE id > :min_id ORDER BY id ASC';
 
-        return $this->em->getConnection()->fetchColumn($query, array('min_id' => $min_id));
+        return $this->em->getConnection()->fetchColumn($query, ['min_id' => $min_id]);
     }
 
     /**
@@ -142,7 +142,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
      */
     public function findCustomDefTickets()
     {
-        return $this->em->getRepository('DeskPRO:CustomDefTicket')->findBy(array('parent' => null));
+        return $this->em->getRepository('DeskPRO:CustomDefTicket')->findBy(['parent' => null]);
     }
 
     /**
@@ -150,7 +150,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
      */
     public function findCustomDefPeople()
     {
-        return $this->em->getRepository('DeskPRO:CustomDefPerson')->findBy(array('parent' => null));
+        return $this->em->getRepository('DeskPRO:CustomDefPerson')->findBy(['parent' => null]);
     }
 
     /**
@@ -158,7 +158,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
      */
     public function findCustomDefOrganizations()
     {
-        return $this->em->getRepository('DeskPRO:CustomDefOrganization')->findBy(array('parent' => null));
+        return $this->em->getRepository('DeskPRO:CustomDefOrganization')->findBy(['parent' => null]);
     }
 
     /**
@@ -166,7 +166,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
      */
     public function findCustomDefArticles()
     {
-        return $this->em->getRepository('DeskPRO:CustomDefArticle')->findBy(array('parent' => null));
+        return $this->em->getRepository('DeskPRO:CustomDefArticle')->findBy(['parent' => null]);
     }
 
     /**
@@ -174,7 +174,7 @@ class DeskPROReader extends AbstractReader implements DeskPROReaderInterface
      */
     public function findCustomDefFeedback()
     {
-        return $this->em->getRepository('DeskPRO:CustomDefFeedback')->findBy(array('parent' => null));
+        return $this->em->getRepository('DeskPRO:CustomDefFeedback')->findBy(['parent' => null]);
     }
 
     /**

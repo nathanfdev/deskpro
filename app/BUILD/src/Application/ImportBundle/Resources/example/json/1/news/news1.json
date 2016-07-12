@@ -3,7 +3,6 @@
   "import_map_key": null,
   "person": "user@example.com",
   "language": "english",
-  "slug": "news-slug-1",
   "title": "News Title 1",
   "content": "News Content 1",
   "view_count": 0,

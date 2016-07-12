@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -49,7 +49,7 @@ class TransformerConfiguration
      * @param string $transformer_type
      * @param array  $options
      */
-    public function __construct($transformer_type, array $options = array())
+    public function __construct($transformer_type, array $options = [])
     {
         $this->transformer_type = $transformer_type;
         $this->options          = $options;
@@ -77,7 +77,7 @@ class TransformerConfiguration
      *
      * @return static
      */
-    public static function create($transformer_type, array $options = array())
+    public static function create($transformer_type, array $options = [])
     {
         return new static($transformer_type, $options);
     }

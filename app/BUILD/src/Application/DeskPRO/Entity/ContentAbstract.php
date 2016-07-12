@@ -29,6 +29,7 @@
 /**
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -221,6 +222,9 @@ abstract class ContentAbstract extends DomainObject
         ];
     }
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->setModelField('date_updated', new \DateTime());
@@ -266,6 +270,30 @@ abstract class ContentAbstract extends DomainObject
     public function getDateUpdated()
     {
         return $this->date_updated;
+    }
+
+    /**
+     * @param DateTime $date_created
+     *
+     * @return $this
+     */
+    public function setDateCreated(DateTime $date_created = null)
+    {
+        $this->setModelField('date_created', $date_created);
+
+        return $this;
+    }
+
+    /**
+     * @param DateTime $date_published
+     *
+     * @return $this
+     */
+    public function setDatePublished($date_published)
+    {
+        $this->setModelField('date_published', $date_published);
+
+        return $this;
     }
 
     /**
@@ -837,6 +865,18 @@ abstract class ContentAbstract extends DomainObject
     public function getTotalRating()
     {
         return $this->total_rating;
+    }
+
+    /**
+     * @param int $view_count
+     *
+     * @return $this
+     */
+    public function setViewCount($view_count)
+    {
+        $this->setModelField('view_count', $view_count);
+
+        return $this;
     }
 
     /**

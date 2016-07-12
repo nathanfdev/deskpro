@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -72,7 +72,7 @@ class Organization extends AbstractEntity
     /**
      * @var string[]
      */
-    private $labels = array();
+    private $labels = [];
 
     /**
      * Constructor.
@@ -259,7 +259,7 @@ class Organization extends AbstractEntity
             throw new \Exception('Date created is not set up');
         }
 
-        return array(
+        return [
             'oid'            => $this->oid,
             'import_map_key' => $this->import_map_key,
             'name'           => $this->name,
@@ -269,7 +269,7 @@ class Organization extends AbstractEntity
             'contact_data'   => $this->contact_data->entitiesToArray(),
             'custom_fields'  => $this->custom_fields->entitiesToArray(),
             'labels'         => $this->labels,
-        );
+        ];
     }
 
     /**

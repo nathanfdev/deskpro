@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -76,16 +76,16 @@ class Translations extends AbstractParserFormatterHelper
      */
     public function exportTranslation(array $data)
     {
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'oid'         => TransformerInterface::TYPE_STRING,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => 'translation_',
-                'ref'     => 'oid',
-            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => 'translation_',
+                'ref'    => 'oid',
+            ]),
             'language' => TransformerInterface::TYPE_STRING,
             'property' => TransformerInterface::TYPE_STRING,
             'value'    => TransformerInterface::TYPE_STRING,
-        ));
+        ]);
 
         $entity = new Entity\ObjectLang();
         $entity

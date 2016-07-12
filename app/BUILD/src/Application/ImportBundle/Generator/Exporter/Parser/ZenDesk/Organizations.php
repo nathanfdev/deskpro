@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -85,17 +85,17 @@ final class Organizations extends AbstractParser
     protected function exportOrganization(array $data)
     {
         $entity    = new Entity\Organization();
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'id'          => TransformerInterface::TYPE_STRING,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => $entity->getDestinationPrefix(),
-                'ref'     => 'id',
-            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => $entity->getDestinationPrefix(),
+                'ref'    => 'id',
+            ]),
             'name'                => TransformerInterface::TYPE_STRING,
             'created_at'          => TransformerInterface::TYPE_DATE,
             'tags'                => TransformerInterface::TYPE_ARRAY,
             'organization_fields' => TransformerInterface::TYPE_ARRAY,
-        ));
+        ]);
 
         $entity
             ->setRawData($data)
@@ -125,12 +125,12 @@ final class Organizations extends AbstractParser
      */
     protected function exportCustomFields(array $person)
     {
-        $custom_fields = array();
+        $custom_fields = [];
         foreach ($person['organization_fields'] as $key => $value) {
-            $custom_fields[] = array(
+            $custom_fields[] = [
                 'id'    => $key,
                 'value' => $value,
-            );
+            ];
         }
 
         $config = new ExportCollectionConfig();
@@ -154,14 +154,14 @@ final class Organizations extends AbstractParser
     protected function exportCustomField($data)
     {
         $entity    = new Entity\CustomField();
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'id'          => TransformerInterface::TYPE_STRING,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => $entity->getDestinationPrefix(),
-                'ref'     => 'id',
-            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => $entity->getDestinationPrefix(),
+                'ref'    => 'id',
+            ]),
             'value' => TransformerInterface::TYPE_STRING,
-        ));
+        ]);
 
         $custom_def = $this->getCustomDefById($formatted['id']);
         if (!empty($custom_def['custom_field_options'])) {

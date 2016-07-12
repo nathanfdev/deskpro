@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -103,19 +103,19 @@ class MultipleContactData extends AbstractParserFormatterHelper
      */
     protected function exportContactDataFields(array $data, $destination_prefix, $ref_column)
     {
-        $contact_info = array();
+        $contact_info = [];
         foreach ($data as $num => $field) {
             try {
-                $formatted = $this->formatter->format($field, array(
+                $formatted = $this->formatter->format($field, [
                     $ref_column   => TransformerInterface::TYPE_STRING,
-                    'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                        'prefix'  => $destination_prefix,
-                        'ref'     => $ref_column,
-                    )),
+                    'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                        'prefix' => $destination_prefix,
+                        'ref'    => $ref_column,
+                    ]),
                     'contact_id' => TransformerInterface::TYPE_STRING,
                     'field_name' => TransformerInterface::TYPE_STRING,
                     'value'      => TransformerInterface::TYPE_STRING,
-                ));
+                ]);
 
                 if (!$formatted['contact_id']) {
                     throw new SkippingException('Empty contact_id', $formatted);

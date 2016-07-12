@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -114,22 +114,22 @@ final class People extends AbstractParser
      */
     protected function exportPerson(array $person, $num)
     {
-        $formatted = $this->formatter->format($person, array(
-            'id'          => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+        $formatted = $this->formatter->format($person, [
+            'id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, [
                 'default' => 'num_'.$num,
-            )),
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => self::PERSON_PREFIX,
-                'ref'     => array('original#id', 'email'),
-            )),
+            ]),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => self::PERSON_PREFIX,
+                'ref'    => ['original#id', 'email'],
+            ]),
             'name'         => TransformerInterface::TYPE_STRING,
             'email'        => TransformerInterface::TYPE_STRING,
             'date_created' => TransformerInterface::TYPE_DATE,
             'is_agent'     => TransformerInterface::TYPE_BOOLEAN,
-        ));
+        ]);
 
-            $entity = new Entity\Person();
-            $entity
+        $entity = new Entity\Person();
+        $entity
             ->setRawData($person)
             ->setDestination($formatted['destination'])
             ->setOid($formatted['id'])
@@ -140,8 +140,8 @@ final class People extends AbstractParser
             ->addEmail($formatted['email'])
         ;
 
-            return $entity;
-        }
+        return $entity;
+    }
 
     /**
      * Returns a collection of people custom field data.

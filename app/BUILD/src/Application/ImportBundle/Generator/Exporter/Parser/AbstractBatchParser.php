@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -58,13 +58,13 @@ abstract class AbstractBatchParser implements BatchParserInterface
      */
     public function parse(array $data)
     {
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'id'            => TransformerInterface::TYPE_STRING,
             'type'          => TransformerInterface::TYPE_STRING,
             'date_created'  => TransformerInterface::TYPE_DATE,
             'date_modified' => TransformerInterface::TYPE_DATE,
             'has_remaining' => TransformerInterface::TYPE_BOOLEAN,
-        ));
+        ]);
 
         $config = $this->getDefaultBatchConfig();
         $config

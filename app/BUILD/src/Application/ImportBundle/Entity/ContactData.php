@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -380,8 +380,8 @@ class ContactData extends AbstractEntity
 
         $metadata
             ->addPropertyConstraint('contact_type', new Constraints\NotBlank())
-            ->addPropertyConstraint('contact_type', new Constraints\Choice(array(
-                'choices' => array(
+            ->addPropertyConstraint('contact_type', new Constraints\Choice([
+                'choices' => [
                     self::TYPE_ADDRESS,
                     self::TYPE_FACEBOOK,
                     self::TYPE_FAX,
@@ -392,8 +392,8 @@ class ContactData extends AbstractEntity
                     self::TYPE_SKYPE,
                     self::TYPE_TWITTER,
                     self::TYPE_WEBSITE,
-                ),
-            )))
+                ],
+            ]))
             ->addPropertyConstraint('field_1', new Constraints\NotBlank())
         ;
     }

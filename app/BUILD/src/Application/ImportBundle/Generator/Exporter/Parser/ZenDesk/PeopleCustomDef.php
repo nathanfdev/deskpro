@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -86,12 +86,12 @@ final class PeopleCustomDef extends AbstractCustomDefParser
     protected function exportCustomDef(array $data)
     {
         $entity    = $this->getDefaultCustomDefEntity();
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'id'          => TransformerInterface::TYPE_STRING,
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => $entity->getDestinationPrefix(),
-                'ref'     => 'id',
-            )),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => $entity->getDestinationPrefix(),
+                'ref'    => 'id',
+            ]),
             'key'                   => TransformerInterface::TYPE_STRING,
             'title'                 => TransformerInterface::TYPE_STRING,
             'description'           => TransformerInterface::TYPE_STRING,
@@ -101,7 +101,7 @@ final class PeopleCustomDef extends AbstractCustomDefParser
             'updated_at'            => TransformerInterface::TYPE_DATE,
             'regexp_for_validation' => TransformerInterface::TYPE_STRING,
             'tag'                   => TransformerInterface::TYPE_STRING,
-        ));
+        ]);
 
         $entity
             ->setRawData($data)

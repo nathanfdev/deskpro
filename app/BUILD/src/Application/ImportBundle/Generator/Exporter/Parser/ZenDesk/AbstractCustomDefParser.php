@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -72,17 +72,17 @@ abstract class AbstractCustomDefParser extends AbstractParser
     protected function exportCustomFieldOption(array $data, $num)
     {
         $entity    = $this->getDefaultCustomDefEntity();
-        $formatted = $this->formatter->format($data, array(
-            'id'          => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, array(
+        $formatted = $this->formatter->format($data, [
+            'id' => TransformerConfiguration::create(TransformerInterface::TYPE_STRING, [
                 'default' => 'num_'.$num,
-            )),
-            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'  => $entity->getDestinationPrefix(),
-                'ref'     => 'id',
-            )),
+            ]),
+            'destination' => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => $entity->getDestinationPrefix(),
+                'ref'    => 'id',
+            ]),
             'name'  => TransformerInterface::TYPE_STRING,
             'value' => TransformerInterface::TYPE_STRING,
-        ));
+        ]);
 
         $entity
             ->setRawData($data)
@@ -104,7 +104,7 @@ abstract class AbstractCustomDefParser extends AbstractParser
      *
      * @return array
      */
-    protected function configureOptions(array $formatted, array $options = array())
+    protected function configureOptions(array $formatted, array $options = [])
     {
         switch ($formatted['type']) {
             case ZenDeskReaderInterface::FIELD_TYPE_REGEXP:
@@ -115,34 +115,34 @@ abstract class AbstractCustomDefParser extends AbstractParser
                     $regex = '/'.$regex.'/';
                 }
 
-                $options = array_merge($options, array(
+                $options = array_merge($options, [
                     'validation_type'       => 'regex',
                     'regex'                 => $regex,
                     'agent_validation_type' => 'regex',
                     'agent_regex'           => $regex,
-                ));
+                ]);
 
                 break;
 
             case ZenDeskReaderInterface::FIELD_TYPE_DECIMAL:
                 $decimal_regex = '/^[-+]?[0-9]*[.,]?[0-9]+$/';
-                $options       = array_merge($options, array(
+                $options       = array_merge($options, [
                     'validation_type'       => 'regex',
                     'regex'                 => $decimal_regex,
                     'agent_validation_type' => 'regex',
                     'agent_regex'           => $decimal_regex,
-                ));
+                ]);
 
                 break;
 
             case ZenDeskReaderInterface::FIELD_TYPE_INTEGER:
                 $numeric_regex = '/^[-+]?\d+$/';
-                $options       = array_merge($options, array(
+                $options       = array_merge($options, [
                     'validation_type'       => 'regex',
                     'regex'                 => $numeric_regex,
                     'agent_validation_type' => 'regex',
                     'agent_regex'           => $numeric_regex,
-                ));
+                ]);
 
                 break;
         }

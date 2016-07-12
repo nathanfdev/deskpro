@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -83,13 +83,13 @@ final class News extends AbstractParser
      */
     protected function exportNews(array $data)
     {
-        $formatted = $this->formatter->format($data, array(
+        $formatted = $this->formatter->format($data, [
             'oid'            => TransformerInterface::TYPE_STRING,
             'import_map_key' => TransformerInterface::TYPE_STRING,
-            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, array(
-                'prefix'     => 'news_',
-                'ref'        => 'oid',
-            )),
+            'destination'    => TransformerConfiguration::create(TransformerInterface::TYPE_DESTINATION, [
+                'prefix' => 'news_',
+                'ref'    => 'oid',
+            ]),
             'person'         => TransformerInterface::TYPE_STRING,
             'language'       => TransformerInterface::TYPE_STRING,
             'title'          => TransformerInterface::TYPE_STRING,
@@ -100,25 +100,23 @@ final class News extends AbstractParser
             'num_ratings'    => TransformerInterface::TYPE_INT,
             'status'         => TransformerInterface::TYPE_STRING,
             'date_created'   => TransformerInterface::TYPE_DATE,
-            'date_published' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, array(
-                'null'       => true,
-            )),
+            'date_published' => TransformerConfiguration::create(TransformerInterface::TYPE_DATE, [
+                'null' => true,
+            ]),
             'category' => TransformerInterface::TYPE_STRING,
             'labels'   => TransformerInterface::TYPE_ARRAY,
-        ));
+        ]);
 
-            $entity = new Entity\News();
-            $entity
+        $entity = new Entity\News();
+        $entity
             ->setRawData($data)
             ->setOid($formatted['oid'])
             ->setImportMapKey($formatted['import_map_key'])
             ->setDestination($formatted['destination'])
             ->setPersonEmail($formatted['person'])
             ->setLanguage($formatted['language'])
-            ->setSlug($formatted['slug'])
             ->setTitle($formatted['title'])
             ->setContent($formatted['content'])
-            ->setSlug($formatted['slug'])
             ->setViewCount($formatted['view_count'])
             ->setTotalRating($formatted['total_rating'])
             ->setNumComments($formatted['num_comments'])
@@ -130,9 +128,9 @@ final class News extends AbstractParser
         ;
 
         foreach ($formatted['labels'] as $label) {
-                $entity->addLabel($label);
-            }
-
-            return $entity;
+            $entity->addLabel($label);
         }
+
+        return $entity;
+    }
 }

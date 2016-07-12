@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -138,10 +138,10 @@ final class BatchConfig extends AbstractBatchSizeConfig
      */
     public function toArray()
     {
-        return array_merge(parent::toArray(), array(
+        return array_merge(parent::toArray(), [
             'staff_min_id'   => $this->staff_min_id,
             'users_min_id'   => $this->users_min_id,
             'tickets_min_id' => $this->tickets_min_id,
-        ));
+        ]);
     }
 }

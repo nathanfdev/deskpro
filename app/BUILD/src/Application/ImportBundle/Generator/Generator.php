@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -367,7 +367,7 @@ final class Generator extends AbstractGenerator implements GeneratorInterface, E
             throw new Exception('Generator configuration is not defined');
         }
 
-        $allowed_types = array();
+        $allowed_types = [];
         foreach ($types as $type) {
             if ($this->config->hasEntityType($type)) {
                 $allowed_types[] = $type;
