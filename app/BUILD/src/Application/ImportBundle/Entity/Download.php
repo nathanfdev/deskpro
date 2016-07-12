@@ -29,6 +29,7 @@
 namespace Application\ImportBundle\Entity;
 
 use Application\DeskPRO\Entity\CategoryAbstract;
+use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**

@@ -299,7 +299,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
             //return $this->structure_helper->getCategoryHelperForCategory($this)->getChildren($this);
         }
 
-        return $this->children;
+        return $this->children ?: new ArrayCollection();
     }
 
     /**
