@@ -52,7 +52,7 @@ class DeferredPropertiesListener implements EventSubscriberInterface
                 'method'   => 'loadDeferred',
                 'class'    => ApiWrapper::class,
                 'format'   => 'json',
-                'priority' => 16,
+                'priority' => 32,
             ],
         ];
     }
@@ -70,8 +70,8 @@ class DeferredPropertiesListener implements EventSubscriberInterface
         }
 
         $data = VisitorDataAccessor::getData($visitor);
-        if (is_array($data['data'])) {
-            $data['data'] = $this->resolveArray($data['data'], $context);
+        if (is_array($data)) {
+            $data = $this->resolveArray($data, $context);
             VisitorDataAccessor::setData($visitor, $data);
         }
     }
