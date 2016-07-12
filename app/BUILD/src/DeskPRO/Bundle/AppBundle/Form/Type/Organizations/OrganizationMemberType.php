@@ -127,7 +127,7 @@ class OrganizationMemberType extends AbstractType
             $organization = $config->getOption('organization');
             if (!$data->getOrganization()) {
                 $data->setOrganization($organization);
-            } elseif ($data->getOrganization() !== $organization) {
+            } elseif ($data->getOrganization()->getId() === $organization->getId()) {
                 $form->addError(new FormError('already_in_organization'));
             }
         }
