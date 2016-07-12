@@ -56,6 +56,7 @@ use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\Product;
@@ -251,6 +252,7 @@ class ObjectsManager
             'News'                   => [Factory\SimpleFactory::class, 'create', News::class],
             'NewsCategory'           => [Factory\SimpleFactory::class, 'create', NewsCategory::class],
             'Organization'           => [Factory\SimpleFactory::class, 'create', Organization::class],
+            'OrganizationNote'       => [Factory\SimpleFactory::class, 'create', OrganizationNote::class],
             'Product'                => [Factory\CommonFactories::class, 'product'],
             'Ticket'                 => [Factory\CommonFactories::class, 'ticket'],
             'TicketPriority'         => [Factory\SimpleFactory::class, 'create', TicketPriority::class],
@@ -295,6 +297,7 @@ class ObjectsManager
             'TicketAttachment'       => [$this, 'find', TicketAttachment::class],
             'SLA'                    => [$this, 'find', Sla::class],
             'Organization'           => [$this, 'find', Organization::class],
+            'OrganizationNote'       => [$this, 'find', OrganizationNote::class],
             'Product'                => [$this, 'find', Product::class],
             'Chat'                   => [$this, 'find', ChatConversation::class],
             'Department'             => [$this, 'find', Department::class],
