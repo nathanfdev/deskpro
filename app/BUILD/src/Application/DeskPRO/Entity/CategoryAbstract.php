@@ -80,7 +80,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
      * Display order.
      *
      * @JMS\Expose()
-     * @JMS\Type("string")
+     * @JMS\Type("integer")
      * @JMS\Groups("product")
      *
      * @var int
