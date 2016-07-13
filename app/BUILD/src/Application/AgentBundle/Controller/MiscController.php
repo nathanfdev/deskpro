@@ -38,11 +38,13 @@ use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConf
 use Application\DeskPRO\Assets\RequireJsConfigGenerator;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
+use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class MiscController extends AbstractController
 {
@@ -57,11 +59,11 @@ class MiscController extends AbstractController
 
     public function getGeoIpAction(Request $request)
     {
-        /** @var \Orb\GeoIP\AbstractGeoIp $geoip */
-        $geoip = $this->container->getSystemService('geo_ip');
+        /** @var EnvironmentService $env */
+        $env = $this->container->get('app.environment');
 
         return $this->createJsonResponse([
-            'geoip' => $geoip->lookup($request->getClientIp()),
+            'geoip' => $env->getGeoIp(),
         ]);
     }
 

@@ -780,16 +780,6 @@ class DeskproContainer extends Container
     /**
      * @deprecated
      *
-     * @return \Orb\GeoIp\AbstractGeoIp
-     */
-    public function getGeoIp()
-    {
-        return $this->getSystemService('geo_ip');
-    }
-
-    /**
-     * @deprecated
-     *
      * @return string
      */
     public function getLogDir()

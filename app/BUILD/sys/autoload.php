@@ -198,9 +198,5 @@ define('QP_NO_AUTOLOADER', true);
 require DP_APP_DIR.'/vendor-src/querypath/src/qp.php';
 $GLOBALS['DP_AUTOLOADER'] = $loader;
 
-if (!defined('GEOIP_API_INC_PATH')) {
-    define('GEOIP_API_INC_PATH', DP_APP_DIR.'/vendor-src/geoip-api');
-}
-
 // Needed for assetic build to work
 class_exists('CssMin');
