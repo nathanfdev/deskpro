@@ -187,7 +187,10 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                 $return = $request->get('return');
                 $session->set('auth_return', $return);
 
-                return $this->redirect($result->getRedirectUrl());
+                $r = $this->redirect($result->getRedirectUrl());
+                $r->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'Yes');
+
+                return $r;
             }
 
             throw new BadCredentialsException();
