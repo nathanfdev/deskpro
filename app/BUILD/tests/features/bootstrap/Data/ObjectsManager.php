@@ -79,6 +79,7 @@ use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAttachment;
+use DeskPRO\Bundle\AppBundle\Entity\TaskComment;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
@@ -256,6 +257,7 @@ class ObjectsManager
             'FeedbackComment'        => [Factory\SimpleFactory::class, 'create', FeedbackComment::class],
             'GlossaryWord'           => [Factory\SimpleFactory::class, 'create', GlossaryWord::class],
             'Task'                   => [Factory\CommonFactories::class, 'task'],
+            'TaskComment'            => [Factory\SimpleFactory::class, 'create', TaskComment::class],
             'TaskAssignment'         => [Factory\SimpleFactory::class, 'create', TaskAssignment::class],
             'TaskProject'            => [Factory\SimpleFactory::class, 'create', TaskProject::class],
             'ProjectMember'          => [Factory\SimpleFactory::class, 'create', ProjectMember::class],
@@ -324,6 +326,7 @@ class ObjectsManager
             'CustomDefFeedback'      => [$this, 'find', CustomDefFeedback::class],
             'CustomDataFeedback'     => [$this, 'find', CustomDataFeedback::class],
             'Task'                   => [$this, 'find', Task::class],
+            'TaskComment'            => [$this, 'find', TaskComment::class],
             'TaskProject'            => [$this, 'find', TaskProject::class],
             'TaskList'               => [$this, 'find', TaskList::class],
             'TaskAttachment'         => [$this, 'find', TaskAttachment::class],
