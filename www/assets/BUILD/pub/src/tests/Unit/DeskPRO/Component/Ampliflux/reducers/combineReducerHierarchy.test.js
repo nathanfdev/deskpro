@@ -2,7 +2,6 @@
 
 jest.autoMockOff();
 
-import 'babel-polyfill';
 import { toImmutable } from 'Helpers';
 
 describe('Ampliflux combineReducerHierarchy()', () => {
@@ -12,7 +11,9 @@ describe('Ampliflux combineReducerHierarchy()', () => {
 
   let handlers;
   let hierarchy;
+
   beforeEach(() => {
+
     // create action handler function spies
     handlers = {
       one: jasmine.createSpy('ACTION_ONE_handler').and.returnValue(toImmutable({})),
