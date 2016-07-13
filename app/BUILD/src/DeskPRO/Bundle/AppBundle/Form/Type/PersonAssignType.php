@@ -125,18 +125,18 @@ class PersonAssignType extends AbstractType
         $data = $event->getData();
         $form = $event->getForm();
 
-        /** @var \Application\DeskPRO\EntityRepository\Person $person_repository */
-        $person_repository = $this->em->getRepository(Person::class);
-        $default_person    = $form->getConfig()->getOption('person');
+        /** @var \Application\DeskPRO\EntityRepository\Person $personRepository */
+        $personRepository = $this->em->getRepository(Person::class);
+        $defaultPerson    = $form->getConfig()->getOption('person');
 
         // Set person entity from request fields (id or email)
         // Creates a new person if no person found by provided email
 
         if (!empty($data['email'])) {
-            $person = $person_repository->findOneByEmail($data['email']);
+            $person = $personRepository->findOneByEmail($data['email']);
             if (!$person) {
-                $allow_create = $form->getConfig()->getOption('allow_create');
-                if ($allow_create) {
+                $allowCreate = $form->getConfig()->getOption('allow_create');
+                if ($allowCreate) {
                     $person = new Person();
                     $person->addEmailAddressString($data['email']);
                 } else {
@@ -146,7 +146,8 @@ class PersonAssignType extends AbstractType
 
             $form->setData($person);
         } elseif (!empty($data['id'])) {
-            $person = $person_repository->find((int) $data['id']);
+            /** @var Person $person */
+            $person = $personRepository->find((int) $data['id']);
             if (!$person) {
                 $form->addError(new FormError(ErrorsCodes::NO_PERSON, null, ['value' => $data['id']]));
             }
@@ -154,14 +155,20 @@ class PersonAssignType extends AbstractType
             $form->setData($person);
 
         // Use config person entity as default
-        } elseif (!$form->getData() && $default_person) {
-            $form->setData($default_person);
+        } elseif (!$form->getData() && $defaultPerson) {
+            $form->setData($defaultPerson);
         }
 
         /** @var Person $person */
         $person = $form->getData();
         if (!isset($data['name']) && $person) {
-            $data['name'] = $person->name;
+            // If we sent just ID and person doesn't have name
+            // then force set name from its display name to prevent validation error as name is required field
+            if ($person->getId() && !$person->getName()) {
+                $person->setName($person->getDisplayName());
+            }
+
+            $data['name'] = $person->getName();
 
             $event->setData($data);
         }
