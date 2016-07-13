@@ -12,7 +12,9 @@
 {% include 'Theme:Internal:custom-header.html.twig' %}
 {% include 'Theme:Internal:body-include.html.twig' %}
 {% block doc_begin %}{% endblock %}
-
+{% if cls is not defined %}
+    {% set cls = "column-half-plus" %}
+{% endif %}
 <div class="dp-page-body">
 
     {% show agent_bar %}
@@ -26,7 +28,7 @@
         </section>
 
         <section class="column-full page-main-section">
-            <div class="column-half-plus">
+            <div class="{{ cls }}">
                 <section class="search-section">
                     {% show section search_bar %}
                 </section>
@@ -54,10 +56,11 @@
                 </section>
                     </div>
             </div>
-
-            <aside class="sidebar">
-                {% show section sidebar %}
-            </aside>
+            {% block sidebar %}
+                <aside class="sidebar">
+                    {% show section sidebar %}
+                </aside>
+            {% endblock sidebar %}
         </section>
 
         <section class="page-bottom-section">

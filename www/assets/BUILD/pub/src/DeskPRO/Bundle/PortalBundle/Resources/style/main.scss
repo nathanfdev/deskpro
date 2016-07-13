@@ -306,6 +306,9 @@ section {
 
 // full width when sidebared
 .column-half-plus {
+  &.wide {
+    width: 100%;
+  }
   @include span-columns(9);
   @include media($tablet) {
     @include span-columns(6);
