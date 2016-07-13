@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Security\EventListener;
 
 use Application\DeskPRO\Auth\AuthenticationManager;
@@ -44,42 +40,66 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
+/**
+ * Class SsoListener.
+ */
 class SsoListener implements EventSubscriberInterface
 {
     /**
      * @var \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface
      */
-    private $authorization_checker;
+    private $authorizationChecker;
 
     /**
      * @var \Application\DeskPRO\Auth\AuthenticationManager
      */
-    private $auth_manager;
+    private $authManager;
 
     /**
      * @var \Psr\Log\LoggerInterface
      */
     private $logger;
 
-    public function __construct(AuthorizationCheckerInterface $authorization_checker, AuthenticationManager $auth_manager, LoggerInterface $logger)
+    /**
+     * Constructor.
+     *
+     * @param AuthorizationCheckerInterface $authorizationChecker
+     * @param AuthenticationManager         $authManager
+     * @param LoggerInterface               $logger
+     */
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, AuthenticationManager $authManager, LoggerInterface $logger)
     {
-        $this->authorization_checker = $authorization_checker;
-        $this->auth_manager          = $auth_manager;
-        $this->logger                = $logger;
+        $this->authorizationChecker = $authorizationChecker;
+        $this->authManager          = $authManager;
+        $this->logger               = $logger;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            KernelEvents::REQUEST => 'onKernelRequest',
+        ];
+    }
+
+    /**
+     * @param GetResponseEvent $event
+     */
     public function onKernelRequest(GetResponseEvent $event)
     {
         if (!$event->isMasterRequest()) {
             return;
         }
 
-        if ($this->authorization_checker->isGranted('ROLE_USER')) {
+        if ($this->authorizationChecker->isGranted('ROLE_USER')) {
             return;
         }
 
         // if we need to return a redirect from the auth system, do so now
-        if ($res = $this->checkAuthSystemForResponse($this->auth_manager->getSettings(), $event->getRequest())) {
+        $res = $this->checkAuthSystemForResponse($this->authManager->getSettings(), $event->getRequest());
+        if ($res) {
             $this->logger->info('Automatic SSO is detected, redirecting to '.$res->getTargetUrl());
             $res->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 1);
             $event->setResponse($res);
@@ -94,9 +114,8 @@ class SsoListener implements EventSubscriberInterface
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    protected function checkAuthSystemForResponse(
-        AuthInterfaceSettings $authInterfaceSettings, Request $request
-    ) {
+    protected function checkAuthSystemForResponse(AuthInterfaceSettings $authInterfaceSettings, Request $request)
+    {
         $session = $request->getSession();
         if (
             null !== $session
@@ -105,17 +124,20 @@ class SsoListener implements EventSubscriberInterface
             && $session->get(LogoutHandler::RECENT_LOGOUT) > 0
         ) {
             $session->remove(LogoutHandler::RECENT_LOGOUT);
-            if ($url = $authInterfaceSettings->getLogoutRedirectUrl()) {
+
+            $url = $authInterfaceSettings->getLogoutRedirectUrl();
+            if ($url) {
                 return new RedirectResponse($url);
             }
         }
 
-        if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {
-            if ($sso_result->isRedirectRequired()) {
+        $ssoResult = $this->handleAutomaticSso($authInterfaceSettings);
+        if ($ssoResult) {
+            if ($ssoResult->isRedirectRequired()) {
                 $return = $request->get('return');
                 $session->set('auth_return', $return);
 
-                return new RedirectResponse($sso_result->getRedirectUrl());
+                return new RedirectResponse($ssoResult->getRedirectUrl());
             }
         }
     }
@@ -132,12 +154,5 @@ class SsoListener implements EventSubscriberInterface
         }
 
         return;
-    }
-
-    public static function getSubscribedEvents()
-    {
-        return array(
-            KernelEvents::REQUEST => 'onKernelRequest',
-        );
     }
 }
