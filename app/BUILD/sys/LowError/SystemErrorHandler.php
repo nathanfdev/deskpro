@@ -85,6 +85,11 @@ class SystemErrorHandler
     /**
      * @var array
      */
+    private static $lastError;
+
+    /**
+     * @var array
+     */
     private static $errorLevelMap = [
         E_ERROR             => LogLevel::CRITICAL,
         E_WARNING           => LogLevel::WARNING,
@@ -313,7 +318,17 @@ class SystemErrorHandler
      */
     public static function handleError($errno, $errstr, $errfile, $errline)
     {
+        self::$lastError = [
+            'type'    => $errno,
+            'message' => $errstr,
+            'file'    => $errfile,
+            'line'    => $errline,
+            'ignored' => false,
+        ];
+
         if (!(error_reporting() & $errno)) {
+            self::$lastError['ignored'] = true;
+
             return;
         }
 
@@ -336,6 +351,20 @@ class SystemErrorHandler
     public static function handleFatalError()
     {
         $lastError = error_get_last();
+
+        // Some cases we might have logged / ignored an error already
+        // that is being caught by this fatal error handler.
+        // e.g., trying to parse an invalid image raises an E_PARSE for some reason,
+        // so we want to ignore that here.
+        if (
+            self::$lastError
+            && self::$lastError['type']    === $lastError['type']
+            && self::$lastError['message'] === $lastError['message']
+            && self::$lastError['file']    === $lastError['file']
+            && self::$lastError['line']    === $lastError['line']
+        ) {
+            return;
+        }
 
         if ($lastError && in_array($lastError['type'], self::$fatalErrors, true)) {
             $errinfo = self::getErrorInfo($lastError['type'], $lastError['message'], $lastError['file'], $lastError['line']);
