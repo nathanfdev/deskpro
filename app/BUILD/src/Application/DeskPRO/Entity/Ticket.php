@@ -4025,6 +4025,23 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return $this->status !== 'hidden';
     }
 
+    /**
+     * @deprecated This exists only for old customised email templates
+     *
+     * @return string
+     */
+    public function getLink()
+    {
+        $container = App::getContainer();
+        if ($container->has('object_router')) {
+            $r = $container->get('object_router');
+
+            return $r->getPortalUrl($this);
+        }
+
+        return '';
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
