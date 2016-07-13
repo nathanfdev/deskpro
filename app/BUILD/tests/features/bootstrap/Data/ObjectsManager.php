@@ -85,6 +85,7 @@ use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
 use DeskPRO\Bundle\AppBundle\Entity\TaskList;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
+use DeskPRO\Bundle\AppBundle\Entity\TaskSubtask;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -265,6 +266,7 @@ class ObjectsManager
             'TaskLinkedArticle'      => [Factory\SimpleFactory::class, 'create', TaskLinkedArticle::class],
             'TaskLinkedTicket'       => [Factory\SimpleFactory::class, 'create', TaskLinkedTicket::class],
             'TaskLinkedChat'         => [Factory\SimpleFactory::class, 'create', TaskLinkedChat::class],
+            'TaskSubtask'            => [Factory\SimpleFactory::class, 'create', TaskSubtask::class],
             'GlossaryWordDefinition' => [Factory\SimpleFactory::class, 'create', GlossaryWordDefinition::class],
             'News'                   => [Factory\SimpleFactory::class, 'create', News::class],
             'NewsCategory'           => [Factory\SimpleFactory::class, 'create', NewsCategory::class],
@@ -334,6 +336,7 @@ class ObjectsManager
             'TaskLinkedArticle'      => [$this, 'find', TaskLinkedArticle::class],
             'TaskLinkedTicket'       => [$this, 'find', TaskLinkedTicket::class],
             'TaskLinkedChat'         => [$this, 'find', TaskLinkedChat::class],
+            'TaskSubtask'            => [$this, 'find', TaskSubtask::class],
             'ProjectMember'          => [$this, 'find', ProjectMember::class],
             'Article'                => [$this, 'find', Article::class],
             'News'                   => [$this, 'find', News::class],

@@ -1,11 +1,14 @@
+@new
 Feature: /tasks/{id}/subtasks endpoint
   To CRUD DeskPRO subtasks
   As an API user
   I want an API endpoint
 
   Background:
-    Given I install the api data set
-    And my request is authenticated
+    Given I'm authenticated as "admin"
+    And the following "Task" records exist:
+      | #    | creator | title     |
+      | task | {me}    | Test Task |
 
   Scenario: Successfully create a subtask
     Given I create a Task and reference it as task
@@ -20,26 +23,35 @@ Feature: /tasks/{id}/subtasks endpoint
     And the header "Location" should be equal to "/api/v2/tasks/{task}/subtasks/{lastCreatedId}"
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My test subtask"
-    And the JSON node "data.creator" should be equal to 1
+    And the JSON node "data.creator" should be equal to "{me}"
 
   Scenario: I GET a single subtask
-    When I send a GET request to "/api/v2/tasks/{task}/subtasks/{lastCreatedId}"
+    Given the following "TaskSubtask" records exist:
+      | #       | task   | title        | creator |
+      | subtask | {task} | Test Subtask | {me}    |
+    When I send a GET request to "/api/v2/tasks/{task}/subtasks/{subtask}"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
-    And the JSON node "data.title" should be equal to "My test subtask"
+    And the JSON node "data.title" should be equal to "Test Subtask"
     And the JSON node "data.is_done" should be equal to 0
 
   Scenario: I GET subtasks
+    Given the following "TaskSubtask" records exist:
+      | #       | task   | title        | creator |
+      | subtask | {task} | Test Subtask | {me}    |
     When I send a GET request to "/api/v2/tasks/{task}/subtasks"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "meta" should exist
     And the JSON node "data" should exist
-    And the JSON node "data[0].title" should be equal to "My test subtask"
+    And the JSON node "data[0].title" should be equal to "Test Subtask"
 
   Scenario: I modify a subtask
-    When I send a PUT request to "/api/v2/tasks/{task}/subtasks/{lastCreatedId}" with body:
+    Given the following "TaskSubtask" records exist:
+      | #       | task   | title        | creator |
+      | subtask | {task} | Test Subtask | {me}    |
+    When I send a PUT request to "/api/v2/tasks/{task}/subtasks/{subtask}" with body:
     """
 {
   "is_done": true
@@ -48,15 +60,17 @@ Feature: /tasks/{id}/subtasks endpoint
     Then the response status code should be 204
     And the response should be empty
 
-  Scenario: I verify the resource has been updated by the PUT request
-    When I send a GET request to "/api/v2/tasks/{task}/subtasks/{lastCreatedId}"
+    When I send a GET request to "/api/v2/tasks/{task}/subtasks/{subtask}"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data.is_done" should be equal to true
 
   Scenario: I try to remove the title from the subtask
-    When I send a PUT request to "/api/v2/tasks/{task}/subtasks/{lastCreatedId}" with body:
+    Given the following "TaskSubtask" records exist:
+      | #       | task   | title        | creator |
+      | subtask | {task} | Test Subtask | {me}    |
+    When I send a PUT request to "/api/v2/tasks/{task}/subtasks/{subtask}" with body:
     """
 {
   "title": null
@@ -67,32 +81,23 @@ Feature: /tasks/{id}/subtasks endpoint
     And the JSON node "errors.fields.title.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.title.errors[0].message" should be equal to "This value should not be blank."
 
-  Scenario: I DELETE a single task
-    When I send a DELETE request to "/api/v2/tasks/{task}/subtasks/{lastCreatedId}"
+  Scenario: I DELETE a single subtask
+    Given the following "TaskSubtask" records exist:
+      | #       | task   | title        | creator |
+      | subtask | {task} | Test Subtask | {me}    |
+    When I send a DELETE request to "/api/v2/tasks/{task}/subtasks/{subtask}"
     Then the response should be in JSON
     And the response status code should be 200
 
-  Scenario: I verify the resource has been removed by the DELETE request
-    When I send a GET request to "/api/v2/tasks/{task}/subtasks/{lastCreatedId}"
-    Then the response should be in JSON
-    And the response status code should be 404
-
   Scenario: I POST a second subtask to test cascading deletions
-    When I send a POST request to "/api/v2/tasks/{task}/subtasks" with body:
-    """
-{
-  "title": "Deletion test task"
-}
-    """
-    Then the response should be in JSON
-    And the response status code should be 201
+    Given the following "TaskSubtask" records exist:
+      | #       | task   | title        | creator |
+      | subtask | {task} | Test Subtask | {me}    |
 
-  Scenario: I delete a parent task
     When I send a DELETE request to "/api/v2/tasks/{task}"
     Then the response should be in JSON
     And the response status code should be 200
 
-  Scenario: I verify there are no subtasks left
     When I send a GET request to "{lastRequestUrl}"
     Then the response should be in JSON
     And the response status code should be 404
