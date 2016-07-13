@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -71,9 +72,9 @@ class TicketFlagged extends DomainObject
     ];
 
     /**
-     * @var int
+     * @var Ticket
      */
-    protected $ticket_id = null;
+    protected $ticket;
 
     /**
      * @var int
@@ -84,6 +85,82 @@ class TicketFlagged extends DomainObject
      * @var string
      */
     protected $color = 'blue';
+
+    /**
+     * @return string
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    /**
+     * @param string $color
+     *
+     * @return $this
+     */
+    public function setColor($color)
+    {
+        $this->setModelField('color', $color);
+
+        return $this;
+    }
+
+    /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return $this
+     */
+    public function setTicket(Ticket $ticket = null)
+    {
+        $this->setModelField('ticket', $ticket);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPersonId()
+    {
+        return $this->person_id;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson(Person $person = null)
+    {
+        if ($person) {
+            $this->setPersonId($person->getId());
+        } else {
+            $this->setPersonId(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param int|null $person_id
+     *
+     * @return $this
+     */
+    public function setPersonId($person_id)
+    {
+        $this->setModelField('person_id', $person_id);
+
+        return $this;
+    }
 
     ############################################################################
     # Doctrine Metadata
@@ -117,17 +194,6 @@ class TicketFlagged extends DomainObject
         );
         $metadata->mapField(
             [
-                'fieldName'  => 'ticket_id',
-                'type'       => 'integer',
-                'precision'  => 0,
-                'scale'      => 0,
-                'nullable'   => false,
-                'columnName' => 'ticket_id',
-                'id'         => true,
-            ]
-        );
-        $metadata->mapField(
-            [
                 'fieldName'  => 'color',
                 'type'       => 'string',
                 'length'     => 20,
@@ -135,6 +201,23 @@ class TicketFlagged extends DomainObject
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'color',
+            ]
+        );
+
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'ticket',
+                'targetEntity' => Ticket::class,
+                'cascade'      => ['persist'],
+                'id'           => true,
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'ticket_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => false,
+                        'onDelete'             => 'cascade',
+                    ],
+                ],
             ]
         );
     }

@@ -34,7 +34,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count as CountModel;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketStarType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketStarNameType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -99,7 +99,7 @@ class TicketStarsController extends BaseController
         $color = TicketFlagged::$colorMap[$id];
         $model = $this->get('data.ticket_stars')->findOrCreateStarNamePersonPref($this->getUser(), $color);
 
-        $form = $this->createForm(TicketStarType::class, $model);
+        $form = $this->createForm(TicketStarNameType::class, $model);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
