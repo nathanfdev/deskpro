@@ -50,7 +50,7 @@ class PersonEmailTerm extends AbstractTerm
         $resolver->setConstraints([
             'email' => [
                 new Assert\NotBlank(),
-                new Assert\Email(),
+                new Assert\Email(['strict' => true]),
             ],
         ]);
     }

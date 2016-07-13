@@ -73,7 +73,7 @@ class PasswordResetRequestType extends AbstractType
             'label'       => $this->languageManager->phrase('portal.forms.label_email'),
             'constraints' => [
                 new Assert\NotBlank(),
-                new Assert\Email(),
+                new Assert\Email(['strict' => true]),
             ],
         ]);
 

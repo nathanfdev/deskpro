@@ -55,7 +55,7 @@ class AuthenticationRequestType extends AbstractType
             ->add('email', 'email', [
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Email(),
+                    new Assert\Email(['strict' => true]),
                 ],
             ])
             ->add('password', 'password', [

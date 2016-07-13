@@ -70,7 +70,7 @@ class PersonEmailType extends AbstractType
             ],
             'email_constraints' => [
                 new Assert\NotBlank(),
-                new Assert\Email(),
+                new Assert\Email(['strict' => true]),
             ],
         ]);
     }
