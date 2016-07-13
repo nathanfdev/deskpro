@@ -510,14 +510,17 @@ class PortalController extends AbstractController
 
         // rate limit first
         $check = new UploadAbuseCheck($this->getUser(), $request->getClientIp());
-        $this->getAntiAbuseService()->check($check);
-        if ($check->isLimited()) {
-            return new JsonResponse([
-                'success' => false,
-                'error'   => [
-                    'code' => 'rate_limit',
-                ],
-            ]);
+        try {
+            $this->getAntiAbuseService()->check($check);
+        } finally {
+            if ($check->isLimited()) {
+                return new JsonResponse([
+                    'success' => false,
+                    'error'   => [
+                        'code' => 'rate_limit',
+                    ],
+                ]);
+            }
         }
 
         $cookie_val = (string) $request->cookies->get(CsrfDoubleSubmitExtension::COOKIE_NAME);
