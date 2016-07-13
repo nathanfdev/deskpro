@@ -53,3 +53,9 @@ services:
     arguments: ["@deskpro.interface_info", "@logger"]
     tags:
       - { name: kernel.event_subscriber }
+
+  url_corrector.listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\UrlCorrectorEventListener
+    arguments: ["@deskpro.interface_info", "@brand_stack", "@portal_mode_storage", "@logger"]
+    tags:
+      - { name: kernel.event_subscriber }

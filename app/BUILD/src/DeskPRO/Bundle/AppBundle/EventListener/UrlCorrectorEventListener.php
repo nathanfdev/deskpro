@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\PortalBundle\EventListener;
+namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
@@ -217,13 +217,6 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
             return true;
         }
 
-        $portalMode = $this->portalModeStorage->getMode();
-        if ($portalMode && $portalMode->isFocusWindow()) {
-            $this->logger->info('[UrlCorrector] Skip: Portal is in focus-window mode');
-
-            return true;
-        }
-
         return false;
     }
 
@@ -235,12 +228,16 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
     private function getCorrectionMode(FilterControllerEvent $event)
     {
         $request = $event->getRequest();
-
         if ($this->interfaceInfo->isInterfaceId([InterfaceInfo::ID_AGENT, InterfaceInfo::ID_ADMIN])) {
             if (strpos($request->getPathInfo(), '/login') !== false) {
                 // admin and agent logins are handled in the controller so we can show info
                 return self::MODE_ATTR;
             }
+        }
+
+        $portalMode = $this->portalModeStorage->getMode();
+        if ($portalMode && $portalMode->isFocusWindow()) {
+            return self::MODE_ATTR;
         }
 
         return self::MODE_REDIRECT;
