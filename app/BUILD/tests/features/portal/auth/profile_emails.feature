@@ -5,6 +5,9 @@ Feature: User Profile
   Background:
     Given there are no PersonEmail records
     And I'm authenticated as user
+    And the following languages are enabled:
+      | default |
+    And the default brand is using the standard theme
 
   Scenario: A user tries to add a new email that is already taken by another account
     Given an agent with "agent@deskpro.dev" email exists
