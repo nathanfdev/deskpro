@@ -120,6 +120,10 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      */
     public function getData()
     {
+        if (!$this->field) {
+            return '';
+        }
+
         switch ($this->field->getTypeName()) {
             case 'toggle':
                 return $this->value;
