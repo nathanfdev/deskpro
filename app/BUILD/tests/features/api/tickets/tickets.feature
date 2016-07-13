@@ -22,6 +22,10 @@ Feature: /tickets endpoint
     And no EmailAccount records exist
 
   Scenario: I create a ticket
+    Given only the following Product records exist:
+      | #  | Title     |
+      | p1 | Product 1 |
+      | p2 | Product 2 |
     When I send a POST request to "/api/v2/tickets" with body:
     """
 {
@@ -31,6 +35,7 @@ Feature: /tickets endpoint
   "is_hold": true,
   "person":  ~user~,
   "agent": ~agent~,
+  "product": ~p2~,
   "followers": ["agent@deskpro.dev", ~admin~],
   "cc": ["user@deskpro.dev"]
 }
@@ -41,6 +46,7 @@ Feature: /tickets endpoint
     And the JSON node "data.is_hold" should be equal to 1
     And the JSON node "data.parent" should be equal to "{ticket1}"
     And the JSON node "data.department" should be equal to "{department}"
+    And the JSON node "data.product" should be equal to "{p2}"
     And the JSON node "data.person" should be equal to "{user}"
     And the JSON node "data.agent" should be equal to "{agent}"
     And the JSON node "data.cc" should have 1 element
