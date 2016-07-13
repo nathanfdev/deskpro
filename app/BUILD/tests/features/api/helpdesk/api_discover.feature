@@ -18,6 +18,8 @@ Feature: API discover feature
     And the response status code should be 200
     And the JSON node "data.settings" should exist
     And the JSON node "data.settings.helpdesk_name" should exist
+    And the JSON node "data.settings.multi_lang" should exist
+    And the JSON node "data.settings.brands" should exist
     And the JSON node "data.tickets" should exist
     And the JSON node "data.tickets.enabled" should exist
     And the JSON node "data.chat" should exist
@@ -30,7 +32,3 @@ Feature: API discover feature
     And the JSON node "data.publish.enabled" should exist
     And the JSON node "data.tasks" should exist
     And the JSON node "data.tasks.enabled" should exist
-
-
-
-

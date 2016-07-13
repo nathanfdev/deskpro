@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
@@ -113,6 +114,7 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
         $model = new CoreSettings();
         $model
             ->setMultiLang($this->getSetting('core.enable_languages'))
+            ->setBrands($this->em->getRepository(Brand::class)->countAll() > 1)
             ->setHelpdeskName($this->getSetting('core.deskpro_name'))
             ->setAttachments($this->getAttachmentsSettings())
         ;

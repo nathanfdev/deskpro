@@ -44,6 +44,13 @@ class CoreSettings
     private $multiLang = false;
 
     /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $brands = false;
+
+    /**
      * @var string
      *
      * @JMS\Type("string")
@@ -81,6 +88,26 @@ class CoreSettings
     public function setMultiLang($multiLang)
     {
         $this->multiLang = $multiLang;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBrands()
+    {
+        return $this->brands;
+    }
+
+    /**
+     * @param bool $brands
+     *
+     * @return $this
+     */
+    public function setBrands($brands)
+    {
+        $this->brands = $brands;
 
         return $this;
     }
