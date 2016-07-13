@@ -76,6 +76,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAttachment;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
@@ -254,6 +255,7 @@ class ObjectsManager
             'FeedbackComment'        => [Factory\SimpleFactory::class, 'create', FeedbackComment::class],
             'GlossaryWord'           => [Factory\SimpleFactory::class, 'create', GlossaryWord::class],
             'Task'                   => [Factory\CommonFactories::class, 'task'],
+            'TaskAssignment'         => [Factory\SimpleFactory::class, 'create', TaskAssignment::class],
             'TaskProject'            => [Factory\SimpleFactory::class, 'create', TaskProject::class],
             'TaskList'               => [Factory\SimpleFactory::class, 'create', TaskList::class],
             'TaskLinkedArticle'      => [Factory\SimpleFactory::class, 'create', TaskLinkedArticle::class],
@@ -323,6 +325,7 @@ class ObjectsManager
             'TaskProject'            => [$this, 'find', TaskProject::class],
             'TaskList'               => [$this, 'find', TaskList::class],
             'TaskAttachment'         => [$this, 'find', TaskAttachment::class],
+            'TaskAssignment'         => [$this, 'find', TaskAssignment::class],
             'TaskLinkedArticle'      => [$this, 'find', TaskLinkedArticle::class],
             'TaskLinkedTicket'       => [$this, 'find', TaskLinkedTicket::class],
             'TaskLinkedChat'         => [$this, 'find', TaskLinkedChat::class],
