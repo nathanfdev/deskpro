@@ -34,6 +34,7 @@ use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketPriority;
@@ -60,16 +61,16 @@ class TicketType extends AbstractType
     /**
      * @var CustomFieldManager
      */
-    private $field_manager;
+    private $fieldManager;
 
     /**
      * Constructor.
      *
-     * @param CustomFieldManager $field_manager
+     * @param CustomFieldManager $fieldManager
      */
-    public function __construct(CustomFieldManager $field_manager)
+    public function __construct(CustomFieldManager $fieldManager)
     {
-        $this->field_manager = $field_manager;
+        $this->fieldManager = $fieldManager;
     }
 
     /**
@@ -99,6 +100,9 @@ class TicketType extends AbstractType
             ])
             ->add('workflow', EntityType::class, [
                 'class' => TicketWorkflow::class,
+            ])
+            ->add('product', EntityType::class, [
+                'class' => Product::class,
             ])
             ->add('person', EntityType::class, [
                 'class' => Person::class,
@@ -163,7 +167,7 @@ class TicketType extends AbstractType
      */
     private function getCustomDataFields(FormBuilderInterface $builder, array $options)
     {
-        $defs   = $this->field_manager->getAvailableTicketDefs();
+        $defs   = $this->fieldManager->getAvailableTicketDefs();
         $fields = [];
 
         foreach ($defs as $def) {
