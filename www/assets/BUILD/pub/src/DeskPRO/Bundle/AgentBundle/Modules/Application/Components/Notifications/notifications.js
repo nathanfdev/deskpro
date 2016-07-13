@@ -1,37 +1,54 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { destroyNotification } from '../../Actions/notificationActions';
+import { notificationsSelector } from  '../../Selectors/notifications';
 
-@connect(state => ({ notifications: state.Application.notifications.getIn(['notifications']) }))
+@connect(state => ({
+  notifications: notificationsSelector(state)
+}))
 export class NotificationsContainer extends React.Component {
   static propTypes = {
     dispatch:      PropTypes.func.isRequired,
     notifications: PropTypes.object.isRequired
   };
 
-  destroyNotification = (id) => () => this.props.dispatch(destroyNotification(id));
+  render() {
+    const props = {
+      notifications: this.props.notifications,
+      destroyNotification: (id) => () => this.props.dispatch(destroyNotification(id))
+    };
+
+    return <Notifications {...props} />;
+  }
+}
+
+export class Notifications extends React.Component {
+  static propTypes = {
+    destroyNotification: PropTypes.func.isRequired,
+    notifications:       PropTypes.object.isRequired
+  };
 
   renderNotification(props) {
+    const { destroyNotification } = this.props;
+
     switch (props.type) {
       case 'info':
-        return <InfoNotification {...props} key={props.id} destroy={this.destroyNotification(props.id)} />;
+        return <InfoNotification {...props} key={props.id} destroy={destroyNotification(props.id)} />;
       case 'error':
-        return <ErrorNotification {...props} key={props.id} destroy={this.destroyNotification(props.id)} />;
+        return <ErrorNotification {...props} key={props.id} destroy={destroyNotification(props.id)} />;
       case 'delayed':
-        return <DelayedActionNotification {...props} key={props.id} destroy={this.destroyNotification(props.id)} />;
+        return <DelayedActionNotification {...props} key={props.id} destroy={destroyNotification(props.id)} />;
       case 'undoable':
-        return <UndoableActionNotification {...props} key={props.id} destroy={this.destroyNotification(props.id)} />;
+        return <UndoableActionNotification {...props} key={props.id} destroy={destroyNotification(props.id)} />;
       default:
         throw new Error(`Unknown notifications type: ${props.type}`);
     }
   }
 
   render() {
-    let num = 1;
-
     return (
       <div>
-        {this.props.notifications.map(notification => this.renderNotification({ ...notification, num: num++ }))}
+        {this.props.notifications.map((notification, i) => this.renderNotification({ ...notification, num: i + 1 }))}
       </div>
     );
   }

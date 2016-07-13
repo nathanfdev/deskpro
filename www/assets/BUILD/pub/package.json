@@ -150,6 +150,7 @@
       "/Actions/",
       "/Reducers/",
       "/Constants/",
+      "/AgentBundle/AgentApp",
       "index.js",
       "/Application/Components/",
       "/Common/Components/",
