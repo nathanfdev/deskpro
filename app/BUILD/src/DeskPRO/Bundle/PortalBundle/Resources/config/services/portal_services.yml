@@ -18,12 +18,6 @@ services:
     tags:
       - { name: pagerfanta.view, alias: deskpro }
 
-  portal_mode_factory:
-      class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory
-
-  portal_mode_storage:
-      class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage
-
   portal_search_serializer:
       class: DeskPRO\Bundle\PortalBundle\Search\SimplePortalEntitySerializer
       arguments: ["@object_router", "@icon_factory"]

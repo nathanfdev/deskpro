@@ -54,6 +54,14 @@ class UrlCorrectorEventListenerTest extends PortalTestCase
      */
     private $logger;
 
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * {@inheritdoc}
+     */
     public function setUp()
     {
         $this->interfaceInfo = new InterfaceInfo(InterfaceInfo::ID_USER);
@@ -145,7 +153,7 @@ class UrlCorrectorEventListenerTest extends PortalTestCase
      */
     private function createEvent($uri)
     {
-        $request = Request::create($uri, 'GET', [], [], [], [
+        $this->request = Request::create($uri, 'GET', [], [], [], [
             'SCRIPT_NAME'     => 'index.php',
             'SCRIPT_FILENAME' => 'index.php',
         ]);
@@ -154,7 +162,12 @@ class UrlCorrectorEventListenerTest extends PortalTestCase
             return 'testController';
         };
 
-        return new FilterControllerEvent($this->getPortalKernel(), $controller, $request, HttpKernelInterface::MASTER_REQUEST);
+        return new FilterControllerEvent(
+            $this->getPortalKernel(),
+            $controller,
+            $this->request,
+            HttpKernelInterface::MASTER_REQUEST
+        );
     }
 
     /**

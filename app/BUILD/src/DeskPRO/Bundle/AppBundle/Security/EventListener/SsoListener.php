@@ -97,6 +97,11 @@ class SsoListener implements EventSubscriberInterface
             return;
         }
 
+        $pathInfo = $event->getRequest()->getPathInfo();
+        if (preg_match('#^/api/#i', $pathInfo) || preg_match('#^/portal/api/#i', $pathInfo)) {
+            return;
+        }
+
         // if we need to return a redirect from the auth system, do so now
         $res = $this->checkAuthSystemForResponse($this->authManager->getSettings(), $event->getRequest());
         if ($res) {
