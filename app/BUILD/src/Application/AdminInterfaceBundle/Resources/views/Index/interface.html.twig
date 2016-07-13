@@ -281,19 +281,23 @@
     {{ ng_tpl('AdminInterfaceBundle:Common:datepicker-menu.html.twig', 'template/datepicker/popup.html') }}
     {{ ng_tpl('AdminInterfaceBundle:Common:timepicker.html.twig', 'template/timepicker/timepicker.html') }}
 
-<link rel="stylesheet" href="{{ asset('bower_components/font-awesome/css/font-awesome.min.css') }}"/>
-<link rel="stylesheet" href="{{ asset('node_modules/Select2/select2.css') }}"/>
-<link rel="stylesheet" href="{{ asset('bower_components/spectrum/spectrum.css') }}"/>
-<link rel="stylesheet" href="{{ asset('bower_components/blueimp-file-upload/css/jquery.fileupload.css') }}"/>
-<link rel="stylesheet" href="{{ asset('bower_components/angular-slider/slider.css') }}"/>
-<link rel="stylesheet" href="{{ asset('bower_components/angular-grid/ng-grid.min.css') }}"/>
-<link rel="stylesheet" href="{{ asset('bower_components/animate.css/animate.min.css') }}"/>
-<link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/admin-style.css') }}"/>
-<link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/icons-style.css') }}"/>
-<link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/admin2-style.css') }}"/>
-<link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/semantic.css') }}"/>
-<link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/new-admin.css') }}"/>
-<link rel="stylesheet" href="{{ asset('vendor/redactor/redactor.css') }}" type="text/css"/>
+    <link rel="stylesheet" href="{{ asset('bower_components/normalize-css/normalize.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bower_components/font-awesome/css/font-awesome.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('node_modules/Select2/select2.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bower_components/spectrum/spectrum.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bower_components/blueimp-file-upload/css/jquery.fileupload.css') }}">
+    <link rel="stylesheet" href="{{ asset('bower_components/angular-slider/slider.css') }}">
+    <link rel="stylesheet" href="{{ asset('bower_components/angular-grid/ng-grid.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bower_components/animate.css/animate.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bower_components/intl-tel-input/build/css/intlTelInput.css') }}">
+    <link rel="stylesheet" href="{{ asset('bower_components/angular-ui-tree/dist/angular-ui-tree.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('webpack/styles/Admin/admin-style.css') }}" />
+    <link rel="stylesheet" href="{{ asset('webpack/styles/Admin/admin2-style.css') }}" />
+    <link rel="stylesheet" href="{{ asset('webpack/styles/Admin/semantic.css') }}" />
+    {#    <link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/admin-style.css') }}" />
+        <link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/icons-style.css') }}" />
+        <link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/new-admin.css') }}" />#}
+    <link rel="stylesheet" href="{{ asset('vendor/redactor/redactor.css') }}" type="text/css" />
 
     <link href='https://fonts.googleapis.com/css?family=Lato:400,700,900,100,300' rel='stylesheet' type='text/css'>
     {% if is_first_load %}

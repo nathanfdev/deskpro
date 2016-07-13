@@ -1,0 +1,153 @@
+@import '../../../../stylesheets-less/semantic-ui/site/globals/site.variables';
+
+// Language button
+//
+// Markup:
+//<div class="ui left labeled language button">
+//  <a class="ui basic label">
+//    <i class="icon globe"></i>
+//  </a>
+//  <div class="ui button">
+//    1/5
+//  </div>
+//</div>
+//<div class="ui left labeled language button">
+//  <a class="ui basic label">
+//    <i class="icon globe"></i>
+//  </a>
+//  <div class="ui button with-progress">
+//    1/5
+//    <div class="ui tiny progress">
+//      <div class="bar" style="width:20%"></div>
+//    </div>
+//  </div>
+//</div>
+//<div class="ui left labeled language button">
+//  <a class="ui basic label">
+//    <i class="icon globe"></i>
+//  </a>
+//  <div class="ui button with-progress">
+//    5/5
+//    <i class="icon check"></i>
+//  </div>
+//</div>
+//
+// Styleguide 1.1.1
+.ui.language.button {
+  height: 40px;
+  width: 80px;
+  border: 1px solid @dp-greyscale-250;
+  border-radius: 2px;
+
+  .label {
+    color: @dp-greyscale-450;
+    font-size: 1.166rem;
+    box-shadow: 0px 1px 0px @dp-greyscale-250;
+    padding: 12px;
+    border-radius: 2px;
+
+    > .icon {
+      margin: 0;
+    }
+  }
+
+  .button {
+    font-family: @pageFont;
+    font-weight: 600;
+    font-size: 0.688rem;
+    color: @dp-greyscale-1000;
+    background-color: @dp-greyscale-150;
+    box-shadow: 0px 1px 0px @dp-greyscale-250;
+    width: 40px;
+    padding: 12px 0;
+    text-align: center;
+    border: 1px solid @dp-greyscale-250;
+    border-left: 0;
+    border-radius: 2px;
+
+    &.with-progress {
+      padding: 8px 0;
+    }
+
+    &:active {
+      transform: none;
+    }
+
+    .progress {
+      background-color: @dp-greyscale-50;
+      width: 30px;
+      height: 4px;
+      margin: 4px auto 0;
+      border-radius: 0;
+
+      .bar {
+        background: @dp-sonic-primary;
+        border-radius: 0;
+        min-width: 0;
+      }
+    }
+    .check {
+      color: @dp-emerald-primary;
+      margin: 2px 5px 0;
+    }
+  }
+}
+
+// Image checkbox
+//
+// Markup:
+//<div class="column">
+//  <div class="ui checkbox image field">
+//    <input type="radio" name="widget_style" id="radio_image_1" class="hidden" value="image_1">
+//    <label for="radio_image_1">
+//      Image 1
+//      <div class="ui divider"></div>
+//      <img src="http://thecatapi.com/api/images/get?format=src&type=png&size=small&test=2"
+//        alt="Image 1"/>
+//    </label>
+//  </div>
+//  <div class="ui checkbox image field">
+//    <input type="radio" name="widget_style" id="radio_image_2" class="hidden" value="image_2">
+//    <label for="radio_image_2">
+//      Image 2
+//      <div class="ui divider"></div>
+//      <img src="http://thecatapi.com/api/images/get?format=src&type=png&size=small&test=1"
+//        alt="Image 2"/>
+//    </label>
+//  </div>
+//</div>
+//
+// Styleguide 1.1.2
+
+
+.ui.checkbox.image {
+  background: @dp-greyscale-100;
+
+  input.hidden {
+    display: none;
+  }
+
+  .box,
+  label {
+    padding: 10px;
+    border: 1px solid @dp-greyscale-250;
+
+    .divider {
+      margin: 5px 0;
+    }
+
+    &:before,
+    &:after {
+      display: none;
+    }
+
+    img {
+      margin: 0 auto;
+    }
+  }
+
+  input:checked ~ .box,
+  input:checked ~ label {
+    border-color: @dp-sonic-primary;
+  }
+}

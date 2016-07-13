@@ -30,7 +30,7 @@ export class AdminLoad {
 
 export const start = () => {
   require('./CtrlList');
-  
+
   let loadingEl = document.getElementById('dp_loading');
   loadingEl.parentNode.removeChild(loadingEl);
   loadingEl = null;
