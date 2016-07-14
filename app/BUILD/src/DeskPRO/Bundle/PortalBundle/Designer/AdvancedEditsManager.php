@@ -80,9 +80,11 @@ class AdvancedEditsManager
     private $mainScssPath;
 
     /**
-     * @var bool
+     * Array of name => true for assets that were updated.
+     *
+     * @var array
      */
-    private $didChangeCss;
+    private $changedAssets = [];
 
     /**
      * Constructor.
@@ -116,18 +118,10 @@ class AdvancedEditsManager
             $this->saveTemplate(self::CUSTOM_FOOTER_TEMPLATE_NAME, $data['footer']);
         }
         if (array_key_exists('custom_scss', $data)) {
-            $didChange = false;
-            $this->saveThemeSetAsset(self::CUSTOM_SCSS_ASSET_NAME, self::CUSTOM_SCSS_ASSET_TAG, 'text/css', $data['custom_scss'], $didChange);
-            if ($didChange) {
-                $this->didChangeCss = true;
-            }
+            $this->saveThemeSetAsset(self::CUSTOM_SCSS_ASSET_NAME, self::CUSTOM_SCSS_ASSET_TAG, 'text/css', $data['custom_scss']);
         }
         if (array_key_exists('main_scss', $data)) {
-            $didChange = false;
-            $this->saveThemeSetAsset(self::MAIN_SCSS_ASSET_NAME, self::MAIN_SCSS_ASSET_TAG, 'text/css', $data['main_scss'], $didChange);
-            if ($didChange) {
-                $this->didChangeCss = true;
-            }
+            $this->saveThemeSetAsset(self::MAIN_SCSS_ASSET_NAME, self::MAIN_SCSS_ASSET_TAG, 'text/css', $data['main_scss']);
         }
         if (array_key_exists('javascript', $data)) {
             $this->saveThemeSetAsset(self::CUSTOM_JS_ASSET_NAME, self::CUSTOM_JS_ASSET_TAG, 'text/javascript', $data['javascript']);
@@ -139,7 +133,8 @@ class AdvancedEditsManager
      */
     public function hasChangedCssFiles()
     {
-        return $this->didChangeCss;
+        return isset($this->changedAssets[self::CUSTOM_SCSS_ASSET_NAME])
+            || isset($this->changedAssets[self::MAIN_SCSS_ASSET_NAME]);
     }
 
     /**
@@ -272,11 +267,10 @@ CODE;
      * @param string $tag
      * @param string $mimeType
      * @param string $code
-     * @param bool   $didChange
      *
      * @return ThemeSetAsset
      */
-    private function saveThemeSetAsset($name, $tag, $mimeType, $code, &$didChange = false)
+    private function saveThemeSetAsset($name, $tag, $mimeType, $code)
     {
         $theme_set = $this->edit_theme_set;
 
@@ -302,7 +296,8 @@ CODE;
             }
         }
 
-        $didChange = true;
+        // record it as changed
+        $this->changedAssets[$name] = true;
 
         $blob = $this->bs->createBlobRecordFromString($code, $name, $mimeType, ['tag' => 'brand_asset.'.$tag]);
 
