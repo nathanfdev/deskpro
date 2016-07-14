@@ -183,7 +183,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 
 			$.ajax({
 				url: $(this).attr('href'),
-				data: self.getFormData(),
+				data: self.getFormData($form),
 				type: 'POST',
 				dataType: 'json'
 			}).done(function(json) {
@@ -218,8 +218,8 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 		}
 	},
 
-  getFormData: function() {
-    var form = this.getEl('billing_form');
+  getFormData: function(form) {
+    var form = form || this.getEl('billing_form');
     var old = form.find('input, textarea, select').serializeArray();
     var data = {};
     for (var idx = 0; idx < old.length; idx++) {
