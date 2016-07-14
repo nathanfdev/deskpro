@@ -172,6 +172,20 @@ $definition->setClass('DeskPRO\Bundle\AppBundle\Content\ContentSlugManager');
 $definition->setArguments(array(new Reference('service_container')));
 $container->setDefinition('content_slug_manager', $definition);
 
+// slug listener (sets slugs on category)
+// NOTE: this is duplicated in the InstallExtension so that the install process can use it
+$definition = new Definition();
+$definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\Content\DoctrineCategorySlugListener');
+$definition->setArguments(array(new Reference('category_slug_manager')));
+$definition->addTag('doctrine.event_subscriber');
+$container->setDefinition('doctrine_listener.category_slug', $definition);
+// a service to set the correct slug on a category object
+// NOTE: this is duplicated in the InstallExtension so that the install process can use it
+$definition = new Definition();
+$definition->setClass('DeskPRO\Bundle\AppBundle\Content\CategorySlugManager');
+$definition->setArguments(array(new Reference('service_container')));
+$container->setDefinition('category_slug_manager', $definition);
+
 $definition = new Definition();
 $definition->setClass('DeskPRO\\Bundle\\AppBundle\\Assets\\PackagesFactory');
 $definition->setArguments([

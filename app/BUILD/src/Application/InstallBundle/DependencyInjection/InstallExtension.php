@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -68,6 +69,19 @@ class InstallExtension extends Extension
         $definition->setClass('DeskPRO\Bundle\AppBundle\Content\ContentSlugManager');
         $definition->setArguments(array(new Reference('service_container')));
         $container->setDefinition('content_slug_manager', $definition);
+
+        // slug listener (sets slugs on categories)
+        // note this is a duplicate for install (canonical definition is in config.shared.php)
+        $definition = new Definition();
+        $definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\Content\DoctrineCategorySlugListener');
+        $definition->setArguments(array(new Reference('category_slug_manager')));
+        $definition->addTag('doctrine.event_subscriber');
+        $container->setDefinition('doctrine_listener.category_slug', $definition);
+        // slug manager (note duplicate: canonical definition is in config.shared.php)
+        $definition = new Definition();
+        $definition->setClass('DeskPRO\Bundle\AppBundle\Content\CategorySlugManager');
+        $definition->setArguments(array(new Reference('service_container')));
+        $container->setDefinition('category_slug_manager', $definition);
 
         $this->loadInputReader($container);
     }
