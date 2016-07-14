@@ -1,37 +1,59 @@
+@new
 Feature: JSON API fetch ids only
 
   Background:
-    Given I install the api data set
-    And my request is authenticated
+   Given I'm authenticated as "admin"
 
-  Scenario: I search with ids only
-    When I send a GET request to "/api/v2/search?q=1&ids_only=1"
-    Then the JSON node "data.grouped_results[0].type" should be equal to "article"
-    And the JSON node "data.grouped_results[0].results[0]" should be equal to 1
-    And the JSON node "data.grouped_results[1].type" should be equal to "download"
-    And the JSON node "data.grouped_results[1].results[0]" should be equal to 1
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
-    And the JSON node "data.grouped_results[2].results[0]" should be equal to 1
-    And the JSON node "data.grouped_results[3].type" should be equal to "news"
-    And the JSON node "data.grouped_results[3].results[0]" should be equal to 1
-    And the JSON node "data.grouped_results[4].type" should be equal to "ticket"
-    And the JSON node "data.grouped_results[4].results[0]" should be equal to 1
-    And the JSON node "data.grouped_results[5].type" should be equal to "person"
-    And the JSON node "data.grouped_results[5].results[0]" should be equal to 1
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
-    And the JSON node "data.grouped_results[6].results[0]" should be equal to 1
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
-    And the JSON node "data.grouped_results[7].results[0]" should be equal to 1
+  Scenario Outline: I search by ID
+    Given only the following "Feedback" records exist:
+      | #        | person  | is_reviewed | slug      | title     | content   | status |
+      | feedback | {admin} | 1           | feedback1 | Feedback1 | Feedback1 | active |
+    And only the following "Article" records exist:
+      | #       | slug     | title    | content  | status  |
+      | article | article1 | Article1 | Article1 | visible |
+    And only the following "Download" records exist:
+      | #        | slug      | title     |  status   |
+      | download | Download1 | Download1 | published |
+    And only the following "News" records exist:
+      | #    | slug  | title | status    |
+      | news | News1 | News1 | published |
+    And only the following "Organization" records exist:
+      | #            | name       | summary                                    |
+      | organization | Vector ltd | Vector is a common fake org name in Russia |
+    And only the following "Ticket" records exist:
+      | #      | status        | ref  | subject |
+      | ticket | awaiting_user | AAAA | Ticket  |
+    When I send a GET request to "/api/v2/search?q=<ref>&ids_only=1"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data.grouped_results[<order>].type" should be equal to "<type>"
+    And the JSON node "data.grouped_results[<order>].results" should have 1 element
+    And the JSON node "data.grouped_results[<order>].results[0]" should be equal to "<ref>"
+
+    Examples:
+      | ref            | type         | order |
+      | {article}      | article      | 0     |
+      | {download}     | download     | 1     |
+      | {feedback}     | feedback     | 2     |
+      | {news}         | news         | 3     |
+      | {ticket}       | ticket       | 4     |
+      | {me}           | person       | 5     |
+      | {organization} | organization | 6     |
 
   Scenario Outline: I get lists of data
     Given I re-fill ticket search table
+    And only the following "Ticket" records exist:
+      | #       | status        | ref  | subject |
+      | ticket1 | awaiting_user | AAAA | Ticket1 |
+      | ticket2 | awaiting_user | BBBB | Ticket2 |
     When I send a GET request to "/api/v2/<endpoint>?order_by=id&order_dir=asc&ids_only=1"
     Then the JSON node "data" should have <count> element
     And the JSON node "data[0]" should be equal to <id1>
     And the JSON node "data[1]" should be equal to <id2>
 
     Examples:
-      | endpoint                 | count | id1 | id2 |
-      | people                   | 4     | 1   | 2   |
-      | tickets                  | 4     | 1   | 2   |
-      | ticket_filters/1/tickets | 2     | 2   | 4   |
+      | endpoint | count | id1         | id2         |
+# is the people endpoint something we can ensure it has ONLY records?
+#      | people   | 2     | "{admin}"   | "{agent}"   |
+      | tickets  | 2     | "{ticket1}" | "{ticket2}" |
+#      | ticket_filters/1/tickets | 2     | 2   | 4   |

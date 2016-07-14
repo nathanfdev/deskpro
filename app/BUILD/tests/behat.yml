@@ -36,7 +36,9 @@ api:
                 - DpBehat\Data\PeopleContext
                 - DpBehat\Data\CustomDataContext
                 - DpBehat\Data\TicketLayoutContext
+                - DpBehat\Data\OrganizationContext
                 - DpBehat\Data\BlobContext
+                - DpBehat\Data\LabelContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:

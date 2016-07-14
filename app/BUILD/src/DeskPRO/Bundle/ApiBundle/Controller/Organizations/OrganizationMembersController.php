@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Application\DeskPRO\Entity\Person;
@@ -52,6 +53,16 @@ class OrganizationMembersController extends CrudSubController
     public static $entity         = Person::class;
     public static $parentProperty = 'organization';
     public static $type           = 'organization_member';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function instantiateEntity(Request $request)
+    {
+        $person_id = $request->request->getInt('person');
+
+        return $entity = $this->getRepository(Person::class)->find($person_id);
+    }
 
     /**
      * {@inheritdoc}
