@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldReso
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\LabelTicket;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager;
@@ -232,10 +233,15 @@ abstract class AbstractFieldResolver
     {
         $def = $this->fieldManager->getCustomPersonFieldById($field->getFieldId());
 
-        $field = $this->createCustomField($context, 'person.custom_data', $def);
-        $field->setOption('owner_form', $context->getForm()->get(FormFields::PERSON));
+        $person = $this->getSubmittedPerson($context);
+        if (!$person instanceof Person) {
+            return false;
+        }
 
-        return $field;
+        // ensure that proper person is set when we are creating user field
+        $context->getTicket()->setPerson($person);
+
+        return $this->createCustomField($context, 'person.custom_data', $def);
     }
 
     /**
@@ -246,26 +252,33 @@ abstract class AbstractFieldResolver
      */
     protected function createCustomOrgField(TicketWithLayoutsContext $context, LayoutField $field)
     {
-        $person_organization = $context->getPerson()->getOrganization();
-        $ticket_organization = $context->getTicket()->getOrganization();
-
-        if (!$ticket_organization) {
-            // must be in an organization to see this field
-            if (!$person_organization) {
-                return false;
-            }
-
-            $ticket_organization = $person_organization;
+        $person = $this->getSubmittedPerson($context);
+        if ($person instanceof Person) {
+            $personOrganization = $person->getOrganization();
+        } else {
+            $personOrganization = null;
         }
 
-        // person must be a part of the tickets organization to edit org fields
-        if ($person_organization !== $ticket_organization) {
+        // must be in an organization to see this field
+        if (!$personOrganization) {
             return false;
         }
 
-        $field_def = $this->fieldManager->getCustomOrganizationFieldById($field->getFieldId());
+        $ticketOrganization = $context->getTicket()->getOrganization();
+        if (!$ticketOrganization) {
+            $context->getTicket()->setOrganization($personOrganization);
+        }
 
-        return $this->createCustomField($context, 'organization.custom_data', $field_def);
+        // person must be a part of the tickets organization to edit org fields
+        if ($personOrganization !== $context->getTicket()->getOrganization()) {
+            return false;
+        }
+
+        return $this->createCustomField(
+            $context,
+            'organization.custom_data',
+            $this->fieldManager->getCustomOrganizationFieldById($field->getFieldId())
+        );
     }
 
     /**
@@ -535,4 +548,14 @@ abstract class AbstractFieldResolver
     {
         return $def && $def->isEnabled() && $def->getType();
     }
+
+    /**
+     * Get actual person ON_SUBMIT event.
+     * It can be changed via the form.
+     *
+     * @param TicketWithLayoutsContext $context
+     *
+     * @return Person
+     */
+    abstract protected function getSubmittedPerson(TicketWithLayoutsContext $context);
 }

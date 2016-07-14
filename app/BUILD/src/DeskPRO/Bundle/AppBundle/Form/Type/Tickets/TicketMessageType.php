@@ -142,6 +142,7 @@ class TicketMessageType extends AbstractType
         }
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onEnsureMessageTextExists'], 100);
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetMessageFromOptions']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onChangeMessageFormat'], 100);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
@@ -192,6 +193,23 @@ class TicketMessageType extends AbstractType
     }
 
     /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onEnsureMessageTextExists(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (is_array($data) && !isset($data['message'])) {
+            $data['message'] = '';
+        }
+
+        $event->setData($data);
+    }
+
+    /**
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onSetMessageFromOptions(FormEvent $event)
@@ -203,6 +221,8 @@ class TicketMessageType extends AbstractType
     }
 
     /**
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onChangeMessageFormat(FormEvent $event)
@@ -217,6 +237,8 @@ class TicketMessageType extends AbstractType
     }
 
     /**
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onSetRelations(FormEvent $event)
@@ -240,6 +262,8 @@ class TicketMessageType extends AbstractType
     }
 
     /**
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onValidateTicket(FormEvent $event)
@@ -253,6 +277,8 @@ class TicketMessageType extends AbstractType
 
     /**
      * We can't get form errors from disabled form so we need to enable the ticket form to access them.
+     *
+     * @internal
      *
      * @param FormEvent $event
      */
@@ -269,6 +295,8 @@ class TicketMessageType extends AbstractType
 
     /**
      * The ios app sends html message in bad format so we need to 'fix' it before submit.
+     *
+     * @internal
      *
      * @param FormEvent $event
      */

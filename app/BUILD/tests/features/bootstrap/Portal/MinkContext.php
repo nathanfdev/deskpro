@@ -148,7 +148,10 @@ class MinkContext extends \Behat\MinkExtension\Context\MinkContext
      */
     public function fillField($name, $value)
     {
-        parent::fillField(DataContext::replace($name), $value);
+        $name  = DataContext::replace($name);
+        $value = DataContext::replace($value);
+
+        parent::fillField($name, $value);
     }
 
     /**

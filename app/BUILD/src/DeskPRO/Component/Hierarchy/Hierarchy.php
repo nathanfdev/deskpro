@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,14 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Component\Hierarchy;
 
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Traversable;
 
+/**
+ * Class Hierarchy.
+ */
 class Hierarchy implements \Countable, \IteratorAggregate
 {
     /**
@@ -63,21 +63,22 @@ class Hierarchy implements \Countable, \IteratorAggregate
      */
     public function __construct(array $root_nodes, HierarchyFormatterInterface $formatter = null, $node_id_path = null)
     {
-        $this->formatter = $formatter ?: new Formatter\FlatListFormatter();
-
-        // suppress the bug in php in some versions for modifying an array in usort
-        @usort($root_nodes, function ($node1, $node2) {
-            $a = $node2->getOrder();
-            $b = $node1->getOrder();
-
-            if ($a == $b) {
-                return 0;
-            }
-
-            return ($a < $b) ? -1 : 1;
-        });
+        $this->formatter  = $formatter ?: new Formatter\FlatListFormatter();
         $this->root_nodes = $root_nodes;
 
+        // suppress the bug in php in some versions for modifying an array in usort
+        @uksort($root_nodes, function ($a, $b) {
+            $order1 = $this->root_nodes[$a]->getOrder();
+            $order2 = $this->root_nodes[$b]->getOrder();
+
+            if ($order1 === $order2) {
+                return ($a < $b) ? -1 : 1;
+            }
+
+            return ($order2 < $order1) ? -1 : 1;
+        });
+
+        $this->root_nodes = array_values($root_nodes);
         foreach ($root_nodes as $root_node) {
             $root_node->setHierarchy($this);
         }

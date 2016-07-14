@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldReso
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
@@ -119,15 +120,14 @@ class ApiFieldResolver extends AbstractFieldResolver
     protected function createMessage(TicketWithLayoutsContext $context)
     {
         return new FormField(TicketDescriptionType::class, [
-            'mapped'         => false,
-            'person'         => $context->getPerson(),
-            'ticket'         => $context->getTicket(),
-            'ticket_message' => $context->getMessage(),
-            'data'           => $context->getMessage(),
-            'format'         => '',
-            'required'       => true,
-            'constraints'    => [
-                new Assert\NotBlank(),
+            'mapped'              => false,
+            'person'              => $context->getPerson(),
+            'ticket'              => $context->getTicket(),
+            'ticket_message'      => $context->getMessage(),
+            'data'                => $context->getMessage(),
+            'format'              => '',
+            'required'            => true,
+            'message_constraints' => [
                 new Assert\Length(['min' => 10]),
             ],
         ]);
@@ -142,6 +142,10 @@ class ApiFieldResolver extends AbstractFieldResolver
             return false;
         }
 
+        if ($def->getType() === CustomDefAbstract::TYPE_DISPLAY) {
+            return false;
+        }
+
         $options = [
             'custom_def'      => $def,
             'property_path'   => $propertyPath,
@@ -151,5 +155,21 @@ class ApiFieldResolver extends AbstractFieldResolver
         ];
 
         return new FormField(CustomDataType::class, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getSubmittedPerson(TicketWithLayoutsContext $context)
+    {
+        $submitted = $context->getSubmittedData();
+        if (isset($submitted[FormFields::PERSON])) {
+            $personForm = clone $context->getForm()->get(FormFields::PERSON);
+            $personForm->submit($submitted[FormFields::PERSON]);
+
+            return $personForm->getData();
+        }
+
+        return $context->getForm()->get(FormFields::PERSON)->getData();
     }
 }

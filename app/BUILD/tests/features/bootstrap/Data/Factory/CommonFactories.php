@@ -64,6 +64,9 @@ class CommonFactories
             $data['is_agent']  = 1;
             $data['can_admin'] = 1;
         }
+        if (!isset($data['email'])) {
+            $data['email'] = uniqid().'@deskpro.com';
+        }
 
         $person = new Person();
 
@@ -135,6 +138,7 @@ class CommonFactories
             'multi_choice'   => CustomDefAbstract::HANDLER_CLASS_CHOICE,
             'toggle'         => CustomDefAbstract::HANDLER_CLASS_TOGGLE,
             'hidden'         => CustomDefAbstract::HANDLER_CLASS_HIDDEN,
+            'display'        => CustomDefAbstract::HANDLER_CLASS_DISPLAY,
         ];
 
         $def = new $types[$type]();

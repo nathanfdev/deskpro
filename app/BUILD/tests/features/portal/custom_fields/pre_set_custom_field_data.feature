@@ -91,7 +91,7 @@ Feature: Check custom field pre set values
     And the object "user" has "multi_choice_field" custom data with "{choice_2},{choice_3}"
 
     When I go to "/profile"
-    Then the "person_profile[{multi_choice_field}][data][]" multiple field should contain "{choice_3},{choice_2}"
+    Then the "person_profile[{multi_choice_field}][data][]" multiple field should contain "{choice_2},{choice_3}"
 
   Scenario: I check date field
     Given only the following custom person fields exist:

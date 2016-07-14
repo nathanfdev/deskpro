@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
@@ -82,6 +83,10 @@ class TicketWithLayoutsType extends AbstractType
             ->setDefaults([
                 'data_class'    => Ticket::class,
                 'department_id' => null,
+                'error_mapping' => [
+                    'messages[0].attachments' => FormFields::ATTACHMENTS,
+                    'messages[0].message'     => FormFields::MESSAGE.'.message',
+                ],
             ])
             ->setRequired([
                 'person',

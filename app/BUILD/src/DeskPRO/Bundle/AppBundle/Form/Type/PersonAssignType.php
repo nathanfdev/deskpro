@@ -39,7 +39,6 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Assigns person entity using multiple formats.
@@ -77,12 +76,9 @@ class PersonAssignType extends AbstractType
                 'required' => false,
             ])
             ->add('email', EmailType::class, [
-                'label'       => $options['label_email'],
-                'required'    => false,
-                'mapped'      => false,
-                'constraints' => [
-                    new Assert\Email(['strict' => true]),
-                ],
+                'label'    => $options['label_email'],
+                'required' => false,
+                'mapped'   => false,
             ])
         ;
 
@@ -204,6 +200,9 @@ class PersonAssignType extends AbstractType
                 'allow_extra_fields' => false,
                 'allow_create'       => false,
                 'error_bubbling'     => false,
+                'error_mapping'      => [
+                    'emails' => 'email',
+                ],
             ])
             ->setAllowedTypes([
                 'person'       => ['null', Person::class],

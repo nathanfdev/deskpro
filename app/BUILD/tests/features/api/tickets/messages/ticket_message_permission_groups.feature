@@ -46,8 +46,12 @@ Feature: /tickets/{id}/messages endpoint
     Then the response status code should be 403
 
     Given I set permission "agent_tickets.modify_messages_own" = 1 for "registered" usergroup
-
-    When I send a PUT request to "/api/v2/tickets/{ticket}/messages/{lastCreatedId}"
+    When I send a PUT request to "/api/v2/tickets/{ticket}/messages/{lastCreatedId}" with body:
+    """
+{
+  "message": "my message"
+}
+    """
     Then the response status code should be 204
 
     When I send a DELETE request to "/api/v2/tickets/{ticket}/messages/{lastCreatedId}"
@@ -67,7 +71,12 @@ Feature: /tickets/{id}/messages endpoint
     """
      Then the response status code should be 201
 
-     When I send a PUT request to "/api/v2/tickets/{ticket}/messages/{lastCreatedId}"
+     When I send a PUT request to "/api/v2/tickets/{ticket}/messages/{lastCreatedId}" with body:
+   """
+{
+  "message": "my message"
+}
+    """
      Then the response status code should be 204
 
      When I send a DELETE request to "/api/v2/tickets/{ticket}/messages/{lastCreatedId}"

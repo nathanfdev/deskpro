@@ -98,6 +98,21 @@ class FormContext extends BasePortalContext
     }
 
     /**
+     * @Then print :locator form field errors
+     *
+     * @param $locator
+     */
+    public function printFormFieldErrors($locator)
+    {
+        $field = $this->assertField($locator);
+        $nodes = $this->findNodeErrors($this->findFieldParentNode($field));
+
+        foreach ($nodes as $node) {
+            echo $node->getHtml();
+        }
+    }
+
+    /**
      * @Then :locator form field should have :count error(s)
      *
      * @param string $locator
@@ -153,6 +168,23 @@ class FormContext extends BasePortalContext
     }
 
     /**
+     * @Then I should not see the :locator field
+     *
+     * @param string $locator
+     *
+     * @throws \Exception
+     */
+    public function theFormShouldNotHaveField($locator)
+    {
+        $locator = DataContext::replace($locator);
+        $field   = $this->getSession()->getPage()->findField($locator);
+
+        if ($field) {
+            throw new \Exception("Field $locator was found");
+        }
+    }
+
+    /**
      * @Then the :locator form should have :expectedCount elements
      *
      * @param string $locator
@@ -162,9 +194,12 @@ class FormContext extends BasePortalContext
      */
     public function theFormShouldHaveElementsCount($locator, $expectedCount)
     {
-        $form  = $this->getSession()->getPage()->find('css', $locator);
-        $nodes = $form->findAll('css', 'input, textarea, select');
+        $form = $this->getSession()->getPage()->find('css', $locator);
+        if (!$form) {
+            throw new \Exception("Form $locator not found");
+        }
 
+        $nodes = $form->findAll('css', 'input, textarea, select');
         $count = count($nodes);
         if ($count !== $expectedCount) {
             throw new \Exception("Form should have $expectedCount element but it has {$count}");

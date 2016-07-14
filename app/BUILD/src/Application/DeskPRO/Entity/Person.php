@@ -383,13 +383,13 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * The primary email address used by this account.
      *
-     * @var \Application\DeskPRO\Entity\PersonEmail
+     * @var PersonEmail
      * @Assert\NotNull()
      */
     protected $primary_email;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection|PersonEmail[]
      *
      * @Assert\Valid()
      * @Assert\Count(min=1)
@@ -402,7 +402,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $phone_numbers;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      *
      * @Assert\Valid()
      * @AppAssert\UniqueCollection(property={"label"})
@@ -410,12 +410,12 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $labels;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $custom_data;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      *
      * @Assert\Valid()
      */
@@ -424,31 +424,31 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * Usergroups the user belongs to.
      *
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $usergroups;
 
     /**
      * Twitter accounts this user has access to.
      *
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $twitter_accounts;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $twitter_users;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $preferences;
 
     /**
      * Usersource associations.
      *
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $usersource_assoc;
 
@@ -553,7 +553,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $_search_highlights;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      *
      * @Assert\Count(max=0, groups="User")
      */
@@ -2093,7 +2093,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * @return PersonEmail[]|\Doctrine\Common\Collections\ArrayCollection
+     * @return PersonEmail[]|ArrayCollection
      */
     public function getEmails()
     {

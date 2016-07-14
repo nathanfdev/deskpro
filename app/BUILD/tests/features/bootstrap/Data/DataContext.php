@@ -28,8 +28,10 @@
 
 namespace DpBehat\Data;
 
+use Application\DeskPRO\Entity\Ticket;
 use Behat\Gherkin\Node\TableNode;
 use DpBehat\BaseContext;
+use DpBehat\Data\Factory\SimpleFactory;
 
 /**
  * Class DataContext.
@@ -179,6 +181,8 @@ class DataContext extends BaseContext
      * @Given there are no :type records
      * @Given no :type records exist
      * @Given I remove all :type records
+     *
+     * @param string $type
      */
     public function noRecordsExist($type)
     {
@@ -186,6 +190,7 @@ class DataContext extends BaseContext
         foreach ($records as $record) {
             $this->em()->remove($record);
         }
+
         $this->em()->flush();
     }
 
@@ -195,6 +200,9 @@ class DataContext extends BaseContext
      * @Given I create a(n) :type record and reference it as :ref
      * @Given I create a(n) :type and reference it as :ref
      * @Given I have a(n) :type record referenced as :ref
+     *
+     * @param string $type
+     * @param string $ref
      */
     public function iCreateAnObjectAndReferenceItAs($type, $ref)
     {
@@ -209,6 +217,11 @@ class DataContext extends BaseContext
      * @Given I add a(n) :type record with :prop equal to :value referenced as :ref
      * @Given I have a(n) :type record with :prop equal to :value referenced as :ref
      * @Given I have a(n) :type record with :prop equal to :value which is referenced as :ref
+     *
+     * @param string $type
+     * @param string $prop
+     * @param string $value
+     * @param string $ref
      */
     public function iCreateAnObjectWithPropEqualToAndReferenceItAs($type, $prop, $value, $ref)
     {
@@ -217,6 +230,11 @@ class DataContext extends BaseContext
 
     /**
      * @Given the only :type has :prop equal to :value and referenced as :ref
+     *
+     * @param string $type
+     * @param string $prop
+     * @param string $value
+     * @param string $ref
      */
     public function theOnlyObjectWithPropEqualToIsReferencedAs($type, $prop, $value, $ref)
     {
@@ -286,18 +304,31 @@ class DataContext extends BaseContext
         $this->theFollowingRecordsExist($type, $table);
     }
 
-    // ConcreteDataContext ---------------------------------------------------------------------------------------------
-
     /**
-     * @Given there are no Blob records in the DB
+     * @Given the :ref record :prop prop is equal to :value
+     *
+     * @param string $ref
+     * @param string $prop
+     * @param string $value
      */
-    public function noBlobs()
+    public function theFollowingRecordPropHasValue($ref, $prop, $value)
     {
-        $this->noRecordsExist('TaskAttachment');
-        $this->noRecordsExist('Blob');
-    }
+        $record = self::resolveReference($ref);
+        if (self::isReference($value)) {
+            $value = self::resolveReference($value);
+        }
 
-    // -----------------------------------------------------------------------------------------------------------------
+        $value = ObjectsManager::preProcessValue($value);
+        SimpleFactory::provide($record, [$prop => $value]);
+
+        if ($record instanceof Ticket) {
+            $record->disableAutoTicketProcess();
+        }
+
+        $this->em()->persist($record);
+        $this->em()->flush();
+        $this->em()->clear();
+    }
 
     /**
      * @param string $ref

@@ -95,6 +95,7 @@ class TicketWithLayoutsWebType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onAddUiFields'], -1);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddUiFields'], -1);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddRerenderField'], -1);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onResetRerenderFormData'], 100);
     }
 
     /**
@@ -169,5 +170,22 @@ class TicketWithLayoutsWebType extends AbstractType
         if ($context->hadLayout() && $hasNotSubmitted && $hasNotSubmitted && count($data) > 0) {
             $this->fieldRenderer->addRerenderField($context);
         }
+    }
+
+    /**
+     * Reset request data of temp field to avoid extra field validation error.
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onResetRerenderFormData(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (array_key_exists('rerender_form', $data)) {
+            unset($data['rerender_form']);
+        }
+
+        $event->setData($data);
     }
 }

@@ -559,6 +559,7 @@ abstract class CrudController extends BaseController
         }
 
         $this->persistModel($model);
+
         $view = View::create(!$isModify ? $this->wrap($model) : null, $status);
         if ($this->isExposed('get')) {
             $view->setLocation($this->getLocationUrl($model, $request));

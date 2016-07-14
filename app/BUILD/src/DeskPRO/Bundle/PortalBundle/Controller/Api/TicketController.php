@@ -83,10 +83,9 @@ class TicketController extends AbstractApiController
             ]);
         }
 
-        $ticket_service = $this->get('tickets.new_ticket');
-        $ticket         = $ticket_service->createNewTicket($request, $visitor_id, $this->getUser(), Ticket::CREATED_WEB_PERSON_WIDGET);
-        $person         = $ticket->getPerson();
-        $ticket_message = $ticket->messages[0];
+        $ticketService = $this->get('tickets.new_ticket');
+        $ticket        = $ticketService->createNewTicket($request, $visitor_id, $this->getUser(), Ticket::CREATED_WEB_PERSON_WIDGET);
+        $person        = $ticket->getPerson();
 
         $formOptions = [
             'person'                        => $person,
@@ -112,9 +111,9 @@ class TicketController extends AbstractApiController
                 $ticket->setPerson($person);
                 $guestForm->handleRequest($request);
 
-                $ticket_service->acceptNewTicket($ticket, $request);
+                $ticketService->acceptNewTicket($ticket, $request);
             } else {
-                $ticket_service->acceptNewTicketForGuest($ticket, $request, $guestForm);
+                $ticketService->acceptNewTicketForGuest($ticket, $request, $guestForm);
             }
 
             // check if ticket was created and then return success response
