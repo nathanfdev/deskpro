@@ -97,6 +97,11 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
 
         $redirect_url = $this->determineTargetUrl($request);
 
+        // Never redirect back to login controller, can cause loops
+        if (strpos($redirect_url, 'login') !== false) {
+            $redirect_url = $this->options['default_target_path'];
+        }
+
         if ($request->isXmlHttpRequest()) {
             return $this->getResponseForAjax($redirect_url);
         }

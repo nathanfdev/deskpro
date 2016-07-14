@@ -64,6 +64,7 @@ use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
+use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\PortalBundle\Twig\Environment;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\ORM\OptimisticLockException;
@@ -820,7 +821,10 @@ HTML;
 
                 $this->session->save();
 
-                return $this->redirect($result->getRedirectUrl());
+                $r = $this->redirect($result->getRedirectUrl());
+                $r->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'Yes');
+
+                return $r;
 
                 // Otherwise its an error
             } else {
@@ -1052,7 +1056,10 @@ HTML;
                         $found = null;
                     }
                     if ($found && $us->lost_password_url) {
-                        return $this->redirect($us->lost_password_url);
+                        $r = $this->redirect($us->lost_password_url);
+                        $r->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'Yes');
+
+                        return $r;
                     }
                 }
             }
@@ -1084,7 +1091,10 @@ HTML;
                         return $this->createJsonResponse(['status' => 'usersource_redirect', 'usersource_name' => $assoc->usersource->getTitle(), 'url' => $assoc->usersource->lost_password_url]);
                     }
 
-                    return $this->redirect($assoc->usersource->lost_password_url);
+                    $r = $this->redirect($assoc->usersource->lost_password_url);
+                    $r->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'Yes');
+
+                    return $r;
                 }
             }
 
