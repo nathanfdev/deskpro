@@ -45,15 +45,14 @@ class ApiWrapper
     protected $data = [];
 
     /**
-     * @JMS\Type("array")
      * @JMS\Groups("wrapper")
+     * @JMS\Type("map")
      *
      * @var array
      */
-    protected $meta = [];
+    protected $meta;
 
     /**
-     * @JMS\Type("array")
      * @JMS\Exclude()
      *
      * It will be filled up just after serialization ends
@@ -69,6 +68,7 @@ class ApiWrapper
      */
     public function __construct($data)
     {
+        $this->meta = new \ArrayObject();
         if (!$this->checkPagination($data)) {
             $this->data = $data;
         }

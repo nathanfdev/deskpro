@@ -53,9 +53,9 @@ class SideloadListener implements EventSubscriberInterface
     private $em;
 
     /**
-     * @var array
+     * @var \ArrayObject
      */
-    private $linked = [];
+    private $linked;
 
     /**
      * SideloadListener constructor.
@@ -64,7 +64,8 @@ class SideloadListener implements EventSubscriberInterface
      */
     public function __construct(EntityManager $em)
     {
-        $this->em = $em;
+        $this->em     = $em;
+        $this->linked = new \ArrayObject();
     }
 
     /**
@@ -88,7 +89,7 @@ class SideloadListener implements EventSubscriberInterface
      */
     public function sideload(ObjectEvent $event)
     {
-        $this->linked = []; // just clear it
+        $this->linked = new \ArrayObject(); // just clear it
 
         /** @var GenericSerializationVisitor $visitor */
         $visitor = $event->getVisitor();

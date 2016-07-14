@@ -78,7 +78,7 @@ class Organization
      *
      * @var CustomDataAbstract[]
      *
-     * @JMS\Type("custom_data<array<Application\DeskPRO\Entity\CustomDataAbstract>>")
+     * @JMS\Type("custom_data<map<Application\DeskPRO\Entity\CustomDataAbstract>>")
      */
     protected $fields;
 

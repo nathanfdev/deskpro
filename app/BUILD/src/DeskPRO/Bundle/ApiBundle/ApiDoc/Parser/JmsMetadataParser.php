@@ -52,7 +52,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
     {
         $item->type = $this->sliceDeferred($item->type); // we should just remove deferred wrapper for type
 
-        if ($item->type['name'] === SerializerTypes::TYPE_COLLECTION) {
+        if ($item->type['name'] === SerializerTypes::TYPE_COLLECTION || $item->type['name'] === SerializerTypes::TYPE_MAP) {
             $item->type['name'] = 'array';
         }
 
