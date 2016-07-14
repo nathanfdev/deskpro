@@ -89,24 +89,15 @@ class ListUtilsTest extends DeskProTestCase
 
     public function testIsList()
     {
-        $this->assertTrue(
-            TypeUtils::isList([1, 2, 3, 4, 'a', 'b', 'c'])
-        );
+        $this->assertTrue(TypeUtils::isList([1, 2, 3, 4, 'a', 'b', 'c']));
+        $this->assertTrue(TypeUtils::isList([]));
+        $this->assertTrue(TypeUtils::isList(new \SplFixedArray()));
+        $this->assertTrue(TypeUtils::isList(new \SplStack()));
+        $this->assertTrue(TypeUtils::isList(new \SplQueue()));
+        $this->assertTrue(TypeUtils::isList(new \SplDoublyLinkedList()));
 
-        $this->assertTrue(
-            TypeUtils::isList([])
-        );
-
-        $this->assertFalse(
-            TypeUtils::isList(['a', 'b' => 'c', 'd'])
-        );
-
-        $this->assertFalse(
-            TypeUtils::isList([0 => 1, 1 => 1, 3 => 2])
-        );
-
-        $this->assertFalse(
-            TypeUtils::isList(['a' => 1, 'b' => 2])
-        );
+        $this->assertFalse(TypeUtils::isList(['a', 'b' => 'c', 'd']));
+        $this->assertFalse(TypeUtils::isList([0 => 1, 1 => 1, 3 => 2]));
+        $this->assertFalse(TypeUtils::isList(['a' => 1, 'b' => 2]));
     }
 }
