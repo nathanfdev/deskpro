@@ -31,8 +31,11 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Entity\Labels\Label;
+use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -49,7 +52,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @PortalLinkRoute("portal_news_post_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
  * @PortalLinkRoute("portal_news_post_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
  */
-class News extends ContentAbstract implements HighlightableModelInterface
+class News extends ContentAbstract implements HighlightableModelInterface, LabelsOwner
 {
     const CONTENT_TYPE = 'news';
 
@@ -181,7 +184,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
      *
      * @return $this
      */
-    public function resetLabels()
+    public function clearLabels()
     {
         foreach ($this->labels as $data) {
             $this->labels->removeElement($data);
@@ -193,17 +196,28 @@ class News extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * @param LabelNews $label
+     * @param Label $label
      *
      * @return $this
      */
-    public function addLabel(LabelNews $label)
+    public function addLabel(Label $label)
     {
         $label['news'] = $this;
         $this->labels->add($label);
         $this->_onPropertyChanged('labels', null, $this->labels);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeLabel(Label $label)
+    {
+        if ($this->labels->contains($label)) {
+            $this->labels->removeElement($label);
+            $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+        }
     }
 
     /**

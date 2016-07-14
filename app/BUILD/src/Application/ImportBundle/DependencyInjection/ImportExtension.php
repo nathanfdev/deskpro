@@ -30,9 +30,7 @@ namespace Application\ImportBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
@@ -45,15 +43,6 @@ class ImportExtension extends Extension
      */
     public function load(array $config, ContainerBuilder $container)
     {
-        // slug listener (sets slugs on content)
-        // note this is a duplicate (canonical definition is in config.shared.php)
-        $definition = new Definition();
-        $definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\Content\DoctrineContentSlugListener');
-        $definition->setArguments([new Reference('content_slug_manager')]);
-        $definition->addTag('doctrine.event_subscriber');
-        $container->setDefinition('doctrine_listener.content_slug', $definition);
-        // slug manager (note duplicate: canonical definition is in config.shared.php)
-
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
     }

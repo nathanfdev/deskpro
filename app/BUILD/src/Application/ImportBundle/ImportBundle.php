@@ -26,12 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\ImportBundle;
 
+use Application\ImportBundle\DependencyInjection\Compiler\EntityHandlerRegistryCompilerPass;
+use Application\ImportBundle\DependencyInjection\Compiler\MapperRegistryCompilerPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
@@ -39,4 +38,12 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class ImportBundle extends Bundle
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function build(ContainerBuilder $container)
+    {
+        $container->addCompilerPass(new MapperRegistryCompilerPass());
+        $container->addCompilerPass(new EntityHandlerRegistryCompilerPass());
+    }
 }

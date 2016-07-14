@@ -28,343 +28,141 @@
 
 namespace Application\ImportBundle\Importer;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
-use Application\DeskPRO\Entity\DataStore;
-use Application\DeskPRO\EntityRepository;
-use Application\ImportBundle\Generator\Exporter\ExporterInterface;
-use Application\ImportBundle\Generator\GeneratorConfig;
-use Application\ImportBundle\Generator\GeneratorInterface;
-use Application\ImportBundle\Generator\ImporterProgressBar;
-use Application\ImportBundle\Generator\Writer\WriterInterface;
-use Application\ImportBundle\Reader\Csv\CsvConfig;
-use Application\ImportBundle\Reader\DeskPRO\DeskPROConfig;
-use Application\ImportBundle\Reader\OsTicket\OsTicketConfig;
-use Application\ImportBundle\Reader\ZenDesk\ZenDeskConfig;
-use Doctrine\ORM\EntityManager;
-use Orb\Util\Strings;
-use Orb\Zip\Zip;
+use Application\ImportBundle\Exporter\ExporterInterface;
+use Application\ImportBundle\Writer\WriterInterface;
+use DpSys\LowError\SystemErrorHandler;
+use JMS\Serializer\Serializer;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * Class Importer.
+ * Generator importer service
+ * Data exporter (what we call "generators") from 3rd party systems.
+ *
+ * Class Generator
  */
-class Importer
+class Importer implements ImporterInterface
 {
-    public static $allowed = [
-        ExporterInterface::TYPE_CSV,
-        ExporterInterface::TYPE_JSON,
-        ExporterInterface::TYPE_OS_TICKET,
-        ExporterInterface::TYPE_ZENDESK,
-        ExporterInterface::TYPE_DESKPRO,
-    ];
+    /**
+     * @var ExporterInterface
+     */
+    private $exporter;
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var ValidatorInterface
      */
-    protected $entity_manager;
+    private $validator;
 
     /**
-     * @var EntityRepository\DataStore
+     * @var WriterInterface
      */
-    protected $data_store_repository;
+    private $writer;
 
     /**
-     * @var DeskproBlobStorage
+     * @var Serializer
      */
-    protected $blob_storage;
+    private $serializer;
 
     /**
-     * @var Zip
+     * @var LoggerInterface
      */
-    protected $zipper;
+    private $logger;
 
     /**
      * Constructor.
      *
-     * @param EntityManager      $entity_manager
-     * @param DeskproBlobStorage $blob_storage
-     * @param Zip                $zipper
+     * @param ExporterInterface  $exporter
+     * @param ValidatorInterface $validator
+     * @param WriterInterface    $writer
+     * @param Serializer         $serializer
+     * @param LoggerInterface    $logger
      */
-    public function __construct(EntityManager $entity_manager, DeskproBlobStorage $blob_storage, Zip $zipper)
-    {
-        $this->entity_manager        = $entity_manager;
-        $this->blob_storage          = $blob_storage;
-        $this->data_store_repository = $this->entity_manager->getRepository('DeskPRO:DataStore');
+    public function __construct(
+        ExporterInterface  $exporter,
+        ValidatorInterface $validator,
+        WriterInterface    $writer,
+        Serializer         $serializer,
+        LoggerInterface    $logger
+    ) {
+        $this->exporter   = $exporter;
+        $this->writer     = $writer;
+        $this->validator  = $validator;
+        $this->serializer = $serializer;
+        $this->logger     = $logger;
     }
 
     /**
-     * Get current importer name.
-     *
-     * @return DataStore
+     * {@inheritdoc}
      */
-    public function getCurrentName()
+    public function getTotalRecordsCount(ImporterContext $context)
     {
-        $data = $this->data_store_repository->getByName('importers.main');
-        if (!$data) {
-            return;
+        $count = 0;
+        foreach (ImporterContext::getOrderedTypes() as $entityClass) {
+            $count += $this->exporter->getCountByType($context, $entityClass);
         }
 
-        return $data->getData('current');
+        return $count;
     }
 
     /**
-     * Set current importer name.
-     *
-     * @param string $name
+     * {@inheritdoc}
      */
-    public function setCurrentName($name)
+    public function generate(ImporterContext $context)
     {
-        $data = $this->data_store_repository->getByName('importers.main');
-        if (!$data) {
-            $data         = new DataStore();
-            $data['name'] = 'importers.main';
-            $this->entity_manager->persist($data);
+        $collection = new ImporterCollection();
+
+        // Exports data to a collection of entities
+        foreach (ImporterContext::getOrderedTypes() as $type) {
+            $this->logger->info('');
+            $this->logger->info('=====================================');
+            $this->logger->info(sprintf('Export `%s` collection', $type));
+            $this->logger->info('=====================================');
+
+            $collection->attach($type, $this->exporter->exportByType($context, $type));
         }
 
-        $data->setData('current', $name);
-        $this->entity_manager->flush($data);
-    }
+        // Writes batch config (even no entities to support "retry-after" timeout)
+        // Writes batch config before validation to skip broken batches
+        $newBatchConfig = $this->exporter->getNextBatchConfig($context);
+        @file_put_contents($context->getBatchFilePath(), $this->serializer->serialize($newBatchConfig, 'json'));
 
-    /**
-     * Get importer by id.
-     *
-     * @param string $id
-     *
-     * @throws \RuntimeException
-     *
-     * @return DataStore
-     */
-    public function getImporter($id)
-    {
-        if (!in_array($id, self::$allowed)) {
-            throw new \RuntimeException(sprintf('Importer `%s` is not supported', $id));
-        }
+        if ($collection->hasEntities()) {
+            // Validate the collection of entities
+            foreach (ImporterContext::getOrderedTypes() as $type) {
+                if ($collection->hasEntitiesByType($type)) {
+                    foreach ($collection->getByType($type) as $model) {
+                        $errors = $this->validator->validate($model);
+                        if (count($errors)) {
+                            // Removing broken entities
+                            $collection->detach($model);
+                            $this->logger->alert(sprintf(
+                                'Validator failure for %s on record #%s: %s',
+                                get_class($model), $model->getOid(), $errors
+                            ));
 
-        $name     = 'importers.'.$id;
-        $importer = $this->data_store_repository->getByName($name);
-
-        if ($importer) {
-            return $importer;
-        }
-
-        $importer         = new DataStore();
-        $importer['name'] = $name;
-        $importer->setData('id', $id);
-
-        switch ($id) {
-            case ExporterInterface::TYPE_CSV:
-                $title = 'CSV';
-                $desc  = 'Import from CSV (comma-separated values) files.';
-                break;
-            case ExporterInterface::TYPE_OS_TICKET:
-                $title = 'osTicket';
-                $desc  = 'Import from an osTicket database.';
-                break;
-            case ExporterInterface::TYPE_ZENDESK:
-                $title = 'ZenDesk';
-                $desc  = 'Import from a ZenDesk helpdesk.';
-                break;
-            case ExporterInterface::TYPE_DESKPRO:
-                $title = 'DeskPRO';
-                $desc  = 'Import from a DeskPRO helpdesk.';
-                break;
-            default:
-                $title = ucfirst($id);
-                $desc  = "Import from $title";
-        }
-
-        $importer->setData('title', $title);
-        $importer->setData('description', $desc);
-
-        if (ExporterInterface::TYPE_CSV === $id) {
-            $data = ['blobs' => []];
-            $importer->setData('config', $data);
-        }
-
-        $this->entity_manager->persist($importer);
-        $this->entity_manager->flush($importer);
-
-        return $importer;
-    }
-
-    /**
-     * Returns reader config.
-     *
-     * @param string $id
-     *
-     * @throws \Exception
-     *
-     * @return CsvConfig|DeskPROConfig|OsTicketConfig|ZenDeskConfig|null
-     */
-    public function getReaderConfig($id)
-    {
-        $importer = $this->getImporter($id);
-        $config   = $importer->getData('config');
-
-        $readerConfig = null;
-        switch ($id) {
-            case ExporterInterface::TYPE_CSV:
-                $readerConfig = CsvConfig::fromArray($config);
-                break;
-            case ExporterInterface::TYPE_ZENDESK:
-                $readerConfig = ZenDeskConfig::fromArray($config);
-                break;
-            case ExporterInterface::TYPE_OS_TICKET:
-                $readerConfig = OsTicketConfig::fromArray($config);
-                break;
-            case ExporterInterface::TYPE_DESKPRO:
-                $readerConfig = DeskPROConfig::fromArray($config);
-                break;
-            default:
-                throw new \Exception(sprintf('Unknown importer "%s"', $id));
-        }
-
-        return $readerConfig;
-    }
-
-    /**
-     * Create/copy all necessary dirs/files for import.
-     *
-     * @param string $id
-     *
-     * @return DataStore
-     */
-    public function initReader($id)
-    {
-        $importer = $this->getImporter($id);
-        $config   = $importer->getData('config');
-
-        // Create temp dir
-        $tmp = @$config['temp'];
-        if (!$tmp) {
-            $tmp            = dp_get_tmp_dir().'/importer-'.time();
-            $config['temp'] = $tmp;
-            $this->entity_manager->flush($importer);
-        }
-
-        if (!file_exists($tmp)) {
-            mkdir($tmp.'/in', 0777, true);
-            mkdir($tmp.'/out', 0777, true);
-
-            // Copy blobs to temp dir
-            if (@$config['blobs']) {
-                foreach ($config['blobs'] as $blobData) {
-                    if (!$blob = $this->entity_manager->find('DeskPRO:Blob', $blobData['id'])) {
-                        continue;
+                            if ($model->getRawData()) {
+                                foreach (explode("\n", SystemErrorHandler::varToString($model->getRawData(), 2)) as $line) {
+                                    $this->logger->info($line);
+                                }
+                            }
+                        }
                     }
+                }
+            }
 
-                    $this->blob_storage->copyBlobRecordToFile($tmp.'/in/'.$blob['filename'], $blob);
+            // Writes entities to a storage
+            foreach (ImporterContext::getOrderedTypes() as $type) {
+                if ($collection->hasEntitiesByType($type)) {
+                    $this->logger->info('');
+                    $this->logger->info('=====================================');
+                    $this->logger->info(sprintf('Write `%s` collection', $type));
+                    $this->logger->info('=====================================');
 
-                    if ('application/zip' === $blob['content_type']) {
-                        $this->zipper->decompressZip($tmp.'/in/'.$blob['filename'], $tmp.'/in');
+                    foreach ($collection->getByType($type) as $model) {
+                        $this->writer->writeData($context, $model);
                     }
                 }
             }
         }
-
-        // Log file
-        $log_file = $importer->getData('logfile');
-        if (!$log_file) {
-            $log_file = dp_get_log_dir().'/importlog-'.date('Ymd-His').'-'.Strings::random(6, Strings::CHARS_ALPHA_IU);
-            $importer->setData('logfile', $log_file);
-        }
-
-        $importer->setData('config', $config);
-        $this->entity_manager->flush($importer);
-
-        return $importer;
-    }
-
-    /**
-     * Set state of import.
-     *
-     * @param $state
-     * @param null $id
-     *
-     * @throws \Exception
-     */
-    public function setStatus($id, $state)
-    {
-        $importer = $this->getImporter($id);
-        $importer->setData('status', $state);
-        $importer->setData('updated', time());
-        $this->entity_manager->flush($importer);
-    }
-
-    /**
-     * @param string $id
-     *
-     * @return DataStore
-     */
-    public function startImport($id)
-    {
-        $importer = $this->initReader($id);
-
-        // set pointer to current import
-        $this->setStatus($id, GeneratorInterface::STATUS_PENDING);
-        $this->setCurrentName($id);
-
-        // trigger cron to start console command
-        file_put_contents(App::$container->getParameter('dp.user.tmp_dir').'/importer_cron.pid', 0);
-
-        return $importer;
-    }
-
-    /**
-     * @param DataStore $importer
-     *
-     * @return GeneratorConfig
-     */
-    public function createGeneratorConfig(DataStore $importer)
-    {
-        $config = new GeneratorConfig();
-        $config->setVerbose(true);
-        $config->setExporterType(str_replace('importers.', '', $importer['name']));
-        $config->setWriterType(WriterInterface::TYPE_JSON);
-
-        $id = $importer->getData('id');
-        $this->initReader($id);
-        $config->setReaderConfig($this->getReaderConfig($id));
-
-        return $config;
-    }
-
-    /**
-     * @param DataStore $importer
-     */
-    public function cleanup(DataStore $importer)
-    {
-        $readerConfigData = $importer->getData('config');
-
-        $tmp = @$readerConfigData['temp'];
-        if ($tmp && false !== strpos($tmp, 'importer-')) {
-            PHP_OS === 'Windows'
-                ? exec("rd /s /q {$tmp}")
-                : exec("rm -rf {$tmp}");
-
-            unset($readerConfigData['temp']);
-            $this->entity_manager->flush($importer);
-        }
-
-        $importer->setData('status', null);
-        $importer->setData('log', null);
-        $importer->setData('updated', null);
-        $importer->setData('progress_start', null);
-        $importer->setData('progress_step', null);
-        $importer->setData('progress_max', null);
-
-        $this->entity_manager->flush($importer);
-    }
-
-    /**
-     * @param $total_count
-     *
-     * @return ImporterProgressBar
-     */
-    public function createProgressBar($total_count)
-    {
-        $importer = $this->getImporter($this->getCurrentName());
-
-        return new ImporterProgressBar($importer, $this->entity_manager, $total_count);
     }
 }

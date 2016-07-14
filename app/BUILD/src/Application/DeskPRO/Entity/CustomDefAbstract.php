@@ -49,6 +49,8 @@ use Orb\Util\Numbers;
  * @property CustomDefAbstract|null              $parent
  * @property CustomDefAbstract[]|ArrayCollection $children
  *
+ * @method setParent(CustomDefAbstract $parent)
+ *
  * @JMS\ExclusionPolicy("all")
  */
 class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
