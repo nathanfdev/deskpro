@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Component\Util;
 
 use DeskPRO\Component\Util\MapUtils;
@@ -155,6 +156,17 @@ class MapUtilsTest extends DeskProTestCase
         $this->assertEquals(
             $arr2,
             MapUtils::setIn($arr1, ['foo', 'bar', 'baz'], 'z')
+        );
+    }
+
+    public function testRecursiveDiff()
+    {
+        $arr1 = ['a' => 'b', 'foo' => 'bar', 'baz' => ['z' => 'zz', 'y' => 'yy']];
+        $arr2 = ['foo' => 'zzz', 'baz' => ['y' => 'yy'], 'a' => 'b'];
+
+        $this->assertEquals(
+            ['foo' => 'bar', 'baz' => ['z' => 'zz']],
+            MapUtils::recursiveDiff($arr1, $arr2)
         );
     }
 }

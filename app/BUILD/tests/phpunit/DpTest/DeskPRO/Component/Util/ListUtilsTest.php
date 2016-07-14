@@ -33,6 +33,7 @@
 namespace DpTest\DeskPRO\Component\Util;
 
 use DeskPRO\Component\Util\ListUtils;
+use DeskPRO\Component\Util\TypeUtils;
 use DpTest\DeskProTestCase;
 
 class ListUtilsTest extends DeskProTestCase
@@ -83,6 +84,29 @@ class ListUtilsTest extends DeskProTestCase
         $this->assertEquals(
             array(false, 2, null, 3, '3'),
             ListUtils::unique(array(false, 2, null, 3, false, null, 3, '3'), '===')
+        );
+    }
+
+    public function testIsList()
+    {
+        $this->assertTrue(
+            TypeUtils::isList([1, 2, 3, 4, 'a', 'b', 'c'])
+        );
+
+        $this->assertTrue(
+            TypeUtils::isList([])
+        );
+
+        $this->assertFalse(
+            TypeUtils::isList(['a', 'b' => 'c', 'd'])
+        );
+
+        $this->assertFalse(
+            TypeUtils::isList([0 => 1, 1 => 1, 3 => 2])
+        );
+
+        $this->assertFalse(
+            TypeUtils::isList(['a' => 1, 'b' => 2])
         );
     }
 }

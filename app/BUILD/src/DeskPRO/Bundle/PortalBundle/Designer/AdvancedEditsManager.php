@@ -80,6 +80,11 @@ class AdvancedEditsManager
     private $mainScssPath;
 
     /**
+     * @var bool
+     */
+    private $didChangeCss;
+
+    /**
      * Constructor.
      *
      * @param EntityManager      $em
@@ -111,14 +116,30 @@ class AdvancedEditsManager
             $this->saveTemplate(self::CUSTOM_FOOTER_TEMPLATE_NAME, $data['footer']);
         }
         if (array_key_exists('custom_scss', $data)) {
-            $this->saveThemeSetAsset(self::CUSTOM_SCSS_ASSET_NAME, self::CUSTOM_SCSS_ASSET_TAG, 'text/css', $data['custom_scss']);
+            $didChange = false;
+            $this->saveThemeSetAsset(self::CUSTOM_SCSS_ASSET_NAME, self::CUSTOM_SCSS_ASSET_TAG, 'text/css', $data['custom_scss'], $didChange);
+            if ($didChange) {
+                $this->didChangeCss = true;
+            }
         }
         if (array_key_exists('main_scss', $data)) {
-            $this->saveThemeSetAsset(self::MAIN_SCSS_ASSET_NAME, self::MAIN_SCSS_ASSET_TAG, 'text/css', $data['main_scss']);
+            $didChange = false;
+            $this->saveThemeSetAsset(self::MAIN_SCSS_ASSET_NAME, self::MAIN_SCSS_ASSET_TAG, 'text/css', $data['main_scss'], $didChange);
+            if ($didChange) {
+                $this->didChangeCss = true;
+            }
         }
         if (array_key_exists('javascript', $data)) {
             $this->saveThemeSetAsset(self::CUSTOM_JS_ASSET_NAME, self::CUSTOM_JS_ASSET_TAG, 'text/javascript', $data['javascript']);
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasChangedCssFiles()
+    {
+        return $this->didChangeCss;
     }
 
     /**
@@ -251,14 +272,14 @@ CODE;
      * @param string $tag
      * @param string $mimeType
      * @param string $code
+     * @param bool   $didChange
      *
      * @return ThemeSetAsset
      */
-    private function saveThemeSetAsset($name, $tag, $mimeType, $code)
+    private function saveThemeSetAsset($name, $tag, $mimeType, $code, &$didChange = false)
     {
         $theme_set = $this->edit_theme_set;
 
-        $blob    = $this->bs->createBlobRecordFromString($code, $name, $mimeType, ['tag' => 'brand_asset.'.$tag]);
         $oldBlob = null;
 
         // Find existing or create a new ThemeSetAsset
@@ -269,6 +290,21 @@ CODE;
         } else {
             $asset = new ThemeSetAsset();
         }
+
+        if ($oldBlob) {
+            try {
+                $oldContent = $this->bs->copyBlobRecordToString($oldBlob);
+                if ($oldContent === $code) {
+                    // no change
+                    return $oldBlob;
+                }
+            } catch (\Exception $e) {
+            }
+        }
+
+        $didChange = true;
+
+        $blob = $this->bs->createBlobRecordFromString($code, $name, $mimeType, ['tag' => 'brand_asset.'.$tag]);
 
         $asset->setName($name);
         $asset->setThemeSet($theme_set);
