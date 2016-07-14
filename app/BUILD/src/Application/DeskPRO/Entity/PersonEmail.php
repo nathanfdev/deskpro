@@ -95,7 +95,7 @@ class PersonEmail extends DomainObject
      * The email address.
      *
      * @Assert\NotBlank()
-     * @Assert\Email()
+     * @Assert\Email(strict="true")
      *
      * @JMS\Expose()
      * @JMS\Type("string")

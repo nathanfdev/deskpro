@@ -87,7 +87,7 @@ class ChatCreateType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $emailConstraints = [new Assert\Email()];
+        $emailConstraints = [new Assert\Email(['strict' => true])];
         if ($this->settingsResolver->isChatEmailValidation() && !$this->settingsResolver->isChatRequireLogin()) {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceEmailSubmit'], 100);
             $emailConstraints[] = new Assert\NotBlank();

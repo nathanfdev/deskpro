@@ -81,7 +81,7 @@ class PersonAssignType extends AbstractType
                 'required'    => false,
                 'mapped'      => false,
                 'constraints' => [
-                    new Assert\Email(),
+                    new Assert\Email(['strict' => true]),
                 ],
             ])
         ;
