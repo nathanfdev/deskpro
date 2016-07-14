@@ -4,10 +4,11 @@ Feature: /ticket_forms
 
   Background:
     Given I'm authenticated as admin
+    And I have default brand
     And only the following Department records exist:
-      | #  | Parent | Title        | Is Tickets Enabled |
-      | d1 |        | Department 1 | 1                  |
-      | d2 |        | Department 2 | 1                  |
+      | #  | Title        | Brands           | Is Tickets Enabled |
+      | d1 | Department 1 | [{defaultBrand}] | 1                  |
+      | d2 | Department 2 | [{defaultBrand}] | 1                  |
     And only the following Ticket records exist:
       | #  | Subject  |
       | t1 | Ticket 1 |

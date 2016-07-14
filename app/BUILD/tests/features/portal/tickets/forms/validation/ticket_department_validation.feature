@@ -4,13 +4,14 @@ Feature: New ticket form validation
 
   Background:
     Given I'm authenticated as user
+    And I have default brand
 
   Scenario: I check empty department
     Given default everyone user group exits
     And only the following Department records exist:
-      | #  | Title        | Is Tickets Enabled |
-      | d1 | Department 1 | 1                  |
-      | d2 | Department 2 | 1                  |
+      | #  | Title        | Brands           | Is Tickets Enabled |
+      | d1 | Department 1 | [{defaultBrand}] | 1                  |
+      | d2 | Department 2 | [{defaultBrand}] | 1                  |
     And I grant the "{d1}" department permission of tickets app for usergroup everyone
     And I grant the "{d2}" department permission of tickets app for usergroup everyone
 
@@ -22,10 +23,10 @@ Feature: New ticket form validation
   Scenario: I check leaf department
     Given default everyone user group exits
     And only the following Department records exist:
-      | #  | Parent | Title        | Is Tickets Enabled |
-      | d1 | NULL   | Department 1 | 1                  |
-      | d2 | {d1}   | Department 2 | 1                  |
-      | d3 | {d1}   | Department 3 | 1                  |
+      | #  | Parent | Title        | Brands           | Is Tickets Enabled |
+      | d1 | NULL   | Department 1 | [{defaultBrand}] | 1                  |
+      | d2 | {d1}   | Department 2 | [{defaultBrand}] | 1                  |
+      | d3 | {d1}   | Department 3 | [{defaultBrand}] | 1                  |
     And I grant the "{d1}" department permission of tickets app for usergroup everyone
     And I grant the "{d2}" department permission of tickets app for usergroup everyone
     And I grant the "{d3}" department permission of tickets app for usergroup everyone

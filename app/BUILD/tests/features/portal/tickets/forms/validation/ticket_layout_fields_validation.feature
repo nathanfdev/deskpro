@@ -4,10 +4,11 @@ Feature: New ticket form validation
 
   Background:
     Given I'm authenticated as user
+    And I have default brand
     And only the following Department records exist:
-      | #  | Title        | Is Tickets Enabled |
-      | d1 | Department 1 | 1                  |
-      | d2 | Department 2 | 1                  |
+      | #  | Title        | Brands           | Is Tickets Enabled |
+      | d1 | Department 1 | [{defaultBrand}] | 1                  |
+      | d2 | Department 2 | [{defaultBrand}] | 1                  |
     And I grant the "{d1}" department permission of tickets app for usergroup everyone
     And I grant the "{d2}" department permission of tickets app for usergroup everyone
     And there are no TicketLayout records
@@ -17,6 +18,7 @@ Feature: New ticket form validation
       | user_layout |
       | cc          |
     And I go to "/new-ticket"
+    And print last response
     And I select "Department 1" from "Department"
     And I press "Submit"
 

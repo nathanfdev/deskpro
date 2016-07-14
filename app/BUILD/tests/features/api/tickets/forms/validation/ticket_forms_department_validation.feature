@@ -4,6 +4,7 @@ Feature: /ticket_forms validation
 
   Background:
     Given I'm authenticated as admin
+    And I have default brand
 
   Scenario: I try to create a ticket with no subject property in request
     When I send a POST request to "/api/v2/ticket_forms/agent"
@@ -34,10 +35,10 @@ Feature: /ticket_forms validation
 
   Scenario: I try to select leaf department
     Given only the following Department records exist:
-      | #  | Parent | Title        | Is Tickets Enabled |
-      | d1 | NULL   | Department 1 | 1                  |
-      | d2 | {d1}   | Department 2 | 1                  |
-      | d3 | {d1}   | Department 3 | 1                  |
+      | #  | Parent | Brands           | Title        | Is Tickets Enabled |
+      | d1 | NULL   | [{defaultBrand}] | Department 1 | 1                  |
+      | d2 | {d1}   | [{defaultBrand}] | Department 2 | 1                  |
+      | d3 | {d1}   | [{defaultBrand}] | Department 3 | 1                  |
 
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
     """
@@ -57,9 +58,9 @@ Feature: /ticket_forms validation
       | tu1 | text | Text field |
       | tu2 | text | Text field |
     And only the following Department records exist:
-      | #  | Title        | Is Tickets Enabled |
-      | d1 | Department 1 | 1                  |
-      | d2 | Department 2 | 1                  |
+      | #  | Title        | Brands           | Is Tickets Enabled |
+      | d1 | Department 1 | [{defaultBrand}] | 1                  |
+      | d2 | Department 2 | [{defaultBrand}] | 1                  |
     And no TicketLayout records exist
     And the ticket layout exists for "d1" department with fields:
       | agent_layout       | user_layout        |
