@@ -26,10 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\DeskPRO\Bundle\PortalBundle\EventListener;
+namespace DpTest\DeskPRO\Bundle\AppBundle\EventListener;
 
+use DeskPRO\Bundle\AppBundle\EventListener\UrlCorrectorEventListener;
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
-use DeskPRO\Bundle\PortalBundle\EventListener\UrlCorrectorEventListener;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DpTest\PortalTestCase;
@@ -54,6 +54,14 @@ class UrlCorrectorEventListenerTest extends PortalTestCase
      */
     private $logger;
 
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * {@inheritdoc}
+     */
     public function setUp()
     {
         $this->interfaceInfo = new InterfaceInfo(InterfaceInfo::ID_USER);
@@ -77,7 +85,7 @@ class UrlCorrectorEventListenerTest extends PortalTestCase
     /**
      * @test
      */
-    public function skip_focus_window()
+    public function focus_window_mode_attr()
     {
         $event = $this->createEvent('http://example.com/index.php/focus-win/new-ticket');
 
@@ -86,15 +94,18 @@ class UrlCorrectorEventListenerTest extends PortalTestCase
 
         $controller = $event->getController();
         $this->assertEquals('testController', $controller());
-        $this->assertSkipInfo('[UrlCorrector] Skip: Portal is in focus-window mode');
+        $this->assertEquals(['index_segment', 'host'], $this->request->attributes->get('deskpro.url_corrector.corrections'));
     }
 
     /**
+     * @param string $apiUrl
+     *
      * @test
+     * @dataProvider skipApiProvider
      */
-    public function skip_portal_api()
+    public function skip_portal_api($apiUrl)
     {
-        $event = $this->createEvent('http://example.com/index.php/portal/api/tickets/new');
+        $event = $this->createEvent('http://example.com/index.php'.$apiUrl);
 
         $listener = $this->createListener($event);
         $listener->onController($event);
@@ -102,6 +113,18 @@ class UrlCorrectorEventListenerTest extends PortalTestCase
         $controller = $event->getController();
         $this->assertEquals('testController', $controller());
         $this->assertSkipInfo('[UrlCorrector] Skip: Ignore API requests');
+    }
+
+    /**
+     * @return array
+     */
+    public function skipApiProvider()
+    {
+        return [
+            ['/portal/api/tickets/new'],
+            ['/api/tickets'],
+            ['/api/v2/tickets'],
+        ];
     }
 
     /**
@@ -130,7 +153,7 @@ class UrlCorrectorEventListenerTest extends PortalTestCase
      */
     private function createEvent($uri)
     {
-        $request = Request::create($uri, 'GET', [], [], [], [
+        $this->request = Request::create($uri, 'GET', [], [], [], [
             'SCRIPT_NAME'     => 'index.php',
             'SCRIPT_FILENAME' => 'index.php',
         ]);
@@ -139,7 +162,12 @@ class UrlCorrectorEventListenerTest extends PortalTestCase
             return 'testController';
         };
 
-        return new FilterControllerEvent($this->getPortalKernel(), $controller, $request, HttpKernelInterface::MASTER_REQUEST);
+        return new FilterControllerEvent(
+            $this->getPortalKernel(),
+            $controller,
+            $this->request,
+            HttpKernelInterface::MASTER_REQUEST
+        );
     }
 
     /**

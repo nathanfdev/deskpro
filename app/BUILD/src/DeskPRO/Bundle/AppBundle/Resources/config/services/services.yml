@@ -85,3 +85,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService
     arguments: ["@request_stack"]
 
+  portal_mode_factory:
+      class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory
+
+  portal_mode_storage:
+      class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage
