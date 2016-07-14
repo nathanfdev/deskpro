@@ -4397,9 +4397,7 @@ class TicketController extends AbstractController
      */
     public function newTicketGetCustomFieldsRowAction($person_id, $department_id)
     {
-        if ($person_id) {
-            $person = $this->em->find('DeskPRO:Person', $person_id);
-        } else {
+        if (!$person = $this->em->find('DeskPRO:Person', (int) $person_id)) {
             $person = new Person(); // mock
         }
 

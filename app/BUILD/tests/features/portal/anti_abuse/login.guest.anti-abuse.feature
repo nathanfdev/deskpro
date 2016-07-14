@@ -20,11 +20,13 @@ Feature: Login anti-abuse feature
 
     When I use bad "user" credentials for login
     Then I should be on "/login"
-    And I should not see "You have failed login too many times"
+    # this happens because now we have combined response
+    And I should see "You have failed login too many times"
 
     When I use bad "agent" credentials for login
     Then I should be on "/login"
-    And I should not see "You have failed login too many times"
+    # this happens because now we have combined response
+    And I should see "You have failed login too many times"
 
   Scenario: Checking captcha response for guest
     Given I set "login" rate limit to 1 attempt within 1 minute with "captcha" response for guest
