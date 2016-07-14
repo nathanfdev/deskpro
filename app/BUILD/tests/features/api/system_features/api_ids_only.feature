@@ -5,7 +5,7 @@ Feature: JSON API fetch ids only
    Given I'm authenticated as "admin"
 
   Scenario Outline: I search by ID
-    And only the following "Feedback" records exist:
+    Given only the following "Feedback" records exist:
       | #        | person  | is_reviewed | slug      | title     | content   | status |
       | feedback | {admin} | 1           | feedback1 | Feedback1 | Feedback1 | active |
     And only the following "Article" records exist:

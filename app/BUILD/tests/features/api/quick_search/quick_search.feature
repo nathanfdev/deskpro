@@ -300,7 +300,7 @@ Feature: Quick Search
 
   Scenario: I search organization by name
     Given only the following "Organization" records exist:
-      | #            | name       | summary                                    |
+      | #      | name       | summary                                    |
       | vector | Vector ltd | Vector is a common fake org name in Russia |
     And the "me" is in "vector" organization
     When I send a GET request to "/api/v2/search?q=Vector"

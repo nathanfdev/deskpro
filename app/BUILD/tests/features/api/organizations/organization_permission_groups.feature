@@ -3,7 +3,7 @@ Feature: /organizations endpoint
   I want to check ticket permission groups
 
   Background:
-    Given I'm authenticated as "agent"
+    Given "agent@deskpro.dev" agent exists
     And I clear usergroup "registered" permissions
     And I remove "agent" usergroup relation "agent_all_perms"
     And I remove "agent" usergroup relation "agent_all_safe_perms"
@@ -13,6 +13,7 @@ Feature: /organizations endpoint
       | org2 | List ltd   | List is a double linked structure          |
 
   Scenario: I have no organization permissions
+    Given I'm authenticated as "agent"
     When I send a GET request to "/api/v2/organizations"
     Then the response status code should be 200
 
@@ -29,6 +30,7 @@ Feature: /organizations endpoint
     Then the response status code should be 403
 
   Scenario: I grant access to create organization
+    Given I'm authenticated as "agent"
     And I set only "agent_org.create" = 1 for "registered" usergroup
 
     When I send a GET request to "/api/v2/organizations"
@@ -47,6 +49,7 @@ Feature: /organizations endpoint
     Then the response status code should be 403
 
   Scenario: I grant access to edit organization
+    Given I'm authenticated as "agent"
     And I set permission "agent_org.edit" = 1 for "registered" usergroup
 
     When I send a GET request to "/api/v2/organizations"
@@ -65,6 +68,7 @@ Feature: /organizations endpoint
     Then the response status code should be 403
 
   Scenario: I grant access to delete organization
+    Given I'm authenticated as "agent"
     And I set permission "agent_org.delete" = 1 for "registered" usergroup
 
     When I send a GET request to "/api/v2/organizations"

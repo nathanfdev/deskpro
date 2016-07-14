@@ -2,7 +2,7 @@
 Feature: /organization_notes endpoint
 
   Background:
-    Given I'm authenticated as "agent"
+    Given "agent@deskpro.dev" agent exists
     And I clear usergroup "registered" permissions
     And I remove "agent" usergroup relation "agent_all_perms"
     And I remove "agent" usergroup relation "agent_all_safe_perms"
@@ -13,6 +13,7 @@ Feature: /organization_notes endpoint
     And I remove "agent" usergroup relation "agent_all_safe_perms"
 
   Scenario: I have no organization note permissions
+    Given I'm authenticated as "agent"
 
     When I send a GET request to "/api/v2/organizations/{org1}/notes"
     Then the response status code should be 200
@@ -27,7 +28,8 @@ Feature: /organization_notes endpoint
     Then the response status code should be 404
 
   Scenario: I create an organization note
-    Given I set permission "agent_org.notes" = 1 for "registered" usergroup
+    Given I'm authenticated as "agent"
+    And I set permission "agent_org.notes" = 1 for "registered" usergroup
     And my request is authenticated to "agent"
     When I send a POST request to "/api/v2/organizations/{org1}/notes" with body:
     """

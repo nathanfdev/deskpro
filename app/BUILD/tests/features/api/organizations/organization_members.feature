@@ -13,7 +13,7 @@ Feature: /organizations/{id}/members endpoint
       | organization2 | Organization2 |
 
   Scenario: I retrieve list of organization members
-    And the "user" is in "organization" organization
+    Given the "user" is in "organization" organization
     And the "admin" is in "organization" organization
     When I send a GET request to "/api/v2/organizations/{organization}/members"
     Then the response should be in JSON
@@ -47,7 +47,7 @@ Feature: /organizations/{id}/members endpoint
     And the JSON node "errors.fields.person.errors[0].message" should be equal to "One or more of the given values is invalid."
 
   Scenario: I try add a member who is already in organization
-    And the "user" is in "organization" organization
+    Given the "user" is in "organization" organization
     When I send a POST request to "/api/v2/organizations/{organization}/members" with body:
     """
 {
@@ -86,7 +86,7 @@ Feature: /organizations/{id}/members endpoint
     And the JSON node "data.organization_position" should be equal to "some text"
 
   Scenario: I reset organization position
-    And the "user" is in "organization2" organization
+    Given the "user" is in "organization2" organization
     When I send a POST request to "/api/v2/organizations/{organization}/members" with body:
     """
 {
@@ -108,7 +108,7 @@ Feature: /organizations/{id}/members endpoint
     And the JSON node "message" should be equal to "Person is not a member of this organization."
 
   Scenario: I remove person from organization
-    And the "user" is in "organization" organization
+    Given the "user" is in "organization" organization
     When I send a DELETE request to "/api/v2/organizations/{organization}/members/{user}"
     Then the response should be in JSON
     And the response status code should be 200

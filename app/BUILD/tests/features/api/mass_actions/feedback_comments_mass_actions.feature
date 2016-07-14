@@ -22,8 +22,6 @@ Feature: /mass_actions/feedback_comments endpoint
       | #        | feedback   | person  | content  | is_reviewed |
       | comment1 | {feedback} | {admin} | comment1 | 0           |
       | comment2 | {feedback} | {admin} | comment2 | 0           |
-      | comment3 | {feedback} | {admin} | comment3 | 0           |
-      | comment4 | {feedback} | {admin} | comment4 | 0           |
     When I send a POST request to "/api/v2/mass_actions/feedback_comments" with body:
     """
 {
