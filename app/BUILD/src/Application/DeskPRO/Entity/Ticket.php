@@ -45,6 +45,7 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use DpSys\LowError\SystemErrorHandler;
@@ -610,6 +611,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     protected $api_data_hash = null;
 
     /**
+     * @var TicketFlagged[]
+     */
+    protected $stars;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -628,6 +634,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->ticket_slas      = new ArrayCollection();
         $this->problems         = new ArrayCollection();
         $this->children_tickets = new ArrayCollection();
+        $this->stars            = new ArrayCollection();
 
         // Default ref (is reset with ref generator)
         $this->ref = DpStrings::random(10, Strings::CHARS_ALPHA_IU).'-'.date('YzB');
@@ -4439,6 +4446,24 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return TicketFlagged[]|ArrayCollection
+     */
+    public function getStars()
+    {
+        return $this->stars;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return TicketFlagged|null
+     */
+    public function getPersonStar(Person $person)
+    {
+        return $this->stars->matching(new Criteria(Criteria::expr()->eq('person_id', $person->getId())))->first();
+    }
+
+    /**
      * @return array
      */
     public static function getTicketStatuses()
@@ -4466,17 +4491,17 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postPersist');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postUpdate');
         $metadata->setPrimaryTable(
-            array(
+            [
                 'name'    => 'tickets',
-                'indexes' => array(
-                    'date_created_idx' => array('columns' => array('date_created')),
-                    'date_locked_idx'  => array('columns' => array('date_locked')),
-                    'status_idx'       => array('columns' => array('status')),
-                ),
-                'uniqueConstraints' => array(
-                    'ref_idx' => array('columns' => array('ref')),
-                ),
-            )
+                'indexes' => [
+                    'date_created_idx' => ['columns' => ['date_created']],
+                    'date_locked_idx'  => ['columns' => ['date_locked']],
+                    'status_idx'       => ['columns' => ['status']],
+                ],
+                'uniqueConstraints' => [
+                    'ref_idx' => ['columns' => ['ref']],
+                ],
+            ]
         );
 
         $metadata->mapField(
@@ -5017,6 +5042,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 'mappedBy'      => 'ticket',
                 'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
                 'orderBy'       => ['date_created' => 'ASC'],
+                'orphanRemoval' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'stars',
+                'targetEntity'  => TicketFlagged::class,
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'mappedBy'      => 'ticket',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
                 'orphanRemoval' => true,
             ]
         );

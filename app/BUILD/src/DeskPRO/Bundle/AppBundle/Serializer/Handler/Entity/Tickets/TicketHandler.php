@@ -70,6 +70,16 @@ class TicketHandler extends AbstractEntityHandler
     private $formErrorsGenerator;
 
     /**
+     * @var int[]
+     */
+    private $ticketIds = [];
+
+    /**
+     * @var array
+     */
+    private $stars = [];
+
+    /**
      * TicketHandler constructor.
      *
      * @param TicketLayoutFactory $layoutFactory
@@ -208,18 +218,42 @@ class TicketHandler extends AbstractEntityHandler
     }
 
     /**
+     * @param TicketEntity                 $entity
+     * @param SideloadSerializationContext $context
+     *
+     * @return string|null
+     */
+    public function getStar(TicketEntity $entity, SideloadSerializationContext $context)
+    {
+        if (!$this->stars && $context->getUser()) {
+            /** @var \Application\DeskPRO\DBAL\Connection $connection */
+            $connection  = $this->em->getConnection();
+            $this->stars = $connection->fetchAllKeyValue(
+                'SELECT f.ticket_id, f.color FROM  tickets_flagged AS f WHERE f.ticket_id IN (?) AND f.person_id = ?',
+                [implode(',', $this->ticketIds), $context->getUser()->getId()]
+            );
+        }
+
+        return isset($this->stars[$entity->getId()]) ? $this->stars[$entity->getId()] : null;
+    }
+
+    /**
      * {@inheritdoc}
      *
      * @param TicketEntity $entity
      */
     protected function createModel($entity, SideloadSerializationContext $context)
     {
-        $serializerClass = $context->getMappedClass(TicketEntity::class);
+        $this->ticketIds[] = $entity->getId();
 
+        $serializerClass = $context->getMappedClass(TicketEntity::class);
         if ($serializerClass === TicketCsv::class) {
             return new TicketCsv($entity);
         }
 
-        return new TicketModel($entity);
+        $model = new TicketModel($entity);
+        $model->setStar(new CallbackDeferredProperty([$this, 'getStar'], [$entity, $context]));
+
+        return $model;
     }
 }

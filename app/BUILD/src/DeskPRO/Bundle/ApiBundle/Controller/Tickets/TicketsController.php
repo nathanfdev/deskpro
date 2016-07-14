@@ -246,6 +246,7 @@ class TicketsController extends AbstractTicketsController
     {
         $options = array_merge($options, [
             'agent_interface' => true,
+            'person'          => $this->getUser(),
         ]);
 
         return parent::handleForm($model, $request, $options);

@@ -36,6 +36,7 @@ Feature: /tickets endpoint
   "person":  ~user~,
   "agent": ~agent~,
   "product": ~p2~,
+  "star": "green",
   "followers": ["agent@deskpro.dev", ~admin~],
   "cc": ["user@deskpro.dev"]
 }
@@ -54,6 +55,7 @@ Feature: /tickets endpoint
     And the JSON node "data.followers" should have 2 elements
     And the JSON node "data.followers[0]" should be equal to "{agent}"
     And the JSON node "data.followers[1]" should be equal to "{admin}"
+    And the JSON node "data.star" should be equal to the string "green"
 
   Scenario: I modify a ticket
     When I send a PUT request to "/api/v2/tickets/{ticket1}" with body:

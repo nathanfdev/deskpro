@@ -141,6 +141,12 @@ class TicketType extends AbstractType
                 'forms'          => $this->getCustomDataFields($builder, $options),
                 'error_bubbling' => false,
             ])
+            ->add('star', TicketStarType::class, [
+                'mapped' => false,
+                'ticket' => $builder->getData(),
+                'person' => $options['person'],
+                'inline' => true,
+            ])
         ;
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
@@ -152,9 +158,13 @@ class TicketType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
+            ->setRequired('person')
             ->setDefaults([
                 'data_class'      => Ticket::class,
                 'agent_interface' => false,
+            ])
+            ->setAllowedTypes([
+                'person' => Person::class,
             ])
         ;
     }

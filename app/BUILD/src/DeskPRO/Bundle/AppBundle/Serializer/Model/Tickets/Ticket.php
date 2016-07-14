@@ -574,6 +574,15 @@ class Ticket
     private $followers;
 
     /**
+     * Person star color.
+     *
+     * @JMS\Type("deferred<string>")
+     *
+     * @var string
+     */
+    private $star;
+
+    /**
      * Constructor.
      *
      * @param TicketEntity $ticket
@@ -644,5 +653,13 @@ class Ticket
         $this->followers            = $ticket->getAgentParticipants();
         $this->children             = $ticket->getChildrenTickets();
         $this->siblings             = $ticket->getSiblingsTickets();
+    }
+
+    /**
+     * @param string $star
+     */
+    public function setStar($star)
+    {
+        $this->star = $star;
     }
 }
