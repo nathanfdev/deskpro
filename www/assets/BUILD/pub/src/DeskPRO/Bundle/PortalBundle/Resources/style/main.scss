@@ -239,7 +239,7 @@ hr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $grid-columns: 12;
-$tablet: new-breakpoint(max-width 760px 6);
+$tablet: new-breakpoint(max-width 850px 6);
 
 // Structure
 section {
@@ -306,6 +306,9 @@ section {
 
 // full width when sidebared
 .column-half-plus {
+  &.wide {
+    width: 100%;
+  }
   @include span-columns(9);
   @include media($tablet) {
     @include span-columns(6);
@@ -6527,6 +6530,7 @@ ul.categories-article-list {
       margin: 10px;
       padding: 5px;
       border: 1px solid $hr-border;
+      max-width: 100%;
     }
 
     img.left {
@@ -10708,7 +10712,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   }
 
   .note-for-user-blue {
-    color: $state-info-bg;
+    color: $state-info-text;
   }
 }
 
