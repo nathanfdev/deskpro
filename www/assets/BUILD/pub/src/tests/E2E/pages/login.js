@@ -1,3 +1,4 @@
+import { config } from '../config.js';
 import { url } from '../helpers.js';
 
 const commands = {
@@ -9,6 +10,12 @@ const commands = {
       .click('@loginButton')
       .waitForElementVisible('@loadingIndicator')
     ;
+  },
+  loginAsAdmin: function() {
+    this.login(
+      config.users.admin.email,
+      config.users.admin.password
+    );
   }
 };
 
