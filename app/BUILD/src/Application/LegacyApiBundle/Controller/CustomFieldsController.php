@@ -463,7 +463,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
             'field_'.$id => @$data['value'],
         );
 
-        $manager->saveFormToObject($submit, $object);
+        $manager->saveFormToObject($submit, $object, true);
 
         return $this->createSuccessResponse();
     }
