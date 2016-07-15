@@ -22,6 +22,6 @@ export function renderInRedux(state, jsx, dispatch = null) {
   );
 }
 
-export function createAgentApp() {
-  return AgentApp.createStore();
+export function createAgentApp(state = {}) {
+  return AgentApp.createStore(state);
 }

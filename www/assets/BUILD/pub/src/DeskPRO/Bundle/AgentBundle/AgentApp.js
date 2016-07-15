@@ -34,9 +34,6 @@ export class AgentApp {
 
   start() {
     window.DP_DEV_MODE = __DEV__;
-
-    setApi(api);
-    loadRepositoriesConfig(repositoriesConfig);
     const store = AgentApp.createStore();
 
     ReactDOM.render(
@@ -51,7 +48,12 @@ export class AgentApp {
     );
   }
 
-  static createStore() {
+  static createStore(initialState = {}) {
+
+    // Bootstrap API and DAL
+    setApi(api);
+    loadRepositoriesConfig(repositoriesConfig);
+
     // This builder calls compile on old-style reducers
     // created via the Reducer class
     const legacyReducerBuilder = function (reducer) {
@@ -76,6 +78,6 @@ export class AgentApp {
     );
     const makeStore = compose(middleware)(createStore);
 
-    return makeStore(reducer, {}, window.devToolsExtension ? window.devToolsExtension() : f => f);
+    return makeStore(reducer, initialState, window.devToolsExtension ? window.devToolsExtension() : f => f);
   }
 }

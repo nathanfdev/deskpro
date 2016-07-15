@@ -21,14 +21,14 @@ export const ticketsNavDemoState = {
                 {"count": 1, "id": 8, "type": "department", "title": "Control"},
                 {"count": 1, "id": 7, "type": "department", "title": "Regulation"}
               ],
-              "id": 1,
+              "id": 10,
               "type": "filter",
               "title": "My Tickets",
               "grouped_by": "department"
             },
             {
               "count": 0,
-              "id": 2,
+              "id": 11,
               "type": "filter",
               "title": "My Team's Tickets"
             },
@@ -38,14 +38,14 @@ export const ticketsNavDemoState = {
                 {"count": 21, "id": 0, "type": "organization", "title": ""},
                 {"count": 10, "id": 76, "type": "organization", "title": "Mana Publishing"}
               ],
-              "id": 3,
+              "id": 12,
               "type": "filter",
               "title": "Tickets I Follow",
               "grouped_by": "organization"
             },
             {
               "count": 267,
-              "id": 5,
+              "id": 13,
               "type": "filter",
               "title": "All"
             }
@@ -71,13 +71,13 @@ export const ticketsNavDemoState = {
                 {"count": 3, "id": 288, "type": "person", "title": "Manuela Jast"},
                 {"count": 2, "id": 519, "type": "person", "title": "Mara Reilly"}
               ],
-              "id": 10,
+              "id": 20,
               "type": "filter",
               "title": "New (opened today)"
             },
             {
               "count": 7,
-              "id": 11,
+              "id": 21,
               "type": "filter",
               "title": "My Awaiting User"
             },
@@ -90,7 +90,7 @@ export const ticketsNavDemoState = {
                 {"count": 39, "id": 5, "type": "language", "title": "\u0627\u0644\u0639\u0631\u0628\u064a\u0629"},
                 {"count": 39, "id": 3, "type": "language", "title": "Polski"}
               ],
-              "id": 12,
+              "id": 22,
               "type": "filter",
               "title": "All Awaiting User"
             }
