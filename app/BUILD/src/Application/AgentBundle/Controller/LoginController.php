@@ -211,6 +211,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             'AgentBundle:Login:index.html.twig',
             [
                 'lockout'           => $check->isLockoutRecommended() ? $check->getLockoutTime() : false,
+                'authManager'       => $this->get('dp_authentication_manager.agent'),
                 'return'            => $return,
                 'route_prefix'      => $this->route_prefix,
                 'logo_blob'         => $logo_blob,
