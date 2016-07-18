@@ -202,9 +202,6 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 
     protected function checkVersion($url)
     {
-        // todo throw exception on 1.x versions
-        return;
-
         if (!$url) {
             return;
         }
@@ -215,8 +212,9 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
         $res            = $client->request('/');
         if ($res instanceof Response) {
             $res = $res->getData();
-            if (version_compare(@$res['version']['number'], '2.0.0', '>=')) {
-                throw new \Exception('DeskPRO is not compatible with your ElasticSearch 2.x server. Please use DeskPRO with an ElasticSearch 1.x server. ElasticSearch 2.x is a very new update. We are working on adding support for this version and will ship an update in the near future.');
+            if (version_compare(@$res['version']['number'], '2.0.0') < 0) {
+                throw new \Exception('DeskPRO is not compatible with your ElasticSearch '.@$res['version']['number']
+                    .' server. Please use DeskPRO with an ElasticSearch 2.x server.');
             }
         }
     }
