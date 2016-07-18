@@ -139,9 +139,9 @@ class PortalStylesCompiler
     {
         return MapUtils::recursiveDiff(
             $variables,
-            $themeSet->getOption(self::$customVarsThemeSetOption)
+            $themeSet->getOption(self::$customVarsThemeSetOption, [])
         ) || MapUtils::recursiveDiff(
-            $themeSet->getOption(self::$customVarsThemeSetOption),
+            $themeSet->getOption(self::$customVarsThemeSetOption, []),
             $variables
         );
     }

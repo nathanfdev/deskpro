@@ -364,7 +364,7 @@ class MapUtils
      * Note that the order does not matter.
      *
      * @param \Traversable|array $array1
-     * @param \Traversable|array $array2
+     * @param \ArrayAccess|array $array2
      * @param string|callback    $cmp    The comparison technique. Can be '==', '===' or a custom callback.
      *
      * @return array
@@ -372,6 +372,13 @@ class MapUtils
     public static function recursiveDiff($array1, $array2, $cmp = '===')
     {
         $diff = [];
+
+        if (!TypeUtils::isTraversable($array1)) {
+            throw new \InvalidArgumentException('$array1 is expected to be traversable');
+        }
+        if (!TypeUtils::isArrayLike($array2)) {
+            throw new \InvalidArgumentException('$array2 is expected to be an array-like value');
+        }
 
         foreach ($array1 as $k => $v) {
             if (TypeUtils::isTraversable($v)) {
