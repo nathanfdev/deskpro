@@ -78,10 +78,7 @@ class ScssVariablesController extends AbstractApiController
         }
 
         try {
-            if (
-                $this->getAdvancedEditsManager()->hasChangedCssFiles()
-                || $this->getPortalStylesCompiler()->hasChangedVars($variables, $editThemeSet)
-            ) {
+            if ($this->getPortalStylesCompiler()->hasChangedVars($variables, $editThemeSet)) {
                 $this->getPortalStylesCompiler()->recompile($variables, $editThemeSet);
             }
         } catch (ParserException $e) {

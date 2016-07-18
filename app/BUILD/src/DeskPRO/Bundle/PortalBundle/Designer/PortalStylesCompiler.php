@@ -31,7 +31,6 @@ namespace DeskPRO\Bundle\PortalBundle\Designer;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
-use DeskPRO\Component\Util\MapUtils;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -137,13 +136,7 @@ class PortalStylesCompiler
      */
     public function hasChangedVars(array $variables, $themeSet)
     {
-        return MapUtils::recursiveDiff(
-            $variables,
-            $themeSet->getOption(self::$customVarsThemeSetOption, [])
-        ) || MapUtils::recursiveDiff(
-            $themeSet->getOption(self::$customVarsThemeSetOption, []),
-            $variables
-        );
+        return $variables == $themeSet->getOption(self::$customVarsThemeSetOption, []);
     }
 
     /**
