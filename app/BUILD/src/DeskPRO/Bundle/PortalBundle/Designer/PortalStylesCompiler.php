@@ -136,7 +136,7 @@ class PortalStylesCompiler
      */
     public function hasChangedVars(array $variables, $themeSet)
     {
-        return $variables == $themeSet->getOption(self::$customVarsThemeSetOption, []);
+        return $variables != $themeSet->getOption(self::$customVarsThemeSetOption, []);
     }
 
     /**
