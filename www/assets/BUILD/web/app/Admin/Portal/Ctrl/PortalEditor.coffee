@@ -174,19 +174,24 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       )
 
     loadTemplateOptions: () =>
+      template_options = []
       @$http.get('/portal/api/style/edit-theme-set/templates').success(
         (templates) =>
           for template in templates
-            @template_options.push({
-              value: template,
+            template_options.push({
+              value: template.name,
+              custom: template.is_custom,
               name: @templateName(template),
               group: @templateGroup(template)
             })
       )
 
-    templateName: (template) => template.split(':')[2].replace(/\.twig/, '')
+    templateName: (template) =>
+      name = template.name.split(':')[2].replace(/\.twig/, '')
+      if template.is_custom then name = '(*)' + name
+      return name
     templateGroup: (template) =>
-      parts = template.split(':')
+      parts = template.name.split(':')
       if parts[1] then parts[1] else parts[0]
 
     editTemplate: =>
@@ -218,6 +223,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         () =>
           @selected_template = null
           @selected_template_info_loaded = false
+          @loadTemplateOptions()
       )
       .error(@serverError)
 
