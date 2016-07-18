@@ -23,8 +23,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @portalSettings.getSettings().then((s) => @settings = s)
       )
 
-      @Api2.sendGet('brands').then (res) =>
-        @$scope.brands = res.data.data
+      @getBrands()
+
+      me = @
+      @$scope.$on 'dp-update-brands', (e) ->
+        me.getBrands()
 
       @$scope.$watch('Ctrl.portalSettings.version', =>
         @portalSettings.getSettings().then((s) => @settings = s)
@@ -36,6 +39,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           $('.dp-layout-appnav').find('li').first().find('a').first().click();
         , 10)
         return
+
+    getBrands: ->
+      @Api2.sendGet('brands').then (res) =>
+        @$scope.brands = res.data.data
 
     changeBrand: ->
       if @$scope.brandId == '-1'

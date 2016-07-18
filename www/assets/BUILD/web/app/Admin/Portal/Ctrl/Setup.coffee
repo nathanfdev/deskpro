@@ -47,6 +47,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @startSpinner()
       @portalSettings.updateSettings(@settings).then(=>
         @stopSpinner()
+        @$scope.$emit 'dp-update-brands'
       , =>
         @stopSpinner()
       )
@@ -68,7 +69,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       .catch (err) ->
         me.Api2.sendPostJson('brands', brand).then (res) =>
           me.Growl.success("Brand created")
-          me.brandId = res.data.data.id
+          me.$scope.brand_id = res.data.data.id
           me.portalSettings.setBrandId(res.data.data.id)
           me.saveSettings().then(=>
             me.$state.go 'portal.setup', {brandId: me.brandId}
