@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
+use Application\DeskPRO\Entity\Language;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Bundle\TwigBundle\Extension\AssetsExtension;
@@ -83,6 +84,7 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
     public function getPortalCssUrl($text_direction = null)
     {
         if ($text_direction === null) {
+            /** @var Language $lang */
             if (!$lang = $this->container->get('language_stack')->getActive()) {
                 $lang = $this->container->get('language_stack')->getDefaultLanguage();
             }

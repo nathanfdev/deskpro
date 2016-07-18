@@ -60,6 +60,10 @@ class TemplatesController extends AbstractApiController
     /**
      * @Route("/portal/api/style/edit-theme-set/template-info")
      * @Method({"GET"})
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
     public function getTemplateSourceAction(Request $request)
     {
@@ -82,6 +86,10 @@ class TemplatesController extends AbstractApiController
     /**
      * @Route("/portal/api/style/edit-theme-set/template-sources")
      * @Method({"PUT"})
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
     public function updateTemplateSourceAction(Request $request)
     {
@@ -101,8 +109,10 @@ class TemplatesController extends AbstractApiController
             if (!empty($data['revert'])) {
                 $this->getManager()->remove($template);
             } else {
-                $template->template_code     = $data['code'];
-                $template->template_compiled = $this->get('twig')->compileSource($template->template_code, $template_name);
+                $template->setTemplate(
+                    $data['code'],
+                    $this->get('twig')->compileSource($template->template_code, $template_name)
+                );
                 $this->getManager()->persist($template);
             }
         } catch (\Twig_Error $e) {
