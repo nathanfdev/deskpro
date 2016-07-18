@@ -184,6 +184,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
               name: @templateName(template),
               group: @templateGroup(template)
             })
+          @template_options = template_options
       )
 
     templateName: (template) =>
