@@ -122,6 +122,6 @@ class CustomDataHandler implements SubscribingHandlerInterface
             }
         }
 
-        return $result;
+        return $result ?: new \ArrayObject();
     }
 }

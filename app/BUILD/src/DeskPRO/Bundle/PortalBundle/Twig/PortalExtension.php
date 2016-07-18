@@ -137,6 +137,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         return [
             new \Twig_SimpleFunction('auth_usersources_js_object', [$this, 'getAuthUsersourcesJsObject'], ['is_safe' => ['html', 'javascript']]),
             new \Twig_SimpleFunction('has_login_form', [$this, 'hasLoginForm']),
+            new \Twig_SimpleFunction('is_forgot_password_visible', [$this, 'isForgotPasswordVisible']),
             new \Twig_SimpleFunction('ticket_status', [$this, 'getTicketStatusString']),
             new \Twig_SimpleFunction('ticket_public_id', [$this, 'getPublicTicketId']),
             new \Twig_SimpleFunction('brand_setting', [$this, 'getBrandSetting'], ['is_safe' => ['html']]),
@@ -209,6 +210,14 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     public function hasLoginForm()
     {
         return $this->container->get('usersources_view_helper')->hasLoginForm();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForgotPasswordVisible()
+    {
+        return $auth_manager = $this->container->get('dp_authentication_manager.user')->isForgotPasswordVisible();
     }
 
     /**

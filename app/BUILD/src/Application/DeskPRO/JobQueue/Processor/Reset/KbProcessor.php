@@ -26,21 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler;
-
-/**
- * Class SerializerTypes.
- */
-final class SerializerTypes
+class KbProcessor extends Base
 {
-    const TYPE_ENTITY      = 'entity';
-    const TYPE_TO_STRING   = 'to_string';
-    const TYPE_CUSTOM_DATA = 'custom_data';
-    const TYPE_COLLECTION  = 'collection';
-    const TYPE_MAP         = 'map';
-    const TYPE_DEFERRED    = 'deferred';
+    const JOB_TYPE = 'reset.kb';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function doProcess(array $data)
+    {
+        $this->connection->executeUpdate('DELETE FROM articles');
+    }
 }
