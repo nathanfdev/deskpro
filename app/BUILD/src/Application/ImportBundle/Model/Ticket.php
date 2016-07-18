@@ -36,9 +36,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * Class Ticket
  */
-class Ticket extends AbstractImportModel
-    implements PersonAwareInterface, LabelAwareModelInterface, LanguageAwareInterface, CustomDataOwnerModelInterface
+class Ticket implements PersonAwareInterface, LabelAwareModelInterface, LanguageAwareInterface, CustomDataAwareModelInterface, PrimaryImportModelInterface
 {
+    use PrimaryImportModelTrait, LabelAwareTrait;
+
     /**
      * @var string
      *
@@ -59,7 +60,6 @@ class Ticket extends AbstractImportModel
      * @JMS\Type("string")
      *
      * @Assert\NotBlank()
-     * @Assert\Email(strict="true")
      */
     private $person;
 
@@ -67,18 +67,8 @@ class Ticket extends AbstractImportModel
      * @var string
      *
      * @JMS\Type("string")
-     *
-     * @Assert\NotBlank()
-     * @Assert\Email(strict="true")
      */
     private $agent;
-
-    /**
-     * @var string
-     *
-     * @JMS\Type("string")
-     */
-    private $agent_team;
 
     /**
      * @var string
@@ -190,27 +180,15 @@ class Ticket extends AbstractImportModel
      * @JMS\Type("array<string>")
      *
      * @Assert\All(constraints={
-     *   @Assert\NotBlank(),
-     *   @Assert\Email(strict="true")
+     *   @Assert\NotBlank()
      * })
      */
     private $participants = [];
 
     /**
-     * @var string[]
-     *
-     * @JMS\Type("array<string>")
-     *
-     * @Assert\All(constraints={
-     *   @Assert\NotBlank()
-     * })
-     */
-    private $labels = [];
-
-    /**
      * @var TicketMessage[]
      *
-     * @JMS\Type("Application\ImportBundle\Model\TicketMessage")
+     * @JMS\Type("array<Application\ImportBundle\Model\TicketMessage>")
      *
      * @Assert\Valid()
      */
@@ -219,7 +197,7 @@ class Ticket extends AbstractImportModel
     /**
      * @var CustomField[]
      *
-     * @JMS\Type("Application\ImportBundle\Model\CustomField")
+     * @JMS\Type("array<Application\ImportBundle\Model\CustomField>")
      *
      * @Assert\Valid()
      */
@@ -229,10 +207,8 @@ class Ticket extends AbstractImportModel
      * @var string
      *
      * @JMS\Type("string")
-     *
-     * @Assert\NotBlank()
      */
-    private $log_message;
+    private $log_message = 'Imported';
 
     /**
      * @return int
@@ -285,9 +261,9 @@ class Ticket extends AbstractImportModel
     /**
      * {@inheritdoc}
      */
-    public function setPerson($person_email)
+    public function setPerson($person)
     {
-        $this->person = (string) $person_email;
+        $this->person = $person;
 
         return $this;
     }
@@ -307,27 +283,7 @@ class Ticket extends AbstractImportModel
      */
     public function setAgent($agent)
     {
-        $this->agent = (string) $agent;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAgentTeam()
-    {
-        return $this->agent_team;
-    }
-
-    /**
-     * @param int $agent_team
-     *
-     * @return $this
-     */
-    public function setAgentTeam($agent_team)
-    {
-        $this->agent_team = $agent_team;
+        $this->agent = $agent;
 
         return $this;
     }
@@ -607,6 +563,18 @@ class Ticket extends AbstractImportModel
     }
 
     /**
+     * @param \string[] $participants
+     *
+     * @return $this
+     */
+    public function setParticipants(array $participants)
+    {
+        $this->participants = $participants;
+
+        return $this;
+    }
+
+    /**
      * @param string $participant
      *
      * @return $this
@@ -614,24 +582,6 @@ class Ticket extends AbstractImportModel
     public function addParticipant($participant)
     {
         $this->participants[] = $participant;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabels()
-    {
-        return $this->labels;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addLabel($label)
-    {
-        $this->labels[] = $label;
 
         return $this;
     }
@@ -656,7 +606,6 @@ class Ticket extends AbstractImportModel
     public function addMessage(TicketMessage $message)
     {
         $this->messages[] = $message;
-        $message->setTicket($this);
 
         return $this;
     }

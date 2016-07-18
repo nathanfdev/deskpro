@@ -36,7 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * Class TicketPriority
  */
-class TicketPriority extends AbstractImportModel
+class TicketPriority
 {
     /**
      * @var string

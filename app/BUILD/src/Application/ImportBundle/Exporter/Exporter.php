@@ -32,7 +32,7 @@ use Application\ImportBundle\Exporter\Reader\JsonReader;
 use Application\ImportBundle\Exporter\Reader\NotFoundException;
 use Application\ImportBundle\Importer\ImporterContext;
 use Application\ImportBundle\Model\ImportModelCollection;
-use Application\ImportBundle\Model\ImportModelInterface;
+use Application\ImportBundle\Model\PrimaryImportModelInterface;
 use JMS\Serializer\Serializer;
 use Psr\Log\LoggerInterface;
 
@@ -99,7 +99,7 @@ class Exporter implements ExporterInterface
                 try {
                     $this->logger->debug("Export $modelClass#$oid");
 
-                    /** @var ImportModelInterface $model */
+                    /** @var PrimaryImportModelInterface $model */
                     $model = $this->serializer->deserialize($rawData, $modelClass, 'json');
                     $model->setOid($oid);
                     $model->setRawData($rawData);
@@ -107,6 +107,7 @@ class Exporter implements ExporterInterface
                     $collection->attach($model);
                 } catch (\Exception $e) {
                     $this->logger->error('Unable to parse entity.');
+                    $this->logger->error($e->getMessage());
                     $this->logger->error($rawData);
                 }
             }

@@ -33,5 +33,11 @@ namespace Application\ImportBundle\Model\ContactData;
  */
 class Website extends AbstractUrlContactData
 {
-    protected static $contact_type = 'website';
+    /**
+     * {@inheritdoc}
+     */
+    public function getContactType()
+    {
+        return 'website';
+    }
 }

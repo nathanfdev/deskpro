@@ -37,8 +37,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * Class Person
  */
-class Person extends AbstractImportModel implements LabelAwareModelInterface, LanguageAwareInterface, CustomDataOwnerModelInterface
+class Person implements LabelAwareModelInterface, LanguageAwareInterface, CustomDataAwareModelInterface, PrimaryImportModelInterface, UsergroupAwareModelInterface, ContactDataAwareModelInterface
 {
+    use PrimaryImportModelTrait, LabelAwareTrait;
+
     const INITIAL_PASSWORD = 'password';
 
     const PASSWORD_SCHEME_PLAIN  = 'plain';
@@ -118,7 +120,7 @@ class Person extends AbstractImportModel implements LabelAwareModelInterface, La
      *
      * @Assert\Choice(choices={"plain", "bcrypt"})
      */
-    private $password_scheme = self::PASSWORD_SCHEME_PLAIN;
+    private $password_scheme;
 
     /**
      * @var string
@@ -132,7 +134,7 @@ class Person extends AbstractImportModel implements LabelAwareModelInterface, La
      *
      * @JMS\Type("DateTime")
      */
-    private $date_created;
+    private $dateCreated;
 
     /**
      * @var string
@@ -172,13 +174,6 @@ class Person extends AbstractImportModel implements LabelAwareModelInterface, La
      * @var string[]
      *
      * @JMS\Type("array<string>")
-     */
-    private $labels = [];
-
-    /**
-     * @var string[]
-     *
-     * @JMS\Type("array<string>")
      *
      * @Assert\All(constraints={
      *   @Assert\NotBlank()
@@ -193,7 +188,7 @@ class Person extends AbstractImportModel implements LabelAwareModelInterface, La
      *
      * @Assert\Valid()
      */
-    private $contact_data = [];
+    private $contact_data;
 
     /**
      * @var array
@@ -344,24 +339,7 @@ class Person extends AbstractImportModel implements LabelAwareModelInterface, La
      */
     public function getFirstName()
     {
-        if ($this->first_name) {
-            return $this->first_name;
-        }
-
-        $name = $this->getName();
-        if ($name) {
-            $names = explode(' ', $name);
-
-            if (count($names) > 1) {
-                array_pop($names);
-
-                return implode(' ', $names);
-            } else {
-                return $name;
-            }
-        }
-
-        return '';
+        return $this->first_name;
     }
 
     /**
@@ -386,20 +364,7 @@ class Person extends AbstractImportModel implements LabelAwareModelInterface, La
      */
     public function getLastName()
     {
-        if ($this->last_name) {
-            return $this->last_name;
-        }
-
-        $name = $this->getName();
-        if ($name) {
-            $names = explode(' ', $name);
-
-            if (count($names) > 1) {
-                return array_pop($names);
-            }
-        }
-
-        return '';
+        return $this->last_name;
     }
 
     /**
@@ -424,17 +389,7 @@ class Person extends AbstractImportModel implements LabelAwareModelInterface, La
      */
     public function getName()
     {
-        if ($this->name) {
-            return $this->name;
-        }
-        if ($this->getFirstEmail()) {
-            $email = @explode('@', $this->getFirstEmail(), 2);
-            if (isset($email[0])) {
-                return $email[0];
-            }
-        }
-
-        return '';
+        return $this->name;
     }
 
     /**
@@ -565,19 +520,19 @@ class Person extends AbstractImportModel implements LabelAwareModelInterface, La
      */
     public function getDateCreated()
     {
-        return $this->date_created;
+        return $this->dateCreated;
     }
 
     /**
      * Set date created.
      *
-     * @param \DateTime $date_created
+     * @param \DateTime $dateCreated
      *
      * @return $this
      */
-    public function setDateCreated(\DateTime $date_created)
+    public function setDateCreated(\DateTime $dateCreated)
     {
-        $this->date_created = $date_created;
+        $this->dateCreated = $dateCreated;
 
         return $this;
     }
@@ -677,6 +632,18 @@ class Person extends AbstractImportModel implements LabelAwareModelInterface, La
     }
 
     /**
+     * @param array $emails
+     *
+     * @return $this
+     */
+    public function setEmails(array $emails)
+    {
+        $this->emails = $emails;
+
+        return $this;
+    }
+
+    /**
      * Returns the first person email.
      *
      * @return string|null
@@ -705,29 +672,21 @@ class Person extends AbstractImportModel implements LabelAwareModelInterface, La
     /**
      * {@inheritdoc}
      */
-    public function getLabels()
-    {
-        return $this->labels;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addLabel($label)
-    {
-        $this->labels[] = $label;
-
-        return $this;
-    }
-
-    /**
-     * Returns a collection of person user groups.
-     *
-     * @return array
-     */
     public function getUserGroups()
     {
         return $this->user_groups;
+    }
+
+    /**
+     * @param \string[] $user_groups
+     *
+     * @return $this
+     */
+    public function setUserGroups(array $user_groups)
+    {
+        $this->user_groups = $user_groups;
+
+        return $this;
     }
 
     /**
@@ -745,9 +704,7 @@ class Person extends AbstractImportModel implements LabelAwareModelInterface, La
     }
 
     /**
-     * Returns person contact data.
-     *
-     * @return ContactData
+     * {@inheritdoc}
      */
     public function getContactData()
     {
@@ -755,9 +712,7 @@ class Person extends AbstractImportModel implements LabelAwareModelInterface, La
     }
 
     /**
-     * Returns a collection of person custom fields.
-     *
-     * @return CustomField[]
+     * {@inheritdoc}
      */
     public function getCustomFields()
     {
@@ -765,11 +720,7 @@ class Person extends AbstractImportModel implements LabelAwareModelInterface, La
     }
 
     /**
-     * Add a custom field.
-     *
-     * @param CustomField $custom_field
-     *
-     * @return $this
+     * {@inheritdoc}
      */
     public function addCustomField(CustomField $custom_field)
     {

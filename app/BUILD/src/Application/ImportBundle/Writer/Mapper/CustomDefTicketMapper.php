@@ -29,13 +29,14 @@
 namespace Application\ImportBundle\Writer\Mapper;
 
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\ImportBundle\Model\TicketCustomDef;
 
 /**
  * Custom def ticket record mapper.
  *
  * Class CustomDefTicket
  */
-final class CustomDefTicketMapper extends AbstractCustomDefMapper
+class CustomDefTicketMapper extends AbstractEntityManagerMapper implements CustomDefMapperInterface
 {
     /**
      * {@inheritdoc}
@@ -43,5 +44,13 @@ final class CustomDefTicketMapper extends AbstractCustomDefMapper
     public static function getEntityClass()
     {
         return CustomDefTicket::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getModelClass()
+    {
+        return TicketCustomDef::class;
     }
 }

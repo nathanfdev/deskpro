@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Base comments.
@@ -152,6 +153,8 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
      *
      * @JMS\Type("string")
      * @JMS\Groups({"list", "details"})
+     *
+     * @Assert\NotBlank()
      *
      * @var string
      */

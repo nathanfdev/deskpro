@@ -35,15 +35,22 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Exporting attachment entity.
  *
  * Class Attachment
+ *
+ * @Assert\GroupSequenceProvider
  */
-class Attachment extends AbstractBlob implements PersonAwareInterface
+class Attachment extends Blob implements PersonAwareInterface, OidAwareModelInterface
 {
+    /**
+     * @var int|string
+     *
+     * @JMS\Type("string")
+     */
+    protected $oid;
+
     /**
      * @var string
      *
      * @JMS\Type("string")
-     *
-     * @Assert\NotBlank()
      */
     private $person;
 
@@ -57,6 +64,24 @@ class Attachment extends AbstractBlob implements PersonAwareInterface
     /**
      * {@inheritdoc}
      */
+    public function getOid()
+    {
+        return $this->oid;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setOid($oid)
+    {
+        $this->oid = $oid;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getPerson()
     {
         return $this->person;
@@ -65,9 +90,9 @@ class Attachment extends AbstractBlob implements PersonAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function setPerson($person_email)
+    public function setPerson($person)
     {
-        $this->person = $person_email;
+        $this->person = $person;
 
         return $this;
     }

@@ -159,7 +159,7 @@ class Importer implements ImporterInterface
                     $this->logger->info('=====================================');
 
                     foreach ($collection->getByType($type) as $model) {
-                        $this->writer->writeData($context, $model);
+                        $this->writer->writeData($model, $context->isDryRun());
                     }
                 }
             }

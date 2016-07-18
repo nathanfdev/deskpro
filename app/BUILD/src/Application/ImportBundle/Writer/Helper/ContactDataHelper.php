@@ -30,9 +30,12 @@ namespace Application\ImportBundle\Writer\Helper;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
 use Application\ImportBundle\Model\ContactData\AbstractContactData;
-use Application\ImportBundle\Model\ContactData\ContactData;
+use Application\ImportBundle\Model\ContactDataAwareModelInterface;
+use Application\ImportBundle\Writer\EntityPersister;
+use Application\ImportBundle\Writer\Mapper\MapperInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Strings;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class ContactDataHandler.
@@ -40,110 +43,158 @@ use Orb\Util\Strings;
 class ContactDataHelper
 {
     /**
-     * @var string
+     * @var CreateEntityHelper
      */
-    private $entityClassName;
+    private $createEntityHelper;
+
+    /**
+     * @var EntityPersister
+     */
+    private $persister;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * Constructor.
      *
-     * @param string $entityClassName
+     * @param CreateEntityHelper $createEntityHelper
+     * @param EntityPersister    $persister
+     * @param LoggerInterface    $logger
      */
-    public function __construct($entityClassName)
+    public function __construct(CreateEntityHelper $createEntityHelper, EntityPersister $persister, LoggerInterface $logger)
     {
-        $this->entityClassName = $entityClassName;
+        $this->createEntityHelper = $createEntityHelper;
+        $this->persister          = $persister;
+        $this->logger             = $logger;
     }
 
     /**
-     * @param ContactData $model
-     *
-     * @return ArrayCollection|ContactDataAbstract[]
+     * @param MapperInterface                $mapper
+     * @param ContactDataAwareModelInterface $model
+     * @param mixed                          $entity
      */
-    public function getEntities(ContactData $model)
+    public function updateContactData(MapperInterface $mapper, ContactDataAwareModelInterface $model, $entity)
     {
-        $collection = new ArrayCollection();
+        // prepare new contact data collection
+        $newContactData = new ArrayCollection();
 
-        foreach ($model->getAddress() as $contact) {
-            $entity = $this->createContactTypeEntity($contact);
-            $entity->setField1($contact->getAddress());
-            $entity->setField2($contact->getCity());
-            $entity->setField3($contact->getState());
-            $entity->setField4($contact->getZip());
-            $entity->setField5($contact->getCountry());
+        foreach ($model->getContactData()->getAddress() as $contactModel) {
+            $contactEntity = $this->findOrCreateContactEntity($contactModel, $mapper);
+            $contactEntity
+                ->setField1($contactModel->getAddress())
+                ->setField2($contactModel->getCity())
+                ->setField3($contactModel->getState())
+                ->setField4($contactModel->getZip())
+                ->setField5($contactModel->getCountry())
+            ;
 
-            $collection->add($entity);
+            $newContactData->add($contactEntity);
+            $this->persistAndFlushContactEntity($contactEntity, $contactModel, $entity);
         }
 
-        foreach ($model->getFacebook() as $contact) {
-            $entity = $this->createContactTypeEntity($contact);
-            $entity->setField1($contact->getUrl());
+        foreach ($model->getContactData()->getFacebook() as $contactModel) {
+            $contactEntity = $this->findOrCreateContactEntity($contactModel, $mapper);
+            $contactEntity->setField1($contactModel->getUrl());
 
-            if (preg_match('#/profile\.php?id=([0-9]+)#', $contact->getUrl(), $m)) {
-                $entity->setField2($m[1]);
-            } elseif (preg_match('#facebook\.com/([a-zA-Z0-9\.\-_]+)#', $contact->getUrl(), $m)) {
-                $entity->setField2($m[1]);
-            } elseif (preg_match('#facebook\.com/people/([a-zA-Z0-9\.\-_]+)#', $contact->getUrl(), $m)) {
-                $entity->setField2($m[1]);
+            if (preg_match('#/profile\.php?id=([0-9]+)#', $contactModel->getUrl(), $m)) {
+                $contactEntity->setField2($m[1]);
+            } elseif (preg_match('#facebook\.com/([a-zA-Z0-9\.\-_]+)#', $contactModel->getUrl(), $m)) {
+                $contactEntity->setField2($m[1]);
+            } elseif (preg_match('#facebook\.com/people/([a-zA-Z0-9\.\-_]+)#', $contactModel->getUrl(), $m)) {
+                $contactEntity->setField2($m[1]);
             }
 
-            $collection->add($entity);
+            $newContactData->add($contactEntity);
+            $this->persistAndFlushContactEntity($contactEntity, $contactModel, $entity);
         }
 
-        foreach ($model->getInstantMessage() as $contact) {
-            $entity = $this->createContactTypeEntity($contact);
-            $entity->setField1($contact->getUsername());
-            $entity->setField2($contact->getService());
+        foreach ($model->getContactData()->getInstantMessage() as $contactModel) {
+            $contactEntity = $this->findOrCreateContactEntity($contactModel, $mapper);
+            $contactEntity->setField1($contactModel->getUsername());
+            $contactEntity->setField2($contactModel->getService());
 
-            $collection->add($entity);
+            $newContactData->add($contactEntity);
+            $this->persistAndFlushContactEntity($contactEntity, $contactModel, $entity);
         }
 
-        foreach ($model->getLinkedIn() as $contact) {
-            $entity = $this->createContactTypeEntity($contact);
-            $entity->setField1($contact->getUrl());
-            $entity->setField2(Strings::extractRegexMatch('#/in/(.*?)$#', $contact->getUrl(), 1) ?: '');
+        foreach ($model->getContactData()->getLinkedIn() as $contactModel) {
+            $contactEntity = $this->findOrCreateContactEntity($contactModel, $mapper);
+            $contactEntity->setField1($contactModel->getUrl());
+            $contactEntity->setField2(Strings::extractRegexMatch('#/in/(.*?)$#', $contactModel->getUrl(), 1) ?: '');
 
-            $collection->add($entity);
+            $newContactData->add($contactEntity);
+            $this->persistAndFlushContactEntity($contactEntity, $contactModel, $entity);
         }
 
-        foreach ($model->getPhone() as $contact) {
-            $entity = $this->createContactTypeEntity($contact);
-            $entity->setField1($contact->getCode());
-            $entity->setField2($contact->getNumber());
-            $entity->setField3($contact->getType() ?: 'phone');
+        foreach ($model->getContactData()->getPhone() as $contactModel) {
+            $contactEntity = $this->findOrCreateContactEntity($contactModel, $mapper);
+            $contactEntity->setField1($contactModel->getCode());
+            $contactEntity->setField2($contactModel->getNumber());
+            $contactEntity->setField3($contactModel->getType() ?: 'phone');
 
-            $collection->add($entity);
+            $newContactData->add($contactEntity);
+            $this->persistAndFlushContactEntity($contactEntity, $contactModel, $entity);
         }
 
-        foreach ($model->getTwitter() as $contact) {
-            $entity = $this->createContactTypeEntity($contact);
-            $entity->setField1($contact->getUsername());
-            $entity->setField2((int) $contact->isDisplayFeed());
+        foreach ($model->getContactData()->getTwitter() as $contactModel) {
+            $contactEntity = $this->findOrCreateContactEntity($contactModel, $mapper);
+            $contactEntity->setField1($contactModel->getUsername());
+            $contactEntity->setField2((int) $contactModel->isDisplayFeed());
 
-            $collection->add($entity);
+            $newContactData->add($contactEntity);
+            $this->persistAndFlushContactEntity($contactEntity, $contactModel, $entity);
         }
 
-        foreach ($model->getWebsite() as $contact) {
-            $entity = $this->createContactTypeEntity($contact);
-            $entity->setField1($contact->getUrl());
+        foreach ($model->getContactData()->getWebsite() as $contactModel) {
+            $contactEntity = $this->findOrCreateContactEntity($contactModel, $mapper);
+            $contactEntity->setField1($contactModel->getUrl());
 
-            $collection->add($entity);
+            $newContactData->add($contactEntity);
+            $this->persistAndFlushContactEntity($contactEntity, $contactModel, $entity);
         }
 
-        return $collection;
+        // remove deleted contacts
+        /** @var ContactDataAbstract $contactEntity */
+        foreach ($entity->getContactData() as $contactEntity) {
+            if (!$newContactData->contains($contactEntity)) {
+                $this->logger->debug("Remove deleted contact {$contactEntity->getContactType()}");
+                $entity->getContactData()->removeElement($contactEntity);
+                $this->persister->removeAndFlush($contactEntity);
+            }
+        }
     }
 
     /**
-     * @param AbstractContactData $contact
+     * @param AbstractContactData $contactModel
+     * @param MapperInterface     $mapper
      *
      * @return ContactDataAbstract
      */
-    private function createContactTypeEntity(AbstractContactData $contact)
+    private function findOrCreateContactEntity(AbstractContactData $contactModel, MapperInterface $mapper)
     {
         /** @var ContactDataAbstract $entity */
-        $entity = new $this->entityClassName();
-        $entity->setContactType($contact->getContactType());
-        $entity->setComment($contact->getComment());
+        $entity = $this->createEntityHelper->findOrCreateEntity($mapper, $contactModel);
+        $entity->setContactType($contactModel->getContactType());
+        $entity->setComment($contactModel->getComment());
 
         return $entity;
+    }
+
+    /**
+     * @param ContactDataAbstract $contactEntity
+     * @param AbstractContactData $contactModel
+     * @param mixed               $entity
+     */
+    private function persistAndFlushContactEntity(ContactDataAbstract $contactEntity, AbstractContactData $contactModel, $entity)
+    {
+        if (!$entity->getContactData()->contains($contactEntity)) {
+            $this->logger->debug("Add new contact {$contactEntity->getContactType()}");
+            $entity->addContactData($contactEntity);
+        }
+
+        $this->persister->persistAndFlush($contactEntity, $contactModel);
     }
 }

@@ -1,4 +1,0 @@
-person_id,field_name,value
-joe.smith@example.com,Multiple-select box field,Choice 1 > Choice 2
-joe.smith@example.com,Multiple-select box field,Choice 4 > Choice 5
-joe.smith@example.com,Hidden field,some value

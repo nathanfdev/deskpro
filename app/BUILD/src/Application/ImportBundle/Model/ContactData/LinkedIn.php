@@ -33,5 +33,11 @@ namespace Application\ImportBundle\Model\ContactData;
  */
 class LinkedIn extends AbstractUrlContactData
 {
-    protected static $contact_type = 'linked_in';
+    /**
+     * {@inheritdoc}
+     */
+    public function getContactType()
+    {
+        return 'linked_in';
+    }
 }

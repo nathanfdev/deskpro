@@ -28,11 +28,8 @@
 
 namespace Application\ImportBundle\Writer\EntityHandler;
 
-use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\DeskPRO\Entity;
 use Application\ImportBundle\Model;
-use Application\ImportBundle\Writer\Helper\ContactDataHelper;
-use Application\ImportBundle\Writer\Helper\CustomDataHelper;
-use Application\ImportBundle\Writer\Helper\LabelHelper;
 
 /**
  * DeskPRO person importer.
@@ -51,41 +48,53 @@ class PersonHandler extends AbstractEntityHandler
 
     /**
      * {@inheritdoc}
+     *
+     * @param Model\Person $model
      */
-    public function prepare(Model\ImportModelInterface $model, $entityId = null)
+    public function writeModel(Model\PrimaryImportModelInterface $model)
     {
-        if (!$model instanceof Model\Person) {
-            Model\UnexpectedException::throwUnexpectedEntityTypeException($model);
-        }
-
         if ($model->isAgent()) {
             $this->logger->alert(sprintf('Importing agent `%s`', $model->getFirstEmail()));
         }
 
-        $entity = $this->findOrCreatePerson($model->getEmails());
+        $entity = $this->findOrCreatePerson($model);
         $entity
-            ->setFirstName($model->getFirstName())
-            ->setLastName($model->getLastName())
-            ->setName($model->getName())
             ->setTimezone($model->getTimezone())
             ->setIsAgent($model->isAgent())
             ->setCanAgent($model->isAgent())
             ->setCanAdmin($model->isAdmin())
-            ->setLanguage($model->getLanguage() ? $this->findLanguage($model->getLanguage()) : null)
+            ->setLanguage($this->helpers->getLanguageHelper()->findLanguage($model->getLanguage()))
             ->setIsDisabled($model->isDisabled())
             ->setIsDeleted($model->isDeleted())
-            ->setDateCreated($model->getDateCreated())
-            ->setOrganization($this->findOrCreateOrganization($model->getOrganization()))
-            ->setOrganizationPosition($model->getOrganizationPosition())
-            ->resetEmails()
-            ->resetUsergroups()
-            ->resetContactData()
         ;
 
-        if ($model->isAgent() && !in_array('agent_all_safe_perms', $model->getUserGroups(), true)) {
-            $model->addUserGroup('agent_all_safe_perms');
+        if ($model->getDateCreated()) {
+            $entity->setDateCreated($model->getDateCreated());
         }
 
+        // update person name
+        if ($model->getFirstName()) {
+            $entity->setFirstName($model->getFirstName());
+        }
+        if ($model->getLastName()) {
+            $entity->setLastName($model->getLastName());
+        }
+        if ($model->getName()) {
+            $entity->setName($model->getName());
+        }
+
+        // update organization
+        if ($model->getOrganization()) {
+            $organizationEntity = $this->helpers->getOrganizationHelper()->findOrCreateOrganization($model->getOrganization());
+            if ($organizationEntity) {
+                $entity->setOrganization($organizationEntity);
+                $entity->setOrganizationPosition($model->getOrganizationPosition());
+            } else {
+                $entity->setOrganization(null);
+            }
+        }
+
+        // set password
         if ($model->getPassword()) {
             if ($model->isPlainPasswordScheme()) {
                 $entity->setPassword($model->getPassword());
@@ -93,84 +102,70 @@ class PersonHandler extends AbstractEntityHandler
                 $this->logger->alert(sprintf('Password scheme `%s` is not supported. Set initial password.', $model->getPasswordScheme()));
                 $entity->setPassword(Model\Person::INITIAL_PASSWORD);
             }
-        } else {
-            if ($model->isUser()) {
-                $entity->setPassword(Model\Person::INITIAL_PASSWORD);
-            }
         }
 
+        // update person emails
         foreach ($model->getEmails() as $email) {
             if ($this->mappers->getEmailAccountMapper()->findOneByEmail($email, false)) {
                 $this->logger->warning(sprintf('Email `%s` is an a gateway account address (Skipping)', $email));
-            } else {
-                if (!count($entity->getEmailAddresses())) {
-                    $entity->setEmail($email);
-                    $this->logger->debug(sprintf('Set primary email `%s`', $model->getFirstEmail()));
-                } else {
-                    $entity->addEmailAddressString($email);
-                    $this->logger->debug(sprintf('Set email `%s`', $model->getFirstEmail()));
-                }
+                continue;
+            }
+
+            if (!in_array($email, $entity->getEmailAddresses())) {
+                $entity->addEmailAddressString($email);
             }
         }
-        foreach ($model->getUserGroups() as $user_group_name) {
-            $user_group = $this->findUserGroup($user_group_name);
-            if ($user_group) {
-                $entity->addUsergroup($user_group);
+
+        foreach ($entity->getEmails() as $emailEntity) {
+            if (!in_array($emailEntity->getEmail(), $model->getEmails())) {
+                $entity->getEmails()->removeElement($emailEntity);
             }
         }
-        foreach ($this->createContactData($model) as $contactEntity) {
-            $entity->addContactData($contactEntity);
+
+        // update common props
+        if ($model->isAgent() && !in_array('agent_all_safe_perms', $model->getUserGroups())) {
+            $model->addUserGroup('agent_all_safe_perms');
         }
 
-        $labelsHelper = new LabelHelper($this->logger);
-        $labelsHelper->updateLabels($model, $entity, DeskPROEntity\LabelPerson::class);
+        $this->helpers->getUserGroupHelper()->updateUserGroups($model, $entity);
+        $this->helpers->getCustomDataHelper()->updateCustomData($this->mappers->getPersonCustomDefMapper(), $model, $entity);
+        $this->helpers->getLabelHelper()->updateLabels($model, $entity, Entity\LabelPerson::class);
 
-        $customDataHelper = new CustomDataHelper($this->mappers->getPersonCustomDefMapper(), $this->logger);
-        $customDataHelper->updateCustomData($model, $entity, $this->records);
+        // persist basic entity
+        $this->persister->persistAndFlush($entity, $model);
 
-        $this->records->setPrimaryEntity($entity);
+        // persist others related entities which contains own oids
+        $this->helpers->getContactDataHelper()->updateContactData($this->mappers->getPersonContactDataMapper(), $model, $entity);
     }
 
     /**
      * Returns a person entity.
      * Creates a new person if not found.
      *
-     * @param array $emails
+     * @param Model\Person $model
      *
-     * @throws \Exception
-     *
-     * @return DeskPROEntity\Person
+     * @return Entity\Person
      */
-    private function findOrCreatePerson(array $emails)
+    private function findOrCreatePerson(Model\Person $model)
     {
-        $emails = array_values($emails);
-        if (empty($emails)) {
-            throw new ImporterException('Unable to find or create without primary email');
+        $entity = null;
+
+        // try to find existing person by emails
+        if (count($model->getEmails())) {
+            $entity = $this->mappers->getPersonMapper()->findOneByEmails($model->getEmails(), false);
+            if ($entity) {
+                $this->logger->debug(sprintf(
+                    'Found existing user, id=`%d` with email `%s`',
+                    $entity->getId(), $entity->getEmailAddress()
+                ));
+            }
         }
 
-        $entity = $this->mappers->getPersonMapper()->findOneByEmails($emails, false);
-        if ($entity) {
-            $this->logger->debug(sprintf(
-                'Found existing user, id=`%d` with email `%s`',
-                $entity->getId(), $entity->getEmailAddress()
-            ));
-        } else {
-            $entity = new DeskPROEntity\Person();
-            $this->logger->info(sprintf('Creating new person with email `%s`', $emails[0]));
+        // find person by oid or create a new one
+        if (!$entity) {
+            $entity = $this->findOrCreateEntity($this->mappers->getPersonMapper(), $model);
         }
 
         return $entity;
-    }
-
-    /**
-     * Returns person contact data entity.
-     *
-     * @param Model\Person $model
-     *
-     * @return DeskPROEntity\PersonContactData[]
-     */
-    private function createContactData(Model\Person $model)
-    {
-        return (new ContactDataHelper(DeskPROEntity\PersonContactData::class))->getEntities($model->getContactData());
     }
 }

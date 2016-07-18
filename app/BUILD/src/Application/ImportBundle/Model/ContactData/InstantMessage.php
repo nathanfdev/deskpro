@@ -29,14 +29,13 @@
 namespace Application\ImportBundle\Model\ContactData;
 
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class InstantMessage.
  */
 class InstantMessage extends AbstractUserNameContactData
 {
-    protected static $contact_type = 'instant_message';
-
     /**
      * @var string
      *
@@ -45,6 +44,14 @@ class InstantMessage extends AbstractUserNameContactData
      * @Assert\Choice(choices={"aim", "msn", "icq", "skype", "gtalk", "other"})
      */
     protected $service;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getContactType()
+    {
+        return 'instant_message';
+    }
 
     /**
      * @return string

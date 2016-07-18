@@ -60,6 +60,7 @@ class LabelHelper
      */
     public function updateLabels(LabelAwareModelInterface $model, LabelsOwner $entity, $labelClassName)
     {
+        // add new labels
         foreach ($model->getLabels() as $labelName) {
             $filtered = $entity->getLabels()->filter(function (Label $label) use ($labelName) {
                 return $label->getLabel() === $labelName;
@@ -77,6 +78,7 @@ class LabelHelper
             }
         }
 
+        // remove deleted labels
         foreach ($entity->getLabels() as $label) {
             if (!in_array($label->getLabel(), $model->getLabels())) {
                 $entity->removeLabel($label);

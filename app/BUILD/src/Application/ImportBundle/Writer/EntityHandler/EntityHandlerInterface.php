@@ -45,26 +45,11 @@ interface EntityHandlerInterface
     public static function getModelClass();
 
     /**
-     * Clears doctrine records.
-     *
-     * @return $this
-     */
-    public function reset();
-
-    /**
      * Parses to a collection of the importing DeskPRO doctrine entities.
      *
-     * @param Model\ImportModelInterface $model
-     * @param int|null                   $entityId
+     * @param Model\PrimaryImportModelInterface $model
      *
      * @throws \Exception
      */
-    public function prepare(Model\ImportModelInterface $model, $entityId = null);
-
-    /**
-     * Returns a collection of DeskPRO doctrine entities.
-     *
-     * @return DoctrineEntities
-     */
-    public function getDoctrineEntities();
+    public function writeModel(Model\PrimaryImportModelInterface $model);
 }

@@ -35,7 +35,7 @@ use Application\DeskPRO\Entity\DownloadCategory;
  *
  * Class DownloadCategory
  */
-class DownloadCategoryMapper extends AbstractTitleMapper
+class DownloadCategoryMapper extends AbstractCategoryMapper
 {
     /**
      * {@inheritdoc}

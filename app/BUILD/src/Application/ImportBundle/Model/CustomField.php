@@ -30,52 +30,74 @@ namespace Application\ImportBundle\Model;
 
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\GroupSequenceProviderInterface;
 
 /**
  * Exporting custom field entity.
  *
  * Class CustomField
+ *
+ * @Assert\GroupSequenceProvider
  */
-class CustomField extends AbstractImportModel
+class CustomField implements GroupSequenceProviderInterface, OidAwareModelInterface
 {
     /**
      * @var string
      *
      * @JMS\Type("string")
-     *
-     * @Assert\NotBlank()
      */
-    private $key;
+    private $oid;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     *
+     * @Assert\NotBlank(groups={"name"})
+     */
+    private $name;
 
     /**
      * @var mixed
      *
      * @JMS\Type("string")
      *
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"common"})
      */
     private $value;
 
     /**
-     * Key name.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getKey()
+    public function getOid()
     {
-        return $this->key;
+        return $this->oid;
     }
 
     /**
-     * Set a key name.
-     *
-     * @param string $key
+     * @param mixed $oid
+     */
+    public function setOid($oid)
+    {
+        $this->oid = $oid;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
      *
      * @return $this
      */
-    public function setKey($key)
+    public function setName($name)
     {
-        $this->key = (string) $key;
+        $this->name = $name;
 
         return $this;
     }
@@ -102,5 +124,18 @@ class CustomField extends AbstractImportModel
         $this->value = $value;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupSequence()
+    {
+        $groups = ['common'];
+        if (!$this->oid) {
+            $groups[] = 'name';
+        }
+
+        return $groups;
     }
 }

@@ -35,7 +35,7 @@ use DeskPRO\Component\Util\AbstractCollection;
  *
  * Class Collection
  *
- * @property ImportModelInterface[]|array $collection
+ * @property PrimaryImportModelInterface[]|array $collection
  */
 final class ImportModelCollection extends AbstractCollection
 {
@@ -77,11 +77,11 @@ final class ImportModelCollection extends AbstractCollection
     /**
      * Add an entity.
      *
-     * @param ImportModelInterface $entity
+     * @param PrimaryImportModelInterface $entity
      *
      * @return $this
      */
-    public function attach(ImportModelInterface $entity)
+    public function attach(PrimaryImportModelInterface $entity)
     {
         $this->collection[] = $entity;
 
@@ -91,11 +91,11 @@ final class ImportModelCollection extends AbstractCollection
     /**
      * Remove an entity.
      *
-     * @param ImportModelInterface $entity
+     * @param PrimaryImportModelInterface $entity
      *
      * @return $this
      */
-    public function detach(ImportModelInterface $entity)
+    public function detach(PrimaryImportModelInterface $entity)
     {
         $key = array_search($entity, $this->collection, true);
 
@@ -118,7 +118,7 @@ final class ImportModelCollection extends AbstractCollection
         $this->expected_count += $collection->getExpectedCount();
 
         foreach ($collection as $entity) {
-            /* @var ImportModelInterface $entity */
+            /* @var PrimaryImportModelInterface $entity */
             $this->attach($entity);
         }
 
@@ -143,7 +143,7 @@ final class ImportModelCollection extends AbstractCollection
     public function getOids()
     {
         return array_map(
-            function (ImportModelInterface $entity) {
+            function (PrimaryImportModelInterface $entity) {
                 return $entity->getOid();
             },
             $this->collection
@@ -159,7 +159,7 @@ final class ImportModelCollection extends AbstractCollection
     {
         return empty($this->collection) ? 0 : max(
             array_map(
-                function (ImportModelInterface $entity) {
+                function (PrimaryImportModelInterface $entity) {
                     return $entity->getOid();
                 },
                 $this->collection

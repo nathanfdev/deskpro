@@ -28,8 +28,7 @@
 
 namespace Application\ImportBundle\Writer;
 
-use Application\ImportBundle\Importer\ImporterContext;
-use Application\ImportBundle\Model\ImportModelInterface;
+use Application\ImportBundle\Model\PrimaryImportModelInterface;
 
 /**
  * Generator writer interface.
@@ -41,8 +40,8 @@ interface WriterInterface
     /**
      * Writes an entity to the storage.
      *
-     * @param ImporterContext      $context
-     * @param ImportModelInterface $model
+     * @param PrimaryImportModelInterface $model
+     * @param bool                        $dryRun
      */
-    public function writeData(ImporterContext $context, ImportModelInterface $model);
+    public function writeData(PrimaryImportModelInterface $model, $dryRun = false);
 }

@@ -1043,6 +1043,19 @@ class Strings
     }
 
     /**
+     * @param $string
+     *
+     * @return string
+     */
+    public static function slugifyTitleToUnderscore($string)
+    {
+        $string = self::slugifyTitle($string);
+        $string = str_replace('-', '_', $string);
+
+        return $string;
+    }
+
+    /**
      * Converts newlines to paragraphs and breaks. Two consecutive newlines are paragrpahs, all else
      * are breaks.
      *

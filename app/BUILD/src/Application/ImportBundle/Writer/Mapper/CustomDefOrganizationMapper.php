@@ -29,13 +29,14 @@
 namespace Application\ImportBundle\Writer\Mapper;
 
 use Application\DeskPRO\Entity\CustomDefOrganization;
+use Application\ImportBundle\Model\OrganizationCustomDef;
 
 /**
  * Custom def organization record mapper.
  *
  * Class CustomDefOrganization
  */
-class CustomDefOrganizationMapper extends AbstractCustomDefMapper
+class CustomDefOrganizationMapper extends AbstractEntityManagerMapper implements CustomDefMapperInterface
 {
     /**
      * {@inheritdoc}
@@ -43,5 +44,13 @@ class CustomDefOrganizationMapper extends AbstractCustomDefMapper
     public static function getEntityClass()
     {
         return CustomDefOrganization::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getModelClass()
+    {
+        return OrganizationCustomDef::class;
     }
 }

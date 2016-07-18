@@ -35,7 +35,7 @@ use Application\DeskPRO\Entity\NewsCategory;
  *
  * Class NewsCategory
  */
-class NewsCategoryMapper extends AbstractTitleMapper
+class NewsCategoryMapper extends AbstractCategoryMapper
 {
     /**
      * {@inheritdoc}

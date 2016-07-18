@@ -29,6 +29,7 @@
 namespace Application\ImportBundle\Writer\Mapper;
 
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleAttachment;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\CustomDefArticle;
@@ -41,6 +42,7 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackAttachment;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\ImportMap;
 use Application\DeskPRO\Entity\Language;
@@ -48,8 +50,11 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\ObjectLang;
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\OrganizationContactData;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMessage;
@@ -117,6 +122,14 @@ class MapperRegistry
     }
 
     /**
+     * @return PersonContactDataMapper
+     */
+    public function getPersonContactDataMapper()
+    {
+        return $this->getMapper(PersonContactData::class);
+    }
+
+    /**
      * Returns the person custom def mapper.
      *
      * @return CustomDefPersonMapper
@@ -164,6 +177,16 @@ class MapperRegistry
     public function getArticleCategoryMapper()
     {
         return $this->getMapper(ArticleCategory::class);
+    }
+
+    /**
+     * Returns the article attachment mapper.
+     *
+     * @return ArticleCategoryMapper
+     */
+    public function getArticleAttachmentMapper()
+    {
+        return $this->getMapper(ArticleAttachment::class);
     }
 
     /**
@@ -229,6 +252,16 @@ class MapperRegistry
     /**
      * Returns the feedback custom def mapper.
      *
+     * @return FeedbackAttachmentMapper
+     */
+    public function getFeedbackAttachmentMapper()
+    {
+        return $this->getMapper(FeedbackAttachment::class);
+    }
+
+    /**
+     * Returns the feedback custom def mapper.
+     *
      * @return CustomDefFeedbackMapper
      */
     public function getFeedbackCustomDefMapper()
@@ -287,6 +320,16 @@ class MapperRegistry
     }
 
     /**
+     * Returns the ticket category mapper.
+     *
+     * @return TicketAttachmentMapper
+     */
+    public function getTicketAttachmentMapper()
+    {
+        return $this->getMapper(TicketAttachment::class);
+    }
+
+    /**
      * Returns the ticket message mapper.
      *
      * @return TicketMessageMapper
@@ -324,6 +367,14 @@ class MapperRegistry
     public function getOrganizationMapper()
     {
         return $this->getMapper(Organization::class);
+    }
+
+    /**
+     * @return OrganizationContactDataMapper
+     */
+    public function getOrganizationContactDataMapper()
+    {
+        return $this->getMapper(OrganizationContactData::class);
     }
 
     /**

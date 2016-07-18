@@ -542,7 +542,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
     }
 
     /**
-     * @return ArrayCollection
+     * @return ArrayCollection|CustomDataFeedback[]
      */
     public function getCustomData()
     {
@@ -933,8 +933,9 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'comments',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackComment',
+                'targetEntity' => FeedbackComment::class,
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
                 'mappedBy'     => 'feedback',
             ]
         );

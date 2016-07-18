@@ -29,6 +29,8 @@
 namespace Application\ImportBundle\Writer\Mapper;
 
 use Application\DeskPRO\Entity\ImportMap;
+use Application\ImportBundle\Model\OidAwareModelInterface;
+use Orb\Util\Strings;
 
 /**
  * Import map record mapper.
@@ -46,45 +48,71 @@ class ImportMapMapper extends AbstractEntityManagerMapper
     }
 
     /**
-     * Find an entity mapping.
+     * @param OidAwareModelInterface $model
      *
-     * @param string $type
-     * @param int    $id
+     * @return ImportMap
+     */
+    public function findOneByModel(OidAwareModelInterface $model)
+    {
+        if (!$model->getOid()) {
+            throw new \RuntimeException('Primary entity does not have OID. Unable to find existing entity ID by import map reference.');
+        }
+
+        $criteria = [
+            'old_id'   => $model->getOid(),
+            'typename' => self::getImportMapKey($model),
+        ];
+
+        return $this->findOneBy($criteria, false);
+    }
+
+    /**
+     * @param $model
      *
      * @return string|null
      */
-    public function findRefByOldId($type, $id)
+    public function findIdByModel(OidAwareModelInterface $model)
     {
-        /** @var ImportMap $mapping */
-        $mapping = $this->findOneBy([
-            'old_id'   => $id,
-            'typename' => $type,
-        ], false);
+        $mapEntity = $this->findOneByModel($model);
 
-        return $mapping ? $mapping->getNewId() : null;
+        return $mapEntity ? $mapEntity->getNewId() : null;
     }
 
     /**
      * Saves an entity mapping.
      *
-     * @param string $type
-     * @param int    $old_id
-     * @param int    $ref
+     * @param OidAwareModelInterface $model
+     * @param mixed                  $entity
      *
      * @return $this
      */
-    public function saveMapping($type, $old_id, $ref)
+    public function saveMapping(OidAwareModelInterface $model, $entity)
     {
-        $entity = new ImportMap();
-        $entity
-            ->setTypename($type)
-            ->setOldId($old_id)
-            ->setNewId($ref)
+        if (!$model->getOid()) {
+            throw new \RuntimeException('Primary entity does not have OID. Unable to store import map reference.');
+        }
+
+        $mapEntity = $this->findOneByModel($model) ?: new ImportMap();
+        $mapEntity
+            ->setTypename(self::getImportMapKey($model))
+            ->setOldId($model->getOid())
+            ->setNewId($entity->getId())
         ;
 
-        $this->em->persist($entity);
+        $this->em->persist($mapEntity);
         $this->em->flush();
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getImportMapKey($model)
+    {
+        $modelClass = (new \ReflectionClass($model))->getShortName();
+        $modelClass = Strings::camelCaseToUnderscore($modelClass);
+
+        return 'importer_'.$modelClass;
     }
 }

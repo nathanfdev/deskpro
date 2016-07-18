@@ -28,7 +28,7 @@
 
 namespace Application\ImportBundle\Writer\EntityHandler;
 
-use Application\ImportBundle\Model\ImportModelInterface;
+use Application\ImportBundle\Model\PrimaryImportModelInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -65,25 +65,19 @@ class EntityHandlerRegistry
     }
 
     /**
-     * @param ImportModelInterface $model
+     * @param PrimaryImportModelInterface $model
      *
      * @throws \Exception
      *
      * @return EntityHandlerInterface
      */
-    public function getHandlers(ImportModelInterface $model)
+    public function getHandler(PrimaryImportModelInterface $model)
     {
         $modelClass = get_class($model);
-
         if (!isset($this->handlers[$modelClass])) {
             throw new \Exception("Importer entity handler with $model not found");
         }
 
-        $handlers = [];
-        foreach ($this->handlers[$modelClass] as $id) {
-            $handlers[] = $this->container->get($id);
-        }
-
-        return $handlers;
+        return $this->container->get($this->handlers[$modelClass]);
     }
 }

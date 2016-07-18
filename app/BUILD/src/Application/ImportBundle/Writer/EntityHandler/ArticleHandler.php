@@ -28,13 +28,9 @@
 
 namespace Application\ImportBundle\Writer\EntityHandler;
 
-use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\DeskPRO\Entity;
 use Application\ImportBundle\Model;
-use Application\ImportBundle\Writer\Helper\BlobAdapter;
-use Application\ImportBundle\Writer\Helper\CustomDataHelper;
-use Application\ImportBundle\Writer\Helper\LabelHelper;
-use Application\ImportBundle\Writer\Mapper\MapperRegistry;
-use Psr\Log\LoggerInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO article importer.
@@ -43,24 +39,6 @@ use Psr\Log\LoggerInterface;
  */
 class ArticleHandler extends AbstractEntityHandler
 {
-    /**
-     * @var BlobAdapter
-     */
-    private $blobAdapter;
-
-    /**
-     * Constructor.
-     *
-     * @param MapperRegistry  $mappers
-     * @param LoggerInterface $logger
-     * @param BlobAdapter     $blobAdapter
-     */
-    public function __construct(MapperRegistry $mappers, LoggerInterface $logger, BlobAdapter $blobAdapter)
-    {
-        parent::__construct($mappers, $logger);
-        $this->blobAdapter = $blobAdapter;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -71,159 +49,68 @@ class ArticleHandler extends AbstractEntityHandler
 
     /**
      * {@inheritdoc}
+     *
+     * @param Model\Article $model
      */
-    public function prepare(Model\ImportModelInterface $model, $entityId = null)
+    public function writeModel(Model\PrimaryImportModelInterface $model)
     {
-        if (!$model instanceof Model\Article) {
-            Model\UnexpectedException::throwUnexpectedEntityTypeException($model);
-        }
-
-        $entity = $this->findOrCreateArticle($entityId);
+        /** @var Entity\Article $entity */
+        $entity = $this->findOrCreateEntity($this->mappers->getArticleMapper(), $model);
         $entity
             ->setTitle($model->getTitle())
             ->setContent($model->getContent())
             ->setStatus($model->getStatus())
-            ->setPerson($this->mappers->getPersonMapper()->findOneByEmail($model->getPerson()))
-            ->setLanguage($this->findLanguage($model->getLanguage()))
-            ->setDateCreated($model->getDateCreated())
+            ->setLanguage($this->helpers->getLanguageHelper()->findLanguage($model->getLanguage()))
             ->setDatePublished($model->getDatePublished())
             ->setDateEnd($model->getDateEnd())
             ->setEndAction($model->getEndAction())
             ->setViewCount($model->getViewCount())
-            ->resetCategories()
-            ->resetAttachments()
         ;
 
-        if ($entity->getId()) {
-            $this->mappers->getArticleCommentMapper()->resetComments($entity->getId());
-            $this->mappers->getObjectLangMapper()->removeBy('articles', $entity->getId());
+        if ($model->getDateCreated()) {
+            $entity->setDateCreated($model->getDateCreated());
+        }
+        if ($model->getPerson()) {
+            $entity->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()));
+        } else {
+            $entity->setPerson(null);
         }
 
-        foreach ($model->getCategories() as $category) {
-            $entity->addToCategory($this->findOrCreateArticleCategory($category));
-        }
-        foreach ($model->getAttachments() as $attachment) {
-            $attachment = $this->createAttachment($attachment, $model->getPerson());
-            if ($attachment) {
-                $entity->addAttachment($attachment);
-            }
-        }
-        foreach ($model->getComments() as $comment) {
-            $entity->addComment($this->createArticleComment($comment));
-        }
+        $this->helpers->getCustomDataHelper()->updateCustomData($this->mappers->getArticleCustomDefMapper(), $model, $entity);
+        $this->helpers->getLabelHelper()->updateLabels($model, $entity, Entity\LabelArticle::class);
 
-        $labelsHelper = new LabelHelper($this->logger);
-        $labelsHelper->updateLabels($model, $entity, DeskPROEntity\LabelArticle::class);
+        // update article categories
+        $newCategories = new ArrayCollection();
+        foreach ($model->getCategories() as $categoryPath) {
+            /** @var Entity\ArticleCategory $categoryEntity */
+            $categoryEntity = $this->helpers->getCategoryHelper()->findOrCreateCategory(
+                $this->mappers->getArticleCategoryMapper(),
+                $categoryPath
+            );
 
-        $customDataHelper = new CustomDataHelper($this->mappers->getArticleCustomDefMapper(), $this->logger);
-        $customDataHelper->updateCustomData($model, $entity, $this->records);
-
-        foreach ($model->getUniqueTranslations() as $translation) {
-            $this->addObjectLang($translation, $entity);
+            $entity->addToCategory($categoryEntity);
+            $newCategories->add($categoryEntity);
         }
 
-        $this->records->setPrimaryEntity($entity);
-    }
-
-    /**
-     * Returns an article by oid
-     * Creates a new article if not found.
-     *
-     * @param int $entity_id
-     *
-     * @return DeskPROEntity\Article
-     */
-    protected function findOrCreateArticle($entity_id)
-    {
-        $article = $this->mappers->getArticleMapper()->findOneBy(['id' => $entity_id], false);
-        if ($article) {
-            $this->logger->debug(sprintf('Found existing article `%s`', $article->getRealTitle()));
-
-            return $article;
-        }
-
-        $this->logger->debug('Creating new article');
-
-        return new DeskPROEntity\Article();
-    }
-
-    /**
-     * Creates an article comment entity.
-     *
-     * @param Model\ArticleComment $entity
-     *
-     * @return DeskPROEntity\ArticleComment
-     */
-    public function createArticleComment(Model\ArticleComment $entity)
-    {
-        $article_comment = new DeskPROEntity\ArticleComment();
-        $article_comment
-            ->setPerson($this->mappers->getPersonMapper()->findOneByEmail($entity->getPerson(), false))
-            ->setContent($entity->getContent())
-            ->setStatus($entity->getStatus())
-            ->setDateCreated($entity->getDateCreated())
-        ;
-
-        $this->records->addRelatedEntity($article_comment);
-
-        return $article_comment;
-    }
-
-    /**
-     * Returns the importing DeskPRO doctrine article attachment entity.
-     *
-     * @param Model\Attachment $entity
-     * @param string           $personEmail
-     *
-     * @return DeskPROEntity\ArticleAttachment
-     */
-    private function createAttachment(Model\Attachment $entity, $personEmail)
-    {
-        $blob = $this->blobAdapter->createByBlob($entity, false);
-        if (!$blob) {
-            return false;
-        }
-
-        $person = $this->mappers->getPersonMapper()->findOneByEmail($entity->getPerson() ?: $personEmail, false);
-        if (!$person) {
-            return false;
-        }
-
-        $attachment = new DeskPROEntity\ArticleAttachment();
-        $attachment
-            ->setPerson($person)
-            ->setBlob($blob)
-        ;
-
-        return $attachment;
-    }
-
-    /**
-     * Returns an article category by title
-     * Creates a new article category if not found.
-     *
-     * @param string $title
-     *
-     * @throws \Exception
-     *
-     * @return DeskPROEntity\ArticleCategory|null
-     */
-    private function findOrCreateArticleCategory($title)
-    {
-        $category = null;
-        if ($title) {
-            $category = $this->mappers->getArticleCategoryMapper()->findOneByTitle($title, false);
-            if ($category) {
-                $this->logger->debug(sprintf('Found existing article category `%s`', $category->getTitle()));
-            } else {
-                $category = new DeskPROEntity\ArticleCategory();
-                $category->setRealTitle($title);
-
-                $this->records->addRelatedEntity($category);
-                $this->logger->info(sprintf('New article category creating `%s`', $category->getTitle()));
+        foreach ($entity->getCategories() as $category) {
+            if (!$newCategories->contains($category)) {
+                $entity->removeFromCategory($category);
             }
         }
 
-        return $category;
+        // persist basic entity
+        $this->persister->persistAndFlush($entity, $model);
+
+        // persist others related entities which contains own oids
+        foreach ($model->getComments() as $commentModel) {
+            $this->helpers->getCommentHelper()->createOrUpdateComment(
+                $this->mappers->getArticleCommentMapper(), $commentModel, $entity
+            );
+        }
+        foreach ($model->getAttachments() as $attachmentModel) {
+            $this->helpers->getAttachmentHelper()->createOrUpdateAttachment(
+                $this->mappers->getArticleAttachmentMapper(), $attachmentModel, $entity
+            );
+        }
     }
 }

@@ -33,16 +33,7 @@ use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Importer\ImporterContext;
 use Application\ImportBundle\Model\BatchConfig;
 use DpSys\LowError\SystemErrorHandler;
-use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\StreamHandler;
-use Monolog\Processor\MemoryUsageProcessor;
-use Orb\Util\OptionsArray;
-use Psr\Log\LoggerInterface;
 use RuntimeException;
-use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
-use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -58,13 +49,15 @@ use Symfony\Component\Process\Process;
  *
  * Class AbstractExportCommand
  */
-class ApplyCommand extends ContainerAwareCommand
+class ApplyCommand extends AbstractImporterCommand
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
+        parent::configure();
+
         $this
             ->setName('import:apply')
             ->setHelp('Executes the importer.')
@@ -80,46 +73,16 @@ class ApplyCommand extends ContainerAwareCommand
                 'The path to the directory where the exporting files are present'
             )
             ->addOption(
-                'output-path',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'The path to the directory where the files should be exported'
-            )
-            ->addOption(
-                'batch-config',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'The path to the directory where the exporter batch config is located'
-            )
-            ->addOption(
                 'dry-run',
                 null,
                 InputOption::VALUE_NONE,
                 'A writer does not flush data'
             )
             ->addOption(
-                'silent',
-                null,
-                InputOption::VALUE_NONE,
-                'No progressbar'
-            )
-            ->addOption(
                 'batch',
                 'b',
                 InputOption::VALUE_NONE,
                 'Runs only the next batch'
-            )
-            ->addOption(
-                'memory-usage',
-                'm',
-                InputOption::VALUE_NONE,
-                'Shows memory usage'
-            )
-            ->addOption(
-                'config-from-db',
-                'c',
-                InputOption::VALUE_NONE,
-                'Whether to load config from DB'
             )
         ;
     }
@@ -242,14 +205,11 @@ class ApplyCommand extends ContainerAwareCommand
     protected function executeBatchRun(InputInterface $input, OutputInterface $output)
     {
         $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
+        $logger = $this->getContainer()->get('dp.importer_logger');
 
         try {
             $context = $this->createGeneratorContext($input);
-            $logger  = $this->setLoggerHandlers($context, $input, $output);
-
-            if ($context->isSilent()) {
-                $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
-            }
+            $this->setLoggerHandlers($input, $output);
 
             $generator = $this->getContainer()->get('dp.importer');
             $generator->generate($context);
@@ -257,7 +217,7 @@ class ApplyCommand extends ContainerAwareCommand
             $output->writeln('');
             $output->writeln(sprintf(
                 'Done. Import was successful. Look at the log file `%s` to see details.',
-                $context->getLogPath()
+                $this->getLogFilePath()
             ));
 
             return 0;
@@ -271,7 +231,7 @@ class ApplyCommand extends ContainerAwareCommand
             if (isset($context)) {
                 $output->writeln(sprintf(
                     'An error has occurred while import. Look at the log file `%s` to see details.',
-                    $context->getLogPath()
+                    $this->getLogFilePath()
                 ));
             }
 
@@ -294,110 +254,36 @@ class ApplyCommand extends ContainerAwareCommand
     {
         $config = new ImporterContext();
 
-        $import_config = new OptionsArray($this->getContainer()->get('deskpro.app_env')->getConfig('import', []));
-        $config->setLogPath($import_config->get('log_path', dp_get_log_dir().'/export.log'));
-
-        $config->setInputPath($input->getOption('input-path'));
-        if ($input->hasOption('log-path')) {
-            $config->setLogPath($input->getOption('log-path'));
-        }
-        if ($input->hasOption('verbose')) {
-            $config->setVerbose($input->getOption('verbose'));
+        if ($input->getOption('input-path')) {
+            $config->setInputPath($input->getOption('input-path'));
+        } else {
+            $config->setInputPath($this->getImporterDefaultOutputPath());
         }
         if ($input->hasOption('dry-run')) {
             $config->setDryRun($input->getOption('dry-run'));
         }
-        if ($input->hasOption('silent')) {
-            $config->setSilent($input->getOption('silent'));
-        }
 
-        if (!$config->getInputPath()) {
-            throw new RuntimeException('Input path must be specified');
-        }
-
-        $batch_config_file = null;
         $config->setBatchConfig(null);
 
         // Tries to get batch.json from output or input path
+        $batchFilePath = null;
         if ($config->getBatchFilePath()) {
             if (@file_exists($config->getBatchFilePath())) {
-                $batch_config_file = $config->getBatchFilePath();
+                $batchFilePath = $config->getBatchFilePath();
             }
         }
 
-        // Tries to get custom batch.json from "batch-config" option
-        if ($input->hasOption('batch-config')) {
-            if ($input->getOption('batch-config')) {
-                $batch_config_file = $input->getOption('batch-config');
-            }
-        }
-
-        if ($batch_config_file) {
-            if (!file_exists($batch_config_file)) {
-                throw new FileNotFoundException(sprintf('Batch config `%s` not found', $batch_config_file));
+        if ($batchFilePath) {
+            if (!file_exists($batchFilePath)) {
+                throw new FileNotFoundException(sprintf('Batch config `%s` not found', $batchFilePath));
             }
 
             $serializer = $this->getContainer()->get('serializer');
-            $data       = file_get_contents($batch_config_file);
+            $data       = file_get_contents($batchFilePath);
 
             $config->setBatchConfig($serializer->deserialize($data, BatchConfig::class, 'json'));
         }
 
         return $config;
-    }
-
-    /**
-     * Create a logger.
-     *
-     * @param ImporterContext $config
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return LoggerInterface
-     */
-    protected function setLoggerHandlers(ImporterContext $config, InputInterface $input, OutputInterface $output)
-    {
-        $logger = $this->getContainer()->get('dp.importer_logger');
-
-        $formatter = new LineFormatter();
-        $formatter->ignoreEmptyContextAndExtra(true);
-        $formatter->allowInlineLineBreaks(true);
-
-        if ($config->getLogPath()) {
-            $handler = new StreamHandler($config->getLogPath());
-            $handler->setFormatter($formatter);
-            $logger->pushHandler($handler);
-        }
-
-        $handler = new StreamHandler(dp_get_log_dir().'/export_perm.log');
-        $handler->setFormatter($formatter);
-
-        $logger->pushHandler($handler);
-
-        if ($config->isConsoleOutputEnabled()) {
-            $formatter = new ConsoleFormatter();
-            $formatter->ignoreEmptyContextAndExtra(true);
-            $formatter->allowInlineLineBreaks(true);
-
-            $handler = new ConsoleHandler($output);
-            $handler->setFormatter($formatter);
-
-            $logger->pushHandler($handler);
-        }
-        if ($input->getOption('memory-usage')) {
-            $logger->pushProcessor(new MemoryUsageProcessor());
-        }
-
-        return $logger;
-    }
-
-    /**
-     * Override container to set correct type hinting.
-     *
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    protected function getContainer()
-    {
-        return parent::getContainer();
     }
 }

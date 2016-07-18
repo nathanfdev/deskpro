@@ -28,13 +28,8 @@
 
 namespace Application\ImportBundle\Writer\EntityHandler;
 
-use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\DeskPRO\Entity;
 use Application\ImportBundle\Model;
-use Application\ImportBundle\Writer\Helper\BlobAdapter;
-use Application\ImportBundle\Writer\Helper\CustomDataHelper;
-use Application\ImportBundle\Writer\Helper\LabelHelper;
-use Application\ImportBundle\Writer\Mapper\MapperRegistry;
-use Psr\Log\LoggerInterface;
 
 /**
  * DeskPRO feedback importer.
@@ -43,24 +38,6 @@ use Psr\Log\LoggerInterface;
  */
 class FeedbackHandler extends AbstractEntityHandler
 {
-    /**
-     * @var BlobAdapter
-     */
-    private $blobAdapter;
-
-    /**
-     * Constructor.
-     *
-     * @param MapperRegistry  $mappers
-     * @param BlobAdapter     $blobAdapter
-     * @param LoggerInterface $logger
-     */
-    public function __construct(MapperRegistry $mappers, LoggerInterface $logger, BlobAdapter $blobAdapter)
-    {
-        parent::__construct($mappers, $logger);
-        $this->blobAdapter = $blobAdapter;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -74,87 +51,51 @@ class FeedbackHandler extends AbstractEntityHandler
      *
      * @param Model\Feedback $model
      */
-    public function prepare(Model\ImportModelInterface $model, $entityId = null)
+    public function writeModel(Model\PrimaryImportModelInterface $model)
     {
-        $entity = $this->mappers->getFeedbackMapper()->findOneByTitle($model->getTitle(), false) ?: new DeskPROEntity\Feedback();
+        /** @var Entity\Feedback $entity */
+        $entity = $this->findOrCreateEntity($this->mappers->getFeedbackMapper(), $model);
         $entity
             ->setTitle($model->getTitle())
             ->setContent($model->getContent())
-            ->setPerson($this->mappers->getPersonMapper()->findOneByEmail($model->getPerson()))
-            ->setLanguage($this->findLanguage($model->getLanguage()))
-            ->setCategory($this->findOrCreateFeedbackCategory($model->getCategory()))
-            ->setDateCreated($model->getDateCreated())
+            ->setStatus($model->getStatus())
+            ->setLanguage($this->helpers->getLanguageHelper()->findLanguage($model->getLanguage()))
             ->setDatePublished($model->getDatePublished())
             ->setViewCount($model->getViewCount())
         ;
 
-        foreach ($model->getAttachments() as $attachment) {
-            $entity->addAttachment($this->createAttachment(
-                $attachment,
-                $model->getPerson()
+        if ($model->getDateCreated()) {
+            $entity->setDateCreated($model->getDateCreated());
+        }
+
+        // update feedback person
+        if ($model->getPerson()) {
+            $entity->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()));
+        } else {
+            $entity->setPerson(null);
+        }
+
+        // update feedback category
+        if ($model->getCategory()) {
+            $entity->setCategory($this->helpers->getCategoryHelper()->findOrCreateCategory(
+                $this->mappers->getFeedbackCategoryMapper(),
+                $model->getCategory()
             ));
+        } else {
+            $entity->setCategory(null);
         }
 
-        $labelsHelper = new LabelHelper($this->logger);
-        $labelsHelper->updateLabels($model, $entity, DeskPROEntity\LabelFeedback::class);
+        $this->helpers->getCustomDataHelper()->updateCustomData($this->mappers->getFeedbackCustomDefMapper(), $model, $entity);
+        $this->helpers->getLabelHelper()->updateLabels($model, $entity, Entity\LabelFeedback::class);
 
-        $customDataHelper = new CustomDataHelper($this->mappers->getFeedbackCustomDefMapper(), $this->logger);
-        $customDataHelper->updateCustomData($model, $entity, $this->records);
+        // persist basic entity
+        $this->persister->persistAndFlush($entity, $model);
 
-        $this->records->setPrimaryEntity($entity);
-    }
-
-    /**
-     * Returns an feedback category by title.
-     * Creates a new feedback category if not found.
-     *
-     * @param string $title
-     *
-     * @throws \Exception
-     *
-     * @return DeskPROEntity\FeedbackCategory|null
-     */
-    private function findOrCreateFeedbackCategory($title)
-    {
-        $category = null;
-        if ($title) {
-            $category = $this->mappers->getFeedbackCategoryMapper()->findOneByTitle($title, false);
-            if ($category) {
-                $this->logger->debug(sprintf('Found existing feedback category `%s`', $category->getTitle()));
-            } else {
-                $category = new DeskPROEntity\FeedbackCategory();
-                $category->setRealTitle($title);
-
-                $this->records->addRelatedEntity($category);
-                $this->logger->info(sprintf('New feedback category creating `%s`', $category->getTitle()));
-            }
+        // persist others related entities which contains own oids
+        foreach ($model->getAttachments() as $attachmentModel) {
+            $this->helpers->getAttachmentHelper()->createOrUpdateAttachment(
+                $this->mappers->getFeedbackAttachmentMapper(), $attachmentModel, $entity
+            );
         }
-
-        return $category;
-    }
-
-    /**
-     * Returns the importing DeskPRO doctrine feedback attachment entity.
-     *
-     * @param Model\Attachment $entity
-     * @param string           $person_email
-     *
-     * @return DeskPROEntity\FeedbackAttachment
-     */
-    private function createAttachment(Model\Attachment $entity, $person_email)
-    {
-        $email = $entity->getPerson() ?: $person_email;
-        $blob  = $this->blobAdapter->createByBlob($entity);
-
-        $attachment = new DeskPROEntity\FeedbackAttachment();
-        $attachment
-            ->setPerson($this->mappers->getPersonMapper()->findOneByEmail($email))
-            ->setBlob($blob)
-        ;
-
-        $this->records->addRelatedEntity($attachment);
-        $this->records->addRelatedEntity($blob);
-
-        return $attachment;
     }
 }

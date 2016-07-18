@@ -35,7 +35,7 @@ use Application\DeskPRO\Entity\TicketMessage;
  * 
  * Class TicketMessage
  */
-class TicketMessageMapper extends AbstractImportMapMapper
+class TicketMessageMapper extends AbstractEntityManagerMapper
 {
     /**
      * {@inheritdoc}
@@ -43,33 +43,5 @@ class TicketMessageMapper extends AbstractImportMapMapper
     public static function getEntityClass()
     {
         return TicketMessage::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findOneBy(array $criteria, $throw_exception = true)
-    {
-        $entity = null;
-        $id     = $this->findImportMapNewId($criteria);
-
-        if ($id) {
-            $entity = $this->em->getRepository(TicketMessage::class)->find($id);
-        } else {
-            if (isset($criteria['entity'])) {
-                unset($criteria['entity']);
-            }
-
-            if (!empty($criteria)) {
-                $entity = $this->em->getRepository(TicketMessage::class)->findOneBy($criteria);
-            }
-        }
-
-        /** @var TicketMessage $entity */
-        if (!$entity && $throw_exception) {
-            throw new MapperException('Ticket message not found', $criteria);
-        }
-
-        return $entity;
     }
 }

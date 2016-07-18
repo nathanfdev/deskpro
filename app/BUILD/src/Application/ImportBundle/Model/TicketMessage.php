@@ -36,14 +36,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * Class TicketMessage
  */
-class TicketMessage extends AbstractImportModel implements PersonAwareInterface, AttachmentsAwareInterface
+class TicketMessage implements PersonAwareInterface, AttachmentsAwareInterface, OidAwareModelInterface
 {
     /**
-     * @var Ticket
+     * @var int
      *
-     * @JMS\Exclude()
+     * @JMS\Type("string")
+     *
+     * @Assert\NotBlank()
      */
-    private $ticket;
+    private $oid;
 
     /**
      * @var string
@@ -51,7 +53,6 @@ class TicketMessage extends AbstractImportModel implements PersonAwareInterface,
      * @JMS\Type("string")
      *
      * @Assert\NotBlank()
-     * @Assert\Email(strict="true")
      */
     private $person;
 
@@ -99,23 +100,11 @@ class TicketMessage extends AbstractImportModel implements PersonAwareInterface,
     private $attachments = [];
 
     /**
-     * @return Ticket
+     * @param string $oid
      */
-    public function getTicket()
+    public function setOid($oid)
     {
-        return $this->ticket;
-    }
-
-    /**
-     * @param Ticket $ticket
-     *
-     * @return $this
-     */
-    public function setTicket(Ticket $ticket)
-    {
-        $this->ticket = $ticket;
-
-        return $this;
+        $this->oid = $oid;
     }
 
     /**
@@ -123,7 +112,7 @@ class TicketMessage extends AbstractImportModel implements PersonAwareInterface,
      */
     public function getOid()
     {
-        return ($this->ticket ? $this->ticket->getOid().'-' : '').parent::getOid();
+        return $this->oid;
     }
 
     /**
@@ -137,9 +126,9 @@ class TicketMessage extends AbstractImportModel implements PersonAwareInterface,
     /**
      * {@inheritdoc}
      */
-    public function setPerson($person_email)
+    public function setPerson($person)
     {
-        $this->person = $person_email;
+        $this->person = $person;
 
         return $this;
     }

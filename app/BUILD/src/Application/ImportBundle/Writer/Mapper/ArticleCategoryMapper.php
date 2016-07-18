@@ -35,7 +35,7 @@ use Application\DeskPRO\Entity\ArticleCategory;
  *
  * Class ArticleCategory
  */
-class ArticleCategoryMapper extends AbstractEntityManagerMapper implements MapperByTitleInterface
+class ArticleCategoryMapper extends AbstractCategoryMapper
 {
     /**
      * {@inheritdoc}
@@ -43,45 +43,5 @@ class ArticleCategoryMapper extends AbstractEntityManagerMapper implements Mappe
     public static function getEntityClass()
     {
         return ArticleCategory::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findOneByTitle($title, $throw_exception = true)
-    {
-        return $this->findDeepCategory($title, null, $throw_exception);
-    }
-
-    /**
-     * Find a category
-     * We store value for categories like "A > A1".
-     *
-     * Category 1
-     *   SubCategory A
-     *   SubCategory B
-     *
-     * @param array|string         $category_path
-     * @param ArticleCategory|null $parent
-     * @param bool                 $throw_exception
-     *
-     * @return ArticleCategoryMapper
-     */
-    public function findDeepCategory($category_path, ArticleCategory $parent = null, $throw_exception = true)
-    {
-        if (is_string($category_path)) {
-            $category_path = explode('>', $category_path);
-            $category_path = array_map('trim', $category_path);
-        }
-
-        $category = $this->findOneBy(
-            [
-                'title'  => array_shift($category_path),
-                'parent' => $parent ? $parent->getId() : null,
-            ],
-            $throw_exception
-        );
-
-        return empty($category_path) ? $category : $this->findDeepCategory($category_path, $category, $throw_exception);
     }
 }

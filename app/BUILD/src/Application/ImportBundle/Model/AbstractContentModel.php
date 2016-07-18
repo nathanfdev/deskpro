@@ -37,8 +37,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * Class AbstractContentEntity
  */
-abstract class AbstractContentModel extends AbstractImportModel implements ContentAwareInterface
+abstract class AbstractContentModel implements ContentAwareInterface
 {
+    use PrimaryImportModelTrait;
+
     /**
      * @var string
      *
@@ -61,8 +63,6 @@ abstract class AbstractContentModel extends AbstractImportModel implements Conte
      * @var string
      *
      * @JMS\Type("string")
-     *
-     * @Assert\NotBlank()
      */
     protected $language;
 
@@ -90,27 +90,6 @@ abstract class AbstractContentModel extends AbstractImportModel implements Conte
      * @JMS\Type("integer")
      */
     protected $view_count = 0;
-
-    /**
-     * @var int
-     *
-     * @JMS\Type("integer")
-     */
-    protected $total_rating = 0;
-
-    /**
-     * @var int
-     *
-     * @JMS\Type("integer")
-     */
-    protected $num_comments = 0;
-
-    /**
-     * @var int
-     *
-     * @JMS\Type("integer")
-     */
-    protected $num_ratings = 0;
 
     /**
      * @var \DateTime
@@ -197,7 +176,7 @@ abstract class AbstractContentModel extends AbstractImportModel implements Conte
      */
     public function setStatus($status)
     {
-        $this->status = $status ?: 'hidden.'.ContentAbstract::HIDDEN_STATUS_UNPUBLISHED;
+        $this->status = $status ?: ContentAbstract::STATUS_HIDDEN.'.'.ContentAbstract::HIDDEN_STATUS_UNPUBLISHED;
 
         return $this;
     }
@@ -216,60 +195,6 @@ abstract class AbstractContentModel extends AbstractImportModel implements Conte
     public function setViewCount($view_count)
     {
         $this->view_count = (int) $view_count;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTotalRating()
-    {
-        return $this->total_rating;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setTotalRating($total_rating)
-    {
-        $this->total_rating = (int) $total_rating;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getNumComments()
-    {
-        return $this->num_comments;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setNumComments($num_comments)
-    {
-        $this->num_comments = (int) $num_comments;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getNumRatings()
-    {
-        return $this->num_ratings;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setNumRatings($num_ratings)
-    {
-        $this->num_ratings = (int) $num_ratings;
 
         return $this;
     }

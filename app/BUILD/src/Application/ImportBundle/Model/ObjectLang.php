@@ -34,7 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class ObjectLang.
  */
-class ObjectLang extends AbstractImportModel
+class ObjectLang
 {
     /**
      * @var string

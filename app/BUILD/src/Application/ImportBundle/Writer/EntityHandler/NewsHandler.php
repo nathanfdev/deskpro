@@ -28,9 +28,8 @@
 
 namespace Application\ImportBundle\Writer\EntityHandler;
 
-use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\DeskPRO\Entity;
 use Application\ImportBundle\Model;
-use Application\ImportBundle\Writer\Helper\LabelHelper;
 
 /**
  * DeskPRO news importer.
@@ -52,50 +51,43 @@ class NewsHandler extends AbstractEntityHandler
      *
      * @param Model\News $model
      */
-    public function prepare(Model\ImportModelInterface $model, $entityId = null)
+    public function writeModel(Model\PrimaryImportModelInterface $model)
     {
-        $entity = $this->mappers->getNewsMapper()->findOneByTitle($model->getTitle(), false) ?: new DeskPROEntity\News();
+        /** @var Entity\News $entity */
+        $entity = $this->findOrCreateEntity($this->mappers->getNewsMapper(), $model);
         $entity
             ->setTitle($model->getTitle())
             ->setContent($model->getContent())
-            ->setPerson($this->mappers->getPersonMapper()->findOneByEmail($model->getPerson()))
-            ->setLanguage($this->findLanguage($model->getLanguage()))
-            ->setCategory($this->findOrCreateNewsCategory($model->getCategory()))
-            ->setDateCreated($model->getDateCreated())
+            ->setStatus($model->getStatus())
+            ->setLanguage($this->helpers->getLanguageHelper()->findLanguage($model->getLanguage()))
             ->setDatePublished($model->getDatePublished())
             ->setViewCount($model->getViewCount())
         ;
 
-        $labelsHelper = new LabelHelper($this->logger);
-        $labelsHelper->updateLabels($model, $entity, DeskPROEntity\LabelNews::class);
-
-        $this->records->setPrimaryEntity($entity);
-    }
-
-    /**
-     * Returns an feedback category by title
-     * Creates a new feedback category if not found.
-     *
-     * @param string $title
-     *
-     * @return DeskPROEntity\NewsCategory|null
-     */
-    private function findOrCreateNewsCategory($title)
-    {
-        $category = null;
-        if ($title) {
-            $category = $this->mappers->getNewsCategoryMapper()->findOneByTitle($title, false);
-            if ($category) {
-                $this->logger->debug(sprintf('Found existing news category `%s`', $category->getTitle()));
-            } else {
-                $category = new DeskPROEntity\NewsCategory();
-                $category->setRealTitle($title);
-
-                $this->records->addRelatedEntity($category);
-                $this->logger->info(sprintf('New news category creating `%s`', $category->getTitle()));
-            }
+        if ($model->getDateCreated()) {
+            $entity->setDateCreated($model->getDateCreated());
         }
 
-        return $category;
+        // update news person
+        if ($model->getPerson()) {
+            $entity->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()));
+        } else {
+            $entity->setPerson(null);
+        }
+
+        // update news category
+        if ($model->getCategory()) {
+            $entity->setCategory($this->helpers->getCategoryHelper()->findOrCreateCategory(
+                $this->mappers->getNewsCategoryMapper(),
+                $model->getCategory()
+            ));
+        } else {
+            $entity->setCategory(null);
+        }
+
+        $this->helpers->getLabelHelper()->updateLabels($model, $entity, Entity\LabelNews::class);
+
+        // persist basic entity
+        $this->persister->persistAndFlush($entity, $model);
     }
 }

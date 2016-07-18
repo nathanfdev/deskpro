@@ -35,14 +35,20 @@ use JMS\Serializer\Annotation as JMS;
  */
 class Twitter extends AbstractUserNameContactData
 {
-    protected static $contact_type = 'twitter';
-
     /**
      * @var bool
      *
      * @JMS\Type("boolean")
      */
     protected $displayFeed = false;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getContactType()
+    {
+        return 'twitter';
+    }
 
     /**
      * @return bool

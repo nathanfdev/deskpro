@@ -37,8 +37,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * Class Organization
  */
-class Organization extends AbstractImportModel implements LabelAwareModelInterface, CustomDataOwnerModelInterface
+class Organization implements LabelAwareModelInterface, CustomDataAwareModelInterface, PrimaryImportModelInterface, ContactDataAwareModelInterface
 {
+    use PrimaryImportModelTrait, LabelAwareTrait;
+
     /**
      * @var string
      *
@@ -52,6 +54,8 @@ class Organization extends AbstractImportModel implements LabelAwareModelInterfa
      * @var Blob
      *
      * @JMS\Type("Application\ImportBundle\Model\Blob")
+     *
+     * @Assert\Valid()
      */
     private $picture;
 
@@ -76,7 +80,7 @@ class Organization extends AbstractImportModel implements LabelAwareModelInterfa
      *
      * @Assert\Valid()
      */
-    private $contact_data = [];
+    private $contact_data;
 
     /**
      * @var CustomField[]
@@ -86,17 +90,6 @@ class Organization extends AbstractImportModel implements LabelAwareModelInterfa
      * @Assert\Valid()
      */
     private $custom_fields = [];
-
-    /**
-     * @var string[]
-     *
-     * @JMS\Type("array<string>")
-     *
-     * @Assert\All(constraints={
-     *   @Assert\NotBlank()
-     * })
-     */
-    private $labels = [];
 
     /**
      * Constructor.
@@ -161,7 +154,7 @@ class Organization extends AbstractImportModel implements LabelAwareModelInterfa
      */
     public function getImportance()
     {
-        return $this->importance;
+        return $this->importance ?: 1;
     }
 
     /**
@@ -203,9 +196,7 @@ class Organization extends AbstractImportModel implements LabelAwareModelInterfa
     }
 
     /**
-     * Returns organization contact data.
-     *
-     * @return ContactData
+     * {@inheritdoc}
      */
     public function getContactData()
     {
@@ -213,7 +204,7 @@ class Organization extends AbstractImportModel implements LabelAwareModelInterfa
     }
 
     /**
-     * @return CustomField[]
+     * {@inheritdoc}
      */
     public function getCustomFields()
     {
@@ -221,31 +212,11 @@ class Organization extends AbstractImportModel implements LabelAwareModelInterfa
     }
 
     /**
-     * @param CustomField $custom_field
-     *
-     * @return $this
+     * {@inheritdoc}
      */
     public function addCustomField(CustomField $custom_field)
     {
         $this->custom_fields[] = $custom_field;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabels()
-    {
-        return $this->labels;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addLabel($label)
-    {
-        $this->labels[] = $label;
 
         return $this;
     }

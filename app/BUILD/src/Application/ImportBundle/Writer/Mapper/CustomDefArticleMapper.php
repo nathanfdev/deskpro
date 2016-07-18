@@ -29,13 +29,14 @@
 namespace Application\ImportBundle\Writer\Mapper;
 
 use Application\DeskPRO\Entity\CustomDefArticle;
+use Application\ImportBundle\Model\ArticleCustomDef;
 
 /**
  * Custom def article record mapper.
  *
  * Class CustomDefArticle
  */
-class CustomDefArticleMapper extends AbstractCustomDefMapper
+class CustomDefArticleMapper extends AbstractEntityManagerMapper implements CustomDefMapperInterface
 {
     /**
      * {@inheritdoc}
@@ -43,5 +44,13 @@ class CustomDefArticleMapper extends AbstractCustomDefMapper
     public static function getEntityClass()
     {
         return CustomDefArticle::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getModelClass()
+    {
+        return ArticleCustomDef::class;
     }
 }

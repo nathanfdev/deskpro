@@ -28,12 +28,8 @@
 
 namespace Application\ImportBundle\Writer\EntityHandler;
 
-use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\DeskPRO\Entity;
 use Application\ImportBundle\Model;
-use Application\ImportBundle\Writer\Helper\BlobAdapter;
-use Application\ImportBundle\Writer\Helper\LabelHelper;
-use Application\ImportBundle\Writer\Mapper\MapperRegistry;
-use Psr\Log\LoggerInterface;
 
 /**
  * DeskPRO download importer.
@@ -42,24 +38,6 @@ use Psr\Log\LoggerInterface;
  */
 class DownloadHandler extends AbstractEntityHandler
 {
-    /**
-     * @var BlobAdapter
-     */
-    private $blobAdapter;
-
-    /**
-     * Constructor.
-     *
-     * @param MapperRegistry  $mappers
-     * @param BlobAdapter     $blobAdapter
-     * @param LoggerInterface $logger
-     */
-    public function __construct(MapperRegistry $mappers, LoggerInterface $logger, BlobAdapter $blobAdapter)
-    {
-        parent::__construct($mappers, $logger);
-        $this->blobAdapter = $blobAdapter;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -73,54 +51,51 @@ class DownloadHandler extends AbstractEntityHandler
      *
      * @param Model\Download $model
      */
-    public function prepare(Model\ImportModelInterface $model, $entityId = null)
+    public function writeModel(Model\PrimaryImportModelInterface $model)
     {
-        $entity = $this->mappers->getDownloadMapper()->findOneByTitle($model->getTitle(), false) ?: new DeskPROEntity\Download();
+        /** @var Entity\Download $entity */
+        $entity = $this->findOrCreateEntity($this->mappers->getDownloadMapper(), $model);
         $entity
             ->setTitle($model->getTitle())
             ->setContent($model->getContent())
-            ->setPerson($this->mappers->getPersonMapper()->findOneByEmail($model->getPerson()))
-            ->setLanguage($this->findLanguage($model->getLanguage()))
-            ->setBlob($this->blobAdapter->createByBlob($model->getAttachment()))
-            ->setCategory($this->findOrCreateDownloadCategory($model->getCategory()))
-            ->setDateCreated($model->getDateCreated())
+            ->setStatus($model->getStatus())
+            ->setLanguage($this->helpers->getLanguageHelper()->findLanguage($model->getLanguage()))
             ->setDatePublished($model->getDatePublished())
             ->setViewCount($model->getViewCount())
             ->setNumDownloads($model->getNumDownloads())
         ;
 
-        $labelsHelper = new LabelHelper($this->logger);
-        $labelsHelper->updateLabels($model, $entity, DeskPROEntity\LabelDownload::class);
-
-        $this->records->setPrimaryEntity($entity);
-    }
-
-    /**
-     * Returns an download category by title.
-     * Creates a new article category if not found.
-     *
-     * @param string $title
-     *
-     * @throws \Exception
-     *
-     * @return DeskPROEntity\DownloadCategory|null
-     */
-    private function findOrCreateDownloadCategory($title)
-    {
-        $category = null;
-        if ($title) {
-            $category = $this->mappers->getDownloadCategoryMapper()->findOneByTitle($title, false);
-            if ($category) {
-                $this->logger->debug(sprintf('Found existing download category `%s`', $category->getTitle()));
-            } else {
-                $category = new DeskPROEntity\DownloadCategory();
-                $category->setRealTitle($title);
-
-                $this->records->addRelatedEntity($category);
-                $this->logger->info(sprintf('New download category creating `%s`', $category->getTitle()));
-            }
+        if ($model->getDateCreated()) {
+            $entity->setDateCreated($model->getDateCreated());
         }
 
-        return $category;
+        // update download person
+        if ($model->getPerson()) {
+            $entity->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()));
+        } else {
+            $entity->setPerson(null);
+        }
+
+        // update download category
+        if ($model->getCategory()) {
+            $entity->setCategory($this->helpers->getCategoryHelper()->findOrCreateCategory(
+                $this->mappers->getDownloadCategoryMapper(),
+                $model->getCategory()
+            ));
+        } else {
+            $entity->setCategory(null);
+        }
+
+        // update download blob
+        if ($model->getBlob()) {
+            $entity->setBlob($this->helpers->getBlobAdapter()->createByBlob($model->getBlob(), false));
+        } else {
+            $entity->setBlob(null);
+        }
+
+        $this->helpers->getLabelHelper()->updateLabels($model, $entity, Entity\LabelDownload::class);
+
+        // persist basic entity
+        $this->persister->persistAndFlush($entity, $model);
     }
 }

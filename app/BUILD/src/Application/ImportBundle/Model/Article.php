@@ -37,15 +37,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * Class Article
  */
-class Article extends AbstractContentModel implements PersonAwareInterface, LabelAwareModelInterface, CustomDataOwnerModelInterface
+class Article extends AbstractContentModel implements PersonAwareInterface, LabelAwareModelInterface, CustomDataAwareModelInterface
 {
+    use LabelAwareTrait;
+
     /**
      * @var string
      *
      * @JMS\Type("string")
      *
      * @Assert\NotBlank()
-     * @Assert\Email(strict="true")
      */
     private $person;
 
@@ -53,6 +54,8 @@ class Article extends AbstractContentModel implements PersonAwareInterface, Labe
      * @var string
      *
      * @JMS\Type("string")
+     *
+     * @Assert\Choice(choices={"archive", "delete"})
      */
     private $end_action;
 
@@ -82,17 +85,6 @@ class Article extends AbstractContentModel implements PersonAwareInterface, Labe
     private $categories = [];
 
     /**
-     * @var array
-     *
-     * @JMS\Type("array<string>")
-     *
-     * @Assert\All(constraints={
-     *   @Assert\NotBlank()
-     * })
-     */
-    private $labels = [];
-
-    /**
      * @var CustomField[]
      *
      * @JMS\Type("array<Application\ImportBundle\Model\CustomField>")
@@ -111,9 +103,9 @@ class Article extends AbstractContentModel implements PersonAwareInterface, Labe
     private $attachments = [];
 
     /**
-     * @var ArticleComment[]
+     * @var Comment[]
      *
-     * @JMS\Type("array<Application\ImportBundle\Model\ArticleComment>")
+     * @JMS\Type("array<Application\ImportBundle\Model\Comment>")
      *
      * @Assert\Valid()
      */
@@ -168,25 +160,6 @@ class Article extends AbstractContentModel implements PersonAwareInterface, Labe
         $this->end_action = $end_action;
 
         return $this;
-    }
-
-    /**
-     * Checks if end action is valid.
-     *
-     * @return bool
-     */
-    public function isEndActionValid()
-    {
-        if ($this->end_action) {
-            $actions = [
-                DeskPRO\Entity\Article::END_ACTION_ARCHIVE,
-                DeskPRO\Entity\Article::END_ACTION_DELETE,
-            ];
-
-            return in_array($this->end_action, $actions, true);
-        }
-
-        return true;
     }
 
     /**
@@ -256,6 +229,18 @@ class Article extends AbstractContentModel implements PersonAwareInterface, Labe
     }
 
     /**
+     * @param array $categories
+     *
+     * @return $this
+     */
+    public function setCategories($categories)
+    {
+        $this->categories = $categories;
+
+        return $this;
+    }
+
+    /**
      * Add a new category.
      *
      * @param string $category
@@ -265,24 +250,6 @@ class Article extends AbstractContentModel implements PersonAwareInterface, Labe
     public function addCategory($category)
     {
         $this->categories[] = (string) $category;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabels()
-    {
-        return $this->labels;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addLabel($label)
-    {
-        $this->labels[] = (string) $label;
 
         return $this;
     }
@@ -326,7 +293,7 @@ class Article extends AbstractContentModel implements PersonAwareInterface, Labe
     /**
      * Returns article comments.
      *
-     * @return ArticleComment[]
+     * @return Comment[]
      */
     public function getComments()
     {
@@ -336,11 +303,11 @@ class Article extends AbstractContentModel implements PersonAwareInterface, Labe
     /**
      * Add an article comment.
      *
-     * @param ArticleComment $comment
+     * @param Comment $comment
      *
      * @return $this
      */
-    public function addComment(ArticleComment $comment)
+    public function addComment(Comment $comment)
     {
         $this->comments[] = $comment;
 

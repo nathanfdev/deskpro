@@ -28,10 +28,11 @@
 
 namespace Application\ImportBundle\Writer\EntityHandler;
 
-use Application\DeskPRO\Entity as DeskPROEntity;
-use Application\ImportBundle\Model\ObjectLang;
+use Application\ImportBundle\Model\OidAwareModelInterface;
+use Application\ImportBundle\Writer\EntityPersister;
+use Application\ImportBundle\Writer\Helper\HelperRegistry;
+use Application\ImportBundle\Writer\Mapper\MapperInterface;
 use Application\ImportBundle\Writer\Mapper\MapperRegistry;
-use Application\ImportBundle\Writer\Mapper\OrganizationMapper;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -48,9 +49,14 @@ abstract class AbstractEntityHandler implements EntityHandlerInterface
     protected $mappers;
 
     /**
-     * @var DoctrineEntities
+     * @var HelperRegistry
      */
-    protected $records;
+    protected $helpers;
+
+    /**
+     * @var EntityPersister
+     */
+    protected $persister;
 
     /**
      * @var LoggerInterface
@@ -61,153 +67,26 @@ abstract class AbstractEntityHandler implements EntityHandlerInterface
      * Constructor.
      *
      * @param MapperRegistry  $mappers
+     * @param HelperRegistry  $helpers
+     * @param EntityPersister $persister
      * @param LoggerInterface $logger
      */
-    public function __construct(MapperRegistry $mappers, LoggerInterface $logger)
+    public function __construct(MapperRegistry $mappers, HelperRegistry $helpers, EntityPersister $persister, LoggerInterface $logger)
     {
-        $this->mappers = $mappers;
-        $this->logger  = $logger;
+        $this->mappers   = $mappers;
+        $this->helpers   = $helpers;
+        $this->persister = $persister;
+        $this->logger    = $logger;
     }
 
     /**
-     * {@inheritdoc}
+     * @param MapperInterface        $mapper
+     * @param OidAwareModelInterface $model
+     *
+     * @return object
      */
-    public function reset()
+    public function findOrCreateEntity(MapperInterface $mapper, OidAwareModelInterface $model)
     {
-        $this->records = new DoctrineEntities();
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDoctrineEntities()
-    {
-        return $this->records;
-    }
-
-    /**
-     * Returns a language id by title.
-     *
-     * @param string $title
-     *
-     * @throws \Exception
-     *
-     * @return int
-     */
-    protected function findLanguageId($title)
-    {
-        $id = 0;
-        if ($title) {
-            $id = $this->mappers->getLanguageMapper()->findOneByTitle($title)->getId();
-        }
-
-        return $id;
-    }
-
-    /**
-     * Returns a language by title.
-     *
-     * @param string $title
-     *
-     * @return DeskPROEntity\Language|null
-     */
-    protected function findLanguage($title)
-    {
-        $language = null;
-        if ($title) {
-            $language = $this->mappers->getLanguageMapper()->findOneByTitle($title);
-            if ($language) {
-                $this->logger->info(sprintf('Found existing `%s` language', $title));
-            } else {
-                $this->logger->notice(sprintf('Could not map unknown `%s` language', $title));
-            }
-        }
-
-        return $language;
-    }
-
-    /**
-     * Returns an organization by title
-     * Creates a new organization if not found.
-     *
-     * @param string $title
-     *
-     * @throws \Exception
-     *
-     * @return DeskPROEntity\Organization|null
-     */
-    protected function findOrCreateOrganization($title)
-    {
-        /** @var OrganizationMapper $mapper */
-        $mapper       = $this->mappers->getMapper(DeskPROEntity\Organization::class);
-        $organization = null;
-
-        if ($title) {
-            $organization = $mapper->findOneByTitle($title, false);
-            if ($organization) {
-                $this->logger->debug(sprintf(
-                    'Found existing organization `%d` with title `%s`',
-                    $organization->getId(), $organization->getName()
-                ));
-            } else {
-                $organization = new DeskPROEntity\Organization();
-                $organization->setName($title);
-
-                $this->records->addRelatedEntity($organization);
-                $this->logger->info(sprintf('Creating new organization `%s`', $organization->getName()));
-            }
-        }
-
-        return $organization;
-    }
-
-    /**
-     * Returns an user group by sys name.
-     *
-     * @param string $sys_name
-     *
-     * @throws \Exception
-     *
-     * @return DeskPROEntity\UserGroup|null
-     */
-    protected function findUserGroup($sys_name)
-    {
-        $mapper     = $this->mappers->getUserGroupMapper();
-        $user_group = null;
-
-        if ($sys_name) {
-            $user_group = $mapper->findOneBySysName($sys_name, false);
-            if ($user_group) {
-                $this->logger->debug(sprintf(
-                    'Found existing user group `%d` with title `%s`',
-                    $user_group->getId(), $user_group->getTitle()
-                ));
-            } else {
-                $this->logger->warning(sprintf('No user group `%s`', $sys_name));
-            }
-        }
-
-        return $user_group;
-    }
-
-    /**
-     * Creates object lang.
-     *
-     * @param ObjectLang $translation
-     * @param mixed      $entity
-     */
-    protected function addObjectLang(ObjectLang $translation, $entity)
-    {
-        $language = $this->mappers->getLanguageMapper()->findOneByTitle($translation->getLanguage(), false);
-        if (!$language) {
-            return;
-        }
-
-        $objectLang = DeskPROEntity\ObjectLang::createObjectLang($language, $entity, $translation->getProperty(), $translation->getValue());
-
-        $this->logger->debug("Add new {$translation->getProperty()} translation with {$translation->getValue()}");
-        $this->records->addRelatedEntity($objectLang);
+        return $this->helpers->getCreateEntityHelper()->findOrCreateEntity($mapper, $model);
     }
 }

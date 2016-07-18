@@ -39,6 +39,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Basic properties on content.
@@ -93,6 +94,8 @@ abstract class ContentAbstract extends DomainObject
      * Content title.
      *
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $title = '';
 
@@ -100,6 +103,8 @@ abstract class ContentAbstract extends DomainObject
      * The main content for the item. This should be HTML!
      *
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $content = '';
 
@@ -119,6 +124,8 @@ abstract class ContentAbstract extends DomainObject
 
     /**
      * @var ArrayCollection
+     *
+     * @Assert\Valid()
      */
     protected $comments;
 
@@ -140,6 +147,8 @@ abstract class ContentAbstract extends DomainObject
      * Status title.
      *
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $status;
 
@@ -227,6 +236,7 @@ abstract class ContentAbstract extends DomainObject
      */
     public function __construct()
     {
+        $this->setModelField('date_created', new \DateTime());
         $this->setModelField('date_updated', new \DateTime());
         $this['date_created'] = new \DateTime();
         $this->revisions      = new ArrayCollection();
@@ -289,7 +299,7 @@ abstract class ContentAbstract extends DomainObject
      *
      * @return $this
      */
-    public function setDatePublished($date_published)
+    public function setDatePublished(DateTime $date_published = null)
     {
         $this->setModelField('date_published', $date_published);
 
@@ -402,6 +412,8 @@ abstract class ContentAbstract extends DomainObject
     public function setStatus($status)
     {
         $this->setStatusCode($status);
+
+        return $this;
     }
 
     public function setStatusCode($status_code)
@@ -711,6 +723,8 @@ abstract class ContentAbstract extends DomainObject
         }
         $this->setModelField('date_last_comment', new \DateTime());
         $comment->setObject($this);
+
+        $this->comments->add($comment);
     }
 
     public function removeComment()

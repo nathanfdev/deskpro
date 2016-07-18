@@ -154,7 +154,7 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
         if ($category) {
             $this->setModelField('category', $category);
         } else {
-            $this->setModelField('category', -1);
+            $this->setModelField('category', null);
         }
 
         return $this;
@@ -553,6 +553,15 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
                 'targetEntity' => 'Application\DeskPRO\Entity\NewsSlugHistory',
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'     => 'news',
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'comments',
+                'targetEntity' => NewsComment::class,
+                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'mappedBy'     => 'news',
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );
     }

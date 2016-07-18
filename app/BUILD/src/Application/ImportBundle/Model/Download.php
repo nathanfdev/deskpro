@@ -39,6 +39,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Download extends AbstractContentModel implements PersonAwareInterface, LabelAwareModelInterface
 {
+    use LabelAwareTrait;
+
     /**
      * @var string
      *
@@ -49,11 +51,12 @@ class Download extends AbstractContentModel implements PersonAwareInterface, Lab
     /**
      * @var Attachment
      *
-     * @JMS\Type("Application\ImportBundle\Model\Attachment")
+     * @JMS\Type("Application\ImportBundle\Model\Blob")
      *
+     * @Assert\NotNull()
      * @Assert\Valid()
      */
-    private $attachment;
+    private $blob;
 
     /**
      * @var string
@@ -61,7 +64,6 @@ class Download extends AbstractContentModel implements PersonAwareInterface, Lab
      * @JMS\Type("string")
      *
      * @Assert\NotBlank()
-     * @Assert\Email(strict="true")
      */
     private $person;
 
@@ -71,17 +73,6 @@ class Download extends AbstractContentModel implements PersonAwareInterface, Lab
      * @JMS\Type("integer")
      */
     private $num_downloads = 0;
-
-    /**
-     * @var string[]
-     *
-     * @JMS\Type("array<string>")
-     *
-     * @Assert\All(constraints={
-     *   @Assert\NotBlank()
-     * })
-     */
-    private $labels = [];
 
     /**
      * Download category.
@@ -110,23 +101,23 @@ class Download extends AbstractContentModel implements PersonAwareInterface, Lab
     /**
      * Download attachment.
      *
-     * @return Attachment
+     * @return Blob
      */
-    public function getAttachment()
+    public function getBlob()
     {
-        return $this->attachment;
+        return $this->blob;
     }
 
     /**
      * Set a download attachment.
      *
-     * @param Attachment $attachment
+     * @param Blob $blob
      *
      * @return $this
      */
-    public function setAttachment(Attachment $attachment = null)
+    public function setBlob(Blob $blob = null)
     {
-        $this->attachment = $attachment;
+        $this->blob = $blob;
 
         return $this;
     }
@@ -142,9 +133,9 @@ class Download extends AbstractContentModel implements PersonAwareInterface, Lab
     /**
      * {@inheritdoc}
      */
-    public function setPerson($person_email)
+    public function setPerson($person)
     {
-        $this->person = $person_email;
+        $this->person = $person;
 
         return $this;
     }
@@ -169,24 +160,6 @@ class Download extends AbstractContentModel implements PersonAwareInterface, Lab
     public function setNumDownloads($num_downloads)
     {
         $this->num_downloads = (int) $num_downloads;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabels()
-    {
-        return $this->labels;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addLabel($label)
-    {
-        $this->labels[] = $label;
 
         return $this;
     }

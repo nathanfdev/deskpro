@@ -28,17 +28,20 @@
 
 namespace Application\ImportBundle\Model\ContactData;
 
+use Application\ImportBundle\Model\OidAwareModelInterface;
 use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class AbstractContactData.
  */
-abstract class AbstractContactData
+abstract class AbstractContactData implements OidAwareModelInterface
 {
     /**
-     * @var string
+     * @var int|string
+     *
+     * @JMS\Type("string")
      */
-    protected static $contact_type;
+    protected $oid;
 
     /**
      * Comment attached to contact.
@@ -50,14 +53,27 @@ abstract class AbstractContactData
     protected $comment;
 
     /**
-     * @return string
-     *
-     * @JMS\VirtualProperty()
+     * {@inheritdoc}
      */
-    public function getContactType()
+    public function getOid()
     {
-        return self::$contact_type;
+        return $this->oid;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setOid($oid)
+    {
+        $this->oid = $oid;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    abstract public function getContactType();
 
     /**
      * @return string

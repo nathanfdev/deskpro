@@ -346,6 +346,14 @@ class Download extends ContentAbstract implements HighlightableModelInterface, L
     /**
      * @return string
      */
+    public function getNumDownloads()
+    {
+        return $this->num_downloads;
+    }
+
+    /**
+     * @return string
+     */
     public function getContentDesc()
     {
         $content = $this->content;
@@ -732,6 +740,15 @@ class Download extends ContentAbstract implements HighlightableModelInterface, L
                     ],
                 ],
                 'dpApi' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'comments',
+                'targetEntity' => DownloadComment::class,
+                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'mappedBy'     => 'download',
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );
         $metadata->mapOneToMany(

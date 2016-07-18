@@ -49,24 +49,9 @@ class ImporterContext
     private $inputPath;
 
     /**
-     * @var string
-     */
-    private $logPath = '/import.log';
-
-    /**
-     * @var bool
-     */
-    private $verbose = false;
-
-    /**
      * @var bool
      */
     private $dryRun = false;
-
-    /**
-     * @var bool
-     */
-    private $silent = false;
 
     /**
      * @return array
@@ -133,55 +118,6 @@ class ImporterContext
     }
 
     /**
-     * Returns a log path.
-     *
-     * @return string
-     */
-    public function getLogPath()
-    {
-        return $this->logPath;
-    }
-
-    /**
-     * Set a log path.
-     *
-     * @param string $logPath
-     *
-     * @return $this
-     */
-    public function setLogPath($logPath)
-    {
-        $this->logPath = $logPath;
-
-        return $this;
-    }
-
-    /**
-     * Is verbose mode enabled.
-     *
-     * @return bool
-     */
-    public function isVerbose()
-    {
-        return $this->verbose;
-    }
-
-    /**
-     * Set verbose mode
-     * All output messages are shown in console.
-     *
-     * @param bool $verbose
-     *
-     * @return $this
-     */
-    public function setVerbose($verbose)
-    {
-        $this->verbose = (bool) $verbose;
-
-        return $this;
-    }
-
-    /**
      * Returns true if a writer does not flush data.
      *
      * @return bool
@@ -203,51 +139,6 @@ class ImporterContext
         $this->dryRun = (bool) $dryRun;
 
         return $this;
-    }
-
-    /**
-     * Is silent mode.
-     *
-     * @return bool
-     */
-    public function isSilent()
-    {
-        return $this->silent;
-    }
-
-    /**
-     * Set silent mode
-     * No progressbar or output messages.
-     *
-     * @param bool $silent
-     *
-     * @return $this
-     */
-    public function setSilent($silent)
-    {
-        $this->silent = (bool) $silent;
-
-        return $this;
-    }
-
-    /**
-     * Shows progressbar.
-     *
-     * @return bool
-     */
-    public function isProgressbarEnabled()
-    {
-        return !$this->verbose && !$this->silent;
-    }
-
-    /**
-     * Shows output.
-     *
-     * @return bool
-     */
-    public function isConsoleOutputEnabled()
-    {
-        return $this->verbose && !$this->silent;
     }
 
     /**

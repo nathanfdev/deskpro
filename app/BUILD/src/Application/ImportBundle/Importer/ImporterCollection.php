@@ -29,7 +29,7 @@
 namespace Application\ImportBundle\Importer;
 
 use Application\ImportBundle\Model\ImportModelCollection;
-use Application\ImportBundle\Model\ImportModelInterface;
+use Application\ImportBundle\Model\PrimaryImportModelInterface;
 use DeskPRO\Component\Util\AbstractCollection;
 
 /**
@@ -64,11 +64,11 @@ final class ImporterCollection extends AbstractCollection
     /**
      * Remove an entity collection.
      *
-     * @param ImportModelInterface $entity
+     * @param PrimaryImportModelInterface $entity
      *
      * @return $this
      */
-    public function detach(ImportModelInterface $entity)
+    public function detach(PrimaryImportModelInterface $entity)
     {
         foreach ($this->collection as $type => $type_collection) {
             /* @var ImportModelCollection $type_collection */
@@ -85,7 +85,7 @@ final class ImporterCollection extends AbstractCollection
      *
      * @throws \Exception
      *
-     * @return ImportModelCollection|ImportModelInterface[]
+     * @return ImportModelCollection|PrimaryImportModelInterface[]
      */
     public function getByType($type)
     {

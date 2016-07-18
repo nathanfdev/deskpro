@@ -29,13 +29,14 @@
 namespace Application\ImportBundle\Writer\Mapper;
 
 use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\ImportBundle\Model\FeedbackCustomDef;
 
 /**
  * Custom def ticket record mapper.
  *
  * Class CustomDefFeedback
  */
-final class CustomDefFeedbackMapper extends AbstractCustomDefMapper
+class CustomDefFeedbackMapper extends AbstractEntityManagerMapper implements CustomDefMapperInterface
 {
     /**
      * {@inheritdoc}
@@ -43,5 +44,13 @@ final class CustomDefFeedbackMapper extends AbstractCustomDefMapper
     public static function getEntityClass()
     {
         return CustomDefFeedback::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getModelClass()
+    {
+        return FeedbackCustomDef::class;
     }
 }

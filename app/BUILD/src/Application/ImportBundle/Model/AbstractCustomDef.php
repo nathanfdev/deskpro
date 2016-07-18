@@ -30,54 +30,55 @@ namespace Application\ImportBundle\Model;
 
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\GroupSequenceProviderInterface;
 
 /**
  * Abstract exporting custom def entity.
  *
  * Class AbstractCustomDef
  */
-abstract class AbstractCustomDef extends AbstractImportModel
+abstract class AbstractCustomDef implements GroupSequenceProviderInterface, PrimaryImportModelInterface
 {
-    /**
-     * @var AbstractCustomDef
-     */
-    protected $parent;
+    use PrimaryImportModelTrait;
 
     /**
      * @var string
      *
      * @JMS\Type("string")
      *
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"common"})
      */
-    protected $title;
+    protected $title = '';
 
     /**
      * @JMS\Type("string")
      *
      * @var string
      */
-    protected $description;
+    protected $description = '';
 
     /**
      * @var string
      *
      * @JMS\Type("string")
      *
-     * @Assert\NotBlank()
-     * @Assert\Choice(choices={
-     *   "text",
-     *   "textarea",
-     *   "toggle",
-     *   "date",
-     *   "datetime",
-     *   "choice",
-     *   "multichoice",
-     *   "checkbox",
-     *   "radio",
-     *   "display",
-     *   "hidden"
-     * })
+     * @Assert\NotBlank(groups={"common"})
+     * @Assert\Choice(
+     *   groups={"common"},
+     *   choices={
+     *     "text",
+     *     "textarea",
+     *     "toggle",
+     *     "date",
+     *     "datetime",
+     *     "choice",
+     *     "multichoice",
+     *     "checkbox",
+     *     "radio",
+     *     "display",
+     *     "hidden"
+     *   }
+     * )
      */
     protected $widgetType;
 
@@ -86,21 +87,21 @@ abstract class AbstractCustomDef extends AbstractImportModel
      *
      * @JMS\Type("boolean")
      */
-    protected $is_enabled = false;
+    protected $is_enabled = true;
 
     /**
      * @var bool
      *
      * @JMS\Type("boolean")
      */
-    protected $is_user_enabled = false;
+    protected $is_user_enabled = true;
 
     /**
      * @var bool
      *
      * @JMS\Type("boolean")
      */
-    protected $is_agent_field = false;
+    protected $is_agent_field = true;
 
     /**
      * @var mixed
@@ -117,45 +118,14 @@ abstract class AbstractCustomDef extends AbstractImportModel
     protected $options = [];
 
     /**
-     * @var AbstractCustomDef[]
+     * @var CustomDefChoice[]
      *
-     * @JMS\Type("array")
+     * @JMS\Type("array<Application\ImportBundle\Model\CustomDefChoice>")
      *
+     * @Assert\Count(min="1", groups={"choices"})
      * @Assert\Valid()
      */
-    protected $children = [];
-
-    /**
-     * Returns parent field.
-     *
-     * @return AbstractCustomDef
-     */
-    public function getParent()
-    {
-        return $this->parent;
-    }
-
-    /**
-     * Set parent field.
-     *
-     * @param AbstractCustomDef $parent
-     *
-     * @return $this
-     */
-    public function setParent(AbstractCustomDef $parent = null)
-    {
-        $this->parent = $parent;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOid()
-    {
-        return ($this->parent ? $this->parent->getOid().'-' : '').parent::getOid();
-    }
+    protected $choices = [];
 
     /**
      * Returns title.
@@ -352,25 +322,49 @@ abstract class AbstractCustomDef extends AbstractImportModel
     /**
      * Returns a collection of child custom def.
      *
-     * @return AbstractCustomDef[]
+     * @return CustomDefChoice[]
      */
-    public function getChildren()
+    public function getChoices()
     {
-        return $this->children;
+        return $this->choices;
+    }
+
+    /**
+     * @param CustomDefChoice[] $choices
+     *
+     * @return $this
+     */
+    public function setChoices($choices)
+    {
+        $this->choices = $choices;
+
+        return $this;
     }
 
     /**
      * Add a child custom def.
      *
-     * @param AbstractCustomDef $custom_def
+     * @param CustomDefChoice $choice
      *
      * @return $this
      */
-    public function addCustomDef(AbstractCustomDef $custom_def)
+    public function addChoice(CustomDefChoice $choice)
     {
-        $this->children[] = $custom_def;
-        $custom_def->setParent($this);
+        $this->choices[] = $choice;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupSequence()
+    {
+        $groups = ['common'];
+        if (in_array($this->widgetType, ['choice', 'multichoice', 'checkbox', 'radio'])) {
+            $groups[] = 'choices';
+        }
+
+        return $groups;
     }
 }

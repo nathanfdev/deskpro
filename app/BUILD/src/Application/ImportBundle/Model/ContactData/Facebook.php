@@ -33,5 +33,11 @@ namespace Application\ImportBundle\Model\ContactData;
  */
 class Facebook extends AbstractUrlContactData
 {
-    protected static $contact_type = 'facebook';
+    /**
+     * {@inheritdoc}
+     */
+    public function getContactType()
+    {
+        return 'facebook';
+    }
 }

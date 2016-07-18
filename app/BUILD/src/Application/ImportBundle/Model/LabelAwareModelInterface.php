@@ -43,6 +43,15 @@ interface LabelAwareModelInterface
     public function getLabels();
 
     /**
+     * Set labels.
+     *
+     * @param string[] $labels
+     *
+     * @return $this
+     */
+    public function setLabels(array $labels);
+
+    /**
      * Add a new label.
      *
      * @param string $label

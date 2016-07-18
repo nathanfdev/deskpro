@@ -28,14 +28,8 @@
 
 namespace Application\ImportBundle\Writer\EntityHandler;
 
-use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\DeskPRO\Entity;
 use Application\ImportBundle\Model;
-use Application\ImportBundle\Writer\Helper\BlobAdapter;
-use Application\ImportBundle\Writer\Helper\ContactDataHelper;
-use Application\ImportBundle\Writer\Helper\CustomDataHelper;
-use Application\ImportBundle\Writer\Helper\LabelHelper;
-use Application\ImportBundle\Writer\Mapper\MapperRegistry;
-use Psr\Log\LoggerInterface;
 
 /**
  * DeskPRO organization importer.
@@ -44,24 +38,6 @@ use Psr\Log\LoggerInterface;
  */
 class OrganizationHandler extends AbstractEntityHandler
 {
-    /**
-     * @var BlobAdapter
-     */
-    private $blobAdapter;
-
-    /**
-     * Constructor.
-     *
-     * @param MapperRegistry  $mappers
-     * @param LoggerInterface $logger
-     * @param BlobAdapter     $blobAdapter
-     */
-    public function __construct(MapperRegistry $mappers, LoggerInterface $logger, BlobAdapter $blobAdapter)
-    {
-        parent::__construct($mappers, $logger);
-        $this->blobAdapter = $blobAdapter;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -72,48 +48,33 @@ class OrganizationHandler extends AbstractEntityHandler
 
     /**
      * {@inheritdoc}
-     */
-    public function prepare(Model\ImportModelInterface $model, $entityId = null)
-    {
-        if (!$model instanceof Model\Organization) {
-            Model\UnexpectedException::throwUnexpectedEntityTypeException($model);
-        }
-
-        $entity = $this->findOrCreateOrganization($model->getName());
-        $entity
-            ->setImportance($model->getImportance())
-            ->setDateCreated($model->getDateCreated())
-            ->resetContactData()
-        ;
-
-        if ($model->getPicture()) {
-            $picture = $this->blobAdapter->createByBlob($model->getPicture());
-
-            $entity->setPicture($picture);
-            $this->records->addRelatedEntity($picture);
-        }
-        foreach ($this->createContactData($model) as $contactEntity) {
-            $entity->addContactData($contactEntity);
-        }
-
-        $labelsHelper = new LabelHelper($this->logger);
-        $labelsHelper->updateLabels($model, $entity, DeskPROEntity\LabelOrganization::class);
-
-        $customDataHelper = new CustomDataHelper($this->mappers->getOrganizationCustomDefMapper(), $this->logger);
-        $customDataHelper->updateCustomData($model, $entity, $this->records);
-
-        $this->records->setPrimaryEntity($entity);
-    }
-
-    /**
-     * Returns organization contact data entities.
      *
      * @param Model\Organization $model
-     *
-     * @return DeskPROEntity\OrganizationContactData[]
      */
-    private function createContactData(Model\Organization $model)
+    public function writeModel(Model\PrimaryImportModelInterface $model)
     {
-        return (new ContactDataHelper(DeskPROEntity\PersonContactData::class))->getEntities($model->getContactData());
+        /** @var Entity\Organization $entity */
+        $entity = $this->findOrCreateEntity($this->mappers->getOrganizationMapper(), $model);
+        $entity->setName($model->getName());
+        $entity->setImportance($model->getImportance());
+
+        if ($model->getDateCreated()) {
+            $entity->setDateCreated($model->getDateCreated());
+        }
+
+        if ($model->getPicture()) {
+            $entity->setPicture($this->helpers->getBlobAdapter()->createByBlob($model->getPicture(), false));
+        } else {
+            $entity->setPicture(null);
+        }
+
+        $this->helpers->getCustomDataHelper()->updateCustomData($this->mappers->getOrganizationCustomDefMapper(), $model, $entity);
+        $this->helpers->getLabelHelper()->updateLabels($model, $entity, Entity\LabelOrganization::class);
+
+        // persist basic entity
+        $this->persister->persistAndFlush($entity, $model);
+
+        // persist others related entities which contains own oids
+        $this->helpers->getContactDataHelper()->updateContactData($this->mappers->getOrganizationContactDataMapper(), $model, $entity);
     }
 }

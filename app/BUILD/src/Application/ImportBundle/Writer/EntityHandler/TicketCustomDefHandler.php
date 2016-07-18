@@ -28,7 +28,7 @@
 
 namespace Application\ImportBundle\Writer\EntityHandler;
 
-use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\ImportBundle\Model;
 
 /**
@@ -49,38 +49,53 @@ class TicketCustomDefHandler extends AbstractCustomDefHandler
     /**
      * {@inheritdoc}
      */
-    public function prepare(Model\ImportModelInterface $model, $entityId = null)
+    public function writeModel(Model\PrimaryImportModelInterface $model)
     {
-        if (!$model instanceof Model\TicketCustomDef) {
-            Model\UnexpectedException::throwUnexpectedEntityTypeException($model);
-        }
+        parent::writeModel($model);
 
-        $custom_def = $this->findOrCreateCustomDef($entityId);
-        $this->records->setPrimaryEntity($this->setCustomDef($custom_def, $model));
-    }
-
-    /**
-     * Find or create new custom def.
-     *
-     * @param int $entity_id
-     *
-     * @return DeskPROEntity\CustomDefTicket
-     */
-    private function findOrCreateCustomDef($entity_id)
-    {
-        if ($entity_id) {
-            $custom_def = $this->getCustomDefMapper()->findOneBy(['id' => $entity_id], false);
-
-            if ($custom_def) {
-                $this->logger->debug(sprintf('Found existing ticket custom def, id=%s', $entity_id));
-
-                return $custom_def;
-            }
-        }
-
-        $this->logger->debug('Creating a new ticket custom def');
-
-        return new DeskPROEntity\CustomDefTicket();
+//        $custom_def = $this->records->getPrimaryEntity();
+//        $layouts    = $this->mappers->getTicketLayoutMapper()->findAll();
+//
+//        foreach ($layouts as $layout) {
+//            $change = false;
+//
+//            $user_layout  = clone $layout->user_layout;
+//            $agent_layout = clone $layout->agent_layout;
+//
+//            if (!$user_layout->has($custom_def->getId())) {
+//                $field = new LayoutField('ticket_field', $custom_def->getId());
+//                $field->setOptionsFromArray([
+//                    'on_editticket'      => true,
+//                    'on_viewticket'      => true,
+//                    'on_viewticket_mode' => 'value',
+//                    'on_newticket'       => true,
+//                ]);
+//
+//                $user_layout->add($field, 'message');
+//                $change = true;
+//            }
+//
+//            if (!$user_layout->has($custom_def->getId())) {
+//                $field = new LayoutField('ticket_field', $custom_def->getId());
+//                $field->setOptionsFromArray([
+//                    'on_editticket'      => true,
+//                    'on_viewticket'      => true,
+//                    'on_viewticket_mode' => 'value',
+//                    'on_newticket'       => true,
+//                ]);
+//
+//                $agent_layout->add($field, 'message');
+//                $change = true;
+//            }
+//
+//            if ($change) {
+//                $layout->user_layout  = $user_layout;
+//                $layout->agent_layout = $agent_layout;
+//                $layout->date_updated = new \DateTime();
+//
+//                $this->records->addRelatedEntity($layout);
+//            }
+//        }
     }
 
     /**

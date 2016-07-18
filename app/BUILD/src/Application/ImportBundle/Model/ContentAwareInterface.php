@@ -35,7 +35,7 @@ use DateTime;
  *
  * Interface ContentAwareInterface
  */
-interface ContentAwareInterface extends LanguageAwareInterface
+interface ContentAwareInterface extends LanguageAwareInterface, PrimaryImportModelInterface
 {
     /**
      * Entity title.
@@ -100,54 +100,6 @@ interface ContentAwareInterface extends LanguageAwareInterface
      * @return $this
      */
     public function setViewCount($view_count);
-
-    /**
-     * Total rating.
-     *
-     * @return int
-     */
-    public function getTotalRating();
-
-    /**
-     * Set total rating.
-     *
-     * @param int $total_rating
-     *
-     * @return $this
-     */
-    public function setTotalRating($total_rating);
-
-    /**
-     * Number of comments.
-     *
-     * @return int
-     */
-    public function getNumComments();
-
-    /**
-     * Set number of comments.
-     *
-     * @param int $num_comments
-     *
-     * @return $this
-     */
-    public function setNumComments($num_comments);
-
-    /**
-     * Number of rating.
-     *
-     * @return int
-     */
-    public function getNumRatings();
-
-    /**
-     * Set number of rating.
-     *
-     * @param int $num_ratings
-     *
-     * @return $this
-     */
-    public function setNumRatings($num_ratings);
 
     /**
      * Date created.

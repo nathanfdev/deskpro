@@ -33,7 +33,7 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * Class AbstractUserNameContactData.
  */
-class AbstractUserNameContactData extends AbstractContactData
+abstract class AbstractUserNameContactData extends AbstractContactData
 {
     /**
      * @var string

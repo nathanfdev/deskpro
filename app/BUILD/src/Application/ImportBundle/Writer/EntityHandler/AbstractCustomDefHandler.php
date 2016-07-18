@@ -30,8 +30,9 @@ namespace Application\ImportBundle\Writer\EntityHandler;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Model\AbstractCustomDef;
-use Application\ImportBundle\Writer\Mapper\AbstractCustomDefMapper;
-use Application\ImportBundle\Writer\Mapper\OidEntityMap;
+use Application\ImportBundle\Model\CustomDefChoice;
+use Application\ImportBundle\Model\PrimaryImportModelInterface;
+use Application\ImportBundle\Writer\Mapper\CustomDefMapperInterface;
 
 /**
  * Class AbstractCustomDefImporter.
@@ -39,61 +40,120 @@ use Application\ImportBundle\Writer\Mapper\OidEntityMap;
 abstract class AbstractCustomDefHandler extends AbstractEntityHandler
 {
     /**
-     * Set custom def properties.
+     * {@inheritdoc}
      *
-     * @param DeskPROEntity\CustomDefAbstract $def
-     * @param AbstractCustomDef               $entity
-     *
-     * @return DeskPROEntity\CustomDefAbstract
+     * @param AbstractCustomDef $model
      */
-    protected function setCustomDef(DeskPROEntity\CustomDefAbstract $def, AbstractCustomDef $entity)
+    public function writeModel(PrimaryImportModelInterface $model)
     {
-        $def
-            ->setTitle($entity->getTitle())
-            ->setDescription($entity->getDescription())
-            ->setHandlerClass($entity->getWidgetType())
-            ->setOptions($entity->getOptions())
-            ->setIsEnabled($entity->isEnabled())
-            ->setIsUserEnabled($entity->isUserEnabled())
-            ->setIsAgentField($entity->isAgentField())
-            ->setDefaultValue($entity->getDefaultValue())
+        $entity = $this->findOrCreateCustomDef($model);
+        $entity
+            ->setTitle($model->getTitle())
+            ->setDescription($model->getDescription())
+            ->setWidgetType($model->getWidgetType())
+            ->setIsEnabled($model->isEnabled())
+            ->setIsUserEnabled($model->isUserEnabled())
+            ->setIsAgentField($model->isAgentField())
+            ->setDefaultValue($model->getDefaultValue())
         ;
 
+        $this->persister->persistAndFlush($entity, $model);
+
+        foreach ($model->getOptions() as $optionName => $optionValue) {
+            if (is_string($optionName)) {
+                $entity->setOption($optionName, $optionValue);
+            }
+        }
+
         // Create and update children
-        foreach ($entity->getChildren() as $child_entity) {
-            $exist_child = $this->getCustomDefMapper()->findOneBy(['entity' => $child_entity], false);
-            if ($exist_child) {
-                $this->setCustomDef($exist_child, $child_entity);
-            } else {
-                $custom_def_class = get_class($def);
-                $child_custom_def = $this->setCustomDef(new $custom_def_class(), $child_entity);
+        $deleteChoices = function ($model, $parentId) use ($entity) {
+            /* @var CustomDefChoice $model */
+            $titles = array_map(function (CustomDefChoice $choice) {
+                return $choice->getTitle();
+            }, $model->getChoices());
 
-                $def->addChild($child_custom_def);
-                $this->records->addImportMapEntity(new OidEntityMap($child_entity, $child_custom_def));
+            foreach ($entity->getChildren() as $choiceDef) {
+                if ($choiceDef->getOption('parent_id') != $parentId) {
+                    continue;
+                }
+
+                if (!in_array($choiceDef->getTitle(), $titles)) {
+                    $entity->removeChild($choiceDef);
+                    $this->persister->removeAndFlush($choiceDef);
+                }
+            }
+        };
+
+        $choiceIterator = function (CustomDefChoice $choiceModel, $parentDefId = 0) use ($entity, &$choiceIterator, &$deleteChoices) {
+            $choiceDef = $entity->getChildren()
+                ->filter(function (DeskPROEntity\CustomDefAbstract $choiceDef) use ($choiceModel, $parentDefId) {
+                    return $choiceDef->getTitle() === $choiceModel->getTitle()
+                    && $choiceDef->getOption('parent_id') == $parentDefId;
+                })
+                ->first()
+            ;
+
+            if (!$choiceDef) {
+                $customDefClass = $this->getCustomDefMapper()->getEntityClass();
+
+                /* @var DeskPROEntity\CustomDefAbstract $choiceDef */
+                $choiceDef = new $customDefClass();
+                $choiceDef->setTitle($choiceModel->getTitle());
+                $choiceDef->setParent($entity);
+
+                if ($parentDefId) {
+                    $choiceDef->setOption('parent_id', $parentDefId);
+                }
+
+                $this->persister->persistAndFlush($choiceDef, $choiceModel);
+                $entity->addChild($choiceDef);
+            }
+
+            foreach ($choiceModel->getChoices() as $subChoice) {
+                $choiceIterator($subChoice, $choiceDef->getId());
+            }
+
+            $deleteChoices($choiceModel, $choiceDef->getId());
+        };
+
+        foreach ($model->getChoices() as $choice) {
+            $choiceIterator($choice);
+        }
+
+        $deleteChoices($model, 0);
+
+        return $entity;
+    }
+
+    /**
+     * Find or create new custom def.
+     *
+     * @param PrimaryImportModelInterface $model
+     *
+     * @return DeskPROEntity\CustomDefFeedback
+     */
+    private function findOrCreateCustomDef(PrimaryImportModelInterface $model)
+    {
+        $entityId = $this->mappers->getImportMapMapper()->findIdByModel($model);
+        if ($entityId) {
+            $entity = $this->getCustomDefMapper()->findOneBy(['id' => $entityId], false);
+            if ($entity) {
+                $this->logger->debug(sprintf('Found existing custom def, id=%s', $entityId));
+
+                return $entity;
             }
         }
 
-        // Remove deleted children
-        $new_titles = array_map(
-            function (AbstractCustomDef $entity) {
-                return $entity->getTitle();
-            },
-            $entity->getChildren()
-        );
+        $this->logger->debug('Creating a new custom def');
+        $entityClass = $this->getCustomDefMapper()->getEntityClass();
 
-        foreach ($def->getAllChildren() as $child_custom_def) {
-            if (!in_array($child_custom_def->getTitle(), $new_titles)) {
-                $def->removeChild($child_custom_def);
-            }
-        }
-
-        return $def;
+        return new $entityClass();
     }
 
     /**
      * Returns custom def mapper.
      *
-     * @return AbstractCustomDefMapper
+     * @return CustomDefMapperInterface
      */
     abstract protected function getCustomDefMapper();
 }

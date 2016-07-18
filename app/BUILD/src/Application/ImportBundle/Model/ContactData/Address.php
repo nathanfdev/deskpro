@@ -35,8 +35,6 @@ use JMS\Serializer\Annotation as JMS;
  */
 class Address extends AbstractContactData
 {
-    protected static $contact_type = 'address';
-
     /**
      * @var string
      *
@@ -71,6 +69,14 @@ class Address extends AbstractContactData
      * @JMS\Type("string")
      */
     protected $country;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getContactType()
+    {
+        return 'address';
+    }
 
     /**
      * @return string

@@ -35,7 +35,7 @@ use Application\DeskPRO\Entity\FeedbackCategory;
  *
  * Class FeedbackCategory
  */
-class FeedbackCategoryMapper extends AbstractTitleMapper
+class FeedbackCategoryMapper extends AbstractCategoryMapper
 {
     /**
      * {@inheritdoc}

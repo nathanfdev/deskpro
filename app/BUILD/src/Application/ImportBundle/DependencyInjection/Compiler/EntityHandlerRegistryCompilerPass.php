@@ -55,7 +55,7 @@ class EntityHandlerRegistryCompilerPass implements CompilerPassInterface
                 throw new \RuntimeException('Expected instance of '.EntityHandlerInterface::class);
             }
 
-            $handlers[call_user_func([$class, 'getModelClass'])][] = $id;
+            $handlers[call_user_func([$class, 'getModelClass'])] = $id;
         }
 
         $container->getDefinition('dp.importer.writer.entity_handler_registry')->addMethodCall('setHandlers', [$handlers]);

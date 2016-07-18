@@ -28,7 +28,6 @@
 
 namespace Application\ImportBundle\Writer\EntityHandler;
 
-use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Model;
 
 /**
@@ -42,43 +41,6 @@ class ArticleCustomDefHandler extends AbstractCustomDefHandler
     public static function getModelClass()
     {
         return Model\ArticleCustomDef::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function prepare(Model\ImportModelInterface $model, $entityId = null)
-    {
-        if (!$model instanceof Model\ArticleCustomDef) {
-            Model\UnexpectedException::throwUnexpectedEntityTypeException($model);
-        }
-
-        $custom_def = $this->findOrCreateCustomDef($entityId);
-        $this->records->setPrimaryEntity($this->setCustomDef($custom_def, $model));
-    }
-
-    /**
-     * Find or create new custom def.
-     *
-     * @param int $entity_id
-     *
-     * @return DeskPROEntity\CustomDefArticle
-     */
-    private function findOrCreateCustomDef($entity_id)
-    {
-        if ($entity_id) {
-            $custom_def = $this->getCustomDefMapper()->findOneBy(['id' => $entity_id], false);
-
-            if ($custom_def) {
-                $this->logger->debug(sprintf('Found existing article custom def, id=%s', $entity_id));
-
-                return $custom_def;
-            }
-        }
-
-        $this->logger->debug('Creating a new article custom def');
-
-        return new DeskPROEntity\CustomDefArticle();
     }
 
     /**

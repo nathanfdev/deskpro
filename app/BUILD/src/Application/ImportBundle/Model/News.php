@@ -29,7 +29,6 @@
 namespace Application\ImportBundle\Model;
 
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Exporting news entity.
@@ -38,13 +37,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class News extends AbstractContentModel implements PersonAwareInterface, LabelAwareModelInterface
 {
+    use LabelAwareTrait;
+
     /**
      * @var string
      *
      * @JMS\Type("string")
-     *
-     * @Assert\NotBlank()
-     * @Assert\Email(strict="true")
      */
     private $person;
 
@@ -54,17 +52,6 @@ class News extends AbstractContentModel implements PersonAwareInterface, LabelAw
      * @JMS\Type("string")
      */
     private $category;
-
-    /**
-     * @var string[]
-     *
-     * @JMS\Type("array<string>")
-     *
-     * @Assert\All(constraints={
-     *   @Assert\NotBlank()
-     * })
-     */
-    private $labels = [];
 
     /**
      * {@inheritdoc}
@@ -77,9 +64,9 @@ class News extends AbstractContentModel implements PersonAwareInterface, LabelAw
     /**
      * {@inheritdoc}
      */
-    public function setPerson($person_email)
+    public function setPerson($person)
     {
-        $this->person = $person_email;
+        $this->person = $person;
 
         return $this;
     }
@@ -104,24 +91,6 @@ class News extends AbstractContentModel implements PersonAwareInterface, LabelAw
     public function setCategory($category)
     {
         $this->category = (string) $category;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLabels()
-    {
-        return $this->labels;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addLabel($label)
-    {
-        $this->labels[] = (string) $label;
 
         return $this;
     }

@@ -49,4 +49,11 @@ interface MapperInterface
      * @return mixed
      */
     public function findOneBy(array $criteria, $throw_exception = true);
+
+    /**
+     * @param int $id
+     *
+     * @return null|object
+     */
+    public function find($id);
 }

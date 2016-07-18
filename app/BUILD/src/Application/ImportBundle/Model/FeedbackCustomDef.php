@@ -35,6 +35,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Exporting feedback custom def entity.
  *
  * Class FeedbackCustomDef
+ *
+ * @Assert\GroupSequenceProvider
  */
 class FeedbackCustomDef extends AbstractCustomDef
 {

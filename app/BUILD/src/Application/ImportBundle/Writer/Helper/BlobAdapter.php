@@ -42,16 +42,16 @@ class BlobAdapter
     /**
      * @var DeskproBlobStorage
      */
-    private $blob_storage;
+    private $blobStorage;
 
     /**
      * Constructor.
      *
-     * @param DeskproBlobStorage $blob_storage
+     * @param DeskproBlobStorage $blobStorage
      */
-    public function __construct(DeskproBlobStorage $blob_storage)
+    public function __construct(DeskproBlobStorage $blobStorage)
     {
-        $this->blob_storage = $blob_storage;
+        $this->blobStorage = $blobStorage;
     }
 
     /**
@@ -59,22 +59,22 @@ class BlobAdapter
      */
     public function createBySourceData($source_data, $filename, $content_type)
     {
-        return $this->blob_storage->createBlobRecordFromString($source_data, $filename, $content_type);
+        return $this->blobStorage->createBlobRecordFromString($source_data, $filename, $content_type);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function createByBlob(Model\AbstractBlob $blob, $throwException = true)
+    public function createByBlob(Model\Blob $blob, $throwException = true)
     {
-        $blob_data = BlobDataMapper::findOneByParams(
+        $blobData = BlobDataMapper::findOneByParams(
             $blob->getBlobData(),
             $blob->getBlobPath(),
             $blob->getBlobUrl(),
             $throwException
         );
 
-        if (!$blob_data) {
+        if (!$blobData) {
             if ($throwException) {
                 throw new \Exception('Blob data is empty');
             }
@@ -82,6 +82,14 @@ class BlobAdapter
             return false;
         }
 
-        return $this->createBySourceData($blob_data, $blob->getFileName(), $blob->getContentType());
+        if (!$blob->getFileName() || !$blob->getContentType()) {
+            if ($throwException) {
+                throw new \Exception('Blob info is empty');
+            }
+
+            return false;
+        }
+
+        return $this->createBySourceData($blobData, $blob->getFileName(), $blob->getContentType());
     }
 }

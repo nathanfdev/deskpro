@@ -62,4 +62,12 @@ abstract class AbstractEntityManagerMapper implements MapperInterface
 
         return $entity;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function find($id)
+    {
+        return $this->em->getRepository($this->getEntityClass())->find($id);
+    }
 }

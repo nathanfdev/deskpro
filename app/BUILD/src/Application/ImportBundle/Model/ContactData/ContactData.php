@@ -95,9 +95,21 @@ class ContactData
     /**
      * @param Address[] $address
      */
-    public function setAddress($address)
+    public function setAddress(array $address)
     {
         $this->address = $address;
+    }
+
+    /**
+     * @param Address $address
+     *
+     * @return $this
+     */
+    public function addAddress(Address $address)
+    {
+        $this->address[] = $address;
+
+        return $this;
     }
 
     /**
@@ -111,9 +123,21 @@ class ContactData
     /**
      * @param Facebook[] $facebook
      */
-    public function setFacebook($facebook)
+    public function setFacebook(array $facebook)
     {
         $this->facebook = $facebook;
+    }
+
+    /**
+     * @param Facebook $facebook
+     *
+     * @return $this
+     */
+    public function addFacebook(Facebook $facebook)
+    {
+        $this->facebook[] = $facebook;
+
+        return $this;
     }
 
     /**
@@ -127,9 +151,21 @@ class ContactData
     /**
      * @param InstantMessage[] $instantMessage
      */
-    public function setInstantMessage($instantMessage)
+    public function setInstantMessage(array $instantMessage)
     {
         $this->instantMessage = $instantMessage;
+    }
+
+    /**
+     * @param InstantMessage $instantMessage
+     *
+     * @return $this
+     */
+    public function addInstantMessage(InstantMessage $instantMessage)
+    {
+        $this->instantMessage[] = $instantMessage;
+
+        return $this;
     }
 
     /**
@@ -143,9 +179,21 @@ class ContactData
     /**
      * @param LinkedIn[] $linkedIn
      */
-    public function setLinkedIn($linkedIn)
+    public function setLinkedIn(array $linkedIn)
     {
         $this->linkedIn = $linkedIn;
+    }
+
+    /**
+     * @param LinkedIn $linkedIn
+     *
+     * @return $this
+     */
+    public function addLinkedIn(LinkedIn $linkedIn)
+    {
+        $this->linkedIn[] = $linkedIn;
+
+        return $this;
     }
 
     /**
@@ -159,9 +207,21 @@ class ContactData
     /**
      * @param Phone[] $phone
      */
-    public function setPhone($phone)
+    public function setPhone(array $phone)
     {
         $this->phone = $phone;
+    }
+
+    /**
+     * @param Phone $phone
+     *
+     * @return $this
+     */
+    public function addPhone(Phone $phone)
+    {
+        $this->phone[] = $phone;
+
+        return $this;
     }
 
     /**
@@ -175,9 +235,21 @@ class ContactData
     /**
      * @param Twitter[] $twitter
      */
-    public function setTwitter($twitter)
+    public function setTwitter(array $twitter)
     {
         $this->twitter = $twitter;
+    }
+
+    /**
+     * @param Twitter $twitter
+     *
+     * @return $this
+     */
+    public function addTwitter(Twitter $twitter)
+    {
+        $this->twitter[] = $twitter;
+
+        return $this;
     }
 
     /**
@@ -191,8 +263,20 @@ class ContactData
     /**
      * @param Website[] $website
      */
-    public function setWebsite($website)
+    public function setWebsite(array $website)
     {
         $this->website = $website;
+    }
+
+    /**
+     * @param Website $website
+     *
+     * @return Website
+     */
+    public function addWebsite(Website $website)
+    {
+        $this->website[] = $website;
+
+        return $website;
     }
 }

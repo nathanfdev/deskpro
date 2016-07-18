@@ -36,8 +36,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Phone extends AbstractContactData
 {
-    protected static $contact_type = 'phone';
-
     /**
      * @var string
      *
@@ -61,6 +59,14 @@ class Phone extends AbstractContactData
      * @Assert\Choice(choices={"fax", "mobile", "phone"})
      */
     protected $type;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getContactType()
+    {
+        return 'phone';
+    }
 
     /**
      * @return string

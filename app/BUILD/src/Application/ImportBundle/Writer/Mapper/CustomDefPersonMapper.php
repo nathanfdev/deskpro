@@ -29,13 +29,14 @@
 namespace Application\ImportBundle\Writer\Mapper;
 
 use Application\DeskPRO\Entity\CustomDefPerson;
+use Application\ImportBundle\Model\PersonCustomDef;
 
 /**
  * Custom def people record mapper.
  *
  * Class CustomDefPeople
  */
-class CustomDefPersonMapper extends AbstractCustomDefMapper
+class CustomDefPersonMapper extends AbstractEntityManagerMapper implements CustomDefMapperInterface
 {
     /**
      * {@inheritdoc}
@@ -43,5 +44,13 @@ class CustomDefPersonMapper extends AbstractCustomDefMapper
     public static function getEntityClass()
     {
         return CustomDefPerson::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getModelClass()
+    {
+        return PersonCustomDef::class;
     }
 }

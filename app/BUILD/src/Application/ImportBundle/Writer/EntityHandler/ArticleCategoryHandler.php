@@ -30,9 +30,6 @@ namespace Application\ImportBundle\Writer\EntityHandler;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Model;
-use Application\ImportBundle\Writer\Mapper\MapperRegistry;
-use Doctrine\ORM\EntityManager;
-use Psr\Log\LoggerInterface;
 
 /**
  * Article category importer.
@@ -41,24 +38,6 @@ use Psr\Log\LoggerInterface;
  */
 class ArticleCategoryHandler extends AbstractEntityHandler
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * Constructor.
-     *
-     * @param MapperRegistry  $mappers
-     * @param EntityManager   $em
-     * @param LoggerInterface $logger
-     */
-    public function __construct(MapperRegistry $mappers, LoggerInterface $logger, EntityManager $em)
-    {
-        parent::__construct($mappers, $logger);
-        $this->em = $em;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -69,114 +48,133 @@ class ArticleCategoryHandler extends AbstractEntityHandler
 
     /**
      * {@inheritdoc}
+     *
+     * @param Model\ArticleCategory $model
      */
-    public function prepare(Model\ImportModelInterface $model, $entityId = null)
+    public function writeModel(Model\PrimaryImportModelInterface $model)
     {
-        if (!$model instanceof Model\ArticleCategory) {
-            Model\UnexpectedException::throwUnexpectedEntityTypeException($model);
+        $entity = null;
+        if ($model->getOid()) {
+            $entity = $this->findArticleCategoryByOid($model);
+        }
+        if (!$entity) {
+            $entity = $this->mappers->getArticleCategoryMapper()->findOneBy([
+                'title'  => $model->getTitle(),
+                'parent' => null,
+            ], false);
+
+            if ($entity) {
+                $this->logger->debug("Found existing article category `{$model->getTitle()}` by oid");
+            } else {
+                $this->logger->debug("Creating new article category `{$model->getTitle()}`");
+                $entity = new DeskPROEntity\ArticleCategory();
+            }
         }
 
-        $category = $this->findOrCreateArticleCategory($entityId);
+        $this->setCategoryProperties($model, $entity);
+        $this->persister->persistAndFlush($entity, $model);
+        $this->createOrUpdateDeepCategories($entity, $model);
+    }
 
-        $this->setCategoryProperties($model, $category, null);
-        $this->createOrUpdateDeepCategories($category, $model);
+    /**
+     * @param Model\AbstractArticleCategory $model
+     *
+     * @return DeskPROEntity\ArticleCategory
+     */
+    private function findArticleCategoryByOid(Model\AbstractArticleCategory $model)
+    {
+        $entityId = $this->mappers->getImportMapMapper()->findIdByModel($model);
+        if ($entityId) {
+            $entity = $this->mappers->getArticleCategoryMapper()->findOneBy(['id' => $entityId], false);
 
-        $this->records->setPrimaryEntity($category);
+            if ($entity) {
+                $this->logger->debug("Found existing article category `{$model->getTitle()}` by oid");
+
+                return $entity;
+            }
+        }
+
+        return false;
     }
 
     /**
      * Create categories tree.
      *
-     * @param DeskPROEntity\ArticleCategory $parent_category
-     * @param Model\ArticleCategory         $entity
+     * @param DeskPROEntity\ArticleCategory $entity
+     * @param Model\AbstractArticleCategory $model
      */
-    private function createOrUpdateDeepCategories(DeskPROEntity\ArticleCategory $parent_category, Model\ArticleCategory $entity)
+    private function createOrUpdateDeepCategories(DeskPROEntity\ArticleCategory $entity, Model\AbstractArticleCategory $model)
     {
-        $new_categories = [];
-        $old_categories = [];
+        $newTitles = [];
+        $newIds    = [];
 
-        foreach ($entity->getCategories() as $new_category) {
-            $new_categories[$new_category->getTitle()] = $new_category;
-        }
-        foreach ($parent_category->getChildren() as $old_category) {
-            $old_categories[$old_category->getRealTitle()] = $old_category;
-        }
+        // create and update sub categories
+        foreach ($model->getCategories() as $subModel) {
+            $subEntity = null;
 
-        foreach ($parent_category->getChildren() as $old_category) {
-            $title        = $old_category->getRealTitle();
-            $new_category = isset($new_categories[$title]) ? $new_categories[$title] : null;
-
-            if ($new_category) {
-                $this->setCategoryProperties($new_category, $old_category, $parent_category);
-                $this->createOrUpdateDeepCategories($old_category, $new_category);
-
-                $this->logger->debug(sprintf('Updating article category `%s`', $title));
-            } else {
-                $this->em->remove($old_category);
-                $this->logger->debug(sprintf('Removing article category `%s`', $title));
-            }
-        }
-
-        foreach ($entity->getCategories() as $child_entity) {
-            if (isset($old_categories[$child_entity->getTitle()])) {
-                continue;
+            if ($subModel->getOid()) {
+                $subEntity = $this->findArticleCategoryByOid($subModel);
+                if ($subEntity) {
+                    $this->logger->debug("Found article sub category `{$subModel->getTitle()}` by oid");
+                    $newIds[] = $subEntity->getId();
+                }
             }
 
-            $category = $this->setCategoryProperties($child_entity, new DeskPROEntity\ArticleCategory(), $parent_category);
+            if (!$subEntity) {
+                $subEntity = $entity->getChildren()
+                    ->filter(function (DeskPROEntity\ArticleCategory $subEntity) use ($subModel) {
+                        return $subEntity->getTitle() === $subModel->getTitle();
+                    })
+                    ->first()
+                ;
+                if ($subEntity) {
+                    $this->logger->debug("Found article sub category `{$subModel->getTitle()}` by title");
+                } else {
+                    $this->logger->debug("Creating new article sub category `{$subModel->getTitle()}`");
+                    $subEntity = new DeskPROEntity\ArticleCategory();
+                }
+            }
 
-            $this->createOrUpdateDeepCategories($category, $child_entity);
-            $this->records->addRelatedEntity($category);
+            $this->setCategoryProperties($subModel, $subEntity);
+            $entity->addChild($subEntity);
+            $this->persister->persistAndFlush($subEntity, $subModel);
+            $this->createOrUpdateDeepCategories($subEntity, $subModel);
+
+            $newTitles[] = $subModel->getTitle();
+        }
+
+        // remove deleted sub categories
+        foreach ($model->getCategories() as $newCategory) {
+            $newTitles[$newCategory->getTitle()] = $newCategory;
+        }
+
+        foreach ($entity->getChildren() as $subEntity) {
+            if (!in_array($subEntity->getTitle(), $newTitles) && !in_array($subEntity->getId(), $newIds)) {
+                $this->logger->debug("Removing article sub category `{$subEntity->getTitle()}`");
+                $entity->getChildren()->removeElement($subEntity);
+                $this->persister->removeAndFlush($subEntity);
+            }
         }
     }
 
     /**
      * Set article category properties.
      *
-     * @param Model\ArticleCategory              $entity
-     * @param DeskPROEntity\ArticleCategory      $category
-     * @param DeskPROEntity\ArticleCategory|null $parent_category
+     * @param Model\AbstractArticleCategory $model
+     * @param DeskPROEntity\ArticleCategory $entity
      *
      * @return DeskPROEntity\ArticleCategory
      */
-    private function setCategoryProperties(Model\ArticleCategory $entity, DeskPROEntity\ArticleCategory $category, DeskPROEntity\ArticleCategory $parent_category = null)
+    private function setCategoryProperties(Model\AbstractArticleCategory $model, DeskPROEntity\ArticleCategory $entity)
     {
-        $category
-            ->setRealTitle($entity->getTitle())
-            ->setParent($parent_category)
-            ->setIsAgent($entity->isAgent())
-            ->setIsBook($entity->isBook())
-            ->resetUserGroups()
+        $entity
+            ->setRealTitle($model->getTitle())
+            ->setIsAgent($model->isAgent())
+            ->setIsBook($model->isBook())
         ;
 
-        foreach ($entity->getUserGroups() as $user_group_name) {
-            $user_group = $this->findUserGroup($user_group_name);
-            if ($user_group) {
-                $category->addUsergroup($user_group);
-            }
-        }
+        $this->helpers->getUserGroupHelper()->updateUserGroups($model, $entity);
 
-        return $category;
-    }
-
-    /**
-     * Returns an article category by oid.
-     * Creates a new article if not found.
-     *
-     * @param int $entity_id
-     *
-     * @return DeskPROEntity\ArticleCategory
-     */
-    protected function findOrCreateArticleCategory($entity_id)
-    {
-        $category = $this->mappers->getArticleCategoryMapper()->findOneBy(['id' => $entity_id], false);
-        if ($category) {
-            $this->logger->debug(sprintf('Found existing article category `%s`', $category->getRealTitle()));
-
-            return $category;
-        }
-
-        $this->logger->debug('Creating new article category');
-
-        return new DeskPROEntity\ArticleCategory();
+        return $entity;
     }
 }

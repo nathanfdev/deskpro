@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpSys\Kernel;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -64,6 +65,7 @@ class ApiKernel extends BaseKernel
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
             new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
             new \DeskPRO\Bundle\AuditBundle\AuditBundle(),
+            new \Application\ImportBundle\ImportBundle(),
         ];
 
         if ('dev' === $this->getEnvironment()

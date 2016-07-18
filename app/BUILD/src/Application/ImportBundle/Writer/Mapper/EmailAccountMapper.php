@@ -28,7 +28,6 @@
 
 namespace Application\ImportBundle\Writer\Mapper;
 
-use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\Entity\EmailAccount;
 
 /**
@@ -36,23 +35,8 @@ use Application\DeskPRO\Entity\EmailAccount;
  *
  * Class EmailAccount
  */
-class EmailAccountMapper implements MapperInterface
+class EmailAccountMapper extends AbstractEntityManagerMapper
 {
-    /**
-     * @var EmailAccountManager
-     */
-    private $manager;
-
-    /**
-     * Constructor.
-     *
-     * @param EmailAccountManager $manager
-     */
-    public function __construct(EmailAccountManager $manager)
-    {
-        $this->manager = $manager;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -62,34 +46,13 @@ class EmailAccountMapper implements MapperInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function findOneBy(array $criteria, $throw_exception = true)
-    {
-        if (count($criteria) !== 1 || empty($criteria['email'])) {
-            throw new \Exception('Invalid criteria');
-        }
-
-        $record = $this->manager->findAccountForEmailAddress($criteria['email']);
-        if (!$record && $throw_exception) {
-            throw new MapperException('Email account not found', $criteria);
-        }
-
-        return $record;
-    }
-
-    /**
-     * Returns the existing email account by email.
-     *
      * @param string $email
-     * @param bool   $throw_exception
+     * @param bool   $throwException
      *
-     * @throws MapperException
-     *
-     * @return \Application\DeskPRO\Entity\EmailAccount|null
+     * @return EmailAccount
      */
-    public function findOneByEmail($email, $throw_exception = true)
+    public function findOneByEmail($email, $throwException = true)
     {
-        return $this->findOneBy(['email' => $email], $throw_exception);
+        return $this->findOneBy(['address' => $email], $throwException);
     }
 }

@@ -29,16 +29,11 @@
 namespace Application\ImportBundle\Writer;
 
 use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
-use Application\ImportBundle\Importer\ImporterContext;
-use Application\ImportBundle\Model\ImportModelInterface;
-use Application\ImportBundle\Writer\EntityHandler\EntityHandlerInterface;
+use Application\ImportBundle\Model\PrimaryImportModelInterface;
 use Application\ImportBundle\Writer\EntityHandler\EntityHandlerRegistry;
-use Application\ImportBundle\Writer\Mapper\ImportMapMapper;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
-use Orb\Util\Util;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * DeskPRO generator writer.
@@ -59,19 +54,9 @@ class Writer implements WriterInterface
     private $em;
 
     /**
-     * @var ImportMapMapper
-     */
-    private $oidMapper;
-
-    /**
      * @var EntityWatcher
      */
     private $entityWatcher;
-
-    /**
-     * @var ValidatorInterface
-     */
-    private $validator;
 
     /**
      * @var LoggerInterface
@@ -83,111 +68,47 @@ class Writer implements WriterInterface
      *
      * @param EntityHandlerRegistry $entityHandlers
      * @param EntityManager         $em
-     * @param ImportMapMapper       $oidMapper
      * @param EntityWatcher         $entityWatcher
-     * @param ValidatorInterface    $validator
      * @param LoggerInterface       $logger
      */
     public function __construct(
-        EntityHandlerRegistry    $entityHandlers,
-        EntityManager            $em,
-        ImportMapMapper          $oidMapper,
-        EntityWatcher            $entityWatcher,
-        ValidatorInterface       $validator,
-        LoggerInterface          $logger
+        EntityHandlerRegistry $entityHandlers,
+        EntityManager         $em,
+        EntityWatcher         $entityWatcher,
+        LoggerInterface       $logger
     ) {
         $this->entityHandlers = $entityHandlers;
         $this->em             = $em;
-        $this->oidMapper      = $oidMapper;
         $this->entityWatcher  = $entityWatcher;
-        $this->validator      = $validator;
         $this->logger         = $logger;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function writeData(ImporterContext $context, ImportModelInterface $model)
+    public function writeData(PrimaryImportModelInterface $model, $dryRun = false)
     {
-        $handlers = $this->entityHandlers->getHandlers($model);
-        foreach ($handlers as $handler) {
-            try {
-                $entityId = null;
-                $entityId = $this->oidMapper->findRefByOldId($model->getImportMapKey(), $model->getOid());
+        $handler = $this->entityHandlers->getHandler($model);
+        $this->em->beginTransaction();
 
-                if ($entityId) {
-                    $this->logger->debug(sprintf(
-                        'Found existing mapping for `%s`, oid = %s, id = %d',
-                        $model->getImportMapKey(), $model->getOid(), $entityId
-                    ));
-                }
+        try {
+            $handler->writeModel($model);
+            $this->em->flush();
+            $this->em->clear();
+            $this->entityWatcher->flushUpdatesQuiet();
 
-                /* @var EntityHandlerInterface $handler */
-                $handler->reset()->prepare($model, $entityId);
-                $entities = $handler->getDoctrineEntities();
-
-                // validate entities
-                foreach ($entities->getPersistEntities() as $entity) {
-                    $errors = $this->validator->validate($entity);
-                    if (count($errors)) {
-                        $this->logger->alert($errors);
-                        continue;
-                    }
-                }
-
-                // persist entities
-                foreach ($entities->getPersistEntities() as $entity) {
-                    if (!$context->isDryRun()) {
-                        $this->em->persist($entity);
-                    }
-                }
-
-                $this->em->flush();
-
-                foreach ($entities->getPersistEntities() as $entity) {
-                    $this->logger->debug(sprintf(
-                        'Persisted %s #%s',
-
-                        Util::getBaseClassname($entity),
-                        method_exists($entity, 'getId') ? $entity->getId() : '_'
-                    ));
-                }
-
-                // Save primary entity oid mapping
-                $primaryEntity = $entities->getPrimaryEntity();
-                if ($primaryEntity && method_exists($primaryEntity, 'getId') && null === $entityId) {
-                    $this->oidMapper->saveMapping($model->getImportMapKey(), $model->getOid(), $primaryEntity->getId());
-                }
-
-                // Save related entity mapping
-                foreach ($entities->getImportMapEntities() as $oidMap) {
-                    $mapEntity = $oidMap->getEntity();
-
-                    if (!$this->oidMapper->findRefByOldId($mapEntity->getImportMapKey(), $mapEntity->getOid())) {
-                        $importMap = $oidMap->createDoctrineImportMapEntity();
-
-                        $this->em->persist($importMap);
-                        $this->logger->info(sprintf(
-                            'Persisted a new import map %s, oid=%s, id=%s',
-                            $importMap->getTypename(), $importMap->getOldId(), $importMap->getNewId()
-                        ));
-                    } else {
-                        $this->logger->warning(sprintf(
-                            'Unable to add a new import map %s, oid=%s, already exists',
-                            $mapEntity->getImportMapKey(), $mapEntity->getOid()
-                        ));
-                    }
-                }
-
-                $this->em->flush();
-                $this->em->clear();
-                $this->entityWatcher->flushUpdatesQuiet();
-            } catch (Mapper\MapperException $e) {
-                $this->logger->warning(sprintf(
-                    'Unable to create `%s` with oid `%s`. Reason %s',
-                    get_class($model), $model->getOid(), $e->__toString()
-                ));
+            if ($dryRun) {
+                $this->em->rollback();
+            } else {
+                $this->em->commit();
             }
+        } catch (\Exception $e) {
+            $this->logger->error(sprintf(
+                'Unable to create `%s` with oid `%s`. Reason %s',
+                get_class($model), $model->getOid(), $e->__toString()
+            ));
+
+            $this->em->rollback();
         }
     }
 }

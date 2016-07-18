@@ -30,11 +30,13 @@ namespace Application\ImportBundle\Writer\Helper;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
-use Application\ImportBundle\Model\CustomDataOwnerModelInterface;
-use Application\ImportBundle\Writer\EntityHandler\DoctrineEntities;
-use Application\ImportBundle\Writer\Mapper\AbstractCustomDefMapper;
+use Application\ImportBundle\Model\AbstractCustomDef;
+use Application\ImportBundle\Model\CustomDataAwareModelInterface;
+use Application\ImportBundle\Model\CustomField;
+use Application\ImportBundle\Writer\EntityPersister;
+use Application\ImportBundle\Writer\Mapper\CustomDefMapperInterface;
+use Application\ImportBundle\Writer\Mapper\ImportMapMapper;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Criteria;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -43,9 +45,14 @@ use Psr\Log\LoggerInterface;
 class CustomDataHelper
 {
     /**
-     * @var AbstractCustomDefMapper
+     * @var ImportMapMapper
      */
-    private $mapper;
+    private $importMapMapper;
+
+    /**
+     * @var EntityPersister
+     */
+    private $persister;
 
     /**
      * @var LoggerInterface
@@ -55,111 +62,211 @@ class CustomDataHelper
     /**
      * Constructor.
      *
-     * @param AbstractCustomDefMapper $mapper
-     * @param LoggerInterface         $logger
+     * @param ImportMapMapper $importMapMapper
+     * @param EntityPersister $persister
+     * @param LoggerInterface $logger
      */
-    public function __construct(AbstractCustomDefMapper $mapper, LoggerInterface $logger)
+    public function __construct(ImportMapMapper $importMapMapper, EntityPersister $persister, LoggerInterface $logger)
     {
-        $this->mapper = $mapper;
-        $this->logger = $logger;
+        $this->importMapMapper = $importMapMapper;
+        $this->persister       = $persister;
+        $this->logger          = $logger;
     }
 
     /**
      * Returns custom def person entity.
      *
-     * @param CustomDataOwnerModelInterface $model
-     * @param mixed                         $entity
-     * @param DoctrineEntities              $entities
+     * @param CustomDefMapperInterface      $mapper
+     * @param CustomDataAwareModelInterface $model
+     * @param mixed                         $customDataOwner
      */
-    public function updateCustomData(CustomDataOwnerModelInterface $model, $entity, DoctrineEntities $entities)
+    public function updateCustomData(CustomDefMapperInterface $mapper, CustomDataAwareModelInterface $model, $customDataOwner)
     {
-        $updatedDefs = new ArrayCollection();
-        $defClass    = $this->mapper->getEntityClass();
-
-        // prepare new custom definitions
         foreach ($model->getCustomFields() as $fieldModel) {
-            $criteria = [
-                'title'  => $fieldModel->getKey(),
-                'parent' => null,
-            ];
-
-            $customDef = $this->mapper->findOneBy($criteria, false);
-            if (!$customDef) {
-                /** @var CustomDefAbstract $customDef */
-                $customDef = new $defClass();
-                $customDef->setHandlerClass(CustomDefAbstract::HANDLER_CLASS_TEXT);
-                $customDef->setTitle($fieldModel->getKey());
-
-                $entities->addRelatedEntity($customDef);
-            }
-
-            if ($customDef->isChoiceType()) {
-                $choiceDef = $this->mapper->findChoiceCustomDef($fieldModel->getValue(), $customDef);
-                if (!$choiceDef) {
-                    /** @var CustomDefAbstract $choiceDef */
-                    $choiceDef = new $defClass();
-                    $customDef->addChild($choiceDef);
-                    $entities->addRelatedEntity($choiceDef);
-                }
-            }
-
-            if (in_array($customDef->getTypeName(), [CustomDefAbstract::TYPE_DISPLAY, CustomDefAbstract::TYPE_HIDDEN])) {
-                continue;
-            }
-
-            $updatedDefs->add($customDef);
-        }
-
-        // update custom data
-        foreach ($model->getCustomFields() as $fieldModel) {
-            $customDef = $updatedDefs->matching(new Criteria(Criteria::expr()->eq('title', $fieldModel->getKey())))->first();
-            if (!$customDef) {
-                continue;
-            }
             if (!$fieldModel->getValue()) {
                 continue;
             }
-
-            /** @var CustomDataAbstract[]|ArrayCollection $customDefData */
-            if ($customDef->isChoiceType()) {
-                $choiceDef     = $this->mapper->findChoiceCustomDef($fieldModel->getValue(), $customDef);
-                $customDefData = $entity->getCustomData()->filter(function (CustomDataAbstract $customData) use ($choiceDef) {
-                    return $customData->field === $choiceDef;
-                });
-
-                if (!$customDefData->count()) {
-                    $customData = $customDef->createCustomData();
-                    $customData->setField($choiceDef);
-                    $customData->setValue(1);
-
-                    $entity->addCustomData($customDef);
-                }
-            } else {
-                $customDefData = $entity->getCustomData()->filter(function (CustomDataAbstract $customData) use ($customDef) {
-                    return $customData->root_field === $customDef && null !== $customData->field;
-                });
-
-                if ($customDefData->first()) {
-                    $customData = $customDefData->first();
-                } else {
-                    $customData = $customDef->createCustomData();
-                    $entity->addCustomData($customData);
-                }
-
-                switch ($customDef->getTypeName()) {
-                    case CustomDefAbstract::TYPE_TEXT:
-                    case CustomDefAbstract::TYPE_TEXTAREA:
-                        $customData->setInput($fieldModel->getValue());
-                        break;
-                    case CustomDefAbstract::TYPE_TOGGLE:
-                        $customData->setValue($fieldModel->getValue() ? 1 : 0);
-                        break;
-                    case CustomDefAbstract::TYPE_DATE:
-                    case CustomDefAbstract::TYPE_DATETIME:
-                        $customData->setValue(strtotime($fieldModel->getValue()));
-                        break;
-                }
+            if (!is_string($fieldModel->getValue())) {
+                throw new \RuntimeException('Custom field value should be a string');
             }
+
+            $customDef = $this->findOrCreateCustomDef($mapper, $fieldModel);
+            if (!$customDef) {
+                continue;
+            }
+
+            if ($customDef->isChoiceType()) {
+                $this->updateChoiceCustomData($customDef, $fieldModel, $customDataOwner);
+            } else {
+                $this->updateSingleCustomData($customDef, $fieldModel, $customDataOwner);
+            }
+        }
+    }
+
+    /**
+     * @param CustomDefMapperInterface $mapper
+     * @param CustomField              $fieldModel
+     *
+     * @return CustomDefAbstract|null
+     */
+    private function findOrCreateCustomDef(CustomDefMapperInterface $mapper, CustomField $fieldModel)
+    {
+        $customDef = null;
+
+        // try to get custom def by oid
+        if ($fieldModel->getOid()) {
+            $entityId = $this->importMapMapper->findIdByModel($fieldModel);
+            if ($entityId) {
+                $this->logger->debug('Found existing custom def id by OID');
+                $customDef = $mapper->find($entityId);
+            }
+
+            // just oid was provided (no name), try to get by field name fallback
+            if (!$customDef && !$fieldModel->getName()) {
+                $customDef = $mapper->findOneBy([
+                    'title'  => 'Custom field'.$fieldModel->getOid(),
+                    'parent' => null,
+                ], false);
+            }
+        }
+
+        // try to get custom def by title
+        if (!$customDef) {
+            $customDef = $mapper->findOneBy([
+                'title'  => $fieldModel->getName(),
+                'parent' => null,
+            ], false);
+
+            if ($customDef) {
+                $this->logger->debug('Found existing custom def id by title');
+            }
+        }
+
+        if ($customDef) {
+            if ($customDef->getParent()) {
+                $this->logger->warning(
+                    "Unable to set data to child custom def {$mapper->getEntityClass()} ".
+                    "`{$fieldModel->getOid()}` `{$fieldModel->getName()}`"
+                );
+
+                return;
+            }
+        } else {
+            // no custom def found, create a new one
+            $customDefModelClass  = $mapper->getModelClass();
+            $customDefEntityClass = $mapper->getEntityClass();
+
+            /** @var AbstractCustomDef $customDefModel */
+            $customDefModel = new $customDefModelClass();
+            $customDefModel->setOid($fieldModel->getOid() ?: $fieldModel->getName());
+            $customDefModel->setTitle($fieldModel->getName() ?: 'Custom field'.$fieldModel->getOid());
+
+            /** @var CustomDefAbstract $customDef */
+            $customDef = new $customDefEntityClass();
+            $customDef->setTitle($customDefModel->getTitle());
+            $customDef->setWidgetType(CustomDefAbstract::TYPE_TEXT);
+
+            $this->persister->persistAndFlush($customDef, $customDefModel);
+        }
+
+        return $customDef;
+    }
+
+    /**
+     * @param CustomDefAbstract $customDef
+     * @param CustomField       $fieldModel
+     * @param mixed             $customDataOwner
+     */
+    private function updateChoiceCustomData(CustomDefAbstract $customDef, CustomField $fieldModel, $customDataOwner)
+    {
+        /** @var CustomDataAbstract[]|ArrayCollection $allCustomData */
+        $allCustomData = $customDataOwner->getCustomData();
+        $newChoiceIds  = [];
+
+        $choicePaths = explode(',', $fieldModel->getValue());
+        foreach ($choicePaths as $choicePath) {
+            // get choice def
+            $choiceDef = null;
+
+            $choicePath = explode('>', $choicePath);
+            $choicePath = array_map('trim', $choicePath);
+
+            $parentDefId = null;
+            foreach ($choicePath as $choiceName) {
+                $choiceDef = $customDef->getChildren()->filter(function (CustomDefAbstract $choiceDef) use ($choiceName, $parentDefId) {
+                    return $choiceDef->getTitle() == $choiceName && $choiceDef->getOption('parent_id') == $parentDefId;
+                })->first();
+
+                if (!$choiceDef) {
+                    $this->logger->debug("Choice def was not found for {$customDef->getTitle()}, create a new one");
+                    $choiceDefClass = get_class($customDef);
+
+                    /** @var CustomDefAbstract $choiceDef */
+                    $choiceDef = new $choiceDefClass();
+                    $choiceDef->setParent($customDef);
+                    $choiceDef->setOption('parent_id', $parentDefId);
+                    $choiceDef->setTitle($choiceName);
+
+                    $this->persister->persistAndFlush($choiceDef);
+                }
+
+                $parentDefId = $choiceDef->getId();
+            }
+
+            $customDefData = $allCustomData->filter(function (CustomDataAbstract $customData) use ($customDef, $choiceDef) {
+                return $customData->root_field === $customDef && $customData->field === $choiceDef;
+            });
+
+            if (!$customDefData->count()) {
+                $customData = $customDef->createCustomData();
+                $customData->setField($choiceDef);
+                $customData->setValue(1);
+
+                $customDataOwner->addCustomData($customData);
+            }
+
+            // remember current choice to delete
+            $newChoiceIds[] = $choiceDef->getId();
+        }
+
+        foreach ($allCustomData as $customData) {
+            if ($customData->root_field === $customDef && !in_array($customData->getFieldId(), $newChoiceIds)) {
+                $allCustomData->removeElement($customData);
+            }
+        }
+    }
+
+    /**
+     * @param CustomDefAbstract $customDef
+     * @param CustomField       $fieldModel
+     * @param mixed             $customDataOwner
+     */
+    private function updateSingleCustomData(CustomDefAbstract $customDef, CustomField $fieldModel, $customDataOwner)
+    {
+        /** @var CustomDataAbstract[]|ArrayCollection $customDefData */
+        $customDefData = $customDataOwner->getCustomData()->filter(function (CustomDataAbstract $customData) use ($customDef) {
+            return $customData->root_field === $customDef && null !== $customData->field;
+        });
+
+        if ($customDefData->first()) {
+            $customData = $customDefData->first();
+        } else {
+            $customData = $customDef->createCustomData();
+            $customDataOwner->addCustomData($customData);
+        }
+
+        switch ($customDef->getTypeName()) {
+            case CustomDefAbstract::TYPE_TEXT:
+            case CustomDefAbstract::TYPE_TEXTAREA:
+                $customData->setInput($fieldModel->getValue());
+                break;
+            case CustomDefAbstract::TYPE_TOGGLE:
+                $customData->setValue($fieldModel->getValue() ? 1 : 0);
+                break;
+            case CustomDefAbstract::TYPE_DATE:
+            case CustomDefAbstract::TYPE_DATETIME:
+                $customData->setValue(strtotime($fieldModel->getValue()));
+                break;
         }
     }
 }
