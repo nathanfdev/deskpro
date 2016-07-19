@@ -5,7 +5,7 @@ module.exports = {
   devtool: 'eval',
   entry:   './es6/Admin/AdminApp.js',
   output:  {
-    path:              './webpack/',
+    path:              './app-build/',
     filename:          'app.bundle.js',
     sourceMapFilename: '[name].map'
   },
