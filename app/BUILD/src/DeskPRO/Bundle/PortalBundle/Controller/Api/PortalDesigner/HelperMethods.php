@@ -119,6 +119,10 @@ trait HelperMethods
         $theme          = $this->getTheme();
         $edit_theme_set = $this->getEditThemeSet();
 
+        if (!$edit_theme_set) {
+            return;
+        }
+
         if (!array_key_exists($template_name, $theme->getTemplateMap())) {
             throw $this->createNotFoundException('Unable to find requested template');
         }
