@@ -218,17 +218,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         if (defined('DP_BUILD_TIME')) {
             $logger->info('Setting deskpro_build = '.DP_BUILD_TIME);
-            $current = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
-            if ($current < DP_BUILD_TIME) {
-                $db = App::getDb();
-                $db->beginTransaction();
-                App::getDb()->deleteIn('settings', ['core.deskpro_build', 'core.deskpro_build_num'], 'name');
-                App::getDb()->batchInsert('settings', [
-                    ['value' => DP_BUILD_TIME, 'name' => 'core.deskpro_build'],
-                    ['value' => DP_BUILD_NUM, 'name' => 'core.deskpro_build_num'],
-                ]);
-                $db->commit();
-            }
+            $db = App::getDb();
+            $db->update('settings', ['value' => DP_BUILD_TIME], ['name' => 'core.deskpro_build']);
+            $db->update('settings', ['value' => DP_BUILD_NUM], ['name' => 'core.deskpro_build_num']);
         }
 
         $logger->info('Upgrade complete');
