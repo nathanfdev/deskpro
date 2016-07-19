@@ -127,6 +127,19 @@ class PortalStylesCompiler
     }
 
     /**
+     * Check if any vars have changed.
+     *
+     * @param array    $variables
+     * @param ThemeSet $themeSet
+     *
+     * @return bool
+     */
+    public function hasChangedVars(array $variables, $themeSet)
+    {
+        return $variables != $themeSet->getOption(self::$customVarsThemeSetOption, []);
+    }
+
+    /**
      * Recompile portal css.
      *
      * @param array    $variables
@@ -173,11 +186,16 @@ class PortalStylesCompiler
         $asset->setBlob($blob);
 
         $this->em->persist($asset);
-        $this->em->flush();
 
+        // we dont delete the blob because it might still be required in old
+        // cached pages. Mark it as temp so it'll be auto-removed in 6 hours
         if ($oldBlob) {
-            $this->bs->deleteBlobRecord($oldBlob);
+            $oldBlob->is_temp      = true;
+            $oldBlob->date_created = new \DateTime();
+            $this->em->persist($oldBlob);
         }
+
+        $this->em->flush();
     }
 
     /**

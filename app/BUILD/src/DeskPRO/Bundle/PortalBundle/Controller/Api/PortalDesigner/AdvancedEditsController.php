@@ -74,7 +74,14 @@ class AdvancedEditsController extends AbstractApiController
 
         try {
             $this->getAdvancedEditsManager()->save($data);
-            $this->getPortalStylesCompiler()->recompile($variables, $editThemeSet);
+
+            if (
+                $this->getAdvancedEditsManager()->hasChangedCssFiles()
+                || $this->getPortalStylesCompiler()->hasChangedVars($variables, $editThemeSet)
+            ) {
+                $this->getPortalStylesCompiler()->recompile($variables, $editThemeSet);
+            }
+
             $this->getManager()->commit();
         } catch (ParserException $e) {
             $this->getManager()->rollback();

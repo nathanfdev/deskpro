@@ -42,16 +42,10 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @refreshPreviewUrl()
 
     save: =>
-      request = @$http({
-        method: 'PUT',
-        url: '/portal/api/style/edit-theme-set/advanced-edits',
-        data: @advanced
-      })
-      promises = [@saveValues(), @editWelcomeBox(), request]
+      promises = [@saveValues(), @editWelcomeBox()]
       all = @$q.all(promises)
       @savingMulti = true
       all.then( =>
-        console.log("ERE")
         @savingMulti = false
         @refreshPreviewUrl()
       , =>

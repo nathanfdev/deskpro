@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Component\Util;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -110,6 +111,62 @@ class TypeUtils
         }
 
         return false;
+    }
+
+    /**
+     * Checks if a value can be iterated over with foreach.
+     *
+     * @param mixed $value
+     *
+     * @return bool
+     */
+    public static function isTraversable($value)
+    {
+        return is_array($value) || $value instanceof \Traversable;
+    }
+
+    /**
+     * Checks if you can use array notation on a variable.
+     *
+     * @param mixed $value
+     *
+     * @return bool
+     */
+    public static function isArrayLike($value)
+    {
+        return is_array($value) || $value instanceof \ArrayAccess;
+    }
+
+    /**
+     * Checks if a value is a list (aka numerically indexed array).
+     *
+     * @param mixed $value
+     *
+     * @return bool
+     */
+    public static function isList($value)
+    {
+        if (!self::isArrayLike($value) || !self::isTraversable($value)) {
+            return false;
+        }
+
+        if (
+            $value instanceof \SplFixedArray
+            || $value instanceof \SplStack
+            || $value instanceof \SplQueue
+            || $value instanceof \SplDoublyLinkedList
+        ) {
+            return true;
+        }
+
+        $idx = 0;
+        foreach ($value as $k => $v) {
+            if ($k !== $idx++) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
