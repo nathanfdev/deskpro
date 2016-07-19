@@ -114,24 +114,33 @@ class OneSkyUploadCommand extends ContainerAwareCommand
 
             foreach ($project->getFiles() as $f) {
                 $friendlyPath = str_replace($langDir.'/', '', str_replace('\\', '/', $f->getRealPath()));
-                $output->write(sprintf('Processing %-40s ... ', $friendlyPath));
+                $output->writeln(sprintf('Processing %-40s ... ', $friendlyPath));
 
                 $fileId         = $f->getBasename('.php');
                 $groupedPhrases = $project->groupPhrasesFromFile($f);
 
                 foreach ($groupedPhrases as $group => $phrases) {
-                    $output->write(sprintf('           %-40s ... ', $friendlyPath));
+                    $output->write(sprintf('           %-40s ... ', "{$fileId}_{$group}.php"));
                     $filePath = $tmpDir.DIRECTORY_SEPARATOR."{$fileId}_{$group}.php";
                     file_put_contents($filePath, $compiler->compilePhpCode($phrases));
 
                     $upStartTime = microtime(true);
-                    $onesky->files('upload', [
-                        'project_id'             => $projectId,
-                        'file'                   => $filePath,
-                        'file_format'            => 'PHP',
-                        'locale'                 => $locale,
-                        'is_keeping_all_strings' => !$cleanup,
-                    ]);
+
+                    for ($i = 0; $i < 3; ++$i) {
+                        try {
+                            $onesky->files('upload', [
+                                'project_id'             => $projectId,
+                                'file'                   => $filePath,
+                                'file_format'            => 'PHP',
+                                'locale'                 => $locale,
+                                'is_keeping_all_strings' => !$cleanup,
+                            ]);
+                        } catch (\Exception $e) {
+                            if ($i === 2) {
+                                throw $e;
+                            }
+                        }
+                    }
                     $output->writeln(sprintf('Done in %.3fs', microtime(true) - $upStartTime));
                 }
             }
