@@ -109,7 +109,7 @@ services:
 
   dpsid.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\DpsidListener
-    arguments: ["@doctrine.orm.default_entity_manager", "@security.token_storage", "@annotation_reader"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@security.token_storage", "@annotation_reader", "@portal_mode_storage", "@language_stack"]
     tags:
       - { name: kernel.event_subscriber }
 
