@@ -386,7 +386,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       modalInstance.result.then((email) => @preview_as_email = email; @refreshPreviewUrl())
 
     error: (message) => @showAlert(message, 'Changes were not applied')
-    success: (message) => @showAlert(message, 'Changes were applied')
+    success: (message) => @Growl.success(message)
     serverError: (message) => @error('Server error occurred. Unable to save data (' + message.message + ').')
 
   AdminPortalCtrlPortalEditor.EXPORT_CTRL()
