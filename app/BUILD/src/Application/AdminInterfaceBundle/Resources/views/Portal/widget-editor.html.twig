@@ -316,7 +316,7 @@
                                         </div>
                                         <div class="column">
                                             <div class="ui checkbox image field proactive-style">
-                                                <input type="radio" name="widget_style"
+                                                <input type="radio" ng-disabled="brand_settings.chat.request_user_info" name="widget_style"
                                                        ng-model="brand_settings.chat.popup.style"
                                                        id="proactive_style_agent_text_input" class="hidden"
                                                        value="agent_text_input">
@@ -360,7 +360,7 @@
                                         </div>
                                         <div class="column">
                                             <div class="ui checkbox image field proactive-style">
-                                                <input type="radio" name="widget_style"
+                                                <input type="radio" name="widget_style" ng-disabled="brand_settings.chat.request_user_info"
                                                        ng-model="brand_settings.chat.popup.style"
                                                        id="proactive_style_text_input"
                                                        class="hidden" value="text_input">
