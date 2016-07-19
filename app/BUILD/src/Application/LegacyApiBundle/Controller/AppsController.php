@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -417,7 +417,7 @@ class AppsController extends AbstractController
         $package->tags         = array('custom');
         $package->author_name  = $this->person->getDisplayName();
         $package->author_email = $this->person->getEmailAddress();
-        $package->author_link  = $this->container->getSetting('core.deskpro_url');
+        $package->author_link  = $this->container->getBrandSetting('core.deskpro_url');
         $package->api_version  = 1;
         $package->version      = 1;
         $package->version_name = '1.0.0';

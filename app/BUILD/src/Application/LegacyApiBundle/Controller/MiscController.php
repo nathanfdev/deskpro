@@ -81,7 +81,12 @@ class MiscController extends AbstractController
         $data = array();
 
         // The home page for the helpdesk (used in links and such)
-        $data['helpdesk_url'] = trim(str_replace('/index.php', '', $this->container->getSetting('core.deskpro_url')), '/').'/';
+        $data['helpdesk_url'] = trim(str_replace(
+                '/index.php',
+                '',
+                $this->container->getBrandSetting('core.deskpro_url')),
+                '/'
+            ).'/';
 
         // The base URL for deskpro URLs (will include /index.php/ if required)
         $data['deskpro_url'] = $data['helpdesk_url'];
@@ -93,7 +98,7 @@ class MiscController extends AbstractController
         } else {
             $data['api_url'] = $data['helpdesk_url'].'index.php/api/';
 
-            $data['asset_url'] = $this->container->getSetting('core.deskpro_url');
+            $data['asset_url'] = $this->container->getBrandSetting('core.deskpro_url');
             $data['asset_url'] = trim(str_replace('/index.php', '', $data['asset_url']), '/');
             $data['asset_url'] .= '/web/';
             $data['asset_url'] = preg_replace('#^https?://#', '//', $data['asset_url']);
@@ -111,7 +116,7 @@ class MiscController extends AbstractController
         # Auth local
         #------------------------------
 
-        $adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
+        $adapter = new \Application\DeskPRO\Auth\Adapter\Local($this->container->getEm());
         $adapter->setCredentials($email, $password);
         $result = $adapter->authenticate();
 
@@ -271,7 +276,7 @@ class MiscController extends AbstractController
         );
 
         if ($this->in->getBool('return_info')) {
-            $api_url = App::getSetting('core.deskpro_url');
+            $api_url = $this->container->getBrandSetting('core.deskpro_url');
             $api_url .= 'index.php/';
 
             if ($this->getRequest()->isSecure() && strpos($api_url, 'https://') !== 0 && !defined('DPC_IS_CLOUD')) {
@@ -280,8 +285,8 @@ class MiscController extends AbstractController
 
             $data['api_url']       = $api_url;
             $data['helpdesk_info'] = array(
-                'url'  => App::getSetting('core.deskpro_url'),
-                'name' => App::getSetting('core.helpdesk_name'),
+                'url'  => $this->container->getBrandSetting('core.deskpro_url'),
+                'name' => $this->container->getBrandSetting('core.helpdesk_name'),
             );
             $data['person_id']   = $person->getId();
             $data['person_info'] = $person->toApiData(true);
@@ -312,12 +317,12 @@ class MiscController extends AbstractController
         );
 
         if ($this->in->getBool('return_info')) {
-            $api_url = App::getSetting('core.deskpro_url');
+            $api_url = $this->container->getBrandSetting('core.deskpro_url');
 
             $data['api_url']       = $api_url;
             $data['helpdesk_info'] = array(
-                'url'  => App::getSetting('core.deskpro_url'),
-                'name' => App::getSetting('core.helpdesk_name'),
+                'url'  => $this->container->getBrandSetting('core.deskpro_url'),
+                'name' => $this->container->getBrandSetting('core.helpdesk_name'),
             );
             $data['person_id']   = $person->getId();
             $data['person_info'] = $person->toApiData(true);
@@ -380,7 +385,7 @@ class MiscController extends AbstractController
 
     public function getRateLimitAction()
     {
-        if (!App::getSetting('core.api_rate_limit')) {
+        if (!$this->container->getSetting('core.api_rate_limit')) {
             return $this->createApiResponse(array(
                 'limit' => 0,
             ));
@@ -393,8 +398,8 @@ class MiscController extends AbstractController
         }
 
         return $this->createApiResponse(array(
-            'limit'       => App::getSetting('core.api_rate_limit'),
-            'remaining'   => max(0, App::getSetting('core.api_rate_limit') - $this->rate_info['hits']),
+            'limit'       => $this->container->getSetting('core.api_rate_limit'),
+            'remaining'   => max(0, $this->container->getSetting('core.api_rate_limit') - $this->rate_info['hits']),
             'reset_stamp' => $this->rate_info['reset_stamp'],
             'reset_date'  => gmdate('r', $this->rate_info['reset_stamp']),
         ));

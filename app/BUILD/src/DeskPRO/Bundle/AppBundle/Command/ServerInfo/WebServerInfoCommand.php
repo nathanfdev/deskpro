@@ -67,9 +67,15 @@ class WebServerInfoCommand extends Command
             if ($dbConfig) {
                 $dbInfo = LowUtil::getMysqlInfoFromConfigArray($dbConfig);
                 try {
-                    $pdo = LowUtil::getPdoFromMysqlInfo($dbInfo);
-                    /* @TODO retrieve this value from settings_brand */
-                    $baseUrl = $pdo->query("SELECT value FROM settings WHERE name = 'core.deskpro_url'")->fetchColumn();
+                    $pdo            = LowUtil::getPdoFromMysqlInfo($dbInfo);
+                    $defaultBrandId = $pdo->query("SELECT value FROM settings WHERE name = 'portal.default_brand'")
+                        ->fetchColumn();
+                    if (empty($defaultBrandId)) {
+                        $defaultBrandId = 1;
+                    }
+                    $baseUrl = $pdo->query("SELECT value FROM settings_brand
+                        WHERE name = 'core.deskpro_url' AND brand_id = ".(int) $defaultBrandId)
+                        ->fetchColumn();
                 } catch (\Exception $e) {
                     $baseUrl = null;
                 }
