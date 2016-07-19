@@ -44,7 +44,7 @@ class WidgetBrandChatSettings
      *
      * @JMS\Type("boolean")
      */
-    private $requestUserInfo = true;
+    private $requestUserInfo = false;
 
     /**
      * @var bool

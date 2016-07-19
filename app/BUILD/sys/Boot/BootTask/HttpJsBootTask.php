@@ -158,39 +158,39 @@ class HttpJsBootTask implements BootTaskInterface
         $baseUrl   = $this->request->getUriForPath('/');
         $loaderSrc = $this->request->getUriForPath('/assets/'.$this->env->getAppName().'/pub/build/widget_loader.min.js');
 
-        $options = array(
+        $options = [
             'helpdeskUrl' => $baseUrl,
-            'widget'      => array(
+            'widget'      => [
                 'type'     => 'column',
                 'position' => 'right',
-            ),
-            'button' => array(
-                'translations' => array(array('language' => 1,
-                        'name'                           => 'Help',
-                )),
+            ],
+            'button' => [
+                'translations' => [['language' => 1,
+                                    'name'     => 'Help',
+                                   ]],
                 'size'   => 'medium',
-                'colors' => array(
+                'colors' => [
                     'background' => '#62ad8c',
                     'text'       => '#ffffff',
                     'border'     => '#4e9576',
-                ),
-            ),
-            'chat' => array(
-                'request_user_info' => true,
+                ],
+            ],
+            'chat' => [
+                'request_user_info' => false,
                 'proactive'         => false,
-                'popup'             => array(
-                    'translations' => array(array(
-                        'language' => 1,
-                        'title'    => 'Customer Support',
-                        'message'  => 'Need help? Just reply to start a live chat with one of our team.',
-                    )),
+                'popup'             => [
+                    'translations' => [[
+                                           'language' => 1,
+                                           'title'    => 'Customer Support',
+                                           'message'  => 'Need help? Just reply to start a live chat with one of our team.',
+                                       ]],
                     'reply_type' => 'buttons',
-                ),
+                ],
                 'begin_mode'      => 'form',
                 'waiting_timeout' => 150,
-            ),
-            'ticket' => array('select_department' => 'custom'),
-        );
+            ],
+            'ticket' => ['select_department' => 'custom'],
+        ];
 
         // override options
         $options = json_encode($options);
