@@ -507,7 +507,17 @@ class KbController extends AbstractController
                 $rev            = ContentRevisionUtil::findOrCreate($article, 'content', $this->person);
                 $rev['content'] = $article['content'];
 
-                $glossary = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
+                if (!$category = $article->getPrimaryCategory()) {
+                    $category = current($article->getCategories());
+                }
+                if ($category && $category->getBrand()) {
+                    $brand = $category->getBrand();
+                } else {
+                    $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+                    $brand   = $this->container->getEm()->getRepository(Brand::class)->find($brandId);
+                }
+
+                $glossary = new GlossaryHandler($this->em, $brand);
                 $content  = $article->content;
                 $content  = $glossary->processText($content);
 

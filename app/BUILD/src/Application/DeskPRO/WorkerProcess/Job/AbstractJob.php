@@ -85,7 +85,7 @@ abstract class AbstractJob
      * @param string $message
      * @param array  $details
      */
-    public function logStatus($message, array $details = array())
+    public function logStatus($message, array $details = [])
     {
         $details['flag'] = 'status';
         $this->logger->log($message, Logger::INFO, $details);
