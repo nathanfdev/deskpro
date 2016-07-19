@@ -28,7 +28,7 @@ export class WidgetHeaderContainer extends React.Component {
     dispatch(closeWidget());
 
     this.props.dispatch(closeTriggerPopup());
-    localStorage['dpWidget.dpWindow.popupShown'] = 'none';
+    sessionStorage['dpWidget.dpWindow.popupShown'] = 'none';
 
     // If chat was ended then we can unset chat on close button
     if (chatEnded) {

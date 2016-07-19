@@ -94,13 +94,13 @@ export class HelpButtonContainer extends React.Component {
 
   onClosePopup = () => {
     this.props.dispatch(closeTriggerPopup());
-    localStorage['dpWidget.dpWindow.popupShown'] = 'none';
+    sessionStorage['dpWidget.dpWindow.popupShown'] = 'none';
   };
 
   checkRenderPopup() {
     const { widgetOpened, triggerPopupOpened, agentsCount, hasChat, proactiveChat, liveDemo, dispatch } = this.props;
     const storageKey = 'dpWidget.dpWindow.popupShown';
-    const notClosedPopup = !(storageKey in localStorage) || localStorage[storageKey] !== 'none';
+    const notClosedPopup = !(storageKey in sessionStorage) || sessionStorage[storageKey] !== 'none';
 
     if (!widgetOpened && hasChat && proactiveChat && (liveDemo || (notClosedPopup && agentsCount > 0))) {
       if (!triggerPopupOpened) {
