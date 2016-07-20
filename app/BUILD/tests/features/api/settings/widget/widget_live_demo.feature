@@ -17,24 +17,12 @@ Feature: Widget setup
     Then the response status code should be 200
     And the JSON node "data.people.agents" should have 3 elements
     And the JSON node "data.people.users" should have 3 elements
-    And the JSON node "data.people.agents[0].primary_email_address" should be equal to "admin@deskpro.dev"
-    And the JSON node "data.people.agents[1].primary_email_address" should be equal to "agent_1@deskpro.dev"
-    And the JSON node "data.people.agents[2].primary_email_address" should be equal to "agent_2@deskpro.dev"
-    And the JSON node "data.people.users[0].primary_email_address" should be equal to "person_1@deskpro.dev"
-    And the JSON node "data.people.users[1].primary_email_address" should be equal to "person_2@deskpro.dev"
-    And the JSON node "data.people.users[2].primary_email_address" should be equal to "person_3@deskpro.dev"
 
   Scenario: I have less than required real people
     When I send a GET request to "/api/v2/widget/live_demo/sample_state"
     Then the response status code should be 200
     And the JSON node "data.people.agents" should have 3 elements
     And the JSON node "data.people.users" should have 3 elements
-    And the JSON node "data.people.agents[0].primary_email_address" should be equal to "admin@deskpro.dev"
-    And the JSON node "data.people.agents[1].primary_email_address" should exist
-    And the JSON node "data.people.agents[2].primary_email_address" should exist
-    And the JSON node "data.people.users[0].primary_email_address" should exist
-    And the JSON node "data.people.users[1].primary_email_address" should exist
-    And the JSON node "data.people.users[2].primary_email_address" should exist
 
   Scenario: I have chat sample state
     When I send a GET request to "/api/v2/widget/live_demo/sample_state"
