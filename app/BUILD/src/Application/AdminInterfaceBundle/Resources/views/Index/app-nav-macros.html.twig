@@ -10,7 +10,7 @@
 
 {% macro list_item(title, href, state_mark, icon, cond, ngClass) %}
     <li {% if cond %}ng-if="{{ cond }}"{% endif %}>
-        <a href="{{ href }}" class="item" {% if ngClass %}ng-class="{{ ngClass }}"{% endif %} dp-state-mark="{{ state_mark }}">
+        <a ng-href="{{ href }}" class="item" {% if ngClass %}ng-class="{{ ngClass }}"{% endif %} dp-state-mark="{{ state_mark }}">
             <i class="fa {{ icon }}"></i> {{ title }}
             <span class="disabled-tag" title="Disabled">Disabled</span>
         </a>
@@ -19,7 +19,7 @@
 
 {% macro list_subitem(title, href, state_mark, icon, cond, ngClass) %}
     <li {% if cond %}ng-if="{{ cond }}"{% endif %}>
-        <a href="{{ href }}" class="item" {% if ngClass %}ng-class="{{ ngClass }}"{% endif %} dp-state-mark="{{ state_mark }}">
+        <a ng-href="{{ href }}" class="item" {% if ngClass %}ng-class="{{ ngClass }}"{% endif %} dp-state-mark="{{ state_mark }}">
             <i class="fa {{ icon }}"></i> {{ title }}
             <span class="disabled-tag" title="Disabled">Disabled</span>
         </a>
@@ -28,7 +28,7 @@
 
 {% macro list_subitem_regex_statemark(title, href, state_mark, icon, cond, ngClass) %}
     <li {% if cond %}ng-if="{{ cond }}"{% endif %}>
-        <a href="{{ href }}" class="item" {% if ngClass %}ng-class="{{ ngClass }}"{% endif %} dp-state-mark-regex="{{ state_mark }}">
+        <a ng-href="{{ href }}" class="item" {% if ngClass %}ng-class="{{ ngClass }}"{% endif %} dp-state-mark-regex="{{ state_mark }}">
             <i class="fa {{ icon }}"></i> {{ title }}
             <span class="disabled-tag" title="Disabled">Disabled</span>
         </a>
@@ -37,7 +37,7 @@
 
 {% macro list_item_group(title, icon, href, state_mark, cond, ngClass, groupNgClass) %}
     <li {% if groupNgClass %}ng-class="{{ groupNgClass }}"{% endif %} {% if cond %}ng-show="{{ cond }}"{% endif %}>
-        <a href="{{ href }}" class="item" {% if ngClass %}ng-class="{{ ngClass }}"{% endif %} dp-state-mark="{{ state_mark }}">
+        <a ng-href="{{ href }}" class="item" {% if ngClass %}ng-class="{{ ngClass }}"{% endif %} dp-state-mark="{{ state_mark }}">
             <i class="fa {{ icon }}"></i> {{ title }}
             <span class="disabled-tag" title="Disabled">Disabled</span>
         </a>
