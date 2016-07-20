@@ -48,6 +48,74 @@
 		</article>
 	</section>
 
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+			</nav>
+			<h3>Default departments</h3>
+			<div class="dp-pane-help-box">
+				The default department is pre-selected in new ticket forms
+			</div>
+		</header>
+		<article>
+			<div style="padding-left: 15px; padding-bottom: 20px;">
+				<h4>Select brand</h4>
+				<select
+						style="width: 200px"
+						ui-select2
+						ng-model="ListCtrl.brandId"
+						ng-init="ListCtrl.brandId = 0"
+				>
+					<option
+							ng-repeat="brand in ListCtrl.brandList"
+							ng-value="brand.id"
+							ng-selected = "ListCtrl.brandId == brand.id || (!ListCtrl.brandId && $index == 0)"
+					>
+						{{ ng_var('brand.name')}}
+
+					</option>
+				</select>
+			</div>
+
+
+			<div style="padding-left: 15px; padding-bottom: 20px;">
+				<h4>Default department for agents:</h4>
+				<select
+						style="width: 200px"
+						ui-select2
+						ng-model="ListCtrl.defaultDepartments[ListCtrl.brandId].agent"
+						ng-change="ListCtrl.changeDefaultDepartment('agent')">
+					<option
+							ng-repeat="dep in ListCtrl.flattenedList"
+							ng-value="dep.id"
+							ng-selected="dep.id === ListCtrl.defaultDepartments[ListCtrl.brandId].agent"
+					>
+						{{ ng_var('dep.title')}}
+					</option>
+				</select>
+			</div>
+
+			<div style="padding-left: 15px; padding-bottom: 20px;">
+				<h4>Default department for users:</h4>
+				<select
+						style="width: 200px"
+						ui-select2
+						ng-model="ListCtrl.defaultDepartments[ListCtrl.brandId].user"
+						ng-change="ListCtrl.changeDefaultDepartment('user')">
+					<option
+							ng-repeat="dep in ListCtrl.flattenedList"
+							ng-value="dep.id"
+							ng-selected="dep.id === ListCtrl.defaultDepartments[ListCtrl.brandId].user"
+					>
+						{{ ng_var('dep.title')}}
+
+					</option>
+				</select>
+			</div>
+		</article>
+	</section>
+
 	<div dp-register-message="no_delete_last">{{ phrase('adm.departments.no_delete_last') }}</div>
 {% endblock %}
 {% block listpane_help %}

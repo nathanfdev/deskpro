@@ -7290,4 +7290,10 @@ $collection->create('api_billing_fields_update_order', [
     'methods'    => ['POST'],
 ]);
 
+$collection->create('brands_list', [
+    'path'       => '/brands',
+    'controller' => 'LegacyApiBundle:Brand:list',
+    'methods'    => ['GET'],
+]);
+
 return $collection;

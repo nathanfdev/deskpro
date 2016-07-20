@@ -5,7 +5,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     init: ->
       @depData = @DataService.get('TicketDeps')
-
+      @defaultDepartments = { 0: {agent: null, user: null}}
+      @brandId = 0
+      @brandList = []
       @sortedListOptions = {
         axis: 'y',
         handle: '.drag-handle',
@@ -28,9 +30,18 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       promise = @depData.loadList().then( (list) =>
         @depList = list
         @deps = @depData.listModels
+        @flattenedList = []
+        if @depList
+          for dep in @depList
+            @flattenedList.push dep
+            if dep.children.length
+              for subdep in dep.children then @flattenedList.push subdep
       )
 
-      return promise
+      brandsPromise = @Api.sendGet('/brands').then (response) =>
+        @brandList = response.data.brands
+
+      return @$q.all([promise, brandsPromise])
 
     ###
     # Get the move dep list for use in the delete/move dlg
@@ -103,5 +114,13 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
         @applyErrorResponseToView(info)
       )
+
+    changeDefaultDepartment: (type) =>
+      if not @brandId
+        @showAlert('You should select brand to set default department')
+        return
+      return
+      @Api2.sendPutJson('settings/departments/default/' + @brandId, {type: type, department: @defaultDepartments[@brandId][type]})
+      .success(() -> @showAlert('Default department for ' + type + 's was successfully set'))
 
   Admin_TicketDeps_Ctrl_List.EXPORT_CTRL()
