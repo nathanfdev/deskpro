@@ -1,22 +1,43 @@
-var path    = require('path');
-var webpack = require('webpack');
+var path              = require('path');
+var webpack           = require('webpack');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   devtool: 'eval',
-  entry:   './es6/Admin/AdminApp.js',
+  entry:   {
+    Admin:  './es6/Admin/AdminApp.js',
+    styles: './app/Admin/Resources/style/admin2-style.scss',
+    less:   './app/Admin/Resources/style/admin-style.less'
+  },
   output:  {
-    path:              './app-build/',
-    filename:          'app.bundle.js',
+    path:              path.join(__dirname, 'app-build/'),
+    filename:          '[name].bundle.js',
     sourceMapFilename: '[name].map'
   },
   module:  {
     loaders: [
+      {
+        test:   /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg|mp3|ogg|wav)$/,
+        loader: 'file-loader?context=app&name=[path][name].[ext]'
+      },
+      {
+        test: /\.scss$/, loader: ExtractTextPlugin.extract('style-loader',
+        `css-loader?sourceMap!resolve-url!sass-loader?sourceMap&outputStyle=expanded`,
+        { publicPath: './' })
+      },
+      {
+        test: /\.less$/,
+        loader: ExtractTextPlugin.extract('css?sourceMap!' + 'less?sourceMap&rootpath=app/Admin/Resources/style/../../../../')
+      },
       { test: /[\/]angular\.js$/, loader: "exports?angular!imports?jquery" },
       { test: /jquery\.min\.js$/, loader: 'expose?jQuery!expose?$' },
       { test: path.join(__dirname, 'es6'), loader: 'babel-loader' }
     ]
   },
   plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoErrorsPlugin(),
+    new ExtractTextPlugin('[name].css'),
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: false,
       mangle:    false

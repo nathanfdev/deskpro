@@ -291,8 +291,8 @@
     <link rel="stylesheet" href="{{ asset('bower_components/animate.css/animate.min.css') }}">
     <link rel="stylesheet" href="{{ asset('bower_components/intl-tel-input/build/css/intlTelInput.css') }}">
     <link rel="stylesheet" href="{{ asset('bower_components/angular-ui-tree/dist/angular-ui-tree.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('app-build/styles/Admin/admin-style.css') }}" />
-    <link rel="stylesheet" href="{{ asset('app-build/styles/Admin/admin2-style.css') }}" />
+    <link rel="stylesheet" href="{{ asset('app-build/less.css') }}" />
+    <link rel="stylesheet" href="{{ asset('app-build/styles.css') }}" />
     <link rel="stylesheet" href="{{ asset('app-build/styles/Admin/semantic.css') }}" />
     <link rel="stylesheet" href="{{ asset('vendor/redactor/redactor.css') }}" type="text/css" />
 
@@ -345,7 +345,7 @@
         window.name                = "NG_DEFER_BOOTSTRAP!";
         window.DP_INTERFACE_LOADER = 'AdminLoad';
     </script>
-    <script src="{{ asset('app-build/app.bundle.js') }}" charset="utf-8"></script>
+    <script src="{{ asset('app-build/Admin.bundle.js') }}" charset="utf-8"></script>
 
     {% include 'DeskPRO:Common:notify-login-script.html.twig' with {show:true} %}
 

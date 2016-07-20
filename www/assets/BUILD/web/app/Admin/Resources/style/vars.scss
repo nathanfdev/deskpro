@@ -1,5 +1,5 @@
 $web-path: "../../../../..";
-$ifce-res-path: $web-path + "/app/Interface/Resources";
+$ifce-res-path: $web-path + "/app/Admin/Resources";
 $ifce-img-path: $ifce-res-path + "/img";
 
 $tablet: new-breakpoint(max-width 960px 6);
