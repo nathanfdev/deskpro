@@ -6,7 +6,7 @@ import {
 } from '../../Selectors/list';
 import { List } from './List';
 import { toggleSelectedAction } from '../../../Application/Actions/massActions';
-import { applyParams } from '../../Actions/chatListActions';
+import { applyParams } from '../../Actions/listActions';
 import {
   setCollection, releaseCollection
 }

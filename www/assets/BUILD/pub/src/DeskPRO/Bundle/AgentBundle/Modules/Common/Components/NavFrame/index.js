@@ -6,6 +6,6 @@ export { ListItem } from './Lists/ListItem';
 export { ListItemStatefulContainer } from './Lists/ListItemStatefulContainer';
 export { NestedList } from './Lists/NestedList';
 export { ListItemLabelSpinner } from './Lists/ListItemLabelSpinner';
-export { ListGroupingControlContainer } from './ListGroupingControlContainer';
+export { ListGroupingModal, ListGroupingForm } from './grouping-control';
 export { LabelsDictionary } from './labels';
 export { ButtonsPane, Button } from './buttons';

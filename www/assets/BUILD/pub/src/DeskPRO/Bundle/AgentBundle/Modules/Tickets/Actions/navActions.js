@@ -33,34 +33,36 @@ const loadFilterCount = createAction(
 
 export const startFilterEditing = createAction('TICKETS_NAV_FILTER_EDITING_START');
 export const closeFilterEditing = createAction('TICKETS_NAV_FILTER_EDITING_CLOSE');
-export const applyFilterEditing = createAction(
-  'TICKETS_NAV_FILTER_EDITING_APPLY',
-  (groupBy, content, prefId) => (dispatch, getState) => {
-    const id = editedFilterIdSelector(getState());
-    dispatch(closeFilterEditing());
+export const applyFilterEditingActionFactory = function(prefId) {
+  return createAction(
+    'TICKETS_NAV_FILTER_EDITING_APPLY',
+    (groupBy) => (dispatch, getState) => {
+      const id = editedFilterIdSelector(getState());
+      dispatch(closeFilterEditing());
 
-    // remove nested counts or mark filter as reloading depending on if grouping is applied
-    if (!groupBy) {
-      dispatch(removeFilterNestedCounts(id));
-    } else {
-      dispatch(markFilterLoading(id));
-    }
+      // remove nested counts or mark filter as reloading depending on if grouping is applied
+      if (!groupBy) {
+        dispatch(removeFilterNestedCounts(id));
+      } else {
+        dispatch(markFilterLoading(id));
+      }
 
-    if (prefId) {
-      repository('TicketFilter').putFilterPref(id, prefId, groupBy).success(() => {
-        dispatch(updateFilterGrouping(id, prefId, groupBy));
-        dispatch(loadFilterCount(id));
-      });
-    } else {
-      repository('TicketFilter').postFilterPref(id, groupBy).success(() => {
-        api.sendGet('DP_API/helpdesk/agent-client/settings').success(({ data }) => {
-          dispatch(setAgentSettings(data));
+      if (prefId) {
+        repository('TicketFilter').putFilterPref(id, prefId, groupBy).success(() => {
+          dispatch(updateFilterGrouping(id, prefId, groupBy));
           dispatch(loadFilterCount(id));
         });
-      });
+      } else {
+        repository('TicketFilter').postFilterPref(id, groupBy).success(() => {
+          api.sendGet('DP_API/helpdesk/agent-client/settings').success(({ data }) => {
+            dispatch(setAgentSettings(data));
+            dispatch(loadFilterCount(id));
+          });
+        });
+      }
     }
-  }
-);
+  );
+};
 
 export const initialLoad = createAction(
   'TICKETS_NAV_INITIAL_LOAD',

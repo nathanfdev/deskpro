@@ -1,27 +1,14 @@
 import Immutable from 'immutable';
 import { createReducer } from 'DeskPRO/Component/Ampliflux';
 import { async, mergeFullPayload, setValue } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
-import * as actions from '../Actions/chatNavActions';
+import * as actions from '../Actions/navActions';
 
-const initialState = {
-  async: { done: false },
-
-  my: {
-    total:                    0,
-    grouped_by:               'date_period',
-    isGroupingControlVisible: false,
-    nested:                   [/* {count, group} */]
-  },
-
-  all: {
-    total:                    0,
-    grouped_by:               'agent',
-    isGroupingControlVisible: false,
-    nested:                   [/* {count, group} */]
-  }
+export const chatNavInitialState = {
+  async:  { done: false },
+  counts: []
 };
 
-export default createReducer(initialState, {
+export default createReducer(chatNavInitialState, {
 
   [actions.initialLoad]: async({
     success: mergeFullPayload(),
@@ -29,17 +16,17 @@ export default createReducer(initialState, {
     done:    setValue('async.done', true)
   }),
 
-  [actions.loadCounts]: async({
-    success: (state, payload) => state.set(payload.list, Immutable.fromJS(payload.counts)),
+  [actions.reloadCount]: async({
+    success: (state, payload) => {
+      const i = state.get('counts').findIndex(c => c.get('id') == payload.countId);
+      const next = state
+        .setIn(['counts', i, 'nested'], Immutable.fromJS(payload.count.nested))
+        .setIn(['counts', i, 'grouped_by'], Immutable.fromJS(payload.count.grouped_by))
+      ;
+
+      return next;
+    },
     start:   setValue('async.done', false),
     done:    setValue('async.done', true)
-  }),
-
-  [actions.toggleListGroupingVisibility]: (state, payload) => {
-    const target = ['lists', payload, 'isGroupingControlVisible'];
-    return state.setIn(target, !state.getIn(target));
-  },
-
-  [actions.changeListGrouping]: (state, payload) => state.setIn([payload.list, 'grouped_by'], payload.groupBy)
-
+  })
 });

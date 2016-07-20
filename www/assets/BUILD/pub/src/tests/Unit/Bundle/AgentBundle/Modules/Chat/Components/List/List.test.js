@@ -11,7 +11,7 @@ jest.dontMock('~List/ControlBar/ControlBarContainer');
 
 import React from 'react';
 import { toImmutable } from 'Helpers';
-import { renderChatsInRedux } from '../../chats.test-helper';
+import { renderInChatApp } from '../../chat.test-helper';
 
 describe('List', () => {
   const ListFrameContainer  = require('~ListFrame/frame').ListFrameContainer;
@@ -22,7 +22,7 @@ describe('List', () => {
 
   const renderList = (viewMode = 'card', pagination = null) => {
     const emptyList = toImmutable([]);
-    renderChatsInRedux(3,
+    renderInChatApp(3,
       <List
         currentListParams={toImmutable({})}
         elements={[]}

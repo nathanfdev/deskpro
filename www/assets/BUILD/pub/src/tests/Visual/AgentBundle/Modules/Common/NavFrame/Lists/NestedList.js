@@ -4,7 +4,7 @@ import { css } from 'Visual/decorators';
 import { SectionsPane, Section, SectionHeader, NestedList }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 
-storiesOf('Common: NestedList', module)
+storiesOf('Common-Nav: NestedList', module)
   .addDecorator(story => css(
     <div style={{width: '250px'}}>
       <SectionsPane>

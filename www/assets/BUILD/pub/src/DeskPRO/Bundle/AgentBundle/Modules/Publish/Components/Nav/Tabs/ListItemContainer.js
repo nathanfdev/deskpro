@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { ListItemStatefulContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { urlSanitize } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Service/routing';
 import { routingStateSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
-import { applyParams } from '../../Actions/publishListActions';
+import { applyParams } from '../../../Actions/publishListActions';
 
 @connect(state => ({
   hash: routingStateSelector(state)
@@ -24,7 +24,7 @@ export class ListItemContainer extends Component {
     this.itemId = urlSanitize(props.label);
   }
 
-  componentDidMount = () => {
+  componentDidMount() {
     const { hash, listOptions, dispatch, group, content } = this.props;
     const activeItemId = hash.get('nav') ? hash.get('nav').get(`${content}_${group}`) : null;
 
@@ -33,12 +33,12 @@ export class ListItemContainer extends Component {
     }
   };
 
-  loadList = () => {
+  loadList() {
     const { dispatch, listOptions } = this.props;
     dispatch(applyParams(listOptions));
   };
 
-  render = () => {
+  render() {
     const { group, label, children, content } = this.props;
     const props = {
       label,
@@ -50,9 +50,6 @@ export class ListItemContainer extends Component {
       itemId:  this.itemId
     };
 
-    return (
-      <ListItemStatefulContainer {...props} />
-    );
+    return <ListItemStatefulContainer {...props} />;
   }
-
 }

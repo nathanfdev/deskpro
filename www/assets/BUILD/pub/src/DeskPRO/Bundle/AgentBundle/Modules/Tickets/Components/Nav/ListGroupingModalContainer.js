@@ -1,23 +1,23 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { ListGroupingControlContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
+import { ListGroupingModal } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { filterSetGroupingsSettingsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Selectors/settings';
 import { editedFilterSelector } from '../../Selectors/nav';
-import { applyFilterEditing, closeFilterEditing } from '../../Actions/navActions';
+import { applyFilterEditingActionFactory, closeFilterEditing } from '../../Actions/navActions';
 import Immutable from 'immutable';
 
 @connect(state => ({
   filter:   editedFilterSelector(state),
   grouping: filterSetGroupingsSettingsSelector(state)
 }))
-export class FilterEditPopupContainer extends Component {
+export class ListGroupingModalContainer extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    filterId: PropTypes.number.isRequired,
     filter:   PropTypes.object,
     grouping: PropTypes.object.isRequired,
-    attachTo: PropTypes.func.isRequired
+    filterId: PropTypes.number.isRequired,
+    attachTo: PropTypes.any.isRequired
   };
 
   static groupingOptions = [
@@ -34,31 +34,28 @@ export class FilterEditPopupContainer extends Component {
     { value: 'open_time', label: 'Open Time' }
   ];
 
-  closeFilterEditing = () => this.props.dispatch(closeFilterEditing());
-
   render() {
-    const { filter = Immutable.fromJS({}), grouping, attachTo, filterId } = this.props;
-    const content = filter.get('title') || 'none';
+    const { filter = Immutable.fromJS({}), grouping, attachTo, filterId, dispatch } = this.props;
 
-    let groupBy = '';
-    let id;
-
+    let selected = '';
+    let prefId;
     if (grouping.get(String(filterId))) {
-      groupBy = grouping.get(String(filterId)).get('main_grouping');
-      id = grouping.get(String(filterId)).get('id');
+      selected = grouping.get(String(filterId)).get('main_grouping');
+      prefId   = grouping.get(String(filterId)).get('id');
     }
 
-    return (
-      <ListGroupingControlContainer
-        visible={filter.get('id') === filterId}
-        id={id}
-        content={content}
-        options={FilterEditPopupContainer.groupingOptions}
-        changeListGrouping={applyFilterEditing}
-        closeGroupingVisibility={this.closeFilterEditing}
-        selected={groupBy}
-        attachTo={attachTo}
-      />
-    );
+    const close = () => dispatch(closeFilterEditing());
+    const apply = (groupBy) => {
+      const action = applyFilterEditingActionFactory(prefId);
+      dispatch(action(groupBy));
+    };
+
+    const visible = filter.get('id') === filterId;
+    const options = ListGroupingModalContainer.groupingOptions;
+    const title   = filter.get('title') || '-';
+
+    const modal = {attachTo, visible, title, options, selected, apply, close};
+
+    return <ListGroupingModal {...modal} />;
   }
 }

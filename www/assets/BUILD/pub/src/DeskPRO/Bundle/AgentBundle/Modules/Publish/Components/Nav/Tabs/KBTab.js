@@ -1,54 +1,14 @@
-import React, { Component, PropTypes } from 'react';
-import {
-  SectionsPane, Section, SectionHeader, ButtonsPane, Button
-}
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
-import { NestedList } from '../NestedList';
-import { NavGroupingPopup } from '../NavGroupingPopup';
+import React, { Component } from 'react';
+import { ContentTab } from './ContentTab';
+import { ButtonsPane, Button } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 
 export class KBTab extends Component {
-  static propTypes = {
-    articles:                 PropTypes.object.isRequired,
-    toggleGroupingVisibility: PropTypes.func.isRequired,
-    closeGroupingVisibility:  PropTypes.func.isRequired
-  };
+  static propTypes = ContentTab.propTypes;
 
-  constructor(props) {
-    super(props);
-    this.state = { expanded: false };
-  }
-
-  getAttachTarget = () => this.refs.articles;
-
-  render = () => {
-    const { articles, toggleGroupingVisibility, closeGroupingVisibility } = this.props;
-    const toggle = toggleGroupingVisibility.bind(this);
-    const close  = closeGroupingVisibility.bind(this);
-
+  render() {
     return (
       <div>
-        <SectionsPane>
-          <Section>
-            <SectionHeader
-              label="Knowledgebase"
-              ref="articles"
-              count={articles.get('count')}
-              callback={toggle}
-            />
-            <NestedList
-              content="articles"
-              groupedBy={articles.get('grouped_by')}
-              items={articles.get('nested').toJS()}
-            />
-            <NavGroupingPopup
-              attachTo={this.getAttachTarget}
-              content="articles"
-              visible={this.state.expanded}
-              closeGroupingVisibility={close}
-              groupedBy={articles.get('grouped_by')}
-            />
-          </Section>
-        </SectionsPane>
+        <ContentTab content="articles" count={this.props.count} />
 
         <ButtonsPane>
           <Button title="Glossary" icon="fa-quote-left" />

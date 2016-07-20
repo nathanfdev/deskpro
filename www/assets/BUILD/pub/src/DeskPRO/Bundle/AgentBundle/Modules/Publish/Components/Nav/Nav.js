@@ -1,11 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import {
-  NavFrame, NavFrameHeaderContainer, NavFrameBody, TabsPaneStatefulContainer, Tab
-}
+import { NavFrame, NavFrameHeaderContainer, NavFrameBody, TabsPaneStatefulContainer, Tab }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
+import { ContentTab } from './Tabs/ContentTab';
 import { KBTab } from './Tabs/KBTab';
-import { NewsTab } from './Tabs/NewsTab';
-import { DownloadsTab } from './Tabs/DownloadsTab';
 import { ToDoTab } from './Tabs/ToDoTab';
 
 export class Nav extends Component {
@@ -16,19 +13,10 @@ export class Nav extends Component {
     news:      PropTypes.object.isRequired,
     downloads: PropTypes.object.isRequired,
     todo:      PropTypes.object.isRequired,
-    grouping:  PropTypes.object.isRequired,
     setMine:   PropTypes.func.isRequired
   };
 
-  toggle() {
-    this.setState({ expanded: !this.state.expanded });
-  }
-
-  close() {
-    this.setState({ expanded: false });
-  }
-
-  render = () => {
+  render() {
     const { articles, news, downloads, todo, setMine, isLoaded } = this.props;
 
     return (
@@ -37,31 +25,16 @@ export class Nav extends Component {
         <NavFrameBody isLoaded={isLoaded}>
           <TabsPaneStatefulContainer id="tab">
             <Tab title="KB">
-              <KBTab
-                articles={articles}
-                toggleGroupingVisibility={this.toggle}
-                closeGroupingVisibility={this.close}
-              />
+              <KBTab count={articles} />
             </Tab>
             <Tab title="News">
-              <NewsTab
-                news={news}
-                toggleGroupingVisibility={this.toggle}
-                closeGroupingVisibility={this.close}
-              />
+              <ContentTab content="news" count={news} />
             </Tab>
             <Tab icon="fa-download" title="Downloads">
-              <DownloadsTab
-                downloads={downloads}
-                toggleGroupingVisibility={this.toggle}
-                closeGroupingVisibility={this.close}
-              />
+              <ContentTab content="downloads" count={downloads} />
             </Tab>
             <Tab title="Todo">
-              <ToDoTab
-                todo={todo}
-                setMine={setMine}
-              />
+              <ToDoTab todo={todo} setMine={setMine} />
             </Tab>
           </TabsPaneStatefulContainer>
         </NavFrameBody>

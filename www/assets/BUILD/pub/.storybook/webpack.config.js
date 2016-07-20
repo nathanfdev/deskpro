@@ -7,6 +7,10 @@ const config = {
         test: /\.css?$/,
         loaders: ['style', 'raw'],
         include: path.resolve(__dirname, '../')
+      },
+      {
+        loader: 'json-loader',
+        test: /\.json$/
       }
     ]
   },

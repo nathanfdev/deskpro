@@ -10,6 +10,12 @@ module.exports = {
     myTicketsFilter: {
       locateStrategy: 'xpath',
       selector: '//a/div[contains(., "My Tickets")]'
+    },
+    listSpinner: {
+      selector: 'div.loader div.spinner'
+    },
+    listCard: {
+      selector: 'div.dpmw--single-card'
     }
   }
 };
