@@ -215,8 +215,11 @@ class Boot
 
     /**
      * Boot a CLI app.
+     *
+     * @param \DpRun\DpEnv $env
+     * @param array        $commandClasses Additional command classes that don't get registered together with bundles
      */
-    public static function bootCli(\DpRun\DpEnv $env)
+    public static function bootCli(\DpRun\DpEnv $env, array $commandClasses = [])
     {
         $tasks = [
             'Loader',
@@ -234,6 +237,13 @@ class Boot
         $input = $res['cli_input'];
 
         $app = new Application($kernel);
+        foreach ($commandClasses as $commandClass) {
+            $command = new $commandClass();
+            if (method_exists($command, 'setDpEnv')) {
+                $command->setDpEnv($env);
+            }
+            $app->add($command);
+        }
         $app->run($input);
     }
 
