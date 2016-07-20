@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Languages;
 
 use Application\DeskPRO\App;
@@ -45,9 +46,20 @@ use Application\DeskPRO\Products\Products;
 use Application\DeskPRO\Tickets\TicketCategories;
 use Application\DeskPRO\Tickets\TicketPriorities;
 use Application\DeskPRO\Tickets\TicketWorkflows;
+use DeskPRO\Component\Util\MapUtils;
 
 class PhraseData
 {
+    private static $groupFileMap = [
+        'adm'     => 'admin.php',
+        'admin'   => 'admin.php',
+        'api'     => 'api.php',
+        'agent'   => 'agent.php',
+        'general' => 'general.php',
+        'portal'  => 'portal.php',
+        'user'    => 'portal.php',
+    ];
+
     /**
      * @var \Application\DeskPRO\EntityRepository\Phrase
      */
@@ -676,7 +688,7 @@ class PhraseData
         $group_id = preg_replace('#[^a-zA-Z0-9\.\-_]#', '', $group_id);
 
         $parts = explode('.', $group_id);
-        if (count($parts) != 2) {
+        if (count($parts) != 2 || !isset(self::$groupFileMap[$parts[0]])) {
             return array();
         }
 
@@ -684,16 +696,20 @@ class PhraseData
             .DIRECTORY_SEPARATOR
             .$lang_name
             .DIRECTORY_SEPARATOR
-            .$parts[0]
-            .DIRECTORY_SEPARATOR
-            .$parts[1]
-            .'.php';
+            .self::$groupFileMap[$parts[0]];
 
         if (!file_exists($path)) {
             return array();
         }
 
+        $subGroupId = $parts[1];
+
         $phrases = require $path;
+        $phrases = MapUtils::filter($phrases, function ($phraseId) use ($subGroupId) {
+            $parts = explode('.', $phraseId);
+
+            return $subGroupId === @$parts[1];
+        });
 
         return $phrases;
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Translate
  */
+
 namespace Application\DeskPRO\Translate\Loader;
 
 use Orb\Util\Arrays;
@@ -40,6 +41,16 @@ use Orb\Util\Arrays;
  */
 class SystemLoader implements LoaderInterface
 {
+    private static $groupFileMap = [
+        'adm'     => 'admin.php',
+        'admin'   => 'admin.php',
+        'api'     => 'api.php',
+        'agent'   => 'agent.php',
+        'general' => 'general.php',
+        'portal'  => 'portal.php',
+        'user'    => 'portal.php',
+    ];
+
     /**
      * Array of filepath => array.
      *
@@ -67,17 +78,12 @@ class SystemLoader implements LoaderInterface
             foreach ($groups as $group) {
                 $group_parts = explode('.', $group, 2);
 
-                // agent.something => agent/something.php
-                if (count($group_parts) == 2) {
-                    $file = $path.'/'.$group_parts[0].'/'.$group_parts[1].'.php';
-                // agent => agent/agent.php
-                } else {
-                    $file = $path.'/'.$group_parts[0].'/'.$group_parts[0].'.php';
-                }
-
-                $file_phrases = $this->loadFile($file);
-                if ($file_phrases) {
-                    $phrases = array_merge($phrases, $file_phrases);
+                if (isset(self::$groupFileMap[$group_parts[0]])) {
+                    $file         = $path.'/'.self::$groupFileMap[$group_parts[0]];
+                    $file_phrases = $this->loadFile($file);
+                    if ($file_phrases) {
+                        $phrases = array_merge($phrases, $file_phrases);
+                    }
                 }
             }
         }
