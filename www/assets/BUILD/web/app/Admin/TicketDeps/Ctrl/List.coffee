@@ -5,7 +5,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     init: ->
       @depData = @DataService.get('TicketDeps')
-      @defaultDepartments = { 0: {agent: null, user: null}}
+      @defaultDepartments = {}
       @brandId = 0
       @brandList = []
       @sortedListOptions = {
@@ -41,7 +41,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       brandsPromise = @Api.sendGet('/brands').then (response) =>
         @brandList = response.data.brands
 
-      return @$q.all([promise, brandsPromise])
+      brandsSettingsPromise = @Api2.sendGet('/settings/departments/default').then (response) =>
+        for setting in response.data.data
+          @defaultDepartments[setting.brand] = {} if !@defaultDepartments[setting.brand]
+          @defaultDepartments[setting.brand][setting.type] = setting.department
+
+      return @$q.all([promise, brandsPromise, brandsSettingsPromise])
 
     ###
     # Get the move dep list for use in the delete/move dlg
