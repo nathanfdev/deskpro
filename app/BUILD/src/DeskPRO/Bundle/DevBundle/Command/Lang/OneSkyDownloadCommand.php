@@ -40,6 +40,7 @@ use DeskPRO\Component\Util\ListUtils;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class OneSkyDownloadCommand extends ContainerAwareCommand
@@ -51,6 +52,7 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
     {
         $this->setName('dpdev:lang:onesky:download')
             ->setDescription('Downloads phrases from OneSky and into the PHP lang files')
+            ->addOption('merge', null, InputOption::VALUE_NONE, 'Merge existing lang with what we donwload (meaning old phrases will continue to exist)')
             ->addArgument('languageId', InputArgument::REQUIRED, 'Which language to upload. This will be a dir name here in the languages/ directory. Use "all" to download all langs.')
             ->addArgument('projectName', InputArgument::OPTIONAL, 'Project to upload: portal, agent, other or the special value all', 'all')
         ;
@@ -159,6 +161,11 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
                     ]);
                     if ($res) {
                         $tmpName = tempnam($tmpDir, 'lang_'.$fileName);
+
+                        if (!preg_match('/^\s*<?php/', $res)) {
+                            $res = '<?php return '.$res;
+                        }
+
                         file_put_contents($tmpName, $res);
 
                         $out = null;
@@ -193,14 +200,21 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
             $output->writeln('Writing lang files to filesystem...');
 
             foreach ($groupedPhrases as $targetFileName => $phrases) {
-                $phpCode = $langFileCompiler->compilePhpCode($phrases);
-
                 $targetDir = basename($langDir.'/'.$targetFileName);
                 if (!is_dir($targetDir)) {
                     mkdir($targetDir, 0755);
                 }
 
-                file_put_contents($langDir.'/'.$targetFileName, $phpCode);
+                $targetFilePath = $langDir.'/'.$targetFileName;
+                if ($input->getOption('merge') && is_file($targetFilePath)) {
+                    $filePhrases = require $targetFilePath;
+                    if ($filePhrases) {
+                        $phrases = array_merge($filePhrases, $phrases);
+                    }
+                }
+
+                $phpCode = $langFileCompiler->compilePhpCode($phrases);
+                file_put_contents($targetFilePath, $phpCode);
             }
         }
 
