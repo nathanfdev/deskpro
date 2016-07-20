@@ -28,7 +28,7 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.button.translations[0].name" should be equal to the string "Help"
     And the JSON node "data.settings.brand.button.colors.background" should be equal to the string "#62ad8c"
     And the JSON node "data.settings.brand.button.colors.text" should be equal to the string "#ffffff"
-    And the JSON node "data.settings.brand.chat.request_user_info" should be equal to 1
+    And the JSON node "data.settings.brand.chat.request_user_info" should be equal to 0
     And the JSON node "data.settings.brand.chat.proactive" should be equal to 1
     And the JSON node "data.settings.brand.chat.popup.translations[0].language" should be equal to 1
     And the JSON node "data.settings.brand.chat.popup.translations[0].title" should be equal to the string "Customer Support"

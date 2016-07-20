@@ -54,7 +54,15 @@ class TemplatesController extends AbstractApiController
      */
     public function getTemplatesListAction()
     {
-        return new JsonResponse(array_keys($this->getTheme()->getTemplateMap()));
+        $templates = [];
+        foreach (array_keys($this->getTheme()->getTemplateMap()) as $templateName) {
+            $templates[] = [
+                'name'      => $templateName,
+                'is_custom' => $this->getEditThemeSetTemplate($templateName) ? true : false,
+            ];
+        }
+
+        return new JsonResponse($templates);
     }
 
     /**

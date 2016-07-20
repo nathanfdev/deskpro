@@ -597,7 +597,10 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			this.getEl('user_typing').hide();
 		}
 
-		this.addMessageRow(data.author_name, data.content, data.author_type, data.is_html, data.id, data.metadata, data);
+		this.addMessageRow(data.author_name, data.content, data.author_type, data.is_html, data.message_id, data.metadata, data);
+		if(data.author_id == DESKPRO_PERSON_ID && data.metadata && data.metadata.type && data.metadata.type == 'file') {
+			this.getEl('messages_box').find('.message-' + data.message_id).addClass('server-ack').data('message-id', data.message_id)
+		}
 	},
 
 	chatReassignedTo: function(agent_id) {

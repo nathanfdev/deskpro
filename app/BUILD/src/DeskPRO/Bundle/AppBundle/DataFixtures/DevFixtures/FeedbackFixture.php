@@ -32,7 +32,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
-use Application\DeskPRO\CustomFields\Handler\Choice;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
@@ -128,7 +127,7 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
     public function load(ObjectManager $manager)
     {
         $this->manager = $manager;
-        $this->loadCustomDefFeedback();
+        $this->loadFeedbackChoices();
         $this->loadStatusCategories();
         $this->loadLabels();
         $this->manager->flush();
@@ -151,20 +150,13 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
         $this->loadFeedbackComments();
     }
 
-    private function loadCustomDefFeedback()
+    private function loadFeedbackChoices()
     {
-        $customCatDef = new CustomDefFeedback();
-        $customCatDef
-            ->setSysName('cat')
-            ->setTitle('Category')
-            ->setDescription('e.g., maybe Windows, Mac, Linux.')
-            ->setHandlerClass(Choice::class)
-        ;
+        $customCatDef = $this->manager->getRepository(CustomDefFeedback::class)->findOneBy([
+            'sys_name' => 'cat',
+        ]);
 
-        $this->manager->persist($customCatDef);
-        $this->manager->flush();
-
-        foreach (['Windows', 'Mac', 'Linux'] as $order => $title) {
+        foreach ($this->categories as $order => $title) {
             $customCatChoice = new CustomDefFeedback();
             $customCatChoice
                 ->setParent($customCatDef)
