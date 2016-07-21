@@ -633,4 +633,24 @@ class TicketSearchController extends AbstractController
 
         return $this->createApiResponse($stats);
     }
+
+    public function getApiData($input, $deep = true)
+    {
+        if (is_array($input) || $input instanceof \Traversable) {
+            $output = array();
+            $i = 0;
+            foreach ($input as $key => $value) {
+                if ($value instanceof \Application\DeskPRO\Domain\DomainObject) {
+                    $output[$key] = $value->toApiData(false, $deep);
+                    $output[$key]['_order'] = $i++;
+                }
+            }
+
+            return $output;
+        } elseif ($input instanceof \Application\DeskPRO\Domain\DomainObject) {
+            return $input->toApiData(true, $deep);
+        }
+
+        return false;
+    }
 }
