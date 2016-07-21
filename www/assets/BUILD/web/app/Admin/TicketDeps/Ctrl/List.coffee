@@ -33,9 +33,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @flattenedList = []
         if @depList
           for dep in @depList
-            @flattenedList.push dep
-            if dep.children.length
-              for subdep in dep.children then @flattenedList.push subdep
+            @flattenedList.push dep if !dep.children.length
+            for subdep in dep.children then @flattenedList.push subdep if dep.children.length
       )
 
       brandsPromise = @Api.sendGet('/brands').then (response) =>
@@ -124,8 +123,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       if not @brandId
         @showAlert('You should select brand to set default department')
         return
-      return
-      @Api2.sendPutJson('settings/departments/default/' + @brandId, {type: type, department: @defaultDepartments[@brandId][type]})
-      .success(() -> @showAlert('Default department for ' + type + 's was successfully set'))
+      @Api2.sendPutJson('settings/departments/default', {type: type, department: @defaultDepartments[@brandId][type], brand: @brandId})
+      .success(() => @Growl('Default department for ' + type + 's was successfully set'))
 
   Admin_TicketDeps_Ctrl_List.EXPORT_CTRL()

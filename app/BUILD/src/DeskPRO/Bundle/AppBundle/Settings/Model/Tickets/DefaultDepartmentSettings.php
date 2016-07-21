@@ -41,6 +41,11 @@ use JMS\Serializer\Annotation as JMS;
  */
 class DefaultDepartmentSettings
 {
+    const DEFAULT_DEPARTMENT_AGENT_TYPE = 'agent';
+    const DEFAULT_DEPARTMENT_USER_TYPE  = 'user';
+
+    private $pattern = 'default_department.%s';
+
     /**
      * @JMS\Type("string")
      *
@@ -68,6 +73,15 @@ class DefaultDepartmentSettings
     public function getType()
     {
         return $this->type;
+    }
+
+    public function getName()
+    {
+        if (!$this->type) {
+            throw new \LogicException('The $type should be set before setting name resolve');
+        }
+
+        return sprintf($this->pattern, $this->type);
     }
 
     /**
