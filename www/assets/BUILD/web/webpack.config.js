@@ -22,7 +22,7 @@ module.exports = {
       },
       {
         test: /\.scss$/, loader: ExtractTextPlugin.extract('style-loader',
-        `css-loader?sourceMap!resolve-url!sass-loader?sourceMap&outputStyle=expanded`,
+        `css-loader?sourceMap!sass-loader?sourceMap&outputStyle=expanded`,
         { publicPath: './' })
       },
       {
