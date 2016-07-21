@@ -31,10 +31,13 @@ namespace Application\ImportBundle\ScriptHelper;
 use Application\ImportBundle\Model;
 use DeskPRO\Bundle\AppBundle\Form\Error\ValidatorErrorsGenerator;
 use JMS\Serializer\Serializer;
+use libphonenumber\PhoneNumberFormat;
+use libphonenumber\PhoneNumberUtil;
 use Orb\Util\Strings;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -256,6 +259,65 @@ class WriteHelper
     }
 
     /**
+     * @param string $number
+     *
+     * @return string|false
+     */
+    public function getFormattedNumber($number)
+    {
+        $numberUtil   = PhoneNumberUtil::getInstance();
+        $parsedNumber = null;
+
+        $countryCodes = ['', '+'];
+        foreach (range(1, 10) as $codeNum) {
+            $countryCodes[] = '+'.$codeNum;
+        }
+
+        foreach ($countryCodes as $countryCode) {
+            try {
+                $checkNumber  = $countryCode.' '.$number;
+                $parsedNumber = $numberUtil->parse($checkNumber, null);
+
+                if ($numberUtil->isValidNumber($parsedNumber)) {
+                    break;
+                }
+            } catch (\Exception $e) {
+            }
+        }
+
+        if (!$parsedNumber) {
+            return false;
+        }
+        if (!$numberUtil->isValidNumber($parsedNumber)) {
+            return false;
+        }
+
+        return $numberUtil->format($parsedNumber, PhoneNumberFormat::E164);
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return bool|string
+     */
+    public function getFormattedUrl($url)
+    {
+        if (strpos($url, 'http://') !== 0 && strpos($url, 'https://') !== 0) {
+            $url = 'http://'.$url;
+        }
+
+        $errors = $this->validator->validate($url, [
+            new Assert\Url(),
+        ]);
+
+        if (count($errors)) {
+            return false;
+        }
+
+        return $url;
+    }
+
+    /**
      * @param int    $oid
      * @param array  $rawData
      * @param string $modelClassName
@@ -265,7 +327,6 @@ class WriteHelper
     protected function writeModel($oid, array $rawData, $modelClassName)
     {
         $modelType = $this->getModelType($modelClassName);
-        $oidEnc    = is_int($oid) || ctype_digit($oid) ? $oid : md5($oid);
 
         $this->lastModel = null;
         $this->logger->debug("Export $modelType #$oid");
@@ -273,7 +334,7 @@ class WriteHelper
         try {
             // transform to model
             $model = $this->serializer->fromArray($rawData, $modelClassName);
-            $model->setOid($oidEnc);
+            $model->setOid($oid);
             $model->setRawData($rawData);
 
             $this->lastModel = $model;

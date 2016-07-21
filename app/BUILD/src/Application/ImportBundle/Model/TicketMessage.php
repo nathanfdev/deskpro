@@ -69,7 +69,6 @@ class TicketMessage implements PersonAwareInterface, AttachmentsAwareInterface, 
      * @JMS\Type("string")
      *
      * @Assert\NotBlank()
-     * @Assert\Length(min="10")
      */
     private $message;
 
@@ -81,7 +80,7 @@ class TicketMessage implements PersonAwareInterface, AttachmentsAwareInterface, 
      * @Assert\NotBlank()
      * @Assert\Choice(choices={"html", "text"})
      */
-    private $format;
+    private $format = 'html';
 
     /**
      * @var bool

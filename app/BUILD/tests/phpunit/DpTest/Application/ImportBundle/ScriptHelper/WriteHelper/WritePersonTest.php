@@ -88,7 +88,7 @@ class WritePersonTest extends AbstractWriteHelperTest
                 ],
                 'facebook' => [
                     [
-                        'url' => 'facebook',
+                        'url' => 'http://facebook.com',
                     ],
                 ],
                 'instant_message' => [
@@ -108,8 +108,7 @@ class WritePersonTest extends AbstractWriteHelperTest
                 ],
                 'phone' => [
                     [
-                        'code'   => '+1',
-                        'number' => '1234567',
+                        'number' => '+14157012311',
                         'type'   => 'fax',
                     ],
                 ],

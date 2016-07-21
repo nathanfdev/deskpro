@@ -46,6 +46,11 @@ class DbPager
     private $query;
 
     /**
+     * @var array
+     */
+    private $params = [];
+
+    /**
      * @var int
      */
     private $pageNum = 1;
@@ -60,9 +65,10 @@ class DbPager
      *
      * @param Connection $connection
      * @param string     $query
+     * @param array      $params
      * @param int        $perPage
      */
-    public function __construct(Connection $connection, $query, $perPage = 1000)
+    public function __construct(Connection $connection, $query, array $params = [], $perPage = 1000)
     {
         if ($perPage < 1) {
             throw new \RuntimeException('Per page number should be greater than 1.');
@@ -71,6 +77,7 @@ class DbPager
         $this->connection = $connection;
         $this->query      = $query;
         $this->perPage    = $perPage;
+        $this->params     = $params;
     }
 
     /**
@@ -79,7 +86,7 @@ class DbPager
     public function next()
     {
         $limit     = ($this->pageNum - 1) * $this->perPage;
-        $statement = $this->connection->executeQuery("{$this->query} LIMIT $limit, {$this->perPage}");
+        $statement = $this->connection->executeQuery("{$this->query} LIMIT $limit, {$this->perPage}", $this->params);
 
         ++$this->pageNum;
 

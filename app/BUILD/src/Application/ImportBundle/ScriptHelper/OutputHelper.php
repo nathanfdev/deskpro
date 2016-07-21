@@ -94,6 +94,14 @@ class OutputHelper
     /**
      * @param string $message
      */
+    public function debug($message)
+    {
+        $this->logger->debug($message);
+    }
+
+    /**
+     * @param string $message
+     */
     public function info($message)
     {
         $this->logger->info($message);

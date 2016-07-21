@@ -108,7 +108,15 @@ class Writer implements WriterInterface
                 get_class($model), $model->getOid(), $e->__toString()
             ));
 
+            // Entity manager could become closed if some sql error occurred
+            // so no need to keep writing, break the process
+            if (!$this->em->isOpen()) {
+                throw $e;
+            }
+
             $this->em->rollback();
+        } finally {
+            $this->em->clear();
         }
     }
 }

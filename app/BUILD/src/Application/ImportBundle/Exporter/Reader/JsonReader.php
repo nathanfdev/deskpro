@@ -78,7 +78,7 @@ class JsonReader
         $iterator = $this->getIterator($this->getEntityPath($path, $modelClass, $batchNum));
 
         foreach ($iterator as $file) {
-            $data[$file->getBasename($file->getExtension())] = $file->getContents();
+            $data[$file->getBasename('.'.$file->getExtension())] = $file->getContents();
         }
 
         return $data;

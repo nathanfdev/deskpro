@@ -28,6 +28,7 @@
 
 namespace Application\ImportBundle\Model\ContactData;
 
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -40,13 +41,9 @@ class Phone extends AbstractContactData
      * @var string
      *
      * @JMS\Type("string")
-     */
-    protected $code;
-
-    /**
-     * @var string
      *
-     * @JMS\Type("string")
+     * @Assert\NotBlank()
+     * @AppAssert\PhoneNumber()
      */
     protected $number;
 
@@ -66,22 +63,6 @@ class Phone extends AbstractContactData
     public function getContactType()
     {
         return 'phone';
-    }
-
-    /**
-     * @return string
-     */
-    public function getCode()
-    {
-        return $this->code;
-    }
-
-    /**
-     * @param string $code
-     */
-    public function setCode($code)
-    {
-        $this->code = $code;
     }
 
     /**

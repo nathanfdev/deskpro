@@ -96,12 +96,7 @@ class PersonHandler extends AbstractEntityHandler
 
         // set password
         if ($model->getPassword()) {
-            if ($model->isPlainPasswordScheme()) {
-                $entity->setPassword($model->getPassword());
-            } else {
-                $this->logger->alert(sprintf('Password scheme `%s` is not supported. Set initial password.', $model->getPasswordScheme()));
-                $entity->setPassword(Model\Person::INITIAL_PASSWORD);
-            }
+            $entity->setPassword($model->getPassword());
         }
 
         // update person emails
@@ -111,13 +106,14 @@ class PersonHandler extends AbstractEntityHandler
                 continue;
             }
 
-            if (!in_array($email, $entity->getEmailAddresses())) {
+            if (!in_array($email, $entity->getEmailAddresses(false))) {
                 $entity->addEmailAddressString($email);
             }
         }
 
         foreach ($entity->getEmails() as $emailEntity) {
             if (!in_array($emailEntity->getEmail(), $model->getEmails())) {
+                $this->logger->debug("`{$emailEntity->getEmail()}` email was not found in the new email list, removing.");
                 $entity->getEmails()->removeElement($emailEntity);
             }
         }

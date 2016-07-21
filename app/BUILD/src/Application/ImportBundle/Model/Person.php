@@ -437,7 +437,7 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
      */
     public function getPassword()
     {
-        return $this->password;
+        return $this->password ?: self::INITIAL_PASSWORD;
     }
 
     /**
@@ -628,7 +628,7 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
      */
     public function getEmails()
     {
-        return $this->emails;
+        return array_map('strtolower', $this->emails ?: []);
     }
 
     /**
@@ -662,9 +662,7 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
      */
     public function addEmail($email)
     {
-        if (!in_array($email, $this->emails)) {
-            $this->emails[] = $email;
-        }
+        $this->emails[] = $email;
 
         return $this;
     }

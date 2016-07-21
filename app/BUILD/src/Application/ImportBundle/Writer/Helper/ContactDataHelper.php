@@ -30,10 +30,12 @@ namespace Application\ImportBundle\Writer\Helper;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
 use Application\ImportBundle\Model\ContactData\AbstractContactData;
+use Application\ImportBundle\Model\ContactData\ContactData;
 use Application\ImportBundle\Model\ContactDataAwareModelInterface;
 use Application\ImportBundle\Writer\EntityPersister;
 use Application\ImportBundle\Writer\Mapper\MapperInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use libphonenumber\PhoneNumberUtil;
 use Orb\Util\Strings;
 use Psr\Log\LoggerInterface;
 
@@ -80,8 +82,9 @@ class ContactDataHelper
     {
         // prepare new contact data collection
         $newContactData = new ArrayCollection();
+        $contactData    = $model->getContactData() ?: new ContactData();
 
-        foreach ($model->getContactData()->getAddress() as $contactModel) {
+        foreach ($contactData->getAddress() as $contactModel) {
             $contactEntity = $this->findOrCreateContactEntity($contactModel, $mapper);
             $contactEntity
                 ->setField1($contactModel->getAddress())
@@ -95,7 +98,7 @@ class ContactDataHelper
             $this->persistAndFlushContactEntity($contactEntity, $contactModel, $entity);
         }
 
-        foreach ($model->getContactData()->getFacebook() as $contactModel) {
+        foreach ($contactData->getFacebook() as $contactModel) {
             $contactEntity = $this->findOrCreateContactEntity($contactModel, $mapper);
             $contactEntity->setField1($contactModel->getUrl());
 
@@ -111,7 +114,7 @@ class ContactDataHelper
             $this->persistAndFlushContactEntity($contactEntity, $contactModel, $entity);
         }
 
-        foreach ($model->getContactData()->getInstantMessage() as $contactModel) {
+        foreach ($contactData->getInstantMessage() as $contactModel) {
             $contactEntity = $this->findOrCreateContactEntity($contactModel, $mapper);
             $contactEntity->setField1($contactModel->getUsername());
             $contactEntity->setField2($contactModel->getService());
@@ -120,7 +123,7 @@ class ContactDataHelper
             $this->persistAndFlushContactEntity($contactEntity, $contactModel, $entity);
         }
 
-        foreach ($model->getContactData()->getLinkedIn() as $contactModel) {
+        foreach ($contactData->getLinkedIn() as $contactModel) {
             $contactEntity = $this->findOrCreateContactEntity($contactModel, $mapper);
             $contactEntity->setField1($contactModel->getUrl());
             $contactEntity->setField2(Strings::extractRegexMatch('#/in/(.*?)$#', $contactModel->getUrl(), 1) ?: '');
@@ -129,17 +132,27 @@ class ContactDataHelper
             $this->persistAndFlushContactEntity($contactEntity, $contactModel, $entity);
         }
 
-        foreach ($model->getContactData()->getPhone() as $contactModel) {
-            $contactEntity = $this->findOrCreateContactEntity($contactModel, $mapper);
-            $contactEntity->setField1($contactModel->getCode());
-            $contactEntity->setField2($contactModel->getNumber());
-            $contactEntity->setField3($contactModel->getType() ?: 'phone');
+        foreach ($contactData->getPhone() as $contactModel) {
+            try {
+                $phoneNumberUtil = PhoneNumberUtil::getInstance();
+                $number          = $phoneNumberUtil->parse($contactModel->getNumber(), null);
 
-            $newContactData->add($contactEntity);
-            $this->persistAndFlushContactEntity($contactEntity, $contactModel, $entity);
+                $contactEntity = $this->findOrCreateContactEntity($contactModel, $mapper);
+                $contactEntity->setField1($number->getCountryCode());
+                $contactEntity->setField2($number->getNationalNumber());
+                $contactEntity->setField3($contactModel->getType() ?: 'phone');
+
+                // set searchable value
+                $contactEntity->setField9($contactModel->getNumber());
+
+                $newContactData->add($contactEntity);
+                $this->persistAndFlushContactEntity($contactEntity, $contactModel, $entity);
+            } catch (\Exception $e) {
+                $this->logger->warning("Phone number `{$contactModel->getNumber()}` is invalid");
+            }
         }
 
-        foreach ($model->getContactData()->getTwitter() as $contactModel) {
+        foreach ($contactData->getTwitter() as $contactModel) {
             $contactEntity = $this->findOrCreateContactEntity($contactModel, $mapper);
             $contactEntity->setField1($contactModel->getUsername());
             $contactEntity->setField2((int) $contactModel->isDisplayFeed());
@@ -148,7 +161,7 @@ class ContactDataHelper
             $this->persistAndFlushContactEntity($contactEntity, $contactModel, $entity);
         }
 
-        foreach ($model->getContactData()->getWebsite() as $contactModel) {
+        foreach ($contactData->getWebsite() as $contactModel) {
             $contactEntity = $this->findOrCreateContactEntity($contactModel, $mapper);
             $contactEntity->setField1($contactModel->getUrl());
 

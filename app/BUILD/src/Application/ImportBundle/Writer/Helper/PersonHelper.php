@@ -34,6 +34,8 @@ use Application\ImportBundle\Writer\EntityPersister;
 use Application\ImportBundle\Writer\Mapper\ImportMapMapper;
 use Application\ImportBundle\Writer\Mapper\PersonMapper;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class PersonHelper.
@@ -51,6 +53,11 @@ class PersonHelper
     private $importMapMapper;
 
     /**
+     * @var ValidatorInterface
+     */
+    private $validator;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -63,15 +70,22 @@ class PersonHelper
     /**
      * Constructor.
      *
-     * @param PersonMapper    $personMapper
-     * @param ImportMapMapper $importMapMapper
-     * @param EntityPersister $persister
-     * @param LoggerInterface $logger
+     * @param PersonMapper       $personMapper
+     * @param ImportMapMapper    $importMapMapper
+     * @param ValidatorInterface $validator
+     * @param EntityPersister    $persister
+     * @param LoggerInterface    $logger
      */
-    public function __construct(PersonMapper $personMapper, ImportMapMapper $importMapMapper, EntityPersister $persister, LoggerInterface $logger)
-    {
+    public function __construct(
+        PersonMapper       $personMapper,
+        ImportMapMapper    $importMapMapper,
+        ValidatorInterface $validator,
+        EntityPersister    $persister,
+        LoggerInterface    $logger
+    ) {
         $this->personMapper    = $personMapper;
         $this->importMapMapper = $importMapMapper;
+        $this->validator       = $validator;
         $this->persister       = $persister;
         $this->logger          = $logger;
     }
@@ -90,28 +104,44 @@ class PersonHelper
             throw new \RuntimeException('Person email or id is not scalar value.');
         }
 
-        if (is_int($personEmailOrId) || ctype_digit($personEmailOrId)) {
-            $model = new Model\Person();
-            $model->setOid($personEmailOrId);
+        $entity = null;
 
-            $entityId = $this->importMapMapper->findIdByModel($model);
-            if ($entityId) {
-                $entity = $this->personMapper->find($entityId);
-            } else {
-                $personEmail = "imported.user.$personEmailOrId@example.com";
+        // try to find person by oid
+        $model = new Model\Person();
+        $model->setOid($personEmailOrId);
 
-                $entity = $this->personMapper->findOneByEmail($personEmailOrId, false);
-                if (!$entity) {
-                    $entity = new Entity\Person();
-                    $entity->addEmailAddressString($personEmail);
-                }
-            }
-        } else {
-            $model  = null;
+        $entityId = $this->importMapMapper->findIdByModel($model);
+        if ($entityId) {
+            $entity = $this->personMapper->find($entityId);
+        }
+
+        // try to find person by emails
+        if (!$entity) {
             $entity = $this->personMapper->findOneByEmail($personEmailOrId, false);
             if (!$entity) {
+                // try to create person with real email
+                $errors = $this->validator->validate($personEmailOrId, [
+                    new Assert\Email(),
+                ]);
+
+                if (!count($errors)) {
+                    $entity = new Entity\Person();
+                    $entity->addEmailAddressString($personEmailOrId);
+
+                    // reset $model to avoid unnecessary import map entities
+                    $model = null;
+                }
+            }
+        }
+
+        // try to find person by auto generated email
+        if (!$entity) {
+            $personEmail = "imported.user.$personEmailOrId@example.com";
+            $entity      = $this->personMapper->findOneByEmail($personEmail, false);
+
+            if (!$entity) {
                 $entity = new Entity\Person();
-                $entity->addEmailAddressString($personEmailOrId);
+                $entity->addEmailAddressString($personEmail);
             }
         }
 

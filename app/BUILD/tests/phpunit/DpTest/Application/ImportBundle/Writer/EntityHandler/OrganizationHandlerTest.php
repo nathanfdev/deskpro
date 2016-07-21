@@ -137,8 +137,7 @@ class OrganizationHandlerTest extends AbstractEntityHandlerTest
 
         $phoneModel = new Model\ContactData\Phone();
         $phoneModel->setComment('comment');
-        $phoneModel->setNumber('12345');
-        $phoneModel->setCode('1');
+        $phoneModel->setNumber('+14157012311');
         $phoneModel->setType('fax');
 
         $twitterModel = new Model\ContactData\Twitter();
@@ -194,7 +193,7 @@ class OrganizationHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('phone', $contactData[4]->getContactType());
         $this->assertEquals('comment', $contactData[4]->getComment());
         $this->assertEquals('1', $contactData[4]->getField1());
-        $this->assertEquals('12345', $contactData[4]->getField2());
+        $this->assertEquals('4157012311', $contactData[4]->getField2());
         $this->assertEquals('fax', $contactData[4]->getField3());
 
         $this->assertEquals('twitter', $contactData[5]->getContactType());

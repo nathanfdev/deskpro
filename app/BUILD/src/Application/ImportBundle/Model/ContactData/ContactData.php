@@ -29,6 +29,7 @@
 namespace Application\ImportBundle\Model\ContactData;
 
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class ContactData.
@@ -39,6 +40,8 @@ class ContactData
      * @var Address[]
      *
      * @JMS\Type("array<Application\ImportBundle\Model\ContactData\Address>")
+     *
+     * @Assert\Valid()
      */
     private $address = [];
 
@@ -46,6 +49,8 @@ class ContactData
      * @var Facebook[]
      *
      * @JMS\Type("array<Application\ImportBundle\Model\ContactData\Facebook>")
+     *
+     * @Assert\Valid()
      */
     private $facebook = [];
 
@@ -53,6 +58,8 @@ class ContactData
      * @var InstantMessage[]
      *
      * @JMS\Type("array<Application\ImportBundle\Model\ContactData\InstantMessage>")
+     *
+     * @Assert\Valid()
      */
     private $instantMessage = [];
 
@@ -60,6 +67,8 @@ class ContactData
      * @var LinkedIn[]
      *
      * @JMS\Type("array<Application\ImportBundle\Model\ContactData\LinkedIn>")
+     *
+     * @Assert\Valid()
      */
     private $linkedIn = [];
 
@@ -67,6 +76,8 @@ class ContactData
      * @var Phone[]
      *
      * @JMS\Type("array<Application\ImportBundle\Model\ContactData\Phone>")
+     *
+     * @Assert\Valid()
      */
     private $phone = [];
 
@@ -74,6 +85,8 @@ class ContactData
      * @var Twitter[]
      *
      * @JMS\Type("array<Application\ImportBundle\Model\ContactData\Twitter>")
+     *
+     * @Assert\Valid()
      */
     private $twitter = [];
 
@@ -81,6 +94,8 @@ class ContactData
      * @var Website[]
      *
      * @JMS\Type("array<Application\ImportBundle\Model\ContactData\Website>")
+     *
+     * @Assert\Valid()
      */
     private $website = [];
 

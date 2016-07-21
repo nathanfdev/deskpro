@@ -66,14 +66,15 @@ class DbHelper
 
     /**
      * @param string $query
+     * @param array  $params
      * @param int    $perPage
      *
      * @return DbPager
      */
-    public function getPager($query, $perPage = 1000)
+    public function getPager($query, array $params = [], $perPage = 1000)
     {
         $connection = DriverManager::getConnection($this->credentials);
 
-        return new DbPager($connection, $query, $perPage);
+        return new DbPager($connection, $query, $params, $perPage);
     }
 }

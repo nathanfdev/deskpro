@@ -90,6 +90,8 @@ class OrganizationHelper
             throw new \RuntimeException('Person email or id is not scalar value.');
         }
 
+        $entity = null;
+
         if (is_int($organizationIdOrName) || ctype_digit($organizationIdOrName)) {
             $model = new Model\Organization();
             $model->setOid($organizationIdOrName);
@@ -97,7 +99,8 @@ class OrganizationHelper
             $entityId = $this->importMapMapper->findIdByModel($model);
             if ($entityId) {
                 $entity = $this->organizationMapper->find($entityId);
-            } else {
+            }
+            if (!$entity) {
                 $organizationName = 'Organization'.$organizationIdOrName;
 
                 $entity = $this->organizationMapper->findOneByTitle($organizationName, false);
