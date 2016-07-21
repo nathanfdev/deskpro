@@ -58,8 +58,10 @@ class ImportCommand extends AbstractImporterCommand
     {
         $this->setLoggerHandlers($input, $output);
 
-        $appEnv = $this->getContainer()->get('deskpro.app_env');
-        $script = realpath($appEnv->getDpRoot()).'/bin/'.$input->getArgument('file');
+        $appEnv   = $this->getContainer()->get('deskpro.app_env');
+        $filename = $input->getArgument('file');
+
+        $script = realpath($appEnv->getDpRoot()).'/bin/importers/'.$filename.'/'.$filename.'.php';
         if (!file_exists($script)) {
             throw new \Exception("File $script not found");
         }
