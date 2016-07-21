@@ -29,6 +29,7 @@
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\NewSearch\Provider\Doctrine as DoctrineProvider;
 use FOS\ElasticaBundle\IndexManager;
 use FOS\ElasticaBundle\Provider\ProviderRegistry;
@@ -83,12 +84,14 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
             ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Sleep time between persisting iterations (microseconds)', 0)
             ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)', 500)
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Do not stop on errors')
-            ->setDescription('Populates search indexes from providers')
-        ;
+            ->setDescription('Populates search indexes from providers');
     }
 
     /**
      * @see Symfony\Component\Console\Command\Command::initialize()
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
@@ -106,6 +109,11 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
 
     /**
      * @see Symfony\Component\Console\Command\Command::execute()
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -119,8 +127,8 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
             $reset = true;
         }
 
-        $this->getContainer()->getDb()->delete('settings', array('name' => 'elastica.requires_reset'));
-        $this->getContainer()->getDb()->delete('settings', array('name' => 'elastica.requires_reset_started'));
+        $this->getContainer()->getDb()->delete('settings', ['name' => 'elastica.requires_reset']);
+        $this->getContainer()->getDb()->delete('settings', ['name' => 'elastica.requires_reset_started']);
 
         if (!App::$container->getSetting('elastica.enabled')) {
             $output->writeln('<error>Elasticsearch is not enabled.');
@@ -131,13 +139,14 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
         $indexes = array_keys($this->indexManager->getAllIndexes());
         $em      = App::$container->getEm();
 
-        $es_status = $em->getRepository('DeskPRO:DataStore')->getByName('sys.es_indexer', true);
+        /** @var DataStore $es_status */
+        $es_status = $em->getRepository(DataStore::class)->getByName('sys.es_indexer', true);
         $es_status->setData('date_created', new \DateTime());
         $es_status->setData('date_last', new \DateTime());
         $es_status->setData('date_completed', null);
         $es_status->setData('status', 'running');
 
-        $all_totals = array();
+        $all_totals = [];
 
         foreach ($indexes as $index) {
             /** @var $providers DoctrineProvider[] */
@@ -192,9 +201,13 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
         $em->flush();
     }
 
+    /**
+     * @param                 $arguments
+     * @param OutputInterface $output
+     */
     private function runCommand($arguments, OutputInterface $output)
     {
-        $php_path = dp_get_php_path(false);
+        $php_path = $this->getContainer()->get('deskpro.app_env')->getConfig('paths.php_path');
         $file     = escapeshellarg(realpath(DP_APP_DIR.'/bin/console'));
 
         if (defined('DPC_IS_CLOUD')) {
@@ -218,9 +231,19 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
         });
     }
 
+    /**
+     * @param InputInterface $input
+     * @param                $index
+     * @param                $type
+     * @param int            $offset
+     * @param int            $limit
+     * @param int            $batchSize
+     *
+     * @return array
+     */
     private function getArguments($input, $index, $type, $offset, $limit, $batchSize)
     {
-        $arguments = array();
+        $arguments = [];
 
         $arguments[] = '--index="'.$index.'"';
         $arguments[] = '--type="'.$type.'"';

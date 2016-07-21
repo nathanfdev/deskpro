@@ -47,15 +47,16 @@ class Doctrine extends Provider
      */
     public function populate(\Closure $loggerClosure = null, array $options = array())
     {
-        $queryBuilder = $this->createQueryBuilder();
+        $queryBuilder = $this->createQueryBuilder('createSearchQueryBuilder');
         $nbObjects    = $this->countObjects($queryBuilder);
+        $options      = $this->resolveOptions($options);
 
-        $offset = isset($options['offset']) ? intval($options['offset']) : 0;
-        $limit  = isset($options['limit']) ? intval($options['limit']) : -1;
-        $sleep  = isset($options['sleep']) ? intval($options['sleep']) : 0;
+        $offset = $options['offset'];
+        $limit  = $options['limit'];
+        $sleep  = $options['sleep'];
 
-        $batchSize    = isset($options['batch-size']) ? intval($options['batch-size']) : $this->options['batch_size'];
-        $ignoreErrors = isset($options['ignore-errors']) ? $options['ignore-errors'] : $this->options['ignore_errors'];
+        $batchSize    = $options['batch_size'];
+        $ignoreErrors = $options['ignore_errors'];
 
         if ($limit == -1) {
             $cutoff = $nbObjects;
@@ -68,7 +69,8 @@ class Doctrine extends Provider
                 $stepStartTime = microtime(true);
             }
 
-            $objects = $this->fetchSlice($queryBuilder, $batchSize, $offset);
+            $objects       = $this->fetchSlice($queryBuilder, $batchSize, $offset);
+            $stepNbObjects = count($objects);
 
             if (!$ignoreErrors) {
                 $this->objectPersister->insertMany($objects);
@@ -77,21 +79,18 @@ class Doctrine extends Provider
                     $this->objectPersister->insertMany($objects);
                 } catch (BulkResponseException $e) {
                     if ($loggerClosure) {
-                        $loggerClosure(sprintf('<error>%s</error>', $e->getMessage()));
+                        // function ($increment, $totalObjects, $message = null)
+                        $loggerClosure($stepNbObjects, $nbObjects, sprintf('<error>%s</error>', $e->getMessage()));
                     }
                 }
             }
 
             if ($loggerClosure) {
-                $stepNbObjects    = count($objects);
-                $stepCount        = $stepNbObjects + $offset;
-                $percentComplete  = 100 * $stepCount / $nbObjects;
-                $timeDifference   = microtime(true) - $stepStartTime;
-                $objectsPerSecond = $timeDifference ? ($stepNbObjects / $timeDifference) : $stepNbObjects;
-                $loggerClosure(sprintf('%0.1f%% (%d/%d), %d objects/s %s', $percentComplete, $stepCount, $nbObjects, $objectsPerSecond, $this->getMemoryUsage()));
+                // function ($increment, $totalObjects, $message = null)
+                $loggerClosure($stepNbObjects, $nbObjects, '');
             }
 
-            if ($this->options['clear_object_manager']) {
+            if ($options['clear_object_manager']) {
                 $this->managerRegistry->getManagerForClass($this->objectClass)->clear();
 
                 $objects          = null;
@@ -108,8 +107,17 @@ class Doctrine extends Provider
         }
     }
 
+    protected function configureOptions()
+    {
+        parent::configureOptions();
+
+        $this->resolver->setDefaults(array(
+            'limit' => -1,
+        ));
+    }
+
     public function getCounts()
     {
-        return $this->countObjects($this->createQueryBuilder());
+        return $this->countObjects($this->createQueryBuilder('createSearchQueryBuilder'));
     }
 }
