@@ -1,6 +1,7 @@
-var path              = require('path');
-var webpack           = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var path                  = require('path');
+var webpack               = require('webpack');
+var ExtractTextPlugin     = require('extract-text-webpack-plugin');
+var WebpackNotifierPlugin = require('webpack-notifier');
 
 module.exports = {
   devtool: 'eval',
@@ -12,6 +13,7 @@ module.exports = {
   },
   output:  {
     path:              path.join(__dirname, 'app-build/'),
+    pathinfo:          true,
     filename:          '[name].bundle.js',
     sourceMapFilename: '[name].map'
   },
@@ -32,16 +34,18 @@ module.exports = {
       },
       { test: /[\/]angular\.js$/, loader: "exports?angular!imports?jquery" },
       { test: /jquery\.min\.js$/, loader: 'expose?jQuery!expose?$' },
-      { test: path.join(__dirname, 'es6'), loader: 'babel-loader' }
-    ]
+      { test: path.join(__dirname, 'es6'), loader: 'babel?cacheDirectory' },
+    ],
+    // noParse: [/\.min\.js/]
   },
   plugins: [
+    new WebpackNotifierPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
     new ExtractTextPlugin('[name].css'),
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: false,
-      mangle:    false
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': '"development"',
+      __DEV__:                true
     })
   ],
   resolve: {

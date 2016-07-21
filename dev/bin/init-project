@@ -21,7 +21,7 @@ npm run-script bower-install
 echo ".. done"
 
 echo ">> Building web assets"
-npm run-script build
+npm run-script build:prod
 echo ".. done"
 echo
 
