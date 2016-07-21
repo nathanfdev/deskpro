@@ -106,7 +106,6 @@ define [
           @Growl.error 'Error'
       ).then(
         (form) =>
-          console.log(@tags)
           @service.tags.updateTags(@tags, form.id).then(
             (data) =>
               @stopSpinner 'saving', true

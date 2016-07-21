@@ -120,6 +120,7 @@ $CONFIG['agent_vendors'] = array(
         'vendor/idbstore/idbstore.min.js',
         'vendor/twig/twig.js',
         'bower_components/moment/min/moment-with-locales.min.js',
+        'bower_components/moment-timezone/builds/moment-timezone-with-data.min.js',
         'bower_components/notify.js/notify.js',
         'bower_components/intl-tel-input/build/js/intlTelInput.min.js',
         'bower_components/jquery-qrcode/dist/jquery.qrcode.js',

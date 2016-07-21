@@ -190,14 +190,8 @@
 											ui-select2
 											ng-model="settings.lock_timeout"
 											style="min-width: 240px"
+											ng-options="time.id as time.label for time in lock_timeouts"
 											>
-										<option value="900">15 minutes</option>
-										<option value="1800">30 minutes</option>
-										<option value="3600">1 hour</option>
-										<option value="7200">2 hours</option>
-										<option value="14400">4 hours</option>
-										<option value="28000">8 hours</option>
-										<option value="86400">1 day</option>
 									</select>
 								</label>
 										<span class="help-block">
@@ -608,16 +602,8 @@
 										ui-select2
 										ng-model="settings.ref_custom_pattern_digits"
 										style="min-width: 120px"
+										ng-options="digit.id as digit.label for digit in digits"
 									>
-										<option value="0">0 digits</option>
-										<option value="1">1 digit</option>
-										<option value="2">2 digits</option>
-										<option value="3">3 digits</option>
-										<option value="4">4 digits</option>
-										<option value="5">5 digits</option>
-										<option value="6">6 digits</option>
-										<option value="7">7 digits</option>
-										<option value="8">8 digits</option>
 									</select> <span class="help-icon" tooltip-placement="top" tooltip="This will append a counter to the end of your pattern. For example, if you based it on the year, you might choose 5 digits and get refs like 2012-00001 and 2012-00002, counting upwards.<br /><br />If your pattern has a low number of possibilities, then it is highly recommended to use a counter to avoid collisions."></span>
 								</div>
 							</div>

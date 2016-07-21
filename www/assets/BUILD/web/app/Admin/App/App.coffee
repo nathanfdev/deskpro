@@ -46,23 +46,8 @@ define [
     $httpProvider.interceptors.push('dpHttpSessionInterceptor');
   ])
   AdminModule.constant('angularMomentConfig', {
-    timezone: window.DP_PERSON_TZ,
-    preprocess: 'deskpro_process'
+    timezone: window.DP_PERSON_TZ
   })
-  AdminModule.config(['$provide', ($provide) ->
-    $provide.decorator("amMoment", ($delegate) ->
-      $delegate.preprocessors.deskpro_process = (input) ->
-        if Util.isInteger(input)
-          if (parseInt(input)+"").length >= 13
-            return moment.unix(input / 1000)
-          else
-            return moment.unix(input)
-        else
-          return moment.utc(input).local()
-
-      return $delegate
-    );
-  ])
 
   SetupNetwork(AdminModule)
   SetupDirectives(AdminModule)

@@ -21,6 +21,27 @@ define ['DeskPRO/Data/TzData'], (TzData) ->
         scope.hol_new_name   = ''
         scope.holidays       = []
 
+        scope.minutes = []
+        for i in [0..59]
+          scope.minutes.push {id: i, label: ("0" + i).slice(-2)}
+        scope.hours = []
+        for i in [0..23]
+          scope.hours.push {id: i, label: ("0" + i).slice(-2)}
+
+        scope.days = []
+        for i in [0..31]
+          scope.days.push {id: i, label: ("0" + i).slice(-2)}
+        scope.months = []
+        for i in [0..12]
+          scope.months.push {id: i, label: ("0" + i).slice(-2)}
+
+        currentYear = new Date().getFullYear();
+        scope.years = []
+        for i in [currentYear..currentYear+3]
+          scope.years.push {id: i, label: i + ""}
+
+
+
         #------------------------------
         # Element references
         #------------------------------

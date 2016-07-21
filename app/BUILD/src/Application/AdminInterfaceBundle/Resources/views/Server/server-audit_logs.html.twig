@@ -79,10 +79,8 @@
 						ng-model="ServerAuditLogs.pagination.current_page"
 						ui-select2
 						style="width: 130px;"
+						ng-options='page as ("Page " + page) for page in ServerAuditLogs.pagination.page_nums'
 				>
-					<option ng-repeat="page in ServerAuditLogs.pagination.page_nums" value="{{ ng_var('page') }}">
-						Page {{ ng_var('page') }}
-					</option>
 				</select>
 				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page < ServerAuditLogs.pagination.total_pages"
 						ng-click="ServerAuditLogs.goNextPage()">
@@ -154,10 +152,8 @@
 						ng-model="ServerAuditLogs.pagination.current_page"
 						ui-select2
 						style="width: 130px;"
+						ng-options='page as ("Page " + page) for page in ServerAuditLogs.pagination.page_nums'
 				>
-					<option ng-repeat="page in ServerAuditLogs.pagination.page_nums" value="{{ ng_var('page') }}">
-						Page {{ ng_var('page') }}
-					</option>
 				</select>
 				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page < ServerAuditLogs.pagination.total_pages"
 						ng-click="ServerAuditLogs.goNextPage()">

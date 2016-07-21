@@ -136,20 +136,13 @@
 						</div>
 						<div class="col-lg-10">
 							<div class="inner-group">
-								<select name="twitter_auto_remove_time" ng-model="setup.twitter_auto_remove_time" ui-select2 style="min-width: 240px">
-									<option value="86400">1 day</option>
-									<option value="259200">3 days</option>
-									<option value="432000">5 days</option>
-									<option value="604800">1 week</option>
-									<option value="1209600">2 weeks</option>
-									<option value="1814400">3 weeks</option>
-									<option value="2419000">1 month</option>
-									<option value="4838000">2 months</option>
-									<option value="7257000">3 months</option>
-									<option value="14514000">6 months</option>
-									<option value="21771000">9 months</option>
-									<option value="29028000">1 year</option>
-									<option value="58056000">2 years</option>
+								<select
+										name="twitter_auto_remove_time"
+										dp-closest-number
+										ng-model="setup.twitter_auto_remove_time"
+										style="min-width: 240px"
+										ng-options="time.id as time.label for time in times"
+								>
 								</select>
 								<span class="help-block">
 									{{ phrase('adm.ticket_filters.auto_remove_time_explain') }}

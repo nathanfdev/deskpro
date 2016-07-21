@@ -36,7 +36,7 @@
   "load-image-exif":                 "bower_components/blueimp-load-image/js/load-image-exif",
   "canvas-to-blob":                  "bower_components/blueimp-canvas-to-blob/js/canvas-to-blob.min",
   "underscore":                      "bower_components/underscore/underscore-min",
-  "momentTimezone":                  "vendor/moment-timezone",
+  "momentTimezone":                  "bower_components/moment-timezone/builds/moment-timezone-with-data.min",
   "moment":                          "bower_components/moment/min/moment-with-locales.min",
   "aceEditor":                       "bower_components/ace-builds/src-min-noconflict/ace",
   "stacktrace":                      "bower_components/stacktrace/stacktrace",

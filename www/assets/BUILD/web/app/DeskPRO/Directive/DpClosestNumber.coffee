@@ -3,7 +3,7 @@ define ['DeskPRO/Util/Numbers'], (Numbers) ->
     # Description
     # -----------
     #
-    # This directive adds a new form element for a filesize described as a number and a unit. For example,
+    # This directive adds a new form element for a file size described as a number and a unit. For example,
     # "2 mb" or "5 gb". In the model, the number is saved as the size in bytes.
     #
     # Add a "model-type" attribute to the element to change how the time is represented in the model:
@@ -15,14 +15,16 @@ define ['DeskPRO/Util/Numbers'], (Numbers) ->
     # Example Controller
     # ------------------
     # $scope.my_model = 8
+    # $scope.values = [
+    #   {id: 0, label: "0"},
+    #   {id: 5, label: "5"},
+    #   {id: 10, label: "10"},
+    #   {id: 15, label: "15"}
+    # ]
     #
     # Example View
     # ------------
-    # <select dp-closest-number ng-model="my_model">
-    #     <option value="0">0</option>
-    #     <option value="0">5</option>
-    #     <option value="0">10</option>
-    #     <option value="0">15</option>
+    # <select dp-closest-number ng-model="my_model" ng-options="e.id as a.label for e in values">
     # </select>
     # (Will render with option 10)
     ###
@@ -39,7 +41,7 @@ define ['DeskPRO/Util/Numbers'], (Numbers) ->
             values = scope.$eval(valuesExpr).map((n) -> parseInt(n))
           else
             values = []
-            iElement.find('option').each(-> values.push(parseInt(this.value)))
+            iElement.find('option').each(-> values.push(parseInt(this.value.replace(/^number:/, ''))))
           return values
 
         ngModel.$formatters.push( (modelValue) ->

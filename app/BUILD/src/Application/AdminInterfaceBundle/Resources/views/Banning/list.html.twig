@@ -26,7 +26,7 @@
 				</li>
 			</ul>
 
-			<div class="dp-btn-pagination pull-left" style="margin: 10px;" ng-show="ListCtrl.list.ip_bans">
+			<div class="dp-btn-pagination pull-left" style="margin: 10px;" ng-show="ListCtrl.pagination.ip_bans.page_nums > 1">
 				<span dp-show-spinning="paginating_ip_bans">
 					<i class="spinner-flat"></i>
 				</span>
@@ -35,12 +35,9 @@
 				</button>
 				<select
 						ng-model="ListCtrl.pagination.ip_bans.page"
-						ui-select2
 						style="width: 130px;"
+						ng-options='page as ("Page " + page) for page in ListCtrl.pagination.ip_bans.page_nums'
 						>
-					<option ng-repeat="page in ListCtrl.pagination.ip_bans.page_nums" value="{{ ng_var('page') }}">
-						Page {{ ng_var('page') }}
-					</option>
 				</select>
 				<button class="btn" ng-show="ListCtrl.pagination.ip_bans.page < ListCtrl.pagination.ip_bans.num_pages"
 						ng-click="ListCtrl.goNextIpBanPage()">
@@ -121,12 +118,9 @@
 				</button>
 				<select
 						ng-model="ListCtrl.pagination.email_bans.page"
-						ui-select2
 						style="width: 130px;"
+						ng-options='page as ("Page " + page) for page in ListCtrl.pagination.email_bans.page_nums'
 						>
-					<option ng-repeat="page in ListCtrl.pagination.email_bans.page_nums" value="{{ ng_var('page') }}">
-						Page {{ ng_var('page') }}
-					</option>
 				</select>
 				<button class="btn" ng-show="ListCtrl.pagination.email_bans.page < ListCtrl.pagination.email_bans.num_pages"
 						ng-click="ListCtrl.goNextEmailBanPage()">
