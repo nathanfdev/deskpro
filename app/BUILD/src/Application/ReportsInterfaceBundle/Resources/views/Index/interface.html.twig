@@ -132,6 +132,6 @@ window.DP_BUILD_TIME     = {{ app.getBuildTime() }};
 	window.name = "NG_DEFER_BOOTSTRAP!";
 	window.DP_INTERFACE_LOADER = 'ReportsLoad';
 </script>
-<script	type="text/javascript" data-main="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
+	<script src="{{ asset('app-build/Reports.bundle.js') }}" charset="utf-8"></script>
 </body>
 </html>

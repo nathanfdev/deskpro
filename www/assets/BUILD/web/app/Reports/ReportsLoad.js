@@ -48,7 +48,7 @@ define([
       log: function(){},
       warn: function(){},
       error: function(){}
-    }
+    };
   }
 
   return {
@@ -79,5 +79,5 @@ define([
         angular.bootstrap($html, ['Reports_App']);
       });
     }
-  }
+  };
 });

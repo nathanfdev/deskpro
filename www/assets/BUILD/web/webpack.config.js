@@ -5,9 +5,10 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = {
   devtool: 'eval',
   entry:   {
-    Admin:  './es6/Admin/AdminApp.js',
-    styles: './app/Admin/Resources/style/admin2-style.scss',
-    less:   './app/Admin/Resources/style/admin-style.less'
+    Admin:   './es6/Admin/AdminApp.js',
+    Reports: './es6/Reports/ReportsApp.js',
+    styles:  './app/Admin/Resources/style/admin2-style.scss',
+    less:    './app/Admin/Resources/style/admin-style.less'
   },
   output:  {
     path:              path.join(__dirname, 'app-build/'),
@@ -26,7 +27,7 @@ module.exports = {
         { publicPath: './' })
       },
       {
-        test: /\.less$/,
+        test:   /\.less$/,
         loader: ExtractTextPlugin.extract('css?sourceMap!' + 'less?sourceMap&rootpath=app/Admin/Resources/style/../../../../')
       },
       { test: /[\/]angular\.js$/, loader: "exports?angular!imports?jquery" },
