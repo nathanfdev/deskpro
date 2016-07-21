@@ -2,6 +2,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
   class Admin_TicketDeps_Ctrl_List extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_TicketDeps_Ctrl_List'
     @CTRL_AS = 'ListCtrl'
+    @DEPS      = ['Api', 'Api2', 'Growl']
 
     init: ->
       @depData = @DataService.get('TicketDeps')
@@ -39,6 +40,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
       brandsPromise = @Api.sendGet('/brands').then (response) =>
         @brandList = response.data.brands
+        @brandId = response.data.brands[0].id
 
       brandsSettingsPromise = @Api2.sendGet('/settings/departments/default').then (response) =>
         for setting in response.data.data
@@ -120,10 +122,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       )
 
     changeDefaultDepartment: (type) =>
-      if not @brandId
-        @showAlert('You should select brand to set default department')
-        return
-      @Api2.sendPutJson('settings/departments/default', {type: type, department: @defaultDepartments[@brandId][type], brand: @brandId})
-      .success(() => @Growl('Default department for ' + type + 's was successfully set'))
+      if @brandId && !!@defaultDepartments[@brandId] && @defaultDepartments[@brandId][type]
+        @Api2.sendPutJson('settings/departments/default', {type: type, department: @defaultDepartments[@brandId][type], brand: @brandId})
+          .success(() => @Growl.success('Default department for ' + type + 's was successfully set'))
 
   Admin_TicketDeps_Ctrl_List.EXPORT_CTRL()
