@@ -39,12 +39,14 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Entity\TicketWorkflow;
+use DeskPRO\Bundle\AppBundle\Form\BrandFormHelper;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -64,13 +66,20 @@ class TicketType extends AbstractType
     private $fieldManager;
 
     /**
+     * @var BrandFormHelper
+     */
+    private $helper;
+
+    /**
      * Constructor.
      *
      * @param CustomFieldManager $fieldManager
+     * @param BrandFormHelper    $helper
      */
-    public function __construct(CustomFieldManager $fieldManager)
+    public function __construct(CustomFieldManager $fieldManager, BrandFormHelper $helper)
     {
         $this->fieldManager = $fieldManager;
+        $this->helper       = $helper;
     }
 
     /**
@@ -84,6 +93,7 @@ class TicketType extends AbstractType
             ])
             ->add('department', EntityType::class, [
                 'class' => Department::class,
+                'data'  => $this->getDefaultDepartment($builder),
             ])
             ->add('parent', EntityType::class, [
                 'class'         => Ticket::class,
@@ -195,5 +205,15 @@ class TicketType extends AbstractType
         }
 
         return $fields;
+    }
+
+    private function getDefaultDepartment(FormBuilderInterface $builder)
+    {
+        $type = $builder->getOption('agent_interface')
+            ? DefaultDepartmentSettings::DEFAULT_DEPARTMENT_AGENT_TYPE
+            : DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE
+            ;
+
+        return $this->helper->getDefaultDepartment($type);
     }
 }

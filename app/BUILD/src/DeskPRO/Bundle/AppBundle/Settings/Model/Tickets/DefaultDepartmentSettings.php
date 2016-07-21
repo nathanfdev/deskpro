@@ -44,7 +44,10 @@ class DefaultDepartmentSettings
     const DEFAULT_DEPARTMENT_AGENT_TYPE = 'agent';
     const DEFAULT_DEPARTMENT_USER_TYPE  = 'user';
 
-    private $pattern = 'default_department.%s';
+    /**
+     * @var string
+     */
+    private static $pattern = 'default_department.%s';
 
     /**
      * @JMS\Type("string")
@@ -75,13 +78,26 @@ class DefaultDepartmentSettings
         return $this->type;
     }
 
+    /**
+     * @return mixed
+     */
     public function getName()
     {
         if (!$this->type) {
             throw new \LogicException('The $type should be set before setting name resolve');
         }
 
-        return sprintf($this->pattern, $this->type);
+        return sprintf(self::$pattern, $this->type);
+    }
+
+    /**
+     * @param $type
+     *
+     * @return mixed
+     */
+    public static function constructName($type)
+    {
+        return sprintf(self::$pattern, $type);
     }
 
     /**

@@ -29,11 +29,13 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\BrandFormHelper;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
@@ -48,6 +50,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayou
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWorkflowType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -86,6 +89,9 @@ abstract class AbstractFieldResolver
      */
     protected $settingsResolver;
 
+    /** @var BrandFormHelper */
+    protected $helper;
+
     /**
      * Constructor.
      *
@@ -95,6 +101,7 @@ abstract class AbstractFieldResolver
      * @param CustomPerFieldManager      $customPerFieldManager
      * @param TicketFieldSettings        $fieldSettings
      * @param BrandAwareSettingsResolver $settingsResolver
+     * @param BrandFormHelper            $helper
      */
     public function __construct(
         HierarchyGenerator         $hierarchyGenerator,
@@ -102,7 +109,8 @@ abstract class AbstractFieldResolver
         CustomFieldManager         $fieldManager,
         CustomPerFieldManager      $customPerFieldManager,
         TicketFieldSettings        $fieldSettings,
-        BrandAwareSettingsResolver $settingsResolver
+        BrandAwareSettingsResolver $settingsResolver,
+        BrandFormHelper            $helper
     ) {
         $this->hierarchyGenerator    = $hierarchyGenerator;
         $this->languageManager       = $languageManager;
@@ -110,6 +118,7 @@ abstract class AbstractFieldResolver
         $this->customPerFieldManager = $customPerFieldManager;
         $this->fieldSettings         = $fieldSettings;
         $this->settingsResolver      = $settingsResolver;
+        $this->helper                = $helper;
     }
 
     /**
@@ -169,8 +178,13 @@ abstract class AbstractFieldResolver
      */
     protected function createDepartment(TicketWithLayoutsContext $context)
     {
+        $type = $context->getOption('agent_interface') ?
+            DefaultDepartmentSettings::DEFAULT_DEPARTMENT_AGENT_TYPE :
+            DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE;
+
         return new FormField(TicketDepartmentChoiceType::class, [
             'label'       => $this->phrase('portal.forms.label_department'),
+            'data'        => $this->helper->getDefaultDepartment($type),
             'person'      => $context->getPerson(),
             'ticket'      => $context->getTicket(),
             'placeholder' => '',
