@@ -35,6 +35,7 @@ namespace DpBehat\Portal;
 use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeRepository;
+use DpBehat\Data\DataContext;
 use DpBehat\RebootableContextInterface;
 
 class PortalBrandThemeContext extends BasePortalContext implements RebootableContextInterface
@@ -84,5 +85,7 @@ class PortalBrandThemeContext extends BasePortalContext implements RebootableCon
             $this->em->persist($brand);
             $this->em->flush($brand);
         }
+
+        DataContext::setReference('defaultBrand', $brand);
     }
 }

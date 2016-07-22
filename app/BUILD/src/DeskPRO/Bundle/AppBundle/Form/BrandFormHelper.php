@@ -48,12 +48,27 @@ class BrandFormHelper
      */
     private $brandStack;
 
+    /**
+     * BrandFormHelper constructor.
+     *
+     * @param EntityManager $em
+     * @param BrandStack    $brandStack
+     */
     public function __construct(EntityManager $em, BrandStack $brandStack)
     {
         $this->em         = $em;
         $this->brandStack = $brandStack;
     }
 
+    /**
+     * @param string $type
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Department|null
+     */
     public function getDefaultDepartment($type = DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE)
     {
         $departmentId = $this->brandStack->getActive()->getSetting(DefaultDepartmentSettings::constructName($type));

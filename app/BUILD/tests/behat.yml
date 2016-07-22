@@ -140,6 +140,7 @@ portal:
                 - DpBehat\Data\CustomDataContext
                 - DpBehat\Data\TicketLayoutContext
                 - DpBehat\PermissionContext
+                - DpBehat\BrandSettingContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
