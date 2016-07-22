@@ -35,12 +35,31 @@ dp_build_runcmd('dev/bin/init-project');
 # Hacks
 ########################################################################################################################
 
-$f = $DP_DIR.'/app/BUILD/vendor/zendframework/zend-ldap/src/Node.php';
-file_put_contents($f, preg_replace(
-    '/'.preg_quote('if (!Dn::isChildOf($this->_getDn(), $ldap->getBaseDn())) {').'.*?\}\s*/s',
-    "/* DESKPRO EDIT: Removed isChildOf check */\n\n        ",
-    file_get_contents($f)
-));
+echo "Patching zend-ldap/src/Node.php\n";
+
+// This hack is necessary because it causes false negative in auth when using AD
+// because of bad matching when the Base DN entered in admin is not a 100%
+// match (including case) to that of the directory.
+// E.g., OU=foo,DC=bar does not match ou=foo,dc=com when it actually should
+//
+// So we remove that check because it doesnt matter for us. We only search
+// the specific base dn for accounts anyway, so we already know it's a child of it.
+
+$f          = $DP_DIR.'/app/BUILD/vendor/zendframework/zend-ldap/src/Node.php';
+$content    = file_get_contents($f);
+$newContent = str_replace('if (!Dn::isChildOf($this->_getDn(), $ldap->getBaseDn())) {', 'if (/* DESKPRO EDIT: Removed isChildOf check */false) {', $content);
+
+if ($content === $newContent && strpos($content, 'DESKPRO EDIT') === false) {
+    echo "\n\n";
+    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+    echo "Failed to patch zend-ldap/src/Node.php\n";
+    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+    echo "\n\n";
+    exit(1);
+}
+
+file_put_contents($f, $newContent);
+unset($f, $content, $newContent);
 
 ########################################################################################################################
 # Cache warmup
