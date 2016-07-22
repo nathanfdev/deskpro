@@ -68,3 +68,41 @@ $PATHS_CONFIG['mysqldump_path'] = '';
 ######################################################
 
 $PATHS_CONFIG['mysql_path'] = '';
+
+######################################################
+# Location of DeskPRO data directories               #
+######################################################
+# Override any of these values to change the paths   #
+# to DeskPRO's system directories.                   #
+######################################################
+
+$PATHS_CONFIG['dp_paths'] = [
+    // Change the path to the 'attachments' directory.
+    // This is where uploads, ticket attachments, images,
+    // and other binary data is stored.
+    // Default: /path/to/deskpro/attachments
+    'attachments' => null,
+
+    // Change the path to the 'backups' directory.
+    // This is where DeskPRO will store database backups
+    // that are made before an automatic upgrade.
+    // Default: /path/to/deskpro/backups
+    'backups' => null,
+
+    // Change the path to the 'var' directory.
+    // This will change all sub-directories as well:
+    // var/cache, var/debug, var/kernel_cache, var/logs, var/tmp
+    // (unless overridden again by other options below).
+    // Default: /path/to/deskpro/var
+    'user_dir' => null,
+
+    // Change the path to the var/logs directory.
+    // This is where DeskPRO writes all log files to.
+    // Default: /path/to/deskpro/var/logs
+    'logs' => null,
+
+    // Change the path to the var/tmp directory.
+    // This is where DeskPRO writes temporary files to.
+    // Default: /path/to/deskpro/var/tmp
+    'tmp' => null,
+];
