@@ -132,8 +132,11 @@ module.exports = {
       "AdminUpgradeLoad": path.resolve("./app/AdminUpgrade/AdminUpgradeLoad"),
       "AdminStartLoad":   path.resolve("./app/AdminStart/AdminStartLoad"),
       "ReportsLoad":      path.resolve("./app/Reports/ReportsLoad"),
-      "ReportsRouting":   path.resolve("./app/Reports/Resources/config/routing")
+      "ReportsRouting":   path.resolve("./app/Reports/Resources/config/routing"),
 
+      "react":    path.resolve("./bower_components/react/react"),
+      "react-dom": path.resolve("./bower_components/react/react-dom"),
+      "ngReact":  path.resolve("./bower_components/ngReact/ngReact.min")
     }
   }
 };
