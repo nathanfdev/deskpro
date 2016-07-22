@@ -178,16 +178,28 @@ abstract class AbstractFieldResolver
      */
     protected function createDepartment(TicketWithLayoutsContext $context)
     {
-        return new FormField(TicketDepartmentChoiceType::class, [
+        $options = [
             'label'       => $this->phrase('portal.forms.label_department'),
-            'data'        => $this->helper->getDefaultDepartment(DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE),
             'person'      => $context->getPerson(),
             'ticket'      => $context->getTicket(),
             'placeholder' => '',
             'constraints' => [
                 new Assert\NotNull(),
             ],
-        ]);
+        ];
+
+        if ($department = $this->getDefaultDepartment($context)) {
+            $options['data'] = $department;
+        }
+
+        return new FormField(TicketDepartmentChoiceType::class, $options);
+    }
+
+    private function getDefaultDepartment(TicketWithLayoutsContext $context)
+    {
+        return $context->getOption('department_id')
+            ? null
+            : $this->helper->getDefaultDepartment(DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE);
     }
 
     /**
