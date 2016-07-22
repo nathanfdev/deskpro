@@ -27,7 +27,7 @@
  */
 
 return array(
-    'portal.account.automatically_join_org_tickets'         => 'Automatically join {{org_name}}\'s tickets? a',
+    'portal.account.automatically_join_org_tickets'         => 'Automatically join {{org_name}}\'s tickets?,
     'portal.account.change-password'                        => 'Change Password',
     'portal.account.change-password-btn'                    => 'Update Password',
     'portal.account.comment-lockout'                        => 'You have submitted lots of comments. Please wait to submit more.',
