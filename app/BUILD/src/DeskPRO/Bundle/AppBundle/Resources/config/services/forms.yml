@@ -143,7 +143,7 @@ services:
 
   form.ticket:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType
-    arguments: ["@custom_field_manager"]
+    arguments: ["@custom_field_manager", "@brand_form_helper"]
     tags:
       - { name: form.type }
 
