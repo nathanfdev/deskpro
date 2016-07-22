@@ -1,4 +1,8 @@
-define ->
+define [
+  'underscore'
+], (
+  _
+) ->
   class Arrays
     ###
       # Analyze a flat array of categories that have structure defined like:

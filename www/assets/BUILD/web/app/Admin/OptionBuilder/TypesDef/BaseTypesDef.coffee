@@ -1,4 +1,12 @@
-define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
+define [
+  'DeskPRO/Util/Util',
+  'DeskPRO/Util/Arrays',
+  'underscore'
+], (
+  Util,
+  Arrays,
+  _
+) ->
   class Admin_OptionBuilder_TypesDef_BaseTypesDef
     standardOptionsFormatter: (options, extraOptions) ->
       getRenderOpt = (opt, parentTitleSegs = []) ->

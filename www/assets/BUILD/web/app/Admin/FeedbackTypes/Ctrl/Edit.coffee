@@ -1,7 +1,9 @@
 define [
-  'Admin/Main/Ctrl/Base'
+  'Admin/Main/Ctrl/Base',
+  'underscore'
 ], (
-  Admin_Ctrl_Base
+  Admin_Ctrl_Base,
+  _
 ) ->
   class Admin_FeedbackTypes_Ctrl_Edit extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_FeedbackTypes_Ctrl_Edit'

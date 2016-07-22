@@ -1,4 +1,8 @@
-define ->
+define [
+  'underscore'
+], (
+  _
+) ->
   class Admin_TicketTriggers_TriggerEditFormMapper
     getFormFromModel: (model, appTriggerEvents) ->
       form = {}
