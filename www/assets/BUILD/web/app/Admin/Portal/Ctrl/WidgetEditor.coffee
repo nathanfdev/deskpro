@@ -220,12 +220,12 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       everyone = @$scope.everyone_group.id
       reg = @$scope.reg_group.id
       if group.id == everyone && !@$scope.user_group_permission[group.id]
-        for id,g of @$scope.user_group_permission
+        for own id,g of @$scope.user_group_permission
           if id != everyone
             @$scope.user_group_permission[id] = true
         return true
       if group.id == reg && !@$scope.user_group_permission[group.id]
-        for id,g of @$scope.user_group_permission
+        for own id,g of @$scope.user_group_permission
           if id != everyone && id != reg
             @$scope.user_group_permission[id] = true
         return true

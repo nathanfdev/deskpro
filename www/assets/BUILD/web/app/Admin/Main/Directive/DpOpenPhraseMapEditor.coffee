@@ -29,7 +29,7 @@ define ->
                 delete phrase_map[l.language]
 
             if Object.keys(phrase_map).length
-              for id, l of phrase_map
+              for own id, l of phrase_map
                 if l
                   lang = {}
                   lang.language = id

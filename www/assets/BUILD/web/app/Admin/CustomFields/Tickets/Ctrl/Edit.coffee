@@ -12,9 +12,9 @@ define [
         @agent_layouts = data.agent_layouts
 
         if !@field_id
-          for l of @user_layouts
+          for own l of @user_layouts
             @user_layouts[l].enabled = true
-          for l of @agent_layouts
+          for own l of @agent_layouts
             @agent_layouts[l].enabled = true
       )
 

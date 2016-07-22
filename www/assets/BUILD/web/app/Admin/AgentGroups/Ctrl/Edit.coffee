@@ -100,18 +100,18 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       return if !@group?
 
       if 'perms' == type and @group.perms[section]
-        for perm of @group.perms[section]
+        for own perm of @group.perms[section]
           @group.perms[section][perm] = @all_perms[type][section]
 
         if 'people' == section
           @changeAllPerms('perms', 'org')
 
       else if 'deps_perms_tickets' == type and @group.deps_perms.tickets
-        for dep of @group.deps_perms.tickets
+        for own dep of @group.deps_perms.tickets
           @group.deps_perms.tickets[dep][section] = @all_perms.deps_perms.tickets[section]
 
       else if 'deps_perms_chat' == type and @group.deps_perms.chat
-        for dep of @group.deps_perms.chat
+        for own dep of @group.deps_perms.chat
           @group.deps_perms.chat[dep][section] = @all_perms.deps_perms.chat[section]
 
 
@@ -119,24 +119,24 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     updateAllPermsState: ->
       return if !@group?
 
-      for section, perms of @group.perms
+      for own section, perms of @group.perms
         enabled = true
-        for perm of perms
+        for own perm of perms
           if !perms[perm]
             enabled = false
             break
         @all_perms.perms[section] = enabled
 
       return if !@group.deps_perms
-      for type, sections of @all_perms.deps_perms
-        for section of sections
+      for own type, sections of @all_perms.deps_perms
+        for own section of sections
           enabled = true
-          for dep of @group.deps_perms[type]
+          for own dep of @group.deps_perms[type]
             if !@group.deps_perms[type][dep][section]
               enabled = false
           @all_perms.deps_perms[type][section] = enabled
 
-        
+
 
     saveForm: ->
       postData =

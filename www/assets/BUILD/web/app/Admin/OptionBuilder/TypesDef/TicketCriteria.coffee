@@ -1092,7 +1092,7 @@ define [
           data: (term, page) -> { name: term, limit: 10 }
           results: (data, page) ->
             results = []
-            for k, v of data.data?.organizations
+            for own k, v of data.data?.organizations
               results.push {id: v.id, name: v.name}
             return {results: results}
       @getRemoteInput options
