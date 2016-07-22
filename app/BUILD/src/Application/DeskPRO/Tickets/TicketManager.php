@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -115,7 +116,10 @@ class TicketManager
 
         $this->post_save_actions[] = new TicketSaveActions\SaveContextualFields($container->getCustomFieldManager());
         $this->post_save_actions[] = new TicketSaveActions\ExecTriggers($container->getEm()->getRepository('DeskPRO:TicketTrigger'), new ActionApplicator($container));
-        $this->post_save_actions[] = new TicketSaveActions\VerifyDepartment($container->getTicketDepartments());
+        $this->post_save_actions[] = new TicketSaveActions\VerifyDepartment(
+            $container->getTicketDepartments(),
+            $container->get('brand_form_helper')
+        );
         $this->post_save_actions[] = new TicketSaveActions\SetActionTimes();
         $this->post_save_actions[] = new TicketSaveActions\ApplySlas($container->getEm()->getRepository('DeskPRO:Sla')->getAutoSlas(), $container->getEm(), new SlaClientMessageSender($container->getDb()));
         $this->post_save_actions[] = new TicketSaveActions\RecalculateSlas($container->getEm(), new ActionApplicator($container));
