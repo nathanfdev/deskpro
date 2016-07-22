@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Departments\TicketDepartments;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Bundle\AppBundle\Form\BrandFormHelper;
@@ -47,6 +48,7 @@ class VerifyDepartment implements TicketSaveActionInterface
      */
     private $ticketDeps;
 
+    /** @var BrandFormHelper */
     private $helper;
 
     /**
@@ -69,25 +71,78 @@ class VerifyDepartment implements TicketSaveActionInterface
             return;
         }
 
-        if (!$ticket->department) {
-            $type = $ticket->getPerson() && $ticket->getPerson()->isAgent()
-                ? DefaultDepartmentSettings::DEFAULT_DEPARTMENT_AGENT_TYPE
-                : DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE;
-            $ticket->setDepartment($this->helper->getDefaultDepartment($type));
+        $this->checkSetDepartmentIsInvalid($ticket, $context);
+        $this->checkDepartmentIsNotSet($ticket, $context);
+    }
+
+    /**
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     */
+    private function checkSetDepartmentIsInvalid(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if ($ticket->getDepartment() && $this->ticketDeps->getChildren($ticket->getDepartment())) {
+            $defaultDepartment = $this->getDefaultDepartment($ticket, $context);
+
+            $set = $ticket->getDepartment();
+            $context->getLogger()->info(
+                sprintf(
+                    'The set department %s ( %d ) has children. Reverting to default: %s ( %d )',
+                    $set->getTitle(),
+                    $set->getId(),
+                    $defaultDepartment->getTitle(),
+                    $defaultDepartment->getId()
+                )
+            );
+            $ticket->setDepartment($defaultDepartment);
+        }
+    }
+
+    /**
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     */
+    private function checkDepartmentIsNotSet(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$ticket->getDepartment()) {
+            $defaultDepartment = $this->getDefaultDepartment($ticket, $context);
+
+            $context->getLogger()->info(
+                sprintf(
+                    'Setting default department: %s ( %d )',
+                    $defaultDepartment->getId(),
+                    $defaultDepartment->getTitle()
+                )
+            );
+            $ticket->setDepartment($defaultDepartment);
+        }
+    }
+
+    /**
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
+     * @return Department
+     */
+    private function getDefaultDepartment(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $type = $ticket->getPerson() && $ticket->getPerson()->isAgent()
+            ? DefaultDepartmentSettings::DEFAULT_DEPARTMENT_AGENT_TYPE
+            : DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE;
+
+        $defaultDepartment = $this->helper->getDefaultDepartment($type);
+
+        if (!$defaultDepartment || $this->ticketDeps->getChildren($defaultDepartment)) {
+            $defaultDepartment = $this->ticketDeps->getDefaultDepartment();
+            $context->getLogger()->info(
+                sprintf(
+                    'Default department for brand not found or invalid. Picking system default: %s ( %d )',
+                    $defaultDepartment->getTitle(),
+                    $defaultDepartment->getId()
+                )
+            );
         }
 
-        if (!$ticket->department) {
-            if ($dep = $this->ticketDeps->getDefaultDepartment()) {
-                $context->getLogger()->info("Setting system default department: {$dep->getId()} {$dep->getTitle()}");
-                $ticket->department = $dep;
-            }
-        }
-
-        if ($ticket->department && $this->ticketDeps->getChildren($ticket->department)) {
-            $set = $ticket->department;
-            $dep = $this->ticketDeps->getDefaultDepartment();
-            $context->getLogger()->info("The set department {$set->id} {$set->title} has children. Reverting to system default: {$dep->id} {$dep->title}");
-            $ticket->department = $dep;
-        }
+        return $defaultDepartment;
     }
 }
