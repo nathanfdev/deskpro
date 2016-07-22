@@ -9,6 +9,7 @@ module.exports = {
     Admin:   './es6/Admin/AdminApp.js',
     Reports: './es6/Reports/ReportsApp.js',
     styles:  './app/Admin/Resources/style/admin2-style.scss',
+    reports: './app/Reports/Resources/style/reports-style.less',
     less:    './app/Admin/Resources/style/admin-style.less'
   },
   output:  {
