@@ -178,13 +178,9 @@ abstract class AbstractFieldResolver
      */
     protected function createDepartment(TicketWithLayoutsContext $context)
     {
-        $type = $context->getOption('agent_interface') ?
-            DefaultDepartmentSettings::DEFAULT_DEPARTMENT_AGENT_TYPE :
-            DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE;
-
         return new FormField(TicketDepartmentChoiceType::class, [
             'label'       => $this->phrase('portal.forms.label_department'),
-            'data'        => $this->helper->getDefaultDepartment($type),
+            'data'        => $this->helper->getDefaultDepartment(DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE),
             'person'      => $context->getPerson(),
             'ticket'      => $context->getTicket(),
             'placeholder' => '',
