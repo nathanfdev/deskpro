@@ -45,6 +45,8 @@ class DefaultDepartmentSettings
     const DEFAULT_DEPARTMENT_USER_TYPE  = 'user';
 
     /**
+     * @JMS\Exclude()
+     *
      * @var string
      */
     private static $pattern = 'default_department.%s';

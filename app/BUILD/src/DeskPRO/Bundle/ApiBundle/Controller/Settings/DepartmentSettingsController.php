@@ -75,9 +75,8 @@ class DepartmentSettingsController extends BaseController
      *      section="Settings",
      *      description="list if default departments grouped by brand",
      *      statusCodes={
-     *          200="Here you are",
+     *          204="Update successful",
      *      },
-     *      output="array<DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings>"
      * )
      * @ApiUnstable()
      * @Rest\Put("/settings/departments/default")

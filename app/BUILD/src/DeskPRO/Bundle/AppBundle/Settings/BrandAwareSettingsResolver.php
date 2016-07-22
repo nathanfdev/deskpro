@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
@@ -91,17 +92,31 @@ class BrandAwareSettingsResolver
         return $this->getGlobalSetting($name, $default);
     }
 
+    /**
+     * @return array
+     */
     public function getDefaultDepartmentSettings()
     {
         $settings = [];
-        foreach ($this->brand_stack->getContainers() as $brandContainer) {
-            $settings[] = $this->getDepartmentSetting($brandContainer, 'agent');
-            $settings[] = $this->getDepartmentSetting($brandContainer, 'user');
+        foreach ($this->em->getRepository(Brand::class)->findAll() as $brand) {
+            $brandContainer = new BrandContainer($brand, $this->settings_resolver->getBrandSettings($brand, true));
+            $settings[]     = $this->getDepartmentSetting($brandContainer, 'agent');
+            $settings[]     = $this->getDepartmentSetting($brandContainer, 'user');
         }
 
         return $settings;
     }
 
+    /**
+     * @param BrandContainer $brandContainer
+     * @param                $type
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return DefaultDepartmentSettings
+     */
     private function getDepartmentSetting(BrandContainer $brandContainer, $type)
     {
         $settingName       = sprintf('default_department.%s', $type);
@@ -109,7 +124,7 @@ class BrandAwareSettingsResolver
         $departmentSetting
             ->setBrand($brandContainer->getBrand())
             ->setType($type)
-            ->setDepartment($this->em->find(Department::class, $brandContainer->getSetting($settingName)));
+            ->setDepartment($this->em->find(Department::class, $brandContainer->getSetting($settingName) ?: 0));
 
         return $departmentSetting;
     }

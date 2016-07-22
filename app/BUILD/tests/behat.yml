@@ -39,6 +39,7 @@ api:
                 - DpBehat\Data\OrganizationContext
                 - DpBehat\Data\BlobContext
                 - DpBehat\Data\LabelContext
+                - DpBehat\BrandSettingContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
