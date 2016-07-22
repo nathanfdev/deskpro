@@ -37,6 +37,8 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Controller\AbstractController;
 use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
+use Application\DeskPRO\Routing\Generator\UrlGenerator;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LoginHelper
 {
@@ -297,7 +299,11 @@ class LoginHelper
         }
 
         if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
-            $adapter->setCallbackUrl($this->generateUrl($this->route_prefix.'_login_callback', array('usersource_id' => $usersource['id']), true));
+            $adapter->setCallbackUrl($this->generateUrl(
+                $this->route_prefix.'_login_callback',
+                ['usersource_id' => $usersource['id']],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            ));
         }
 
         if ($adapter instanceof \Orb\Auth\Adapter\SessionStateInterface) {

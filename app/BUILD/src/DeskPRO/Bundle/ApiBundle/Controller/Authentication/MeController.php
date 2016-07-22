@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class MeController.
@@ -88,7 +89,11 @@ class MeController extends BaseController
         $this->getManager()->persist($tmpData);
         $this->getManager()->flush();
 
-        $url = $this->generateUrl('api_authenticate_device', ['auth' => $tmpData->getAuth()], true);
+        $url = $this->generateUrl(
+            'api_authenticate_device',
+            ['auth' => $tmpData->getAuth()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
 
         return View::create($this->wrap(new DeviceSetupToken($url)));
     }

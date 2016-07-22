@@ -50,6 +50,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @ApiModes("all")
@@ -291,8 +292,12 @@ class TicketController extends AbstractController implements ProtectedController
         }
 
         return $this->createApiCreateResponse(
-            array('ticket_id' => $ticket->id),
-            $this->generateUrl('api_tickets_ticket', array('ticket_id' => $ticket->id), true)
+            ['ticket_id' => $ticket->id],
+            $this->generateUrl(
+                'api_tickets_ticket',
+                ['ticket_id' => $ticket->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -860,8 +865,12 @@ class TicketController extends AbstractController implements ProtectedController
         }
 
         return $this->createApiCreateResponse(
-            array('message_id' => $message->id),
-            $this->generateUrl('api_tickets_ticket_message', array('ticket_id' => $ticket->id, 'message_id' => $message->id), true)
+            ['message_id' => $message->id],
+            $this->generateUrl(
+                'api_tickets_ticket_message',
+                ['ticket_id' => $ticket->id, 'message_id' => $message->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1146,8 +1155,12 @@ class TicketController extends AbstractController implements ProtectedController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('id' => $task->id),
-            $this->generateUrl('api_tasks_task', array('task_id' => $task->id), true)
+            ['id' => $task->id],
+            $this->generateUrl(
+                'api_tasks_task',
+                ['task_id' => $task->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1218,8 +1231,12 @@ class TicketController extends AbstractController implements ProtectedController
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $charge->id),
-            $this->generateUrl('api_tickets_ticket_billing_charge', array('ticket_id' => $ticket->id, 'charge_id' => $charge->id), true)
+            ['id' => $charge->id],
+            $this->generateUrl(
+                'api_tickets_ticket_billing_charge',
+                ['ticket_id' => $ticket->id, 'charge_id' => $charge->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1304,8 +1321,12 @@ class TicketController extends AbstractController implements ProtectedController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('id' => $ticket_sla->id),
-            $this->generateUrl('api_tickets_ticket_sla', array('ticket_id' => $ticket->id, 'ticket_sla_id' => $ticket_sla->id), true)
+            ['id' => $ticket_sla->id],
+            $this->generateUrl(
+                'api_tickets_ticket_sla',
+                ['ticket_id' => $ticket->id, 'ticket_sla_id' => $ticket_sla->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1411,8 +1432,12 @@ class TicketController extends AbstractController implements ProtectedController
 
         if ($person->id && $ticket->hasParticipantPerson($person)) {
             return $this->createApiCreateResponse(
-                array('person_id' => $person->id),
-                $this->generateUrl('api_tickets_ticket_participant', array('ticket_id' => $ticket->id, 'person_id' => $person->id), true)
+                ['person_id' => $person->id],
+                $this->generateUrl(
+                    'api_tickets_ticket_participant',
+                    ['ticket_id' => $ticket->id, 'person_id' => $person->id],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                )
             );
         }
 
@@ -1438,8 +1463,12 @@ class TicketController extends AbstractController implements ProtectedController
         }
 
         return $this->createApiCreateResponse(
-            array('person_id' => $part->person->id),
-            $this->generateUrl('api_tickets_ticket_participant', array('ticket_id' => $ticket->id, 'person_id' => $part->person->id), true)
+            ['person_id' => $part->person->id],
+            $this->generateUrl(
+                'api_tickets_ticket_participant',
+                ['ticket_id' => $ticket->id, 'person_id' => $part->person->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1552,8 +1581,12 @@ class TicketController extends AbstractController implements ProtectedController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('label' => $label),
-            $this->generateUrl('api_tickets_ticket_label', array('ticket_id' => $ticket->id, 'label' => $label), true)
+            ['label' => $label],
+            $this->generateUrl(
+                'api_tickets_ticket_label',
+                ['ticket_id' => $ticket->id, 'label' => $label],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 

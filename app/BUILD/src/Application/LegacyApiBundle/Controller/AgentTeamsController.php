@@ -39,6 +39,7 @@ use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Arrays;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class AgentTeamsController.
@@ -188,7 +189,7 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
         if ($is_new) {
             return $this->createApiCreateResponse(
                 ['team_id' => $team->id],
-                $this->generateUrl('api_agent_teams_get', ['id' => $team->id], true)
+                $this->generateUrl('api_agent_teams_get', ['id' => $team->id], UrlGeneratorInterface::ABSOLUTE_URL)
             );
         } else {
             return $this->createApiSuccessResponse(['team_id' => $team->id]);

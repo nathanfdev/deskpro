@@ -73,16 +73,16 @@ class UrlGenerator extends BaseUrlGenerator
         $this->context = $context;
     }
 
-    public function generate($name, $parameters = array(), $absolute = false)
+    public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
     {
         if ($this->getDpEnv()->isDebug()) {
-            return parent::generate($name, $parameters, $absolute);
+            return parent::generate($name, $parameters, $referenceType);
         }
 
         // When in prod, eat route not found exceptions because
         // users can mistype them when editing templates
         try {
-            return parent::generate($name, $parameters, $absolute);
+            return parent::generate($name, $parameters, $referenceType);
         } catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
             return;
         }

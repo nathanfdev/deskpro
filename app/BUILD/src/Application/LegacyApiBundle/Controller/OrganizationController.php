@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * SWG\Resource(
@@ -352,8 +353,12 @@ class OrganizationController extends AbstractController
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $org->id),
-            $this->generateUrl('api_organizations_organization', array('organization_id' => $org->id), true)
+            ['id' => $org->id],
+            $this->generateUrl(
+                'api_organizations_organization',
+                ['organization_id' => $org->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1024,8 +1029,12 @@ class OrganizationController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('id' => $note->id),
-            $this->generateUrl('api_organizations_organization_notes_note', array('organization_id' => $org->id, 'note_id' => $note->id), true)
+            ['id' => $note->id],
+            $this->generateUrl(
+                'api_organizations_organization_notes_note',
+                ['organization_id' => $org->id, 'note_id' => $note->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1205,8 +1214,12 @@ class OrganizationController extends AbstractController
         $domain_rec = $org_domain_manager->assignDomain($domain, $org);
 
         return $this->createApiCreateResponse(
-            array('domain' => $domain_rec->domain),
-            $this->generateUrl('api_organizations_organization_email_domain', array('organization_id' => $org->id, 'domain' => $domain_rec->domain), true)
+            ['domain' => $domain_rec->domain],
+            $this->generateUrl(
+                'api_organizations_organization_email_domain',
+                ['organization_id' => $org->id, 'domain' => $domain_rec->domain],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1477,8 +1490,12 @@ class OrganizationController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('id' => $contact_data->id),
-            $this->generateUrl('api_organizations_organization_contact_detail', array('organization_id' => $org->id, 'contact_id' => $contact_data->id), true)
+            ['id' => $contact_data->id],
+            $this->generateUrl(
+                'api_organizations_organization_contact_detail',
+                ['organization_id' => $org->id, 'contact_id' => $contact_data->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1647,8 +1664,12 @@ class OrganizationController extends AbstractController
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $group_id),
-            $this->generateUrl('api_organizations_organization_group', array('organization_id' => $org->id, 'usergroup_id' => $group_id), true)
+            ['id' => $group_id],
+            $this->generateUrl(
+                'api_organizations_organization_group',
+                ['organization_id' => $org->id, 'usergroup_id' => $group_id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1802,8 +1823,12 @@ class OrganizationController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('label' => $label),
-            $this->generateUrl('api_organizations_organization_label', array('organization_id' => $org->id, 'label' => $label), true)
+            ['label' => $label],
+            $this->generateUrl(
+                'api_organizations_organization_label',
+                ['organization_id' => $org->id, 'label' => $label],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 

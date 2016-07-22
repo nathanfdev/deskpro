@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Searcher\TaskSearch;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * SWG\Resource(
@@ -396,8 +397,12 @@ class TaskController extends AbstractController
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $task->id),
-            $this->generateUrl('api_tasks_task', array('task_id' => $task->id), true)
+            ['id' => $task->id],
+            $this->generateUrl(
+                'api_tasks_task',
+                ['task_id' => $task->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -646,8 +651,12 @@ class TaskController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('id' => $assoc->id),
-            $this->generateUrl('api_tasks_task_associated_item', array('task_id' => $task->id, 'assoc_id' => $assoc->id), true)
+            ['id' => $assoc->id],
+            $this->generateUrl(
+                'api_tasks_task_associated_item',
+                ['task_id' => $task->id, 'assoc_id' => $assoc->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -805,8 +814,12 @@ class TaskController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('id' => $comment->id),
-            $this->generateUrl('api_tasks_task_comment', array('task_id' => $task->id, 'comment_id' => $comment->id), true)
+            ['id' => $comment->id],
+            $this->generateUrl(
+                'api_tasks_task_comment',
+                ['task_id' => $task->id, 'comment_id' => $comment->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -964,8 +977,12 @@ class TaskController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('label' => $label),
-            $this->generateUrl('api_tasks_task_label', array('task_id' => $task->id, 'label' => $label), true)
+            ['label' => $label],
+            $this->generateUrl(
+                'api_tasks_task_label',
+                ['task_id' => $task->id, 'label' => $label],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 

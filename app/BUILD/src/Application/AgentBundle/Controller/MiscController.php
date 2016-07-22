@@ -38,6 +38,7 @@ use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConf
 use Application\DeskPRO\Assets\RequireJsConfigGenerator;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
+use Application\DeskPRO\Routing\Generator\UrlGenerator;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Component\Filesystem\SafeFile;
@@ -943,7 +944,7 @@ JS;
         if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
             $adapter->setCallbackUrl(
                 rtrim($this->container->getSetting('core.deskpro_url'), '/').
-                $this->generateUrl('user_login_callback', ['usersource_id' => $usersource['id']], false)
+                $this->generateUrl('user_login_callback', ['usersource_id' => $usersource['id']])
             );
         }
 
