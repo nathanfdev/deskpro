@@ -1,12 +1,16 @@
 {
   "name": "DeskPRO",
+  "description": "Client-side scripts for DeskPRO",
   "version": "1.0.0",
   "dependencies": {
+    "react": "15.1.0",
+    "react-dom": "15.1.0",
     "angular-ui-select2": "0.0.5",
     "Select2": "^3.5.7",
     "clipboard": "^1.5.12"
   },
   "devDependencies": {
+    "@kadira/storybook": "^1.1.0",
     "autoprefixer": "^6.3.6",
     "babel": "^6.5.2",
     "babel-eslint": "^6.1.1",
@@ -39,6 +43,7 @@
     "path": "^0.12.7",
     "postcss-cli": "^2.5.2",
     "postcss-discard-comments": "^2.0.4",
+    "raw-loader": "^0.5.1",
     "sass-loader": "^4.0.0",
     "sassdoc": "^2.1.18",
     "semantic-ui-less": "^2.1.8",
@@ -70,6 +75,7 @@
     "watch:webpack": "node webpack.server.js",
     "watch:coffee": "coffee -o compiled/ -cw app/",
     "watch:js": "cpx \"app/**/*.js\" compiled -w -v",
-    "watch": "parallelshell 'npm run watch:js' 'npm run watch:coffee' 'npm run watch:webpack'"
+    "watch": "parallelshell 'npm run watch:js' 'npm run watch:coffee' 'npm run watch:webpack'",
+    "test:visual": "start-storybook -p 9001"
   }
 }
