@@ -1,4 +1,5 @@
 <?php
+
 $DB_CONFIG                 = [];
 $DB_CONFIG['read']         = [];
 $DB_CONFIG['read_reports'] = [];
@@ -43,9 +44,15 @@ $DB_CONFIG['read_search']  = [];
 //$DB_CONFIG['read_search'][0]['dbname']   = 'deskpro_read';
 
 ######################################################
-# System incidents Database                          #
+# DeskPRO System Database                            #
 ######################################################
-# Define one to use separate db for system incidents #
+# Enter details for the database you want to use     #
+# for DeskPRO system needs.                          #
+#                                                    #
+# We recommend using a separate DB for the system    #
+# information, but it's optional. If you leave the   #
+# below config commented out, system information     #
+# will be stored in the main database.               #
 ######################################################
 
 //$DB_CONFIG['system']['host']     = 'localhost';
