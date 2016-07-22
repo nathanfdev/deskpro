@@ -35,6 +35,7 @@
     "less-loader": "^2.2.3",
     "node-sass": "^3.8.0",
     "onchange": "^2.5.0",
+    "parallelshell": "^2.0.0",
     "path": "^0.12.7",
     "postcss-cli": "^2.5.2",
     "postcss-discard-comments": "^2.0.4",
@@ -63,13 +64,12 @@
     "presemantic": "cpx \"stylesheets-less/semantic-ui/theme.config\" node_modules/semantic-ui-less/",
     "semantic": "npm run semantic:copy",
     "prebuild": "npm run clean && npm run copy:js && npm run compile:coffee && npm run semantic",
+    "postbuild": "npm run sassdoc",
     "build:prod": "npm run prebuild && webpack --progress --colors --display-error-details --config webpack-prod.config.js -p && npm run postbuild",
     "build:dev": "npm run prebuild && webpack --progress --colors --display-error-details && npm run postbuild",
-    "webpack:watch": "node webpack.server.js",
-    "postbuild": "npm run sassdoc",
+    "watch:webpack": "node webpack.server.js",
     "watch:coffee": "coffee -o compiled/ -cw app/",
-    "watch:sass": "node-sass -w -r --source-map true -o app-build/styles/Admin app/**/Resources/style/*-style.scss",
     "watch:js": "cpx \"app/**/*.js\" compiled -w -v",
-    "build:watch": "onchange 'app/' 'es6/' 'stylesheets-less/semantic-ui/semantic.css' -- npm run build"
+    "watch": "parallelshell 'npm run watch:js' 'npm run watch:coffee' 'npm run watch:webpack'"
   }
 }
