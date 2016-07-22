@@ -50,6 +50,7 @@ class DisabledHelpdeskListener implements EventSubscriberInterface, SkipLowReque
     public static $whitelisted_route_names = [
         'user_context_hash',
         'user_logout',
+        'portal_ping',
     ];
 
     /**
