@@ -31,12 +31,14 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -213,8 +215,8 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     public function getFilenameSafe()
     {
         $filename_safe = Strings::utf8_accents_to_ascii($this->getFileName());
-        $filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
-        $filename_safe = preg_replace('#\-{2,}#', '-', $filename_safe);
+        $filename_safe = RegexUtils::safePregReplace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
+        $filename_safe = RegexUtils::safePregReplace('#\-{2,}#', '-', $filename_safe);
 
         return $filename_safe;
     }

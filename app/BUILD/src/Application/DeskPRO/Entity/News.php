@@ -31,10 +31,12 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -102,7 +104,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
         $content = $this->getContent();
 
         // Remove the intro separator
-        $content = preg_replace('#[\r\n]+\-{3,}[\r\n]+#', "\n", $content);
+        $content = RegexUtils::safePregReplace('#[\r\n]+\-{3,}[\r\n]+#', "\n", $content);
 
         return $content;
     }
@@ -122,7 +124,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
             $words   = str_word_count($excerpt, 2);
             $pos     = Arrays::getNthKey($words, 50);
             $excerpt = substr($excerpt, 0, $pos);
-            $excerpt = preg_replace('#[^a-zA-Z0-9]$#', '', $excerpt);
+            $excerpt = RegexUtils::safePregReplace('#[^a-zA-Z0-9]$#', '', $excerpt);
             $excerpt .= '...';
         }
 

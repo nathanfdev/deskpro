@@ -113,4 +113,50 @@ class RegexUtils
 
         return $res;
     }
+
+    /**
+     * @param string $pattern
+     * @param string $subject
+     * @param mixed  $matches
+     * @param int    $flags
+     * @param int    $offset
+     * @param int    $backtrackLimit
+     *
+     * @return mixed
+     */
+    public static function safePregMatchAll($pattern, $subject, &$matches = null, $flags = 0, $offset = 0, $backtrackLimit = 20000)
+    {
+        $iniLimit = (int) ini_get('pcre.backtrack_limit') ?: 1000000;
+        ini_set('pcre.backtrack_limit', $backtrackLimit);
+
+        $res = preg_match_all($pattern, $subject, $matches, $flags, $offset);
+
+        ini_set('pcre.backtrack_limit', $iniLimit);
+
+        return $res;
+    }
+
+    /**
+     * @param string $pattern
+     * @param mixed  $replacement
+     * @param mixed  $subject
+     * @param int    $limit
+     * @param null   $count
+     * @param int    $backtrackLimit
+     *
+     * @see https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS
+     *
+     * @return mixed
+     */
+    public static function safePregReplace($pattern, $replacement, $subject, $limit = -1, &$count = null, $backtrackLimit = 20000)
+    {
+        $iniLimit = (int) ini_get('pcre.backtrack_limit') ?: 1000000;
+        ini_set('pcre.backtrack_limit', $backtrackLimit);
+
+        $result = preg_replace($pattern, $replacement, $subject, $limit, $count);
+
+        ini_set('pcre.backtrack_limit', $iniLimit);
+
+        return $result;
+    }
 }
