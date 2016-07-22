@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\ContactData;
 
+use DeskPRO\Component\Util\RegexUtils;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -53,7 +54,7 @@ class LinkedInUrlValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        if (!preg_match('#/in/(.*?)$#', $value)) {
+        if (!RegexUtils::safePregMatch('#/in/(.*?)$#', $value)) {
             /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
             $context = $this->context;
             $context
