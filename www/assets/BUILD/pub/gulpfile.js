@@ -128,17 +128,10 @@ function refreshWidgetLoader(loaderFilename) {
 
 function refreshPortalDesignerVariables() {
   process.chdir('../web');
-  const child = spawn('gulp', ['sassdoc']);
-
-  // Print output from Gulpfile
-  child.stdout.on('data', data => {
-    if (data) {
-      console.log(data.toString());
-    }
-  });
-
+  spawn('npm', ['run', 'sassdoc']);
   process.chdir('../pub');
 }
+
 /**
  * @param {String}  mode          all, agent, portal
  * @param {Boolean} isProd        To add settings for prod such as uglify and source maps
