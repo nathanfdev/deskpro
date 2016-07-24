@@ -73,6 +73,11 @@ class DpCategoryBuilderType extends CollectionType
 
     public function getName()
     {
+        return $this->getBlockPrefix();
+    }
+
+    public function getBlockPrefix()
+    {
         return 'dp_category_builder';
     }
 }
