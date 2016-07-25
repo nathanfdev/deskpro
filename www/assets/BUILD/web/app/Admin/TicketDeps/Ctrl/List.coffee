@@ -2,10 +2,13 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
   class Admin_TicketDeps_Ctrl_List extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_TicketDeps_Ctrl_List'
     @CTRL_AS = 'ListCtrl'
+    @DEPS      = ['Api', 'Api2', 'Growl']
 
     init: ->
       @depData = @DataService.get('TicketDeps')
-
+      @defaultDepartments = {}
+      @brandId = 0
+      @brandList = []
       @sortedListOptions = {
         axis: 'y',
         handle: '.drag-handle',
@@ -28,9 +31,23 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       promise = @depData.loadList().then( (list) =>
         @depList = list
         @deps = @depData.listModels
+        @flattenedList = []
+        if @depList
+          for dep in @depList
+            @flattenedList.push dep if !dep.children.length
+            for subdep in dep.children then @flattenedList.push subdep if dep.children.length
       )
 
-      return promise
+      brandsPromise = @Api.sendGet('/brands').then (response) =>
+        @brandList = response.data.brands
+        @brandId = response.data.brands[0].id
+
+      brandsSettingsPromise = @Api2.sendGet('/settings/departments/default').then (response) =>
+        for setting in response.data.data
+          @defaultDepartments[setting.brand] = {} if !@defaultDepartments[setting.brand]
+          @defaultDepartments[setting.brand][setting.type] = setting.department
+
+      return @$q.all([promise, brandsPromise, brandsSettingsPromise])
 
     ###
     # Get the move dep list for use in the delete/move dlg
@@ -103,5 +120,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
         @applyErrorResponseToView(info)
       )
+
+    changeDefaultDepartment: (type) =>
+      if @brandId && !!@defaultDepartments[@brandId] && @defaultDepartments[@brandId][type]
+        @Api2.sendPutJson('settings/departments/default', {type: type, department: @defaultDepartments[@brandId][type], brand: @brandId})
+          .success(() => @Growl.success('Default department for ' + type + 's was successfully set'))
 
   Admin_TicketDeps_Ctrl_List.EXPORT_CTRL()

@@ -31,6 +31,8 @@ namespace DpBehat\Data;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\BrandSetting;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\CustomDefChat;
@@ -293,8 +295,9 @@ class ObjectsManager
             'LabelTicket'            => [Factory\SimpleFactory::class, 'create', LabelTicket::class],
             'LabelDef'               => [Factory\SimpleFactory::class, 'create', LabelDef::class],
             'LabelFeedback'          => [Factory\SimpleFactory::class, 'create', LabelFeedback::class],
-            'LabelTicket'            => [Factory\SimpleFactory::class, 'create', LabelTicket::class],
             'LabelTask'              => [Factory\SimpleFactory::class, 'create', LabelTask::class],
+            'Brand'                  => [Factory\SimpleFactory::class, 'create', Brand::class],
+            'BrandSetting'           => [Factory\SimpleFactory::class, 'create', BrandSetting::class],
         ];
     }
 
@@ -365,6 +368,8 @@ class ObjectsManager
             'LabelFeedback'          => [$this, 'find', LabelFeedback::class],
             'LabelTicket'            => [$this, 'find', LabelTicket::class],
             'LabelTask'              => [$this, 'find', LabelTask::class],
+            'Brand'                  => [$this, 'find', Brand::class],
+            'BrandSetting'           => [$this, 'find', BrandSetting::class],
         ];
     }
 }

@@ -28,8 +28,13 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use Doctrine\ORM\EntityManager;
 
 /**
  * This is the settings resolver we should use (app-wide) moving forward.
@@ -59,12 +64,17 @@ class BrandAwareSettingsResolver
      * Constructor.
      *
      * @param SettingsResolver $settings_resolver
+     * @param EntityManager    $em
      * @param BrandStack|null  $brand_stack
      */
-    public function __construct(SettingsResolver $settings_resolver, BrandStack $brand_stack = null)
-    {
+    public function __construct(
+        SettingsResolver $settings_resolver,
+        EntityManager $em,
+        BrandStack $brand_stack = null
+    ) {
         $this->brand_stack       = $brand_stack;
         $this->settings_resolver = $settings_resolver;
+        $this->em                = $em;
     }
 
     /**
@@ -80,6 +90,43 @@ class BrandAwareSettingsResolver
         }
 
         return $this->getGlobalSetting($name, $default);
+    }
+
+    /**
+     * @return array
+     */
+    public function getDefaultDepartmentSettings()
+    {
+        $settings = [];
+        foreach ($this->em->getRepository(Brand::class)->findAll() as $brand) {
+            $brandContainer = new BrandContainer($brand, $this->settings_resolver->getBrandSettings($brand, true));
+            $settings[]     = $this->getDepartmentSetting($brandContainer, 'agent');
+            $settings[]     = $this->getDepartmentSetting($brandContainer, 'user');
+        }
+
+        return $settings;
+    }
+
+    /**
+     * @param BrandContainer $brandContainer
+     * @param                $type
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return DefaultDepartmentSettings
+     */
+    private function getDepartmentSetting(BrandContainer $brandContainer, $type)
+    {
+        $settingName       = sprintf('default_department.%s', $type);
+        $departmentSetting = new DefaultDepartmentSettings();
+        $departmentSetting
+            ->setBrand($brandContainer->getBrand())
+            ->setType($type)
+            ->setDepartment($this->em->find(Department::class, $brandContainer->getSetting($settingName) ?: 0));
+
+        return $departmentSetting;
     }
 
     /**

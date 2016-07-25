@@ -2,3 +2,9 @@ services:
 
   url_host_checker:
     class: DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker
+
+  brand_form_helper:
+    class: DeskPRO\Bundle\AppBundle\Form\BrandFormHelper
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@brand_stack"

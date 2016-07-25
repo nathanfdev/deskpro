@@ -2,7 +2,7 @@ services:
 
   brand_aware_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver
-    arguments: ["@settings_resolver", "@?brand_stack"]
+    arguments: ["@settings_resolver", "@doctrine.orm.default_entity_manager", "@?brand_stack"]
 
   widget_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver
