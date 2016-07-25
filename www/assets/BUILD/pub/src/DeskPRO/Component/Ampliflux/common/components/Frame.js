@@ -127,6 +127,7 @@ export class Frame extends React.Component {
 
         $head.html($styles);
         $head.append($links);
+        $body.addClass('react_frame_body').addClass(`${this.props.name}_body`);
         $body.html($container);
 
         this.containerReady = true;
@@ -148,7 +149,8 @@ export class Frame extends React.Component {
 
   render() {
     return (
-      <iframe ref="iframe"
+      <iframe
+        ref="iframe"
         name={this.props.name}
         style={this.getFrameStyles()}
       />

@@ -77,7 +77,7 @@ define ["jquery", "intl-tel-input", "intl-tel-input-utils"] , ($, intlTelInput, 
           $main.intlTelInput('utilsLoaded')
           $main.bind('change keyup', () ->
             main_val = $main.val();
-            for dcode, isocode of dialCodes
+            for own dcode, isocode of dialCodes
               dial_code = '+' + dcode;
               shouldRemoveDialCode = main_val.indexOf(dial_code) == 0 && main_val.length > dial_code.length + 1
               if shouldRemoveDialCode

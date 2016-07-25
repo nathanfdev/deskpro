@@ -238,20 +238,6 @@ define [
       return false
 
     ###
-    # This method should be overriden.
-    #
-    # This method needs to load the list data and needs to
-    # resolve to an array of models that will be set on the list collection.
-    #
-    # This method must return a promise
-    #
-    # @return {promise}
-    ###
-    _doLoadList: ->
-      throw new Exception("This method must be implemented by a sub-class")
-
-
-    ###
     # Takes a data model and updates the list.
     # For example, you would use this when you want to apply changes from the Edit pane into the List pane.
     # By merging the data model, this will either 1) update the list model (eg the title) or 2) create
@@ -298,7 +284,7 @@ define [
 
       # if this model is already in list then we some options
       if listModel != null
-        for k, v of listModel
+        for own k, v of listModel
           if dataModel[k] != undefined
             listModel[k] = dataModel[k]
 
@@ -491,7 +477,7 @@ define [
 
 
     url: ->
-      throw '[BaseListEdit:url] This method must be implemented by a sub-class'
+      throw new Error('[BaseListEdit:url] This method must be implemented by a sub-class')
 
 
 

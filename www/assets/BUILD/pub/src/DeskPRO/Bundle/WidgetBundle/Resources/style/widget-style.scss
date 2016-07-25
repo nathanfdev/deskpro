@@ -58,6 +58,10 @@ html, body {
   overflow: auto;
 }
 
+body.widget_trigger_iframe_body {
+  overflow: hidden;
+}
+
 #react_frame_container {
   position: absolute;
 }

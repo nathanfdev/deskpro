@@ -14,7 +14,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
       @$scope.countDefinitions = =>
         count = 0
-        for n of @$scope.labels
+        for own n of @$scope.labels
           count++
         count
 

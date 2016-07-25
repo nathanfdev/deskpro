@@ -85,7 +85,7 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
       for value, key in @$scope.importSettings.fieldMappings
 
         obj = {map: value}
-        for key2, value2 of @$scope.importSettings.additionalMappings[key]
+        for own key2, value2 of @$scope.importSettings.additionalMappings[key]
           obj[key2] = value2
 
         field_maps.push(obj)
@@ -135,7 +135,7 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
     # @param {String} selected_field - name of field sent by 'ng-change'
     ###
     selectMapping: (column_id, selected_field) ->
-      for key of @$scope.importSettings.showExtraMappings
+      for own key of @$scope.importSettings.showExtraMappings
         @$scope.importSettings.showExtraMappings[key][column_id] = false
 
       if @showExtraMappingsCases.indexOf(selected_field) > -1

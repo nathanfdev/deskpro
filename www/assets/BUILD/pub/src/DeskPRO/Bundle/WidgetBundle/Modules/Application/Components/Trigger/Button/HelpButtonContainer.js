@@ -170,7 +170,7 @@ export class HelpButtonContainer extends React.Component {
       <HelpButton
         {...this.props}
         ref="button"
-        locationPath={this.state.locationPath}
+        locationPath={this.state.locationPath || null}
         onClick={this.onClick}
       />
     </div>);
