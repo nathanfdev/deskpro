@@ -87,7 +87,7 @@ class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
     }
 
     /**
-     * @return UpdaterSettings
+     * @return UpdaterStatus
      */
     public function getUpdaterStatus()
     {
@@ -112,7 +112,11 @@ class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
 
-        $auth = $DP_ENV->getDatManager()->readTxtFile('server_info_auth');
+        if ($DP_ENV->getDatManager()->hasTxtFile('server_info_auth')) {
+            $auth = $DP_ENV->getDatManager()->readTxtFile('server_info_auth');
+        } else {
+            $auth = '';
+        }
         $status->setLogUrl($this->router->generate('serve_root', [], RouterInterface::ABSOLUTE_URL)."__serverinfo/logs/updater?auth=$auth");
 
         $status->setBackupPath($DP_ENV->getUserBackupsDir());
