@@ -45,6 +45,10 @@ services:
     class: Application\ImportBundle\ScriptHelper\DbHelper
     arguments: ["@dp.importer_logger"]
 
+  dp.importer.script_helper.formatter:
+    class: Application\ImportBundle\ScriptHelper\FormatHelper
+    arguments: ["@validator", "@dp.importer_logger"]
+
   # Mappers
   dp.importer.writer.mapper_registry:
     class: Application\ImportBundle\Writer\Mapper\MapperRegistry

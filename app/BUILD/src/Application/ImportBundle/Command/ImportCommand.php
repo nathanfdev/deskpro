@@ -67,9 +67,10 @@ class ImportCommand extends AbstractImporterCommand
         }
 
         // the following services are used inside the script code
-        $writer = $this->getContainer()->get('dp.importer.script_helper.writer');
-        $output = $this->getContainer()->get('dp.importer.script_helper.output');
-        $db     = $this->getContainer()->get('dp.importer.script_helper.db');
+        $writer    = $this->getContainer()->get('dp.importer.script_helper.writer');
+        $formatter = $this->getContainer()->get('dp.importer.script_helper.formatter');
+        $output    = $this->getContainer()->get('dp.importer.script_helper.output');
+        $db        = $this->getContainer()->get('dp.importer.script_helper.db');
 
         $writer->setOutputPath($this->getImporterDefaultOutputPath());
 
