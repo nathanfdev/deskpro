@@ -273,7 +273,7 @@ abstract class AbstractBuild
     /**
      * Executes an ALTER command that can potentially be slow.
      *
-     * If 'online_schema_upgrade' is true on config.php,
+     * If 'online_schema_upgrade' is true on config.upgrader.php,
      * then this will use the 'pt-online-schema-change' command.
      *
      * If the alter is not likely to be slow, it's often better to use the normal
@@ -290,8 +290,8 @@ abstract class AbstractBuild
      *
      * @see http://www.percona.com/doc/percona-toolkit/2.2/pt-online-schema-change.html
      *
-     * To enable pt-online-schema-change, add this line to /config.php:
-     *  $DP_CONFIG['online_schema_upgrade'] = '/usr/bin/pt-online-schema-change';
+     * To enable pt-online-schema-change, add this line to /config/config.upgrader.php:
+     *  $CONFIG['online_schema_upgrade'] = '/usr/bin/pt-online-schema-change';
      * Change the path accordingly.
      *
      * @param string $table The table to alter
