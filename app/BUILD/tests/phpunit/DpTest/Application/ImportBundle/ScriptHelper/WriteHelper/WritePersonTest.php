@@ -57,6 +57,7 @@ class WritePersonTest extends AbstractWriteHelperTest
             'is_deleted'    => false,
             'labels'        => [],
             'user_groups'   => [],
+            'agent_groups'  => [],
             'custom_fields' => [],
         ]));
     }
@@ -125,6 +126,7 @@ class WritePersonTest extends AbstractWriteHelperTest
                 ],
             ],
             'user_groups'           => ['everyone'],
+            'agent_groups'          => ['all_perm'],
             'timezone'              => 'UTC',
             'date_created'          => '2016-07-15T12:55:01+0300',
             'language'              => 'eng',

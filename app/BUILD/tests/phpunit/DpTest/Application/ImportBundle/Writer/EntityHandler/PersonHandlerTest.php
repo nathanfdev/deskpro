@@ -131,10 +131,9 @@ class PersonHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('Organization2', $entity->getOrganization()->getName());
         $this->assertEquals('manager', $entity->organization_position);
         $this->assertEquals(['email@deskpro.dev', 'email2@deskpro.dev'], $entity->getEmailAddresses());
-        $this->assertCount(3, $entity->getUsergroups());
+        $this->assertCount(2, $entity->getUsergroups());
         $this->assertEquals('group_1', $entity->getUsergroups()[0]->getSysName());
         $this->assertEquals('group_2', $entity->getUsergroups()[1]->getSysName());
-        $this->assertEquals('agent_all_safe_perms', $entity->getUsergroups()[2]->getSysName());
         $this->assertCount(2, $entity->getLabels());
         $this->assertCount(1, $entity->getCustomData());
         $this->assertCount(1, $entity->getContactData());

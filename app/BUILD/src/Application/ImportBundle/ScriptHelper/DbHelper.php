@@ -28,6 +28,7 @@
 
 namespace Application\ImportBundle\ScriptHelper;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Psr\Log\LoggerInterface;
 
@@ -47,6 +48,11 @@ class DbHelper
     private $credentials;
 
     /**
+     * @var Connection
+     */
+    private $connection;
+
+    /**
      * Constructor.
      *
      * @param LoggerInterface $logger
@@ -62,6 +68,7 @@ class DbHelper
     public function setCredentials(array $credentials)
     {
         $this->credentials = $credentials;
+        $this->connection  = DriverManager::getConnection($this->credentials);
     }
 
     /**
@@ -73,8 +80,19 @@ class DbHelper
      */
     public function getPager($query, array $params = [], $perPage = 1000)
     {
-        $connection = DriverManager::getConnection($this->credentials);
+        return new DbPager($this->connection, $query, $params, $perPage);
+    }
 
-        return new DbPager($connection, $query, $params, $perPage);
+    /**
+     * @param string $query
+     * @param array  $params
+     *
+     * @return mixed
+     */
+    public function findOne($query, array $params = [])
+    {
+        $statement = $this->connection->executeQuery($query, $params);
+
+        return $statement->fetch();
     }
 }
