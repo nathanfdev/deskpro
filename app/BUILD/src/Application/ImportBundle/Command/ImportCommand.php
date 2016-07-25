@@ -28,6 +28,7 @@
 
 namespace Application\ImportBundle\Command;
 
+use DeskPRO\ImporterTools\Helpers\WriteHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -60,18 +61,31 @@ class ImportCommand extends AbstractImporterCommand
 
         $appEnv   = $this->getContainer()->get('deskpro.app_env');
         $filename = $input->getArgument('file');
+        $basePath = realpath($appEnv->getDpRoot().'/bin/deskpro-importer-tools');
 
-        $script = realpath($appEnv->getDpRoot()).'/bin/importers/'.$filename.'/'.$filename.'.php';
+        // add the import tools inc files to autoloader
+        $importerAutoload = $basePath.'/inc/autoload.php';
+        if (!file_exists($importerAutoload)) {
+            throw new \Exception('Unable to locate importer tools autoload');
+        }
+
+        require_once $importerAutoload;
+
+        // resolve importer script
+        if ($filename === 'custom') {
+            $script = $basePath.'/custom/custom.php';
+        } else {
+            $script = $basePath.'/importers/'.$filename.'/'.$filename.'.php';
+        }
+
         if (!file_exists($script)) {
             throw new \Exception("File $script not found");
         }
 
-        // the following services are used inside the script code
-        $writer    = $this->getContainer()->get('dp.importer.script_helper.writer');
-        $formatter = $this->getContainer()->get('dp.importer.script_helper.formatter');
-        $output    = $this->getContainer()->get('dp.importer.script_helper.output');
-        $db        = $this->getContainer()->get('dp.importer.script_helper.db');
+        global $DP_CONTAINER;
+        $DP_CONTAINER = $this->getContainer();
 
+        $writer = WriteHelper::getHelper();
         $writer->setOutputPath($this->getImporterDefaultOutputPath());
 
         require_once $script;

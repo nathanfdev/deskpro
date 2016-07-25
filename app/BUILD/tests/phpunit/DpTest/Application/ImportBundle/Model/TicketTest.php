@@ -26,33 +26,36 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\Application\ImportBundle\ScriptHelper\WriteHelper;
+namespace DpTest\Application\ImportBundle\Model;
+
+use Application\ImportBundle\Model\Ticket;
 
 /**
- * Class WriteTicketTest.
+ * Class TicketTest.
  */
-class WriteTicketTest extends AbstractWriteHelperTest
+class TicketTest extends AbstractModelTest
 {
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage ticket #1 validation is failed
-     */
-    public function test_check_validation()
+    protected static $modelClass = Ticket::class;
+
+    public function test_required_params_validation()
     {
-        $this->writer->writeTicket(1, []);
+        $errors = $this->validateData([]);
+
+        $this->assertCount(3, $errors);
+        $this->assertEquals('status', $errors[0]->getPropertyPath());
+        $this->assertEquals('subject', $errors[1]->getPropertyPath());
+        $this->assertEquals('raw_data', $errors[2]->getPropertyPath());
     }
 
     public function test_required_params()
     {
         $params = [
             'subject' => 'Ticket subject',
-            'person'  => '1',
             'status'  => 'awaiting_agent',
 
         ];
 
-        $this->writer->writeTicket(1, $params);
-        $this->assertImporterModelEquals('/1/ticket/1.json', array_merge($params, [
+        $this->assertEquals($this->transformData($params), array_merge($params, [
             'labels'        => [],
             'custom_fields' => [],
             'participants'  => [],
@@ -116,7 +119,6 @@ class WriteTicketTest extends AbstractWriteHelperTest
             ],
         ];
 
-        $this->writer->writeTicket(1, $params);
-        $this->assertImporterModelEquals('/1/ticket/1.json', $params);
+        $this->assertEquals($this->transformData($params), $params);
     }
 }

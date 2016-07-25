@@ -45,8 +45,6 @@ class Article extends AbstractContentModel implements PersonAwareInterface, Labe
      * @var string
      *
      * @JMS\Type("string")
-     *
-     * @Assert\NotBlank()
      */
     private $person;
 

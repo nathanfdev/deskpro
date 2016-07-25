@@ -26,20 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\Application\ImportBundle\ScriptHelper\WriteHelper;
+namespace DpTest\Application\ImportBundle\Model;
+
+use Application\ImportBundle\Model\Article;
 
 /**
- * Class WriteArticleTest.
+ * Class ArticleTest.
  */
-class WriteArticleTest extends AbstractWriteHelperTest
+class ArticleTest extends AbstractModelTest
 {
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage article #1 validation is failed
-     */
-    public function test_check_validation()
+    protected static $modelClass = Article::class;
+
+    public function test_required_params_validation()
     {
-        $this->writer->writeArticle(1, []);
+        $errors = $this->validateData([]);
+
+        $this->assertCount(4, $errors);
+        $this->assertEquals('title', $errors[0]->getPropertyPath());
+        $this->assertEquals('content', $errors[1]->getPropertyPath());
+        $this->assertEquals('status', $errors[2]->getPropertyPath());
+        $this->assertEquals('raw_data', $errors[3]->getPropertyPath());
     }
 
     public function test_required_params()
@@ -48,11 +54,9 @@ class WriteArticleTest extends AbstractWriteHelperTest
             'title'   => 'Article 1',
             'content' => 'Article content',
             'status'  => 'published',
-            'person'  => '1',
         ];
 
-        $this->writer->writeArticle(1, $params);
-        $this->assertImporterModelEquals('/1/article/1.json', array_merge($params, [
+        $this->assertEquals($this->transformData($params), array_merge($params, [
             'view_count'    => 0,
             'labels'        => [],
             'categories'    => [],
@@ -122,7 +126,6 @@ class WriteArticleTest extends AbstractWriteHelperTest
             'language'       => 'eng',
         ];
 
-        $this->writer->writeArticle(1, $params);
-        $this->assertImporterModelEquals('/1/article/1.json', $params);
+        $this->assertEquals($this->transformData($params), $params);
     }
 }

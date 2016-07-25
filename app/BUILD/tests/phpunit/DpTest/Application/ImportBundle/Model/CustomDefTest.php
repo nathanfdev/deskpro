@@ -26,37 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\Application\ImportBundle\ScriptHelper\WriteHelper;
+namespace DpTest\Application\ImportBundle\Model;
+
+use Application\ImportBundle\Model;
 
 /**
- * Class WriteCustomDefTest.
+ * Class CustomDefTest.
  */
-class WriteCustomDefTest extends AbstractWriteHelperTest
+class CustomDefTest extends AbstractModelTest
 {
     private $customDefTypes = [
-        ['writePersonCustomDef', 'person_custom_def'],
-        ['writeTicketCustomDef', 'ticket_custom_def'],
-        ['writeArticleCustomDef', 'article_custom_def'],
-        ['writeOrganizationCustomDef', 'organization_custom_def'],
-        ['writeFeedbackCustomDef', 'feedback_custom_def'],
+        Model\PersonCustomDef::class,
+        Model\TicketCustomDef::class,
+        Model\ArticleCustomDef::class,
+        Model\OrganizationCustomDef::class,
+        Model\FeedbackCustomDef::class,
     ];
 
     /**
      * @dataProvider simpleDefTypeProvider
      *
-     * @param string $method
-     * @param string $dir
+     * @param string $modelClass
      * @param string $widgetType
      */
-    public function test_simple_field($method, $dir, $widgetType)
+    public function test_simple_field($modelClass, $widgetType)
     {
         $params = [
             'title'       => 'Custom Def',
             'widget_type' => $widgetType,
         ];
 
-        $this->writer->$method(1, $params);
-        $this->assertImporterModelEquals("/1/$dir/1.json", array_merge($params, [
+        static::$modelClass = $modelClass;
+        $this->assertEquals($this->transformData($params), array_merge($params, [
             'description'     => '',
             'is_enabled'      => true,
             'is_user_enabled' => true,
@@ -69,11 +70,10 @@ class WriteCustomDefTest extends AbstractWriteHelperTest
     /**
      * @dataProvider choiceDefTypeProvider
      *
-     * @param string $method
-     * @param string $dir
+     * @param string $modelClass
      * @param string $widgetType
      */
-    public function test_choice_field($method, $dir, $widgetType)
+    public function test_choice_field($modelClass, $widgetType)
     {
         $params = [
             'title'       => 'Custom Def',
@@ -95,8 +95,8 @@ class WriteCustomDefTest extends AbstractWriteHelperTest
             ],
         ];
 
-        $this->writer->$method(1, $params);
-        $this->assertImporterModelEquals("/1/$dir/1.json", array_merge($params, [
+        static::$modelClass = $modelClass;
+        $this->assertEquals($this->transformData($params), array_merge($params, [
             'description'     => '',
             'is_enabled'      => true,
             'is_user_enabled' => true,
@@ -107,20 +107,20 @@ class WriteCustomDefTest extends AbstractWriteHelperTest
 
     /**
      * @dataProvider unknownDefTypeProvider
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage validation is failed
      *
-     * @param string $method
+     * @param string $modelClass
      * @param string $widgetType
      */
-    public function test_unknown_field($method, $widgetType)
+    public function test_unknown_field($modelClass, $widgetType)
     {
         $params = [
             'title'       => 'Custom Def',
             'widget_type' => $widgetType,
         ];
 
-        $this->writer->$method(1, $params);
+        static::$modelClass = $modelClass;
+        $errors             = $this->validateData($params);
+        $this->assertEquals('widgetType', $errors[0]->getPropertyPath());
     }
 
     /**
@@ -130,8 +130,8 @@ class WriteCustomDefTest extends AbstractWriteHelperTest
     {
         $args = [];
         foreach (['text', 'textarea', 'hidden', 'display', 'date', 'datetime', 'toggle'] as $widgetType) {
-            foreach ($this->customDefTypes as $customDefType) {
-                $args[] = array_merge($customDefType, [$widgetType]);
+            foreach ($this->customDefTypes as $modelClass) {
+                $args[] = [$modelClass, $widgetType];
             }
         }
 
@@ -145,8 +145,8 @@ class WriteCustomDefTest extends AbstractWriteHelperTest
     {
         $args = [];
         foreach (['choice', 'multichoice', 'radio', 'checkbox'] as $widgetType) {
-            foreach ($this->customDefTypes as $customDefType) {
-                $args[] = array_merge($customDefType, [$widgetType]);
+            foreach ($this->customDefTypes as $modelClass) {
+                $args[] = [$modelClass, $widgetType];
             }
         }
 
@@ -160,8 +160,8 @@ class WriteCustomDefTest extends AbstractWriteHelperTest
     {
         $args = [];
         foreach (['unkwnown', '', 'text_field'] as $widgetType) {
-            foreach ($this->customDefTypes as $customDefType) {
-                $args[] = array_merge([$customDefType[0]], [$widgetType]);
+            foreach ($this->customDefTypes as $modelClass) {
+                $args[] = [$modelClass, $widgetType];
             }
         }
 

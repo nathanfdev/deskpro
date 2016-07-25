@@ -62,8 +62,6 @@ class Download extends AbstractContentModel implements PersonAwareInterface, Lab
      * @var string
      *
      * @JMS\Type("string")
-     *
-     * @Assert\NotBlank()
      */
     private $person;
 

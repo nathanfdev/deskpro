@@ -98,8 +98,6 @@ class Feedback implements PersonAwareInterface, LabelAwareModelInterface, Attach
      * @var string
      *
      * @JMS\Type("string")
-     *
-     * @Assert\NotBlank()
      */
     private $person;
 

@@ -32,23 +32,6 @@ services:
       - "@dp.importer.writer.mapper.import_map"
       - "@dp.importer_logger"
 
-  # Script helpers
-  dp.importer.script_helper.writer:
-    class: Application\ImportBundle\ScriptHelper\WriteHelper
-    arguments: ["@serializer", "@validator", "@form_error.validator_errors_generator.api", "@dp.importer_logger"]
-
-  dp.importer.script_helper.output:
-    class: Application\ImportBundle\ScriptHelper\OutputHelper
-    arguments: ["@dp.importer_logger"]
-
-  dp.importer.script_helper.db:
-    class: Application\ImportBundle\ScriptHelper\DbHelper
-    arguments: ["@dp.importer_logger"]
-
-  dp.importer.script_helper.formatter:
-    class: Application\ImportBundle\ScriptHelper\FormatHelper
-    arguments: ["@validator", "@dp.importer_logger"]
-
   # Mappers
   dp.importer.writer.mapper_registry:
     class: Application\ImportBundle\Writer\Mapper\MapperRegistry

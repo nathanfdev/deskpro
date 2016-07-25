@@ -26,31 +26,35 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\Application\ImportBundle\ScriptHelper\WriteHelper;
+namespace DpTest\Application\ImportBundle\Model;
+
+use Application\ImportBundle\Model\Person;
 
 /**
- * Class WritePersonTest.
+ * Class PersonTest.
  */
-class WritePersonTest extends AbstractWriteHelperTest
+class PersonTest extends AbstractModelTest
 {
-    private $requiredPersonParams = [
-        'name'   => 'Person Name',
-        'emails' => ['email_1@deskpro.dev'],
-    ];
+    protected static $modelClass = Person::class;
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage person #1 validation is failed
-     */
-    public function test_check_validation()
+    public function test_required_params_validation()
     {
-        $this->writer->writePerson(1, []);
+        $errors = $this->validateData([]);
+
+        $this->assertCount(3, $errors);
+        $this->assertEquals('name', $errors[0]->getPropertyPath());
+        $this->assertEquals('emails', $errors[1]->getPropertyPath());
+        $this->assertEquals('raw_data', $errors[2]->getPropertyPath());
     }
 
     public function test_required_params()
     {
-        $this->writer->writePerson(1, $this->requiredPersonParams);
-        $this->assertImporterModelEquals('/1/person/1.json', array_merge($this->requiredPersonParams, [
+        $params = [
+            'name'   => 'Person Name',
+            'emails' => ['email_1@deskpro.dev'],
+        ];
+
+        $this->assertEquals($this->transformData($params), array_merge($params, [
             'is_agent'      => false,
             'is_admin'      => false,
             'is_disabled'   => false,
@@ -144,7 +148,6 @@ class WritePersonTest extends AbstractWriteHelperTest
             ],
         ];
 
-        $this->writer->writePerson(1, $params);
-        $this->assertImporterModelEquals('/1/person/1.json', $params);
+        $this->assertEquals($this->transformData($params), $params);
     }
 }

@@ -26,20 +26,27 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\Application\ImportBundle\ScriptHelper\WriteHelper;
+namespace DpTest\Application\ImportBundle\Model;
+
+use Application\ImportBundle\Model\Download;
 
 /**
- * Class WriteDownloadTest.
+ * Class DownloadTest.
  */
-class WriteDownloadTest extends AbstractWriteHelperTest
+class DownloadTest extends AbstractModelTest
 {
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage download #1 validation is failed
-     */
-    public function test_check_validation()
+    protected static $modelClass = Download::class;
+
+    public function test_required_params_validation()
     {
-        $this->writer->writeDownload(1, []);
+        $errors = $this->validateData([]);
+
+        $this->assertCount(5, $errors);
+        $this->assertEquals('title', $errors[0]->getPropertyPath());
+        $this->assertEquals('content', $errors[1]->getPropertyPath());
+        $this->assertEquals('status', $errors[2]->getPropertyPath());
+        $this->assertEquals('raw_data', $errors[3]->getPropertyPath());
+        $this->assertEquals('blob', $errors[4]->getPropertyPath());
     }
 
     public function test_required_params()
@@ -48,7 +55,6 @@ class WriteDownloadTest extends AbstractWriteHelperTest
             'title'   => 'Download 1',
             'content' => 'Download content',
             'status'  => 'published',
-            'person'  => '1',
             'blob'    => [
                 'blob_url'     => 'http://url',
                 'file_name'    => 'file.jpg',
@@ -56,8 +62,7 @@ class WriteDownloadTest extends AbstractWriteHelperTest
             ],
         ];
 
-        $this->writer->writeDownload(1, $params);
-        $this->assertImporterModelEquals('/1/download/1.json', array_merge($params, [
+        $this->assertEquals($this->transformData($params), array_merge($params, [
             'view_count'    => 0,
             'num_downloads' => 0,
             'labels'        => [],
@@ -85,7 +90,6 @@ class WriteDownloadTest extends AbstractWriteHelperTest
             'date_published' => '2016-07-15T12:55:01+0300',
         ];
 
-        $this->writer->writeDownload(1, $params);
-        $this->assertImporterModelEquals('/1/download/1.json', $params);
+        $this->assertEquals($this->transformData($params), $params);
     }
 }

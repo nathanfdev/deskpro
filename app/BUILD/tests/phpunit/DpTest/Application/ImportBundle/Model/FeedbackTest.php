@@ -26,20 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\Application\ImportBundle\ScriptHelper\WriteHelper;
+namespace DpTest\Application\ImportBundle\Model;
+
+use Application\ImportBundle\Model\Feedback;
 
 /**
- * Class WriteFeedbackTest.
+ * Class FeedbackTest.
  */
-class WriteFeedbackTest extends AbstractWriteHelperTest
+class FeedbackTest extends AbstractModelTest
 {
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage feedback #1 validation is failed
-     */
-    public function test_check_validation()
+    protected static $modelClass = Feedback::class;
+
+    public function test_required_params_validation()
     {
-        $this->writer->writeFeedback(1, []);
+        $errors = $this->validateData([]);
+
+        $this->assertCount(4, $errors);
+        $this->assertEquals('title', $errors[0]->getPropertyPath());
+        $this->assertEquals('content', $errors[1]->getPropertyPath());
+        $this->assertEquals('status', $errors[2]->getPropertyPath());
+        $this->assertEquals('raw_data', $errors[3]->getPropertyPath());
     }
 
     public function test_required_params()
@@ -48,11 +54,9 @@ class WriteFeedbackTest extends AbstractWriteHelperTest
             'title'   => 'Feedback 1',
             'content' => 'Feedback content',
             'status'  => 'closed',
-            'person'  => '1',
         ];
 
-        $this->writer->writeFeedback(1, $params);
-        $this->assertImporterModelEquals('/1/feedback/1.json', array_merge($params, [
+        $this->assertEquals($this->transformData($params), array_merge($params, [
             'labels'        => [],
             'view_count'    => 0,
             'popularity'    => 0,
@@ -96,7 +100,6 @@ class WriteFeedbackTest extends AbstractWriteHelperTest
             ],
         ];
 
-        $this->writer->writeFeedback(1, $params);
-        $this->assertImporterModelEquals('/1/feedback/1.json', $params);
+        $this->assertEquals($this->transformData($params), $params);
     }
 }

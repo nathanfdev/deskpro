@@ -26,20 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\Application\ImportBundle\ScriptHelper\WriteHelper;
+namespace DpTest\Application\ImportBundle\Model;
+
+use Application\ImportBundle\Model\ArticleCategory;
 
 /**
- * Class WriteArticleCategoryTest.
+ * Class ArticleCategoryTest.
  */
-class WriteArticleCategoryTest extends AbstractWriteHelperTest
+class ArticleCategoryTest extends AbstractModelTest
 {
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage article_category #1 validation is failed
-     */
-    public function test_check_validation()
+    protected static $modelClass = ArticleCategory::class;
+
+    public function test_required_params_validation()
     {
-        $this->writer->writeArticleCategory(1, []);
+        $errors = $this->validateData([]);
+
+        $this->assertCount(2, $errors);
+        $this->assertEquals('title', $errors[0]->getPropertyPath());
+        $this->assertEquals('raw_data', $errors[1]->getPropertyPath());
+    }
+
+    public function test_sub_category_validation()
+    {
+        $errors = $this->validateData([
+            'title'      => 'Cat 1',
+            'categories' => [
+                [],
+            ],
+        ]);
+
+        $this->assertCount(1, $errors);
+        $this->assertEquals('categories[0].title', $errors[0]->getPropertyPath());
     }
 
     public function test_full_params()
@@ -70,7 +87,6 @@ class WriteArticleCategoryTest extends AbstractWriteHelperTest
             ],
         ];
 
-        $this->writer->writeArticleCategory(1, $params);
-        $this->assertImporterModelEquals('/1/article_category/1.json', $params);
+        $this->assertEquals($this->transformData($params), $params);
     }
 }

@@ -58,8 +58,6 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
      * @var string
      *
      * @JMS\Type("string")
-     *
-     * @Assert\NotBlank()
      */
     private $person;
 

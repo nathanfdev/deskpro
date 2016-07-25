@@ -26,20 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\Application\ImportBundle\ScriptHelper\WriteHelper;
+namespace DpTest\Application\ImportBundle\Model;
+
+use Application\ImportBundle\Model\News;
 
 /**
- * Class WriteNewsTest.
+ * Class NewsTest.
  */
-class WriteNewsTest extends AbstractWriteHelperTest
+class NewsTest extends AbstractModelTest
 {
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage news #1 validation is failed
-     */
-    public function test_check_validation()
+    protected static $modelClass = News::class;
+
+    public function test_required_params_validation()
     {
-        $this->writer->writeNews(1, []);
+        $errors = $this->validateData([]);
+
+        $this->assertCount(4, $errors);
+        $this->assertEquals('title', $errors[0]->getPropertyPath());
+        $this->assertEquals('content', $errors[1]->getPropertyPath());
+        $this->assertEquals('status', $errors[2]->getPropertyPath());
+        $this->assertEquals('raw_data', $errors[3]->getPropertyPath());
     }
 
     public function test_required_params()
@@ -50,8 +56,7 @@ class WriteNewsTest extends AbstractWriteHelperTest
             'status'  => 'published',
         ];
 
-        $this->writer->writeNews(1, $params);
-        $this->assertImporterModelEquals('/1/news/1.json', array_merge($params, [
+        $this->assertEquals($this->transformData($params), array_merge($params, [
             'labels'     => [],
             'view_count' => 0,
         ]));
@@ -72,7 +77,6 @@ class WriteNewsTest extends AbstractWriteHelperTest
             'person'         => 1,
         ];
 
-        $this->writer->writeNews(1, $params);
-        $this->assertImporterModelEquals('/1/news/1.json', $params);
+        $this->assertEquals($this->transformData($params), $params);
     }
 }

@@ -26,20 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\Application\ImportBundle\ScriptHelper\WriteHelper;
+namespace DpTest\Application\ImportBundle\Model;
+
+use Application\ImportBundle\Model\Organization;
 
 /**
- * Class WriteOrganization.
+ * Class OrganizationTest.
  */
-class WriteOrganization extends AbstractWriteHelperTest
+class OrganizationTest extends AbstractModelTest
 {
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage organization #1 validation is failed
-     */
-    public function test_check_validation()
+    protected static $modelClass = Organization::class;
+
+    public function test_required_params_validation()
     {
-        $this->writer->writeOrganization(1, []);
+        $errors = $this->validateData([]);
+
+        $this->assertCount(2, $errors);
+        $this->assertEquals('name', $errors[0]->getPropertyPath());
+        $this->assertEquals('raw_data', $errors[1]->getPropertyPath());
     }
 
     public function test_required_params()
@@ -48,8 +52,7 @@ class WriteOrganization extends AbstractWriteHelperTest
             'name' => 'Org name',
         ];
 
-        $this->writer->writeOrganization(1, $params);
-        $this->assertImporterModelEquals('/1/organization/1.json', array_merge($params, [
+        $this->assertEquals($this->transformData($params), array_merge($params, [
             'labels'        => [],
             'custom_fields' => [],
         ]));
@@ -89,7 +92,7 @@ class WriteOrganization extends AbstractWriteHelperTest
                 ],
                 'facebook' => [
                     [
-                        'url' => 'facebook',
+                        'url' => 'http://facebook.com',
                     ],
                 ],
                 'instant_message' => [
@@ -109,8 +112,7 @@ class WriteOrganization extends AbstractWriteHelperTest
                 ],
                 'phone' => [
                     [
-                        'code'   => '+1',
-                        'number' => '1234567',
+                        'number' => '+14157012311',
                         'type'   => 'fax',
                     ],
                 ],
@@ -128,7 +130,6 @@ class WriteOrganization extends AbstractWriteHelperTest
             ],
         ];
 
-        $this->writer->writeOrganization(1, $params);
-        $this->assertImporterModelEquals('/1/organization/1.json', $params);
+        $this->assertEquals($this->transformData($params), $params);
     }
 }
