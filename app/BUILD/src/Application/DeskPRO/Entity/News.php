@@ -151,11 +151,7 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
      */
     public function setCategory(NewsCategory $category = null)
     {
-        if ($category) {
-            $this->setModelField('category', $category);
-        } else {
-            $this->setModelField('category', null);
-        }
+        $this->setModelField('category', $category);
 
         return $this;
     }

@@ -1047,6 +1047,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
                 $this->setOption('expanded', true);
                 $this->setOption('multiple', false);
                 break;
+            default:
+                throw new \Exception("Unknown widget type `$widgetType`");
         }
 
         return $this;

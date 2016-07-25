@@ -238,11 +238,11 @@ abstract class ContentAbstract extends DomainObject
     {
         $this->setModelField('date_created', new \DateTime());
         $this->setModelField('date_updated', new \DateTime());
-        $this['date_created'] = new \DateTime();
-        $this->revisions      = new ArrayCollection();
-        $this->labels         = new ArrayCollection();
-        $this->slug_history   = new ArrayCollection();
-        $this->comments       = new ArrayCollection();
+
+        $this->revisions    = new ArrayCollection();
+        $this->labels       = new ArrayCollection();
+        $this->slug_history = new ArrayCollection();
+        $this->comments     = new ArrayCollection();
 
         $this['status']        = self::STATUS_HIDDEN;
         $this['hidden_status'] = self::HIDDEN_STATUS_DRAFT;

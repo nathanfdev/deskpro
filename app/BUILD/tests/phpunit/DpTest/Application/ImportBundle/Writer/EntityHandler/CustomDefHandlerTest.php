@@ -74,6 +74,7 @@ class CustomDefHandlerTest extends AbstractEntityHandlerTest
         $model = new $modelClass();
         $model->setOid(1);
         $model->setTitle('test_def');
+        $model->setWidgetType('text');
 
         $this->writer->writeData($model);
 
@@ -104,6 +105,7 @@ class CustomDefHandlerTest extends AbstractEntityHandlerTest
         $model = new $modelClass();
         $model->setOid(1);
         $model->setTitle('test_def');
+        $model->setWidgetType('text');
 
         $this->writer->writeData($model);
 
