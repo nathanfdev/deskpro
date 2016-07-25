@@ -119,11 +119,8 @@ class PersonHandler extends AbstractEntityHandler
         }
 
         // update common props
-        if ($model->isAgent() && !in_array('agent_all_safe_perms', $model->getUserGroups())) {
-            $model->addUserGroup('agent_all_safe_perms');
-        }
-
         $this->helpers->getUserGroupHelper()->updateUserGroups($model, $entity);
+        $this->helpers->getUserGroupHelper()->updateAgentGroups($model, $entity);
         $this->helpers->getCustomDataHelper()->updateCustomData($this->mappers->getPersonCustomDefMapper(), $model, $entity);
         $this->helpers->getLabelHelper()->updateLabels($model, $entity, Entity\LabelPerson::class);
 

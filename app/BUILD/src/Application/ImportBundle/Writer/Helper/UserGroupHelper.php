@@ -28,7 +28,9 @@
 
 namespace Application\ImportBundle\Writer\Helper;
 
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Usergroup;
+use Application\ImportBundle\Model;
 use Application\ImportBundle\Model\UsergroupAwareModelInterface;
 use Application\ImportBundle\Writer\EntityPersister;
 use Application\ImportBundle\Writer\Mapper\UserGroupMapper;
@@ -75,15 +77,41 @@ class UserGroupHelper
      */
     public function updateUserGroups(UsergroupAwareModelInterface $model, $entity)
     {
-        // add new usergroups
-        foreach ($model->getUserGroups() as $userGroupName) {
-            $entity->addUsergroup($this->findOrCreateUserGroup($userGroupName));
+        // add new user groups
+        foreach ($model->getUserGroups() as $groupName) {
+            $entity->addUsergroup($this->findOrCreateUserGroup($groupName));
         }
 
-        // remove deleted usergroups
+        // remove deleted user groups
         /** @var Usergroup $usergroup */
         foreach ($entity->getUsergroups() as $usergroup) {
+            if ($usergroup->isAgentGroup()) {
+                continue;
+            }
             if (!in_array($usergroup->getSysName(), $model->getUserGroups()) && !in_array($usergroup->getTitle(), $model->getUserGroups())) {
+                $entity->getUsergroups()->removeElement($usergroup);
+            }
+        }
+    }
+
+    /**
+     * @param Model\Person  $model
+     * @param Entity\Person $entity
+     */
+    public function updateAgentGroups(Model\Person $model, Entity\Person $entity)
+    {
+        // add new agent groups
+        foreach ($model->getAgentGroups() as $groupName) {
+            $entity->addUsergroup($this->findOrCreateUserGroup($groupName, true));
+        }
+
+        // remove deleted agent groups
+        /** @var Usergroup $usergroup */
+        foreach ($entity->getUsergroups() as $usergroup) {
+            if (!$usergroup->isAgentGroup()) {
+                continue;
+            }
+            if (!in_array($usergroup->getSysName(), $model->getAgentGroups()) && !in_array($usergroup->getTitle(), $model->getAgentGroups())) {
                 $entity->getUsergroups()->removeElement($usergroup);
             }
         }
@@ -93,12 +121,13 @@ class UserGroupHelper
      * Returns an user group by sys name.
      *
      * @param string $name
+     * @param bool   $isAgent
      *
      * @throws \Exception
      *
      * @return Usergroup
      */
-    protected function findOrCreateUserGroup($name)
+    protected function findOrCreateUserGroup($name, $isAgent = false)
     {
         // try to fetch usergroup by sys name
         $sysName = Strings::slugifyTitleToUnderscore($name);
@@ -129,6 +158,7 @@ class UserGroupHelper
         $entity = new Usergroup();
         $entity->setTitle($name);
         $entity->setSysName($sysName);
+        $entity->setIsAgentGroup($isAgent);
 
         $this->persister->persistAndFlush($entity);
 

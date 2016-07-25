@@ -179,7 +179,18 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
      *   @Assert\NotBlank()
      * })
      */
-    private $user_groups = [];
+    private $userGroups = [];
+
+    /**
+     * @var string[]
+     *
+     * @JMS\Type("array<string>")
+     *
+     * @Assert\All(constraints={
+     *   @Assert\NotBlank()
+     * })
+     */
+    private $agentGroups = [];
 
     /**
      * @var ContactData
@@ -672,31 +683,65 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
      */
     public function getUserGroups()
     {
-        return $this->user_groups;
+        return $this->userGroups;
     }
 
     /**
-     * @param \string[] $user_groups
+     * @param \string[] $userGroups
      *
      * @return $this
      */
-    public function setUserGroups(array $user_groups)
+    public function setUserGroups(array $userGroups)
     {
-        $this->user_groups = $user_groups;
+        $this->userGroups = $userGroups;
 
         return $this;
     }
 
     /**
-     * Add an user group.
+     * Add a user group.
      *
-     * @param string $user_group
+     * @param string $userGroup
      *
      * @return $this
      */
-    public function addUserGroup($user_group)
+    public function addUserGroup($userGroup)
     {
-        $this->user_groups[] = $user_group;
+        $this->userGroups[] = $userGroup;
+
+        return $this;
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getAgentGroups()
+    {
+        return $this->agentGroups;
+    }
+
+    /**
+     * @param \string[] $agentGroups
+     *
+     * @return $this
+     */
+    public function setAgentGroups(array $agentGroups)
+    {
+        $this->agentGroups = $agentGroups;
+
+        return $this;
+    }
+
+    /**
+     * Add an agent group.
+     *
+     * @param string $agentGroup
+     *
+     * @return $this
+     */
+    public function addAgentGroup($agentGroup)
+    {
+        $this->agentGroups[] = $agentGroup;
 
         return $this;
     }
