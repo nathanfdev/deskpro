@@ -39,6 +39,9 @@
                                         <option value="{{ tz }}">{{ tzName }}</option>
                                     {% endfor %}
                                 </select>
+                                <div ng-show="Ctrl.info.next_check_desc" style="padding: 5px; background: #eee; margin-top: 4px; ">
+                                    🕞 Next check in {{ ng_var('Ctrl.info.next_check_desc') }}.
+                                </div>
                             </div>
                             <div class="inner-group">
                                 <label>

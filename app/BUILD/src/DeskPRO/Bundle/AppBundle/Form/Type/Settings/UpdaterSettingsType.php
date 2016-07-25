@@ -35,6 +35,8 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UpdaterSettingsType extends AbstractType
@@ -49,6 +51,14 @@ class UpdaterSettingsType extends AbstractType
             ->add('interval_days', NumberType::class)
             ->add('time_of_day', TextType::class)
             ->add('timezone', TimezoneType::class);
+
+        $builder->get('timezone')->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $data = $event->getData();
+
+            if (!empty($data) && $data instanceof \DateTimeZone) {
+                $event->setData($data->getName());
+            }
+        });
     }
 
     /**

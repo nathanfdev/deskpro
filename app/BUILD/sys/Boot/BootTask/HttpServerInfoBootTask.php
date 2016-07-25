@@ -43,16 +43,23 @@ class HttpServerInfoBootTask implements BootTaskInterface
      */
     private $env;
 
+    /**
+     * @var array
+     */
+    private $params;
+
     public function run(\DpRun\DpEnv $env, array $resources)
     {
-        $this->env = $env;
+        $this->env    = $env;
+        $this->params = $resources['serverinfo_params'];
 
         $action = $resources['serverinfo_action'];
+        $auth   = @$_GET['auth'] ?: @$resources['serverinfo_params']['auth'];
 
         // Will exit if any match
         $this->authlessServerChecks($action);
 
-        if (!$this->checkAuth(@$_GET['auth'])) {
+        if (!$this->checkAuth($auth)) {
             echo "The auth code in the URL you are trying to view is invalid. Please run the dp:web-server-info command to generate new links.\n";
             exit;
         }
@@ -203,14 +210,35 @@ class HttpServerInfoBootTask implements BootTaskInterface
                 }
 
                 exit;
+
+            case 'update_watcher':
+                $DP_AUTH = $this->getAuth();
+
+                /** @var \Symfony\Component\HttpFoundation\Request $request */
+                $request = $this->params['request'];
+
+                $BASE_PATH  = rtrim($request->getUriForPath('/'), '/');
+                $ASSET_PATH = $request->getUriForPath('/assets/'.$this->env->getAppName().'/web');
+
+                require __DIR__.'/../../Resources/upgrade-watcher/upgrade-watcher.php';
+
+                exit;
         }
+    }
+
+    /**
+     * @return string|null
+     */
+    private function getAuth()
+    {
+        return $this->env->getDatManager()->readTxtFile('server_info_auth', null);
     }
 
     private function checkAuth($auth)
     {
         // If installed, we require auth
         if (($this->env->getConfig('database.host') || $this->env->getConfig('database.0.host'))) {
-            $server_info_auth = $this->env->getDatManager()->readTxtFile('server_info_auth', null);
+            $server_info_auth = $this->getAuth();
             if (!$server_info_auth || empty($auth)) {
                 return false;
             }

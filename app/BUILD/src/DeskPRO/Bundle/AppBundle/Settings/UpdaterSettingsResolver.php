@@ -36,6 +36,7 @@ use Symfony\Component\Routing\RouterInterface;
 class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
 {
     const AUTO_UPDATER_ENABLED     = 'auto_updater_enabled';
+    const AUTO_UPDATER_NEXT_TIME   = 'auto_updater_next_check';
     const AUTO_UPDATER_TIME_OF_DAY = 'auto_updater_time_of_day';
     const AUTO_UPDATER_TIMEZONE    = 'auto_updater_time_of_day_tz';
     const AUTO_UPDATER_INTERVAL    = 'auto_updater_interval_days';
@@ -69,7 +70,11 @@ class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getUpdaterSettings()
     {
         $updaterSettings = new UpdaterSettings();
-        $updaterSettings->setEnabled((bool) $this->getSetting('auto_updater_enabled'));
+        $updaterSettings->setIsEnabled((bool) $this->getSetting('auto_updater_enabled'));
+
+        if ($updaterSettings->isEnabled() && !$this->getNextCheckDate()) {
+            $updaterSettings->setIsEnabled(false);
+        }
 
         $tzName = $this->getSetting('auto_updater_time_of_day_tz') ?: 'UTC';
         try {
@@ -129,6 +134,10 @@ class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
      */
     private function getNextCheckDate()
     {
+        if (!$this->getSetting('auto_updater_enabled')) {
+            return;
+        }
+
         $nextDateStr = $this->getSetting('auto_updater_next_check');
         $nextDate    = null;
         if ($nextDateStr) {

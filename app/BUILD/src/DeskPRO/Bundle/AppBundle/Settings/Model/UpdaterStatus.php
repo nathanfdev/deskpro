@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Settings\Model;
 
 use JMS\Serializer\Annotation as JMS;
+use Orb\Util\Dates;
 
 class UpdaterStatus
 {
@@ -62,6 +63,20 @@ class UpdaterStatus
     public function getNextCheck()
     {
         return $this->nextCheck;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     *
+     * @return null|string
+     */
+    public function getNextCheckDesc()
+    {
+        if (!$this->nextCheck) {
+            return;
+        }
+
+        return Dates::secsToReadable($this->nextCheck->getTimestamp() - time());
     }
 
     /**

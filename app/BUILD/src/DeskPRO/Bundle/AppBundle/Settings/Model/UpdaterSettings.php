@@ -69,7 +69,7 @@ class UpdaterSettings
      *
      * @return $this
      */
-    public function setEnabled($isEnabled)
+    public function setIsEnabled($isEnabled)
     {
         $this->isEnabled = $isEnabled;
 
@@ -117,6 +117,19 @@ class UpdaterSettings
     }
 
     /**
+     * @return array
+     */
+    public function getTimeOfDayParts()
+    {
+        list($h, $m) = explode(':', $this->getTimeOfDay());
+
+        return [
+            'hour'   => $h,
+            'minute' => $m,
+        ];
+    }
+
+    /**
      * @return \DateTimeZone
      */
     public function getTimezone()
@@ -125,14 +138,39 @@ class UpdaterSettings
     }
 
     /**
-     * @param \DateTimeZone $timezone
+     * @param \DateTimeZone|string $timezone
      *
      * @return $this
      */
-    public function setTimezone(\DateTimeZone $timezone)
+    public function setTimezone($timezone)
     {
+        if (!$timezone instanceof \DateTimeZone) {
+            $timezone = new \DateTimeZone($timezone);
+        }
         $this->timezone = $timezone;
 
         return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function calculateNextTimeUtc()
+    {
+        $tz = $this->getTimezone();
+
+        $now  = new \DateTime();
+        $date = new \DateTime('now', $tz);
+
+        $tod = $this->getTimeOfDayParts();
+        $date->setTime($tod['hour'], $tod['minute'], 0);
+
+        if ($now > $date) {
+            $date->modify('+24 hours');
+        }
+
+        $date->setTimezone(new \DateTimeZone('UTC'));
+
+        return $date;
     }
 }

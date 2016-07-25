@@ -80,11 +80,12 @@ class Boot
      *
      * @param \DpRun\DpEnv $env
      * @param string       $action
+     * @param array        $params
      */
-    private static function bootServerInfoChecks(\DpRun\DpEnv $env, $action)
+    private static function bootServerInfoChecks(\DpRun\DpEnv $env, $action, array $params = [])
     {
         $tasks = ['HttpServerInfo'];
-        self::runBootTasks($env, $tasks, ['serverinfo_action' => $action]);
+        self::runBootTasks($env, $tasks, ['serverinfo_action' => $action, 'serverinfo_params' => $params]);
         exit;
     }
 
@@ -149,7 +150,6 @@ class Boot
             'Lib',
             'PreparePaths',
             'Request',
-            'OfflineCheck',
         ];
 
         $res = self::runBootTasks($env, $tasks);
@@ -165,6 +165,17 @@ class Boot
 
             return;
         }
+
+        if (substr($path, 0, 22) === '/admin/updater-status/') {
+            self::bootServerInfoChecks($env, 'update_watcher', [
+                'auth'    => substr($path, 22),
+                'request' => $request,
+            ]);
+
+            return;
+        }
+
+        $res = self::runBootTasks($env, ['OfflineCheck'], $res);
 
         #------------------------------
         # Boot to low scripts

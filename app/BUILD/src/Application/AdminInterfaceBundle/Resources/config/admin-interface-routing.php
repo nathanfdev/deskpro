@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -78,7 +78,13 @@ $collection->create('admin_start_index', array(
 ########################################################################################################################
 
 $collection->create('admin_upgrade_index', array(
-    'path'       => '/upgrade',
+    'path'       => '/update',
+    'controller' => 'AdminInterfaceBundle:Upgrade:index',
+));
+
+$collection->create('admin_upgrade_view', array(
+    'path' => '/updater-status/{auth}',
+    // BOGUS - will be caught by the booter and served the static update-watcher.php file
     'controller' => 'AdminInterfaceBundle:Upgrade:index',
 ));
 

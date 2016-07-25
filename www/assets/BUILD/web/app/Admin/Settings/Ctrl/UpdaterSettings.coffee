@@ -21,9 +21,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base) ->
       postData = @settings
 
       @startSpinner('saving')
-      @Api2.sendPutJson('/helpdesk/updater/settings', postData).success(=>
-        @stopSpinner('saving').then(=>
-          @Growl.success(@getRegisteredMessage('saved_settings'))
+      @Api2.sendPutJson('/helpdesk/updater/settings', postData).success( =>
+        @initialLoad().then( =>
+          @stopSpinner('saving').then(=>
+            @Growl.success(@getRegisteredMessage('saved_settings'))
+          )
         )
       ).error((info, code) =>
         @stopSpinner('saving', true)

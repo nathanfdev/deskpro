@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Helpdesk;
 
+use Application\DeskPRO\Entity\Setting;
 use Application\DeskPRO\EntityRepository\Setting as SettingRepository;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
@@ -74,14 +75,6 @@ class UpdaterController extends BaseController
     /**
      * @ApiDoc(
      *      description="Set updater settings",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="The id of the resource",
-     *              "dataType"="integer"
-     *          }
-     *      },
      *      statusCodes={
      *          204="Returned in case of successful resource modify",
      *          400="We will return this in case your request was malformed",
@@ -112,12 +105,13 @@ class UpdaterController extends BaseController
         }
 
         /** @var SettingRepository $settingRepos */
-        $settingRepos = $this->getRepository(SettingRepository::class);
+        $settingRepos = $this->getRepository(Setting::class);
         $settingRepos
-            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_ENABLED, $model->isEnabled() ? 1 : 0)
+            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_ENABLED,     $model->isEnabled() ? 1 : 0)
             ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_TIME_OF_DAY, $model->getTimeOfDay())
-            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_TIMEZONE, $model->getTimezone()->getName())
-            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_INTERVAL, $model->getIntervalDays())
+            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_TIMEZONE,    $model->getTimezone()->getName())
+            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_INTERVAL,    $model->getIntervalDays())
+            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_NEXT_TIME,   $model->calculateNextTimeUtc() ? $model->calculateNextTimeUtc()->format('Y-m-d H:i:s') : null)
         ;
 
         $view = View::create(!$isModify ? $this->wrap($model) : null, $status);
