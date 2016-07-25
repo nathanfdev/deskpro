@@ -50,6 +50,7 @@ use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTablesCollection;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -362,7 +363,7 @@ class TicketsController extends AbstractController
         $name  = $request->request->get('name');
         $email = $request->request->get('email');
 
-        if (!preg_match('/.+\@.+\..+/', $email)) {
+        if (!RegexUtils::safePregMatch('/.+\@.+\..+/', $email)) {
             // return error with email
             $this->addFlash('error', 'Please enter a valid email for your participant and try again.');
 
