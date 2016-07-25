@@ -583,8 +583,12 @@ class PersonController extends AbstractController implements ProtectedController
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $person->id),
-            $this->generateUrl('api_people_person', array('person_id' => $person->id), true)
+            ['id' => $person->id],
+            $this->generateUrl(
+                'api_people_person',
+                ['person_id' => $person->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1141,8 +1145,12 @@ class PersonController extends AbstractController implements ProtectedController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('id' => $email_rec->id),
-            $this->generateUrl('api_people_person_email', array('person_id' => $person->id, 'email_id' => $email_rec->id), true)
+            ['id' => $email_rec->id],
+            $this->generateUrl(
+                'api_people_person_email',
+                ['person_id' => $person->id, 'email_id' => $email_rec->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1812,8 +1820,12 @@ class PersonController extends AbstractController implements ProtectedController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('id' => $note->id),
-            $this->generateUrl('api_people_person_notes', array('person_id' => $person->id), true)
+            ['id' => $note->id],
+            $this->generateUrl(
+                'api_people_person_notes',
+                ['person_id' => $person->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1975,8 +1987,12 @@ class PersonController extends AbstractController implements ProtectedController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('id' => $contact_data->id),
-            $this->generateUrl('api_people_person_contact_detail', array('person_id' => $person->id, 'contact_id' => $contact_data->id), true)
+            ['id' => $contact_data->id],
+            $this->generateUrl(
+                'api_people_person_contact_detail',
+                ['person_id' => $person->id, 'contact_id' => $contact_data->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -2145,8 +2161,12 @@ class PersonController extends AbstractController implements ProtectedController
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $group_id),
-            $this->generateUrl('api_people_person_group', array('person_id' => $person->id, 'usergroup_id' => $group_id), true)
+            ['id' => $group_id],
+            $this->generateUrl(
+                'api_people_person_group',
+                ['person_id' => $person->id, 'usergroup_id' => $group_id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -2300,8 +2320,12 @@ class PersonController extends AbstractController implements ProtectedController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('label' => $label),
-            $this->generateUrl('api_people_person_label', array('person_id' => $person->id, 'label' => $label), true)
+            ['label' => $label],
+            $this->generateUrl(
+                'api_people_person_label',
+                ['person_id' => $person->id, 'label' => $label],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 

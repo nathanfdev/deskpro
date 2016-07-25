@@ -39,6 +39,7 @@ use Application\DeskPRO\Searcher\FeedbackSearch;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * SWG\Resource(
@@ -298,8 +299,12 @@ class FeedbackController extends AbstractController
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $feedback->id),
-            $this->generateUrl('api_feedback_feedback', array('feedback_id' => $feedback->id), true)
+            ['id' => $feedback->id],
+            $this->generateUrl(
+                'api_feedback_feedback',
+                ['feedback_id' => $feedback->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -620,8 +625,12 @@ class FeedbackController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('id' => $comment->id),
-            $this->generateUrl('api_feedback_feedback_comments_comment', array('feedback_id' => $feedback->id, 'comment_id' => $comment->id), true)
+            ['id' => $comment->id],
+            $this->generateUrl(
+                'api_feedback_feedback_comments_comment',
+                ['feedback_id' => $feedback->id, 'comment_id' => $comment->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -923,8 +932,12 @@ class FeedbackController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('id' => $attach->id),
-            $this->generateUrl('api_feedback_feedback_attachment', array('feedback_id' => $feedback->id, 'attachment_id' => $attach->id), true)
+            ['id' => $attach->id],
+            $this->generateUrl(
+                'api_feedback_feedback_attachment',
+                ['feedback_id' => $feedback->id, 'attachment_id' => $attach->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1080,8 +1093,12 @@ class FeedbackController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('label' => $label),
-            $this->generateUrl('api_feedback_feedback_label', array('feedback_id' => $feedback->id, 'label' => $label), true)
+            ['label' => $label],
+            $this->generateUrl(
+                'api_feedback_feedback_label',
+                ['feedback_id' => $feedback->id, 'label' => $label],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 

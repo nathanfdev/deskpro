@@ -44,6 +44,7 @@ use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @ApiModes("all")
@@ -205,7 +206,7 @@ class UsergroupsController extends AbstractController implements ProtectedContro
         if (!$id) {
             return $this->createApiCreateResponse(
                 ['id' => $usergroup->id],
-                $this->generateUrl('api_user_groups_get', ['id' => $usergroup->id], true)
+                $this->generateUrl('api_user_groups_get', ['id' => $usergroup->id], UrlGeneratorInterface::ABSOLUTE_URL)
             );
         } else {
             return $this->createApiSuccessResponse();
