@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Annotation\Metadata;
 
 use Metadata\Cache\FileCache;
 use Metadata\ClassMetadata;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class MetadataCache.
@@ -47,6 +48,11 @@ class MetadataCache extends FileCache
     private $cache_dir;
 
     /**
+     * @var Filesystem
+     */
+    private $fs;
+
+    /**
      * @param string $kernel_cache_dir
      * @param string $cache_dir
      */
@@ -57,17 +63,27 @@ class MetadataCache extends FileCache
     }
 
     /**
+     * @return Filesystem
+     */
+    private function getFs()
+    {
+        if (!$this->fs) {
+            $this->fs = new Filesystem();
+        }
+
+        return $this->fs;
+    }
+
+    /**
      * @param string $kernel_cache_dir
      *
      * @return string
      */
-    protected function getCacheDir($kernel_cache_dir)
+    private function getCacheDir($kernel_cache_dir)
     {
         $cache_dir = $kernel_cache_dir.DIRECTORY_SEPARATOR.$this->cache_dir;
         if (!file_exists($cache_dir)) {
-            if (!$rs = @mkdir($cache_dir, 0777, true)) {
-                throw new \RuntimeException(sprintf('Could not create cache directory "%s".', $cache_dir));
-            }
+            $this->getFs()->mkdir($cache_dir, 0777);
         }
 
         return $cache_dir;
@@ -103,11 +119,9 @@ class MetadataCache extends FileCache
     {
         $path                      = $this->getFilePath($metadata->name);
         $metadata->fileResources[] = $path;
-        $tmpFile                   = tempnam($this->dir, 'metadata-cache');
-        file_put_contents($tmpFile, '<?php return unserialize('.var_export(serialize($metadata), true).');');
-        chmod($tmpFile, 0666 & ~umask());
 
-        $this->renameFile($tmpFile, $path);
+        $this->getFs()->dumpFile($path, '<?php return unserialize('.var_export(serialize($metadata), true).');', null);
+        $this->getFs()->chmod($path, 0666);
     }
 
     /**
@@ -117,21 +131,7 @@ class MetadataCache extends FileCache
     {
         $path = $this->getFilePath($class->name);
         if (file_exists($path)) {
-            unlink($path);
-        }
-    }
-
-    /**
-     * Renames a file with fallback for windows
-     * !!! People who creating private libraries should BURN !!!
-     *
-     * @param string $source
-     * @param string $target
-     */
-    protected function renameFile($source, $target)
-    {
-        if (false === @rename($source, $target)) {
-            throw new \RuntimeException(sprintf('Could not write new cache file to %s.', $target));
+            $this->getFs()->remove($path);
         }
     }
 }
