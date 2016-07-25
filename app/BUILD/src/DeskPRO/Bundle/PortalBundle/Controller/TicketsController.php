@@ -469,12 +469,12 @@ class TicketsController extends AbstractController
 
         // message must exist and belong to the ticket requested
         if (!$message || $message->getTicketId() !== $ticket->getId()) {
-            throw new NotFoundHttpException('message does not belong to ticket');
+            return $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $ticket_ref]);
         }
 
         // message must not be an agent note and the person on the message must be an agent
         if ($message->is_agent_note || !$message->getPerson()->isAgent()) {
-            throw new NotFoundHttpException('message cannot be an agent note or a non-agent message');
+            return $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $ticket_ref]);
         }
 
         $person = $this->getAuthenticatedUserOrTicketPerson($ticket);
@@ -517,7 +517,7 @@ class TicketsController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
         return $this->renderThemeView('Theme:Tickets:feedback.html.twig', [
-            'page_title'  => $this->get('portal_view.page_title_generator')->kb(),
+            'page_title'  => $this->get('portal_view.page_title_generator')->feedback(),
             'breadcrumbs' => $breadcrumbs,
             'ticket'      => $ticket,
             'message'     => $message,
