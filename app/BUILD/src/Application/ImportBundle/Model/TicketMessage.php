@@ -51,8 +51,6 @@ class TicketMessage implements PersonAwareInterface, AttachmentsAwareInterface, 
      * @var string
      *
      * @JMS\Type("string")
-     *
-     * @Assert\NotBlank()
      */
     private $person;
 

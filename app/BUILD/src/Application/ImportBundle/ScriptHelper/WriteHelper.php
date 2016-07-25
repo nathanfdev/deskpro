@@ -134,6 +134,26 @@ class WriteHelper
     }
 
     /**
+     * @param string $oid
+     *
+     * @return string
+     */
+    public function prepareUserOid($oid)
+    {
+        return $oid ? 'user_'.$oid : null;
+    }
+
+    /**
+     * @param string $oid
+     *
+     * @return string
+     */
+    public function prepareAgentOid($oid)
+    {
+        return $oid ? 'agent_'.$oid : null;
+    }
+
+    /**
      * @param int|string $oid
      * @param array      $data
      */
@@ -212,6 +232,26 @@ class WriteHelper
     public function writeOrganizationCustomDef($oid, array $data)
     {
         $this->writeModel($oid, $data, Model\OrganizationCustomDef::class);
+    }
+
+    /**
+     * @param int|string $oid
+     * @param array      $data
+     */
+    public function writeUser($oid, array $data)
+    {
+        $this->writePerson($this->prepareUserOid($oid), $data);
+    }
+
+    /**
+     * @param int|string $oid
+     * @param array      $data
+     */
+    public function writeAgent($oid, array $data)
+    {
+        $this->writePerson($this->prepareAgentOid($oid), array_merge($data, [
+            'is_agent' => true,
+        ]));
     }
 
     /**

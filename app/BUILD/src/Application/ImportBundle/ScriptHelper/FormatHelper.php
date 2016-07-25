@@ -113,6 +113,10 @@ class FormatHelper
      */
     public function getFormattedUrl($url)
     {
+        if (!$url) {
+            return '';
+        }
+
         if (strpos($url, 'http://') !== 0 && strpos($url, 'https://') !== 0) {
             $url = 'http://'.$url;
         }
