@@ -309,7 +309,6 @@ class CustomFieldManager
                 'children_collection' => $children,
                 'children_only'       => true,
                 'label'               => $def['title'],
-                'persister'           => $this->persister,
                 'allow_edit'          => isset($def['options']['allow_edit']) ? $def['options']['allow_edit'] : false,
             ));
         }

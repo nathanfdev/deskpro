@@ -281,3 +281,9 @@ services:
     arguments: ["@doctrine.orm.default_entity_manager", "@data.departments"]
     tags:
       - { name: form.type }
+
+  form.deskpro_category_builder:
+      class: Application\DeskPRO\Form\Type\DpCategoryBuilderType
+      arguments: ["@doctrine.orm.default_entity_manager"]
+      tags:
+        - { name: form.type, alias: dp_category_builder }

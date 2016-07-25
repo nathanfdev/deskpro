@@ -29,7 +29,9 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Form\Type\CustomFields\Definitions\ContextualChoiceDefinitionType;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
@@ -224,6 +226,25 @@ class PersonEditProfileType extends AbstractType
                 'custom_def'      => $def,
                 'property_path'   => 'custom_data',
                 'agent_interface' => false,
+            ]);
+        }
+
+        $per_person_defs = $this->fieldManager->getAvailableContextualDefs($person);
+        if (!$per_person_defs->count()) {
+            return;
+        }
+
+        $children = $this->fieldManager->getAvailableContextualDefsChildren($person);
+        foreach ($per_person_defs as $def) {
+            /* @var $def CustomFieldDefinition */
+            $form->add('definition_' . $def->getId(), ContextualChoiceDefinitionType::class, [
+                'context'             => $person,
+                'data'                => $def,
+                'children_collection' => $children,
+                'children_only'       => true,
+                'label'               => $def['title'],
+                'allow_edit'          => isset($def['options']['allow_edit']) ? $def['options']['allow_edit'] : false,
+                'mapped'              => false,
             ]);
         }
     }
