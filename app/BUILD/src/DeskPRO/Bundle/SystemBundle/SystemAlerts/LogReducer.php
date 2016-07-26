@@ -175,7 +175,6 @@ class LogReducer
                 'SELECT MIN(id) FROM `system_alerts_events` WHERE subject_unique_id = ?', $eventSubjectId);
 
             if (count($preserveIds) === $this->quantityLimit) {
-                $preserveIds = implode(',', $preserveIds);
                 $this->conn->executeUpdate(
                     'DELETE FROM system_alerts_events WHERE subject_unique_id = ? AND processed = ? AND id NOT IN (?)',
                     [$eventSubjectId, $processed, $preserveIds],

@@ -36,6 +36,7 @@ use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\LogReducer;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\TriggeringProcess;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -47,9 +48,96 @@ use Symfony\Component\Console\Output\OutputInterface;
 class IncidentsTriggeringCommand extends ContainerAwareCommand
 {
     /**
+     * Log processing will be terminated once incidents number exceeds MAX_INCIDENTS.
+     */
+    const MAX_INCIDENTS = 100;
+
+    /**
      * @var OutputInterface
      */
     private $output;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this
+            ->setName('dp:sys:trigger-incidents')
+            ->setDescription('Process system alerts events log')
+            ->addArgument('batch_size', InputArgument::OPTIONAL, 'Number of events processed within an iteration', 100)
+            ->addArgument('iterations_limit', InputArgument::OPTIONAL, 'Iteration limit per single command run', 5)
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->output = $output;
+
+        if ($this->shouldTerminate()) {
+            $this->logTerminated();
+
+            return 1;
+        }
+
+        $start = microtime(true);
+
+        $this->getLogReducer()->preProcessingReducer();
+        $this->runTriggeringProcess(
+            $input->getArgument('batch_size'),
+            $input->getArgument('iterations_limit')
+        );
+        $this->getLogReducer()->postProcessingReducer();
+
+        $time = microtime(true) - $start;
+        $output->writeln("Finished in $time seconds");
+
+        return 0;
+    }
+
+    /**
+     * @return bool
+     */
+    private function shouldTerminate()
+    {
+        return $this->getTriggeringProcess()->countIncidents() > self::MAX_INCIDENTS;
+    }
+
+    /**
+     * Logs / Alerts about terminated triggering process.
+     */
+    private function logTerminated()
+    {
+        SystemErrorHandler::logException(new \Exception(
+            $message = 'System alerts log processing was terminated. Incidents number has reached the limit.'
+        ));
+        $this->output->writeln($message);
+    }
+
+    /**
+     * @param int $batchSize
+     * @param int $iterationsLimit
+     */
+    private function runTriggeringProcess($batchSize, $iterationsLimit)
+    {
+        $process  = $this->getTriggeringProcess();
+        $i        = 1;
+        $finished = false;
+        while ($i <= $iterationsLimit && !$finished) {
+            $start    = microtime(true);
+            $result   = $process->run($batchSize);
+            $finished = empty($result['events']);
+            if (!$finished) {
+                $time = microtime(true) - $start;
+                $this->batchReport(
+                    $i, $time, $result['events'], $result['new_incidents'], $result['updated_incidents']);
+            }
+            ++$i;
+        }
+    }
 
     /**
      * @param int        $iterationNum
@@ -58,7 +146,7 @@ class IncidentsTriggeringCommand extends ContainerAwareCommand
      * @param Incident[] $newIncidents
      * @param Incident[] $updatedIncidents
      */
-    public function batchReport($iterationNum, $time, array $events, array $newIncidents, array $updatedIncidents)
+    private function batchReport($iterationNum, $time, array $events, array $newIncidents, array $updatedIncidents)
     {
         $this->output->writeln(sprintf('Iteration #%d: %d events processed', $iterationNum, count($events)));
         $this->output->writeln('');
@@ -88,53 +176,18 @@ class IncidentsTriggeringCommand extends ContainerAwareCommand
     }
 
     /**
-     * {@inheritdoc}
+     * @return LogReducer
      */
-    protected function configure()
+    private function getLogReducer()
     {
-        $this
-            ->setName('dp:sys:trigger-incidents')
-            ->setDescription('Process system alerts events log')
-            ->addArgument('batch_size', InputArgument::OPTIONAL, 'Number of events processed within an iteration', 100)
-            ->addArgument('iterations_limit', InputArgument::OPTIONAL, 'Iteration limit per single command run', 5)
-        ;
+        return $this->getContainer()->get('dp_sys.alerts.log_reducer');
     }
 
     /**
-     * {@inheritdoc}
+     * @return TriggeringProcess
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    private function getTriggeringProcess()
     {
-        $this->output = $output;
-
-        /** @var LogReducer $logReducer */
-        $logReducer = $this->getContainer()->get('dp_sys.alerts.log_reducer');
-        $logReducer->preProcessingReducer();
-
-        /** @var TriggeringProcess $triggeringProcess */
-        $triggeringProcess = $this->getContainer()->get('dp_sys.alerts.triggering_process');
-        $batchSize         = $input->getArgument('batch_size');
-        $iterationsLimit   = $input->getArgument('iterations_limit');
-        $totalTime         = 0;
-        $i                 = 1;
-        $finished          = false;
-        while ($i <= $iterationsLimit && !$finished) {
-            $start    = microtime(true);
-            $result   = $triggeringProcess->run($batchSize);
-            $finished = empty($result['events']);
-            if (!$finished) {
-                $time = microtime(true) - $start;
-                $totalTime += $time;
-                $this->batchReport(
-                    $i, $time, $result['events'], $result['new_incidents'], $result['updated_incidents']);
-            }
-            ++$i;
-        }
-
-        $logReducer->postProcessingReducer();
-
-        $output->writeln("Finished in $totalTime seconds");
-
-        return 0;
+        return $this->getContainer()->get('dp_sys.alerts.triggering_process');
     }
 }
