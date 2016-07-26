@@ -21,7 +21,13 @@ services:
 
   dp.importer:
     class: Application\ImportBundle\Importer\Importer
-    arguments: ["@dp.importer.exporter", "@validator", "@dp.importer.writer", "@serializer", "@dp.importer_logger"]
+    arguments:
+      - "@dp.importer.exporter"
+      - "@validator"
+      - "@dp.importer.writer"
+      - "@serializer"
+      - "@dp.importer.writer.entity_handler_registry"
+      - "@dp.importer_logger"
 
   dp.importer.entity_persister:
     class: Application\ImportBundle\Writer\EntityPersister
@@ -247,6 +253,18 @@ services:
     tags:
       - { name: dp.importer.writer.mapper }
 
+  dp.importer.writer.mapper.text_snippet:
+    class: Application\ImportBundle\Writer\Mapper\TextSnippetMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.text_snippet_category:
+    class: Application\ImportBundle\Writer\Mapper\TextSnippetCategoryMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
   # Writer helpers
   dp.importer.writer.helper_registry:
     class: Application\ImportBundle\Writer\Helper\HelperRegistry
@@ -309,9 +327,15 @@ services:
     tags:
       - { name: dp.importer.writer.helper }
 
-  dp.importer.writer.helper.language_helper:
+  dp.importer.writer.helper.language:
     class: Application\ImportBundle\Writer\Helper\LanguageHelper
-    arguments: ["@dp.importer.writer.mapper.language", "@dp.importer_logger"]
+    arguments: ["@dp.importer.writer.mapper.language", "@dp.importer.entity_persister", "@dp.importer_logger"]
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.translation:
+    class: Application\ImportBundle\Writer\Helper\TranslationHelper
+    arguments: ["@dp.importer.writer.helper.language", "@dp.importer_logger"]
     tags:
       - { name: dp.importer.writer.helper }
 
@@ -342,6 +366,18 @@ services:
     tags:
       - { name: dp.importer.writer.helper }
 
+  dp.importer.writer.helper.text_snippet_category:
+    class: Application\ImportBundle\Writer\Helper\TextSnippetCategoryHelper
+    arguments:
+      - "@dp.importer.writer.mapper.text_snippet_category"
+      - "@dp.importer.writer.mapper.language"
+      - "@dp.importer.writer.mapper.import_map"
+      - "@dp.importer.writer.helper.language"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }
+
   # Entity handlers
   dp.importer.writer.entity_handler_registry:
     class: Application\ImportBundle\Writer\EntityHandler\EntityHandlerRegistry
@@ -365,7 +401,7 @@ services:
       - "@dp.importer.entity_persister"
       - "@dp.importer_logger"
     tags:
-      - { name: dp.importer.writer.entity_handler }
+      - { name: dp.importer.writer.entity_handler, priority: 10 }
 
   dp.importer.writer.entity_handler.feedback:
     class: Application\ImportBundle\Writer\EntityHandler\FeedbackHandler
@@ -385,7 +421,7 @@ services:
       - "@dp.importer.entity_persister"
       - "@dp.importer_logger"
     tags:
-      - { name: dp.importer.writer.entity_handler }
+      - { name: dp.importer.writer.entity_handler, priority: 10 }
 
   dp.importer.writer.entity_handler.article:
     class: Application\ImportBundle\Writer\EntityHandler\ArticleHandler
@@ -405,7 +441,7 @@ services:
       - "@dp.importer.entity_persister"
       - "@dp.importer_logger"
     tags:
-      - { name: dp.importer.writer.entity_handler }
+      - { name: dp.importer.writer.entity_handler, priority: 10 }
 
   dp.importer.writer.entity_handler.news:
     class: Application\ImportBundle\Writer\EntityHandler\NewsHandler
@@ -425,7 +461,7 @@ services:
       - "@dp.importer.entity_persister"
       - "@dp.importer_logger"
     tags:
-      - { name: dp.importer.writer.entity_handler }
+      - { name: dp.importer.writer.entity_handler, priority: 10 }
 
   dp.importer.writer.entity_handler.person:
     class: Application\ImportBundle\Writer\EntityHandler\PersonHandler
@@ -445,7 +481,7 @@ services:
       - "@dp.importer.entity_persister"
       - "@dp.importer_logger"
     tags:
-      - { name: dp.importer.writer.entity_handler }
+      - { name: dp.importer.writer.entity_handler, priority: 10 }
 
   dp.importer.writer.entity_handler.ticket:
     class: Application\ImportBundle\Writer\EntityHandler\TicketHandler
@@ -465,7 +501,7 @@ services:
       - "@dp.importer.entity_persister"
       - "@dp.importer_logger"
     tags:
-      - { name: dp.importer.writer.entity_handler }
+      - { name: dp.importer.writer.entity_handler, priority: 10 }
 
   dp.importer.writer.entity_handler.organization:
     class: Application\ImportBundle\Writer\EntityHandler\OrganizationHandler
@@ -476,3 +512,23 @@ services:
       - "@dp.importer_logger"
     tags:
       - { name: dp.importer.writer.entity_handler }
+
+  dp.importer.writer.entity_handler.text_snippet:
+    class: Application\ImportBundle\Writer\EntityHandler\TextSnippetHandler
+    arguments:
+      - "@dp.importer.writer.mapper_registry"
+      - "@dp.importer.writer.helper_registry"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.entity_handler }
+
+  dp.importer.writer.entity_handler.text_snippet_category:
+    class: Application\ImportBundle\Writer\EntityHandler\TextSnippetCategoryHandler
+    arguments:
+      - "@dp.importer.writer.mapper_registry"
+      - "@dp.importer.writer.helper_registry"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.entity_handler, priority: 10 }

@@ -49,14 +49,13 @@ class PersonEmailMapper extends AbstractEntityManagerMapper
      * Returns person email entities.
      *
      * @param string $email
-     * @param bool   $throw_exception
      *
      * @throws MapperException
      *
      * @return \Application\DeskPRO\Entity\PersonEmail
      */
-    public function findOneByEmail($email, $throw_exception = true)
+    public function findOneByEmail($email)
     {
-        return $this->findOneBy(['email' => $email], $throw_exception);
+        return $this->findOneBy(['email' => $email]);
     }
 }

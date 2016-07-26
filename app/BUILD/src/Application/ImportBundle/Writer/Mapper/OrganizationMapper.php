@@ -48,16 +48,11 @@ class OrganizationMapper extends AbstractEntityManagerMapper implements MapperBy
     /**
      * {@inheritdoc}
      */
-    public function findOneByTitle($title, $throw_exception = true)
+    public function findOneByTitle($title)
     {
         /** @var \Application\DeskPRO\EntityRepository\Organization $repository */
         $repository = $this->em->getRepository(Organization::class);
-        $entity     = $repository->findOneByName($title);
 
-        if (!$entity && $throw_exception) {
-            throw new MapperException('Organization not found', ['name' => $title]);
-        }
-
-        return $entity;
+        return $repository->findOneByName($title);
     }
 }

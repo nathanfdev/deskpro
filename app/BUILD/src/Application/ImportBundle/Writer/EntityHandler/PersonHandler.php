@@ -63,7 +63,7 @@ class PersonHandler extends AbstractEntityHandler
             ->setIsAgent($model->isAgent())
             ->setCanAgent($model->isAgent())
             ->setCanAdmin($model->isAdmin())
-            ->setLanguage($this->helpers->getLanguageHelper()->findLanguage($model->getLanguage()))
+            ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
             ->setIsDisabled($model->isDisabled())
             ->setIsDeleted($model->isDeleted())
         ;
@@ -101,7 +101,7 @@ class PersonHandler extends AbstractEntityHandler
 
         // update person emails
         foreach ($model->getEmails() as $email) {
-            if ($this->mappers->getEmailAccountMapper()->findOneByEmail($email, false)) {
+            if ($this->mappers->getEmailAccountMapper()->findOneByEmail($email)) {
                 $this->logger->warning(sprintf('Email `%s` is an a gateway account address (Skipping)', $email));
                 continue;
             }

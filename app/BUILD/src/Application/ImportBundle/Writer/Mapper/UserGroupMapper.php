@@ -49,12 +49,11 @@ class UserGroupMapper extends AbstractTitleMapper
      * Returns the DeskPRO record by title.
      *
      * @param string $name
-     * @param bool   $throw_exception
      *
      * @return mixed
      */
-    public function findOneBySysName($name, $throw_exception = true)
+    public function findOneBySysName($name)
     {
-        return $this->findOneBy(['sys_name' => $name], $throw_exception);
+        return $this->findOneBy(['sys_name' => $name]);
     }
 }

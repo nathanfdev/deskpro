@@ -50,21 +50,29 @@ class LanguageMapper extends AbstractEntityManagerMapper implements MapperByTitl
     /**
      * {@inheritdoc}
      */
-    public function findOneByTitle($title, $throw_exception = true)
+    public function findOneByTitle($title)
     {
         $criteria = new Criteria();
         $criteria
             ->orWhere(Criteria::expr()->eq('title', $title))
             ->orWhere(Criteria::expr()->eq('lang_code', $title))
             ->orWhere(Criteria::expr()->eq('locale', $title))
+            ->orWhere(Criteria::expr()->eq('sys_name', $title))
         ;
 
         /* @var Language[]|ArrayCollection $records */
-        $records = $this->em->getRepository(Language::class)->matching($criteria);
-        if ($records->isEmpty() && $throw_exception) {
-            throw new MapperException('Language not found', ['title' => $title]);
-        }
+        $records = $this->em->getRepository($this->getEntityClass())->matching($criteria);
 
-        return $records->first();
+        return $records->first() ?: null;
+    }
+
+    /**
+     * @return Language|null
+     */
+    public function findFirst()
+    {
+        $result = $this->em->getRepository($this->getEntityClass())->findBy([], null, 1);
+
+        return array_shift($result);
     }
 }

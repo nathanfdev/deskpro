@@ -47,12 +47,11 @@ class EmailAccountMapper extends AbstractEntityManagerMapper
 
     /**
      * @param string $email
-     * @param bool   $throwException
      *
      * @return EmailAccount
      */
-    public function findOneByEmail($email, $throwException = true)
+    public function findOneByEmail($email)
     {
-        return $this->findOneBy(['address' => $email], $throwException);
+        return $this->findOneBy(['address' => $email]);
     }
 }

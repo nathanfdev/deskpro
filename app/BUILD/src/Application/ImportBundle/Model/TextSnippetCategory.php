@@ -32,53 +32,62 @@ use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class ObjectLang.
+ * Class SnippetCategory.
  */
-class ObjectLang
+class TextSnippetCategory implements PrimaryImportModelInterface
 {
-    /**
-     * @var string
-     *
-     * @JMS\Type("string")
-     *
-     * @Assert\NotBlank()
-     */
-    private $language;
+    use PrimaryImportModelTrait;
 
     /**
      * @var string
      *
      * @JMS\Type("string")
-     *
-     * @Assert\NotBlank()
      */
-    private $property;
+    private $person;
 
     /**
      * @var string
      *
-     * @JMS\Type("string")
-     *
      * @Assert\NotBlank()
+     * @Assert\Choice(choices={"tickets", "chat"})
+     *
+     * @JMS\Type("string")
      */
-    private $value;
+    private $typename;
+
+    /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $isGlobal = false;
+
+    /**
+     * @var Translation[]
+     *
+     * @Assert\Count(min=1)
+     * @Assert\Valid()
+     *
+     * @JMS\Type("array<Application\ImportBundle\Model\Translation>")
+     */
+    private $titleTranslations = [];
 
     /**
      * @return string
      */
-    public function getLanguage()
+    public function getPerson()
     {
-        return $this->language;
+        return $this->person;
     }
 
     /**
-     * @param string $language
+     * @param string $person
      *
      * @return $this
      */
-    public function setLanguage($language)
+    public function setPerson($person)
     {
-        $this->language = $language;
+        $this->person = $person;
 
         return $this;
     }
@@ -86,65 +95,72 @@ class ObjectLang
     /**
      * @return string
      */
-    public function getProperty()
+    public function getTypename()
     {
-        return $this->property;
+        return $this->typename;
     }
 
     /**
-     * @param string $property
+     * @param string $typename
      *
      * @return $this
      */
-    public function setProperty($property)
+    public function setTypename($typename)
     {
-        $this->property = $property;
+        $this->typename = $typename;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return bool
      */
-    public function getValue()
+    public function isGlobal()
     {
-        return $this->value;
+        return $this->isGlobal;
     }
 
     /**
-     * @param string $value
+     * @param bool $isGlobal
      *
      * @return $this
      */
-    public function setValue($value)
+    public function setIsGlobal($isGlobal)
     {
-        $this->value = $value;
+        $this->isGlobal = $isGlobal;
 
         return $this;
     }
 
     /**
-     * Filters duplicate translations.
-     *
-     * @param array $translations
-     *
-     * @return ObjectLang[]
+     * @return Translation[]
      */
-    public static function getUniqueCollection(array $translations)
+    public function getTitleTranslations()
     {
-        $unique_entities = [];
-        $unique_keys     = [];
+        return $this->titleTranslations;
+    }
 
-        foreach ($translations as $translation) {
-            /* @var ObjectLang $translation */
-            $unique_key = $translation->getLanguage().'_'.$translation->getProperty();
+    /**
+     * @param Translation[] $titleTranslations
+     *
+     * @return $this
+     */
+    public function setTitleTranslations(array $titleTranslations)
+    {
+        $this->titleTranslations = $titleTranslations;
 
-            if (!isset($unique_keys[$unique_key])) {
-                $unique_keys[$unique_key] = 1;
-                $unique_entities[]        = $translation;
-            }
-        }
+        return $this;
+    }
 
-        return $unique_entities;
+    /**
+     * @param Translation $translation
+     *
+     * @return $this
+     */
+    public function addTitleTranslation(Translation $translation)
+    {
+        $this->titleTranslations[] = $translation;
+
+        return $this;
     }
 }

@@ -28,52 +28,45 @@
 
 namespace Application\ImportBundle\Writer\Mapper;
 
-use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\ObjectLang;
+use Application\DeskPRO\Entity\TextSnippetCategory;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
- * Ticket record mapper.
- *
- * Class Ticket
+ * Class TextSnippetCategoryMapper.
  */
-class TicketMapper extends AbstractEntityManagerMapper
+class TextSnippetCategoryMapper extends AbstractEntityManagerMapper implements MapperByTitleInterface
 {
     /**
      * {@inheritdoc}
      */
     public static function getEntityClass()
     {
-        return Ticket::class;
+        return TextSnippetCategory::class;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function findOneBy(array $criteria)
+    public function findOneByTitle($title)
     {
-        /** @var Ticket $entity */
-        $entity = parent::findOneBy($criteria);
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('c')
+            ->from($this->getEntityClass(), 'c')
+            ->join(ObjectLang::class, 'o', Join::WITH, 'o.ref_id = c.id')
+            ->andWhere(
+                'o.prop_name = :prop_name',
+                'o.ref_type = :ref_type',
+                'o.value = :title'
+            )
+            ->setParameter('prop_name', 'title')
+            ->setParameter('ref_type', 'text_snippet_categories')
+            ->setParameter('title', $title)
+        ;
 
-        if ($entity) {
-            $entity->disableAutoTicketProcess();
-            $entity->__dp_skip_ticket_manager = true;
-        }
+        $result = $qb->getQuery()->getResult();
 
-        return $entity;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function find($id)
-    {
-        /** @var Ticket $entity */
-        $entity = parent::find($id);
-
-        if ($entity) {
-            $entity->disableAutoTicketProcess();
-            $entity->__dp_skip_ticket_manager = true;
-        }
-
-        return $entity;
+        return array_shift($result);
     }
 }

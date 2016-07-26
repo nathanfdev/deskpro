@@ -36,9 +36,8 @@ interface CategoryMapperInterface extends MapperInterface
     /**
      * @param string $title
      * @param null   $parentId
-     * @param bool   $throwException
      *
      * @return mixed
      */
-    public function findOneByTitle($title, $parentId = null, $throwException = true);
+    public function findOneByTitle($title, $parentId = null);
 }

@@ -53,6 +53,8 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationContactData;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
+use Application\DeskPRO\Entity\TextSnippet;
+use Application\DeskPRO\Entity\TextSnippetCategory;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketCategory;
@@ -421,5 +423,21 @@ class MapperRegistry
     public function getEmailAccountMapper()
     {
         return $this->getMapper(EmailAccount::class);
+    }
+
+    /**
+     * @return TextSnippetMapper
+     */
+    public function getTextSnippetMapper()
+    {
+        return $this->getMapper(TextSnippet::class);
+    }
+
+    /**
+     * @return TextSnippetCategoryMapper
+     */
+    public function getTextSnippetCategoryMapper()
+    {
+        return $this->getMapper(TextSnippetCategory::class);
     }
 }

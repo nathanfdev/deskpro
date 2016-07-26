@@ -131,7 +131,7 @@ class UserGroupHelper
     {
         // try to fetch usergroup by sys name
         $sysName = Strings::slugifyTitleToUnderscore($name);
-        $entity  = $this->mapper->findOneBySysName($name, false);
+        $entity  = $this->mapper->findOneBySysName($name);
         if ($entity) {
             $this->logger->debug(sprintf(
                 'Found existing user group `%d` with title `%s` by sys name `%s`',
@@ -142,7 +142,7 @@ class UserGroupHelper
         }
 
         // try to fetch usergroup by title
-        $entity = $this->mapper->findOneByTitle($name, false);
+        $entity = $this->mapper->findOneByTitle($name);
         if ($entity) {
             $this->logger->debug(sprintf(
                 'Found existing user group `%d` by title `%s`',

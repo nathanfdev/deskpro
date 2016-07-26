@@ -75,9 +75,17 @@ class EntityHandlerRegistry
     {
         $modelClass = get_class($model);
         if (!isset($this->handlers[$modelClass])) {
-            throw new \Exception("Importer entity handler with $model not found");
+            throw new \Exception("Importer entity handler with $modelClass not found");
         }
 
         return $this->container->get($this->handlers[$modelClass]);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getModelClasses()
+    {
+        return array_keys($this->handlers);
     }
 }

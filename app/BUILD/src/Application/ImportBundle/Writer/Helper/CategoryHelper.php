@@ -82,7 +82,7 @@ class CategoryHelper
         $parent = null;
         $entity = null;
         foreach ($categoryPath as $categoryTitle) {
-            $entity = $mapper->findOneByTitle($categoryTitle, $parent ? $parent->getId() : null, false);
+            $entity = $mapper->findOneByTitle($categoryTitle, $parent ? $parent->getId() : null);
             if ($entity) {
                 $this->logger->debug("Found existing category `$categoryTitle`");
             } else {

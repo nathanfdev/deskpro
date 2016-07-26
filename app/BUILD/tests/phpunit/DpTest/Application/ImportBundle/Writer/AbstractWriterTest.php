@@ -69,4 +69,14 @@ abstract class AbstractWriterTest extends ApiTestCase
     {
         return $this->getEntityManager();
     }
+
+    /**
+     * @param string $title
+     *
+     * @return \Application\DeskPRO\Entity\Language|null
+     */
+    protected function findOrCreateLanguage($title)
+    {
+        return $this->getContainer()->get('dp.importer.writer.helper.language')->findOrCreateLanguage($title);
+    }
 }

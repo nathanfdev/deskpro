@@ -44,11 +44,10 @@ interface MapperInterface
      * Returns the DeskPRO record by criteria.
      *
      * @param array $criteria
-     * @param bool  $throw_exception
      *
      * @return mixed
      */
-    public function findOneBy(array $criteria, $throw_exception = true);
+    public function findOneBy(array $criteria);
 
     /**
      * @param int $id
