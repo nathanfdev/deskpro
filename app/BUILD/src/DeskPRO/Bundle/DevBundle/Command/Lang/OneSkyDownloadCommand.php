@@ -160,9 +160,10 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
                         'export_file_name' => 'out.json',
                     ]);
                     if ($res) {
+                        $res     = trim($res);
                         $tmpName = tempnam($tmpDir, 'lang_'.$fileName);
 
-                        if (!preg_match('/^\s*<?php/', $res)) {
+                        if (!preg_match('/^<\?php/', $res)) {
                             $res = '<?php return '.$res;
                         }
 
