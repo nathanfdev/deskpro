@@ -141,10 +141,12 @@ class BrandStack
     {
         $brand_id = $brand->getId();
 
-        array_push($this->stack, $brand_id);
+        if (!in_array($brand_id, $this->stack)) {
+            array_push($this->stack, $brand_id);
 
-        if (!array_key_exists($brand_id, $this->brand_containers)) {
-            $this->brand_containers[$brand_id] = $this->factory->create($brand);
+            if (!array_key_exists($brand_id, $this->brand_containers)) {
+                $this->brand_containers[$brand_id] = $this->factory->create($brand);
+            }
         }
 
         return $this->getActive();
