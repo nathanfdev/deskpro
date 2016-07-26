@@ -14,7 +14,7 @@ Feature: Articles commenting
   Scenario: I comment on an article as a guest and I click the email verification link
     Given I am not logged in
     And I am on "/kb/articles/example-article"
-    When I fill in "What is your comment?" with "This is a guest comment!"
+    When I fill in "Any comments?" with "This is a guest comment!"
     When I fill in "Your Name" with "Chris Name"
     When I fill in "Email" with "chris@deskpro.com"
     And I press "Save Comment"
@@ -27,7 +27,7 @@ Feature: Articles commenting
   Scenario: I use a registered email to comment as a guest
     Given I am not logged in
     And I am on "/kb/articles/example-article"
-    When I fill in "What is your comment?" with "This is a guest comment!"
+    When I fill in "Any comments?" with "This is a guest comment!"
     When I fill in "Your Name" with "Chris Name"
     When I fill in "Email" with "user@deskpro.dev"
     And I press "Save Comment"
@@ -52,7 +52,7 @@ Feature: Articles commenting
   Scenario: I comment on an article as a user
     Given I login with user credentials
     And I am on "/kb/articles/example-article"
-    When I fill in "What is your comment?" with "This is my comment! I just posted it!"
+    When I fill in "Any comments?" with "This is my comment! I just posted it!"
     And I press "Save Comment"
     Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
     And I should see "This is my comment! I just posted it!"

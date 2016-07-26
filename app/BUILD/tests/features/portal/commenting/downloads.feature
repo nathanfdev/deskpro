@@ -13,7 +13,7 @@ Feature: Downloads commenting
   Scenario: I comment on a download as a guest
     Given the "download" category "General" exists with content titled "Example Download"
     And I am on "/downloads/files/example-download"
-    When I fill in "What is your comment?" with "This is a guest comment on a download!"
+    When I fill in "Any comments?" with "This is a guest comment on a download!"
     When I fill in "Your Name" with "Chris Name"
     When I fill in "Email" with "chris@deskpro.com"
     And I press "Save Comment"
@@ -25,7 +25,7 @@ Feature: Downloads commenting
 
   Scenario: I use a registered email to comment as a guest
     Given I am on "/downloads/files/example-download"
-    When I fill in "What is your comment?" with "This is a guest comment!"
+    When I fill in "Any comments?" with "This is a guest comment!"
     When I fill in "Your Name" with "Chris Name"
     When I fill in "Email" with "user@deskpro.dev"
     And I press "Save Comment"
@@ -46,7 +46,7 @@ Feature: Downloads commenting
   Scenario: I comment on a download as a user
     Given I login with user credentials
     And I am on "/downloads/files/example-download"
-    When I fill in "What is your comment?" with "This is my comment! I just posted it on a download!"
+    When I fill in "Any comments?" with "This is my comment! I just posted it on a download!"
     And I press "Save Comment"
     Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
     And I should see "This is my comment! I just posted it on a download!"

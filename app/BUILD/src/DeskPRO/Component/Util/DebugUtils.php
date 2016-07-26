@@ -132,7 +132,7 @@ class DebugUtils
 
     /**
      * Checks a PHP file for syntax errors by running the linter.
-     * 
+     *
      * @param string      $file   Full path to the PHP file to check
      * @param string|null $out    The output from the linter check will be placed in here
      * @param string      $phpBin The path to the PHP binary to use
@@ -142,7 +142,7 @@ class DebugUtils
     public static function lintPhpFile($file, &$out = null, $phpBin = 'php')
     {
         $proc = new Process(sprintf("'%s' -l '%s'", $phpBin, $file));
-        $proc->run(function ($l) use (&$out) {
+        $proc->run(function ($type, $l) use (&$out) {
             $out .= $l;
         });
 
