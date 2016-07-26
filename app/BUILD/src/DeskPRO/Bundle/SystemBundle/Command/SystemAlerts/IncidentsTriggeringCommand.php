@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\SystemBundle\Command\SystemAlerts;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\LogReducer;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\TriggeringProcess;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -106,14 +107,17 @@ class IncidentsTriggeringCommand extends ContainerAwareCommand
     {
         $this->output = $output;
 
+        /** @var LogReducer $logReducer */
+        $logReducer = $this->getContainer()->get('dp_sys.alerts.log_reducer');
+        $logReducer->preProcessingReducer();
+
         /** @var TriggeringProcess $triggeringProcess */
         $triggeringProcess = $this->getContainer()->get('dp_sys.alerts.triggering_process');
-
-        $batchSize       = $input->getArgument('batch_size');
-        $iterationsLimit = $input->getArgument('iterations_limit');
-        $totalTime       = 0;
-        $i               = 1;
-        $finished        = false;
+        $batchSize         = $input->getArgument('batch_size');
+        $iterationsLimit   = $input->getArgument('iterations_limit');
+        $totalTime         = 0;
+        $i                 = 1;
+        $finished          = false;
         while ($i <= $iterationsLimit && !$finished) {
             $start    = microtime(true);
             $result   = $triggeringProcess->run($batchSize);
@@ -127,8 +131,9 @@ class IncidentsTriggeringCommand extends ContainerAwareCommand
             ++$i;
         }
 
-        $output->writeln(
-            sprintf('Finished in %s seconds', $iterationsLimit, $batchSize, $totalTime));
+        $logReducer->postProcessingReducer();
+
+        $output->writeln("Finished in $totalTime seconds");
 
         return 0;
     }

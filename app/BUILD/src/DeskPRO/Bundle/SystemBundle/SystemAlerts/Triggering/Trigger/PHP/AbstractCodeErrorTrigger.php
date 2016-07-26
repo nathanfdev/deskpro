@@ -46,7 +46,7 @@ abstract class AbstractCodeErrorTrigger extends AbstractStatefulIncidentTrigger
     private $periodMinutes;
 
     /**
-     * @var int Trigger will raise an incident once failures count within the reached this number
+     * @var int Trigger will raise an incident once failures count within the reaches this number
      */
     private $incidentErrorsCount;
 

@@ -56,6 +56,9 @@ abstract class AbstractEvent implements Event
 {
     use NotifyPropertyChangedTrait;
 
+    const EXPIRES_WITH_TIME     = 'time';
+    const EXPIRES_WITH_QUANTITY = 'quantity';
+
     /**
      * @var int
      * @ORM\Id()
@@ -82,6 +85,13 @@ abstract class AbstractEvent implements Event
      * @ORM\Column(type="boolean")
      */
     protected $processed = false;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="expiration_strategy", type="string")
+     */
+    protected $expirationStrategy = self::EXPIRES_WITH_QUANTITY;
 
     /**
      * Event constructor.

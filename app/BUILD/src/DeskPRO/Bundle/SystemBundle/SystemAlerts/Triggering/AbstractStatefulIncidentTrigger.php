@@ -118,7 +118,7 @@ abstract class AbstractStatefulIncidentTrigger extends AbstractTrigger implement
     {
         $this->continuingIncidents = [];
         foreach ($incidents as $incident) {
-            $this->continuingIncidents[$incident->getFirstEvent()->getSubjectUniqueId()] = $incident;
+            $this->continuingIncidents[$incident->getSubjectUniqueId()] = $incident;
         }
     }
 

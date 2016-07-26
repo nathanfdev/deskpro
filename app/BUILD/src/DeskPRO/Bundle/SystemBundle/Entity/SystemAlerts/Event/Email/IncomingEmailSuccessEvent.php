@@ -47,6 +47,11 @@ class IncomingEmailSuccessEvent extends AbstractEvent implements SuccessEvent
     use EmailAccountData;
 
     /**
+     * {@inheritdoc}
+     */
+    protected $expirationStrategy = AbstractEvent::EXPIRES_WITH_TIME;
+
+    /**
      * @param EmailAccount   $account
      * @param \DateTime|null $dateCreated
      */

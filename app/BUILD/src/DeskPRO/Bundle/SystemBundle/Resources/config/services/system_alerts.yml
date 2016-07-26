@@ -33,6 +33,13 @@ services:
     arguments:
       - "@doctrine.orm.system_entity_manager"
 
+  dp_sys.alerts.log_reducer:
+    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\LogReducer
+    arguments:
+      - "@doctrine.dbal.system_connection"
+      - 150              # Max events of the same type for events with quantity based expiration strategy
+      - "@= 60 * 24 * 7" # Max time alive for events with time based expiration strategy
+
   # --------------------------------------------------------------------------------------------------------------------
   # Trigger services
   # --------------------------------------------------------------------------------------------------------------------
@@ -73,7 +80,7 @@ services:
       -  { name: dp_sys.alerts.trigger }
     calls:
       # Configure to raise an incident on a single fatal error within a year period
-      - [setPeriodMinutes, ["@= 60 * 24 * 365"]]
+      - [setPeriodMinutes, ["@= 60 * 24 * 7"]]
       - [setIncidentErrorsCount, [1]]
 #      -
 #        - setRaisedCallback
@@ -99,7 +106,7 @@ services:
       -  { name: dp_sys.alerts.trigger }
     calls:
       # Configure to raise an incident on a single exception within a year period
-      - [setPeriodMinutes, ["@= 60 * 24 * 365"]]
+      - [setPeriodMinutes, ["@= 60 * 24 * 7"]]
       - [setIncidentErrorsCount, [1]]
 #      -
 #        - setRaisedCallback

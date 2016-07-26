@@ -139,4 +139,9 @@ interface Incident extends EntityInterface, NotifyPropertyChanged
      * @param bool $dismissed
      */
     public function setDismissed($dismissed);
+
+    /**
+     * @return string
+     */
+    public function getSubjectUniqueId();
 }

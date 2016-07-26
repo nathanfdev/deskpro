@@ -96,7 +96,10 @@ abstract class AbstractIncident implements Incident
      *     inversedBy="incidents",
      *     cascade={"all"}
      * )
-     * @ORM\JoinTable(name="system_alerts_incident_events")
+     * @ORM\JoinTable(name="system_alerts_incident_events",
+     *     joinColumns={@ORM\JoinColumn(name="incident_id", referencedColumnName="id", onDelete="CASCADE")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id", onDelete="CASCADE")}
+     * )
      */
     protected $events;
 
@@ -197,9 +200,19 @@ abstract class AbstractIncident implements Incident
      */
     public function addEvent(Event $event)
     {
+        $subjectUniqueId = $event->getSubjectUniqueId();
+
+        if ($this->subjectUniqueId && ($this->subjectUniqueId !== $subjectUniqueId)) {
+            throw new \Exception(sprintf(
+                'Incident must group events with equal subject unique id, expected %s, got %s',
+                $this->subjectUniqueId,
+                $subjectUniqueId
+            ));
+        }
+
         if (!$this->events->contains($event)) {
             $this->events[]        = $event;
-            $this->subjectUniqueId = $event->getSubjectUniqueId();
+            $this->subjectUniqueId = $subjectUniqueId;
         }
     }
 
@@ -296,5 +309,13 @@ abstract class AbstractIncident implements Incident
     public function setDismissed($dismissed)
     {
         $this->dismissed = $dismissed;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubjectUniqueId()
+    {
+        return $this->subjectUniqueId;
     }
 }
