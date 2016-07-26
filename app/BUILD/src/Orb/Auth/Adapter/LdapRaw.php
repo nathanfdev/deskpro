@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Auth
  */
+
 namespace Orb\Auth\Adapter;
 
 use DpSys\LowError\SystemErrorHandler;
@@ -38,7 +39,6 @@ use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Log\Logger;
 use Orb\Util\Arrays;
-use Zend\Ldap\Ldap;
 
 class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
 {
@@ -118,7 +118,19 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
     public function getZendAuthAdapter()
     {
         $options = array('tryUsernameSplit' => false);
-        foreach (array('host', 'port', 'baseDn', 'username', 'password', 'accountFilterFormat', 'accountCanonicalForm', 'bindRequiresDn', 'useStartTls', 'useSsl') as $k) {
+        foreach (
+            [
+                'host',
+                'port',
+                'baseDn',
+                'username',
+                'password',
+                'accountFilterFormat',
+                'accountCanonicalForm',
+                'bindRequiresDn',
+                'useStartTls',
+                'useSsl',
+            ] as $k) {
             if (isset($this->options[$k]) && $this->options[$k]) {
                 $options[$k] = $this->options[$k];
             }
