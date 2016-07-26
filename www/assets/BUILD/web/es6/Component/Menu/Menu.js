@@ -6,6 +6,7 @@ class Menu extends React.Component {
   static propTypes = {
     title: PropTypes.string,
     withDivider: PropTypes.bool,
+    filterText: PropTypes.string,
     items: PropTypes.arrayOf(
       PropTypes.object
     )
@@ -19,6 +20,9 @@ class Menu extends React.Component {
         continue;
       }
       let props = items[i];
+      if (props.label.toLowerCase().indexOf(this.props.filterText.toLowerCase()) === -1) {
+        continue;
+      }
       props['key'] = String(i);
       menus.push(<MenuItem {...props} />)
     }
