@@ -17,10 +17,12 @@ class List extends React.Component {
 
   getItems() {
     let items = [];
-    const elements = this.props.structure.elements;
+    const {elements} = this.props.structure;
     for (const i in elements) {
-      const item = elements[i];
-      let props = item;
+      if (!elements.hasOwnProperty(i)) {
+        continue;
+      }
+      let props = elements[i];
       props['key'] = String(i);
       items.push(<ListElement {...props} />);
     }

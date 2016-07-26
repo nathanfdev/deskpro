@@ -1,19 +1,19 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
-import { MenuWrapper } from 'Component/Menu/MenuWrapper';
+import MenuWrapper from 'Component/Menu/MenuWrapper';
 
 storiesOf('App: menu', module)
   .add(
     'Email Menu',
-    () => <MenuWrapper structure={emailStructure} />
+    () => <MenuWrapper {...emailStructure} />
   )
   .add(
     'Phrases Menu',
-    () => <MenuWrapper structure={phrasesStructure} />
+    () => <MenuWrapper {...phrasesStructure} />
   )
   .add(
     'Variables Menu',
-    () => <MenuWrapper structure={variablesStructure} />
+    () => <MenuWrapper {...variablesStructure} />
   )
 ;
 const emailStructure = {

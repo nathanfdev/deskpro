@@ -1,25 +1,45 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { MenuItem } from 'Component/Menu/MenuItem';
+import MenuItem from 'Component/Menu/MenuItem';
 
-export class Menu extends React.Component {
+class Menu extends React.Component {
   static propTypes = {
-    section: PropTypes.object.isRequired
+    title: PropTypes.string,
+    withDivider: PropTypes.bool,
+    items: PropTypes.arrayOf(
+      PropTypes.object
+    )
   };
 
-  render() {
-    let items = [];
-    for (let item of this.props.section.items) {
-      items.push(<MenuItem item={item} />)
+  getItems() {
+    let menus = [];
+    const {items} = this.props;
+    for (const i in items) {
+      if (!items.hasOwnProperty(i)) {
+        continue;
+      }
+      let props = items[i];
+      props['key'] = String(i);
+      menus.push(<MenuItem {...props} />)
     }
-    let title = '';
-    if (this.props.section.title)
-      title = <h4>{this.props.section.title}</h4>;
-    return <div className={classNames('item', {'with-divider': this.props.section.withDivider})}>
-      {title}
+    return menus;
+  }
+
+  getTitle() {
+    const {title} = this.props;
+    if (title)
+      return <h4>{title}</h4>;
+    return null;
+  }
+
+  render() {
+    const {withDivider} = this.props;
+    return <div className={classNames('item', {'with-divider': withDivider})}>
+      {this.getTitle()}
       <div className="menu">
-        {items}
+        {this.getItems()}
       </div>
     </div>
   }
 }
+export default Menu;

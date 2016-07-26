@@ -1,31 +1,35 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { Menu } from 'Component/Menu/Menu';
 
-export class MenuItem extends React.Component {
+class MenuItem extends React.Component {
   static propTypes = {
-    item: PropTypes.object.isRequired
+    label: PropTypes.string.isRequired,
+    icon: PropTypes.string,
+    subContent: PropTypes.object
   };
 
-  render() {
-    let subMenu = [];
-    if (this.props.item.subContent) {
-      subMenu.push(<i className="dropdown icon"/>);
-      if (this.props.item.subContent.sections) {
-        for (let section of this.props.item.subContent.sections) {
-          subMenu.push(<Menu section={section} />);
-        }
-      }
+  getIcon() {
+    const {icon} = this.props;
+    if (icon) {
+      return <i className={classNames('icon', icon)} />
     }
-    let itemIcon = '';
-    if (this.props.item.icon) {
-      itemIcon = <i className={classNames('icon', this.props.item.icon)} />;
-    }
-    return <a className={classNames('ui', 'item', { dropdown: !!this.props.item.subContent })}>
-      {itemIcon}
-      {this.props.item.label}
+  }
 
-      {subMenu}
+  getSubContent() {
+    const {subContent} = this.props;
+    if (subContent) {
+      return <i className="dropdown icon"/>;
+    }
+  }
+
+  render() {
+    const {label, subContent} = this.props;
+    return <a className={classNames('ui', 'item', { dropdown: !!subContent })}>
+      {this.getIcon()}
+      {label}
+
+      {this.getSubContent()}
       </a>
   }
 }
+export default MenuItem;
