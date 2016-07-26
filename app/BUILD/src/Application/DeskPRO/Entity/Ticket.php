@@ -1968,6 +1968,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     {
         $this->labels->clear();
         $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $this;
     }
 
     /**

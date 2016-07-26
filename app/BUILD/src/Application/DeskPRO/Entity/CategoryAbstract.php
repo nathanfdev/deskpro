@@ -42,6 +42,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Basic hierarchicial category entity.
@@ -66,6 +67,8 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
      * @JMS\Expose()
      * @JMS\Type("string")
      * @JMS\Groups("list")
+     *
+     * @Assert\NotBlank()
      *
      * @var string
      */

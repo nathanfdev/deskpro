@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Util
  */
+
 namespace Orb\Util;
 
 /**
@@ -304,7 +305,7 @@ class Strings
             return true;
         }
 
-        return (strpos($haystack, $needle) !== false);
+        return strpos($haystack, $needle) !== false;
     }
 
     /**
@@ -331,7 +332,7 @@ class Strings
             return true;
         }
 
-        return (strpos($haystack, $needle) === 0);
+        return strpos($haystack, $needle) === 0;
     }
 
     /**
@@ -753,7 +754,7 @@ class Strings
      */
     public static function quotedPrintableEncode($input, $line_max = 75)
     {
-        $hex       = array('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F');
+        $hex       = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F');
         $lines     = preg_split("/(?:\r\n|\r|\n)/", $input);
         $linebreak = "=0D=0A=\r\n";
 
@@ -1042,12 +1043,25 @@ class Strings
     }
 
     /**
+     * @param $string
+     *
+     * @return string
+     */
+    public static function slugifyTitleToUnderscore($string)
+    {
+        $string = self::slugifyTitle($string);
+        $string = str_replace('-', '_', $string);
+
+        return $string;
+    }
+
+    /**
      * Converts newlines to paragraphs and breaks. Two consecutive newlines are paragrpahs, all else
      * are breaks.
      *
      * @param string $string The string to work on
      *
-     * @return stirng
+     * @return string
      */
     public static function nl2p($string)
     {
@@ -1208,7 +1222,7 @@ class Strings
     {
         // No wildcard in it, just a straight up comparison is needed
         if (strpos($pattern, '*') === false) {
-            return ($pattern == $test);
+            return $pattern == $test;
         }
 
         $pattern = preg_quote($pattern, '#');
@@ -2351,7 +2365,7 @@ class Strings
      */
     public static function compareHtml($html1, $html2)
     {
-        return ($html1 == $html2 || self::_prepareCompareHtml($html1) == self::_prepareCompareHtml($html2));
+        return $html1 == $html2 || self::_prepareCompareHtml($html1) == self::_prepareCompareHtml($html2);
     }
 
     protected static function _prepareCompareHtml($html)
@@ -2511,10 +2525,10 @@ class Strings
         $val = intval($val);
         switch ($val) {
             case 0: return chr(0);
-            case ($val & 0x7F): return chr($val);
-            case ($val & 0x7FF): return chr(0xC0 | (($val >> 6) & 0x1F)).chr(0x80 | ($val & 0x3F));
-            case ($val & 0xFFFF): return chr(0xE0 | (($val >> 12) & 0x0F)).chr(0x80 | (($val >> 6) & 0x3F)).chr(0x80 | ($val & 0x3F));
-            case ($val & 0x1FFFFF): return chr(0xF0 | ($val >> 18)).chr(0x80 | (($val >> 12) & 0x3F)).chr(0x80 | (($val >> 6) & 0x3F)).chr(0x80 | ($val & 0x3F));
+            case $val & 0x7F: return chr($val);
+            case $val & 0x7FF: return chr(0xC0 | (($val >> 6) & 0x1F)).chr(0x80 | ($val & 0x3F));
+            case $val & 0xFFFF: return chr(0xE0 | (($val >> 12) & 0x0F)).chr(0x80 | (($val >> 6) & 0x3F)).chr(0x80 | ($val & 0x3F));
+            case $val & 0x1FFFFF: return chr(0xF0 | ($val >> 18)).chr(0x80 | (($val >> 12) & 0x3F)).chr(0x80 | (($val >> 6) & 0x3F)).chr(0x80 | ($val & 0x3F));
         }
 
         return '';

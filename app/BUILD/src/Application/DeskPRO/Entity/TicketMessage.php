@@ -859,7 +859,9 @@ class TicketMessage extends DomainObject
      */
     public function initPersonAccessCode()
     {
-        $this->ticket->addAccessCodeForPerson($this->person);
+        if ($this->person) {
+            $this->ticket->addAccessCodeForPerson($this->person);
+        }
     }
 
     public function incTicketCount()
@@ -868,7 +870,7 @@ class TicketMessage extends DomainObject
             return;
         }
 
-        if (!$this->is_agent_note && $this->person->is_agent) {
+        if (!$this->is_agent_note && $this->person && $this->person->is_agent) {
             ++$this->ticket->count_agent_replies;
         } else {
             ++$this->ticket->count_user_replies;

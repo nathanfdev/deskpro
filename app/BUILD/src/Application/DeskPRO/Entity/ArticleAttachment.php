@@ -38,6 +38,7 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Numbers;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Article attachments.
@@ -65,6 +66,8 @@ class ArticleAttachment extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var \Application\DeskPRO\Entity\Blob
+     *
+     * @Assert\Valid()
      */
     protected $blob;
 
@@ -101,7 +104,7 @@ class ArticleAttachment extends \Application\DeskPRO\Domain\DomainObject
      *
      * @return $this
      */
-    public function setPerson(Person $person)
+    public function setPerson(Person $person = null)
     {
         $this->setModelField('person', $person);
 

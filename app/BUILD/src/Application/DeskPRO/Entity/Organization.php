@@ -339,7 +339,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     /**
      * @param null $type
      *
-     * @return Entity\OrganizationContactData[]
+     * @return Entity\OrganizationContactData[]|ArrayCollection
      */
     public function getContactData($type = null)
     {
@@ -574,6 +574,14 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         $this->setModelField('picture_blob', $blob);
 
         return $this;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getPicture()
+    {
+        return $this->picture_blob;
     }
 
     /**
