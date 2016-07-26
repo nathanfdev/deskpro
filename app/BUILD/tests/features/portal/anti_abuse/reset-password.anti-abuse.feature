@@ -15,7 +15,7 @@ Feature: To prevent password resetting abuse
 
     And I press "Reset Password"
     Given I am on "/login/reset-password"
-    Then I should see "You are trying to reset password too often and were locked out." in the ".inline-form-alert" element
+    Then I should see "You have tried to reset your password too many times. You will be locked out for a short period of time. Please try again later." in the ".inline-form-alert" element
 
   Scenario: Checking captcha response
     Given I set "reset_password" rate limit to 1 attempt within 15 minutes with "captcha" response

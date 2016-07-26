@@ -18,7 +18,7 @@ Feature: News commenting
 
   Scenario: I comment on a news article as a guest
     Given I am on "/news/posts/example-news-post"
-    When I fill in "What is your comment?" with "This is a guest comment on a news post!"
+    When I fill in "Any comments?" with "This is a guest comment on a news post!"
     When I fill in "Your Name" with "Chris Name"
     When I fill in "Email" with "chris@deskpro.com"
     And I press "Save Comment"
@@ -30,7 +30,7 @@ Feature: News commenting
 
   Scenario: I use a registered email to comment as a guest
     Given I am on "/news/posts/example-news-post"
-    When I fill in "What is your comment?" with "This is a guest comment!"
+    When I fill in "Any comments?" with "This is a guest comment!"
     When I fill in "Your Name" with "Chris Name"
     When I fill in "Email" with "user@deskpro.dev"
     And I press "Save Comment"
@@ -50,7 +50,7 @@ Feature: News commenting
   Scenario: I comment on a news post as a user
     Given I login with user credentials
     And I am on "/news/posts/example-news-post"
-    When I fill in "What is your comment?" with "This is my comment! I just posted it!!"
+    When I fill in "Any comments?" with "This is my comment! I just posted it!!"
     And I press "Save Comment"
     Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
     And I should see "This is my comment! I just posted it!!"

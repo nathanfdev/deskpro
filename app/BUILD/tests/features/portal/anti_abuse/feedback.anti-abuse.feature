@@ -20,7 +20,7 @@ Feature: To prevent feedback submitting abuse
     Then the url should match "/feedback"
 
     When I am on "/feedback"
-    Then I should see "You have submitted feedback too many times."
+    Then I should see "You have submitted feedback too many times so you have been locked out. Please try again later."
 
   Scenario: Checking captcha response for user
     Given I'm authenticated as "user"
@@ -52,7 +52,7 @@ Feature: To prevent feedback submitting abuse
     Then the url should match "/feedback"
 
     When I am on "/feedback"
-    Then I should see "You have submitted feedback too many times."
+    Then I should see "You have submitted feedback too many times so you have been locked out. Please try again later."
 
   Scenario: Checking lockout captcha for guest
     Given I am not logged in
