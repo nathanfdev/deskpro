@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,11 +31,13 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\Collection;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Numbers;
@@ -786,7 +788,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
                             return false;
                         }
 
-                        if (preg_match($regex, $value)) {
+                        if (RegexUtils::safePregMatch($regex, $value)) {
                             if ($op == 'is_regex') {
                                 return true;
                             }

@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\ContactData;
 
+use DeskPRO\Component\Util\RegexUtils;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -60,7 +61,7 @@ class FacebookUrlValidator extends ConstraintValidator
         ];
 
         foreach ($patterns as $pattern) {
-            if (preg_match($pattern, $value)) {
+            if (RegexUtils::safePregMatch($pattern, $value)) {
                 return;
             }
         }

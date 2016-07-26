@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ContactData;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
+use DeskPRO\Component\Util\RegexUtils;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -103,7 +104,7 @@ class PhoneType extends AbstractContactDataItemType
 
         $data
             ->setField9($number)
-            ->setField10(preg_replace('#[^0-9a-zA-Z]#', '', $number))
+            ->setField10(RegexUtils::safePregReplace('#[^0-9a-zA-Z]#', '', $number))
         ;
     }
 }

@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Component\Util\RegexUtils;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -106,7 +108,7 @@ class QuickSearchRequest
      */
     public function isTicketRef()
     {
-        return (bool) preg_match('#^[0-9A-Z\-_\.]+$#', $this->query);
+        return (bool) RegexUtils::safePregMatch('#^[0-9A-Z\-_\.]+$#', $this->query);
     }
 
     /**
@@ -154,7 +156,7 @@ class QuickSearchRequest
      */
     public function getLabel()
     {
-        if (preg_match('#^\[(.*?)\]$#', $this->query, $matches)) {
+        if (RegexUtils::safePregMatch('#^\[(.*?)\]$#', $this->query, $matches)) {
             return $matches[1];
         }
 

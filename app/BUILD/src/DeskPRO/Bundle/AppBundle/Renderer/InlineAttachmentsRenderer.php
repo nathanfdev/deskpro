@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\AppBundle\Renderer;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use DeskPRO\Component\Util\RegexUtils;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -80,7 +81,8 @@ class InlineAttachmentsRenderer
             $m       = null;
             $changed = false;
 
-            if (preg_match('#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#', $string, $m)) {
+            if (RegexUtils::safePregMatch('#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#',
+                $string, $m)) {
                 $changed = true;
                 $pos     = strpos($string, $m[0]);
                 $before  = substr($string, 0, $pos);

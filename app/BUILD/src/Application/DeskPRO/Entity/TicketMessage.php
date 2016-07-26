@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -442,7 +443,7 @@ class TicketMessage extends DomainObject
     public function getMessagePreviewText($max_length = 0, $ellipses = '...')
     {
         $message = $this->message;
-        $message = preg_replace(
+        $message = RegexUtils::safePregReplace(
             '#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#',
             '',
             $message
@@ -592,7 +593,7 @@ class TicketMessage extends DomainObject
             $changed = false;
 
             // [attach:type:auth_id:filename]
-            if (preg_match('#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#', $message, $m)) {
+            if (RegexUtils::safePregMatch('#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#', $message, $m)) {
                 $changed = true;
                 $pos     = strpos($message, $m[0]);
                 $before  = substr($message, 0, $pos);
@@ -619,26 +620,26 @@ class TicketMessage extends DomainObject
                 $replace = $blob->getEmbedCode(true);
 
                 $regex        = '#(<img[^>]+src=")'.preg_quote($blob->getDownloadUrl(true), '#').'("[^>]*>)#i';
-                $message_text = preg_replace($regex, $replace, $message_text);
+                $message_text = RegexUtils::safePregReplace($regex, $replace, $message_text);
 
                 $regex        = '#<a[^>]+'.preg_quote('dp-embed-blob-a-'.$blob->getAuthId()).'[^>]*>.*?</a>#';
-                $message_text = preg_replace($regex, $replace, $message_text);
+                $message_text = RegexUtils::safePregReplace($regex, $replace, $message_text);
 
                 $regex        = '#<img[^>]+'.preg_quote('dp-embed-blob-img-'.$blob->getAuthId()).'[^>]>#';
-                $message_text = preg_replace($regex, $replace, $message_text);
+                $message_text = RegexUtils::safePregReplace($regex, $replace, $message_text);
             }
         }
 
         // signature images - alt contains the original text
         $regex        = '#<img[^>]+class="dp-signature-image" alt="([^"]+)"[^>]*>#i';
-        $message_text = preg_replace($regex, '$1', $message_text);
+        $message_text = RegexUtils::safePregReplace($regex, '$1', $message_text);
 
         return $message_text;
     }
 
     public function getUsedSignatureImageBlobs()
     {
-        preg_match_all(
+        RegexUtils::safePregMatchAll(
             '#\[attach:signature_image:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#',
             $this->message,
             $matches,
@@ -705,7 +706,7 @@ class TicketMessage extends DomainObject
     public function getMessageQuote()
     {
         $message_quote = wordwrap($this->getMessageText(), 75, "\n", true);
-        $message_quote = preg_replace('#^#m', '> ', $message_quote);
+        $message_quote = RegexUtils::safePregReplace('#^#m', '> ', $message_quote);
 
         return $message_quote;
     }
@@ -827,7 +828,7 @@ class TicketMessage extends DomainObject
         $hashes = [];
 
         $hashable_msg = $this->message;
-        $hashable_msg = preg_replace(
+        $hashable_msg = RegexUtils::safePregReplace(
             '#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#',
             '$3',
             $hashable_msg
