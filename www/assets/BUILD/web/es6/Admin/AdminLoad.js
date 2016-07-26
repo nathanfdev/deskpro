@@ -29,6 +29,7 @@ export class AdminLoad {
 }
 
 export const start = () => {
+  require('../../bower_components/spectrum/spectrum');
   require('./CtrlList');
 
   let loadingEl = document.getElementById('dp_loading');
