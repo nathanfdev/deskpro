@@ -77,6 +77,18 @@ class BrandContainer
     }
 
     /**
+     * This method used only for tests, where we need to reload settings at same thread!
+     *
+     * @internal
+     *
+     * @param SettingsBag $settings
+     */
+    public function setSettings(SettingsBag $settings)
+    {
+        $this->settings = $settings;
+    }
+
+    /**
      * @return Brand
      */
     public function getBrand()

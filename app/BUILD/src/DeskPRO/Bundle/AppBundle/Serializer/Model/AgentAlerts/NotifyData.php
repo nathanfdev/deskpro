@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlerts;
 
+use DeskPRO\Component\Util\RegexUtils;
 use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 
@@ -79,7 +80,7 @@ class NotifyData
         $string = Strings::removeInvisibleCharacters($string);
         $string = Strings::removeLineBreaks($string);
         $string = str_replace("\t", ' ', $string);
-        $string = preg_replace('#\s{,2}#', ' ', $string);
+        $string = RegexUtils::safePregReplace('#\s{,2}#', ' ', $string);
         $string = trim($string);
 
         return $string;

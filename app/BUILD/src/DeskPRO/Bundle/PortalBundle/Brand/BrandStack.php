@@ -117,6 +117,11 @@ class BrandStack
         return $this->stack;
     }
 
+    public function getContainers()
+    {
+        return $this->brand_containers;
+    }
+
     /**
      * @return Brand
      */

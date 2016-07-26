@@ -41,7 +41,7 @@ function app(name, state) {
 /**
  * Navigation story book
  */
-storiesOf('Navigation', module)
+storiesOf('App: Navigation', module)
   .addDecorator(story => css(story()))
 
   // Expanded app nav frames

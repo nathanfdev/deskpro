@@ -38,8 +38,10 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Markdown;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\Strings;
 
 /**
  * TaskComment entity definition.
@@ -164,13 +166,13 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
             return '';
         }
         $content = Strings::standardEol($this->content);
-        $content = preg_replace("#<br\s*/?><p>#", '<p>', $content);
-        $content = preg_replace("#<p></p><br\s*/?>#", '<p>', $content);
-        $content = preg_replace("#</p><br\s*/?>#", '</p>', $content);
-        $content = preg_replace("#<br\s*/?></p>#", '</p>', $content);
-        $content = preg_replace("#<br\s*/?>?#", "\n", $content);
-        $content = preg_replace("#<p>\n?#", "\n", $content);
-        $content = preg_replace("#\n?</p>#", "\n", $content);
+        $content = RegexUtils::safePregReplace("#<br\s*/?><p>#", '<p>', $content);
+        $content = RegexUtils::safePregReplace("#<p></p><br\s*/?>#", '<p>', $content);
+        $content = RegexUtils::safePregReplace("#</p><br\s*/?>#", '</p>', $content);
+        $content = RegexUtils::safePregReplace("#<br\s*/?></p>#", '</p>', $content);
+        $content = RegexUtils::safePregReplace("#<br\s*/?>?#", "\n", $content);
+        $content = RegexUtils::safePregReplace("#<p>\n?#", "\n", $content);
+        $content = RegexUtils::safePregReplace("#\n?</p>#", "\n", $content);
         $content = html_entity_decode(strip_tags($content), \ENT_QUOTES, 'UTF-8');
         $content = trim($content);
 
@@ -181,7 +183,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $content = implode("\n", $lines);
-        $content = preg_replace("#\n{3,}#", "\n\n", $content);
+        $content = RegexUtils::safePregReplace("#\n{3,}#", "\n\n", $content);
 
         return $content;
     }

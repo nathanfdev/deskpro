@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\DevBundle\Command\Lang;
 
 use DeskPRO\Bundle\DevBundle\Language\PhrasesFinder;
@@ -39,7 +40,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Finder\Finder;
 
 class CheckUsesCommand extends ContainerAwareCommand
 {
@@ -56,14 +56,14 @@ class CheckUsesCommand extends ContainerAwareCommand
                 'zone',
                 'z',
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'Specify the zone as comma-sep list: adm, admin, agent, api, portal, user',
+                'Specify the zone as comma-sep list: admin, agent, api, portal',
                 ['all']
             )
             ->addOption(
                 'ignore-zone',
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'Specify the zones to IGNORE as comma-sep list: adm, admin, agent, api, portal, user',
+                'Specify the zones to IGNORE as comma-sep list: admin, agent, api, portal',
                 []
             )
             ->addOption(
@@ -148,14 +148,17 @@ class CheckUsesCommand extends ContainerAwareCommand
         # Load phrase IDs
         #------------------------------
 
-        $finder = Finder::create()->files()->name('*.php');
+        $finder = [];
         foreach ($zones as $z) {
-            $finder->in($lang_dir.'/'.$z);
+            $zFile = $lang_dir.DIRECTORY_SEPARATOR.$z.'.php';
+            if (file_exists($zFile)) {
+                $finder[] = new \SplFileInfo($zFile);
+            }
         }
 
         $phrase_ids = [];
         foreach ($finder as $f) {
-            $tmp        = require $f->getRealPath();
+            $tmp        = require $f->getPathname();
             $phrase_ids = array_merge($phrase_ids, array_keys($tmp));
         }
         unset($tmp);

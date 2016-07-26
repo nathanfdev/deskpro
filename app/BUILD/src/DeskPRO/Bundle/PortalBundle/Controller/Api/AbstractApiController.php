@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
@@ -178,5 +179,21 @@ abstract class AbstractApiController extends FOSRestController
     protected function getWidgetOptionDataStoreName()
     {
         return 'dpWidgetOptions.'.$this->getToken()->getCredentials();
+    }
+
+    /**
+     * @return int|null
+     */
+    protected function getLastChatId()
+    {
+        $storedChatId = $this->getWidgetOption('chat_id');
+        if ($storedChatId) {
+            $conversation = $this->getManager()->getRepository(ChatConversation::class)->find($storedChatId);
+            if ($conversation && !$conversation->getDateEnded()) {
+                return $conversation->getId();
+            }
+        }
+
+        return;
     }
 }

@@ -38,13 +38,13 @@ use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConf
 use Application\DeskPRO\Assets\RequireJsConfigGenerator;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
+use Application\DeskPRO\Routing\Generator\UrlGenerator;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class MiscController extends AbstractController
 {
@@ -942,8 +942,8 @@ JS;
 
         if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
             $adapter->setCallbackUrl(
-                rtrim($this->container->getBrandSetting('core.deskpro_url'), '/').
-                $this->generateUrl('user_login_callback', ['usersource_id' => $usersource['id']], false)
+                rtrim($this->container->getSetting('core.deskpro_url'), '/').
+                $this->generateUrl('user_login_callback', ['usersource_id' => $usersource['id']], UrlGenerator::RELATIVE_PATH)
             );
         }
 

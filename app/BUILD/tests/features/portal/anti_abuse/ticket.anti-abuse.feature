@@ -24,7 +24,7 @@ Feature: To prevent ticket submitting abuse
     Then the url should match "/thank-you"
 
     When I am on "/new-ticket"
-    Then I should see "You have submitted too many tickets to this moment and were locked out." in the ".inline-form-alert" element
+    Then I should see "You have submitted too many tickets so you have been locked out. Please try again later." in the ".inline-form-alert" element
 
   Scenario: Checking captcha response for user
     Given I'm authenticated as "user"
@@ -64,7 +64,7 @@ Feature: To prevent ticket submitting abuse
     Then the url should match "/thank-you"
 
     When I am on "/new-ticket"
-    Then I should see "You have submitted too many tickets to this moment and were locked out." in the ".inline-form-alert" element
+    Then I should see "You have submitted too many tickets so you have been locked out. Please try again later." in the ".inline-form-alert" element
 
   Scenario: Checking lockout captcha for guest
     Given I am not logged in

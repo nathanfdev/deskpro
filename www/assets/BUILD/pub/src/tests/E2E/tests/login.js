@@ -1,4 +1,3 @@
-import { config } from '../config.js';
 import { url } from '../helpers.js';
 
 module.exports = {
@@ -9,10 +8,7 @@ module.exports = {
   },
 
   'I log in as admin and access secured area': function (client) {
-    client.page.login().navigate().login(
-      config.users.admin.email,
-      config.users.admin.password
-    );
+    client.page.login().navigate().loginAsAdmin();
     client.page.tickets().navigate().waitForElementVisible('@myTicketsFilter');
     client.end();
   }

@@ -24,17 +24,18 @@ export class AttachedImage extends React.Component {
           {count > 1
             ? <div className="dpdesignportal-chat-form-attached-image-count" onClick={onExpand}>
                 {count} <i className="fa fa-angle-double-right" />
-              </div>
+            </div>
             : <div className="dpdesignportal-chat-form-attached-image-remove" onClick={() => onRemove(attachment)}>
-                <i className="fa fa-times" />
-              </div>
+              <i className="fa fa-times" />
+            </div>
           }
-          <div className="dpdesignportal-chat-form-attached-image-thumb"
+          <div
+            className="dpdesignportal-chat-form-attached-image-thumb"
             onClick={this.openFullImage}
             style={{ backgroundImage: `url(${downloadUrl})` }}
-          ></div>
-
-          <img src={downloadUrl} ref="image" className="hidden" />
+          >
+          </div>
+          <img role="presentation" src={downloadUrl} ref="image" className="hidden" />
         </div>
       </li>
     );

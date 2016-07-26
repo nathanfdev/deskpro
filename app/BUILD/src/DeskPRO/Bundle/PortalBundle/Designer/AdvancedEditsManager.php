@@ -80,6 +80,13 @@ class AdvancedEditsManager
     private $mainScssPath;
 
     /**
+     * Array of name => true for assets that were updated.
+     *
+     * @var array
+     */
+    private $changedAssets = [];
+
+    /**
      * Constructor.
      *
      * @param EntityManager      $em
@@ -119,6 +126,15 @@ class AdvancedEditsManager
         if (array_key_exists('javascript', $data)) {
             $this->saveThemeSetAsset(self::CUSTOM_JS_ASSET_NAME, self::CUSTOM_JS_ASSET_TAG, 'text/javascript', $data['javascript']);
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasChangedCssFiles()
+    {
+        return isset($this->changedAssets[self::CUSTOM_SCSS_ASSET_NAME])
+            || isset($this->changedAssets[self::MAIN_SCSS_ASSET_NAME]);
     }
 
     /**
@@ -258,7 +274,6 @@ CODE;
     {
         $theme_set = $this->edit_theme_set;
 
-        $blob    = $this->bs->createBlobRecordFromString($code, $name, $mimeType, ['tag' => 'brand_asset.'.$tag]);
         $oldBlob = null;
 
         // Find existing or create a new ThemeSetAsset
@@ -269,6 +284,22 @@ CODE;
         } else {
             $asset = new ThemeSetAsset();
         }
+
+        if ($oldBlob) {
+            try {
+                $oldContent = $this->bs->copyBlobRecordToString($oldBlob);
+                if ($oldContent === $code) {
+                    // no change
+                    return $oldBlob;
+                }
+            } catch (\Exception $e) {
+            }
+        }
+
+        // record it as changed
+        $this->changedAssets[$name] = true;
+
+        $blob = $this->bs->createBlobRecordFromString($code, $name, $mimeType, ['tag' => 'brand_asset.'.$tag]);
 
         $asset->setName($name);
         $asset->setThemeSet($theme_set);

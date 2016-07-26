@@ -344,7 +344,7 @@ class DataContext extends BaseContext
      */
     private static function resolveReference($ref)
     {
-        $ref = str_replace(['{', '}', '~'], '', $ref);
+        $ref = trim($ref, '{}~');
         if (!array_key_exists($ref, self::$references)) {
             throw new \Exception("Unable to resolve reference '$ref'");
         }
@@ -381,7 +381,7 @@ class DataContext extends BaseContext
     {
         $string = trim($string, '[]');
 
-        return explode(',', $string);
+        return array_map('trim', explode(',', $string));
     }
 
     /**

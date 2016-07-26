@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Labels\Label;
+use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use Application\DeskPRO\Labels\LabelManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\AgentLinkRoute;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
@@ -53,7 +55,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @PortalLinkRoute("portal_feedback_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
  * @AgentLinkRoute("agent_feedback_view", route_param_map={"feedback_id": "id"})
  */
-class Feedback extends ContentAbstract implements HighlightableModelInterface
+class Feedback extends ContentAbstract implements HighlightableModelInterface, LabelsOwner
 {
     const CONTENT_TYPE = 'feedback';
 
@@ -474,11 +476,23 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * @param LabelFeedback $label
-     *
-     * @return $this
+     * {@inheritdoc}
      */
-    public function addLabel(LabelFeedback $label)
+    public function clearLabels()
+    {
+        foreach ($this->labels as $data) {
+            $this->labels->removeElement($data);
+        }
+
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addLabel(Label $label)
     {
         $label['feedback'] = $this;
         $this->labels->add($label);
@@ -487,7 +501,20 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\LabelFeedback[]|\Doctrine\Common\Collections\ArrayCollection
+     * {@inheritdoc}
+     */
+    public function removeLabel(Label $label)
+    {
+        if ($this->labels->contains($label)) {
+            $this->labels->removeElement($label);
+            $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return LabelFeedback[]|ArrayCollection
      */
     public function getLabels()
     {
@@ -515,7 +542,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * @return ArrayCollection
+     * @return ArrayCollection|CustomDataFeedback[]
      */
     public function getCustomData()
     {
@@ -906,8 +933,9 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'comments',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackComment',
+                'targetEntity' => FeedbackComment::class,
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
                 'mappedBy'     => 'feedback',
             ]
         );

@@ -124,7 +124,7 @@ define [
 
     changeUse: (type) ->
       return if !@perm_form[type]? || true == @perm_form[type].use
-      for perm of @perm_form[type]
+      for own perm of @perm_form[type]
         @perm_form[type][perm] = false
 
 
@@ -133,7 +133,7 @@ define [
       return if !@perm_form? || !@deps_perms?
 
       if 'perms' == type
-        for perm of @perm_form[section]
+        for own perm of @perm_form[section]
           if not @ugEffectivePerms[section]?[perm]? or not @ugEffectivePerms[section][perm]
             @perm_form[section][perm] = @all_perms[type][section]
 
@@ -141,12 +141,12 @@ define [
           @changeAllPerms('perms', 'org')
 
       else if 'deps_perms_tickets' == type
-        for dep of @deps_perms.tickets
+        for own dep of @deps_perms.tickets
           if !@ugEffectiveDepPerms.tickets[dep]?[section]? || !@ugEffectiveDepPerms.tickets[dep][section]
             @deps_perms.tickets[dep][section] = @all_perms.deps_perms.tickets[section]
 
       else if 'deps_perms_chat' == type
-        for dep of @deps_perms.chat
+        for own dep of @deps_perms.chat
           if !@ugEffectiveDepPerms.chat[dep]?[section]? || !@ugEffectiveDepPerms.chat[dep][section]
             @deps_perms.chat[dep][section] = @all_perms.deps_perms.chat[section]
 
@@ -158,25 +158,25 @@ define [
       return if !@perm_form?
 
       # check "use" state first
-      for section, perms of @perm_form
-        for perm of perms
+      for own section, perms of @perm_form
+        for own perm of perms
           if 'use' != perm && perms.use? && (perms[perm] || @ugEffectivePerms[section]?[perm])
             perms.use = true
             break
 
       # and this one is for "toggle all"
-      for section, perms of @perm_form
+      for own section, perms of @perm_form
         enabled = true
-        for perm of perms
+        for own perm of perms
           if !perms[perm] && !@ugEffectivePerms[section]?[perm]
             enabled = false
             break
         @all_perms.perms[section] = enabled
 
-      for type, sections of @all_perms.deps_perms
-        for section of sections
+      for own type, sections of @all_perms.deps_perms
+        for own section of sections
           enabled = true
-          for dep of @deps_perms[type]
+          for own dep of @deps_perms[type]
             if !@deps_perms[type][dep][section] && !@ugEffectiveDepPerms[type][dep][section]
               enabled = false
           @all_perms.deps_perms[type][section] = enabled

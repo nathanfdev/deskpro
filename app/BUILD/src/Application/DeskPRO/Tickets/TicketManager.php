@@ -124,7 +124,10 @@ class TicketManager
             $container->getEm()->getRepository(Brand::class),
             $container->getSetting('portal.default_brand')
         );
-        $this->post_save_actions[] = new TicketSaveActions\VerifyDepartment($container->getTicketDepartments());
+        $this->post_save_actions[] = new TicketSaveActions\VerifyDepartment(
+            $container->getTicketDepartments(),
+            $container->get('brand_form_helper')
+        );
         $this->post_save_actions[] = new TicketSaveActions\SetActionTimes();
         $this->post_save_actions[] = new TicketSaveActions\ApplySlas($container->getEm()->getRepository(Sla::class)->getAutoSlas(), $container->getEm(), new SlaClientMessageSender($container->getDb()));
         $this->post_save_actions[] = new TicketSaveActions\RecalculateSlas($container->getEm(), new ActionApplicator($container));

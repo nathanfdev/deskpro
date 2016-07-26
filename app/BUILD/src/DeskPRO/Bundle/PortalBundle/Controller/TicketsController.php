@@ -50,6 +50,7 @@ use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTablesCollection;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -362,7 +363,7 @@ class TicketsController extends AbstractController
         $name  = $request->request->get('name');
         $email = $request->request->get('email');
 
-        if (!preg_match('/.+\@.+\..+/', $email)) {
+        if (!RegexUtils::safePregMatch('/.+\@.+\..+/', $email)) {
             // return error with email
             $this->addFlash('error', 'Please enter a valid email for your participant and try again.');
 
@@ -468,12 +469,12 @@ class TicketsController extends AbstractController
 
         // message must exist and belong to the ticket requested
         if (!$message || $message->getTicketId() !== $ticket->getId()) {
-            throw new NotFoundHttpException('message does not belong to ticket');
+            return $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $ticket_ref]);
         }
 
         // message must not be an agent note and the person on the message must be an agent
         if ($message->is_agent_note || !$message->getPerson()->isAgent()) {
-            throw new NotFoundHttpException('message cannot be an agent note or a non-agent message');
+            return $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $ticket_ref]);
         }
 
         $person = $this->getAuthenticatedUserOrTicketPerson($ticket);
@@ -516,7 +517,7 @@ class TicketsController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
         return $this->renderThemeView('Theme:Tickets:feedback.html.twig', [
-            'page_title'  => $this->get('portal_view.page_title_generator')->kb(),
+            'page_title'  => $this->get('portal_view.page_title_generator')->feedback(),
             'breadcrumbs' => $breadcrumbs,
             'ticket'      => $ticket,
             'message'     => $message,

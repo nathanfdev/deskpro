@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -391,7 +392,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
             if (empty($str)) {
                 continue;
             }
-            if (preg_match('/^[A-Za-z]/', $str[0])) {
+            if (RegexUtils::safePregMatch('/^[A-Za-z]/', $str[0])) {
                 $parts                         = explode(':', $str);
                 $header                        = strtolower($parts[0]);
                 $this->parsed_headers[$header] = trim($parts[1]);

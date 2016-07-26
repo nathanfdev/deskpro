@@ -37,22 +37,6 @@ const initialState = {
     }
   },
 
-  // Lists grouping control popup data
-  grouping: {
-    options: [
-      { value: 'category', label: 'Category' },
-      { value: 'author', label: 'Author' },
-      { value: 'period_created', label: 'Created' },
-      { value: 'period_updated', label: 'Updated' }
-    ],
-
-    visibility: {
-      articles:  false,
-      news:      false,
-      downloads: false
-    }
-  },
-
   // List labels
   groups: {
     categories: {

@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\TextSnippet;
 use Application\DeskPRO\Entity\TextSnippetCategory;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Strings;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @ApiModes("all")
@@ -207,8 +208,12 @@ class TextSnippetsController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('snippet_id' => $snippet->id),
-            $this->generateUrl('api_textsnippets_get', array('id' => $snippet->id, 'typename' => $typename), true)
+            ['snippet_id' => $snippet->id],
+            $this->generateUrl(
+                'api_textsnippets_get',
+                ['id' => $snippet->id, 'typename' => $typename],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -311,8 +316,12 @@ class TextSnippetsController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('category_id' => $cat->id),
-            $this->generateUrl('api_textsnippets_cats_get', array('id' => $cat->id, 'typename' => $typename), true)
+            ['category_id' => $cat->id],
+            $this->generateUrl(
+                'api_textsnippets_cats_get',
+                ['id' => $cat->id, 'typename' => $typename],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
 use Application\DeskPRO\Entity\TextSnippet;
@@ -132,7 +133,7 @@ class TextSnippetsController extends CrudController
             }
         }
 
-        return $this->wrap($contents ?: null);
+        return $this->wrap($contents ?: new \ArrayObject());
     }
 
     /**

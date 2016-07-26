@@ -83,6 +83,10 @@ module.exports = {
       // DemoState/... paths ----------------------------------------------------------------------------------------
 
       result = result.replace(
+        /import([^;]+?)from([^;]+?)[\"\']DemoState(.*?)[\"\'](.*?);/gm,
+        "import$1 from $2'" + margin + "tests/DemoState$3'$4"
+      );
+      result = result.replace(
         /^import(.*)[\"\']DemoState(.*)[\"\'](.*)$/gm,
         "import$1'" + margin + "tests/DemoState$2'$3"
       );

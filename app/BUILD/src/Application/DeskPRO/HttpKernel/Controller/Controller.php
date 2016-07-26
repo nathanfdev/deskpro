@@ -40,6 +40,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * The base controller.
@@ -166,7 +167,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      */
     public function redirectRoute($route, array $parameters = array(), $status = 302)
     {
-        $url = $this->generateUrl($route, $parameters, true);
+        $url = $this->generateUrl($route, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
 
         return $this->redirect($url, $status);
     }

@@ -31,10 +31,14 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Entity\Labels\Label;
+use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -49,7 +53,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @PortalLinkRoute("portal_news_post_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
  * @PortalLinkRoute("portal_news_post_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
  */
-class News extends ContentAbstract implements HighlightableModelInterface
+class News extends ContentAbstract implements HighlightableModelInterface, LabelsOwner
 {
     const CONTENT_TYPE = 'news';
 
@@ -102,7 +106,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
         $content = $this->getContent();
 
         // Remove the intro separator
-        $content = preg_replace('#[\r\n]+\-{3,}[\r\n]+#', "\n", $content);
+        $content = RegexUtils::safePregReplace('#[\r\n]+\-{3,}[\r\n]+#', "\n", $content);
 
         return $content;
     }
@@ -122,7 +126,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
             $words   = str_word_count($excerpt, 2);
             $pos     = Arrays::getNthKey($words, 50);
             $excerpt = substr($excerpt, 0, $pos);
-            $excerpt = preg_replace('#[^a-zA-Z0-9]$#', '', $excerpt);
+            $excerpt = RegexUtils::safePregReplace('#[^a-zA-Z0-9]$#', '', $excerpt);
             $excerpt .= '...';
         }
 
@@ -148,11 +152,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
      */
     public function setCategory(NewsCategory $category = null)
     {
-        if ($category) {
-            $this->setModelField('category', $category);
-        } else {
-            $this->setModelField('category', -1);
-        }
+        $this->setModelField('category', $category);
 
         return $this;
     }
@@ -181,7 +181,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
      *
      * @return $this
      */
-    public function resetLabels()
+    public function clearLabels()
     {
         foreach ($this->labels as $data) {
             $this->labels->removeElement($data);
@@ -193,17 +193,28 @@ class News extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * @param LabelNews $label
+     * @param Label $label
      *
      * @return $this
      */
-    public function addLabel(LabelNews $label)
+    public function addLabel(Label $label)
     {
         $label['news'] = $this;
         $this->labels->add($label);
         $this->_onPropertyChanged('labels', null, $this->labels);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeLabel(Label $label)
+    {
+        if ($this->labels->contains($label)) {
+            $this->labels->removeElement($label);
+            $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+        }
     }
 
     /**
@@ -539,6 +550,15 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'targetEntity' => 'Application\DeskPRO\Entity\NewsSlugHistory',
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'     => 'news',
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'comments',
+                'targetEntity' => NewsComment::class,
+                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'mappedBy'     => 'news',
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );
     }

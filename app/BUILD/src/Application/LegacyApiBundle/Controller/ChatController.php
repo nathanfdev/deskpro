@@ -37,6 +37,7 @@ use Application\DeskPRO\Searcher\ChatConversationSearch;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * SWG\Resource(
@@ -421,8 +422,12 @@ class ChatController extends AbstractController
         $message      = $chat_manager->addMessage($chat, $this->person, $text);
 
         return $this->createApiCreateResponse(
-            array('message_id' => $message->id),
-            $this->generateUrl('api_chats_chat_message', array('chat_id' => $chat->id, 'message_id' => $message->id), true)
+            ['message_id' => $message->id],
+            $this->generateUrl(
+                'api_chats_chat_message',
+                ['chat_id' => $chat->id, 'message_id' => $message->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -494,8 +499,12 @@ class ChatController extends AbstractController
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $person->id),
-            $this->generateUrl('api_chats_chat_participant', array('chat' => $chat->id, 'person_id' => $person->id), true)
+            ['id' => $person->id],
+            $this->generateUrl(
+                'api_chats_chat_participant',
+                ['chat' => $chat->id, 'person_id' => $person->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -645,8 +654,12 @@ class ChatController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('label' => $label),
-            $this->generateUrl('api_chats_chat_label', array('chat_id' => $chat->id, 'label' => $label), true)
+            ['label' => $label],
+            $this->generateUrl(
+                'api_chats_chat_label',
+                ['chat_id' => $chat->id, 'label' => $label],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 

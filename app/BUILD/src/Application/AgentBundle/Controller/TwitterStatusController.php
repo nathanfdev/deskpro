@@ -35,6 +35,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TwitterAccount;
 use Application\DeskPRO\Entity\TwitterAccountStatus;
 use Application\DeskPRO\Entity\TwitterAccountStatusNote;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Handles creating/editing of Twitter Accounts.
@@ -732,7 +733,7 @@ class TwitterStatusController extends AbstractController
                     'change_assignment'  => $new_assignment,
                     'assignment_picture' => ($account_status->agent
                         ? $account_status->agent->getPictureUrl(16)
-                        : $this->generateUrl('serve_default_picture', array('s' => 16, 'size-fit' => 1), true)
+                        : $this->generateUrl('serve_default_picture', array('s' => 16, 'size-fit' => 1), UrlGeneratorInterface::ABSOLUTE_URL)
                     ),
                     'old_assignment'    => $old_assign,
                     'old_agent_id'      => $old_agent_id,

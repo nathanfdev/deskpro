@@ -56,15 +56,6 @@ class WidgetPerson
     private $display_name;
 
     /**
-     * Person email address.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    private $primary_email_address;
-
-    /**
      * True if person is agent.
      *
      * @var bool
@@ -88,10 +79,9 @@ class WidgetPerson
      */
     public function __construct(PersonEntity $person, Avatar $avatar)
     {
-        $this->id                    = $person->getId();
-        $this->display_name          = $person->getDisplayNameUser();
-        $this->primary_email_address = $person->getPrimaryEmailAddress();
-        $this->is_agent              = $person->isAgent();
-        $this->avatar                = $avatar;
+        $this->id           = $person->getId();
+        $this->display_name = $person->getDisplayNameUser();
+        $this->is_agent     = $person->isAgent();
+        $this->avatar       = $avatar;
     }
 }

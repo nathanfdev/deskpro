@@ -40,6 +40,7 @@ use Application\DeskPRO\Searcher\NewsSearch;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * SWG\Resource(
@@ -232,8 +233,12 @@ class NewsController extends AbstractController
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $news->id),
-            $this->generateUrl('api_news_news', array('news_id' => $news->id), true)
+            ['id' => $news->id],
+            $this->generateUrl(
+                'api_news_news',
+                ['news_id' => $news->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -508,8 +513,12 @@ class NewsController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('id' => $comment->id),
-            $this->generateUrl('api_news_news_comments_comment', array('news_id' => $news->id, 'comment_id' => $comment->id), true)
+            ['id' => $comment->id],
+            $this->generateUrl(
+                'api_news_news_comments_comment',
+                ['news_id' => $news->id, 'comment_id' => $comment->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -734,8 +743,12 @@ class NewsController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('label' => $label),
-            $this->generateUrl('api_news_news_label', array('news_id' => $news->id, 'label' => $label), true)
+            ['label' => $label],
+            $this->generateUrl(
+                'api_news_news_label',
+                ['news_id' => $news->id, 'label' => $label],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -922,8 +935,12 @@ class NewsController extends AbstractController
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $category->id),
-            $this->generateUrl('api_news_category', array('category_id' => $category->id), true)
+            ['id' => $category->id],
+            $this->generateUrl(
+                'api_news_category',
+                ['category_id' => $category->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1202,8 +1219,12 @@ class NewsController extends AbstractController
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $group_id),
-            $this->generateUrl('api_news_category_group', array('category_id' => $category->id, 'group_id' => $group_id), true)
+            ['id' => $group_id],
+            $this->generateUrl(
+                'api_news_category_group',
+                ['category_id' => $category->id, 'group_id' => $group_id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 

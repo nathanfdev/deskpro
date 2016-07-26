@@ -76,6 +76,8 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @Assert\Valid()
      */
     protected $attachments;
 
@@ -231,7 +233,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     }
 
     /**
-     * @return ArrayCollection
+     * @return ArrayCollection|CustomDataArticle[]
      */
     public function getCustomData()
     {
@@ -401,6 +403,14 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     public function getCategories()
     {
         return $this->categories;
+    }
+
+    /**
+     * @return ArrayCollection|ArticleAttachment[]
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
     }
 
     /**
@@ -818,6 +828,16 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
                 'fieldName'    => 'task_links',
                 'targetEntity' => TaskLinkedArticle::class,
                 'mappedBy'     => 'article',
+            ]
+        );
+
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'comments',
+                'targetEntity' => ArticleComment::class,
+                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'mappedBy'     => 'article',
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );
 

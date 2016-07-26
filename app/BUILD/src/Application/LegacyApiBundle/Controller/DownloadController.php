@@ -40,6 +40,7 @@ use Application\DeskPRO\Searcher\DownloadSearch;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * SWG\Resource(
@@ -341,8 +342,12 @@ class DownloadController extends AbstractController
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $download->id),
-            $this->generateUrl('api_downloads_download', array('download_id' => $download->id), true)
+            ['id' => $download->id],
+            $this->generateUrl(
+                'api_downloads_download',
+                ['download_id' => $download->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -642,8 +647,12 @@ class DownloadController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('id' => $comment->id),
-            $this->generateUrl('api_downloads_download_comments_comment', array('download_id' => $download->id, 'comment_id' => $comment->id), true)
+            ['id' => $comment->id],
+            $this->generateUrl(
+                'api_downloads_download_comments_comment',
+                ['download_id' => $download->id, 'comment_id' => $comment->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -874,8 +883,11 @@ class DownloadController extends AbstractController
         $this->em->flush();
 
         return $this->createApiCreateResponse(
-            array('label' => $label),
-            $this->generateUrl('api_downloads_download_label', array('download_id' => $download->id, 'label' => $label), true)
+            ['label' => $label],
+            $this->generateUrl(
+                'api_downloads_download_label', ['download_id' => $download->id, 'label' => $label],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1088,8 +1100,12 @@ class DownloadController extends AbstractController
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $category->id),
-            $this->generateUrl('api_downloads_category', array('category_id' => $category->id), true)
+            ['id' => $category->id],
+            $this->generateUrl(
+                'api_downloads_category',
+                ['category_id' => $category->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1385,8 +1401,12 @@ class DownloadController extends AbstractController
         }
 
         return $this->createApiCreateResponse(
-            array('id' => $group_id),
-            $this->generateUrl('api_downloads_category_group', array('category_id' => $category->id, 'group_id' => $group_id), true)
+            ['id' => $group_id],
+            $this->generateUrl(
+                'api_downloads_category_group',
+                ['category_id' => $category->id, 'group_id' => $group_id],
+                true
+            )
         );
     }
 

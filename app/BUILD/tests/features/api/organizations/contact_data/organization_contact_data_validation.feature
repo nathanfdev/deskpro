@@ -1,11 +1,11 @@
+@new
 Feature: /organizations endpoint
   To check contact data validation
   As an API user
   I want an API endpoint
 
   Background:
-    Given I install the api data set
-    And my request is authenticated
+    Given I'm authenticated as "admin"
 
   Scenario: I check contact data validation
     When I send a POST request to "/api/v2/organizations" with body:

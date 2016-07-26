@@ -35,10 +35,12 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use DateTime;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Basic properties on content.
@@ -93,6 +95,8 @@ abstract class ContentAbstract extends DomainObject
      * Content title.
      *
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $title = '';
 
@@ -100,6 +104,8 @@ abstract class ContentAbstract extends DomainObject
      * The main content for the item. This should be HTML!
      *
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $content = '';
 
@@ -119,6 +125,8 @@ abstract class ContentAbstract extends DomainObject
 
     /**
      * @var ArrayCollection
+     *
+     * @Assert\Valid()
      */
     protected $comments;
 
@@ -140,6 +148,8 @@ abstract class ContentAbstract extends DomainObject
      * Status title.
      *
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $status;
 
@@ -222,14 +232,18 @@ abstract class ContentAbstract extends DomainObject
         ];
     }
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
+        $this->setModelField('date_created', new \DateTime());
         $this->setModelField('date_updated', new \DateTime());
-        $this['date_created'] = new \DateTime();
-        $this->revisions      = new ArrayCollection();
-        $this->labels         = new ArrayCollection();
-        $this->slug_history   = new ArrayCollection();
-        $this->comments       = new ArrayCollection();
+
+        $this->revisions    = new ArrayCollection();
+        $this->labels       = new ArrayCollection();
+        $this->slug_history = new ArrayCollection();
+        $this->comments     = new ArrayCollection();
 
         $this['status']        = self::STATUS_HIDDEN;
         $this['hidden_status'] = self::HIDDEN_STATUS_DRAFT;
@@ -267,6 +281,30 @@ abstract class ContentAbstract extends DomainObject
     public function getDateUpdated()
     {
         return $this->date_updated;
+    }
+
+    /**
+     * @param DateTime $date_created
+     *
+     * @return $this
+     */
+    public function setDateCreated(DateTime $date_created = null)
+    {
+        $this->setModelField('date_created', $date_created);
+
+        return $this;
+    }
+
+    /**
+     * @param DateTime $date_published
+     *
+     * @return $this
+     */
+    public function setDatePublished(DateTime $date_published = null)
+    {
+        $this->setModelField('date_published', $date_published);
+
+        return $this;
     }
 
     /**
@@ -375,6 +413,8 @@ abstract class ContentAbstract extends DomainObject
     public function setStatus($status)
     {
         $this->setStatusCode($status);
+
+        return $this;
     }
 
     public function setStatusCode($status_code)
@@ -457,13 +497,13 @@ abstract class ContentAbstract extends DomainObject
             return '';
         }
         $content = Strings::standardEol($this['content']);
-        $content = preg_replace("#<br\s*/?><p>#", '<p>', $content);
-        $content = preg_replace("#<p></p><br\s*/?>#", '<p>', $content);
-        $content = preg_replace("#</p><br\s*/?>#", '</p>', $content);
-        $content = preg_replace("#<br\s*/?></p>#", '</p>', $content);
-        $content = preg_replace("#<br\s*/?>?#", "\n", $content);
-        $content = preg_replace("#<p>\n?#", "\n", $content);
-        $content = preg_replace("#\n?</p>#", "\n", $content);
+        $content = RegexUtils::safePregReplace("#<br\s*/?><p>#", '<p>', $content);
+        $content = RegexUtils::safePregReplace("#<p></p><br\s*/?>#", '<p>', $content);
+        $content = RegexUtils::safePregReplace("#</p><br\s*/?>#", '</p>', $content);
+        $content = RegexUtils::safePregReplace("#<br\s*/?></p>#", '</p>', $content);
+        $content = RegexUtils::safePregReplace("#<br\s*/?>?#", "\n", $content);
+        $content = RegexUtils::safePregReplace("#<p>\n?#", "\n", $content);
+        $content = RegexUtils::safePregReplace("#\n?</p>#", "\n", $content);
         $content = html_entity_decode(Strings::stripTags($content), \ENT_QUOTES, 'UTF-8');
         $content = str_replace('&nbsp;', ' ', $content);
         $content = trim($content);
@@ -475,7 +515,7 @@ abstract class ContentAbstract extends DomainObject
         }
 
         $content = implode("\n", $lines);
-        $content = preg_replace("#\n{3,}#", "\n\n", $content);
+        $content = RegexUtils::safePregReplace("#\n{3,}#", "\n\n", $content);
 
         return $content;
     }
@@ -684,6 +724,8 @@ abstract class ContentAbstract extends DomainObject
         }
         $this->setModelField('date_last_comment', new \DateTime());
         $comment->setObject($this);
+
+        $this->comments->add($comment);
     }
 
     public function removeComment()
@@ -838,6 +880,18 @@ abstract class ContentAbstract extends DomainObject
     public function getTotalRating()
     {
         return $this->total_rating;
+    }
+
+    /**
+     * @param int $view_count
+     *
+     * @return $this
+     */
+    public function setViewCount($view_count)
+    {
+        $this->setModelField('view_count', $view_count);
+
+        return $this;
     }
 
     /**

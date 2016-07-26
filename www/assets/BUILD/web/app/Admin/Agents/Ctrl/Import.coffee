@@ -68,7 +68,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
           return if data.data.length? # catch array instead of object, possible if no results
 
-          for email, entry of data.data
+          for own email, entry of data.data
             @invited++ if entry.person_id?
 
             if 'validation_error' == entry.error_code

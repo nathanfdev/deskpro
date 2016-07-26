@@ -110,20 +110,24 @@ trait HelperMethods
     }
 
     /**
-     * @param string $template_name
+     * @param string $templateName
      *
      * @return Template
      */
-    private function getEditThemeSetTemplate($template_name)
+    private function getEditThemeSetTemplate($templateName)
     {
-        $theme          = $this->getTheme();
-        $edit_theme_set = $this->getEditThemeSet();
+        $theme        = $this->getTheme();
+        $editThemeSet = $this->getEditThemeSet();
 
-        if (!array_key_exists($template_name, $theme->getTemplateMap())) {
+        if (!$editThemeSet) {
+            return;
+        }
+
+        if (!array_key_exists($templateName, $theme->getTemplateMap())) {
             throw $this->createNotFoundException('Unable to find requested template');
         }
 
-        $template = $this->getThemeResolver()->getThemeSetTemplateFromDb($edit_theme_set, $template_name);
+        $template = $this->getThemeResolver()->getThemeSetTemplateFromDb($editThemeSet, $templateName);
 
         return $template;
     }

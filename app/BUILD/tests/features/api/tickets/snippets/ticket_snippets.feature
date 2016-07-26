@@ -145,11 +145,11 @@ Feature: /ticket_snippets endpoint
   Scenario: I sideload snippet w/o content
     When I send a GET request to "/api/v2/ticket_snippets/11/content"
     Then the response status code should be 200
-    And the JSON node "data" should be null
+    And the JSON node "data" should have 0 elements
 
     When I send a GET request to "/api/v2/ticket_snippets/11?include=text_snippet_content"
     Then the response status code should be 200
-    And the JSON node "linked.text_snippet_content.11" should be null
+    And the JSON node "linked.text_snippet_content.11" should have 0 elements
 
   Scenario: I try to create a ticket snippet with empty request
     When I send a POST request to "/api/v2/ticket_snippets"

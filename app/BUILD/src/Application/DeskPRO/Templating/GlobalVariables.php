@@ -43,10 +43,10 @@ use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables as BaseGlobalVaria
 class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInterface
 {
     /** @var array */
-    protected $variables = array();
+    protected $variables = [];
 
     /** @var array simple cache of isAppAllowed() multiple calls */
-    protected $app_allowed_checks = array();
+    protected $app_allowed_checks = [];
 
     public function setVariable($name, $value)
     {
@@ -174,16 +174,16 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
         if ($accounts === null) {
             $accounts = array_map(function ($a) {
-                return array(
+                return [
                     'id'                    => $a->id,
                     'address'               => $a->address,
                     'other_addresses'       => $a->other_addresses,
                     'all_addresses'         => $a->getAllAddresses(),
                     'incoming_account_type' => $a->getIncomingAccountType(),
                     'outgoing_account_type' => $a->getOutgoingAccountType(),
-                );
+                ];
             }, App::$container->getEmailAccountManager()
-                              ->getAllAccounts());
+                ->getAllAccounts());
         }
 
         return $accounts;
@@ -218,6 +218,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
     {
         return App::getDataService('AgentTeam');
     }
+
     public function getAgentTeams()
     {
         return App::getDataService('AgentTeam');
@@ -405,5 +406,10 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         $installTime      = $settingsResolver->getGlobalSettings()->get('core.install_timestamp');
 
         return $count < 500 && $installTime && $installTime > time() - 90 * 60 * 60 * 24;
+    }
+
+    public function brandDefaultDepartment($type)
+    {
+        return App::get('brand_form_helper')->getDefaultDepartment($type);
     }
 }

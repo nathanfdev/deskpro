@@ -341,6 +341,13 @@ define(function() {
   });
 
   routes.push({
+    id: 'agents.usersources.deskpro',
+    url: '/deskpro',
+    templateName: 'Usersources/edit-instance.html',
+    controller: 'Admin_Usersources_Ctrl_EditDeskproInstance'
+  });
+
+  routes.push({
     id: 'agents.usersources.id',
     url: '/{id:[\\d\\w]+}',
     templateName: 'Usersources/edit-instance.html',

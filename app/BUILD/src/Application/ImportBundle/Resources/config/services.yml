@@ -1,31 +1,478 @@
 services:
 
-  deskpro.import.formatter:
-    class: Application\ImportBundle\Generator\Exporter\Formatter\Formatter
-    factory: [Application\ImportBundle\Generator\Exporter\Formatter\FormatterFactory, create]
+  dp.importer_logger:
+    class: Monolog\Logger
+    arguments: ["importer"]
 
-  deskpro.import.csv_reader_factory:
-    class: Application\ImportBundle\Reader\Csv\CsvReaderFactory
+  dp.importer.exporter_reader:
+    class: Application\ImportBundle\Exporter\Reader\JsonReader
 
-  deskpro.import.json_reader_factory:
-    class: Application\ImportBundle\Reader\Json\JsonReaderFactory
+  dp.importer.exporter:
+    class: Application\ImportBundle\Exporter\Exporter
+    arguments: ["@dp.importer.exporter_reader", "@serializer", "@dp.importer_logger"]
 
-  deskpro.import.deskpro_reader_factory:
-    class: Application\ImportBundle\Reader\DeskPRO\DeskPROReaderFactory
-    arguments: ["@service_container"]
+  dp.importer.writer:
+    class: Application\ImportBundle\Writer\Writer
+    arguments:
+      - "@dp.importer.writer.entity_handler_registry"
+      - "@doctrine.orm.entity_manager"
+      - "@deskpro.search.entity_listener"
+      - "@dp.importer_logger"
 
-  deskpro.import.osticket_reader_factory:
-    class: Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory
-
-  deskpro.import.zendesk_reader_factory:
-    class: Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderFactory
-
-  deskpro.import:
+  dp.importer:
     class: Application\ImportBundle\Importer\Importer
-    factory: [Application\ImportBundle\Importer\ImporterFactory, create]
+    arguments: ["@dp.importer.exporter", "@validator", "@dp.importer.writer", "@serializer", "@dp.importer_logger"]
+
+  dp.importer.entity_persister:
+    class: Application\ImportBundle\Writer\EntityPersister
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@ticket_manager"
+      - "@validator"
+      - "@dp.importer.writer.mapper.import_map"
+      - "@dp.importer_logger"
+
+  # Mappers
+  dp.importer.writer.mapper_registry:
+    class: Application\ImportBundle\Writer\Mapper\MapperRegistry
     arguments: ["@service_container"]
 
-  deskpro.import.batch_exporter:
-    class: Application\ImportBundle\Generator\Exporter\Batch
-    factory: [Application\ImportBundle\Generator\Exporter\BatchFactory, createExporter]
-    arguments: ["@deskpro.import.formatter"]
+  dp.importer.writer.mapper.article:
+    class: Application\ImportBundle\Writer\Mapper\ArticleMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.article_category:
+    class: Application\ImportBundle\Writer\Mapper\ArticleCategoryMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.article_attachment:
+    class: Application\ImportBundle\Writer\Mapper\ArticleAttachmentMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.article_comment:
+    class: Application\ImportBundle\Writer\Mapper\ArticleCommentMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.custom_def_person:
+    class: Application\ImportBundle\Writer\Mapper\CustomDefPersonMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.custom_def_ticket:
+    class: Application\ImportBundle\Writer\Mapper\CustomDefTicketMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.custom_def_organization:
+    class: Application\ImportBundle\Writer\Mapper\CustomDefOrganizationMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.custom_def_article:
+    class: Application\ImportBundle\Writer\Mapper\CustomDefArticleMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.custom_def_feedback:
+    class: Application\ImportBundle\Writer\Mapper\CustomDefFeedbackMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.department:
+    class: Application\ImportBundle\Writer\Mapper\DepartmentMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.download:
+    class: Application\ImportBundle\Writer\Mapper\DownloadMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.download_category:
+    class: Application\ImportBundle\Writer\Mapper\DownloadCategoryMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.feedback:
+    class: Application\ImportBundle\Writer\Mapper\FeedbackMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.feedback_attachment:
+    class: Application\ImportBundle\Writer\Mapper\FeedbackAttachmentMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.feedback_category:
+    class: Application\ImportBundle\Writer\Mapper\FeedbackCategoryMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.language:
+    class: Application\ImportBundle\Writer\Mapper\LanguageMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.news:
+    class: Application\ImportBundle\Writer\Mapper\NewsMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.news_category:
+    class: Application\ImportBundle\Writer\Mapper\NewsCategoryMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.organization:
+    class: Application\ImportBundle\Writer\Mapper\OrganizationMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.organization_contact_data:
+    class: Application\ImportBundle\Writer\Mapper\OrganizationContactDataMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.person:
+    class: Application\ImportBundle\Writer\Mapper\PersonMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.person_contact_data:
+    class: Application\ImportBundle\Writer\Mapper\PersonContactDataMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.person_email:
+    class: Application\ImportBundle\Writer\Mapper\PersonEmailMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.product:
+    class: Application\ImportBundle\Writer\Mapper\ProductMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.ticket:
+    class: Application\ImportBundle\Writer\Mapper\TicketMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.ticket_message:
+    class: Application\ImportBundle\Writer\Mapper\TicketMessageMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.ticket_priority:
+    class: Application\ImportBundle\Writer\Mapper\TicketPriorityMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.ticket_category:
+    class: Application\ImportBundle\Writer\Mapper\TicketCategoryMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.ticket_attachment:
+    class: Application\ImportBundle\Writer\Mapper\TicketAttachmentMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.ticket_layout:
+    class: Application\ImportBundle\Writer\Mapper\TicketLayoutMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.ticket_workflow:
+    class: Application\ImportBundle\Writer\Mapper\TicketWorkflowMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.usergroup:
+    class: Application\ImportBundle\Writer\Mapper\UserGroupMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.object_lang:
+    class: Application\ImportBundle\Writer\Mapper\ObjectLangMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.import_map:
+    class: Application\ImportBundle\Writer\Mapper\ImportMapMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.email_account:
+    class: Application\ImportBundle\Writer\Mapper\EmailAccountMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  # Writer helpers
+  dp.importer.writer.helper_registry:
+    class: Application\ImportBundle\Writer\Helper\HelperRegistry
+    arguments: ["@service_container"]
+
+  dp.importer.writer.helper.blob_adapter:
+    class: Application\ImportBundle\Writer\Helper\BlobAdapter
+    arguments: ["@blob.storage"]
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.attachment:
+    class: Application\ImportBundle\Writer\Helper\AttachmentHelper
+    arguments:
+      - "@dp.importer.writer.helper.create_entity"
+      - "@dp.importer.writer.helper.person"
+      - "@dp.importer.writer.helper.blob_adapter"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.create_entity:
+    class: Application\ImportBundle\Writer\Helper\CreateEntityHelper
+    arguments: ["@dp.importer.writer.mapper.import_map", "@dp.importer_logger"]
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.category:
+    class: Application\ImportBundle\Writer\Helper\CategoryHelper
+    arguments: ["@dp.importer.entity_persister", "@dp.importer_logger"]
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.custom_data:
+    class: Application\ImportBundle\Writer\Helper\CustomDataHelper
+    arguments: ["@dp.importer.writer.mapper.import_map", "@dp.importer.entity_persister", "@dp.importer_logger"]
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.contact_data:
+    class: Application\ImportBundle\Writer\Helper\ContactDataHelper
+    arguments: ["@dp.importer.writer.helper.create_entity", "@dp.importer.entity_persister",  "@dp.importer_logger"]
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.comment:
+    class: Application\ImportBundle\Writer\Helper\CommentHelper
+    arguments:
+      - "@dp.importer.writer.helper.create_entity"
+      - "@dp.importer.writer.helper.person"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.label:
+    class: Application\ImportBundle\Writer\Helper\LabelHelper
+    arguments: ["@dp.importer_logger"]
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.language_helper:
+    class: Application\ImportBundle\Writer\Helper\LanguageHelper
+    arguments: ["@dp.importer.writer.mapper.language", "@dp.importer_logger"]
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.user_group:
+    class: Application\ImportBundle\Writer\Helper\UserGroupHelper
+    arguments: ["@dp.importer.writer.mapper.usergroup", "@dp.importer.entity_persister", "@dp.importer_logger"]
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.person:
+    class: Application\ImportBundle\Writer\Helper\PersonHelper
+    arguments:
+      - "@dp.importer.writer.mapper.person"
+      - "@dp.importer.writer.mapper.import_map"
+      - "@validator"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.organization:
+    class: Application\ImportBundle\Writer\Helper\OrganizationHelper
+    arguments:
+      - "@dp.importer.writer.mapper.organization"
+      - "@dp.importer.writer.mapper.import_map"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  # Entity handlers
+  dp.importer.writer.entity_handler_registry:
+    class: Application\ImportBundle\Writer\EntityHandler\EntityHandlerRegistry
+    arguments: ["@service_container"]
+
+  dp.importer.writer.entity_handler.download:
+    class: Application\ImportBundle\Writer\EntityHandler\DownloadHandler
+    arguments:
+      - "@dp.importer.writer.mapper_registry"
+      - "@dp.importer.writer.helper_registry"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.entity_handler }
+
+  dp.importer.writer.entity_handler.feedback_custom_def:
+    class: Application\ImportBundle\Writer\EntityHandler\FeedbackCustomDefHandler
+    arguments:
+      - "@dp.importer.writer.mapper_registry"
+      - "@dp.importer.writer.helper_registry"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.entity_handler }
+
+  dp.importer.writer.entity_handler.feedback:
+    class: Application\ImportBundle\Writer\EntityHandler\FeedbackHandler
+    arguments:
+      - "@dp.importer.writer.mapper_registry"
+      - "@dp.importer.writer.helper_registry"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.entity_handler }
+
+  dp.importer.writer.entity_handler.article_custom_def:
+    class: Application\ImportBundle\Writer\EntityHandler\ArticleCustomDefHandler
+    arguments:
+      - "@dp.importer.writer.mapper_registry"
+      - "@dp.importer.writer.helper_registry"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.entity_handler }
+
+  dp.importer.writer.entity_handler.article:
+    class: Application\ImportBundle\Writer\EntityHandler\ArticleHandler
+    arguments:
+      - "@dp.importer.writer.mapper_registry"
+      - "@dp.importer.writer.helper_registry"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.entity_handler }
+
+  dp.importer.writer.entity_handler.article_category:
+    class: Application\ImportBundle\Writer\EntityHandler\ArticleCategoryHandler
+    arguments:
+      - "@dp.importer.writer.mapper_registry"
+      - "@dp.importer.writer.helper_registry"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.entity_handler }
+
+  dp.importer.writer.entity_handler.news:
+    class: Application\ImportBundle\Writer\EntityHandler\NewsHandler
+    arguments:
+      - "@dp.importer.writer.mapper_registry"
+      - "@dp.importer.writer.helper_registry"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.entity_handler }
+
+  dp.importer.writer.entity_handler.person_custom_def:
+    class: Application\ImportBundle\Writer\EntityHandler\PersonCustomDefHandler
+    arguments:
+      - "@dp.importer.writer.mapper_registry"
+      - "@dp.importer.writer.helper_registry"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.entity_handler }
+
+  dp.importer.writer.entity_handler.person:
+    class: Application\ImportBundle\Writer\EntityHandler\PersonHandler
+    arguments:
+      - "@dp.importer.writer.mapper_registry"
+      - "@dp.importer.writer.helper_registry"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.entity_handler }
+
+  dp.importer.writer.entity_handler.ticket_custom_def:
+    class: Application\ImportBundle\Writer\EntityHandler\TicketCustomDefHandler
+    arguments:
+      - "@dp.importer.writer.mapper_registry"
+      - "@dp.importer.writer.helper_registry"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.entity_handler }
+
+  dp.importer.writer.entity_handler.ticket:
+    class: Application\ImportBundle\Writer\EntityHandler\TicketHandler
+    arguments:
+      - "@dp.importer.writer.mapper_registry"
+      - "@dp.importer.writer.helper_registry"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.entity_handler }
+
+  dp.importer.writer.entity_handler.organization_custom_def:
+    class: Application\ImportBundle\Writer\EntityHandler\OrganizationCustomDefHandler
+    arguments:
+      - "@dp.importer.writer.mapper_registry"
+      - "@dp.importer.writer.helper_registry"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.entity_handler }
+
+  dp.importer.writer.entity_handler.organization:
+    class: Application\ImportBundle\Writer\EntityHandler\OrganizationHandler
+    arguments:
+      - "@dp.importer.writer.mapper_registry"
+      - "@dp.importer.writer.helper_registry"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.entity_handler }

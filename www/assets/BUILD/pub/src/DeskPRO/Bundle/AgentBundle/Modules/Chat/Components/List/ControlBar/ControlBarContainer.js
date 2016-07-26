@@ -6,7 +6,7 @@ import { ControlBar } from '../../../../Common/Components/ListFrame/ControlBar/C
 import { currentListParamsSelector, viewModeSelector, cardFieldsSelector, tableFieldsSelector }
   from '../../../Selectors/list';
 import { listFiltersSelector } from '../../../Selectors/filters';
-import { applyParams, toggleFieldVisibility, changeFieldOrder } from '../../../Actions/chatListActions';
+import { applyParams, toggleFieldVisibility, changeFieldOrder } from '../../../Actions/listActions';
 
 @connect(state => ({
   currentParams: currentListParamsSelector(state),

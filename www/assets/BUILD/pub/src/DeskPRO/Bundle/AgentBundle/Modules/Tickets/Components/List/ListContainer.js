@@ -8,7 +8,7 @@ import { selectedSelector } from '../../../Application/Selectors/massActions';
 import { applyListParams } from '../../Actions/listActions';
 
 @connect(state => ({
-  isLoaded:          isLoadedCollectionSelectorFactory('Person', 'tickets')(state),
+  isLoaded:          isLoadedCollectionSelectorFactory('Ticket', 'list')(state),
   currentListParams: listParamsSelector(state),
   selected:          selectedSelector(state),
   pagination:        paginationSelector(state),

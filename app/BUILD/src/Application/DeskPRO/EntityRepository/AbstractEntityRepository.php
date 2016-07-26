@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Orb\Util\Arrays;
@@ -148,5 +147,10 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
     public function getName()
     {
         return $this->getClassMetadata()->getName();
+    }
+
+    public function createSearchQueryBuilder($entityAlias)
+    {
+        return $this->createQueryBuilder($entityAlias);
     }
 }

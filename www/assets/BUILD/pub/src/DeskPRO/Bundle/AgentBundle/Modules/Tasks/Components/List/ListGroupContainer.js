@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
-import { groupCollection } from 'Util/ListGroup';
+import { groupCollection } from 'DeskPRO/Component/Util/ListGroup';
 import { currentOrderBySelector, elementsSelector } from '../../Selectors/list';
 import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';

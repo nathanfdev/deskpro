@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { toggleSelectedAction } from '../../../../../Application/Actions/massActions';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { toggleSelectedAction } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/massActions';
+import { selectedSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/massActions';
 import { cardFieldsSelector } from '../../../../Selectors/list';
 import { TicketCard } from './TicketCard';
-import { collectionSelectorFactory } from '../../../../../../../AppBundle/Modules/RecordsStore';
-import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 
 @connect(state => ({
   tickets:  collectionSelectorFactory('Ticket', 'list')(state),

@@ -89,6 +89,8 @@ class ContentSlugManager
     {
         $existing_slug = $content->getSlug();
         $expected_slug = Strings::slugifyTitle($content->getTitle());
+        // we're about trim slug here, to ensure it, otherwise it will be trimmed on query an we are expecting error
+        $expected_slug = substr($expected_slug, 0, 94);
 
         if ($existing_slug === $expected_slug) {
             return; // already valid and set, no need to do more here

@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -72,7 +73,7 @@ class CustomDataHelper
         if (strpos($param, $fullPrefix) !== 0) {
             return false;
         }
-        if (preg_match('/^\d+$/', substr($param, strlen($fullPrefix)), $matches)) {
+        if (RegexUtils::safePregMatch('/^\d+$/', substr($param, strlen($fullPrefix)), $matches)) {
             return (int) $matches[0];
         }
 

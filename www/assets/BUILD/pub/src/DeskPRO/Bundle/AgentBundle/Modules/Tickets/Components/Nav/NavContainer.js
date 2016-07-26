@@ -19,5 +19,4 @@ export class NavContainer extends Component {
   render() {
     return <Nav {...this.props} />;
   }
-
 }

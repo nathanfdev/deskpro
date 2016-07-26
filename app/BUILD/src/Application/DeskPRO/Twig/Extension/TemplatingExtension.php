@@ -45,6 +45,7 @@ use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Component\Filesystem\SafeFile;
+use DeskPRO\Component\Util\RegexUtils;
 use Orb\Auth\Adapter\IframeSsoInterface;
 use Orb\Auth\Adapter\JsSsoInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
@@ -55,7 +56,6 @@ use Orb\Util\Strings;
 use Orb\Util\Util;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -645,7 +645,7 @@ class TemplatingExtension extends \Twig_Extension
         $string = htmlspecialchars($string);
         foreach ($words as $w) {
             $w      = htmlspecialchars($w);
-            $string = preg_replace('#(\\b)('.preg_quote($w, '#').')(\\b)#iu', '$1<em>$2</em>$3', $string);
+            $string = RegexUtils::safePregReplace('#(\\b)('.preg_quote($w, '#').')(\\b)#iu', '$1<em>$2</em>$3', $string);
         }
 
         return $string;
@@ -1571,8 +1571,8 @@ class TemplatingExtension extends \Twig_Extension
 
     public function plain_template_filter($content)
     {
-        $content = preg_replace('#<\s*script#i', '<deskpro_script', $content);
-        $content = preg_replace('#<\s*/\s*script#i', '</deskpro_script', $content);
+        $content = RegexUtils::safePregReplace('#<\s*script#i', '<deskpro_script', $content);
+        $content = RegexUtils::safePregReplace('#<\s*/\s*script#i', '</deskpro_script', $content);
 
         return $content;
     }
@@ -1584,7 +1584,7 @@ class TemplatingExtension extends \Twig_Extension
             return false;
         }
 
-        return preg_match($regex, $str);
+        return RegexUtils::safePregMatch($regex, $str);
     }
 
     public function set_tplvar($context, $k, $v)
@@ -1725,7 +1725,7 @@ class TemplatingExtension extends \Twig_Extension
     {
         // Inserts a 0-width space at position $length
         // Browsers will wrap at this point in long strings
-        return preg_replace('/(.{'.$length.'})/u', '$1'.Strings::chrUtf8(8203), $string);
+        return RegexUtils::safePregReplace('/(.{'.$length.'})/u', '$1'.Strings::chrUtf8(8203), $string);
     }
 
     public function regexReplace($string, $regex, $replace, $limit = -1)
@@ -1736,7 +1736,7 @@ class TemplatingExtension extends \Twig_Extension
             return $string;
         }
 
-        $result = preg_replace($regex, $replace, $string, $limit);
+        $result = RegexUtils::safePregReplace($regex, $replace, $string, $limit);
 
         if ($result === null) {
             return $string;

@@ -59,6 +59,8 @@ class ArticleCategory extends CategoryAbstract
      * @JMS\Expose()
      * @JMS\Groups("articles_categories")
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\ArticleCategory>>")
+     *
+     * @var ArrayCollection|ArticleCategory[]
      */
     protected $children;
 
@@ -143,6 +145,7 @@ class ArticleCategory extends CategoryAbstract
     {
         $this->articles   = new ArrayCollection();
         $this->usergroups = new ArrayCollection();
+        $this->children   = new ArrayCollection();
     }
 
     /**
@@ -186,7 +189,7 @@ class ArticleCategory extends CategoryAbstract
     }
 
     /**
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return ArrayCollection|Usergroup[]
      */
     public function getUserGroups()
     {
@@ -194,7 +197,7 @@ class ArticleCategory extends CategoryAbstract
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Usergroup $usergroup
+     * @param Usergroup $usergroup
      */
     public function addUsergroup(Usergroup $usergroup)
     {
@@ -224,15 +227,14 @@ class ArticleCategory extends CategoryAbstract
     }
 
     /**
-     * Remove all user groups.
-     *
-     * @return $this
+     * @param ArticleCategory $category
      */
-    public function resetUserGroups()
+    public function addChild(ArticleCategory $category)
     {
-        $this->usergroups->clear();
-
-        return $this;
+        if (!$this->children->contains($category)) {
+            $category->setParent($this);
+            $this->children->add($category);
+        }
     }
 
     ############################################################################

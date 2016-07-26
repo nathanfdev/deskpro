@@ -16,6 +16,11 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.map:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\MapHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.closure:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\DeferredHandler
     tags:

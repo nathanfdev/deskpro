@@ -184,7 +184,7 @@ define [
     autoRelease: ->
       time_cut = (new Date()).getTime() - 10000
       for own type, entities of @entity_cache
-        for ent_id, ent of entities
+        for own ent_id, ent of entities
           if ent._obj_refc < 1 and ent._obj_time < time_cut
             delete @entity_cache[type][ent_id]
 

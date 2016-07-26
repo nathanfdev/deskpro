@@ -12,7 +12,7 @@ function shouldComponentUpdate(nextProps, nextState) {
 }
 
 /**
- * Makes the given component "pure"
+ * Adds default shouldComponentUpdate() implementation to a given component
  *
  * @param {object} component React Component
  * @return {bool} If shouldComponentUpdate

@@ -1,8 +1,0 @@
-id;name;email;is_agent
-1;Joe Smith;joe.smith@example.com;true
-2;Angry Customer;angry.customer@example.com;false
-3;Some Customer;some@email.tld;false
-4;Another Customer;another@email.tld;false
-5;Some Agent;agent@email.tld;true
-6;Some Agent 2;agent2@email.tld;true
-7;Some Agent 3;agent3@email.tld;true

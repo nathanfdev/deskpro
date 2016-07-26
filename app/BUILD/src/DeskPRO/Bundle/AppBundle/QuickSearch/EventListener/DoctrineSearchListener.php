@@ -39,6 +39,7 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -208,7 +209,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
                     'pe.email LIKE :query',
                     "CONCAT(CONCAT(p.first_name, ' '), p.last_name) LIKE :query"
                 ))
-                ->setParameter('query', '%'.$this->escapeLike(preg_replace('#\s+#', ' ', $request->getQuery())).'%')
+                ->setParameter('query', '%'.$this->escapeLike(RegexUtils::safePregReplace('#\s+#', ' ', $request->getQuery())).'%')
             ;
         }
 

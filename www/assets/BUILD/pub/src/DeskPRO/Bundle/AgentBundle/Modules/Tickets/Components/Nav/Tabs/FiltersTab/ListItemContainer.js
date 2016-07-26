@@ -5,7 +5,7 @@ import { ListItem, ListItemLabelSpinner, ListItemStatefulContainer }
 import { routingStateSelector } from '../../../../../Application/Selectors/routing';
 import { startFilterEditing } from '../../../../Actions/navActions';
 import { applyListParams } from '../../../../Actions/listActions';
-import { FilterEditPopupContainer } from '../../FilterEditPopupContainer';
+import { ListGroupingModalContainer } from '../../ListGroupingModalContainer';
 import { loadingFilterIdsSelector } from '../../../../Selectors/nav';
 import { urlSanitize } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Service/routing';
 
@@ -54,8 +54,6 @@ export class ListItemContainer extends Component {
     return label || '—';
   }
 
-  getAttachTarget = () => this.refs.item;
-
   startFilterEditing(filterId) {
     return () => this.props.dispatch(startFilterEditing(filterId));
   }
@@ -90,7 +88,7 @@ export class ListItemContainer extends Component {
           <div part="label">{label}</div>
           <div part="nested">
             {children}
-            {isTopLevel && <FilterEditPopupContainer attachTo={this.getAttachTarget} filterId={id} />}
+            {isTopLevel && <ListGroupingModalContainer attachTo={this.refs.item} filterId={id} />}
           </div>
         </ListItem>
       </ListItemStatefulContainer>

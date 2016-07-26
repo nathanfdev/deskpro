@@ -163,7 +163,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           when "date", "datetime"
             if fieldModel.options?.date_valid_dow?
               formTypeOpts.valid_weekdays = [false, false, false, false, false, false, false]
-              for day of fieldModel.options.date_valid_dow
+              for own day of fieldModel.options.date_valid_dow
                 formTypeOpts.valid_weekdays[day] = true
 
             if fieldModel.options.date_valid_type?

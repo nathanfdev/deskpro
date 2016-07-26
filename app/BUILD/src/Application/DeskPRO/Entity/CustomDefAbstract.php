@@ -41,6 +41,7 @@ use Application\DeskPRO\Translate\Translate;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Numbers;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A custom field definition.
@@ -48,6 +49,8 @@ use Orb\Util\Numbers;
  * @property int                                 $display_order
  * @property CustomDefAbstract|null              $parent
  * @property CustomDefAbstract[]|ArrayCollection $children
+ *
+ * @method setParent(CustomDefAbstract $parent)
  *
  * @JMS\ExclusionPolicy("all")
  */
@@ -135,6 +138,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      *
      * @JMS\Expose()
      * @JMS\Type("string")
+     *
+     * @Assert\NotBlank()
      */
     protected $title = '';
 
@@ -991,6 +996,62 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         }
 
         return $name;
+    }
+
+    /**
+     * @param string $widgetType
+     *
+     * @return $this
+     */
+    public function setWidgetType($widgetType)
+    {
+        switch ($widgetType) {
+            case self::TYPE_TEXT:
+                $this->setHandlerClass(self::HANDLER_CLASS_TEXT);
+                break;
+            case self::TYPE_TEXTAREA:
+                $this->setHandlerClass(self::HANDLER_CLASS_TEXTAREA);
+                break;
+            case self::TYPE_TOGGLE:
+                $this->setHandlerClass(self::HANDLER_CLASS_TOGGLE);
+                break;
+            case self::TYPE_HIDDEN:
+                $this->setHandlerClass(self::HANDLER_CLASS_HIDDEN);
+                break;
+            case self::TYPE_DISPLAY:
+                $this->setHandlerClass(self::HANDLER_CLASS_DISPLAY);
+                break;
+            case self::TYPE_DATE:
+                $this->setHandlerClass(self::HANDLER_CLASS_DATE);
+                break;
+            case self::TYPE_DATETIME:
+                $this->setHandlerClass(self::HANDLER_CLASS_DATETIME);
+                break;
+            case self::TYPE_CHOICE:
+                $this->setHandlerClass(self::HANDLER_CLASS_CHOICE);
+                break;
+
+            // extended choice types
+            case 'multichoice':
+                $this->setHandlerClass(self::HANDLER_CLASS_CHOICE);
+                $this->setOption('multiple', true);
+                $this->setOption('expanded', false);
+                break;
+            case 'checkbox':
+                $this->setHandlerClass(self::HANDLER_CLASS_CHOICE);
+                $this->setOption('multiple', true);
+                $this->setOption('expanded', true);
+                break;
+            case 'radio':
+                $this->setHandlerClass(self::HANDLER_CLASS_CHOICE);
+                $this->setOption('expanded', true);
+                $this->setOption('multiple', false);
+                break;
+            default:
+                throw new \Exception("Unknown widget type `$widgetType`");
+        }
+
+        return $this;
     }
 
     /**

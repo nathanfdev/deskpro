@@ -4,7 +4,7 @@ import { pureRender } from 'DeskPRO/Component/Ampliflux';
 import { ListItemStatefulContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { routingStateSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 import { urlSanitize } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Service/routing';
-import { applyParams } from '../../Actions/chatListActions.js';
+import { applyParams } from '../../Actions/listActions.js';
 
 @connect(state => ({
   hash: routingStateSelector(state)
@@ -13,13 +13,13 @@ import { applyParams } from '../../Actions/chatListActions.js';
 export class ListItemContainer extends Component {
 
   static propTypes = {
-    dispatch:     PropTypes.func.isRequired,
-    label:        PropTypes.string.isRequired,
-    listOptions:  PropTypes.object.isRequired,
-    children:     PropTypes.node,
-    activeItemId: PropTypes.string,
-    content:      PropTypes.string.isRequired,
-    hash:         PropTypes.object
+    dispatch:      PropTypes.func.isRequired,
+    label:         PropTypes.string.isRequired,
+    listOptions:   PropTypes.object.isRequired,
+    children:      PropTypes.node,
+    activeItemId:  PropTypes.string,
+    parentCountId: PropTypes.string.isRequired,
+    hash:          PropTypes.object
   };
 
   constructor(props) {
@@ -28,8 +28,8 @@ export class ListItemContainer extends Component {
   }
 
   componentDidMount = () => {
-    const { listOptions, dispatch, hash, content } = this.props;
-    const activeItemId = hash.get('nav') ? hash.get('nav').get(content) : null;
+    const { listOptions, dispatch, hash, parentCountId } = this.props;
+    const activeItemId = hash.get('nav') ? hash.get('nav').get(parentCountId) : null;
     if (activeItemId === this.itemId) {
       dispatch(applyParams(listOptions));
     }
@@ -41,13 +41,13 @@ export class ListItemContainer extends Component {
   };
 
   render = () => {
-    const { label, children, content } = this.props;
+    const { label, children, parentCountId } = this.props;
     const props = {
       label,
       children,
 
       groupId: 'nav',
-      active:  content,
+      active:  parentCountId,
       onClick: this.loadList,
       itemId:  this.itemId
     };

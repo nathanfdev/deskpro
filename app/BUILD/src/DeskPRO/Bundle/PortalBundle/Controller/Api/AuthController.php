@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
-use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
@@ -118,21 +117,5 @@ class AuthController extends AbstractApiController
             $this->container->get('language_stack')->getActiveOrDefault(),
             $this->getLastChatId()
         )));
-    }
-
-    /**
-     * @return int|null
-     */
-    protected function getLastChatId()
-    {
-        $storedChatId = $this->getWidgetOption('chat_id');
-        if ($storedChatId) {
-            $conversation = $this->getManager()->getRepository(ChatConversation::class)->find($storedChatId);
-            if ($conversation && !$conversation->getDateEnded()) {
-                return $conversation->getId();
-            }
-        }
-
-        return;
     }
 }

@@ -37,7 +37,10 @@ api:
                 - DpBehat\Data\PeopleContext
                 - DpBehat\Data\CustomDataContext
                 - DpBehat\Data\TicketLayoutContext
+                - DpBehat\Data\OrganizationContext
                 - DpBehat\Data\BlobContext
+                - DpBehat\Data\LabelContext
+                - DpBehat\BrandSettingContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
@@ -140,6 +143,7 @@ portal:
                 - DpBehat\Data\CustomDataContext
                 - DpBehat\Data\TicketLayoutContext
                 - DpBehat\PermissionContext
+                - DpBehat\BrandSettingContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:

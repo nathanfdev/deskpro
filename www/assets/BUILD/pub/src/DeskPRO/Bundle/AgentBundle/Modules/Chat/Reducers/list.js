@@ -1,9 +1,9 @@
 import { createReducer } from 'DeskPRO/Component/Ampliflux';
 import { async, setValue, setFullPayload } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
 import { constants } from '../../../Constants/Constants';
-import * as actions from '../Actions/chatListActions';
+import * as actions from '../Actions/listActions';
 
-export const initialState = {
+export const chatListInitialState = {
   async:             { done: true },
   viewMode:          constants.VIEW_MODE_CARD,
   currentListParams: {
@@ -35,7 +35,7 @@ export const initialState = {
   }
 };
 
-export default createReducer(initialState, {
+export default createReducer(chatListInitialState, {
   [actions.load]: async(
     {
       success: (state, payload) => state.set('pagination', payload.pagination),

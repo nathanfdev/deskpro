@@ -20,6 +20,7 @@ phantomjsdriver.log
 /dev/scratch/*
 !/dev/scratch/README.md
 /dev/dev_config
+bin/deskpro-importer-tools
 
 # vendors and build files
 /node_modules

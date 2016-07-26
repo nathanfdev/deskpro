@@ -359,6 +359,60 @@ class MapUtils
     }
 
     /**
+     * Returns a map containing all entries from arary1 that are not present or are different from array2.
+     *
+     * Note that the order does not matter.
+     *
+     * @param \Traversable|array $array1
+     * @param \ArrayAccess|array $array2
+     * @param string|callback    $cmp    The comparison technique. Can be '==', '===' or a custom callback.
+     *
+     * @return array
+     */
+    public static function recursiveDiff($array1, $array2, $cmp = '===')
+    {
+        $diff = [];
+
+        if (!TypeUtils::isTraversable($array1)) {
+            throw new \InvalidArgumentException('$array1 is expected to be traversable');
+        }
+        if (!TypeUtils::isArrayLike($array2)) {
+            throw new \InvalidArgumentException('$array2 is expected to be an array-like value');
+        }
+
+        foreach ($array1 as $k => $v) {
+            if (TypeUtils::isTraversable($v)) {
+                if (!isset($array2[$k]) || !TypeUtils::isTraversable($array2[$k])) {
+                    $diff[$k] = $v;
+                } else {
+                    $subDiff = self::recursiveDiff($v, $array2[$k]);
+                    if (!empty($subDiff)) {
+                        $diff[$k] = $subDiff;
+                    }
+                }
+            } elseif (!array_key_exists($k, $array2)) {
+                $diff[$k] = $v;
+            } else {
+                switch ($cmp) {
+                    case '==':
+                        $isSame = $v == $array2[$k];
+                        break;
+                    case '===':
+                        $isSame = $v === $array2[$k];
+                        break;
+                    default:
+                        $isSame = $cmp($v, $array2[$k]);
+                }
+                if (!$isSame) {
+                    $diff[$k] = $v;
+                }
+            }
+        }
+
+        return $diff;
+    }
+
+    /**
      * @param \Traversable|array $array
      *
      * @return mixed

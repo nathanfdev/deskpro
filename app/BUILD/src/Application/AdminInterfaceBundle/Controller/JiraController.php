@@ -34,6 +34,7 @@ namespace Application\AdminInterfaceBundle\Controller;
 use Application\DeskPRO\JIRA\OAuthWrapper;
 use Application\DeskPRO\Service\JIRA;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class JiraController extends AbstractController
 {
@@ -46,7 +47,10 @@ class JiraController extends AbstractController
      */
     public function tokenAction(Request $request)
     {
-        $oauth = new OAuthWrapper($this->get(JIRA::NAME), $this->generateUrl('jira_token', array(), true));
+        $oauth = new OAuthWrapper(
+            $this->get(JIRA::NAME),
+            $this->generateUrl('jira_token', array(), UrlGeneratorInterface::ABSOLUTE_URL)
+        );
 
         $verifier    = $request->get('oauth_verifier');
         $credentials = $request->getSession()->get('jira_oauth');

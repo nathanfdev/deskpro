@@ -31,12 +31,16 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Labels\Label;
+use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -53,7 +57,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @PortalLinkRoute("portal_downloads_download", route_param_map={"slug":"slug"}, type="save")
  * @PortalLinkCustom(type="serve")
  */
-class Download extends ContentAbstract implements HighlightableModelInterface
+class Download extends ContentAbstract implements HighlightableModelInterface, LabelsOwner
 {
     const CONTENT_TYPE = 'download';
 
@@ -126,6 +130,8 @@ class Download extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @param Blob $blob
+     *
+     * @return $this
      */
     public function setBlob(Blob $blob = null)
     {
@@ -137,6 +143,8 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         } else {
             $this->setModelField('blob', null);
         }
+
+        return $this;
     }
 
     /**
@@ -213,8 +221,8 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     public function getFilenameSafe()
     {
         $filename_safe = Strings::utf8_accents_to_ascii($this->getFileName());
-        $filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
-        $filename_safe = preg_replace('#\-{2,}#', '-', $filename_safe);
+        $filename_safe = RegexUtils::safePregReplace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
+        $filename_safe = RegexUtils::safePregReplace('#\-{2,}#', '-', $filename_safe);
 
         return $filename_safe;
     }
@@ -281,11 +289,9 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * Reset labels.
-     *
-     * @return $this
+     * {@inheritdoc}
      */
-    public function resetLabels()
+    public function clearLabels()
     {
         foreach ($this->labels as $data) {
             $this->labels->removeElement($data);
@@ -297,14 +303,23 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * Add a label.
-     *
-     * @param \Application\DeskPRO\Entity\LabelDownload $label
+     * {@inheritdoc}
      */
-    public function addLabel(LabelDownload $label)
+    public function addLabel(Label $label)
     {
         $label['download'] = $this;
         $this->labels->add($label);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeLabel(Label $label)
+    {
+        if ($this->labels->contains($label)) {
+            $this->labels->removeElement($label);
+            $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+        }
     }
 
     /**
@@ -327,6 +342,14 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         $this->setModelField('num_downloads', $num_downloads);
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNumDownloads()
+    {
+        return $this->num_downloads;
     }
 
     /**
@@ -718,6 +741,15 @@ class Download extends ContentAbstract implements HighlightableModelInterface
                     ],
                 ],
                 'dpApi' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'comments',
+                'targetEntity' => DownloadComment::class,
+                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'mappedBy'     => 'download',
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );
         $metadata->mapOneToMany(

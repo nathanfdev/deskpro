@@ -5,7 +5,8 @@ jest.dontMock('~ListFrame/index');
 jest.dontMock('~List/View/Table/ChatsTableContainer');
 
 import React from 'react';
-import { renderChatsInRedux } from '../../../../chats.test-helper';
+import { renderInChatApp } from '../../../../chat.test-helper';
+import { fakeRecordsStoreRequest } from 'Helpers';
 
 describe('ChatsTableContainer', () => {
   const ChatsTableContainer = require('~List/View/Table/ChatsTableContainer').ChatsTableContainer;
@@ -14,13 +15,16 @@ describe('ChatsTableContainer', () => {
 
   it('should render its header', () => {
     spyOn(TableHeader.prototype, 'render').and.callThrough();
-    renderChatsInRedux(1, <ChatsTableContainer />);
+    renderInChatApp(1, <ChatsTableContainer />);
     expect(TableHeader.prototype.render).toHaveBeenCalled();
   });
 
   it('should render 3 rows when passing 3 children', () => {
     spyOn(Row.prototype, 'render').and.callThrough();
-    renderChatsInRedux(3, <ChatsTableContainer />);
+    renderInChatApp(
+      fakeRecordsStoreRequest('UserChat', 'chats', [{id: 1}, {id: 2}, {id: 3}]),
+      <ChatsTableContainer />
+    );
     expect(Row.prototype.render.calls.count()).toEqual(3);
   });
 });

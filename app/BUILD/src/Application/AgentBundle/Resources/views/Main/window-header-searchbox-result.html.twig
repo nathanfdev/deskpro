@@ -131,7 +131,7 @@
 {######################################################################## #}
 
 <% if (group.type == 'organization') { var org = result; %>
-<article class="row-item single-row" route-notabreload="1" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '{{ org.id }}'})|raw }}">
+<article class="row-item single-row" route-notabreload="1" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '<%- org.id %>'})|raw }}">
     <div class="userinfo">
         <span class="obj-id">#<%- org.id %></span>
         <a class="subject click-through">

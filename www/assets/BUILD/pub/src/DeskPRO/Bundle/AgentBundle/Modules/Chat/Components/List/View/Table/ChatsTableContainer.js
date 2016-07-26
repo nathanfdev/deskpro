@@ -10,7 +10,6 @@ import { connect } from 'react-redux';
   people:      collectionSelectorFactory('Person', 'chats')(state),
   departments: collectionSelectorFactory('Department', 'all_chats')(state)
 }))
-
 export class ChatsTableContainer extends Component {
   static propTypes = {
     people:      PropTypes.object.isRequired,
@@ -39,7 +38,7 @@ export class ChatsTableContainer extends Component {
       <Table>
         <TableHeader fields={this.props.fields} />
         <tbody>
-          {this.props.chats.entrySeq().map(([id, chat]) => this.renderRow(chat))}
+          {this.props.chats.map(chat => this.renderRow(chat))}
         </tbody>
       </Table>
     );

@@ -37,10 +37,10 @@ use DeskPRO\Bundle\DevBundle\Language\LangPhpFileCompiler;
 use DeskPRO\Bundle\DevBundle\Language\OneSky;
 use DeskPRO\Component\Util\DebugUtils;
 use DeskPRO\Component\Util\ListUtils;
-use DeskPRO\Component\Util\MapUtils;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class OneSkyDownloadCommand extends ContainerAwareCommand
@@ -52,6 +52,8 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
     {
         $this->setName('dpdev:lang:onesky:download')
             ->setDescription('Downloads phrases from OneSky and into the PHP lang files')
+            ->addOption('merge', null, InputOption::VALUE_NONE, 'Merge existing lang with what we donwload (meaning old phrases will continue to exist)')
+            ->addOption('export-command-list', null, InputOption::VALUE_NONE, 'Exports a list of commands. E.g. to generate a bash file or a list to use with parallel: parallel --gnu --linebuffer -j 6 {} < exported-command-list')
             ->addArgument('languageId', InputArgument::REQUIRED, 'Which language to upload. This will be a dir name here in the languages/ directory. Use "all" to download all langs.')
             ->addArgument('projectName', InputArgument::OPTIONAL, 'Project to upload: portal, agent, other or the special value all', 'all')
         ;
@@ -102,6 +104,17 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
             $langIds = [$reqLangId];
         }
 
+        if ($input->getOption('export-command-list')) {
+            foreach ($langIds as $lid) {
+                if ($lid === 'default' || strpos($lid, 'dev_')) {
+                    continue;
+                }
+                echo "bin/console dpdev:lang:onesky:download {$lid} {$input->getArgument('projectName')}\n";
+            }
+
+            return 0;
+        }
+
         $onesky = $this->getContainer()->get('dpdev.onesky');
 
         #----------------------------------------
@@ -142,6 +155,8 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
             $locale  = $lang['locale'];
             $langDir = str_replace('\\', '/', $langPacks->getLangDir().'/'.$langId);
 
+            $groupedPhrases = [];
+
             $output->writeln(sprintf('******************** Language: %s (%s) ********************', $langId, $locale));
 
             foreach ($projectNames as $projectName) {
@@ -157,7 +172,13 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
                         'export_file_name' => 'out.json',
                     ]);
                     if ($res) {
+                        $res     = trim($res);
                         $tmpName = tempnam($tmpDir, 'lang_'.$fileName);
+
+                        if (!preg_match('/^<\?php/', $res)) {
+                            $res = '<?php return '.$res;
+                        }
+
                         file_put_contents($tmpName, $res);
 
                         $out = null;
@@ -169,15 +190,13 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
                             if (!$phrases) {
                                 $output->writeln('Empty file');
                             } else {
-                                $targetFileName = $langFileCompiler->getFilenameFromPhraseName(MapUtils::firstKey($phrases));
-                                $phpCode        = $langFileCompiler->compilePhpCode($phrases);
-
-                                $targetDir = basename($langDir.'/'.$targetFileName);
-                                if (!is_dir($targetDir)) {
-                                    mkdir($targetDir, 0755);
+                                foreach ($phrases as $phraseId => $phrase) {
+                                    $fileId = $langFileCompiler->getFilenameFromPhraseName($phraseId);
+                                    if (!isset($groupedPhrases[$fileId])) {
+                                        $groupedPhrases[$fileId] = [];
+                                    }
+                                    $groupedPhrases[$fileId][$phraseId] = $phrase;
                                 }
-
-                                file_put_contents($langDir.'/'.$targetFileName, $phpCode);
                                 $output->writeln('Done');
                             }
                         }
@@ -189,6 +208,26 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
                 }
 
                 $output->writeln(sprintf("All files in project done in %.3fs\n", microtime(true) - $projectStartTime));
+            }
+
+            $output->writeln('Writing lang files to filesystem...');
+
+            foreach ($groupedPhrases as $targetFileName => $phrases) {
+                $targetDir = basename($langDir.'/'.$targetFileName);
+                if (!is_dir($targetDir)) {
+                    mkdir($targetDir, 0755);
+                }
+
+                $targetFilePath = $langDir.'/'.$targetFileName;
+                if ($input->getOption('merge') && is_file($targetFilePath)) {
+                    $filePhrases = require $targetFilePath;
+                    if ($filePhrases) {
+                        $phrases = array_merge($filePhrases, $phrases);
+                    }
+                }
+
+                $phpCode = $langFileCompiler->compilePhpCode($phrases);
+                file_put_contents($targetFilePath, $phpCode);
             }
         }
 

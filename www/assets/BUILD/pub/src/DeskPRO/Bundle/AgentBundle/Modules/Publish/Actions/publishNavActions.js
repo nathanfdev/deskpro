@@ -115,13 +115,16 @@ export const loadCategories = createAction(
   () => repository('Content').loadCategories().then(promise => promise.getData().data)
 );
 
-export const changeListGrouping = createAction(
-  'PUBLISH_NAV_CHANGE_LIST_GROUPING',
-  (groupBy, list) => (dispatch) => {
-    dispatch(loadCounts(list, groupBy));
-    return { content: list, grouped_by: groupBy };
-  }
-);
+export const changeListGroupingActionFactory = function(content) {
+  return createAction(
+    'PUBLISH_NAV_CHANGE_LIST_GROUPING',
+    groupBy => dispatch => {
+      dispatch(loadCounts(content, groupBy));
+
+      return { content, grouped_by: groupBy };
+    }
+  );
+};
 
 export const setMine = createAction(
   'PUBLISH_NAV_SET_MINE',

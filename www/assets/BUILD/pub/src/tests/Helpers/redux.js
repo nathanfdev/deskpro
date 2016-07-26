@@ -2,6 +2,7 @@ import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 import { IntlProvider } from 'react-intl';
 import { fakeState } from './state';
+import { AgentApp } from 'DeskPRO/Bundle/AgentBundle/AgentApp';
 
 export function renderInRedux(state, jsx, dispatch = null) {
   const { Provider } = require('react-redux');
@@ -19,4 +20,8 @@ export function renderInRedux(state, jsx, dispatch = null) {
       </IntlProvider>
     </Provider>
   );
+}
+
+export function createAgentApp(state = {}) {
+  return AgentApp.createStore(state);
 }

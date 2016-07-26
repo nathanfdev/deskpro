@@ -46,6 +46,7 @@ use Application\DeskPRO\Searcher\ArticleSearch;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * SWG\Resource(
@@ -442,7 +443,11 @@ class KbController extends AbstractController
 
         return $this->createApiCreateResponse(
             ['id' => $article->id],
-            $this->generateUrl('api_kb_article', ['article_id' => $article->id], true)
+            $this->generateUrl(
+                'api_kb_article',
+                ['article_id' => $article->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -896,7 +901,11 @@ class KbController extends AbstractController
 
         return $this->createApiCreateResponse(
             ['id' => $comment->id],
-            $this->generateUrl('api_kb_article_comments_comment', ['article_id' => $article->id, 'comment_id' => $comment->id], true)
+            $this->generateUrl(
+                'api_kb_article_comments_comment',
+                ['article_id' => $article->id, 'comment_id' => $comment->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1145,7 +1154,11 @@ class KbController extends AbstractController
 
         return $this->createApiCreateResponse(
             ['id' => $attach->id],
-            $this->generateUrl('api_kb_article_attachment', ['article_id' => $article->id, 'attachment_id' => $attach->id], true)
+            $this->generateUrl(
+                'api_kb_article_attachment',
+                ['article_id' => $article->id, 'attachment_id' => $attach->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1301,7 +1314,11 @@ class KbController extends AbstractController
 
         return $this->createApiCreateResponse(
             ['label' => $label],
-            $this->generateUrl('api_kb_article_label', ['article_id' => $article->id, 'label' => $label], true)
+            $this->generateUrl(
+                'api_kb_article_label',
+                ['article_id' => $article->id, 'label' => $label],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1516,7 +1533,11 @@ class KbController extends AbstractController
 
         return $this->createApiCreateResponse(
             ['id' => $category->id],
-            $this->generateUrl('api_kb_category', ['category_id' => $category->id], true)
+            $this->generateUrl(
+                'api_kb_category',
+                ['category_id' => $category->id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 
@@ -1822,7 +1843,11 @@ class KbController extends AbstractController
 
         return $this->createApiCreateResponse(
             ['id' => $group_id],
-            $this->generateUrl('api_kb_category_group', ['category_id' => $category->id, 'group_id' => $group_id], true)
+            $this->generateUrl(
+                'api_kb_category_group',
+                ['category_id' => $category->id, 'group_id' => $group_id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
         );
     }
 

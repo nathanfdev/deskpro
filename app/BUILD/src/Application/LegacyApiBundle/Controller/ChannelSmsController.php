@@ -233,7 +233,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
         $this->saveSmsAccount($account);
 
         // setup twilio endpoint
-        $twilio_endpoint = $this->generateUrl('api_channel_incoming_sms_twilio', array(), UrlGeneratorInterface::ABSOLUTE_URL);
+        $twilio_endpoint = $this->generateUrl('api_channel_incoming_sms_twilio', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $provider        = SmsProviderFactory::create($account->type, $account->params);
         $provider->setUrlForNumber($twilio_endpoint, $account->phone_number->number);
 

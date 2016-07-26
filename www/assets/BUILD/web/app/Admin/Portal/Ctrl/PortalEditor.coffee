@@ -183,16 +183,21 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/templates').success(
         (templates) =>
           for template in templates
-            @template_options.push({
-              value: template,
+            template_options.push({
+              value: template.name,
+              custom: template.is_custom,
               name: @templateName(template),
               group: @templateGroup(template)
             })
+          @template_options = template_options
       )
 
-    templateName: (template) => template.split(':')[2].replace(/\.twig/, '')
+    templateName: (template) =>
+      name = template.name.split(':')[2].replace(/\.twig/, '')
+      if template.is_custom then name = '(*)' + name
+      return name
     templateGroup: (template) =>
-      parts = template.split(':')
+      parts = template.name.split(':')
       if parts[1] then parts[1] else parts[0]
 
     editTemplate: =>
@@ -224,6 +229,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         () =>
           @selected_template = null
           @selected_template_info_loaded = false
+          @loadTemplateOptions()
       )
       .error(@serverError)
 
@@ -385,7 +391,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       modalInstance.result.then((email) => @preview_as_email = email; @refreshPreviewUrl())
 
     error: (message) => @showAlert(message, 'Changes were not applied')
-    success: (message) => @showAlert(message, 'Changes were applied')
+    success: (message) => @Growl.success(message)
     serverError: (message) => @error('Server error occurred. Unable to save data (' + message.message + ').')
 
   AdminPortalCtrlPortalEditor.EXPORT_CTRL()
