@@ -151,3 +151,45 @@
     border-color: @dp-sonic-primary;
   }
 }
+
+.menu-with-panel {
+  td {
+    vertical-align: top;
+  }
+  .panel {
+    font-size: 1rem;
+    padding: 20px;
+    width: 340px;
+  }
+  .ui.list > .item {
+    padding-bottom: 15px;
+    .icon {
+      color: @dp-sonic-primary;
+      font-size: 12px;
+    }
+  }
+  .ui.styled.accordion {
+    width: 100%;
+    .icon {
+      font-size: 12px;
+      color: @dp-greyscale-350;
+    }
+    .title {
+      padding: 10px;
+      color: @dp-greyscale-850;
+      font-weight: 400;
+      .count {
+        color: @dp-greyscale-350;
+      }
+    }
+    .content {
+      padding: 1em;
+    }
+    .list {
+      padding: 0;
+      .content {
+        border: 0;
+      }
+    }
+  }
+}

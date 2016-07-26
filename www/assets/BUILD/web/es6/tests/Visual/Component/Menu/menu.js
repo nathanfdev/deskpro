@@ -1,6 +1,8 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
 import MenuWrapper from 'Component/Menu/MenuWrapper';
+import Accordion from 'Component/Accordion/Accordion';
+import List from 'Component/List/List';
 
 storiesOf('App: menu', module)
   .add(
@@ -14,6 +16,22 @@ storiesOf('App: menu', module)
   .add(
     'Variables Menu',
     () => <MenuWrapper {...variablesStructure} />
+  )
+  .add(
+    'With side panel',
+    () => <table className="menu-with-panel">
+      <tr>
+        <td><MenuWrapper {...emailStructure} /></td>
+        <td className="panel">
+          <h4>Primary</h4>
+          <List {...primaryList} />
+          <h4>Custom</h4>
+          <Accordion {...customStructure} />
+          <h4>Additional templates</h4>
+          <Accordion {...listStructure} />
+        </td>
+      </tr>
+    </table>
   )
 ;
 const emailStructure = {
@@ -169,6 +187,220 @@ const variablesStructure = {
           subContent: {}
         }
       ]
+    }
+  ]
+};
+const primaryList = {
+  elements: [
+    {
+      label: 'New ticket auto-response',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket by agent',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket confirmation',
+      icon: 'code'
+    },
+    {
+      label: 'New agent reply',
+      icon: 'code'
+    },
+    {
+      label: 'User reply auto-response',
+      icon: 'code'
+    },
+  ]
+};
+const customList = {
+  elements: [
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+  ]
+};
+const customStructure = {
+  panels: [
+    {
+      title: 'Custom templates',
+      icon: 'open folder',
+      count: customList.elements,
+      content: <List {...customList} />
+    },
+  ]
+};
+const validationList = {
+  elements: [
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'Ticket new Validate email',
+      icon: 'code'
+    }
+  ]
+};
+const warningList = {
+  elements: [
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+  ]
+};
+const ratingList = {
+  elements: [
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+  ]
+};
+const ccList = {
+  elements: [
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    },
+    {
+      label: 'New ticket (validation required)',
+      icon: 'code'
+    }
+  ]
+};
+const listStructure = {
+  panels: [
+    {
+      title: 'Validation',
+      icon: 'open folder',
+      count: validationList.elements,
+      content: <List {...validationList} />
+    },
+    {
+      title: 'Warning, alerts & errors',
+      icon: 'open folder',
+      count: warningList.elements,
+      content: <List {...warningList} />
+    },
+    {
+      title: 'Rating',
+      icon: 'open folder',
+      count: ratingList.elements,
+      content: <List {...ratingList} />
+    },
+    {
+      title: 'CC and new participants',
+      icon: 'open folder',
+      count: ccList.elements,
+      content: <List {...ccList} />
     }
   ]
 };

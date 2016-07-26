@@ -10,17 +10,3 @@ export function css(jsx) {
     </div>
   );
 }
-
-export function redux(state, jsx) {
-  const { Provider } = require('react-redux');
-  const createStore = require('redux').createStore;
-  const store = createStore(s => s, fakeState(state));
-
-  return (
-    <Provider store={store}>
-      <IntlProvider locale="en">
-        {jsx}
-      </IntlProvider>
-    </Provider>
-  );
-}

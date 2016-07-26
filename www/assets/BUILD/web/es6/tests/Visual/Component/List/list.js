@@ -5,15 +5,15 @@ import List from 'Component/List/List';
 storiesOf('App: list', module)
   .add(
     'Simple List',
-    () => <List structure={structure} />
+    () => <List {...structure} />
   )
   .add(
     'List with description',
-    () => <List structure={structureDescription} />
+    () => <List {...structureDescription} />
   )
   .add(
     'List with hierarchy',
-    () => <List structure={hierarchy} />
+    () => <List {...hierarchy} />
   )
 ;
 const structure = {

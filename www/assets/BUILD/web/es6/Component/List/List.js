@@ -3,12 +3,10 @@ import ListElement from 'Component/List/ListElement';
 
 class List extends React.Component {
   static propTypes = {
-    structure: PropTypes.shape({
-      elements: PropTypes.arrayOf(PropTypes.shape({
-        label: PropTypes.string,
-        icon: PropTypes.string
-      }))
-    })
+    elements: PropTypes.arrayOf(PropTypes.shape({
+      label: PropTypes.string,
+      icon: PropTypes.string
+    }))
   };
 
   constructor(props) {
@@ -17,7 +15,7 @@ class List extends React.Component {
 
   getItems() {
     let items = [];
-    const {elements} = this.props.structure;
+    const {elements} = this.props;
     for (const i in elements) {
       if (!elements.hasOwnProperty(i)) {
         continue;

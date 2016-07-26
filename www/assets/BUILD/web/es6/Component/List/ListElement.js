@@ -27,9 +27,7 @@ class ListElement extends React.Component {
     }
     if (elements) {
       const props = {
-        structure: {
-          elements: elements
-        }
+        elements: elements
       };
       content.push(<List {...props} />);
     }
