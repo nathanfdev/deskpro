@@ -53,6 +53,7 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
         $this->setName('dpdev:lang:onesky:download')
             ->setDescription('Downloads phrases from OneSky and into the PHP lang files')
             ->addOption('merge', null, InputOption::VALUE_NONE, 'Merge existing lang with what we donwload (meaning old phrases will continue to exist)')
+            ->addOption('export-command-list', null, InputOption::VALUE_NONE, 'Exports a list of commands. E.g. to generate a bash file or a list to use with parallel: parallel --gnu --linebuffer -j 6 {} < exported-command-list')
             ->addArgument('languageId', InputArgument::REQUIRED, 'Which language to upload. This will be a dir name here in the languages/ directory. Use "all" to download all langs.')
             ->addArgument('projectName', InputArgument::OPTIONAL, 'Project to upload: portal, agent, other or the special value all', 'all')
         ;
@@ -101,6 +102,17 @@ class OneSkyDownloadCommand extends ContainerAwareCommand
             $langIds = $langPacks->getLangIds();
         } else {
             $langIds = [$reqLangId];
+        }
+
+        if ($input->getOption('export-command-list')) {
+            foreach ($langIds as $lid) {
+                if ($lid === 'default' || strpos($lid, 'dev_')) {
+                    continue;
+                }
+                echo "bin/console dpdev:lang:onesky:download {$lid} {$input->getArgument('projectName')}\n";
+            }
+
+            return 0;
         }
 
         $onesky = $this->getContainer()->get('dpdev.onesky');
