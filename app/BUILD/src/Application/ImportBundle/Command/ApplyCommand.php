@@ -33,14 +33,11 @@ use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Importer\ImporterContext;
 use Application\ImportBundle\Model\BatchConfig;
 use DpSys\LowError\SystemErrorHandler;
-use RuntimeException;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Process\Process;
 
 /**
@@ -60,12 +57,7 @@ class ApplyCommand extends AbstractImporterCommand
 
         $this
             ->setName('import:apply')
-            ->setHelp('Executes the importer.')
-            ->addArgument(
-                'script',
-                InputArgument::OPTIONAL,
-                'The target script to use'
-            )
+            ->setHelp('Saves the imported data to the DeskPRO helpdesk.')
             ->addOption(
                 'input-path',
                 null,
@@ -102,7 +94,7 @@ class ApplyCommand extends AbstractImporterCommand
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
         if ($input->getOption('batch')) {
-            $pid = App::$container->getParameter('dp.user.tmp_dir').'/importer.pid';
+            $pid = $this->getContainer()->get('deskpro.app_env')->getUserTmpDir().'/importer.pid';
             $fh  = @fopen($pid, 'a');
 
             if (!$fh) {
@@ -182,7 +174,7 @@ class ApplyCommand extends AbstractImporterCommand
             $exporter_config = $config->getBatchConfig();
 
             if ($exporter_config) {
-                $rerun = $exporter_config->getHasRemaining();
+                $rerun = $exporter_config->hasRemaining();
                 if ($rerun) {
                     $output->writeln('<info>Running next batch</info>');
                 }
@@ -208,11 +200,19 @@ class ApplyCommand extends AbstractImporterCommand
         $logger = $this->getContainer()->get('dp.importer_logger');
 
         try {
-            $context = $this->createGeneratorContext($input);
+            $importer = $this->getContainer()->get('dp.importer');
+            $context  = $this->createGeneratorContext($input);
             $this->setLoggerHandlers($input, $output);
 
-            $generator = $this->getContainer()->get('dp.importer');
-            $generator->generate($context);
+            $dataCollection = $importer->getImportData($context);
+
+            // Writes batch config (even no entities to support "retry-after" timeout)
+            // Writes batch config before validation to skip broken batches
+            $nextBatchConfig = $importer->getNextBatchConfig($context);
+            $importer->writeBatchConfig($context, $nextBatchConfig);
+
+            $importer->validateData($dataCollection);
+            $importer->writeData($dataCollection, $input->getOption('dry-run', false));
 
             $output->writeln('');
             $output->writeln(sprintf(
@@ -241,49 +241,33 @@ class ApplyCommand extends AbstractImporterCommand
     }
 
     /**
-     * Creates a new generator config instance
-     * The export is executing in the order of the entity type collection.
+     * Creates the importer context.
      *
      * @param InputInterface $input
-     *
-     * @throws RuntimeException
      *
      * @return ImporterContext
      */
     protected function createGeneratorContext(InputInterface $input)
     {
-        $config = new ImporterContext();
+        $context = new ImporterContext();
 
+        // set an input path
         if ($input->getOption('input-path')) {
-            $config->setInputPath($input->getOption('input-path'));
+            $context->setInputPath($input->getOption('input-path'));
         } else {
-            $config->setInputPath($this->getImporterDefaultOutputPath());
-        }
-        if ($input->hasOption('dry-run')) {
-            $config->setDryRun($input->getOption('dry-run'));
+            $context->setInputPath($this->getImporterDefaultOutputPath());
         }
 
-        $config->setBatchConfig(null);
-
-        // Tries to get batch.json from output or input path
-        $batchFilePath = null;
-        if ($config->getBatchFilePath()) {
-            if (@file_exists($config->getBatchFilePath())) {
-                $batchFilePath = $config->getBatchFilePath();
-            }
-        }
-
-        if ($batchFilePath) {
-            if (!file_exists($batchFilePath)) {
-                throw new FileNotFoundException(sprintf('Batch config `%s` not found', $batchFilePath));
-            }
+        // try to get batch.json from the input path
+        if (file_exists($context->getBatchFilePath())) {
+            $batchFilePath = $context->getBatchFilePath();
 
             $serializer = $this->getContainer()->get('serializer');
             $data       = file_get_contents($batchFilePath);
 
-            $config->setBatchConfig($serializer->deserialize($data, BatchConfig::class, 'json'));
+            $context->setBatchConfig($serializer->deserialize($data, BatchConfig::class, 'json'));
         }
 
-        return $config;
+        return $context;
     }
 }

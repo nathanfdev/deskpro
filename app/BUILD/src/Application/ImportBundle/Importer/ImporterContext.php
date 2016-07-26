@@ -49,11 +49,6 @@ class ImporterContext
     private $inputPath;
 
     /**
-     * @var bool
-     */
-    private $dryRun = false;
-
-    /**
      * @return array
      */
     public static function getOrderedTypes()
@@ -115,30 +110,6 @@ class ImporterContext
     public function getBatchFilePath()
     {
         return $this->inputPath.'batch.json';
-    }
-
-    /**
-     * Returns true if a writer does not flush data.
-     *
-     * @return bool
-     */
-    public function isDryRun()
-    {
-        return $this->dryRun;
-    }
-
-    /**
-     * Set a writer not to flush data.
-     *
-     * @param bool $dryRun
-     *
-     * @return $this
-     */
-    public function setDryRun($dryRun)
-    {
-        $this->dryRun = (bool) $dryRun;
-
-        return $this;
     }
 
     /**

@@ -117,19 +117,4 @@ class Exporter implements ExporterInterface
 
         return $collection;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getNextBatchConfig(ImporterContext $context)
-    {
-        $newConfig = clone $context->getBatchConfig();
-        $newConfig
-            ->setId($newConfig->getId() + 1)
-            ->setDateModified(new \DateTime())
-            ->setHasRemaining(is_dir($context->getInputPath().DIRECTORY_SEPARATOR.$newConfig->getId()))
-        ;
-
-        return $newConfig;
-    }
 }

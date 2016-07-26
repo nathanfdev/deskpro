@@ -3,7 +3,7 @@
 
 $_SERVER['argv'][0] = str_replace('import', 'console', $_SERVER['argv'][0]);
 if (isset($_SERVER['argv'][1])) {
-    if (in_array($_SERVER['argv'][1], ['apply', 'clean'])) {
+    if (in_array($_SERVER['argv'][1], ['verify', 'apply', 'clean'])) {
         array_splice($_SERVER['argv'], 1, 1, ['import:'.$_SERVER['argv'][1]]);
     } else {
         array_splice($_SERVER['argv'], 1, 0, ['import']);

@@ -140,7 +140,7 @@ class BatchConfig
     /**
      * {@inheritdoc}
      */
-    public function getHasRemaining()
+    public function hasRemaining()
     {
         return $this->has_remaining;
     }

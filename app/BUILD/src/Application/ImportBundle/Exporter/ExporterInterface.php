@@ -57,13 +57,4 @@ interface ExporterInterface
      * @return Model\ImportModelCollection
      */
     public function exportByType(ImporterContext $context, $modelClass);
-
-    /**
-     * Returns updated batch config for the next step.
-     *
-     * @param ImporterContext $context
-     *
-     * @return Model\BatchConfig
-     */
-    public function getNextBatchConfig(ImporterContext $context);
 }

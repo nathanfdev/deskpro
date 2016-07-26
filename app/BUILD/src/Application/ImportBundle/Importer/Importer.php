@@ -29,6 +29,7 @@
 namespace Application\ImportBundle\Importer;
 
 use Application\ImportBundle\Exporter\ExporterInterface;
+use Application\ImportBundle\Model\BatchConfig;
 use Application\ImportBundle\Writer\WriterInterface;
 use DpSys\LowError\SystemErrorHandler;
 use JMS\Serializer\Serializer;
@@ -36,12 +37,9 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * Generator importer service
- * Data exporter (what we call "generators") from 3rd party systems.
- *
- * Class Generator
+ * Class Importer.
  */
-class Importer implements ImporterInterface
+class Importer
 {
     /**
      * @var ExporterInterface
@@ -92,77 +90,131 @@ class Importer implements ImporterInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a count of records of all types to be exported.
+     *
+     * @param ImporterContext $context
+     *
+     * @return int
      */
-    public function getTotalRecordsCount(ImporterContext $context)
+    public function getTotalCount(ImporterContext $context)
     {
         $count = 0;
-        foreach (ImporterContext::getOrderedTypes() as $entityClass) {
-            $count += $this->exporter->getCountByType($context, $entityClass);
+        foreach (ImporterContext::getOrderedTypes() as $modelClass) {
+            $count += $this->exporter->getCountByType($context, $modelClass);
         }
 
         return $count;
     }
 
     /**
-     * {@inheritdoc}
+     * @param ImporterContext $context
+     *
+     * @return ImporterCollection
      */
-    public function generate(ImporterContext $context)
+    public function getImportData(ImporterContext $context)
     {
         $collection = new ImporterCollection();
-
-        // Exports data to a collection of entities
         foreach (ImporterContext::getOrderedTypes() as $type) {
-            $this->logger->info('');
-            $this->logger->info('=====================================');
-            $this->logger->info(sprintf('Export `%s` collection', $type));
-            $this->logger->info('=====================================');
-
+            $this->printHeader("Export `$type` collection");
             $collection->attach($type, $this->exporter->exportByType($context, $type));
         }
 
-        // Writes batch config (even no entities to support "retry-after" timeout)
-        // Writes batch config before validation to skip broken batches
-        $newBatchConfig = $this->exporter->getNextBatchConfig($context);
-        @file_put_contents($context->getBatchFilePath(), $this->serializer->serialize($newBatchConfig, 'json'));
+        return $collection;
+    }
 
-        if ($collection->hasEntities()) {
-            // Validate the collection of entities
-            foreach (ImporterContext::getOrderedTypes() as $type) {
-                if ($collection->hasEntitiesByType($type)) {
-                    foreach ($collection->getByType($type) as $model) {
-                        $errors = $this->validator->validate($model);
-                        if (count($errors)) {
-                            // Removing broken entities
-                            $collection->detach($model);
-                            $this->logger->alert(sprintf(
-                                'Validator failure for %s on record #%s: %s',
-                                get_class($model), $model->getOid(), $errors
-                            ));
+    /**
+     * @param ImporterContext $context
+     *
+     * @return BatchConfig
+     */
+    public function getNextBatchConfig(ImporterContext $context)
+    {
+        $nextId = $context->getBatchConfig()->getId() + 1;
 
-                            if ($model->getRawData()) {
-                                foreach (explode("\n", SystemErrorHandler::varToString($model->getRawData(), 2)) as $line) {
-                                    $this->logger->info($line);
-                                }
+        $nextBatchConfig = clone $context->getBatchConfig();
+        $nextBatchConfig
+            ->setId($nextId)
+            ->setDateModified(new \DateTime())
+            ->setHasRemaining(is_dir($context->getInputPath().DIRECTORY_SEPARATOR.$nextId))
+        ;
+
+        return $nextBatchConfig;
+    }
+
+    /**
+     * @param ImporterContext $context
+     * @param BatchConfig     $batchConfig
+     *
+     * @throws \Exception
+     */
+    public function writeBatchConfig(ImporterContext $context, BatchConfig $batchConfig)
+    {
+        $encodedConfig = $this->serializer->serialize($batchConfig, 'json');
+
+        if (!@file_put_contents($context->getBatchFilePath(), $encodedConfig)) {
+            throw new \Exception("Unable to write batch config to {$context->getBatchFilePath()}");
+        }
+    }
+
+    /**
+     * @param ImporterCollection $collection
+     *
+     * @throws \Exception
+     */
+    public function validateData(ImporterCollection $collection)
+    {
+        // Validate the collection of entities
+        foreach (ImporterContext::getOrderedTypes() as $type) {
+            if ($collection->hasEntitiesByType($type)) {
+                foreach ($collection->getByType($type) as $model) {
+                    $errors = $this->validator->validate($model);
+                    if (count($errors)) {
+                        // Removing broken entities
+                        $collection->detach($model);
+                        $this->logger->alert(sprintf(
+                            'Validator failure for %s on record #%s: %s',
+                            get_class($model), $model->getOid(), $errors
+                        ));
+
+                        if ($model->getRawData()) {
+                            foreach (explode("\n", SystemErrorHandler::varToString($model->getRawData(), 2)) as $line) {
+                                $this->logger->info($line);
                             }
                         }
                     }
                 }
             }
+        }
+    }
 
-            // Writes entities to a storage
-            foreach (ImporterContext::getOrderedTypes() as $type) {
-                if ($collection->hasEntitiesByType($type)) {
-                    $this->logger->info('');
-                    $this->logger->info('=====================================');
-                    $this->logger->info(sprintf('Write `%s` collection', $type));
-                    $this->logger->info('=====================================');
+    /**
+     * Writes a collection of entities.
+     *
+     * @param ImporterCollection $collection
+     * @param bool               $dryRun
+     */
+    public function writeData(ImporterCollection $collection, $dryRun)
+    {
+        // Writes entities to a storage
+        foreach (ImporterContext::getOrderedTypes() as $type) {
+            if ($collection->hasEntitiesByType($type)) {
+                $this->printHeader("Write `$type` collection");
 
-                    foreach ($collection->getByType($type) as $model) {
-                        $this->writer->writeData($model, $context->isDryRun());
-                    }
+                foreach ($collection->getByType($type) as $model) {
+                    $this->writer->writeData($model, $dryRun);
                 }
             }
         }
+    }
+
+    /**
+     * @param string $title
+     */
+    private function printHeader($title)
+    {
+        $this->logger->info('');
+        $this->logger->info('=====================================');
+        $this->logger->info($title);
+        $this->logger->info('=====================================');
     }
 }
