@@ -58,6 +58,12 @@ class UpdaterStatus
     private $logUrl;
 
     /**
+     * @var string
+     * @JMS\Type("string")
+     */
+    private $watcherUrl;
+
+    /**
      * @return \DateTime
      */
     public function getNextCheck()
@@ -151,6 +157,26 @@ class UpdaterStatus
     public function setLogUrl($logUrl)
     {
         $this->logUrl = $logUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWatcherUrl()
+    {
+        return $this->watcherUrl;
+    }
+
+    /**
+     * @param string $watcherUrl
+     *
+     * @return $this
+     */
+    public function setWatcherUrl($watcherUrl)
+    {
+        $this->watcherUrl = $watcherUrl;
 
         return $this;
     }

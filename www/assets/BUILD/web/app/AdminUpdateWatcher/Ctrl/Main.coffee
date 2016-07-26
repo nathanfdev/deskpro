@@ -33,6 +33,7 @@ define ->
       @has_init = true
 
     init: ->
+      @$scope.showFinishedNextInfo = false
       @$scope.logUrl = window.DP_BASE_URL+'/__serverinfo/logs/updater?auth=' + window.DP_SERVERINFO_AUTH
       @refreshStatus().then(=>
         @$scope.initDone = true
@@ -44,6 +45,11 @@ define ->
 
     refreshStatus: ->
       @$http.get(window.DP_BASE_URL+'/admin/updater-status/' +  window.DP_SERVERINFO_AUTH + '?status').then((res) =>
+        # if the status starts on anything but finished, then
+        # the UI should not show the 'next' notice
+        if @$scope.info?.status != 'finished'
+          @$scope.showFinishedNextInfo = true
+
         @$scope.info = res.data
       )
 

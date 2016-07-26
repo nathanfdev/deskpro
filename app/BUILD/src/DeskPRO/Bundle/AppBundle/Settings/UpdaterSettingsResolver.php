@@ -123,6 +123,7 @@ class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
             $auth = '';
         }
         $status->setLogUrl($this->router->generate('serve_root', [], RouterInterface::ABSOLUTE_URL)."__serverinfo/logs/updater?auth=$auth");
+        $status->setWatcherUrl($this->router->generate('serve_root', [], RouterInterface::ABSOLUTE_URL).'/admin/updater-status/'.sha1($auth.'update_watcher'));
 
         $status->setBackupPath($DP_ENV->getUserBackupsDir());
 

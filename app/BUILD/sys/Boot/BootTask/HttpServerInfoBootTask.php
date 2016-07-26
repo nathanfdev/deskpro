@@ -62,7 +62,7 @@ class HttpServerInfoBootTask implements BootTaskInterface
         // Will exit if any match
         $this->authlessServerChecks($action);
 
-        if (!$this->checkAuth($auth)) {
+        if (!$this->checkAuth($auth, $action)) {
             echo "The auth code in the URL you are trying to view is invalid. Please run the dp:web-server-info command to generate new links.\n";
             exit;
         }
@@ -237,19 +237,18 @@ class HttpServerInfoBootTask implements BootTaskInterface
 
                 header('Content-Type: application/json');
 
+                $pdo         = LowUtil::getPdoFromMysqlInfo($this->env->getConfig('database'));
+                $q           = $pdo->query("SELECT value FROM settings WHERE name = 'auto_updater_next_check'");
+                $nextDateStr = $q->fetchColumn();
+                $nextDate    = $nextDateStr ? \DateTime::createFromFormat('Y-m-d H:i:s', $nextDateStr) : null;
+
                 // If there is no session yet, then we check if we're waiting for it
                 if (!$sessionId) {
-                    $pdo = LowUtil::getPdoFromMysqlInfo($this->env->getConfig('database'));
-
-                    $q           = $pdo->query("SELECT value FROM settings WHERE name = 'auto_updater_next_check'");
-                    $nextDateStr = $q->fetchColumn();
-
                     if (!$nextDateStr) {
                         echo json_encode(['status' => 'none']);
                         exit;
                     }
 
-                    $nextDate = \DateTime::createFromFormat('Y-m-d H:i:s', $nextDateStr);
                     echo json_encode([
                         'status'           => 'waiting',
                         'date'             => $nextDate->format('Y-m-d H:i:s'),
@@ -271,6 +270,10 @@ class HttpServerInfoBootTask implements BootTaskInterface
                     'finishedStatus' => null,
                     'steps'          => [],
                     'currentStepId'  => $session->findCurrentStepId(),
+                    'next'           => [
+                        'date'             => $nextDate->format('Y-m-d H:i:s'),
+                        'date_description' => $nextDate ? (($nextDate < (new \DateTime())) ? 'in a few seconds' : Dates::secsToReadable($nextDate->getTimestamp() - time())) : null,
+                    ],
                 ];
 
                 foreach ($session->getStepIds() as $stepId) {
@@ -329,7 +332,7 @@ class HttpServerInfoBootTask implements BootTaskInterface
         return $this->env->getDatManager()->readTxtFile('server_info_auth', null);
     }
 
-    private function checkAuth($auth)
+    private function checkAuth($auth, $action)
     {
         // If installed, we require auth
         if (($this->env->getConfig('database.host') || $this->env->getConfig('database.0.host'))) {
@@ -337,7 +340,7 @@ class HttpServerInfoBootTask implements BootTaskInterface
             if (!$server_info_auth || empty($auth)) {
                 return false;
             }
-            if ($auth !== $server_info_auth) {
+            if ($auth !== $server_info_auth && $auth !== sha1($server_info_auth.$action)) {
                 return false;
             }
         }

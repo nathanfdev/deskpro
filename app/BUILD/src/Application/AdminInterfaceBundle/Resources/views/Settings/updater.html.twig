@@ -1,5 +1,33 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
+    <div class="form-horizontal dp-form" ng-if="Ctrl.info.next_check_desc">
+        <section class="dp-paneblock dp-listpane">
+            <header style="margin-bottom: 15px;">
+                <h3>Next Update</h3>
+            </header>
+
+            {##################################################################################################}
+
+            <article class="form-horizontal dp-form">
+                <div class="panel panel-innertable">
+                    <div class="form-group">
+                        <p>
+                            The system is scheduled for an automatic update in {{ ng_var('Ctrl.info.next_check_desc') }}
+                            <span style="color: #aaa">(<span dp-date="Ctrl.info.next_check">{{ ng_var('Ctrl.info.next_check') }}</span>)</span>
+                        </p>
+                    </div>
+                    <div class="form-group" style="margin-top: 5px; padding-to: 15px;">
+                        <p>
+                            You can watch the update as it progresses, you can open the update status viewer:
+                            <br/>
+                            <a ng-href="{{ ng_var('Ctrl.info.watcher_url') }}" target="_blank" class="btn btn-primary">Open Update Status</a>
+                        </p>
+                    </div>
+                </div>
+            </article>
+        </section>
+    </div>
+
     <form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && Ctrl.save()">
         <section class="dp-paneblock dp-listpane">
             <header style="margin-bottom: 15px;">
@@ -17,6 +45,8 @@
             </header>
 
             {##################################################################################################}
+
+
 
             <article class="form-horizontal dp-form" ng-show="Ctrl.settings.is_enabled">
                 <div class="panel panel-innertable">
@@ -39,10 +69,15 @@
                                         <option value="{{ tz }}">{{ tzName }}</option>
                                     {% endfor %}
                                 </select>
-                                <div ng-show="Ctrl.info.next_check_desc" style="padding: 5px; background: #eee; margin-top: 4px; ">
-                                    Next check in {{ ng_var('Ctrl.info.next_check_desc') }}
-                                    <span style="color: #aaa">(<span dp-date="Ctrl.info.next_check">{{ ng_var('Ctrl.info.next_check') }}</span>)</span>
-                                </div>
+                            </div>
+                            <div class="inner-group">
+                                <label>
+                                    <h4>Updater Log</h4>
+                                </label>
+                                <br/>
+                                The updater keeps a detailed record of the operations perforemd. Here is the URL to the log file:<br/>
+                                <input type="text" class="form-control" ng-model="Ctrl.info.log_url" style="width: 50%" disabled />
+                                <a ng-href="{{ ng_var('Ctrl.info.log_url') }}" target="_blank">View</a>
                             </div>
                             <div class="inner-group">
                                 <label>
@@ -97,7 +132,7 @@
                                 <option value="300">5 minutes</option>
                                 <option value="900">15 minutes</option>
                                 <option value="1800">30 minutes</option>
-                                <option value="2700">45 minutes</option>
+                                <option value="2700">45 mUinutes</option>
                                 <option value="3600">1 hour</option>
                                 <option value="7200">2 hours</option>
                                 <option value="10800">3 hours</option>

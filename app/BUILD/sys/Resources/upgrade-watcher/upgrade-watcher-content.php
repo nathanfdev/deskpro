@@ -28,6 +28,14 @@
             </div>
         </section>
     </article>
+    <div ng-if="showFinishedNextInfo && initDone && info.status == 'finished' && info.next.date_description" style="padding: 15px; margin-bottom: 5px; background: #eee; border-bottom: 1px solid #ccc;">
+        <section>
+            <div style="text-align: center">
+                The last system update is finished with the details below.<br/>
+                The next process is scheduled to begin in {{ info.next.date_description }}
+            </div>
+        </section>
+    </div>
     <article ng-if="initDone && info.status == 'running' || info.status == 'finished'">
         <section class="card-section" ng-repeat="step in info.steps" ng-hide="info.status == 'finished' && step.status == 'waiting'">
             <h3>

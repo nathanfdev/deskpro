@@ -78,7 +78,7 @@ class UpdateCommand extends ContainerAwareCommand
 
         /** @var \Application\DeskPRO\EntityRepository\Setting $settingRepos */
         $settingRepos = $this->getContainer()->get('doctrine.orm.default_entity_manager')->getRepository(Setting::class);
-        $settingRepos->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_NEXT_TIME,   $nextDate ?: null);
+        $settingRepos->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_NEXT_TIME, $nextDate ?: null);
 
         $output->writeln('Starting automatic update (SessionID: '.$sessionId.')');
 
