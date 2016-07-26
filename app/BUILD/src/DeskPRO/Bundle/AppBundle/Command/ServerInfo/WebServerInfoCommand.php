@@ -98,6 +98,7 @@ class WebServerInfoCommand extends Command
         $table->addRow(['OpCache Status', "$baseUrl/__serverinfo/check_requirements?auth=$auth"]);
         $table->addRow(['DeskPRO Error Log', "$baseUrl/__serverinfo/logs/errors?auth=$auth"]);
         $table->addRow(['PHP Error Log', "$baseUrl/__serverinfo/logs/php-errors?auth=$auth"]);
+        $table->addRow(['Updater Status', "$baseUrl/admin/updater-status/$auth"]);
         $table->render($output);
 
         return 0;

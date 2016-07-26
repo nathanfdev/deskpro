@@ -2,14 +2,9 @@ define ->
   class AdminUpdateWatcher_Ctrl_Main
     @CTRL_AS   = 'Ctrl'
     @CTRL_ID   = 'AdminUpdateWatcher_Ctrl_Main'
-    @DEPS      = []
+    @DEPS      = ['$q', '$timeout', '$scope', '$http', '$interval']
 
     @EXPORT_CTRL: () ->
-      if @DEPS.indexOf('$q') == -1
-        @DEPS.unshift('$q')
-      if @DEPS.indexOf('$timeout') == -1
-        @DEPS.unshift('$timeout')
-
       ctrl_def = @DEPS.slice(0)
       ctrl_def.push(@)
       if not window.DP_CTRL_REG
@@ -38,6 +33,18 @@ define ->
       @has_init = true
 
     init: ->
-      console.log("XX")
+      @$scope.logUrl = window.DP_BASE_URL+'/__serverinfo/logs/updater?auth=' + window.DP_SERVERINFO_AUTH
+      @refreshStatus().then(=>
+        @$scope.initDone = true
+      )
+
+      @timeId = @$interval(=>
+        @refreshStatus()
+      , 3500)
+
+    refreshStatus: ->
+      @$http.get(window.DP_BASE_URL+'/admin/updater-status/' +  window.DP_SERVERINFO_AUTH + '?status').then((res) =>
+        @$scope.info = res.data
+      )
 
   AdminUpdateWatcher_Ctrl_Main.EXPORT_CTRL()

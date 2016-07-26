@@ -1,8 +1,8 @@
 define([
   'angular',
 
-  'AdminStart/App/App',
-  'AdminStart/Ctrl/Main'
+  'AdminUpdateWatcher/App/App',
+  'AdminUpdateWatcher/Ctrl/Main'
 ], function(angular) {
 
   if (!window.console) {

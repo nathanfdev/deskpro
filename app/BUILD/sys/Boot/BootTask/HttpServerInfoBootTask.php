@@ -28,6 +28,9 @@
 
 namespace DpSys\Boot\BootTask;
 
+use DeskPRO\Bundle\UpdateBundle\Session\UpdateSessionManager;
+use DpRun\LowUtil;
+use Orb\Util\Dates;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -212,15 +215,107 @@ class HttpServerInfoBootTask implements BootTaskInterface
                 exit;
 
             case 'update_watcher':
-                $DP_AUTH = $this->getAuth();
-
                 /** @var \Symfony\Component\HttpFoundation\Request $request */
                 $request = $this->params['request'];
 
-                $BASE_PATH  = rtrim($request->getUriForPath('/'), '/');
-                $ASSET_PATH = $request->getUriForPath('/assets/'.$this->env->getAppName().'/web');
+                if (isset($_GET['status'])) {
+                    return $this->authRequiredServerChecks('update_watcher_status');
+                }
+
+                $DP_AUTH    = $this->getAuth();
+                $BASE_URL   = rtrim($request->getUriForPath('/'), '/');
+                $BASE_PATH  = rtrim($request->getBasePath(), '/');
+                $ASSET_URL  = $request->getUriForPath('/assets/'.$this->env->getAppName().'/web');
+                $ASSET_PATH = rtrim($request->getBasePath(), '/').'/assets/'.$this->env->getAppName().'/web';
 
                 require __DIR__.'/../../Resources/upgrade-watcher/upgrade-watcher.php';
+
+                exit;
+
+            case 'update_watcher_status':
+                $sessionId = $this->env->getDatManager()->readTxtFile('last_updater_session_id', null);
+
+                header('Content-Type: application/json');
+
+                // If there is no session yet, then we check if we're waiting for it
+                if (!$sessionId) {
+                    $pdo = LowUtil::getPdoFromMysqlInfo($this->env->getConfig('database'));
+
+                    $q           = $pdo->query("SELECT value FROM settings WHERE name = 'auto_updater_next_check'");
+                    $nextDateStr = $q->fetchColumn();
+
+                    if (!$nextDateStr) {
+                        echo json_encode(['status' => 'none']);
+                        exit;
+                    }
+
+                    $nextDate = \DateTime::createFromFormat('Y-m-d H:i:s', $nextDateStr);
+                    echo json_encode([
+                        'status'           => 'waiting',
+                        'date'             => $nextDate->format('Y-m-d H:i:s'),
+                        'date_description' => ($nextDate < (new \DateTime())) ? 'in a few seconds' : Dates::secsToReadable($nextDate->getTimestamp() - time()),
+                    ]);
+                    exit;
+                }
+
+                try {
+                    $sm      = new UpdateSessionManager($sessionId, $this->env->getUserTmpDir());
+                    $session = $sm->getSession();
+                } catch (\Exception $e) {
+                    echo json_encode(['status' => 'none']);
+                    exit;
+                }
+
+                $data = [
+                    'status'         => '',
+                    'finishedStatus' => null,
+                    'steps'          => [],
+                    'currentStepId'  => $session->findCurrentStepId(),
+                ];
+
+                foreach ($session->getStepIds() as $stepId) {
+                    $step = $session->getStep($stepId);
+
+                    if ($step->isRunning()) {
+                        $stepStatus = 'running';
+                    } elseif ($step->isError()) {
+                        $stepStatus = 'error';
+                    } elseif ($step->isFinished()) {
+                        $stepStatus = 'finished';
+                    } else {
+                        $stepStatus = 'waiting';
+                    }
+
+                    $data['steps'][] = [
+                        'status'  => $stepStatus,
+                        'stepId'  => $stepId,
+                        'title'   => $step->getTitle(),
+                        'summary' => $step->getSummary(),
+                        'details' => $step->getDetails(),
+                    ];
+                }
+
+                if ($session->isSuccess()) {
+                    $data['finishedStatus'] = 'success';
+                } elseif ($session->isError()) {
+                    $data['finishedStatus'] = 'error';
+                } elseif ($session->isWaiting()) {
+                    $data['finishedStatus'] = 'warning';
+                }
+
+                if ($session->isWaiting()) {
+                    $nextDate                 = new \DateTime();
+                    $data['status']           = 'waiting';
+                    $data['date']             = $nextDate->format('Y-m-d H:i:s');
+                    $data['date_description'] = 'in a few seconds';
+                    exit;
+                } elseif ($session->isRunning()) {
+                    $data['status'] = 'running';
+                } elseif ($session->isFinished()) {
+                    $data['status'] = 'finished';
+                }
+
+                echo json_encode($data);
 
                 exit;
         }

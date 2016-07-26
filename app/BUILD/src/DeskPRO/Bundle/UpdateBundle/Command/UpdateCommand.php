@@ -30,6 +30,8 @@ declare (ticks = 100);
 
 namespace DeskPRO\Bundle\UpdateBundle\Command;
 
+use Application\DeskPRO\Entity\Setting;
+use DeskPRO\Bundle\AppBundle\Settings\UpdaterSettingsResolver;
 use DeskPRO\Bundle\UpdateBundle\Logger\LogKeyEvent;
 use DeskPRO\Component\Util\DebugUtils;
 use DeskPRO\Component\Util\RandUtils;
@@ -61,6 +63,22 @@ class UpdateCommand extends ContainerAwareCommand
         if (!$sessionId) {
             $sessionId = date('YmdHis').RandUtils::randomStringFormat('%8An');
         }
+
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+        $DP_ENV->getDatManager()->writeTxtFile('last_updater_session_id', $sessionId);
+
+        $updaterSettings = $this->getContainer()->get('updater_settings_resolver')->getUpdaterSettings();
+        if ($updaterSettings->isEnabled()) {
+            $nextDate = $updaterSettings->calculateNextTimeUtc();
+            $nextDate = $nextDate ? $nextDate->format('Y-m-d H:i:s') : null;
+        } else {
+            $nextDate = null;
+        }
+
+        /** @var \Application\DeskPRO\EntityRepository\Setting $settingRepos */
+        $settingRepos = $this->getContainer()->get('doctrine.orm.default_entity_manager')->getRepository(Setting::class);
+        $settingRepos->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_NEXT_TIME,   $nextDate ?: null);
 
         $output->writeln('Starting automatic update (SessionID: '.$sessionId.')');
 
