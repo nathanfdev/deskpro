@@ -7,6 +7,10 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base) ->
     init: ->
       @settings = null
       @info = null
+      @didManualSet = false
+      @manualForm = {
+        delay: "60"
+      }
 
     initialLoad: ->
       p1 = @Api2.sendGet('/helpdesk/updater/settings').then( (response) =>
@@ -29,6 +33,24 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base) ->
         )
       ).error((info, code) =>
         @stopSpinner('saving', true)
+        @applyErrorResponseToView(info)
+      )
+
+    doManualSchedule: ->
+      postData = {
+        delay: parseInt(@manualForm.delay) || 0
+      }
+
+      @startSpinner('saving_manual')
+      @Api2.sendPostJson('/helpdesk/updater/manual-schedule', postData).success( =>
+        @initialLoad().then( =>
+          @didManualSet = true
+          @stopSpinner('saving_manual').then(=>
+            @Growl.success(@getRegisteredMessage('saved_settings'))
+          )
+        )
+      ).error((info, code) =>
+        @stopSpinner('saving_manual', true)
         @applyErrorResponseToView(info)
       )
 

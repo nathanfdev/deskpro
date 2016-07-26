@@ -40,7 +40,8 @@
                                     {% endfor %}
                                 </select>
                                 <div ng-show="Ctrl.info.next_check_desc" style="padding: 5px; background: #eee; margin-top: 4px; ">
-                                    🕞 Next check in {{ ng_var('Ctrl.info.next_check_desc') }}.
+                                    Next check in {{ ng_var('Ctrl.info.next_check_desc') }}
+                                    <span style="color: #aaa">(<span dp-date="Ctrl.info.next_check">{{ ng_var('Ctrl.info.next_check') }}</span>)</span>
                                 </div>
                             </div>
                             <div class="inner-group">
@@ -50,14 +51,6 @@
                                 <br/>
                                 A database backup is always made before performing an automatic update. Backups are saved to this directory:<br/>
                                 <input type="text" class="form-control" ng-model="Ctrl.info.backup_path" style="width: 50%" disabled />
-                            </div>
-                            <div class="inner-group" ng-show="Ctrl.info.next_check">
-                                <label>
-                                    <h4>Next Update Check</h4>
-                                </label>
-                                <br/>
-                                The next time the system will check for updates is:<br/>
-                                <input type="text" class="form-control" ng-model="Ctrl.info.next_check" style="width: 50%" disabled />
                             </div>
                         </div>
                     </div>
@@ -85,7 +78,7 @@
     <div class="form-horizontal dp-form">
         <section class="dp-paneblock dp-listpane">
             <header style="margin-bottom: 15px;">
-                <h3>Manual Update</h3>
+                <h3>Manually Schedule Update</h3>
             </header>
 
             {##################################################################################################}
@@ -98,11 +91,35 @@
                             be scheduled to run immediately.
                         </p>
                         <p>
-                            <label><input type="checkbox" ng-model="allowManualBtn" /> I want to schedule the updater to run right now</label>
+                            <label><input type="checkbox" ng-model="allowManualBtn" /> I want to manually start the updater to run in </label>
+                            <select ng-model="Ctrl.manualForm.delay">
+                                <option value="60">1 minute</option>
+                                <option value="300">5 minutes</option>
+                                <option value="900">15 minutes</option>
+                                <option value="1800">30 minutes</option>
+                                <option value="2700">45 minutes</option>
+                                <option value="3600">1 hour</option>
+                                <option value="7200">2 hours</option>
+                                <option value="10800">3 hours</option>
+                                <option value="14400">4 hours</option>
+                                <option value="18000">5 hours</option>
+                                <option value="21600">6 hours</option>
+                                <option value="2520060">7 hours</option>
+                                <option value="28800">8 hours</option>
+                            </select>
                             <br/>
-                            <button ng-disabled="!allowManualBtn" class="btn btn-default">Start the updater &rarr;</button>
+                            <div dp-hide-spinning="saving_manual">
+                                <button ng-disabled="!allowManualBtn" class="btn btn-default" ng-click="Ctrl.doManualSchedule()">Schedule the updater &rarr;</button>
+                            </div>
+                            <div dp-show-spinning="saving_manual">
+                                <i class="spinner-flat"></i>
+                            </div>
                         </p>
                     </div>
+                </div>
+                <div ng-show="Ctrl.didManualSet && Ctrl.info.next_check_desc" style="padding: 5px; background: #eee; margin-top: 4px; ">
+                    Next check in {{ ng_var('Ctrl.info.next_check_desc') }}
+                    <span style="color: #aaa">(<span dp-date="Ctrl.info.next_check">{{ ng_var('Ctrl.info.next_check') }}</span>)</span>
                 </div>
             </article>
         </section>

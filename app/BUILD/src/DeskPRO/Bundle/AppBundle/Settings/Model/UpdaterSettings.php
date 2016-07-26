@@ -159,15 +159,10 @@ class UpdaterSettings
     {
         $tz = $this->getTimezone();
 
-        $now  = new \DateTime();
         $date = new \DateTime('now', $tz);
-
-        $tod = $this->getTimeOfDayParts();
+        $tod  = $this->getTimeOfDayParts();
         $date->setTime($tod['hour'], $tod['minute'], 0);
-
-        if ($now > $date) {
-            $date->modify('+24 hours');
-        }
+        $date->modify('+'.$this->getIntervalDays() * 24 .' hours');
 
         $date->setTimezone(new \DateTimeZone('UTC'));
 

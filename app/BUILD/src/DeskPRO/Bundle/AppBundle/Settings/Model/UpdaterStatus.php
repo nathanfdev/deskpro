@@ -76,6 +76,10 @@ class UpdaterStatus
             return;
         }
 
+        if ($this->nextCheck < (new \DateTime())) {
+            return 'a few seconds';
+        }
+
         return Dates::secsToReadable($this->nextCheck->getTimestamp() - time());
     }
 

@@ -124,6 +124,38 @@ class UpdaterController extends BaseController
 
     /**
      * @ApiDoc(
+     *      description="Manually schedule an upgrade to run right now",
+     *      statusCodes={
+     *          204="Returned in case of successful resource modify",
+     *          400="We will return this in case your request was malformed",
+     *      }
+     * )
+     * @Rest\Post("/helpdesk/updater/manual-schedule")
+     * @ApiUnstable()
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function manualSheduleAction(Request $request)
+    {
+        $secs = (int) $request->request->get('delay', 60);
+        if ($secs < 0) {
+            $secs = 60;
+        }
+
+        $setDate = new \DateTime();
+        $setDate->modify('+'.$secs.' seconds');
+
+        /** @var SettingRepository $settingRepos */
+        $settingRepos = $this->getRepository(Setting::class);
+        $settingRepos->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_NEXT_TIME,   $setDate->format('Y-m-d H:i:s'));
+
+        return View::create($this->wrap(['success' => true]));
+    }
+
+    /**
+     * @ApiDoc(
      *     section="Helpdesk",
      *     description="Get the updater status",
      *     statusCodes={

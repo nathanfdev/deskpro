@@ -84,7 +84,7 @@ class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
         }
         $updaterSettings->setTimezone($tz);
 
-        $days = min(1, (int) $this->getSetting('auto_updater_interval_days'));
+        $days = max(1, (int) $this->getSetting('auto_updater_interval_days'));
         $updaterSettings->setIntervalDays($days);
         $updaterSettings->setTimeOfDay($this->getSetting('auto_updater_time_of_day'));
 
