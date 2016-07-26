@@ -246,7 +246,7 @@ class CustomFieldManager
 
         $qb = $this->em
             ->createQueryBuilder()
-            ->select('c')
+            ->select('c, p')
             ->from(CustomFieldDefinition::class, 'c')
             ->join('c.parent', 'p')
             ->where(
