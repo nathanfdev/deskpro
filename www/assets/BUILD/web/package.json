@@ -64,6 +64,7 @@
     "compile:coffee": "coffee -c -o compiled/ app/",
     "build:sass": "node-sass -r --source-map true -o app-build/styles/Admin app/**/Resources/style/*-style.scss",
     "build:less": "lessc --source-map -rp=app/Admin/Resources/style/../../../ app/**/Resources/style/admin-style.less app-build/styles/Admin/admin-style.css",
+    "build:semantic-less": "lessc --source-map  node_modules/semantic-ui-less/semantic.less stylesheets-less/semantic-ui/semantic.css",
     "build:css": "npm run build:sass && npm run build:less",
     "semantic:copy": "postcss --use autoprefixer --autoprefixer.browsers 'last 2 versions' --use postcss-discard-comments --postcss-discard-comments.removeAll true -d app-build/styles/Admin/ stylesheets-less/semantic-ui/semantic.css",
     "presemantic": "cpx \"stylesheets-less/semantic-ui/theme.config\" node_modules/semantic-ui-less/",
@@ -76,6 +77,6 @@
     "watch:coffee": "coffee -o compiled/ -cw app/",
     "watch:js": "cpx \"app/**/*.js\" compiled -w -v",
     "watch": "parallelshell 'npm run watch:js' 'npm run watch:coffee' 'npm run watch:webpack'",
-    "test:visual": "start-storybook -p 9001"
+    "test:visual": "start-storybook -p 9001 -s ."
   }
 }

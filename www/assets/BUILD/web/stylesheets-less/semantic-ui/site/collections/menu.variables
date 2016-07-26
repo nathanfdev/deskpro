@@ -17,3 +17,16 @@
 @tabularTextColor: @dp-greyscale-450;
 
 @tabularHoveredTextColor: @dp-sonic-primary;
+
+@mediumWidth: 16.43rem;
+
+@itemVerticalPadding: 10px;
+@itemHorizontalPadding: 10px;
+
+@verticalIconFloat: left;
+@verticalIconMargin: 0em 0.5em 0em 0em;
+
+@subMenuDistance: 0;
+
+@subMenuFontSize: 0.8571rem;
+@subMenuTextColor: @dp-greyscale-850;

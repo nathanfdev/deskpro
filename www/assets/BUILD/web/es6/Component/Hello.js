@@ -6,8 +6,6 @@ export class Hello extends React.Component {
   };
 
   render() {
-    return React.DOM.span( null,
-      'Hello ' + this.props.person.fname + ' ' + this.props.person.lname
-    );
+    return <span>Hello {this.props.person.fname}  {this.props.person.lname}</span>
   }
 }
