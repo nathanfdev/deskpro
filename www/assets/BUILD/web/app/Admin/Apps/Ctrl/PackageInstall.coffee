@@ -54,7 +54,7 @@ define ['require', 'Admin/Main/Ctrl/Base', 'Admin/Usersources/Helper/UsersourceT
           loadingAssets.push(@$http.get(path, { responseType: "text" }).success((data) =>
             @dpTemplateManager.setTemplate(form_template, data)
           ))
-        if path = getResourcePath('js', 'AdminInterface/Install/install.js')
+        if getResourcePath('js', 'AdminInterface/Install/install.js')
           jsDeferred = @$q.defer()
           require(["../../../../../../../../app/BUILD/apps/" + @pack.name + "/js/AdminInterface/Install/install.js"], (c) ->
             installCtrl = c

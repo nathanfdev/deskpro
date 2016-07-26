@@ -13,14 +13,11 @@ devConfig.output.pathinfo = false;
 devConfig.plugins         = [
   new webpack.NoErrorsPlugin(),
   new ExtractTextPlugin('[name].css'),
+  new webpack.optimize.DedupePlugin(),
   new webpack.optimize.UglifyJsPlugin({
     sourceMap: true,
     mangle:    false,
     exclude:   [/(node_modules|bower_components)/]
-  }),
-  new webpack.ProvidePlugin({
-    $:      'jquery',
-    jQuery: 'jquery'
   }),
   new webpack.DefinePlugin({
     'process.env.NODE_ENV': '"production"',
