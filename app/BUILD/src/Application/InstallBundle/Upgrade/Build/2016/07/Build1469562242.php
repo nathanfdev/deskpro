@@ -28,7 +28,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1466087195 extends AbstractBuild
+class Build1469562242 extends AbstractBuild
 {
     public function run()
     {
@@ -66,7 +66,7 @@ class Build1466087195 extends AbstractBuild
         $instructions   = [];
         $instructions[] = 'ADD brand_id INT DEFAULT NULL';
         $instructions[] = 'ADD CONSTRAINT FK_54469DF444F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE SET NULL';
-        $instructions[] = 'CREATE INDEX IDX_54469DF444F5D008 ON tickets (brand_id)';
+        $instructions[] = 'ADD INDEX IDX_54469DF444F5D008 (brand_id)';
 
         $this->execSlowAlterTable('tickets', implode(', ', $instructions));
 
