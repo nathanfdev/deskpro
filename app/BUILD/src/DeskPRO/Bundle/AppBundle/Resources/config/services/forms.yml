@@ -42,7 +42,6 @@ services:
       - "@tickets.custom_per_field_manager"
       - "@ticket_field_settings"
       - "@brand_aware_settings_resolver"
-      - "@brand_form_helper"
 
   ticket_with_layouts_web_field_resolver:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\WebFieldResolver
@@ -53,7 +52,6 @@ services:
       - "@tickets.custom_per_field_manager"
       - "@ticket_field_settings"
       - "@brand_aware_settings_resolver"
-      - "@brand_form_helper"
 
   ticket_with_layouts_api_field_renderer:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\ApiFieldRenderer
@@ -220,6 +218,7 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@form_hierarchy_generator"
+      - "@brand_form_helper"
     tags:
       - { name: form.type }
 
