@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpSys\Kernel;
 
 use Application\AgentBundle\AgentBundle;
@@ -203,7 +204,7 @@ abstract class BaseKernel extends Kernel
      *
      * @throws \Exception
      *
-     * @return ApiBundle|AppBundle|PortalBundle
+     * @return ApiBundle|AppBundle|PortalBundle|AgentBundle
      */
     private function instantiateBundle($name)
     {
@@ -260,6 +261,14 @@ abstract class BaseKernel extends Kernel
             $content
         );
 
+        foreach (['tmp', 'cache', 'debug', 'backups', 'files'] as $userDirId) {
+            $content = str_replace(
+                "'__dp__user_{$userDirId}_dir__'",
+                '$this->getDpUserDir(\''.$userDirId.'\')',
+                $content
+            );
+        }
+
         $parts = preg_split('/\s*private \$parameters;/', $content);
 
         $getter = <<<'CODE'
@@ -276,6 +285,19 @@ abstract class BaseKernel extends Kernel
     private function getDpAppDir()
     {
         return $this->targetDirs[4].'/app/' . $this->getDpBuildId();
+    }
+
+    private function getDpUserDir($type)
+    {
+        global $DP_ENV;
+        switch ($type) {
+            case 'tmp':     return $DP_ENV->getUserTmpDir();
+            case 'cache':   return $DP_ENV->getUserCacheDir();
+            case 'debug':   return $DP_ENV->getUserDebugDir();
+            case 'backups': return $DP_ENV->getUserBackupsDir();
+            case 'files':   return $DP_ENV->getUserFilesDir();
+            default: throw new \InvalidArgumentException();
+        }
     }
 CODE;
 
@@ -300,12 +322,14 @@ CODE;
         $params            = parent::getKernelParameters();
         $params['DP_ROOT'] = DP_ROOT; //legacy
 
+        // these are inserted statically at compile-time,
+        // and we replace them with real values in our dumpContainer above
         $params['dp.app_dir']          = $this->dpEnv->getAppDir();
-        $params['dp.user.tmp_dir']     = $this->dpEnv->getUserTmpDir();
-        $params['dp.user.cache_dir']   = $this->dpEnv->getUserCacheDir();
-        $params['dp.user.debug_dir']   = $this->dpEnv->getUserDebugDir();
-        $params['dp.user.backups_dir'] = $this->dpEnv->getUserBackupsDir();
-        $params['dp.user.files_dir']   = $this->dpEnv->getUserFilesDir();
+        $params['dp.user.tmp_dir']     = '__dp__user_tmp_dir__';
+        $params['dp.user.cache_dir']   = '__dp__user_cache_dir__';
+        $params['dp.user.debug_dir']   = '__dp__user_debug_dir__';
+        $params['dp.user.backups_dir'] = '__dp__user_backups_dir__';
+        $params['dp.user.files_dir']   = '__dp__user_files_dir__';
 
         return $params;
     }
