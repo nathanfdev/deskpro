@@ -78,8 +78,7 @@ echo "Cache warmup: dp\n";
 dp_build_runcmd('bin/console cache:warmup --kernel dp --env prod --verbose --barg is-building');
 
 echo "Cache warmup: portal\n";
-// TODO: we need to fix this
-//dp_build_runcmd('bin/console cache:warmup --kernel portal --env prod --verbose --barg is-building');
+dp_build_runcmd('bin/console cache:warmup --kernel portal --env prod --verbose --barg is-building');
 
 echo "Cache warmup: install\n";
 dp_build_runcmd('bin/console cache:warmup --kernel install --env prod --verbose --barg is-building');
