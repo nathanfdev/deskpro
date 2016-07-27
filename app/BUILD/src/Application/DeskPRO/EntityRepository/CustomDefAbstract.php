@@ -31,17 +31,46 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\DBAL\Connection;
 
 class CustomDefAbstract extends AbstractEntityRepository
 {
+    private $didLoadHierarchy = false;
+
     public static function getCacheId($id)
     {
         $str = 'customdef'.md5(get_called_class()).'_'.$id;
 
         return $str;
+    }
+
+    /**
+     * After loading a full collection using one of the getters below, we
+     * do a separate query to select just the hierarchy. This prevents query in a loop whenever ->children is called.
+     *
+     * You could also add a LEFT JOIN f.children to any of the getters below,
+     * but doing that results in duplicate data for the
+     * parent in each child row, which could potentially be a lot of actual data (titles+options+descriptions etc)
+     * Here we're just getting partials, so a very small result set, even if there are dupe rows.
+     *
+     * So the idea is this is a bit defensive and that two small queries is better than 1 query with potentially
+     * a very large result set.
+     */
+    private function preloadHierarchy()
+    {
+        if ($this->didLoadHierarchy) {
+            return;
+        }
+        $this->didLoadHierarchy = true;
+        $this->_em->createQuery("
+            SELECT PARTIAL f.{id}, PARTIAL ch.{id}
+            FROM {$this->_entityName} f INDEX BY f.id
+            LEFT JOIN f.children ch
+            ORDER BY f.display_order ASC, f.title
+        ")->execute();
     }
 
     /**
@@ -55,7 +84,12 @@ class CustomDefAbstract extends AbstractEntityRepository
             ORDER BY f.display_order ASC, f.title
         ");
 
-        return $q->execute();
+        $res = $q->execute();
+        if (count($res)) {
+            $this->preloadHierarchy();
+        }
+
+        return $res;
     }
 
     public function getEnabledFields()
@@ -67,7 +101,12 @@ class CustomDefAbstract extends AbstractEntityRepository
             ORDER BY f.display_order ASC, f.title
         ");
 
-        return $q->execute();
+        $res = $q->execute();
+        if (count($res)) {
+            $this->preloadHierarchy();
+        }
+
+        return $res;
     }
 
     public function getEnabledUserFields()
@@ -79,7 +118,12 @@ class CustomDefAbstract extends AbstractEntityRepository
             ORDER BY f.display_order ASC, f.title
         ");
 
-        return $q->execute();
+        $res = $q->execute();
+        if (count($res)) {
+            $this->preloadHierarchy();
+        }
+
+        return $res;
     }
 
     /**
@@ -94,7 +138,12 @@ class CustomDefAbstract extends AbstractEntityRepository
             ORDER BY f.display_order ASC, f.title
         ");
 
-        return $q->execute();
+        $res = $q->execute();
+        if (count($res)) {
+            $this->preloadHierarchy();
+        }
+
+        return $res;
     }
 
     /**
@@ -109,7 +158,10 @@ class CustomDefAbstract extends AbstractEntityRepository
             ORDER BY f.display_order ASC, f.title
         ");
 
-        return $q->execute();
+        $res = $q->execute();
+        $this->preloadHierarchy();
+
+        return $res;
     }
 
     /**
