@@ -12,11 +12,12 @@
   };
 
   if (!window.DP_IS_DEBUG || window.DP_USE_RJS_BUILD) {
-    config.paths["AdminLoad"] = "app-build/Admin/AdminLoad.min";
-    config.paths["AgentLoad"] = "app-build/Agent/AgentLoad.min";
-    config.paths["CloudAdminLoad"] = "app-build/Admin/Cloud/CloudAdminLoad.min";
-    config.paths["AdminStartLoad"] = "app-build/AdminStart/AdminStartLoad.min";
-    config.paths["ReportsLoad"] = "app-build/Reports/ReportsLoad.min";
+    config.paths["AdminLoad"] = "compiled/Admin/AdminLoad.min";
+    config.paths["AgentLoad"] = "compiled/Agent/AgentLoad.min";
+    config.paths["CloudAdminLoad"] = "compiled/Admin/Cloud/CloudAdminLoad.min";
+    config.paths["AdminUpgradeLoad"] = "compiled/AdminUpgrade/AdminUpgradeLoad.min";
+    config.paths["AdminStartLoad"] = "compiled/AdminStart/AdminStartLoad.min";
+    config.paths["ReportsLoad"] = "compiled/Reports/ReportsLoad.min";
   }
 
   if (window.DP_RJS_PATHS) {

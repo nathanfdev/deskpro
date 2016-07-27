@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\Assets\RequireJsConfigGenerator;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository\Usersource;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 use Application\DeskPRO\Routing\Generator\UrlGenerator;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
@@ -903,7 +904,7 @@ JS;
         # Auth usersources that accept local input
         #------------------------------
 
-        $usersources = $this->em->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
+        $usersources = $this->em->getRepository(Usersource::class)->getLocalInputUsersources();
         foreach ($usersources as $us) {
             foreach ($this->person->getEmailAddresses() as $email) {
                 /* @var $us \Application\DeskPRO\Entity\Usersource */
@@ -989,9 +990,9 @@ JS;
             $rjs->setUrlArgsExpr('"v='.DP_BUILD_TIME.'"');
         }
 
-        $rjs->addPath('AppPlatform', 'app-build/Agent/AppPlatform/Platform');
+        $rjs->addPath('AppPlatform', 'compiled/Agent/AppPlatform/Platform');
         $rjs->addPath('AppPlatformConfig', str_replace('.js', '', $this->generateUrl('agent_apps_config_js')));
-        $rjs->addPath('AgentApp', 'app-build/Agent/App/AgentModule');
+        $rjs->addPath('AgentApp', 'compiled/Agent/App/AgentModule');
 
         $rjs_apps = new AppsRequireJsConfigGenerator($manager, $this->generateUrl('serve_file_root').'/apps');
         $rjs->addPathsFromGenerator($rjs_apps);
