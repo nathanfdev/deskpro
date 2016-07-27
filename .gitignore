@@ -250,4 +250,5 @@ www/assets/BUILD/pub/nightwatch.conf.js
 /app/BUILD/sys/config/build-time.php
 /app/BUILD/sys/config/build-num.php
 /app/BUILD/sys/config/build-num.txt
+/app/BUILD/sys/config/commit-id.txt
 /app/run/build-num.txt
