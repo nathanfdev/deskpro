@@ -26,29 +26,27 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
 
-use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\CustomDefHierarchyNodeTransformer;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\StringToIntegerArrayTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class CustomFieldChoiceType.
+ * Class ContextualPerFieldChoiceType.
  */
-class CustomFieldChoiceType extends AbstractType
+class ContextualPerFieldChoiceType extends AbstractType
 {
     /**
      * @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator
      */
-    private $hierarchyGenerator;
+    private $hierarchy;
 
     /**
      * Constructor.
@@ -57,7 +55,7 @@ class CustomFieldChoiceType extends AbstractType
      */
     public function __construct(HierarchyGenerator $hierarchy)
     {
-        $this->hierarchyGenerator = $hierarchy;
+        $this->hierarchy = $hierarchy;
     }
 
     /**
@@ -65,19 +63,10 @@ class CustomFieldChoiceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer($options['choice_list'], $options['multiple']), true);
         if ($options['multiple']) {
             $builder->addModelTransformer(new StringToIntegerArrayTransformer(','));
-        } else {
-            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onTransformSingleChoice'], 100);
-
-            if ($options['expanded']) {
-                // for radio boxes ChoiceType uses PRE_SET_DATA callback,
-                // so we need to transform our choice to HierarchyNode before it called
-                $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onTransformRadioData'], 100);
-            }
         }
-
-        $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer($options['choice_list']), true);
     }
 
     /**
@@ -95,44 +84,19 @@ class CustomFieldChoiceType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'empty_data'  => null,
-                'choice_list' => function (Options $options) {
-                    return $this->hierarchyGenerator->generateForCustomFormField($options['custom_field'])->getChoiceList();
+                'empty_data'         => null,
+                'contextual_choices' => [],
+                'choice_list'        => function (Options $options) {
+                    return $this->hierarchy
+                        ->generateForCustomPerFormField($options['custom_field'], $options['contextual_choices'])
+                        ->getChoiceList()
+                    ;
                 },
-                'placeholder' => '',
-                'help'        => '',
             ])
-            ->setRequired([
-                'custom_field',
-            ])
+            ->setRequired('custom_field')
             ->setAllowedTypes([
-                'custom_field' => CustomDefAbstract::class,
+                'custom_field' => CustomFieldDefinition::class,
             ])
         ;
-    }
-
-    /**
-     * @param FormEvent $event
-     */
-    public function onTransformSingleChoice(FormEvent $event)
-    {
-        $data = $event->getData();
-        if (is_array($data)) {
-            $data = (string) array_shift($data);
-        }
-
-        $event->setData($data);
-    }
-
-    /**
-     * @param FormEvent $event
-     */
-    public function onTransformRadioData(FormEvent $event)
-    {
-        $form   = $event->getForm();
-        $config = $form->getConfig();
-
-        $transformer = new CustomDefHierarchyNodeTransformer($config->getOption('choice_list'));
-        $event->setData($transformer->transform($event->getData()));
     }
 }

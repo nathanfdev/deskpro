@@ -89,19 +89,25 @@ services:
       - { name: form.type }
 
   form.custom_data:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType
     arguments: ["@custom_field_manager", "@validator"]
     tags:
       - { name: form.type }
 
   form.deskpro_custom_per_field_data:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomPerFieldType
-    arguments: ["@tickets.custom_per_field_manager", "@custom_field_manager"]
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType
+    arguments: ["@tickets.custom_per_field_manager"]
     tags:
-      - { name: form.type, alias: deskpro_custom_per_field_data }
+      - { name: form.type }
+
+  form.deskpro_contextual_per_field_choice:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\ContextualPerFieldChoiceType
+    arguments: ["@form_hierarchy_generator"]
+    tags:
+      - { name: form.type }
 
   form.custom_field_choice:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFieldChoiceType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldChoiceType
     arguments: ["@form_hierarchy_generator"]
     tags:
       - { name: form.type }

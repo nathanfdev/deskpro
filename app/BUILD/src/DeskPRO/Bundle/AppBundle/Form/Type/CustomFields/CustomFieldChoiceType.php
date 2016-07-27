@@ -26,29 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
 
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
-
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\CustomDefHierarchyNodeTransformer;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\StringToIntegerArrayTransformer;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class ContextualPerFieldChoiceType.
+ * Class CustomFieldChoiceType.
  */
-class ContextualPerFieldChoiceType extends AbstractType
+class CustomFieldChoiceType extends AbstractType
 {
     /**
      * @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator
      */
-    private $hierarchy_generator;
+    private $hierarchyGenerator;
 
     /**
      * Constructor.
@@ -57,7 +57,7 @@ class ContextualPerFieldChoiceType extends AbstractType
      */
     public function __construct(HierarchyGenerator $hierarchy)
     {
-        $this->hierarchy_generator = $hierarchy;
+        $this->hierarchyGenerator = $hierarchy;
     }
 
     /**
@@ -67,19 +67,17 @@ class ContextualPerFieldChoiceType extends AbstractType
     {
         if ($options['multiple']) {
             $builder->addModelTransformer(new StringToIntegerArrayTransformer(','));
-        }
-        $builder->addModelTransformer(
-            new CustomDefHierarchyNodeTransformer($options['choice_list'], $options['multiple']),
-            true
-        );
-    }
+        } else {
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onTransformSingleChoice'], 100);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'deskpro_contextual_per_field_choice';
+            if ($options['expanded']) {
+                // for radio boxes ChoiceType uses PRE_SET_DATA callback,
+                // so we need to transform our choice to HierarchyNode before it called
+                $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onTransformRadioData'], 100);
+            }
+        }
+
+        $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer($options['choice_list']), true);
     }
 
     /**
@@ -87,7 +85,7 @@ class ContextualPerFieldChoiceType extends AbstractType
      */
     public function getParent()
     {
-        return 'choice';
+        return ChoiceType::class;
     }
 
     /**
@@ -95,28 +93,46 @@ class ContextualPerFieldChoiceType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $hierarchy_generator = $this->hierarchy_generator;
-
         $resolver
             ->setDefaults([
-                'empty_data'         => null,
-                'contextual_choices' => [],
-                'choice_list'        => function (Options $options) use ($hierarchy_generator) {
-                    return $hierarchy_generator
-                        ->generateForCustomPerFormField(
-                            $options['custom_field'],
-                            $options['contextual_choices']
-                        )
-                        ->getChoiceList()
-                    ;
+                'empty_data'  => null,
+                'choice_list' => function (Options $options) {
+                    return $this->hierarchyGenerator->generateForCustomFormField($options['custom_field'])->getChoiceList();
                 },
+                'placeholder' => '',
+                'help'        => '',
             ])
             ->setRequired([
                 'custom_field',
             ])
             ->setAllowedTypes([
-                'custom_field' => 'Application\\DeskPRO\\Entity\\CustomFieldDefinition',
+                'custom_field' => CustomDefAbstract::class,
             ])
         ;
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onTransformSingleChoice(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (is_array($data)) {
+            $data = (string) array_shift($data);
+        }
+
+        $event->setData($data);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onTransformRadioData(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $config = $form->getConfig();
+
+        $transformer = new CustomDefHierarchyNodeTransformer($config->getOption('choice_list'));
+        $event->setData($transformer->transform($event->getData()));
     }
 }

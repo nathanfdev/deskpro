@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
@@ -127,13 +127,6 @@ class CustomDataType extends AbstractType
             'error_bubbling' => true,
             'mapped'         => false,
         ]);
-
-        if ($config->getOption('ignore_validation')) {
-            $options = array_merge($options, [
-                'validation_groups' => [],
-                'constraints'       => null,
-            ]);
-        }
 
         // child field is not mapped so the form tries to get data from the options
         // so we should pass stored value via its options
@@ -268,9 +261,6 @@ class CustomDataType extends AbstractType
         if (!$form->isSubmitted()) {
             return;
         }
-        if ($options['ignore_validation']) {
-            return;
-        }
 
         /** @var CustomDefAbstract $customDef */
         $customDef = $options['custom_def'];
@@ -324,10 +314,9 @@ class CustomDataType extends AbstractType
                 'required' => function (Options $options) {
                     return $options['custom_def']->isRequired($options['agent_interface']);
                 },
-                'inline'            => false,
-                'error_bubbling'    => false,
-                'ignore_validation' => false,
-                'ticket'            => false,
+                'inline'         => false,
+                'error_bubbling' => false,
+                'ticket'         => false,
             ])
             ->setRequired([
                 'custom_def',

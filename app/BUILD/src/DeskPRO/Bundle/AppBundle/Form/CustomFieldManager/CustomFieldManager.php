@@ -39,13 +39,12 @@ use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Form\Type\CustomFieldChoiceType;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A service responsible for making sense of "Fields". Usually, special strings (see FormFields class), need to be
@@ -66,38 +65,6 @@ class CustomFieldManager
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
-    }
-
-    /**
-     * @param CustomFieldDefinition $field
-     * @param bool                  $agent_interface
-     *
-     * @return array
-     */
-    public function getCustomPerField(CustomFieldDefinition $field, $agent_interface)
-    {
-        $constraints = [];
-
-        // required
-        if ($field->isRequired($agent_interface)) {
-            $constraints[] = new Assert\NotBlank();
-        }
-
-        $options = [
-            'required'     => $field->isRequired($agent_interface),
-            'expanded'     => $field->isExpanded(),
-            'multiple'     => $field->isMultiple(),
-            'custom_field' => $field,
-            'label'        => false,
-            'constraints'  => $constraints,
-            'help'         => $field->getDescription(),
-        ];
-
-        return [
-            'data',
-            'deskpro_contextual_per_field_choice',
-            $options,
-        ];
     }
 
     /**

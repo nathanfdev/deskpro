@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,15 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\CustomField\Context;
 
 use Application\DeskPRO\Entity\CustomFieldData;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Doctrine\ORM\EntityManager;
 
+/**
+ * Class CustomPerFieldManager.
+ */
 class CustomPerFieldManager
 {
     /**
@@ -51,9 +51,14 @@ class CustomPerFieldManager
      */
     private $save_queue;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
-        $this->save_queue = array();
+        $this->save_queue = [];
         $this->em         = $em;
     }
 
@@ -65,7 +70,7 @@ class CustomPerFieldManager
      */
     public function getCustomPerFieldDefinition($definition_id, CustomFieldContext $context)
     {
-        if (!$def = $this->em->getRepository('DeskPRO:CustomFieldDefinition')->find($definition_id)) {
+        if (!$def = $this->em->getRepository(CustomFieldDefinition::class)->find($definition_id)) {
             return;
         }
 
@@ -82,6 +87,13 @@ class CustomPerFieldManager
         return $def;
     }
 
+    /**
+     * @param CustomFieldDefinition $def
+     * @param $title
+     * @param $context_id
+     *
+     * @return CustomFieldDefinition
+     */
     public function createNewOption(CustomFieldDefinition $def, $title, $context_id)
     {
         $child             = $def->spawnChild($title);
@@ -90,14 +102,19 @@ class CustomPerFieldManager
         return $child;
     }
 
+    /**
+     * @param CustomFieldDefinition $def
+     * @param CustomFieldContext    $context
+     *
+     * @return CustomFieldData
+     */
     public function getOrCreateCustomPerFieldData(CustomFieldDefinition $def, CustomFieldContext $context)
     {
         if ($data = $this->getCustomPerFieldData($def, $context)) {
             return $data;
         }
 
-        $owner      = $context->getOwner($def->getOwnerClass());
-        $contextual = $context->getOwner($def->getOwnerClass());
+        $owner = $context->getOwner($def->getOwnerClass());
 
         $data                  = new CustomFieldData();
         $data->definition      = $def;
@@ -107,14 +124,20 @@ class CustomPerFieldManager
         return $data;
     }
 
+    /**
+     * @param CustomFieldData $data
+     */
     public function saveDataToQueue(CustomFieldData $data)
     {
         $this->save_queue[] = $data;
     }
 
+    /**
+     * @param bool $flush
+     */
     public function flushDataQueue($flush = true)
     {
-        $data = array();
+        $data = [];
 
         foreach ($this->save_queue as $queue_data) {
             $this->em->persist($queue_data);
@@ -126,6 +149,12 @@ class CustomPerFieldManager
         }
     }
 
+    /**
+     * @param CustomFieldDefinition $def
+     * @param CustomFieldContext    $context
+     *
+     * @return array|null
+     */
     public function getCustomPerFieldData(CustomFieldDefinition $def, CustomFieldContext $context)
     {
         $owner      = $context->getOwner($def->getOwnerClass());
@@ -135,15 +164,18 @@ class CustomPerFieldManager
             return;
         }
 
-        $result = $this->em->getRepository('DeskPRO:CustomFieldData')->getFieldData($def, $owner);
+        /** @var \Application\DeskPRO\EntityRepository\CustomFieldData $repository */
+        $repository = $this->em->getRepository(CustomFieldData::class);
+        $result     = $repository->getFieldData($def, $owner);
 
-        if (is_array($result)) {
-            return current($result);
-        }
-
-        return $result;
+        return is_array($result) ? current($result) : null;
     }
 
+    /**
+     * @param CustomFieldDefinition $def
+     *
+     * @return CustomFieldDefinition
+     */
     protected function findRootDefinition(CustomFieldDefinition $def)
     {
         if ($def->parent) {
@@ -153,14 +185,24 @@ class CustomPerFieldManager
         return $def;
     }
 
+    /**
+     * @param CustomFieldDefinition $def
+     * @param CustomFieldContext    $context
+     *
+     * @return array
+     */
     public function getCustomPerFieldChoices(CustomFieldDefinition $def, CustomFieldContext $context)
     {
-        $context_id = $context->getContext($def->getContextClass());
-
-        $qb = $this->em->getRepository('DeskPRO:CustomFieldDefinition')->createQueryBuilder('def');
-        $qb->where('def.parent = :parent')->setParameter('parent', $def);
-        $qb->andWhere('def.context_id = :context_id')->setParameter('context_id', $context_id);
-        $qb->andWhere('def.is_enabled = true');
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('def')
+            ->from(CustomFieldDefinition::class, 'def')
+            ->where('def.parent = :parent')
+            ->andWhere('def.context_id = :context_id')
+            ->andWhere('def.is_enabled = true')
+            ->setParameter('parent', $def)
+            ->setParameter('context_id', $context->getContext($def->getContextClass()))
+        ;
 
         return $qb->getQuery()->getResult();
     }

@@ -38,6 +38,7 @@ use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketCategoryType;
@@ -289,29 +290,29 @@ abstract class AbstractFieldResolver
      */
     protected function createCustomPerField(TicketWithLayoutsContext $context, LayoutField $field)
     {
-        $field_context = new CustomFieldTicketContext($context->getTicket());
-        $def           = $this->customPerFieldManager->getCustomPerFieldDefinition($field->getFieldId(), $field_context);
+        $fieldContext = new CustomFieldTicketContext($context->getTicket());
+        $def          = $this->customPerFieldManager->getCustomPerFieldDefinition($field->getFieldId(), $fieldContext);
 
         if (!$def || !$def->isEnabled()) {
             return false;
         }
 
-        $possible_choices = $this->customPerFieldManager->getCustomPerFieldChoices($def, $field_context);
+        $possible_choices = $this->customPerFieldManager->getCustomPerFieldChoices($def, $fieldContext);
         if (count($possible_choices) < 1) {
             return false;
         }
 
-        $data    = $this->customPerFieldManager->getOrCreateCustomPerFieldData($def, $field_context);
+        $data    = $this->customPerFieldManager->getOrCreateCustomPerFieldData($def, $fieldContext);
         $options = [
-            'agent_interface'             => $context->getViewContext() === TicketWithLayoutsContext::VIEW_AGENT,
+            'agent_interface'             => $context->isAgentView(),
             'label'                       => $def->getTitle(),
             'data'                        => $data,
-            'custom_per_field_context'    => $field_context,
+            'custom_per_field_context'    => $fieldContext,
             'custom_per_field_definition' => $def,
             'mapped'                      => false,
         ];
 
-        return new FormField('deskpro_custom_per_field_data', $options);
+        return new FormField(CustomPerFieldType::class, $options);
     }
 
     /**

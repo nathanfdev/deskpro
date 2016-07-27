@@ -26,19 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
-
+use Application\DeskPRO\Entity\CustomFieldData;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
+use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldContext;
+use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager;
-use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class CustomPerFieldType.
@@ -48,23 +48,16 @@ class CustomPerFieldType extends AbstractType
     /**
      * @var CustomPerFieldManager
      */
-    private $custom_per_field_manager;
-
-    /**
-     * @var CustomFieldManager
-     */
-    private $field_manager;
+    private $perFieldManager;
 
     /**
      * Constructor.
      *
-     * @param CustomPerFieldManager $custom_per_field_manager
-     * @param CustomFieldManager    $field_manager
+     * @param CustomPerFieldManager $perFieldManager
      */
-    public function __construct(CustomPerFieldManager $custom_per_field_manager, CustomFieldManager $field_manager)
+    public function __construct(CustomPerFieldManager $perFieldManager)
     {
-        $this->custom_per_field_manager = $custom_per_field_manager;
-        $this->field_manager            = $field_manager;
+        $this->perFieldManager = $perFieldManager;
     }
 
     /**
@@ -72,58 +65,62 @@ class CustomPerFieldType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'preDataEvent']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'postSubmitEvent']);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreData']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
+     * @internal
+     *
      * @param FormEvent $event
      */
-    public function preDataEvent(FormEvent $event)
+    public function onPreData(FormEvent $event)
     {
         $form   = $event->getForm();
         $config = $form->getConfig();
 
         /** @var \Application\DeskPRO\Entity\CustomFieldData $data */
         $data = $event->getData();
-        /** @var \Application\DeskPRO\Entity\CustomFieldDefinition $definition */
-        $definition = $data->root_definition;
+        /** @var \Application\DeskPRO\Entity\CustomFieldDefinition $def */
+        $def = $data->root_definition;
 
         if (!$data->getData()) {
-            $data->setData($definition->getDefaultValue());
+            $data->setData($def->getDefaultValue());
         }
 
-        list($value_name, $form_type, $options) = $this->field_manager->getCustomPerField(
-            $definition,
-            $config->getOption('agent_interface')
-        );
+        $constraints = [];
+        if ($def->isRequired($config->getOption('agent_interface'))) {
+            $constraints[] = new Assert\NotBlank();
+        }
 
-        $contextual_choices = $this->custom_per_field_manager->getCustomPerFieldChoices(
+        $options = [
+            'required'     => $def->isRequired($config->getOption('agent_interface')),
+            'expanded'     => $def->isExpanded(),
+            'multiple'     => $def->isMultiple(),
+            'custom_field' => $def,
+            'label'        => false,
+            'constraints'  => $constraints,
+            'help'         => $def->getDescription(),
+        ];
+
+        $contextualChoices = $this->perFieldManager->getCustomPerFieldChoices(
             $config->getOption('custom_per_field_definition'),
             $config->getOption('custom_per_field_context')
         );
 
-        if ($config->getOption('ignore_validation')) {
-            $options = array_merge($options, [
-                'validation_groups' => [],
-                'constraints'       => null,
-            ]);
-        }
+        $options = array_merge($options, [
+            'contextual_choices' => $contextualChoices,
+        ]);
 
-        $options = array_merge(
-            $options,
-            [
-                'contextual_choices' => $contextual_choices,
-            ]
-        );
-
-        $form->add($value_name, $form_type, $options);
+        $form->add('data', ContextualPerFieldChoiceType::class, $options);
     }
 
     /**
+     * @internal
+     *
      * @param FormEvent $event
      */
-    public function postSubmitEvent(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\CustomFieldData $custom_data */
         $custom_data = $event->getData();
@@ -138,14 +135,12 @@ class CustomPerFieldType extends AbstractType
         }
 
         // if admin switched from multi select to single select, we need to fix the data object
-        $custom_data_field                      = $custom_data ? $custom_data->definition : $config->getOption('custom_per_field_definition');
-        list($value_name, $form_type, $options) = $this->field_manager->getCustomPerField($custom_data_field, $config->getOption('agent_interface'));
-
-        if (array_key_exists('multiple', $options) && !$options['multiple']) {
+        $def = $custom_data ? $custom_data->definition : $config->getOption('custom_per_field_definition');
+        if (!$def->isMultiple()) {
             $custom_data->input = '';
         }
 
-        $this->custom_per_field_manager->saveDataToQueue($custom_data);
+        $this->perFieldManager->saveDataToQueue($custom_data);
     }
 
     /**
@@ -153,9 +148,9 @@ class CustomPerFieldType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
-                'data_class'      => 'Application\DeskPRO\Entity\CustomFieldData',
+        $resolver
+            ->setDefaults([
+                'data_class'      => CustomFieldData::class,
                 'agent_interface' => false,
             ])
             ->setRequired([
@@ -163,20 +158,9 @@ class CustomPerFieldType extends AbstractType
                 'custom_per_field_context',
             ])
             ->setAllowedTypes([
-                'custom_per_field_definition' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
-                'custom_per_field_context'    => [
-                    'DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldContext',
-                    'DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldTicketContext',
-                ],
+                'custom_per_field_definition' => CustomFieldDefinition::class,
+                'custom_per_field_context'    => [CustomFieldContext::class, CustomFieldTicketContext::class],
             ])
         ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'deskpro_custom_per_field_data';
     }
 }
