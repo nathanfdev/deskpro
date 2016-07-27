@@ -36,7 +36,6 @@ use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
 use DeskPRO\Bundle\SystemBundle\Exception\DenormalizationException;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\LogReducer;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -107,6 +106,11 @@ abstract class AbstractIncident implements Incident
     protected $events;
 
     /**
+     * @var Event[] Not persisted field. Stores events passed to the addEvent() method.
+     */
+    protected $newEvents = [];
+
+    /**
      * @var Event|null
      *
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent", fetch="EAGER")
@@ -135,13 +139,6 @@ abstract class AbstractIncident implements Incident
      * @ORM\Column(name="success_events_count", type="integer", nullable=false)
      */
     protected $successEventsCount = 0;
-
-    /**
-     * @var int[] Array of timestamps
-     *
-     * @ORM\Column(name="event_dates", type="simple_array", nullable=false)
-     */
-    protected $eventDates = [];
 
     /**
      * @var bool
@@ -200,13 +197,15 @@ abstract class AbstractIncident implements Incident
      */
     public function getEvents()
     {
-        try {
-            throw new \Exception('getEvents()');
-        } catch (\Exception $e) {
-            die($e->getTraceAsString());
-        }
-
         return $this->events;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNewEvents()
+    {
+        return $this->newEvents;
     }
 
     /**
@@ -214,15 +213,7 @@ abstract class AbstractIncident implements Incident
      */
     public function getEventsCount()
     {
-        // Since $this->events->count() doesn't load the whole collection in EXTRA_LAZY mode
-        // let's have this denormalization verification here at low cost
-        $objectsCount = $this->events->count();
-        $datesCount   = count($this->eventDates);
-        if ($objectsCount !== $datesCount) {
-            throw new DenormalizationException('Events count is not equal to event dates count');
-        }
-
-        return $objectsCount;
+        return $this->events->count();
     }
 
     /**
@@ -253,12 +244,11 @@ abstract class AbstractIncident implements Incident
         if (!$this->events->contains($event)) {
             $this->events[] = $event;
 
-            // Denormalized data ---------------------------------------------
+            // getNewEvents() data -------------------------------------------
 
-            $this->eventDates[] = $event->getDateCreated()->getTimestamp();
-//            if (count($this->eventDates) > LogReducer::QUANTITY_LIMIT) {
-//                $this->eventDates = array_slice($this->eventDates, 0, - LogReducer::QUANTITY_LIMIT);
-//            }
+            $this->newEvents[] = $event;
+
+            // Denormalized data ---------------------------------------------
 
             $this->subjectUniqueId = $subjectUniqueId;
 
@@ -272,21 +262,6 @@ abstract class AbstractIncident implements Incident
                 $this->lastFailureEvent                              = $event;
             }
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getEventDates()
-    {
-        $dates = [];
-        foreach ($this->eventDates as $timestamp) {
-            $date = new \DateTime();
-            $date->setTimestamp($timestamp);
-            $dates[] = $date;
-        }
-
-        return $dates;
     }
 
     /**

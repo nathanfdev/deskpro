@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\PHP;
 
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\AbstractStatefulIncidentTrigger;
 
@@ -82,17 +83,41 @@ abstract class AbstractCodeErrorTrigger extends AbstractStatefulIncidentTrigger
      */
     protected function isIncidentState(Incident $incident)
     {
-        $eventDates  = $incident->getEventDates();
-        $periodCount = 0;
-        $now         = new \DateTime();
+        // When event is already raised, it will remain raised unless there are new success event
+        // so we can skip main algorithm which requires loading the whole events collection
 
-        foreach ($eventDates as $date) {
-            $date = $date->modify("+{$this->periodMinutes} minutes");
-            if ($date > $now) {
-                ++$periodCount;
+        if ($incident->isRaised()) {
+            $hasNewSuccessEvent = false;
+            foreach ($incident->getNewEvents() as $event) {
+                if ($event instanceof SuccessEvent) {
+                    $hasNewSuccessEvent = true;
+                    break;
+                }
+            }
+
+            if (!$hasNewSuccessEvent) {
+                return true;
             }
         }
 
-        return $periodCount >= $this->incidentErrorsCount;
+        // Main algorithm checks number of errors within the period of time
+
+        $events      = $incident->getEvents();
+        $periodCount = 0;
+        $now         = new \DateTime();
+
+        foreach ($events as $event) {
+            $date = clone $event->getDateCreated();
+            $date = $date->modify("+{$this->periodMinutes} minutes");
+            if ($date > $now) {
+                ++$periodCount;
+
+                if ($periodCount >= $this->incidentErrorsCount) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
