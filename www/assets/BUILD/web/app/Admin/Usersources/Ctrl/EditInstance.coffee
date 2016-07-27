@@ -14,7 +14,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
       @$scope.getController = => return this
       @$scope.setPresaveCallback = (callback) => @presaveCallback = callback
       @$scope.enableCustomFooter = => @$scope.has_own_footer = true
-      @usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state);
+      @usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state)
       @presaveCallback = null
       @app = null
 
@@ -36,7 +36,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
       @Api.sendDataGet({
         app: '/apps/instances/' + @instanceId
       }).then( (result) =>
-        @app = result.data.app?.app;
+        @app = result.data.app?.app
 
         @$scope.app = @app
         @$scope.appId = @app?.id
@@ -105,9 +105,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
             loadingAssets.push(@$http.get(path, { responseType: "text"}).success((data) =>
               @dpTemplateManager.setTemplate(form_template, data)
             ))
-          if path = getResourcePath('js', 'AdminInterface/Install/settings.js')
+          if getResourcePath('js', 'AdminInterface/Install/settings.js')
             jsDeferred = @$q.defer()
-            require([path], (c) =>
+            require(["../../../../../../../../app/BUILD/apps/" + @pack.name + "/js/AdminInterface/Install/settings.js"], (c) ->
               installCtrl = c
               jsDeferred.resolve()
             )
@@ -118,7 +118,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
               if installCtrl
                 @$scope.install_ctrl = installCtrl
               else
-                @$scope.install_ctrl = [=>
+                @$scope.install_ctrl = [->
                   return
                 ]
 
@@ -238,24 +238,24 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
         controller: ['app', '$scope', '$modalInstance', (app, $scope, $modalInstance) ->
           $scope.app = app
           $scope.dismiss = ->
-            $modalInstance.close();
+            $modalInstance.close()
 
           $scope.confirm = ->
             $scope.is_loading = true
             doDelete().then(->
-              $modalInstance.close();
+              $modalInstance.close()
             )
         ],
         resolve: {
           app: =>
             return @app
         }
-      });
+      })
 
 
 
     listCtrl: ->
-      @$scope.$parent?.ListCtrl || {refresh: =>}
+      @$scope.$parent?.ListCtrl || {refresh: ->}
 
 
 

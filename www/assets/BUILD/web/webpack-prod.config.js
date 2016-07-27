@@ -16,12 +16,15 @@ devConfig.plugins         = [
   new webpack.optimize.DedupePlugin(),
   new webpack.optimize.UglifyJsPlugin({
     sourceMap: true,
-    mangle:    false,
-    exclude:   [/(node_modules|bower_components)/]
+    mangle:    false
   }),
   new webpack.DefinePlugin({
     'process.env.NODE_ENV': '"production"',
     __DEV__:                false
+  }),
+  new webpack.optimize.CommonsChunkPlugin({
+    name: "vendor",
+    minChunks: Infinity
   })
 ];
 
