@@ -46,21 +46,21 @@ use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent;
 class LogReducer
 {
     /**
-     * @var Connection
-     */
-    private $conn;
-
-    /**
      * @var int Max number of events of the same type, applied to events with quantity expiration strategy. This number
      *          must be sufficient to raise any incident.
      */
-    private $quantityLimit;
+    const QUANTITY_LIMIT = 150;
 
     /**
      * @var int Event max alive time in minutes, applied to events with time expiration strategy. This period must be
      *          sufficient to raise any incident.
      */
-    private $timeLimit;
+    const TIME_LIMIT = 4320; // 60 * 24 * 3 = 4320
+
+    /**
+     * @var Connection
+     */
+    private $conn;
 
     /**
      * @var array Used by the getEventSubjectIds() to cache its' result
@@ -68,15 +68,16 @@ class LogReducer
     private $eventSubjectIdsCache = [];
 
     /**
-     * @param Connection $conn
-     * @param int        $quantityLimit
-     * @param int        $timeLimit
+     * @var array Used by the getPreservedEventIds() to cache its' result
      */
-    public function __construct(Connection $conn, $quantityLimit, $timeLimit)
+    private $preservedEventIdsCache = [];
+
+    /**
+     * @param Connection $conn
+     */
+    public function __construct(Connection $conn)
     {
-        $this->conn          = $conn;
-        $this->quantityLimit = $quantityLimit;
-        $this->timeLimit     = $timeLimit;
+        $this->conn = $conn;
     }
 
     /**
@@ -121,10 +122,14 @@ class LogReducer
         $processed       = $processed ? 1 : 0;
         $eventSubjectIds = $this->getEventSubjectIds(AbstractEvent::EXPIRES_WITH_QUANTITY);
         foreach ($eventSubjectIds as $eventSubjectId) {
-            $topIds = $this->queryTopIds($eventSubjectId, $this->quantityLimit);
+            $preserveIds = $this->getPreservedEventIds($eventSubjectId);
+            $preserveIds = array_merge(
+                $preserveIds,
+                $this->queryTopIds($eventSubjectId, self::QUANTITY_LIMIT - count($preserveIds))
+            );
             $this->conn->executeUpdate(
                 'DELETE FROM `system_alerts_events` WHERE subject_unique_id = ? AND processed = ? AND id NOT IN (?)',
-                [$eventSubjectId, $processed, $topIds],
+                [$eventSubjectId, $processed, $preserveIds],
                 [\PDO::PARAM_STR, \PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]
             );
         }
@@ -151,7 +156,7 @@ class LogReducer
                 DELETE FROM `system_alerts_events`
                 WHERE subject_unique_id = ? AND processed = ? AND date_created < ? - INTERVAL ? MINUTE
             ';
-            $this->query($reduceSql, [$eventSubjectId, $processed, $lastEventDate, $this->timeLimit], false);
+            $this->query($reduceSql, [$eventSubjectId, $processed, $lastEventDate, self::TIME_LIMIT], false);
         }
     }
 
@@ -170,11 +175,15 @@ class LogReducer
         $processed       = $processed ? 1 : 0;
         $eventSubjectIds = $this->getEventSubjectIds(AbstractEvent::EXPIRES_WITH_TIME);
         foreach ($eventSubjectIds as $eventSubjectId) {
-            $preserveIds   = $this->queryTopIds($eventSubjectId, $this->quantityLimit - 1);
+            $preserveIds   = $this->getPreservedEventIds($eventSubjectId);
             $preserveIds[] = $this->query(
                 'SELECT MIN(id) FROM `system_alerts_events` WHERE subject_unique_id = ?', $eventSubjectId);
+            $preserveIds = array_merge(
+                $preserveIds,
+                $this->queryTopIds($eventSubjectId, self::QUANTITY_LIMIT - count($preserveIds))
+            );
 
-            if (count($preserveIds) === $this->quantityLimit) {
+            if (count($preserveIds) === self::QUANTITY_LIMIT) {
                 $this->conn->executeUpdate(
                     'DELETE FROM system_alerts_events WHERE subject_unique_id = ? AND processed = ? AND id NOT IN (?)',
                     [$eventSubjectId, $processed, $preserveIds],
@@ -211,6 +220,23 @@ class LogReducer
     }
 
     /**
+     * @param string|null $eventSubjectId Optional subject_unique_id
+     *
+     * @return array|mixed
+     */
+    private function getPreservedEventIds($eventSubjectId = null)
+    {
+        if (!array_key_exists($eventSubjectId, $this->preservedEventIdsCache)) {
+            $this->preservedEventIdsCache[$eventSubjectId] = $this->queryAll('
+                SELECT DISTINCT first_failure_event_id FROM system_alerts_incidents
+                UNION SELECT DISTINCT last_failure_event_id FROM system_alerts_incidents
+            ');
+        }
+
+        return $this->preservedEventIdsCache[$eventSubjectId];
+    }
+
+    /**
      * @param string $eventSubjectId
      * @param int    $limit
      *
@@ -231,7 +257,8 @@ class LogReducer
      */
     private function flushCache()
     {
-        $this->eventSubjectIdsCache = [];
+        $this->eventSubjectIdsCache   = [];
+        $this->preservedEventIdsCache = [];
     }
 
     /**
@@ -241,7 +268,7 @@ class LogReducer
      *
      * @return mixed
      */
-    private function query($sql, $params, $mode = \PDO::FETCH_COLUMN)
+    private function query($sql, $params = [], $mode = \PDO::FETCH_COLUMN)
     {
         is_array($params) or $params = [$params];
 
@@ -260,7 +287,7 @@ class LogReducer
      *
      * @return mixed
      */
-    private function queryAll($sql, $params, $mode = \PDO::FETCH_COLUMN)
+    private function queryAll($sql, $params = [], $mode = \PDO::FETCH_COLUMN)
     {
         is_array($params) or $params = [$params];
 

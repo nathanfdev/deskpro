@@ -66,19 +66,11 @@ abstract class AbstractEmailFailureTrigger extends AbstractStatefulIncidentTrigg
             return false;
         }
 
-        $lastFailure  = $incident->getLastEvent();
-        $firstFailure = $lastFailure;
-        $events       = $incident->getEvents();
-        $i            = count($events) - 1;
-        while ($i >= 0) {
-            if ($events[$i] instanceof SuccessEvent) {
-                break;
-            }
-            $firstFailure = $events[$i--];
-        }
+        $dateFirstFailure = $incident->getDateFirstFailure();
+        $dateLastFailure  = $incident->getDateLastFailure();
 
         /** @var \DateInterval $diff */
-        $diff    = $lastFailure->getDateCreated()->diff($firstFailure->getDateCreated());
+        $diff    = $dateLastFailure->diff($dateFirstFailure);
         $minutes = $diff->days * 24 * 60 + $diff->h * 60 + $diff->i;
 
         return $minutes >= $this->silenceTime;

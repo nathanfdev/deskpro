@@ -35,6 +35,8 @@ namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
 use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
+use DeskPRO\Bundle\SystemBundle\Exception\DenormalizationException;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\LogReducer;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -94,7 +96,8 @@ abstract class AbstractIncident implements Incident
      * @ORM\ManyToMany(
      *     targetEntity="DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent",
      *     inversedBy="incidents",
-     *     cascade={"all"}
+     *     cascade={"all"},
+     *     fetch="EXTRA_LAZY"
      * )
      * @ORM\JoinTable(name="system_alerts_incident_events",
      *     joinColumns={@ORM\JoinColumn(name="incident_id", referencedColumnName="id", onDelete="CASCADE")},
@@ -102,6 +105,43 @@ abstract class AbstractIncident implements Incident
      * )
      */
     protected $events;
+
+    /**
+     * @var Event|null
+     *
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent", fetch="EAGER")
+     * @ORM\JoinColumn(name="first_failure_event_id", referencedColumnName="id", nullable=true)
+     */
+    protected $firstFailureEvent;
+
+    /**
+     * @var Event|null
+     *
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent", fetch="EAGER")
+     * @ORM\JoinColumn(name="last_failure_event_id", referencedColumnName="id", nullable=true)
+     */
+    protected $lastFailureEvent;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="failure_events_count", type="integer", nullable=false)
+     */
+    protected $failureEventsCount = 0;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="success_events_count", type="integer", nullable=false)
+     */
+    protected $successEventsCount = 0;
+
+    /**
+     * @var int[] Array of timestamps
+     *
+     * @ORM\Column(name="event_dates", type="simple_array", nullable=false)
+     */
+    protected $eventDates = [];
 
     /**
      * @var bool
@@ -160,20 +200,13 @@ abstract class AbstractIncident implements Incident
      */
     public function getEvents()
     {
-        return $this->events;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getEventIds()
-    {
-        $ids = [];
-        foreach ($this->events as $event) {
-            $ids[] = $event->getId();
+        try {
+            throw new \Exception('getEvents()');
+        } catch (\Exception $e) {
+            die($e->getTraceAsString());
         }
 
-        return $ids;
+        return $this->events;
     }
 
     /**
@@ -181,7 +214,15 @@ abstract class AbstractIncident implements Incident
      */
     public function getEventsCount()
     {
-        return count($this->events);
+        // Since $this->events->count() doesn't load the whole collection in EXTRA_LAZY mode
+        // let's have this denormalization verification here at low cost
+        $objectsCount = $this->events->count();
+        $datesCount   = count($this->eventDates);
+        if ($objectsCount !== $datesCount) {
+            throw new DenormalizationException('Events count is not equal to event dates count');
+        }
+
+        return $objectsCount;
     }
 
     /**
@@ -189,9 +230,8 @@ abstract class AbstractIncident implements Incident
      */
     public function setEvents(array $events)
     {
-        $this->events = new ArrayCollection($events);
-        if (count($this->events)) {
-            $this->subjectUniqueId = $this->events[0]->getSubjectUniqueId();
+        foreach ($events as $event) {
+            $this->addEvent($event);
         }
     }
 
@@ -211,9 +251,42 @@ abstract class AbstractIncident implements Incident
         }
 
         if (!$this->events->contains($event)) {
-            $this->events[]        = $event;
+            $this->events[] = $event;
+
+            // Denormalized data ---------------------------------------------
+
+            $this->eventDates[] = $event->getDateCreated()->getTimestamp();
+//            if (count($this->eventDates) > LogReducer::QUANTITY_LIMIT) {
+//                $this->eventDates = array_slice($this->eventDates, 0, - LogReducer::QUANTITY_LIMIT);
+//            }
+
             $this->subjectUniqueId = $subjectUniqueId;
+
+            if ($event instanceof SuccessEvent) {
+                ++$this->successEventsCount;
+                $this->firstFailureEvent = null;
+                $this->lastFailureEvent  = null;
+            } else {
+                ++$this->failureEventsCount;
+                $this->firstFailureEvent or $this->firstFailureEvent = $event;
+                $this->lastFailureEvent                              = $event;
+            }
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEventDates()
+    {
+        $dates = [];
+        foreach ($this->eventDates as $timestamp) {
+            $date = new \DateTime();
+            $date->setTimestamp($timestamp);
+            $dates[] = $date;
+        }
+
+        return $dates;
     }
 
     /**
@@ -221,8 +294,8 @@ abstract class AbstractIncident implements Incident
      */
     public function getFirstEvent()
     {
-        if (count($this->events)) {
-            return $this->events[0];
+        if ($this->events->count()) {
+            return $this->events->get(0);
         }
     }
 
@@ -231,7 +304,9 @@ abstract class AbstractIncident implements Incident
      */
     public function getLastEvent()
     {
-        return $this->events->last();
+        if ($count = $this->events->count()) {
+            return $this->events->get($count - 1);
+        }
     }
 
     /**
@@ -239,13 +314,7 @@ abstract class AbstractIncident implements Incident
      */
     public function getLastFailureEvent()
     {
-        $i = $this->events->count() - 1;
-        while ($i >= 0) {
-            if (!$this->events[$i] instanceof SuccessEvent) {
-                return $this->events[$i];
-            }
-            --$i;
-        }
+        return $this->lastFailureEvent;
     }
 
     /**
@@ -253,7 +322,7 @@ abstract class AbstractIncident implements Incident
      */
     public function getDateFirstFailure()
     {
-        return $this->getFirstEvent()->getDateCreated();
+        return $this->firstFailureEvent->getDateCreated();
     }
 
     /**
@@ -261,7 +330,7 @@ abstract class AbstractIncident implements Incident
      */
     public function getDateLastFailure()
     {
-        return $this->getLastFailureEvent()->getDateCreated();
+        return $this->lastFailureEvent->getDateCreated();
     }
 
     /**
@@ -269,14 +338,11 @@ abstract class AbstractIncident implements Incident
      */
     public function getFailureEventsCount()
     {
-        $count = 0;
-        foreach ($this->events as $event) {
-            if (!$event instanceof SuccessEvent) {
-                ++$count;
-            }
+        if ($this->failureEventsCount + $this->successEventsCount !== $this->getEventsCount()) {
+            throw new DenormalizationException('Total events count is not equal to sum of failure and success counts');
         }
 
-        return $count;
+        return $this->failureEventsCount;
     }
 
     /**

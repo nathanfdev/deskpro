@@ -37,8 +37,6 @@ services:
     class: DeskPRO\Bundle\SystemBundle\SystemAlerts\LogReducer
     arguments:
       - "@doctrine.dbal.system_connection"
-      - 150              # Max events of the same type for events with quantity based expiration strategy
-      - "@= 60 * 24 * 7" # Max time alive for events with time based expiration strategy
 
   # --------------------------------------------------------------------------------------------------------------------
   # Trigger services

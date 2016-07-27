@@ -82,13 +82,11 @@ abstract class AbstractCodeErrorTrigger extends AbstractStatefulIncidentTrigger
      */
     protected function isIncidentState(Incident $incident)
     {
-        $failures    = $incident->getEvents();
-        $count       = count($failures);
+        $eventDates  = $incident->getEventDates();
         $periodCount = 0;
         $now         = new \DateTime();
 
-        for ($i = $count - 1; $i >= 0; --$i) {
-            $date = clone $failures[$i]->getDateCreated();
+        foreach ($eventDates as $date) {
             $date = $date->modify("+{$this->periodMinutes} minutes");
             if ($date > $now) {
                 ++$periodCount;

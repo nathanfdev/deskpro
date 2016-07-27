@@ -81,9 +81,9 @@ interface Incident extends EntityInterface, NotifyPropertyChanged
     public function getEvents();
 
     /**
-     * @return int[]
+     * @return \DateTime[]
      */
-    public function getEventIds();
+    public function getEventDates();
 
     /**
      * @return int
