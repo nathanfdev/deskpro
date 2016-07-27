@@ -44,6 +44,11 @@ class InstallSession
     private $sessionId;
 
     /**
+     * @var string
+     */
+    private $sessionUuid = null;
+
+    /**
      * @var \DateTime
      */
     private $startDate;
@@ -111,6 +116,30 @@ class InstallSession
     public function getSessionId()
     {
         return $this->sessionId;
+    }
+
+    /**
+     * Get the session uuid.
+     *
+     * The session ID (above) is unique per install attempt. It's expected that if you made a mistake
+     * and re-started the install from scratch that the ID might be different.
+     *
+     * The uuid is expected to be more persistent. It's used in our reporting to keep track of
+     * attempts to try and connect different attempts together.
+     *
+     * @return string
+     */
+    public function getSessionUuid()
+    {
+        return $this->sessionUuid;
+    }
+
+    /**
+     * @param string $sessionUuid
+     */
+    public function setSessionUuid($sessionUuid)
+    {
+        $this->sessionUuid = $sessionUuid;
     }
 
     /**

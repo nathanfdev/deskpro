@@ -35,6 +35,7 @@ use DeskPRO\Bundle\InstallBundle\InstallSession\InstallSession;
 use DeskPRO\Bundle\InstallBundle\InstallSession\SessionManager;
 use DeskPRO\Component\Exception\Filesystem\FileWriteException;
 use DeskPRO\Component\Util\EnvUtils;
+use DeskPRO\Component\Util\RandUtils;
 use DeskPRO\Component\Util\TypeUtils;
 use DpRun\DpEnv;
 use Orb\Util\Strings;
@@ -185,6 +186,20 @@ class InstallCommand extends ContainerAwareCommand
         register_shutdown_function(function () use ($sm, $session, $DP_ENV) {
             $sm->saveInstallSession($session);
         });
+
+        if ($profile->hasAnswer('session_uuid')) {
+            $session->setSessionUuid($profile->getAnswer('session_uuid'));
+        }
+
+        if (!$session->getSessionUuid() && $DP_ENV->getDatManager()->hasTxtFile('install_session_uuid')) {
+            $session->setSessionUuid($DP_ENV->getDatManager()->readTxtFile('install_session_uuid'));
+        }
+
+        if (!$session->getSessionUuid()) {
+            $session->setSessionUuid(RandUtils::randomStringFormat('%30An'));
+        }
+
+        $DP_ENV->getDatManager()->writeTxtFile('install_session_uuid', $session->getSessionUuid());
 
         #------------------------------
         # Create the steps

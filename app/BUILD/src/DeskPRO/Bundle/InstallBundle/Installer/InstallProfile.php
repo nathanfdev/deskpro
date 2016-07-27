@@ -52,6 +52,7 @@ class InstallProfile
         'user_password',
         'skip_recommendations',
         'filestorage_method',
+        'session_uuid',
     ];
 
     /**
