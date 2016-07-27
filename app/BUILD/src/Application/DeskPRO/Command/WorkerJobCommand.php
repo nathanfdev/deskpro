@@ -38,6 +38,7 @@ use Orb\Util\Env;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 
 class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
@@ -138,6 +139,30 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         }
 
         App::getDb()->delete('install_data', array('build' => 1, 'name' => 'cron_run_errors'));
+
+        #------------------------------
+        # Auto-upgrader
+        #------------------------------
+
+        $updaterSettings = $this->getContainer()->get('updater_settings_resolver')->getUpdaterSettings();
+        $updaterStatus   = $this->getContainer()->get('updater_settings_resolver')->getUpdaterStatus();
+
+        if ($updaterSettings->isEnabled() && $updaterStatus->getNextCheck() && $updaterStatus->getNextCheck() < (new \DateTime())) {
+            $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:update --no-interaction');
+            if ($output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
+                $output->writeln("Running upgrade: $cmd");
+                $cb = function ($t, $l) use ($output) {
+                    $output->write($l);
+                };
+            } else {
+                $cb = null;
+            }
+
+            $proc = new Process($cmd);
+            $proc->run($cb);
+
+            return 0;
+        }
 
         #------------------------------
         # CLI phpinfo
