@@ -155,6 +155,31 @@ class MinkContext extends \Behat\MinkExtension\Context\MinkContext
     }
 
     /**
+     * @override
+     *
+     * @param string $select
+     * @param string $option
+     */
+    public function selectOption($select, $option)
+    {
+        $select = DataContext::replace($select);
+        $option = DataContext::replace($option);
+
+        parent::selectOption($select, $option);
+    }
+
+    /**
+     * @override
+     *
+     * @param string $option
+     */
+    public function checkOption($option)
+    {
+        $option = DataContext::replace($option);
+        parent::checkOption($option);
+    }
+
+    /**
      * @param string $name
      * @param string $value
      * @param string $actual

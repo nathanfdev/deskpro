@@ -99,21 +99,22 @@ class CustomPerFieldType extends AbstractType
 
         /** @var CustomFieldDefinition $customDef */
         $customDef = $config->getOption('custom_def');
+        $required  = $customDef->isRequired($config->getOption('agent_interface'));
 
         $constraints = [];
-        if ($customDef->isRequired($config->getOption('agent_interface'))) {
+        if ($required) {
             $constraints[] = new Assert\NotBlank();
         }
 
         $options = [
-            'required'           => $customDef->isRequired($config->getOption('agent_interface')),
+            'required'           => $required,
             'expanded'           => $customDef->isExpanded(),
             'multiple'           => $customDef->isMultiple(),
             'custom_field'       => $customDef,
             'label'              => false,
             'constraints'        => $constraints,
             'help'               => $customDef->getDescription(),
-            'contextual_choices' => $customDef->getChoices()->toArray(),
+            'contextual_choices' => $customDef->getChoices($config->getOption('owner'))->toArray(),
             'mapped'             => false,
 
             // child field is not mapped so the form tries to get data from the options

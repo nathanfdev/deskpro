@@ -66,20 +66,20 @@ Feature: New ticket form
       | ticket[message][format]   |               |
       | ticket[department]        |               |
 
-    Scenario: I check required fields
-      Given the only default ticket layout exists with fields:
-        | user_layout               |
-        | user_field_{user_field_1} |
+  Scenario: I check required fields
+    Given the only default ticket layout exists with fields:
+      | user_layout               |
+      | user_field_{user_field_1} |
 
-      When I go to "/new-ticket"
-      Then the ".form-ticket" form should have 8 elements
-      And I should see ".form-ticket" form fields in following order:
-        | name                                    | class         |
-        | ticket[user_field_{user_field_1}][data] |               |
-        | ticket[department]                      |               |
-        | ticket[subject]                         |               |
-        | ticket[message][message]                |               |
-        | ticket[message][format]                 |               |
-        | ticket[person][user_name]               |               |
-        |                                         | email-present |
-        | ticket[displayed_fields]                |               |
+    When I go to "/new-ticket"
+    Then the ".form-ticket" form should have 8 elements
+    And I should see ".form-ticket" form fields in following order:
+      | name                                    | class         |
+      | ticket[user_field_{user_field_1}][data] |               |
+      | ticket[department]                      |               |
+      | ticket[subject]                         |               |
+      | ticket[message][message]                |               |
+      | ticket[message][format]                 |               |
+      | ticket[person][user_name]               |               |
+      |                                         | email-present |
+      | ticket[displayed_fields]                |               |

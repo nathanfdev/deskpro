@@ -39,6 +39,8 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -214,27 +216,34 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
     }
 
     /**
-     * @param int $def_id
+     * @param int $defId
      *
      * @return CustomFieldDefinition
      */
-    public function getChildById($def_id)
+    public function getChildById($defId)
     {
-        foreach ($this->children as $v) {
-            if ($v->getId() == $def_id) {
-                return $v;
-            }
-        }
+        $criteria = new Criteria();
+        $criteria->andWhere($criteria->expr()->eq('id', $defId));
+
+        return $this->children->matching($criteria)->first();
     }
 
     /**
+     * @param mixed $contextEntity
+     *
      * @return \Doctrine\Common\Collections\Collection|static
      */
-    public function getChoices()
+    public function getChoices($contextEntity)
     {
-        return $this->children->filter(function (self $child) {
-            return $child->isEnabled();
-        });
+        if (!$contextEntity || !$contextEntity->getId()) {
+            return new ArrayCollection();
+        }
+
+        $criteria = new Criteria();
+        $criteria->andWhere($criteria->expr()->eq('context_id', $contextEntity->getId()));
+        $criteria->andWhere($criteria->expr()->eq('context_class', ClassUtils::getClass($contextEntity)));
+
+        return $this->children->matching($criteria);
     }
 
     /**
@@ -259,6 +268,24 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
     public function isForPerson()
     {
         return $this->context_class == Person::class;
+    }
+
+    /**
+     * @param mixed $entity
+     *
+     * @return $this
+     */
+    public function setContext($entity)
+    {
+        if ($entity) {
+            $this->setModelField('context_class', ClassUtils::getClass($entity));
+            $this->setModelField('context_id', $entity->getId());
+        } else {
+            $this->setModelField('context_class', '');
+            $this->setModelField('context_id', null);
+        }
+
+        return $this;
     }
 
     /**
@@ -537,7 +564,7 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
 
         $metadata->mapManyToOne([
             'fieldName'    => 'parent',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomFieldDefinition',
+            'targetEntity' => self::class,
             'mappedBy'     => null,
             'inversedBy'   => 'children',
             'joinColumns'  => [
@@ -552,7 +579,8 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
 
         $metadata->mapOneToMany([
             'fieldName'    => 'children',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomFieldDefinition',
+            'targetEntity' => self::class,
+            'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             'cascade'      => [
                 'remove',
                 'persist',

@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\CustomFieldDefinition;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataOwnerInterface;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\EventSubscriber;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
@@ -116,7 +117,7 @@ class CustomPerDataListener implements EventSubscriber
             ->innerJoin('d.root_definition', 'def')
             ->where(
                 'd.owner_id = :owner_id',
-                'd.root_definition = :def_ids'
+                'd.root_definition IN (:def_ids)'
             )
             ->setParameter('owner_id', $entity->getId())
             ->setParameter('def_ids', $this->getDefIds($entity, $em))
@@ -185,7 +186,7 @@ class CustomPerDataListener implements EventSubscriber
                 'd.owner_class = :owner_class',
                 'd.parent is null'
             )
-            ->setParameter('owner_class', get_class($entity))
+            ->setParameter('owner_class', ClassUtils::getClass($entity))
         ;
 
         $defs = $qb->getQuery()->getResult();

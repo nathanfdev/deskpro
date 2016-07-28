@@ -106,6 +106,7 @@ abstract class AbstractFieldResolver
         TicketFieldSettings        $fieldSettings,
         BrandAwareSettingsResolver $settingsResolver
     ) {
+        $this->em                 = $em;
         $this->hierarchyGenerator = $hierarchyGenerator;
         $this->languageManager    = $languageManager;
         $this->fieldManager       = $fieldManager;
@@ -278,10 +279,6 @@ abstract class AbstractFieldResolver
             return false;
         }
 
-        if (count($def->getChoices()) < 1) {
-            return false;
-        }
-
         if ($def->getContextClass() === Person::class) {
             $owner = $this->getSubmittedPerson($context);
         } elseif ($def->getContextClass() === Organization::class) {
@@ -290,7 +287,7 @@ abstract class AbstractFieldResolver
             $owner = null;
         }
 
-        if (!$owner) {
+        if (!$owner || count($def->getChoices($owner)) < 1) {
             return false;
         }
 

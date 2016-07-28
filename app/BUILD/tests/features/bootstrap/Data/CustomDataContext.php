@@ -175,4 +175,24 @@ class CustomDataContext extends BaseContext
     {
         $this->dataContext->onlyTheFollowingRecordsExist('CustomDefChat', $table);
     }
+
+    /**
+     * @Given only the following custom per user fields exist:
+     *
+     * @param TableNode $table
+     */
+    public function onlyTheFollowingCustomPerUserFieldsExist(TableNode $table)
+    {
+        $this->dataContext->onlyTheFollowingRecordsExist('CustomPerUserDef', $table);
+    }
+
+    /**
+     * @Given only the following custom per organization fields exist:
+     *
+     * @param TableNode $table
+     */
+    public function onlyTheFollowingCustomPerOrganizationFieldsExist(TableNode $table)
+    {
+        $this->dataContext->onlyTheFollowingRecordsExist('CustomPerOrgDef', $table);
+    }
 }

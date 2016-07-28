@@ -39,6 +39,11 @@ use Application\DeskPRO\CustomFields\Handler\Toggle;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 
+/**
+ * Class CustomFieldUtil.
+ *
+ * todo fix me, does not work properly with choice fields
+ */
 class CustomFieldUtil
 {
     /**
