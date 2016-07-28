@@ -584,6 +584,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 			reloadInterface: function() {
 				$('#reload_overlay').show().on('click', function(ev) { ev.stopPropagation(); });
 				window.location.reload(false);
+			},
+
+			inIframe: function () {
+				try {
+					return window.self !== window.top;
+				} catch (e) {
+					return true;
+				}
 			}
 		};
 	},
@@ -683,6 +691,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var loadReports;
 		if (loadReports = window.location.hash.match(/#reports:(.*?)$/)) {
 			loadReports = loadReports[1];
+		}
+
+		if (this.util.inIframe()) {
+			console.log('Sending iframe message');
+			data = {
+				reload: true,
+				location: window.location.href
+			};
+			window.top.postMessage(data, window.location.origin);
 		}
 
 		$.fn.qtip.zindex = 999999999;

@@ -55,6 +55,10 @@ define [
     , 20000)
   ])
 
+
+  if window.parent == window.self
+    window.location.href = window.DP_BASE_URL + 'agent/#reports:' + window.location.hash.replace(/^#/, '')
+
   if window.parent?.DP_FRAME_OVERLAYS?.reports
     window.parent.DP_FRAME_OVERLAYS.reports.callLoaded()
 
