@@ -28,7 +28,7 @@
 
 namespace Application\EmailBundle\Mail\RawMessage\Mail;
 
-use Zend\Mail\Headers;
+use Zend\Mail\Headers as BaseHeaders;
 use Zend\Mail\Storage\AbstractStorage;
 use Zend\Mail\Storage\Exception\InvalidArgumentException;
 use Zend\Mime;
@@ -54,7 +54,7 @@ class Part extends \Zend\Mail\Storage\Part
         if (isset($params['raw'])) {
             Decode::splitMessage($params['raw'], $this->headers, $this->content, Mime\Mime::LINEEND, $params['strict']);
         } elseif (isset($params['headers'])) {
-            if ($params['headers'] instanceof Headers) {
+            if ($params['headers'] instanceof BaseHeaders) {
                 $this->headers = $params['headers'];
             } elseif (is_array($params['headers'])) {
                 $this->headers = new Headers();
