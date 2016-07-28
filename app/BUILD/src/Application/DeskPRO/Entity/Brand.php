@@ -206,6 +206,19 @@ class Brand extends DomainObject
     }
 
     /**
+     * @param Department $department
+     *
+     * @return $this
+     */
+    public function removeDepartment(Department $department)
+    {
+        $this->departments->removeElement($department);
+        $this->_onPropertyChanged('departments', null, $this->departments);
+
+        return $this;
+    }
+
+    /**
      * @param Department $searchDepartment
      *
      * @return bool
@@ -292,7 +305,7 @@ class Brand extends DomainObject
                         0 => [
                             'name'                 => 'brand_id',
                             'referencedColumnName' => 'id',
-                            'nullable'             => true,
+                            'nullable'             => false,
                             'onDelete'             => 'cascade',
                         ],
                     ],
@@ -300,7 +313,7 @@ class Brand extends DomainObject
                         0 => [
                             'name'                 => 'department_id',
                             'referencedColumnName' => 'id',
-                            'nullable'             => true,
+                            'nullable'             => false,
                             'onDelete'             => 'cascade',
                         ],
                     ],
