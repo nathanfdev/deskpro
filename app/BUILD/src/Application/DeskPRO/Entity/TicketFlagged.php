@@ -210,6 +210,7 @@ class TicketFlagged extends DomainObject
                 'targetEntity' => Ticket::class,
                 'cascade'      => ['persist'],
                 'id'           => true,
+                'inversedBy'   => 'stars',
                 'joinColumns'  => [
                     [
                         'name'                 => 'ticket_id',
