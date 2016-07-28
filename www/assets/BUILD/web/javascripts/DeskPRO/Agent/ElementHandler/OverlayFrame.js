@@ -18,10 +18,12 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 			Orb.cancelEvent(ev);
 			self.open();
 		});
+
+		self.preload();
 	},
 
 	initFrame: function() {
-		this.frameWrap = $('<div class="overlay-frame-wrap" style="position: absolute; top: 51px; right: 0; bottom: 0; left: 0; z-index: 5;"></div>');
+		this.frameWrap = $('<div id="overlay-frame-'+this.frameId+'" class="overlay-frame-wrap" style="display:none; position: absolute; top: 51px; right: 0; bottom: 0; left: 0; z-index: 100;"></div>');
 		this.frame = $('<iframe frameborder="0" width="100%" height="100%" scrolling="auto" marginheight="0" marginwidth="0" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; margin: 0; padding: 0;"></iframe>');
 		this.frame.appendTo(this.frameWrap);
 
@@ -35,16 +37,16 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 		this.frameWrap.appendTo('body');
 	},
 
-	open: function(with_hash, callback) {
-		var self = this, hash, frameId = this.frameId;
+	preload: function(with_hash, callback) {
+		var self = this, frameId = this.frameId;
 
-		if (window['DP_FRAME_OVERLAYS']) {
-			for (var k in window['DP_FRAME_OVERLAYS']) {
-				if (k !== this.frameId && window['DP_FRAME_OVERLAYS'].hasOwnProperty(k)) {
-					window['DP_FRAME_OVERLAYS'][k].close();
-				}
-			}
-		}
+		// if (window['DP_FRAME_OVERLAYS']) {
+		// 	for (var k in window['DP_FRAME_OVERLAYS']) {
+		// 		if (k !== this.frameId && window['DP_FRAME_OVERLAYS'].hasOwnProperty(k)) {
+		// 			window['DP_FRAME_OVERLAYS'][k].close();
+		// 		}
+		// 	}
+		// }
 
 		if (!this.frame) {
 			this.initFrame(with_hash);
@@ -52,29 +54,16 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 
 		this.callback = callback;
 
-		var url = this.frameUrl;
+		this.url = this.frameUrl;
 		if (with_hash) {
-			if (url.indexOf('#') !== -1) {
-				url = url.substr(0, url.indexOf('#'));
+			if (this.url.indexOf('#') !== -1) {
+				this.url = this.url.substr(0, this.url.indexOf('#'));
 			}
 
-			url += '#' + with_hash
+			this.url += '#' + with_hash
 		}
 
-		if (url.indexOf('#') !== -1) {
-			hash = url.substr(url.indexOf('#')+1);
-		} else {
-			hash = '';
-		}
-
-		this.setHash(hash);
-		this.frameWrap.show();
-		this.frame.attr('src', url);
-
-		if (this.frameTitle) {
-			this.originalTitle = document.title;
-			document.title = this.frameTitle;
-		}
+		this.frame.attr('src', this.url);
 
 		DeskPRO_Window.disableHashPath(function(hash) {
 			if (hash.indexOf(self.frameId + ':') !== 0) {
@@ -100,6 +89,26 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 		});
 	},
 
+	open: function() {
+		var hash;
+
+		this.frameWrap.css('display', 'block');
+
+		if (this.url.indexOf('#') !== -1) {
+			hash = this.url.substr(url.indexOf('#')+1);
+		} else {
+			hash = '';
+		}
+
+		this.setHash(hash);
+		this.frameWrap.show();
+
+		if (this.frameTitle) {
+			this.originalTitle = document.title;
+			document.title = this.frameTitle;
+		}
+	},
+
 	callLoaded: function() {
 		if (this.callback) {
 			this.callback();
@@ -111,12 +120,20 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 			hash = '';
 		}
 
-		hash = hash.replace(/^#/, '')
+		hash = hash.replace(/^#/, '');
 		hash = this.frameId + ':' + hash;
 		window.location.hash = '#' + hash;
 	},
 
 	close: function() {
+		this.frameWrap.css('display', 'none');
+
+		if (this.frameTitle) {
+			document.title = this.originalTitle;
+		}
+	},
+
+	delete: function() {
 		if (this.frameWrap) {
 			this.frameWrap.remove();
 			this.frame = null;
