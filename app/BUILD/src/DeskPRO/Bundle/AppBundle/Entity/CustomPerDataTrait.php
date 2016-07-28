@@ -26,59 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\CustomField\Context;
+namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\CustomFieldData;
+use Doctrine\Common\Collections\Collection;
 
 /**
- * Class CustomFieldTicketContext.
+ * Class CustomPerDataTrait.
  */
-class CustomFieldTicketContext extends CustomFieldContext
+trait CustomPerDataTrait
 {
     /**
-     * @var Ticket
+     * @var CustomFieldData[]|Collection
      */
-    private $ticket;
+    protected $customPerData;
 
     /**
-     * Constructor.
-     *
-     * @param Ticket $ticket
+     * {@inheritdoc}
      */
-    public function __construct(Ticket $ticket)
+    public function getCustomPerData()
     {
-        parent::__construct($ticket, null);
-        $this->ticket = $ticket;
+        return $this->customPerData;
     }
 
     /**
-     * @param $owner_class
-     *
-     * @return Ticket
+     * {@inheritdoc}
      */
-    public function getOwner($owner_class)
+    public function setCustomPerData($customPerData)
     {
-        return $this->ticket;
-    }
-
-    /**
-     * @param $context_class
-     *
-     * @return \Application\DeskPRO\Entity\Organization|\Application\DeskPRO\Entity\Person|null
-     */
-    public function getContext($context_class)
-    {
-        switch ($context_class) {
-            case 'Application\DeskPRO\Entity\Person':
-                return $this->ticket->getPerson();
-            case 'Application\DeskPRO\Entity\Organization':
-                if ($org = $this->ticket->getOrganization()) {
-                    return $org;
-                }
-
-                return;
-        }
-
-        return;
+        $this->customPerData = $customPerData;
     }
 }

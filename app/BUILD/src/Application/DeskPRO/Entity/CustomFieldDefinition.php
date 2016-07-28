@@ -170,17 +170,25 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
      */
     protected $context_id;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->children        = new ArrayCollection();
         $this->description     = '';
         $this->display_order   = 0;
-        $this->options         = array();
+        $this->options         = [];
         $this->is_enabled      = true;
         $this->is_user_enabled = true;
         $this->is_agent_field  = false;
     }
 
+    /**
+     * @param string $title
+     *
+     * @return CustomFieldDefinition
+     */
     public function spawnChild($title)
     {
         $new                  = new self();
@@ -197,26 +205,75 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         return $new;
     }
 
+    /**
+     * @return ArrayCollection|CustomFieldDefinition[]
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * @param int $def_id
+     *
+     * @return CustomFieldDefinition
+     */
+    public function getChildById($def_id)
+    {
+        foreach ($this->children as $v) {
+            if ($v->getId() == $def_id) {
+                return $v;
+            }
+        }
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection|static
+     */
+    public function getChoices()
+    {
+        return $this->children->filter(function (self $child) {
+            return $child->isEnabled();
+        });
+    }
+
+    /**
+     * @param CustomFieldDefinition $child
+     */
     public function addChild(CustomFieldDefinition $child)
     {
         $this->children->add($child);
     }
 
+    /**
+     * @return bool
+     */
     public function isForOrganization()
     {
-        return $this->context_class == 'Application\DeskPRO\Entity\Organization';
+        return $this->context_class == Organization::class;
     }
 
+    /**
+     * @return bool
+     */
     public function isForPerson()
     {
-        return $this->context_class == 'Application\DeskPRO\Entity\Person';
+        return $this->context_class == Person::class;
     }
 
+    /**
+     * @return bool|string
+     */
     public function isEnabled()
     {
         return $this->is_enabled;
     }
 
+    /**
+     * @param bool $agent_interface
+     *
+     * @return bool
+     */
     public function isRequired($agent_interface = false)
     {
         // never required if agent is filling it out
@@ -227,21 +284,33 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         return (bool) $this->getOption('required', false);
     }
 
+    /**
+     * @return string
+     */
     public function getDefaultValue()
     {
         return $this->default_value;
     }
 
+    /**
+     * @return bool
+     */
     public function isMultiple()
     {
         return (bool) $this->getOption('multiple', false);
     }
 
+    /**
+     * @return bool
+     */
     public function isExpanded()
     {
         return (bool) $this->getOption('expanded', false);
     }
 
+    /**
+     * @return bool
+     */
     public function isOptionsEditableByUser()
     {
         return (bool) $this->getOption('allow_edit', false);

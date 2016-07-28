@@ -663,7 +663,6 @@ class TicketsController extends AbstractController
 
             $ticket_manager->saveTicket($ticket, $context);
             $em->flush();
-            $this->get('tickets.custom_per_field_manager')->flushDataQueue();
             $em->commit();
         } catch (\Exception $e) {
             $em->rollback();
@@ -716,7 +715,6 @@ class TicketsController extends AbstractController
 
             $ticket_manager->saveTicket($ticket, $context);
             $em->flush();
-            $this->get('tickets.custom_per_field_manager')->flushDataQueue();
             $em->commit();
         } catch (\Exception $e) {
             $em->rollback();

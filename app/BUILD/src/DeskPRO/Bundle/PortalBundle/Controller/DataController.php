@@ -28,9 +28,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldContext;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -66,20 +64,16 @@ class DataController extends AbstractController
         if ($type !== 'per_user') {
             throw $this->createNotFoundException('this type is not allowed');
         }
-
-        $typeContext = Person::class;
         if (!$newTitle = $request->request->get('new_field')) {
             throw new InvalidArgumentException('please provide "new_field"');
         }
 
         // get the definition
-        $customPerManager = $this->get('tickets.custom_per_field_manager');
-
-        $context = new CustomFieldContext(Ticket::class, $typeContext);
-        $def     = $customPerManager->getCustomPerFieldDefinition($id, $context);
+        $def = $this->getEm()->getRepository(CustomFieldDefinition::class)->find($id);
 
         // add a new option
-        $new_choice = $customPerManager->createNewOption($def, $newTitle, $this->getUser()->getId());
+        $new_choice             = $def->spawnChild($newTitle);
+        $new_choice->context_id = $this->getUser()->getId();
         $this->persistAndFlushEntity($new_choice);
 
         return $this->makeJsonResponse([

@@ -36,20 +36,20 @@ services:
   ticket_with_layouts_api_field_resolver:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\ApiFieldResolver
     arguments:
+      - "@doctrine.orm.default_entity_manager"
       - "@form_hierarchy_generator"
       - "@language_manager"
       - "@custom_field_manager"
-      - "@tickets.custom_per_field_manager"
       - "@ticket_field_settings"
       - "@brand_aware_settings_resolver"
 
   ticket_with_layouts_web_field_resolver:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\WebFieldResolver
     arguments:
+      - "@doctrine.orm.default_entity_manager"
       - "@form_hierarchy_generator"
       - "@language_manager"
       - "@custom_field_manager"
-      - "@tickets.custom_per_field_manager"
       - "@ticket_field_settings"
       - "@brand_aware_settings_resolver"
 
@@ -91,12 +91,6 @@ services:
   form.custom_data:
     class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType
     arguments: ["@custom_field_manager", "@validator"]
-    tags:
-      - { name: form.type }
-
-  form.deskpro_custom_per_field_data:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType
-    arguments: ["@tickets.custom_per_field_manager"]
     tags:
       - { name: form.type }
 

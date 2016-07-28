@@ -40,6 +40,8 @@ use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
+use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataOwnerInterface;
+use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataTrait;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -132,8 +134,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @AppAssert\Ticket\TicketLink()
  */
-class Ticket extends DomainObject implements HighlightableModelInterface, LabelsOwner
+class Ticket extends DomainObject implements HighlightableModelInterface, LabelsOwner, CustomPerDataOwnerInterface
 {
+    use CustomPerDataTrait;
+
     const TAC_AUTHCODE_LEN     = 15;
     const TAC_AUTHCODE_LEN_MAX = 30;
 
@@ -279,29 +283,29 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     protected $linked_chat = null;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $attachments;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $access_codes;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      *
      * @Assert\Valid()
      */
     protected $messages;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $sms_messages;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection|CustomDataTicket[]
      */
     protected $custom_data;
 
@@ -628,6 +632,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->messages         = new ArrayCollection();
         $this->sms_messages     = new ArrayCollection();
         $this->custom_data      = new ArrayCollection();
+        $this->customPerData    = new ArrayCollection();
         $this->labels           = new ArrayCollection();
         $this->access_codes     = new ArrayCollection();
         $this->attachments      = new ArrayCollection();
