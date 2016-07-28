@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\FragmentRouter;
@@ -990,9 +989,9 @@ JS;
             $rjs->setUrlArgsExpr('"v='.DP_BUILD_TIME.'"');
         }
 
-        $rjs->addPath('AppPlatform', 'compiled/Agent/AppPlatform/Platform');
+        $rjs->addPath('AppPlatform', 'app-build/Agent/AppPlatform/Platform');
         $rjs->addPath('AppPlatformConfig', str_replace('.js', '', $this->generateUrl('agent_apps_config_js')));
-        $rjs->addPath('AgentApp', 'compiled/Agent/App/AgentModule');
+        $rjs->addPath('AgentApp', 'app-build/Agent/App/AgentModule');
 
         $rjs_apps = new AppsRequireJsConfigGenerator($manager, $this->generateUrl('serve_file_root').'/apps');
         $rjs->addPathsFromGenerator($rjs_apps);

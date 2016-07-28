@@ -17,7 +17,6 @@ module.exports = {
   },
   output:  {
     path:              path.join(__dirname, 'app-build/'),
-    publicPath:        '/assets/BUILD/web/app-build/',
     pathinfo:          true,
     filename:          '[name].bundle.js',
     sourceMapFilename: '[name].map'
