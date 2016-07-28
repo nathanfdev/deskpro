@@ -46,7 +46,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.appsSidebar = {
 			visible: false,
 			width: 350
-		}
+		};
 
 		if (Modernizr.localstorage) {
 			if (localStorage['apps_sidebar_state'] && localStorage['apps_sidebar_state'] == 'open') {
@@ -69,7 +69,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			source: 1,
 			list: 2,
 			tabs: 4
-		}
+		};
 
 		var self = this;
 
@@ -327,9 +327,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 
 				if (options.uploadTemplate) {
-					var setel = options.uploadTemplate;
+					setel = options.uploadTemplate;
 				} else {
-					var setel = $('.template-upload', el);
+					setel = $('.template-upload', el);
 				}
 
 				if (!setel || !setel[0]) {
@@ -347,9 +347,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 				options.uploadTemplateId = id;
 
 				if (options.downloadTemplate) {
-					var setel = options.downloadTemplate;
+					setel = options.downloadTemplate;
 				} else {
-					var setel = $('.template-download', el);
+					setel = $('.template-download', el);
 				}
 
 				if (!setel || !setel[0]) {
@@ -656,12 +656,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			loadNewTicket = loadNewTicket[1];
 		}
 
-		var loadSearchTerm = false;
+		var loadSearchTerm;
 		if (loadSearchTerm = window.location.hash.match(/#q:(.*?)$/)) {
 			loadSearchTerm = loadSearchTerm[1];
 		}
 
-		var loadVis = false;
+		var loadVis;
 		if (loadVis = window.location.hash.match(/vis:([0-9]{1})/)) {
 			loadVis = parseInt(loadVis[1]);
 		}
@@ -675,12 +675,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.setPaneVisNum(loadVis);
 		}
 
-		var loadAdmin = false;
+		var loadAdmin;
 		if (loadAdmin = window.location.hash.match(/#admin:(.*?)$/)) {
 			loadAdmin = loadAdmin[1];
 		}
 
-		var loadReports = false;
+		var loadReports;
 		if (loadReports = window.location.hash.match(/#reports:(.*?)$/)) {
 			loadReports = loadReports[1];
 		}

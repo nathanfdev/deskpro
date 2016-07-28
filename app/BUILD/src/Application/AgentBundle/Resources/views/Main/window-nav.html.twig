@@ -59,7 +59,14 @@
 
 			{% if app.user.can_reports %}
 				<li class="no-click-switch is-nav-btn">
-					<a title="Go to Reports Interface" href="{{ app.request.getBaseUrl() }}/reports/">
+					<a id="reports_interface_trigger"
+					   title="Go to Reports Interface"
+					   target="_blank"
+					   href="{{ app.request.getBaseUrl() }}/reports"
+					   data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
+					   data-frame-id="reports"
+					   data-win-title="DeskPRO Reports Interface"
+					>
 						<i class="app-icon app-icon-reports-ifce"></i>
 					</a>
 				</li>
@@ -67,13 +74,27 @@
 
 			{% if app.user.can_admin %}
 				<li class="no-click-switch is-nav-btn">
-					<a title="Go to Billing Interface" href="{{ app.request.getBaseUrl() }}/admin/#/license">
+					<a id="billings_interface_trigger"
+					   title="Go to Billing Interface"
+					   target="_blank"
+					   href="{{ app.request.getBaseUrl() }}/admin/#/license"
+					   data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
+					   data-frame-id="billing"
+					   data-win-title="DeskPRO Billing Interface"
+					>
 						<i class="app-icon app-icon-billing-ifce"></i>
 					</a>
 				</li>
 
 				<li id="settings_section" class="no-click-switch is-nav-btn">
-					<a title="Go to Admin Interface" href="{{ app.request.getBaseUrl() }}/admin/">
+					<a id="admin_interface_trigger"
+						title="Go to Admin Interface"
+						target="_blank"
+						href="{{ app.request.getBaseUrl() }}/admin/"
+						data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
+						data-frame-id="admin"
+						data-win-title="DeskPRO Admin Interface"
+					>
 						<i class="app-icon app-icon-admin-ifce"></i>
 					</a>
 				</li>
