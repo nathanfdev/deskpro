@@ -131,6 +131,14 @@ abstract class AbstractEvent implements Event
     /**
      * {@inheritdoc}
      */
+    public function setDateCreated(\DateTime $date)
+    {
+        $this->dateCreated = $date;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isProcessed()
     {
         return $this->processed;

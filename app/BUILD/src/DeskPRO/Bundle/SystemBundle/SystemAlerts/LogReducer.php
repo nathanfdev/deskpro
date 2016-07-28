@@ -49,13 +49,13 @@ class LogReducer
      * @var int Max number of events of the same type, applied to events with quantity expiration strategy. This number
      *          must be sufficient to raise any incident.
      */
-    const QUANTITY_LIMIT = 150;
+    private $quantityLimit = 150;
 
     /**
      * @var int Event max alive time in minutes, applied to events with time expiration strategy. This period must be
      *          sufficient to raise any incident.
      */
-    const TIME_LIMIT = 4320; // 60 * 24 * 3 = 4320
+    private $timeLimit = 4320; // "60 * 24 * 3" PhpLint doesn't allow expression here
 
     /**
      * @var Connection
@@ -78,6 +78,22 @@ class LogReducer
     public function __construct(Connection $conn)
     {
         $this->conn = $conn;
+    }
+
+    /**
+     * @param int $quantityLimit
+     */
+    public function setQuantityLimit($quantityLimit)
+    {
+        $this->quantityLimit = $quantityLimit;
+    }
+
+    /**
+     * @param int $timeLimit
+     */
+    public function setTimeLimit($timeLimit)
+    {
+        $this->timeLimit = $timeLimit;
     }
 
     /**
@@ -123,10 +139,11 @@ class LogReducer
         $eventSubjectIds = $this->getEventSubjectIds(AbstractEvent::EXPIRES_WITH_QUANTITY);
         foreach ($eventSubjectIds as $eventSubjectId) {
             $preserveIds = $this->getPreservedEventIds($eventSubjectId);
-            $preserveIds = array_merge(
-                $preserveIds,
-                $this->queryTopIds($eventSubjectId, self::QUANTITY_LIMIT - count($preserveIds))
-            );
+
+            $limit = $this->quantityLimit - count($preserveIds);
+            if ($limit > 0) {
+                $preserveIds = array_merge($preserveIds, $this->queryTopIds($eventSubjectId, $limit, $processed));
+            }
             $this->conn->executeUpdate(
                 'DELETE FROM `system_alerts_events` WHERE subject_unique_id = ? AND processed = ? AND id NOT IN (?)',
                 [$eventSubjectId, $processed, $preserveIds],
@@ -156,7 +173,7 @@ class LogReducer
                 DELETE FROM `system_alerts_events`
                 WHERE subject_unique_id = ? AND processed = ? AND date_created < ? - INTERVAL ? MINUTE
             ';
-            $this->query($reduceSql, [$eventSubjectId, $processed, $lastEventDate, self::TIME_LIMIT], false);
+            $this->query($reduceSql, [$eventSubjectId, $processed, $lastEventDate, $this->timeLimit], false);
         }
     }
 
@@ -178,12 +195,13 @@ class LogReducer
             $preserveIds   = $this->getPreservedEventIds($eventSubjectId);
             $preserveIds[] = $this->query(
                 'SELECT MIN(id) FROM `system_alerts_events` WHERE subject_unique_id = ?', $eventSubjectId);
-            $preserveIds = array_merge(
-                $preserveIds,
-                $this->queryTopIds($eventSubjectId, self::QUANTITY_LIMIT - count($preserveIds))
-            );
 
-            if (count($preserveIds) === self::QUANTITY_LIMIT) {
+            $limit = $this->quantityLimit - count($preserveIds);
+            if ($limit > 0) {
+                $preserveIds = array_merge($preserveIds, $this->queryTopIds($eventSubjectId, $limit, $processed));
+            }
+
+            if (count($preserveIds) === $this->quantityLimit) {
                 $this->conn->executeUpdate(
                     'DELETE FROM system_alerts_events WHERE subject_unique_id = ? AND processed = ? AND id NOT IN (?)',
                     [$eventSubjectId, $processed, $preserveIds],
@@ -237,17 +255,25 @@ class LogReducer
     }
 
     /**
-     * @param string $eventSubjectId
-     * @param int    $limit
+     * @param string   $eventSubjectId
+     * @param int      $limit
+     * @param int|bool $processed
      *
      * @return array
      */
-    private function queryTopIds($eventSubjectId, $limit)
+    private function queryTopIds($eventSubjectId, $limit, $processed)
     {
-        $limit = intval($limit);
-        $sql   = "SELECT id FROM `system_alerts_events` WHERE subject_unique_id = ? ORDER BY id DESC LIMIT $limit";
-        $ids   = $this->queryAll($sql, $eventSubjectId);
-        $ids   = array_map(function ($id) { return intval($id); }, $ids);
+        $processed = $processed ? 1 : 0;
+        $limit     = intval($limit);
+        $sql       = "
+            SELECT id
+            FROM `system_alerts_events`
+            WHERE subject_unique_id = ? AND processed = ?
+            ORDER BY id DESC
+            LIMIT $limit
+        ";
+        $ids = $this->queryAll($sql, [$eventSubjectId, $processed]);
+        $ids = array_map(function ($id) { return intval($id); }, $ids);
 
         return $ids;
     }
