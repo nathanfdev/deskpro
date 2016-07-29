@@ -44,14 +44,13 @@ define ->
         # ]
         # scope.selected = ['today', 'agent', 'department']
         ###
-        scope.texts = []
-        scope.options = []
-        scope.selected = []
+        scope.texts             = []
+        scope.options           = []
+        scope.selected          = []
         scope.defaultLinkParams = ''
-        scope.type = attrs.type || 'builtIn'
+        scope.type              = attrs.type || 'builtIn'
 
-        scope.$watch(attrs.possibleValues, (newVal) =>
-
+        scope.$watch(attrs.possibleValues, (newVal) ->
           if typeof newVal == 'undefined' then return
           valueToDecorate = scope.$eval(attrs.valueToDecorate)
           if !valueToDecorate then return
@@ -68,7 +67,6 @@ define ->
         # The reason for doing so - problems with inner directives that were compiled with $compile() functionality
         ###
         buildDirectiveVariables = (value) ->
-
           lastPiece = value
           regex = /(.*?)(<(\d+:.+?)>)/g
 
@@ -104,17 +102,17 @@ define ->
           else if input.match(/^\d+:field group:([a-zA-Z0-9_]+)(.*)$/)
             type = RegExp.$1
             if typeof possibleValues.fields[type] != 'undefined'
-              choices = possibleValues.fields[type]
+              choices     = possibleValues.fields[type]
               extrasMatch = RegExp.$2
           else if input.match(/^\d+:status group:([a-zA-Z0-9_]+)(.*)$/)
             type = RegExp.$1
             if typeof possibleValues.statuses[type] != 'undefined'
-              choices = possibleValues.statuses[type]
+              choices     = possibleValues.statuses[type]
               extrasMatch = RegExp.$2
           else if input.match(/^\d+:order group:([a-zA-Z0-9_]+)(.*)$/)
             type = RegExp.$1
             if typeof possibleValues.orders[type] != 'undefined'
-              choices = possibleValues.orders[type]
+              choices     = possibleValues.orders[type]
               extrasMatch = RegExp.$2
 
           # information about default group...
@@ -127,10 +125,10 @@ define ->
           # constructing selects...
 
           for own key, value of choices
-            options.push({value: key, label: value[0]})
+            options.push({ value: key, label: value[0] })
 
           if !options.length
-            options.push {value: 0, label: 'invalid value'}
+            options.push { value: 0, label: 'invalid value' }
 
           return {
             options: options
@@ -139,15 +137,19 @@ define ->
 
         updateLink = ->
           linkParams = scope.selected.join(',')
-          scope.report_link = $state.href('builder.edit', {id: scope.reportId, params:linkParams, type: scope.type})
+          scope.report_link = '#' + $state.href('builder.edit', {
+              id: scope.reportId,
+              params: linkParams,
+              type: scope.type
+            })
 
         ###
-        # Going to correponding route after changing selected options inside select box
+        # Going to corresponding route after changing selected options inside select box
         ###
         scope.changeLinkParams = () ->
           updateLink()
           linkParams = scope.selected.join(',')
-          $state.go('builder.edit', {id: scope.reportId, params:linkParams, type: scope.type})
+          $state.go('builder.edit', { id: scope.reportId, params: linkParams, type: scope.type })
     }
   ]
 

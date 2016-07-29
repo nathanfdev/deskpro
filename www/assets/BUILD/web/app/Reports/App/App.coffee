@@ -37,13 +37,13 @@ define [
     return {
     responseError: (rejection) ->
       if rejection.status? and rejection.data?.error? and rejection.status == 403 and rejection.data.error == "session_expired"
-        window.location = window.DP_BASE_URL + 'agent/login?timeout=1&return=' + encodeURIComponent(window.DP_BASE_URL + 'reports/' + window.location.hash);
+        window.location = window.DP_BASE_URL + 'agent/login?timeout=1&return=' + encodeURIComponent(window.DP_BASE_URL + 'reports/' + window.location.hash)
       else
         return $q.reject(rejection)
     }
   ])
   ReportsModule.config(['$httpProvider', ($httpProvider) ->
-    $httpProvider.interceptors.push('dpHttpSessionInterceptor');
+    $httpProvider.interceptors.push('dpHttpSessionInterceptor')
   ])
 
   ReportsModule.service('SessionPing', ['Api', (Api) ->
