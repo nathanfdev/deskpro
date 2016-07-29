@@ -29,7 +29,6 @@
 namespace DpTest\DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\Entity\BlobStorage;
-use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager;
@@ -60,8 +59,6 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
      * @var array Dummy advanced edits data
      */
     private $dummy_data = [
-        'header'      => '<h1>Custom header</h1>',
-        'footer'      => '<b>Custom footer</b>',
         'main_scss'   => 'body { background: #fff; color: #000; }',
         'custom_scss' => '.dp-dummy-style { border-left: 42px dotted purple; }',
         'javascript'  => 'console.log("Hello, custom JS!");',
@@ -99,28 +96,6 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
     }
 
     // Helper methods --------------------------------------------------------------------------------------------------
-
-    /**
-     * @return null|Template
-     */
-    private function findCustomHeader()
-    {
-        return $this->em->getRepository(Template::class)->findOneBy([
-            'name'      => AdvancedEditsManager::CUSTOM_HEADER_TEMPLATE_NAME,
-            'theme_set' => $this->edit_theme_set,
-        ]);
-    }
-
-    /**
-     * @return null|Template
-     */
-    private function findCustomFooter()
-    {
-        return $this->em->getRepository(Template::class)->findOneBy([
-            'name'      => AdvancedEditsManager::CUSTOM_FOOTER_TEMPLATE_NAME,
-            'theme_set' => $this->edit_theme_set,
-        ]);
-    }
 
     /**
      * @return null|ThemeSetAsset
@@ -174,12 +149,6 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
      */
     private function removeCustomEdits()
     {
-        if ($header = $this->findCustomHeader()) {
-            $this->em->remove($header);
-        }
-        if ($footer = $this->findCustomFooter()) {
-            $this->em->remove($footer);
-        }
         if ($mainScss = $this->findMainScss()) {
             $this->em->remove($mainScss);
         }
@@ -210,70 +179,6 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
     {
         $this->removeCustomEdits();
         $this->assertEquals($this->service->getMainScss(), 'body { background: #fff; }');
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_create_custom_header_DB_template()
-    {
-        $this->removeCustomEdits();
-        $this->saveDummyData();
-        $this->assertNotNull($this->findCustomHeader());
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_update_contents_of_the_existing_custom_header_DB_template()
-    {
-        $this->saveDummyData();
-        $this->dummy_data['header'] = 'Modified Header';
-        $this->saveDummyData();
-        $code = $this->findCustomHeader() ? $this->findCustomHeader()->getTemplateCode() : null;
-        $this->assertEquals($code, 'Modified Header');
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_assign_custom_header_to_the_edit_ThemeSet()
-    {
-        $this->saveDummyData();
-        $theme_set = $this->findCustomHeader() ? $this->findCustomHeader()->getThemeSet() : null;
-        $this->assertEquals($theme_set, $this->edit_theme_set);
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_create_custom_footer_DB_template()
-    {
-        $this->removeCustomEdits();
-        $this->saveDummyData();
-        $this->assertNotNull($this->findCustomFooter());
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_update_contents_of_the_existing_custom_footer_DB_template()
-    {
-        $this->saveDummyData();
-        $this->dummy_data['footer'] = 'Modified Footer';
-        $this->saveDummyData();
-        $code = $this->findCustomFooter() ? $this->findCustomFooter()->getTemplateCode() : null;
-        $this->assertEquals($code, 'Modified Footer');
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_assign_custom_footer_to_the_edit_ThemeSet()
-    {
-        $this->saveDummyData();
-        $theme_set = $this->findCustomFooter() ? $this->findCustomFooter()->getThemeSet() : null;
-        $this->assertEquals($theme_set, $this->edit_theme_set);
     }
 
     /**

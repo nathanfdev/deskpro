@@ -9,7 +9,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @recompiling = false
       @commiting = false
       @savingMulti = false
-      @advanced = {header: '', footer: '', main_scss: '', custom_scss: '', javascript: ''}
+      @advanced = {main_scss: '', custom_scss: '', javascript: ''}
       @available_themes = [
         {id: "standard", title: "Standard"},
         {id: "sidebar", title: "Sidebar"}
