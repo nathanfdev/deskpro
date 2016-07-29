@@ -166,10 +166,26 @@ class HelperRegistry
     }
 
     /**
+     * @return TranslationHelper
+     */
+    public function getTranslationHelper()
+    {
+        return $this->getHelper(TranslationHelper::class);
+    }
+
+    /**
      * @return UserGroupHelper
      */
     public function getUserGroupHelper()
     {
         return $this->getHelper(UserGroupHelper::class);
+    }
+
+    /**
+     * @return TextSnippetCategoryHelper
+     */
+    public function getTextSnippetCategoryHelper()
+    {
+        return $this->getHelper(TextSnippetCategoryHelper::class);
     }
 }

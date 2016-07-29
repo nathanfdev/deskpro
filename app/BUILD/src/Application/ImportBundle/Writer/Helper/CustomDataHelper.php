@@ -126,7 +126,7 @@ class CustomDataHelper
                 $customDef = $mapper->findOneBy([
                     'title'  => 'Custom field'.$fieldModel->getOid(),
                     'parent' => null,
-                ], false);
+                ]);
             }
         }
 
@@ -135,7 +135,7 @@ class CustomDataHelper
             $customDef = $mapper->findOneBy([
                 'title'  => $fieldModel->getName(),
                 'parent' => null,
-            ], false);
+            ]);
 
             if ($customDef) {
                 $this->logger->debug('Found existing custom def id by title');

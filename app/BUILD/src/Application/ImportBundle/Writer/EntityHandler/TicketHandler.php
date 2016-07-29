@@ -62,7 +62,7 @@ class TicketHandler extends AbstractEntityHandler
             ->setDepartment($this->findOrCreateTicketDepartment($model->getDepartment()))
             ->setCategory($this->findOrCreateTicketCategory($model->getCategory()))
             ->setStatus($model->getStatus())
-            ->setLanguage($this->helpers->getLanguageHelper()->findLanguage($model->getLanguage()))
+            ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
             ->setDateResolved($model->getDateResolved())
             ->setDateArchived($model->getDateArchived())
             ->setIsHold($model->isHold())
@@ -126,7 +126,7 @@ class TicketHandler extends AbstractEntityHandler
             $personImportMap = $this->mappers->getImportMapMapper()->findOneBy([
                 'new_id'   => $participant->getPerson()->getId(),
                 'typename' => ImportMapMapper::getImportMapKey(Model\Person::class),
-            ], false);
+            ]);
 
             if ($personImportMap) {
                 $participantEmails[] = $personImportMap->getOldId();
@@ -214,7 +214,7 @@ class TicketHandler extends AbstractEntityHandler
     {
         $department = null;
         if ($title) {
-            $department = $this->mappers->getDepartmentMapper()->findOneByTitle($title, false);
+            $department = $this->mappers->getDepartmentMapper()->findOneByTitle($title);
             if ($department) {
                 $this->logger->debug(sprintf(
                     'Found existing department `%d` with title `%s`',
@@ -244,7 +244,7 @@ class TicketHandler extends AbstractEntityHandler
     {
         $category = null;
         if ($title) {
-            $category = $this->mappers->getTicketCategoryMapper()->findOneByTitle($title, false);
+            $category = $this->mappers->getTicketCategoryMapper()->findOneByTitle($title);
             if ($category) {
                 $this->logger->debug(sprintf('Found existing ticket category `%s`', $category->getTitle()));
             } else {

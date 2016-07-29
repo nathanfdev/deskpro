@@ -175,18 +175,26 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject imple
         return $this->is_global;
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    /**
+     * @return \Doctrine\Common\Collections\Collection|ObjectLang[]
+     */
+    public function getTitleTranslations()
+    {
+        return $this->getObjectPropTranslations('title');
+    }
+
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data          = parent::toApiData($primary, $deep, $visited);
-        $data['title'] = array();
+        $data['title'] = [];
 
         foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
             $title           = $this->getObjectTranslatable()->getObjectProp('title', $lang);
-            $data['title'][] = array(
+            $data['title'][] = [
                 'language_id' => $lang->getId(),
                 'locale'      => $lang->getLocale(),
                 'value'       => $title,
-            );
+            ];
         }
 
         return $data;

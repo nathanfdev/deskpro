@@ -26,54 +26,49 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Writer\Mapper;
+namespace Application\ImportBundle\Writer\EntityHandler;
 
-use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TextSnippetCategory;
+use Application\ImportBundle\Model;
 
 /**
- * Ticket record mapper.
- *
- * Class Ticket
+ * Class TextSnippetCategoryHandler.
  */
-class TicketMapper extends AbstractEntityManagerMapper
+class TextSnippetCategoryHandler extends AbstractEntityHandler
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getModelClass()
     {
-        return Ticket::class;
+        return Model\TextSnippetCategory::class;
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param Model\TextSnippetCategory $model
      */
-    public function findOneBy(array $criteria)
+    public function writeModel(Model\PrimaryImportModelInterface $model)
     {
-        /** @var Ticket $entity */
-        $entity = parent::findOneBy($criteria);
+        /** @var TextSnippetCategory $entity */
+        $entity = $this->findOrCreateEntity($this->mappers->getTextSnippetCategoryMapper(), $model);
+        $entity
+            ->setTypename($model->getTypename())
+            ->setIsGlobal($model->isGlobal())
+        ;
 
-        if ($entity) {
-            $entity->disableAutoTicketProcess();
-            $entity->__dp_skip_ticket_manager = true;
+        // update person
+        if ($model->getPerson()) {
+            $entity->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()));
+        } else {
+            $entity->setPerson(null);
         }
 
-        return $entity;
-    }
+        // update translations
+        $this->helpers->getTranslationHelper()->updateTranslations($model->getTitleTranslations(), $entity, 'title');
 
-    /**
-     * {@inheritdoc}
-     */
-    public function find($id)
-    {
-        /** @var Ticket $entity */
-        $entity = parent::find($id);
-
-        if ($entity) {
-            $entity->disableAutoTicketProcess();
-            $entity->__dp_skip_ticket_manager = true;
-        }
-
-        return $entity;
+        // persist basic entity
+        $this->persister->persistAndFlush($entity, $model);
     }
 }

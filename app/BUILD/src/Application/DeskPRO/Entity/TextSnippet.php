@@ -125,6 +125,18 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements Ob
     }
 
     /**
+     * @param TextSnippetCategory $category
+     *
+     * @return $this
+     */
+    public function setCategory(TextSnippetCategory $category = null)
+    {
+        $this->setModelField('category', $category);
+
+        return $this;
+    }
+
+    /**
      * @return TextSnippetCategory
      */
     public function getCategory()
@@ -134,6 +146,8 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements Ob
 
     /**
      * @param string $sc
+     *
+     * @return $this
      */
     public function setShortcutCode($sc)
     {
@@ -142,6 +156,8 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements Ob
         } else {
             $this->setModelField('shortcut_code', $sc);
         }
+
+        return $this;
     }
 
     /**
@@ -150,6 +166,18 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements Ob
     public function getShortcutCode()
     {
         return $this->shortcut_code;
+    }
+
+    /**
+     * @param bool $is_draft
+     *
+     * @return $this
+     */
+    public function setIsDraft($is_draft)
+    {
+        $this->setModelField('is_draft', $is_draft);
+
+        return $this;
     }
 
     /**
@@ -206,20 +234,20 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements Ob
         return $result;
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data                = parent::toApiData($primary, $deep, $visited);
         $data['category_id'] = $this->category ? $this->category->getId() : 0;
-        $data['title']       = array();
-        $data['snippet']     = array();
+        $data['title']       = [];
+        $data['snippet']     = [];
         $data['is_draft']    = $this->is_draft;
 
         foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
             $title   = $this->getObjectTranslatable()->getObjectProp('title', $lang);
             $snippet = $this->getObjectTranslatable()->getObjectProp('snippet', $lang);
 
-            $data['title'][]   = array('language_id' => $lang->getId(), 'locale' => $lang->getLocale(), 'value' => $title);
-            $data['snippet'][] = array('language_id' => $lang->getId(), 'locale' => $lang->getLocale(), 'value' => $snippet);
+            $data['title'][]   = ['language_id' => $lang->getId(), 'locale' => $lang->getLocale(), 'value' => $title];
+            $data['snippet'][] = ['language_id' => $lang->getId(), 'locale' => $lang->getLocale(), 'value' => $snippet];
         }
 
         return $data;
@@ -242,7 +270,7 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements Ob
      */
     public static function loadObjectTranslatableMetadata()
     {
-        return array('fields' => array('title', 'snippet'));
+        return ['fields' => ['title', 'snippet']];
     }
 
     public static function loadMetadata(ClassMetadata $metadata)

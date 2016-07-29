@@ -136,7 +136,7 @@ abstract class AbstractCustomDefHandler extends AbstractEntityHandler
     {
         $entityId = $this->mappers->getImportMapMapper()->findIdByModel($model);
         if ($entityId) {
-            $entity = $this->getCustomDefMapper()->findOneBy(['id' => $entityId], false);
+            $entity = $this->getCustomDefMapper()->findOneBy(['id' => $entityId]);
             if ($entity) {
                 $this->logger->debug(sprintf('Found existing custom def, id=%s', $entityId));
 

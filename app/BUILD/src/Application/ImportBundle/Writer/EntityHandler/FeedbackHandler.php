@@ -59,7 +59,7 @@ class FeedbackHandler extends AbstractEntityHandler
             ->setTitle($model->getTitle())
             ->setContent($model->getContent())
             ->setStatus($model->getStatus())
-            ->setLanguage($this->helpers->getLanguageHelper()->findLanguage($model->getLanguage()))
+            ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
             ->setDatePublished($model->getDatePublished())
             ->setViewCount($model->getViewCount())
         ;

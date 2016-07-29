@@ -53,14 +53,9 @@ abstract class AbstractEntityManagerMapper implements MapperInterface
     /**
      * {@inheritdoc}
      */
-    public function findOneBy(array $criteria, $throw_exception = true)
+    public function findOneBy(array $criteria)
     {
-        $entity = $this->em->getRepository($this->getEntityClass())->findOneBy($criteria);
-        if (!$entity && $throw_exception) {
-            throw new MapperException($this->getEntityClass().' not found', $criteria);
-        }
-
-        return $entity;
+        return $this->em->getRepository($this->getEntityClass())->findOneBy($criteria);
     }
 
     /**

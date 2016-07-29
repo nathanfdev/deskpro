@@ -36,13 +36,11 @@ abstract class AbstractCategoryMapper extends AbstractEntityManagerMapper implem
     /**
      * {@inheritdoc}
      */
-    public function findOneByTitle($title, $parentId = null, $throwException = true)
+    public function findOneByTitle($title, $parentId = null)
     {
-        $criteria = [
+        return $this->findOneBy([
             'title'  => $title,
             'parent' => $parentId,
-        ];
-
-        return $this->findOneBy($criteria, $throwException);
+        ]);
     }
 }

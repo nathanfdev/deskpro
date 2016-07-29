@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Importer;
 
 use Application\ImportBundle\Exporter\ExporterInterface;
 use Application\ImportBundle\Model\BatchConfig;
+use Application\ImportBundle\Writer\EntityHandler\EntityHandlerRegistry;
 use Application\ImportBundle\Writer\WriterInterface;
 use DpSys\LowError\SystemErrorHandler;
 use JMS\Serializer\Serializer;
@@ -62,6 +63,11 @@ class Importer
     private $serializer;
 
     /**
+     * @var EntityHandlerRegistry
+     */
+    private $entityHandlerRegistry;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -69,24 +75,27 @@ class Importer
     /**
      * Constructor.
      *
-     * @param ExporterInterface  $exporter
-     * @param ValidatorInterface $validator
-     * @param WriterInterface    $writer
-     * @param Serializer         $serializer
-     * @param LoggerInterface    $logger
+     * @param ExporterInterface     $exporter
+     * @param ValidatorInterface    $validator
+     * @param WriterInterface       $writer
+     * @param Serializer            $serializer
+     * @param EntityHandlerRegistry $entityHandlerRegistry
+     * @param LoggerInterface       $logger
      */
     public function __construct(
-        ExporterInterface  $exporter,
-        ValidatorInterface $validator,
-        WriterInterface    $writer,
-        Serializer         $serializer,
-        LoggerInterface    $logger
+        ExporterInterface     $exporter,
+        ValidatorInterface    $validator,
+        WriterInterface       $writer,
+        Serializer            $serializer,
+        EntityHandlerRegistry $entityHandlerRegistry,
+        LoggerInterface       $logger
     ) {
-        $this->exporter   = $exporter;
-        $this->writer     = $writer;
-        $this->validator  = $validator;
-        $this->serializer = $serializer;
-        $this->logger     = $logger;
+        $this->exporter              = $exporter;
+        $this->writer                = $writer;
+        $this->validator             = $validator;
+        $this->serializer            = $serializer;
+        $this->entityHandlerRegistry = $entityHandlerRegistry;
+        $this->logger                = $logger;
     }
 
     /**
@@ -99,7 +108,7 @@ class Importer
     public function getTotalCount(ImporterContext $context)
     {
         $count = 0;
-        foreach (ImporterContext::getOrderedTypes() as $modelClass) {
+        foreach ($this->entityHandlerRegistry->getModelClasses() as $modelClass) {
             $count += $this->exporter->getCountByType($context, $modelClass);
         }
 
@@ -114,9 +123,9 @@ class Importer
     public function getImportData(ImporterContext $context)
     {
         $collection = new ImporterCollection();
-        foreach (ImporterContext::getOrderedTypes() as $type) {
+        foreach ($this->entityHandlerRegistry->getModelClasses() as $type) {
             $this->printHeader("Export `$type` collection");
-            $collection->attach($type, $this->exporter->exportByType($context, $type));
+            $collection->add($type, $this->exporter->exportByType($context, $type));
         }
 
         return $collection;
@@ -164,13 +173,13 @@ class Importer
     public function validateData(ImporterCollection $collection)
     {
         // Validate the collection of entities
-        foreach (ImporterContext::getOrderedTypes() as $type) {
+        foreach ($this->entityHandlerRegistry->getModelClasses() as $type) {
             if ($collection->hasEntitiesByType($type)) {
                 foreach ($collection->getByType($type) as $model) {
                     $errors = $this->validator->validate($model);
                     if (count($errors)) {
                         // Removing broken entities
-                        $collection->detach($model);
+                        $collection->remove($model);
                         $this->logger->alert(sprintf(
                             'Validator failure for %s on record #%s: %s',
                             get_class($model), $model->getOid(), $errors
@@ -196,7 +205,7 @@ class Importer
     public function writeData(ImporterCollection $collection, $dryRun)
     {
         // Writes entities to a storage
-        foreach (ImporterContext::getOrderedTypes() as $type) {
+        foreach ($this->entityHandlerRegistry->getModelClasses() as $type) {
             if ($collection->hasEntitiesByType($type)) {
                 $this->printHeader("Write `$type` collection");
 

@@ -36,8 +36,8 @@ abstract class AbstractTitleMapper extends AbstractEntityManagerMapper implement
     /**
      * {@inheritdoc}
      */
-    public function findOneByTitle($title, $throw_exception = true)
+    public function findOneByTitle($title)
     {
-        return $this->findOneBy(['title' => $title], $throw_exception);
+        return $this->findOneBy(['title' => $title]);
     }
 }
