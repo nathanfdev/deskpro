@@ -45,7 +45,7 @@ class DownloadsLinkGenerator extends AbstractContentLinkGenerator
      */
     public function supports($object, $type, $context)
     {
-        return $object instanceof Download && $context === ObjectRouter::CONTEXT_PORTAL;
+        return $object instanceof Download && $context === ObjectRouter::CONTEXT_PORTAL && $type == 'permalink';
     }
 
     /**
