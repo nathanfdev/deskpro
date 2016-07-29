@@ -26,15 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\People\PersonEmail;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -43,7 +39,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * Handles email string as person primary email
  */
-class PersonEmailType extends ApiType
+class PersonEmailType extends AbstractType
 {
     /**
      * @var Person
