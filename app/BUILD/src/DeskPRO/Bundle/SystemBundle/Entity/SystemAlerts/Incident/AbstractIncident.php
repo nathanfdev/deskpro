@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
 use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
+use DeskPRO\Bundle\SystemBundle\Exception\DenormalizationException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -94,11 +95,50 @@ abstract class AbstractIncident implements Incident
      * @ORM\ManyToMany(
      *     targetEntity="DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent",
      *     inversedBy="incidents",
-     *     cascade={"all"}
+     *     cascade={"all"},
+     *     fetch="EXTRA_LAZY"
      * )
-     * @ORM\JoinTable(name="system_alerts_incident_events")
+     * @ORM\JoinTable(name="system_alerts_incident_events",
+     *     joinColumns={@ORM\JoinColumn(name="incident_id", referencedColumnName="id", onDelete="CASCADE")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id", onDelete="CASCADE")}
+     * )
      */
     protected $events;
+
+    /**
+     * @var Event[] Not persisted field. Stores events passed to the addEvent() method.
+     */
+    protected $newEvents = [];
+
+    /**
+     * @var Event|null
+     *
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent", fetch="EAGER")
+     * @ORM\JoinColumn(name="first_failure_event_id", referencedColumnName="id", nullable=true)
+     */
+    protected $firstFailureEvent;
+
+    /**
+     * @var Event|null
+     *
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent", fetch="EAGER")
+     * @ORM\JoinColumn(name="last_failure_event_id", referencedColumnName="id", nullable=true)
+     */
+    protected $lastFailureEvent;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="failure_events_count", type="integer", nullable=false)
+     */
+    protected $failureEventsCount = 0;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="success_events_count", type="integer", nullable=false)
+     */
+    protected $successEventsCount = 0;
 
     /**
      * @var bool
@@ -163,14 +203,9 @@ abstract class AbstractIncident implements Incident
     /**
      * {@inheritdoc}
      */
-    public function getEventIds()
+    public function getNewEvents()
     {
-        $ids = [];
-        foreach ($this->events as $event) {
-            $ids[] = $event->getId();
-        }
-
-        return $ids;
+        return $this->newEvents;
     }
 
     /**
@@ -178,7 +213,7 @@ abstract class AbstractIncident implements Incident
      */
     public function getEventsCount()
     {
-        return count($this->events);
+        return $this->events->count();
     }
 
     /**
@@ -186,9 +221,8 @@ abstract class AbstractIncident implements Incident
      */
     public function setEvents(array $events)
     {
-        $this->events = new ArrayCollection($events);
-        if (count($this->events)) {
-            $this->subjectUniqueId = $this->events[0]->getSubjectUniqueId();
+        foreach ($events as $event) {
+            $this->addEvent($event);
         }
     }
 
@@ -197,9 +231,36 @@ abstract class AbstractIncident implements Incident
      */
     public function addEvent(Event $event)
     {
+        $subjectUniqueId = $event->getSubjectUniqueId();
+
+        if ($this->subjectUniqueId && ($this->subjectUniqueId !== $subjectUniqueId)) {
+            throw new \Exception(sprintf(
+                'Incident must group events with equal subject unique id, expected %s, got %s',
+                $this->subjectUniqueId,
+                $subjectUniqueId
+            ));
+        }
+
         if (!$this->events->contains($event)) {
-            $this->events[]        = $event;
-            $this->subjectUniqueId = $event->getSubjectUniqueId();
+            $this->events[] = $event;
+
+            // getNewEvents() data -------------------------------------------
+
+            $this->newEvents[] = $event;
+
+            // Denormalized data ---------------------------------------------
+
+            $this->subjectUniqueId = $subjectUniqueId;
+
+            if ($event instanceof SuccessEvent) {
+                ++$this->successEventsCount;
+                $this->firstFailureEvent = null;
+                $this->lastFailureEvent  = null;
+            } else {
+                ++$this->failureEventsCount;
+                $this->firstFailureEvent or $this->firstFailureEvent = $event;
+                $this->lastFailureEvent                              = $event;
+            }
         }
     }
 
@@ -208,8 +269,8 @@ abstract class AbstractIncident implements Incident
      */
     public function getFirstEvent()
     {
-        if (count($this->events)) {
-            return $this->events[0];
+        if ($this->events->count()) {
+            return $this->events->get(0);
         }
     }
 
@@ -218,7 +279,9 @@ abstract class AbstractIncident implements Incident
      */
     public function getLastEvent()
     {
-        return $this->events->last();
+        if ($count = $this->events->count()) {
+            return $this->events->get($count - 1);
+        }
     }
 
     /**
@@ -226,13 +289,7 @@ abstract class AbstractIncident implements Incident
      */
     public function getLastFailureEvent()
     {
-        $i = $this->events->count() - 1;
-        while ($i >= 0) {
-            if (!$this->events[$i] instanceof SuccessEvent) {
-                return $this->events[$i];
-            }
-            --$i;
-        }
+        return $this->lastFailureEvent;
     }
 
     /**
@@ -240,7 +297,7 @@ abstract class AbstractIncident implements Incident
      */
     public function getDateFirstFailure()
     {
-        return $this->getFirstEvent()->getDateCreated();
+        return $this->firstFailureEvent->getDateCreated();
     }
 
     /**
@@ -248,7 +305,7 @@ abstract class AbstractIncident implements Incident
      */
     public function getDateLastFailure()
     {
-        return $this->getLastFailureEvent()->getDateCreated();
+        return $this->lastFailureEvent->getDateCreated();
     }
 
     /**
@@ -256,14 +313,11 @@ abstract class AbstractIncident implements Incident
      */
     public function getFailureEventsCount()
     {
-        $count = 0;
-        foreach ($this->events as $event) {
-            if (!$event instanceof SuccessEvent) {
-                ++$count;
-            }
+        if ($this->failureEventsCount + $this->successEventsCount !== $this->getEventsCount()) {
+            throw new DenormalizationException('Total events count is not equal to sum of failure and success counts');
         }
 
-        return $count;
+        return $this->failureEventsCount;
     }
 
     /**
@@ -296,5 +350,13 @@ abstract class AbstractIncident implements Incident
     public function setDismissed($dismissed)
     {
         $this->dismissed = $dismissed;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubjectUniqueId()
+    {
+        return $this->subjectUniqueId;
     }
 }

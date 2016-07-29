@@ -32,7 +32,6 @@
 
 namespace DeskPRO\Bundle\SystemBundle\SystemAlerts;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\StatefulIncident;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\StatefulIncidentTrigger;
@@ -95,13 +94,11 @@ class IncidentManager
     {
         $this->em->beginTransaction();
 
-        $this
-            ->em
-            ->createQuery('DELETE FROM '.AbstractEvent::class.' e WHERE e.id IN(:ids)')
-            ->execute(['ids' => $incident->getEventIds()]);
-
+        foreach ($incident->getEvents() as $event) {
+            $this->em->remove($event);
+        }
         $this->em->remove($incident);
-        $this->em->flush($incident);
+        $this->em->flush();
 
         $this->em->commit();
     }

@@ -30,43 +30,30 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email;
+namespace DpTest\Bundle\SystemBundle\SystemAlerts;
 
-use Application\DeskPRO\Entity\EmailAccount;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
-use Doctrine\ORM\Mapping as ORM;
+use Application\DeskPRO\DBAL\Connection;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\LogReducer;
+use DpTest\DeskProTestCase;
 
 /**
- * Class IncomingEmailSuccessEvent.
- *
- * @ORM\Entity
+ * Class LogReducerTest.
  */
-class IncomingEmailSuccessEvent extends AbstractEvent implements SuccessEvent
+class LogReducerTest extends DeskProTestCase
 {
-    use EmailAccountData;
-
     /**
-     * {@inheritdoc}
+     * @test
      */
-    protected $expirationStrategy = AbstractEvent::EXPIRES_WITH_TIME;
-
-    /**
-     * @param EmailAccount   $account
-     * @param \DateTime|null $dateCreated
-     */
-    public function __construct(EmailAccount $account, \DateTime $dateCreated = null)
+    public function it_should_be_instantiable()
     {
-        $this->emailAccountId      = $account->getId();
-        $this->emailAccountAddress = $account->getAddress();
-        parent::__construct($dateCreated);
+        $this->assertInstanceOf(LogReducer::class, $this->instance());
     }
 
     /**
-     * {@inheritdoc}
+     * @return LogReducer
      */
-    public function getFailureType()
+    private function instance()
     {
-        return IncomingEmailFailureEvent::class;
+        return new LogReducer($this->mockConnection(Connection::class)->reveal());
     }
 }

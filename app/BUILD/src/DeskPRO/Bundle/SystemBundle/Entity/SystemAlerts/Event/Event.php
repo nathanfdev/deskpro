@@ -68,6 +68,11 @@ interface Event extends EntityInterface, NotifyPropertyChanged
     public function getDateCreated();
 
     /**
+     * @param \DateTime $date
+     */
+    public function setDateCreated(\DateTime $date);
+
+    /**
      * @return bool
      */
     public function isProcessed();

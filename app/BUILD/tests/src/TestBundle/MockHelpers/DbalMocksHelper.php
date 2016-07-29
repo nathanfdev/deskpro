@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTestSrc\TestBundle\MockHelpers;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\AbstractQuery as Query;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -113,5 +115,15 @@ trait DbalMocksHelper
         $repository->findAll()->willReturn([]);
 
         return $repository;
+    }
+
+    /**
+     * @return \Prophecy\Prophecy\ObjectProphecy
+     */
+    protected function mockConnection($class = Connection::class)
+    {
+        $connection = $this->prophesize($class);
+
+        return $connection;
     }
 }
