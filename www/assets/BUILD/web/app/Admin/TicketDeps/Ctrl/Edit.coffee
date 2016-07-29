@@ -198,7 +198,9 @@ define [
       promise.then(=>
         triggerSaver()
 
-        if @dep.has_children then return
+        if @dep.has_children
+          @successSaving()
+          return
 
         if (@form.use_custom_layout)
           @Api.sendPostJson("/ticket_layouts/#{@dep.id}", {layout: @form.custom_layout}).then(-> deferred2.resolve())
@@ -215,14 +217,17 @@ define [
 
       deferred2.promise.then(=>
         @origForm = Util.clone(@form, true)
-        @stopSpinner('saving_dep').then(=>
-          @Growl.success(@getRegisteredMessage('saved_dep'), =>
-            @$state.go('tickets.ticket_deps.edit', {id: @dep.id})
-          )
-        )
+        @successSaving()
       )
 
       return deferred2.promise
+
+    successSaving: ->
+      @stopSpinner('saving_dep').then(=>
+        @Growl.success(@getRegisteredMessage('saved_dep'), =>
+          @$state.go('tickets.ticket_deps.edit', {id: @dep.id})
+        )
+      )
 
     propogatePermission: (obj, perm) ->
       if @_propogatePermission_running then return
