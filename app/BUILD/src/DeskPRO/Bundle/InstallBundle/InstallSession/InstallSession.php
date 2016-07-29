@@ -34,9 +34,10 @@ use DeskPRO\Bundle\InstallBundle\InstallSession\Model\User;
 
 class InstallSession
 {
-    const SOURCE_DEV           = 'dev';
-    const SOURCE_BUILDSERVER   = 'buildserver';
-    const SOURCE_WIN_INSTALLER = 'win_installer';
+    const SOURCE_DEV            = 'dev';
+    const SOURCE_BUILDSERVER    = 'buildserver';
+    const SOURCE_WIN_INSTALLER  = 'win_installer';
+    const SOURCE_AUTO_INSTALLER = 'automated_installer';
 
     /**
      * @var string

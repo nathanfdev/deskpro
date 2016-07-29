@@ -103,7 +103,10 @@ class AcceptWebUrlStep extends AbstractStep
 
     private function validateUrl($url)
     {
-        if ($this->getSession()->getSource() == InstallSession::SOURCE_WIN_INSTALLER) {
+        if (
+            $this->getSession()->getSource() == InstallSession::SOURCE_WIN_INSTALLER
+            || $this->getSession()->getSource() == InstallSession::SOURCE_AUTO_INSTALLER
+        ) {
             return true;
         }
 
@@ -232,7 +235,10 @@ class AcceptWebUrlStep extends AbstractStep
      */
     private function validateRequirements($res)
     {
-        if ($this->getSession()->getSource() == InstallSession::SOURCE_WIN_INSTALLER) {
+        if (
+            $this->getSession()->getSource() == InstallSession::SOURCE_WIN_INSTALLER
+            || $this->getSession()->getSource() == InstallSession::SOURCE_AUTO_INSTALLER
+        ) {
             return true;
         }
 
