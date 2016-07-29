@@ -180,6 +180,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       )
 
     loadTemplateOptions: () =>
+      template_options = []
       @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/templates').success(
         (templates) =>
           for template in templates
