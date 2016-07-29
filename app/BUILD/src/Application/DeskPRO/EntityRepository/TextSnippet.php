@@ -232,7 +232,7 @@ class TextSnippet extends AbstractEntityRepository
 
         $res = array();
         foreach ($snippets as $snippet) {
-            if (isset($langDataMap[$snippet['id']])) {
+            if (!isset($langDataMap[$snippet['id']])) {
                 continue;
             }
 
