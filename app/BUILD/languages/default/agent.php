@@ -502,6 +502,7 @@ return [
     'agent.general.deleted_by'                                 => 'Deleted by {{name}}',
     'agent.general.deleted_reason'                             => 'Deleted Reason',
     'agent.general.department'                                 => 'Department',
+    'agent.general.department.parent'                          => 'Parent department',
     'agent.general.departments'                                => 'Departments',
     'agent.general.description'                                => 'Description',
     'agent.general.deskpro'                                    => 'DeskPRO',

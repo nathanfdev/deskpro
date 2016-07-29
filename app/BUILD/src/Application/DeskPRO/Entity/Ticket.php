@@ -3677,7 +3677,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             unset($data['email_account']['incoming_account']);
             unset($data['email_account']['outgoing_account']);
         }
-
+        $data['department']['parent'] = $this->department->parent
+            ? $this->department->parent->toApiData(true, false)
+            : [];
         $data['total_user_waiting_real']   = $this->getRealTotalUserWaiting();
         $data['total_user_waiting_work']   = $this->getTotalUserWaitingWorkTime();
         $data['current_user_waiting']      = $this->getCurrentUserWaitingTime();
