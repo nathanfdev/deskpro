@@ -39,6 +39,9 @@ class Build1469786838 extends AbstractBuild
         $this->execDbQuery('default', 'ALTER TABLE brands ADD CONSTRAINT FK_7EA24434D91464D5 FOREIGN KEY (logo_blob_id) REFERENCES blobs (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'CREATE UNIQUE INDEX UNIQ_7EA24434D91464D5 ON brands (logo_blob_id)');
 
+        $brands = $this->getDbConnection('default')->fetchAll('SELECT * FROM `brands`');
+        $brand  = current($brands);
+
         $this->out('Content categories brand');
         $this->execDbQuery('default', 'ALTER TABLE article_categories ADD brand_id INT DEFAULT NULL');
         $this->execDbQuery('default', 'ALTER TABLE article_categories ADD CONSTRAINT FK_62A97E944F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE SET NULL');
@@ -50,15 +53,20 @@ class Build1469786838 extends AbstractBuild
         $this->execDbQuery('default', 'ALTER TABLE news_categories ADD CONSTRAINT FK_D68C911144F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE SET NULL');
         $this->execDbQuery('default', 'CREATE INDEX IDX_D68C911144F5D008 ON news_categories (brand_id)');
 
+        $this->out('Bind categories to brand to keep portal working');
+
+        $this->execDbQuery('default', sprintf('UPDATE `article_categories` SET `brand_id` = %d', $brand['id']));
+        $this->execDbQuery('default', sprintf('UPDATE `download_categories` SET `brand_id` = %d', $brand['id']));
+        $this->execDbQuery('default', sprintf('UPDATE `news_categories` SET `brand_id` = %d', $brand['id']));
+
         $this->out('Departments brand');
         $this->execDbQuery('default', 'CREATE TABLE department_to_brand (department_id INT NOT NULL, brand_id INT NOT NULL, INDEX IDX_2ED0D242AE80F5DF (department_id), INDEX IDX_2ED0D24244F5D008 (brand_id), PRIMARY KEY(department_id, brand_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
         $this->execDbQuery('default', 'ALTER TABLE department_to_brand ADD CONSTRAINT FK_2ED0D242AE80F5DF FOREIGN KEY (department_id) REFERENCES departments (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE department_to_brand ADD CONSTRAINT FK_2ED0D24244F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE CASCADE');
 
         $this->out('Bind departments to existing brand');
-        $brands = $this->getDbConnection('default')->fetchAll('SELECT * FROM `brands`');
-        $brand  = current($brands);
-        $sql    = <<<SQL
+
+        $sql = <<<SQL
 SELECT `d1`.* 
   FROM `departments` AS `d` 
 INNER JOIN `departments` AS `d1` ON `d1`.`id` != `d`.`parent_id` 
@@ -87,6 +95,8 @@ SQL;
         $this->execDbQuery('default', 'DROP INDEX UNIQ_1A8003DAC3F17511 ON glossary_words;');
         $this->execDbQuery('default', 'CREATE UNIQUE INDEX glossary_words_word_brand_id_uindex ON glossary_words (word, brand_id);');
 
+        $this->execDbQuery('default', sprintf('UPDATE `glossary_words` SET `brand_id` = %d', $brand['id']));
+
         $this->out('Add tickets link to brand');
         $instructions   = [];
         $instructions[] = 'ADD brand_id INT DEFAULT NULL';
@@ -97,5 +107,19 @@ SQL;
 
         $instructions = ['ADD brand_id INT DEFAULT NULL'];
         $this->execSlowAlterTable('tickets_search_active', implode(', ', $instructions));
+
+        $this->out('Bind existing tickets to brand');
+        $connection = $this->getDbConnection('default');
+        $ticketsSQL = <<<SQL
+UPDATE `tickets`
+SET `brand_id` = :brand
+WHERE `brand_id` IS NULL 
+LIMIT 25000
+SQL;
+        do {
+            $rows = $connection->executeUpdate($ticketsSQL, ['brand' => $brand['id']]);
+            $this->out('Updating 25000 tickets');
+            usleep(1000);
+        } while ($rows);
     }
 }
