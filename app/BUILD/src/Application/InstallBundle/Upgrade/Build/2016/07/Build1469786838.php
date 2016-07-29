@@ -55,6 +55,31 @@ class Build1469786838 extends AbstractBuild
         $this->execDbQuery('default', 'ALTER TABLE department_to_brand ADD CONSTRAINT FK_2ED0D242AE80F5DF FOREIGN KEY (department_id) REFERENCES departments (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE department_to_brand ADD CONSTRAINT FK_2ED0D24244F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE CASCADE');
 
+        $this->out('Bind departments to existing brand');
+        $brands = $this->getDbConnection('default')->fetchAll('SELECT * FROM `brands`');
+        $brand  = current($brands);
+        $sql    = <<<SQL
+SELECT `d1`.* 
+  FROM `departments` AS `d` 
+INNER JOIN `departments` AS `d1` ON `d1`.`id` != `d`.`parent_id` 
+GROUP BY `d1`.`id`
+SQL;
+        $departments = $this->getDbConnection('default')->fetchAll($sql);
+        $insertSQL   = <<<SQL
+INSERT INTO `department_to_brand` SET 
+  `department_id` = :department, 
+  `brand_id` = :brand
+SQL;
+        $statement = $this->getDbConnection('default')->prepare($insertSQL);
+        foreach ($departments as $department) {
+            $statement->execute(
+                [
+                    'department' => $department['id'],
+                    'brand'      => $brand['id'],
+                ]
+            );
+        }
+
         $this->out('Glossary words brand');
         $this->execDbQuery('default', 'ALTER TABLE glossary_words ADD brand_id INT DEFAULT NULL');
         $this->execDbQuery('default', 'ALTER TABLE glossary_words ADD CONSTRAINT FK_1A8003DA44F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE SET NULL');
