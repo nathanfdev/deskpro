@@ -60,6 +60,8 @@ class BrandsController extends CrudController
     public static $exposeOnly   = ['get', 'list', 'post', 'delete'];
     public static $entity       = Brand::class;
     public static $listPaginate = false;
+    public static $listOrder    = 'ASC';
+    public static $listSort     = 'name';
 
     /**
      * Get resource with provided id.

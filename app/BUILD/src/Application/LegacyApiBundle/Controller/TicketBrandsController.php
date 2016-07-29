@@ -60,7 +60,7 @@ class TicketBrandsController extends AbstractController implements ProtectedCont
         $data = [];
 
         /** @var Brand[] $brandsObjects */
-        $brandsObjects = $this->em->getRepository(Brand::class)->findAll();
+        $brandsObjects = $this->em->getRepository(Brand::class)->findBy([], ['name' => 'ASC']);
 
         $brands = [];
         foreach ($brandsObjects as $brand) {
