@@ -68,7 +68,7 @@ class UrlRequestContextFactory
     public function createGenerateContext(RequestContext $defaultContext, $name, $parameters = [], $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
         if ($referenceType === UrlGeneratorInterface::ABSOLUTE_URL) {
-            return $this->createContextForSettingsUrl($defaultContext);
+            return $this->createContextForSettingsUrl($defaultContext, $parameters);
         }
 
         return $defaultContext;
@@ -76,13 +76,17 @@ class UrlRequestContextFactory
 
     /**
      * @param RequestContext $defaultContext
+     * @param array          $parameters
      *
      * @return RequestContext
      */
-    private function createContextForSettingsUrl(RequestContext $defaultContext)
+    private function createContextForSettingsUrl(RequestContext $defaultContext, array $parameters)
     {
         /** @var Brand $brand */
-        $brand = $this->container->get('brand_stack')->getActive()->getBrand();
+        $brand =
+            array_key_exists('brand', $parameters) && $parameters['brand'] instanceof Brand
+            ? $parameters['brand']
+            : $this->container->get('brand_stack')->getActive()->getBrand();
 
         if (isset($this->absContextToBrand[$brand->getId()])) {
             return $this->absContextToBrand[$brand->getId()];

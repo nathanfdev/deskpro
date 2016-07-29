@@ -2401,7 +2401,15 @@ class TicketSearch extends SearcherAbstract
                                 break;
                         }
                         break;
+                    case 'brand_id':
+                        $this->affected_fields[] = 'ticket.brand_id';
 
+                        if (count($choice) == 1) {
+                            $this->specific_fields[] = 'brand';
+                        }
+
+                        $wheres[] = $this->_choiceMatch("$tickets_table.brand_id", $op, $choice, true);
+                        break;
                     default:
                         $e = new \InvalidArgumentException("Unknown term: $term");
                         \DpSys\LowError\SystemErrorHandler::logErrorInfo(\DpSys\LowError\SystemErrorHandler::getExceptionInfo($e));

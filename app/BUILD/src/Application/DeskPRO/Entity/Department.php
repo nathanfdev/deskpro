@@ -604,6 +604,15 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
         return $this;
     }
 
+    public function removeBrand(Brand $brand)
+    {
+        $this->brands->removeElement($brand);
+        $brand->removeDepartment($this);
+        $this->_onPropertyChanged('brands', null, $this->brands);
+
+        return $this;
+    }
+
     ############################################################################
     # Validation Metadata
     ############################################################################
@@ -826,7 +835,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
                         0 => [
                             'name'                 => 'department_id',
                             'referencedColumnName' => 'id',
-                            'nullable'             => true,
+                            'nullable'             => false,
                             'onDelete'             => 'cascade',
                         ],
                     ],
@@ -834,7 +843,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
                         0 => [
                             'name'                 => 'brand_id',
                             'referencedColumnName' => 'id',
-                            'nullable'             => true,
+                            'nullable'             => false,
                             'onDelete'             => 'cascade',
                         ],
                     ],

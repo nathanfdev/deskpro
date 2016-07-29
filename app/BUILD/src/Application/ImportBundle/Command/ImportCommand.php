@@ -63,7 +63,7 @@ class ImportCommand extends AbstractImporterCommand
         $filename = $input->getArgument('file');
         $basePath = realpath($appEnv->getDpRoot().'/bin/deskpro-importer-tools');
 
-        // add the import tools inc files to autoloader
+        // register importer inc files in autoload
         $importerAutoload = $basePath.'/inc/autoload.php';
         if (!file_exists($importerAutoload)) {
             throw new \Exception('Unable to locate importer tools autoload');
@@ -87,6 +87,14 @@ class ImportCommand extends AbstractImporterCommand
 
         $writer = WriteHelper::getHelper();
         $writer->setOutputPath($this->getImporterDefaultOutputPath());
+
+        // register the script lib files in autoload
+        $scriptLibPath = dirname($script);
+        if (file_exists($scriptLibPath.'/lib/autoload.php')) {
+            require_once $scriptLibPath.'/lib/autoload.php';
+        } elseif (file_exists($scriptLibPath.'/lib/vendor/autoload.php')) {
+            require_once $scriptLibPath.'/lib/vendor/autoload.php';
+        }
 
         require_once $script;
     }

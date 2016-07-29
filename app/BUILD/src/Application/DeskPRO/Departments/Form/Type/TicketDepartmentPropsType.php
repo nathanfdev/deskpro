@@ -35,7 +35,9 @@ namespace Application\DeskPRO\Departments\Form\Type;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -44,34 +46,31 @@ class TicketDepartmentPropsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text', [
-            'required' => false,
-            ])
-            ->add('user_title', 'text', [
-                'required' => false,
-            ])
-            ->add('parent', 'entity', [
-                'class'         => Department::class,
-                'required'      => false,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('d')->where('d.is_tickets_enabled = true AND d.parent IS NULL')->orderBy('d.display_order', 'ASC');
-                },
-            ])
-            ->add('avatar', 'text', [
-                'required' => false,
-                'mapped'   => false,
-            ])
-            ->add(
-                'brands',
-                'entity',
-                [
-                    'class'    => Brand::class,
+            ->add('title', TextType::class, [
                     'required' => false,
-                    'expanded' => true,
-                    'multiple' => true,
-                    'property' => 'name',
-                ]
-            );
+            ])
+            ->add('user_title', TextType::class, [
+                    'required' => false,
+            ])
+            ->add('parent', EntityType::class, [
+                    'class'         => Department::class,
+                    'required'      => false,
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('d')->where('d.is_tickets_enabled = true AND d.parent IS NULL')->orderBy('d.display_order', 'ASC');
+                    },
+            ])
+            ->add('avatar', TextType::class, [
+                    'required' => false,
+                    'mapped'   => false,
+            ])
+            ->add('brands', EntityType::class, [
+                    'class'        => Brand::class,
+                    'required'     => false,
+                    'expanded'     => true,
+                    'multiple'     => true,
+                    'choice_label' => 'name',
+                    'by_reference' => false,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

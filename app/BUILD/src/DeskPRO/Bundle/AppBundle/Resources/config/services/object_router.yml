@@ -5,6 +5,9 @@ services:
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter
     arguments:
       link_generators:
+        - "@object_router.link_generator.content.articles"
+        - "@object_router.link_generator.content.news"
+        - "@object_router.link_generator.content.downloads"
         - "@object_router.link_generator.portal"
         - "@object_router.link_generator.agent"
         - "@object_router.link_generator.ticket"
@@ -66,6 +69,34 @@ services:
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\DownloadsLinkGenerator
     arguments:
       - "@router"
+
+  object_router.link_generator.content.articles:
+    public: false
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\Content\ArticlesLinkGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@router"
+      - "@property_accessor"
+      - "@object_router.annotation_config"
+
+  object_router.link_generator.content.news:
+    public: false
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\Content\NewsLinkGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@router"
+      - "@property_accessor"
+      - "@object_router.annotation_config"
+
+  object_router.link_generator.content.downloads:
+    public: false
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\Content\DownloadsLinkGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@router"
+      - "@property_accessor"
+      - "@object_router.annotation_config"
+
 
   object_router.link_generator.feedback:
     public: false

@@ -122,6 +122,10 @@ class RouterWithDynamicContext implements RouterInterface, RouterDecorator, Requ
             $context = $prevContext;
         }
 
+        if (isset($parameters['brand'])) {
+            unset($parameters['brand']);
+        }
+
         if ($context !== $prevContext) {
             $this->setContext($context);
         }
