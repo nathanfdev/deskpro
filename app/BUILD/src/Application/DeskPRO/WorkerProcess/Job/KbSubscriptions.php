@@ -72,7 +72,6 @@ class KbSubscriptions extends AbstractJob
         }
 
         $lastDate = new \DateTime("@$lastTime");
-        $lastDate->sub(new \DateInterval('PT6H'));
 
         /** @var Brand[] $brands */
         $brands = $this->getContainer()->getEm()->getRepository(Brand::class)->findAll();
@@ -145,7 +144,7 @@ class KbSubscriptions extends AbstractJob
                 ', [$categoryIds], 'person_id', null, 'category_id', [Connection::PARAM_INT_ARRAY]);
 
                 $rootSubs = $this->getContainer()->getDb()->fetchAllGrouped('
-                    SELECT person_id
+                    SELECT person_id, root_category
                     FROM kb_subscriptions
                     WHERE root_category = 1
                 ', [], 'person_id', null, 'root_category', [Connection::PARAM_INT_ARRAY]);
