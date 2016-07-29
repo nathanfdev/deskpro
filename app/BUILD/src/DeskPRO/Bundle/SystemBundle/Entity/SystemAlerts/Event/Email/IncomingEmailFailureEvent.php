@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email;
 
 use Application\DeskPRO\Entity\EmailAccount;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\AbstractExceptionEvent;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -44,6 +45,11 @@ use Doctrine\ORM\Mapping as ORM;
 class IncomingEmailFailureEvent extends AbstractExceptionEvent
 {
     use EmailAccountData;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected $expirationStrategy = AbstractEvent::EXPIRES_WITH_TIME;
 
     /**
      * @param EmailAccount   $account

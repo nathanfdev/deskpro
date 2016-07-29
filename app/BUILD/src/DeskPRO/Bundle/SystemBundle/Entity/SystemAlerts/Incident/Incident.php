@@ -81,9 +81,9 @@ interface Incident extends EntityInterface, NotifyPropertyChanged
     public function getEvents();
 
     /**
-     * @return int[]
+     * @return Event[] Get events which are not yet persisted
      */
-    public function getEventIds();
+    public function getNewEvents();
 
     /**
      * @return int
@@ -139,4 +139,9 @@ interface Incident extends EntityInterface, NotifyPropertyChanged
      * @param bool $dismissed
      */
     public function setDismissed($dismissed);
+
+    /**
+     * @return string
+     */
+    public function getSubjectUniqueId();
 }

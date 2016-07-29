@@ -15,18 +15,3 @@ $DB_CONFIG['host']     = 'localhost';
 $DB_CONFIG['user']     = 'root';
 $DB_CONFIG['password'] = '';
 $DB_CONFIG['dbname']   = 'deskpro';
-
-
-######################################################
-# DeskPRO System Database                            #
-######################################################
-# Enter details for the database you want to use     #
-# for DeskPRO system needs.                          #
-#                                                    #
-# We recommend using a separate DB for the system    #
-# information, but it's optional. If you leave the   #
-# below config commented out, system information     #
-# will be stored in the main database.               #
-######################################################
-
-

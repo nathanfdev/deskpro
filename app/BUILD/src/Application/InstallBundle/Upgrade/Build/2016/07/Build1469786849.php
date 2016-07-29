@@ -34,7 +34,7 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 
-class Build1469562253 extends AbstractBuild
+class Build1469786849 extends AbstractBuild
 {
     public function run()
     {

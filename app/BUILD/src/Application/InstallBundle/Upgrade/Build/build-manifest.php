@@ -1751,12 +1751,16 @@ return array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/07/Build1467973149.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1467973149',
     ),
-    1469562242 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/07/Build1469562242.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1469562242',
+    1469581920 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/07/Build1469581920.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1469581920',
     ),
-    1469562253 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/07/Build1469562253.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1469562253',
+    1469786838 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/07/Build1469786838.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1469786838',
+    ),
+    1469786849 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/07/Build1469786849.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1469786849',
     ),
 );
