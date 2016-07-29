@@ -57,13 +57,14 @@ class ArticleTest extends AbstractModelTest
         ];
 
         $this->assertEquals($this->transformData($params), array_merge($params, [
-            'view_count'    => 0,
-            'labels'        => [],
-            'categories'    => [],
-            'comments'      => [],
-            'attachments'   => [],
-            'translations'  => [],
-            'custom_fields' => [],
+            'view_count'           => 0,
+            'labels'               => [],
+            'categories'           => [],
+            'comments'             => [],
+            'attachments'          => [],
+            'title_translations'   => [],
+            'content_translations' => [],
+            'custom_fields'        => [],
         ]));
     }
 
@@ -97,15 +98,23 @@ class ArticleTest extends AbstractModelTest
                     'is_inline'    => true,
                 ],
             ],
-            'translations' => [
+            'title_translations' => [
                 [
                     'language' => 'fr',
-                    'property' => 'title',
                     'value'    => 'translated text',
                 ],
                 [
+                    'language' => 'it',
+                    'value'    => 'translated text',
+                ],
+            ],
+            'content_translations' => [
+                [
                     'language' => 'fr',
-                    'property' => 'content',
+                    'value'    => 'translated text',
+                ],
+                [
+                    'language' => 'it',
                     'value'    => 'translated text',
                 ],
             ],

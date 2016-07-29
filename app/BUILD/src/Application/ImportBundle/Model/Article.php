@@ -110,13 +110,22 @@ class Article extends AbstractContentModel implements PersonAwareInterface, Labe
     private $comments = [];
 
     /**
-     * @var ObjectLang[]
+     * @var Translation[]
      *
-     * @JMS\Type("array<Application\ImportBundle\Model\ObjectLang>")
+     * @JMS\Type("array<Application\ImportBundle\Model\Translation>")
      *
      * @Assert\Valid()
      */
-    private $translations = [];
+    private $titleTranslations = [];
+
+    /**
+     * @var Translation[]
+     *
+     * @JMS\Type("array<Application\ImportBundle\Model\Translation>")
+     *
+     * @Assert\Valid()
+     */
+    private $contentTranslations = [];
 
     /**
      * {@inheritdoc}
@@ -313,35 +322,73 @@ class Article extends AbstractContentModel implements PersonAwareInterface, Labe
     }
 
     /**
-     * Returns article translations.
+     * Returns article title translations.
      *
-     * @return ObjectLang[]
+     * @return Translation[]
      */
-    public function getTranslations()
+    public function getTitleTranslations()
     {
-        return $this->translations;
+        return $this->titleTranslations;
     }
 
     /**
-     * Returns article translations grouped by language.
-     *
-     * @return ObjectLang[]
-     */
-    public function getUniqueTranslations()
-    {
-        return ObjectLang::getUniqueCollection($this->translations);
-    }
-
-    /**
-     * Add an article property translation.
-     *
-     * @param ObjectLang $translation
+     * @param Translation[] $titleTranslations
      *
      * @return $this
      */
-    public function addTranslation(ObjectLang $translation)
+    public function setTitleTranslations(array $titleTranslations)
     {
-        $this->translations[] = $translation;
+        $this->titleTranslations = $titleTranslations;
+
+        return $this;
+    }
+
+    /**
+     * Add an article title translation.
+     *
+     * @param Translation $translation
+     *
+     * @return $this
+     */
+    public function addTitleTranslation(Translation $translation)
+    {
+        $this->titleTranslations[] = $translation;
+
+        return $this;
+    }
+
+    /**
+     * Returns article content translations.
+     *
+     * @return Translation[]
+     */
+    public function getContentTranslations()
+    {
+        return $this->contentTranslations;
+    }
+
+    /**
+     * @param Translation[] $titleTranslations
+     *
+     * @return $this
+     */
+    public function setContentTranslations(array $titleTranslations)
+    {
+        $this->contentTranslations = $titleTranslations;
+
+        return $this;
+    }
+
+    /**
+     * Add an article content translation.
+     *
+     * @param Translation $translation
+     *
+     * @return $this
+     */
+    public function addContentTranslation(Translation $translation)
+    {
+        $this->contentTranslations[] = $translation;
 
         return $this;
     }

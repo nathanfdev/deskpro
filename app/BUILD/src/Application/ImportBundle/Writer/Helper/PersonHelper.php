@@ -91,24 +91,24 @@ class PersonHelper
     }
 
     /**
-     * @param string $personEmailOrId
+     * @param string $personOidOrEmail
      *
      * @return Entity\Person|null
      */
-    public function findOrCreatePerson($personEmailOrId)
+    public function findOrCreatePerson($personOidOrEmail)
     {
-        if (!$personEmailOrId) {
+        if (!$personOidOrEmail) {
             return;
         }
-        if (!is_scalar($personEmailOrId)) {
-            throw new \RuntimeException('Person email or id is not scalar value.');
+        if (!is_scalar($personOidOrEmail)) {
+            throw new \RuntimeException('Person email or id is not a scalar value.');
         }
 
         $entity = null;
 
         // try to find person by oid
         $model = new Model\Person();
-        $model->setOid($personEmailOrId);
+        $model->setOid($personOidOrEmail);
 
         $entityId = $this->importMapMapper->findIdByModel($model);
         if ($entityId) {
@@ -117,16 +117,16 @@ class PersonHelper
 
         // try to find person by emails
         if (!$entity) {
-            $entity = $this->personMapper->findOneByEmail($personEmailOrId, false);
+            $entity = $this->personMapper->findOneByEmail($personOidOrEmail, false);
             if (!$entity) {
                 // try to create person with real email
-                $errors = $this->validator->validate($personEmailOrId, [
+                $errors = $this->validator->validate($personOidOrEmail, [
                     new Assert\Email(),
                 ]);
 
                 if (!count($errors)) {
                     $entity = new Entity\Person();
-                    $entity->addEmailAddressString($personEmailOrId);
+                    $entity->addEmailAddressString($personOidOrEmail);
 
                     // reset $model to avoid unnecessary import map entities
                     $model = null;
@@ -136,7 +136,7 @@ class PersonHelper
 
         // try to find person by auto generated email
         if (!$entity) {
-            $personEmail = "imported.user.$personEmailOrId@example.com";
+            $personEmail = "imported.user.$personOidOrEmail@example.com";
             $entity      = $this->personMapper->findOneByEmail($personEmail, false);
 
             if (!$entity) {

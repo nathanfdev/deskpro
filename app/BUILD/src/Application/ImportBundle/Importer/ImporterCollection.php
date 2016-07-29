@@ -38,48 +38,48 @@ use DeskPRO\Component\Util\AbstractCollection;
  *
  * Class GenerateCollection
  */
-final class ImporterCollection extends AbstractCollection
+class ImporterCollection extends AbstractCollection
 {
     /**
-     * Add an entity collection.
+     * Add an model collection.
      *
      * @param string                $type
-     * @param ImportModelCollection $entities
+     * @param ImportModelCollection $models
      *
      * @return $this
      */
-    public function attach($type, ImportModelCollection $entities)
+    public function add($type, ImportModelCollection $models)
     {
         if (isset($this->collection[$type])) {
             /** @var ImportModelCollection $collection */
             $collection = $this->collection[$type];
-            $collection->merge($entities);
+            $collection->merge($models);
         } else {
-            $this->collection[$type] = $entities;
+            $this->collection[$type] = $models;
         }
 
         return $this;
     }
 
     /**
-     * Remove an entity collection.
+     * Remove an model collection.
      *
-     * @param PrimaryImportModelInterface $entity
+     * @param PrimaryImportModelInterface $model
      *
      * @return $this
      */
-    public function detach(PrimaryImportModelInterface $entity)
+    public function remove(PrimaryImportModelInterface $model)
     {
         foreach ($this->collection as $type => $type_collection) {
             /* @var ImportModelCollection $type_collection */
-            $type_collection->detach($entity);
+            $type_collection->detach($model);
         }
 
         return $this;
     }
 
     /**
-     * Returns a collection of entities.
+     * Returns a collection of models.
      *
      * @param string $type
      *
@@ -97,42 +97,7 @@ final class ImporterCollection extends AbstractCollection
     }
 
     /**
-     * Returns containing entity types.
-     *
-     * @return string[]
-     */
-    public function getContainingEntityTypes()
-    {
-        $types = [];
-        foreach ($this->collection as $type => $type_collection) {
-            /** @var ImportModelCollection $type_collection */
-            if ($type_collection->count()) {
-                $types[] = $type;
-            }
-        }
-
-        return $types;
-    }
-
-    /**
-     * Returns if collection has entities.
-     *
-     * @return bool
-     */
-    public function hasEntities()
-    {
-        foreach ($this->collection as $type_collection) {
-            /** @var ImportModelCollection $type_collection */
-            if ($type_collection->count()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns if collection has entities of current type.
+     * Returns if collection has models of current type.
      *
      * @param string $type
      *
@@ -148,19 +113,5 @@ final class ImporterCollection extends AbstractCollection
         }
 
         return false;
-    }
-
-    /**
-     * @return int
-     */
-    public function getSkippedCount()
-    {
-        $count = 0;
-        foreach ($this->collection as $type_collection) {
-            /* @var ImportModelCollection $type_collection */
-            $count += $type_collection->getSkippedCount();
-        }
-
-        return $count;
     }
 }

@@ -26,82 +26,71 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Importer;
+namespace Application\ImportBundle\Model;
 
-use Application\ImportBundle\Model\BatchConfig;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Configuration of generator importer service.
- *
- * Class GeneratorConfig
+ * Class Translation.
  */
-class ImporterContext
+class Translation
 {
     /**
-     * @var BatchConfig
+     * @var string
+     *
+     * @JMS\Type("string")
+     *
+     * @Assert\NotBlank()
      */
-    private $batchConfig;
+    private $language;
 
     /**
      * @var string
-     */
-    private $inputPath;
-
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        $this->batchConfig = new BatchConfig();
-    }
-
-    /**
-     * Input path of exporting data.
      *
+     * @JMS\Type("string")
+     *
+     * @Assert\NotBlank()
+     */
+    private $value;
+
+    /**
      * @return string
      */
-    public function getInputPath()
+    public function getLanguage()
     {
-        return $this->inputPath;
+        return $this->language;
     }
 
     /**
-     * Set an input path.
-     *
-     * @param string $inputPath
+     * @param string $language
      *
      * @return $this
      */
-    public function setInputPath($inputPath)
+    public function setLanguage($language)
     {
-        $this->inputPath = $inputPath ? (rtrim($inputPath, '/').'/') : null;
+        $this->language = $language;
 
         return $this;
     }
 
     /**
-     * Returns batch file path location.
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param string $value
      *
-     * @return null|string
+     * @return $this
      */
-    public function getBatchFilePath()
+    public function setValue($value)
     {
-        return $this->inputPath.'batch.json';
-    }
+        $this->value = $value;
 
-    /**
-     * @return BatchConfig
-     */
-    public function getBatchConfig()
-    {
-        return $this->batchConfig;
-    }
-
-    /**
-     * @param BatchConfig $batchConfig
-     */
-    public function setBatchConfig(BatchConfig $batchConfig = null)
-    {
-        $this->batchConfig = $batchConfig ?: new BatchConfig();
+        return $this;
     }
 }

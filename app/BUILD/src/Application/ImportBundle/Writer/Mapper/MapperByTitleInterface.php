@@ -39,9 +39,8 @@ interface MapperByTitleInterface
      * Returns the DeskPRO record by title.
      *
      * @param string $title
-     * @param bool   $throw_exception
      *
      * @return mixed
      */
-    public function findOneByTitle($title, $throw_exception = true);
+    public function findOneByTitle($title);
 }

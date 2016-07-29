@@ -28,64 +28,47 @@
 
 namespace Application\ImportBundle\Writer\EntityHandler;
 
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\TextSnippet;
 use Application\ImportBundle\Model;
 
 /**
- * DeskPRO news importer.
- *
- * Class News
+ * Class TextSnippetHandler.
  */
-class NewsHandler extends AbstractEntityHandler
+class TextSnippetHandler extends AbstractEntityHandler
 {
     /**
      * {@inheritdoc}
      */
     public static function getModelClass()
     {
-        return Model\News::class;
+        return Model\TextSnippet::class;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @param Model\News $model
+     * @param Model\TextSnippet $model
      */
     public function writeModel(Model\PrimaryImportModelInterface $model)
     {
-        /** @var Entity\News $entity */
-        $entity = $this->findOrCreateEntity($this->mappers->getNewsMapper(), $model);
+        /** @var TextSnippet $entity */
+        $entity = $this->findOrCreateEntity($this->mappers->getTextSnippetMapper(), $model);
         $entity
-            ->setTitle($model->getTitle())
-            ->setContent($model->getContent())
-            ->setStatus($model->getStatus())
-            ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
-            ->setDatePublished($model->getDatePublished())
-            ->setViewCount($model->getViewCount())
+            ->setCategory($this->helpers->getTextSnippetCategoryHelper()->findOrCreateTextSnippetCategory($model->getCategory()))
+            ->setShortcutCode($model->getShortcutCode())
+            ->setIsDraft($model->isDraft())
         ;
 
-        if ($model->getDateCreated()) {
-            $entity->setDateCreated($model->getDateCreated());
-        }
-
-        // update news person
+        // update person
         if ($model->getPerson()) {
             $entity->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()));
         } else {
             $entity->setPerson(null);
         }
 
-        // update news category
-        if ($model->getCategory()) {
-            $entity->setCategory($this->helpers->getCategoryHelper()->findOrCreateCategory(
-                $this->mappers->getNewsCategoryMapper(),
-                $model->getCategory()
-            ));
-        } else {
-            $entity->setCategory(null);
-        }
-
-        $this->helpers->getLabelHelper()->updateLabels($model, $entity, Entity\LabelNews::class);
+        // update translations
+        $this->helpers->getTranslationHelper()->updateTranslations($model->getTitleTranslations(), $entity, 'title');
+        $this->helpers->getTranslationHelper()->updateTranslations($model->getSnippetTranslations(), $entity, 'snippet');
 
         // persist basic entity
         $this->persister->persistAndFlush($entity, $model);

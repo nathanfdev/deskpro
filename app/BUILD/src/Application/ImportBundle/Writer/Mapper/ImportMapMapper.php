@@ -63,7 +63,7 @@ class ImportMapMapper extends AbstractEntityManagerMapper
             'typename' => self::getImportMapKey($model),
         ];
 
-        return $this->findOneBy($criteria, false);
+        return $this->findOneBy($criteria);
     }
 
     /**

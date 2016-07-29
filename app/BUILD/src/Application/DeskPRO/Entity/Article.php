@@ -38,10 +38,13 @@ use Application\DeskPRO\Domain\ObjectTranslatable;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use DateTime;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableInterface;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableTrait;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -55,8 +58,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @PortalLinkRoute("portal_kb_article_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
  * @PortalLinkRoute("portal_kb_article_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
  */
-class Article extends ContentAbstract implements HighlightableModelInterface, LabelsOwner
+class Article extends ContentAbstract implements HighlightableModelInterface, LabelsOwner, ObjectTranslatableInterface
 {
+    use ObjectTranslatableTrait;
+
     const CONTENT_TYPE = 'article';
 
     const END_ACTION_DELETE  = 'delete';
@@ -119,17 +124,23 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     protected $_search_highlights;
 
     /**
+     * @var ArrayCollection|ObjectLang[]
+     */
+    protected $props_translations;
+
+    /**
      * Constructor.
      */
     public function __construct()
     {
         parent::__construct();
 
-        $this->categories  = new ArrayCollection();
-        $this->attachments = new ArrayCollection();
-        $this->custom_data = new ArrayCollection();
-        $this->labels      = new ArrayCollection();
-        $this->task_links  = new ArrayCollection();
+        $this->categories         = new ArrayCollection();
+        $this->attachments        = new ArrayCollection();
+        $this->custom_data        = new ArrayCollection();
+        $this->labels             = new ArrayCollection();
+        $this->task_links         = new ArrayCollection();
+        $this->props_translations = new ArrayCollection();
     }
 
     /**
@@ -498,6 +509,26 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         $this->slug_history->add($history);
 
         return $history;
+    }
+
+    /**
+     * @return Collection|ObjectLang[]
+     *
+     * @Assert\Valid()
+     */
+    public function getTitleTranslations()
+    {
+        return $this->getObjectPropTranslations('title');
+    }
+
+    /**
+     * @return Collection|ObjectLang[]
+     *
+     * @Assert\Valid()
+     */
+    public function getContentTranslations()
+    {
+        return $this->getObjectPropTranslations('content');
     }
 
     ############################################################################

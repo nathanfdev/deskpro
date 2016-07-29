@@ -135,7 +135,7 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
         return $ol;
     }
 
-    public function setLanguage(Language $lang)
+    public function setLanguage(Language $lang = null)
     {
         $this->setModelField('language', $lang);
 

@@ -60,7 +60,7 @@ class ArticleHandler extends AbstractEntityHandler
             ->setTitle($model->getTitle())
             ->setContent($model->getContent())
             ->setStatus($model->getStatus())
-            ->setLanguage($this->helpers->getLanguageHelper()->findLanguage($model->getLanguage()))
+            ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
             ->setDatePublished($model->getDatePublished())
             ->setDateEnd($model->getDateEnd())
             ->setEndAction($model->getEndAction())
@@ -78,6 +78,8 @@ class ArticleHandler extends AbstractEntityHandler
 
         $this->helpers->getCustomDataHelper()->updateCustomData($this->mappers->getArticleCustomDefMapper(), $model, $entity);
         $this->helpers->getLabelHelper()->updateLabels($model, $entity, Entity\LabelArticle::class);
+        $this->helpers->getTranslationHelper()->updateTranslations($model->getTitleTranslations(), $entity, 'title');
+        $this->helpers->getTranslationHelper()->updateTranslations($model->getContentTranslations(), $entity, 'content');
 
         // update article categories
         $newCategories = new ArrayCollection();

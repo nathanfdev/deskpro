@@ -77,33 +77,33 @@ class OrganizationHelper
     }
 
     /**
-     * @param string $organizationIdOrName
+     * @param string $organizationOidOrName
      *
      * @return Entity\Organization
      */
-    public function findOrCreateOrganization($organizationIdOrName)
+    public function findOrCreateOrganization($organizationOidOrName)
     {
-        if (!$organizationIdOrName) {
+        if (!$organizationOidOrName) {
             return;
         }
-        if (!is_scalar($organizationIdOrName)) {
+        if (!is_scalar($organizationOidOrName)) {
             throw new \RuntimeException('Person email or id is not scalar value.');
         }
 
         $entity = null;
 
-        if (is_int($organizationIdOrName) || ctype_digit($organizationIdOrName)) {
+        if (is_int($organizationOidOrName) || ctype_digit($organizationOidOrName)) {
             $model = new Model\Organization();
-            $model->setOid($organizationIdOrName);
+            $model->setOid($organizationOidOrName);
 
             $entityId = $this->importMapMapper->findIdByModel($model);
             if ($entityId) {
                 $entity = $this->organizationMapper->find($entityId);
             }
             if (!$entity) {
-                $organizationName = 'Organization'.$organizationIdOrName;
+                $organizationName = 'Organization'.$organizationOidOrName;
 
-                $entity = $this->organizationMapper->findOneByTitle($organizationName, false);
+                $entity = $this->organizationMapper->findOneByTitle($organizationName);
                 if (!$entity) {
                     $entity = new Entity\Organization();
                     $entity->setName($organizationName);
@@ -111,10 +111,10 @@ class OrganizationHelper
             }
         } else {
             $model  = null;
-            $entity = $this->organizationMapper->findOneByTitle($organizationIdOrName, false);
+            $entity = $this->organizationMapper->findOneByTitle($organizationOidOrName);
             if (!$entity) {
                 $entity = new Entity\Organization();
-                $entity->setName($organizationIdOrName);
+                $entity->setName($organizationOidOrName);
             }
         }
 
