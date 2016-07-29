@@ -814,6 +814,14 @@ class LegacyTermsTransformer
 
             case 'feedback_rating':
                 return new Terms\FilterFeedbackRating($op, $options);
+
+            case 'brand':
+                $ids = @$options['brand'] ?: [];
+                if (!is_array($ids)) {
+                    $ids = [$ids];
+                }
+
+                return new Terms\FilterBrand($op, ['brand_ids' => $ids]);
         }
 
         return;
