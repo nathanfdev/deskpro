@@ -127,19 +127,13 @@ class CustomFieldUtil
     public static function getCustomDataForField(CustomDefAbstract $field, $customData)
     {
         $fieldId = $field->getId();
-
-        $matches  = [];
-        $isChoice = false;
+        $matches = [];
         foreach ($customData as $data) {
             $cdField     = $data->getField();
             $cdRootField = $data->getRootField();
 
             if (($cdField && $cdField->getId() === $fieldId) || ($cdRootField && $cdRootField->getId() === $fieldId)) {
                 $matches[] = $data;
-
-                if ($cdRootField && $cdRootField->isChoiceType()) {
-                    $isChoice = true;
-                }
             }
         }
 

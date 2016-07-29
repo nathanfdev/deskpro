@@ -50,12 +50,12 @@ class TicketViewDataService extends AbstractDataService
     /**
      * @var CustomFieldManager
      */
-    private $form_field_manager;
+    private $customFieldManager;
 
     /**
      * @var TicketLayoutFactory
      */
-    private $ticket_layout_factory;
+    private $ticketLayoutFactory;
 
     /**
      * @var Translate
@@ -65,30 +65,30 @@ class TicketViewDataService extends AbstractDataService
     /**
      * @var BrandAwareSettingsResolver
      */
-    private $brand_aware_settings;
+    private $brandAwareSettings;
 
     /**
      * Constructor.
      *
      * @param EntityManager              $em
-     * @param CustomFieldManager         $form_field_manager
-     * @param TicketLayoutFactory        $ticket_layout_factory
+     * @param CustomFieldManager         $customFieldManager
+     * @param TicketLayoutFactory        $ticketLayoutFactory
      * @param Translate                  $translate
-     * @param BrandAwareSettingsResolver $brand_aware_settings
+     * @param BrandAwareSettingsResolver $brandAwareSettings
      */
     public function __construct(
         EntityManager              $em,
-        CustomFieldManager         $form_field_manager,
-        TicketLayoutFactory        $ticket_layout_factory,
+        CustomFieldManager         $customFieldManager,
+        TicketLayoutFactory        $ticketLayoutFactory,
         Translate                  $translate,
-        BrandAwareSettingsResolver $brand_aware_settings
+        BrandAwareSettingsResolver $brandAwareSettings
     ) {
         parent::__construct($em);
 
-        $this->form_field_manager    = $form_field_manager;
-        $this->ticket_layout_factory = $ticket_layout_factory;
-        $this->translate             = $translate;
-        $this->brand_aware_settings  = $brand_aware_settings;
+        $this->customFieldManager  = $customFieldManager;
+        $this->ticketLayoutFactory = $ticketLayoutFactory;
+        $this->translate           = $translate;
+        $this->brandAwareSettings  = $brandAwareSettings;
     }
 
     /**
@@ -103,7 +103,7 @@ class TicketViewDataService extends AbstractDataService
 
         $view = new TicketView($ticket);
 
-        $full_layout = $this->ticket_layout_factory->getLayoutForView($ticket->getDepartment());
+        $full_layout = $this->ticketLayoutFactory->getLayoutForView($ticket->getDepartment());
         $layout      = $full_layout->getUserLayout();
 
         /** @var \Application\DeskPro\TicketLayout\LayoutField $layout_field */
@@ -159,7 +159,7 @@ class TicketViewDataService extends AbstractDataService
                     break;
                 case FormFields::TICKET_FIELD:
                     /** @var \Application\DeskPRO\Entity\CustomDefTicket $fieldDef */
-                    if (!$fieldDef = $this->form_field_manager->getCustomTicketFieldById($defId)) {
+                    if (!$fieldDef = $this->customFieldManager->getCustomTicketFieldById($defId)) {
                         // ignore fields that don't have a definition. this may rarely happen if admin deletes fields?
                         break;
                     }
@@ -173,7 +173,7 @@ class TicketViewDataService extends AbstractDataService
                         break;
                     }
                     /* @var \Application\DeskPRO\Entity\CustomDefOrganization $field_def */
-                    if (!$fieldDef = $this->form_field_manager->getCustomOrganizationFieldById($defId)) {
+                    if (!$fieldDef = $this->customFieldManager->getCustomOrganizationFieldById($defId)) {
                         // ignore fields that don't have a definition. this may rarely happen if admin deletes fields?
                         break;
                     }
@@ -183,7 +183,7 @@ class TicketViewDataService extends AbstractDataService
                     break;
                 case FormFields::USER_FIELD:
                     /* @var \Application\DeskPRO\Entity\CustomDefPerson $fieldDef */
-                    if (!$fieldDef = $this->form_field_manager->getCustomPersonFieldById($defId)) {
+                    if (!$fieldDef = $this->customFieldManager->getCustomPersonFieldById($defId)) {
                         // ignore fields that don't have a definition. this may rarely happen if admin deletes fields?
                         break;
                     }
@@ -228,7 +228,7 @@ class TicketViewDataService extends AbstractDataService
      *
      * @return bool|null|string
      */
-    public function addCustomDataProperty(TicketView $view, $field_id, CustomDefAbstract $field_def, $data, $is_always_visible)
+    private function addCustomDataProperty(TicketView $view, $field_id, CustomDefAbstract $field_def, $data, $is_always_visible)
     {
         if (is_array($data)) {
             $value = array_map(function ($data) use ($field_def) {
@@ -258,6 +258,6 @@ class TicketViewDataService extends AbstractDataService
      */
     private function hasSetting($name)
     {
-        return (bool) $this->brand_aware_settings->getSetting($name, false);
+        return (bool) $this->brandAwareSettings->getSetting($name, false);
     }
 }
