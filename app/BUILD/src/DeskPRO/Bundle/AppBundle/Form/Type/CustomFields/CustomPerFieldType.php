@@ -56,6 +56,10 @@ class CustomPerFieldType extends AbstractType
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onGenerateFields']);
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onTransformToCustomData'], -1);
+
+        if ($options['inline']) {
+            $builder->addEventSubscriber(new InlineCustomDataListener());
+        }
     }
 
     /**
@@ -74,11 +78,13 @@ class CustomPerFieldType extends AbstractType
         $resolver
             ->setRequired([
                 'agent_interface',
+                'inline',
                 'custom_def',
                 'owner',
             ])
             ->setAllowedTypes([
                 'agent_interface' => 'bool',
+                'inline'          => 'bool',
                 'custom_def'      => CustomFieldDefinition::class,
                 'owner'           => [Person::class, Organization::class],
             ])
@@ -122,7 +128,7 @@ class CustomPerFieldType extends AbstractType
             'data' => $this->getFormData($event->getData() ?: new ArrayCollection(), $customDef),
         ];
 
-        $form->add('data', ContextualPerFieldChoiceType::class, $options);
+        $form->add('data', CustomPerFieldChoiceType::class, $options);
     }
 
     /**
@@ -169,7 +175,6 @@ class CustomPerFieldType extends AbstractType
                 $customData
                     ->setRootDefinition($customDef)
                     ->setDefinition($customDef->getChildById($fieldId))
-                    ->setOwner($config->getOption('owner'))
                     ->setData(1)
                 ;
 

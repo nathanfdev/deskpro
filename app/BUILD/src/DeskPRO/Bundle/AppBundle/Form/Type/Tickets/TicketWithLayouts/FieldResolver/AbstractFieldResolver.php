@@ -38,7 +38,6 @@ use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
-use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketCategoryType;
@@ -291,13 +290,7 @@ abstract class AbstractFieldResolver
             return false;
         }
 
-        return new FormField(CustomPerFieldType::class, [
-            'property_path'   => 'custom_per_data',
-            'agent_interface' => $context->isAgentView(),
-            'label'           => $def->getTitle(),
-            'owner'           => $owner,
-            'custom_def'      => $def,
-        ]);
+        return $this->createContextualCustomPerField($context, $def, $owner);
     }
 
     /**
@@ -497,6 +490,15 @@ abstract class AbstractFieldResolver
      * @return FormField
      */
     abstract protected function createCustomField(TicketWithLayoutsContext $context, $propertyPath, CustomDefAbstract $def = null);
+
+    /**
+     * @param TicketWithLayoutsContext $context
+     * @param CustomFieldDefinition    $def
+     * @param mixed                    $owner
+     *
+     * @return FormField
+     */
+    abstract protected function createContextualCustomPerField(TicketWithLayoutsContext $context, CustomFieldDefinition $def, $owner);
 
     /**
      * @param string $name

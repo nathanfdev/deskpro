@@ -26,22 +26,50 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 /**
- * Class SerializerTypes.
+ * Class InlineCustomDataListener.
  */
-final class SerializerTypes
+class InlineCustomDataListener implements EventSubscriberInterface
 {
-    const TYPE_ENTITY          = 'entity';
-    const TYPE_TO_STRING       = 'to_string';
-    const TYPE_CUSTOM_DATA     = 'custom_data';
-    const TYPE_CUSTOM_PER_DATA = 'custom_per_data';
-    const TYPE_COLLECTION      = 'collection';
-    const TYPE_MAP             = 'map';
-    const TYPE_DEFERRED        = 'deferred';
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            FormEvents::PRE_SUBMIT => 'onSetInlineData',
+        ];
+    }
+
+    /**
+     * Set form data from inline value.
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onSetInlineData(FormEvent $event)
+    {
+        $data = $event->getData();
+
+        // default format based on form "data" field
+        if (isset($data['data'])) {
+            return;
+        }
+
+        // custom data serializer format we get from api response
+        if (isset($data['value'])) {
+            $data = $data['value'];
+        }
+
+        $event->setData([
+            'data' => $data,
+        ]);
+    }
 }

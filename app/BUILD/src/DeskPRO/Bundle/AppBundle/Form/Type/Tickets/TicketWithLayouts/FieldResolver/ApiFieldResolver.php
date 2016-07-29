@@ -29,9 +29,11 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
@@ -155,6 +157,20 @@ class ApiFieldResolver extends AbstractFieldResolver
         ];
 
         return new FormField(CustomDataType::class, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function createContextualCustomPerField(TicketWithLayoutsContext $context, CustomFieldDefinition $def, $owner)
+    {
+        return new FormField(CustomPerFieldType::class, [
+            'property_path'   => 'custom_per_data',
+            'agent_interface' => $context->isAgentView(),
+            'owner'           => $owner,
+            'custom_def'      => $def,
+            'inline'          => true,
+        ]);
     }
 
     /**

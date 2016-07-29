@@ -90,12 +90,12 @@ services:
 
   form.custom_data:
     class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType
-    arguments: ["@custom_field_manager", "@validator"]
+    arguments: ["@validator"]
     tags:
       - { name: form.type }
 
   form.deskpro_contextual_per_field_choice:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\ContextualPerFieldChoiceType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldChoiceType
     arguments: ["@form_hierarchy_generator"]
     tags:
       - { name: form.type }

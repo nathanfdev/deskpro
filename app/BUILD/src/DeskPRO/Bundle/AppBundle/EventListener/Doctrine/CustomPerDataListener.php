@@ -73,7 +73,7 @@ class CustomPerDataListener implements EventSubscriber
         }
 
         $entity->setCustomPerData($this->getLazyCriteriaCollection($entity, $args->getEntityManager()));
-        $this->updateQueue[$entity->getId()] = $entity;
+        $this->updateQueue[spl_object_hash($entity)] = $entity;
     }
 
     /**
@@ -94,7 +94,7 @@ class CustomPerDataListener implements EventSubscriber
      */
     public function onFlush(OnFlushEventArgs $args)
     {
-        foreach ($this->updateQueue as $id => $entity) {
+        foreach ($this->updateQueue as $entity) {
             $this->updateCustomPerData($entity, $args->getEntityManager());
         }
     }
@@ -124,6 +124,7 @@ class CustomPerDataListener implements EventSubscriber
         ;
 
         $qb->getQuery()->execute();
+        unset($this->updateQueue[spl_object_hash($entity)]);
     }
 
     /**
@@ -142,8 +143,11 @@ class CustomPerDataListener implements EventSubscriber
         // persist new and changed entities
         foreach ($newCollection as $customData) {
             /* @var CustomFieldData $customData */
-            $customData->setOwner($entity);
-            $em->persist($customData);
+            if (!$customData->owner_id && $entity->getId()) {
+                $customData->setOwner($entity);
+                $em->persist($customData);
+                $em->getUnitOfWork()->computeChangeSets();
+            }
         }
 
         // remove deleted

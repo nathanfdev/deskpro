@@ -41,10 +41,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class ContextualPerFieldChoiceType.
  */
-class ContextualPerFieldChoiceType extends AbstractType
+class CustomPerFieldChoiceType extends AbstractType
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator
+     * @var HierarchyGenerator
      */
     private $hierarchy;
 

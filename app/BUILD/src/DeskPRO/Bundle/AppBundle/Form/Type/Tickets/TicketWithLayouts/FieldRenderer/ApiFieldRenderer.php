@@ -33,6 +33,7 @@ use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 
 /**
@@ -44,6 +45,7 @@ class ApiFieldRenderer implements FieldRendererInterface
         FormFields::TICKET_FIELD => 'fields',
         FormFields::ORG_FIELD    => 'organization_fields',
         FormFields::USER_FIELD   => 'user_fields',
+        FormFields::CUSTOM_FIELD => 'contextual_fields',
     ];
 
     /**
@@ -53,7 +55,7 @@ class ApiFieldRenderer implements FieldRendererInterface
     {
         $form = $context->getForm();
 
-        if ($formField->getType() === CustomDataType::class) {
+        if (in_array($formField->getType(), [CustomDataType::class, CustomPerFieldType::class])) {
             $customGroupName = self::$customDataMapping[$field->getFieldType()];
             if (!$form->has($customGroupName)) {
                 $form->add($customGroupName, CombinedType::class, [

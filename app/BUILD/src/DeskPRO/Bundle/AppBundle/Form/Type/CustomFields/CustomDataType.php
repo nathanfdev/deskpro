@@ -31,12 +31,16 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -53,11 +57,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class CustomDataType extends AbstractType
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager
-     */
-    protected $fieldManager;
-
-    /**
      * @var ValidatorInterface
      */
     protected $validator;
@@ -65,13 +64,11 @@ class CustomDataType extends AbstractType
     /**
      * Constructor.
      *
-     * @param CustomFieldManager $fieldManager
      * @param ValidatorInterface $validator
      */
-    public function __construct(CustomFieldManager $fieldManager, ValidatorInterface $validator)
+    public function __construct(ValidatorInterface $validator)
     {
-        $this->fieldManager = $fieldManager;
-        $this->validator    = $validator;
+        $this->validator = $validator;
     }
 
     /**
@@ -100,7 +97,7 @@ class CustomDataType extends AbstractType
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onValidateData'], -1);
 
         if ($options['inline']) {
-            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetInlineData']);
+            $builder->addEventSubscriber(new InlineCustomDataListener());
         }
     }
 
@@ -116,7 +113,7 @@ class CustomDataType extends AbstractType
 
         /** @var CustomDefAbstract $customDef */
         $customDef = $config->getOption('custom_def');
-        $field     = $this->fieldManager->createCustomField($customDef, $config->getOption('inline'));
+        $field     = $this->createCustomField($customDef, $config->getOption('inline'));
 
         // custom fields are implemented as a compound type
         // and this label is for the 'data' attribute, whereas
@@ -132,30 +129,6 @@ class CustomDataType extends AbstractType
         // so we should pass stored value via its options
         $options['data'] = $this->getFormData($event->getData() ?: new ArrayCollection(), $customDef);
         $form->add('data', $field->getType(), $options);
-    }
-
-    /**
-     * Set form data from inline value.
-     *
-     * @param FormEvent $event
-     */
-    public function onSetInlineData(FormEvent $event)
-    {
-        $data = $event->getData();
-
-        // default format based on form "data" field
-        if (isset($data['data'])) {
-            return;
-        }
-
-        // custom data serializer format we get from api response
-        if (isset($data['value'])) {
-            $data = $data['value'];
-        }
-
-        $event->setData([
-            'data' => $data,
-        ]);
     }
 
     /**
@@ -427,5 +400,115 @@ class CustomDataType extends AbstractType
         }
 
         return $customDefData;
+    }
+
+    /**
+     * @param CustomDefAbstract $def
+     * @param bool              $isInline
+     *
+     * @return FormField
+     */
+    private function createCustomField(CustomDefAbstract $def, $isInline = false)
+    {
+        switch ($def->getType()) {
+            case CustomDefAbstract::TYPE_TEXT:
+                return new FormField(TextType::class, [
+                    'help' => $def->getRealDescription(),
+                ]);
+
+            case CustomDefAbstract::TYPE_TEXTAREA:
+                return new FormField(TextareaType::class, [
+                    'help' => $def->getRealDescription(),
+                ]);
+
+            case CustomDefAbstract::TYPE_TOGGLE:
+                if ($isInline) {
+                    return new FormField(ApiBooleanType::class);
+                }
+
+                $options = [
+                    'checkbox_label' => $def->getOption('label_text') ?: '',
+                    'force_boolean'  => true,
+                    'help'           => $def->getRealDescription(),
+                ];
+
+                return new FormField('single_checkbox', $options);
+
+            case CustomDefAbstract::TYPE_DISPLAY:
+                $options = [
+                    'html'  => $def->getOption('html'),
+                    'data'  => '',
+                    'label' => false,
+                    'help'  => $def->getRealDescription(),
+                ];
+
+                return new FormField('deskpro_display_html', $options);
+
+            case CustomDefAbstract::TYPE_CHOICE:
+                $options = [
+                    'expanded'     => (bool) $def->getOption('expanded'),
+                    'multiple'     => (bool) $def->getOption('multiple'),
+                    'custom_field' => $def,
+                    'help'         => $def->getRealDescription(),
+                ];
+
+                return new FormField(CustomFieldChoiceType::class, $options);
+
+            case CustomDefAbstract::TYPE_DATE:
+                if ($isInline) {
+                    $options = [
+                        'input'  => 'timestamp',
+                        'widget' => 'single_text',
+                    ];
+                } else {
+                    $options = [
+                        'input'    => 'timestamp',
+                        'widget'   => 'choice',
+                        'weekdays' => $def->getOption('date_valid_dow'),
+                        'min_date' => $def->getDateMinFormat(),
+                        'max_date' => $def->getDateMaxFormat(),
+                        'help'     => $def->getRealDescription(),
+                    ];
+                }
+
+                return new FormField('deskpro_date', $options);
+
+            case CustomDefAbstract::TYPE_DATETIME:
+                if ($isInline) {
+                    $options = [
+                        'input'  => 'timestamp',
+                        'widget' => 'single_text',
+                    ];
+
+                    return new FormField('datetime', $options);
+                } else {
+                    $options = [
+                        'input'    => 'timestamp',
+                        'widget'   => 'choice',
+                        'format'   => 'Y-m-d H:i',
+                        'weekdays' => $def->getOption('date_valid_dow'),
+                        'min_date' => $def->getDateMinFormat(),
+                        'max_date' => $def->getDateMaxFormat(),
+                        'help'     => $def->getRealDescription(),
+                    ];
+
+                    return new FormField(DateTimeType::class, $options);
+                }
+
+            case CustomDefAbstract::TYPE_HIDDEN:
+                $options = [
+                    'auto_fill'          => false,
+                    'hidden'             => true,
+                    'label'              => false,
+                    'help'               => false,
+                    'cookie_param_name'  => $def->getOption('cookie_name'),
+                    'request_param_name' => $def->getOption('param_name'),
+                ];
+
+                return new FormField('deskpro_hidden', $options);
+
+            default:
+                throw new \InvalidArgumentException("Invalid field #{$def->getId()}. Cannot find handler for type \"{$def->getType()}\".");
+        }
     }
 }

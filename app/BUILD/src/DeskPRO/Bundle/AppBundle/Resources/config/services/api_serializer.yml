@@ -32,6 +32,11 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.custom_per_data:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\CustomPerDataHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.contact_data:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ContactDataHandler
     tags:
