@@ -4,15 +4,30 @@
         <head>
             <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
             <meta charset="utf-8" />
-            <title></title>
+            <title>{{ brand_setting('core.deskpro_name') }}</title>
             <link href="{{ portal_css_url() }}" media="all" rel="stylesheet" type="text/css" />
+            <link href="{{ asset('DeskPRO_PortalBundle_vendors_style.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
         </head>
     <body>
         <div class="world with-searchbox">
-            <section class="with-dpx">
-                <div class="column-full">
-                    The portal has been disabled. You can re-enable the portal from <a href="{{ path('admin') }}#/portal/setup">Admin > Portal > Setup</a>.
-                </div>
+            <div class="column-full">
+                The portal has been disabled. You can re-enable the portal from <a href="{{ path('admin') }}#/portal/setup">Admin > Portal > Setup</a>.
+            </div>
+            <section class="welcome-news">
+                <ul class="big-button-collection big-buttons dpx-toggle-mobile">
+                    <li>
+                        <a href="{{ path('agent') }}">
+                            <i class="fa fa-user"></i>
+                            <span class="title">Agent interface</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('admin') }}">
+                            <i class="fa fa-gear"></i>
+                            <span class="title">Admin interface</span>
+                        </a>
+                    </li>
+                </ul>
             </section>
         </div>
     </body>
