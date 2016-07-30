@@ -252,9 +252,6 @@ class ServerFileUploads
                 $settings->setSetting('core.filestorage_s3_secret', $options->get('s3_secret', null));
                 $settings->setSetting('core.filestorage_s3_bucket', $options->get('s3_bucket', null));
 
-                // Need to clear CSS blobs too, since the URLs will change
-                \Application\DeskPRO\Style\RefreshStylesheets::refresh(App::$container);
-
                 break;
         }
 
@@ -283,6 +280,7 @@ class ServerFileUploads
                 case 'db': $message = 'Currently transferring files to the database'; break;
                 case 'fs': $message = 'Currently transferring files to the filesystem'; break;
                 case 's3': $message = 'Currently transferring files AmazonS3'; break;
+                default: $message   = '';
             }
 
             $message .= $transfer['count_done'].' of '.$transfer['count_todo'];
