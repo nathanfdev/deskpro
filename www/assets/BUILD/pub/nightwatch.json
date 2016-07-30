@@ -26,6 +26,19 @@
         "javascriptEnabled": true,
         "acceptSslCerts": true
       }
+    },
+    "cbt" : {
+      "selenium_host": "hub.crossbrowsertesting.com",
+      "selenium_port": 80,
+      "desiredCapabilities": {
+        "browser_api_name": "Chrome51x64",
+        "os_api_name": "Win7x64-C1",
+        "browserName": "chrome",
+        "record_video": "true",
+        "record_network": "true",
+        "record_snapshot": "true",
+        "screen_resolution": "1280x1024"
+      }
     }
   }
 }
