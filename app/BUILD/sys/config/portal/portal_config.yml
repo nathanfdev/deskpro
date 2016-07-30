@@ -12,6 +12,14 @@ parameters:
   templating.name_parser.class: DeskPRO\Bundle\AppBundle\Templating\TemplateNameParser
   jms_serializer.json_serialization_visitor.class: DeskPRO\Bundle\AppBundle\Serializer\Visitor\JsonSerializationVisitor
 
+services:
+  # legacy ext is required by some ticket functions (e.g. rendering notifications)
+  twig.helpers.deskpro_templating:
+    class: Application\DeskPRO\Twig\Extension\TemplatingExtension
+    arguments: ["@service_container"]
+    tags:
+      - { name: twig.extension }
+
 framework:
     esi:             { enabled: true }
     fragments:       { path: /_proxy }
