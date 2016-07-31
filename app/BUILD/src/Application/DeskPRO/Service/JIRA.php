@@ -352,6 +352,8 @@ class JIRA
             ));
         } catch (\Exception $e) {
             $this->container->get('dp_sys.alerts.event_logger')->log(new JiraApiExceptionEvent($e));
+
+            return;
         }
     }
 
