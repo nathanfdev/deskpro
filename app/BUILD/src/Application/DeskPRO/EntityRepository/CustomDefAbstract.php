@@ -66,9 +66,9 @@ class CustomDefAbstract extends AbstractEntityRepository
         }
         $this->didLoadHierarchy = true;
         $this->_em->createQuery("
-            SELECT PARTIAL f.{id}, PARTIAL ch.{id}
+            SELECT f, ch
             FROM {$this->_entityName} f INDEX BY f.id
-            LEFT JOIN f.children ch
+            JOIN f.children ch
             ORDER BY f.display_order ASC, f.title
         ")->execute();
     }
