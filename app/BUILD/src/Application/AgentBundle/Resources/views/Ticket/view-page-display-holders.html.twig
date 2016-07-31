@@ -1,7 +1,7 @@
 {% if not baseId %}{% set baseId = el_uid() %}{% endif %}
 {% if app.languages.isMultiLang() %}
 	<tbody class="ticket_language language_id standard-field item-on {% if not ticket.language.title %}no-value{% endif %}" data-item-type="ticket_language">
-		<tr class="mode-display">
+		<tr class="mode-display" ng-show="!isEditMode('language')" ng-click="editField('language')">
 			<th width="80">
 				<span class="language_id label">{{ phrase('agent.general.language') }}:</span>
 			</th>
@@ -9,7 +9,7 @@
 				<span class="prop-val language_id">{% if ticket.language %}{{ phrase_object(ticket.language) }}{% else %}None{% endif %}</span>
 			</td>
 		</tr>
-		<tr class="mode-edit">
+		<tr class="mode-edit" ng-show="isEditMode('language')">
 			<th width="80">{{ phrase('agent.general.language') }}:</th>
 			<td>
 				{% include 'AgentBundle:Common:select-language.html.twig' with {
@@ -29,7 +29,7 @@
 {# Standard fields #}
 {% if app.getSetting('core.use_ticket_category') %}
 	<tbody class="category category_id standard-field item {% if not ticket.category %}no-value{% endif %}" data-item-type="ticket_category" style="display:none">
-		<tr class="mode-display">
+		<tr class="mode-display" ng-show="!isEditMode('category')" ng-click="editField('category')">
 			<th width="80">
 				<span class="category_id label">{{ phrase('agent.general.category') }}:</span>
 			</th>
@@ -37,7 +37,7 @@
 				<span class="prop-val category_id">{{ticket.category.full_title|default(phrase('agent.general.none'))}}</span>
 			</td>
 		</tr>
-		<tr class="mode-edit">
+		<tr class="mode-edit" ng-show="isEditMode('category')">
 			<th width="80">{{ phrase('agent.general.category') }}:</th>
 			<td>
 				<select name="ticket[category_id]" id="{{baseId}}_ticket_category_id" data-prop-id="category_id" class="prop-input-category_id">
@@ -223,8 +223,13 @@
 
 {# Custom fields#}
 {% for f in custom_fields %}
-	<tbody class="ticket_field_{{f.id}} custom-field item {% if f.field_def.isFormField() and not ticket.hasCustomField(f.id) %}no-value{% endif %}" data-field-type="ticket_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}" style="display:none">
-		<tr class="mode-display">
+	<tbody class="ticket_field_{{f.id}} custom-field item {% if f.field_def.isFormField() and not ticket.hasCustomField(f.id) %}no-value{% endif %}"
+		   data-field-type="ticket_field"
+		   data-item-id="{{f.id}}"
+		   data-custom-field-handler="{{f.field_handler}}"
+		   style="display:none"
+	>
+		<tr class="mode-display" ng-show="!isEditMode('ticket_field_{{ f.id }}')" ng-click="editField('ticket_field_{{ f.id }}')">
 			<th width="80">
 				<span class="custom-field edit-trigger ticket_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>
 			</th>
@@ -234,7 +239,7 @@
 				</div>
 			</td>
 		</tr>
-		<tr class="mode-edit">
+		<tr class="mode-edit" ng-show="isEditMode('ticket_field_{{ f.id }}')" style="display: none;">
 			<th width="80">{{ f.title }}:</th>
 			<td>
 				<div class="custom-field field-input ticket_field_{{f.id}}" data-item-id="{{f.id}}">
@@ -294,7 +299,7 @@
 {% for f in new_custom_fields %}
     {% set id = f.vars.def.id %}
     <tbody class="custom_field_{{id}} custom-field item {% if not f.vars.rendered_data %}no-value{% endif %}" data-field-type="custom_field" data-item-id="{{id}}" style="display:none">
-		<tr class="mode-display">
+		<tr class="mode-display" ng-show="!isEditMode('custom_field_{{ f.id }}')" ng-click="editField('custom_field_{{ f.id }}')">
 			<th width="80">
 				<span class="custom-field edit-trigger custom_field_{{id}}" data-item-id="{{id}}">{{ f.vars.label }}:</span>
 			</th>
@@ -304,7 +309,7 @@
 				</div>
 			</td>
 		</tr>
-		<tr class="mode-edit">
+		<tr class="mode-edit" ng-show="isEditMode('custom_field_{{ f.id }}')">
 			<th width="80">{{ form_label(f) }}:</th>
 			<td>
 				<div class="custom-field field-input custom_field_{{id}}" data-item-id="{{id}}">

@@ -1247,6 +1247,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	destroyPage: function() {
+		this.$scope && this.$scope.$destroy();
 		if (this.ticketReplyBox) {
 			this.ticketReplyBox.destroy();
 			this.ticketReplyBox = null;
