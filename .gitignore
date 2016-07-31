@@ -234,4 +234,4 @@ www/assets/BUILD/pub/src/tests/E2E/reports/*
 www/assets/BUILD/pub/bin/chromedriver
 www/assets/BUILD/pub/bin/selenium.jar
 www/assets/BUILD/pub/src/tests/E2E/config.js
-
+www/assets/BUILD/pub/nightwatch.conf.js
