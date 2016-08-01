@@ -355,7 +355,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     public function getGroupedSnippets($as_array = false)
     {
         if ($this->_snippets === null) {
-            $this->_snippets = App::getOrm()->getRepository(TextSnippet::class)
+            $this->_snippets = App::getOrm()->getRepository(Entity\TextSnippet::class)
                                   ->getSnippetsForAgent('tickets', $this->person);
 
             $snippets_flat = array();
