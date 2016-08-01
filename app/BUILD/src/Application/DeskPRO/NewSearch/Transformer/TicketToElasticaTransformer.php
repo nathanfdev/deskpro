@@ -81,6 +81,7 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
 
         $document->set('subject', $object->getSubject());
         $document->set('ref', $object->getRef());
+        $document->set('brand', $object->getBrandId());
         $document->set('department', $object->getDepartmentId());
         $document->set('agent', $object->getAgentId());
         $document->set('agent_team', $object->getAgentTeamId());

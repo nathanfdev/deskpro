@@ -161,10 +161,12 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 
         // In user mode, never show notes
         if ($mode == 'user') {
-            $new_replies = array_filter($new_replies, function ($r) { return !$r->is_agent_note; });
+            $new_replies = array_filter($new_replies, function ($r) {
+                return !$r->is_agent_note;
+            });
             $ticket_logs = null;
 
-        // Agent mode - include ticket logs
+            // Agent mode - include ticket logs
         } else {
             $ticketlog_generator = new TicketLogGenerator($ticket, $context);
             $ticket_logs         = $ticketlog_generator->getLogEntries();
@@ -174,7 +176,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         # Build map of mentions
         #------------------------------
 
-        $vars = array(
+        $vars = [
             'type'               => $type,
             'user_mode'          => $mode,
             'performer_type'     => $context->getEventPerformer(),
@@ -188,7 +190,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             'new_messages'       => $new_replies,
             'ticket_logs'        => $ticket_logs,
             'user_vars'          => $context->getUserVars(),
-        );
+        ];
 
         return $vars;
     }
@@ -244,16 +246,18 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
                     return $person->getDisplayNameUser();
                 }
             case 'helpdesk_name':
-                return $this->getContainer()->getSetting('core.deskpro_name');
+                /* Todo ensure we stacked the right brand here */
+                return $this->getContainer()->getBrandSetting('core.deskpro_name');
             case 'site_name':
-                return $this->getContainer()->getSetting('core.site_name');
+                /* Todo ensure we stacked the right brand here */
+                return $this->getContainer()->getBrandSetting('core.site_name');
             default:
                 try {
                     $name = $this->renderStringTemplate($name, $ticket, $context);
 
                     return trim(Strings::collapseWhitespace(Strings::removeLineBreaks($name)));
                 } catch (\Exception $e) {
-                    $context->getLogger()->warn('Invalid name pattern syntax: '.$name.'. Exception: '.$e->getMessage(), array('exception' => $e));
+                    $context->getLogger()->warn('Invalid name pattern syntax: '.$name.'. Exception: '.$e->getMessage(), ['exception' => $e]);
 
                     return '';
                 }
@@ -273,7 +277,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         /** @var TemplatingExtension $renderer */
         $renderer = $this->getContainer()->getTwig()->getExtension('deskpro_templating');
 
-        return $renderer->renderTicketTemplate($string, $ticket, $context, $extra_vars ?: array());
+        return $renderer->renderTicketTemplate($string, $ticket, $context, $extra_vars ?: []);
     }
 
     /**
@@ -285,7 +289,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
      */
     protected function processHeaders(array $raw_headers, Ticket $ticket, ExecutorContextInterface $context)
     {
-        $headers = array();
+        $headers = [];
         foreach ($raw_headers as $h) {
             if (empty($h['name'])) {
                 continue;
@@ -293,10 +297,10 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             if (empty($h['value'])) {
                 $h['value'] = '';
             }
-            $headers[] = array(
+            $headers[] = [
                 'name'  => $this->renderStringTemplate($h['name'], $ticket, $context),
                 'value' => $this->renderStringTemplate($h['value'], $ticket, $context),
-            );
+            ];
         }
 
         return $headers;

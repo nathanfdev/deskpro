@@ -13,6 +13,7 @@ services:
       - "@router"
       - "@security.token_storage"
       - "@portal_permissions_manager"
+      - "@brand_stack"
 
   captcha_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\CaptchaSettingsResolver
@@ -75,7 +76,7 @@ services:
 
   pdf_renderer:
     class: DeskPRO\Component\Pdf\mPdfRenderer
-    arguments: ["@settings_resolver"]
+    arguments: ["@brand_stack"]
 
   widget_loader_code_renderer:
     class: DeskPRO\Bundle\AppBundle\Templating\WidgetLoader

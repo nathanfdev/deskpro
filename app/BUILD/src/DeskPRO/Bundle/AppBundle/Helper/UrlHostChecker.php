@@ -107,4 +107,17 @@ class UrlHostChecker
 
         return $this->isMatch($checkUrl, $host, $port, $allowSchemeSwitch);
     }
+
+    public function simplifyUrl($url)
+    {
+        // fix schemaless urls
+        if (substr($url, 0, 2) != '//' && substr($url, 0, 4) != 'http') {
+            $url = '//'.$url;
+        }
+        $host = parse_url($url, PHP_URL_HOST);
+        $host = preg_replace('/^www\./', '', $host);
+        $port = parse_url($url, PHP_URL_PORT);
+
+        return $host.(($port && $port != 80) ? ':'.$port : '');
+    }
 }

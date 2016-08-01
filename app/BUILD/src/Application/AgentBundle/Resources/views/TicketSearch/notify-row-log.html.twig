@@ -26,6 +26,10 @@
 	{{ phrase('agent.general.category') }}
 	{{ phrase('agent.tickets.changed_to') }}
 	{{log.details.new_category_title|default(phrase('agent.general.none'))}}
+{% elseif log.action_type == 'changed_brand' %}
+	{{ phrase('agent.general.brand') }}
+	{{ phrase('agent.tickets.changed_to') }}
+	{{log.details.new_brand_name|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'changed_department' %}
 	{{ phrase('agent.general.department') }}
 	{{ phrase('agent.tickets.changed_to') }}

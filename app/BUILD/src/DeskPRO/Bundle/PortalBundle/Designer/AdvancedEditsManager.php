@@ -40,14 +40,12 @@ use Doctrine\ORM\EntityManager;
  */
 class AdvancedEditsManager
 {
-    const CUSTOM_HEADER_TEMPLATE_NAME = 'Theme:Internal:custom-header.html.twig';
-    const CUSTOM_FOOTER_TEMPLATE_NAME = 'Theme:Internal:custom-footer.html.twig';
-    const MAIN_SCSS_ASSET_NAME        = 'main.scss';
-    const MAIN_SCSS_ASSET_TAG         = 'main';
-    const CUSTOM_SCSS_ASSET_NAME      = 'custom-styles.scss';
-    const CUSTOM_SCSS_ASSET_TAG       = 'custom_style';
-    const CUSTOM_JS_ASSET_NAME        = 'custom-javascript.js';
-    const CUSTOM_JS_ASSET_TAG         = 'custom_js';
+    const MAIN_SCSS_ASSET_NAME   = 'main.scss';
+    const MAIN_SCSS_ASSET_TAG    = 'main';
+    const CUSTOM_SCSS_ASSET_NAME = 'custom-styles.scss';
+    const CUSTOM_SCSS_ASSET_TAG  = 'custom_style';
+    const CUSTOM_JS_ASSET_NAME   = 'custom-javascript.js';
+    const CUSTOM_JS_ASSET_TAG    = 'custom_js';
 
     /**
      * @var EntityManager
@@ -111,12 +109,6 @@ class AdvancedEditsManager
      */
     public function save(array $data)
     {
-        if (array_key_exists('header', $data)) {
-            $this->saveTemplate(self::CUSTOM_HEADER_TEMPLATE_NAME, $data['header']);
-        }
-        if (array_key_exists('footer', $data)) {
-            $this->saveTemplate(self::CUSTOM_FOOTER_TEMPLATE_NAME, $data['footer']);
-        }
         if (array_key_exists('custom_scss', $data)) {
             $this->saveThemeSetAsset(self::CUSTOM_SCSS_ASSET_NAME, self::CUSTOM_SCSS_ASSET_TAG, 'text/css', $data['custom_scss']);
         }
@@ -143,8 +135,6 @@ class AdvancedEditsManager
     public function get()
     {
         $data = [
-            'header'      => $this->findOrCreateTemplate(self::CUSTOM_HEADER_TEMPLATE_NAME)->getTemplateCode(),
-            'footer'      => $this->findOrCreateTemplate(self::CUSTOM_FOOTER_TEMPLATE_NAME)->getTemplateCode(),
             'main_scss'   => $this->getMainScss(),
             'custom_scss' => $this->getEditThemeSetScss(),
             'javascript'  => $this->getEditThemeSetJs(),
@@ -228,38 +218,6 @@ CODE;
         } catch (\Exception $e) {
             return '// Failed to load custom JS';
         }
-    }
-
-    /**
-     * Saves template assigning it to the edit ThemeSet.
-     *
-     * @param string $name
-     * @param string $code
-     */
-    private function saveTemplate($name, $code)
-    {
-        $template = $this->findOrCreateTemplate($name);
-        $template->setTemplate($code, $this->twig->compileSource($code, $name));
-        $this->em->persist($template);
-        $this->em->flush();
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return Template
-     */
-    private function findOrCreateTemplate($name)
-    {
-        $criteria = ['name' => $name, 'theme_set' => $this->edit_theme_set];
-        $template = $this->em->getRepository(Template::class)->findOneBy($criteria);
-        if (!$template) {
-            $template            = new Template();
-            $template->name      = $name;
-            $template->theme_set = $this->edit_theme_set;
-        }
-
-        return $template;
     }
 
     /**

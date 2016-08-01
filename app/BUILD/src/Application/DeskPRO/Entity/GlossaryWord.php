@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\GlossaryWord as GlossaryWordRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -80,6 +81,16 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
     protected $definition;
 
     /**
+     * Brand linked to the glossary word.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
+     *
+     * @var Brand
+     */
+    protected $brand;
+
+    /**
      * @return int
      */
     public function getId()
@@ -96,11 +107,15 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param GlossaryWordDefinition $definition
+     * @param string $word
+     *
+     * @return GlossaryWord
      */
-    public function setDefinition($definition)
+    public function setWord($word)
     {
-        $this->setModelField('definition', $definition);
+        $this->setModelField('word', $word);
+
+        return $this;
     }
 
     /**
@@ -109,6 +124,38 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
     public function getDefinition()
     {
         return $this->definition;
+    }
+
+    /**
+     * @param GlossaryWordDefinition $definition
+     *
+     * @return $this
+     */
+    public function setDefinition($definition)
+    {
+        $this->setModelField('definition', $definition);
+
+        return $this;
+    }
+
+    /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return GlossaryWord
+     */
+    public function setBrand($brand)
+    {
+        $this->setModelField('brand', $brand);
+
+        return $this;
     }
 
     /**
@@ -126,8 +173,20 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\GlossaryWord';
-        $metadata->setPrimaryTable(['name' => 'glossary_words']);
+        $metadata->customRepositoryClassName = GlossaryWordRepository::class;
+        $metadata->setPrimaryTable(
+            [
+                'name'              => 'glossary_words',
+                'uniqueConstraints' => [
+                    'prop_ref' => [
+                        'columns' => [
+                            'word',
+                            'brand_id',
+                        ],
+                    ],
+                ],
+            ]
+        );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             [
@@ -145,7 +204,6 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
                 'fieldName'  => 'word',
                 'type'       => 'string',
                 'length'     => 255,
-                'unique'     => true,
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
@@ -155,7 +213,7 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'definition',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\GlossaryWordDefinition',
+                'targetEntity' => GlossaryWordDefinition::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [
@@ -165,6 +223,22 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
                         'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'brand',
+                'targetEntity' => Brand::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'brand_id',
+                        'referencedColumnName' => 'id',
+                        'onDelete'             => 'set null',
                     ],
                 ],
                 'dpApi' => true,

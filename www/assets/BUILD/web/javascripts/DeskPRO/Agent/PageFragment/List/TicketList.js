@@ -1,3 +1,4 @@
+'use strict';
 Orb.createNamespace('DeskPRO.Agent.PageFragment.List');
 
 DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
@@ -48,16 +49,18 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			var $list = self.wrapper.find('section.list-listing:first');
 			return {
 				scrollTo: function($current) {
-					var $children = $list.children('.ng-scope')
-						, totalHeight = 0
-						;
+					var $children = $list.children('.ng-scope'), totalHeight = 0;
 
 					$children.each(function(){
 						totalHeight += $(this).height();
 					});
-					if ($list.height() > totalHeight) return;
+					if ($list.height() > totalHeight) {
+						return;
+					}
 
-					if ($current.position().top > 0 && $current.position().top < $list.height() - $current.height()) return;
+					if ($current.position().top > 0 && $current.position().top < $list.height() - $current.height()) {
+						return;
+					}
 
 					var scrollTo = $current.position().top < 0
 						? $list.scrollTop() + $current.position().top
@@ -65,29 +68,34 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 					$list.scrollTop(scrollTo);
 				},
 				up: function() {
-					var $current = $list.children('.ng-scope.selection-on:first')
-						, $next = $current.length ? $current.prev('.ng-scope') : $list.children('.ng-scope').first()
-						;
+					var $current = $list.children('.ng-scope.selection-on:first'),
+						$next = $current.length ? $current.prev('.ng-scope') : $list.children('.ng-scope').first();
 
-					if ($current.length) $current.removeClass('selection-on');
-					if (!$next.length) $next = $current;
+					if ($current.length) {
+						$current.removeClass('selection-on');
+					}
+					if (!$next.length) {
+						$next = $current;
+					}
 					$next.addClass('selection-on');
 					this.scrollTo($next);
 				},
 				down: function() {
-					var $current = $list.children('.ng-scope.selection-on:first')
-						, $next = $current.length ? $current.next('.ng-scope') : $list.children('.ng-scope').first()
-						;
+					var $current = $list.children('.ng-scope.selection-on:first'),
+						$next = $current.length ? $current.next('.ng-scope') : $list.children('.ng-scope').first();
 
-					if ($current.length) $current.removeClass('selection-on');
-					if (!$next.length) $next = $current;
+					if ($current.length) {
+						$current.removeClass('selection-on');
+					}
+					if (!$next.length) {
+						$next = $current;
+					}
 					$next.addClass('selection-on');
 					this.scrollTo($next);
 				},
 				check: function() {
-					var $current = $list.children('.ng-scope.selection-on:first')
-						, $check = $current.find('.dp-tpl article input[type="checkbox"]:first')
-						;
+					var $current = $list.children('.ng-scope.selection-on:first'),
+						$check = $current.find('.dp-tpl article input[type="checkbox"]:first');
 
 					$check.length && $check.prop('checked', !$check.prop('checked'));
 				},
@@ -101,7 +109,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	},
 
 	updateSlaListForTicket: function(info) {
-		if (!info.ticket_id || !info.sla_id || !this.meta.sla_id || info.sla_id != this.meta.sla_id) {
+		if (!info.ticket_id || !info.sla_id || !this.meta.sla_id || info.sla_id !== this.meta.sla_id) {
 			return;
 		}
 
@@ -133,9 +141,13 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		startTicketsBatch = [[], [], []];
 		for (var i = 0; i < startTickets.length; i++) {
-			if (i <= 15) startTicketsBatch[0].push(startTickets[i]);
-			else if (i <= 30) startTicketsBatch[1].push(startTickets[i]);
-			else startTicketsBatch[2].push(startTickets[i]);
+			if (i <= 15) {
+				startTicketsBatch[0].push(startTickets[i]);
+			} else if (i <= 30) {
+				startTicketsBatch[1].push(startTickets[i]);
+			} else {
+				startTicketsBatch[2].push(startTickets[i]);
+			}
 		}
 
 		$scope.tickets              = startTickets;
@@ -198,7 +210,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			$scope = this.$scope,
 			routeTemplate = $scope.routes.ticket;
 
-		if (!self.IS_ACTIVE) return;
+		if (!self.IS_ACTIVE) {
+			return;
+		}
 		$scope.listItems.length = 0;
 
 		$scope.tickets.each(function(ticket){
@@ -237,17 +251,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			$scope.pageCursorEnd = 0;
 		}
 
-		if ($scope.pageCursorStart != 1) {
-			$scope.hasPrevPage = true;
-		} else {
-			$scope.hasPrevPage = false;
-		}
+		$scope.hasPrevPage = ($scope.pageCursorStart !== 1);
 
-		if ($scope.pageCursorEnd < $scope.ticketCount) {
-			$scope.hasNextPage = true;
-		} else {
-			$scope.hasNextPage = false;
-		}
+		$scope.hasNextPage = ($scope.pageCursorEnd < $scope.ticketCount); 
 	},
 
 	//#########################################################################
@@ -283,7 +289,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				groupCountEl.text(currentCount);
 			});
 		}
-		if (this.meta.groupBy && this.meta.groupByOption && this.meta.groupByOption != 'DP_NOT_SET') {
+		if (this.meta.groupBy && this.meta.groupByOption && this.meta.groupByOption !== 'DP_NOT_SET') {
 			if (this.meta.groupByOption.match(/^\d+/)) {
 				this.meta.groupByOption = parseInt(this.meta.groupByOption);
 			}
@@ -376,9 +382,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			DeskPRO_Window.getMessageBroker().addMessageListener('agent.filter-update', function(data) {
 				var filterId = parseInt(data.filter_id);
 				var ticketId = parseInt(data.ticket_id || 0);
-				if (filterId == self.filterId) {
+				if (filterId === self.filterId) {
 					if (ticketId && data.op) {
-						if (data.op == 'add') {
+						if (data.op === 'add') {
 							if (!self.isClientSideGroupingLogic) {
 								self.refreshCursor(null, true);
 								self.updateSubgroupingBubbles('refresh');
@@ -392,7 +398,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 									self.queueChangeEvent('addTicketResults', [ticketId]);
 								}
 							}
-						} else if (data.op == 'del') {
+						} else if (data.op === 'del') {
 							self.queueChangeEvent('removeTicketResults', [ticketId]);
 							self.updateSubgroupingBubbles('refresh');
 						}
@@ -427,7 +433,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	 * @param {Array} ticketIds
 	 */
 	queueChangeEvent: function(type, ticketIds) {
-		if (!this.$scope) return;
+		if (!this.$scope) {
+			return;
+		}
 
 		var self = this;
 
@@ -448,7 +456,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	},
 
 	_runQueuedChangeEvents: function() {
-		if (!this.$scope) return;
+		if (!this.$scope) {
+			return;
+		}
 
 		var events = this.queuedChangeEvents;
 		this.queuedChangeEvents = {'addTicketResults': [], 'removeTicketResults': [], 'refreshTicketResults': [], 'postRun': []};
@@ -528,7 +538,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		promise = this.getTicketRows(ticketIds);
 		promise.then(function(tickets) {
-			if (!self.$scope) return;
+			if (!self.$scope) {
+				return;
+			}
 			var firstId = $scope.tickets[0] ? $scope.tickets[0].id : null,
 				newFirstTicketIdx = null,
 				listTicketIdsMap;
@@ -598,7 +610,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 					insertPos = self.listTicketIds.indexOf(firstId);
 				}
 
-				if (insertPos == -1) {
+				if (insertPos === -1) {
 					insertPos = self.listTicketIds.length - 1;// fallback, append
 				}
 
@@ -763,7 +775,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		promise = this.getTicketRows(ticketIds);
 		promise.then(function (tickets) {
-			if (!self.$scope) return;
+			if (!self.$scope) {
+				return;
+			}
 			self.applyTicketData(tickets);
 		});
 
@@ -796,7 +810,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				removeIds.push(newTicket.id);
 			} else {
 				for (var i = 0; i < $scope.tickets.length; i++) {
-					if ($scope.tickets[i].id == newTicket.id) {
+					if ($scope.tickets[i].id === newTicket.id) {
 						found = true;
 						self.updateSubgroupingBubbles('remove', $scope.tickets[i]);
 						self.updateSubgroupingBubbles('add', newTicket);
@@ -838,7 +852,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			newTicket;
 
 		$scope.tickets.forEach(function(ticket, i) {
-			if (ticket.id != ticketId) return;
+			if (ticket.id !== ticketId) {
+				return;
+			}
 			newTicket = _.extend({}, ticket, data || {});
 			idx = i;
 		});
@@ -897,7 +913,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		}
 
 		ticketIds.forEach(function(tid) {
-			formData.push({ name: 'ticket_ids[]', value: tid });;
+			formData.push({ name: 'ticket_ids[]', value: tid });
 		});
 
 		$.ajax({
@@ -940,7 +956,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		}
 
 		ticketIds.forEach(function(tid) {
-			formData.push({ name: 'ticket_ids[]', value: tid });;
+			formData.push({ name: 'ticket_ids[]', value: tid });
 		});
 
 		changes.forEach(function(c) {
@@ -982,7 +998,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			if (ticketMap[ticket.id]) {
 				ticket.preview_changes = ticketMap[ticket.id];
 
-				if (!ticket.version_id) ticket.version_id = 0;
+				if (!ticket.version_id) {
+					ticket.version_id = 0;
+				}
 				ticket.version_id++;
 			}
 		});
@@ -998,7 +1016,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				ticket.preview_changes = null;
 				delete ticket.preview_changes;
 
-				if (!ticket.version_id) ticket.version_id = 0;
+				if (!ticket.version_id) {
+					ticket.version_id = 0;
+				}
 				ticket.version_id++;
 			}
 		});
@@ -1029,7 +1049,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 					ticket.preview_changes = null;
 					delete ticket.preview_changes;
 
-					if (!ticket.version_id) ticket.version_id = 0;
+					if (!ticket.version_id) {
+						ticket.version_id = 0;
+					}
 					ticket.version_id++;
 				}
 			}
@@ -1062,28 +1084,28 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		if (!ticket) {
 			op = 'refresh';
 		}
-		if (op != 'refresh') {
+		if (op !== 'refresh') {
 			ticketValue = this.fieldUtil.getFieldValue(this.meta.groupBy, ticket);
 			if (ticketValue === '__UNKNOWN__') {
 				op = 'refresh';
 			}
 		}
-		if (op != 'refresh') {
+		if (op !== 'refresh') {
 			if (ticketValue === null) {
 				ticketValue = 0;
 			}
 			groupingBar.find('li').each(function() {
 				var el = $(this), num;
-				if (el.data('grouping-option') == ticketValue) {
+				if (el.data('grouping-option') === ticketValue) {
 					foundBubble = el;
 					num = parseInt(el.find('span').text().trim() || 0);
-					if (op == 'add') {
+					if (op === 'add') {
 						num++;
 					} else {
 						num--;
 					}
 					el.find('span').text(num);
-					if (num == 0) {
+					if (num === 0) {
 						el.hide();
 					} else {
 						el.show();
@@ -1095,7 +1117,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			}
 		}
 
-		if (op == 'refresh') {
+		if (op === 'refresh') {
 			$timeout(function() {
 				self.refreshSubgroupNumbers();
 			}, 100);
@@ -1123,13 +1145,15 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				var touched = [];
 
 				for (var k in data.group_display.counts) {
-					if (!data.group_display.counts.hasOwnProperty(k)) continue;
+					if (!data.group_display.counts.hasOwnProperty(k)) {
+						continue;
+					}
 					groupingBar.find('li').each(function() {
 						var el = $(this), num = data.group_display.counts[k].total || 0;
-						if (el.data('grouping-option') == k) {
+						if (el.data('grouping-option') === k) {
 							touched.push(this);
 							el.find('span').text(num);
-							if (num == 0) {
+							if (num === 0) {
 								el.hide();
 							} else {
 								el.show();
@@ -1177,11 +1201,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				}
 			}
 
-			if ($scope.checkedTicketsCount == $scope.tickets.length) {
-				$scope.checkedTicketsToggle = true;
-			} else {
-				$scope.checkedTicketsToggle = false;
-			}
+			$scope.checkedTicketsToggle = ($scope.checkedTicketsCount === $scope.tickets.length);
 
 			if ($scope.checkedTicketsCount && !self.massActions && DeskPRO_Window.paneVis.tabs) {
 				$scope.openMassActions();
@@ -1357,6 +1377,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 					return !!ticket.date_last_agent_reply;
 				case 'date_last_reply':
 					return (ticket.date_last_user_reply || ticket.date_last_agent_reply);
+				case 'brand':
+					return !!ticket.brand;
 				case 'department':
 					return !!ticket.department;
 				case 'language':
@@ -1401,7 +1423,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				fields.push(v);
 			});
 			$scope.display_fields.each(function(v){
-				if (fields.indexOf(v) > -1 || v == 'id') return;
+				if (fields.indexOf(v) > -1 || v === 'id') {
+					return;
+				}
 				fields.push(v);
 			});
 			return fields;
@@ -1457,7 +1481,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				sel.find('option').prop('selected', false);
 				sel.find('option.' + prop).prop('selected', true);
 
-				if(wrapperEl.find('header.list-grouping-bar').css('display') == 'block') {
+				if(wrapperEl.find('header.list-grouping-bar').css('display') === 'block') {
 					wrapperEl.find('header.list-grouping-bar').hide();
 					self.getEl('grouping_loading').show();
 				}
@@ -1483,7 +1507,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				var url = self.meta.refreshUrl;
 				url = Orb.appendQueryData(url, 'group_by', prop);
 
-				if (self.meta.viewType == 'list') {
+				if (self.meta.viewType === 'list') {
 					self.loadNewListviewUrl(url +'&view_type=list');
 				} else {
 					self.wrapper.find('header.list-grouping-bar').hide();
@@ -1496,7 +1520,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this.ownObject(groupingMenu);
 
 		$scope.openAgentChat = function(agentId, $event) {
-			if (!agentId) return;
+			if (!agentId) {
+				return;
+			}
 
 			if ($event) {
 				$event.stopPropagation();
@@ -1543,8 +1569,16 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			}
 		};
 
-		$scope.loadPrevCursorPage = function() { if ($scope.hasPrevPage) self.loadPrevCursorPage(); };
-		$scope.loadNextCursorPage = function() { if ($scope.hasNextPage) self.loadNextCursorPage(); };
+		$scope.loadPrevCursorPage = function() { 
+			if ($scope.hasPrevPage) {
+				self.loadPrevCursorPage();
+			} 
+		};
+		$scope.loadNextCursorPage = function() { 
+			if ($scope.hasNextPage) {
+				self.loadNextCursorPage();
+			} 
+		};
 	},
 
 	refreshCursor: function(cursor, invisibleLoad) {
@@ -1556,7 +1590,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			time1 = new Date(),
 			time2;
 
-		if (typeof cursor == 'undefined' || cursor === null) {
+		if (typeof cursor === 'undefined' || cursor === null) {
 			cursor = this.realCursorStart - 1;
 		}
 
@@ -1577,7 +1611,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			url: this.meta.refreshCursorUrl.replace(/\$cursor/g, cursor),
 			dataType: 'json',
 			success: function(data) {
-				if (!self.$scope) return;
+				if (!self.$scope) {
+					return;
+				}
 				this.refreshCursorAjax = null;
 				time2 = new Date();
 				console.log('[TicketList] refreshCursor :: done load (%dms) :: %o', time2.getTime() - time1.getTime(), data);
@@ -1721,7 +1757,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
 		var valA = 0,
 			valB = 0,
 			idDir = dir,
-			rDir = dir == 'ASC' ? 'DESC' : 'ASC';
+			rDir = dir === 'ASC' ? 'DESC' : 'ASC';
 
 		switch (field) {
 			case 'urgency':
@@ -1744,6 +1780,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
 					case 'archived':       valB = 4; break;
 					default:               valB = 5; break;
 				}
+				break;
 			case 'date_created':
 				idDir = dir;
 				// Will fallback to id
@@ -1809,7 +1846,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
 			dir = idDir;
 		}
 
-		if (dir == 'ASC') {
+		if (dir === 'ASC') {
 			return valA < valB ? -1 : 1;
 		} else {
 			return valA < valB ? 1 : -1;
@@ -1943,7 +1980,9 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 	 */
 	_initOverlay: function() {
 		var self = this;
-		if (this._hasInit) return;
+		if (this._hasInit) {
+			return;
+		}
 		this._hasInit = true;
 
 		this.wrapper.detach().appendTo('body');
@@ -2057,7 +2096,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 			$('select[name="actions[agent]"]', this.wrapper).val(0).trigger('change');
 		});
 		$('select[name="actions[agent]"]').on('change', function(){
-			$(this).val() == $assignMe.data('me') ? $assignMe.hide() : $assignMe.show();
+			$(this).val() === $assignMe.data('me') ? $assignMe.hide() : $assignMe.show();
 			parseInt($(this).val()) ? $unassignAgent.show() : $unassignAgent.hide();
 		});
 		var $assignTeam = this.getElById('assign_team'),
@@ -2069,7 +2108,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 			$('select[name="actions[agent_team]"]', this.wrapper).val(0).trigger('change');
 		});
 		$('select[name="actions[agent_team]"]').on('change', function(){
-			$(this).val() == $assignTeam.data('team') ? $assignTeam.hide() : $assignTeam.show();
+			$(this).val() === $assignTeam.data('team') ? $assignTeam.hide() : $assignTeam.show();
 			parseInt($(this).val()) ? $unassignTeam.show() : $unassignTeam.hide();
 		});
 		var $assignFollow = this.getElById('follower_me');
@@ -2167,10 +2206,10 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 
 				Array.each(snippetCode, function(info) {
 					if (info.value) {
-						if (info.language_id == DESKPRO_PERSON_LANG_ID) {
+						if (info.language_id === DESKPRO_PERSON_LANG_ID) {
 							agentText = info.value;
 						}
-						if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+						if (info.language_id === DESKPRO_DEFAULT_LANG_ID) {
 							defaultText = info.value;
 						}
 						useText = info.value;
@@ -2258,11 +2297,11 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 		// on this popup
 		$('div.type', add).each(function() {
 			var type = $(this).data('rule-type');
-			if (!type) return;
+			if (!type) {
+				return;
+			}
 
-			if (type == 'add_labels' || type == 'remove_labels' || type.indexOf('ticket_field[') !== -1 || type.indexOf('people_field[') !== -1) {
-
-			} else {
+			if (type !== 'add_labels' && type !== 'remove_labels' && type.indexOf('ticket_field[') === -1 && type.indexOf('people_field[') === -1) {
 				$(this).remove();
 			}
 			self.updatePositions();
@@ -2291,10 +2330,12 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 		var self = this;
 		appendArray = appendArray || [];
 
-		if (!info) info = {};
+		if (!info) {
+			info = {};
+		}
 		info.actionsCount = 0;
 
-		if (this.wrapper.find('select.macro_id')[0] && this.wrapper.find('select.macro_id').val() != '0') {
+		if (this.wrapper.find('select.macro_id')[0] && this.wrapper.find('select.macro_id').val() !== '0') {
 			appendArray.push({
 				name: 'run_macro_id',
 				value: this.wrapper.find('select.macro_id').val()
@@ -2311,7 +2352,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 				val = '';
 			}
 
-			if (val == '-1') {
+			if (val === '-1') {
 				val = '';
 			}
 
@@ -2326,20 +2367,20 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 			}
 
 			// Dont send reply type when we're just fetching previews
-			if (!isApply && name == 'actions[reply][reply_text]') {
+			if (!isApply && name === 'actions[reply][reply_text]') {
 				return;
 			}
-			if (!isApply && name == 'actions[reply][is_html]') {
+			if (!isApply && name === 'actions[reply][is_html]') {
 				return;
 			}
 
 			// Empty reply, dont add it
-			if (name == 'actions[reply][reply_text]') {
+			if (name === 'actions[reply][reply_text]') {
 				var copy = $.trim(self.wrapper.find('.ticketreply').find('.redactor_editor').text()).replace(/\s/g, ' ');
 				var tmp = $('<div/>').html(self.wrapper.find('textarea.signature-value-html').val());
 				var sig = $.trim(tmp.text()).replace(/\s/g, ' ');
 
-				if (!copy || copy == sig) {
+				if (!copy || copy === sig) {
 					return;
 				}
 			}
@@ -2411,7 +2452,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 					// hide any open tickets
 					$.each(data.success_tickets, function(k, ticketId) {
 						var tab = DeskPRO_Window.getTabWatcher().findTab('ticket', function(tab) {
-							return (tab && tab.page && tab.page && tab.page.meta.ticket_id == ticketId);
+							return (tab && tab.page && tab.page && tab.page.meta.ticket_id === ticketId);
 						});
 						if (tab) {
 							DeskPRO_Window.removePage(tab.page);
@@ -2456,11 +2497,17 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 			contentH += 50;
 		}
 
-		if (hasHeader) $('> section > article', this.wrapper).removeClass('no-header');
-		else $('> section > article', this.wrapper).addClass('no-header');
+		if (hasHeader) {
+			$('> section > article', this.wrapper).removeClass('no-header');
+		} else {
+			$('> section > article', this.wrapper).addClass('no-header');
+		}
 
-		if (hasFooter) $('> section > article', this.wrapper).removeClass('no-footer');
-		else $('> section > article', this.wrapper).addClass('no-footer');
+		if (hasFooter) {
+			$('> section > article', this.wrapper).removeClass('no-footer');
+		} else {
+			$('> section > article', this.wrapper).addClass('no-footer');
+		}
 
 		if (contentH < 350) {
 			contentH = 350;

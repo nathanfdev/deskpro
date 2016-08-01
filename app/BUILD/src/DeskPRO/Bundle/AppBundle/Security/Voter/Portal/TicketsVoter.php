@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -52,9 +48,9 @@ class TicketsVoter extends AbstractVoter
      */
     protected function supports($attribute, $subject)
     {
-        return $subject instanceof Ticket && in_array($attribute, array(
+        return $subject instanceof Ticket && in_array($attribute, [
             self::TICKET_LIST, self::TICKET_VIEW, self::TICKET_EDIT, self::TICKET_VIEW_AUTH,
-        ));
+        ]);
     }
 
     /**

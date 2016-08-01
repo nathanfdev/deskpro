@@ -100,6 +100,8 @@ class AdminAccountStep extends AbstractStep
 
         $em->flush();
 
+        $brandId = $container->getSetting('portal.default_brand');
+
         // And insert the web url
         $url = $this->getSession()->getWebUrl();
         if (!$url) {
@@ -111,6 +113,10 @@ class AdminAccountStep extends AbstractStep
         $db->executeUpdate(
             'REPLACE INTO settings (name, value) VALUES (?, ?)',
             ['core.deskpro_url', $url]
+        );
+        $db->executeUpdate(
+            'REPLACE INTO settings_brand (name, brand_id, value) VALUES (?, ?, ?)',
+            ['core.deskpro_url', $brandId, $url]
         );
 
         $this->getSession()->enableFlag('install_admin_ok');

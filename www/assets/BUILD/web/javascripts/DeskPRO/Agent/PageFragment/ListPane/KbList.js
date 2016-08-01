@@ -127,7 +127,10 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 			DeskPRO_Window.getSectionData('publish_section', function(data) {
 				(section._initSection.bind(section))(data);
 				$('#publish_outline_articlescat_list .kb-cat-' + category + ' .is-nav-item').click();
-			});
+			},
+				{
+					brand_id: $('#publish_brand_id').val()
+				});
 		}
 
 		if(data.error) {
@@ -188,7 +191,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 		this.getEl('catfoot').find('.cat-save-trigger').on('click', function(ev){
 			Orb.cancelEvent(ev);
 
-			var postData = catEl.find('input').serializeArray();
+			var postData = catEl.find('input, select').serializeArray();
 
 			self.getEl('catfoot').addClass('dp-loading-on');
 			$.ajax({

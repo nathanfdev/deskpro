@@ -36,6 +36,7 @@ namespace Application\EmailBundle\Twig\Extension;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Templating\GlobalVariables;
@@ -52,6 +53,7 @@ use Orb\Util\Dates;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Bundle\FrameworkBundle\Templating\Helper\AssetsHelper;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -81,6 +83,14 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
     }
 
     /**
+     * @return \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
+     */
+    public function getBrandStack()
+    {
+        return $this->container->getBrandStack();
+    }
+
+    /**
      * @return \Application\DeskPRO\Templating\Engine
      */
     public function getTemplating()
@@ -106,6 +116,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             'url_full'                     => new \Twig_Function_Method($this, 'urlFull'),
             'url_display'                  => new \Twig_Function_Method($this, 'urlDisplay'),
             'helpdesk_url'                 => new \Twig_Function_Method($this, 'helpdeskUrl'),
+            'brand_setting'                => new \Twig_Function_Method($this, 'getBrandSetting', ['is_safe' => ['html']]),
             'is_helpdesk_path'             => new \Twig_Function_Method($this, 'isHelpdeskPath'),
             'deskpro_debug'                => new \Twig_Function_Method($this, 'isDebugMode'),
             'render_custom_field'          => new \Twig_Function_Method($this, 'renderCustomField', ['is_safe' => ['html']]),
@@ -233,7 +244,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
     public function getPath($name, $parameters = [])
     {
         try {
-            return App::getRouter()->generate($name, $parameters, false);
+            return $this->container->getRouter()->generate($name, $parameters, false);
         } catch (\Exception $e) {
             if ($this->container->isDebug()) {
                 throw $e;
@@ -246,7 +257,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
     public function getUrl($name, $parameters = [])
     {
         try {
-            return App::getRouter()->generate($name, $parameters, true);
+            return $this->container->getRouter()->generate($name, $parameters, true);
         } catch (\Exception $e) {
             if ($this->container->isDebug()) {
                 throw $e;
@@ -339,7 +350,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
     {
         $hash = strtolower(md5($email));
         $url  = 'http://www.gravatar.com/avatar/'.$hash.'?';
-        $url .= '&d='.App::get('router')->generate('serve_default_picture', ['s' => $size], true);
+        $url .= '&d='.$this->container->getRouter()->generate('serve_default_picture', ['s' => $size], true);
 
         return $url;
     }
@@ -465,6 +476,13 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return Strings::linkifyHtml($text, true);
     }
 
+    /**
+     * @param $html
+     *
+     * @return mixed
+     *
+     * @todo ensure we stacked the proper brand before calling
+     */
     public function linkAgentShortCodeHtml($html)
     {
         $id_map = [
@@ -478,7 +496,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             'tw' => ['Tweet', 'agent/#app.twitter,tw.o:'],
         ];
 
-        $url = App::getSetting('core.deskpro_url');
+        $url = $this->container->getBrandSetting('core.deskpro_url');
 
         foreach ($id_map as $prefix => $info) {
             $html = RegexUtils::safePregReplace(
@@ -682,27 +700,27 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         switch ($format) {
             case 'full':
                 //D, jS M Y
-                $format = App::getSetting('core.date_full');
+                $format = $this->container->getSetting('core.date_full');
                 break;
 
             case 'fulltime':
                 //D, jS M Y g:ia
-                $format = App::getSetting('core.date_fulltime');
+                $format = $this->container->getSetting('core.date_fulltime');
                 break;
 
             case 'day':
                 //M j Y
-                $format = App::getSetting('core.date_day');
+                $format = $this->container->getSetting('core.date_day');
                 break;
 
             case 'day_short':
                 //M j
-                $format = App::getSetting('core.date_day_short');
+                $format = $this->container->getSetting('core.date_day_short');
                 break;
 
             case 'time':
                 //g:i a
-                $format = App::getSetting('core.date_time');
+                $format = $this->container->getSetting('core.date_time');
                 break;
         }
 
@@ -812,27 +830,27 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         switch ($format) {
             case 'full':
                 //D, jS M Y
-                $format = App::getSetting('core.date_full');
+                $format = $this->container->getSetting('core.date_full');
                 break;
 
             case 'fulltime':
                 //D, jS M Y g:ia
-                $format = App::getSetting('core.date_fulltime');
+                $format = $this->container->getSetting('core.date_fulltime');
                 break;
 
             case 'day':
                 //M j Y
-                $format = App::getSetting('core.date_day');
+                $format = $this->container->getSetting('core.date_day');
                 break;
 
             case 'day_short':
                 //M j
-                $format = App::getSetting('core.date_day_short');
+                $format = $this->container->getSetting('core.date_day_short');
                 break;
 
             case 'time':
                 //g:i a
-                $format = App::getSetting('core.date_time');
+                $format = $this->container->getSetting('core.date_time');
                 break;
         }
 
@@ -841,16 +859,16 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
 
     public function formToken($name = '', $field_name = '_dp_security_token')
     {
-        if (!App::getSession()->getEntity()->getPersonId()) {
+        if (!$this->container->getSession()->getEntity()->getPersonId()) {
             $html = "<!--DP_FORM_TOKEN($name, $field_name)-->";
         } else {
             $html = '';
         }
 
-        $html .= '<input type="hidden" name="'.$field_name.'" value="'.App::getSession()
+        $html .= '<input type="hidden" name="'.$field_name.'" value="'.$this->container->getSession()
                 ->getEntity()
                 ->generateSecurityToken($name, 43200).'" />';
-        $html .= '<input type="hidden" name="_rt" value="'.App::getSession()
+        $html .= '<input type="hidden" name="_rt" value="'.$this->container->getSession()
                 ->getEntity()
                 ->generateSecurityToken('request_token', 10800).'" class="dp_request_token" />';
 
@@ -861,12 +879,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
 
     public function securityToken($name = '', $timeout = 43200)
     {
-        return App::getSession()->getEntity()->generateSecurityToken($name, $timeout);
+        return $this->container->getSession()->getEntity()->generateSecurityToken($name, $timeout);
     }
 
     public function staticSecurityToken($name = '', $timeout = 18000)
     {
-        return App::getContainer()->generateStaticSecurityToken($name, $timeout);
+        return $this->container->generateStaticSecurityToken($name, $timeout);
     }
 
     public function staticSecurityTokenSecret($secret, $timeout = 43200)
@@ -1015,9 +1033,27 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return $this->container->get('router')->generate($name, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
+    /**
+     * @param $path
+     *
+     * @return string
+     *
+     * @todo ensure we stacked the proper brand before calling
+     */
     public function helpdeskUrl($path)
     {
-        return App::getSetting('core.deskpro_url').ltrim($path, '/');
+        return $this->getBrandSetting('core.deskpro_url').ltrim($path, '/');
+    }
+
+    /**
+     * @param string $setting
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getBrandSetting($setting, $default = null)
+    {
+        return $this->getBrandStack()->getActive()->getSetting($setting, $default);
     }
 
     public function isHelpdeskPath($path)
@@ -1102,8 +1138,8 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
 
     public function getLanguageHtmlAttributes($language = null)
     {
-        if (!($language instanceof \Application\DeskPRO\Entity\Language)) {
-            $language = App::getLanguage();
+        if (!($language instanceof Language)) {
+            $language = $this->container->getTranslator()->getLanguage();
         }
 
         $attributes = [
@@ -1131,8 +1167,8 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             }
         }
 
-        if (!($language instanceof \Application\DeskPRO\Entity\Language)) {
-            $language = App::getLanguage();
+        if (!($language instanceof Language)) {
+            $language = $this->container->getTranslator()->getLanguage();
         }
 
         if ($language->is_rtl) {
@@ -1144,8 +1180,8 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
 
     public function isRtl($language = null)
     {
-        if (!($language instanceof \Application\DeskPRO\Entity\Language)) {
-            $language = App::getLanguage();
+        if (!($language instanceof Language)) {
+            $language = $this->container->getTranslator()->getLanguage();
         }
 
         return $language->is_rtl;
@@ -1200,13 +1236,23 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return md5($string);
     }
 
+    /**
+     * @param $location
+     *
+     * @throws \Throwable
+     *
+     * @return string
+     *
+     * @todo ensure we stacked the proper brand before calling
+     */
     public function assetFull($location)
     {
-        $assetHelper = App::$container->get('templating.helper.assets');
-        $assetUrl    = $assetHelper->getUrl($location, $packageName);
+        /** @var AssetsHelper $assetHelper */
+        $assetHelper = $this->container->get('templating.helper.assets');
+        $assetUrl    = $assetHelper->getUrl($location);
 
         if (!preg_match('#^https?://#', $assetUrl)) {
-            $url      = App::getSetting('core.deskpro_url');
+            $url      = $this->getBrandSetting('core.deskpro_url');
             $url      = trim(str_replace('/index.php', '', $url), '/');
             $assetUrl = $url.$assetUrl;
         }
@@ -1377,7 +1423,8 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
     {
         return [];
         if (!array_key_exists($page, $this->_widgetCache)) {
-            $this->_widgetCache[$page] = App::getEntityRepository('DeskPRO:Widget')->getEnabledPageWidgetsGrouped($page);
+            $this->_widgetCache[$page] = $this->container->getEm()->getRepository(Widget::class)
+                ->getEnabledPageWidgetsGrouped($page);
         }
 
         if (empty($this->_widgetCache[$page][$location])) {
@@ -1461,7 +1508,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         ///////////////////////////////////////////////////////////////////////
         // Settings
         $person        = App::getCurrentPerson();
-        $is_first_page = App::getSession()->isFirstPage(); // not to be trusted
+        $is_first_page = $this->container->getSession()->isFirstPage(); // not to be trusted
         /** @var \Application\DeskPRO\Auth\AuthSettings $auth_settings */
         $auth_settings           = $this->container->getSystemService('auth_settings');
         $auth_interface_settings = $interface == 'user' ? $auth_settings->getUserInterfaceSettings() : $auth_settings->getAgentInterfaceSettings();
@@ -1637,7 +1684,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
 
     public function getTplSourceTemplate($id, $name)
     {
-        $source = App::getContainer()->getTemplating()->getSource($name);
+        $source = $this->container->getTemplating()->getSource($name);
         $source = str_replace('<script>', '%startScript%', $source);
         $source = str_replace('</script>', '%endScript%', $source);
         $source = '<script type="text/x-deskpro-tmpl" id="'.$id.'">'.$source.'</script>';
@@ -1655,7 +1702,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         $positions = [];
 
         for ($i = 0; $i < 5; ++$i) {
-            $text = App::getTranslator()->getPhraseTextCount($phrase_name, $i);
+            $text = $this->container->getTranslator()->getPhraseTextCount($phrase_name, $i);
             $text = str_replace('{{count}}', '{}', $text);
             if (!in_array($text, $positions, true)) {
                 $positions[$i] = $text;
@@ -1698,7 +1745,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
     {
         $name = $tpl_name;
 
-        $tpl = App::getContainer()->getTemplating();
+        $tpl = $this->container->getTemplating();
         if (!$tpl->exists($name)) {
             return '<!-- No such template exists: '.$name.' -->';
         }
@@ -1854,8 +1901,8 @@ HTML;
         $vars = [
             'performer'     => $context->getPersonContext(),
             'ticket'        => $ticket,
-            'helpdesk_name' => $this->getContainer()->getSetting('core.deskpro_name'),
-            'site_name'     => $this->getContainer()->getSetting('core.site_name'),
+            'helpdesk_name' => $this->getContainer()->getBrandSetting('core.deskpro_name'),
+            'site_name'     => $this->getContainer()->getBrandSetting('core.site_name'),
             'user_vars'     => $context->getUserVars(),
         ];
 

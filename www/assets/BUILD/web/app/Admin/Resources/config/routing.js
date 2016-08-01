@@ -61,17 +61,10 @@ define(function() {
 
   routes.push({
     id: 'portal',
-    url: '/portal',
+    url: '/portal/{brandId:[0-9]+|new}',
     templateName: 'Index/app-nav-portal.html',
 		controller: 'Admin_Portal_Ctrl_Nav'
 	});
-
-	routes.push({
-		id: 'brand',
-		url: '/brand',
-		templateName: 'Index/app-nav-brand.html',
-    controller: 'Admin_Main_Ctrl_Nav'
-  });
 
   routes.push({
     id: 'chat',
@@ -1560,31 +1553,6 @@ define(function() {
     url: '/export',
     templateName: 'ExportCsv/export-csv.html',
     controller: 'Admin_ExportCsv_Ctrl_ExportCsv'
-  });
-
-  //##################################################################################################################
-  // Brand
-  //##################################################################################################################
-
-  routes.push({
-    id: 'brand.setup',
-    url: '/setup',
-    templateName: 'Brand/brand-list.html',
-    controller: 'Admin_Brand_Ctrl_List'
-  });
-
-  routes.push({
-    id: 'brand.setup.create',
-    url: '/create',
-    templateName: 'Brand/brand-setup.html',
-    controller: 'Admin_Brand_Ctrl_Setup'
-  });
-
-  routes.push({
-    id: 'brand.setup.edit',
-    url: '/{id}',
-    templateName: 'Brand/brand-setup.html',
-    controller: 'Admin_Brand_Ctrl_Setup'
   });
 
   //##################################################################################################################

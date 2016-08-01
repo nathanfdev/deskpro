@@ -1,4 +1,27 @@
 <div class="pane-rows-wrap">
+	{% if brands %}
+		<div class="pane-row add-to-search">
+			<table class="layout-table v-middle" width="100%">
+				<tr>
+					<td nowrap="nowrap" width="100" style="width: 100px;"><span class="row-label">{{ phrase('agent.general.brand') }}</span></td>
+					<td style="padding: 0 5px;" width="115">
+						<select name="terms_expanded[brand][op]" class="with-select2">
+							<option value="contains">{{ phrase('agent.general.is') }}</option>
+							<option value="notcontains">{{ phrase('agent.general.is_not') }}</option>
+						</select>
+					</td>
+					<td>
+						<select name="terms_expanded[brand][options][brand_ids][]" multiple="multiple" class="with-select2 ensure-value">
+							{% for brand in brands %}
+								<option value="{{brand.id}}">{{brand.name}}</option>
+							{% endfor %}
+						</select>
+					</td>
+				</tr>
+			</table>
+		</div>
+	{% endif %}
+
 	{% if app.departments.getPersonDepartments(app.user, 'tickets') %}
 		<div class="pane-row add-to-search">
 			<table class="layout-table v-middle" width="100%">

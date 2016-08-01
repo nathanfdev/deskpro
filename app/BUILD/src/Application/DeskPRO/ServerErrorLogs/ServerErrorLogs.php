@@ -109,7 +109,7 @@ class ServerErrorLogs
      */
     private function _generateUrl($url)
     {
-        $result = App::getSetting('core.deskpro_url').'__serverinfo/'.$url;
+        $result = App::getContainer()->getBrandSetting('core.deskpro_url').'__serverinfo/'.$url;
         $result .= '?auth='.$this->auth;
 
         return $result;

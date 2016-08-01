@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Model\EmailTo;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -330,6 +331,7 @@ class PortalEmailSender
     {
         // if we have a brand activated, use its settings
         if ($this->container->has('brand_stack')) {
+            /** @var BrandContainer $brand */
             if ($brand = $this->container->get('brand_stack')->getActive()) {
                 return $brand->getSetting($name, $default);
             }

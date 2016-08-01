@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\ServerReportFile;
 
 use Application\DeskPRO\App;
@@ -328,7 +329,7 @@ class ServerReportFile
     {
         $sql = array();
 
-        $sql[] = '### '.App::getContainer()->getSetting('core.deskpro_url')."\n";
+        $sql[] = '### '.App::getContainer()->getBrandSetting('core.deskpro_url')."\n";
         $sql[] = '### DeskPRO Build: '.DP_BUILD_TIME."\n";
         $sql[] = '### Generated: '.date('Y-m-d H:i:s')."\n\n";
 
@@ -532,7 +533,7 @@ class ServerReportFile
 
         $content = '';
 
-        $content .=  '### '.App::getContainer()->getSetting('core.deskpro_url')."\n";
+        $content .=  '### '.App::getContainer()->getBrandSetting('core.deskpro_url')."\n";
         $content .=  '### DeskPRO Build: '.DP_BUILD_TIME."\n";
         $content .=  '### Generated: '.date('Y-m-d H:i:s')."\n\n";
 
@@ -585,7 +586,7 @@ class ServerReportFile
 
         $content = '';
 
-        $content .= '### '.App::getContainer()->getSetting('core.deskpro_url')."\n";
+        $content .= '### '.App::getContainer()->getBrandSetting('core.deskpro_url')."\n";
         $content .= '### DeskPRO Build: '.DP_BUILD_TIME."\n";
         $content .= '### Generated: '.date('Y-m-d H:i:s')."\n\n";
 

@@ -1,6 +1,25 @@
 <section class="source-pane-search">
 
 	{##################################################################################################################}
+	{# Brand #}
+	{##################################################################################################################}
+
+	<div class="input-row">
+		<div class="input-row-title">
+			<strong>{{ phrase('agent.general.brand') }}</strong>
+		</div>
+		<div class="input-row-body add-to-search">
+			<select class="dp-select-widget-simple brand_id" name="brand" data-target-menu="auto">
+				{% for brand in brands %}
+					<option value="{{ brand.id }}" {% if selected_brand_id == brand.id %}selected="selected"{% endif %}>
+						{{ brand.name }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+
+	{##################################################################################################################}
 	{# Type #}
 	{##################################################################################################################}
 

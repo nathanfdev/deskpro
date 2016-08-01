@@ -76,11 +76,21 @@ class DownloadCategory extends CategoryAbstract
      * Usergroups that has access to this category.
      *
      * @JMS\Groups("download_categories")
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Download>>")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Usergroup>>")
      *
      * @var ArrayCollection
      */
     protected $usergroups;
+
+    /**
+     * Brand linked to the category.
+     *
+     * @JMS\Groups("download_categories")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
+     *
+     * @var Brand
+     */
+    protected $brand;
 
     public function __construct()
     {
@@ -93,6 +103,26 @@ class DownloadCategory extends CategoryAbstract
     public function getUserGroups()
     {
         return $this->usergroups;
+    }
+
+    /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
+    public function setBrand($brand)
+    {
+        $this->setModelField('brand', $brand);
+
+        return $this;
     }
 
     /**
@@ -183,7 +213,7 @@ class DownloadCategory extends CategoryAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'parent',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory',
+                'targetEntity' => self::class,
                 'mappedBy'     => null,
                 'inversedBy'   => 'children',
                 'joinColumns'  => [
@@ -199,7 +229,7 @@ class DownloadCategory extends CategoryAbstract
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'children',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory',
+                'targetEntity' => self::class,
                 'mappedBy'     => 'parent',
                 'orderBy'      => ['display_order' => 'ASC'],
             ]
@@ -207,7 +237,7 @@ class DownloadCategory extends CategoryAbstract
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'usergroups',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+                'targetEntity' => Usergroup::class,
                 'cascade'      => ['persist', 'merge'],
                 'joinTable'    => [
                     'name'        => 'download_category2usergroup',
@@ -237,8 +267,24 @@ class DownloadCategory extends CategoryAbstract
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'downloads',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Download',
+                'targetEntity' => Download::class,
                 'mappedBy'     => 'category',
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'brand',
+                'targetEntity' => Brand::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'brand_id',
+                        'referencedColumnName' => 'id',
+                        'onDelete'             => 'set null',
+                    ],
+                ],
+                'dpApi' => true,
             ]
         );
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,9 +33,10 @@
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class GlossaryFixture extends DeskProAbstractFixture
+class GlossaryFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
     const NUM_WORDS            = 20;
     const NUM_WORD_DEFINITIONS = 10;
@@ -44,6 +45,14 @@ class GlossaryFixture extends DeskProAbstractFixture
      * @var int[]
      */
     private $definitions;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 10;
+    }
 
     /**
      * Load data fixtures with the passed EntityManager.
@@ -78,6 +87,7 @@ class GlossaryFixture extends DeskProAbstractFixture
             $batch[] = [
                 'definition_id' => $this->faker->randomElement($this->definitions),
                 'word'          => $this->faker->realText(15),
+                'brand_id'      => $this->getReference('brand')->getId(),
             ];
         }
         $this->db->batchInsert(self::TABLE_GLOSSARY_WORDS, $batch, true);

@@ -104,6 +104,22 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getDefinition()
+    {
+        return $this->definition;
+    }
+
+    /**
+     * @param string $definition
+     */
+    public function setDefinition($definition)
+    {
+        $this->setModelField('definition', $definition);
+    }
+
+    /**
      * @param array|\ArrayAccess $words
      */
     public function setWords($words)
@@ -117,14 +133,28 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-    public function addWord($word)
+    /**
+     * @param GlossaryWord $word
+     */
+    public function addWord(GlossaryWord $word)
+    {
+        $this->words->add($word);
+    }
+
+    /**
+     * @param string $word
+     * @param Brand  $brand
+     *
+     * @return GlossaryWord|void
+     */
+    public function addNewWord($word, $brand)
     {
         $word = trim(strval($word));
         if ($word === '') {
             return;
         }
 
-        $existing = App::getEntityRepository('DeskPRO:GlossaryWord')->findByWord($word);
+        $existing = App::getEntityRepository(GlossaryWord::class)->findBy(['word' => $word, 'brand' => $brand]);
         if ($existing) {
             return;
         }
@@ -134,16 +164,21 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
             }
         }
 
-        $obj             = new GlossaryWord();
-        $obj->word       = $word;
-        $obj->definition = $this;
+        $obj = new GlossaryWord();
+        $obj->setWord($word);
+        $obj->setDefinition($this);
+        $obj->setBrand($brand);
 
         $this->words->add($obj);
 
         return $obj;
     }
 
-    public function updateWords(array $words)
+    /**
+     * @param array $words
+     * @param Brand $brand
+     */
+    public function updateWords(array $words, $brand)
     {
         if (!$words) {
             throw new \InvalidArgumentException('Must provide some words');
@@ -161,14 +196,14 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
         }
 
         foreach (array_keys($words_test) as $key) {
-            $this->addWord($words[$key]);
+            $this->addNewWord($words[$key], $brand);
         }
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data          = parent::toApiData($primary, $deep, $visited);
-        $data['words'] = array();
+        $data['words'] = [];
         foreach ($this->words as $word) {
             $data['words'][$word->id] = $word->word;
         }
@@ -183,6 +218,7 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->words;
     }
+
     /**
      * An array of words belongs this definition.
      *
@@ -190,7 +226,9 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getStringWords()
     {
-        return array_map(function (GlossaryWord $word) { return $word->getWord(); }, $this->getWords()->toArray());
+        return array_map(function (GlossaryWord $word) {
+            return $word->getWord();
+        }, $this->getWords()->toArray());
     }
 
     ############################################################################
@@ -227,7 +265,7 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'words',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\GlossaryWord',
+                'targetEntity' => GlossaryWord::class,
                 'cascade'      => [
                     0 => 'remove',
                     1 => 'persist',

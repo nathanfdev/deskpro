@@ -27,6 +27,9 @@
 			<select ui-select2 ng-model="chats_created.grouping_field" style="min-width: 120px" class="no-search"
 					ng-change="Overview.getStats('chats_created')">
 				<optgroup label="Chat Fields">
+					<option {% if chats_created.grouping_field == 'brand' %}selected="selected"{% endif %}
+							value="brand">Brand
+					</option>
 					<option {% if chats_created.grouping_field == 'department' %}selected="selected"{% endif %}
 							value="department">Department
 					</option>

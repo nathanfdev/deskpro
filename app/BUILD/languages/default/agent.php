@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'agent.chat.added_as_participant'                          => 'Added as a participant',
     'agent.chat.agent_chats'                                   => 'Agent Chats',
     'agent.chat.between_members'                               => 'Chat between:',
@@ -502,6 +502,7 @@ return array(
     'agent.general.deleted_by'                                 => 'Deleted by {{name}}',
     'agent.general.deleted_reason'                             => 'Deleted Reason',
     'agent.general.department'                                 => 'Department',
+    'agent.general.department.parent'                          => 'Parent department',
     'agent.general.departments'                                => 'Departments',
     'agent.general.description'                                => 'Description',
     'agent.general.deskpro'                                    => 'DeskPRO',
@@ -651,9 +652,9 @@ return array(
     'agent.general.initial_visit'                              => 'Initial Visit',
     'agent.general.insert'                                     => 'Insert',
     'agent.general.insert_attach'                              => 'Insert Attachment',
-    'agent.general.insert_content'                             => 'Insert the entire contents of this page into your reply',
+    'agent.general.insert_content'                             => 'INSERT the entire contents of this PAGE INTO your reply',
     'agent.general.insert_image'                               => 'Insert Image',
-    'agent.general.insert_into_article'                        => 'Insert Into Article',
+    'agent.general.insert_into_article'                        => 'INSERT INTO Article',
     'agent.general.insert_link'                                => 'Insert Link',
     'agent.general.insert_thumbnail'                           => 'Insert Thumbnail',
     'agent.general.insert_title'                               => 'Insert {{title}}',
@@ -2461,4 +2462,8 @@ return array(
     'agent.usertrack.session_start_time'                       => 'Session Start Time',
     'agent.usertrack.visited_pages'                            => 'Visited Pages',
     'agent.usertrack.visitor_id'                               => 'Visitor ID',
-);
+
+    'agent.general.brand'          => 'Brand',
+    'agent.general.brands'         => 'Brands',
+    'agent.general.select_a_brand' => 'Select a brand',
+];

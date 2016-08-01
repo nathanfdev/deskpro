@@ -187,6 +187,13 @@
 {% elseif log.action_type == 'changed_category' %}
 	<span class="type">{{ phrase('agent.general.category') }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{log.details.old_category_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_category_title|default(phrase('agent.general.none'))}}</span>
+{% elseif log.action_type == 'changed_brand' %}
+	{% if log.details.old_brand_name %}
+		<span class="type">{{ phrase('agent.general.brand') }}</span> {{ phrase('agent.tickets.changed_from') }}
+		<span class="old-val">{{log.details.old_brand_name|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">[#{{log.details.new_brand_id}}] {{log.details.new_brand_name|default(phrase('agent.general.none'))}}</span>
+	{% else %}
+		Brand set to <span class="new-val">[#{{log.details.new_brand_id}}] {{log.details.new_brand_name|default(phrase('agent.general.none'))}}</span>
+	{% endif %}
 {% elseif log.action_type == 'changed_department' %}
 	{% if log.details.old_department_title %}
 		<span class="type">{{ phrase('agent.general.department') }}</span> {{ phrase('agent.tickets.changed_from') }}

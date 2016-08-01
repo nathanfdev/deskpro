@@ -135,7 +135,7 @@ class CustomFieldDefinitionType extends AbstractType implements EventSubscriberI
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $view->vars['rendered_data'] = null;
-        $view->vars['allow_edit'] = $options['allow_edit'];
+        $view->vars['allow_edit']    = $options['allow_edit'];
 
         if (!($data = $form->getData()) instanceof CustomFieldDefinition) {
             return;

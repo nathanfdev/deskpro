@@ -82,7 +82,7 @@ class UserSearch implements UserSearchInterface
      */
     public function search(SearchContextInterface $context, $query, array $options = null)
     {
-        $options      = new OptionsArray($options ?: array());
+        $options      = new OptionsArray($options ?: []);
         $per_page     = Numbers::bound($options->get('per_page', self::LIMIT), 1, self::LIMIT);
         $page         = max($options->get('page', 1), 1);
         $ignore_perms = $options->get('ignore_perms');
@@ -110,14 +110,14 @@ class UserSearch implements UserSearchInterface
                 $query2 = Strings::utf8_accents_to_ascii($query2);
 
                 $query_words           = Arrays::removeEmptyString(explode(' ', trim($query.' '.$query2)));
-                list($total, $results) = $this->findTicketResults($context, $limit_types_array, $page, $query_words, 0, array());
+                list($total, $results) = $this->findTicketResults($context, $limit_types_array, $page, $query_words, 0, []);
 
                 $objects = $this->transformer->transform($results);
 
                 return new ResultSet($objects, $total);
             }
 
-            return new ResultSet(array());
+            return new ResultSet([]);
         }
 
         $limit_types = "'".implode('\',\'', $types)."'";
@@ -134,15 +134,15 @@ class UserSearch implements UserSearchInterface
 
         $query_words = array_unique($query_words);
 
-        $params = array();
-        $likes  = array();
+        $params = [];
+        $likes  = [];
         foreach ($query_words as $w) {
             if (strlen($w) <= 2) {
                 continue;
             }
 
             $likes[]  = 'content_search.content LIKE ?';
-            $params[] = '%'.str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w).'%';
+            $params[] = '%'.str_replace(['%', '_', '\\'], ['\\%', '\\_', '\\\\'], $w).'%';
 
             if (count($likes) >= self::MAX_WORDS) {
                 break;
@@ -154,7 +154,7 @@ class UserSearch implements UserSearchInterface
                 SELECT DISTINCT label
                 FROM label_defs
                 WHERE label IN (?)
-            ', array($query_words), array(Connection::PARAM_STR_ARRAY));
+            ', [$query_words], [Connection::PARAM_STR_ARRAY]);
             foreach ($exist_labels as $l) {
                 $l = MysqlAdapter::encodeLabel($l);
                 if ($l) {
@@ -207,7 +207,7 @@ class UserSearch implements UserSearchInterface
             $results = $this->db->fetchAll($select_query, $params);
         } else {
             $total   = 0;
-            $results = array();
+            $results = [];
         }
 
         if ($total === null) {
@@ -237,7 +237,9 @@ class UserSearch implements UserSearchInterface
 //        $content = preg_replace('#[^a-zA-Z0-9]#', ' ', $content);
         $content = preg_replace('#\s+#', ' ', $content);
         $content = explode(' ', $content);
-        $content = array_filter($content, function ($s) { return isset($s[2]); });
+        $content = array_filter($content, function ($s) {
+            return isset($s[2]);
+        });
         $content = array_unique($content);
         $content = implode(' ', $content);
 
@@ -289,27 +291,32 @@ class UserSearch implements UserSearchInterface
             $person->add($qb->expr()->eq('tickets_participants.person', '?'.$paramsIndex));
         }
         $params[$paramsIndex++] = (int) $context->getPerson()->getId();
+
+        $brand                  = $qb->expr()->eq('tickets.brand', '?'.$paramsIndex);
+        $params[$paramsIndex++] = (int) $context->getBrand()->getId();
+
         if ($context->getPerson()->organization && $context->getPerson()->organization_manager) {
             $person->add($qb->expr()->eq('tickets.organization', '?'.$paramsIndex));
             $params[$paramsIndex] = (int) $context->getPerson()->organization->getId();
         }
 
         $qb->select('DISTINCT(tickets.id)')
-           ->from(Ticket::class, 'tickets')
-           ->leftJoin('tickets.participants', 'tickets_participants')
-           ->leftJoin('tickets.messages', 'tickets_messages', 'WITH', 'tickets_messages.is_agent_note = 0')
-           ->where(
-               $qb->expr()->orX(
-                   $qb->expr()->isNotNull('tickets.date_last_agent_reply'),
-                   $qb->expr()->isNotNull('tickets.date_last_user_reply')
-               )
-           )
-           ->andWhere($searchPlaces)
-           ->andWhere($person)
-           ->orderBy('tickets.date_status', 'DESC')
-           ->addOrderBy('tickets.date_created', 'DESC')
-           ->setMaxResults($limit)
-           ->setParameters($params);
+            ->from(Ticket::class, 'tickets')
+            ->leftJoin('tickets.participants', 'tickets_participants')
+            ->leftJoin('tickets.messages', 'tickets_messages', 'WITH', 'tickets_messages.is_agent_note = 0')
+            ->where(
+                $qb->expr()->orX(
+                    $qb->expr()->isNotNull('tickets.date_last_agent_reply'),
+                    $qb->expr()->isNotNull('tickets.date_last_user_reply')
+                )
+            )
+            ->andWhere($searchPlaces)
+            ->andWhere($person)
+            ->andWhere($brand)
+            ->orderBy('tickets.date_status', 'DESC')
+            ->addOrderBy('tickets.date_created', 'DESC')
+            ->setMaxResults($limit)
+            ->setParameters($params);
 
         $ticketIds = $qb->getQuery()->getArrayResult();
 
@@ -338,9 +345,9 @@ class UserSearch implements UserSearchInterface
      */
     private function buildParams(SearchContextInterface $context, array $limit_types = null)
     {
-        $types  = array();
-        $joins  = array();
-        $wheres = array();
+        $types  = [];
+        $joins  = [];
+        $wheres = [];
 
         $x = 0;
         if ($context->getArticleCategoryIds() && ($limit_types === null || in_array('article', $limit_types))) {
@@ -376,20 +383,20 @@ class UserSearch implements UserSearchInterface
             $wheres[] = "($jn.object_type = 'download' AND $jn.object_id IS NOT NULL)";
         }
 
-        return array(
+        return [
             'types' => $types,
             'join'  => implode("\n", $joins),
             'where' => '('.implode(' OR ', $wheres).')',
-        );
+        ];
     }
 
     /**
      * @param SearchContextInterface $context
-     * @param $limit_types_array
-     * @param $page
-     * @param $query_words
-     * @param $total
-     * @param $results
+     * @param                        $limit_types_array
+     * @param                        $page
+     * @param                        $query_words
+     * @param                        $total
+     * @param                        $results
      *
      * @return array
      */
@@ -404,6 +411,6 @@ class UserSearch implements UserSearchInterface
             }
         }
 
-        return array($total, $results);
+        return [$total, $results];
     }
 }

@@ -127,7 +127,7 @@ export class OmniSearch extends React.Component {
             name={portalPhrases.get('portal.general.nav-tickets')}
             nameApi="ticket"
             nameIcon="fa fa-support"
-            initialResult={'ticket' in data ? data.ticket : []}
+            initialResult={'ticket' in data ? data.ticket : {}}
             q={this.state.searchQuery.q}
           />
 
@@ -135,7 +135,7 @@ export class OmniSearch extends React.Component {
             name={portalPhrases.get('portal.general.nav-kb')}
             nameApi="article"
             nameIcon="fa fa-file-text-o"
-            initialResult={'article' in data ? data.article : []}
+            initialResult={'article' in data ? data.article : {}}
             q={this.state.searchQuery.q}
           />
 
@@ -143,7 +143,7 @@ export class OmniSearch extends React.Component {
             name={portalPhrases.get('portal.general.nav-downloads')}
             nameApi="download"
             nameIcon="fa fa-download"
-            initialResult={'download' in data ? data.download : []}
+            initialResult={'download' in data ? data.download : {}}
             q={this.state.searchQuery.q}
           />
 
@@ -151,7 +151,7 @@ export class OmniSearch extends React.Component {
             name={portalPhrases.get('portal.general.nav-news')}
             nameApi="news"
             nameIcon="fa fa-file-text-o"
-            initialResult={'news' in data ? data.news : []}
+            initialResult={'news' in data ? data.news : {}}
             q={this.state.searchQuery.q}
           />
 
@@ -159,7 +159,7 @@ export class OmniSearch extends React.Component {
             name={portalPhrases.get('portal.general.nav-feedback')}
             nameApi="feedback"
             nameIcon="fa fa-comments"
-            initialResult={'feedback' in data ? data.feedback : []}
+            initialResult={'feedback' in data ? data.feedback : {}}
             q={this.state.searchQuery.q}
           />
         </div>

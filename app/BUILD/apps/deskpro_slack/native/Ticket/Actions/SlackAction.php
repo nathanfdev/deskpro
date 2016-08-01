@@ -31,6 +31,7 @@
  *
  * @category Slack
  */
+
 namespace deskpro_slack\Ticket\Actions;
 
 use Application\DeskPRO\Entity\AppInstance;
@@ -116,7 +117,7 @@ class SlackAction extends AbstractContainerAwareAction implements ActionInterfac
         $statechange = $ticket->getStateChangeRecorder();
 
         $fallback = '#'.$ticket->id.' ';
-        $fallback .= '<'.$this->getContainer()->getSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id.'|'.htmlspecialchars($ticket->subject).'> ';
+        $fallback .= '<'.$this->getContainer()->getBrandSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id.'|'.htmlspecialchars($ticket->subject).'> ';
 
         /* @var TicketMessage $message */
         $messages = $ticket->getDisplayableMessages();
@@ -126,7 +127,7 @@ class SlackAction extends AbstractContainerAwareAction implements ActionInterfac
             'color'      => '#1D7AB2',
             'text'       => Strings::htmlEntityEncodeUtf8($message->getMessagePreviewText(160)),
             'title'      => '#'.$ticket->id.' '.htmlspecialchars($ticket->subject),
-            'title_link' => $this->getContainer()->getSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id,
+            'title_link' => $this->getContainer()->getBrandSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id,
         );
 
         if ($context->getEventType() == 'newticket') {

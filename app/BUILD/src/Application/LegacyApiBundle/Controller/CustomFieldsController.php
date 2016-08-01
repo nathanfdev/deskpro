@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\DeskPRO\CustomFields\CustomDataPersister;
 use Application\DeskPRO\CustomFields\FieldDisplayArray;
 use Application\DeskPRO\CustomFields\FieldManager;
 use Application\DeskPRO\CustomFields\Handler\Choice;
@@ -229,7 +229,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
         }
 
         $form = $this->createForm($definition->createDefinitionType(), $definition, array(
-            'context'   => new Ticket(),
+            'context' => new Ticket(),
         ))->submit($post);
 
         if (!$form->isValid()) {

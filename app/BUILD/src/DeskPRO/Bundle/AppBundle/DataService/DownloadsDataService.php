@@ -34,7 +34,9 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\RelatedContent;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\ORM\EntityManager;
@@ -100,7 +102,7 @@ class DownloadsDataService extends AbstractDataService
             function () use ($em, $permissions_manager, $category, $max_per_page, $page, $person) {
                 $qb = $em->createQueryBuilder();
                 $qb->select('d')
-                    ->from('DeskPRO:Download', 'd')
+                    ->from(Download::class, 'd')
                     ->where('d.status = :status')->setParameter('status', Download::STATUS_PUBLISHED)
                     ->orderBy('d.id', 'DESC')
                 ;
@@ -169,14 +171,18 @@ class DownloadsDataService extends AbstractDataService
                 )->getAllowedDownloadCategories();
 
                 if (!$category) { // get root categories
-                    $result = $that->getDownloadCategoriesRepo()->findBy(['parent' => null, 'id' => $allowed_ids]);
+                    $result = $that->getDownloadCategoriesRepo()
+                        ->findBy([
+                            'parent' => null,
+                            'id'     => $allowed_ids,
+                        ]);
                 } else {
                     if (!$category instanceof DownloadCategory) { // if not already category, try to make it one
                         if (!$category = $that->getCategory($category)) {
                             throw new \InvalidArgumentException(sprintf('could not convert "%s" into a download category'));
                         }
                     }
-                    $children = $category->children;
+                    $children = $category->getChildren();
 
                     $result = [];
                     foreach ($children as $child) {
@@ -186,7 +192,10 @@ class DownloadsDataService extends AbstractDataService
                     }
                 }
 
-                $result = ListUtils::sortByFnValue($result, function ($v) { return $v->getDisplayOrder(); });
+                $result = ListUtils::sortByFnValue($result, function ($v) {
+                    /* @var DownloadCategory $v */
+                    return $v->getDisplayOrder();
+                });
 
                 return $result;
             }
@@ -282,7 +291,7 @@ class DownloadsDataService extends AbstractDataService
      */
     public function getDownloadsRepo()
     {
-        return $this->em->getRepository('DeskPRO:Download');
+        return $this->em->getRepository(Download::class);
     }
 
     /**
@@ -290,7 +299,7 @@ class DownloadsDataService extends AbstractDataService
      */
     public function getDownloadCategoriesRepo()
     {
-        return $this->em->getRepository('DeskPRO:DownloadCategory');
+        return $this->em->getRepository(DownloadCategory::class);
     }
 
     /**
@@ -298,7 +307,7 @@ class DownloadsDataService extends AbstractDataService
      */
     public function getDownloadCommentRepo()
     {
-        return $this->em->getRepository('DeskPRO:DownloadComment');
+        return $this->em->getRepository(DownloadComment::class);
     }
 
     /**
@@ -306,6 +315,6 @@ class DownloadsDataService extends AbstractDataService
      */
     public function getRelatedContentRepo()
     {
-        return $this->em->getRepository('DeskPRO:RelatedContent');
+        return $this->em->getRepository(RelatedContent::class);
     }
 }

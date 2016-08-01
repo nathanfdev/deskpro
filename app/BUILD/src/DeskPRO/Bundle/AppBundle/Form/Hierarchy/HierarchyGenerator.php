@@ -42,6 +42,7 @@ use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService;
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Component\Hierarchy\Formatter\FlatListLanguageAwareFormatter;
 use DeskPRO\Component\Hierarchy\Formatter\ParentListLanguageAwareFormatter;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -55,7 +56,7 @@ class HierarchyGenerator
     /**
      * @var ArbitraryHasher
      */
-    protected $hash_generator;
+    protected $hashGenerator;
 
     /**
      * @var ConvenientCache
@@ -83,19 +84,31 @@ class HierarchyGenerator
     private $languageManager;
 
     /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
      * Constructor.
      *
      * @param EntityManager         $em
      * @param DepartmentDataService $departmentDataService
      * @param FeedbackDataService   $feedbackDataService
      * @param LanguageManager       $languageManager
+     * @param BrandStack            $brandStack
      */
-    public function __construct(EntityManager $em, DepartmentDataService $departmentDataService, FeedbackDataService $feedbackDataService, LanguageManager $languageManager)
-    {
+    public function __construct(
+        EntityManager $em,
+        DepartmentDataService $departmentDataService,
+        FeedbackDataService $feedbackDataService,
+        LanguageManager $languageManager,
+        BrandStack $brandStack
+    ) {
         $this->em                    = $em;
         $this->departmentDataService = $departmentDataService;
         $this->feedbackDataService   = $feedbackDataService;
         $this->languageManager       = $languageManager;
+        $this->brandStack            = $brandStack;
     }
 
     /**
@@ -241,23 +254,32 @@ class HierarchyGenerator
      */
     public function generateTicketDepartmentsHierarchy(Person $person, Ticket $ticket = null)
     {
-        $department_data_service = $this->departmentDataService;
+        $departmentDataService = $this->departmentDataService;
+
+        $brand = $this->brandStack->getActive()->getBrand();
 
         return $this->generateAndCache(
             [
                 'generateTicketDepartmentsHierarchy',
                 $person,
                 $ticket,
+                $brand,
             ],
-            function () use ($department_data_service, $person, $ticket) {
-                $allowed_departments = $department_data_service->getTicketDepartmentsForPerson($person);
-                $allowed_departments = new ArrayCollection($allowed_departments); // for convenient methods
+            function () use ($departmentDataService, $person, $ticket, $brand) {
+                $allowedDepartments = $departmentDataService->getTicketDepartmentsForPerson($person);
+                /** @var ArrayCollection|Department[] $allowedDepartments */
+                $allowedDepartments = new ArrayCollection($allowedDepartments); // for convenient methods
+                foreach ($allowedDepartments as $key => $department) {
+                    if (!$department->hasBrand($brand)) {
+                        $allowedDepartments->remove($key);
+                    }
+                }
                 if ($ticket) {
-                    $ticket_department = $ticket->getDepartment();
-                    if ($ticket_department && !$allowed_departments->contains($ticket_department)) {
+                    $ticketDepartment = $ticket->getDepartment();
+                    if ($ticketDepartment && !$allowedDepartments->contains($ticketDepartment)) {
                         // the dep on the ticket is not allowed for this person, so we force it
                         // to be allowed here...
-                        $allowed_departments->add($ticket_department);
+                        $allowedDepartments->add($ticketDepartment);
                     }
                 }
 
@@ -266,24 +288,24 @@ class HierarchyGenerator
                 $addedDepartments = [];
 
                 /** @var \Application\DeskPRO\Entity\Department $department */
-                foreach ($allowed_departments as $department) {
-                    $found_root = null;
+                foreach ($allowedDepartments as $department) {
+                    $foundRoot = null;
                     if ($department->getParent()) {
                         // go through all parents, add them to the "allowed" array so they are in our hierarchy.
                         $parents = $department->getAllParents();
-                        foreach ($parents as $parent_dep) {
-                            if (!$allowed_departments->contains($parent_dep)) {
-                                $allowed_departments->add($parent_dep);
+                        foreach ($parents as $parentDep) {
+                            if (!$allowedDepartments->contains($parentDep)) {
+                                $allowedDepartments->add($parentDep);
                             }
-                            if (!$parent_dep->getParent()) {
-                                $found_root = $parent_dep;
+                            if (!$parentDep->getParent()) {
+                                $foundRoot = $parentDep;
                             }
                         }
                     }
 
-                    if ($found_root) {
+                    if ($foundRoot) {
                         // if we found a root, that means the dep has parents and we need to use it's root
-                        $department = $found_root;
+                        $department = $foundRoot;
                     }
 
                     // add only unique root departments
@@ -302,22 +324,24 @@ class HierarchyGenerator
                 $hierarchy = new Hierarchy($rootNodes, new FlatListLanguageAwareFormatter($this->languageManager, 'user'));
                 $hierarchy->markOnlyLeafSelections();
 
-                $recursive = function (Department $dep, HierarchyNode $parent, $depth) use (&$recursive,
-                    $allowed_departments) {
+                $recursive = function (Department $dep, HierarchyNode $parent, $depth) use (
+                    &$recursive,
+                    $allowedDepartments
+                ) {
                     /** @var \Application\DeskPRO\Entity\Department $child */
                     foreach ($dep->children as $child) {
-                        if (!$allowed_departments->contains($child)) {
+                        if (!$allowedDepartments->contains($child)) {
                             continue; // not allowed to use this dep.
                         }
 
-                        $parent->addChild($child_node = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->display_order)));
-                        $recursive($child, $child_node, $depth + 1);
+                        $parent->addChild($childNode = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->display_order)));
+                        $recursive($child, $childNode, $depth + 1);
                     }
                 };
 
-                /** @var \Application\DeskPRO\Entity\Department $root_node */
-                foreach ($hierarchy as $root_node) {
-                    $recursive($root_node->getData(), $root_node, 1);
+                /** @var \Application\DeskPRO\Entity\Department $rootNode */
+                foreach ($hierarchy as $rootNode) {
+                    $recursive($rootNode->getData(), $rootNode, 1);
                 }
 
                 return $hierarchy;
@@ -441,11 +465,11 @@ class HierarchyGenerator
      */
     protected function generateHash($input)
     {
-        if (null === $this->hash_generator) {
-            $this->hash_generator = new ArbitraryHasher();
+        if (null === $this->hashGenerator) {
+            $this->hashGenerator = new ArbitraryHasher();
         }
 
-        return $this->hash_generator->generateHash($input);
+        return $this->hashGenerator->generateHash($input);
     }
 
     /**

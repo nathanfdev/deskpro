@@ -48,6 +48,13 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
     private $ref;
 
     /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $brand;
+
+    /**
      * @var string
      *
      * @JMS\Type("string")
@@ -224,6 +231,26 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
     public function setRef($ref)
     {
         $this->ref = $ref;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param string $brand
+     *
+     * @return Ticket
+     */
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
 
         return $this;
     }

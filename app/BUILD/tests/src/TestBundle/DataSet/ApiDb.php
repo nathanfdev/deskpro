@@ -26,14 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Organization;
@@ -45,6 +42,7 @@ use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpTestSrc\TestBundle\Mock\Usersource\CallbackAdapterMock;
@@ -113,6 +111,24 @@ class ApiDb extends AbstractDbSet
             true
         );
 
+        // we need a brand here, but the other db's use data.php which has all the brands
+        $brand = new Brand();
+        $brand->setName('default');
+
+        $themeSet = new ThemeSet();
+        $themeSet->setThemeId('standard');
+        $this->getEm()->persist($themeSet);
+
+        $editThemeSet = new ThemeSet();
+        $editThemeSet->setThemeId('standard');
+        $this->getEm()->persist($editThemeSet);
+
+        $brand->setThemeSet($themeSet);
+        $brand->setEditThemeSet($editThemeSet);
+
+        $this->getEm()->persist($brand);
+        $this->getEm()->flush();
+
         // Default language --------------------------------------------------------------------------------------------
         $this->getDb()->exec(
             <<<SQL
@@ -132,10 +148,13 @@ SQL
         // we need some deps, and some other entities
         $dep1        = Department::createTicketDepartment();
         $dep1->title = 'sales';
+        $dep1->addBrand($brand);
         $dep2        = Department::createTicketDepartment();
         $dep2->title = 'support';
+        $dep2->addBrand($brand);
         $dep3        = Department::createChatDepartment();
         $dep3->title = 'support';
+        $dep3->addBrand($brand);
 
         $team       = new AgentTeam();
         $team->name = 'test team';
@@ -248,6 +267,7 @@ SQL
         $em->persist($taskAssignment);
         $em->persist($unassignedTask);
         $em->persist($article);
+        $em->persist($brand);
         $em->flush();
 
         $this->getDb()->insert('permissions', ['person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1]);
@@ -389,7 +409,7 @@ SQL
             "
             REPLACE INTO `settings` (`name`, `value`)
             VALUES
-                ('portal.default_brand', '1'),
+                ('portal.default_brand', '".$brand->getId()."'),
                 ('core.app_secret', 'YXI5Z2HSQ9IF8KROQQ63GL4FB4CV57ZIIZ7CZO68FUDYBZIP2M'),
                 ('core.cron_logreport.cli-phperr.log', '1380716762'),
                 ('core.default_from_email', 'noreply@example.com'),
@@ -443,16 +463,18 @@ SQL
         $ticket1->setLanguageId(1);
         $ticket1->setSubject('Ticket #1');
         $ticket1->setRef('DIDXGBLWRL-201622485');
+        $ticket1->setBrand($brand);
         $em->persist($ticket1);
         $ticket2 = new Ticket();
         $ticket2->disableAutoTicketProcess();
         $ticket2->setPersonId(3);
         $ticket2->agent = $agent2;
         $ticket2->setDepartmentId(1);
-        $ticket1->setOrganization($organization2);
-        $ticket1->setLanguageId(1);
+        $ticket2->setOrganization($organization2);
+        $ticket2->setLanguageId(1);
         $ticket2->setSubject('Ticket #2');
-        $ticket1->setAgentTeamId(1);
+        $ticket2->setAgentTeamId(1);
+        $ticket2->setBrand($brand);
         $em->persist($ticket2);
         $ticket3 = new Ticket();
         $ticket3->disableAutoTicketProcess();
@@ -460,8 +482,9 @@ SQL
         $ticket3->agent = $agent1;
         $ticket3->setDepartmentId(2);
         $ticket3->setSubject('Ticket #3');
+        $ticket3->setAgentTeamId(2);
+        $ticket3->setBrand($brand);
         $em->persist($ticket3);
-        $ticket1->setAgentTeamId(2);
         $em->flush();
 
         // Add a blue flag on the first ticket.
@@ -764,19 +787,19 @@ SQL
             ;
 
             INSERT INTO `article_categories`
-                (`id`, `parent_id`, `is_agent`, `is_book`, `template_suffix`, `title`, `slug`, `display_order`, `depth`)
+                (`id`, `brand_id`, `parent_id`, `is_agent`, `is_book`, `template_suffix`, `title`, `slug`, `display_order`, `depth`)
             VALUES
-                (1, NULL, 1, 1, NULL, 'Test Category #1', '1', 1, 1),
-                (2, NULL, 0, 0, NULL, 'Test Category #2', '2', 2, 1),
-                (3, 1, 1, 1, NULL, 'Test Category #3', '3', 1, 1),
-                (4, 1, 1, 1, NULL, 'Test Category #4', '4', 1, 1),
-                (5, 2, 1, 1, NULL, 'Test Category #5', '5', 1, 1),
-                (6, 2, 1, 1, NULL, 'Test Category #6', '6', 1, 1),
-                (7, 3, 1, 1, NULL, 'Test Category #7', '7', 1, 1),
-                (8, 3, 1, 1, NULL, 'Test Category #8', '8', 1, 1),
-                (9, 7, 1, 1, NULL, 'Test Category #9', '9', 1, 1),
-                (10, 7, 1, 1, NULL, 'Test Category #10', '10', 1, 1),
-                (11, 7, 1, 1, NULL, 'Test Category #11', '11', 1, 1)
+                (1, 1, NULL, 1, 1, NULL, 'Test Category #1', '1', 1, 1),
+                (2, 1, NULL, 0, 0, NULL, 'Test Category #2', '2', 2, 1),
+                (3, 1, 1, 1, 1, NULL, 'Test Category #3', '3', 1, 1),
+                (4, 1, 1, 1, 1, NULL, 'Test Category #4', '4', 1, 1),
+                (5, 1, 2, 1, 1, NULL, 'Test Category #5', '5', 1, 1),
+                (6, 1, 2, 1, 1, NULL, 'Test Category #6', '6', 1, 1),
+                (7, 1, 3, 1, 1, NULL, 'Test Category #7', '7', 1, 1),
+                (8, 1, 3, 1, 1, NULL, 'Test Category #8', '8', 1, 1),
+                (9, 1, 7, 1, 1, NULL, 'Test Category #9', '9', 1, 1),
+                (10, 1, 7, 1, 1, NULL, 'Test Category #10', '10', 1, 1),
+                (11, 1, 7, 1, 1, NULL, 'Test Category #11', '11', 1, 1)
             ;
 
             INSERT INTO `article_category2usergroup`
@@ -811,19 +834,19 @@ SQL
             ;
 
             INSERT INTO `news_categories`
-                (`id`, `parent_id`, `title`, `slug`, `display_order`, `depth`)
+                (`id`, `brand_id`, `parent_id`, `title`, `slug`, `display_order`, `depth`)
             VALUES
-                (1, NULL, 'Test Category #1', '1', 1, 1),
-                (2, NULL, 'Test Category #2', '2', 2, 1),
-                (3, 1, 'Test Category #3', '3', 2, 1),
-                (4, 1, 'Test Category #4', '4', 2, 1),
-                (5, 2, 'Test Category #5', '5', 2, 1),
-                (6, 2, 'Test Category #6', '6', 2, 1),
-                (7, 3, 'Test Category #7', '7', 2, 1),
-                (8, 3, 'Test Category #8', '8', 2, 1),
-                (9, 7, 'Test Category #9', '9', 2, 1),
-                (10, 7, 'Test Category #10', '10', 2, 1),
-                (11, 7, 'Test Category #11', '11', 2, 1)
+                (1, 1, NULL, 'Test Category #1', '1', 1, 1),
+                (2, 1, NULL, 'Test Category #2', '2', 2, 1),
+                (3, 1, 1, 'Test Category #3', '3', 2, 1),
+                (4, 1, 1, 'Test Category #4', '4', 2, 1),
+                (5, 1, 2, 'Test Category #5', '5', 2, 1),
+                (6, 1, 2, 'Test Category #6', '6', 2, 1),
+                (7, 1, 3, 'Test Category #7', '7', 2, 1),
+                (8, 1, 3, 'Test Category #8', '8', 2, 1),
+                (9, 1, 7, 'Test Category #9', '9', 2, 1),
+                (10, 1, 7, 'Test Category #10', '10', 2, 1),
+                (11, 1, 7, 'Test Category #11', '11', 2, 1)
             ;
 
 
@@ -858,19 +881,19 @@ SQL
             ;
 
             INSERT INTO `download_categories`
-                (`id`, `parent_id`, `title`, `slug`, `display_order`, `depth`)
+                (`id`, `brand_id`, `parent_id`, `title`, `slug`, `display_order`, `depth`)
             VALUES
-                (1, NULL, 'Test Category #1', '1', 1, 1),
-                (2, NULL, 'Test Category #2', '2', 2, 1),
-                (3, 1, 'Test Category #3', '3', 2, 1),
-                (4, 1, 'Test Category #4', '4', 2, 1),
-                (5, 2, 'Test Category #5', '5', 2, 1),
-                (6, 2, 'Test Category #6', '6', 2, 1),
-                (7, 3, 'Test Category #7', '7', 2, 1),
-                (8, 3, 'Test Category #8', '8', 2, 1),
-                (9, 7, 'Test Category #9', '9', 2, 1),
-                (10, 7, 'Test Category #10', '10', 2, 1),
-                (11, 7, 'Test Category #11', '11', 2, 1)
+                (1, 1, NULL, 'Test Category #1', '1', 1, 1),
+                (2, 1, NULL, 'Test Category #2', '2', 2, 1),
+                (3, 1, 1, 'Test Category #3', '3', 2, 1),
+                (4, 1, 1, 'Test Category #4', '4', 2, 1),
+                (5, 1, 2, 'Test Category #5', '5', 2, 1),
+                (6, 1, 2, 'Test Category #6', '6', 2, 1),
+                (7, 1, 3, 'Test Category #7', '7', 2, 1),
+                (8, 1, 3, 'Test Category #8', '8', 2, 1),
+                (9, 1, 7, 'Test Category #9', '9', 2, 1),
+                (10, 1, 7, 'Test Category #10', '10', 2, 1),
+                (11, 1, 7, 'Test Category #11', '11', 2, 1)
             ;
 
             INSERT INTO `download_category2usergroup`
@@ -947,10 +970,10 @@ SQL
 
 
             INSERT INTO `glossary_words`
-                (`id`, `definition_id`, `word`)
+                (`id`, `definition_id`, `word`, `brand_id`)
             VALUES
-                (1, 1, 'Word 1'),
-                (2, 1, 'Word 2')
+                (1, 1, 'Word 1', 1),
+                (2, 1, 'Word 2', 1)
             ;
         "
         );

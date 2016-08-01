@@ -115,7 +115,7 @@
 				</td>
 			</tr>
 
-			{% if app.getSetting('user.publish_comments') %}
+			{% if cross_brand_setting('user.publish_comments') %}
 
 				<tr>
 					<td width="100%">{{ phrase('admin.user_groups.submit_feedback_comments') }}</td>
@@ -126,7 +126,7 @@
 
 			{% endif %}
 
-			{% if app.getSetting('user.publish_comments') %}
+			{% if cross_brand_setting('user.publish_comments') %}
 
 				<tr>
 					<td width="100%" style="padding-left: 16px;">{{ phrase('admin.user_groups.submit_comment_no_review') }}</td>
@@ -159,7 +159,7 @@
 				</td>
 			</tr>
 
-			{% if app.getSetting('user.publish_comments') %}
+			{% if cross_brand_setting('user.publish_comments') %}
 
 				<tr>
 					<td width="100%">{{ phrase('admin.user_groups.submit_article_comments') }}</td>
@@ -170,7 +170,7 @@
 
 			{% endif %}
 
-			{% if app.getSetting('user.publish_comments') %}
+			{% if cross_brand_setting('user.publish_comments') %}
 
 				<tr>
 					<td width="100%" style="padding-left: 16px;">{{ phrase('admin.user_groups.submit_comment_no_review') }}</td>
@@ -210,7 +210,7 @@
 				</td>
 			</tr>
 
-			{% if app.getSetting('user.publish_comments') %}
+			{% if cross_brand_setting('user.publish_comments') %}
 
 				<tr>
 					<td width="100%">{{ phrase('admin.user_groups.submit_download_comments') }}</td>
@@ -221,7 +221,7 @@
 
 			{% endif %}
 
-			{% if app.getSetting('user.publish_comments') %}
+			{% if cross_brand_setting('user.publish_comments') %}
 
 				<tr>
 					<td width="100%" style="padding-left: 16px;">{{ phrase('admin.user_groups.submit_comment_no_review') }}</td>

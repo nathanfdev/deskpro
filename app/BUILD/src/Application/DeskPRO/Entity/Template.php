@@ -134,9 +134,9 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 
     public function setTemplate($code, $compiled)
     {
-        $this['template_code']     = $code;
-        $this['template_compiled'] = $compiled;
-        $this['date_updated']      = new \DateTime();
+        $this->setModelField('template_code', $code);
+        $this->setModelField('template_compiled', $compiled);
+        $this->setModelField('date_updated', new \DateTime());
     }
 
     public function isCustom()

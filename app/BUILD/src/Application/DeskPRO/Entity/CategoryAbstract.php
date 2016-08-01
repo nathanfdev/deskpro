@@ -200,6 +200,18 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         $this->setModelField('slug', $this->slug);
     }
 
+    /**
+     * @param $slug
+     *
+     * @return $this
+     */
+    public function setSlug($slug)
+    {
+        $this->setModelField('slug', $slug);
+
+        return $this;
+    }
+
     public function setTitle($title)
     {
         $this->setModelField('title', $title);

@@ -29,7 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Chats;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\DepartmentsController;
+use DeskPRO\Bundle\ApiBundle\Controller\AbstractDepartmentsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
@@ -40,7 +40,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @Rest\Route("/chat_departments")
  * @ApiDoc(target="all", section="Departments", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Department")
  */
-class ChatDepartmentsController extends DepartmentsController
+class ChatDepartmentsController extends AbstractDepartmentsController
 {
     protected static $property       = 'is_chat_enabled';
     protected static $departmentType = 'chat';

@@ -34,6 +34,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ApiToken;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\EntityRepository\ApiToken as ApiTokenRepository;
@@ -85,7 +86,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                 return $this->redirect($return);
             }
 
-            $url = App::getSetting('core.deskpro_url').'agent/';
+            $url = $this->container->getBrandSetting('core.deskpro_url').'agent/';
 
             return $this->redirect($url);
         }
@@ -98,7 +99,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
          * auto-start a session for that user
          */
         if (!$this->settings->get('core.setup_initial')) {
-            $persons = $this->em->getRepository('DeskPRO:Person')->findBy(
+            $persons = $this->em->getRepository(Person::class)->findBy(
                 ['is_agent' => true, 'can_admin' => true],
                 [],
                 1
@@ -191,7 +192,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
         $logo_blob = null;
         if ($logo_blob_id = $this->settings->get('agent.login_logo_blob_id')) {
-            $logo_blob = $this->em->find('DeskPRO:Blob', $logo_blob_id);
+            $logo_blob = $this->em->find(Blob::class, $logo_blob_id);
         }
 
         $captcha = null;

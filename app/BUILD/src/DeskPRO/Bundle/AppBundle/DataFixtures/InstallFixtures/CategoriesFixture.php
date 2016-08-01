@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\Entity\ArticleCategory;
@@ -61,8 +58,9 @@ class CategoriesFixture extends DeskProAbstractFixture implements OrderedFixture
         # General KB cat : article_category_general
         #------------------------------
 
-        $cat        = new ArticleCategory();
-        $cat->title = $translate->phrase('user.defaults.article_category_general');
+        $cat = new ArticleCategory();
+        $cat->setTitle($translate->phrase('user.defaults.article_category_general'));
+        $cat->setBrand($this->getReference('brand'));
 
         $this->setReference('article_category_general', $cat);
         $manager->persist($cat);
@@ -71,8 +69,9 @@ class CategoriesFixture extends DeskProAbstractFixture implements OrderedFixture
         # General News cat : news_category_general
         #------------------------------
 
-        $cat        = new NewsCategory();
-        $cat->title = $translate->phrase('user.defaults.news_category_general');
+        $cat = new NewsCategory();
+        $cat->setTitle($translate->phrase('user.defaults.news_category_general'));
+        $cat->setBrand($this->getReference('brand'));
         $manager->persist($cat);
 
         $this->setReference('news_category_general', $cat);
@@ -82,8 +81,9 @@ class CategoriesFixture extends DeskProAbstractFixture implements OrderedFixture
         # General Downloads cat : downloads_category_general
         #------------------------------
 
-        $cat        = new DownloadCategory();
-        $cat->title = $translate->phrase('user.defaults.downloads_category_general');
+        $cat = new DownloadCategory();
+        $cat->setTitle($translate->phrase('user.defaults.downloads_category_general'));
+        $cat->setBrand($this->getReference('brand'));
 
         $this->setReference('downloads_category_general', $cat);
         $manager->persist($cat);
@@ -94,8 +94,8 @@ class CategoriesFixture extends DeskProAbstractFixture implements OrderedFixture
         #------------------------------
 
         foreach (['Suggestion', 'Feature Request', 'Bug Report'] as $title) {
-            $cat        = new FeedbackCategory();
-            $cat->title = $title;
+            $cat = new FeedbackCategory();
+            $cat->setTitle($title);
             $manager->persist($cat);
 
             $id = str_replace(' ', '_', strtolower($title));
@@ -126,12 +126,12 @@ class CategoriesFixture extends DeskProAbstractFixture implements OrderedFixture
         $db = $this->container->get('database_connection');
 
         $ref_perms = [
-            ['id' => 'article_category_general',          'table' => 'article_category2usergroup'],
-            ['id' => 'news_category_general',             'table' => 'news_category2usergroup'],
-            ['id' => 'downloads_category_general',        'table' => 'download_category2usergroup'],
-            ['id' => 'feedback_category_suggestion',      'table' => 'feedback_category2usergroup'],
+            ['id' => 'article_category_general', 'table' => 'article_category2usergroup'],
+            ['id' => 'news_category_general', 'table' => 'news_category2usergroup'],
+            ['id' => 'downloads_category_general', 'table' => 'download_category2usergroup'],
+            ['id' => 'feedback_category_suggestion', 'table' => 'feedback_category2usergroup'],
             ['id' => 'feedback_category_feature_request', 'table' => 'feedback_category2usergroup'],
-            ['id' => 'feedback_category_bug_report',      'table' => 'feedback_category2usergroup'],
+            ['id' => 'feedback_category_bug_report', 'table' => 'feedback_category2usergroup'],
         ];
 
         foreach ($ref_perms as $perm) {

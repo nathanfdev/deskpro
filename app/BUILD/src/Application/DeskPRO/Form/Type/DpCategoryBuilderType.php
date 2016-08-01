@@ -50,6 +50,7 @@ class DpCategoryBuilderType extends CollectionType
 
     /**
      * DpCategoryBuilderType constructor.
+     *
      * @param EntityManager $em
      */
     public function __construct(EntityManager $em)

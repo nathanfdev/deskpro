@@ -32,7 +32,7 @@ use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\ContentSubscriptionLog")
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\ContentSubscriptionLogRepository")
  * @ORM\Table(name="content_subscription_log", indexes={
  *     @ORM\Index(name="content_idx", columns={"content_type", "content_id"})
  * })

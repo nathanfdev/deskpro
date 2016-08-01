@@ -57,18 +57,18 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
 
         $builder
             ->add('_children', DpCategoryBuilderType::class, [
-                'type'         => SimpleDefinitionType::class,
-                'label'        => false,
-                'allow_add'    => (bool) $options['allow_edit'],
-                'allow_delete' => (bool) $options['allow_edit'],
-                'required'     => false,
-                'data'         => $children ?: new ArrayCollection(),
-                'mapped'       => false,
+                'type'               => SimpleDefinitionType::class,
+                'label'              => false,
+                'allow_add'          => (bool) $options['allow_edit'],
+                'allow_delete'       => (bool) $options['allow_edit'],
+                'required'           => false,
+                'data'               => $children ?: new ArrayCollection(),
+                'mapped'             => false,
                 'allow_extra_fields' => true,
-                'options'      => [
-                    'label'   => false,
-                    'context' => $options['context'],
-                    'parent'  => $options['data'],
+                'options'            => [
+                    'label'    => false,
+                    'context'  => $options['context'],
+                    'parent'   => $options['data'],
                     'disabled' => !$options['allow_edit'],
                 ],
             ]);

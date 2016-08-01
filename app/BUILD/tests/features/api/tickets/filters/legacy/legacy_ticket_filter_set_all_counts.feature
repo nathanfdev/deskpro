@@ -14,7 +14,7 @@ Feature: /ticket_filter_sets/all/counts endpoint
     And the response should be in JSON
 
     And the JSON node "data" should have 3 elements
-    And the JSON node "data[0].count" should be equal to 5
+    And the JSON node "data[0].count" should be equal to 6
     And the JSON node "data[0].type" should be equal to "ticket_filter_set"
     And the JSON node "data[0].title" should be equal to "Awaiting agent"
     And the JSON node "data[0].grouped_by" should be equal to "filter"
@@ -68,7 +68,7 @@ Feature: /ticket_filter_sets/all/counts endpoint
     And the response should be in JSON
 
     And the JSON node "data" should have 3 elements
-    And the JSON node "data[0].count" should be equal to 5
+    And the JSON node "data[0].count" should be equal to 6
     And the JSON node "data[0].type" should be equal to "ticket_filter_set"
     And the JSON node "data[0].title" should be equal to "Awaiting agent"
     And the JSON node "data[0].grouped_by" should be equal to "filter"

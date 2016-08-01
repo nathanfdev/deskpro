@@ -35,6 +35,8 @@ namespace DeskPRO\Bundle\PortalBundle\Routing;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
 use DeskPRO\Bundle\AppBundle\Routing\RouterDecorator;
+use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
+use DeskPRO\Bundle\AppBundle\Routing\RouterWithDynamicContext;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use League\Url\Url;
@@ -49,7 +51,7 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcherInterface, RouterDecorator
 {
-    public static $generating_ignored_routes = [
+    public static $generatingIgnoredRoutes = [
         'saml_sls',
         'saml_metadata',
         'portal_agent_login',
@@ -73,7 +75,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         '_profiler',
     ];
 
-    public static $legacy_portal_routes = [
+    public static $legacyPortalRoutes = [
         'user_admin_rendertpl',
         'user_comment_form_login_partial',
         'user_test',
@@ -163,32 +165,32 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
     /**
      * @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager
      */
-    private $language_manager;
+    private $languageManager;
 
     /**
      * @var PortalModeStorage
      */
-    private $mode_store;
+    private $portalModeStorage;
 
     /**
      * @var PortalModeFactory
      */
-    private $mode_factory;
+    private $modeFactory;
 
     /**
      * Constructor.
      *
      * @param RouterInterface   $router
-     * @param LanguageManager   $language_manager
-     * @param PortalModeStorage $mode_store
-     * @param PortalModeFactory $mode_factory
+     * @param LanguageManager   $languageManager
+     * @param PortalModeStorage $portalModeStorage
+     * @param PortalModeFactory $modeFactory
      */
-    public function __construct(RouterInterface $router, LanguageManager $language_manager, PortalModeStorage $mode_store, PortalModeFactory $mode_factory)
+    public function __construct(RouterInterface $router, LanguageManager $languageManager, PortalModeStorage $portalModeStorage, PortalModeFactory $modeFactory)
     {
-        $this->router           = $router;
-        $this->language_manager = $language_manager;
-        $this->mode_store       = $mode_store;
-        $this->mode_factory     = $mode_factory;
+        $this->router            = $router;
+        $this->languageManager   = $languageManager;
+        $this->portalModeStorage = $portalModeStorage;
+        $this->modeFactory       = $modeFactory;
     }
 
     /**
@@ -205,8 +207,17 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
     public function generate($name, $parameters = [], $referenceType = self::ABSOLUTE_PATH)
     {
         // ignore legacy routes that we delete to prevent random 500s (return a blank string)
-        if (in_array($name, self::$legacy_portal_routes)) {
+        if (in_array($name, self::$legacyPortalRoutes)) {
             return '';
+        }
+
+        $portalMode = $this->portalModeStorage->getMode();
+        if (
+            $portalMode
+            && ($portalMode->isBrand() || $portalMode->isAdminPreview())
+            && $this->router instanceof RouterWithDynamicContext
+        ) {
+            $this->router = RouterUtils::unwrapDecoratedRouter($this->router);
         }
 
         $generated = $this->router->generate($name, $parameters, $referenceType);
@@ -215,7 +226,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
             $generated = str_replace('index.php//', 'index.php/', $generated);
         }
 
-        if (in_array($name, self::$generating_ignored_routes)) {
+        if (in_array($name, self::$generatingIgnoredRoutes)) {
             return $generated;
         }
 
@@ -241,13 +252,13 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
      */
     public function matchRequest(Request $request)
     {
-        $request_info = new PortalRequestInfo($request, $this->getPortalMode(), $this->mode_factory);
-        $request_info->setRouter($this->router);
+        $requestInfo = new PortalRequestInfo($request, $this->getPortalMode(), $this->modeFactory);
+        $requestInfo->setRouter($this->router);
 
         // if its not safe, or its a special url, just match it immediately
-        if (!$request->isMethodSafe() || $request_info->isSpecialPath()) {
-            $routable_path = $request_info->getRoutablePath();
-            $params        = $this->router->match($routable_path);
+        if (!$request->isMethodSafe() || $requestInfo->isSpecialPath()) {
+            $routablePath = $requestInfo->getRoutablePath();
+            $params       = $this->router->match($routablePath);
 
             return $params;
         }
@@ -257,22 +268,22 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
             !RequestUtils::isLowRequest($request)
             && !RequestUtils::isPortalApiRequest($request)
             && (
-                ($this->isMultiLanguage() && !$request_info->getLanguageUrlCode())
-                || (!$this->isMultiLanguage() && $request_info->getLanguageUrlCode())
+                ($this->isMultiLanguage() && !$requestInfo->getLanguageUrlCode())
+                || (!$this->isMultiLanguage() && $requestInfo->getLanguageUrlCode())
             )
         ) {
-            $url = $this->buildUrl($request_info->getRoutablePath());
+            $url = $this->buildUrl($requestInfo->getRoutablePath());
 
-            $query_params = $request->query->all();
-            if ($query_params) {
-                $url .= '?'.http_build_query($query_params);
+            $queryParams = $request->query->all();
+            if ($queryParams) {
+                $url .= '?'.http_build_query($queryParams);
             }
 
             throw new RedirectToUrlException($url);
         }
 
-        $routable_path = $request_info->getRoutablePath();
-        $params        = $this->router->match($routable_path);
+        $routablePath = $requestInfo->getRoutablePath();
+        $params       = $this->router->match($routablePath);
 
         return $params;
     }
@@ -284,13 +295,13 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
      */
     protected function buildUrl($path)
     {
-        $url_builder = new PortalUrlBuilder(
+        $urlBuilder = new PortalUrlBuilder(
             $path,
             $this->isMultiLanguage() ? $this->getActiveLanguage() : null,
             $this->getPortalMode()
         );
 
-        return (string) $url_builder;
+        return (string) $urlBuilder;
     }
 
     /**
@@ -310,7 +321,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
      */
     protected function getActiveLanguage()
     {
-        return $this->language_manager->getLanguageStack()->getActive();
+        return $this->languageManager->getLanguageStack()->getActive();
     }
 
     /**
@@ -318,7 +329,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
      */
     protected function getPortalMode()
     {
-        return $this->mode_store->getMode();
+        return $this->portalModeStorage->getMode();
     }
 
     /**
@@ -326,7 +337,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
      */
     protected function isMultiLanguage()
     {
-        return $this->language_manager->isMultiLanguagePortal();
+        return $this->languageManager->isMultiLanguagePortal();
     }
 
     /**
@@ -348,9 +359,9 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
     /**
      * {@inheritdoc}
      */
-    public function match($path_info)
+    public function match($pathInfo)
     {
-        return $this->matchRequest(Request::create($path_info));
+        return $this->matchRequest(Request::create($pathInfo));
     }
 
     /**

@@ -4,6 +4,7 @@ Feature: /ticket_forms endpoint
 
   Background:
     Given I'm authenticated as admin
+    And I have default brand
     And there are no Department records
     And the only default ticket layout exists with fields:
       | agent_layout |
@@ -11,8 +12,8 @@ Feature: /ticket_forms endpoint
 
   Scenario: I have just one department
     Given only the following Department records exist:
-      | # | Title      | Is Tickets Enabled |
-      | d | Department | 1                  |
+      | # | Title      | Brands           | Is Tickets Enabled |
+      | d | Department | [{defaultBrand}] | 1                  |
 
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
     """
@@ -26,10 +27,10 @@ Feature: /ticket_forms endpoint
 
   Scenario: I have just one selectable department
     Given only the following Department records exist:
-      | #  | Parent | Title          | Is Tickets Enabled |
-      | d1 |        | Department 1   | 1                  |
-      | d2 | {d1}   | Department 1a  | 1                  |
-      | d3 | {d2}   | Department 1aa | 1                  |
+      | #  | Parent | Brands           | Title          | Is Tickets Enabled |
+      | d1 |        | [{defaultBrand}] | Department 1   | 1                  |
+      | d2 | {d1}   | [{defaultBrand}] | Department 1a  | 1                  |
+      | d3 | {d2}   | [{defaultBrand}] | Department 1aa | 1                  |
 
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
     """
@@ -43,11 +44,11 @@ Feature: /ticket_forms endpoint
 
   Scenario: I have more than one selectable department
     Given only the following Department records exist:
-      | #  | Parent | Title          | Is Tickets Enabled |
-      | d1 |        | Department 1   | 1                  |
-      | d2 | {d1}   | Department 1a  | 1                  |
-      | d3 | {d1}   | Department 1b  | 1                  |
-      | d4 | {d2}   | Department 1aa | 1                  |
+      | #  | Parent | Brands           | Title          | Is Tickets Enabled |
+      | d1 |        | [{defaultBrand}] | Department 1   | 1                  |
+      | d2 | {d1}   | [{defaultBrand}] | Department 1a  | 1                  |
+      | d3 | {d1}   | [{defaultBrand}] | Department 1b  | 1                  |
+      | d4 | {d2}   | [{defaultBrand}] | Department 1aa | 1                  |
 
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
     """

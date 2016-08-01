@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -180,10 +180,13 @@ class Department extends AbstractCategoryRepository
     {
         switch ($context) {
             case 'ticket':
-                $check_field = 'is_tickets_enabled';
+                $check_field = 'AND d.is_tickets_enabled = 1';
                 break;
             case 'chat':
-                $check_field = 'is_chat_enabled';
+                $check_field = 'AND d.is_chat_enabled = 1';
+                break;
+            case 'both':
+                $check_field = '';
                 break;
             default:
                 throw new \InvalidArgumentException("Unknown context `$context`");
@@ -192,8 +195,9 @@ class Department extends AbstractCategoryRepository
         return $this->getEntityManager()->createQuery("
             SELECT d
             FROM DeskPRO:Department d
-            WHERE d.parent IS NOT NULL
-                AND d.$check_field = 1
+            LEFT JOIN d.children c 
+            WHERE c.id IS NULL
+                $check_field
         ")->execute();
     }
 }

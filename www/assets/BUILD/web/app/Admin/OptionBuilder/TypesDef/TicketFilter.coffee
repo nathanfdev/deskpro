@@ -24,6 +24,11 @@ define [
       })
 
       options.push({
+        title: 'Brand',
+        value: 'FilterBrand'
+      })
+
+      options.push({
         title: 'Department',
         value: 'FilterDepartment'
       })
@@ -326,6 +331,7 @@ define [
         @loadDataPromise = @Api.sendDataGet({
           agents:          '/agents'
           agent_teams:      '/agent_teams'
+          ticket_brands:      '/ticket_brands'
           ticket_deps:      '/ticket_deps'
           ticket_cats:      '/ticket_cats'
           ticket_prods:     '/ticket_prods'
@@ -343,6 +349,7 @@ define [
           options_data = {}
           options_data['agents']            = data.agents.agents
           options_data['agent_teams']       = data.agent_teams.agent_teams
+          options_data['ticket_brands']     = data.ticket_brands.brands
           options_data['ticket_deps']       = data.ticket_deps.departments
           options_data['ticket_cats']       = data.ticket_cats.categories
           options_data['ticket_pris']       = data.ticket_pris.priorities
@@ -452,7 +459,7 @@ define [
     getFilterSla: (options = {}) ->
       options.propName = 'sla_id'
       options.dataName = 'ticket_slas'
-      options.optionsFormatter = (res) =>
+      options.optionsFormatter = (res) ->
         (res.slas || []).map (item) -> {title: item.title, value: item.id}
       @getStandardSelect(options)
 
@@ -464,7 +471,7 @@ define [
 
         getData: ->
           defer = me.$q.defer()
-          me.loadDataOptions().then =>
+          me.loadDataOptions().then ->
             options = []
             for sla in me.options_data.ticket_slas?.slas
               options.push
@@ -519,6 +526,12 @@ define [
 
     getFilterDateLastUserReply: (options = {}) ->
       def = @getDateInput(options)
+      return def
+
+    getFilterBrand: (options = {}) ->
+      options.propName = 'brand_ids'
+      options.dataName = 'ticket_brands'
+      def = @getStandardSelect(options)
       return def
 
     getFilterDepartment: (options = {}) ->

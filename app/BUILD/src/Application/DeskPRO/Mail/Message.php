@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Mail;
 
 use Application\DeskPRO\App;
@@ -155,7 +156,7 @@ class Message extends \Orb\Mail\Message
             }
 
             if (!$this->set_to_person && $this->template_vars['to_email']) {
-                $this->set_to_person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail(
+                $this->set_to_person = App::getOrm()->getRepository(Person::class)->findOneByEmail(
                     $this->template_vars['to_email']
                 )
                 ;
@@ -165,9 +166,9 @@ class Message extends \Orb\Mail\Message
             $this->template_vars['person_timezone'] = $this->set_to_person ? $this->set_to_person->getDateTimezone(
             ) : App::getContainer()->getSettingsHandler()->getDefaultTimezone();
 
-            $this->template_vars['site_url']    = App::getSetting('core.site_url');
-            $this->template_vars['site_name']   = App::getSetting('core.site_name');
-            $this->template_vars['deskpro_url'] = App::getSetting('core.deskpro_url');
+            $this->template_vars['site_url']    = App::getContainer()->getBrandSetting('core.site_url');
+            $this->template_vars['site_name']   = App::getContainer()->getBrandSetting('core.site_name');
+            $this->template_vars['deskpro_url'] = App::getContainer()->getBrandSetting('core.deskpro_url');
 
             $content = $this->template_engine->render($this->template, $this->template_vars);
 

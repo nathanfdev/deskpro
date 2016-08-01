@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\CustomFields\PersonFieldManager;
@@ -43,6 +44,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Settings\Settings;
 use Application\DeskPRO\TicketLayout\TicketLayoutManager;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use Orb\Util\OptionsArray;
@@ -83,7 +85,8 @@ class TicketEmailBuilder
             ->setTranslate($container->getTranslator())
             ->setTicketFieldManager($container->getTicketFieldManager())
             ->setUserFieldManager($container->getPersonFieldManager())
-            ->setTicketLayoutManager($container->getTicketLayoutManager());
+            ->setTicketLayoutManager($container->getTicketLayoutManager())
+            ->setBrandStack($container->getBrandStack());
 
         return $build;
     }
@@ -188,6 +191,18 @@ class TicketEmailBuilder
     public function setTicketLayoutManager(TicketLayoutManager $ticket_layout_manager)
     {
         $this->options->set('ticket_layout_manager', $ticket_layout_manager);
+
+        return $this;
+    }
+
+    /**
+     * @param BrandStack $brandStack
+     *
+     * @return $this
+     */
+    public function setBrandStack(BrandStack $brandStack)
+    {
+        $this->options->set('brand_stack', $brandStack);
 
         return $this;
     }

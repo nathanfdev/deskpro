@@ -13,7 +13,7 @@ Feature: /ticket_filter_sets/{id}/count endpoint
     Then the response status code should be 200
     And the response should be in JSON
 
-    And the JSON node "data.count" should be equal to 5
+    And the JSON node "data.count" should be equal to 6
     And the JSON node "data.id" should be equal to 1
     And the JSON node "data.type" should be equal to "ticket_filter_set"
     And the JSON node "data.title" should be equal to "Awaiting agent"
@@ -39,7 +39,7 @@ Feature: /ticket_filter_sets/{id}/count endpoint
     Then the response status code should be 200
     And the response should be in JSON
 
-    And the JSON node "data.count" should be equal to 5
+    And the JSON node "data.count" should be equal to 6
     And the JSON node "data.id" should be equal to 1
     And the JSON node "data.type" should be equal to "ticket_filter_set"
     And the JSON node "data.title" should be equal to "Awaiting agent"

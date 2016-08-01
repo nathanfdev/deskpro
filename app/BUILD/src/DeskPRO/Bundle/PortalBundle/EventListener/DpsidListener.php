@@ -30,7 +30,9 @@ namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
 use DeskPRO\Bundle\PortalBundle\Annotation\Dpsid;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
@@ -65,17 +67,36 @@ class DpsidListener implements EventSubscriberInterface
     private $reader;
 
     /**
+     * @var PortalModeStorage
+     */
+    private $portalModeStorage;
+
+    /**
+     * @var LanguageStack
+     */
+    private $languageStack;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager $em
-     * @param TokenStorage  $tokenStorage
-     * @param Reader        $annotationReader
+     * @param EntityManager     $em
+     * @param TokenStorage      $tokenStorage
+     * @param Reader            $annotationReader
+     * @param PortalModeStorage $portalModeStorage
+     * @param LanguageStack     $languageStack
      */
-    public function __construct(EntityManager $em, TokenStorage $tokenStorage, Reader $annotationReader)
-    {
-        $this->em           = $em;
-        $this->tokenStorage = $tokenStorage;
-        $this->reader       = $annotationReader;
+    public function __construct(
+        EntityManager $em,
+        TokenStorage $tokenStorage,
+        Reader $annotationReader,
+        PortalModeStorage $portalModeStorage,
+        LanguageStack $languageStack
+    ) {
+        $this->em                = $em;
+        $this->tokenStorage      = $tokenStorage;
+        $this->reader            = $annotationReader;
+        $this->portalModeStorage = $portalModeStorage;
+        $this->languageStack     = $languageStack;
     }
 
     /**
@@ -98,7 +119,13 @@ class DpsidListener implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
-        if (strpos($request->getPathInfo(), '/portal/api') !== 0) {
+
+        $path = ($this->portalModeStorage->getMode()) ?
+            $this->portalModeStorage->getMode()->getInternalPath() : $request->getPathInfo();
+
+        $locale = $this->languageStack->getActive()->getLocale();
+
+        if (!in_array(strpos($path, '/portal/api'), [0, strlen($locale) + 1], true)) {
             return;
         }
 

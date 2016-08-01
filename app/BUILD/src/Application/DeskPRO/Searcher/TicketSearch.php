@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -90,6 +91,7 @@ class TicketSearch extends SearcherAbstract
     const TERM_SLA_COMPLETED         = 'sla_completed';
     const TERM_IP_ADDRESS            = 'ip_address';
     const TERM_PROBLEMS              = 'problems';
+    const TERM_BRAND                 = 'brand';
 
     /**
      * True to search in the non-search tables (aka all tickets not just active).
@@ -120,14 +122,14 @@ class TicketSearch extends SearcherAbstract
      *
      * @var array
      */
-    protected $summary = array();
+    protected $summary = [];
 
     /**
      * Summary of sorting in phrases.
      *
      * @var array
      */
-    protected $order_summary = array();
+    protected $order_summary = [];
 
     /**
      * An array of fields these search terms are affected by.
@@ -135,7 +137,7 @@ class TicketSearch extends SearcherAbstract
      *
      * @var array
      */
-    protected $affected_fields      = array();
+    protected $affected_fields      = [];
     protected $done_affected_fields = false;
 
     /**
@@ -144,7 +146,7 @@ class TicketSearch extends SearcherAbstract
      *
      * @return array
      */
-    protected $specific_fields = array();
+    protected $specific_fields = [];
 
     /**
      * Amount to limit results by (unless pageinfo is provided).
@@ -156,17 +158,17 @@ class TicketSearch extends SearcherAbstract
     /**
      * @var array
      */
-    protected $add_raw_wheres = array();
+    protected $add_raw_wheres = [];
 
     /**
      * @var array
      */
-    protected $add_raw_joins = array();
+    protected $add_raw_joins = [];
 
     /**
      * @var array
      */
-    protected $add_raw_selects = array();
+    protected $add_raw_selects = [];
 
     /**
      * @var bool
@@ -299,7 +301,7 @@ class TicketSearch extends SearcherAbstract
                 $data = Arrays::getFirstItem($data);
             }
             if (!is_array($data)) {
-                $data = array($data);
+                $data = [$data];
             }
 
             foreach ($data as $s) {
@@ -378,9 +380,9 @@ class TicketSearch extends SearcherAbstract
         }
 
         $this->done_affected_fields = true;
-        $this->affected_fields      = array();
+        $this->affected_fields      = [];
 
-        foreach (array(array('all', $this->terms), array('any', $this->terms_any)) as $term_set) {
+        foreach ([['all', $this->terms], ['any', $this->terms_any]] as $term_set) {
             foreach ($term_set[1] as $info) {
                 if (!$info || !is_array($info)) {
                     continue;
@@ -550,7 +552,7 @@ class TicketSearch extends SearcherAbstract
         $this->used_person_context       = 0;
         $this->done_person_context_check = true;
 
-        foreach (array(array('all', $this->terms), array('any', $this->terms_any)) as $term_set) {
+        foreach ([['all', $this->terms], ['any', $this->terms_any]] as $term_set) {
             foreach ($term_set[1] as $info) {
                 if (!$info || !is_array($info)) {
                     continue;
@@ -665,7 +667,7 @@ class TicketSearch extends SearcherAbstract
                 $assigned_perm_part = "($assigned_perm_part OR tickets.agent_team_id IN (".implode(',', $this->person->getAgentTeamIds()).'))';
             }
 
-            $where_perm = array();
+            $where_perm = [];
 
             // Cant view anything else:
             // -> No departments
@@ -826,7 +828,7 @@ class TicketSearch extends SearcherAbstract
         $this->getLogger()->logDebug('Search Count Query: '.$count_sql);
         $time = microtime(true);
 
-        $db = App::getDbRead('search.filter.tickets', array('query' => $count_sql));
+        $db = App::getDbRead('search.filter.tickets', ['query' => $count_sql]);
 
         try {
             $result = $db->fetchColumn($count_sql);
@@ -900,7 +902,7 @@ class TicketSearch extends SearcherAbstract
                 $assigned_perm_part = "($assigned_perm_part OR tickets.agent_team_id IN (".implode(',', $this->person->getAgentTeamIds()).'))';
             }
 
-            $where_perm = array();
+            $where_perm = [];
 
             // Cant view anything else:
             // -> No departments
@@ -1085,7 +1087,7 @@ class TicketSearch extends SearcherAbstract
 
         // Set a default if none
         if (!$this->order_by) {
-            $this->order_by = array('ticket.urgency', 'DESC');
+            $this->order_by = ['ticket.urgency', 'DESC'];
         }
 
         list($type, $dir) = $this->order_by;
@@ -1152,10 +1154,10 @@ class TicketSearch extends SearcherAbstract
                 $this->add_raw_selects[] = "MAX(FIELD(sort_table.sla_status, 'ok', 'warning', 'fail')) AS status_order";
                 $this->add_raw_selects[] = "IF(MAX(FIELD(sort_table.sla_status, 'ok', 'warning', 'fail')) <= 1, MIN(sort_table.warn_date), MIN(sort_table.fail_date)) AS status_order2";
                 $this->order_summary     = 'SLA Severity';
-                $order_by                = array(
+                $order_by                = [
                     'INNER JOIN ticket_slas AS sort_table ON (sort_table.ticket_id = tickets.id)',
                     "ORDER BY status_order $dir, status_order2 $dir",
-                );
+                ];
                 break;
 
             case 'ticket.date_resolved':
@@ -1188,13 +1190,22 @@ class TicketSearch extends SearcherAbstract
                 $order_by                = "ORDER BY status_order $dir, id DESC";
                 break;
 
+            case 'ticket.brand':
+                $this->add_raw_selects[] = 'sort_table.name AS brand_order';
+                $this->order_summary     = $tr->phrase('agent.general.brand');
+                $order_by                = [
+                    'INNER JOIN brands AS sort_table ON (sort_table.id = tickets.brand_id)',
+                    "ORDER BY brand_order $dir, id DESC",
+                ];
+                break;
+
             case 'ticket.organization':
                 $this->add_raw_selects[] = 'sort_table.name AS status_order';
                 $this->order_summary     = $tr->phrase('agent.general.organization_name');
-                $order_by                = array(
+                $order_by                = [
                     'INNER JOIN organizations AS sort_table ON (sort_table.id = tickets.organization_id)',
                     "ORDER BY status_order $dir, id DESC",
-                );
+                ];
                 break;
 
             case 'ticket.date_last_user_reply':
@@ -1229,20 +1240,20 @@ class TicketSearch extends SearcherAbstract
                     case 'input':
                     case 'value':
                         $this->add_raw_selects[] = "sort_table.$search_type AS status_order";
-                        $order_by                = array(
+                        $order_by                = [
                             "JOIN custom_data_ticket AS sort_table ON (sort_table.ticket_id = tickets.id AND sort_table.root_field_id = $term_id)",
                             "ORDER BY status_order $dir, id DESC",
-                        );
+                        ];
                         break;
                     case 'id':
                         $this->add_raw_selects[] = 'cdef.title AS status_order';
-                        $order_by                = array(
+                        $order_by                = [
                             "
                                 JOIN custom_data_ticket AS cdata ON cdata.ticket_id = tickets.id AND cdata.root_field_id = $term_id
                                 JOIN custom_def_ticket AS cdef ON cdef.id = cdata.field_id
                             ",
                             "ORDER BY status_order $dir, id DESC",
-                        );
+                        ];
                         break;
 
                 }
@@ -1269,16 +1280,16 @@ class TicketSearch extends SearcherAbstract
 
         $tr = App::getTranslator();
 
-        $joins = array();
+        $joins = [];
 
-        $wheres_all = array();
-        $wheres_any = array();
+        $wheres_all = [];
+        $wheres_any = [];
 
         // If we dont set a status, we will automatically
         // exclude 'hidden' tickets
         $set_status = false;
 
-        foreach (array(array('all', $this->terms), array('any', $this->terms_any)) as $term_set) {
+        foreach ([['all', $this->terms], ['any', $this->terms_any]] as $term_set) {
             if ($term_set[0] == 'all') {
                 $wheres = &$wheres_all;
             } else {
@@ -1318,11 +1329,11 @@ class TicketSearch extends SearcherAbstract
 
                         $choice = is_array($choice) && isset($choice['ticket_id']) ? $choice['ticket_id'] : $choice;
                         if (!is_array($choice)) {
-                            $choice = array($choice);
+                            $choice = [$choice];
                         }
 
                         if (!$choice) {
-                            $choice = array(0);
+                            $choice = [0];
                         }
 
                         if ($op == self::OP_IS) {
@@ -1340,7 +1351,7 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_PERSON_ID:
                         $choice = is_array($choice) && isset($choice['person_id']) ? $choice['person_id'] : $choice;
                         if (!is_array($choice)) {
-                            $choice = array($choice);
+                            $choice = [$choice];
                         }
 
                         if ($op == self::OP_IS) {
@@ -1372,6 +1383,15 @@ class TicketSearch extends SearcherAbstract
                         }
 
                         $wheres[] = $this->_choiceMatch("$tickets_table.department_id", $op, $choice, true);
+                        break;
+                    case self::TERM_BRAND:
+                        $this->affected_fields[] = 'ticket.brand_id';
+
+                        if (count($choice) == 1) {
+                            $this->specific_fields[] = self::TERM_BRAND;
+                        }
+
+                        $wheres[] = $this->_choiceMatch("$tickets_table.brand_id", $op, $choice, true);
                         break;
 
                     case self::TERM_EMAIL_ACCOUNT:
@@ -1443,7 +1463,7 @@ class TicketSearch extends SearcherAbstract
                         $this->enableArchiveSearch();
                         $this->affected_fields[] = 'ticket.date_resolved';
                         $wheres[]                = $this->_dateMatch("$tickets_table.date_resolved", $op, $choice);
-                        $wheres[]                = $this->_choiceMatch("$tickets_table.status", 'is', array('resolved'));
+                        $wheres[]                = $this->_choiceMatch("$tickets_table.status", 'is', ['resolved']);
                         break;
                     case self::TERM_DATE_ARCHIVED:
                         $this->enableArchiveSearch();
@@ -1452,7 +1472,7 @@ class TicketSearch extends SearcherAbstract
                             $this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_archived'), $op, $choice);
                         }
                         $wheres[] = $this->_dateMatch("$tickets_table.date_archived", $op, $choice);
-                        $wheres[] = $this->_choiceMatch("$tickets_table.status", 'is', array('archived'));
+                        $wheres[] = $this->_choiceMatch("$tickets_table.status", 'is', ['archived']);
                         break;
                     case self::TERM_DATE_LAST_USER_REPLY:
                         $this->enableArchiveSearch();
@@ -1523,7 +1543,7 @@ class TicketSearch extends SearcherAbstract
 
                         $this->affected_fields[] = 'ticket.sla_id';
 
-                        $choices_in = array();
+                        $choices_in = [];
                         foreach ($choice as $c) {
                             $choices_in[] = $this->quoteDbValue($c);
                         }
@@ -1532,19 +1552,19 @@ class TicketSearch extends SearcherAbstract
                         switch ($op) {
                             case self::OP_IS:
                             case self::OP_CONTAINS:
-                                $joins[] = array(
+                                $joins[] = [
                                     'ticket_slas',
                                     "LEFT JOIN ticket_slas AS $join_name ON ($join_name.ticket_id = tickets.id)",
-                                );
+                                ];
                                 $wheres[] = "$join_name.sla_id IN ($choices_in)";
                                 break;
 
                             case self::OP_NOT:
                             case self::OP_NOTCONTAINS:
-                                $joins[] = array(
+                                $joins[] = [
                                     'ticket_slas',
                                     "LEFT JOIN ticket_slas AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.sla_id IN ($choices_in))",
-                                );
+                                ];
                                 $wheres[] = "$join_name.ticket_id IS NULL";
                                 break;
                         }
@@ -1554,20 +1574,20 @@ class TicketSearch extends SearcherAbstract
 
                         if (is_array($choice) && isset($choice['sla_status'])) {
                             $statuses = (array) $choice['sla_status'];
-                            $sla_ids  = (array) (isset($choice['sla_id']) ? $choice['sla_id'] : array());
+                            $sla_ids  = (array) (isset($choice['sla_id']) ? $choice['sla_id'] : []);
                             if (!$sla_ids) {
-                                (isset($choice['sla_ids']) ? $choice['sla_ids'] : array());
+                                (isset($choice['sla_ids']) ? $choice['sla_ids'] : []);
                             }
                         } else {
                             $statuses = (array) $choice;
-                            $sla_ids  = array();
+                            $sla_ids  = [];
                         }
                         if (!$statuses && !$sla_ids) {
                             break;
                         }
 
                         if (!$statuses) {
-                            $statuses       = array('ok', 'warning', 'fail');
+                            $statuses       = ['ok', 'warning', 'fail'];
                             $status_summary = false;
                         } else {
                             $status_summary = true;
@@ -1578,8 +1598,8 @@ class TicketSearch extends SearcherAbstract
                             $this->affected_fields[] = 'ticket.sla_id';
                         }
 
-                        $statuses_in = array();
-                        $sla_ids_in  = array();
+                        $statuses_in = [];
+                        $sla_ids_in  = [];
 
                         foreach ($statuses as $c) {
                             $statuses_in[] = $this->quoteDbValue($c);
@@ -1595,22 +1615,22 @@ class TicketSearch extends SearcherAbstract
                         switch ($op) {
                             case self::OP_IS:
                             case self::OP_CONTAINS:
-                                $joins[] = array(
+                                $joins[] = [
                                     'ticket_slas',
                                     "LEFT JOIN ticket_slas AS $join_name ON ($join_name.ticket_id = tickets.id)",
-                                );
+                                ];
                                 $wheres[] = "$join_name.sla_status IN ($statuses_in)"
                                     .($sla_ids_in ? " AND $join_name.sla_id IN ($sla_ids_in)" : '');
                                 break;
 
                             case self::OP_NOT:
                             case self::OP_NOTCONTAINS:
-                                $joins[] = array(
+                                $joins[] = [
                                     'ticket_slas',
                                     "LEFT JOIN ticket_slas AS $join_name ON ($join_name.ticket_id = tickets.id"
                                     ." AND $join_name.sla_status IN ($statuses_in)"
                                     .($sla_ids_in ? " AND $join_name.sla_id IN ($sla_ids_in)" : '').')',
-                                );
+                                ];
                                 $wheres[] = "$join_name.ticket_id IS NULL";
                                 break;
                         }
@@ -1620,17 +1640,17 @@ class TicketSearch extends SearcherAbstract
 
                         if (is_array($choice) && isset($choice['is_completed'])) {
                             $completed = (array) $choice['is_completed'];
-                            $sla_ids   = (array) (isset($choice['sla_id']) ? $choice['sla_id'] : array());
+                            $sla_ids   = (array) (isset($choice['sla_id']) ? $choice['sla_id'] : []);
                         } else {
                             $completed = (array) $choice;
-                            $sla_ids   = array();
+                            $sla_ids   = [];
                         }
                         if (!$completed && !$sla_ids) {
                             break;
                         }
 
                         if (!$completed) {
-                            $completed      = array(1, 0);
+                            $completed      = [1, 0];
                             $status_summary = false;
                         } else {
                             $status_summary = true;
@@ -1641,8 +1661,8 @@ class TicketSearch extends SearcherAbstract
                             $this->affected_fields[] = 'ticket.sla_id';
                         }
 
-                        $completed_in = array();
-                        $sla_ids_in   = array();
+                        $completed_in = [];
+                        $sla_ids_in   = [];
 
                         foreach ($completed as $c) {
                             $completed_in[] = $this->quoteDbValue($c);
@@ -1658,22 +1678,22 @@ class TicketSearch extends SearcherAbstract
                         switch ($op) {
                             case self::OP_IS:
                             case self::OP_CONTAINS:
-                                $joins[] = array(
+                                $joins[] = [
                                     'ticket_slas',
                                     "LEFT JOIN ticket_slas AS $join_name ON ($join_name.ticket_id = tickets.id)",
-                                );
+                                ];
                                 $wheres[] = "$join_name.is_completed IN ($completed_in)"
                                     .($sla_ids_in ? " AND $join_name.sla_id IN ($sla_ids_in)" : '');
                                 break;
 
                             case self::OP_NOT:
                             case self::OP_NOTCONTAINS:
-                                $joins[] = array(
+                                $joins[] = [
                                     'ticket_slas',
                                     "LEFT JOIN ticket_slas AS $join_name ON ($join_name.ticket_id = tickets.id"
                                     ."AND $join_name.is_completed IN ($completed_in)"
                                     .($sla_ids_in ? " AND $join_name.sla_id IN ($sla_ids_in)" : '').')',
-                                );
+                                ];
                                 $wheres[] = "$join_name.ticket_id IS NULL";
                                 break;
                         }
@@ -1706,7 +1726,7 @@ class TicketSearch extends SearcherAbstract
                         if ($not_id) {
                             $wheres[] = "$tickets_table.agent_id != ".$not_id;
                         } else {
-                            $w = array();
+                            $w = [];
 
                             if ($unassigned) {
                                 if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
@@ -1742,7 +1762,7 @@ class TicketSearch extends SearcherAbstract
                         if ($not_ids) {
                             $wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", 'not', $team_ids, true);
                         } else {
-                            $w = array();
+                            $w = [];
 
                             if ($no_team) {
                                 if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
@@ -1772,10 +1792,10 @@ class TicketSearch extends SearcherAbstract
                         $this->affected_fields[] = 'ticket.status';
                         $set_status              = true;
 
-                        $show_status   = array();
-                        $hidden_status = array();
+                        $show_status   = [];
+                        $hidden_status = [];
 
-                        $choice_str = array();
+                        $choice_str = [];
 
                         foreach ((array) $choice as $c) {
                             if (strpos($c, '.') !== false) {
@@ -1815,7 +1835,7 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_HIDDEN_STATUS:
                         $this->affected_fields[] = 'ticket.hidden_status';
 
-                        $choice_str = array();
+                        $choice_str = [];
                         foreach ((array) $choice as $c) {
                             $choice_str[] = $tr->phrase('agent.tickets.hidden_status_'.$c);
                         }
@@ -1881,10 +1901,10 @@ class TicketSearch extends SearcherAbstract
                         $choice = is_array($choice) ? array_pop($choice) : $choice;
                         $choice = preg_replace('#[^0-9\.]#', '', $choice);
 
-                        $joins[] = array(
+                        $joins[] = [
                             'tickets_messages',
                             "LEFT JOIN tickets_messages AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.ip_address != '')",
-                        );
+                        ];
                         $field = "$join_name.ip_address";
 
                         // If last char is a dot, then do a wildcard suffix search
@@ -1924,10 +1944,10 @@ class TicketSearch extends SearcherAbstract
                         $type = 'and';
 
                         $this->affected_fields[] = 'ticket.message';
-                        $joins[]                 = array(
+                        $joins[]                 = [
                             'tickets_messages',
                             "LEFT JOIN tickets_messages AS $join_name ON ($join_name.ticket_id = tickets.id)",
-                        );
+                        ];
                         $field    = "$join_name.message";
                         $wheres[] = $this->_stringSearch($field, $op, $string, $type);
 
@@ -1939,21 +1959,21 @@ class TicketSearch extends SearcherAbstract
                         $type   = !empty($choice['type']) ? $choice['type'] : 'phrase';
 
                         $this->affected_fields[] = 'ticket.message';
-                        $joins[]                 = array(
+                        $joins[]                 = [
                             'tickets_messages',
                             "LEFT JOIN tickets_messages AS $join_name ON ($join_name.ticket_id = tickets.id)",
-                        );
+                        ];
                         $field = "$join_name.message";
 
-                        $w   = array();
+                        $w   = [];
                         $w[] = '('.$this->_stringSearch($field, $op, $string, $type).')';
 
                         if (!empty($choice['who'])) {
                             $join_name2 = $join_name.'_u';
-                            $joins[]    = array(
+                            $joins[]    = [
                                 'people',
                                 "LEFT JOIN people AS $join_name2 ON ($join_name2.id = $join_name.person_id)",
-                            );
+                            ];
 
                             if ($choice['who'] == 'agent') {
                                 $w[] = "($join_name2.is_agent = 1)";
@@ -1989,7 +2009,7 @@ class TicketSearch extends SearcherAbstract
                         $this->affected_fields[] = 'ticket.labels';
                         $this->_normalizeOpAndChoice($op, $choice);
 
-                        $choices_in = array();
+                        $choices_in = [];
                         if (is_array($choice)) {
                             foreach ((array) $choice as $c) {
                                 $choices_in[] = $this->quoteDbValue($c);
@@ -2002,32 +2022,32 @@ class TicketSearch extends SearcherAbstract
 
                         switch ($op) {
                             case self::OP_IS:
-                                $joins[] = array(
+                                $joins[] = [
                                     'labels_tickets',
                                     "LEFT JOIN labels_tickets AS $join_name ON ($join_name.ticket_id = tickets.id)",
-                                );
+                                ];
                                 $wheres[] = "$join_name.label = ".$this->quoteDbValue($choice);
                                 break;
                             case self::OP_NOT:
-                                $joins[] = array(
+                                $joins[] = [
                                     'labels_tickets',
                                     "LEFT JOIN labels_tickets AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.label = ".$this->quoteDbValue($choice).')',
-                                );
+                                ];
                                 $wheres[] = "$join_name.ticket_id IS NULL";
                                 break;
                             case self::OP_CONTAINS:
-                                $joins[] = array(
+                                $joins[] = [
                                     'labels_tickets',
                                     "LEFT JOIN labels_tickets AS $join_name ON ($join_name.ticket_id = tickets.id)",
-                                );
+                                ];
                                 $wheres[] = "$join_name.label IN ($choices_in)";
                                 break;
 
                             case self::OP_NOTCONTAINS:
-                                $joins[] = array(
+                                $joins[] = [
                                     'labels_tickets',
                                     "LEFT JOIN labels_tickets AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.label IN ($choices_in))",
-                                );
+                                ];
                                 $wheres[] = "$join_name.ticket_id IS NULL";
                                 break;
                         }
@@ -2068,10 +2088,10 @@ class TicketSearch extends SearcherAbstract
                                     $choice = 'DP_NO_SELECTION';
                                 }
 
-                                $joins[] = array(
+                                $joins[] = [
                                     'custom_data_ticket',
                                     "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.field_id = $term_id)",
-                                );
+                                ];
 
                                 $field = 'custom_data_ticket_'.$join_id.'.'.$search_type;
                                 switch ($op) {
@@ -2150,7 +2170,7 @@ class TicketSearch extends SearcherAbstract
 
                             case 'id':
                                 $join_id    = Util::requestUniqueId();
-                                $choices_in = array();
+                                $choices_in = [];
 
                                 if (is_array($choice) && count($choice) === 1 && array_key_exists(0, $choice)) {
                                     $choice = $choice[0];
@@ -2166,7 +2186,7 @@ class TicketSearch extends SearcherAbstract
                                         $choice = $choice["field_{$field_def->getId()}"];
                                     }
                                     if (!is_array($choice)) {
-                                        $choice = array($choice);
+                                        $choice = [$choice];
                                     }
 
                                     /* @var  $children */
@@ -2189,7 +2209,7 @@ class TicketSearch extends SearcherAbstract
                                     if (!$choice && !$choices_in) {
                                         $choice = 'DP_NO_SELECTION';
                                     } elseif (!$choices_in) {
-                                        $choice     = array(0);
+                                        $choice     = [0];
                                         $choices_in = '0';
                                     }
                                 }
@@ -2199,16 +2219,16 @@ class TicketSearch extends SearcherAbstract
                                     case self::OP_CONTAINS:
                                     case self::OP_IS:
                                         if ($choice == 'DP_NO_SELECTION') {
-                                            $joins[] = array(
+                                            $joins[] = [
                                                 'custom_data_ticket',
                                                 "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$field_def->id})",
-                                            );
+                                            ];
                                             $wheres[] = "custom_data_ticket_$join_id.id IS NULL";
                                         } else {
-                                            $joins[] = array(
+                                            $joins[] = [
                                                 'custom_data_ticket',
                                                 "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND $field IN ($choices_in))",
-                                            );
+                                            ];
                                             $wheres[] = "custom_data_ticket_$join_id.id IS NOT NULL";
                                         }
                                         break;
@@ -2216,31 +2236,31 @@ class TicketSearch extends SearcherAbstract
                                     case self::OP_NOTCONTAINS:
                                     case self::OP_NOT:
                                         if ($choice == 'DP_NO_SELECTION') {
-                                            $joins[] = array(
+                                            $joins[] = [
                                                 'custom_data_ticket',
                                                 "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$field_def->id})",
-                                            );
+                                            ];
                                             $wheres[] = "custom_data_ticket_$join_id.id IS NOT NULL";
                                         } else {
-                                            $joins[] = array(
+                                            $joins[] = [
                                                 'custom_data_ticket',
                                                 "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND $field IN ($choices_in))",
-                                            );
+                                            ];
                                             $wheres[] = "custom_data_ticket_$join_id.id IS NULL";
                                         }
                                         break;
                                     case 'not_isset':
-                                        $joins[] = array(
+                                        $joins[] = [
                                             'custom_data_ticket',
                                             "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$field_def->id})",
-                                        );
+                                        ];
                                         $wheres[] = "custom_data_ticket_$join_id.id IS NULL";
                                         break;
                                     case 'isset':
-                                        $joins[] = array(
+                                        $joins[] = [
                                             'custom_data_ticket',
                                             "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$field_def->id})",
-                                        );
+                                        ];
                                         $wheres[] = "custom_data_ticket_$join_id.id IS NOT NULL";
                                         break;
                                 }
@@ -2312,10 +2332,10 @@ class TicketSearch extends SearcherAbstract
                             break;
                         }
 
-                        $joins[] = array(
+                        $joins[] = [
                             'ticket_escalation_logs',
                             "LEFT JOIN ticket_escalation_logs AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.escalation_id = {$escalation->id} AND $join_name.date_criteria = tickets.$field)",
-                        );
+                        ];
 
                         $wheres[] = "$join_name.id IS NULL";
                         break;
@@ -2357,7 +2377,7 @@ class TicketSearch extends SearcherAbstract
 
                         $this->affected_fields[] = 'ticket.problems';
 
-                        $choices_in = array();
+                        $choices_in = [];
                         foreach ($choice as $c) {
                             $choices_in[] = (int) $c;
                         }
@@ -2366,22 +2386,30 @@ class TicketSearch extends SearcherAbstract
                         switch ($op) {
                             case self::OP_IS:
                             case self::OP_CONTAINS:
-                                $joins[] = array(
+                                $joins[] = [
                                     'problem2tickets',
                                     "JOIN problem2tickets AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.problem_id IN ($choices_in))",
-                                );
+                                ];
                                 break;
 
                             case self::OP_NOT:
                             case self::OP_NOTCONTAINS:
-                                $joins[] = array(
+                                $joins[] = [
                                     'problem2tickets',
                                     "JOIN problem2tickets AS $join_name ON ($join_name.ticket_id = tickets.id AND $join_name.problem_id NOT IN ($choices_in))",
-                                );
+                                ];
                                 break;
                         }
                         break;
+                    case 'brand_id':
+                        $this->affected_fields[] = 'ticket.brand_id';
 
+                        if (count($choice) == 1) {
+                            $this->specific_fields[] = 'brand';
+                        }
+
+                        $wheres[] = $this->_choiceMatch("$tickets_table.brand_id", $op, $choice, true);
+                        break;
                     default:
                         $e = new \InvalidArgumentException("Unknown term: $term");
                         \DpSys\LowError\SystemErrorHandler::logErrorInfo(\DpSys\LowError\SystemErrorHandler::getExceptionInfo($e));
@@ -2394,11 +2422,11 @@ class TicketSearch extends SearcherAbstract
             $wheres_all[] = $this->_choiceMatch("$tickets_table.status", self::OP_NOT, 'hidden');
         }
 
-        $this->sql_parts = array(
+        $this->sql_parts = [
             'joins'      => $joins,
             'wheres'     => $wheres_all,
             'wheres_any' => $wheres_any,
-        );
+        ];
 
         return $this->sql_parts;
     }
@@ -2416,9 +2444,9 @@ class TicketSearch extends SearcherAbstract
             return false;
         }
 
-        $ignore_terms = array();
+        $ignore_terms = [];
         if ($use_term_cache === null) {
-            $use_term_cache = array();
+            $use_term_cache = [];
         }
 
         foreach ($this->terms as $idx => $info) {
@@ -2482,7 +2510,7 @@ class TicketSearch extends SearcherAbstract
                     $choice = Arrays::getFirstItem($choice);
                 }
                 if (!is_array($choice)) {
-                    $choice = array($choice);
+                    $choice = [$choice];
                 }
 
                 foreach ($choice as $id) {
@@ -2663,7 +2691,7 @@ class TicketSearch extends SearcherAbstract
 
             case self::TERM_LABEL:
 
-                $choice_labels = array();
+                $choice_labels = [];
                 if (!empty($choice['labels'])) {
                     if (!is_array($choice['labels'])) {
                         $choice['labels'] = explode(',', $choice['labels']);
@@ -2840,7 +2868,7 @@ class TicketSearch extends SearcherAbstract
                 break;
 
             case self::TERM_PROBLEMS:
-                $choice_problems = array();
+                $choice_problems = [];
                 if (!empty($choice['problems'])) {
                     if (!is_array($choice['problems'])) {
                         $choice['problems'] = explode(',', $choice['problems']);
@@ -2868,11 +2896,11 @@ class TicketSearch extends SearcherAbstract
                 break;
 
             default:
-                $terms = new TicketTerms(array(array(
-                    'type'    => $term,
-                    'op'      => $op,
-                    'options' => $choice,
-                )));
+                $terms = new TicketTerms([[
+                                              'type'    => $term,
+                                              'op'      => $op,
+                                              'options' => $choice,
+                                          ]]);
                 if (!$terms->doesTicketMatch($ticket)) {
                     return false;
                 }
@@ -2885,21 +2913,38 @@ class TicketSearch extends SearcherAbstract
     public static function getTableField($term_id)
     {
         switch ($term_id) {
-            case self::TERM_DEPARTMENT: return 'department_id';
-            case self::TERM_AGENT: return 'agent_id';
-            case self::TERM_AGENT_TEAM: return 'agent_team_id';
-            case self::TERM_URGENCY: return 'urgency';
-            case self::TERM_CATEGORY: return 'category_id';
-            case self::TERM_PRIORITY: return 'priority_id';
-            case self::TERM_PRODUCT: return 'product_id';
-            case self::TERM_WORKFLOW: return 'workflow_id';
-            case self::TERM_LANGUAGE: return 'language_id';
-            case self::TERM_ORGANIZATION: return 'organization_id';
-            case self::TERM_USER_WAITING: return 'date_user_waiting';
-            case self::TERM_TOTAL_USER_WAITING: return 'total_user_waiting';
-            case self::TERM_DATE_CREATED: return 'date_created';
-            case 'person': return 'person_id';
-            default: throw new \InvalidArgumentException("Invalid field: $term_id");
+            case self::TERM_DEPARTMENT:
+                return 'department_id';
+            case self::TERM_AGENT:
+                return 'agent_id';
+            case self::TERM_AGENT_TEAM:
+                return 'agent_team_id';
+            case self::TERM_URGENCY:
+                return 'urgency';
+            case self::TERM_CATEGORY:
+                return 'category_id';
+            case self::TERM_PRIORITY:
+                return 'priority_id';
+            case self::TERM_PRODUCT:
+                return 'product_id';
+            case self::TERM_WORKFLOW:
+                return 'workflow_id';
+            case self::TERM_LANGUAGE:
+                return 'language_id';
+            case self::TERM_ORGANIZATION:
+                return 'organization_id';
+            case self::TERM_USER_WAITING:
+                return 'date_user_waiting';
+            case self::TERM_TOTAL_USER_WAITING:
+                return 'total_user_waiting';
+            case self::TERM_DATE_CREATED:
+                return 'date_created';
+            case self::TERM_BRAND:
+                return 'brand_id';
+            case 'person':
+                return 'person_id';
+            default:
+                throw new \InvalidArgumentException("Invalid field: $term_id");
         }
     }
 
@@ -2945,7 +2990,7 @@ class TicketSearch extends SearcherAbstract
 
         if (isset($status)) {
             if (!is_array($status)) {
-                $status = array($status);
+                $status = [$status];
             }
 
             if (isset($status) && $op == 'is' && !in_array('awaiting_agent', $status)) {

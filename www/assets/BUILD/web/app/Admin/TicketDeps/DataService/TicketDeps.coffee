@@ -10,7 +10,7 @@ define [
   Util
 )  ->
   class TicketDeps extends BaseListEdit
-    @$inject = ['Api', '$q']
+    @$inject = ['Api', 'Api2', '$q']
 
     url: -> '/ticket_deps'
 
@@ -85,9 +85,12 @@ define [
           layoutStats:        "/ticket_layouts/stats"
         })
 
+      brandPromise = @Api2.sendGet('brands');
       deferred = @$q.defer()
 
-      allPromise = @$q.all([promise, @loadList()]).then( (result) =>
+      allPromise = @$q.all([promise, @loadList(), brandPromise]).then( (result) =>
+        brands = result[2].data.data;
+
         result = result[0].data
 
         data = {}
@@ -115,6 +118,7 @@ define [
               break
 
         data.agents          = result.agentsInfo.agents
+        data.brands          = brands
         data.agentgroups     = result.agentgroupsInfo.groups
         data.usergroups      = result.usergroupsInfo.groups
 
@@ -123,18 +127,19 @@ define [
           custom_layout:     if result.customLayoutInfo then result.customLayoutInfo.layout else null,
           use_custom_layout: if result.customLayoutInfo and not result.customLayoutInfo.is_default then true else false
         }
-
+        
         data.form = @getFormMapper().getFormFromModel(
           data.dep,
           result.depInfo?.trigger || {},
           layouts,
           data.depPerms,
           data.agents,
+          data.brands,
           data.agentgroups,
           data.usergroups,
           data.email_accounts
         )
-
+        
         deferred.resolve(data)
       )
 

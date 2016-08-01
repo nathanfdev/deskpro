@@ -21,6 +21,7 @@ api:
                 - DpBehat\HooksContext
                 - DpBehat\Api\RestContext
                 - DpBehat\Api\AuthContext
+                - DpBehat\Api\BrandContext
                 - DpBehat\TermEngine\TermEngineBehatContext
                 - DpBehat\Api\PeopleContext
                 - DpBehat\Api\AgentsContext
@@ -119,6 +120,7 @@ portal:
                 - DpBehat\Portal\RefsContext
                 - DpBehat\Api\JsonContext
                 - DpBehat\Api\RestContext
+                - DpBehat\Api\BrandContext
                 - DpBehat\LanguageContext
                 - DpBehat\Portal\PortalModeContext
                 - DpBehat\Portal\PortalBrandThemeContext

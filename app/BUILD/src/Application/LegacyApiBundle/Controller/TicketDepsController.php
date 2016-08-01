@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,8 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\Departments\Form\Type\TicketDepartmentType;
 use Application\DeskPRO\Departments\TicketDepartmentEdit;
 use Application\DeskPRO\Departments\TicketDepartmentEditor;
+use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Settings\SettingHandler\TicketDepartment as TicketDepartmentHandler;
@@ -66,7 +68,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 
     public function listAction()
     {
-        $data = array();
+        $data = [];
 
         $ticket_deps = $this->container->getSystemService('ticket_departments');
         $flat_array  = $ticket_deps->getFlatArray();
@@ -75,7 +77,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
         $with_perms = $this->in->getBool('with_perms');
 
         if ($with_perms) {
-            $perms = array();
+            $perms = [];
 
             /** @var \Application\DeskPRO\DependencyInjection\SystemServices\UsergroupDataService $ug */
             $ug = $this->container->getDataService('Usergroup');
@@ -88,17 +90,17 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 
             foreach ($all_perms as $p) {
                 if (!isset($perms[$p['department_id']])) {
-                    $perms[$p['department_id']] = array('agentgroups' => array(), 'usergroups' => array(), 'users' => array());
+                    $perms[$p['department_id']] = ['agentgroups' => [], 'usergroups' => [], 'users' => []];
                 }
 
                 if ($p['usergroup_id']) {
                     if ($ug->getAgentGroup($p['usergroup_id'])) {
-                        $perms[$p['department_id']]['agentgroups'][] = array('id' => (int) $p['usergroup_id'], 'name' => $p['name']);
+                        $perms[$p['department_id']]['agentgroups'][] = ['id' => (int) $p['usergroup_id'], 'name' => $p['name']];
                     } else {
-                        $perms[$p['department_id']]['usergroups'][] = array('id' => (int) $p['usergroup_id'], 'name' => $p['name']);
+                        $perms[$p['department_id']]['usergroups'][] = ['id' => (int) $p['usergroup_id'], 'name' => $p['name']];
                     }
                 } else {
-                    $perms[$p['department_id']]['users'][] = array('id' => (int) $p['person_id'], 'name' => $p['name']);
+                    $perms[$p['department_id']]['users'][] = ['id' => (int) $p['person_id'], 'name' => $p['name']];
                 }
             }
         }
@@ -113,7 +115,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
             $deps_with_layout = array_fill_keys($deps_with_layout, true);
         }
 
-        $deps = array();
+        $deps = [];
         foreach ($flat_array as $row) {
             $r          = $row['object']->toApiData(true, false);
             $r['depth'] = $row['depth'];
@@ -122,14 +124,14 @@ class TicketDepsController extends AbstractController implements ProtectedContro
                 if (isset($perms[$r['id']])) {
                     $r['permissions'] = $perms[$r['id']];
                 } else {
-                    $r['permissions'] = array();
+                    $r['permissions'] = [];
                 }
 
                 if (!isset($r['permissions']['agentgroups'])) {
-                    $r['permissions']['agentgroups'] = array();
+                    $r['permissions']['agentgroups'] = [];
                 }
-                $r['permissions']['agentgroups'][] = array('id' => $ag->getSysGroup('agent_all_perms')->id, 'name' => 'full');
-                $r['permissions']['agentgroups'][] = array('id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'name' => 'full');
+                $r['permissions']['agentgroups'][] = ['id' => $ag->getSysGroup('agent_all_perms')->id, 'name' => 'full'];
+                $r['permissions']['agentgroups'][] = ['id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'name' => 'full'];
             }
 
             if (isset($deps_with_layout[$r['id']])) {
@@ -158,44 +160,44 @@ class TicketDepsController extends AbstractController implements ProtectedContro
             throw $this->createNotFoundException();
         }
 
-        $data               = array();
+        $data               = [];
         $data['department'] = $this->getApiData($dep);
 
-        $perms = $this->db->fetchAll('SELECT usergroup_id, person_id, name FROM department_permissions WHERE department_id = ?', array($dep->id));
+        $perms = $this->db->fetchAll('SELECT usergroup_id, person_id, name FROM department_permissions WHERE department_id = ?', [$dep->id]);
 
-        $data['permissions'] = array(
-            'usergroups'  => array(),
-            'agentgroups' => array(),
-            'agents'      => array(),
-        );
+        $data['permissions'] = [
+            'usergroups'  => [],
+            'agentgroups' => [],
+            'agents'      => [],
+        ];
 
         foreach ($perms as $perm) {
             if ($perm['usergroup_id']) {
                 if ($this->container->getDataService('Usergroup')->get($perm['usergroup_id'])->is_agent_group) {
-                    $data['permissions']['agentgroups'][] = array(
+                    $data['permissions']['agentgroups'][] = [
                         'usergroup_id' => (int) $perm['usergroup_id'],
                         'perm_name'    => $perm['name'],
-                    );
+                    ];
                 } else {
-                    $data['permissions']['usergroups'][] = array(
+                    $data['permissions']['usergroups'][] = [
                         'usergroup_id' => (int) $perm['usergroup_id'],
                         'perm_name'    => $perm['name'],
-                    );
+                    ];
                 }
             } elseif ($perm['person_id']) {
-                $data['permissions']['agents'][] = array(
+                $data['permissions']['agents'][] = [
                     'agent_id'  => (int) $perm['person_id'],
                     'perm_name' => $perm['name'],
-                );
+                ];
             }
         }
 
         $ag                                   = $this->container->getAgentGroups();
-        $data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_perms')->id, 'perm_name' => 'full');
-        $data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'perm_name' => 'full');
+        $data['permissions']['agentgroups'][] = ['usergroup_id' => $ag->getSysGroup('agent_all_perms')->id, 'perm_name' => 'full'];
+        $data['permissions']['agentgroups'][] = ['usergroup_id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'perm_name' => 'full'];
 
         if ($this->in->getBool('with_agents_list')) {
-            $data['agents_list'] = array();
+            $data['agents_list'] = [];
             foreach ($this->container->getAgentData()->getAgents() as $agent) {
                 $agent->loadHelper('AgentPermissions');
                 if ($agent->getHelper('AgentPermissions')->isDepartmentAllowed($dep)) {
@@ -228,17 +230,28 @@ class TicketDepsController extends AbstractController implements ProtectedContro
         $form = $this->createForm(
             new TicketDepartmentType(),
             $dep_edit,
-            array(
+            [
                 'cascade_validation' => true,
-            )
+            ]
         );
 
         $data = $this->in->getAll('post');
         $form->submit($data, true);
 
+        /** @var Brand[] $brands */
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
+        foreach ($brands as $brand) {
+            if ($brand->hasDepartment($dep) && !$dep_edit->department->hasBrand($brand)) {
+                if (count($brand->getDepartments()) == 1) {
+                    return $this->createApiErrorResponse(500, 'Brand '.$brand.' needs at least one department');
+                }
+            }
+        }
+
         if ($form->isValid() || 1) {
             if ($avatar_blob_id = $this->in->getUInt('department.avatar')) {
-                $blob = $this->em->find('DeskPRO:Blob', $avatar_blob_id);
+                $blob = $this->em->find(Blob::class, $avatar_blob_id);
                 if ($blob && $blob->isImage()) {
                     $dep_edit->department->avatar = $blob;
                 } else {
@@ -259,15 +272,15 @@ class TicketDepsController extends AbstractController implements ProtectedContro
                 //$dep_edit->clearTrigger($this->em);
             }
 
-            return $this->createApiResponse(array('id' => $dep->id, 'success' => true));
+            return $this->createApiResponse(['id' => $dep->id, 'success' => true]);
         } else {
-            $errors = array();
+            $errors = [];
 
             foreach ($form->getErrors() as $er) {
                 $errors[] = $er->getMessage();
             }
 
-            return $this->createApiResponse(array('department_id' => $dep->id, 'success' => false, 'errors' => $errors));
+            return $this->createApiResponse(['department_id' => $dep->id, 'success' => false, 'errors' => $errors]);
         }
     }
 
@@ -284,6 +297,17 @@ class TicketDepsController extends AbstractController implements ProtectedContro
             throw $this->createNotFoundException();
         }
 
+        /** @var Brand[] $brands */
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
+        foreach ($brands as $brand) {
+            if ($brand->hasDepartment($dep)) {
+                if (count($brand->getDepartments()) == 1) {
+                    return $this->createApiErrorResponse(500, 'Brand '.$brand.' needs at least one department');
+                }
+            }
+        }
+
         $move_to = $this->container->getSystemService('ticket_departments')->getById($this->in->getUint('move_to'));
         if (!$move_to) {
             throw ValidationException::create('department.remove.move_tickets', 'You must select a department to move existing tickets into');
@@ -291,7 +315,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 
         $old_id = $editor->removeDepartment($dep, $move_to);
 
-        return $this->createApiResponse(array('old_id' => $old_id, 'success' => true));
+        return $this->createApiResponse(['old_id' => $old_id, 'success' => true]);
     }
 
     ####################################################################################################################

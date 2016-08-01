@@ -4,14 +4,17 @@ Feature: /agent_chats endpoint
 
   Background:
     Given I'm authenticated as admin
-    And I have a Department record referenced as department
+    And I have default brand
+    And only the following Department records exist:
+      | # | Title      | Brands           | Is Tickets Enabled |
+      | d | Department | [{defaultBrand}] | 1                  |
 
   Scenario: I create department chat
     When I send a POST request to "api/v2/agent_chats" with body:
     """
 {
   "type": "department",
-  "participant": ~department~
+  "participant": ~d~
 }
     """
     Then the response should be in JSON
@@ -19,7 +22,7 @@ Feature: /agent_chats endpoint
     And the header "Location" should be equal to "/api/v2/agent_chats/{lastCreatedId}"
     And the JSON node "data.id" should be equal to "{lastCreatedId}"
     And the JSON node "data.departments" should have 1 element
-    And the JSON node "data.departments[0]" should be equal to "{department}"
+    And the JSON node "data.departments[0]" should be equal to "{d}"
 
     When I send a GET request to "/api/v2/agent_chats/{lastCreatedId}"
     Then the response should be in JSON
@@ -35,7 +38,7 @@ Feature: /agent_chats endpoint
     """
 {
   "type": "department",
-  "participant": ~department~
+  "participant": ~d~
 }
     """
     Then the response should be in JSON

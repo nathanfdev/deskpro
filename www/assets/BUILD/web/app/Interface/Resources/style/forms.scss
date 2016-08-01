@@ -105,7 +105,7 @@
     .inline-input {
       @include clearfix;
 
-      label, .label, input {
+      label, .label, input:not([type='checkbox']) {
         float: left;
         width: 50%;
         display: block;
@@ -118,7 +118,7 @@
         padding-right: 10px;
       }
 
-      input {
+      input:not([type='checkbox']) {
         width: 65%;
       }
     }
@@ -154,6 +154,11 @@
       color: #fff;
       border-radius: 2px;
       padding: 10px 15px;
+
+      &:disabled {
+        background: #b0b0b0;
+        border-color: #b0b0b0;
+      }
     }
 
     // responsive stuff for form containers

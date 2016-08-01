@@ -659,7 +659,7 @@ class TaskController extends AbstractController
         }
 
         $language    = substr($person->getLanguage()->getLocale(), 0, 2);
-        $deskProName = $this->container->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_name');
+        $deskProName = $this->container->getBrandSetting('core.deskpro_name');
         $vCalendar   = new \Eluceo\iCal\Component\Calendar('-//DeskPRO//'.$deskProName.'//'.strtoupper($language));
 
         foreach ($tasks as $task) {

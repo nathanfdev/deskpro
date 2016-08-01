@@ -33,6 +33,7 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\ApiKey;
+use Application\DeskPRO\Entity\ApiKeyLog;
 use Application\DeskPRO\Form\Type\ApiKeyType;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
@@ -45,9 +46,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * SWG\Resource(
- * 	resourcePath="/api_keys",
- * 	description="Operations about API Keys",
- * 	basePath="/api/api_keys"
+ *    resourcePath="/api_keys",
+ *    description="Operations about API Keys",
+ *    basePath="/api/api_keys"
  * ).
  *
  * @ApiModes("all")
@@ -72,17 +73,17 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 
     /**
      * SWG\Api(
-     * 	path="/api_keys",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get list of all existing API Keys",
-     * 		notes="Returns array of all existing API Keys"
-     * 	)
+     *    path="/api_keys",
+     *    SWG\Operation(
+     *        method="GET",
+     *        summary="Get list of all existing API Keys",
+     *        notes="Returns array of all existing API Keys"
+     *    )
      * ).
      */
     public function listAction()
     {
-        $keys = $this->em->getRepository('DeskPRO:ApiKey')->findAll();
+        $keys = $this->em->getRepository(ApiKey::class)->findAll();
         $data = [];
         foreach ($keys as $index => $key) {
             /* @var ApiKey $key */
@@ -99,25 +100,25 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 
     /**
      * SWG\Api(
-     * 	path="/api_keys/{id}",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Find API Key By ID",
-     * 		notes="Returns API Key based on ID",
-     * 		SWG\Parameter(
-     * 			name="id",
-     * 			description="ID of API Key that needs to be fetched",
-     * 			required=true,
-     * 			type="integer",
-     * 			paramType="path"
-     * 		),
-     * 		SWG\ResponseMessage(code=404, message="API Key not found")
-     * 	)
+     *    path="/api_keys/{id}",
+     *    SWG\Operation(
+     *        method="GET",
+     *        summary="Find API Key By ID",
+     *        notes="Returns API Key based on ID",
+     *        SWG\Parameter(
+     *            name="id",
+     *            description="ID of API Key that needs to be fetched",
+     *            required=true,
+     *            type="integer",
+     *            paramType="path"
+     *        ),
+     *        SWG\ResponseMessage(code=404, message="API Key not found")
+     *    )
      * ).
      */
     public function getAction($id)
     {
-        if (!$key = $this->em->find('DeskPRO:ApiKey', $id)) {
+        if (!$key = $this->em->find(ApiKey::class, $id)) {
             throw $this->createNotFoundException();
         }
 
@@ -144,7 +145,7 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
     {
         /* @var $key ApiKey */
         if ($id) {
-            if (!$key = $this->em->find('DeskPRO:ApiKey', $id)) {
+            if (!$key = $this->em->find(ApiKey::class, $id)) {
                 throw $this->createNotFoundException();
             }
         } else {
@@ -193,7 +194,7 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
                 $limits_service->saveLimit($key, $limit);
             }
         } else {
-            return $this->createApiErrorInfoResponse('validation_error', $this->getFormValidationErrorsString($form), array());
+            return $this->createApiErrorInfoResponse('validation_error', $this->getFormValidationErrorsString($form), []);
         }
 
         return $this->getAction($key['id']);
@@ -215,7 +216,7 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
     public function removeAction($id)
     {
         /** @var $key ApiKey */
-        if (!$key = $this->em->find('DeskPRO:ApiKey', $id)) {
+        if (!$key = $this->em->find(ApiKey::class, $id)) {
             throw $this->createNotFoundException();
         }
 
@@ -224,7 +225,7 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
         $this->em->remove($key);
         $this->em->flush();
 
-        return $this->createSuccessResponse(array('old_id' => $old_id));
+        return $this->createSuccessResponse(['old_id' => $old_id]);
     }
 
     ####################################################################################################################
@@ -243,17 +244,17 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
     public function getLogsAction($id)
     {
         /** @var $key ApiKey */
-        if (!$key = $this->em->find('DeskPRO:ApiKey', $id)) {
+        if (!$key = $this->em->find(ApiKey::class, $id)) {
             throw $this->createNotFoundException();
         }
 
-        $logs = $this->em->getRepository('DeskPRO:ApiKeyLog')->getLogsForKey($key);
+        $logs = $this->em->getRepository(ApiKeyLog::class)->getLogsForKey($key);
 
         $logs = $this->getApiData($logs);
 
-        return $this->createSuccessResponse(array(
+        return $this->createSuccessResponse([
             'logs' => $logs,
-        ));
+        ]);
     }
 
     ####################################################################################################################
@@ -272,14 +273,14 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
     public function regenerateAction($id)
     {
         /** @var $key ApiKey */
-        if (!$key = $this->em->find('DeskPRO:ApiKey', $id)) {
+        if (!$key = $this->em->find(ApiKey::class, $id)) {
             throw $this->createNotFoundException();
         }
 
         $key->regenerateApiKey();
         $this->em->flush();
 
-        return $this->createSuccessResponse(array('code' => $key['code'], 'keyString' => $key['keyString']));
+        return $this->createSuccessResponse(['code' => $key['code'], 'keyString' => $key['keyString']]);
     }
 
     /**
@@ -294,22 +295,22 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
     public function replayLogEntryAction($logEntryId)
     {
         /** @var $entry \Application\DeskPRO\Entity\ApiKeyLog */
-        if (!$entry = $this->em->find('DeskPRO:ApiKeyLog', $logEntryId)) {
+        if (!$entry = $this->em->find(ApiKeyLog::class, $logEntryId)) {
             throw new NotFoundHttpException();
         }
         /** @var ApiKey $key */
         $key     = $entry->key;
         $request = $entry['request'];
 
-        $api  = new \DeskPRO\Api($this->settings->get('core.deskpro_url'), $key->getKeyString(), $key->person['id']);
+        $api  = new \DeskPRO\Api($this->container->getBrandSetting('core.deskpro_url'), $key->getKeyString(), $key->person['id']);
         $path = 0 === strpos($request['path'], '/api') ? substr($request['path'], 4) : $request['path'];
         /** @var \DeskPRO\Api\Result $response */
         $response = $api->call($request['method'], $path, $request['payload']);
 
-        $result = array(
+        $result = [
             'status'  => $response->getResponseCode(),
             'content' => $response->getData(),
-        );
+        ];
 
         return $this->createApiResponse($result);
     }

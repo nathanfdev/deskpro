@@ -1,27 +1,27 @@
 <dp:subject>
-	{% if new_articles and updated_articles %}
+	{% if new_news and updated_news %}
 		{{ phrase('user.email_subjects.news_sub_new_and_updated') }}
-	{% elseif new_articles %}
+	{% elseif new_news %}
 		{{ phrase('user.email_subjects.news_sub_new') }}
 	{% else %}
 		{{ phrase('user.email_subjects.news_sub_updated') }}
 	{% endif %}
 </dp:subject>
 
-{% if new_articles %}
-	<h1>{{ phrase('user.emails.news-new-articles', {count: new_articles|length}) }}</h1>
+{% if new_news %}
+	<h1>{{ phrase('user.emails.news-new-news', {count: new_news|length}) }}</h1>
 	<ul>
-		{% for article in new_articles %}
-			<li><a href="{{ url_full('portal_news_view', {slug: article.getSlug()}) }}">{{ article.title }}</a></li>
+		{% for news in new_news %}
+			<li><a href="{{ url_full('portal_news_view', {slug: news.getSlug()}) }}">{{ news.title }}</a></li>
 		{% endfor %}
 	</ul>
 {% endif %}
 
-{% if updated_articles %}
-	<h1>{{ phrase('user.emails.news-updated-articles', {count: updated_articles|length}) }}</h1>
+{% if updated_news %}
+	<h1>{{ phrase('user.emails.news-updated-news', {count: updated_news|length}) }}</h1>
 	<ul>
-		{% for article in updated_articles %}
-			<li><a href="{{ url_full('portal_news_view', {slug: article.getSlug()}) }}">{{ article.title }}</a></li>
+		{% for news in updated_news %}
+			<li><a href="{{ url_full('portal_news_view', {slug: news.getSlug()}) }}">{{ news.title }}</a></li>
 		{% endfor %}
 	</ul>
 {% endif %}

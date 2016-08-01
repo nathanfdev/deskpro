@@ -26,6 +26,9 @@
 				</a>
 			</span>
 		<% } %>
+		<% if (field == 'brand') { %>
+			<span class="prop-val"><%- ticket_display.brand.name %></span>
+		<% } %>
 		<% if (field == 'department') { %>
 			<span class="prop-val"><%- ticket_display.department.title_full %></span>
 		<% } %>

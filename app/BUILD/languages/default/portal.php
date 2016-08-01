@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.account.automatically_join_org_tickets'         => 'Automatically join {{org_name}}\'s tickets?',
     'portal.account.change-password'                        => 'Change Password',
     'portal.account.change-password-btn'                    => 'Update Password',
@@ -1042,4 +1042,12 @@ return array(
     'user.time.time_x_second'                               => '{0} seconds',
     'user.time.time_x_week'                                 => '{0} weeks',
     'user.time.time_x_year'                                 => '{0} years',
-);
+
+    'user.emails.news-new-news'                 => '1 New News Article|{{count}} New News Articles',
+    'user.emails.news-updated-news'             => '1 Updated News Article|{{count}} Updated News Articles',
+    'user.emails.profile_email-new-confirm'     => 'To finish adding this secondary email address to your account, simply click on the following validation link',
+    'user.emails.profile_email-primary-confirm' => 'To verify your primary email address, simply click on the following validation link',
+    'user.emails.ratelimit_explain'             => 'You have sent {{num_messagess}} messages within {{time_limit}}. To prevent abuse, we have temporarily banned your email address for {{time_lock}}. After {{date_lock_end}}, this temporary ban will be automatically deactivated and you will be able to send emails again.',
+    'user.emails.ratelimit_submit-online'       => 'If this is a mistake and you need to contact us immediately, you can bypass this email filter and submit a ticket online:',
+    'user.emails.ticket_cc-new'                 => 'You have been included in a ticket started by {{name}}.',
+];

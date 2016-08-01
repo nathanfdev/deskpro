@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'adm.agents.import_btn_more'                                                           => 'Invite More Agents?',
     'adm.agents.import_btn_next'                                                           => 'Next step',
     'adm.agents.import_file_dd'                                                            => 'Drag & Drop completed spreadsheet here',
@@ -1868,11 +1868,12 @@ return array(
     'admin.setup.enable_portal'                                                            => 'Enable Portal',
     'admin.setup.enable_portal_help'                                                       => 'The portal is the public facing website that your users can use from their browser or mobile phone.',
     'admin.setup.helpdesk_name'                                                            => 'Helpdesk name',
-    'admin.setup.helpdesk_name_help'                                                       => 'This is the name of your helpdesk.',
+    'admin.setup.helpdesk_name_help'                                                       => 'This is the name of your brands helpdesk.',
     'admin.setup.helpdesk_portal'                                                          => 'Helpdesk Portal',
     'admin.setup.helpdesk_settings'                                                        => 'Helpdesk Settings',
     'admin.setup.helpdesk_url'                                                             => 'Helpdesk URL',
-    'admin.setup.helpdesk_url_help'                                                        => 'This is the URL to your helpdesk.',
+    'admin.setup.helpdesk_url_help'                                                        => 'This is the URL to your helpdesk for this brand.',
+    'admin.setup.feedback_note'                                                            => 'Please note that you can only have one branded Feedback section. All statuses, types, tags and labels are shared across brands. Submissions and comments from all brands will be visible in this section.',
     'admin.setup.incoming_email'                                                           => 'Setup incoming email',
     'admin.setup.portal_disabled'                                                          => 'By turning the portal off, you will disable the public facing website entirely. This means that certain features like the knowledgebase, feedback, news, and downloads, will all be unavailable. This also disables the ability for users to log-in to manage their tickets online, which means they will only interact with your helpdesk via email.',
     'admin.setup.portal_mode_separator'                                                    => 'or',
@@ -2299,4 +2300,12 @@ return array(
     'admin.widget.ticket_settings'                                                         => 'Ticket settings',
     'admin.widget.ticket_user_select_department'                                           => 'User selects department',
     'admin.widget.widget_size'                                                             => 'Widget size',
-);
+
+    'admin.setup.delete_brand'      => 'Delete Brand',
+    'admin.setup.view_brand'        => 'View brand portal',
+    'admin.setup.brand_logo'        => 'Brand logo',
+    'admin.setup.brand_logo_help'   => 'This is the logo of your brand that will be shown in the agent section',
+    'admin.setup.enable_brand_logo' => 'Enable Brand logo',
+    'admin.setup.new_brand'         => 'New Brand...',
+    'admin.portal.create_brand'     => 'Create Brand',
+];

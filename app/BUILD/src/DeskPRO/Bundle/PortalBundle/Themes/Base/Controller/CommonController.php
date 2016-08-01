@@ -77,28 +77,12 @@ class CommonController extends AbstractController
             return new Response('');
         }
 
-        //
-        // TEMPORARY: brand dropdown info - this wil be replaced with something more robust
-        //
-        $brands = $this->getEm()->getRepository(Brand::class)->findAll();
-        /** @var \Application\DeskPRO\Entity\Brand $brand */
-        $b = [];
-        foreach ($brands as $brand) {
-            $b[] = [
-                'brand'    => $brand,
-                'id'       => $brand->getId(),
-                'name'     => $brand->getName(),
-                'theme_id' => $brand->getThemeSet()->getThemeId(),
-            ];
-        }
-
         return $this->renderThemeView(
             'Theme:Common:agent_bar.html.twig',
             [
                 'impersonator'     => $agent,
                 'impersonation_on' => $impersonationOn,
                 'user'             => $this->getCurrentPerson(),
-                'brands'           => $b,
                 'active_brand_id'  => $this->getBrandContainer()->getBrand()->getId(),
             ]
         );

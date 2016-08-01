@@ -82,10 +82,19 @@ class ArticlesController extends AbstractContentController
         parent::applyListFilters($qb, $alias, $request);
 
         $category = $request->get('category');
-        if ($category) {
+        $brands   = $request->query->get('brands');
+
+        if ($category || $brands) {
             $qb->leftJoin("$alias.categories", 'cat');
+        }
+
+        if ($category) {
             $qb->andWhere('cat.id IN (:category)');
             $qb->setParameter('category', $category);
+        }
+        if ($brands) {
+            $qb->andWhere('cat.brand IN (:brand_ids)');
+            $qb->setParameter('brand_ids', $brands);
         }
     }
 

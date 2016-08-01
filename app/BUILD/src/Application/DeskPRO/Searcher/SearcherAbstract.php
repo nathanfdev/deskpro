@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -61,7 +62,7 @@ abstract class SearcherAbstract implements PersonContextInterface
      *
      * @var Entity\Person
      */
-    protected $person = array();
+    protected $person = [];
 
     /**
      * When processing terms, this turns to TRUE
@@ -77,7 +78,7 @@ abstract class SearcherAbstract implements PersonContextInterface
      *
      * @var array
      */
-    protected $terms = array();
+    protected $terms = [];
 
     /**
      * Array of terms we've set.
@@ -85,14 +86,14 @@ abstract class SearcherAbstract implements PersonContextInterface
      *
      * @var array
      */
-    protected $terms_any = array();
+    protected $terms_any = [];
 
     /**
      * array(type, direction) of ordering.
      *
      * @var array
      */
-    protected $order_by = array();
+    protected $order_by = [];
 
     /**
      * @var \Orb\Log\Logger
@@ -210,14 +211,14 @@ abstract class SearcherAbstract implements PersonContextInterface
     }
 
     /**
-     * @param $term
-     * @param bool $all Find all or just the first?
+     * @param      $term
+     * @param bool $all  Find all or just the first?
      *
      * @return mixed
      */
     public function findTerm($term, $all = false)
     {
-        $ret = array();
+        $ret = [];
 
         foreach ($this->terms as $info) {
             if ($info[0] == $term) {
@@ -237,14 +238,14 @@ abstract class SearcherAbstract implements PersonContextInterface
     }
 
     /**
-     * @param $term
-     * @param bool $all Find all or just the first?
+     * @param      $term
+     * @param bool $all  Find all or just the first?
      *
      * @return mixed
      */
     public function findAnyTerm($term, $all = false)
     {
-        $ret = array();
+        $ret = [];
 
         foreach ($this->terms_any as $info) {
             if ($info[0] == $term) {
@@ -281,7 +282,7 @@ abstract class SearcherAbstract implements PersonContextInterface
     public function getTermFields()
     {
         $terms  = $this->getTerms();
-        $fields = array();
+        $fields = [];
         foreach ($terms as $info) {
             $fields[] = $info[0];
         }
@@ -297,7 +298,7 @@ abstract class SearcherAbstract implements PersonContextInterface
      */
     public function setOrderBy($type, $direction = self::ORDER_DESC)
     {
-        $this->order_by = array($type, $direction);
+        $this->order_by = [$type, $direction];
     }
 
     /**
@@ -362,7 +363,7 @@ abstract class SearcherAbstract implements PersonContextInterface
             }
         }
 
-        $this->terms[] = array($term, $op, $data, $term_type, $term_id);
+        $this->terms[] = [$term, $op, $data, $term_type, $term_id];
     }
 
     /**
@@ -389,14 +390,12 @@ abstract class SearcherAbstract implements PersonContextInterface
             }
         }
 
-        $this->terms_any[] = array($term, $op, $data, $term_type, $term_id);
+        $this->terms_any[] = [$term, $op, $data, $term_type, $term_id];
     }
 
     /**
      * Run the search and return an array of matching ID's.
-     *
-     * @param int $limit
-     *
+     * 
      * @return array
      */
     abstract public function getMatches();
@@ -407,17 +406,19 @@ abstract class SearcherAbstract implements PersonContextInterface
      * $choice should be an array, first value date1 and second is date2.
      * If not datetime objects, they're considered to mean "seconds in the past" and will be calculated.
      *
-     * @param  $field
-     * @param  $op
-     * @param \DateTime|null $date1
-     * @param \DateTime|null $date2
+     * @param $field
+     * @param $op
+     * @param $choice
      *
      * @return string
+     *
+     * @internal param \DateTime|null $date1
+     * @internal param \DateTime|null $date2
      */
     protected function _dateMatch($field, $op, $choice)
     {
         if (!is_array($choice)) {
-            $choice = array($choice);
+            $choice = [$choice];
         }
 
         $timezone_context = new \DateTimeZone('UTC');
@@ -518,7 +519,7 @@ abstract class SearcherAbstract implements PersonContextInterface
         }
 
         if (!is_array($choice)) {
-            $choice = array($choice);
+            $choice = [$choice];
         }
 
         $has_empty = false;
@@ -592,9 +593,9 @@ abstract class SearcherAbstract implements PersonContextInterface
     /**
      * Does a string search.
      *
-     * @param $field
-     * @param $op
-     * @param $string
+     * @param        $field
+     * @param        $op
+     * @param        $string
      * @param string $type
      */
     protected function _stringSearch($field, $op, $string, $type = 'or')
@@ -617,9 +618,9 @@ abstract class SearcherAbstract implements PersonContextInterface
                 return '1';
             }
 
-            $where = array();
+            $where = [];
             foreach ($words as $w) {
-                $where[] = "($field $op_like ".$this->quoteDbValue('%'.str_replace(array('%', '_'), array('\\%', '\\_'), $w).'%').')';
+                $where[] = "($field $op_like ".$this->quoteDbValue('%'.str_replace(['%', '_'], ['\\%', '\\_'], $w).'%').')';
             }
 
             if ($type == 'or') {
@@ -634,7 +635,7 @@ abstract class SearcherAbstract implements PersonContextInterface
                 return '1';
             }
 
-            return "($field $op_like ".$this->quoteDbValue('%'.str_replace(array('%', '_'), array('%%', '__'), $string).'%').')';
+            return "($field $op_like ".$this->quoteDbValue('%'.str_replace(['%', '_'], ['%%', '__'], $string).'%').')';
         }
     }
 
@@ -694,27 +695,27 @@ abstract class SearcherAbstract implements PersonContextInterface
         }
 
         if ($op == self::OP_IS) {
-            $summary = App::getTranslator()->phrase('agent.general.x_is_y', array(
+            $summary = App::getTranslator()->phrase('agent.general.x_is_y', [
                 'field'  => $field,
                 'value1' => $range1,
                 'value2' => $range2,
-            ));
+            ]);
         } elseif ($op == self::OP_BETWEEN) {
-            $summary = App::getTranslator()->phrase('agent.general.x_is_between_y_and_z', array(
+            $summary = App::getTranslator()->phrase('agent.general.x_is_between_y_and_z', [
                 'field'  => $field,
                 'value1' => $range1,
                 'value2' => $range2,
-            ));
+            ]);
         } elseif ($op == self::OP_GTE) {
-            $summary = App::getTranslator()->phrase('agent.general.x_is_greater_than_y', array(
+            $summary = App::getTranslator()->phrase('agent.general.x_is_greater_than_y', [
                 'field' => $field,
                 'value' => $range1,
-            ));
+            ]);
         } else {
-            $summary = App::getTranslator()->phrase('agent.general.x_is_less_than_y', array(
+            $summary = App::getTranslator()->phrase('agent.general.x_is_less_than_y', [
                 'field' => $field,
                 'value' => $range1,
-            ));
+            ]);
         }
 
         return $summary;
@@ -799,21 +800,21 @@ abstract class SearcherAbstract implements PersonContextInterface
                 $date1_relative = $tmp;
             }
 
-            $summary = App::getTranslator()->phrase('agent.general.x_is_between_y_and_z', array(
+            $summary = App::getTranslator()->phrase('agent.general.x_is_between_y_and_z', [
                 'field'  => $field,
                 'value1' => $date1_relative ? $date1_relative : $date1->format('M j, Y'),
                 'value2' => $date2_relative ? $date2_relative : $date2->format('M j, Y'),
-            ));
+            ]);
         } elseif ($op == self::OP_GTE) {
-            $summary = App::getTranslator()->phrase('agent.general.x_after_y', array(
+            $summary = App::getTranslator()->phrase('agent.general.x_after_y', [
                 'field' => $field,
                 'value' => $date1_relative ? $date1_relative : $date1->format('M j, Y'),
-            ));
+            ]);
         } else {
-            $summary = App::getTranslator()->phrase('agent.general.x_before_y', array(
+            $summary = App::getTranslator()->phrase('agent.general.x_before_y', [
                 'field' => $field,
                 'value' => $date1_relative ? $date1_relative : $date1->format('M j, Y'),
-            ));
+            ]);
         }
 
         return $summary;
@@ -941,7 +942,7 @@ abstract class SearcherAbstract implements PersonContextInterface
             });
 
             if (empty($choices_in)) {
-                $choices_in = array(0);
+                $choices_in = [0];
             }
 
             $choices_in = '('.implode(',', $choices_in).')';
@@ -975,10 +976,11 @@ abstract class SearcherAbstract implements PersonContextInterface
     }
 
     /**
-     * @param  $field
-     * @param  $op
-     * @param  $choice
-     * @param bool $is_id
+     * @param      $field
+     * @param      $op
+     * @param      $choice
+     * @param null $title_callback
+     * @param bool $always_choice
      *
      * @return string
      */
@@ -1040,16 +1042,16 @@ abstract class SearcherAbstract implements PersonContextInterface
 
         switch ($op) {
             case self::OP_IS:
-                $summary = App::getTranslator()->phrase('agent.general.x_is_y', array('field' => $field, 'value' => $title));
+                $summary = App::getTranslator()->phrase('agent.general.x_is_y', ['field' => $field, 'value' => $title]);
                 break;
             case self::OP_NOT:
-                $summary = App::getTranslator()->phrase('agent.general.x_is_not_y', array('field' => $field, 'value' => $title));
+                $summary = App::getTranslator()->phrase('agent.general.x_is_not_y', ['field' => $field, 'value' => $title]);
                 break;
             case self::OP_CONTAINS:
-                $summary = App::getTranslator()->phrase('agent.general.x_is_y', array('field' => $field, 'value' => $title));
+                $summary = App::getTranslator()->phrase('agent.general.x_is_y', ['field' => $field, 'value' => $title]);
                 break;
             case self::OP_NOTCONTAINS:
-                $summary = App::getTranslator()->phrase('agent.general.x_is_not_y', array('field' => $field, 'value' => $title));
+                $summary = App::getTranslator()->phrase('agent.general.x_is_not_y', ['field' => $field, 'value' => $title]);
                 break;
         }
 
@@ -1104,10 +1106,10 @@ abstract class SearcherAbstract implements PersonContextInterface
     protected function _normalizeAgentChoice($choice)
     {
         if (!is_array($choice)) {
-            $choice = array($choice);
+            $choice = [$choice];
         }
 
-        $agent_ids  = array();
+        $agent_ids  = [];
         $not_id     = null;
         $unassigned = false;
 
@@ -1134,18 +1136,18 @@ abstract class SearcherAbstract implements PersonContextInterface
             }
         }
 
-        return array(
+        return [
             'agent_ids'  => $agent_ids,
             'not_id'     => $not_id,
             'unassigned' => $unassigned,
-        );
+        ];
     }
 
     protected function _normalizeAgentTeamChoice($choice)
     {
         $choice = (array) $choice;
 
-        $team_ids = array();
+        $team_ids = [];
         $not_ids  = null;
         $no_team  = false;
 
@@ -1177,11 +1179,11 @@ abstract class SearcherAbstract implements PersonContextInterface
             }
         }
 
-        return array(
+        return [
             'team_ids' => $team_ids,
             'not_ids'  => $not_ids,
             'no_team'  => $no_team,
-        );
+        ];
     }
 
     ###################################################################
@@ -1412,14 +1414,22 @@ abstract class SearcherAbstract implements PersonContextInterface
     public function invertOp($op)
     {
         switch ($op) {
-            case self::OP_GT:          return self::OP_LT;
-            case self::OP_GTE:         return self::OP_LTE;
-            case self::OP_LT:          return self::OP_GT;
-            case self::OP_LTE:         return self::OP_GTE;
-            case self::OP_NOT:         return self::OP_IS;
-            case self::OP_IS:          return self::OP_NOT;
-            case self::OP_NOTCONTAINS: return self::OP_CONTAINS;
-            case self::OP_CONTAINS:    return self::OP_NOTCONTAINS;
+            case self::OP_GT:
+                return self::OP_LT;
+            case self::OP_GTE:
+                return self::OP_LTE;
+            case self::OP_LT:
+                return self::OP_GT;
+            case self::OP_LTE:
+                return self::OP_GTE;
+            case self::OP_NOT:
+                return self::OP_IS;
+            case self::OP_IS:
+                return self::OP_NOT;
+            case self::OP_NOTCONTAINS:
+                return self::OP_CONTAINS;
+            case self::OP_CONTAINS:
+                return self::OP_NOTCONTAINS;
         }
 
         return;

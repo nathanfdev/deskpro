@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Mail\RawMessage;
 
 use Application\EmailBundle\Mail\RawMessage\Mail\Part;

@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;

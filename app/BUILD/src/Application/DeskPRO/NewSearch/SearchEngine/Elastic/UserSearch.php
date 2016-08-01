@@ -87,48 +87,49 @@ class UserSearch implements UserSearchInterface
         if ($context->getArticleCategoryIds() && ($limit_types === null || in_array('article', $limit_types))) {
             $search->addType('article');
             $f = new Filter\BoolFilter();
-            $f->addMust(new Filter\Term(array('_type' => 'article')));
-            $f->addMust(new Filter\Term(array('status' => 'published')));
+            $f->addMust(new Filter\Term(['_type' => 'article']));
+            $f->addMust(new Filter\Term(['status' => 'published']));
             $f->addMust(new Filter\Terms('category_ids', $context->getArticleCategoryIds()));
             $filter->addFilter($f);
         }
         if ($context->getNewsCategoryIds() && ($limit_types === null || in_array('news', $limit_types))) {
             $search->addType('news');
             $f = new Filter\BoolFilter();
-            $f->addMust(new Filter\Term(array('_type' => 'news')));
-            $f->addMust(new Filter\Term(array('status' => 'published')));
+            $f->addMust(new Filter\Term(['_type' => 'news']));
+            $f->addMust(new Filter\Term(['status' => 'published']));
             $f->addMust(new Filter\Terms('category_id', $context->getNewsCategoryIds()));
             $filter->addFilter($f);
         }
         if ($context->getDownloadCategoryIds() && ($limit_types === null || in_array('download', $limit_types))) {
             $search->addType('download');
             $f = new Filter\BoolFilter();
-            $f->addMust(new Filter\Term(array('_type' => 'download')));
-            $f->addMust(new Filter\Term(array('status' => 'published')));
+            $f->addMust(new Filter\Term(['_type' => 'download']));
+            $f->addMust(new Filter\Term(['status' => 'published']));
             $f->addMust(new Filter\Terms('category_id', $context->getDownloadCategoryIds()));
             $filter->addFilter($f);
         }
         if ($context->getFeedbackCategoryIds() && ($limit_types === null || in_array('feedback', $limit_types))) {
             $search->addType('feedback');
             $f = new Filter\BoolFilter();
-            $f->addMust(new Filter\Term(array('_type' => 'feedback')));
-            $f->addMustNot(new Filter\Term(array('status' => 'hidden')));
+            $f->addMust(new Filter\Term(['_type' => 'feedback']));
+            $f->addMustNot(new Filter\Term(['status' => 'hidden']));
             $f->addMust(new Filter\Terms('category_id', $context->getFeedbackCategoryIds()));
             $filter->addFilter($f);
         }
         if ($context->getPerson() && ($limit_types === null || in_array('ticket', $limit_types))) {
             $search->addType('ticket');
             $f = new Filter\BoolFilter();
-            $f->addMust(new Filter\Term(array('_type' => 'ticket')));
+            $f->addMust(new Filter\Term(['_type' => 'ticket']));
+            $f->addMust(new Filter\Term(['brand' => $context->getBrand()->getId()]));
 
             $f2 = new Filter\BoolOr();
-            $f2->addFilter(new Filter\Term(array('person_id' => $context->getPerson()->getId())));
+            $f2->addFilter(new Filter\Term(['person_id' => $context->getPerson()->getId()]));
             if (!$context->getPerson()->isAgent()) {
-                $f2->addFilter(new Filter\Term(array('participants' => $context->getPerson()->getId())));
+                $f2->addFilter(new Filter\Term(['participants' => $context->getPerson()->getId()]));
             }
 
             if ($context->getPerson()->organization && $context->getPerson()->organization_manager) {
-                $f2->addFilter(new Filter\Term(array('organization_id' => $context->getPerson()->organization->getId())));
+                $f2->addFilter(new Filter\Term(['organization_id' => $context->getPerson()->organization->getId()]));
             }
 
             $f->addMust($f2);
@@ -146,7 +147,7 @@ class UserSearch implements UserSearchInterface
         $bool_query = new Query\BoolQuery();
         $qs         = $this->getQueryString($query);
         $qs->setDefaultField('_all');
-        $qs->setFields(array('_id', 'ref', 'title', 'labels', 'content', 'messages'));
+        $qs->setFields(['_id', 'ref', 'title', 'labels', 'content', 'messages']);
         $qs->setDefaultOperator('AND');
         $bool_query->addMust($qs);
 
@@ -172,7 +173,7 @@ class UserSearch implements UserSearchInterface
         $bool_query->addShould($sticky_match);
 
         $filtered_query = new Query\Filtered($bool_query, $filter);
-        $res            = $search->search($filtered_query, array('limit' => self::LIMIT));
+        $res            = $search->search($filtered_query, ['limit' => self::LIMIT]);
         $objects        = $this->transformer->transform($res->getResults());
 
         if ($context->getPerson() && !$context->getPerson()->is_agent) {
@@ -212,32 +213,32 @@ class UserSearch implements UserSearchInterface
         if ($context->getArticleCategoryIds() && ($limit_types === null || in_array('article', $limit_types))) {
             $search->addType('article');
             $f = new Filter\BoolFilter();
-            $f->addMust(new Filter\Term(array('_type' => 'article')));
-            $f->addMust(new Filter\Term(array('status' => 'published')));
+            $f->addMust(new Filter\Term(['_type' => 'article']));
+            $f->addMust(new Filter\Term(['status' => 'published']));
             $f->addMust(new Filter\Terms('category_ids', $context->getArticleCategoryIds()));
             $filter->addFilter($f);
         }
         if ($context->getNewsCategoryIds() && ($limit_types === null || in_array('news', $limit_types))) {
             $search->addType('news');
             $f = new Filter\BoolFilter();
-            $f->addMust(new Filter\Term(array('_type' => 'news')));
-            $f->addMust(new Filter\Term(array('status' => 'published')));
+            $f->addMust(new Filter\Term(['_type' => 'news']));
+            $f->addMust(new Filter\Term(['status' => 'published']));
             $f->addMust(new Filter\Terms('category_id', $context->getNewsCategoryIds()));
             $filter->addFilter($f);
         }
         if ($context->getDownloadCategoryIds() && ($limit_types === null || in_array('download', $limit_types))) {
             $search->addType('download');
             $f = new Filter\BoolFilter();
-            $f->addMust(new Filter\Term(array('_type' => 'download')));
-            $f->addMust(new Filter\Term(array('status' => 'published')));
+            $f->addMust(new Filter\Term(['_type' => 'download']));
+            $f->addMust(new Filter\Term(['status' => 'published']));
             $f->addMust(new Filter\Terms('category_id', $context->getDownloadCategoryIds()));
             $filter->addFilter($f);
         }
         if ($context->getFeedbackCategoryIds() && ($limit_types === null || in_array('feedback', $limit_types))) {
             $search->addType('feedback');
             $f = new Filter\BoolFilter();
-            $f->addMust(new Filter\Term(array('_type' => 'feedback')));
-            $f->addMustNot(new Filter\Term(array('status' => 'hidden')));
+            $f->addMust(new Filter\Term(['_type' => 'feedback']));
+            $f->addMustNot(new Filter\Term(['status' => 'hidden']));
             $f->addMust(new Filter\Terms('category_id', $context->getFeedbackCategoryIds()));
             $filter->addFilter($f);
         }
@@ -251,13 +252,13 @@ class UserSearch implements UserSearchInterface
         }
 
         $like_query = new Query\MoreLikeThis();
-        $like_query->setFields(array('title', 'labels', 'content'));
+        $like_query->setFields(['title', 'labels', 'content']);
         $like_query->setLikeText($this->escapeQueryStringTerm($content));
         $like_query->setMinTermFrequency(1);
         $like_query->setMinDocFrequency(1);
 
         $filtered_query = new Query\Filtered($like_query, $filter);
-        $res            = $search->search($filtered_query, array('limit' => self::LIMIT));
+        $res            = $search->search($filtered_query, ['limit' => self::LIMIT]);
         $objects        = $this->transformer->transform($res->getResults());
 
         return new ResultSet($objects);
@@ -273,7 +274,7 @@ class UserSearch implements UserSearchInterface
     private function escapeQueryStringTerm($q)
     {
         $q = ElasticaUtil::escapeTerm($q);
-        $q = str_replace(array('AND', 'OR', 'NOT'), array('and', 'or', 'not'), $q);
+        $q = str_replace(['AND', 'OR', 'NOT'], ['and', 'or', 'not'], $q);
 
         return $q;
     }

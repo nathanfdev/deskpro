@@ -199,7 +199,8 @@ class ApcStatus
     public function getHitMissChartUrl()
     {
         $config_hash = '';
-        $url         = App::getSetting('core.deskpro_url').'?_sys=apc&_='.Util::generateStaticSecurityToken($config_hash.'apc', 86400).'&IMG=1&'.time();
+        $url         = App::getContainer()->getBrandSetting('core.deskpro_url').'?_sys=apc&_='
+            .Util::generateStaticSecurityToken($config_hash.'apc', 86400).'&IMG=1&'.time();
 
         return $url;
     }
@@ -214,7 +215,8 @@ class ApcStatus
     public function getMemChartUrl()
     {
         $config_hash = '';
-        $url         = App::getSetting('core.deskpro_url').'?_sys=apc&_='.Util::generateStaticSecurityToken($config_hash.'apc', 86400).'&IMG=1&'.time();
+        $url         = App::getContainer()->getBrandSetting('core.deskpro_url').'?_sys=apc&_='
+            .Util::generateStaticSecurityToken($config_hash.'apc', 86400).'&IMG=1&'.time();
 
         return $url;
     }

@@ -366,7 +366,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         if (defined('DPC_SITE_DOMAIN')) {
             return '//'.DPC_SITE_DOMAIN.'/web/';
         } else {
-            $asset_url = $this->container->getSetting('core.deskpro_url');
+            $asset_url = $this->container->getBrandSetting('core.deskpro_url');
             $asset_url = trim(str_replace('/index.php', '', $asset_url), '/');
             $asset_url .= '/web/';
             $asset_url = preg_replace('#^https?://#', '//', $asset_url);
@@ -380,7 +380,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         if (defined('DPC_SITE_DOMAIN')) {
             return '//'.DPC_SITE_DOMAIN.'/';
         } else {
-            $helpdesk_url = trim(str_replace('/index.php', '', $this->container->getSetting('core.deskpro_url')), '/').'/';
+            $helpdesk_url = trim(str_replace('/index.php', '', $this->container->getBrandSetting('core.deskpro_url')), '/').'/';
             $deskpro_url  = $helpdesk_url;
 
             $widget_url = $deskpro_url;

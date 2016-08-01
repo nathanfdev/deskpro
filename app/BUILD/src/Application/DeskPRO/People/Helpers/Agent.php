@@ -332,7 +332,10 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 
         if ($sig_html) {
             $fn = function ($m) {
-                $url = App::getSetting('core.deskpro_url');
+                /*
+                 * @Todo ensure the proper brand is stacked here
+                 */
+                $url = App::getContainer()->getBrandSetting('core.deskpro_url');
                 $url .= ltrim(App::getRouter()->generate('serve_blob', array('blob_auth_id' => $m[1], 'filename' => $m[2]), RouterInterface::ABSOLUTE_PATH), '/');
 
                 return sprintf('<img src="%s" title="%s" class="dp-signature-image" alt="%s" />',
@@ -352,7 +355,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     public function getGroupedSnippets($as_array = false)
     {
         if ($this->_snippets === null) {
-            $this->_snippets = App::getOrm()->getRepository('DeskPRO:TextSnippet')
+            $this->_snippets = App::getOrm()->getRepository(TextSnippet::class)
                                   ->getSnippetsForAgent('tickets', $this->person);
 
             $snippets_flat = array();

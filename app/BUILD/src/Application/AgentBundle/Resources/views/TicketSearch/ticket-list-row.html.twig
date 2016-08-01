@@ -110,6 +110,11 @@
 						</span>
 					<% } %>
 
+					<% if (field == 'brand') { %>
+						<span class="prop-title">{{ phrase('agent.general.brand') }}:</span>
+						<span class="prop-val"><%- ticket_display.brand.name %></span>
+					<% } %>
+
 					<% if (field == 'ref') { %>
 						<span class="prop-title">{{ phrase('agent.general.ref') }}:</span>
 						<span class="prop-val"><%- ticket_display.ref %></span>

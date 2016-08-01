@@ -205,6 +205,11 @@ class SettingsController extends AbstractController implements ProtectedControll
     # portal-settings
     ####################################################################################################################
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     * 
+     * @deprecated 
+     */
     public function portalSettingsAction()
     {
         $portal_settings = new GeneralPortalSettings($this->settings);
@@ -218,6 +223,11 @@ class SettingsController extends AbstractController implements ProtectedControll
     # save-portal-settings
     ####################################################################################################################
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     * 
+     * @deprecated 
+     */
     public function savePortalSettingsAction()
     {
         try {
@@ -531,6 +541,13 @@ class SettingsController extends AbstractController implements ProtectedControll
     # portal-app-settings
     ####################################################################################################################
 
+    /**
+     * @param $app
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @deprecated please use Api v2
+     */
     public function portalAppSettingsAction($app)
     {
         switch ($app) {
@@ -579,6 +596,15 @@ class SettingsController extends AbstractController implements ProtectedControll
     # save-portal-app-settings
     ####################################################################################################################
 
+    /**
+     * @param $app
+     *
+     * @throws \Exception
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     * 
+     * @deprecated use Api v2 instead
+     */
     public function savePortalAppSettingsAction($app)
     {
         switch ($app) {

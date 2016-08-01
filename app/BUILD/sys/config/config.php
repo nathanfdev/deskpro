@@ -54,7 +54,7 @@ $container->setParameter('file_locator.class', 'DeskPRO\Bundle\AppBundle\HttpKer
 $container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/doctrine-proxies');
 $container->setParameter('doctrine.dbal.connection_factory.class', 'DeskPRO\\Bundle\\AppBundle\\Doctrine\\ConnectionFactory');
 
-// standard-symfony changesn to templating
+// standard-symfony changes to templating
 $container->setParameter('templating.engine.delegating.class', 'Application\\DeskPRO\\Templating\\Engine');
 $container->setParameter('twig.class', 'Application\\DeskPRO\\Twig\\Environment');
 

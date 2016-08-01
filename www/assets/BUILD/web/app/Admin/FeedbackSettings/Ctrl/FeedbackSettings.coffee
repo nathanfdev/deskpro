@@ -4,18 +4,18 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     @CTRL_AS = 'Ctrl'
     @DEPS    = []
 
+    init: ->
+      @$scope.brand_id = @$stateParams.brandId
+
     initialLoad: ->
-      @Api.sendGet('/settings/portal/feedback').then( (res) =>
-        @$scope.settings = res.data.settings
+      @Api2.sendGet('/settings/brands/'+@$scope.brand_id+'/portal/feedback').then( (res) =>
+        @$scope.settings = res.data.data
       )
 
     save: ->
-      postData = {
-        settings: @$scope.settings
-      }
-
       @startSpinner('saving')
-      @Api.sendPostJson('/settings/portal/feedback', postData).then( =>
+      @Api2.sendPostJson('/settings/brands/'+@$scope.brand_id+'/portal/feedback', @$scope.settings).then( =>
+        @Growl.success("Settings saved")
         @stopSpinner('saving')
       )
 

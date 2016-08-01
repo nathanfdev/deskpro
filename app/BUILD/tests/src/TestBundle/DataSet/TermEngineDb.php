@@ -33,6 +33,7 @@
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
@@ -41,10 +42,12 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomData\TicketCustomDataTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
+use Doctrine\ORM\EntityManager;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
 /**
@@ -78,56 +81,66 @@ class TermEngineDb extends AbstractDbSet
         $this->addBaseBrand($em);
         $this->runBasicDataInstall($admin, $em);
 
-        $support    = $this->getEm()->find('DeskPRO:Department', 1);
-        $sales      = $this->getEm()->find('DeskPRO:Department', 2);
-        $team_both  = $this->createAgentTeam('Agent And Chris', array($agent, $agent_chris));
-        $team_agent = $this->createAgentTeam('Agent And Chris', array($agent));
+        /** @var Department $support */
+        $support = $this->getEm()->find(Department::class, 1);
+        /** @var Department $sales */
+        $sales = $this->getEm()->find(Department::class, 2);
+        /** @var Brand $brand */
+        $brand      = $this->getEm()->find(Brand::class, 1);
+        $team_both  = $this->createAgentTeam('Agent And Chris', [$agent, $agent_chris]);
+        $team_agent = $this->createAgentTeam('Agent And Chris', [$agent]);
 
-        // the ticket numbers in the titles are purposley hardcoded
+        // the ticket numbers in the titles are purposely hardcoded
         // because they represent the insert IDs used in tests
-        $this->createTicket('Test Ticket 1', $support, $user, $agent);
-        $this->createTicket('Test Ticket 2', $support, $user, $agent);
-        $this->createTicket('Test Ticket 3', $support, $user, $admin);
-        $this->createTicket('Test Ticket 4', $support, $user, $agent);
-        $this->createTicket('Test Ticket 5', $support, $user, $admin);
-        $this->createTicket('Test Ticket 6', $sales, $user, $agent);
-        $this->createTicket('Test Ticket 7', $sales, $user, $agent);
-        $this->createTicket('Test Ticket 8', $support, $user, $agent);
+        $this->createTicket('Test Ticket 1', $support, $brand, $user, $agent);
+        $this->createTicket('Test Ticket 2', $support, $brand, $user, $agent);
+        $this->createTicket('Test Ticket 3', $support, $brand, $user, $admin);
+        $this->createTicket('Test Ticket 4', $support, $brand, $user, $agent);
+        $this->createTicket('Test Ticket 5', $support, $brand, $user, $admin);
+        $this->createTicket('Test Ticket 6', $sales, $brand, $user, $agent);
+        $this->createTicket('Test Ticket 7', $sales, $brand, $user, $agent);
+        $this->createTicket('Test Ticket 8', $support, $brand, $user, $agent);
 
-        $agent_participates = $this->createTicket('Test Ticket 9', $support, $user, $admin);
+        $agent_participates = $this->createTicket('Test Ticket 9', $support, $brand, $user, $admin);
         $agent_participates->addParticipantPerson($agent);
 
-        $this->createTicket('Test Ticket 10', $support, $user, $agent, $team_both);
+        $this->createTicket('Test Ticket 10', $support, $brand, $user, $agent, $team_both);
 
-        $agent_participates = $this->createTicket('Test Ticket 11', $support, $user, $agent_chris, $team_both);
+        $agent_participates = $this->createTicket('Test Ticket 11', $support, $brand, $user, $agent_chris, $team_both);
         $agent_participates->addParticipantPerson($agent);
-        $agent_participates = $this->createTicket('Test Ticket 12', $support, $user, $agent_chris, $team_both);
+        $agent_participates = $this->createTicket('Test Ticket 12', $support, $brand, $user, $agent_chris, $team_both);
         $agent_participates->addParticipantPerson($agent);
-        $agent_participates = $this->createTicket('Test Ticket 13', $support, $user, $agent_chris, $team_agent);
+        $agent_participates = $this->createTicket('Test Ticket 13', $support, $brand, $user, $agent_chris, $team_agent);
         $agent_participates->addParticipantPerson($agent);
 
-        $this->createTicket('Test Ticket 14', $support, $user, $agent_chris, $team_agent);
-        $this->createTicket('Test Ticket 15', $support, $user, $agent_chris);
-        $this->createTicket('Unassigned But Has Team - Ticket 16', $support, $user, null, $team_agent);
-        $this->createTicket('UNASSIGNED Test Ticket 17', $support, $user);
-        $this->createTicket('UNASSIGNED Test Ticket 18', $support, $user);
-        $this->createTicket('UNASSIGNED Test Ticket 19', $support, $user);
-        $this->createTicket('UNASSIGNED Test Ticket 20', $support, $user);
+        $this->createTicket('Test Ticket 14', $support, $brand, $user, $agent_chris, $team_agent);
+        $this->createTicket('Test Ticket 15', $support, $brand, $user, $agent_chris);
+        $this->createTicket('Unassigned But Has Team - Ticket 16', $support, $brand, $user, null, $team_agent);
+        $this->createTicket('UNASSIGNED Test Ticket 17', $support, $brand, $user);
+        $this->createTicket('UNASSIGNED Test Ticket 18', $support, $brand, $user);
+        $this->createTicket('UNASSIGNED Test Ticket 19', $support, $brand, $user);
+        $this->createTicket('UNASSIGNED Test Ticket 20', $support, $brand, $user);
         $this->createTicket(
             'UNASSIGNED Test Ticket 21',
             $support,
+            $brand,
             $user,
             $agent_chris,
             null,
             Ticket::STATUS_AWAITING_USER
         );
-        $this->createTicket('UNASSIGNED Test Ticket 22', $support, $user, $admin, null, Ticket::STATUS_AWAITING_USER);
-        $this->createTicket('UNASSIGNED Test Ticket 23', $support, $user, $admin, null, Ticket::STATUS_RESOLVED);
-        $this->createTicket('UNASSIGNED Test Ticket 24', $support, $user, $admin, null, Ticket::STATUS_RESOLVED);
-        $this->createTicket('UNASSIGNED Test Ticket 25', $support, $user, $admin, null, Ticket::STATUS_ARCHIVED);
+        $this->createTicket('UNASSIGNED Test Ticket 22', $support, $brand, $user, $admin, null,
+        Ticket::STATUS_AWAITING_USER);
+        $this->createTicket('UNASSIGNED Test Ticket 23', $support, $brand, $user, $admin, null,
+            Ticket::STATUS_RESOLVED);
+        $this->createTicket('UNASSIGNED Test Ticket 24', $support, $brand, $user, $admin, null,
+            Ticket::STATUS_RESOLVED);
+        $this->createTicket('UNASSIGNED Test Ticket 25', $support, $brand, $user, $admin, null,
+            Ticket::STATUS_ARCHIVED);
         $this->createTicket(
             'UNASSIGNED Test Ticket 26',
             $support,
+            $brand,
             $user,
             $admin,
             null,
@@ -136,6 +149,7 @@ class TermEngineDb extends AbstractDbSet
         $this->createTicket(
             'UNASSIGNED Test Ticket 27',
             $support,
+            $brand,
             $user,
             $admin,
             null,
@@ -144,6 +158,7 @@ class TermEngineDb extends AbstractDbSet
         $this->createTicket(
             'UNASSIGNED Test Ticket 28',
             $support,
+            $brand,
             $user,
             $admin,
             null,
@@ -158,6 +173,7 @@ class TermEngineDb extends AbstractDbSet
     protected function createTicket(
         $subject,
         Department $dep,
+        Brand $brand,
         Person $person,
         Person $agent = null,
         AgentTeam $agent_team = null,
@@ -173,6 +189,7 @@ class TermEngineDb extends AbstractDbSet
         $ticket->subject = 'Test';
         $ticket->setStatus($status);
         $ticket->agent_team = $agent_team;
+        $ticket->setBrand($brand);
 
         $message          = new TicketMessage();
         $message->person  = $person;
@@ -230,9 +247,9 @@ class TermEngineDb extends AbstractDbSet
             false
         );
 
-        $this->getDb()->insert('permissions', array('person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1));
+        $this->getDb()->insert('permissions', ['person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1]);
 
-        return array($admin, $agent, $agent_chris, $user);
+        return [$admin, $agent, $agent_chris, $user];
     }
 
     /**
@@ -248,8 +265,8 @@ class TermEngineDb extends AbstractDbSet
     }
 
     /**
-     * @param $admin
-     * @param $em
+     * @param Person        $admin
+     * @param EntityManager $em
      *
      * @throws \Exception
      */
@@ -279,7 +296,7 @@ class TermEngineDb extends AbstractDbSet
         // For the all agent group, fetch permissions from the template
         if ($AGENTGROUP_ALL) {
             $ch = new \Application\DeskPRO\ORM\CollectionHelper($admin, 'usergroups');
-            $ch->setCollection(array($AGENTGROUP_ALL));
+            $ch->setCollection([$AGENTGROUP_ALL]);
             $em->persist($admin);
             $em->flush();
         }
@@ -348,7 +365,7 @@ class TermEngineDb extends AbstractDbSet
     }
 
     /**
-     * @param $team_name
+     * @param       $team_name
      * @param array $members
      *
      * @return AgentTeam
@@ -371,10 +388,10 @@ class TermEngineDb extends AbstractDbSet
     protected function createCustomDataAndCustomFilters()
     {
         // CUSTOM DATA
-        $question_def             = new CustomDefTicket();
-        $question_def->title      = 'Favorite Color';
-        $question_def->dscription = 'Pick your favorite color';
-        $question_def->is_enabled = $question_def->is_user_enabled = true;
+        $question_def              = new CustomDefTicket();
+        $question_def->title       = 'Favorite Color';
+        $question_def->description = 'Pick your favorite color';
+        $question_def->is_enabled  = $question_def->is_user_enabled  = true;
 
         $option_def_green              = new CustomDefTicket();
         $option_def_green->title       = 'Green';
@@ -401,28 +418,28 @@ class TermEngineDb extends AbstractDbSet
         $this->getEm()->flush();
 
         // TICKETS WITH CUSTOM DATA
-        $ticket7             = $this->getEm()->getRepository('DeskPRO:Ticket')->find(7);
+        $ticket7             = $this->getEm()->getRepository(Ticket::class)->find(7);
         $ticket_data         = new CustomDataTicket();
         $ticket_data->field  = $question_def;
         $ticket_data->ticket = $ticket7;
         $ticket_data->value  = $option_def_red->getId();
         $this->getEm()->persist($ticket_data);
 
-        $ticket2             = $this->getEm()->getRepository('DeskPRO:Ticket')->find(2);
+        $ticket2             = $this->getEm()->getRepository(Ticket::class)->find(2);
         $ticket_data         = new CustomDataTicket();
         $ticket_data->field  = $question_def;
         $ticket_data->ticket = $ticket2;
         $ticket_data->value  = $option_def_blue->getId();
         $this->getEm()->persist($ticket_data);
 
-        $ticket4             = $this->getEm()->getRepository('DeskPRO:Ticket')->find(4);
+        $ticket4             = $this->getEm()->getRepository(Ticket::class)->find(4);
         $ticket_data         = new CustomDataTicket();
         $ticket_data->field  = $question_def;
         $ticket_data->ticket = $ticket4;
         $ticket_data->value  = $option_def_blue->getId();
         $this->getEm()->persist($ticket_data);
 
-        $ticket11            = $this->getEm()->getRepository('DeskPRO:Ticket')->find(11); // NOT "agent"
+        $ticket11            = $this->getEm()->getRepository(Ticket::class)->find(11); // NOT "agent"
         $ticket_data         = new CustomDataTicket(); // NOT "agent"
         $ticket_data->field  = $question_def; // NOT "agent"
         $ticket_data->ticket = $ticket11; // NOT "agent"
@@ -434,59 +451,59 @@ class TermEngineDb extends AbstractDbSet
         // ADD CUSTOM FILTER
 
         // tickets that are assigned to the current user, whos custom color field is RED
-        $term = new CompositeTerm(array(), TermInterface::OP_AND);
+        $term = new CompositeTerm([], TermInterface::OP_AND);
         $term->addTerm(
             new AgentTerm(
-                array(
-                    'agent_ids' => array(AgentTerm::ID_ME), // current agent
-                )
+                [
+                    'agent_ids' => [AgentTerm::ID_ME], // current agent
+                ]
             )
         );
         $term->addTerm(
             new TicketCustomDataTerm(
-                array(
+                [
                     'field_id' => $question_def->getId(),
-                    'values'   => array($option_def_red->getId()), // favorite color is RED
-                )
+                    'values'   => [$option_def_red->getId()], // favorite color is RED
+                ]
             )
         );
 
         $filter = new TicketFilter();
         $filter->setTitle('Fav. Color is Red');
         $filter->setTerm($term);
-        $filter->setFilterSet($this->getEm()->getRepository('App:TicketFilterSet')->find(1));
+        $filter->setFilterSet($this->getEm()->getRepository(TicketFilterSet::class)->find(1));
         $this->getEm()->persist($filter);
 
         // tickets that are assigned to the current user, whos custom color field is RED
-        $main_term = new CompositeTerm(array(), TermInterface::OP_AND);
+        $main_term = new CompositeTerm([], TermInterface::OP_AND);
         $main_term->addTerm(
             new AgentTerm(
-                array(
-                    'agent_ids' => array(AgentTerm::ID_ME), // current agent
-                )
+                [
+                    'agent_ids' => [AgentTerm::ID_ME], // current agent
+                ]
             )
         );
 
         // NOTE: this is NOT the only way to do this, because the TicketCustomDataTerm
         //       "values" option allows for an array of ids. This is for testing embedded
         //       composite values.
-        $embedded_or = new CompositeTerm(array(), TermInterface::OP_OR);
+        $embedded_or = new CompositeTerm([], TermInterface::OP_OR);
         $embedded_or->addTerm(
             new TicketCustomDataTerm(
-                array(
+                [
                     'field_id' => $question_def->getId(),
-                    'values'   => array($option_def_red->getId()),
+                    'values'   => [$option_def_red->getId()],
                     // favorite color is RED
-                )
+                ]
             )
         );
         $embedded_or->addTerm(
             new TicketCustomDataTerm(
-                array(
+                [
                     'field_id' => $question_def->getId(),
-                    'values'   => array($option_def_blue->getId()),
+                    'values'   => [$option_def_blue->getId()],
                     // favorite color is BLUE
-                )
+                ]
             )
         );
 
@@ -497,7 +514,7 @@ class TermEngineDb extends AbstractDbSet
         $filter = new TicketFilter();
         $filter->setTitle('Fav. Color is Red or Blue');
         $filter->setTerm($main_term);
-        $filter->setFilterSet($this->getEm()->getRepository('App:TicketFilterSet')->find(1));
+        $filter->setFilterSet($this->getEm()->getRepository(TicketFilterSet::class)->find(1));
         $this->getEm()->persist($filter);
     }
 }

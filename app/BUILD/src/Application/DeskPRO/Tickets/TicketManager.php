@@ -36,8 +36,12 @@ namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\AppInstance;
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Monolog\Logger as DpLogger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
@@ -104,7 +108,7 @@ class TicketManager
 
         $this->save_actions[] = new TicketSaveActions\VerifyCreationSystem();
         $this->save_actions[] = new TicketSaveActions\VerifyRef($container->getRefGenerator());
-        $this->save_actions[] = new TicketSaveActions\VerifyOrgManagers($container->getEm()->getRepository('DeskPRO:Organization'));
+        $this->save_actions[] = new TicketSaveActions\VerifyOrgManagers($container->getEm()->getRepository(Organization::class));
         $this->save_actions[] = new TicketSaveActions\VerifyAgent($container->getAgentData());
         $this->save_actions[] = new TicketSaveActions\DetectAutoresponders(
             $container->getEm(),
@@ -115,13 +119,17 @@ class TicketManager
         );
 
         $this->post_save_actions[] = new TicketSaveActions\SaveContextualFields($container->getCustomFieldManager());
-        $this->post_save_actions[] = new TicketSaveActions\ExecTriggers($container->getEm()->getRepository('DeskPRO:TicketTrigger'), new ActionApplicator($container));
+        $this->post_save_actions[] = new TicketSaveActions\ExecTriggers($container->getEm()->getRepository(TicketTrigger::class), new ActionApplicator($container));
+        $this->post_save_actions[] = new TicketSaveActions\VerifyBrand(
+            $container->getEm()->getRepository(Brand::class),
+            $container->getSetting('portal.default_brand')
+        );
         $this->post_save_actions[] = new TicketSaveActions\VerifyDepartment(
             $container->getTicketDepartments(),
             $container->get('brand_form_helper')
         );
         $this->post_save_actions[] = new TicketSaveActions\SetActionTimes();
-        $this->post_save_actions[] = new TicketSaveActions\ApplySlas($container->getEm()->getRepository('DeskPRO:Sla')->getAutoSlas(), $container->getEm(), new SlaClientMessageSender($container->getDb()));
+        $this->post_save_actions[] = new TicketSaveActions\ApplySlas($container->getEm()->getRepository(Sla::class)->getAutoSlas(), $container->getEm(), new SlaClientMessageSender($container->getDb()));
         $this->post_save_actions[] = new TicketSaveActions\RecalculateSlas($container->getEm(), new ActionApplicator($container));
         $this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($container->getEm());
         $this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container);
@@ -193,7 +201,7 @@ class TicketManager
         // This will cause less locking if we are outside of a transaction
         $ref_gen = $this->container->getRefGenerator();
         try {
-            $ticket->ref = $ref_gen->generateReference('DeskPRO:Ticket');
+            $ticket->ref = $ref_gen->generateReference(Ticket::class);
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
             $ref         = DpStrings::random(4, Strings::CHARS_ALPHA_IU).'-'.DpStrings::random(4, Strings::CHARS_NUM).'-'.DpStrings::random(4, Strings::CHARS_ALPHA_IU).'-'.date('ymd');
@@ -218,7 +226,7 @@ class TicketManager
      */
     public function getTicket($id)
     {
-        $ticket = $this->em->find('DeskPRO:Ticket', $id);
+        $ticket = $this->em->find(Ticket::class, $id);
         if ($ticket) {
             $ticket->disableAutoTicketProcess();
         }

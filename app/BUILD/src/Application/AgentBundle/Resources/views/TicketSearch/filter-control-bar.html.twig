@@ -38,6 +38,10 @@
         <li data-order-by="time_waiting_desc"><label class="label">{{ phrase('agent.general.time_waiting') }}</label> <i class="order-dir">{{ phrase('agent.general.sort_desc') }}</i></li>
         <li data-order-by="total_user_waiting_asc"><label class="label">{{ phrase('agent.general.total_time_waiting') }}</label> <i class="order-dir">{{ phrase('agent.general.sort_asc') }}</i></li>
         <li data-order-by="total_user_waiting_desc"><label class="label">{{ phrase('agent.general.total_time_waiting') }}</label> <i class="order-dir">{{ phrase('agent.general.sort_desc') }}</i></li>
+		{%  if brands| length > 1 %}
+        <li data-order-by="brand_asc"><label class="label">{{ phrase('agent.general.brand') }}</label> <i class="order-dir">{{ phrase('agent.general.sort_asc') }}</i></li>
+        <li data-order-by="brand_desc"><label class="label">{{ phrase('agent.general.brand') }}</label> <i class="order-dir">{{ phrase('agent.general.sort_desc') }}</i></li>
+		{% endif %}
 		{% for f in app.getTicketFieldManager().getFields() %}
 			<li data-order-by="ticket_field_{{ f.id }}_asc"><label class="label">{{ f.title }}</label> <i class="order-dir">{{ phrase('agent.general.sort_asc') }}</i></li>
 			<li data-order-by="ticket_field_{{ f.id }}_desc"><label class="label">{{ f.title }}</label> <i class="order-dir">{{ phrase('agent.general.sort_desc') }}</i></li>
@@ -64,6 +68,9 @@
 		<li data-group-by="user_waiting">{{ phrase('agent.general.time_waiting') }}</li>
 		<li data-group-by="total_user_waiting">{{ phrase('agent.general.total_time_waiting') }}</li>
 		<li data-group-by="date_created">{{ phrase('agent.general.time_since_creation') }}</li>
+		{%  if brands| length > 1 %}
+			<li data-group-by="brand">{{ phrase('agent.general.brand') }}</li>
+		{% endif %}
 		{% for f in app.getTicketFieldManager().getFields() %}
 			<li data-group-by="ticket_field_{{ f.id }}">{{ f.title }}</li>
 		{% endfor %}

@@ -145,7 +145,9 @@
             </li>
             <li tooltip="User Interface" tooltip-append-to-body="true"
                 tooltip-placement="right" dp-state-mark="portal">
-                <a href="#/portal"><i class="app-icon app-icon-portal"></i></a>
+                <a href="#/portal/{{  app.getSetting('portal.default_brand') }}">
+                    <i class="app-icon app-icon-portal"></i>
+                </a>
             </li>
             <li tooltip="{{ phrase('adm.general.apps_chat') }}" tooltip-append-to-body="true" tooltip-placement="right"
                 dp-state-mark="chat">

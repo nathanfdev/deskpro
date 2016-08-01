@@ -43,7 +43,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\Exception\InvalidArgumentException;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A service responsible for making sense of "Fields". Usually, special strings (see FormFields class), need to be
@@ -202,6 +201,7 @@ class CustomFieldManager
 
     /**
      * @param $context
+     *
      * @return ArrayCollection
      */
     public function getAvailableContextualDefs($context)
@@ -224,11 +224,13 @@ class CustomFieldManager
             ->orderBy('c.display_order')
         ;
         $result = new ArrayCollection($qb->getQuery()->getResult());
+
         return $result;
     }
 
     /**
      * @param $context
+     *
      * @return ArrayCollection collection of {parent_id => children collection} for current context
      */
     public function getAvailableContextualDefsChildren($context)

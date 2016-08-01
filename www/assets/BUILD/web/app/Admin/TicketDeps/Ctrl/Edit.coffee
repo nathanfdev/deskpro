@@ -73,6 +73,7 @@ define [
         @usergroups  = data.usergroups
         @agentgroups = data.agentgroups
         @agents      = data.agents
+        @brands      = data.brands
 
         @email_accounts  = data.email_accounts
         @dep_parent_list = data.dep_parent_list
@@ -197,7 +198,9 @@ define [
       promise.then(=>
         triggerSaver()
 
-        if @dep.has_children then return
+        if @dep.has_children
+          @successSaving()
+          return
 
         if (@form.use_custom_layout)
           @Api.sendPostJson("/ticket_layouts/#{@dep.id}", {layout: @form.custom_layout}).then(-> deferred2.resolve())
@@ -214,14 +217,17 @@ define [
 
       deferred2.promise.then(=>
         @origForm = Util.clone(@form, true)
-        @stopSpinner('saving_dep').then(=>
-          @Growl.success(@getRegisteredMessage('saved_dep'), =>
-            @$state.go('tickets.ticket_deps.edit', {id: @dep.id})
-          )
-        )
+        @successSaving()
       )
 
       return deferred2.promise
+
+    successSaving: ->
+      @stopSpinner('saving_dep').then(=>
+        @Growl.success(@getRegisteredMessage('saved_dep'), =>
+          @$state.go('tickets.ticket_deps.edit', {id: @dep.id})
+        )
+      )
 
     propogatePermission: (obj, perm) ->
       if @_propogatePermission_running then return
@@ -292,6 +298,20 @@ define [
         () =>
           @$scope.uploading = false
       )
+
+
+    handleBrand: (brandId, e) ->
+      index = @form.brands.indexOf brandId
+      if index == -1
+        @form.brands.unshift brandId
+      else
+        if (@form.brands.length > 1)
+          @form.brands.splice(index, 1)
+        else
+          alert "Departments need to be linked to at least one Brand"
+          $(e.target).prop("checked", true)
+          return true
+
 
 
 

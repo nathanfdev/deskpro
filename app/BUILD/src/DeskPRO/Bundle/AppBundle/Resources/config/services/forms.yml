@@ -19,7 +19,7 @@ services:
   # helpers
   form_hierarchy_generator:
     class: DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator
-    arguments: ["@doctrine.orm.default_entity_manager", "@data.departments", "@data.feedback", "@language_manager"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@data.departments", "@data.feedback", "@language_manager", "@brand_stack"]
 
   custom_field_manager:
     class: DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager
@@ -287,3 +287,10 @@ services:
       arguments: ["@doctrine.orm.default_entity_manager"]
       tags:
         - { name: form.type, alias: dp_category_builder }
+
+  form.department:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType
+    arguments:
+      - "@brand_stack"
+    tags:
+      - { name: form.type }

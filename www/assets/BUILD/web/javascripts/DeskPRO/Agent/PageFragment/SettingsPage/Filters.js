@@ -47,7 +47,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Filters = new Orb.Class({
 				url: BASE_URL + 'agent/misc/ajax-save-prefs',
 				data: postData
 			});
-		}
+		};
 
 		this.el.find('.filter-hidden-check').on('click', function(ev) {
 			if (!DeskPRO_Window || !DeskPRO_Window.sections.tickets_section) {

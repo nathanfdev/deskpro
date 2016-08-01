@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\Departments\Form\Type;
 
 use Application\DeskPRO\Departments\TicketDepartmentEdit;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Form\Type\PermissionRowType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
@@ -50,7 +51,7 @@ class TicketDepartmentType extends AbstractType
             'allow_delete' => true,
         ]);
         $builder->add('move_department', 'entity', [
-            'class'         => 'DeskPRO:Department',
+            'class'         => Department::class,
             'required'      => false,
             'query_builder' => function (EntityRepository $er) {
                 return $er->createQueryBuilder('d')->where('d.is_tickets_enabled = true AND d.parent IS NULL')->orderBy('d.display_order', 'ASC');

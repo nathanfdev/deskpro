@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\Brand;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -55,6 +57,11 @@ class GlossaryHandler
     protected $db;
 
     /**
+     * @var Brand
+     */
+    protected $brand;
+
+    /**
      * All words defined.
      *
      * @var array
@@ -64,12 +71,13 @@ class GlossaryHandler
     /**
      * @var array
      */
-    protected $_defs = array();
+    protected $_defs = [];
 
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, Brand $brand)
     {
-        $this->em = $em;
-        $this->db = $em->getConnection();
+        $this->em    = $em;
+        $this->db    = $em->getConnection();
+        $this->brand = $brand;
     }
 
     protected function _initWords()
@@ -78,15 +86,17 @@ class GlossaryHandler
             return;
         }
 
-        $this->_words = $this->db->fetchAllCol('
-            SELECT word
-            FROM glossary_words
-        ');
+        $qb = $this->db->createQueryBuilder();
+        $qb->select(['word'])
+            ->from('glossary_words', 'gw')
+            ->andWhere($qb->expr()->eq('gw.brand_id', '?'));
+
+        $this->_words = $this->db->fetchAllCol($qb->getSQL(), [$this->brand->getId()]);
     }
 
     public function clear()
     {
-        $this->_defs = array();
+        $this->_defs = [];
     }
 
     public function loadWords(array $words)
@@ -97,18 +107,21 @@ class GlossaryHandler
 
         $load = array_diff($words, array_keys($this->_defs));
         if ($load) {
-            $words = $this->db->fetchAllKeyValue('
-                SELECT word, glossary_word_definitions.definition
-                FROM glossary_words
-                INNER JOIN glossary_word_definitions ON (glossary_words.definition_id = glossary_word_definitions.id)
-                WHERE word IN (?)
-            ', array($load), array(Connection::PARAM_STR_ARRAY));
+            $qb = $this->db->createQueryBuilder();
+            $qb->select(['word', 'gwd.definition'])
+                ->from('glossary_words', 'gw')
+                ->innerJoin('gw', 'glossary_word_definitions', 'gwd', 'gw.definition_id = gwd.id')
+                ->andWhere($qb->expr()->in('word', '?'))
+                ->andWhere($qb->expr()->eq('gw.brand_id', '?'))
+                ->setParameter('load', $load);
+            $words = $this->db->fetchAllKeyValue($qb->getSQL(), [$load, $this->brand->getId()],
+                [Connection::PARAM_STR_ARRAY]);
 
             $this->_defs = array_merge($this->_defs, $words);
         }
     }
 
-    public function getWordDefs(array $words = array())
+    public function getWordDefs(array $words = [])
     {
         $this->loadWords($words);
 
@@ -124,7 +137,7 @@ class GlossaryHandler
     {
         $this->_initWords();
 
-        $load = array();
+        $load = [];
         foreach ($this->_words as $word) {
             if (preg_match('#\b'.preg_quote($word, '#').'\b#i', $text)) {
                 $load[] = $word;
@@ -143,14 +156,14 @@ class GlossaryHandler
     {
         $this->_initWords();
 
-        $load = array();
+        $load = [];
         foreach ($this->_words as $word) {
             if (preg_match('#\b'.preg_quote($word, '#').'\b#i', $text)) {
                 $load[] = $word;
             }
         }
 
-        $url_base = App::getRouter()->generate('agent_glossary_word_tip', array('word' => '__DP_WORD__'));
+        $url_base = App::getRouter()->generate('agent_glossary_word_tip', ['word' => '__DP_WORD__']);
 
         foreach ($load as $word) {
             $word_h = htmlentities($word);
@@ -162,10 +175,10 @@ class GlossaryHandler
                     $url = str_replace('__DP_WORD__', $word_u, $url_base);
 
                     return $m[1]
-                        .'<span class="embedded-glossary-word tipped" data-glossary-word="'.$word_h.'" data-tipped="'.$url.'" data-tipped-options="ajax:true">'
-                        .$m[2]
-                        .'</span>'
-                        .$m[3];
+                    .'<span class="embedded-glossary-word tipped" data-glossary-word="'.$word_h.'" data-tipped="'.$url.'" data-tipped-options="ajax:true">'
+                    .$m[2]
+                    .'</span>'
+                    .$m[3];
                 },
                 $text,
                 1

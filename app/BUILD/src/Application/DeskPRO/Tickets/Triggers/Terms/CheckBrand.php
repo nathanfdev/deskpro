@@ -26,36 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
+namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
-use Application\DeskPRO\Entity\Article;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ArticleCsv;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Content as ContentModel;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Orb\Util\CheckedOptionsArray;
 
-class ArticleHandler extends AbstractEntityHandler
+/**
+ * Checks if a brand is set.
+ *
+ * @option int[] brand_ids
+ */
+class CheckBrand extends AbstractTriggerTerm
 {
     /**
      * {@inheritdoc}
-     *
-     * @param Article $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    protected function getOptionsDef()
     {
-        $serializerClass = $context->getMappedClass(get_class($entity));
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('brand_ids');
 
-        if ($serializerClass === ArticleCsv::class) {
-            return new ArticleCsv($entity);
-        }
-
-        return new ContentModel($entity);
+        return $options;
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function getClassNames()
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
     {
-        return [Article::class];
+        $options = $this->getTermOptions();
+
+        return $this->isEntityMatch($ticket, $context, 'brand', 'id', $options['brand_ids']);
     }
 }

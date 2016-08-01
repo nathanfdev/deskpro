@@ -122,6 +122,10 @@ class RouterWithDynamicContext implements RouterInterface, RouterDecorator, Requ
             $context = $prevContext;
         }
 
+        if (isset($parameters['brand'])) {
+            unset($parameters['brand']);
+        }
+
         if ($context !== $prevContext) {
             $this->setContext($context);
         }
@@ -138,9 +142,9 @@ class RouterWithDynamicContext implements RouterInterface, RouterDecorator, Requ
     /**
      * {@inheritdoc}
      */
-    public function match($pathinfo)
+    public function match($pathInfo)
     {
-        return $this->router->match($pathinfo);
+        return $this->router->match($pathInfo);
     }
 
     /**

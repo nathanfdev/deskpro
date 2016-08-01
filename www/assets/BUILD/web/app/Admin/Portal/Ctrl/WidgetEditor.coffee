@@ -31,6 +31,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       @$scope.flag_has_changed = false
       @$scope.section = 'button_settings'
       @$scope.emailSendInstructions = ''
+      @$scope.brand_id = @$stateParams.brandId
 
       @chatFieldsSortOptions = {
         axis: 'y',
@@ -63,9 +64,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       promises = []
 
       # todo better get stored data from local storage
-      savedSettings = localStorage.getItem 'dpWidgetSettings'
+      savedSettings = localStorage.getItem 'dpWidgetSettings'+@$scope.brand_id
 
-      promise = @Api2.sendGet('/widget/setup')
+      promise = @Api2.sendGet('/settings/brands/'+@$scope.brand_id+'/widget/setup')
       promise.then (response) =>
         data = response.data.data
         @$scope.remote_settings = JSON.parse(JSON.stringify(data.settings))
@@ -196,14 +197,14 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
 
     discard: ->
       if confirm("Current edit on the settings will be overridden. Are your sure?")
-        localStorage.removeItem 'dpWidgetSettings'
+        localStorage.removeItem 'dpWidgetSettings'+@$scope.brand_id
         @initialLoad(true).then =>
           @Growl.success "Settings reseted"
 
     reset: ->
       if confirm("Current edit on the settings will be reseted. Are your sure?")
-        localStorage.removeItem 'dpWidgetSettings'
-        @Api2.sendDelete('widget/setup').then =>
+        localStorage.removeItem 'dpWidgetSettings'+@$scope.brand_id
+        @Api2.sendDelete('settings/brands/'+@$scope.brand_id+'/widget/setup').then =>
           @initialLoad(true).then =>
             @Growl.success "Settings reseted"
 
@@ -273,9 +274,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
 
     loadCode: (withOptions = false) ->
       if withOptions
-        @Api2.sendGet("widget/code?options=1")
+        @Api2.sendGet('settings/brands/'+@$scope.brand_id+'/widget/code?options=1')
       else
-        @Api2.sendGet("widget/code")
+        @Api2.sendGet('settings/brands/'+@$scope.brand_id+'/widget/code')
 
     updateChatCode: ->
       @$scope.code = ''
@@ -292,7 +293,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       for field in @$scope.chat_custom_fields
         promises.push @Api2.sendPutJson('/user_chat_custom_fields/'+field.id, field, null, headers: {'X-Agent-Request': 'true'})
 
-      promise = @Api2.sendPostJson('/widget/setup', @getWidgetSaveData(), null, headers: {'X-Agent-Request': 'true'})
+      promise = @Api2.sendPostJson('/settings/brands/'+@$scope.brand_id+'/widget/setup', @getWidgetSaveData(), null, headers: {'X-Agent-Request': 'true'})
       promise.then(
         () => @loadCode().then (codeResponse) =>
           @$scope.code = codeResponse.data
@@ -310,7 +311,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
         @stopSpinner('saving')
         @$scope.remote_settings = angular.copy(@getWidgetSaveData())
         @$scope.flag_has_changed = @hasChanged()
-        localStorage.removeItem 'dpWidgetSettings'
+        localStorage.removeItem 'dpWidgetSettings'+@$scope.brand_id
         @Growl.success "Settings saved"
       , (info) =>
         @stopSpinner('saving', true)
@@ -342,7 +343,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
 
     updateLiveDemo: () ->
       @$scope.flag_has_changed = @hasChanged()
-      localStorage.setItem 'dpWidgetSettings', JSON.stringify(@getWidgetSaveData())
+      localStorage.setItem 'dpWidgetSettings'+@$scope.brand_id, JSON.stringify(@getWidgetSaveData())
       if (@getDpWidget())
         @getDpWidget().dispatchCustomEvent('reloadOptions', @getOptions(true))
         @getDpWidget().dispatchCustomEvent('reloadSettings', @$scope.global_settings)

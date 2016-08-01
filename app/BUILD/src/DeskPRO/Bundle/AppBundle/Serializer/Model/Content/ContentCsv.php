@@ -28,12 +28,12 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
-use Application\DeskPRO\Entity\ContentAbstract;
+use Application\DeskPRO\Entity\ContentAbstract as ContentAbstractEntity;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\News;
 use JMS\Serializer\Annotation as JMS;
 
-class ContentCsv extends Content
+class ContentCsv extends ContentAbstract
 {
     /**
      * Person created this content first time.
@@ -59,9 +59,9 @@ class ContentCsv extends Content
     /**
      * Constructor.
      *
-     * @param \Application\DeskPRO\Entity\ContentAbstract $entity
+     * @param ContentAbstractEntity $entity
      */
-    public function __construct(ContentAbstract $entity)
+    public function __construct(ContentAbstractEntity $entity)
     {
         parent::__construct($entity);
 

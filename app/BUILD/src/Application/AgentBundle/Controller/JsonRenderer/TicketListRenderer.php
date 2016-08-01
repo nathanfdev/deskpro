@@ -33,6 +33,8 @@
 namespace Application\AgentBundle\Controller\JsonRenderer;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
@@ -92,16 +94,16 @@ class TicketListRenderer
     public function renderTicketDisplayArray($fn_visitor = null)
     {
         if (!$this->ticket_display->getCount()) {
-            return array();
+            return [];
         }
 
         #------------------------------
         # Precache data
         #------------------------------
 
-        $org_ids    = array();
-        $person_ids = array();
-        $ticket_ids = array();
+        $org_ids    = [];
+        $person_ids = [];
+        $ticket_ids = [];
 
         foreach ($this->ticket_display->getTickets() as $ticket) {
             $ticket_ids[] = $ticket->id;
@@ -112,7 +114,7 @@ class TicketListRenderer
         }
 
         if ($org_ids) {
-            $this->cache_orgs = $this->em->getRepository('DeskPRO:Organization')->getByIds($org_ids);
+            $this->cache_orgs = $this->em->getRepository(Organization::class)->getByIds($org_ids);
             $this->cache_orgs = Arrays::keyFromData($this->cache_orgs, 'id');
         }
 
@@ -120,7 +122,7 @@ class TicketListRenderer
         # Generate data array
         #------------------------------
 
-        $json_array = array();
+        $json_array = [];
 
         foreach ($this->ticket_display->getTickets() as $ticket) {
             $data = $this->renderTicket($ticket);
@@ -154,7 +156,7 @@ class TicketListRenderer
      */
     private function renderTicket(Ticket $ticket)
     {
-        $data = array();
+        $data = [];
 
         $data['id']                     = $ticket->id;
         $data['ref']                    = $ticket->ref;
@@ -171,7 +173,7 @@ class TicketListRenderer
         $data['count_user_replies']     = $ticket->count_user_replies;
         $data['feedback_rating']        = $ticket->feedback_rating;
 
-        foreach (array('date_feedback_rating', 'date_created', 'date_resolved', 'date_archived', 'date_first_agent_assign', 'date_first_agent_reply', 'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'date_status', 'date_locked') as $field) {
+        foreach (['date_feedback_rating', 'date_created', 'date_resolved', 'date_archived', 'date_first_agent_assign', 'date_first_agent_reply', 'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'date_status', 'date_locked'] as $field) {
             if ($ticket->$field) {
                 if ($timezone = $this->person ? new \DateTimeZone($this->person->getTimezone()) : null) {
                     $ticket->$field->setTimezone($timezone);
@@ -188,7 +190,8 @@ class TicketListRenderer
         $data['worst_sla_status']     = $ticket->worst_sla_status;
         $data['waiting_times']        = $ticket->waiting_times;
 
-        foreach (array('language', 'department', 'category', 'priority', 'workflow', 'product', 'person', 'agent', 'agent_team', 'organization', 'locked_by_agent') as $field) {
+        foreach (['language', 'department', 'brand', 'category', 'priority', 'workflow', 'product', 'person', 'agent',
+                  'agent_team', 'organization', 'locked_by_agent', ] as $field) {
             $data[$field] = null;
 
             if (!$ticket->$field) {
@@ -196,34 +199,44 @@ class TicketListRenderer
             }
 
             switch ($field) {
-                case 'langauge':
+                case 'language':
                     $lang = $this->container->getLanguageData()->get($ticket->language->getId());
                     if ($lang) {
-                        $data['language'] = array('id' => $lang->id, 'title' => $lang->title);
+                        $data['language'] = ['id' => $lang->id, 'title' => $lang->title];
                     }
                     break;
 
                 case 'department':
                     $dep = $this->container->getDataService('Department')->get($ticket->department->getId());
                     if ($dep) {
-                        $data['department'] = array(
+                        $data['department'] = [
                             'id'         => $dep->id,
                             'title'      => $dep->title,
                             'title_full' => $dep->getFullTitle(),
-                        );
+                        ];
 
-                        foreach (array(80, 64, 50, 45, 32, 22, 16) as $size) {
+                        foreach ([80, 64, 50, 45, 32, 22, 16] as $size) {
                             $data['department']['avatar_url_'.$size] = $dep->getAvatarUrl($size);
                         }
                     }
                     break;
 
+                case 'brand':
+                    $brand = $ticket->getBrand();
+                    if ($brand) {
+                        $data['brand'] = [
+                            'id'   => $brand->getId(),
+                            'name' => $brand->getName(),
+                        ];
+                    }
+                    break;
+
                 case 'organization':
                     if (isset($this->cache_orgs[$ticket->organization->getId()])) {
-                        $data['organization'] = array(
+                        $data['organization'] = [
                             'id'   => $this->cache_orgs[$ticket->organization->getId()]->id,
                             'name' => $this->cache_orgs[$ticket->organization->getId()]->name,
-                        );
+                        ];
                     }
                     break;
 
@@ -241,12 +254,12 @@ class TicketListRenderer
                     break;
 
                 case 'agent_team':
-                    $data['agent_team'] = array(
+                    $data['agent_team'] = [
                         'id'   => $ticket->agent_team['id'],
                         'name' => $ticket->agent_team['name'],
-                    );
+                    ];
 
-                    foreach (array(80, 64, 50, 45, 32, 22, 16) as $size) {
+                    foreach ([80, 64, 50, 45, 32, 22, 16] as $size) {
                         $data['agent_team']['avatar_url_'.$size] = $ticket->agent_team->getAvatarUrl($size);
                     }
 
@@ -276,12 +289,12 @@ class TicketListRenderer
             }
         }
 
-        $data['ticket_slas'] = array();
+        $data['ticket_slas'] = [];
         foreach ($this->ticket_display->getTicketSlas($ticket) as $sla) {
-            $sla['sla'] = array(
+            $sla['sla'] = [
                 'id'    => $sla['sla_id'],
                 'title' => $sla['title'],
-            );
+            ];
             if ($sla['warn_date']) {
                 $sla['warn_date_ts'] = \DateTime::createFromFormat('YYYY-mm-dd H:i:s', $sla['warn_date']);
             } else {
@@ -293,7 +306,7 @@ class TicketListRenderer
                 $sla['fail_date_ts'] = 0;
             }
 
-            $times = array();
+            $times = [];
             if ($sla['warn_date_ts']) {
                 $times[] = $sla['warn_date_ts'];
             }
@@ -309,23 +322,23 @@ class TicketListRenderer
             $data['ticket_slas'][] = $sla;
         }
 
-        $data['previews'] = array();
+        $data['previews'] = [];
         foreach ($this->ticket_display->getTicketPreview($ticket) as $m) {
-            $data['previews'][] = array(
-                'message' => array(
+            $data['previews'][] = [
+                'message' => [
                     'id'              => $m['id'],
                     'preview_text'    => $m['preview_text'],
                     'date_created'    => $m['date_created']->format('Y-m-d H:i:s'),
                     'date_created_ts' => $m['date_created']->getTimestamp(),
                     'status'          => $m['status'],
-                ),
-                'person' => array(
+                ],
+                'person' => [
                     'id'             => $m['person_id'],
                     'display_name'   => $m['display_name'],
                     'is_agent'       => $m['is_agent'],
                     'picture_url_16' => $m['picture_url_16'],
-                ),
-            );
+                ],
+            ];
         }
 
         $data['flag'] = $this->ticket_display->getFlaggedColor($ticket);
@@ -336,7 +349,7 @@ class TicketListRenderer
 
     private function renderPerson(Person $person)
     {
-        $data = array();
+        $data = [];
 
         $data['id']                    = $person->id;
         $data['is_contact']            = $person->is_contact;
@@ -364,10 +377,10 @@ class TicketListRenderer
 
         $data['display_name'] = $person->getDisplayName();
         if ($person->primary_email) {
-            $data['primary_email'] = array(
+            $data['primary_email'] = [
                 'id'    => $person->primary_email->id,
                 'email' => $person->primary_email->email,
-            );
+            ];
         }
 
         $data['picture_url']    = $person->getPictureUrl();
@@ -394,13 +407,13 @@ class TicketListRenderer
 
     protected function renderAvailableActions(Ticket $ticket, array &$display)
     {
-        $display['actions_allowed'] = array();
+        $display['actions_allowed'] = [];
         if (!$this->person) {
             return;
         }
         /** @var TicketChecker $checker */
         $checker = $this->person->PermissionsManager->TicketChecker;
-        $actions = array('set_resolved', 'set_awaiting_user', 'set_awaiting_agent', 'assign_self', 'assign_agent', 'assign_team');
+        $actions = ['set_resolved', 'set_awaiting_user', 'set_awaiting_agent', 'assign_self', 'assign_agent', 'assign_team'];
         foreach ($actions as $action) {
             if ($checker->canModify($ticket, $action)) {
                 $display['actions_allowed'][] = $action;

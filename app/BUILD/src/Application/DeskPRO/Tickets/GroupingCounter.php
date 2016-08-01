@@ -35,7 +35,11 @@ namespace Application\DeskPRO\Tickets;
 use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Handler\Date;
 use Application\DeskPRO\CustomFields\Handler\DateTime;
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Searcher\TicketSearch;
+use DeskPRO\Component\Util\MapUtils;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
@@ -57,11 +61,11 @@ class GroupingCounter
     /** @var string */
     protected $mode = 'unassigned';
     /** @var array */
-    protected $tickets = array();
+    protected $tickets = [];
     /** @var int|null */
     protected $this_person = null;
     /** @var array */
-    protected $terms = array();
+    protected $terms = [];
     /** @var string */
     protected $grouping_summary = '';
 
@@ -91,7 +95,7 @@ class GroupingCounter
             Arrays::unshiftAssoc($titles2, -1, 'TOTAL');
         }
 
-        $items = array();
+        $items = [];
 
         foreach ($titles1 as $field1 => $field1_title) {
             if (!isset($counts[$field1])) {
@@ -100,20 +104,20 @@ class GroupingCounter
 
             $countinfo = $counts[$field1];
 
-            $row          = array();
+            $row          = [];
             $row['id']    = $field1;
             $row['title'] = $field1_title;
             $row['total'] = $countinfo['total'];
 
             if (!empty($countinfo['sub'])) {
-                $row['sub'] = array();
+                $row['sub'] = [];
                 foreach ($titles2 as $field2 => $field2_title) {
                     if (!isset($countinfo['sub'][$field2])) {
                         continue;
                     }
                     $countinfo2 = $countinfo['sub'][$field2];
 
-                    $row2          = array();
+                    $row2          = [];
                     $row2['id']    = $field2;
                     $row2['title'] = $field2_title;
                     $row2['total'] = $countinfo2['total'];
@@ -129,21 +133,21 @@ class GroupingCounter
         # Now fetch hierarchy which might be used
         #------------------------------
 
-        $group2_structure = array();
+        $group2_structure = [];
         $group1_structure = $this->getFieldStructure($this->grouping1, $titles1, $display_elements['ids1']);
 
         if ($this->grouping2) {
             $group2_structure = $this->getFieldStructure($this->grouping2, $titles2, $display_elements['ids2']);
         }
 
-        return array(
+        return [
             'items'            => $items,
             'counts'           => $counts,
             'titles1'          => $titles1,
             'titles2'          => $titles2,
             'group1_structure' => $group1_structure,
             'group2_structure' => $group2_structure,
-        );
+        ];
     }
 
     /**
@@ -153,7 +157,7 @@ class GroupingCounter
      */
     public function sortDisplayArray(array &$display_array)
     {
-        uasort($display_array, array($this, '_sortDisplayArrayCallback'));
+        uasort($display_array, [$this, '_sortDisplayArrayCallback']);
     }
 
     public function _sortDisplayArrayCallback($a, $b)
@@ -170,7 +174,7 @@ class GroupingCounter
         if ($this->isTimeField($grouping)) {
             return $this->makeTimeFieldSelect($grouping, $field);
         } elseif ($grouping == 'language') {
-            $default = App::getEntityRepository('DeskPRO:Language')->getDefault();
+            $default = App::getEntityRepository(Language::class)->getDefault();
 
             return "COALESCE(tickets.language_id, {$default['id']}) AS $field";
         } elseif ($f = $this->getCustomDefField($grouping)) {
@@ -230,16 +234,16 @@ class GroupingCounter
         // Doing a search on a sys-type filter at the same time
 
         if ($this->mode != self::MODE_SPECIFY) {
-            $wheres = array('tickets.status = \'open\'');
+            $wheres = ['tickets.status = \'open\''];
 
             // Standard agent perms
-            $agent = App::getEntityRepository('DeskPRO:Person')->find($this->this_person);
+            $agent = App::getEntityRepository(Person::class)->find($this->this_person);
             $agent->loadHelper('AgentPermissions');
             $agent->loadHelper('AgentTeam');
 
             // perms only matter if person has permissions applied at all
             if ($agent->getDisallowedDepartments()) {
-                $where_perm   = array();
+                $where_perm   = [];
                 $where_perm[] = "tickets.agent = {$agent['id']}";
 
                 if ($agent->getAgentTeamIds()) {
@@ -285,10 +289,10 @@ class GroupingCounter
                 $group_by WITH ROLLUP
             ";
 
-        // We have ticket IDs already (mode = specify)
+            // We have ticket IDs already (mode = specify)
         } else {
             if (!$this->tickets) {
-                return array();
+                return [];
             }
 
             $wheres[] = 'tickets.id IN ('.implode(',', $this->tickets).')';
@@ -317,11 +321,11 @@ class GroupingCounter
      */
     public function isTimeField($field)
     {
-        return in_array($field, array(
+        return in_array($field, [
             TicketSearch::TERM_USER_WAITING,
             TicketSearch::TERM_TOTAL_USER_WAITING,
             TicketSearch::TERM_DATE_CREATED,
-        ));
+        ]);
     }
 
     /**
@@ -357,7 +361,7 @@ class GroupingCounter
 
         $sql = 'CASE ';
 
-        $parts = array();
+        $parts = [];
         foreach ($times as $t) {
             if ($field == TicketSearch::TERM_TOTAL_USER_WAITING) {
                 // total time is stored in seconds, so we're not doing a date compare
@@ -397,13 +401,13 @@ class GroupingCounter
         # Get titles for each grouping, and sort into a keyed structure
         #------------------------------
 
-        $ids1 = array();
-        $ids2 = array();
+        $ids1 = [];
+        $ids2 = [];
 
         // $counts_structure becomes:
         // array(field1 => array(total => xxx, sub => array(someid => 123, someid2 => 123 ...) )
 
-        $counts_structured = array();
+        $counts_structured = [];
         foreach ($counts as $count) {
             // Store ID's
             if ($count['field1'] !== null) {
@@ -428,9 +432,9 @@ class GroupingCounter
 
             // Init array keys
             if (!isset($counts_structured[$count['field1']])) {
-                $counts_structured[$count['field1']] = array('total' => $count['total']);
+                $counts_structured[$count['field1']] = ['total' => $count['total']];
                 if ($this->grouping2) {
-                    $counts_structured[$count['field1']]['sub'] = array();
+                    $counts_structured[$count['field1']]['sub'] = [];
                 }
             }
 
@@ -456,19 +460,19 @@ class GroupingCounter
             $titles2 = $this->getFieldTitles($this->grouping2, $ids2);
         }
 
-        return array(
+        return [
             'titles1' => $titles1,
             'titles2' => $titles2,
             'ids1'    => $ids1,
             'ids2'    => $ids2,
             'counts'  => $counts_structured,
-        );
+        ];
     }
 
     /**
      * Get's a hierarchy array of titles for use in a template.
      *
-     * @param $field
+     * @param       $field
      * @param array $titles
      * @param array $ids
      *
@@ -483,24 +487,24 @@ class GroupingCounter
 
             case TicketSearch::TERM_CATEGORY:
                 $group_structure      = App::getDataService('TicketCategory')->getInHierarchy();
-                $group_structure['0'] = array('id' => 0, 'title' => App::getTranslator()->phrase('agent.general.none'));
+                $group_structure['0'] = ['id' => 0, 'title' => App::getTranslator()->phrase('agent.general.none')];
                 break;
 
             case TicketSearch::TERM_PRODUCT:
                 $group_structure      = App::getDataService('Product')->getInHierarchy();
-                $group_structure['0'] = array('id' => 0, 'title' => App::getTranslator()->phrase('agent.general.none'));
+                $group_structure['0'] = ['id' => 0, 'title' => App::getTranslator()->phrase('agent.general.none')];
                 break;
 
             default:
-                $group_structure = array();
+                $group_structure = [];
                 foreach ($titles as $id => $t) {
-                    $group_structure[$id] = array('id' => $id, 'title' => $t);
+                    $group_structure[$id] = ['id' => $id, 'title' => $t];
                 }
 
                 // Make note of unknown items (should never happen, but better to include than not!)
                 foreach ($ids as $id) {
                     if (!isset($group_structure[$id])) {
-                        $group_structure[$id] = array('id' => $id, 'title' => "Unknown $id");
+                        $group_structure[$id] = ['id' => $id, 'title' => "Unknown $id"];
                     }
                 }
 
@@ -548,7 +552,7 @@ class GroupingCounter
 
             case TicketSearch::TERM_PERSON:
                 $this->grouping_summary = 'Person';
-                $titles                 = array();
+                $titles                 = [];
 
                 if ($ids) {
                     $ids_str = implode(',', $ids);
@@ -629,7 +633,7 @@ class GroupingCounter
                 $langs                  = App::getContainer()->getLanguageData();
                 $tr                     = App::getContainer()->getTranslator();
 
-                $titles = array(0 => $tr->phrase('agent.general.none'));
+                $titles = [0 => $tr->phrase('agent.general.none')];
                 foreach ($langs->getAll() as $l) {
                     $titles[$l->id] = $tr->getPhraseObject($l);
                 }
@@ -650,13 +654,24 @@ class GroupingCounter
                 $titles                 = $this->getTimeTitles();
                 break;
 
+            case TicketSearch::TERM_BRAND:
+                $this->grouping_summary = $tr->phrase('agent.general.brand');
+                $brands                 = App::getEntityRepository(Brand::class)->findAll();
+                $titles                 = MapUtils::map($brands, function ($key, $value) {
+                    /* @var Brand $value */
+                    return [$value->getId(), $value->getName()];
+                });
+                Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
+
+                break;
+
             default:
 
                 if ($f = $this->getCustomDefField($field)) {
                     $this->grouping_summary = $f->title;
 
                     if ($f->isChoiceType()) {
-                        $titles = array('0' => 'None');
+                        $titles = ['0' => 'None'];
                         foreach (App::getSystemService('TicketFieldsManager')->getFieldChildren($f) as $subf) {
                             $titles[$subf->getId()] = $subf->title;
                         }
@@ -683,7 +698,7 @@ class GroupingCounter
                                 }
                             }
                         } else {
-                            $titles = array();
+                            $titles = [];
                         }
 
                         Arrays::unshiftAssoc($titles, '0', 'None');
@@ -696,7 +711,7 @@ class GroupingCounter
                     if ($ids) {
                         $titles = array_combine($ids, $ids);
                     } else {
-                        $titles = array();
+                        $titles = [];
                     }
                 }
                 break;
@@ -707,7 +722,7 @@ class GroupingCounter
 
     public static function getTimeTitles()
     {
-        $times = array(
+        $times = [
             300                    => 'agent.time.group_lt_5_mins',
             900                    => 'agent.time.group_5_to_15_mins',
             1800                   => 'agent.time.group_15_to_30_mins',
@@ -733,7 +748,7 @@ class GroupingCounter
             12096000               => 'agent.time.group_4_to_5_months',
             14515200               => 'agent.time.group_5_to_6_months',
             self::LAST_TIME_MARKER => 'agent.time.group_gt_6_months',
-        );
+        ];
 
         foreach ($times as &$phrase) {
             $phrase = App::getTranslator()->phrase($phrase);
@@ -794,16 +809,16 @@ class GroupingCounter
                     $date1 = new \DateTime('-5 minutes');
                     $date2 = new \DateTime('now');
 
-                    return array('type' => $groupvar, 'op' => 'between', 'options' => array('date1' => $date1, 'date2' => $date2));
+                    return ['type' => $groupvar, 'op' => 'between', 'options' => ['date1' => $date1, 'date2' => $date2]];
                 } elseif ($key == (count($times) - 1)) {
                     $date = new \DateTime('@'.(time() - 14515201));
 
-                    return array('type' => $groupvar, 'op' => 'lte', 'options' => array('date1' => $date));
+                    return ['type' => $groupvar, 'op' => 'lte', 'options' => ['date1' => $date]];
                 } else {
                     $date1 = new \DateTime('-'.$times[$key].' seconds');
                     $date2 = new \DateTime('-'.$times[$key - 1].' seconds');
 
-                    return array('type' => $groupvar, 'op' => 'between', 'options' => array('date1' => $date1, 'date2' => $date2));
+                    return ['type' => $groupvar, 'op' => 'between', 'options' => ['date1' => $date1, 'date2' => $date2]];
                 }
 
                 break;
@@ -814,18 +829,20 @@ class GroupingCounter
                 $key   = array_search($groupchoice, $times);
 
                 if ($key == 0) {
-                    $term = array('type' => $groupvar, 'op' => 'lte', 'options' => 300);
+                    $term = ['type' => $groupvar, 'op' => 'lte', 'options' => 300];
                 } elseif ($key == (count($times) - 1)) {
-                    $term = array('type' => $groupvar, 'op' => 'gte', 'options' => 14515200);
+                    $term = ['type' => $groupvar, 'op' => 'gte', 'options' => 14515200];
                 } else {
-                    $term = array('type' => $groupvar, 'op' => 'between', 'options' => array($times[$key], $times[$key + 1]));
+                    $term = ['type' => $groupvar, 'op' => 'between', 'options' => [$times[$key], $times[$key + 1]]];
                 }
 
                 return $term;
             case TicketSearch::TERM_URGENCY:
-                return array('type' => $groupvar, 'op' => 'is', 'options' => array($groupchoice));
+                return ['type' => $groupvar, 'op' => 'is', 'options' => [$groupchoice]];
+            case TicketSearch::TERM_BRAND:
+                return ['type' => 'brand_id', 'op' => 'is', 'options' => ['brand_id' => $groupchoice]];
             case 'person':
-                return array('type' => 'person_id', 'op' => 'is', 'options' => array('person_id' => $groupchoice));
+                return ['type' => 'person_id', 'op' => 'is', 'options' => ['person_id' => $groupchoice]];
             default:
                 $f = null;
                 if ($fid = Strings::extractRegexMatch('#^ticket_field_(\d+)$#', $groupvar)) {
@@ -836,14 +853,14 @@ class GroupingCounter
                         $groupchoice = 'DP_NO_SELECTION';
                     }
 
-                    return array(
+                    return [
                         'type'    => "ticket_field[$fid]",
                         'op'      => 'is',
-                        'options' => array('value' => $groupchoice),
-                    );
+                        'options' => ['value' => $groupchoice],
+                    ];
                 }
 
-                return array('type' => $groupvar, 'op' => 'is', 'options' => array($groupchoice));
+                return ['type' => $groupvar, 'op' => 'is', 'options' => [$groupchoice]];
         }
     }
 }

@@ -159,6 +159,31 @@
 		</div>
 	{% endif %}
 
+	{% if 'brand' not in no_show_fields and brands|length > 1 %}
+		<div class="builder-type" title="{{ phrase('agent.general.brand') }}" data-rule-type="brand" data-term-type="GenericMenuTerm" data-term-triggers="brand">
+			<div class="builder-op">
+				<select name="op" class="op">
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+					<option value="not">{{ phrase('agent.general.is_not') }}</option>
+					{% if with_change_terms %}
+						<option value="changed">{{ phrase('agent.general.changed') }}</option>
+						<option value="changed_to">{{ phrase('agent.general.changed_to') }}</option>
+						<option value="changed_from">{{ phrase('agent.general.changed_from') }}</option>
+						<option value="not_changed_to">{{ phrase('agent.general.not_changed_to') }}</option>
+						<option value="not_changed_from">{{ phrase('agent.general.not_changed_from') }}</option>
+					{% endif %}
+				</select>
+			</div>
+			<div class="builder-options">
+				<select name="brand[]" multiple="multiple">
+					{% for brand in brands %}
+						<option value="{{brand.id}}">{{brand.name}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+
 	{% if 'agent' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
 	<div class="builder-type" title="{{ phrase('agent.general.assigned_agent') }}" data-rule-type="agent" data-term-type="GenericMenuTerm" data-term-triggers="agent">
 		<div class="builder-op">

@@ -122,7 +122,10 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 					scroller.updateSize();
 				}
 			}
-		}).bind(this));
+		}).bind(this),
+		{
+			brand_id: $('#publish_brand_id').val()
+		});
 	},
 
 	_initSection: function(data) {
@@ -152,6 +155,10 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			$('#' + this.selected_id).addClass('nav-selected');
 		}
 
+		$('#publish_brand_id').select2().on('change', function() {
+			self.reload();
+		});
+
 		if (this.expanded_ids && this.expanded_ids.length) {
 			Array.each(this.expanded_ids, function(id) {
 				var el = $('#' + id);
@@ -171,8 +178,6 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		}
 
 		this._initSectionSearch();
-
-		var self = this;
 
 		this.contentEl.find('.pane-section').filter('.dp-collapsible').each(function() {
 			var section = $(this);
@@ -217,6 +222,13 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		if (searchPane[0]) {
 			this.searchForm = new DeskPRO.Agent.SourcePane.SearchForm(searchPane);
 		}
+
+		var self = this;
+
+		searchPane.find('.brand_id').on('change', function(e) {
+			$('#publish_brand_id').select2('val', $(e.target).val());
+			self.reload();
+		});
 
 		var catSelectTypes = searchPane.find('.cat-select-type');
 		searchPane.find('.content_type').on('change', function() {
@@ -396,6 +408,10 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			name: 'definition',
 			value: $('textarea.definition', this.addDlg.elements.wrapperOuter).val().trim()
 		});
+		data.push({
+			name: 'brand_id',
+			value: $('#publish_brand_id').val()
+		});
 
 		$.ajax({
 			url: BASE_URL + 'agent/glossary/new-word.json',
@@ -431,6 +447,10 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		data.push({
 			name: 'definition',
 			value: $('textarea.definition', this.editDlg.elements.wrapperOuter).val().trim()
+		});
+		data.push({
+			name: 'brand_id',
+			value: $('#publish_brand_id').val()
 		});
 
 		$.ajax({

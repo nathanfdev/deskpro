@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Orb\Util\Arrays;
@@ -65,7 +66,7 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
     public function getByIds(array $ids, $keep_order = false)
     {
         if (!$ids) {
-            return array();
+            return [];
         }
 
         $class = $this->getName();
@@ -76,7 +77,7 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
                 SELECT o
                 FROM {$class} o INDEX BY o.id
                 WHERE o.id IN(?0)
-            ")->execute(array($ids));
+            ")->execute([$ids]);
 
         if ($keep_order) {
             $q_res = Arrays::orderIdArray($ids, $q_res);
@@ -138,7 +139,7 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 
     public function getReportAssociations()
     {
-        return array();
+        return [];
     }
 
     /**

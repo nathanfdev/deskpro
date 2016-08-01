@@ -94,4 +94,4 @@ services:
       - "@kernel"
       - "@api_log.composer"
       - "@api_log.service_factory"
-      - "@settings_resolver"
+      - "@brand_stack"

@@ -4,10 +4,11 @@ Feature: /ticket_forms
 
   Background:
     Given I'm authenticated as admin
+    And I have default brand
     And only the following Department records exist:
-      | #  | Title        | Is Tickets Enabled |
-      | d1 | Department 1 | 1                  |
-      | d2 | Department 2 | 1                  |
+      | #  | Title        | Brands           | Is Tickets Enabled |
+      | d1 | Department 1 | [{defaultBrand}] | 1                  |
+      | d2 | Department 2 | [{defaultBrand}] | 1                  |
 
   Scenario: I check ticket creation
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:

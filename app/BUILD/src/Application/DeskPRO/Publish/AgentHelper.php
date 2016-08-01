@@ -26,12 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\DownloadComment;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\GlossaryWord;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 use Orb\Util\Arrays;
@@ -81,6 +91,8 @@ class AgentHelper implements PersonContextInterface
 
     /**
      * @param Person $person
+     *
+     * @return $this
      */
     public function setPersonContext(Person $person)
     {
@@ -93,14 +105,15 @@ class AgentHelper implements PersonContextInterface
      * Get the category structure.
      *
      * @param string $type
+     * @param int    $brandId
      *
      * @return array
      */
-    public function getCategoryStructure($type)
+    public function getCategoryStructure($type, $brandId = 0)
     {
         $entity_name = self::getCatEntityNameFor($type);
 
-        return App::getEntityRepository($entity_name)->getRootNodes();
+        return App::getEntityRepository($entity_name)->getRootNodes($brandId);
     }
 
     /**
@@ -155,11 +168,13 @@ class AgentHelper implements PersonContextInterface
     /**
      * Get an array of glossary words, sorted into an alphabetically-indexed array.
      *
+     * @param int $brandId
+     *
      * @return array
      */
-    public function getGlossaryWordsIndex()
+    public function getGlossaryWordsIndex($brandId = 0)
     {
-        $glossary_words = App::getEntityRepository('DeskPRO:GlossaryWord')->getWords();
+        $glossary_words = App::getEntityRepository(GlossaryWord::class)->getWords($brandId);
         $glossary_words = Arrays::sortIntoAlphabeticalIndex($glossary_words, null, true, true);
 
         return $glossary_words;
@@ -285,11 +300,12 @@ class AgentHelper implements PersonContextInterface
 
     /**
      * @param int    $limit
+     * @param int    $brandId
      * @param string $order_dir
      *
      * @return array
      */
-    public function getComments($limit, $order_dir = 'DESC')
+    public function getComments($limit, $brandId = 0, $order_dir = 'DESC')
     {
         $sql_parts = [];
 
@@ -309,12 +325,40 @@ class AgentHelper implements PersonContextInterface
         #------------------------------
 
         foreach ($this->enabled_types as $t) {
-            $t_info      = $types[$t];
-            $sql_parts[] = "(
-                SELECT id as comment_id, '{$t_info['content_type']}' as content_type, date_created
-                FROM {$t_info['table']}
-                WHERE status != 'deleted'
-            )";
+            $t_info = $types[$t];
+            if ($brandId && $t == 'articles') {
+                $sql_parts[] = "(
+                    SELECT {$t_info['table']}.id as comment_id, '{$t_info['content_type']}' as content_type, 
+                    {$t_info['table']}.date_created
+                    FROM {$t_info['table']} 
+                    INNER JOIN {$t_info['content_type']}
+                        ON {$t_info['content_type']}.id = {$t_info['table']}.{$t_info['id_field']}
+                    INNER JOIN {$t_info['category_link_table']}
+                        ON {$t_info['category_link_table']}.{$t_info['id_field']} = {$t_info['table']}.id
+                    INNER JOIN {$t_info['category_table']}
+                        ON {$t_info['category_table']}.id = {$t_info['category_link_table']}.category_id
+                    WHERE {$t_info['table']}.status != 'deleted'
+                    AND {$t_info['category_table']}.brand_id = ".(int) $brandId.'
+                )';
+            } elseif ($brandId && $t != 'feedback') {
+                $sql_parts[] = "(
+                    SELECT {$t_info['table']}.id as comment_id, '{$t_info['content_type']}' as content_type, 
+                    {$t_info['table']}.date_created
+                    FROM {$t_info['table']} 
+                    INNER JOIN {$t_info['content_type']}
+                        ON {$t_info['content_type']}.id = {$t_info['table']}.{$t_info['id_field']}
+                    INNER JOIN {$t_info['category_table']}
+                        ON {$t_info['category_table']}.id = {$t_info['content_type']}.category_id
+                    WHERE {$t_info['table']}.status != 'deleted'
+                    AND {$t_info['category_table']}.brand_id = ".(int) $brandId.'
+                )';
+            } else {
+                $sql_parts[] = "(
+                    SELECT id as comment_id, '{$t_info['content_type']}' as content_type, date_created
+                    FROM {$t_info['table']}
+                    WHERE status != 'deleted'
+                )";
+            }
         }
 
         $sql = implode(' UNION ', $sql_parts);
@@ -368,9 +412,11 @@ class AgentHelper implements PersonContextInterface
     }
 
     /**
+     * @param int $brandId
+     *
      * @return array
      */
-    public function getCommentsCountInfo()
+    public function getCommentsCountInfo($brandId = 0)
     {
         $sql_parts = [];
 
@@ -378,13 +424,39 @@ class AgentHelper implements PersonContextInterface
         $db    = App::getDb();
 
         foreach ($this->enabled_types as $t) {
-            $t_info      = $types[$t];
-            $alias       = $db->quoteIdentifier($t);
-            $sql_parts[] = "(
-                SELECT COUNT(*)
-                FROM {$t_info['table']}
-                WHERE status != 'deleted'
-            ) AS $alias";
+            $t_info = $types[$t];
+            $alias  = $db->quoteIdentifier($t);
+            if ($brandId && $t == 'articles') {
+                $sql_parts[] = "(
+                    SELECT COUNT(DISTINCT {$t_info['table']}.{$t_info['id_field']})
+                    FROM {$t_info['table']} 
+                    INNER JOIN {$t_info['content_type']}
+                        ON {$t_info['content_type']}.id = {$t_info['table']}.{$t_info['id_field']}
+                    INNER JOIN {$t_info['category_link_table']}
+                        ON {$t_info['category_link_table']}.{$t_info['id_field']} = {$t_info['table']}.id
+                    INNER JOIN {$t_info['category_table']}
+                        ON {$t_info['category_table']}.id = {$t_info['category_link_table']}.category_id
+                    WHERE {$t_info['table']}.status != 'deleted'
+                    AND {$t_info['category_table']}.brand_id = ".(int) $brandId."
+                ) AS $alias";
+            } elseif ($brandId && $t != 'feedback') {
+                $sql_parts[] = "(
+                    SELECT COUNT(DISTINCT {$t_info['table']}.{$t_info['id_field']})
+                    FROM {$t_info['table']} 
+                    INNER JOIN {$t_info['content_type']}
+                        ON {$t_info['content_type']}.id = {$t_info['table']}.{$t_info['id_field']}
+                    INNER JOIN {$t_info['category_table']}
+                        ON {$t_info['category_table']}.id = {$t_info['content_type']}.category_id
+                    WHERE {$t_info['table']}.status != 'deleted'
+                    AND {$t_info['category_table']}.brand_id = ".(int) $brandId."
+                ) AS $alias";
+            } else {
+                $sql_parts[] = "(
+                    SELECT COUNT(*)
+                    FROM {$t_info['table']}
+                    WHERE status != 'deleted'
+                ) AS $alias";
+            }
         }
 
         $sql     = 'SELECT '.implode(', ', $sql_parts);
@@ -408,27 +480,31 @@ class AgentHelper implements PersonContextInterface
     {
         static $types = [
             'articles' => [
-                'content_type' => 'articles',
-                'table'        => 'article_comments',
-                'entity'       => 'DeskPRO:ArticleComment',
-                'id_field'     => 'article_id',
+                'content_type'        => 'articles',
+                'table'               => 'article_comments',
+                'entity'              => ArticleComment::class,
+                'category_table'      => 'article_categories',
+                'category_link_table' => 'article_to_categories',
+                'id_field'            => 'article_id',
             ],
             'downloads' => [
-                'content_type' => 'downloads',
-                'table'        => 'download_comments',
-                'entity'       => 'DeskPRO:DownloadComment',
-                'id_field'     => 'download_id',
+                'content_type'   => 'downloads',
+                'table'          => 'download_comments',
+                'entity'         => DownloadComment::class,
+                'category_table' => 'download_categories',
+                'id_field'       => 'download_id',
             ],
             'news' => [
-                'content_type' => 'news',
-                'table'        => 'news_comments',
-                'entity'       => 'DeskPRO:NewsComment',
-                'id_field'     => 'news_id',
+                'content_type'   => 'news',
+                'table'          => 'news_comments',
+                'entity'         => NewsComment::class,
+                'category_table' => 'news_categories',
+                'id_field'       => 'news_id',
             ],
             'feedback' => [
                 'content_type' => 'feedback',
                 'table'        => 'feedback_comments',
-                'entity'       => 'DeskPRO:FeedbackComment',
+                'entity'       => FeedbackComment::class,
                 'id_field'     => 'feedback_id',
             ],
         ];
@@ -458,6 +534,10 @@ class AgentHelper implements PersonContextInterface
 
     /**
      * Get an array of all drafts.
+     *
+     * @param null   $limit
+     * @param string $order_dir
+     * @param bool   $all
      *
      * @return array
      */
@@ -493,25 +573,25 @@ class AgentHelper implements PersonContextInterface
         $types = [
             'articles' => [
                 'content_type' => 'articles',
-                'entity'       => 'DeskPRO:Article',
+                'entity'       => Article::class,
                 'id_field'     => 'article_id',
                 'rev_table'    => 'article_revisions',
             ],
             'downloads' => [
                 'content_type' => 'downloads',
-                'entity'       => 'DeskPRO:Download',
+                'entity'       => Download::class,
                 'id_field'     => 'download_id',
                 'rev_table'    => 'download_revisions',
             ],
             'news' => [
                 'content_type' => 'news',
-                'entity'       => 'DeskPRO:News',
+                'entity'       => News::class,
                 'id_field'     => 'news_id',
                 'rev_table'    => 'news_revisions',
             ],
             'feedback' => [
                 'content_type' => 'feedback',
-                'entity'       => 'DeskPRO:Feedback',
+                'entity'       => Feedback::class,
                 'id_field'     => 'feedback_id',
                 'rev_table'    => 'feedback_revisions',
             ],
@@ -555,6 +635,8 @@ class AgentHelper implements PersonContextInterface
     /**
      * Count how many drafts there are for this user.
      *
+     * @param bool $mine
+     *
      * @return int
      */
     public function getDraftsCount($mine = true)
@@ -562,25 +644,25 @@ class AgentHelper implements PersonContextInterface
         $types = [
             'articles' => [
                 'content_type' => 'articles',
-                'entity'       => 'DeskPRO:Article',
+                'entity'       => Article::class,
                 'id_field'     => 'article_id',
                 'rev_table'    => 'article_revisions',
             ],
             'downloads' => [
                 'content_type' => 'downloads',
-                'entity'       => 'DeskPRO:Download',
+                'entity'       => Download::class,
                 'id_field'     => 'download_id',
                 'rev_table'    => 'download_revisions',
             ],
             'news' => [
                 'content_type' => 'news',
-                'entity'       => 'DeskPRO:News',
+                'entity'       => News::class,
                 'id_field'     => 'news_id',
                 'rev_table'    => 'news_revisions',
             ],
             'feedback' => [
                 'content_type' => 'feedback',
-                'entity'       => 'DeskPRO:Feedback',
+                'entity'       => Feedback::class,
                 'id_field'     => 'feedback_id',
                 'rev_table'    => 'feedback_revisions',
             ],
@@ -625,25 +707,25 @@ class AgentHelper implements PersonContextInterface
         $types = [
             'articles' => [
                 'content_type' => 'articles',
-                'entity'       => 'DeskPRO:Article',
+                'entity'       => Article::class,
                 'id_field'     => 'article_id',
                 'rev_table'    => 'article_revisions',
             ],
             'downloads' => [
                 'content_type' => 'downloads',
-                'entity'       => 'DeskPRO:Download',
+                'entity'       => Download::class,
                 'id_field'     => 'download_id',
                 'rev_table'    => 'download_revisions',
             ],
             'news' => [
                 'content_type' => 'news',
-                'entity'       => 'DeskPRO:News',
+                'entity'       => News::class,
                 'id_field'     => 'news_id',
                 'rev_table'    => 'news_revisions',
             ],
             'feedback' => [
                 'content_type' => 'feedback',
-                'entity'       => 'DeskPRO:Feedback',
+                'entity'       => Feedback::class,
                 'id_field'     => 'feedback_id',
                 'rev_table'    => 'feedback_revisions',
             ],
@@ -703,16 +785,16 @@ class AgentHelper implements PersonContextInterface
     {
         switch ($type) {
             case self::ARTICLES:
-                return 'DeskPRO:Article';
+                return Article::class;
                 break;
             case self::DOWNLOADS:
-                return 'DeskPRO:Download';
+                return Download::class;
                 break;
             case self::NEWS:
-                return 'DeskPRO:News';
+                return News::class;
                 break;
             case self::FEEDBACK:
-                return 'DeskPRO:Feedback';
+                return Feedback::class;
                 break;
         }
 
@@ -733,16 +815,16 @@ class AgentHelper implements PersonContextInterface
     {
         switch ($type) {
             case self::ARTICLES:
-                return 'DeskPRO:ArticleCategory';
+                return ArticleCategory::class;
                 break;
             case self::DOWNLOADS:
-                return 'DeskPRO:DownloadCategory';
+                return DownloadCategory::class;
                 break;
             case self::NEWS:
-                return 'DeskPRO:NewsCategory';
+                return NewsCategory::class;
                 break;
             case self::FEEDBACK:
-                return 'DeskPRO:FeedbackCategory';
+                return FeedbackCategory::class;
                 break;
         }
 

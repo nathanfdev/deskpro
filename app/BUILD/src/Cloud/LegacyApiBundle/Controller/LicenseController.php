@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Cloud\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TmpData;
@@ -92,8 +93,8 @@ class LicenseController extends BaseLicenseController
         $tmpdata = new TmpData();
         $tmpdata->setType('dpc_billing_access');
         $tmpdata->setData('person_info', array(
-            'helpdesk_url'   => rtrim($this->container->getSetting('core.deskpro_url'), '/'),
-            'asset_url'      => str_replace('/index.php', '', rtrim($this->container->getSetting('core.deskpro_url'), '/')),
+            'helpdesk_url'   => rtrim($this->container->getBrandSetting('core.deskpro_url'), '/'),
+            'asset_url'      => str_replace('/index.php', '', rtrim($this->container->getBrandSetting('core.deskpro_url'), '/')),
             'person_id'      => $this->person->getId(),
             'first_name'     => $this->person->first_name,
             'last_name'      => $this->person->last_name,

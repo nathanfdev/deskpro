@@ -53,7 +53,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property array     $terms
  * @property string    $group_by
  * @property string    $order_by
- * @property int   $display_order
+ * @property int       $display_order
  *
  * @JMS\ExclusionPolicy("all")
  */
@@ -230,7 +230,7 @@ class LegacyTicketFilter extends DomainObject
     public function setTerms(array $terms = null)
     {
         if (!$terms) {
-            $terms = array();
+            $terms = [];
         }
 
         $this->setModelField('terms', $terms);
@@ -250,7 +250,7 @@ class LegacyTicketFilter extends DomainObject
      *
      * @return \Application\DeskPRO\Searcher\TicketSearch
      */
-    public function getSearcher(array $force_terms = array())
+    public function getSearcher(array $force_terms = [])
     {
         if (!$force_terms && $this->_searcher) {
             return $this->_searcher;
@@ -267,7 +267,7 @@ class LegacyTicketFilter extends DomainObject
         $has_user_terms = false;
         $has_org_terms  = false;
 
-        $force_term_types = array();
+        $force_term_types = [];
         foreach ($force_terms as $term) {
             if ($term['op'] != 'ignore') {
                 if (strpos($term['type'], 'person_') === 0) {
@@ -433,12 +433,12 @@ class LegacyTicketFilter extends DomainObject
 
     public static function getArchiveTableFilterNames()
     {
-        return array(
+        return [
             'archive_archived',
             'archive_validating',
             'archive_spam',
             'archive_deleted',
-        );
+        ];
     }
 
     public function getResultsCount()
@@ -478,7 +478,7 @@ class LegacyTicketFilter extends DomainObject
     /**
      * {@inheritdoc}
      */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
 
@@ -571,7 +571,7 @@ class LegacyTicketFilter extends DomainObject
         ]);
         $metadata->mapManyToOne([
             'fieldName'    => 'person',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'targetEntity' => Person::class,
             'dpApi'        => true,
             'joinColumns'  => [
                 [
@@ -584,7 +584,7 @@ class LegacyTicketFilter extends DomainObject
         ]);
         $metadata->mapManyToOne([
             'fieldName'    => 'agent_team',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
+            'targetEntity' => AgentTeam::class,
             'dpApi'        => true,
             'joinColumns'  => [
                 [

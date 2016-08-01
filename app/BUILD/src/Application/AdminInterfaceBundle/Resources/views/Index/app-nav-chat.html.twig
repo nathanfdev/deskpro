@@ -5,6 +5,6 @@
 		{{ nav.list_item('Chat Departments', ng_href('chat.chat_deps'), 'chat.chat_deps', 'fa-briefcase') }}
 		{{ nav.list_item('Fields', ng_href('chat.fields'), 'chat.fields', 'fa-terminal') }}
 		{{ nav.list_item('Labels', ng_href('chat.labels'), 'chat.labels', 'fa-tags') }}
-		{{ nav.list_item('Site Widget & Chat', ng_href('portal.widget_editor'), 'portal.widget_editor_link', 'fa-puzzle-piece') }}
+		{{ nav.list_item('Site Widget & Chat', ng_href('portal.widget_editor', {brandId: 1}), 'portal.widget_editor_link', 'fa-puzzle-piece') }}
 	{{ nav.list_end() }}
 {% endblock %}

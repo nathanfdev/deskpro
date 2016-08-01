@@ -39,26 +39,26 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * @property int $id
- * @property string $ref
- * @property int $language_id
- * @property int $department_id
- * @property int $category_id
- * @property int $workflow_id
- * @property int $priority_id
- * @property int $product_id
- * @property int $person_id
- * @property int $person_email_id
- * @property int $agent_id
- * @property int $agent_team_id
- * @property int $organization_id
- * @property string $sent_to_address
- * @property string $creation_system
- * @property string $creation_system_option
- * @property string $status
- * @property bool $is_hold
- * @property int $urgency
- * @property int $feedback_rating
+ * @property int       $id
+ * @property string    $ref
+ * @property int       $language_id
+ * @property int       $department_id
+ * @property int       $category_id
+ * @property int       $workflow_id
+ * @property int       $priority_id
+ * @property int       $product_id
+ * @property int       $person_id
+ * @property int       $person_email_id
+ * @property int       $agent_id
+ * @property int       $agent_team_id
+ * @property int       $organization_id
+ * @property string    $sent_to_address
+ * @property string    $creation_system
+ * @property string    $creation_system_option
+ * @property string    $status
+ * @property bool      $is_hold
+ * @property int       $urgency
+ * @property int       $feedback_rating
  * @property \DateTime $date_feedback_rating
  * @property \DateTime $date_created
  * @property \DateTime $date_resolved
@@ -69,10 +69,10 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property \DateTime $date_agent_waiting
  * @property \DateTime $date_user_waiting
  * @property \DateTime $date_status
- * @property int $total_user_waiting
- * @property int $total_to_first_reply
- * @property string $subject
- * @property string $original_subject
+ * @property int       $total_user_waiting
+ * @property int       $total_to_first_reply
+ * @property string    $subject
+ * @property string    $original_subject
  */
 class TicketSearchActive extends DomainObject
 {
@@ -90,6 +90,11 @@ class TicketSearchActive extends DomainObject
      * @var int
      */
     protected $language_id = null;
+
+    /**
+     * @var int
+     */
+    protected $brand_id = null;
 
     /**
      * @var int
@@ -255,8 +260,8 @@ class TicketSearchActive extends DomainObject
      */
     public static function getFieldNames()
     {
-        return array(
-            'id', 'ref', 'language_id', 'department_id', 'category_id',
+        return [
+            'id', 'ref', 'language_id', 'brand_id', 'department_id', 'category_id',
             'workflow_id', 'priority_id', 'product_id', 'person_id', 'person_email_id',
             'agent_id', 'agent_team_id', 'organization_id', 'creation_system', 'creation_system_option',
             'status', 'is_hold', 'urgency', 'feedback_rating', 'date_feedback_rating',
@@ -264,7 +269,7 @@ class TicketSearchActive extends DomainObject
             'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'date_status',
             'total_user_waiting', 'total_to_first_reply',
             'subject', 'original_subject',
-        );
+        ];
     }
 
     /**
@@ -276,7 +281,7 @@ class TicketSearchActive extends DomainObject
      */
     public static function copyTicketDbArray(Ticket $ticket)
     {
-        $db_array = array();
+        $db_array = [];
 
         foreach (self::getFieldNames() as $field) {
             $prop = $field;
@@ -338,6 +343,12 @@ class TicketSearchActive extends DomainObject
         $metadata->mapField([
             'columnName' => 'language_id',
             'fieldName'  => 'language_id',
+            'type'       => 'integer',
+            'nullable'   => true,
+        ]);
+        $metadata->mapField([
+            'columnName' => 'brand_id',
+            'fieldName'  => 'brand_id',
             'type'       => 'integer',
             'nullable'   => true,
         ]);

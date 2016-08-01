@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Application\DeskPRO\Entity\PhoneNumber;
 use Orb\Util\PhoneNumbers;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -87,7 +88,7 @@ class PhoneNumberType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'data_class' => 'Application\DeskPRO\Entity\PhoneNumber',
+                'data_class' => PhoneNumber::class,
             ]
         );
     }

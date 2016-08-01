@@ -28,13 +28,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings;
 
+use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class WidgetBrandSettings.
  */
-class WidgetBrandSettings
+class WidgetBrandSettings extends AbstractBrandAwareSettings
 {
     /**
      * @var WidgetBrandCommonSettings

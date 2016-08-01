@@ -60,7 +60,7 @@ export class OmniSearchResultSection extends React.Component {
       display_amount:       10,
       currently_displaying: 10,
       page:                 1,
-      total_results:        _.parseInt(props.initialResult.pageinfo.total_results),
+      total_results:        _.parseInt(props.initialResult.length ? props.initialResult.pageinfo.total_results : 0),
       q:                    props.q,
       doSpin:               false
     };
@@ -76,7 +76,7 @@ export class OmniSearchResultSection extends React.Component {
       display_amount:       10,
       currently_displaying: 10,
       page:                 1,
-      total_results:        _.parseInt(newProps.initialResult.pageinfo.total_results),
+      total_results:        _.parseInt(newProps.initialResult.length ? newProps.initialResult.pageinfo.total_results : 0),
       q:                    newProps.q,
       doSpin:               false,
       items:                this.createsItemsFromProps(newProps)

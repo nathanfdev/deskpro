@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\NewsCategory as NewsCategoryRepository;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -79,12 +80,22 @@ class NewsCategory extends CategoryAbstract
     /**
      * Usergroups that has access to this category.
      *
-     * @JMS\Groups("download_categories")
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Download>>")
+     * @JMS\Groups("news_categories")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Usergroup>>")
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $usergroups;
+
+    /**
+     * Brand linked to the category.
+     *
+     * @JMS\Groups("news_categories")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
+     *
+     * @var Brand
+     */
+    protected $brand;
 
     public function __construct()
     {
@@ -109,6 +120,26 @@ class NewsCategory extends CategoryAbstract
         }
     }
 
+    /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
+    public function setBrand($brand)
+    {
+        $this->setModelField('brand', $brand);
+
+        return $this;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -116,7 +147,7 @@ class NewsCategory extends CategoryAbstract
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\NewsCategory';
+        $metadata->customRepositoryClassName = NewsCategoryRepository::class;
         $metadata->setPrimaryTable(['name' => 'news_categories']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
@@ -187,7 +218,7 @@ class NewsCategory extends CategoryAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'parent',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsCategory',
+                'targetEntity' => self::class,
                 'mappedBy'     => null,
                 'inversedBy'   => 'children',
                 'joinColumns'  => [
@@ -203,7 +234,7 @@ class NewsCategory extends CategoryAbstract
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'children',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsCategory',
+                'targetEntity' => self::class,
                 'mappedBy'     => 'parent',
                 'orderBy'      => ['display_order' => 'ASC'],
             ]
@@ -211,7 +242,7 @@ class NewsCategory extends CategoryAbstract
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'usergroups',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+                'targetEntity' => Usergroup::class,
                 'cascade'      => ['persist', 'merge'],
                 'joinTable'    => [
                     'name'        => 'news_category2usergroup',
@@ -241,8 +272,24 @@ class NewsCategory extends CategoryAbstract
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'articles',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\News',
+                'targetEntity' => News::class,
                 'mappedBy'     => 'category',
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'brand',
+                'targetEntity' => Brand::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'brand_id',
+                        'referencedColumnName' => 'id',
+                        'onDelete'             => 'set null',
+                    ],
+                ],
+                'dpApi' => true,
             ]
         );
     }

@@ -459,7 +459,7 @@ abstract class ContentAbstract extends DomainObject
     {
         // Find attach replacements: ![attach:{$blob['authcode']}:{$blob['filename']}]
         $fn = function ($m) {
-            return App::getSetting('core.deskpro_url').'file.php/'.$m[1].'/'.urlencode($m[2]);
+            return App::getContainer()->getBrandSetting('core.deskpro_url').'file.php/'.$m[1].'/'.urlencode($m[2]);
         };
         $content = preg_replace_callback('#!\[attach:([0-9A-Z]+):(.*?)\]#', $fn, $content);
 

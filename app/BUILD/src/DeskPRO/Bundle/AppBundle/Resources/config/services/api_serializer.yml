@@ -69,13 +69,18 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-  api_serializer.handler.content:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ContentHandler
+  api_serializer.handler.news:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\NewsHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.download:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\DownloadHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.article:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ArticleHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\ArticleHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

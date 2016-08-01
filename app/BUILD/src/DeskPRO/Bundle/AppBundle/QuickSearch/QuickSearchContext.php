@@ -29,8 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -262,14 +271,14 @@ class QuickSearchContext
     public static function getDoctrineMapping()
     {
         return [
-            self::TYPE_ARTICLE           => 'DeskPRO:Article',
-            self::TYPE_DOWNLOAD          => 'DeskPRO:Download',
-            self::TYPE_FEEDBACK          => 'DeskPRO:Feedback',
-            self::TYPE_NEWS              => 'DeskPRO:News',
-            self::TYPE_TICKET            => 'DeskPRO:Ticket',
-            self::TYPE_PERSON            => 'DeskPRO:Person',
-            self::TYPE_ORGANIZATION      => 'DeskPRO:Organization',
-            self::TYPE_CHAT_CONVERSATION => 'DeskPRO:ChatConversation',
+            self::TYPE_ARTICLE           => Article::class,
+            self::TYPE_DOWNLOAD          => Download::class,
+            self::TYPE_FEEDBACK          => Feedback::class,
+            self::TYPE_NEWS              => News::class,
+            self::TYPE_TICKET            => Ticket::class,
+            self::TYPE_PERSON            => Person::class,
+            self::TYPE_ORGANIZATION      => Organization::class,
+            self::TYPE_CHAT_CONVERSATION => ChatConversation::class,
         ];
     }
 }

@@ -237,7 +237,7 @@ class PersonEditProfileType extends AbstractType
         $children = $this->fieldManager->getAvailableContextualDefsChildren($person);
         foreach ($per_person_defs as $def) {
             /* @var $def CustomFieldDefinition */
-            $form->add('definition_' . $def->getId(), ContextualChoiceDefinitionType::class, [
+            $form->add('definition_'.$def->getId(), ContextualChoiceDefinitionType::class, [
                 'context'             => $person,
                 'data'                => $def,
                 'children_collection' => $children,

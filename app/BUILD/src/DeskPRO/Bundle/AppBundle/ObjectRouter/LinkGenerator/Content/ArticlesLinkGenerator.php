@@ -26,38 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
+/**
+ * DeskPRO.
+ */
 
+namespace DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\Content;
+
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ContentAbstract;
-use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\News;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Content as ContentModel;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentCsv;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 
-class ContentHandler extends AbstractEntityHandler
+/**
+ */
+class ArticlesLinkGenerator extends AbstractContentLinkGenerator
 {
     /**
      * {@inheritdoc}
-     * 
-     * @param ContentAbstract $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function supports($object, $type, $context)
     {
-        $serializerClass = $context->getMappedClass(get_class($entity));
-
-        if ($serializerClass === ContentCsv::class) {
-            return new ContentCsv($entity);
-        }
-
-        return new ContentModel($entity);
+        return $object instanceof Article && $context === ObjectRouter::CONTEXT_PORTAL;
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function getClassNames()
+    protected function getBrand(ContentAbstract $object)
     {
-        return [News::class, Download::class];
+        /* @var Article $object */
+        /** @var ArticleCategory $category */
+        $category = current($object->getCategories()->toArray());
+
+        return $category->getBrand();
     }
 }

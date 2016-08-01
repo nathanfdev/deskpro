@@ -69,6 +69,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property string                              $ref
  * @property string                              $auth
  * @property Language                            $language
+ * @property Brand                               $brand
  * @property Department                          $department
  * @property TicketCategory                      $category
  * @property TicketWorkflow                      $workflow
@@ -220,6 +221,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @var \Application\DeskPRO\Entity\Language
      */
     protected $language = null;
+
+    /**
+     * @var \Application\DeskPRO\Entity\Brand
+     */
+    protected $brand = null;
 
     /**
      * @var \Application\DeskPRO\Entity\Department
@@ -1247,7 +1253,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * Remove a participant.
      *
-     * @param  $person_or_id
+     * @param Person|int $person_or_id
+     *
+     * @return TicketParticipant|null|void
      */
     public function removeParticipantPerson($person_or_id)
     {
@@ -1359,7 +1367,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * If item in $set_user_ids is an array, its expected to be
      * array(person_id, person_email_id)
      *
-     * @param array $set_agent_ids
+     * @param array $set_user_ids
      */
     public function setParticipantUserIds(array $set_user_ids)
     {
@@ -1427,7 +1435,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @param Person $agent
      * @param int    $time
      * @param int    $amount
-     * @param string $comment
      *
      * @return TicketCharge|null
      */
@@ -1534,6 +1541,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     /**
      * @param $sla_id
+     *
+     * @return TicketSla|void
      */
     public function getSlaById($sla_id)
     {
@@ -1783,7 +1792,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * Set custom field data for a particular field.
      *
      * @param int   $field_id
+     * @param mixed $value_type
      * @param mixed $value
+     *
+     * @throws \Exception
      *
      * @return mixed
      */
@@ -2136,6 +2148,59 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return $email['email'];
     }
 
+    /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBrandId()
+    {
+        if (!$this->brand) {
+            return 0;
+        }
+
+        return $this->brand->getId();
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
+    public function setBrand($brand)
+    {
+        $this->setModelField('brand', $brand);
+
+        return $this;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return $this
+     */
+    public function setBrandId($id)
+    {
+        if ($id) {
+            /** @var Brand $brand */
+            $brand = App::getOrm()->getRepository(Brand::class)->find($id);
+            $this->setBrand($brand);
+        } else {
+            $this->setBrand(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return int|mixed
+     */
     public function getDepartmentId()
     {
         if (!$this->department) {
@@ -2145,6 +2210,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return $this->department['id'];
     }
 
+    /**
+     * @return Department
+     */
     public function getDepartment()
     {
         return $this->department;
@@ -3614,7 +3682,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             unset($data['email_account']['incoming_account']);
             unset($data['email_account']['outgoing_account']);
         }
-
+        $data['department']['parent'] = $this->department->parent
+            ? $this->department->parent->toApiData(true, false)
+            : [];
         $data['total_user_waiting_real']   = $this->getRealTotalUserWaiting();
         $data['total_user_waiting_work']   = $this->getTotalUserWaitingWorkTime();
         $data['current_user_waiting']      = $this->getCurrentUserWaitingTime();
@@ -4843,6 +4913,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         );
         $metadata->mapManyToOne(
             [
+                'fieldName'    => 'brand',
+                'targetEntity' => Brand::class,
+                'cascade'      => ['persist'],
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'brand_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
                 'fieldName'    => 'department',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
                 'cascade'      => ['persist'],
@@ -5159,7 +5245,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'problems',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Problem',
+                'targetEntity' => Problem::class,
                 'inversedBy'   => 'tickets',
                 'cascade'      => ['persist', 'merge'],
                 'joinTable'    => [

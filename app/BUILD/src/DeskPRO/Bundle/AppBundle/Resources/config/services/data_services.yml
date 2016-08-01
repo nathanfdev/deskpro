@@ -6,7 +6,7 @@ services:
 
   data.tickets:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketsDataService
-    arguments: ["@doctrine.orm.default_entity_manager"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@brand_stack"]
 
   data.ticket_timeline:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketTimelineDataService

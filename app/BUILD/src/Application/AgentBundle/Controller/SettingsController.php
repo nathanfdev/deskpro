@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoader;
 use Application\DeskPRO\People\PersonEditManager;
 use Application\DeskPRO\Tickets\Filters\TicketFilterCollection;
@@ -54,11 +56,11 @@ class SettingsController extends AbstractController
         /** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
         $password_validator = App::$container->getSystemService('password_policy_validator');
 
-        return $this->render('AgentBundle:Settings:profile.html.twig', array(
+        return $this->render('AgentBundle:Settings:profile.html.twig', [
             'form'             => $form->createView(),
             'edit_profile'     => $edit_profile,
             'password_expired' => $password_validator->isPasswordExpired($this->person),
-        ));
+        ]);
     }
 
     public function profileSaveAction()
@@ -74,7 +76,7 @@ class SettingsController extends AbstractController
         if ($edit_profile->requiresAuth()) {
             $code = $this->in->getString('authcode');
             if (!$this->session->getEntity()->checkSecurityToken('password_confirm'.$this->person->secret_string, $code)) {
-                return $this->createJsonResponse(array('error' => true, 'error_code' => 'invalid_auth'));
+                return $this->createJsonResponse(['error' => true, 'error_code' => 'invalid_auth']);
             }
         }
 
@@ -85,23 +87,23 @@ class SettingsController extends AbstractController
             $check_exists = $this->em->getRepository('DeskPRO:Person')->findByEmail($edit_profile->email);
             if ($check_exists && $check_exists->getId() != $this->person->getId() && !$check_exists->is_agent) {
                 // Insert the merge code
-                $tmpdata = \Application\DeskPRO\Entity\TmpData::create('validated_merge_user', array(
+                $tmpdata = \Application\DeskPRO\Entity\TmpData::create('validated_merge_user', [
                     'agent_id'      => $this->person->getId(),
                     'other_user_id' => $check_exists->getId(),
                     'email_address' => $edit_profile->email,
                     '_type'         => 'agent_profile_email',
-                ), '+2 days');
+                ], '+2 days');
 
                 $this->em->persist($tmpdata);
                 $this->em->flush();
 
-                $vars = array(
+                $vars = [
                     'person'       => $this->person,
                     'other_person' => $check_exists,
                     'authcode'     => $tmpdata->getCode(),
                     'old_email'    => $this->person->getEmailAddress(),
                     'new_email'    => $edit_profile->email,
-                );
+                ];
 
                 // Send validation email
                 $message = $this->container->getMailer()->createMessage();
@@ -117,22 +119,22 @@ class SettingsController extends AbstractController
 
         $validator = new \Application\AgentBundle\Validator\AgentProfileValidator();
         if (!$validator->isValid($edit_profile)) {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'error'       => true,
                 'error_code'  => 'form_errors',
                 'form_errors' => $validator->getErrors(),
-            ));
+            ]);
         }
 
         $edit_profile->save();
 
         if ($edit_profile->password) {
-            $this->db->delete('sessions', array('person_id' => $this->person->id));
+            $this->db->delete('sessions', ['person_id' => $this->person->id]);
 
-            return $this->createJsonResponse(array('success' => true, 'login' => true));
+            return $this->createJsonResponse(['success' => true, 'login' => true]);
         }
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
     public function profileSaveWelcomeAction()
@@ -155,18 +157,18 @@ class SettingsController extends AbstractController
         $this->em->persist($this->person);
         $this->em->flush();
 
-        $this->db->delete('people_prefs', array(
+        $this->db->delete('people_prefs', [
             'person_id' => $this->person->getId(),
             'name'      => 'agent.first_login',
-        ));
-        $this->db->delete('people_prefs', array(
+        ]);
+        $this->db->delete('people_prefs', [
             'person_id' => $this->person->getId(),
             'name'      => 'agent.first_login_name',
-        ));
+        ]);
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => true,
-        ));
+        ]);
     }
 
     public function signatureAction()
@@ -175,11 +177,11 @@ class SettingsController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        return $this->render('AgentBundle:Settings:signature.html.twig', array(
+        return $this->render('AgentBundle:Settings:signature.html.twig', [
             'signature'       => $this->person->getSignature(),
             'signature_html'  => $this->person->getSignatureHtml(),
             'tweet_signature' => $this->person->getTweetSignature(),
-        ));
+        ]);
     }
 
     public function signatureSaveAction()
@@ -204,7 +206,7 @@ class SettingsController extends AbstractController
             $regex          = '#<img[^>]+class="dp-signature-image" alt="([^"]+)"[^>]*>#i';
             $signature_html = preg_replace($regex, '$1', $signature_html);
 
-            $signature_html = str_replace(array('<div', '</div>'), array('<p', '</p>'), $signature_html);
+            $signature_html = str_replace(['<div', '</div>'], ['<p', '</p>'], $signature_html);
             $signature_html = preg_replace('/^<p>/', '<p class="dp-signature-start">', trim($signature_html));
 
             $signature = strip_tags($signature_html);
@@ -216,10 +218,10 @@ class SettingsController extends AbstractController
             }
         }
 
-        $this->db->delete('drafts', array(
+        $this->db->delete('drafts', [
             'person_id'    => $this->person->id,
             'content_type' => 'ticket',
-        ));
+        ]);
 
         $this->person->setPreference('agent.ticket_signature', $signature);
         $this->person->setPreference('agent.ticket_signature_html', $signature_html);
@@ -229,7 +231,7 @@ class SettingsController extends AbstractController
         $this->em->persist($this->person);
         $this->em->flush();
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
     public function updateTimezoneAction()
@@ -237,7 +239,7 @@ class SettingsController extends AbstractController
         $tz = $this->in->getString('timezone');
 
         if (!in_array($tz, \DateTimeZone::listIdentifiers())) {
-            return $this->createJsonResponse(array('error' => true, 'error_code' => 'invalid_timezone'));
+            return $this->createJsonResponse(['error' => true, 'error_code' => 'invalid_timezone']);
         }
 
         $this->person->timezone = $tz;
@@ -252,7 +254,7 @@ class SettingsController extends AbstractController
             throw $e;
         }
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
     ############################################################################
@@ -273,19 +275,19 @@ class SettingsController extends AbstractController
 
         $my_subs = $prefs->getFilterSubs();
 
-        $sys_ids = array();
+        $sys_ids = [];
         foreach ($sys_filters as $f) {
             $sys_ids[$f->sys_name] = $f->id;
         }
 
-        return $this->render('AgentBundle:Settings:ticket-notifications.html.twig', array(
+        return $this->render('AgentBundle:Settings:ticket-notifications.html.twig', [
             'all_filters'      => $all_filters,
             'sys_filters'      => $sys_filters,
             'sys_ids'          => $sys_ids,
             'sys_filters_hold' => $sys_filters_hold,
             'custom_filters'   => $custom_filters,
             'my_subs'          => $my_subs,
-        ));
+        ]);
     }
 
     public function ticketNotificationsSaveAction()
@@ -322,7 +324,7 @@ class SettingsController extends AbstractController
             $this->in->getBool('agent_notify_override_forward_alert') ? 1 : 0
         );
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
     ############################################################################
@@ -333,9 +335,9 @@ class SettingsController extends AbstractController
     {
         $my_prefs = $this->em->getRepository('DeskPRO:PersonPref')->getPrefgroupForPersonId('agent_notif', $this->person->id, true);
 
-        return $this->render('AgentBundle:Settings:other-notifications.html.twig', array(
+        return $this->render('AgentBundle:Settings:other-notifications.html.twig', [
             'my_prefs' => $my_prefs,
-        ));
+        ]);
     }
 
     public function otherNotificationsSaveAction()
@@ -345,7 +347,7 @@ class SettingsController extends AbstractController
         $person_editor = $this->container->getSystemService('person_edit_manager');
         $person_editor->saveNotificationPreferences($this->person, $prefs);
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
     ############################################################################
@@ -365,13 +367,13 @@ class SettingsController extends AbstractController
             SELECT name, value_str
             FROM people_prefs
             WHERE person_id = ? AND (name LIKE 'agent.ui.filter-visibility.%')
-        ", array($this->person->id));
+        ", [$this->person->id]);
 
-        return $this->render('AgentBundle:Settings:ticket-filters.html.twig', array(
+        return $this->render('AgentBundle:Settings:ticket-filters.html.twig', [
             'filters'             => $filters,
             'filters_shared'      => $filters_shared,
             'filter_show_options' => $filter_show_options,
-        ));
+        ]);
     }
 
     /**
@@ -386,7 +388,7 @@ class SettingsController extends AbstractController
             }
 
             if (!$filter) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no filter with ID $filter_id");
+                throw $this->createNotFoundException("There is no filter with ID $filter_id");
             }
         } else {
             $filter = new Entity\LegacyTicketFilter();
@@ -397,11 +399,13 @@ class SettingsController extends AbstractController
         $ticket_field_defs                    = App::getApi('custom_fields.tickets')->getEnabledFields();
         $custom_fields                        = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
         $term_options['custom_ticket_fields'] = $custom_fields;
+        $brands                               = $this->getAgentBrands();
 
-        return $this->render('AgentBundle:Settings:ticket-filter-edit.html.twig', array(
+        return $this->render('AgentBundle:Settings:ticket-filter-edit.html.twig', [
             'term_options' => $term_options,
             'filter'       => $filter,
-        ));
+            'brands'       => $brands,
+        ]);
     }
 
     public function ticketFilterEditSaveAction($filter_id)
@@ -414,7 +418,7 @@ class SettingsController extends AbstractController
             }
 
             if (!$filter) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no filter with ID $filter_id");
+                throw $this->createNotFoundException("There is no filter with ID $filter_id");
             }
         } else {
             $is_new = true;
@@ -434,20 +438,20 @@ class SettingsController extends AbstractController
         $this->em->persist($filter);
         $this->em->flush();
 
-        return $this->createJsonResponse(array('success' => true, 'filter_id' => $filter->id, 'filter_title' => $filter->title, 'is_new' => $is_new));
+        return $this->createJsonResponse(['success' => true, 'filter_id' => $filter->id, 'filter_title' => $filter->title, 'is_new' => $is_new]);
     }
 
     public function ticketFilterDeleteAction($filter_id)
     {
         $filter = $this->em->find('DeskPRO:LegacyTicketFilter', $filter_id);
         if (!$filter) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Could not find filter');
+            throw $this->createNotFoundException('Could not find filter');
         }
 
         $this->em->remove($filter);
         $this->em->flush();
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
     ############################################################################
@@ -462,10 +466,10 @@ class SettingsController extends AbstractController
             $all_macros = false;
         }
 
-        return $this->render('AgentBundle:Settings:ticket-macros.html.twig', array(
+        return $this->render('AgentBundle:Settings:ticket-macros.html.twig', [
             'show_saved_flash' => $this->in->getBool('saved'),
             'all_macros'       => $all_macros,
-        ));
+        ]);
     }
 
     public function ticketMacroEditAction($macro_id)
@@ -476,7 +480,7 @@ class SettingsController extends AbstractController
             $is_new = false;
             $macro  = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
             if (!$macro || (!$macro->is_global && $macro->person->id != $this->person->id)) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Could not find macro');
+                throw $this->createNotFoundException('Could not find macro');
             }
         } else {
             $macro           = new Entity\TicketMacro();
@@ -493,11 +497,11 @@ class SettingsController extends AbstractController
         $people_field_defs                      = App::getApi('custom_fields.people')->getEnabledFields();
         $ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
 
-        return $this->render('AgentBundle:Settings:ticket-macro-edit.html.twig', array(
+        return $this->render('AgentBundle:Settings:ticket-macro-edit.html.twig', [
             'ticket_options' => $ticket_options,
             'macro'          => $macro,
             'is_new'         => $is_new,
-        ));
+        ]);
     }
 
     public function ticketMacroEditSaveAction($macro_id)
@@ -506,7 +510,7 @@ class SettingsController extends AbstractController
             $is_new = false;
             $macro  = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
             if (!$macro || (!$macro->is_global && $macro->person->id != $this->person->id)) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Could not find macro');
+                throw $this->createNotFoundException('Could not find macro');
             }
         } else {
             $macro           = new Entity\TicketMacro();
@@ -525,25 +529,25 @@ class SettingsController extends AbstractController
         $this->em->persist($macro);
         $this->em->flush();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success'  => true,
             'is_new'   => $is_new,
             'macro_id' => $macro->id,
             'title'    => $macro->title,
-        ));
+        ]);
     }
 
     public function ticketMacroDeleteAction($macro_id)
     {
         $macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
         if (!$macro || (!$macro->is_global && $macro->person->id != $this->person->id)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Could not find macro');
+            throw $this->createNotFoundException('Could not find macro');
         }
 
         $this->em->remove($macro);
         $this->em->flush();
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
     ############################################################################
@@ -563,12 +567,38 @@ class SettingsController extends AbstractController
             SELECT name, value_str
             FROM people_prefs
             WHERE person_id = ? AND (name LIKE 'agent.ui.sla.filter-visibility.%')
-        ", array($this->person->id));
+        ", [$this->person->id]);
 
-        return $this->render('AgentBundle:Settings:ticket-slas.html.twig', array(
+        return $this->render('AgentBundle:Settings:ticket-slas.html.twig', [
             'slas'                => $slas,
             'sla_filter'          => $sla_filter,
             'filter_show_options' => $filter_show_options,
-        ));
+        ]);
+    }
+
+    /**
+     * @return Brand[]
+     */
+    protected function getAgentBrands()
+    {
+        /** @var Entity\Department[] $departments */
+        $departments = $this->container->getDataService('Department')
+            ->getPersonDepartments($this->person, 'tickets', [], 'assign');
+        /** @var Brand[] $brands */
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+        foreach ($brands as $key => $brand) {
+            $department_found = false;
+            foreach ($departments as $department) {
+                if ($department->hasBrand($brand)) {
+                    $department_found = true;
+                    break;
+                }
+            }
+            if (!$department_found) {
+                unset($brands[$key]);
+            }
+        }
+
+        return $brands;
     }
 }

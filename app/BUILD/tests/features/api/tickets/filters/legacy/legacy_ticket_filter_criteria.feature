@@ -1,9 +1,10 @@
-@new
 Feature: /ticket_filters endpoint
   To check filter by related entity
 
   Background:
-    Given I'm authenticated as admin
+    Given I install the api data set
+    And there are no Person records
+    And I'm authenticated as admin
     And there are no Ticket records
     And I re-fill ticket search table
 

@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\ArticleCategory as ArticleCategoryRepository;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -55,6 +56,7 @@ class ArticleCategory extends CategoryAbstract
     protected $parent;
 
     /**
+     * @JMS\Expose()
      * @JMS\Groups("articles_categories")
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\ArticleCategory>>")
      *
@@ -65,6 +67,7 @@ class ArticleCategory extends CategoryAbstract
     /**
      * Articles belongs this category.
      *
+     * @JMS\Expose()
      * @JMS\Groups("articles_categories")
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Article>>")
      *
@@ -75,6 +78,7 @@ class ArticleCategory extends CategoryAbstract
     /**
      * Usergroups that has access to this category.
      *
+     * @JMS\Expose()
      * @JMS\Groups("articles_categories")
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Usergroup>>")
      *
@@ -83,10 +87,22 @@ class ArticleCategory extends CategoryAbstract
     protected $usergroups;
 
     /**
+     * Brand linked to the category.
+     *
+     * @JMS\Expose()
+     * @JMS\Groups("articles_categories")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
+     *
+     * @var Brand
+     */
+    protected $brand;
+
+    /**
      * If this is true, then all categories and articles under this one
      * are considered agent KB articles and wont be displayed in
      * the user interface.
      *
+     * @JMS\Expose()
      * @JMS\Groups("articles_categories")
      * @JMS\Type("boolean")
      *
@@ -98,6 +114,7 @@ class ArticleCategory extends CategoryAbstract
      * If this is true, then all the articles and categories under this category
      * is treated as a book (aka manual).
      *
+     * @JMS\Expose()
      * @JMS\Groups("articles_categories")
      * @JMS\Type("boolean")
      *
@@ -109,6 +126,7 @@ class ArticleCategory extends CategoryAbstract
      * The template suffix to use when rendering the category, and articles within
      * the category.
      *
+     * @JMS\Expose()
      * @JMS\Groups("articles_categories")
      * @JMS\Type("string")
      *
@@ -120,6 +138,9 @@ class ArticleCategory extends CategoryAbstract
      */
     protected $template_suffix = '';
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->articles   = new ArrayCollection();
@@ -186,6 +207,26 @@ class ArticleCategory extends CategoryAbstract
     }
 
     /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
+    public function setBrand($brand)
+    {
+        $this->setModelField('brand', $brand);
+
+        return $this;
+    }
+
+    /**
      * @param ArticleCategory $category
      */
     public function addChild(ArticleCategory $category)
@@ -203,7 +244,7 @@ class ArticleCategory extends CategoryAbstract
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ArticleCategory';
+        $metadata->customRepositoryClassName = ArticleCategoryRepository::class;
         $metadata->setPrimaryTable(['name' => 'article_categories']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
@@ -305,7 +346,7 @@ class ArticleCategory extends CategoryAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'parent',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory',
+                'targetEntity' => self::class,
                 'mappedBy'     => null,
                 'inversedBy'   => 'children',
                 'joinColumns'  => [
@@ -321,7 +362,7 @@ class ArticleCategory extends CategoryAbstract
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'children',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory',
+                'targetEntity' => self::class,
                 'mappedBy'     => 'parent',
                 'orderBy'      => ['display_order' => 'ASC'],
             ]
@@ -329,7 +370,7 @@ class ArticleCategory extends CategoryAbstract
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'usergroups',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+                'targetEntity' => Usergroup::class,
                 'cascade'      => ['persist', 'merge'],
                 'joinTable'    => [
                     'name'        => 'article_category2usergroup',
@@ -359,8 +400,24 @@ class ArticleCategory extends CategoryAbstract
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'articles',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Article',
+                'targetEntity' => Article::class,
                 'mappedBy'     => 'categories',
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'brand',
+                'targetEntity' => Brand::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'brand_id',
+                        'referencedColumnName' => 'id',
+                        'onDelete'             => 'set null',
+                    ],
+                ],
+                'dpApi' => true,
             ]
         );
     }

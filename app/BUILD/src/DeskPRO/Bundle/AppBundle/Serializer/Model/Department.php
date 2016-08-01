@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department as DepartmentEntity;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
 use JMS\Serializer\Annotation as JMS;
@@ -111,6 +112,15 @@ class Department
     protected $avatar;
 
     /**
+     * Department brands.
+     *
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Brand>>")
+     *
+     * @var Brand[]
+     */
+    protected $brands;
+
+    /**
      * Constructor.
      *
      * @param DepartmentEntity $department
@@ -125,5 +135,6 @@ class Department
         $this->is_chat_enabled    = $department->isChatEnabled();
         $this->is_tickets_enabled = $department->isTicketsEnabled();
         $this->display_order      = $department->getDisplayOrder();
+        $this->brands             = $department->getBrands();
     }
 }

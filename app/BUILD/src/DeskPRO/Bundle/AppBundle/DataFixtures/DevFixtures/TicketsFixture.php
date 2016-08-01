@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\Department;
@@ -286,6 +283,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 
             $subj    = $this->faker->sentence(4);
             $batch[] = [
+                'brand_id'      => $this->getReference('brand')->getId(),
                 'department_id' => $this->faker->randomElement($this->departmentIds),
                 'language_id'   => $this->faker->randomElement($this->languageIds),
                 'category_id'   => $this->faker->randomElement($this->categoryIds),
@@ -333,6 +331,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 
             $subj    = $this->faker->realText($this->faker->numberBetween(40, 60));
             $batch[] = [
+                'brand_id'      => $this->getReference('brand')->getId(),
                 'department_id' => $this->faker->randomElement($this->departmentIds),
                 'language_id'   => $this->faker->randomElement($this->languageIds),
                 'category_id'   => $this->faker->randomElement($this->categoryIds),
@@ -381,6 +380,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 
             $subj    = $this->faker->realText($this->faker->numberBetween(40, 60));
             $batch[] = [
+                'brand_id'      => $this->getReference('brand')->getId(),
                 'department_id' => $this->faker->randomElement($this->departmentIds),
                 'language_id'   => $this->faker->randomElement($this->languageIds),
                 'category_id'   => $this->faker->randomElement($this->categoryIds),

@@ -78,6 +78,15 @@ class ThemeSetCopyingService
         $this->em->persist($destination);
     }
 
+    public function drop(ThemeSet $theme)
+    {
+        $this->dropThemeSetAssets($theme);
+        $this->dropTemplates($theme);
+
+        $this->em->remove($theme);
+        $this->em->flush();
+    }
+
     /**
      * @param ThemeSet $theme_set
      */

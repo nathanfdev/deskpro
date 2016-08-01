@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,13 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-namespace Application\DeskPRO\EntityRepository;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Content\Categories;
 
-class SettingBrand extends AbstractEntityRepository
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\HttpFoundation\Request;
+
+/**
+ * Class AbstractCategoriesController.
+ */
+abstract class AbstractCategoriesController extends CrudController
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    {
+        ListHelper::applyInListFilter(new RequestQueryContext($qb, $alias, $request), 'brand', 'brands');
+    }
 }

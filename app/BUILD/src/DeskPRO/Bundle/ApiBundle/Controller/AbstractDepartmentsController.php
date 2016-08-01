@@ -39,7 +39,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class DepartmentsController.
  */
-abstract class DepartmentsController extends CrudController
+abstract class AbstractDepartmentsController extends CrudController
 {
     public static $entity    = Department::class;
     public static $type      = DepartmentType::class;
@@ -85,7 +85,7 @@ abstract class DepartmentsController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $qb->andWhere(sprintf('e.%s = true', static::$property));
+        $qb->andWhere(sprintf("$alias.%s = true", static::$property));
 
         if ($request->query->getBoolean('my', false)) {
             $allowedDepartmentIds = $this->getAllowedDepartmentsId();
@@ -101,6 +101,11 @@ abstract class DepartmentsController extends CrudController
             ;
 
             $qb->andWhere("($subQb) = 0");
+        }
+        if ($request->query->get('brands')) {
+            $qb->join("$alias.brands", 'brands');
+            $qb->andWhere('brands.id IN (:brand_ids)');
+            $qb->setParameter('brand_ids', $request->query->get('brands'));
         }
     }
 
@@ -128,7 +133,6 @@ abstract class DepartmentsController extends CrudController
     {
         /** @var Department $entity */
         $entity = parent::findEntity($id, $request);
-
         if (!$entity->{static::$property}) {
             throw $this->createNotFoundException();
         }

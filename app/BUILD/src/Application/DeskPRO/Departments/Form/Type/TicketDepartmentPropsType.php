@@ -32,9 +32,12 @@
 
 namespace Application\DeskPRO\Departments\Form\Type;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -42,23 +45,32 @@ class TicketDepartmentPropsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('title', 'text', [
-            'required' => false,
-        ]);
-        $builder->add('user_title', 'text', [
-            'required' => false,
-        ]);
-        $builder->add('parent', 'entity', [
-            'class'         => 'DeskPRO:Department',
-            'required'      => false,
-            'query_builder' => function (EntityRepository $er) {
-                return $er->createQueryBuilder('d')->where('d.is_tickets_enabled = true AND d.parent IS NULL')->orderBy('d.display_order', 'ASC');
-            },
-        ]);
-        $builder->add('avatar', 'text', [
-            'required' => false,
-            'mapped'   => false,
-        ]);
+        $builder
+            ->add('title', TextType::class, [
+                    'required' => false,
+            ])
+            ->add('user_title', TextType::class, [
+                    'required' => false,
+            ])
+            ->add('parent', EntityType::class, [
+                    'class'         => Department::class,
+                    'required'      => false,
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('d')->where('d.is_tickets_enabled = true AND d.parent IS NULL')->orderBy('d.display_order', 'ASC');
+                    },
+            ])
+            ->add('avatar', TextType::class, [
+                    'required' => false,
+                    'mapped'   => false,
+            ])
+            ->add('brands', EntityType::class, [
+                    'class'        => Brand::class,
+                    'required'     => false,
+                    'expanded'     => true,
+                    'multiple'     => true,
+                    'choice_label' => 'name',
+                    'by_reference' => false,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -66,10 +78,5 @@ class TicketDepartmentPropsType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Department::class,
         ]);
-    }
-
-    public function getName()
-    {
-        return 'department';
     }
 }

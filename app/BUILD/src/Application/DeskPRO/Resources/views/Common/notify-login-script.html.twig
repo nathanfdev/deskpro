@@ -9,7 +9,7 @@
     is_demo:       app.getLicense().isDemo() ? true : false,
     demo_expire:   app.getLicense().getExpireDate() ? app.getLicense().getExpireDate().getTimestamp() : false,
     master_domain: constant('DPC_SITE_DOMAIN') ?: null,
-    url:           app.getSetting('core.deskpro_url')
+    url:           brand_setting('core.deskpro_url')
   }|json_encode|url_encode }}" style="width: 1px; height: 1px; overflow: hidden; border: none; visibility: hidden; position: absolute; right: 0; bottom: 0;" frameborder="0" width="1" height="1"></iframe>
   {% endif %}
 {% endif %}

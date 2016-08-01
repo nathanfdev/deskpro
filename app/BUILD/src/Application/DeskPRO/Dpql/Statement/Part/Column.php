@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\App;
@@ -61,31 +62,32 @@ class Column extends AbstractPart
      *
      * @var array
      */
-    protected static $_tableResolver = array(
-        'agent_teams'                => array('id', 'name'),
-        'departments'                => array('id', 'title'),
-        'feedback_categories'        => array('id', 'title'),
-        'feedback_status_categories' => array('id', 'title'),
-        'labels_tickets'             => array('label', 'label'),
-        'languages'                  => array('id', 'title'),
-        'organizations'              => array('id', 'name', 'organization'),
-        'people'                     => array('id', 'name', 'person'),
-        'products'                   => array('id', 'title'),
-        'slas'                       => array('id', 'title'),
-        'tickets'                    => array('id', 'subject', 'ticket'),
-        'ticket_categories'          => array('id', 'title'),
-        'ticket_priorities'          => array('id', 'title'),
-        'ticket_workflows'           => array('id', 'title'),
-    );
+    protected static $_tableResolver = [
+        'agent_teams'                => ['id', 'name'],
+        'brands'                     => ['id', 'name'],
+        'departments'                => ['id', 'title'],
+        'feedback_categories'        => ['id', 'title'],
+        'feedback_status_categories' => ['id', 'title'],
+        'labels_tickets'             => ['label', 'label'],
+        'languages'                  => ['id', 'title'],
+        'organizations'              => ['id', 'name', 'organization'],
+        'people'                     => ['id', 'name', 'person'],
+        'products'                   => ['id', 'title'],
+        'slas'                       => ['id', 'title'],
+        'tickets'                    => ['id', 'subject', 'ticket'],
+        'ticket_categories'          => ['id', 'title'],
+        'ticket_priorities'          => ['id', 'title'],
+        'ticket_workflows'           => ['id', 'title'],
+    ];
 
     /**
      * @var array
      */
-    protected static $_autoLink = array(
-        'tickets.id' => array('ticket'),
-    );
+    protected static $_autoLink = [
+        'tickets.id' => ['ticket'],
+    ];
 
-    protected static $_conditionResolver = array(
+    protected static $_conditionResolver = [
         'custom_data_article'       => '%1$s.root_field_id = %2$s',
         'custom_data_feedback'      => '%1$s.root_field_id = %2$s',
         'custom_data_organizations' => '%1$s.root_field_id = %2$s',
@@ -93,7 +95,7 @@ class Column extends AbstractPart
         'custom_data_ticket'        => '%1$s.root_field_id = %2$s',
         'custom_data_billing'       => '%1$s.root_field_id = %2$s',
         'ticket_slas'               => '%1$s.sla_id = %2$s',
-    );
+    ];
 
     /**
      * @param array $parts
@@ -142,7 +144,7 @@ class Column extends AbstractPart
         $repository = $statement->getFromEntityRepository();
         $sqlTable   = $repository->getTableName();
 
-        $partsSoFar          = array($table);
+        $partsSoFar          = [$table];
         $extraConditionValue = false;
 
         foreach ($parts as $partKey => $part) {
@@ -219,9 +221,9 @@ class Column extends AbstractPart
                         $lookup = self::$_autoLink[$linkLookup];
 
                         if ($section == 'split') {
-                            $argSelect = array($statement->getSplitSql()->addSelectField($sql));
+                            $argSelect = [$statement->getSplitSql()->addSelectField($sql)];
                         } else {
-                            $argSelect = array($select->addSelectField($sql));
+                            $argSelect = [$select->addSelectField($sql)];
                         }
 
                         $renderer = function (AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($lookup, $argSelect) {
@@ -316,7 +318,7 @@ class Column extends AbstractPart
                             $sourceTable = $joinAlias;
                             $joinTable   = $sqlTable;
                         } else {
-                            $joinColumns = array();
+                            $joinColumns = [];
                         }
                     }
 
@@ -324,7 +326,7 @@ class Column extends AbstractPart
                         throw new Exception("$partsString cannot be accessed via DPQL.");
                     }
 
-                    $joinConditions = array();
+                    $joinConditions = [];
                     foreach ($joinColumns as $joinColumn) {
                         $joinConditions[] =
                             "`$sourceTable`.`$joinColumn[name]` = "
@@ -360,31 +362,41 @@ class Column extends AbstractPart
             $assocTable = $repository->getTableName();
             $name       = $part;
             if ($assocTable == 'departments') {
-                $call = new FunctionCall('if', array(
-                    new self(array_merge($this->parts, array('parent', 'id'))),
-                    new FunctionCall('concat', array(
-                        new self(array_merge($this->parts, array('parent', 'title'))),
+                $call = new FunctionCall('if', [
+                    new self(array_merge($this->parts, ['parent', 'id'])),
+                    new FunctionCall('concat', [
+                        new self(array_merge($this->parts, ['parent', 'title'])),
                         new StringPart(' > '),
-                        new self(array_merge($this->parts, array('title'))),
-                    )),
-                    new self(array_merge($this->parts, array('title'))),
-                ));
+                        new self(array_merge($this->parts, ['title'])),
+                    ]),
+                    new self(array_merge($this->parts, ['title'])),
+                ]);
                 $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
                 return new Prepared("`$sqlTable`.`id`", $this->_prettifyColumnName($name), $prepped->sql());
             } elseif ($assocTable == 'ticket_slas') {
-                $call    = new self(array_merge($this->parts, array('sla')));
+                $call    = new self(array_merge($this->parts, ['sla']));
                 $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
                 return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), $prepped->printed());
             } elseif (preg_match('/^custom_data_/', $assocTable)) {
                 $custom_def_table = str_replace('_data_', '_def_', $assocTable);
                 switch ($custom_def_table) {
-                    case 'custom_def_ticket': $manager        = App::getContainer()->getSystemService('TicketFieldsManager'); break;
-                    case 'custom_def_billing': $manager       = App::getContainer()->getBillingFieldManager(); break;
-                    case 'custom_def_people': $manager        = App::getContainer()->getSystemService('PersonFieldsManager'); break;
-                    case 'custom_def_organizations': $manager = App::getContainer()->getSystemService('OrgFieldsManager'); break;
-                    default: $manager                         = null; break;
+                    case 'custom_def_ticket':
+                        $manager = App::getContainer()->getSystemService('TicketFieldsManager');
+                        break;
+                    case 'custom_def_billing':
+                        $manager = App::getContainer()->getBillingFieldManager();
+                        break;
+                    case 'custom_def_people':
+                        $manager = App::getContainer()->getSystemService('PersonFieldsManager');
+                        break;
+                    case 'custom_def_organizations':
+                        $manager = App::getContainer()->getSystemService('OrgFieldsManager');
+                        break;
+                    default:
+                        $manager = null;
+                        break;
                 }
 
                 $field = null;
@@ -394,7 +406,7 @@ class Column extends AbstractPart
 
                 $renderer = null;
                 if ($field && $field->getTypeName() == 'date') {
-                    $call    = new self(array_merge($this->parts, array('value')));
+                    $call    = new self(array_merge($this->parts, ['value']));
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
                     $renderer = function (AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer) {
@@ -410,28 +422,28 @@ class Column extends AbstractPart
                         return $valueRenderer->renderValue($date, 'date');
                     };
                 } else {
-                    $call = new FunctionCall('if', array(
-                        new self(array_merge($this->parts, array('value'))),
-                        new self(array_merge($this->parts, array('field', 'title'))),
-                        new self(array_merge($this->parts, array('input'))),
-                    ));
+                    $call = new FunctionCall('if', [
+                        new self(array_merge($this->parts, ['value'])),
+                        new self(array_merge($this->parts, ['field', 'title'])),
+                        new self(array_merge($this->parts, ['input'])),
+                    ]);
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
                 }
 
                 return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), false, $renderer);
             } elseif (preg_match('/^custom_def_/', $assocTable)) {
-                $call = new FunctionCall('if', array(
-                    new self(array_merge($this->parts, array('parent', 'id'))),
-                    new self(array_merge($this->parts, array('parent', 'title'))),
-                    new self(array_merge($this->parts, array('title'))),
-                ));
+                $call = new FunctionCall('if', [
+                    new self(array_merge($this->parts, ['parent', 'id'])),
+                    new self(array_merge($this->parts, ['parent', 'title'])),
+                    new self(array_merge($this->parts, ['title'])),
+                ]);
                 $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
                 return new Prepared($prepped->sql(), $this->_prettifyColumnName($name));
             } elseif (isset(self::$_tableResolver[$assocTable])) {
                 $resolver = self::$_tableResolver[$assocTable];
 
-                if ($stack || in_array($section, array('order'))) {
+                if ($stack || in_array($section, ['order'])) {
                     // if we have a parent of any sort, act on the printed value
                     $sql = "`$sqlTable`.`$resolver[1]`";
                 } else {
@@ -442,9 +454,9 @@ class Column extends AbstractPart
 
                 if (isset($resolver[2])) {
                     if ($section == 'split') {
-                        $argSelect = array($statement->getSplitSql()->addSelectField("`$sqlTable`.`$resolver[0]`"));
+                        $argSelect = [$statement->getSplitSql()->addSelectField("`$sqlTable`.`$resolver[0]`")];
                     } else {
-                        $argSelect = array($select->addSelectField("`$sqlTable`.`$resolver[0]`"));
+                        $argSelect = [$select->addSelectField("`$sqlTable`.`$resolver[0]`")];
                     }
 
                     $renderer = function (AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($resolver, $argSelect) {

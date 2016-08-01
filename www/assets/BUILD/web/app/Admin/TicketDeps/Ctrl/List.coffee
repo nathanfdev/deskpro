@@ -38,7 +38,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
             for subdep in dep.children then @flattenedList.push subdep if dep.children.length
       )
 
-      brandsPromise = @Api.sendGet('/brands').then (response) =>
+      brandsPromise = @Api.sendGet('/ticket_brands').then (response) =>
         @brandList = response.data.brands
         @brandId = response.data.brands[0].id
 

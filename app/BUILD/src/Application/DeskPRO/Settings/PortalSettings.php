@@ -32,6 +32,11 @@
 
 namespace Application\DeskPRO\Settings;
 
+/**
+ * Class PortalSettings.
+ *
+ * @deprecated 
+ */
 class PortalSettings
 {
     /**

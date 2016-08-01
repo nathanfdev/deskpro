@@ -252,6 +252,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         $ticket->person               = $person;
         $ticket->department           = $department;
         $ticket->ref                  = 'DEMO-'.self::$refCnt++;
+        $ticket->brand                = $this->getReference('brand');
         $ticket->agent                = $this->faker->randomElement($this->agents);
         $ticket->agent_team           = $this->faker->randomElement($this->agentTeams);
         $ticket->urgency              = $this->faker->numberBetween(1, 10);
