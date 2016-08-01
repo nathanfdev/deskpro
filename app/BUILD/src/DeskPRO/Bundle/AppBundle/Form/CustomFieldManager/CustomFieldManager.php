@@ -36,16 +36,9 @@ use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\TicketLayout\LayoutField;
-use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Form\Type\CustomFieldChoiceType;
-use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A service responsible for making sense of "Fields". Usually, special strings (see FormFields class), need to be
@@ -66,38 +59,6 @@ class CustomFieldManager
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
-    }
-
-    /**
-     * @param CustomFieldDefinition $field
-     * @param bool                  $agent_interface
-     *
-     * @return array
-     */
-    public function getCustomPerField(CustomFieldDefinition $field, $agent_interface)
-    {
-        $constraints = [];
-
-        // required
-        if ($field->isRequired($agent_interface)) {
-            $constraints[] = new Assert\NotBlank();
-        }
-
-        $options = [
-            'required'     => $field->isRequired($agent_interface),
-            'expanded'     => $field->isExpanded(),
-            'multiple'     => $field->isMultiple(),
-            'custom_field' => $field,
-            'label'        => false,
-            'constraints'  => $constraints,
-            'help'         => $field->getDescription(),
-        ];
-
-        return [
-            'data',
-            'deskpro_contextual_per_field_choice',
-            $options,
-        ];
     }
 
     /**
@@ -141,20 +102,21 @@ class CustomFieldManager
     }
 
     /**
-     * @param LayoutField $layout_field
+     * @param LayoutField $layoutField
      *
      * @return CustomDefAbstract|null
      */
-    public function getCustomDefForLayoutField(LayoutField $layout_field)
+    public function getCustomDefForLayoutField(LayoutField $layoutField)
     {
-        $field_id = $layout_field->getFieldId();
-        switch ($layout_field->getFieldType()) {
+        $fieldId = $layoutField->getFieldId();
+
+        switch ($layoutField->getFieldType()) {
             case FormFields::TICKET_FIELD:
-                return $this->getCustomTicketFieldById($field_id);
+                return $this->getCustomTicketFieldById($fieldId);
             case FormFields::USER_FIELD:
-                return $this->getCustomTicketFieldById($field_id);
+                return $this->getCustomTicketFieldById($fieldId);
             case FormFields::ORG_FIELD:
-                return $this->getCustomTicketFieldById($field_id);
+                return $this->getCustomTicketFieldById($fieldId);
             default:
                 return false;
         }
@@ -203,126 +165,6 @@ class CustomFieldManager
     }
 
     /**
-     * @param CustomDefAbstract $def
-     * @param bool              $isInline
-     *
-     * @return FormField
-     */
-    public function createCustomField(CustomDefAbstract $def, $isInline = false)
-    {
-        switch ($def->getType()) {
-            case CustomDefAbstract::TYPE_TEXT:
-                return new FormField(TextType::class, $this->getGeneralOptionsForField($def, []));
-            case CustomDefAbstract::TYPE_TEXTAREA:
-                return new FormField(TextareaType::class, $this->getGeneralOptionsForField($def, []));
-            case CustomDefAbstract::TYPE_TOGGLE:
-                if ($isInline) {
-                    return new FormField(ApiBooleanType::class);
-                }
-
-                $options = [
-                    'checkbox_label' => $def->getOption('label_text') ?: '',
-                    'force_boolean'  => true,
-                ];
-
-                return new FormField(
-                    'single_checkbox',
-                    $this->getGeneralOptionsForField($def, $options)
-                );
-
-            case CustomDefAbstract::TYPE_DISPLAY:
-                $options = [
-                    'html'  => $def->getOption('html'),
-                    'data'  => '',
-                    'label' => false,
-                ];
-
-                return new FormField(
-                    'deskpro_display_html',
-                    $this->getGeneralOptionsForField($def, $options)
-                );
-
-            case CustomDefAbstract::TYPE_CHOICE:
-                $options = [
-                    'expanded'     => (bool) $def->getOption('expanded'),
-                    'multiple'     => (bool) $def->getOption('multiple'),
-                    'custom_field' => $def,
-                ];
-
-                return new FormField(
-                    CustomFieldChoiceType::class,
-                    $this->getGeneralOptionsForField($def, $options)
-                );
-
-            case CustomDefAbstract::TYPE_DATE:
-                if ($isInline) {
-                    $options = [
-                        'input'  => 'timestamp',
-                        'widget' => 'single_text',
-                    ];
-                } else {
-                    $options = [
-                        'input'    => 'timestamp',
-                        'widget'   => 'choice',
-                        'weekdays' => $def->getOption('date_valid_dow'),
-                        'min_date' => $def->getDateMinFormat(),
-                        'max_date' => $def->getDateMaxFormat(),
-                    ];
-                }
-
-                return new FormField(
-                    'deskpro_date',
-                    $this->getGeneralOptionsForField($def, $options)
-                );
-
-            case CustomDefAbstract::TYPE_DATETIME:
-                if ($isInline) {
-                    $options = [
-                        'input'  => 'timestamp',
-                        'widget' => 'single_text',
-                    ];
-
-                    return new FormField(
-                        'datetime',
-                        $this->getGeneralOptionsForField($def, $options)
-                    );
-                } else {
-                    $options = [
-                        'input'    => 'timestamp',
-                        'widget'   => 'choice',
-                        'format'   => 'Y-m-d H:i',
-                        'weekdays' => $def->getOption('date_valid_dow'),
-                        'min_date' => $def->getDateMinFormat(),
-                        'max_date' => $def->getDateMaxFormat(),
-                    ];
-
-                    return new FormField(
-                        DateTimeType::class,
-                        $this->getGeneralOptionsForField($def, $options)
-                    );
-                }
-
-            case CustomDefAbstract::TYPE_HIDDEN:
-                $options = [
-                    'auto_fill'          => false,
-                    'hidden'             => true,
-                    'label'              => false,
-                    'help'               => false,
-                    'cookie_param_name'  => $def->getOption('cookie_name'),
-                    'request_param_name' => $def->getOption('param_name'),
-                ];
-
-                return new FormField(
-                    'deskpro_hidden',
-                    $this->getGeneralOptionsForField($def, $options)
-                );
-
-            default:
-                throw new \InvalidArgumentException("Invalid field #{$def->getId()}. Cannot find handler for type \"{$def->getType()}\".");
-        }
-    }
-
-    /**
      * @param string $entityType
      *
      * @return CustomDefAbstract[]
@@ -351,18 +193,5 @@ class CustomFieldManager
         });
 
         return $result;
-    }
-
-    /**
-     * @param CustomDefAbstract $field_type
-     * @param array             $specific_options
-     *
-     * @return array
-     */
-    private function getGeneralOptionsForField(CustomDefAbstract $field_type, array $specific_options)
-    {
-        $options['help'] = $field_type->getRealDescription();
-
-        return array_merge($options, $specific_options);
     }
 }

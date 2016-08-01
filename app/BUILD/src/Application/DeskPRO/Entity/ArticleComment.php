@@ -169,7 +169,7 @@ class ArticleComment extends CommentAbstract
             'fieldName'    => 'article',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Article',
             'mappedBy'     => null,
-            'inversedBy'   => 'comment',
+            'inversedBy'   => 'comments',
             'joinColumns'  => [
                 0 => [
                     'name'                 => 'article_id',

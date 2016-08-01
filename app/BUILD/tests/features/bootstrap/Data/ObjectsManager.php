@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Download;
@@ -252,6 +253,9 @@ class ObjectsManager
             'CustomDefChat'          => [Factory\CommonFactories::class, 'customDef', 'conversation'],
             'CustomDefFeedback'      => [Factory\CommonFactories::class, 'customDef', 'feedback'],
             'CustomDataFeedback'     => [Factory\SimpleFactory::class, 'create', CustomDataFeedback::class],
+            'CustomFieldDefinition'  => [Factory\SimpleFactory::class, 'create', CustomFieldDefinition::class],
+            'CustomPerUserDef'       => [Factory\CommonFactories::class, 'customPerDef', Person::class],
+            'CustomPerOrgDef'        => [Factory\CommonFactories::class, 'customPerDef', Organization::class],
             'Department'             => [Factory\CommonFactories::class, 'department'],
             'Download'               => [Factory\SimpleFactory::class, 'create', Download::class],
             'DownloadCategory'       => [Factory\SimpleFactory::class, 'create', DownloadCategory::class],
@@ -333,6 +337,9 @@ class ObjectsManager
             'CustomDefChat'          => [$this, 'find', CustomDefChat::class],
             'CustomDefFeedback'      => [$this, 'find', CustomDefFeedback::class],
             'CustomDataFeedback'     => [$this, 'find', CustomDataFeedback::class],
+            'CustomFieldDefinition'  => [$this, 'find', CustomFieldDefinition::class],
+            'CustomPerUserDef'       => [$this, 'find', CustomFieldDefinition::class, ['context_class' => Person::class]],
+            'CustomPerOrgDef'        => [$this, 'find', CustomFieldDefinition::class, ['context_class' => Organization::class]],
             'Task'                   => [$this, 'find', Task::class],
             'TaskComment'            => [$this, 'find', TaskComment::class],
             'TaskProject'            => [$this, 'find', TaskProject::class],

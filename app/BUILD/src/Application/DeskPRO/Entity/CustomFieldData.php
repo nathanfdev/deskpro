@@ -74,24 +74,61 @@ class CustomFieldData extends DomainObject
     /**
      * @var int
      */
-    protected $value;
+    protected $value = 0;
 
     /**
      * @var string|mixed input
      */
-    protected $input;
+    protected $input = '';
 
     /**
      * @var DomainObject
      */
     protected $owner;
 
-    public function __construct()
+    /**
+     * @param CustomFieldDefinition $definition
+     *
+     * @return $this
+     */
+    public function setDefinition($definition)
     {
-        $this->value = 0;
-        $this->input = '';
+        $this->setModelField('definition', $definition);
+
+        return $this;
     }
 
+    /**
+     * @return CustomFieldDefinition
+     */
+    public function getDefinition()
+    {
+        return $this->definition;
+    }
+
+    /**
+     * @param CustomFieldDefinition $root_definition
+     *
+     * @return $this
+     */
+    public function setRootDefinition($root_definition)
+    {
+        $this->setModelField('root_definition', $root_definition);
+
+        return $this;
+    }
+
+    /**
+     * @return CustomFieldDefinition
+     */
+    public function getRootDefinition()
+    {
+        return $this->root_definition;
+    }
+
+    /**
+     * @param $data
+     */
     public function setData($data)
     {
         if (is_int($data)) {
@@ -101,9 +138,24 @@ class CustomFieldData extends DomainObject
         }
     }
 
+    /**
+     * @return mixed|string
+     */
     public function getData()
     {
         return $this->value ?: $this->input;
+    }
+
+    /**
+     * @param DomainObject $owner
+     *
+     * @return $this
+     */
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
+
+        return $this;
     }
 
     public function preFlush()

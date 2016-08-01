@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,25 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace spec\DeskPRO\Bundle\AppBundle\CustomField\Context;
+namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use PhpSpec\ObjectBehavior;
+use Application\DeskPRO\Entity\CustomFieldData;
+use Doctrine\Common\Collections\Collection;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldContext
+ * Class CustomPerDataTrait.
  */
-class CustomFieldContextSpec extends ObjectBehavior
+trait CustomPerDataTrait
 {
-    public function it_takes_an_owner_and_a_context()
+    /**
+     * @var CustomFieldData[]|Collection
+     */
+    protected $customPerData;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCustomPerData()
     {
-        // you wont need to use this class (its very vague), but it exists in case the more specific
-        // sub classes don't work for you. see the CustomFieldTicketContext.
-        $this->beConstructedWith('arbitrary_owner', 'arbitrary_conext');
-        $this->getOwner('Application\DeskPRO\Entity\Ticket')->shouldReturn('arbitrary_owner');
-        $this->getContext('Application\DeskPRO\Entity\Person')->shouldReturn('arbitrary_conext');
-        $this->getContext('Application\DeskPRO\Entity\Organization')->shouldReturn('arbitrary_conext');
+        return $this->customPerData;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCustomPerData($customPerData)
+    {
+        $this->customPerData = $customPerData;
     }
 }

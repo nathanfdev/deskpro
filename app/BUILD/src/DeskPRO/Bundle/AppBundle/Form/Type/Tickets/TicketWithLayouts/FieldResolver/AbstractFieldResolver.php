@@ -29,13 +29,11 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
-use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\LabelTicket;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\TicketLayout\LayoutField;
-use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldTicketContext;
-use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager;
-use DeskPRO\Bundle\AppBundle\Form\BrandFormHelper;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
@@ -50,8 +48,8 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayou
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWorkflowType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -59,6 +57,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 abstract class AbstractFieldResolver
 {
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
     /**
      * @var HierarchyGenerator
      */
@@ -75,11 +78,6 @@ abstract class AbstractFieldResolver
     protected $fieldManager;
 
     /**
-     * @var CustomPerFieldManager
-     */
-    protected $customPerFieldManager;
-
-    /**
      * @var TicketFieldSettings
      */
     protected $fieldSettings;
@@ -89,36 +87,30 @@ abstract class AbstractFieldResolver
      */
     protected $settingsResolver;
 
-    /** @var BrandFormHelper */
-    protected $helper;
-
     /**
      * Constructor.
      *
+     * @param EntityManager              $em
      * @param HierarchyGenerator         $hierarchyGenerator
      * @param LanguageManager            $languageManager
      * @param CustomFieldManager         $fieldManager
-     * @param CustomPerFieldManager      $customPerFieldManager
      * @param TicketFieldSettings        $fieldSettings
      * @param BrandAwareSettingsResolver $settingsResolver
-     * @param BrandFormHelper            $helper
      */
     public function __construct(
+        EntityManager              $em,
         HierarchyGenerator         $hierarchyGenerator,
         LanguageManager            $languageManager,
         CustomFieldManager         $fieldManager,
-        CustomPerFieldManager      $customPerFieldManager,
         TicketFieldSettings        $fieldSettings,
-        BrandAwareSettingsResolver $settingsResolver,
-        BrandFormHelper            $helper
+        BrandAwareSettingsResolver $settingsResolver
     ) {
-        $this->hierarchyGenerator    = $hierarchyGenerator;
-        $this->languageManager       = $languageManager;
-        $this->fieldManager          = $fieldManager;
-        $this->customPerFieldManager = $customPerFieldManager;
-        $this->fieldSettings         = $fieldSettings;
-        $this->settingsResolver      = $settingsResolver;
-        $this->helper                = $helper;
+        $this->em                 = $em;
+        $this->hierarchyGenerator = $hierarchyGenerator;
+        $this->languageManager    = $languageManager;
+        $this->fieldManager       = $fieldManager;
+        $this->fieldSettings      = $fieldSettings;
+        $this->settingsResolver   = $settingsResolver;
     }
 
     /**
@@ -178,7 +170,7 @@ abstract class AbstractFieldResolver
      */
     protected function createDepartment(TicketWithLayoutsContext $context)
     {
-        $options = [
+        return new FormField(TicketDepartmentChoiceType::class, [
             'label'       => $this->phrase('portal.forms.label_department'),
             'person'      => $context->getPerson(),
             'ticket'      => $context->getTicket(),
@@ -186,20 +178,7 @@ abstract class AbstractFieldResolver
             'constraints' => [
                 new Assert\NotNull(),
             ],
-        ];
-
-        if ($department = $this->getDefaultDepartment($context)) {
-            $options['data'] = $department;
-        }
-
-        return new FormField(TicketDepartmentChoiceType::class, $options);
-    }
-
-    private function getDefaultDepartment(TicketWithLayoutsContext $context)
-    {
-        return $context->getOption('department_id')
-            ? null
-            : $this->helper->getDefaultDepartment(DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE);
+        ]);
     }
 
     /**
@@ -274,25 +253,8 @@ abstract class AbstractFieldResolver
      */
     protected function createCustomOrgField(TicketWithLayoutsContext $context, LayoutField $field)
     {
-        $person = $this->getSubmittedPerson($context);
-        if ($person instanceof Person) {
-            $personOrganization = $person->getOrganization();
-        } else {
-            $personOrganization = null;
-        }
-
-        // must be in an organization to see this field
-        if (!$personOrganization) {
-            return false;
-        }
-
-        $ticketOrganization = $context->getTicket()->getOrganization();
-        if (!$ticketOrganization) {
-            $context->getTicket()->setOrganization($personOrganization);
-        }
-
-        // person must be a part of the tickets organization to edit org fields
-        if ($personOrganization !== $context->getTicket()->getOrganization()) {
+        $organization = $this->getSubmittedOrganization($context);
+        if (!$organization) {
             return false;
         }
 
@@ -311,29 +273,24 @@ abstract class AbstractFieldResolver
      */
     protected function createCustomPerField(TicketWithLayoutsContext $context, LayoutField $field)
     {
-        $field_context = new CustomFieldTicketContext($context->getTicket());
-        $def           = $this->customPerFieldManager->getCustomPerFieldDefinition($field->getFieldId(), $field_context);
-
+        $def = $this->em->getRepository(CustomFieldDefinition::class)->find($field->getFieldId());
         if (!$def || !$def->isEnabled()) {
             return false;
         }
 
-        $possible_choices = $this->customPerFieldManager->getCustomPerFieldChoices($def, $field_context);
-        if (count($possible_choices) < 1) {
+        if ($def->getContextClass() === Person::class) {
+            $owner = $this->getSubmittedPerson($context);
+        } elseif ($def->getContextClass() === Organization::class) {
+            $owner = $this->getSubmittedOrganization($context);
+        } else {
+            $owner = null;
+        }
+
+        if (!$owner || count($def->getChoices($owner)) < 1) {
             return false;
         }
 
-        $data    = $this->customPerFieldManager->getOrCreateCustomPerFieldData($def, $field_context);
-        $options = [
-            'agent_interface'             => $context->getViewContext() === TicketWithLayoutsContext::VIEW_AGENT,
-            'label'                       => $def->getTitle(),
-            'data'                        => $data,
-            'custom_per_field_context'    => $field_context,
-            'custom_per_field_definition' => $def,
-            'mapped'                      => false,
-        ];
-
-        return new FormField('deskpro_custom_per_field_data', $options);
+        return $this->createContextualCustomPerField($context, $def, $owner);
     }
 
     /**
@@ -535,6 +492,15 @@ abstract class AbstractFieldResolver
     abstract protected function createCustomField(TicketWithLayoutsContext $context, $propertyPath, CustomDefAbstract $def = null);
 
     /**
+     * @param TicketWithLayoutsContext $context
+     * @param CustomFieldDefinition    $def
+     * @param mixed                    $owner
+     *
+     * @return FormField
+     */
+    abstract protected function createContextualCustomPerField(TicketWithLayoutsContext $context, CustomFieldDefinition $def, $owner);
+
+    /**
      * @param string $name
      * @param array  $vars
      *
@@ -580,4 +546,41 @@ abstract class AbstractFieldResolver
      * @return Person
      */
     abstract protected function getSubmittedPerson(TicketWithLayoutsContext $context);
+
+    /**
+     * Get actual ticket organization and compare with submitted person.
+     * Person can only see/edit own organization.
+     *
+     * @param TicketWithLayoutsContext $context
+     *
+     * @return Organization|bool
+     */
+    protected function getSubmittedOrganization(TicketWithLayoutsContext $context)
+    {
+        $person = $this->getSubmittedPerson($context);
+        if ($person instanceof Person) {
+            $personOrganization = $person->getOrganization();
+        } else {
+            $personOrganization = null;
+        }
+
+        // must be in an organization to see this field
+        if (!$personOrganization) {
+            return false;
+        }
+
+        $ticketOrganization = $context->getTicket()->getOrganization();
+
+        // if ticket has no organization then use person's organization
+        if (!$ticketOrganization) {
+            $context->getTicket()->setOrganization($personOrganization);
+        }
+
+        // person must be a part of the tickets organization to edit org fields
+        if ($personOrganization !== $context->getTicket()->getOrganization()) {
+            return false;
+        }
+
+        return $personOrganization;
+    }
 }

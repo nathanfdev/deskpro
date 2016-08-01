@@ -35,12 +35,14 @@ use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Form\Type\CustomFields\ContextualChoiceType;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DpBehat\Data\DataContext;
 
@@ -166,6 +168,40 @@ class CommonFactories
 
         // Provide rest of the $data properties
         return SimpleFactory::provide($def, $data);
+    }
+
+    /**
+     * @param string $contextClass
+     * @param array  $data
+     *
+     * @return CustomFieldDefinition
+     */
+    public static function customPerDef($contextClass, array $data = [])
+    {
+        // set basic props
+        $data = array_merge($data, [
+            'form_type'     => ContextualChoiceType::class,
+            'owner_class'   => Ticket::class,
+            'context_class' => $contextClass,
+        ]);
+
+        // set widget type options
+        if (isset($data['type'])) {
+            if (in_array($data['type'], ['checkbox_group', 'multi_choice'])) {
+                $data['options']['multiple'] = true;
+            }
+            if (in_array($data['type'], ['checkbox_group', 'radio_group'])) {
+                $data['options']['expanded'] = true;
+            }
+
+            unset($data['type']);
+        }
+
+        // create custom def
+        $def = new CustomFieldDefinition();
+        SimpleFactory::provide($def, $data);
+
+        return $def;
     }
 
     /**

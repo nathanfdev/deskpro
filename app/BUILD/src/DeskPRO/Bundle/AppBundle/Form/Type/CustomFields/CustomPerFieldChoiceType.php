@@ -26,16 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
 
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
-
+use Application\DeskPRO\Entity\CustomFieldDefinition;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\CustomDefHierarchyNodeTransformer;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\StringToIntegerArrayTransformer;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -43,12 +41,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class ContextualPerFieldChoiceType.
  */
-class ContextualPerFieldChoiceType extends AbstractType
+class CustomPerFieldChoiceType extends AbstractType
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator
+     * @var HierarchyGenerator
      */
-    private $hierarchy_generator;
+    private $hierarchy;
 
     /**
      * Constructor.
@@ -57,7 +55,7 @@ class ContextualPerFieldChoiceType extends AbstractType
      */
     public function __construct(HierarchyGenerator $hierarchy)
     {
-        $this->hierarchy_generator = $hierarchy;
+        $this->hierarchy = $hierarchy;
     }
 
     /**
@@ -65,21 +63,10 @@ class ContextualPerFieldChoiceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer($options['choice_list'], $options['multiple']), true);
         if ($options['multiple']) {
             $builder->addModelTransformer(new StringToIntegerArrayTransformer(','));
         }
-        $builder->addModelTransformer(
-            new CustomDefHierarchyNodeTransformer($options['choice_list'], $options['multiple']),
-            true
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'deskpro_contextual_per_field_choice';
     }
 
     /**
@@ -87,7 +74,15 @@ class ContextualPerFieldChoiceType extends AbstractType
      */
     public function getParent()
     {
-        return 'choice';
+        return ChoiceType::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
+    {
+        return 'custom_field_choice';
     }
 
     /**
@@ -95,27 +90,20 @@ class ContextualPerFieldChoiceType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $hierarchy_generator = $this->hierarchy_generator;
-
         $resolver
             ->setDefaults([
                 'empty_data'         => null,
                 'contextual_choices' => [],
-                'choice_list'        => function (Options $options) use ($hierarchy_generator) {
-                    return $hierarchy_generator
-                        ->generateForCustomPerFormField(
-                            $options['custom_field'],
-                            $options['contextual_choices']
-                        )
+                'choice_list'        => function (Options $options) {
+                    return $this->hierarchy
+                        ->generateForCustomPerFormField($options['custom_field'], $options['contextual_choices'])
                         ->getChoiceList()
                     ;
                 },
             ])
-            ->setRequired([
-                'custom_field',
-            ])
+            ->setRequired('custom_field')
             ->setAllowedTypes([
-                'custom_field' => 'Application\\DeskPRO\\Entity\\CustomFieldDefinition',
+                'custom_field' => CustomFieldDefinition::class,
             ])
         ;
     }

@@ -39,6 +39,8 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -170,17 +172,25 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
      */
     protected $context_id;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->children        = new ArrayCollection();
         $this->description     = '';
         $this->display_order   = 0;
-        $this->options         = array();
+        $this->options         = [];
         $this->is_enabled      = true;
         $this->is_user_enabled = true;
         $this->is_agent_field  = false;
     }
 
+    /**
+     * @param string $title
+     *
+     * @return CustomFieldDefinition
+     */
     public function spawnChild($title)
     {
         $new                  = new self();
@@ -197,26 +207,100 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         return $new;
     }
 
+    /**
+     * @return ArrayCollection|CustomFieldDefinition[]
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * @param int $defId
+     *
+     * @return CustomFieldDefinition
+     */
+    public function getChildById($defId)
+    {
+        $criteria = new Criteria();
+        $criteria->andWhere($criteria->expr()->eq('id', $defId));
+
+        return $this->children->matching($criteria)->first();
+    }
+
+    /**
+     * @param mixed $contextEntity
+     *
+     * @return \Doctrine\Common\Collections\Collection|static
+     */
+    public function getChoices($contextEntity)
+    {
+        if (!$contextEntity || !$contextEntity->getId()) {
+            return new ArrayCollection();
+        }
+
+        $criteria = new Criteria();
+        $criteria->andWhere($criteria->expr()->eq('context_id', $contextEntity->getId()));
+        $criteria->andWhere($criteria->expr()->eq('context_class', ClassUtils::getClass($contextEntity)));
+
+        return $this->children->matching($criteria);
+    }
+
+    /**
+     * @param CustomFieldDefinition $child
+     */
     public function addChild(CustomFieldDefinition $child)
     {
         $this->children->add($child);
     }
 
+    /**
+     * @return bool
+     */
     public function isForOrganization()
     {
-        return $this->context_class == 'Application\DeskPRO\Entity\Organization';
+        return $this->context_class == Organization::class;
     }
 
+    /**
+     * @return bool
+     */
     public function isForPerson()
     {
-        return $this->context_class == 'Application\DeskPRO\Entity\Person';
+        return $this->context_class == Person::class;
     }
 
+    /**
+     * @param mixed $entity
+     *
+     * @return $this
+     */
+    public function setContext($entity)
+    {
+        if ($entity) {
+            $this->setModelField('context_class', ClassUtils::getClass($entity));
+            $this->setModelField('context_id', $entity->getId());
+        } else {
+            $this->setModelField('context_class', '');
+            $this->setModelField('context_id', null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return bool|string
+     */
     public function isEnabled()
     {
         return $this->is_enabled;
     }
 
+    /**
+     * @param bool $agent_interface
+     *
+     * @return bool
+     */
     public function isRequired($agent_interface = false)
     {
         // never required if agent is filling it out
@@ -227,21 +311,33 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         return (bool) $this->getOption('required', false);
     }
 
+    /**
+     * @return string
+     */
     public function getDefaultValue()
     {
         return $this->default_value;
     }
 
+    /**
+     * @return bool
+     */
     public function isMultiple()
     {
         return (bool) $this->getOption('multiple', false);
     }
 
+    /**
+     * @return bool
+     */
     public function isExpanded()
     {
         return (bool) $this->getOption('expanded', false);
     }
 
+    /**
+     * @return bool
+     */
     public function isOptionsEditableByUser()
     {
         return (bool) $this->getOption('allow_edit', false);
@@ -468,7 +564,7 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
 
         $metadata->mapManyToOne([
             'fieldName'    => 'parent',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomFieldDefinition',
+            'targetEntity' => self::class,
             'mappedBy'     => null,
             'inversedBy'   => 'children',
             'joinColumns'  => [
@@ -483,7 +579,8 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
 
         $metadata->mapOneToMany([
             'fieldName'    => 'children',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomFieldDefinition',
+            'targetEntity' => self::class,
+            'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             'cascade'      => [
                 'remove',
                 'persist',

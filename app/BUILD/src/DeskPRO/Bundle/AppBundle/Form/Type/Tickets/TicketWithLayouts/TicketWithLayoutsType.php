@@ -30,8 +30,10 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Form\BrandFormHelper;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -55,15 +57,22 @@ class TicketWithLayoutsType extends AbstractType
     private $hierarchyGenerator;
 
     /**
+     * @var BrandFormHelper
+     */
+    protected $brandHelper;
+
+    /**
      * Constructor.
      *
      * @param EntityManager      $em
      * @param HierarchyGenerator $hierarchyGenerator
+     * @param BrandFormHelper    $brandHelper
      */
-    public function __construct(EntityManager $em, HierarchyGenerator $hierarchyGenerator)
+    public function __construct(EntityManager $em, HierarchyGenerator $hierarchyGenerator, BrandFormHelper $brandHelper)
     {
         $this->em                 = $em;
         $this->hierarchyGenerator = $hierarchyGenerator;
+        $this->brandHelper        = $brandHelper;
     }
 
     /**
@@ -128,6 +137,11 @@ class TicketWithLayoutsType extends AbstractType
         $data   = $event->getData();
         $config = $event->getForm()->getConfig();
 
+        // department is already chosen, no need to select the default one
+        if ($data->getDepartment()) {
+            return;
+        }
+
         if ($config->getOption('department_id')) {
             $hierarchy  = $this->hierarchyGenerator->generateTicketDepartmentsHierarchy($config->getOption('person'));
             $choiceList = $hierarchy->getChoiceList();
@@ -136,6 +150,8 @@ class TicketWithLayoutsType extends AbstractType
             if ($choice) {
                 $data->setDepartment($choice->getData());
             }
+        } else {
+            $data->setDepartment($this->brandHelper->getDefaultDepartment(DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE));
         }
     }
 }

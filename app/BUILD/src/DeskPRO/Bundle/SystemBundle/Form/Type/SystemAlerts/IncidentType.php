@@ -26,20 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\SystemBundle\Form\Type\SystemAlerts;
 
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
  * Class ProblemType.
  */
-class IncidentType extends ApiType
+class IncidentType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -47,8 +43,6 @@ class IncidentType extends ApiType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('dismissed', ApiBooleanType::class)
-        ;
+        $builder->add('dismissed', ApiBooleanType::class);
     }
 }

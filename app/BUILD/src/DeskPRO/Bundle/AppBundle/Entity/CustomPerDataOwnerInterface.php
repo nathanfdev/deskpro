@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,25 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use Symfony\Component\Form\AbstractType;
+use Application\DeskPRO\Entity\CustomFieldData;
+use Doctrine\Common\Collections\Collection;
 
 /**
- * Class ApiType.
- *
- * Base class for API types
+ * Interface CustomPerDataOwnerInterface.
  */
-class ApiType extends AbstractType
+interface CustomPerDataOwnerInterface extends EntityInterface
 {
     /**
-     * @return string
+     * @return CustomFieldData[]|Collection
      */
-    public function getName()
-    {
-        return;
-    }
+    public function getCustomPerData();
+
+    /**
+     * @param CustomFieldData[]|Collection $customPerData
+     */
+    public function setCustomPerData($customPerData);
 }
