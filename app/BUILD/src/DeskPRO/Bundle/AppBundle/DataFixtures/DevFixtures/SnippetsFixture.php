@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\Language;
@@ -66,12 +67,10 @@ class SnippetsFixture extends DeskProAbstractFixture implements OrderedFixtureIn
     {
         for ($i = 0; $i < self::NUM_CATEGORIES; ++$i) {
             $category = new TextSnippetCategory();
-            if ($i === 0) {
+            if ($i % 2 === 0) {
                 $typename = TextSnippetCategory::TYPE_TICKET;
-            } elseif ($i === 1) {
-                $typename = TextSnippetCategory::TYPE_CHAT;
             } else {
-                $typename = $this->faker->word;
+                $typename = TextSnippetCategory::TYPE_CHAT;
             }
             $category->setTypename($typename)->setIsGlobal(true);
             $this->manager->persist($category);
