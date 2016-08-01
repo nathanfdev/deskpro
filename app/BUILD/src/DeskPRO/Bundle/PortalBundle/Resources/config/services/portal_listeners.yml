@@ -33,7 +33,13 @@ services:
 
   disabled_portal.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\DisabledPortalListener
-    arguments: ["@brand_stack", "@settings_resolver", "@logger", "@templating"]
+    arguments:
+      - "@brand_stack"
+      - "@settings_resolver"
+      - "@logger"
+      - "@templating"
+      - "@portal_mode_storage"
+      - "@security.token_storage"
     tags:
       - { name: kernel.event_subscriber }
 

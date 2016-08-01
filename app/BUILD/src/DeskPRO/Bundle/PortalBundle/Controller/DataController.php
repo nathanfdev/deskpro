@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,18 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldContext;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * A very simple controller that the portal depends on for AJAX requests.
@@ -48,6 +45,12 @@ class DataController extends AbstractController
      * @Route("/portal-data/custom-per/{type}/{id}", requirements={"type":"per_user|per_org"})
      * @Security("is_granted('ROLE_USER')")
      * @PageHttpCache
+     *
+     * @param Request $request
+     * @param string  $type
+     * @param int     $id
+     *
+     * @return Response
      */
     public function saveFormCustomPerChoiceControllerAction(Request $request, $type, $id)
     {
@@ -61,34 +64,29 @@ class DataController extends AbstractController
         if ($type !== 'per_user') {
             throw $this->createNotFoundException('this type is not allowed');
         }
-        $type_context = 'Application\DeskPRO\Entity\Person';
-
-        if (!$new_title = $request->request->get('new_field')) {
+        if (!$newTitle = $request->request->get('new_field')) {
             throw new InvalidArgumentException('please provide "new_field"');
         }
 
         // get the definition
-        $custom_per_manager = $this->get('tickets.custom_per_field_manager');
-        $context            = new CustomFieldContext(
-            'Application\DeskPRO\Entity\Ticket',
-            $type_context
-        );
-        $def = $custom_per_manager->getCustomPerFieldDefinition($id, $context);
+        $def = $this->getEm()->getRepository(CustomFieldDefinition::class)->find($id);
 
         // add a new option
-        $new_choice = $custom_per_manager->createNewOption($def, $new_title, $this->getUser()->getId());
+        $new_choice             = $def->spawnChild($newTitle);
+        $new_choice->context_id = $this->getUser()->getId();
         $this->persistAndFlushEntity($new_choice);
 
-        return $this->makeJsonResponse(
-            array(
-                'new' => array(
-                    'id'    => $new_choice->id,
-                    'title' => $new_choice->getTitle(),
-                ),
-            )
-        );
+        return $this->makeJsonResponse([
+            'new' => [
+                'id'    => $new_choice->id,
+                'title' => $new_choice->getTitle(),
+            ],
+        ]);
     }
 
+    /**
+     * @param Request $request
+     */
     protected function ensureAjaxRequest(Request $request)
     {
         if (!$request->isXmlHttpRequest()) {

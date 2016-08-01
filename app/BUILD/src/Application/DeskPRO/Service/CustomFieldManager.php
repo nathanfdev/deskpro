@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -309,7 +309,6 @@ class CustomFieldManager
                 'children_collection' => $children,
                 'children_only'       => true,
                 'label'               => $def['title'],
-                'persister'           => $this->persister,
                 'allow_edit'          => isset($def['options']['allow_edit']) ? $def['options']['allow_edit'] : false,
             ));
         }

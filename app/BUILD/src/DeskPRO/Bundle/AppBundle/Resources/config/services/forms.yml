@@ -36,24 +36,22 @@ services:
   ticket_with_layouts_api_field_resolver:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\ApiFieldResolver
     arguments:
+      - "@doctrine.orm.default_entity_manager"
       - "@form_hierarchy_generator"
       - "@language_manager"
       - "@custom_field_manager"
-      - "@tickets.custom_per_field_manager"
       - "@ticket_field_settings"
       - "@brand_aware_settings_resolver"
-      - "@brand_form_helper"
 
   ticket_with_layouts_web_field_resolver:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\WebFieldResolver
     arguments:
+      - "@doctrine.orm.default_entity_manager"
       - "@form_hierarchy_generator"
       - "@language_manager"
       - "@custom_field_manager"
-      - "@tickets.custom_per_field_manager"
       - "@ticket_field_settings"
       - "@brand_aware_settings_resolver"
-      - "@brand_form_helper"
 
   ticket_with_layouts_api_field_renderer:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\ApiFieldRenderer
@@ -91,19 +89,19 @@ services:
       - { name: form.type }
 
   form.custom_data:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType
-    arguments: ["@custom_field_manager", "@validator"]
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType
+    arguments: ["@validator"]
     tags:
       - { name: form.type }
 
-  form.deskpro_custom_per_field_data:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomPerFieldType
-    arguments: ["@tickets.custom_per_field_manager", "@custom_field_manager"]
+  form.deskpro_contextual_per_field_choice:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldChoiceType
+    arguments: ["@form_hierarchy_generator"]
     tags:
-      - { name: form.type, alias: deskpro_custom_per_field_data }
+      - { name: form.type }
 
   form.custom_field_choice:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFieldChoiceType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldChoiceType
     arguments: ["@form_hierarchy_generator"]
     tags:
       - { name: form.type }
@@ -220,6 +218,7 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@form_hierarchy_generator"
+      - "@brand_form_helper"
     tags:
       - { name: form.type }
 
@@ -282,6 +281,12 @@ services:
     arguments: ["@doctrine.orm.default_entity_manager", "@data.departments"]
     tags:
       - { name: form.type }
+
+  form.deskpro_category_builder:
+      class: Application\DeskPRO\Form\Type\DpCategoryBuilderType
+      arguments: ["@doctrine.orm.default_entity_manager"]
+      tags:
+        - { name: form.type, alias: dp_category_builder }
 
   form.department:
     class: DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType

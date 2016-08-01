@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,54 +26,50 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
+
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+
 /**
- * DeskPRO.
+ * Class InlineCustomDataListener.
  */
-namespace DeskPRO\Bundle\AppBundle\CustomField\Context;
-
-use Application\DeskPRO\Entity\Ticket;
-
-class CustomFieldTicketContext extends CustomFieldContext
+class InlineCustomDataListener implements EventSubscriberInterface
 {
     /**
-     * @var Ticket
+     * {@inheritdoc}
      */
-    private $ticket;
-
-    public function __construct(Ticket $ticket)
+    public static function getSubscribedEvents()
     {
-        parent::__construct($ticket, null);
-        $this->ticket = $ticket;
+        return [
+            FormEvents::PRE_SUBMIT => 'onSetInlineData',
+        ];
     }
 
     /**
-     * @param $owner_class
+     * Set form data from inline value.
      *
-     * @return Ticket
-     */
-    public function getOwner($owner_class)
-    {
-        return $this->ticket;
-    }
-
-    /**
-     * @param $context_class
+     * @internal
      *
-     * @return \Application\DeskPRO\Entity\Organization|\Application\DeskPRO\Entity\Person|null
+     * @param FormEvent $event
      */
-    public function getContext($context_class)
+    public function onSetInlineData(FormEvent $event)
     {
-        switch ($context_class) {
-            case 'Application\DeskPRO\Entity\Person':
-                return $this->ticket->getPerson();
-            case 'Application\DeskPRO\Entity\Organization':
-                if ($org = $this->ticket->getOrganization()) {
-                    return $org;
-                }
+        $data = $event->getData();
 
-                return;
+        // default format based on form "data" field
+        if (isset($data['data'])) {
+            return;
         }
 
-        return;
+        // custom data serializer format we get from api response
+        if (isset($data['value'])) {
+            $data = $data['value'];
+        }
+
+        $event->setData([
+            'data' => $data,
+        ]);
     }
 }

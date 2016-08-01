@@ -120,12 +120,6 @@ services:
       - "@captcha_decider"
       - "@deskpro.core.translate"
 
-  form.deskpro_contextual_per_field_choice:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ContextualPerFieldChoiceType
-    arguments: ["@form_hierarchy_generator"]
-    tags:
-      - { name: form.type, alias: deskpro_contextual_per_field_choice }
-
   form.captcha:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CaptchaType
     arguments: ["@brand_stack", "@language_manager", "%gregwar_captcha.config%"]

@@ -29,17 +29,21 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Twig\Environment;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Templating\EngineInterface;
 
 /**
@@ -63,16 +67,34 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
     private $logger;
 
     /**
+     * @var PortalModeStorage
+     */
+    private $modeStorage;
+
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    /**
      * @var Environment
      */
     private $portal_tpl;
 
-    public function __construct(BrandStack $brand_stack, SettingsResolver $resolver, LoggerInterface $logger, EngineInterface $portal_tpl)
-    {
-        $this->resolver    = $resolver;
-        $this->brand_stack = $brand_stack;
-        $this->logger      = $logger;
-        $this->portal_tpl  = $portal_tpl;
+    public function __construct(
+        BrandStack $brand_stack,
+        SettingsResolver $resolver,
+        LoggerInterface $logger,
+        EngineInterface $portal_tpl,
+        PortalModeStorage $modeStorage,
+        TokenStorageInterface $tokenStorage
+    ) {
+        $this->resolver     = $resolver;
+        $this->brand_stack  = $brand_stack;
+        $this->logger       = $logger;
+        $this->portal_tpl   = $portal_tpl;
+        $this->modeStorage  = $modeStorage;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -87,14 +109,21 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
         ];
     }
 
+    /**
+     * @param GetResponseEvent $event
+     */
     public function onRequest(GetResponseEvent $event)
     {
-        if (!$event->isMasterRequest()) {
+        if (
+            !$event->isMasterRequest()
+            || $this->isWhitelisted($event->getRequest())
+            || $this->isAdminPreview()
+            || $this->isAdminPreviewApiCall($event)
+        ) {
             // we only make this decision on master requests. sub requests are never "offline".
-            return;
-        }
-
-        if ($this->isWhitelisted($event->getRequest())) {
+            // whitlisted routes obviously should pass
+            // also preview mode does not disable portal
+            // and at last - admin could use portal api always.
             return;
         }
 
@@ -107,10 +136,38 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
         }
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return mixed
+     */
     protected function isWhitelisted(Request $request)
     {
         $route_name = $request->attributes->get('_route');
 
         return in_array($route_name, DisabledHelpdeskListener::$whitelisted_route_names);
+    }
+
+    /**
+     * @return bool
+     */
+    private function isAdminPreview()
+    {
+        return $this->modeStorage->getMode() && $this->modeStorage->getMode()->isAdminPreview();
+    }
+
+    /**
+     * @param GetResponseEvent $event
+     *
+     * @return bool
+     */
+    private function isAdminPreviewApiCall(GetResponseEvent $event)
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        return
+            $user instanceof Person
+            && $user->isAdmin()
+            && strpos($event->getRequest()->getPathInfo(), 'portal/api') !== false;
     }
 }

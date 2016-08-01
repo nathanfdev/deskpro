@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\JIRA\Api;
 use Application\DeskPRO\JIRA\ApiCoreException;
 use Application\DeskPRO\JIRA\Meta;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\JiraApiExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -253,8 +254,7 @@ class JIRA
             $app->setSetting(self::PARAM_META, $meta->toArray());
             $this->container->getEm()->flush($app);
         } catch (\Exception $e) {
-            // todo
-            throw $e;
+            $this->container->get('dp_sys.alerts.event_logger')->log(new JiraApiExceptionEvent($e));
         }
 
         return $meta;
@@ -294,7 +294,7 @@ class JIRA
     }
 
     /**
-     * @param $jql
+     * @param string $q
      *
      * @throws \Exception
      *
@@ -334,13 +334,12 @@ class JIRA
     }
 
     /**
-     * @param        $issueId
+     * @param int    $issueId
      * @param Person $author
      * @param Ticket $ticket
-     * @param        $message
+     * @param string $message
      *
      * @throws \Exception
-     * @throws \Exceptions
      */
     public function createComment($issueId, Person $author, Ticket $ticket, $message)
     {
@@ -351,9 +350,10 @@ class JIRA
             return $this->getApi()->post('/issue/'.$issueId.'/comment?expand=renderedBody', array(
                 'body' => sprintf('[%s via DeskPRO #%d|%s]: %s', $author->getDisplayName(), $ticket['id'], $url, $message),
             ));
-        } catch (\Exceptions $e) {
-            // todo
-            throw $e;
+        } catch (\Exception $e) {
+            $this->container->get('dp_sys.alerts.event_logger')->log(new JiraApiExceptionEvent($e));
+
+            return;
         }
     }
 
@@ -362,7 +362,6 @@ class JIRA
      * @param $issueId
      *
      * @throws \Exception
-     * @throws \Exceptions
      */
     public function createRemoteIssueLink(Ticket $ticket, $issueId)
     {
@@ -381,9 +380,8 @@ class JIRA
             );
 
             return $this->getApi()->post('/issue/'.$issueId.'/remotelink', $data);
-        } catch (\Exceptions $e) {
-            // todo
-            throw $e;
+        } catch (\Exception $e) {
+            $this->container->get('dp_sys.alerts.event_logger')->log(new JiraApiExceptionEvent($e));
         }
     }
 
@@ -391,7 +389,6 @@ class JIRA
      * @param JiraIssue $issue
      *
      * @throws \Exception
-     * @throws \Exceptions
      */
     public function removeRemoteIssueLink(JiraIssue $issue)
     {
@@ -401,9 +398,8 @@ class JIRA
             );
 
             return true;
-        } catch (\Exceptions $e) {
-            // todo
-            throw $e;
+        } catch (\Exception $e) {
+            $this->container->get('dp_sys.alerts.event_logger')->log(new JiraApiExceptionEvent($e));
         }
     }
 
@@ -413,7 +409,6 @@ class JIRA
      * @param Person $byPerson
      *
      * @throws \Exception
-     * @throws \Exceptions
      *
      * @return array|null
      */
@@ -465,7 +460,6 @@ class JIRA
      * @param        $issueId
      *
      * @throws \Exception
-     * @throws \Exceptions
      *
      * @return bool|null
      */
@@ -535,13 +529,12 @@ class JIRA
     }
 
     /**
-     * @param        $message
-     * @param        $ticketId
+     * @param string $message
+     * @param int    $ticketId
      * @param Person $performer
-     * @param null   $issueId
+     * @param int    $issueId
      *
      * @throws \Exception
-     * @throws \Exceptions
      *
      * @return array|void
      */

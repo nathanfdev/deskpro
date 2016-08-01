@@ -52,7 +52,7 @@ class ExceptionEvent extends AbstractExceptionEvent
     /**
      * {@inheritdoc}
      */
-    public function generateSubjectUniqueId()
+    protected function generateSubjectUniqueId()
     {
         return $this->class.'-'.$this->code;
     }

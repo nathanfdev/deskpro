@@ -117,8 +117,9 @@ class DepartmentDataService extends BaseRepositoryService
         $this->has_init = true;
 
         $this->cats = $this->em->createQuery('
-            SELECT d
+            SELECT d, PARTIAL ch.{id}
             FROM DeskPRO:Department d INDEX BY d.id
+            LEFT JOIN d.children ch
             ORDER BY d.display_order ASC
         ')->execute();
 

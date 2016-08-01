@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+if (!count($argv)) {
+    die('You must specify the command to run');
+}
+$filename = preg_replace('/[^a-z0-9]/', '_', $argv[1]);
+$lock     = "./var/tmp/$filename.lock";
+
+$fp = fopen($lock, 'w');
+if (flock($fp, LOCK_EX | LOCK_NB)) {
+    set_time_limit(0);
+    fwrite($fp, "Command: $argv[1]\nTime: ".time());
+    fflush($fp);
+    require __DIR__.'/../app/run/targets/console.php';
+} else {
+    die("Command is already running ($lock)\n");
+}
+
+fclose($fp);

@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\CustomDataTicket;
+use Application\DeskPRO\Entity\CustomFieldData;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Language;
@@ -538,6 +539,15 @@ class Ticket
     private $fields;
 
     /**
+     * Contextual ticket fields (per user/org fields).
+     *
+     * @JMS\Type("custom_per_data<array<Application\DeskPRO\Entity\CustomFieldData>>")
+     *
+     * @var CustomFieldData[]
+     */
+    private $contextualFields;
+
+    /**
      * Ticket children.
      *
      * @JMS\Type("array<entity<Application\DeskPRO\Entity\Ticket>>")
@@ -608,6 +618,7 @@ class Ticket
         }
 
         $this->fields               = $ticket->getCustomData();
+        $this->contextualFields     = $ticket->getCustomPerData();
         $this->agent                = $ticket->getAgent();
         $this->agentTeam            = $ticket->getAgentTeam();
         $this->organization         = $ticket->getOrganization();

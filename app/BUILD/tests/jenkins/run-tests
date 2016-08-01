@@ -43,12 +43,15 @@ wait
 echo "--> Done in $SECONDS seconds"
 
 #################################################
-# RUN JEST TESTS
+# RUN E2E AND JEST TESTS
 #################################################
 
 SECONDS=0
+echo "Running E2E"
+(cd ../../../www/assets/BUILD/pub/ && npm run test:e2e -- -e cbt --test=src/tests/E2E/tests/rough-agent-availability-test.js &> "$LOGS_DIR/e2e.txt") &
 echo "Running Jest"
 (cd ../../../www/assets/BUILD/pub/ && npm run test:unit &> "$LOGS_DIR/jest.txt") &
+wait
 echo "--> Done in $SECONDS seconds"
 
 #################################################
@@ -169,6 +172,13 @@ for ((i=1;i<=$PORTAL_THREADS_NUM;i++)); do
     printf "\n\n--- portal thread $i ---\n\n"; tail -n 50 "$LOGS_DIR/behat-portal-$i.txt"; sleep .1
 done
 
+echo ""
+echo "-----------------------------------------------------------------------------------------------------------------"
+echo "E2E"
+echo "-----------------------------------------------------------------------------------------------------------------"
+echo ""
+tail -n 10 "$LOGS_DIR/e2e.txt"; sleep .1
+
 #################################################
 # SUMMARIZE RESULTS
 #################################################
@@ -186,6 +196,7 @@ jest=$(tail -n 1 "$LOGS_DIR/jest.txt" | tr '\n' ' ')
 behat_install=$(tail -n 3 "$LOGS_DIR/behat-install.txt" | tr '\n' ' ')
 behat_system_api=$(tail -n 3 "$LOGS_DIR/behat-system-api.txt" | tr '\n' ' ')
 behat_production=$(tail -n 3 "$LOGS_DIR/behat-production.txt" | tr '\n' ' ')
+e2e=$(tail -n 2 "$LOGS_DIR/e2e.txt" | tr '\n' ' ')
 for ((i=1;i<=$API_THREADS_NUM;i++)); do
     behat_api[$i]=$(tail -n 3 "$LOGS_DIR/behat-api-$i.txt" | tr '\n' ' ')
 done
@@ -229,7 +240,6 @@ for ((i=1;i<=$API_NEW_THREADS_NUM;i++)); do
     echo "($i new) ${behat_api_new[i]}"
 done
 
-
 echo "
 ---------------
 
@@ -238,6 +248,13 @@ Behat portal:
 for ((i=1;i<=$PORTAL_THREADS_NUM;i++)); do
     echo "($i) ${behat_portal[i]}"
 done
+
+echo "
+---------------
+
+E2E:
+"
+echo "$e2e";
 
 echo ""
 echo "-----------------------------------------------------------------------------------------------------------------"
@@ -333,12 +350,19 @@ if [[ "$behat_portal_failed" -ne "0" ]]; then
     echo "- Behat portal failed"
 fi
 
+e2e_failed=0
+if [[ ! ${e2e} =~ "OK." ]] ; then
+    e2e_failed=1
+    mv "$LOGS_DIR/e2e.txt" "$LOGS_DIR/FAILED-e2e.txt"
+    echo "- E2E failed"
+fi
+
 #################################################
 # EXIT 0/1
 #################################################
 
 echo ""
-status=$((phpunit_failed + phpspec_failed + jest_failed + behat_install_failed + behat_system_api_failed + behat_production_failed + behat_api_failed + behat_portal_failed))
+status=$((phpunit_failed + phpspec_failed + jest_failed + behat_install_failed + behat_system_api_failed + behat_production_failed + behat_api_failed + behat_portal_failed + e2e_failed))
 if [[ "$status" -ne "0" ]]; then
     echo "-------------------------------------------------------------------------------------------------------------"
     echo ""

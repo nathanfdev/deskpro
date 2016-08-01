@@ -28,8 +28,8 @@
 
 namespace Application\DeskPRO\Form\Type;
 
-use Application\DeskPRO\CustomFields\CustomDataPersister;
 use Application\DeskPRO\Form\EventListener\ResizeFormListener;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -44,6 +44,21 @@ class DpCategoryBuilderType extends CollectionType
     protected $listener;
 
     /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
+     * DpCategoryBuilderType constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -54,7 +69,7 @@ class DpCategoryBuilderType extends CollectionType
             $options['allow_add'],
             $options['allow_delete'],
             $options['delete_empty'],
-            $options['persister']
+            $this->em
         ));
     }
 
@@ -64,14 +79,14 @@ class DpCategoryBuilderType extends CollectionType
     public function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);
-        $resolver
-            ->setRequired(['persister'])
-            ->addAllowedTypes([
-                'persister' => CustomDataPersister::class,
-            ]);
     }
 
     public function getName()
+    {
+        return $this->getBlockPrefix();
+    }
+
+    public function getBlockPrefix()
     {
         return 'dp_category_builder';
     }

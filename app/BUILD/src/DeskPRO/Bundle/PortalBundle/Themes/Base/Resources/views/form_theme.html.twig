@@ -276,13 +276,13 @@
 {% endblock deskpro_person_email_choice_label %}
 
 
-{% block deskpro_custom_per_field_data_widget %}
+{% block custom_per_field_widget %}
     <div
         class="form-custom-per-field"
-        data-id="{{ data.definition.id }}"
-        data-allow-edit="{{ data.definition.options['allow_edit'] ? "true" : "false" }}"
-        data-multiple="{{ data.definition.options['multiple'] ? "true" : "false" }}"
-        data-expanded="{{ data.definition.options['expanded'] ? "true" : "false" }}"
+        data-id="{{ form.vars.custom_def.id }}"
+        data-allow-edit="{{ form.vars.custom_def.options['allow_edit'] ? "true" : "false" }}"
+        data-multiple="{{ form.vars.custom_def.options['multiple'] ? "true" : "false" }}"
+        data-expanded="{{ form.vars.custom_def.options['expanded'] ? "true" : "false" }}"
         data-input-name="{{ form.vars.full_name }}"
         >
         {% set no_dp_title = true %}

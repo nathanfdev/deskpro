@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,30 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Entity;
+
+use Application\DeskPRO\Entity\CustomFieldData;
+use Doctrine\Common\Collections\Collection;
+
 /**
- * DeskPRO.
+ * Interface CustomPerDataOwnerInterface.
  */
-namespace DeskPRO\Bundle\AppBundle\CustomField\Context;
-
-class CustomFieldContext
+interface CustomPerDataOwnerInterface extends EntityInterface
 {
-    private $owner;
-    private $context;
+    /**
+     * @return CustomFieldData[]|Collection
+     */
+    public function getCustomPerData();
 
-    public function __construct($owner, $context)
-    {
-        $this->owner   = $owner;
-        $this->context = $context;
-    }
-
-    public function getOwner($owner_class)
-    {
-        return $this->owner;
-    }
-
-    public function getContext($context_class)
-    {
-        // we dont use $context_class here, but the sub-clases do
-        return $this->context;
-    }
+    /**
+     * @param CustomFieldData[]|Collection $customPerData
+     */
+    public function setCustomPerData($customPerData);
 }

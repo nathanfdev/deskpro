@@ -118,34 +118,24 @@ class ObjectTranslatableListener implements EventSubscriber
 
         $em = $args->getEntityManager();
 
-        $old_translations = $this->getLazyCriteriaCollection($entity, $em);
-        $new_translations = $entity->getObjectPropsTranslations();
+        $oldCollection = $this->getLazyCriteriaCollection($entity, $em);
+        $newCollection = $entity->getObjectPropsTranslations();
 
         // persist new and changed entities
-        foreach ($new_translations as $object_lang) {
-            /* @var ObjectLang $object_lang */
-            $object_lang->setObject($entity);
-            $em->persist($object_lang);
-            $em->flush($object_lang);
+        foreach ($newCollection as $objectLang) {
+            /* @var ObjectLang $objectLang */
+            $objectLang->setObject($entity);
+            $em->persist($objectLang);
+            $em->flush($objectLang);
         }
 
         // remove deleted
-        foreach ($old_translations as $object_lang) {
-            if (!$new_translations->contains($object_lang)) {
-                $em->remove($object_lang);
-                $em->flush($object_lang);
+        foreach ($oldCollection as $objectLang) {
+            if (!$newCollection->contains($objectLang)) {
+                $em->remove($objectLang);
+                $em->flush($objectLang);
             }
         }
-    }
-
-    /**
-     * @param ObjectTranslatableInterface $entity
-     *
-     * @return Criteria
-     */
-    private function getCriteria(ObjectTranslatableInterface $entity)
-    {
-        return new Criteria(Criteria::expr()->eq('ref', $entity->getObjectRef()));
     }
 
     /**
@@ -157,7 +147,8 @@ class ObjectTranslatableListener implements EventSubscriber
     private function getLazyCriteriaCollection(ObjectTranslatableInterface $entity, EntityManager $em)
     {
         $persister = $em->getUnitOfWork()->getEntityPersister(ObjectLang::class);
+        $criteria  = new Criteria(Criteria::expr()->eq('ref', $entity->getObjectRef()));
 
-        return new LazyCriteriaCollection($persister, $this->getCriteria($entity));
+        return new LazyCriteriaCollection($persister, $criteria);
     }
 }

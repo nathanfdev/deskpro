@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Content;
 
 use Application\DeskPRO\Entity\Article;
@@ -41,7 +37,6 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackSlugHistory;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsSlugHistory;
-use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -53,11 +48,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ContentSlugManager
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
     /**
      * @var ContainerInterface
      */

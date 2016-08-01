@@ -28,7 +28,6 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
@@ -232,27 +231,15 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 
     private function filterField(LayoutField $field)
     {
-        static $fields          = [];
-        static $customFieldsIds = [];
+        static $fields = [];
         if (!$fields) {
             // We retrieve constants from FormFields to filter ticket layout
             $reflectionClass = new \ReflectionClass(FormFields::class);
             $fields          = $reflectionClass->getConstants();
         }
 
-        if (!$customFieldsIds) {
-            /** @var \Application\DeskPRO\CustomFields\TicketFieldManager $fieldManager */
-            $fieldManager    = $this->container->getSystemService('ticket_fields_manager');
-            $customFields    = $fieldManager->getDefinedFields();
-            $customFieldsIds = array_map(function (CustomDefTicket $o) { return $o->getId(); }, $customFields);
-        }
         if (!in_array($field->getFieldType(), $fields)) {
             return false;
-        }
-        if (in_array($field->getFieldType(), ['user_field', 'ticket_field', 'org_field', 'custom_field'])) {
-            if (!in_array($field->getFieldId(), $customFieldsIds)) {
-                return false;
-            }
         }
 
         return true;

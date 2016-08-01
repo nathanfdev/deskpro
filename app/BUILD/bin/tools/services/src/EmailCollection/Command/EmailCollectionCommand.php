@@ -31,6 +31,8 @@ namespace DeskPRO\Services\EmailCollection\Command;
 use DeskPRO\Component\TaskRunner\TaskRunner;
 use DeskPRO\Services\EmailCollection\TaskRunner\Processor\AccountProcessor;
 use DeskPRO\Services\EmailCollection\TaskRunner\Reader\AccountReader;
+use DeskPRO\Services\Lib\Database;
+use DpRun\DpEnv;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -42,6 +44,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EmailCollectionCommand extends Command
 {
+    /**
+     * @var DpEnv
+     */
+    private $dpEnv;
+
+    public function setDpEnv(DpEnv $dpEnv)
+    {
+        $this->dpEnv = $dpEnv;
+    }
+
     protected function configure()
     {
         $this
@@ -64,17 +76,15 @@ class EmailCollectionCommand extends Command
         $max_tasks    = $input->getOption('max-processes') ?: 999;
 
         if ($input->getOption('load-config')) {
-            /* @var \DpRun\DpEnv $DP_ENV */
-            global $DP_ENV;
-
-            if (!$input->getOption('max-time') && $DP_ENV->getConfig('adv_email_collect.max_time')) {
-                $stop_time = (int) $DP_ENV->getConfig('adv_email_collect.max_time');
+            global $AEP_CONFIG;
+            if (!$input->getOption('max-time') && isset($AEP_CONFIG['collect']['max_time'])) {
+                $stop_time = (int) $AEP_CONFIG['collect']['max_time'];
             }
-            if (!$input->getOption('max-processes') && $DP_ENV->getConfig('adv_email_collect.max_processes')) {
-                $max_tasks = (int) $DP_ENV->getConfig('adv_email_collect.max_processes');
+            if (!$input->getOption('max-processes') && isset($AEP_CONFIG['process']['max_processes'])) {
+                $max_tasks = (int) $AEP_CONFIG['collect']['max_processes'];
             }
-            if (!$input->getOption('connect-interval') && $DP_ENV->getConfig('adv_email_collect.connect_interval')) {
-                $interval = (int) $DP_ENV->getConfig('adv_email_collect.connect_interval');
+            if (!$input->getOption('connect-interval') && isset($AEP_CONFIG['collect']['connect_interval'])) {
+                $interval = (int) $AEP_CONFIG['collect']['connect_interval'];
             }
         }
 
@@ -97,7 +107,7 @@ class EmailCollectionCommand extends Command
         }
 
         $reader = new AccountReader($interval, function ($current) {
-            return get_db_if_closed($current);
+            return Database::getDbIfClosed($this->dpEnv->getConfig('database'), $current);
         });
 
         $processor = new AccountProcessor($logger);
@@ -114,7 +124,7 @@ class EmailCollectionCommand extends Command
 
         if ($stop_time) {
             //TODO - accounts staying marked as active when they shouldnt
-            $db = get_db_if_closed();
+            $db = Database::getDbIfClosed($this->dpEnv->getConfig('database'));
             $db->update('email_accounts', array('is_read_active' => 0), array('is_read_active' => 1));
         }
 

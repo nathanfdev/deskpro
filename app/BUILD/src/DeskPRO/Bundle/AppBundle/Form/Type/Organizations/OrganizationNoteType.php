@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -41,7 +41,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class OrganizationNoteType.
  */
-class OrganizationNoteType extends ApiType
+class OrganizationNoteType extends AbstractType
 {
     /**
      * {@inheritdoc}
