@@ -143,16 +143,16 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		for (i = 0; i < this.currentDisplay.length; i++) {
 			var f = this.currentDisplay[i];
 
-			if (!isVisible(f)) {
-				continue;
-			}
+			var row = this.display.find('.item.' + f.id);
+			row.detach().insertBefore(last);
 
 			if (f.isVisibleOnEdit) {
 				$scope.editables[f.id] = 1;
 			}
 
-			var row = this.display.find('.item.' + f.id);
-			row.detach().insertBefore(last).show().addClass('item-on');
+			if (isVisible(f)) {
+				row.show().addClass('item-on');
+			}
 		}
 		this.initFieldWidgets();
 

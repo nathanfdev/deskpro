@@ -153,7 +153,7 @@
 				</tr>
 			{% endfor %}
 		{% endif %}
-		<tr class="mode-edit" ng-show="!isEditMode('product')">
+		<tr class="mode-edit" ng-show="isEditMode('product')">
 			<th width="80">{{ phrase('agent.general.product') }}:</th>
 			<td>
 				<select name="ticket[product_id]" id="{{baseId}}_ticket_product_id" data-prop-id="product" class="prop-input-product">
@@ -184,7 +184,7 @@
 				<span class="prop-val priority_id">{{ticket.priority.title|default(phrase('agent.general.none'))}}</span>
 			</td>
 		</tr>
-		<tr class="mode-edit" ng-show="!isEditMode('priority')">
+		<tr class="mode-edit" ng-show="isEditMode('priority')">
 			<th width="80">{{ phrase('agent.general.priority') }}:</th>
 			<td>
 				<select name="ticket[priority_id]" id="{{baseId}}_ticket_priority_id" data-prop-id="priority_id" class="prop-input-priority_id">
@@ -207,7 +207,7 @@
 				<span class="prop-val workflow_id">{{ticket.workflow.title|default(phrase('agent.general.none'))}}</span>
 			</td>
 		</tr>
-		<tr class="mode-edit" ng-show="!isEditMode('workflow')">
+		<tr class="mode-edit" ng-show="isEditMode('workflow')">
 			<th width="80">{{ phrase('agent.general.workflow') }}:</th>
 			<td>
 				<select name="ticket[workflow_id]" id="{{baseId}}_ticket_workflow_id" data-prop-id="workflow_id" class="prop-input-workflow_id">
@@ -239,7 +239,7 @@
 				</div>
 			</td>
 		</tr>
-		<tr class="mode-edit" ng-show="isEditMode('ticket_field_{{ f.id }}')" style="display: none;">
+		<tr class="mode-edit" ng-show="isEditMode('ticket_field_{{ f.id }}')">
 			<th width="80">{{ f.title }}:</th>
 			<td>
 				<div class="custom-field field-input ticket_field_{{f.id}}" data-item-id="{{f.id}}">
@@ -262,7 +262,7 @@
             </div>
         </td>
     </tr>
-    <tr class="mode-edit" ng-show="!isEditMode('person_field_{{ f.id }}')">
+    <tr class="mode-edit" ng-show="isEditMode('person_field_{{ f.id }}')">
         <th width="80">{{ f.title }}:</th>
         <td>
             <div class="custom-field field-input person_field_{{f.id}}" data-item-id="{{f.id}}">
@@ -285,7 +285,7 @@
             </div>
         </td>
     </tr>
-    <tr class="mode-edit" ng-show="!isEditMode('org_field_{{ f.id }}')">
+    <tr class="mode-edit" ng-show="isEditMode('org_field_{{ f.id }}')">
         <th width="80">{{ f.title }}:</th>
         <td>
             <div class="custom-field field-input org_field_{{f.id}}" data-item-id="{{f.id}}">
