@@ -99,12 +99,12 @@ class HelpdeskStateModifier implements HelpdeskStateModifierInterface, LoggerAwa
 
         if (!@unlink($filepath)) {
             $this->logger->info('[HelpdeskStateModifier] failed to delete active build file: '.$filepath);
+        }
 
-            if (!@file_put_contents($filepath, $build->getBuildId())) {
-                $this->logger->error('[HelpdeskStateModifier] failed to write active build file: '.$filepath);
+        if (!@file_put_contents($filepath, $build->getBuildId())) {
+            $this->logger->error('[HelpdeskStateModifier] failed to write active build file: '.$filepath);
 
-                throw new HelpdeskStateException('Failed to update the active build ID file. The helpdesk is stuck using the previous build.', HelpdeskStateException::SET_BUILD_FAILED);
-            }
+            throw new HelpdeskStateException('Failed to update the active build ID file. The helpdesk is stuck using the previous build.', HelpdeskStateException::SET_BUILD_FAILED);
         }
 
         $this->logger->info('[HelpdeskStateModifier] successfully reset active build file: '.$filepath);
