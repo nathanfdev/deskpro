@@ -206,7 +206,7 @@ class ProjectFileSet
         ];
 
         static $ignorePaths = [
-            '%DP_APP_DIR%/vendor/vendor/autoload.php',
+            '%DP_APP_DIR%/vendor/autoload.php',
             '%DP_APP_DIR%/vendor/behat/',
             '%DP_APP_DIR%/vendor/behatch/',
             '%DP_APP_DIR%/vendor/composer/',
