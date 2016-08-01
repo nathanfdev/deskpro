@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Language;
+use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonTranslation;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupTranslation;
@@ -89,6 +90,9 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     /**
      * Constructor.
      *
+     * Note we are fine to use unwrapped router here, because the only generater url we need is to static file,
+     * so we do not need to attach locale (/en) or brand (/brand-#) parts.
+     *
      * @param BrandAwareSettingsResolver $settingsResolver
      * @param EntityManager              $em
      * @param Packages                   $assetPackages
@@ -110,7 +114,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         $this->em                 = $em;
         $this->assetPackages      = $assetPackages;
-        $this->router             = $router;
+        $this->router             = RouterUtils::unwrapDecoratedRouter($router);
         $this->tokenStorage       = $tokenStorage;
         $this->permissionsManager = $permissionsManager;
         $this->brandStack         = $brandStack;
