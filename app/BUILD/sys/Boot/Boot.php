@@ -236,6 +236,11 @@ class Boot
         /** @var \Symfony\Component\Console\Input\ArgvInput $input */
         $input = $res['cli_input'];
 
+        $commandClasses = array_merge($commandClasses, [
+            'DeskPRO\Services\EmailCollection\Command\EmailCollectionCommand',
+            'DeskPRO\Services\EmailProcess\Command\EmailProcessCommand',
+        ]);
+
         $app = new Application($kernel);
         foreach ($commandClasses as $commandClass) {
             $command = new $commandClass();

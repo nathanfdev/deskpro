@@ -120,7 +120,7 @@ foreach ([
     'DpTestSrc\\' => DP_APP_DIR.'/tests/src/',
     'DpSys\\' => DP_APP_DIR.'/sys/',
     'DpRun\\' => DP_DIR.'/app/run/lib/DpRun',
-    'DeskPRO\\Services\\' => DP_DIR.'/app/BUILD/bin/tools/services/src',
+    'DeskPRO\\Services\\' => DP_APP_DIR.'/bin/tools/services/src',
 ] as $prefix => $path) {
     $loader->addPsr4($prefix, $path);
 }
