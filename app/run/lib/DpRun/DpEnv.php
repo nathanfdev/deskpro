@@ -312,6 +312,8 @@ class DpEnv
 
         if ($buildId = $this->config_reader->getConfig('paths.active_build_dir_name')) {
             $this->active_build = $buildId;
+        } else if ($buildId = $this->config_reader->getConfig('env.use_build_name')) {
+            $this->active_build = $buildId;
         } else {
             $build_finder = new \DpRun\BuildFinder(
                 $this->config_reader,
