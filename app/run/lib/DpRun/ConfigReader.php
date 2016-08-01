@@ -44,6 +44,7 @@ class ConfigReader implements ConfigReaderInterface
         'database_advanced' => 'DB_CONFIG',
         'env'               => 'ENV_CONFIG',
         'mongo'             => 'MONGO_CONFIG',
+        'async_email_processing' => 'AEP_CONFIG',
     ];
 
     /**
@@ -56,6 +57,7 @@ class ConfigReader implements ConfigReaderInterface
         'settings'          => 'advanced',
         'database_advanced' => 'advanced',
         'mongo'             => 'advanced',
+        'async_email_processing' => 'advanced',
     ];
 
     /**

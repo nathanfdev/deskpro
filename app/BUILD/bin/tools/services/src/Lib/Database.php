@@ -26,29 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Services\EmailCollection\TaskRunner\Processor;
+namespace DeskPRO\Services\Lib;
 
-use DeskPRO\Component\TaskRunner\Processor\AbstractCommandProcessor;
-use DeskPRO\Component\TaskRunner\Task\Task;
-
-class AccountProcessor extends AbstractCommandProcessor
+/**
+ * Class Database.
+ */
+class Database
 {
     /**
-     * @param Task $task
+     * @param array                                     $config
+     * @param \Application\DeskPRO\DBAL\Connection|null $conn
      *
-     * @return string
+     * @return \Application\DeskPRO\DBAL\Connection|\Doctrine\DBAL\Connection
      */
-    protected function getCmdString(Task $task)
+    public static function getDbIfClosed(array $config, \Application\DeskPRO\DBAL\Connection $conn = null)
     {
-        $account_id = $task->get('account_id');
+        if (!$conn || !$conn->isConnected()) {
+            return self::getDb($config);
+        }
 
-        $cmd_path = realpath(DP_ROOT.'/../cmd.php');
-        $cmd      = dp_get_php_command($cmd_path, 'dp:collect-email '.$account_id);
+        try {
+            $v = $conn->fetchColumn('SELECT 1');
+            if ($v == 1) {
+                return $conn;
+            }
+        } catch (\Exception $e) {
+        }
 
-        $this->logger->info("[AccountProcessor] <EmailAccount::{$account_id}> process command: $cmd", array(
-            'task' => $task,
-        ));
+        return self::getDb($config);
+    }
 
-        return $cmd;
+    /**
+     * @throws \Doctrine\DBAL\DBALException
+     *
+     * @return \Application\DeskPRO\DBAL\Connection
+     */
+    private static function getDb($config)
+    {
+        return \Doctrine\DBAL\DriverManager::getConnection(array_merge($config, [
+            'driver'       => 'pdo_mysql',
+            'wrapperClass' => 'Application\\DeskPRO\\DBAL\\Connection',
+        ]));
     }
 }

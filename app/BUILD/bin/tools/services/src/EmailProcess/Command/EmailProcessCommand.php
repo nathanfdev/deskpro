@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,8 @@ use DeskPRO\Component\TaskRunner\Reader\RedisReader;
 use DeskPRO\Component\TaskRunner\Task\JsonTaskFactory;
 use DeskPRO\Component\TaskRunner\TaskRunner;
 use DeskPRO\Services\EmailProcess\TaskRunner\Processor\EmailTaskProcessor;
+use Doctrine\Common\Util\Debug;
+use DpRun\DpEnv;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -43,6 +45,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EmailProcessCommand extends Command
 {
+    /**
+     * @var DpEnv
+     */
+    private $dpEnv;
+
+    public function setDpEnv(DpEnv $dpEnv)
+    {
+        $this->dpEnv = $dpEnv;
+    }
+
     protected function configure()
     {
         $this
@@ -78,20 +90,19 @@ class EmailProcessCommand extends Command
         }
 
         if ($input->getOption('load-config')) {
-            /* @var \DpRun\DpEnv $DP_ENV */
-            global $DP_ENV;
+            $config = $this->dpEnv->getConfig('async_email_processing');
 
-            if (!$input->getOption('max-time') && $DP_ENV->getConfig('adv_email_process.max_time')) {
-                $stop_time = (int) $DP_ENV->getConfig('adv_email_process.max_time');
+            if (!$input->getOption('max-time') && isset($config['process']['max_time'])) {
+                $stop_time = (int) $config['process']['max_time'];
             }
-            if (!$input->getOption('max-processes') && $DP_ENV->getConfig('adv_email_process.max_processes')) {
-                $max_tasks = (int) $DP_ENV->getConfig('adv_email_process.max_processes');
+            if (!$input->getOption('max-processes') && isset($config['process']['max_processes'])) {
+                $max_tasks = (int) $config['process']['max_processes'];
             }
-            if (!$input->getOption('redis-key') && $DP_ENV->getConfig('adv_email_process.redis_key')) {
-                $redis_key = $DP_ENV->getConfig('adv_email_process.redis_key');
+            if (!$input->getOption('redis-key') && isset($config['process']['redis_key'])) {
+                $redis_key = $config['process']['redis_key'];
             }
-            if (!$input->getOption('redis') && $DP_ENV->getConfig('adv_email_process.redis_params')) {
-                $redis = $DP_ENV->getConfig('adv_email_process.redis_params');
+            if (!$input->getOption('redis') && isset($config['process']['redis_params'])) {
+                $redis = $config['process']['redis_params'];
             }
         }
 

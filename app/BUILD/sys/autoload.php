@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -120,6 +120,7 @@ foreach ([
     'DpTestSrc\\' => DP_APP_DIR.'/tests/src/',
     'DpSys\\' => DP_APP_DIR.'/sys/',
     'DpRun\\' => DP_DIR.'/app/run/lib/DpRun',
+    'DeskPRO\\Services\\' => DP_DIR.'/app/BUILD/bin/tools/services/src',
 ] as $prefix => $path) {
     $loader->addPsr4($prefix, $path);
 }
