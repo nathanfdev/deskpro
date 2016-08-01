@@ -88,7 +88,7 @@ Feature: /ticket_filters_counts endpoint
     And the JSON node "data.nested[1].nested" should have 0 elements
 
   Scenario Outline: I group by assignee
-    Given the following <entity_type> records exist:
+    Given only the following <entity_type> records exist:
       | #     | <title_prop>    |
       | ref_1 | <entity_type> 1 |
       | ref_2 | <entity_type> 2 |
@@ -103,7 +103,7 @@ Feature: /ticket_filters_counts endpoint
     When I send a GET request to "/api/v2/ticket_filters_counts?group_by[5]=<group_by>"
     Then the response status code should be 200
     And the response should be in JSON
-
+    And print last JSON response
     And the JSON node "data.nested[0].count" should be equal to 4
     And the JSON node "data.nested[0].grouped_by" should be equal to "<group_by>"
     And the JSON node "data.nested[0].nested" should have 3 elements
