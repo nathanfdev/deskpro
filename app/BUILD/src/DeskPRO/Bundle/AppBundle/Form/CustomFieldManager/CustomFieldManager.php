@@ -35,10 +35,15 @@ use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\Exception\InvalidArgumentException;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A service responsible for making sense of "Fields". Usually, special strings (see FormFields class), need to be
@@ -193,5 +198,83 @@ class CustomFieldManager
         });
 
         return $result;
+    }
+
+    /**
+     * @param $context
+     * @return ArrayCollection
+     */
+    public function getAvailableContextualDefs($context)
+    {
+        if (!$context instanceof Person && !$context instanceof Organization) {
+            throw new InvalidArgumentException('Context must be a type of Person or Organization');
+        }
+
+        $qb = $this->em
+            ->createQueryBuilder()
+            ->select('c')
+            ->from(CustomFieldDefinition::class, 'c')
+            ->where(
+                'c.is_user_enabled = true',
+                'c.is_enabled = true',
+                'c.parent is null',
+                'c.context_class = :class'
+            )
+            ->setParameter('class', ClassUtils::getClass($context))
+            ->orderBy('c.display_order')
+        ;
+        $result = new ArrayCollection($qb->getQuery()->getResult());
+        return $result;
+    }
+
+    /**
+     * @param $context
+     * @return ArrayCollection collection of {parent_id => children collection} for current context
+     */
+    public function getAvailableContextualDefsChildren($context)
+    {
+        if (!$context instanceof Person && !$context instanceof Organization) {
+            throw new InvalidArgumentException('Context must be a type of Person or Organization');
+        }
+
+        // def children for current context
+        $collection = new ArrayCollection();
+
+        if (!$context->getId()) {
+            return $collection;
+        }
+
+        $qb = $this->em
+            ->createQueryBuilder()
+            ->select('c, p')
+            ->from(CustomFieldDefinition::class, 'c')
+            ->join('c.parent', 'p')
+            ->where(
+                'c.is_user_enabled = true',
+                'c.is_enabled = true',
+                'c.context_class = :class',
+                'c.context_id = :id'
+            )
+            ->setParameter('class', ClassUtils::getClass($context))
+            ->setParameter('id', $context->getId())
+            ->orderBy('c.display_order')
+        ;
+
+        $children = $qb->getQuery()->getResult();
+
+        // build child tree
+        foreach ($children as $child) {
+            if (!$child->parent) {
+                continue;
+            }
+            $pid = $child->parent['id'];
+            if (!$sub = $collection->get($pid)) {
+                $sub = new ArrayCollection();
+                $collection->set($pid, $sub);
+            }
+            $sub->add($child);
+        }
+
+        return $collection;
     }
 }

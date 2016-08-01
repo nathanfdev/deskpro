@@ -28,8 +28,8 @@
 
 namespace Application\DeskPRO\Form\EventListener;
 
-use Application\DeskPRO\CustomFields\CustomDataPersister;
 use Application\DeskPRO\Domain\DomainObject;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Form\Extension\Core\EventListener\ResizeFormListener as BaseListener;
 use Symfony\Component\Form\FormEvent;
@@ -38,19 +38,19 @@ use Symfony\Component\Form\FormEvents;
 class ResizeFormListener extends BaseListener
 {
     /**
-     * @var \Application\DeskPRO\CustomFields\CustomDataPersister
+     * @var EntityManager
      */
-    protected $persister;
+    protected $em;
 
     /**
      * @var array
      */
     protected $newEntriesMap;
 
-    public function __construct($type, array $options = array(), $allowAdd = false, $allowDelete = false, $deleteEmpty = false, CustomDataPersister $persister)
+    public function __construct($type, array $options = array(), $allowAdd = false, $allowDelete = false, $deleteEmpty = false, EntityManager $em)
     {
         parent::__construct($type, $options, $allowAdd, $allowDelete, $deleteEmpty);
-        $this->persister = $persister;
+        $this->em = $em;
     }
 
     /**
@@ -106,7 +106,7 @@ class ResizeFormListener extends BaseListener
             foreach ($form as $name => $child) {
                 // todo $data[$name]['title'] is very rare! only for DpCategoryBuilderType
                 if (!isset($data[$name]) || empty($data[$name]['title']) && $child->getData() instanceof DomainObject) {
-                    $this->persister->remove($child->getData());
+                    $this->em->remove($child->getData());
                     $form->remove($name);
                 }
             }
@@ -144,7 +144,7 @@ class ResizeFormListener extends BaseListener
 
         foreach ($this->newEntriesMap as $name) {
             if ($form[$name]->getData() instanceof DomainObject) {
-                $this->persister->add($form[$name]->getData());
+                $this->em->persist($form[$name]->getData());
             }
         }
 

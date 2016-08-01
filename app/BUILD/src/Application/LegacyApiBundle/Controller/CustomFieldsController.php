@@ -230,7 +230,6 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
 
         $form = $this->createForm($definition->createDefinitionType(), $definition, array(
             'context'   => new Ticket(),
-            'persister' => new CustomDataPersister(),
         ))->submit($post);
 
         if (!$form->isValid()) {

@@ -1,5 +1,25 @@
 {% extends 'Theme::layout.html.twig' %}
 
+{% form_theme profile_form _self %}
+{% block cf_definition_contextual_choice_widget %}
+    {% spaceless %}
+
+        {% for child in form._children %}
+            {{ form_row(child, {attr: {style: 'margin-bottom:5px;'} }) }}
+        {% endfor %}
+
+        {% set idx = form._children|length %}
+        {% if form.vars.allow_edit %}
+        <input type="hidden" name="{{ form._children.vars.full_name }}[{{ idx }}][id]" value="cb_1" />
+        <input type="hidden" name="{{ form._children.vars.full_name }}[{{ idx }}][display_order]" value="10" />
+        <input type="text" name="{{ form._children.vars.full_name }}[{{ idx }}][title]" style="width: 60%;" />&nbsp;
+        <button type="submit" class="dp-btn dp-btn-default" style="width: 37%;">
+            Add
+        </button>
+        {% endif %}
+    {% endspaceless %}
+{% endblock cf_definition_contextual_choice_widget %}
+
 {% block inner_content %}
     <div class="breadcrumbs" xmlns="http://www.w3.org/1999/html">
         {% show breadcrumbs %}
