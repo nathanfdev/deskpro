@@ -130,6 +130,7 @@ bin/deskpro-importer-tools
 /web/app/node_modules
 /web/app/bower_components
 /web/app-build
+/web/compiled
 /web/loader-build
 /pub/node_modules
 /pub/src-build
