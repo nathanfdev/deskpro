@@ -62,9 +62,6 @@ class TestCommand extends ContainerAwareCommand
         echo __FILE__;
         echo "\n";
 
-        $db = $this->getContainer()->get('database_connection');
-        $db->executeQuery('SELECT banned_ip FROM ban_ips WHERE is_range = 1')->fetchAll(\PDO::FETCH_COLUMN);
-
         return 0;
     }
 }
