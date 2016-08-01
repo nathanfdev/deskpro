@@ -400,9 +400,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function switchFileStorageStatusAction()
     {
-        /*
-         * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads
-         */
+        /** @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads $server_file_uploads */
         $server_file_uploads = $this->container->getSystemService('server_file_uploads');
 
         $server_file_uploads->switchStorageStatus();

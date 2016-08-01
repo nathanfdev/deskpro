@@ -58,17 +58,17 @@ class ServerFileUploads
      */
     public function getPhpVars()
     {
-        $php_vars = array();
+        $phpVars = [];
 
-        foreach (array('file_uploads', 'upload_tmp_dir', 'upload_max_filesize', 'post_max_size') as $var) {
-            $php_vars[$var] = @ini_get($var);
+        foreach (['file_uploads', 'upload_tmp_dir', 'upload_max_filesize', 'post_max_size'] as $var) {
+            $phpVars[$var] = @ini_get($var);
         }
 
-        $php_vars['upload_tmp_dir_real'] = Env::getUploadTempDir();
-        $php_vars['memory_limit']        = Env::getMemoryLimit();
-        $php_vars['memory_limit_real']   = DP_REAL_MEMSIZE;
+        $phpVars['upload_tmp_dir_real'] = Env::getUploadTempDir();
+        $phpVars['memory_limit']        = Env::getMemoryLimit();
+        $phpVars['memory_limit_real']   = DP_REAL_MEMSIZE;
 
-        return $php_vars;
+        return $phpVars;
     }
 
     /**
@@ -80,8 +80,8 @@ class ServerFileUploads
 
         $result = Numbers::getFilesizeDisplayParts($effective_max, 'cs');
         $result = ($result['number'] > 1 ?
-            floor($result['number']) :
-            $result['number'])
+                floor($result['number']) :
+                $result['number'])
             .' '.$result['symbol'];
 
         return $result;
@@ -108,14 +108,14 @@ class ServerFileUploads
      */
     public function getRestrictions()
     {
-        return array(
+        return [
             'attach_user_maxsize'    => App::getSetting('core.attach_user_maxsize'),
             'attach_agent_maxsize'   => App::getSetting('core.attach_agent_maxsize'),
             'attach_user_not_exts'   => App::getSetting('core.attach_user_not_exts'),
             'attach_user_must_exts'  => App::getSetting('core.attach_user_must_exts'),
             'attach_agent_not_exts'  => App::getSetting('core.attach_agent_not_exts'),
             'attach_agent_must_exts' => App::getSetting('core.attach_agent_must_exts'),
-        );
+        ];
     }
 
     /**
@@ -123,42 +123,42 @@ class ServerFileUploads
      */
     public function getMovingFiles()
     {
-        $moving_id = App::getContainer()->getSetting('core.filesystem_move_from_id');
+        $movingId = App::getContainer()->getSetting('core.filesystem_move_from_id');
 
-        if ($moving_id) {
-            if ($moving_id < 1) {
-                $count_done = 0;
+        if ($movingId) {
+            if ($movingId < 1) {
+                $countDone = 0;
             } else {
-                $count_done = App::getDb()->fetchColumn(
+                $countDone = App::getDb()->fetchColumn(
                     'SELECT COUNT(*) FROM blobs WHERE id < ?',
-                    array($moving_id)
+                    [$movingId]
                 );
             }
 
-            $count_todo = App::getDb()->fetchColumn('SELECT COUNT(*) FROM blobs', array($moving_id));
+            $countTodo = App::getDb()->fetchColumn('SELECT COUNT(*) FROM blobs', [$movingId]);
 
-            if (!$count_todo) {
-                $count_todo = 1;
+            if (!$countTodo) {
+                $countTodo = 1;
             }
 
-            $count_left       = $count_todo - $count_done;
-            $count_percentage = floor(($count_done / $count_todo) * 100);
+            $countLeft       = $countTodo - $countDone;
+            $countPercentage = floor(($countDone / $countTodo) * 100);
         } else {
-            $count_done = $count_todo = $count_left = $count_percentage = 0;
-            $count_todo = App::getDb()->fetchColumn('SELECT COUNT(*) FROM blobs');
+            $countDone = $countTodo = $countLeft = $countPercentage = 0;
+            $countTodo = App::getDb()->fetchColumn('SELECT COUNT(*) FROM blobs');
         }
 
-        $total_size          = App::getDb()->fetchColumn('SELECT SUM(filesize) FROM blobs');
-        $total_size_readable = Numbers::filesizeDisplay($total_size);
+        $totalSize         = App::getDb()->fetchColumn('SELECT SUM(filesize) FROM blobs');
+        $totalSizeReadable = Numbers::filesizeDisplay($totalSize);
 
-        return array(
-            'id'               => $moving_id,
-            'count_done'       => $count_done,
-            'count_left'       => $count_left,
-            'count_percentage' => $count_percentage,
-            'count_todo'       => $count_todo,
-            'total_size'       => $total_size_readable,
-        );
+        return [
+            'id'               => $movingId,
+            'count_done'       => $countDone,
+            'count_left'       => $countLeft,
+            'count_percentage' => $countPercentage,
+            'count_todo'       => $countTodo,
+            'total_size'       => $totalSizeReadable,
+        ];
     }
 
     /**
@@ -174,7 +174,7 @@ class ServerFileUploads
      */
     public function getFileStoragePath()
     {
-        return   App::getContainer()->getBlobDir();
+        return App::getContainer()->getBlobDir();
     }
 
     /**
@@ -192,16 +192,16 @@ class ServerFileUploads
      */
     public function getUploadResults($file)
     {
-        $upload_failed   = false;
-        $is_tmp_writable = false;
-        $attach_url      = '';
+        $upload_failed = false;
+        $isTmpWritable = false;
+        $attachUrl     = '';
 
         $accept = App::getContainer()->getAttachmentAccepter();
         $error  = $accept->getError($file, 'agent');
 
         if ($error) {
             if ($error['error_code'] == 'no_file') {
-                $is_tmp_writable = Env::getUploadTempDir() && is_writable(Env::getUploadTempDir());
+                $isTmpWritable = Env::getUploadTempDir() && is_writable(Env::getUploadTempDir());
             }
 
             $upload_failed = App::getContainer()->getTranslator()->phrase(
@@ -209,14 +209,14 @@ class ServerFileUploads
                 $error
             );
         } else {
-            $attach_url = $accept->accept($file)->getDownloadUrl();
+            $attachUrl = $accept->accept($file)->getDownloadUrl();
         }
 
-        return array(
+        return [
             'upload_failed'     => $upload_failed,
-            'uploaded_file_url' => $attach_url,
-            'is_tmp_writable'   => $is_tmp_writable,
-        );
+            'uploaded_file_url' => $attachUrl,
+            'is_tmp_writable'   => $isTmpWritable,
+        ];
     }
 
     /**
@@ -248,18 +248,15 @@ class ServerFileUploads
             case 's3':
                 $settings->setSetting('core.filestorage_method', 's3');
                 $db->executeUpdate("UPDATE blobs SET storage_loc_pref = 's3' WHERE storage_loc != 's3' AND storage_loc_specific IS NULL");
-                $settings->setSetting('core.filestorage_s3_key',    $options->get('s3_key', null));
+                $settings->setSetting('core.filestorage_s3_key', $options->get('s3_key', null));
                 $settings->setSetting('core.filestorage_s3_secret', $options->get('s3_secret', null));
                 $settings->setSetting('core.filestorage_s3_bucket', $options->get('s3_bucket', null));
-
-                // Need to clear CSS blobs too, since the URLs will change
-                \Application\DeskPRO\Style\RefreshStylesheets::refresh(App::$container);
 
                 break;
         }
 
         if ($method != 's3') {
-            $settings->setSetting('core.filestorage_s3_key',    null);
+            $settings->setSetting('core.filestorage_s3_key', null);
             $settings->setSetting('core.filestorage_s3_secret', null);
             $settings->setSetting('core.filestorage_s3_bucket', null);
         }
@@ -274,27 +271,40 @@ class ServerFileUploads
     {
         $transfer = $this->getMovingFiles();
 
-        $to_method = App::$container->getSettingsHandler()->get('core.filestorage_method');
+        $toMethod = App::$container->getSettingsHandler()->get('core.filestorage_method');
 
         if (!empty($transfer['id'])) {
             $status = 'progress';
 
-            switch ($to_method) {
-                case 'db': $message = 'Currently transferring files to the database'; break;
-                case 'fs': $message = 'Currently transferring files to the filesystem'; break;
-                case 's3': $message = 'Currently transferring files AmazonS3'; break;
+            switch ($toMethod) {
+                case 'db':
+                    $message = 'Currently transferring files to the database';
+                    break;
+                case 'fs':
+                    $message = 'Currently transferring files to the filesystem';
+                    break;
+                case 's3':
+                    $message = 'Currently transferring files AmazonS3';
+                    break;
+                default:
+                    throw new \LogicException('Unknown storage for files is set');
             }
 
-            $message .= $transfer['count_done'].' of '.$transfer['count_todo'];
-            $message .= ' ('.$transfer['count_percentage'].'%) files have been processed.';
+            $message = sprintf(
+                '%s %d of %d (%d%%) files have been processed',
+                $message,
+                $transfer['count_done'],
+                $transfer['count_todo'],
+                $transfer['count_percentage']
+            );
         } else {
             $status  = 'completed';
             $message = 'Transferring done!';
         }
 
-        return array(
+        return [
             'status'  => $status,
             'message' => $message,
-        );
+        ];
     }
 }
