@@ -231,7 +231,7 @@ abstract class AbstractIncident implements Incident
      */
     public function addEvent(Event $event)
     {
-        $subjectUniqueId = $event->getSubjectUniqueId();
+        $subjectUniqueId = (string) $event->getSubjectUniqueId();
 
         if ($this->subjectUniqueId && ($this->subjectUniqueId !== $subjectUniqueId)) {
             throw new \Exception(sprintf(

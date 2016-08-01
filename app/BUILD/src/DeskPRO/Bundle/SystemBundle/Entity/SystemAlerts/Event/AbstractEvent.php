@@ -102,7 +102,7 @@ abstract class AbstractEvent implements Event
     public function __construct(\DateTime $dateCreated = null)
     {
         $this->dateCreated     = $dateCreated ?: new \DateTime();
-        $this->subjectUniqueId = $this->generateSubjectUniqueId();
+        $this->subjectUniqueId = (string) $this->generateSubjectUniqueId();
     }
 
     /**
