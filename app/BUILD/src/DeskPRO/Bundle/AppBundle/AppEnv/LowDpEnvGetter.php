@@ -33,7 +33,7 @@ class LowDpEnvGetter
     /**
      * @return \DpRun\DpEnv
      */
-    public function getDpEnv()
+    public static function getDpEnv()
     {
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
