@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Ldap;
 
 class Ldap extends \Zend\Ldap\Ldap
 {
+    public function connect($host = null, $port = null, $useSsl = null, $useStartTls = null, $networkTimeout = 10)
+    {
+        return parent::connect($host, $port, $useSsl, $useStartTls, $networkTimeout);
+    }
+
     /**
      * Custom version to support multiple %s placeholders in custom account filter format.
      *

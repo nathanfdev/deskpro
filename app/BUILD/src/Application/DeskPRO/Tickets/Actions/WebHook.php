@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,12 +31,13 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use DpSys\LowError\SystemErrorHandler;
+use Application\DeskPRO\Twig\Extension\TemplatingExtension;
 use Guzzle\Http\Client as HttpClient;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Strings;
@@ -126,10 +127,8 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
             );
             $ticket->getStateChangeRecorder()->recordData('webhook', $data);
         } catch (\Exception $e) {
-            // todo send to system alerts
-            // https://trello.com/c/TcxTmRRE
-//            SystemErrorHandler::logException($e, false, 'webhook_'.md5($this->getActionOption('url')));
-
+            $exception = new \Exception('Trigger WebHook failed: '.$e->getMessage(), 0, $e);
+            $this->getContainer()->get('dp_sys.alerts.event_logger')->log($exception);
             $data = array(
                 'url'     => $url,
                 'reason'  => $e->getMessage(),

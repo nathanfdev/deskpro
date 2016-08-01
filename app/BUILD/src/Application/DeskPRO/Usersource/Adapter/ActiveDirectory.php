@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Ldap\Ldap;
 use Application\DeskPRO\Ldap\LdapPagedSearcher;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Identity;
@@ -43,7 +45,7 @@ class ActiveDirectory extends AbstractAdapter
     {
         $info = $identity->getRawData();
 
-        return array(
+        return [
             'name'            => isset($info['name']) ? $info['name'] : '',
             'first_name'      => isset($info['first_name']) ? $info['first_name'] : '',
             'last_name'       => isset($info['last_name']) ? $info['last_name'] : '',
@@ -51,7 +53,7 @@ class ActiveDirectory extends AbstractAdapter
             'email_confirmed' => true,
             'picture_data'    => isset($info['picture_data']) ? $info['picture_data'] : null,
             'phone'           => isset($info['phone']) ? $info['phone'] : null,
-        );
+        ];
     }
 
     /**
@@ -59,7 +61,8 @@ class ActiveDirectory extends AbstractAdapter
      */
     protected function _createAuthAdapterObject()
     {
-        $adapter = new \Orb\Auth\Adapter\ActiveDirectory($this->usersource->options);
+        $options = array_merge($this->usersource->options, ['ldapClass' => Ldap::class]);
+        $adapter = new \Orb\Auth\Adapter\ActiveDirectory($options);
 
         if (App::getConfig('debug.enable_usersource_log') && $adapter instanceof \Orb\Log\Loggable) {
             $logger = App::$container->getUsersourceLogger();
@@ -125,10 +128,10 @@ class ActiveDirectory extends AbstractAdapter
             $adapter->getLogger()->logDebug("findIdentityByInput: $id_input");
         }
 
-        $adapter->setFormData(array(
+        $adapter->setFormData([
             'username' => $id_input,
             'password' => '',
-        ));
+        ]);
         $rec = null;
 
         try {
@@ -146,7 +149,7 @@ class ActiveDirectory extends AbstractAdapter
             throw $e;
         }
 
-        $raw_info = array();
+        $raw_info = [];
         if ($rec_arr && isset($rec_arr['dn'])) {
             if ($adapter->getLogger()) {
                 $adapter->getLogger()->logDebug('findRecordViaEmail result: '.print_r($rec_arr, 1));
@@ -251,9 +254,9 @@ class ActiveDirectory extends AbstractAdapter
      */
     public function getCapabilities()
     {
-        return array(
+        return [
             UsersourceInfo::CAPABILITY_FORM_LOGIN,
             UsersourceInfo::CAPABILITY_FIND_IDENTITY,
-        );
+        ];
     }
 }
