@@ -26,22 +26,28 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Writer\Mapper;
+namespace Application\ImportBundle\Writer\EntityHandler;
 
-use Application\DeskPRO\Entity\TicketWorkflow;
+use Application\ImportBundle\Model;
 
 /**
- * Ticket workflow record mapper.
- *
- * Class TicketWorkflow
+ * Class ChatCustomDefHandler.
  */
-class TicketWorkflowMapper extends AbstractTitleMapper
+class ChatCustomDefHandler extends AbstractCustomDefHandler
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getModelClass()
     {
-        return TicketWorkflow::class;
+        return Model\ChatCustomDef::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getCustomDefMapper()
+    {
+        return $this->mappers->getChatCustomDefMapper();
     }
 }

@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Organization implements LabelAwareModelInterface, CustomDataAwareModelInterface, PrimaryImportModelInterface, ContactDataAwareModelInterface
 {
-    use PrimaryImportModelTrait, LabelAwareTrait;
+    use PrimaryImportModelTrait, LabelAwareTrait, CustomDataAwareTrait;
 
     /**
      * @var string
@@ -81,15 +81,6 @@ class Organization implements LabelAwareModelInterface, CustomDataAwareModelInte
      * @Assert\Valid()
      */
     private $contact_data;
-
-    /**
-     * @var CustomField[]
-     *
-     * @JMS\Type("array<Application\ImportBundle\Model\CustomField>")
-     *
-     * @Assert\Valid()
-     */
-    private $custom_fields = [];
 
     /**
      * Constructor.
@@ -201,23 +192,5 @@ class Organization implements LabelAwareModelInterface, CustomDataAwareModelInte
     public function getContactData()
     {
         return $this->contact_data;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCustomFields()
-    {
-        return $this->custom_fields;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addCustomField(CustomField $custom_field)
-    {
-        $this->custom_fields[] = $custom_field;
-
-        return $this;
     }
 }

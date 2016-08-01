@@ -35,12 +35,12 @@ use Application\DeskPRO\Entity\Organization;
  *
  * Class Organization
  */
-class OrganizationMapper extends AbstractEntityManagerMapper implements MapperByTitleInterface
+class OrganizationMapper extends AbstractContainerMapper implements MapperByTitleInterface
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return Organization::class;
     }

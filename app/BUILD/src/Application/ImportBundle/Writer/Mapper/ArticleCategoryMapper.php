@@ -40,7 +40,7 @@ class ArticleCategoryMapper extends AbstractCategoryMapper
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return ArticleCategory::class;
     }

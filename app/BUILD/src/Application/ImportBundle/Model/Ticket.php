@@ -38,7 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Ticket implements PersonAwareInterface, LabelAwareModelInterface, LanguageAwareInterface, CustomDataAwareModelInterface, PrimaryImportModelInterface
 {
-    use PrimaryImportModelTrait, LabelAwareTrait;
+    use PrimaryImportModelTrait, LabelAwareTrait, CustomDataAwareTrait;
 
     /**
      * @var string
@@ -191,15 +191,6 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
      * @Assert\Valid()
      */
     private $messages = [];
-
-    /**
-     * @var CustomField[]
-     *
-     * @JMS\Type("array<Application\ImportBundle\Model\CustomField>")
-     *
-     * @Assert\Valid()
-     */
-    private $custom_fields = [];
 
     /**
      * @var string
@@ -604,26 +595,6 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
     public function addMessage(TicketMessage $message)
     {
         $this->messages[] = $message;
-
-        return $this;
-    }
-
-    /**
-     * @return CustomField[]
-     */
-    public function getCustomFields()
-    {
-        return $this->custom_fields;
-    }
-
-    /**
-     * @param CustomField $custom_field
-     *
-     * @return $this
-     */
-    public function addCustomField(CustomField $custom_field)
-    {
-        $this->custom_fields[] = $custom_field;
 
         return $this;
     }

@@ -26,18 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Writer\Mapper;
+namespace Application\ImportBundle\Parser\Reader;
 
 /**
- * Class AbstractByTitleMapper.
+ * Class NotFoundException.
  */
-abstract class AbstractTitleMapper extends AbstractEntityManagerMapper implements MapperByTitleInterface
+final class NotFoundException extends \RuntimeException
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function findOneByTitle($title)
-    {
-        return $this->findOneBy(['title' => $title]);
-    }
 }

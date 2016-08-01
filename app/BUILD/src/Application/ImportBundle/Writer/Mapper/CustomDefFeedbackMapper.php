@@ -36,12 +36,12 @@ use Application\ImportBundle\Model\FeedbackCustomDef;
  *
  * Class CustomDefFeedback
  */
-class CustomDefFeedbackMapper extends AbstractEntityManagerMapper implements CustomDefMapperInterface
+class CustomDefFeedbackMapper extends AbstractContainerMapper implements CustomDefMapperInterface
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return CustomDefFeedback::class;
     }

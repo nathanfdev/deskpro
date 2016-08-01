@@ -26,20 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Writer\Mapper;
+namespace Application\ImportBundle\Parser;
 
-use Application\DeskPRO\Entity\TextSnippet;
+use Application\ImportBundle\Importer\ImporterContext;
+use Application\ImportBundle\Model;
 
 /**
- * Class TextSnippetMapper.
+ * Interface ParserInterface.
  */
-class TextSnippetMapper extends AbstractEntityManagerMapper
+interface ParserInterface
 {
     /**
-     * {@inheritdoc}
+     * Returns a count of records of the current type to be exported.
+     *
+     * @param ImporterContext $context
+     * @param string          $modelClass
+     *
+     * @return int
      */
-    public static function getEntityClass()
-    {
-        return TextSnippet::class;
-    }
+    public function getCountByType(ImporterContext $context, $modelClass);
+
+    /**
+     * Returns a collection of records of the current type.
+     *
+     * @param ImporterContext $context
+     * @param string          $modelClass
+     *
+     * @return Model\ImportModelCollection
+     */
+    public function exportByType(ImporterContext $context, $modelClass);
 }

@@ -37,12 +37,12 @@ use Orb\Util\Strings;
  *
  * Class ImportMap
  */
-class ImportMapMapper extends AbstractEntityManagerMapper
+class ImportMapMapper extends AbstractContainerMapper
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return ImportMap::class;
     }

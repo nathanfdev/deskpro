@@ -36,12 +36,12 @@ use Application\ImportBundle\Model\ArticleCustomDef;
  *
  * Class CustomDefArticle
  */
-class CustomDefArticleMapper extends AbstractEntityManagerMapper implements CustomDefMapperInterface
+class CustomDefArticleMapper extends AbstractContainerMapper implements CustomDefMapperInterface
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return CustomDefArticle::class;
     }

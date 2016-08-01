@@ -26,35 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Writer\Mapper;
+namespace Application\ImportBundle\Model;
 
-use Application\DeskPRO\Entity\ArticleComment;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class ArticleComment.
+ * Class OidAwareModelTrait.
  */
-class ArticleCommentMapper extends AbstractEntityManagerMapper
+trait OidAwareModelTrait
 {
+    /**
+     * @var int|string
+     *
+     * @JMS\Type("string")
+     */
+    protected $oid;
+
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public function getOid()
     {
-        return ArticleComment::class;
+        return $this->oid;
     }
 
     /**
-     * Removes all article comments.
-     *
-     * @param int $article_id
+     * {@inheritdoc}
      */
-    public function resetComments($article_id)
+    public function setOid($oid)
     {
-        $comments = $this->em->getRepository(ArticleComment::class)->findBy(['article' => $article_id]);
-        foreach ($comments as $comment) {
-            $this->em->remove($comment);
-        }
+        $this->oid = $oid;
 
-        $this->em->flush();
+        return $this;
     }
 }

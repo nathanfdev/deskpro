@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Person implements LabelAwareModelInterface, LanguageAwareInterface, CustomDataAwareModelInterface, PrimaryImportModelInterface, UsergroupAwareModelInterface, ContactDataAwareModelInterface
 {
-    use PrimaryImportModelTrait, LabelAwareTrait;
+    use PrimaryImportModelTrait, LabelAwareTrait, CustomDataAwareTrait;
 
     const INITIAL_PASSWORD = 'password';
 
@@ -200,15 +200,6 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
      * @Assert\Valid()
      */
     private $contact_data;
-
-    /**
-     * @var array
-     *
-     * @JMS\Type("array<Application\ImportBundle\Model\CustomField>")
-     *
-     * @Assert\Valid()
-     */
-    private $custom_fields = [];
 
     /**
      * Constructor.
@@ -752,23 +743,5 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
     public function getContactData()
     {
         return $this->contact_data;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCustomFields()
-    {
-        return $this->custom_fields;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addCustomField(CustomField $custom_field)
-    {
-        $this->custom_fields[] = $custom_field;
-
-        return $this;
     }
 }

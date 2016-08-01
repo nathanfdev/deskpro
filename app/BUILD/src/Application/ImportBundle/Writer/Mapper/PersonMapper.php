@@ -35,12 +35,12 @@ use Application\DeskPRO\Entity\Person;
  *
  * Class Person
  */
-class PersonMapper extends AbstractEntityManagerMapper
+class PersonMapper extends AbstractContainerMapper
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return Person::class;
     }
@@ -49,38 +49,24 @@ class PersonMapper extends AbstractEntityManagerMapper
      * Returns the existing person by email.
      *
      * @param string $email
-     * @param bool   $throw_exception
-     *
-     * @throws MapperException
      *
      * @return \Application\DeskPRO\Entity\Person
      */
-    public function findOneByEmail($email, $throw_exception = true)
+    public function findOneByEmail($email)
     {
-        $entity = $this->getPersonRepository()->findOneByEmail($email);
-        if (!$entity && $throw_exception) {
-            throw new MapperException('Person not found', ['email' => $email]);
-        }
-
-        return $entity;
+        return $this->getPersonRepository()->findOneByEmail($email);
     }
 
     /**
      * Returns the existing person by list of emails.
      *
      * @param array $emails
-     * @param bool  $throw_exception
-     *
-     * @throws MapperException
      *
      * @return \Application\DeskPRO\Entity\Person
      */
-    public function findOneByEmails(array $emails, $throw_exception = true)
+    public function findOneByEmails(array $emails)
     {
         $entities = $this->getPersonRepository()->findByEmails($emails);
-        if (empty($entities) && $throw_exception) {
-            throw new MapperException('Person not found', ['email' => $emails]);
-        }
 
         return array_shift($entities);
     }

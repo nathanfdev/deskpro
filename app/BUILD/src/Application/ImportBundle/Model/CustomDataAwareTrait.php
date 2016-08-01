@@ -26,20 +26,49 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Writer\Mapper;
-
-use Application\DeskPRO\Entity\ArticleAttachment;
+namespace Application\ImportBundle\Model;
 
 /**
- * Class ArticleAttachmentMapper.
+ * Class CustomDataAwareTrait.
  */
-class ArticleAttachmentMapper extends AbstractEntityManagerMapper
+trait CustomDataAwareTrait
 {
+    /**
+     * @var array
+     *
+     * @JMS\Type("array<Application\ImportBundle\Model\CustomField>")
+     *
+     * @Assert\Valid()
+     */
+    protected $custom_fields = [];
+
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public function getCustomFields()
     {
-        return ArticleAttachment::class;
+        return $this->custom_fields;
+    }
+
+    /**
+     * @param array $customFields
+     *
+     * @return $this
+     */
+    public function setCustomFields(array $customFields)
+    {
+        $this->custom_fields = $customFields;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addCustomField(CustomField $custom_field)
+    {
+        $this->custom_fields[] = $custom_field;
+
+        return $this;
     }
 }

@@ -26,22 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Exporter;
+namespace Application\ImportBundle\Parser;
 
-use Application\ImportBundle\Exporter\Reader\JsonReader;
-use Application\ImportBundle\Exporter\Reader\NotFoundException;
 use Application\ImportBundle\Importer\ImporterContext;
 use Application\ImportBundle\Model\ImportModelCollection;
 use Application\ImportBundle\Model\PrimaryImportModelInterface;
+use Application\ImportBundle\Parser\Reader\JsonReader;
+use Application\ImportBundle\Parser\Reader\NotFoundException;
 use JMS\Serializer\Serializer;
 use Psr\Log\LoggerInterface;
 
 /**
- * Exporter from json files.
- *
- * Class Json
+ * Parser from json files.
  */
-class Exporter implements ExporterInterface
+class Parser implements ParserInterface
 {
     /**
      * @var Serializer

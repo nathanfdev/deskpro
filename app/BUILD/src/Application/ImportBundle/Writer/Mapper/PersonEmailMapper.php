@@ -35,12 +35,12 @@ use Application\DeskPRO\Entity\PersonEmail;
  *
  * Class PersonEmail
  */
-class PersonEmailMapper extends AbstractEntityManagerMapper
+class PersonEmailMapper extends AbstractContainerMapper
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return PersonEmail::class;
     }
@@ -49,8 +49,6 @@ class PersonEmailMapper extends AbstractEntityManagerMapper
      * Returns person email entities.
      *
      * @param string $email
-     *
-     * @throws MapperException
      *
      * @return \Application\DeskPRO\Entity\PersonEmail
      */

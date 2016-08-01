@@ -31,16 +31,14 @@ namespace Application\ImportBundle\Writer\Mapper;
 use Application\DeskPRO\Entity\TicketCategory;
 
 /**
- * Ticket category record mapper.
- *
- * Class TicketCategory
+ * Class TicketCategoryMapper.
  */
-class TicketCategoryMapper extends AbstractTitleMapper
+class TicketCategoryMapper extends AbstractCategoryMapper
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return TicketCategory::class;
     }

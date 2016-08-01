@@ -35,12 +35,12 @@ use Application\DeskPRO\Entity\TicketLayout;
  *
  * Class TicketLayout
  */
-class TicketLayoutMapper extends AbstractEntityManagerMapper
+class TicketLayoutMapper extends AbstractContainerMapper
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return TicketLayout::class;
     }

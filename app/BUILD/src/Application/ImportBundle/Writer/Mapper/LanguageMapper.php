@@ -37,12 +37,12 @@ use Doctrine\Common\Collections\Criteria;
  *
  * Class Language
  */
-class LanguageMapper extends AbstractEntityManagerMapper implements MapperByTitleInterface
+class LanguageMapper extends AbstractContainerMapper implements MapperByTitleInterface
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return Language::class;
     }

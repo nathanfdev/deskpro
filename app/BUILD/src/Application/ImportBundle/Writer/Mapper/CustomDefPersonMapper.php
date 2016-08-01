@@ -36,12 +36,12 @@ use Application\ImportBundle\Model\PersonCustomDef;
  *
  * Class CustomDefPeople
  */
-class CustomDefPersonMapper extends AbstractEntityManagerMapper implements CustomDefMapperInterface
+class CustomDefPersonMapper extends AbstractContainerMapper implements CustomDefMapperInterface
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return CustomDefPerson::class;
     }

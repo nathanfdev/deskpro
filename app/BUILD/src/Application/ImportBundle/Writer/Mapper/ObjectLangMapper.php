@@ -33,12 +33,12 @@ use Application\DeskPRO\Entity\ObjectLang;
 /**
  * Class ObjectLang.
  */
-class ObjectLangMapper extends AbstractEntityManagerMapper
+class ObjectLangMapper extends AbstractContainerMapper
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return ObjectLang::class;
     }

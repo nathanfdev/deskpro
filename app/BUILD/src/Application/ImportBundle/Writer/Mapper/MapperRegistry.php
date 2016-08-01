@@ -32,7 +32,10 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleAttachment;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CustomDefArticle;
+use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
@@ -45,10 +48,8 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackAttachment;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\ImportMap;
-use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
-use Application\DeskPRO\Entity\ObjectLang;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationContactData;
 use Application\DeskPRO\Entity\Person;
@@ -61,7 +62,6 @@ use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketPriority;
-use Application\DeskPRO\Entity\Usergroup;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -77,7 +77,7 @@ class MapperRegistry
     /**
      * @var array
      */
-    private $mappers = [];
+    private $containerMappers = [];
 
     /**
      * Constructor.
@@ -90,11 +90,11 @@ class MapperRegistry
     }
 
     /**
-     * @param array $mappers
+     * @param array $containerMappers
      */
-    public function setMappers(array $mappers)
+    public function setContainerMappers(array $containerMappers)
     {
-        $this->mappers = $mappers;
+        $this->containerMappers = $containerMappers;
     }
 
     /**
@@ -106,11 +106,11 @@ class MapperRegistry
      */
     public function getMapper($entityClass)
     {
-        if (!isset($this->mappers[$entityClass])) {
-            throw new \Exception("Importer mapper with $entityClass not found");
+        if (isset($this->containerMappers[$entityClass])) {
+            return $this->container->get($this->containerMappers[$entityClass]);
         }
 
-        return $this->container->get($this->mappers[$entityClass]);
+        return new CommonMapper($this->container->get('doctrine.orm.entity_manager'), $entityClass);
     }
 
     /**
@@ -124,7 +124,7 @@ class MapperRegistry
     }
 
     /**
-     * @return PersonContactDataMapper
+     * @return CommonMapper
      */
     public function getPersonContactDataMapper()
     {
@@ -142,19 +142,9 @@ class MapperRegistry
     }
 
     /**
-     * Returns the language mapper.
-     *
-     * @return LanguageMapper
-     */
-    public function getLanguageMapper()
-    {
-        return $this->getMapper(Language::class);
-    }
-
-    /**
      * Returns the article mapper.
      *
-     * @return ArticleMapper
+     * @return CommonMapper
      */
     public function getArticleMapper()
     {
@@ -164,7 +154,7 @@ class MapperRegistry
     /**
      * Returns the article comment mapper.
      *
-     * @return ArticleCommentMapper
+     * @return CommonMapper
      */
     public function getArticleCommentMapper()
     {
@@ -204,7 +194,7 @@ class MapperRegistry
     /**
      * Returns the download mapper.
      *
-     * @return DownloadMapper
+     * @return CommonMapper
      */
     public function getDownloadMapper()
     {
@@ -224,7 +214,7 @@ class MapperRegistry
     /**
      * Returns the news mapper.
      *
-     * @return NewsMapper
+     * @return CommonMapper
      */
     public function getNewsMapper()
     {
@@ -244,7 +234,7 @@ class MapperRegistry
     /**
      * Returns the feedback mapper.
      *
-     * @return FeedbackMapper
+     * @return CommonMapper
      */
     public function getFeedbackMapper()
     {
@@ -254,7 +244,7 @@ class MapperRegistry
     /**
      * Returns the feedback custom def mapper.
      *
-     * @return FeedbackAttachmentMapper
+     * @return CommonMapper
      */
     public function getFeedbackAttachmentMapper()
     {
@@ -294,7 +284,7 @@ class MapperRegistry
     /**
      * Returns the department mapper.
      *
-     * @return DepartmentMapper
+     * @return CommonMapper
      */
     public function getDepartmentMapper()
     {
@@ -304,7 +294,7 @@ class MapperRegistry
     /**
      * Returns the ticket priority mapper.
      *
-     * @return TicketPriorityMapper
+     * @return CommonMapper
      */
     public function getTicketPriorityMapper()
     {
@@ -324,7 +314,7 @@ class MapperRegistry
     /**
      * Returns the ticket category mapper.
      *
-     * @return TicketAttachmentMapper
+     * @return CommonMapper
      */
     public function getTicketAttachmentMapper()
     {
@@ -334,7 +324,7 @@ class MapperRegistry
     /**
      * Returns the ticket message mapper.
      *
-     * @return TicketMessageMapper
+     * @return CommonMapper
      */
     public function getTicketMessageMapper()
     {
@@ -372,7 +362,7 @@ class MapperRegistry
     }
 
     /**
-     * @return OrganizationContactDataMapper
+     * @return CommonMapper
      */
     public function getOrganizationContactDataMapper()
     {
@@ -390,16 +380,6 @@ class MapperRegistry
     }
 
     /**
-     * Returns the object lang mapper.
-     *
-     * @return ObjectLangMapper
-     */
-    public function getObjectLangMapper()
-    {
-        return $this->getMapper(ObjectLang::class);
-    }
-
-    /**
      * Returns the import map mapper.
      *
      * @return ImportMapMapper
@@ -407,14 +387,6 @@ class MapperRegistry
     public function getImportMapMapper()
     {
         return $this->getMapper(ImportMap::class);
-    }
-
-    /**
-     * @return UserGroupMapper
-     */
-    public function getUserGroupMapper()
-    {
-        return $this->getMapper(Usergroup::class);
     }
 
     /**
@@ -426,7 +398,7 @@ class MapperRegistry
     }
 
     /**
-     * @return TextSnippetMapper
+     * @return CommonMapper
      */
     public function getTextSnippetMapper()
     {
@@ -439,5 +411,29 @@ class MapperRegistry
     public function getTextSnippetCategoryMapper()
     {
         return $this->getMapper(TextSnippetCategory::class);
+    }
+
+    /**
+     * @return CommonMapper
+     */
+    public function getChatMapper()
+    {
+        return $this->getMapper(ChatConversation::class);
+    }
+
+    /**
+     * @return CommonMapper
+     */
+    public function getChatMessageMapper()
+    {
+        return $this->getMapper(ChatMessage::class);
+    }
+
+    /**
+     * @return CustomDefChatMapper
+     */
+    public function getChatCustomDefMapper()
+    {
+        return $this->getMapper(CustomDefChat::class);
     }
 }

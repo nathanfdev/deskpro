@@ -28,20 +28,16 @@
 
 namespace Application\ImportBundle\Writer\Mapper;
 
-use Application\DeskPRO\Entity\Feedback;
-
 /**
- * Feedback record mapper.
- *
- * Class Feedback
+ * Class AbstractContainerMapper.
  */
-class FeedbackMapper extends AbstractTitleMapper
+abstract class AbstractContainerMapper extends AbstractEntityManagerMapper implements ContainerMapperInterface
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public function getEntityClass()
     {
-        return Feedback::class;
+        return static::getMapperEntityClass();
     }
 }

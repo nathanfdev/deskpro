@@ -70,8 +70,7 @@ class BlobAdapter
         $blobData = BlobDataMapper::findOneByParams(
             $blob->getBlobData(),
             $blob->getBlobPath(),
-            $blob->getBlobUrl(),
-            $throwException
+            $blob->getBlobUrl()
         );
 
         if (!$blobData) {

@@ -26,22 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Writer\Mapper;
+namespace Application\ImportBundle\Model;
 
-use Application\DeskPRO\Entity\TicketPriority;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Ticket priority record mapper.
+ * Class ChatCustomDef.
  *
- * Class TicketPriority
+ * @Assert\GroupSequenceProvider
  */
-class TicketPriorityMapper extends AbstractTitleMapper
+class ChatCustomDef extends AbstractCustomDef
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function getEntityClass()
-    {
-        return TicketPriority::class;
-    }
 }

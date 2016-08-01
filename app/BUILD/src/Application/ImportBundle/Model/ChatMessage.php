@@ -26,49 +26,86 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Writer\Mapper;
+namespace Application\ImportBundle\Model;
+
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Mapper exception.
- *
- * Class MapperException
+ * Class ChatMessage.
  */
-final class MapperException extends \Exception
+class ChatMessage implements OidAwareModelInterface
 {
-    /**
-     * @var array
-     */
-    private $criteria;
+    use OidRequiredAwareModelTrait;
 
     /**
-     * Constructor.
+     * @var string
      *
-     * @param string $message
-     * @param array  $criteria
+     * @JMS\Type("string")
      */
-    public function __construct($message, array $criteria)
-    {
-        parent::__construct($message);
-        $this->criteria = $criteria;
-    }
+    private $person;
 
     /**
-     * Returns the criteria.
+     * @var string
      *
-     * @return array
+     * @JMS\Type("string")
+     *
+     * @Assert\NotBlank()
      */
-    public function getCriteria()
-    {
-        return $this->criteria;
-    }
+    private $content;
 
     /**
-     * Parse to string.
+     * @var \DateTime
      *
+     * @JMS\Type("DateTime")
+     */
+    private $dateCreated;
+
+    /**
      * @return string
      */
-    public function __toString()
+    public function getPerson()
     {
-        return sprintf('%s. Criteria: %s', $this->message, json_encode($this->criteria));
+        return $this->person;
+    }
+
+    /**
+     * @param string $person
+     */
+    public function setPerson($person)
+    {
+        $this->person = $person;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param string $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->dateCreated;
+    }
+
+    /**
+     * @param \DateTime $dateCreated
+     */
+    public function setDateCreated($dateCreated)
+    {
+        $this->dateCreated = $dateCreated;
     }
 }

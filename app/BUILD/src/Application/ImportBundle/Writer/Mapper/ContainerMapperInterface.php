@@ -28,20 +28,13 @@
 
 namespace Application\ImportBundle\Writer\Mapper;
 
-use Application\DeskPRO\Entity\Product;
-
 /**
- * Product record mapper.
- *
- * Class Product
+ * Interface ContainerMapperInterface.
  */
-class ProductMapper extends AbstractTitleMapper
+interface ContainerMapperInterface extends MapperInterface
 {
     /**
-     * {@inheritdoc}
+     * @return string
      */
-    public static function getEntityClass()
-    {
-        return Product::class;
-    }
+    public static function getMapperEntityClass();
 }

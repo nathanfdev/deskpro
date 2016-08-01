@@ -117,7 +117,7 @@ class PersonHelper
 
         // try to find person by emails
         if (!$entity) {
-            $entity = $this->personMapper->findOneByEmail($personOidOrEmail, false);
+            $entity = $this->personMapper->findOneByEmail($personOidOrEmail);
             if (!$entity) {
                 // try to create person with real email
                 $errors = $this->validator->validate($personOidOrEmail, [
@@ -137,7 +137,7 @@ class PersonHelper
         // try to find person by auto generated email
         if (!$entity) {
             $personEmail = "imported.user.$personOidOrEmail@example.com";
-            $entity      = $this->personMapper->findOneByEmail($personEmail, false);
+            $entity      = $this->personMapper->findOneByEmail($personEmail);
 
             if (!$entity) {
                 $entity = new Entity\Person();

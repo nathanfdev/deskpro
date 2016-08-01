@@ -59,6 +59,7 @@ class NewsHandler extends AbstractEntityHandler
             ->setTitle($model->getTitle())
             ->setContent($model->getContent())
             ->setStatus($model->getStatus())
+            ->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()))
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
             ->setDatePublished($model->getDatePublished())
             ->setViewCount($model->getViewCount())
@@ -66,13 +67,6 @@ class NewsHandler extends AbstractEntityHandler
 
         if ($model->getDateCreated()) {
             $entity->setDateCreated($model->getDateCreated());
-        }
-
-        // update news person
-        if ($model->getPerson()) {
-            $entity->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()));
-        } else {
-            $entity->setPerson(null);
         }
 
         // update news category

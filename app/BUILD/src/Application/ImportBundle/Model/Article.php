@@ -28,7 +28,7 @@
 
 namespace Application\ImportBundle\Model;
 
-use Application\DeskPRO;
+use Application\DeskPRO\Entity\ContentAbstract;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Article extends AbstractContentModel implements PersonAwareInterface, LabelAwareModelInterface, CustomDataAwareModelInterface
 {
-    use LabelAwareTrait;
+    use LabelAwareTrait, CustomDataAwareTrait;
 
     /**
      * @var string
@@ -81,15 +81,6 @@ class Article extends AbstractContentModel implements PersonAwareInterface, Labe
      * })
      */
     private $categories = [];
-
-    /**
-     * @var CustomField[]
-     *
-     * @JMS\Type("array<Application\ImportBundle\Model\CustomField>")
-     *
-     * @Assert\Valid()
-     */
-    private $custom_fields = [];
 
     /**
      * @var Attachment[]
@@ -175,7 +166,7 @@ class Article extends AbstractContentModel implements PersonAwareInterface, Labe
     public function getStatus()
     {
         if ($this->date_end) {
-            return DeskPRO\Entity\ContentAbstract::STATUS_ARCHIVED;
+            return ContentAbstract::STATUS_ARCHIVED;
         }
 
         return parent::getStatus();
@@ -257,24 +248,6 @@ class Article extends AbstractContentModel implements PersonAwareInterface, Labe
     public function addCategory($category)
     {
         $this->categories[] = (string) $category;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCustomFields()
-    {
-        return $this->custom_fields;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addCustomField(CustomField $custom_field)
-    {
-        $this->custom_fields[] = $custom_field;
 
         return $this;
     }

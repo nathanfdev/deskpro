@@ -28,18 +28,27 @@
 
 namespace Application\ImportBundle\Writer\Mapper;
 
-use Application\DeskPRO\Entity\PersonContactData;
+use Application\DeskPRO\Entity\CustomDefChat;
+use Application\ImportBundle\Model\ChatCustomDef;
 
 /**
- * Class PersonContactDataMapper.
+ * Class ChatCustomDefMapper.
  */
-class PersonContactDataMapper extends AbstractEntityManagerMapper
+class CustomDefChatMapper extends AbstractContainerMapper implements CustomDefMapperInterface
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
-        return PersonContactData::class;
+        return CustomDefChat::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getModelClass()
+    {
+        return ChatCustomDef::class;
     }
 }

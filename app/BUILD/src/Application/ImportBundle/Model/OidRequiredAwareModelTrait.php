@@ -26,38 +26,40 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Exporter\Reader;
+namespace Application\ImportBundle\Model;
+
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Directory json files filter.
- *
- * Class DirectoryIteratorFilter
+ * Class OidAwareModelTrait.
  */
-class DirectoryIteratorFilter extends \RecursiveFilterIterator
+trait OidRequiredAwareModelTrait
 {
     /**
-     * Constructor.
+     * @var int|string
      *
-     * @param \RecursiveIterator $iterator
+     * @JMS\Type("string")
+     *
+     * @Assert\NotBlank()
      */
-    public function __construct(\RecursiveIterator $iterator)
+    protected $oid;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOid()
     {
-        parent::__construct($iterator);
+        return $this->oid;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function accept()
+    public function setOid($oid)
     {
-        /** @var \SplFileInfo $current */
-        $current = $this->current();
+        $this->oid = $oid;
 
-        // Invalid type
-        if ($current->isDir() === false && $current->getExtension() !== 'json') {
-            return false;
-        }
-
-        return true;
+        return $this;
     }
 }
