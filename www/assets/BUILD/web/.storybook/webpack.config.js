@@ -1,4 +1,4 @@
-const path              = require('path');
+const path = require('path');
 
 const config = {
   module: {
@@ -17,9 +17,12 @@ const config = {
   resolve: {
     root: [
       path.resolve('./es6'),
-      path.resolve('./es6/Component'),
+      path.resolve('./es6/Components'),
       path.resolve('./es6/tests')
-    ]
+    ],
+    alias: {
+      invariant:              'fbjs/lib/invariant'
+    }
   }
 };
 

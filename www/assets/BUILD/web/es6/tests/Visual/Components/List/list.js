@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
-import List from 'Components/List/List';
+import { List, ListElement } from 'Components/List';
 
 storiesOf('App: list', module)
   .add(
@@ -14,6 +14,16 @@ storiesOf('App: list', module)
   .add(
     'List with hierarchy',
     () => <List {...hierarchy} />
+  )
+  .add(
+    'List without JSON',
+    () => <List>
+        <ListElement label="Rock" icon="hand rock" />
+        <ListElement label="Paper" icon="hand paper" />
+        <ListElement label="Scissors" icon="hand scissors" />
+        <ListElement label="Lizard" icon="hand lizard" />
+        <ListElement label="Spock" icon="hand spock" />
+      </List>
   )
 ;
 const structure = {

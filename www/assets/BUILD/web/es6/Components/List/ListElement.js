@@ -34,10 +34,16 @@ class ListElement extends React.Component {
     return content;
   }
 
-  render() {
+  getIcon() {
     const {icon} = this.props;
+    if (icon) {
+      return <i className={classNames('icon', icon)} />
+    }
+  }
+
+  render() {
     return <div className="item">
-      <i className={classNames('icon', icon)} />
+      {this.getIcon()}
       <div className="content">
         {this.getContent()}
       </div>

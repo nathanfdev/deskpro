@@ -7,6 +7,7 @@ class Menu extends React.Component {
     title: PropTypes.string,
     withDivider: PropTypes.bool,
     filterText: PropTypes.string,
+    classNames: PropTypes.object,
     items: PropTypes.arrayOf(
       PropTypes.object
     )
@@ -37,11 +38,12 @@ class Menu extends React.Component {
   }
 
   render() {
-    const {withDivider} = this.props;
+    const {withDivider, children} = this.props;
     return <div className={classNames('item', {'with-divider': withDivider})}>
       {this.getTitle()}
       <div className="menu">
         {this.getItems()}
+        {children}
       </div>
     </div>
   }
