@@ -57,17 +57,19 @@ class UrlGenerator extends BaseUrlGenerator
         if (php_sapi_name() === 'cli' && !$this->getDpEnv()->hasRuntimeVar('is_building')) {
             $deskpro_url = rtrim(App::getContainer()->getBrandSetting('core.deskpro_url'), '/');
 
-            $info = parse_url($deskpro_url);
-            $context->setScheme($info['scheme']);
-            if (!empty($info['path'])) {
-                $context->setBaseUrl($info['path']);
-            } else {
-                $context->setBaseUrl('');
-            }
-            $context->setHost($info['host']);
-            $context->setMethod('GET');
-            if (!empty($info['port'])) {
-                $context->setHttpPort($info['port']);
+            if ($deskpro_url) {
+                $info = parse_url($deskpro_url);
+                $context->setScheme($info['scheme']);
+                if (!empty($info['path'])) {
+                    $context->setBaseUrl($info['path']);
+                } else {
+                    $context->setBaseUrl('');
+                }
+                $context->setHost($info['host']);
+                $context->setMethod('GET');
+                if (!empty($info['port'])) {
+                    $context->setHttpPort($info['port']);
+                }
             }
         }
 
