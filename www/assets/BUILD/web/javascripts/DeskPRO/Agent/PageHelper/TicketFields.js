@@ -13,6 +13,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		this.mode = 'view';
 
 		this.initScope(this.page.getEl('field_holders'));
+		this.no_value_fields = [];
 
 		this.ticketReader = {
 			getDepartmentId: function() {
@@ -63,7 +64,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		}]);
 
 		$scope.edit_fields = [];
-		$scope.visible_fields = {};
+		$scope.fields = {};
 		$scope.editables = {
 			language: 1
 		};
@@ -90,6 +91,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		$scope.showHidden = function() {
 			$scope.show_hidden = 1;
+			for (var i = 0; i < self.no_value_fields.length; i++) {
+				$scope.editField(self.no_value_fields[i]);
+			}
 			self.updateDisplay();
 		};
 	},
@@ -108,6 +112,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		$scope.hidden = 0;
 		$scope.editables = {};
+		this.no_value_fields = [];
 
 		for (var i = 0; i < fields.length; i++) {
 			var f = fields[i];
@@ -119,15 +124,15 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				$scope.editables[f.id] = 1;
 			}
 
-			console.info(f.id, isVisible(f), f.isVisibleOnViewAlways, noValue, $scope.show_hidden);
-
 			var show = isVisible(f) && (f.isVisibleOnViewAlways || !noValue || $scope.show_hidden);
-			$scope.visible_fields[f.id] = !!show;
+			$scope.fields[f.id] = !!show;
 
-			if (f.isVisibleOnViewAlways && noValue) {
-				$scope.hidden++;
+			if (!f.isVisibleOnViewAlways && noValue) {
+				this.no_value_fields.push(f.id);
 			}
 		}
+
+		$scope.hidden = this.no_value_fields.length;
 	},
 
 	initFieldWidgets: function() {

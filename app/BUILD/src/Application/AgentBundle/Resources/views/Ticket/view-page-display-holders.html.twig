@@ -1,6 +1,9 @@
 {% if not baseId %}{% set baseId = el_uid() %}{% endif %}
 {% if app.languages.isMultiLang() %}
-	<tbody class="ticket_language language_id standard-field item-on {% if not ticket.language.title %}no-value{% endif %}" data-item-type="ticket_language">
+	<tbody class="ticket_language language_id standard-field item-on {% if not ticket.language.title %}no-value{% endif %}"
+		   data-item-type="ticket_language"
+		   ng-show="fields['language']"
+	>
 		<tr class="mode-display" ng-show="!isEditMode('language')" ng-click="editField('language')">
 			<th width="80">
 				<span class="language_id label">{{ phrase('agent.general.language') }}:</span>
@@ -30,7 +33,7 @@
 {% if app.getSetting('core.use_ticket_category') %}
 	<tbody class="category category_id standard-field item {% if not ticket.category %}no-value{% endif %}"
 		   data-item-type="ticket_category"
-		   ng-show="visible_fields['category']"
+		   ng-show="fields['category']"
 	>
 		<tr class="mode-display" ng-show="!isEditMode('category')" ng-click="editField('category')">
 			<th width="80">
@@ -63,7 +66,10 @@
 {% endif %}
 
 {% if app.getSetting('core.problems.enabled') and app.user.hasPerm('agent_problems.view') %}
-    <tbody class="problem problem_id standard-field item" data-item-type="ticket_problem">
+    <tbody class="problem problem_id standard-field item"
+		   data-item-type="ticket_problem"
+		   ng-show="fields['problem']"
+	>
     <tr class="mode-display" ng-show="!isEditMode('problem')" ng-click="editField('problem')">
         <th width="80">
             <span class="problem_id label">{{ phrase('agent.problems.problem') }}:</span>
@@ -138,7 +144,10 @@
 {% endif %}
 
 {% if app.getSetting('core.use_product') %}
-	<tbody class="product standard-field item {% if not ticket.product %}no-value{% endif %}" data-item-type="product" style="display:none">
+	<tbody class="product standard-field item {% if not ticket.product %}no-value{% endif %}"
+		   data-item-type="product"
+		   ng-show="fields['product']"
+	>
 		<tr class="mode-display" ng-show="!isEditMode('product')" ng-click="editField('product')">
 			<th width="80">
 				<span class="product label">{{ phrase('agent.general.product') }}:</span>
@@ -178,7 +187,10 @@
 	</tbody>
 {% endif %}
 {% if app.getSetting('core.use_ticket_priority') %}
-	<tbody class="priority priority_id standard-field item {% if not ticket.priority %}no-value{% endif %}" data-item-type="ticket_priority" style="display:none">
+	<tbody class="priority priority_id standard-field item {% if not ticket.priority %}no-value{% endif %}"
+		   data-item-type="ticket_priority"
+		   ng-show="fields['priority']"
+	>
 		<tr class="mode-display" ng-show="!isEditMode('priority')" ng-click="editField('priority')">
 			<th width="80">
 				<span class="priority_id label">{{ phrase('agent.general.priority') }}:</span>
@@ -201,7 +213,10 @@
 	</tbody>
 {% endif %}
 {% if app.getSetting('core.use_ticket_workflow') %}
-	<tbody class="workflow workflow_id standard-field item {% if not ticket.workflow %}no-value{% endif %}" data-item-type="ticket_workflow" style="display:none">
+	<tbody class="workflow workflow_id standard-field item {% if not ticket.workflow %}no-value{% endif %}"
+		   data-item-type="ticket_workflow"
+		   ng-show="fields['workflow']"
+	>
 		<tr class="mode-display" ng-show="!isEditMode('workflow')" ng-click="editField('workflow')">
 			<th width="80">
 				<span class="workflow_id label">{{ phrase('agent.general.workflow') }}:</span>
@@ -230,7 +245,7 @@
 		   data-field-type="ticket_field"
 		   data-item-id="{{f.id}}"
 		   data-custom-field-handler="{{f.field_handler}}"
-		   ng-show="visible_fields['ticket_field_{{ f.id }}']"
+		   ng-show="fields['ticket_field_{{ f.id }}']"
 	>
 		<tr class="mode-display" ng-show="!isEditMode('ticket_field_{{ f.id }}')" ng-click="editField('ticket_field_{{ f.id }}')">
 			<th width="80">
@@ -254,7 +269,12 @@
 {% endfor %}
 
 {% for f in custom_person_fields %}
-    <tbody class="person_field_{{f.id}} custom-field item {% if f.field_def.isFormField() and not ticket.person.hasCustomField(f.id) %}no-value{% endif %}" data-field-type="person_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}" style="display:none">
+    <tbody class="person_field_{{f.id}} custom-field item {% if f.field_def.isFormField() and not ticket.person.hasCustomField(f.id) %}no-value{% endif %}"
+		   data-field-type="person_field"
+		   data-item-id="{{f.id}}"
+		   data-custom-field-handler="{{f.field_handler}}"
+		   ng-show="fields['person_field_{{ f.id }}']"
+	>
     <tr class="mode-display" ng-show="!isEditMode('person_field_{{ f.id }}')" ng-click="editField('person_field_{{ f.id }}')">
         <th width="80">
             <span class="custom-field edit-trigger ticket_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>
@@ -277,7 +297,12 @@
 {% endfor %}
 
 {% for f in custom_org_fields if ticket.person.organization %}
-    <tbody class="org_field_{{f.id}} custom-field item {% if f.field_def.isFormField() and not ticket.person.organization.hasCustomField(f.id) %}no-value{% endif %}" data-field-type="org_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}" style="display:none">
+    <tbody class="org_field_{{f.id}} custom-field item {% if f.field_def.isFormField() and not ticket.person.organization.hasCustomField(f.id) %}no-value{% endif %}"
+		   data-field-type="org_field"
+		   data-item-id="{{f.id}}"
+		   data-custom-field-handler="{{f.field_handler}}"
+		   ng-show="fields['org_field_{{ f.id }}']"
+	>
     <tr class="mode-display" ng-show="!isEditMode('org_field_{{ f.id }}')" ng-click="editField('org_field_{{ f.id }}')">
         <th width="80">
             <span class="custom-field edit-trigger org_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>
@@ -304,7 +329,7 @@
     <tbody class="custom_field_{{id}} custom-field item {% if not f.vars.rendered_data %}no-value{% endif %}"
 		   data-field-type="custom_field"
 		   data-item-id="{{id}}"
-		   style="display:none"
+		   ng-show="fields['custom_field_{{ id }}']"
 	>
 		<tr class="mode-display" ng-show="!isEditMode('custom_field_{{ f.id }}')" ng-click="editField('custom_field_{{ f.id }}')">
 			<th width="80">
