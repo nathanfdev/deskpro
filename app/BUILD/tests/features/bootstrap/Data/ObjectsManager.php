@@ -28,6 +28,7 @@
 
 namespace DpBehat\Data;
 
+use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Blob;
@@ -311,6 +312,7 @@ class ObjectsManager
     private function initTypeLocators()
     {
         $this->typeLocators = [
+            'AgentTeam'              => [$this, 'find', AgentTeam::class],
             'Person'                 => [$this, 'find', Person::class],
             'PersonEmail'            => [$this, 'find', PersonEmail::class],
             'User'                   => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => false]],
