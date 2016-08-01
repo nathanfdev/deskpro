@@ -61,7 +61,7 @@
 
 {% if app.getSetting('core.problems.enabled') and app.user.hasPerm('agent_problems.view') %}
     <tbody class="problem problem_id standard-field item" data-item-type="ticket_problem">
-    <tr class="mode-display">
+    <tr class="mode-display" ng-show="!isEditMode('problem')" ng-click="editField('problem')">
         <th width="80">
             <span class="problem_id label">{{ phrase('agent.problems.problem') }}:</span>
         </th>
@@ -91,7 +91,7 @@
 
     {% if (_as and ticket.problems.isEmpty()) or (_ds and not ticket.problems.isEmpty()) %}
 
-        <tr class="mode-edit">
+        <tr class="mode-edit" ng-show="isEditMode('problem')">
             <th width="80">{{ phrase('agent.problems.problem') }}:</th>
             <td>
 				{% set open_problems = open_problems ? open_problems : [] %}
@@ -136,7 +136,7 @@
 
 {% if app.getSetting('core.use_product') %}
 	<tbody class="product standard-field item {% if not ticket.product %}no-value{% endif %}" data-item-type="product" style="display:none">
-		<tr class="mode-display">
+		<tr class="mode-display" ng-show="!isEditMode('product')" ng-click="editField('product')">
 			<th width="80">
 				<span class="product label">{{ phrase('agent.general.product') }}:</span>
 			</th>
@@ -153,7 +153,7 @@
 				</tr>
 			{% endfor %}
 		{% endif %}
-		<tr class="mode-edit">
+		<tr class="mode-edit" ng-show="!isEditMode('product')">
 			<th width="80">{{ phrase('agent.general.product') }}:</th>
 			<td>
 				<select name="ticket[product_id]" id="{{baseId}}_ticket_product_id" data-prop-id="product" class="prop-input-product">
@@ -176,7 +176,7 @@
 {% endif %}
 {% if app.getSetting('core.use_ticket_priority') %}
 	<tbody class="priority priority_id standard-field item {% if not ticket.priority %}no-value{% endif %}" data-item-type="ticket_priority" style="display:none">
-		<tr class="mode-display">
+		<tr class="mode-display" ng-show="!isEditMode('priority')" ng-click="editField('priority')">
 			<th width="80">
 				<span class="priority_id label">{{ phrase('agent.general.priority') }}:</span>
 			</th>
@@ -184,7 +184,7 @@
 				<span class="prop-val priority_id">{{ticket.priority.title|default(phrase('agent.general.none'))}}</span>
 			</td>
 		</tr>
-		<tr class="mode-edit">
+		<tr class="mode-edit" ng-show="!isEditMode('priority')">
 			<th width="80">{{ phrase('agent.general.priority') }}:</th>
 			<td>
 				<select name="ticket[priority_id]" id="{{baseId}}_ticket_priority_id" data-prop-id="priority_id" class="prop-input-priority_id">
@@ -199,7 +199,7 @@
 {% endif %}
 {% if app.getSetting('core.use_ticket_workflow') %}
 	<tbody class="workflow workflow_id standard-field item {% if not ticket.workflow %}no-value{% endif %}" data-item-type="ticket_workflow" style="display:none">
-		<tr class="mode-display">
+		<tr class="mode-display" ng-show="!isEditMode('workflow')" ng-click="editField('workflow')">
 			<th width="80">
 				<span class="workflow_id label">{{ phrase('agent.general.workflow') }}:</span>
 			</th>
@@ -207,7 +207,7 @@
 				<span class="prop-val workflow_id">{{ticket.workflow.title|default(phrase('agent.general.none'))}}</span>
 			</td>
 		</tr>
-		<tr class="mode-edit">
+		<tr class="mode-edit" ng-show="!isEditMode('workflow')">
 			<th width="80">{{ phrase('agent.general.workflow') }}:</th>
 			<td>
 				<select name="ticket[workflow_id]" id="{{baseId}}_ticket_workflow_id" data-prop-id="workflow_id" class="prop-input-workflow_id">
@@ -252,7 +252,7 @@
 
 {% for f in custom_person_fields %}
     <tbody class="person_field_{{f.id}} custom-field item {% if f.field_def.isFormField() and not ticket.person.hasCustomField(f.id) %}no-value{% endif %}" data-field-type="person_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}" style="display:none">
-    <tr class="mode-display">
+    <tr class="mode-display" ng-show="!isEditMode('person_field_{{ f.id }}')" ng-click="editField('person_field_{{ f.id }}')">
         <th width="80">
             <span class="custom-field edit-trigger ticket_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>
         </th>
@@ -262,7 +262,7 @@
             </div>
         </td>
     </tr>
-    <tr class="mode-edit">
+    <tr class="mode-edit" ng-show="!isEditMode('person_field_{{ f.id }}')">
         <th width="80">{{ f.title }}:</th>
         <td>
             <div class="custom-field field-input person_field_{{f.id}}" data-item-id="{{f.id}}">
@@ -275,7 +275,7 @@
 
 {% for f in custom_org_fields if ticket.person.organization %}
     <tbody class="org_field_{{f.id}} custom-field item {% if f.field_def.isFormField() and not ticket.person.organization.hasCustomField(f.id) %}no-value{% endif %}" data-field-type="org_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}" style="display:none">
-    <tr class="mode-display">
+    <tr class="mode-display" ng-show="!isEditMode('org_field_{{ f.id }}')" ng-click="editField('org_field_{{ f.id }}')">
         <th width="80">
             <span class="custom-field edit-trigger org_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>
         </th>
@@ -285,7 +285,7 @@
             </div>
         </td>
     </tr>
-    <tr class="mode-edit">
+    <tr class="mode-edit" ng-show="!isEditMode('org_field_{{ f.id }}')">
         <th width="80">{{ f.title }}:</th>
         <td>
             <div class="custom-field field-input org_field_{{f.id}}" data-item-id="{{f.id}}">
