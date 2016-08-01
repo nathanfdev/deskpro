@@ -35,25 +35,17 @@ namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class ExceptionEvent.
+ * Class IncomingEmailFailureEvent.
  *
  * @ORM\Entity
  */
-class ExceptionEvent extends AbstractExceptionEvent
+class JiraApiExceptionEvent extends ExceptionEvent
 {
     /**
      * {@inheritdoc}
      */
     public function getSubjectDescription()
     {
-        return "Exception \"{$this->message}\" of type {$this->class}";
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function generateSubjectUniqueId()
-    {
-        return $this->class.'-'.$this->code;
+        return "Jira exception: \"{$this->message}\" of type {$this->class}";
     }
 }
