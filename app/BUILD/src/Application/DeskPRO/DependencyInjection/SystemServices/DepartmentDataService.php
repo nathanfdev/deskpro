@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -114,8 +114,9 @@ class DepartmentDataService extends BaseRepositoryService
         $this->has_init = true;
 
         $this->cats = $this->em->createQuery('
-            SELECT d
+            SELECT d, PARTIAL ch.{id}
             FROM DeskPRO:Department d INDEX BY d.id
+            LEFT JOIN d.children ch
             ORDER BY d.display_order ASC
         ')->execute();
 
