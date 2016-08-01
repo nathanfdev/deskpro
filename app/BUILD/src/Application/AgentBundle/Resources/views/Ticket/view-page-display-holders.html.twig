@@ -28,7 +28,10 @@
 
 {# Standard fields #}
 {% if app.getSetting('core.use_ticket_category') %}
-	<tbody class="category category_id standard-field item {% if not ticket.category %}no-value{% endif %}" data-item-type="ticket_category" style="display:none">
+	<tbody class="category category_id standard-field item {% if not ticket.category %}no-value{% endif %}"
+		   data-item-type="ticket_category"
+		   ng-show="visible_fields['category']"
+	>
 		<tr class="mode-display" ng-show="!isEditMode('category')" ng-click="editField('category')">
 			<th width="80">
 				<span class="category_id label">{{ phrase('agent.general.category') }}:</span>
@@ -227,7 +230,7 @@
 		   data-field-type="ticket_field"
 		   data-item-id="{{f.id}}"
 		   data-custom-field-handler="{{f.field_handler}}"
-		   style="display:none"
+		   ng-show="visible_fields['ticket_field_{{ f.id }}']"
 	>
 		<tr class="mode-display" ng-show="!isEditMode('ticket_field_{{ f.id }}')" ng-click="editField('ticket_field_{{ f.id }}')">
 			<th width="80">
@@ -298,7 +301,11 @@
 
 {% for f in new_custom_fields %}
     {% set id = f.vars.def.id %}
-    <tbody class="custom_field_{{id}} custom-field item {% if not f.vars.rendered_data %}no-value{% endif %}" data-field-type="custom_field" data-item-id="{{id}}" style="display:none">
+    <tbody class="custom_field_{{id}} custom-field item {% if not f.vars.rendered_data %}no-value{% endif %}"
+		   data-field-type="custom_field"
+		   data-item-id="{{id}}"
+		   style="display:none"
+	>
 		<tr class="mode-display" ng-show="!isEditMode('custom_field_{{ f.id }}')" ng-click="editField('custom_field_{{ f.id }}')">
 			<th width="80">
 				<span class="custom-field edit-trigger custom_field_{{id}}" data-item-id="{{id}}">{{ f.vars.label }}:</span>

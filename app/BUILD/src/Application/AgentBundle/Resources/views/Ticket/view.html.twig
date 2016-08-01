@@ -527,14 +527,24 @@ pageMeta.lang = {{ {
 
 					{% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
 
-					<tbody class="controls-row" ng-show="edit_fields.length">
+					<tbody class="hidden-row" ng-show="hidden && !show_hidden">
 					<tr>
 						<td></td>
 						<td>
-							<button class="save" ng-click="saveFields()">Save</button>
-							<button class="cancel" ng-click="cancelEdit()">Cancel</button>
+							<a ng-click="showHidden()">
+								{{ ng_var('hidden') }} hidden field<span ng-show="hidden !== 1">s</span> without a value
+							</a>
 						</td>
 					</tr>
+					</tbody>
+					<tbody class="controls-row" ng-show="edit_fields.length">
+						<tr>
+							<td></td>
+							<td>
+								<button class="save" ng-click="saveFields()">Save</button>
+								<button class="cancel" ng-click="cancelEdit()">Cancel</button>
+							</td>
+						</tr>
 					</tbody>
 				</table>
 			</div>

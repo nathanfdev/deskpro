@@ -8,10 +8,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		var self = this;
 		this.page = page;
 		this.display = this.page.getEl('field_holders').find('.field-holders-table');
+		this.initFieldWidgets();
 
 		this.mode = 'view';
-		this.currentDisplay = [];
-		this.currentDisplayModify = [];
 
 		this.initScope(this.page.getEl('field_holders'));
 
@@ -41,9 +40,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 		};
 
-		this.fieldDisplay = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(this.ticketReader, 'view');
-		this.fieldDisplayModify = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(this.ticketReader, 'modify');
-
 		this.page.getEl('department').on('change', function() {
 			self.updateDisplay();
 		});
@@ -67,9 +63,11 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		}]);
 
 		$scope.edit_fields = [];
+		$scope.visible_fields = {};
 		$scope.editables = {
 			language: 1
 		};
+		$scope.show_hidden = 0;
 
 		$scope.editField = function(field) {
 			if (!$scope.editables[field]) return;
@@ -89,13 +87,14 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			self.saveChanges();
 			$scope.edit_fields.length = 0;
 		};
+
+		$scope.showHidden = function() {
+			$scope.show_hidden = 1;
+			self.updateDisplay();
+		};
 	},
 
 	updateDisplay: function() {
-		return this.updateDisplayNew();
-	},
-
-	updateDisplayNew: function() {
 		var fields = [], reader = this.ticketReader;
 		var $scope = this.$scope;
 		if (window.DESKPRO_TICKET_DISPLAY) {
@@ -107,56 +106,28 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			return f.checkFn ? visible && f.checkFn(reader) : visible;
 		};
 
-		var change = false;
+		$scope.hidden = 0;
+		$scope.editables = {};
 
-		// Check to see if the fields are the same and in the same order
-		if (fields.length === this.currentDisplay.length) {
-			var cd = this.currentDisplay;
-			for (var i = 0; i < fields.length; i++) {
-				var field = fields[i];
-
-				field.visible = isVisible(field);
-
-				if (field.id !== cd[i].id || field.visible !== cd[i].visible) {
-					change = true;
-					break;
-				}
-			}
-		} else {
-			change = true;
-		}
-
-		// No Changes, dont need to do any expensive dom work
-		if (!change) {
-			console.log("[TicketFields] No change");
-		}
-
-		// still need to run through to make sure visibility on
-		// rows is set
-
-		this.currentDisplay = fields;
-
-		this.display.find('tbody.item.item-on').hide().removeClass('item-on');
-		var labels = this.display.find('tbody.labels-row');
-		var last = this.display.find('tbody.controls-row');
-
-		for (i = 0; i < this.currentDisplay.length; i++) {
-			var f = this.currentDisplay[i];
+		for (var i = 0; i < fields.length; i++) {
+			var f = fields[i];
 
 			var row = this.display.find('.item.' + f.id);
-			row.detach().insertBefore(last);
+			var noValue = row.hasClass('no-value');
 
 			if (f.isVisibleOnEdit) {
 				$scope.editables[f.id] = 1;
 			}
 
-			if (isVisible(f)) {
-				row.show().addClass('item-on');
+			console.info(f.id, isVisible(f), f.isVisibleOnViewAlways, noValue, $scope.show_hidden);
+
+			var show = isVisible(f) && (f.isVisibleOnViewAlways || !noValue || $scope.show_hidden);
+			$scope.visible_fields[f.id] = !!show;
+
+			if (f.isVisibleOnViewAlways && noValue) {
+				$scope.hidden++;
 			}
 		}
-		this.initFieldWidgets();
-
-		console.info(fields);
 	},
 
 	initFieldWidgets: function() {
@@ -247,12 +218,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		old.remove();
 		this.display.prepend(labels);
 		this.display.append(last);
+		this.initFieldWidgets();
 
 		this.initScope(this.page.getEl('field_holders'));
-		this.$scope.$apply();
 
 		this.currentDisplay = [];
 		this.currentDisplayModify = [];
 		this.updateDisplay();
+		this.$scope.$apply();
 	}
 });
