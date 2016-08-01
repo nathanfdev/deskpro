@@ -4,7 +4,6 @@ import { loadOnlineAgents } from './peopleActions';
 import { loadOptions, fetchOptions, openWidget, reopenWidget, closeWidget } from './dpWindowActions';
 import { pollingChat, setChatId, unsetChatId, setLastAgentId } from '../../Chat/Actions/chatActions';
 import {
-  widgetSessionCodeSelector,
   requireChatLoginSelector,
   requireChatEmailValidationSelector,
   widgetHasChatSelector,
@@ -20,7 +19,6 @@ import $ from 'jquery';
 import lscache from 'lscache';
 
 export const ajaxOptions = { crossDomain: true, dataType: 'json' };
-export const addSessionCode = (state, params = {}) => ({ ...params, dpsid: widgetSessionCodeSelector(state) });
 export const setSettings = createAction('WIDGET_SET_SETTINGS', settings => $.extend(true, {}, settings));
 
 // Api actions
@@ -39,12 +37,11 @@ export const getSession = createAction(
         const data = response.data;
         localStorage.setItem('dpWidget.sessionCode', data.session_code);
         dispatch(setSettings(data.global_settings));
+        resolve(data);
 
         if (data.person) {
           dispatch(loadBatch('Person', [data.person], 'all'));
         }
-
-        resolve(data);
       })
   )
 );

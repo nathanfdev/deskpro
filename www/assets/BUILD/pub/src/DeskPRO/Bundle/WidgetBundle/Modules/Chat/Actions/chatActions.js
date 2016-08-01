@@ -1,7 +1,7 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
-import { ajaxOptions, addSessionCode } from '../../Application/Actions/bootstrapActions';
+import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 import { loadBatch } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { generate } from 'randomstring';
@@ -104,69 +104,55 @@ export const showNotHelpfulForm = createAction('WIDGET_CHAT_SHOW_NOT_HELPFUL_FOR
 // Api actions
 export const createChat = createAction(
   'WIDGET_CHAT_CREATE_NEW',
-  params => (dispatch, getState) => {
-    const state = getState();
-    const queryParams = compileParams(addSessionCode(state));
+  params => (dispatch) => widgetApi
+    .sendPost('DP_API/chats/create', params, { ...ajaxOptions })
+    .success(response => {
+      const data = response.data || {};
+      const chatId = data.id;
 
-    return widgetApi
-      .sendPost(`DP_API/chats/create?${queryParams}`, params, { ...ajaxOptions })
-      .success(response => {
-        const data = response.data || {};
-        const chatId = data.id;
-
-        if (chatId) {
-          localStorage.removeItem('dpWidget.chat.lastAgentId');
-          dispatch(setChatId(chatId));
-        }
-      });
-  }
+      if (chatId) {
+        localStorage.removeItem('dpWidget.chat.lastAgentId');
+        dispatch(setChatId(chatId));
+      }
+    })
 );
 
 export const validateEmail = createAction(
   'WIDGET_CHAT_VALIDATE_EMAIL',
-  (chatId, params) => (dispatch, getState) => {
+  (chatId, params) => {
     if (!chatId) {
       return null;
     }
 
-    const state = getState();
-    const queryParams = compileParams(addSessionCode(state));
-
-    return widgetApi.sendPost(`DP_API/chats/${chatId}/validate/email?${queryParams}`, params, { ...ajaxOptions });
+    return widgetApi.sendPost(`DP_API/chats/${chatId}/validate/email`, params, { ...ajaxOptions });
   }
 );
 
 export const regenerateEmailValidationCode = createAction(
   'WIDGET_CHAT_REGENERATE_EMAIL_CODE',
-  chatId => (dispatch, getState) => {
+  chatId => {
     if (!chatId) {
       return null;
     }
 
-    const state = getState();
-    const queryParams = compileParams(addSessionCode(state));
-
-    return widgetApi.sendPost(`DP_API/chats/${chatId}/validate/email/regenerate?${queryParams}`, null, { ...ajaxOptions });
+    return widgetApi.sendPost(`DP_API/chats/${chatId}/validate/email/regenerate?`, null, { ...ajaxOptions });
   }
 );
 
 export const ackChatMessages = createAction(
   'WIDGET_CHAT_ACK_MESSAGES',
-  (chatId, params) => (dispatch, getState) => {
+  (chatId, params) => {
     if (!chatId) {
       return null;
     }
 
-    const state = getState();
-    const queryParams = compileParams(addSessionCode(state));
-
-    return widgetApi.sendPost(`DP_API/chats/${chatId}/ack_messages?${queryParams}`, params, { ...ajaxOptions });
+    return widgetApi.sendPost(`DP_API/chats/${chatId}/ack_messages`, params, { ...ajaxOptions });
   }
 );
 
 export const toggleSendTranscript = createAction(
   'WIDGET_CHAT_TOGGLE_SEND_TRANSCRIPT',
-  (chatId, value) => (dispatch, getState) => {
+  (chatId, value) => (dispatch) => {
     if (!chatId) {
       return null;
     }
@@ -174,11 +160,8 @@ export const toggleSendTranscript = createAction(
     dispatch(lockPollingResponse());
     dispatch(optimisticToggleSendTranscript(value));
 
-    const state = getState();
-    const queryParams = compileParams(addSessionCode(state));
-    const params = { should_send_transcript: value };
-
-    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/transcript/toggle?${queryParams}`, params, { ...ajaxOptions });
+    const params  = { should_send_transcript: value };
+    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/transcript/toggle`, params, { ...ajaxOptions });
     promise.success(() => dispatch(unlockPollingResponse()));
     promise.catch(() => dispatch(unlockPollingResponse()));
 
@@ -188,17 +171,14 @@ export const toggleSendTranscript = createAction(
 
 export const sendTranscriptInfo = createAction(
   'WIDGET_CHAT_SEND_TRANSCRIPT_INFO',
-  (chatId, params) => (dispatch, getState) => {
+  (chatId, params) => (dispatch) => {
     if (!chatId) {
       return null;
     }
 
     dispatch(lockPollingResponse());
 
-    const state = getState();
-    const queryParams = compileParams(addSessionCode(state));
-
-    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/transcript/info?${queryParams}`, params, { ...ajaxOptions });
+    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/transcript/info`, params, { ...ajaxOptions });
     promise.success(() => dispatch(unlockPollingResponse()));
     promise.catch(() => dispatch(unlockPollingResponse()));
 
@@ -214,7 +194,7 @@ export const pollingChat = createAction(
       return null;
     }
 
-    const queryParams = compileParams(addSessionCode(state, params));
+    const queryParams = compileParams(params);
     const promise = widgetApi.sendGet(`DP_API/chats/${chatId}/polling?${queryParams}`, { ...ajaxOptions });
     promise.success(response => {
       const locked = lockedPollingSelector(state);
@@ -306,15 +286,12 @@ export const pollingChat = createAction(
 
 export const sendUserTyping = createAction(
   'WIDGET_CHAT_SEND_USER_TYPING',
-  (chatId, params) => (dispatch, getState) => {
+  (chatId, params) => {
     if (!chatId) {
       return null;
     }
 
-    const state = getState();
-    const queryParams = compileParams(addSessionCode(state));
-
-    return widgetApi.sendPost(`DP_API/chats/${chatId}/user_typing?${queryParams}`, params, { ...ajaxOptions });
+    return widgetApi.sendPost(`DP_API/chats/${chatId}/user_typing`, params, { ...ajaxOptions });
   }
 );
 
@@ -387,8 +364,7 @@ export const sendChatMessage = createAction(
       dispatch(removeAttachment(attachment));
     });
 
-    const queryParams = compileParams(addSessionCode(state));
-    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/messages?${queryParams}`, params, { ...ajaxOptions });
+    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/messages`, params, { ...ajaxOptions });
     promise.catch(() => {
       dispatch(markNotDelivered(tmpId));
     });
@@ -399,17 +375,14 @@ export const sendChatMessage = createAction(
 
 export const endChat = createAction(
   'WIDGET_CHAT_END',
-  chatId => (dispatch, getState) => {
+  chatId => (dispatch) => {
     if (!chatId) {
       return null;
     }
 
     dispatch(lockPollingResponse());
 
-    const state = getState();
-    const queryParams = compileParams(addSessionCode(state));
-
-    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/end?${queryParams}`, null, { ...ajaxOptions });
+    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/end`, null, { ...ajaxOptions });
     promise.success(() => {
       dispatch(unlockPollingResponse());
     });
@@ -421,17 +394,14 @@ export const endChat = createAction(
 
 export const reopenChat = createAction(
   'WIDGET_CHAT_REOPEN',
-  chatId => (dispatch, getState) => {
+  chatId => (dispatch) => {
     if (!chatId) {
       return null;
     }
 
     dispatch(lockPollingResponse());
 
-    const state = getState();
-    const queryParams = compileParams(addSessionCode(state));
-
-    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/reopen?${queryParams}`, null, { ...ajaxOptions });
+    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/reopen`, null, { ...ajaxOptions });
     promise.success(() => {
       dispatch(unlockPollingResponse());
     });
@@ -443,14 +413,11 @@ export const reopenChat = createAction(
 
 export const sendFeedback = createAction(
   'WIDGET_CHAT_SEND_FEEDBACK',
-  (chatId, params) => (dispatch, getState) => {
+  (chatId, params) => {
     if (!chatId) {
       return null;
     }
 
-    const state = getState();
-    const queryParams = compileParams(addSessionCode(state));
-
-    return widgetApi.sendPost(`DP_API/chats/${chatId}/feedback?${queryParams}`, params, { ...ajaxOptions });
+    return widgetApi.sendPost(`DP_API/chats/${chatId}/feedback`, params, { ...ajaxOptions });
   }
 );

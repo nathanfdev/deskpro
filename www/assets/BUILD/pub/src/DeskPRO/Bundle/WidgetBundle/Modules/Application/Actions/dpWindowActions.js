@@ -17,8 +17,6 @@ import {
 } from '../Selectors/dpWindow';
 import { chatIdSelector, needValidateEmailSelector } from '../../Chat/Selectors/chat';
 import { loadNewTicketForm } from '../../Ticket/Actions/ticketActions';
-import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
-import { addSessionCode } from './bootstrapActions';
 import { history, getLocation } from '../../../Services/history';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import $ from 'jquery';
@@ -217,10 +215,7 @@ export const closeTriggerPopup = createAction('WIDGET_CLOSE_TRIGGER_POPUP');
 let loginWindowOpened;
 export const openLoginWindow = createAction(
   'WIDGET_OPEN_LOGIN_WINDOW',
-  () => (dispatch, getState) => {
-    const state = getState();
-    const queryParams = compileParams(addSessionCode(state));
-
+  () => {
     const width = 575;
     const height = 515;
 
@@ -232,7 +227,7 @@ export const openLoginWindow = createAction(
     }
 
     loginWindowOpened = window.open(
-      `${window.DP_HELPDESK_URL}focus-win/login?${queryParams}`,
+      `${window.DP_HELPDESK_URL}focus-win/login`,
       '',
       `width=${width},height=${height},left=${left},top=${top},` +
       'resizable=1,directories=0,titlebar=0,location=0,status=0,toolbar=0,menubar=0'
