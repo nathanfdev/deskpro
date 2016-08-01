@@ -52,12 +52,22 @@
             </p>
         </section>
     </article>
+    <div ng-if="info.summary || info.details" style="padding: 15px; margin-top: 5px; background: #eee; border-top: 1px solid #ccc;">
+        <section class="card-section">
+            <p ng-if="info.summary"><strong>{{info.summary}}</strong></p>
+            <p ng-if="info.details">{{info.details}}</p>
+        </section>
+    </div>
     <footer ng-show="info.status == 'finished' && info.finishedStatus == 'error'" style="color: #f00c18; padding-top: 13px;">
-        The update finished in an ERROR status. Please review the debug messages above.
+        The update finished in an ERROR status.
+        <br/>
+        <a ng-href="{{logUrl}}" class="btn btn-default" target="_blank">View Update Log</a>
     </footer>
     <footer ng-show="info.status == 'finished' && info.finishedStatus == 'warning'" style="color: #f00c18; padding-top: 13px;">
         The update has completed successfully, but we detected a few warnings
-        that you should review above.
+        that you should review.
+        <br/>
+        <a ng-href="{{logUrl}}" class="btn btn-default" target="_blank">View Update Log</a>
     </footer>
     <footer ng-show="info.status == 'finished' && info.finishedStatus == 'success'" style="padding-top: 13px;">
         The update has completed successfully.

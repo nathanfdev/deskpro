@@ -74,6 +74,20 @@ class UpdateSession extends SessionStep
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function finished($summaryText, $details = '')
+    {
+        foreach ($this->steps as $step) {
+            if ($step->isRunning()) {
+                $step->finished('Updater process finished');
+            }
+        }
+
+        return parent::finished($summaryText, $details);
+    }
+
+    /**
      * @return StatusStep
      */
     public function getStatusStep()

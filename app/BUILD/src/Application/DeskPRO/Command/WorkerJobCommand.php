@@ -34,6 +34,7 @@ namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Log\Logger;
+use DeskPRO\Bundle\UpdateBundle\Logger\LogKeyEvent;
 use Orb\Util\Env;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -178,7 +179,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
             if ($updaterSettings->isEnabled() && $updaterStatus->getNextCheck() && $updaterStatus->getNextCheck() < (new \DateTime())) {
                 do {
-                    $check = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name LIKE ?', ['core.croncheck.%']);
+                    $check = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name LIKE ? AND name != ?', ['core.croncheck.%', 'core.croncheck.updater']);
                     if ($check) {
                         if ($check < time() - 3600) {
                             return 0;
@@ -200,8 +201,45 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                     $cb = null;
                 }
 
-                $proc = new Process($cmd);
-                $proc->run($cb);
+                $container = $this->getContainer();
+
+                // we need to fetch the updater logger and session
+                // to handle error cases where the command fails
+                $getLogger = function () use ($container) {
+                    /* @var $DP_ENV \DpRun\DpEnv */
+                    global $DP_ENV;
+
+                    $sessionId = $DP_ENV->getDatManager()->readTxtFile('last_updater_session_id', null);
+                    if ($sessionId) {
+                        $smf = $this->getContainer()->get('dp.updater.session_manager_factory');
+                        $smf->enableSessionId($sessionId);
+                    }
+
+                    $logger = $this->getContainer()->get('monolog.logger.updater.general');
+
+                    return $logger;
+                };
+
+                try {
+                    $proc = new Process($cmd);
+                    $proc->setTimeout(36000);
+                    $proc->run($cb);
+
+                    if (!$proc->isSuccessful()) {
+                        $e = new \RuntimeException('Updater exited with a non-success status: '.$proc->getExitCode().' ('.$proc->getExitCodeText().')');
+                        $output->writeln('<error>Updater stopped unexpectedly: '.$e->getMessage().'</error>');
+                        $getLogger()->error(
+                            'Updater from cron: finished unexpectedly',
+                            ['keyEvent' => LogKeyEvent::createForException('AutoUpgrade.error', $e)]
+                        );
+                    }
+                } catch (\Exception $e) {
+                    $output->writeln('<error>Updater stopped unexpectedly: '.$e->getMessage().'</error>');
+                    $getLogger()->error(
+                        'Updater from cron: finished unexpectedly',
+                        ['keyEvent' => LogKeyEvent::createForException('AutoUpgrade.error', $e)]
+                    );
+                }
 
                 return 0;
             }

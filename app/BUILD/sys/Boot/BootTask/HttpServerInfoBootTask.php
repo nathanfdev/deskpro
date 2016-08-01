@@ -268,6 +268,8 @@ class HttpServerInfoBootTask implements BootTaskInterface
                 $data = [
                     'status'         => '',
                     'finishedStatus' => null,
+                    'summary'        => $session->getSummary() ?: '',
+                    'details'        => $session->getDetails() ?: '',
                     'steps'          => [],
                     'currentStepId'  => $session->findCurrentStepId(),
                     'next'           => [
