@@ -54,6 +54,7 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationContactData;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
+use Application\DeskPRO\Entity\Setting;
 use Application\DeskPRO\Entity\TextSnippet;
 use Application\DeskPRO\Entity\TextSnippetCategory;
 use Application\DeskPRO\Entity\Ticket;
@@ -435,5 +436,13 @@ class MapperRegistry
     public function getChatCustomDefMapper()
     {
         return $this->getMapper(CustomDefChat::class);
+    }
+
+    /**
+     * @return CommonMapper
+     */
+    public function getSettingMapper()
+    {
+        return $this->getMapper(Setting::class);
     }
 }

@@ -173,3 +173,13 @@ services:
       - "@dp.importer_logger"
     tags:
       - { name: dp.importer.writer.entity_handler, priority: 10 }
+
+  dp.importer.writer.entity_handler.setting:
+    class: Application\ImportBundle\Writer\EntityHandler\SettingHandler
+    arguments:
+      - "@dp.importer.writer.mapper_registry"
+      - "@dp.importer.writer.helper_registry"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.entity_handler }
