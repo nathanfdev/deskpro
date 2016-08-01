@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import ListElement from 'Component/List/ListElement';
+import ListElement from 'Components/List/ListElement';
 
 class List extends React.Component {
   static propTypes = {

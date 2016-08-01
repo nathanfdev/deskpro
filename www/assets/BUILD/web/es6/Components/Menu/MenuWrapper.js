@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import Menu from 'Component/Menu/Menu';
-import SearchBox from 'Component/SearchBox';
+import Menu from 'Components/Menu/Menu';
+import SearchBox from 'Components/SearchBox';
 
 class MenuWrapper extends React.Component {
   static propTypes = {

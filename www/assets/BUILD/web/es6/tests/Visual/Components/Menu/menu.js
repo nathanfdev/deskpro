@@ -1,8 +1,8 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
-import MenuWrapper from 'Component/Menu/MenuWrapper';
-import Accordion from 'Component/Accordion/Accordion';
-import List from 'Component/List/List';
+import MenuWrapper from 'Components/Menu/MenuWrapper';
+import Accordion from 'Components/Accordion/Accordion';
+import List from 'Components/List/List';
 
 storiesOf('App: menu', module)
   .add(

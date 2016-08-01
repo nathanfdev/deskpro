@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import MenuItem from 'Component/Menu/MenuItem';
+import MenuItem from 'Components/Menu/MenuItem';
 
 class Menu extends React.Component {
   static propTypes = {

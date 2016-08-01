@@ -3,7 +3,11 @@ import React, { PropTypes } from 'react';
 class SearchBox extends React.Component {
   static propTypes = {
     placeholder: PropTypes.string,
-    text: PropTypes.string
+    text: PropTypes.string,
+    onUserInput: PropTypes.func
+  };
+  static defaultProps = {
+    onUserInput: function() {}
   };
 
   handleChange() {

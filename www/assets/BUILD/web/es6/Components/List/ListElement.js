@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import List from 'Component/List/List';
+import List from 'Components/List/List';
 
 class ListElement extends React.Component {
   static propTypes = {

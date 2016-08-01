@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
-import Accordion from 'Component/Accordion/Accordion';
-import List from 'Component/List/List';
+import Accordion from 'Components/Accordion/Accordion';
+import List from 'Components/List/List';
 
 storiesOf('App: accordion', module)
   .add(

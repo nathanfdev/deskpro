@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
-import List from 'Component/List/List';
+import List from 'Components/List/List';
 
 storiesOf('App: list', module)
   .add(

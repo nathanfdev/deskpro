@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import AccordionPanel from 'Component/Accordion/AccordionPanel';
+import AccordionPanel from 'Components/Accordion/AccordionPanel';
 
 class Accordion extends React.Component {
   static propTypes = {

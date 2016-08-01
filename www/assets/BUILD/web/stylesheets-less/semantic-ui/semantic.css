@@ -18284,6 +18284,10 @@ a.ui.basic.label:hover {
 /*******************************
          Site Overrides
 *******************************/
+.ui.knuckles.label {
+  background: #d4145a;
+  color: #ffffff;
+}
 /*!
  * # Semantic UI - List
  * http://github.com/semantic-org/semantic-ui/
