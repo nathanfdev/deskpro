@@ -119,13 +119,10 @@ class DpsidListener implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
+        $mode    = $this->portalModeStorage->getMode();
+        $path    = $mode ? $mode->getInternalPath() : $request->getPathInfo();
 
-        $path = ($this->portalModeStorage->getMode()) ?
-            $this->portalModeStorage->getMode()->getInternalPath() : $request->getPathInfo();
-
-        $locale = $this->languageStack->getActive()->getLocale();
-
-        if (!in_array(strpos($path, '/portal/api'), [0, strlen($locale) + 1], true)) {
+        if (strpos($path, '/portal/api') === false) {
             return;
         }
 
