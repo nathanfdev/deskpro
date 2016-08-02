@@ -759,6 +759,35 @@
 			position: relative;
 			top: 4px;
 		}
+
+		.captcha-field {
+			white-space: nowrap;
+		}
+		.captcha-field img {
+			display: inline-block;
+		}
+		.captcha-field input {
+			position: relative;
+			bottom: 20px;
+			width: calc(100% - 140px);
+			max-width: 480px;
+			margin-left(10px);
+		}
+		.captcha-field .captcha_reload {
+			display: inline-block;
+			line-height: 50px;
+			vertical-align: top;
+			padding-left: 5px;
+		}
+
+		.captcha-field .captcha_reload i {
+			vertical-align: middle;
+		}
+
+		.captcha-field .captcha_reload + input {
+			width: calc(100% - 157px);
+			max-width: 463px;
+		}
 	</style>
 	<script type="text/javascript" charset="utf-8" src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('vendor/mootools/mootools-core.min.js') }}"></script>

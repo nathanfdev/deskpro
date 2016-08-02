@@ -37,37 +37,6 @@
 {% endblock %}
 
 {% block head %}
-	<style type="text/css">
-		.captcha-field {
-			white-space: nowrap;
-		}
-		.captcha-field img {
-			display: inline-block;
-		}
-		.captcha-field input {
-			position: relative;
-			bottom: 20px;
-			width: calc(100% - 140px);
-			max-width: 480px;
-		@include margin-left(10px);
-		}
-		.captcha-field .captcha_reload {
-			display: inline-block;
-			line-height: 50px;
-			vertical-align: top;
-			padding-left: 5px;
-		}
-
-		.captcha-field .captcha_reload i {
-			vertical-align: middle;
-		}
-
-		.captcha-field .captcha_reload + input {
-			width: calc(100% - 157px);
-			max-width: 463px;
-		}
-
-	</style>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('.show-lost-password-trigger').on('click', function(ev) {
