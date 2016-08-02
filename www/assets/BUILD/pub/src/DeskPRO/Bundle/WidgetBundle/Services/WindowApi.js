@@ -60,18 +60,18 @@ const dispatchChangedDemoStage = () => {
         dispatchCustomEvent('widgetDemoStage', 'ticket');
       } else if (location.pathname === '/chat/active') {
         dispatchCustomEvent('widgetDemoStage', 'in-chat');
+      } else if (location.pathname.indexOf('/chat/begin') !== -1) {
+        dispatchCustomEvent('widgetDemoStage', 'pre-chat');
       }
-
-      dispatchCustomEvent('widgetDemoStage', 'pre-chat');
     });
   }
 };
 
-handlers.reloadOptions = (options) => {
+handlers.reloadLiveDemoOptions = (options) => {
   store.dispatch(dpWindowActions.reloadOptions(options));
   dispatchChangedDemoStage();
 };
-handlers.reloadSettings = (options) => {
+handlers.reloadLiveDemoSettings = (options) => {
   store.dispatch(bootstrapActions.reloadSettings(options));
   dispatchChangedDemoStage();
 };
@@ -100,9 +100,14 @@ handlers.changeLiveDemoStage = stage => {
       break;
   }
 };
-handlers.setLiveDemoSampleState = sampleState => {
+handlers.setLiveDemoSampleState = state => {
+  const { sampleState = {}, options = {}, settings = {}, chatCustomFields = {} } = state;
   const { agents = [], users = [] } = sampleState.people || {};
   const { dispatch } = store;
+
+  // set global state
+  dispatch(dpWindowActions.loadOptions(options));
+  dispatch(bootstrapActions.setSettings(settings));
 
   // set person state
   dispatch(setCollection('Person', 'onlineAgents', Immutable.fromJS(agents)));
@@ -112,6 +117,7 @@ handlers.setLiveDemoSampleState = sampleState => {
   dispatch(chatActions.setLoaded());
   dispatch(chatActions.updateChatInfo(sampleState.chat.info));
   dispatch(chatActions.addNewMessages(sampleState.chat.messages));
+  dispatch(setCollection('CustomDefChat', 'all', Immutable.fromJS(chatCustomFields)));
 };
 handlers.setLiveDemoChatCustomFields = customFields => {
   const oldState = getState();
