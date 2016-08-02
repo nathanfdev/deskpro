@@ -28,10 +28,12 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings\Portal;
 
+use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\DownloadsSettingsType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\DownloadsSettings;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -43,48 +45,10 @@ use Symfony\Component\HttpFoundation\Response;
  * Class DownloadsSettingsController.
  * 
  * @ApiModes("all")
- * @Rest\Route("/settings/brands/{brandId}/portal/downloads")
+ * @Rest\Route("/settings/brands/{brand}/portal/downloads")
  */
 class DownloadsSettingsController extends AbstractBrandAwareSettingsController
 {
-    /**
-     * @var DownloadsSettings
-     */
-    protected $model;
-
-    /**
-     * @return DownloadsSettings
-     */
-    protected function getModel()
-    {
-        $this->model = $this->get('portal_settings_resolver')->getDownloadsSettings();
-
-        $this->model->setBrand($this->brand);
-
-        return $this->model;
-    }
-
-    protected function getType()
-    {
-        return DownloadsSettingsType::class;
-    }
-
-    /**
-     * @param DownloadsSettings $model
-     * @param int               $brandId
-     */
-    protected function persistModel($model, $brandId)
-    {
-        $brand = $this->getBrand($brandId);
-
-        $settings_repository = $this->getSettingRepository();
-        $settings_repository
-            ->updateSetting(PortalSettingsResolver::APPS_DOWNLOADS, $model->isEnabled(), $brand)
-            ->updateSetting(PortalSettingsResolver::TAB_DOWNLOADS, $model->isTabEnabled(), $brand)
-            ->updateSetting(PortalSettingsResolver::SUBSCRIPTION_DOWNLOADS, $model->isSubscriptions(), $brand)
-        ;
-    }
-
     /**
      * @ApiDoc(
      *     section="Portal Settings",
@@ -100,15 +64,13 @@ class DownloadsSettingsController extends AbstractBrandAwareSettingsController
      *
      * @Rest\Get("")
      *
-     * @param int $brandId
+     * @param Brand $brand
      *
      * @return View
      */
-    public function getAction($brandId)
+    public function getAction(Brand $brand)
     {
-        $this->setBrandStack($brandId);
-
-        return new View($this->wrap($this->getModel()));
+        return new View($this->wrap($this->getModel($brand)));
     }
 
     /**
@@ -131,14 +93,48 @@ class DownloadsSettingsController extends AbstractBrandAwareSettingsController
      * @Rest\Post("")
      *
      * @param Request $request
-     * @param int     $brandId
+     * @param Brand   $brand
      *
      * @return View
      */
-    public function postAction(Request $request, $brandId)
+    public function postAction(Request $request, Brand $brand)
     {
-        $this->handleForm($request, $brandId);
+        $this->handleForm($request, $this->getModel($brand));
 
         return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return DownloadsSettings
+     */
+    protected function getModel(Brand $brand)
+    {
+        return $this->get('portal_settings_resolver')->getDownloadsSettings($brand);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getType()
+    {
+        return DownloadsSettingsType::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param DownloadsSettings $model
+     */
+    protected function persistModel(AbstractBrandAwareSettings $model)
+    {
+        $brand = $model->getBrand();
+        $this
+            ->getSettingRepository()
+            ->updateSetting(PortalSettingsResolver::APPS_DOWNLOADS, $model->isEnabled(), $brand)
+            ->updateSetting(PortalSettingsResolver::TAB_DOWNLOADS, $model->isTabEnabled(), $brand)
+            ->updateSetting(PortalSettingsResolver::SUBSCRIPTION_DOWNLOADS, $model->isSubscriptions(), $brand)
+        ;
     }
 }

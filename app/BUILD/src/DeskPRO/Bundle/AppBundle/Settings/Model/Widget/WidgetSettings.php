@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget;
 
-use Application\DeskPRO\Entity\Brand;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -36,7 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class WidgetSettings.
  */
-class WidgetSettings
+class WidgetSettings extends AbstractBrandAwareSettings
 {
     /**
      * A bunch of configuration described in urls.
@@ -66,13 +66,6 @@ class WidgetSettings
      * @var bool
      */
     private $enabledOnPortal = false;
-
-    /**
-     * @JMS\Type("Application\DeskPRO\Entity\Brand")
-     *
-     * @var Brand
-     */
-    private $brand;
 
     /**
      * Constructor.
@@ -139,26 +132,6 @@ class WidgetSettings
     public function setEnabledOnPortal($enabledOnPortal)
     {
         $this->enabledOnPortal = $enabledOnPortal;
-
-        return $this;
-    }
-
-    /**
-     * @return Brand
-     */
-    public function getBrand()
-    {
-        return $this->brand;
-    }
-
-    /**
-     * @param Brand $brand
-     *
-     * @return WidgetSettings
-     */
-    public function setBrand($brand)
-    {
-        $this->brand = $brand;
 
         return $this;
     }

@@ -79,18 +79,19 @@ class BrandAwareSettingsResolver
 
     /**
      * @param string $name
+     * @param Brand  $brand
      * @param mixed  $default
      *
      * @return mixed
      */
-    public function getSetting($name, $default = null)
+    public function getSetting($name, Brand $brand = null, $default = null)
     {
         if ($this->brand_stack && $this->brand_stack->getActive()) {
             if ($default === null) {
                 $default = $this->getGlobalSetting($name);
             }
 
-            return $this->getBrandSetting($name, $default);
+            return $this->getBrandSetting($name, $brand, $default);
         }
 
         return $this->getGlobalSetting($name, $default);
@@ -109,6 +110,14 @@ class BrandAwareSettingsResolver
         }
 
         return $settings;
+    }
+
+    /**
+     * @return Brand
+     */
+    public function getActiveBrand()
+    {
+        return $this->brand_stack->getActive()->getBrand();
     }
 
     /**
@@ -135,19 +144,26 @@ class BrandAwareSettingsResolver
 
     /**
      * @param string $name
+     * @param Brand  $brand
      * @param mixed  $default
      *
      * @return mixed
      */
-    protected function getBrandSetting($name, $default = null)
+    protected function getBrandSetting($name, Brand $brand = null, $default = null)
     {
-        if (!$brand_container = $this->brand_stack->getActive()) {
+        if ($brand) {
+            $brandContainer = new BrandContainer($brand, $this->settings_resolver->getBrandSettings($brand));
+        } else {
+            $brandContainer = $this->brand_stack->getActive();
+        }
+
+        if (!$brandContainer) {
             throw new \RuntimeException(
                 'tried to access the active brand from the brand_stack but there is no active brand configured
             ');
         }
 
-        return $brand_container->getSetting($name, $default);
+        return $brandContainer->getSetting($name, $default);
     }
 
     /**

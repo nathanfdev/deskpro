@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Language;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
@@ -39,7 +40,6 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\Widget
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetUrlSettings;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -83,11 +83,6 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     private $permissionsManager;
 
     /**
-     * @var BrandStack
-     */
-    private $brandStack;
-
-    /**
      * Constructor.
      *
      * Note we are fine to use unwrapped router here, because the only generater url we need is to static file,
@@ -99,7 +94,6 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
      * @param RouterInterface            $router
      * @param TokenStorageInterface      $tokenStorage
      * @param PortalPermissionsManager   $permissionsManager
-     * @param BrandStack                 $brandStack
      */
     public function __construct(
         BrandAwareSettingsResolver $settingsResolver,
@@ -107,8 +101,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         Packages                   $assetPackages,
         RouterInterface            $router,
         TokenStorageInterface      $tokenStorage,
-        PortalPermissionsManager   $permissionsManager,
-        BrandStack                 $brandStack
+        PortalPermissionsManager   $permissionsManager
     ) {
         parent::__construct($settingsResolver);
 
@@ -117,7 +110,6 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         $this->router             = RouterUtils::unwrapDecoratedRouter($router);
         $this->tokenStorage       = $tokenStorage;
         $this->permissionsManager = $permissionsManager;
-        $this->brandStack         = $brandStack;
     }
 
     /**
@@ -153,15 +145,18 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return WidgetSettings
      */
-    public function getWidgetSettings()
+    public function getWidgetSettings(Brand $brand)
     {
         $model = new WidgetSettings();
         $model
             ->setUrl($this->getWidgetUrlSettings())
-            ->setSettings($this->getWidgetOptions())
+            ->setSettings($this->getWidgetOptions($brand))
             ->setEnabledOnPortal($this->isEnabledOnPortal())
+            ->setBrand($brand)
         ;
 
         return $model;
@@ -194,14 +189,16 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return WidgetOptions
      */
-    public function getWidgetOptions()
+    public function getWidgetOptions(Brand $brand)
     {
         $model = new WidgetOptions();
         $model
             ->setGlobal($this->getWidgetGlobalOptions())
-            ->setBrand($this->getWidgetBrandOptions())
+            ->setBrand($this->getWidgetBrandOptions($brand))
         ;
 
         return $model;
@@ -227,13 +224,17 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return WidgetBrandSettings
      */
-    public function getWidgetBrandOptions()
+    public function getWidgetBrandOptions(Brand $brand)
     {
         $model     = null;
-        $brandId   = $this->brandStack->getActive()->getBrand()->getId();
-        $dataStore = $this->em->getRepository(DataStore::class)->findOneBy(['name' => 'widget.brand_settings.'.$brandId]);
+        $dataStore = $this->em->getRepository(DataStore::class)->findOneBy([
+            'name' => 'widget.brand_settings.'.$brand->getId(),
+        ]);
+
         if ($dataStore) {
             $model = $dataStore->getData('brand_settings');
         }

@@ -33,27 +33,20 @@ use Application\DeskPRO\Entity\BrandSetting;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class AbstractBrandAwareSettingsController.
+ */
 abstract class AbstractBrandAwareSettingsController extends BaseController
 {
     /**
-     * @var Brand
-     */
-    protected $brand;
-
-    /**
-     * @var AbstractBrandAwareSettings
-     */
-    protected $model;
-
-    /**
+     * @param Brand $brand
+     *
      * @return AbstractBrandAwareSettings
      */
-    abstract protected function getModel();
+    abstract protected function getModel(Brand $brand);
 
     /**
      * @return string
@@ -62,56 +55,19 @@ abstract class AbstractBrandAwareSettingsController extends BaseController
 
     /**
      * @param mixed $model
-     * @param int   $brandId
      *
      * @return
      */
-    abstract protected function persistModel($model, $brandId);
-
-    /**
-     * Set the brand as the active Brand in the BrandStack.
-     *
-     * @param int $brandId
-     */
-    protected function setBrandStack($brandId)
-    {
-        $brand = $this->getBrand($brandId);
-
-        /** @var BrandStack $brandStack */
-        $brandStack = $this->get('brand_stack');
-        $brandStack->push($brand);
-    }
-
-    /**
-     * @param $brandId
-     *
-     * @return Brand
-     */
-    protected function getBrand($brandId)
-    {
-        if ($this->brand) {
-            return $this->brand;
-        }
-        $this->brand = $this->getRepository(Brand::class)->find($brandId);
-        if (!$this->brand) {
-            throw $this->createNotFoundException('Brand not found');
-        }
-
-        return $this->brand;
-    }
+    abstract protected function persistModel(AbstractBrandAwareSettings $model);
 
     /**
      * @param Request $request
-     * @param         $brandId
+     * @param mixed   $model
      *
      * @return View
      */
-    protected function handleForm(Request $request, $brandId)
+    protected function handleForm(Request $request, AbstractBrandAwareSettings $model)
     {
-        $this->getBrand($brandId);
-
-        $model = $this->getModel();
-
         $form = $this->createForm($this->getType(), $model);
         $form->submit($request->request->all());
 
@@ -119,9 +75,7 @@ abstract class AbstractBrandAwareSettingsController extends BaseController
             throw new InvalidFormException($form);
         }
 
-        $this->persistModel($model, $brandId);
-
-        return new View(null, Response::HTTP_NO_CONTENT);
+        $this->persistModel($model);
     }
 
     /**

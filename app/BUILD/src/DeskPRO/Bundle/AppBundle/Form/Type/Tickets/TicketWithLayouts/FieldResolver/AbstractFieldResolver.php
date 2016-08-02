@@ -304,7 +304,7 @@ abstract class AbstractFieldResolver
             return false;
         }
 
-        $default = $this->settingsResolver->getSetting('core.default_ticket_cat', null);
+        $default = $this->settingsResolver->getSetting('core.default_ticket_cat');
         if ($default) {
             if (!$context->getTicket()->getCategoryId()) {
                 $context->getTicket()->setCategoryId($default);
@@ -336,7 +336,7 @@ abstract class AbstractFieldResolver
             return false;
         }
 
-        $default = $this->settingsResolver->getSetting('core.default_ticket_pri', null);
+        $default = $this->settingsResolver->getSetting('core.default_ticket_pri');
         if ($default) {
             if (!$context->getTicket()->getPriorityId()) {
                 $context->getTicket()->setPriorityId($default);
@@ -372,7 +372,7 @@ abstract class AbstractFieldResolver
             return false;
         }
 
-        $default = $this->settingsResolver->getSetting('core.default_ticket_work', null);
+        $default = $this->settingsResolver->getSetting('core.default_ticket_work');
         if ($default) {
             if (!$context->getTicket()->getWorkflowId()) {
                 $context->getTicket()->setWorkflowId($default);
@@ -403,7 +403,7 @@ abstract class AbstractFieldResolver
             return false;
         }
 
-        $default = $this->settingsResolver->getSetting('core.default_prod_id', null);
+        $default = $this->settingsResolver->getSetting('core.default_prod_id');
         if ($default) {
             if (!$context->getTicket()->getProductId()) {
                 $context->getTicket()->setProductId($default);

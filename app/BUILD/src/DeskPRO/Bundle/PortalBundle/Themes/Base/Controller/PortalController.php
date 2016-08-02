@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
@@ -104,8 +105,9 @@ class PortalController extends AbstractController
     public function searchBoxAction(TagRequest $tag_request, array $options)
     {
         if (isset($options['include_contact_us']) && $options['include_contact_us'] == true) {
+            $brand       = $this->get('brand_stack')->getActive()->getBrand();
             $chatEnabled = $this->container->get('widget_settings_resolver')
-                ->getWidgetOptions()
+                ->getWidgetOptions($brand)
                 ->getGlobal()
                 ->getChat()
                 ->isEnabled();

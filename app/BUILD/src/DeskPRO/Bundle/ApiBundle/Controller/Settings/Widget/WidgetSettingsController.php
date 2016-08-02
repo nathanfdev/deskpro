@@ -28,13 +28,14 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings\Widget;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\DataStore;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\WidgetOptionsType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -47,58 +48,10 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  * Class WidgetSettingsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/settings/brands/{brandId}/widget")
+ * @Rest\Route("/settings/brands/{brand}/widget")
  */
 class WidgetSettingsController extends AbstractBrandAwareSettingsController
 {
-    /**
-     * @var WidgetSettings
-     */
-    protected $model;
-
-    /**
-     * @return WidgetSettings
-     */
-    protected function getModel()
-    {
-        $this->model = $this->get('widget_settings_resolver')->getWidgetSettings();
-
-        $this->model->setBrand($this->brand);
-
-        return $this->model;
-    }
-
-    protected function getType()
-    {
-        return WidgetOptionsType::class;
-    }
-
-    /**
-     * @param WidgetOptions $model
-     * @param int           $brandId
-     */
-    protected function persistModel($model, $brandId)
-    {
-        $brand = $this->getBrand($brandId);
-
-        $settingRepo = $this->getSettingRepository();
-        $settingRepo->updateSetting(
-            WidgetSettingsResolver::CHAT_EMAIL_VALIDATION,
-            $model->getGlobal()->getChat()->isEmailValidation(),
-            $brand
-        );
-        $settingRepo->updateSetting(
-            WidgetSettingsResolver::CHAT_REQUIRE_LOGIN,
-            $model->getGlobal()->getChat()->isRequireLogin(),
-            $brand
-        );
-        $settingRepo->updateSetting(
-            WidgetSettingsResolver::CHAT_ENABLED,
-            $model->getGlobal()->getChat()->isEnabled(),
-            $brand
-        );
-    }
-
     /**
      * Gather widget setup information.
      *
@@ -114,15 +67,13 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      *)
      * @Rest\Get("/setup")
      *
-     * @param int $brandId
+     * @param Brand $brand
      *
      * @return View
      */
-    public function getWidgetSetupAction($brandId)
+    public function getWidgetSetupAction(Brand $brand)
     {
-        $this->setBrandStack($brandId);
-
-        return new View($this->wrap($this->getModel()));
+        return new View($this->wrap($this->getModel($brand)));
     }
 
     /**
@@ -141,17 +92,15 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      * @Rest\Get("/code")
      *
      * @param Request $request
-     * @param int     $brandId
+     * @param Brand   $brand
      *
      * @return string
      */
-    public function getWidgetCodeAction(Request $request, $brandId)
+    public function getWidgetCodeAction(Request $request, Brand $brand)
     {
-        $this->setBrandStack($brandId);
+        $code = $this->get('widget_loader_code_renderer')->getWidgetCode($brand, $request->query->get('options'));
 
-        $withOptions = $request->query->get('options') ? true : false;
-
-        return new Response($this->get('widget_loader_code_renderer')->getWidgetCode($withOptions));
+        return new Response($code);
     }
 
     /**
@@ -175,13 +124,13 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      * @Rest\Post("/setup")
      *
      * @param Request $request
-     * @param int     $brandId
+     * @param Brand   $brand
      *
      * @return View
      */
-    public function postWidgetSetupAction(Request $request, $brandId)
+    public function postWidgetSetupAction(Request $request, Brand $brand)
     {
-        $this->handleForm($request, $brandId);
+        $this->handleForm($request, $this->getModel($brand));
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -207,17 +156,17 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      * @Rest\Post("/portal/apply")
      *
      * @param Request $request
-     * @param int     $brandId
+     * @param Brand   $brand
      *
      * @return View
      */
-    public function applyPortalWidgetSettingsAction(Request $request, $brandId)
+    public function applyPortalWidgetSettingsAction(Request $request, Brand $brand)
     {
-        $this->handleForm($request, $brandId);
+        $this->handleForm($request, $this->getModel($brand));
 
         // enable widget on the portal
         $settingRepo = $this->getSettingRepository();
-        $settingRepo->updateSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL, true, $this->brand);
+        $settingRepo->updateSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL, true, $brand);
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -236,16 +185,14 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      *
      * @Rest\Post("/portal/remove")
      *
-     * @param int $brandId
+     * @param Brand $brand
      *
      * @return View
      */
-    public function removePortalWidgetAction($brandId)
+    public function removePortalWidgetAction(Brand $brand)
     {
-        $this->getBrand($brandId);
-
         $settingRepo = $this->getSettingRepository();
-        $settingRepo->updateSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL, false, $this->brand);
+        $settingRepo->updateSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL, false, $brand);
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -264,24 +211,22 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      *
      * @Rest\Delete("/setup")
      * 
-     * @param int $brandId
+     * @param Brand $brand
      *
      * @return View
      */
-    public function resetSettingsAction($brandId)
+    public function resetSettingsAction(Brand $brand)
     {
-        $this->getBrand($brandId);
-
-        $settings = $this->getOrCreateWidgetBrandSettings($brandId);
+        $settings = $this->getOrCreateWidgetBrandSettings($brand);
         if ($settings->getId()) {
             $this->getManager()->remove($settings);
             $this->getManager()->flush();
         }
 
         $settingRepo = $this->getSettingRepository();
-        $settingRepo->updateSetting(WidgetSettingsResolver::CHAT_EMAIL_VALIDATION, false, $this->brand);
-        $settingRepo->updateSetting(WidgetSettingsResolver::CHAT_REQUIRE_LOGIN, false, $this->brand);
-        $settingRepo->updateSetting(WidgetSettingsResolver::CHAT_ENABLED, true, $this->brand);
+        $settingRepo->updateSetting(WidgetSettingsResolver::CHAT_EMAIL_VALIDATION, false, $brand);
+        $settingRepo->updateSetting(WidgetSettingsResolver::CHAT_REQUIRE_LOGIN, false, $brand);
+        $settingRepo->updateSetting(WidgetSettingsResolver::CHAT_ENABLED, true, $brand);
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -299,14 +244,12 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      * @Rest\Post("/send-instructions")
      *
      * @param Request $request
-     * @param int     $brandId
+     * @param Brand   $brand
      *
      * @return Response
      */
-    public function sendInstructionsAction(Request $request, $brandId)
+    public function sendInstructionsAction(Request $request, Brand $brand)
     {
-        $this->getBrand($brandId);
-
         $email = $request->request->get('email');
         if (!$email) {
             throw new BadRequestHttpException('You should provide an email!');
@@ -318,7 +261,7 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
         );
         $message->setTo($email);
         $attach = \Swift_Attachment::newInstance(
-            $this->get('widget_loader_code_renderer')->getWidgetCode(true),
+            $this->get('widget_loader_code_renderer')->getWidgetCode($brand, true),
             'deskpro-widget.txt',
             'text/plain'
         );
@@ -329,30 +272,25 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
     }
 
     /**
-     * @param Request $request
-     * @param         $brandId
+     * {@inheritdoc}
      *
-     * @return \Symfony\Component\Form\Form
+     * @param WidgetSettings $model
      */
-    protected function handleForm(Request $request, $brandId)
+    protected function handleForm(Request $request, AbstractBrandAwareSettings $model)
     {
-        $this->getBrand($brandId);
+        $settings = $model->getSettings();
 
-        /** @var WidgetOptions $model */
-        $model = $this->getModel()->getSettings();
-
-        $form = $this->createForm($this->getType(), $model);
+        $form = $this->createForm($this->getType(), $settings);
         $form->submit($request->request->all());
-
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
 
-        $this->persistModel($model, $brandId);
+        $this->persistModel($model);
 
         // Save brand settings
-        $dataStore = $this->getOrCreateWidgetBrandSettings($brandId);
-        $dataStore->setData('brand_settings', $model->getBrand());
+        $dataStore = $this->getOrCreateWidgetBrandSettings($model->getBrand());
+        $dataStore->setData('brand_settings', $settings->getBrand());
 
         $em = $this->getManager();
         $em->persist($dataStore);
@@ -360,13 +298,13 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
     }
 
     /**
-     * @param int $brandId
+     * @param Brand $brand
      *
      * @return DataStore|null
      */
-    protected function getOrCreateWidgetBrandSettings($brandId)
+    protected function getOrCreateWidgetBrandSettings(Brand $brand)
     {
-        return $this->getOrCreateDataStore('widget.brand_settings.'.$brandId);
+        return $this->getOrCreateDataStore('widget.brand_settings.'.$brand->getId());
     }
 
     /**
@@ -383,5 +321,40 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
         }
 
         return $dataStore;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return WidgetSettings
+     */
+    protected function getModel(Brand $brand)
+    {
+        return $this->get('widget_settings_resolver')->getWidgetSettings($brand);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getType()
+    {
+        return WidgetOptionsType::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param WidgetSettings $model
+     */
+    protected function persistModel(AbstractBrandAwareSettings $model)
+    {
+        $brand = $model->getBrand();
+        $chat  = $model->getSettings()->getGlobal()->getChat();
+        $this
+            ->getSettingRepository()
+            ->updateSetting(WidgetSettingsResolver::CHAT_EMAIL_VALIDATION, $chat->isEmailValidation(), $brand)
+            ->updateSetting(WidgetSettingsResolver::CHAT_REQUIRE_LOGIN, $chat->isRequireLogin(), $brand)
+            ->updateSetting(WidgetSettingsResolver::CHAT_ENABLED, $chat->isEnabled(), $brand)
+        ;
     }
 }

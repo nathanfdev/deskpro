@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
+use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAntiAbuseSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalUserRateLimit;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
@@ -101,7 +102,8 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
             ->setLimit($this->getSetting($settingPrefix.'.limit'))
             ->setTime($this->getSetting($settingPrefix.'.time') / 60)
             ->setLockoutTime($this->getSetting($settingPrefix.'.lockout_time') / 60)
-            ->setResponse($this->getSetting($settingPrefix.'.response'));
+            ->setResponse($this->getSetting($settingPrefix.'.response'))
+        ;
     }
 
     /**
@@ -123,90 +125,106 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return GeneralSettings
      */
-    public function getGeneralSettings()
+    public function getGeneralSettings(Brand $brand = null)
     {
+        $brand = $brand ?: $this->settingsResolver->getActiveBrand();
         $model = new GeneralSettings();
-
         $model
-            ->setSiteName($this->getSetting(self::SITE_NAME))
-            ->setSiteUrl($this->getSetting(self::SITE_URL))
-            ->setDeskproName($this->getSetting(self::HELPDESK_NAME))
-            ->setDeskproUrl($this->getSetting(self::HELPDESK_URL))
-            ->setAppsFeedback($this->getSetting(self::APPS_FEEDBACK))
-            ->setAppsKb($this->getSetting(self::APPS_KB))
-            ->setAppsNews($this->getSetting(self::APPS_NEWS))
-            ->setAppsDownloads($this->getSetting(self::APPS_DOWNLOADS))
-            ->setIfacePortal($this->getSetting(self::IFACE_PORTAL))
-            ->setIfaceWidget($this->getSetting(self::IFACE_WIDGET))
-            ->setShowRatings($this->getSetting(self::SHOW_RATINGS))
-            ->setShowRatingsMinVotes($this->getSetting(self::SHOW_RATINGS_MIN_VOTES))
-            ->setPublishComments($this->getSetting(self::PUBLISH_COMMENTS))
+            ->setSiteName($this->getSetting(self::SITE_NAME, $brand))
+            ->setSiteUrl($this->getSetting(self::SITE_URL, $brand))
+            ->setDeskproName($this->getSetting(self::HELPDESK_NAME, $brand))
+            ->setDeskproUrl($this->getSetting(self::HELPDESK_URL, $brand))
+            ->setAppsFeedback($this->getSetting(self::APPS_FEEDBACK, $brand))
+            ->setAppsKb($this->getSetting(self::APPS_KB, $brand))
+            ->setAppsNews($this->getSetting(self::APPS_NEWS, $brand))
+            ->setAppsDownloads($this->getSetting(self::APPS_DOWNLOADS, $brand))
+            ->setIfacePortal($this->getSetting(self::IFACE_PORTAL, $brand))
+            ->setIfaceWidget($this->getSetting(self::IFACE_WIDGET, $brand))
+            ->setShowRatings($this->getSetting(self::SHOW_RATINGS, $brand))
+            ->setShowRatingsMinVotes($this->getSetting(self::SHOW_RATINGS_MIN_VOTES, $brand))
+            ->setPublishComments($this->getSetting(self::PUBLISH_COMMENTS, $brand))
+            ->setBrand($brand)
+            ->setBrandLogo($brand->getLogoBlob())
         ;
 
         return $model;
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return KbSettings
      */
-    public function getKbSettings()
+    public function getKbSettings(Brand $brand = null)
     {
+        $brand = $brand ?: $this->settingsResolver->getActiveBrand();
         $model = new KbSettings();
-
         $model
-            ->setEnabled($this->getSetting(self::APPS_KB))
-            ->setTabEnabled($this->getSetting(self::TAB_KB))
-            ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_KB))
+            ->setEnabled($this->getSetting(self::APPS_KB, $brand))
+            ->setTabEnabled($this->getSetting(self::TAB_KB, $brand))
+            ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_KB, $brand))
+            ->setBrand($brand)
         ;
 
         return $model;
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return FeedbackSettings
      */
-    public function getFeedbackSettings()
+    public function getFeedbackSettings(Brand $brand = null)
     {
+        $brand = $brand ?: $this->settingsResolver->getActiveBrand();
         $model = new FeedbackSettings();
-
         $model
-            ->setEnabled($this->getSetting(self::APPS_FEEDBACK))
-            ->setTabEnabled($this->getSetting(self::TAB_FEEDBACK))
-            ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_FEEDBACK))
+            ->setEnabled($this->getSetting(self::APPS_FEEDBACK, $brand))
+            ->setTabEnabled($this->getSetting(self::TAB_FEEDBACK, $brand))
+            ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_FEEDBACK, $brand))
+            ->setBrand($brand)
         ;
 
         return $model;
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return NewsSettings
      */
-    public function getNewsSettings()
+    public function getNewsSettings(Brand $brand = null)
     {
+        $brand = $brand ?: $this->settingsResolver->getActiveBrand();
         $model = new NewsSettings();
-
         $model
-            ->setEnabled($this->getSetting(self::APPS_NEWS))
-            ->setTabEnabled($this->getSetting(self::TAB_NEWS))
-            ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_NEWS))
-        ;
+            ->setEnabled($this->getSetting(self::APPS_NEWS, $brand))
+            ->setTabEnabled($this->getSetting(self::TAB_NEWS, $brand))
+            ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_NEWS, $brand))
+            ->setBrand($brand)
+    ;
 
         return $model;
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return DownloadsSettings
      */
-    public function getDownloadsSettings()
+    public function getDownloadsSettings(Brand $brand = null)
     {
+        $brand = $brand ?: $this->settingsResolver->getActiveBrand();
         $model = new DownloadsSettings();
-
         $model
-            ->setEnabled($this->getSetting(self::APPS_DOWNLOADS))
-            ->setTabEnabled($this->getSetting(self::TAB_DOWNLOADS))
-            ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_DOWNLOADS))
+            ->setEnabled($this->getSetting(self::APPS_DOWNLOADS, $brand))
+            ->setTabEnabled($this->getSetting(self::TAB_DOWNLOADS, $brand))
+            ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_DOWNLOADS, $brand))
+            ->setBrand($brand)
         ;
 
         return $model;

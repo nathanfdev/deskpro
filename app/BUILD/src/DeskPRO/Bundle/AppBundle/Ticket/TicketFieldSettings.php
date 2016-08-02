@@ -181,6 +181,6 @@ class TicketFieldSettings
      */
     private function hasSetting($name)
     {
-        return (bool) $this->settings_resolver->getSetting($name, false);
+        return (bool) $this->settings_resolver->getSetting($name);
     }
 }

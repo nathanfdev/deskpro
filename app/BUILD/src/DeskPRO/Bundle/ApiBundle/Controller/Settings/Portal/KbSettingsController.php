@@ -28,10 +28,12 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings\Portal;
 
+use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\KbSettingsType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\KbSettings;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -43,48 +45,10 @@ use Symfony\Component\HttpFoundation\Response;
  * Class KbSettingsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/settings/brands/{brandId}/portal/kb")
+ * @Rest\Route("/settings/brands/{brand}/portal/kb")
  */
 class KbSettingsController extends AbstractBrandAwareSettingsController
 {
-    /**
-     * @var KbSettings
-     */
-    protected $model;
-
-    /**
-     * @return KbSettings
-     */
-    protected function getModel()
-    {
-        $this->model = $this->get('portal_settings_resolver')->getKbSettings();
-
-        $this->model->setBrand($this->brand);
-
-        return $this->model;
-    }
-
-    protected function getType()
-    {
-        return KbSettingsType::class;
-    }
-
-    /**
-     * @param KbSettings $model
-     * @param int        $brandId
-     */
-    protected function persistModel($model, $brandId)
-    {
-        $brand = $this->getBrand($brandId);
-
-        $settings_repository = $this->getSettingRepository();
-        $settings_repository
-            ->updateSetting(PortalSettingsResolver::APPS_KB, $model->isEnabled(), $brand)
-            ->updateSetting(PortalSettingsResolver::TAB_KB, $model->isTabEnabled(), $brand)
-            ->updateSetting(PortalSettingsResolver::SUBSCRIPTION_KB, $model->isSubscriptions(), $brand)
-        ;
-    }
-
     /**
      * @ApiDoc(
      *     section="Portal Settings",
@@ -100,15 +64,13 @@ class KbSettingsController extends AbstractBrandAwareSettingsController
      *
      * @Rest\Get("")
      *
-     * @param int $brandId
+     * @param Brand $brand
      *
      * @return View
      */
-    public function getAction($brandId)
+    public function getAction(Brand $brand)
     {
-        $this->setBrandStack($brandId);
-
-        return new View($this->wrap($this->getModel()));
+        return new View($this->wrap($this->getModel($brand)));
     }
 
     /**
@@ -131,14 +93,48 @@ class KbSettingsController extends AbstractBrandAwareSettingsController
      * @Rest\Post("")
      *
      * @param Request $request
-     * @param int     $brandId
+     * @param Brand   $brand
      *
      * @return View
      */
-    public function postAction(Request $request, $brandId)
+    public function postAction(Request $request, Brand $brand)
     {
-        $this->handleForm($request, $brandId);
+        $this->handleForm($request, $this->getModel($brand));
 
         return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return KbSettings
+     */
+    protected function getModel(Brand $brand)
+    {
+        return $this->get('portal_settings_resolver')->getKbSettings($brand);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getType()
+    {
+        return KbSettingsType::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param KbSettings $model
+     */
+    protected function persistModel(AbstractBrandAwareSettings $model)
+    {
+        $brand = $model->getBrand();
+        $this
+            ->getSettingRepository()
+            ->updateSetting(PortalSettingsResolver::APPS_KB, $model->isEnabled(), $brand)
+            ->updateSetting(PortalSettingsResolver::TAB_KB, $model->isTabEnabled(), $brand)
+            ->updateSetting(PortalSettingsResolver::SUBSCRIPTION_KB, $model->isSubscriptions(), $brand)
+        ;
     }
 }

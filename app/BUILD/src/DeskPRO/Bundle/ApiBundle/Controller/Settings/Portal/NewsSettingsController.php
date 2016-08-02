@@ -28,10 +28,12 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings\Portal;
 
+use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\NewsSettingsType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\NewsSettings;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -43,48 +45,10 @@ use Symfony\Component\HttpFoundation\Response;
  * Class NewsSettingsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/settings/brands/{brandId}/portal/news")
+ * @Rest\Route("/settings/brands/{brand}/portal/news")
  */
 class NewsSettingsController extends AbstractBrandAwareSettingsController
 {
-    /**
-     * @var NewsSettings
-     */
-    protected $model;
-
-    /**
-     * @return NewsSettings
-     */
-    protected function getModel()
-    {
-        $this->model = $this->get('portal_settings_resolver')->getNewsSettings();
-
-        $this->model->setBrand($this->brand);
-
-        return $this->model;
-    }
-
-    protected function getType()
-    {
-        return NewsSettingsType::class;
-    }
-
-    /**
-     * @param NewsSettings $model
-     * @param int          $brandId
-     */
-    protected function persistModel($model, $brandId)
-    {
-        $brand = $this->getBrand($brandId);
-
-        $settings_repository = $this->getSettingRepository();
-        $settings_repository
-            ->updateSetting(PortalSettingsResolver::APPS_NEWS, $model->isEnabled(), $brand)
-            ->updateSetting(PortalSettingsResolver::TAB_NEWS, $model->isTabEnabled(), $brand)
-            ->updateSetting(PortalSettingsResolver::SUBSCRIPTION_NEWS, $model->isSubscriptions(), $brand)
-        ;
-    }
-
     /**
      * @ApiDoc(
      *     section="Portal Settings",
@@ -100,15 +64,13 @@ class NewsSettingsController extends AbstractBrandAwareSettingsController
      *
      * @Rest\Get("")
      *
-     * @param int $brandId
+     * @param Brand $brand
      *
      * @return View
      */
-    public function getAction($brandId)
+    public function getAction(Brand $brand)
     {
-        $this->setBrandStack($brandId);
-
-        return new View($this->wrap($this->getModel()));
+        return new View($this->wrap($this->getModel($brand)));
     }
 
     /**
@@ -131,14 +93,48 @@ class NewsSettingsController extends AbstractBrandAwareSettingsController
      * @Rest\Post("")
      *
      * @param Request $request
-     * @param int     $brandId
+     * @param Brand   $brand
      *
      * @return View
      */
-    public function postAction(Request $request, $brandId)
+    public function postAction(Request $request, Brand $brand)
     {
-        $this->handleForm($request, $brandId);
+        $this->handleForm($request, $this->getModel($brand));
 
         return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return NewsSettings
+     */
+    protected function getModel(Brand $brand)
+    {
+        return $this->get('portal_settings_resolver')->getNewsSettings($brand);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getType()
+    {
+        return NewsSettingsType::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param NewsSettings $model
+     */
+    protected function persistModel(AbstractBrandAwareSettings $model)
+    {
+        $brand = $model->getBrand();
+        $this
+            ->getSettingRepository()
+            ->updateSetting(PortalSettingsResolver::APPS_NEWS, $model->isEnabled(), $brand)
+            ->updateSetting(PortalSettingsResolver::TAB_NEWS, $model->isTabEnabled(), $brand)
+            ->updateSetting(PortalSettingsResolver::SUBSCRIPTION_NEWS, $model->isSubscriptions(), $brand)
+        ;
     }
 }

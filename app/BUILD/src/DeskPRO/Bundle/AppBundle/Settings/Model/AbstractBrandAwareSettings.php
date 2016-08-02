@@ -53,7 +53,7 @@ abstract class AbstractBrandAwareSettings
     /**
      * @param Brand $brand
      *
-     * @return AbstractBrandAwareSettings
+     * @return $this
      */
     public function setBrand(Brand $brand)
     {
