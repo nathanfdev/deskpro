@@ -73,7 +73,6 @@ class RunActivator implements RunActivatorInterface, LoggerAwareInterface
      */
     public function activateRunDir(BuildInstance $build)
     {
-        return;
         $runPath    = dirname($build->getAppPath()).'/run';
         $oldRunPath = $runPath.'.'.uniqid('');
 

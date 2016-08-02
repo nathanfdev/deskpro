@@ -62,6 +62,7 @@ class DistroDownloaderTest extends DeskProTestCase
 
         $dl     = new DistroDownloader($client);
         $detail = \Mockery::mock(DistroRelease::class);
+        $detail->shouldReceive('getId')->andReturn('123');
         $detail->shouldReceive('getZipUrl')->andReturn('https://example.com/foobar.zip');
         $detail->shouldReceive('getSha256')->andReturn(hash_file('sha256', $this->getDistroZipPath()));
 
@@ -85,6 +86,7 @@ class DistroDownloaderTest extends DeskProTestCase
 
         $dl     = new DistroDownloader($client);
         $detail = \Mockery::mock(DistroRelease::class);
+        $detail->shouldReceive('getId')->andReturn('123');
         $detail->shouldReceive('getZipUrl')->andReturn('https://example.com/foobar.zip');
         $detail->shouldReceive('getSha256')->andReturn(hash('sha256', 'foo'));
 
