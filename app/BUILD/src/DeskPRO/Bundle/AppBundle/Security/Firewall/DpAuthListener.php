@@ -93,7 +93,8 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         $tokenOrResponse = null;
 
         if ('portal_login_submit' == $request->attributes->get('_route')) {
-            $response = $this->checkCaptcha($request);
+            $abuseCheck = $this->createAntiAbuseEvent($request);
+            $response   = $this->checkCaptcha($request, $abuseCheck);
             if ($response) {
                 $this->logLoginFailure($request->get('username'), $request->getClientIp());
 
@@ -116,23 +117,27 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             return $tokenOrResponse;
         }
 
-        return $this->authenticationManager->authenticate($tokenOrResponse);
+        try {
+            return $this->authenticationManager->authenticate($tokenOrResponse);
+        } catch (BadCredentialsException $e) {
+            if (isset($abuseCheck)) {
+                $this->container->get('anti_abuse')->saveRateLimit($abuseCheck);
+            }
+            throw $e;
+        }
     }
 
     /**
-     * @param Request $request
+     * @param Request         $request
+     * @param LoginAbuseCheck $abuseCheck
      *
      * @return JsonResponse|RedirectResponse|void
      */
-    protected function checkCaptcha(Request $request)
+    protected function checkCaptcha(Request $request, LoginAbuseCheck $abuseCheck)
     {
-        $anti_abuse  = $this->container->get('anti_abuse');
-        $abuse_check = new LoginAbuseCheck($request->get('username'), $request->getClientIp());
-        $request->getSession()->set('last_username', $request->get('username'));
-        $abuse_check->markAsCheckOnly(true);
-        $abuse_check->setResponse(new RedirectResponse($this->container->get('router')->generate('portal_login')));
-        $anti_abuse->check($abuse_check);
-        if ($abuse_check->isCaptchaRecommended()) {
+        $antiAbuse = $this->container->get('anti_abuse');
+        $antiAbuse->check($abuseCheck);
+        if ($abuseCheck->isCaptchaRecommended()) {
             $captchaForm = $this->container->get('form.factory')->create(CaptchaType::class, null, [
                 'csrf_double_submit_protection' => false,
             ]);
@@ -150,10 +155,20 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                 ]));
             }
         }
-        $abuse_check->markAsCheckOnly(false);
-        $anti_abuse->check($abuse_check);
+        $abuseCheck->markAsCheckOnly(false);
+        $antiAbuse->check($abuseCheck);
 
         return;
+    }
+
+    protected function createAntiAbuseEvent(Request $request)
+    {
+        $abuseCheck = new LoginAbuseCheck($request->get('username'), $request->getClientIp());
+        $request->getSession()->set('last_username', $request->get('username'));
+        $abuseCheck->markAsCheckOnly(true);
+        $abuseCheck->setResponse(new RedirectResponse($this->container->get('router')->generate('portal_login')));
+
+        return $abuseCheck;
     }
 
     /**

@@ -104,6 +104,10 @@ class CaptchaEventListenerTest extends PortalTestCase
         for ($i = 0; $i < $lessThanMaxAttempts; ++$i) {
             // should not be recommending anything
             $this->get('anti_abuse')->check($event);
+            if ($event->getType() === AntiAbuse::ACTION_LOGIN) {
+                //rate limit for login is little bit hacky
+                $this->get('anti_abuse')->saveRateLimit($event);
+            }
 
             // no recommendations should be made (we are always under or equal limit here)
             $this->assertFalse($event->isCaptchaRecommended());

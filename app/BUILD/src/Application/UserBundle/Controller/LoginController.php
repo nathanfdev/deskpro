@@ -448,7 +448,7 @@ HTML;
                     }
                 }
             }
-
+            $this->container->get('anti_abuse')->saveRateLimit($check);
             $this->handleLoginAttempt($request);
             $this->session->set('failed_login_name', $inputEmail);
             $this->session->set('failed_to_login', true);
