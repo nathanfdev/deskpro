@@ -234,8 +234,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       )
       .error(@serverError)
 
-
-
     revertTemplateEditor: () =>
       @$http({
         method: 'PUT',
@@ -264,6 +262,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     saveCssEditor: () =>
       data = {}
       data[@css_template_info.type] = @css_template_info.code
+      @advanced[@css_template_info.type] = @css_template_info.code
       @recompiling = true
 
       req = @$http({
