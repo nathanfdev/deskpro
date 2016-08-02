@@ -46,9 +46,9 @@
  *
  * Eac
  */
-$CONFIG = array();
+$CONFIG = [];
 
-$CONFIG['OPTIONS'] = array(
+$CONFIG['OPTIONS'] = [
     'java_path'      => defined('DP_JAVA_PATH') ? DP_JAVA_PATH : '/usr/bin/java',
     'yui_compressor' => defined('DP_YUI_COMPRESSOR_PATH') ? DP_YUI_COMPRESSOR_PATH : '/usr/local/bin/yuicompressor.jar',
     'nodejs'         => defined('DP_NODEJS_PATH') ? DP_NODEJS_PATH : '/usr/bin/nodejs',
@@ -56,16 +56,16 @@ $CONFIG['OPTIONS'] = array(
     'smartsprites'   => defined(
         'DP_SMARTSPRITES_PATH'
     ) ? DP_SMARTSPRITES_PATH : '/opt/smartsprites-0.2.8/smartsprites.sh',
-);
+];
 
 ###############################################################################
 # JAVASCRIPTS
 ###############################################################################
 
-$CONFIG['agent'] = array(
+$CONFIG['agent'] = [
     'out'          => 'js/agent-all.js',
-    'post_filters' => array('yui_simple'),
-    'references'   => array(
+    'post_filters' => ['yui_simple'],
+    'references'   => [
         'agent_vendors',
         'agent_common',
         'agent_deskpro_ui',
@@ -76,12 +76,12 @@ $CONFIG['agent'] = array(
         'agent_pages',
         'agent_pages_lists',
         'agent_element_handlers',
-    ),
-);
+    ],
+];
 
-$CONFIG['agent_vendors'] = array(
+$CONFIG['agent_vendors'] = [
     'out'   => 'js/agent-vendors.js',
-    'files' => array(
+    'files' => [
         'vendor/modernizr.min.js',
         'javascripts/Orb/modernizr-ext.js',
         'vendor/JSON-js/json2.js',
@@ -125,12 +125,12 @@ $CONFIG['agent_vendors'] = array(
         'bower_components/intl-tel-input/build/js/intlTelInput.min.js',
         'bower_components/jquery-qrcode/dist/jquery.qrcode.js',
         'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
-    ),
-);
+    ],
+];
 
-$CONFIG['agent_settingswin'] = array(
+$CONFIG['agent_settingswin'] = [
     'out'   => 'js/agent-settingswin.js',
-    'files' => array(
+    'files' => [
         'javascripts/DeskPRO/Agent/ElementHandler/SettingsWindow.js',
         'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Profile.js',
         'javascripts/DeskPRO/Agent/PageFragment/SettingsPage/Signature.js',
@@ -144,12 +144,12 @@ $CONFIG['agent_settingswin'] = array(
         'javascripts/DeskPRO/Agent/ElementHandler/MediaManagerWindow.js',
         'javascripts/DeskPRO/Agent/PageFragment/MediaManagerPage/Upload.js',
         'javascripts/DeskPRO/Agent/PageFragment/MediaManagerPage/Browse.js',
-    ),
-);
+    ],
+];
 
-$CONFIG['agent_window_sections'] = array(
+$CONFIG['agent_window_sections'] = [
     'out'   => 'js/agent-window-sections.js',
-    'files' => array(
+    'files' => [
         'javascripts/DeskPRO/Agent/WindowElement/Section/AbstractSection.js',
         'javascripts/DeskPRO/Agent/WindowElement/Section/Tickets.js',
         'javascripts/DeskPRO/Agent/WindowElement/Section/People.js',
@@ -159,12 +159,12 @@ $CONFIG['agent_window_sections'] = array(
         'javascripts/DeskPRO/Agent/WindowElement/Section/Feedback.js',
         'javascripts/DeskPRO/Agent/WindowElement/Section/Tasks.js',
         'javascripts/DeskPRO/Agent/WindowElement/Section/Twitter.js',
-    ),
-);
+    ],
+];
 
-$CONFIG['agent_pages_lists'] = array(
+$CONFIG['agent_pages_lists'] = [
     'out'   => 'js/agent-pages-lists.js',
-    'files' => array(
+    'files' => [
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/Basic.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/BasicTicketResults.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketFilter.js',
@@ -201,12 +201,12 @@ $CONFIG['agent_pages_lists'] = array(
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterStatus.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterSearch.js',
         'javascripts/DeskPRO/Agent/PageFragment/List/TicketList.js',
-    ),
-);
+    ],
+];
 
-$CONFIG['agent_pages'] = array(
+$CONFIG['agent_pages'] = [
     'out'   => 'js/agent-pages.js',
-    'files' => array(
+    'files' => [
         'javascripts/DeskPRO/Agent/PageHelper/NewUserOverlay.js',
         'javascripts/DeskPRO/Agent/PageHelper/ListColDrag.js',
         'javascripts/DeskPRO/Agent/PageHelper/ListColResize.js',
@@ -273,12 +273,12 @@ $CONFIG['agent_pages'] = array(
         'javascripts/DeskPRO/Agent/PageFragment/Page/TwitterUser.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/TwitterStatusOverlay.js',
 
-    ),
-);
+    ],
+];
 
-$CONFIG['agent_element_handlers'] = array(
+$CONFIG['agent_element_handlers'] = [
     'out'   => 'js/agent-element-handlers.js',
-    'files' => array(
+    'files' => [
         'javascripts/DeskPRO/Agent/ElementHandler/FormSaver.js',
         'javascripts/DeskPRO/Agent/ElementHandler/TicketReplyBox.js',
         'javascripts/DeskPRO/Agent/ElementHandler/TicketCcManage.js',
@@ -296,12 +296,12 @@ $CONFIG['agent_element_handlers'] = array(
         'javascripts/DeskPRO/Agent/ElementHandler/FirstLogin.js',
         'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
         'javascripts/DeskPRO/Agent/SourcePane/SearchForm.js',
-    ),
-);
+    ],
+];
 
-$CONFIG['agent_common'] = array(
+$CONFIG['agent_common'] = [
     'out'   => 'js/agent-common.js',
-    'files' => array(
+    'files' => [
         'javascripts/DeskPRO/Agent/TouchClicker.js',
         'javascripts/DeskPRO/DP.js',
         'javascripts/DeskPRO/ErrorLogger.js',
@@ -329,12 +329,12 @@ $CONFIG['agent_common'] = array(
         'javascripts/DeskPRO/Translate.js',
         'javascripts/DeskPRO/Agent/RteEditor.js',
         'javascripts/DeskPRO/TextExpander.js',
-    ),
-);
+    ],
+];
 
-$CONFIG['agent_agent_ui'] = array(
+$CONFIG['agent_agent_ui'] = [
     'out'   => 'js/agent-ui.js',
-    'files' => array(
+    'files' => [
         'javascripts/DeskPRO/BasicWindow.js',
         'javascripts/DeskPRO/Agent/Window.js',
         'javascripts/DeskPRO/Agent/Layout/DeskproWindow.js',
@@ -351,12 +351,12 @@ $CONFIG['agent_agent_ui'] = array(
         'javascripts/DeskPRO/Agent/WindowElement/TabBarOverflow.js',
         'javascripts/DeskPRO/Agent/TextSnippetClientDbDriver.js',
         'javascripts/DeskPRO/Agent/TextSnippetAjaxDriver.js',
-    ),
-);
+    ],
+];
 
-$CONFIG['agent_deskpro_ui'] = array(
+$CONFIG['agent_deskpro_ui'] = [
     'out'   => 'js/agent-deskpro-ui.js',
-    'files' => array(
+    'files' => [
         'javascripts/DeskPRO/UI/LabelsInput.js',
         'javascripts/DeskPRO/UI/Overlay.js',
         'javascripts/DeskPRO/UI/PhoneNumberInputs.js',
@@ -372,12 +372,12 @@ $CONFIG['agent_deskpro_ui'] = array(
         'javascripts/DeskPRO/UI/Select/Menu.js',
         'javascripts/DeskPRO/UI/Select/WidgetSimple.js',
         'javascripts/DeskPRO/UI/Select/MenuHtml.js',
-    ),
-);
+    ],
+];
 
-$CONFIG['agent_misc'] = array(
+$CONFIG['agent_misc'] = [
     'out'   => 'js/agent-misc.js',
-    'files' => array(
+    'files' => [
         'javascripts/DeskPRO/Form/InlineEdit.js',
         'javascripts/DeskPRO/Form/RuleBuilder.js',
         'javascripts/DeskPRO/FaviconBadge.js',
@@ -419,36 +419,36 @@ $CONFIG['agent_misc'] = array(
         'javascripts/DeskPRO/Agent/TicketList/Property/Flag.js',
         'javascripts/DeskPRO/Agent/TicketList/Property/Labels.js',
         'javascripts/DeskPRO/UI/MultiLevelSelect.js',
-    ),
-);
+    ],
+];
 
-$CONFIG['user'] = array(
+$CONFIG['user'] = [
     'out'          => 'js/user-all.js',
-    'post_filters' => array('yui_simple'),
-    'references'   => array(
+    'post_filters' => ['yui_simple'],
+    'references'   => [
         'user_vendors',
         'user_common',
-    ),
-);
+    ],
+];
 
-$CONFIG['user_portaladmin'] = array(
+$CONFIG['user_portaladmin'] = [
     'out'   => 'js/user-portaladmin.js',
-    'files' => array(
+    'files' => [
         'javascripts/DeskPRO/UserPortalAdmin/PortalAdmin.js',
-    ),
-);
+    ],
+];
 
-$CONFIG['user_portaladmin_css'] = array(
+$CONFIG['user_portaladmin_css'] = [
     'out'     => 'css/user-portaladmin.css',
-    'filters' => array('less', 'css'),
-    'files'   => array(
+    'filters' => ['less', 'css'],
+    'files'   => [
         'stylesheets-less/admin/portal-admin.less',
-    ),
-);
+    ],
+];
 
-$CONFIG['user_common'] = array(
+$CONFIG['user_common'] = [
     'out'   => 'js/user-common.js',
-    'files' => array(
+    'files' => [
         'javascripts/Orb/Orb.js',
         'javascripts/DeskPRO/DP.js',
         'javascripts/Orb/Class.js',
@@ -471,12 +471,12 @@ $CONFIG['user_common'] = array(
         'javascripts/DeskPRO/FormValidator/EmailValidator.js',
         'javascripts/DeskPRO/FormValidator/RegexValidator.js',
         'javascripts/DeskPRO/FormValidator/TwoLevelSelectValidator.js',
-    ),
-);
+    ],
+];
 
-$CONFIG['user_vendors'] = array(
+$CONFIG['user_vendors'] = [
     'out'   => 'js/user-vendors.js',
-    'files' => array(
+    'files' => [
         'vendor/modernizr.min.js',
         'vendor/html5shiv.min.js',
         'javascripts/Orb/modernizr-ext.js',
@@ -497,79 +497,79 @@ $CONFIG['user_vendors'] = array(
         'vendor/bootstrap/bootstrap-custom.js',
         'bower_components/moment/min/moment-with-locales.min.js',
         'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
-    ),
-);
+    ],
+];
 
 ###############################################################################
 # CSS
 ###############################################################################
 
-$CONFIG['agent_css1'] = array(
+$CONFIG['agent_css1'] = [
     'out'          => 'css/agent-pack1.css',
-    'post_filters' => array('smartsprites', 'css', 'image_gradients'),
-    'references'   => array(
+    'post_filters' => ['smartsprites', 'css', 'image_gradients'],
+    'references'   => [
         'agent_interface_css1',
-    ),
-);
+    ],
+];
 
-$CONFIG['agent_css2'] = array(
+$CONFIG['agent_css2'] = [
     'out'          => 'css/agent-pack2.css',
-    'post_filters' => array('smartsprites', 'css', 'image_gradients'),
-    'references'   => array(
+    'post_filters' => ['smartsprites', 'css', 'image_gradients'],
+    'references'   => [
         'agent_interface_css2',
-    ),
-);
+    ],
+];
 
-$CONFIG['agent_vendor_out_css'] = array(
+$CONFIG['agent_vendor_out_css'] = [
     'out'          => 'css/agent-vendors-all.css',
-    'post_filters' => array('css'),
-    'references'   => array(
+    'post_filters' => ['css'],
+    'references'   => [
         'agent_vendors_css',
-    ),
-);
+    ],
+];
 
-$CONFIG['agent_interface_css1'] = array(
+$CONFIG['agent_interface_css1'] = [
     'out'     => 'css/agent-interface1.css',
-    'filters' => array('less'),
-    'files'   => array(
+    'filters' => ['less'],
+    'files'   => [
         'stylesheets-less/agent/dp-interface.less',
         'stylesheets-less/agent/dp-agent-chat.less',
         'stylesheets-less/agent/overlayCreateTicket.less',
         'stylesheets-less/agent/dp-source-pane.less',
         'stylesheets-less/agent/dp-list-pane.less',
-    ),
-);
+    ],
+];
 
-$CONFIG['agent_interface_css2'] = array(
+$CONFIG['agent_interface_css2'] = [
     'out'     => 'css/agent-interface2.css',
-    'filters' => array('less'),
-    'files'   => array(
+    'filters' => ['less'],
+    'files'   => [
         'stylesheets-less/agent/dp-content-pane.less',
         'stylesheets-less/agent/agent.less',
-    ),
-);
+    ],
+];
 
-$CONFIG['agent_interface_ie_css'] = array(
+$CONFIG['agent_interface_ie_css'] = [
     'out'     => 'css/agent-interface-ie.css',
-    'filters' => array('less'),
-    'files'   => array(
+    'filters' => ['less'],
+    'files'   => [
         'stylesheets-less/agent/agent-ie.less',
-    ),
-);
+    ],
+];
 
-$CONFIG['agent_interface_print_css'] = array(
+$CONFIG['agent_interface_print_css'] = [
     'out'     => 'css/agent-interface-print.css',
-    'filters' => array('less'),
+    'filters' => ['less'],
     'media'   => 'print',
-    'files'   => array(
+    'files'   => [
         'stylesheets-less/agent/print.less',
-    ),
-);
+    ],
+];
 
-$CONFIG['agent_vendors_css'] = array(
+$CONFIG['agent_vendors_css'] = [
     'out'     => 'css/agent-vendors.css',
-    'filters' => array('css_path'),
-    'files'   => array(
+    'filters' => ['css_path'],
+    'files'   => [
         'stylesheets/vendor/jquery-ui/dp-theme/jquery-ui.css',
         'vendor/jquery/qtip/jquery.qtip.min.css',
         'vendor/jquery/colorbox/colorbox.css',
@@ -581,5 +581,7 @@ $CONFIG['agent_vendors_css'] = array(
         'vendor/bootstrap/css/table.css',
         'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
         'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-patch.css',
-    ),
-);
+        'app-build/styles/Admin/semantic.css',
+        'app-build/styles/Admin/admin-style.css',
+    ],
+];
