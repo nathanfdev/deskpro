@@ -884,8 +884,6 @@ class KbController extends AbstractController
             $tpl = 'AgentBundle:Kb:filter-page.html.twig';
         }
 
-        $articleCategories = $this->getFilteredCategory($category->getBrand()->getId());
-
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
         $commentCounts = [];
@@ -907,10 +905,14 @@ class KbController extends AbstractController
                 WHERE category_id = ?
             ', [$category->getId()]);
 
+            $articleCategories = $this->getFilteredCategory($category->getBrand()->getId());
+
             $catStructureData = $articleCategories;
             $catStructureData = Arrays::removeButKey($catStructureData, ['id', 'title', 'children'], true, true);
             $catStructureData = Arrays::multiRenameKey($catStructureData, 'title', 'label');
             $catStructureData = Arrays::assocToNumericArray($catStructureData, 'children');
+        } else {
+            $articleCategories = [];
         }
 
         return $this->render($tpl, [
