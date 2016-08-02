@@ -128,7 +128,7 @@ class CmdBuilderTest extends DeskProTestCase
         ]);
 
         $this->assertEquals(
-            "'/usr/bin/mysqldump' -h localhost --port 3306 -u 'deskpro' -p'pass\"word!@£$.,,<>--'\\''\\' --opt -Q --hex-blob --lock-tables=false --single-transaction 'dpdb' > '/example/dump.sql'",
+            "'/usr/bin/mysqldump' -h localhost --port 3306 -u 'deskpro' -p'pass\"word!@$.,,<>--'\\''\\' --opt -Q --hex-blob --lock-tables=false --single-transaction 'dpdb' > '/example/dump.sql'",
             $cmdBuilder->getDumpCmd('/example/dump.sql', $dbInfo)
         );
     }
