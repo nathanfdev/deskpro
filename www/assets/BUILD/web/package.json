@@ -86,7 +86,6 @@
     "watch:webpack": "node webpack.server.js",
     "watch:coffee": "coffee -o compiled/ -cw app/",
     "watch:js": "cpx \"app/**/*.js\" compiled -w -v",
-    "watch": "parallelshell 'npm run watch:js' 'npm run watch:coffee' 'npm run watch:webpack'",
-    "test:visual": "start-storybook -p 9001 -s ."
+    "watch": "parallelshell 'npm run watch:js' 'npm run watch:coffee' 'npm run watch:webpack'"
   }
 }

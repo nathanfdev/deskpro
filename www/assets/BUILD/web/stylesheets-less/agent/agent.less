@@ -202,12 +202,15 @@ em.counter, em.list-counter {
 //----------------------------------------------------------------------------------------------------------------------
 
 #dp_header {
-	box-sizing: content-box;
 	.gradient-v(@agent_header_bg_color, darken(@agent_header_bg_color, 2%));
 	height: @agent_header_height;
 	border-top: 1px solid @agent_header_bg_color;
 	border-bottom: 1px solid @agent_header_border_color;
 	overflow: visible;
+	&, * {
+		-webkit-box-sizing: content-box;
+		box-sizing: content-box;
+	}
 
 	.group {
 		position: relative;
@@ -1815,7 +1818,11 @@ ul.btn-menu {
 //----------------------------------------------------------------------------------------------------------------------
 // NAVIGATION
 //----------------------------------------------------------------------------------------------------------------------
-
+#dp_nav {
+	&, * {
+		box-sizing: content-box;
+	}
+}
 #dp_nav_sections {
 	background-color: @agent_nav_bg_color;
 	border-right: 1px solid darken(@agent_nav_bg_color, 15%);
@@ -1826,7 +1833,6 @@ ul.btn-menu {
 	top: (@agent_header_height + 1);
 	bottom: -20px; // -20px so the shadow doesnt appear at the bottom
 	width: @agent_nav_width;
-	box-sizing: content-box;
 
 	li {
 		position: relative;
@@ -3663,7 +3669,9 @@ ul.pane-tabs {
 //----------------------------------------------------------------------------------------------------------------------
 
 #dp_center {
-	box-sizing: content-box;
+	&, * {
+		box-sizing: content-box;
+	}
 	top: 51px;
 }
 
@@ -3673,7 +3681,9 @@ ul.pane-tabs {
 	height: (@agent_panetabs_height - 3);
 	z-index: 3;
 	overflow: visible;
-	box-sizing: content-box;
+	&, * {
+		box-sizing: content-box;
+	}
 }
 
 .dp-tab-list {

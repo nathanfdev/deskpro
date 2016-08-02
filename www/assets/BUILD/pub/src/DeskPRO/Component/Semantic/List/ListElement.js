@@ -1,0 +1,50 @@
+import React, { PropTypes } from 'react';
+import classNames from 'classnames';
+import List from './List';
+
+class ListElement extends React.Component {
+  static propTypes = {
+    label:       PropTypes.string,
+    description: PropTypes.string,
+    icon:        PropTypes.string,
+    elements:    PropTypes.arrayOf(PropTypes.object)
+  };
+
+  getContent() {
+    const { label, description, elements } = this.props;
+    let content = [];
+    if (description) {
+      content = [
+        <a className="header">{label}</a>,
+        <div className="description">{description}</div>
+      ];
+    } else {
+      content = [label];
+    }
+    if (elements) {
+      const props = {
+        elements
+      };
+      content.push(<List {...props} />);
+    }
+    return content;
+  }
+
+  getIcon() {
+    const { icon } = this.props;
+    if (icon) {
+      return <i className={classNames('icon', icon)} />;
+    }
+    return null;
+  }
+
+  render() {
+    return (<div className="item">
+      {this.getIcon()}
+      <div className="content">
+        {this.getContent()}
+      </div>
+    </div>);
+  }
+}
+export default ListElement;
