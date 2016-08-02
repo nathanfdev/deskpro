@@ -205,6 +205,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
         var div = $('<div><strong>Server error: </strong>' + message + '</div>');
         DeskPRO_Window.showAlert(div);
 				console.error(message);
+			}).bind(this),
+			(function(data) {
+				if (data.fields) {
+					for (var i = 0; i < data.fields.length; i++) {
+						this.$scope.editField(data.fields[i]);
+					}
+				}
 			}).bind(this)
 		);
 	},
