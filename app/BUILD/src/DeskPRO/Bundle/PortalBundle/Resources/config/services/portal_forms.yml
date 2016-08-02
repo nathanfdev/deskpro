@@ -48,7 +48,7 @@ services:
       - { name: validator.constraint_validator, alias: valid_recaptcha2 }
 
   form.api.chat.set_person_listener:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\SetPersonListener
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\SetPersonListener
     arguments: ["@email.email_account_manager", "@doctrine.orm.default_entity_manager"]
 
   #
@@ -57,7 +57,7 @@ services:
 
   form.csrf_double_submit_extension:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension
-    arguments: ["@request_stack", %kernel.environment%]
+    arguments: ["@request_stack", "%kernel.environment%"]
     tags:
       - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType', order: 1000 }
 

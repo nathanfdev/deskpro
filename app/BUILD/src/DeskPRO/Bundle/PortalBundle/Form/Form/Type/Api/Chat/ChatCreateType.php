@@ -34,8 +34,6 @@ use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
-use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\AutoSetShouldSentTranscriptTrait;
-use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\SetPersonListener;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -51,8 +49,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ChatCreateType extends AbstractType
 {
-    use AutoSetShouldSentTranscriptTrait;
-
     /**
      * @var SetPersonListener
      */
@@ -109,11 +105,12 @@ class ChatCreateType extends AbstractType
             ])
         ;
 
+        $builder->addEventSubscriber($this->personListener);
+        $builder->addEventSubscriber(new AutoSetShouldSentTranscriptListener());
+
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonEmailFromSession']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckRequireLogin']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this->personListener, 'onSetPerson']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetEmailValidationCode']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetShouldSentTranscript']);
     }
 
     /**

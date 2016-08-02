@@ -26,16 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
-use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\AutoSetShouldSentTranscriptTrait;
-use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\SetPersonListener;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -48,28 +44,26 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ChatTranscriptInfoType extends AbstractType
 {
-    use AutoSetShouldSentTranscriptTrait;
-
     /**
      * @var SetPersonListener
      */
-    private $set_person_listener;
+    private $personListener;
 
     /**
      * @var WidgetSettingsResolver
      */
-    private $user_chat_settings;
+    private $chatSettings;
 
     /**
      * Constructor.
      *
-     * @param SetPersonListener      $set_person_listener
-     * @param WidgetSettingsResolver $user_chat_settings
+     * @param SetPersonListener      $personListener
+     * @param WidgetSettingsResolver $chatSettings
      */
-    public function __construct(SetPersonListener $set_person_listener, WidgetSettingsResolver $user_chat_settings)
+    public function __construct(SetPersonListener $personListener, WidgetSettingsResolver $chatSettings)
     {
-        $this->set_person_listener = $set_person_listener;
-        $this->user_chat_settings  = $user_chat_settings;
+        $this->personListener = $personListener;
+        $this->chatSettings   = $chatSettings;
     }
 
     /**
@@ -78,11 +72,11 @@ class ChatTranscriptInfoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text', [
+            ->add('name', TextType::class, [
                 'property_path' => 'person_name',
                 'required'      => false,
             ])
-            ->add('email', 'email', [
+            ->add('email', EmailType::class, [
                 'property_path' => 'person_email',
                 'constraints'   => [
                     new Assert\NotBlank(),
@@ -93,8 +87,8 @@ class ChatTranscriptInfoType extends AbstractType
 
         $builder->get('email')->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckEmailValidation']);
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this->set_person_listener, 'onSetPerson']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetShouldSentTranscript']);
+        $builder->addEventSubscriber($this->personListener);
+        $builder->addEventSubscriber(new AutoSetShouldSentTranscriptListener());
     }
 
     /**
@@ -124,9 +118,9 @@ class ChatTranscriptInfoType extends AbstractType
         }
 
         if ($data !== $form->getData()) {
-            if ($this->user_chat_settings->isChatRequireLogin()) {
+            if ($this->chatSettings->isChatRequireLogin()) {
                 $form->addError(new FormError('Unable to change email, chat require email is enabled.'));
-            } elseif ($this->user_chat_settings->isChatEmailValidation()) {
+            } elseif ($this->chatSettings->isChatEmailValidation()) {
                 $form->addError(new FormError('Unable to change email, chat email validation is enabled.'));
             }
         }

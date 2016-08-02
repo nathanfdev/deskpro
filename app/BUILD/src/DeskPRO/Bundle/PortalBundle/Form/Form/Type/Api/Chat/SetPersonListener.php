@@ -26,18 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener;
+namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 /**
  * Class SetPersonListener.
  */
-class SetPersonListener
+class SetPersonListener implements EventSubscriberInterface
 {
     /**
      * @var EmailAccountManager
@@ -59,6 +61,16 @@ class SetPersonListener
     {
         $this->accountManager = $accountManager;
         $this->em             = $em;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            FormEvents::POST_SUBMIT => 'onSetPerson',
+        ];
     }
 
     /**

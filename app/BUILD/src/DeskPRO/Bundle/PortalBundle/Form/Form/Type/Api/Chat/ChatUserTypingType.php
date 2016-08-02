@@ -26,12 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
+use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -46,7 +43,7 @@ class ChatUserTypingType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('partial_message', 'html_textarea', [
+        $builder->add('partial_message', HtmlTextareaType::class, [
             'html_type' => 'striphtml',
         ]);
     }
