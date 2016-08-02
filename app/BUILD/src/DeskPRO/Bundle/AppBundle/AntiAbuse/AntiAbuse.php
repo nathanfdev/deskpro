@@ -29,9 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\RateLimitLog;
+use Application\DeskPRO\EntityRepository\RateLimitLog as RateLimitLogRepository;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\AntiAbuseEvent;
 use Doctrine\ORM\EntityManager;
@@ -124,6 +127,18 @@ class AntiAbuse
         // still no person object? make it a guest.
         if (!$event->getPerson() instanceof Person) {
             $event->setPerson(new PersonGuest());
+        }
+    }
+
+    /**
+     * @param AntiAbuseEvent $event
+     */
+    public function saveRateLimit(AntiAbuseEvent $event)
+    {
+        if (!$event->isCheckOnly()) {
+            /** @var RateLimitLogRepository $rep */
+            $rep = $this->em->getRepository(RateLimitLog::class);
+            $rep->save($event->getType(), $event->getPerson(), $event->getIp(), $event->isLockoutRecommended());
         }
     }
 

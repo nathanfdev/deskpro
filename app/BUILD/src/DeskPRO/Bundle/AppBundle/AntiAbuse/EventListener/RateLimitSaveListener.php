@@ -51,7 +51,6 @@ class RateLimitSaveListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            AntiAbuse::getEventName(AntiAbuse::ACTION_LOGIN)           => 'saveRateLimit',
             AntiAbuse::getEventName(AntiAbuse::ACTION_REGISTER)        => 'saveRateLimit',
             AntiAbuse::getEventName(AntiAbuse::ACTION_RESET_PASSWORD)  => 'saveRateLimit',
             AntiAbuse::getEventName(AntiAbuse::ACTION_SUBMIT_COMMENT)  => 'saveRateLimit',
