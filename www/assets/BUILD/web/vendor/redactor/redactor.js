@@ -1202,10 +1202,19 @@ var RLANG = {
 
 		insertSnippetHtml: function(html)
 		{
-			this.focusEnd();
+			this.snippetFocus();
 			this.pasteHtmlAtCaret(html);
 			this.observeImages();
 			this.syncCode();
+		},
+
+		snippetFocus: function()
+		{
+			var selection = this.document.getSelection();
+			var range = selection ? selection.getRangeAt(0) : null;
+			if(range && range.startOffset === 0) {
+				this.focusEnd();
+			}
 		},
 
 		prepareFocusContent: function()
