@@ -12,6 +12,7 @@
     "angular-sanitize": "1.2.26",
     "angular-i18n": "1.2.26",
     "angular-ui-ace": "0.2.*",
+    "ace-builds": "1.2.3",
     "angular-ui-router": "0.2.11",
     "angular-ui-select2": "0.0.5",
     "angular-slider": "0.1.8",
