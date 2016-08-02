@@ -7,11 +7,45 @@ use DpSys\SoftwareRequirements\Requirement;
 # Init
 ########################################################################################################################
 
+/** @var \DpSys\SoftwareRequirements\DeskproRequirements $checker */
 $checker = require __DIR__.'/../sys/SoftwareRequirements/load_checker.php';
 
 if (in_array('--encode-output', $_SERVER['argv'])) {
     echo str_repeat('-', 25) . 'BEGIN' . str_repeat('-', 25) . PHP_EOL;
     echo base64_encode(serialize($checker));
+    echo PHP_EOL;
+    echo str_repeat('-', 25) . 'END' . str_repeat('-', 25) . PHP_EOL;
+    exit;
+}
+
+if (in_array('--encode-json-array', $_SERVER['argv'])) {
+    $data = array(
+        'failed_requirements'    => array(),
+        'failed_recommendations' => array()
+    );
+
+    /** @var \DpSys\SoftwareRequirements\Requirement  $req */
+    foreach($checker->getFailedRequirements() as $req) {
+        $data['failed_requirements'][] = array(
+            'description' => $req->getTestMessage(),
+            'help' => $req->getHelpText(),
+        );
+    }
+
+    /** @var \DpSys\SoftwareRequirements\Requirement  $req */
+    foreach($checker->getFailedRecommendations() as $req) {
+        $data['failed_recommendations'][] = array(
+            'description' => $req->getTestMessage(),
+            'help' => $req->getHelpText(),
+        );
+    }
+
+    echo str_repeat('-', 25) . 'BEGIN' . str_repeat('-', 25) . PHP_EOL;
+    if (defined('JSON_PRETTY_PRINT')) {
+        echo json_encode($data, \JSON_PRETTY_PRINT);
+    } else {
+        echo json_encode($data);
+    }
     echo PHP_EOL;
     echo str_repeat('-', 25) . 'END' . str_repeat('-', 25) . PHP_EOL;
     exit;

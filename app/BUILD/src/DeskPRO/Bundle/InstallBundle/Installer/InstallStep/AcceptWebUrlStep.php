@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 
 use DeskPRO\Bundle\InstallBundle\InstallSession\InstallSession;
+use DeskPRO\Component\Util\EnvUtils;
 use DpSys\SoftwareRequirements\DeskproRequirements;
 use Orb\Util\Strings;
 use Symfony\Component\Console\Question\Question;
@@ -103,7 +104,10 @@ class AcceptWebUrlStep extends AbstractStep
 
     private function validateUrl($url)
     {
-        if ($this->getSession()->getSource() == InstallSession::SOURCE_WIN_INSTALLER) {
+        if (
+            $this->getSession()->getSource() == InstallSession::SOURCE_WIN_INSTALLER
+            || $this->getSession()->getSource() == InstallSession::SOURCE_AUTO_INSTALLER
+        ) {
             return true;
         }
 
@@ -203,6 +207,29 @@ class AcceptWebUrlStep extends AbstractStep
 
         $this->writeln('  > <info>OK</info>');
 
+        #------------------------------
+        # Verify HTTP verbs
+        #------------------------------
+
+        $this->writeln('Verifying the web server responds to GET, POST, DELETE, PUT verbs...');
+
+        foreach (['GET', 'POST', 'PUT', 'DELETE'] as $method) {
+            $res = $this->loadUrl($url.'/index.php?__serverinfo=check_http_methods&auth='.$this->authcode, $method);
+            if (strpos($res, "HTTP_METHOD_{$method}") === false) {
+                echo $res;
+                $this->writeln('<error>The web server did not respond properly to a '.$method.' request</error>');
+                $this->writeln('This usually means your server is blocking these HTTP verbs. You must edit your server configuration to allow them.');
+                if (EnvUtils::isWindows()) {
+                    $this->writeln('This can be a common problem when using IIS on Windows. Refer to our knowledgebase article for instructions on how to fix it:');
+                    $this->writeln('https://support.deskpro.com/kb/articles/210');
+                }
+                $this->writeln('');
+
+                return false;
+            }
+            $this->writeln("  > <info>$method OK</info>");
+        }
+
         return true;
     }
 
@@ -210,14 +237,18 @@ class AcceptWebUrlStep extends AbstractStep
      * Loads a URL.
      *
      * @param string $url
+     * @param string $method
      *
      * @return string
      */
-    private function loadUrl($url)
+    private function loadUrl($url, $method = 'GET')
     {
         $context = stream_context_create([
-            'http' => ['timeout' => 20],
-            'ssl'  => ['verify_peer' => false, 'verify_peer_name' => false],
+            'http' => [
+                'timeout' => 20,
+                'method'  => $method,
+            ],
+            'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
         ]);
 
         return @file_get_contents($url, false, $context);
@@ -232,7 +263,10 @@ class AcceptWebUrlStep extends AbstractStep
      */
     private function validateRequirements($res)
     {
-        if ($this->getSession()->getSource() == InstallSession::SOURCE_WIN_INSTALLER) {
+        if (
+            $this->getSession()->getSource() == InstallSession::SOURCE_WIN_INSTALLER
+            || $this->getSession()->getSource() == InstallSession::SOURCE_AUTO_INSTALLER
+        ) {
             return true;
         }
 

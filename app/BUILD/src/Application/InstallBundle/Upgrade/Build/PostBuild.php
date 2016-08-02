@@ -138,7 +138,7 @@ class PostBuild extends AbstractBuild
         # Recompile tempaltes
         #------------------------------
 
-        $cmd = dp_get_php_command('bin/console', 'dp:utility:recompile-templates');
+        $cmd = $this->container->get('deskpro.app_env')->getConsolePhpCommand('dp:utility:recompile-templates');
         $this->out("Cmd: $cmd");
         $proc = new Process(
             $cmd,

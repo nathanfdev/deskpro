@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 
-use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Question\Question;
 
 class AdminAccountStep extends AbstractStep
@@ -77,9 +76,6 @@ class AdminAccountStep extends AbstractStep
         $container = $this->getContext()->getMainContainer();
         $em        = $container->get('doctrine')->getManager();
 
-        /** @var Connection $db */
-        $db = $container->get('doctrine')->getConnection();
-
         /** @var \Application\DeskPRO\Entity\Person $admin */
         $admin = $em->createQuery('SELECT p FROM DeskPRO:Person p WHERE p.can_admin = true ORDER BY p.id ASC')->setMaxResults(1)->getOneOrNullResult();
 
@@ -99,25 +95,6 @@ class AdminAccountStep extends AbstractStep
         $admin->removeLabelByString('not_user');
 
         $em->flush();
-
-        $brandId = $container->getSetting('portal.default_brand');
-
-        // And insert the web url
-        $url = $this->getSession()->getWebUrl();
-        if (!$url) {
-            $url = $this->getContext()->getProfile()->getAnswer('web_url');
-        }
-        if (!$url) {
-            $url = 'http://deskpro-dev/';
-        }
-        $db->executeUpdate(
-            'REPLACE INTO settings (name, value) VALUES (?, ?)',
-            ['core.deskpro_url', $url]
-        );
-        $db->executeUpdate(
-            'REPLACE INTO settings_brand (name, brand_id, value) VALUES (?, ?, ?)',
-            ['core.deskpro_url', $brandId, $url]
-        );
 
         $this->getSession()->enableFlag('install_admin_ok');
     }

@@ -26,7 +26,7 @@ $PATHS_CONFIG = [];
 # on the command line and looking for the string     #
 # such as the one below. The cli part is required    #
 #                                                    #
-# PHP 5.3.10 (cli) (built: Mar 27 2012 1239:38)      #
+# PHP 5.6.14 (cli) (built: Oct  4 2015 09:23:10)     #
 ######################################################
 
 $PATHS_CONFIG['php_path'] = '';

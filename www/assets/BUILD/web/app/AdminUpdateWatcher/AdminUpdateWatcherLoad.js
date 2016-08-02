@@ -1,10 +1,8 @@
 define([
   'angular',
-  'angularRoute',
 
-  'AdminUpgrade/App/App',
-  'AdminUpgrade/Main/Ctrl/UpgradeHome',
-  'AdminUpgrade/Main/Ctrl/UpgradeWatch'
+  'AdminUpdateWatcher/App/App',
+  'AdminUpdateWatcher/Ctrl/Main'
 ], function(angular) {
 
   if (!window.console) {
@@ -27,13 +25,13 @@ define([
         $html.addClass('ng-app');
 
         if (window.DP_CTRL_REG) {
-          var module = angular.module('AdminUpgrade_App');
+          var module = angular.module('AdminUpdateWatcher_App');
           for (var x = 0; x < window.DP_CTRL_REG.length; x++) {
             module.controller(window.DP_CTRL_REG[x][0], window.DP_CTRL_REG[x][1]);
           }
         }
 
-        angular.bootstrap($html, ['AdminUpgrade_App']);
+        angular.bootstrap($html, ['AdminUpdateWatcher_App']);
       });
     }
   }

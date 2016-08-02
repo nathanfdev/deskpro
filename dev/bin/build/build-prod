@@ -5,15 +5,21 @@ $DP_DIR = realpath(__DIR__.'/../../../');
 chdir($DP_DIR);
 
 function dp_build_runcmd($cmd) {
+    $out = null;
     $ret = null;
 
     echo "\$ $cmd\n";
-    passthru($cmd, $ret);
+    exec($cmd, $out, $ret);
+
+    $out = implode("\n", $out);
+    echo $out;
 
     if ($ret) {
         echo "Command failed with status {$ret}\n";
         exit(1);
     }
+
+    return $out;
 }
 
 $options = getopt('', [
@@ -72,8 +78,7 @@ echo "Cache warmup: dp\n";
 dp_build_runcmd('bin/console cache:warmup --kernel dp --env prod --verbose --barg is-building');
 
 echo "Cache warmup: portal\n";
-// TODO: we need to fix this
-//dp_build_runcmd('bin/console cache:warmup --kernel portal --env prod --verbose --barg is-building');
+dp_build_runcmd('bin/console cache:warmup --kernel portal --env prod --verbose --barg is-building');
 
 echo "Cache warmup: install\n";
 dp_build_runcmd('bin/console cache:warmup --kernel install --env prod --verbose --barg is-building');
@@ -130,6 +135,15 @@ if ($build_num && $build_num !== '0.0') {
     );
 
     file_put_contents($DP_DIR.'/app/BUILD/sys/config/build-num.txt', $build_num);
+
+    // record the build of the sys run files
+    file_put_contents($DP_DIR.'/app/run/build-num.txt', $build_num);
+}
+
+// get the current git commit
+if (is_dir('./.git')) {
+    $out = trim(dp_build_runcmd('git rev-parse HEAD'));
+    file_put_contents($DP_DIR.'/app/BUILD/sys/config/commit-id.txt',$out);
 }
 
 ########################################################################################################################

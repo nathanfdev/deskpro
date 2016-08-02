@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,21 +40,32 @@ class ConnectionFactory extends BaseConnectionFactory
      */
     public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null, array $mappingTypes = array())
     {
-        // This is used by some build scrpts to allow building without a real db connection
-        /** @var \DpRun\DpEnv $DP_ENV */
+        // This is used by some kernel cache warmer scrpts to allow building without a real db connection
+        // TODO This is a bit of a hack and sholud be corrected so the warmers dont need it
+
+        /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
 
         if ($DP_ENV && $DP_ENV->getRuntimeVar('is_building', false)) {
             $mock = \Mockery::mock(new PDOStub());
             $mock->shouldReceive('setAttribute')->andReturn();
             $mock->shouldReceive('getAttribute')->andReturn();
-            $mock->shouldReceive('query')->andReturnUsing(function () {
+            $mock->shouldReceive('beginTransaction')->andReturn();
+            $mock->shouldReceive('commit')->andReturn();
+            $mock->shouldReceive('rollback')->andReturn();
+            $mock->shouldReceive('rollback')->andReturn();
+
+            $makeStatement = function () {
                 $s = \Mockery::mock('Doctrine\DBAL\Driver\PDOStatement');
                 $s->shouldDeferMissing();
                 $s->shouldReceive('setFetchMode');
+                $s->shouldReceive('bindValue');
 
                 return $s;
-            });
+            };
+            $mock->shouldReceive('query')->andReturnUsing($makeStatement);
+            $mock->shouldReceive('prepare')->andReturnUsing($makeStatement);
+
             $params['pdo']         = $mock;
             $params['driverClass'] = 'Doctrine\\DBAL\\Driver\\PDOMySql\\Driver';
         }

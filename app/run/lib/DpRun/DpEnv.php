@@ -34,6 +34,7 @@ require_once __DIR__ . '/ConfigReader.php';
 require_once __DIR__ . '/DatManagerInterface.php';
 require_once __DIR__ . '/DatManager.php';
 
+require_once __DIR__ . '/BuildScanner.php';
 require_once __DIR__ . '/BuildFinder.php';
 
 /**
@@ -135,6 +136,15 @@ class DpEnv
      */
     private $dp_root;
 
+    /**
+     * @var string
+     */
+    private $root_kernel_cache_dir;
+
+    /**
+     * @var string
+     */
+    private $root_app_dir;
 
     /**
      * @var string
@@ -232,6 +242,7 @@ class DpEnv
 
         $this->dp_root = realpath($dp_root);
         $baseapp_dir = $this->dp_root.DIRECTORY_SEPARATOR.'app';
+        $this->root_app_dir = $baseapp_dir;
 
         #------------------------------
         # Prepare config reader
@@ -286,6 +297,7 @@ class DpEnv
         }
 
         $kernel_cache_dir          = $this->resolveCustomPath('kernel_cache', $sys_var_dir.DIRECTORY_SEPARATOR.'kernel_cache');
+        $this->root_kernel_cache_dir = $kernel_cache_dir;
 
         $this->user_files_dir      = $this->resolveCustomPath('attachments', $user_dir.DIRECTORY_SEPARATOR.'attachments');
         $this->user_backups_dir    = $this->resolveCustomPath('backups', $user_dir.DIRECTORY_SEPARATOR.'backups');
@@ -299,6 +311,8 @@ class DpEnv
         #------------------------------
 
         if ($buildId = $this->config_reader->getConfig('paths.active_build_dir_name')) {
+            $this->active_build = $buildId;
+        } else if ($buildId = $this->config_reader->getConfig('env.use_build_name')) {
             $this->active_build = $buildId;
         } else {
             $build_finder = new \DpRun\BuildFinder(
@@ -433,6 +447,30 @@ class DpEnv
     public function getAppDir()
     {
         return $this->app_dir;
+    }
+
+    /**
+     * Gets the path to the root app builds dir.
+     *
+     * Example: /path/to/deskpro/app
+     *
+     * @return string
+     */
+    public function getBuildDirRoot()
+    {
+        return $this->root_app_dir;
+    }
+
+    /**
+     * Gets the base path to the kernel cache dir.
+     *
+     * Example: /path/to/deskpro/var/kernel_cache
+     *
+     * @return string
+     */
+    public function getKernelCacheDirRoot()
+    {
+        return $this->root_kernel_cache_dir;
     }
 
     /**

@@ -79,7 +79,7 @@ class LowUtil
         ];
 
         if (substr($config['host'], 0, 12) === 'unix_socket:') {
-            $info['unix_socket']  = substr($config['host'], 13);
+            $info['unix_socket']  = substr($config['host'], 12);
             $info['dsn']          = "mysql:unix_socket={$info['unix_socket']}";
             $info['doctrine']['unix_socket'] = $info['unix_socket'];
         } elseif (preg_match('#^(.*?):([0-9]+)$#', $config['host'], $m)) {

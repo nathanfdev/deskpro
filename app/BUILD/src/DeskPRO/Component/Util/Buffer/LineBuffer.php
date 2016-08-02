@@ -53,6 +53,9 @@ class LineBuffer
 
     public function append($str)
     {
+        // Normalise lf
+        $str = str_replace("\r\n", "\n", $str);
+
         $this->buf .= $str;
         do {
             $pos = strpos($this->buf, "\n");
@@ -69,7 +72,7 @@ class LineBuffer
      */
     public function flush()
     {
-        if ($this->buf) {
+        if ($this->buf !== '') {
             call_user_func($this->fn, $this->buf);
             $this->buf = '';
         }

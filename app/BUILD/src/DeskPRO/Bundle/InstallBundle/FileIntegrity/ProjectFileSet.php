@@ -202,11 +202,14 @@ class ProjectFileSet
             'mock',
             'Mock',
             'test-suite',
+            'classes.map',
         ];
 
         static $ignorePaths = [
+            '%DP_APP_DIR%/vendor/autoload.php',
             '%DP_APP_DIR%/vendor/behat/',
             '%DP_APP_DIR%/vendor/behatch/',
+            '%DP_APP_DIR%/vendor/composer/',
             '%DP_APP_DIR%/vendor/phpmd/',
             '%DP_APP_DIR%/vendor/satooshi/php-coveralls/',
             '%DP_APP_DIR%/vendor/zircote/swagger-php/',
@@ -221,6 +224,7 @@ class ProjectFileSet
             '%DP_APP_DIR%/vendor/nelmio/api-doc-bundle/',
             '%DP_APP_DIR%/vendor/fabpot/php-cs-fixer/',
             '%DP_APP_DIR%/vendor/mockery/',
+            '%DP_APP_DIR%/vendor/zendframework/zend-ldap/src/Node.php', // because we patch it ourselves
             '%DP_APP_KERNEL_CACHE%/dev/',
             '%DP_APP_KERNEL_CACHE%/test/',
         ];

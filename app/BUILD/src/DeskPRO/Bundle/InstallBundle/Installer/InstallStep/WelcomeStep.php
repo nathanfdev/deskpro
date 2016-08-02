@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,12 +28,27 @@
 
 namespace DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 
+use DeskPRO\Bundle\InstallBundle\Installer\InstallerContext;
 use DeskPRO\Bundle\InstallBundle\InstallSession\Model\User;
 use Orb\Validator\StringEmail;
 use Symfony\Component\Console\Question\Question;
 
 class WelcomeStep extends AbstractStep
 {
+    /**
+     * @var bool
+     */
+    private $skipAdmin;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(InstallerContext $context, $skipAdmin = false)
+    {
+        parent::__construct($context);
+        $this->skipAdmin = $skipAdmin;
+    }
+
     public function run()
     {
         $this->writeBigTitle('DeskPRO Installer');
@@ -42,14 +57,16 @@ class WelcomeStep extends AbstractStep
         $this->writeln('Welcome to the DeskPRO installer. This tool will interactively guide you through the install procedure.');
         $this->writeln('');
 
-        $this->writeln('Before we continue, please enter your name and email address. This will be used for your initial admin account that we will set up in a minute.');
-        $this->writeln('');
+        if (!$this->skipAdmin) {
+            $this->writeln('Before we continue, please enter your name and email address. This will be used for your initial admin account that we will set up in a minute.');
+            $this->writeln('');
 
-        $user        = new User();
-        $user->name  = $this->getUserName();
-        $user->email = $this->getUserEmail();
+            $user        = new User();
+            $user->name  = $this->getUserName();
+            $user->email = $this->getUserEmail();
 
-        $this->getSession()->setUser($user);
+            $this->getSession()->setUser($user);
+        }
     }
 
     public function isComplete()

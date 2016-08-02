@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,8 +32,6 @@
 
 namespace Application\AdminInterfaceBundle\Controller;
 
-use Application\DeskPRO\Entity\ApiToken;
-
 class UpgradeController extends AbstractController
 {
     public function preActionHandler($action, $arguments = null)
@@ -55,19 +53,15 @@ class UpgradeController extends AbstractController
             return $this->redirectRoute('admin');
         }
 
-        $token               = new ApiToken();
-        $token->scope        = ApiToken::SCOPE_SESSION;
-        $token->person       = $this->person;
-        $token->date_expires = new \DateTime('+1 hour');
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
 
-        $this->em->persist($token);
-        $this->em->flush();
+        if ($DP_ENV->getDatManager()->hasTxtFile('server_info_auth')) {
+            $auth = $DP_ENV->getDatManager()->readTxtFile('server_info_auth');
+        } else {
+            $auth = 'VIEWER';
+        }
 
-        return $this->render('AdminInterfaceBundle:Upgrade:layout.html.twig', array(
-            'api_token'             => $token,
-            'session'               => $this->session->getEntity(),
-            'is_wincache'           => extension_loaded('wincache'),
-            'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
-        ));
+        return $this->redirectRoute('admin_upgrade_view', ['auth' => $auth]);
     }
 }

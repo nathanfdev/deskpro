@@ -15,7 +15,6 @@
     config.paths["AdminLoad"] = "app-build/Admin/AdminLoad.min";
     config.paths["AgentLoad"] = "app-build/Agent/AgentLoad.min";
     config.paths["CloudAdminLoad"] = "app-build/Admin/Cloud/CloudAdminLoad.min";
-    config.paths["AdminUpgradeLoad"] = "app-build/AdminUpgrade/AdminUpgradeLoad.min";
     config.paths["AdminStartLoad"] = "app-build/AdminStart/AdminStartLoad.min";
     config.paths["ReportsLoad"] = "app-build/Reports/ReportsLoad.min";
   }

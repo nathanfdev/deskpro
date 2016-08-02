@@ -28,6 +28,9 @@
 
 namespace DpSys\Boot\BootTask;
 
+use DeskPRO\Bundle\UpdateBundle\Session\UpdateSessionManager;
+use DpRun\LowUtil;
+use Orb\Util\Dates;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -43,16 +46,23 @@ class HttpServerInfoBootTask implements BootTaskInterface
      */
     private $env;
 
+    /**
+     * @var array
+     */
+    private $params;
+
     public function run(\DpRun\DpEnv $env, array $resources)
     {
-        $this->env = $env;
+        $this->env    = $env;
+        $this->params = $resources['serverinfo_params'];
 
         $action = $resources['serverinfo_action'];
+        $auth   = @$_GET['auth'] ?: @$resources['serverinfo_params']['auth'];
 
         // Will exit if any match
         $this->authlessServerChecks($action);
 
-        if (!$this->checkAuth(@$_GET['auth'])) {
+        if (!$this->checkAuth($auth, $action)) {
             echo "The auth code in the URL you are trying to view is invalid. Please run the dp:web-server-info command to generate new links.\n";
             exit;
         }
@@ -164,6 +174,19 @@ class HttpServerInfoBootTask implements BootTaskInterface
                 }
                 exit;
 
+            case 'logs/updater':
+                header('Content-Type: text/plain');
+
+                $path = $logsPath.'/updater.log';
+                echo "Path: $path\n\n";
+
+                if (file_exists($path)) {
+                    echo file_get_contents($path);
+                } else {
+                    echo '(does not exist)';
+                }
+                exit;
+
             case 'logs/php-errors':
                 header('Content-Type: text/plain');
 
@@ -190,18 +213,136 @@ class HttpServerInfoBootTask implements BootTaskInterface
                 }
 
                 exit;
+
+            case 'update_watcher':
+                /** @var \Symfony\Component\HttpFoundation\Request $request */
+                $request = $this->params['request'];
+
+                if (isset($_GET['status'])) {
+                    return $this->authRequiredServerChecks('update_watcher_status');
+                }
+
+                $DP_AUTH    = $this->getAuth();
+                $BASE_URL   = rtrim($request->getUriForPath('/'), '/');
+                $BASE_PATH  = rtrim($request->getBasePath(), '/');
+                $ASSET_URL  = $request->getUriForPath('/assets/'.$this->env->getAppName().'/web');
+                $ASSET_PATH = rtrim($request->getBasePath(), '/').'/assets/'.$this->env->getAppName().'/web';
+
+                require __DIR__.'/../../Resources/upgrade-watcher/upgrade-watcher.php';
+
+                exit;
+
+            case 'update_watcher_status':
+                $sessionId = $this->env->getDatManager()->readTxtFile('last_updater_session_id', null);
+
+                header('Content-Type: application/json');
+
+                $pdo         = LowUtil::getPdoFromMysqlInfo($this->env->getConfig('database'));
+                $q           = $pdo->query("SELECT value FROM settings WHERE name = 'auto_updater_next_check'");
+                $nextDateStr = $q->fetchColumn();
+                $nextDate    = $nextDateStr ? \DateTime::createFromFormat('Y-m-d H:i:s', $nextDateStr) : null;
+
+                // If there is no session yet, then we check if we're waiting for it
+                if (!$sessionId) {
+                    if (!$nextDateStr) {
+                        echo json_encode(['status' => 'none']);
+                        exit;
+                    }
+
+                    echo json_encode([
+                        'status'           => 'waiting',
+                        'date'             => $nextDate->format('Y-m-d H:i:s'),
+                        'date_description' => ($nextDate < (new \DateTime())) ? 'in a few seconds' : Dates::secsToReadable($nextDate->getTimestamp() - time()),
+                    ]);
+                    exit;
+                }
+
+                try {
+                    $sm      = new UpdateSessionManager($sessionId, $this->env->getUserTmpDir());
+                    $session = $sm->getSession();
+                } catch (\Exception $e) {
+                    echo json_encode(['status' => 'none']);
+                    exit;
+                }
+
+                $data = [
+                    'status'         => '',
+                    'finishedStatus' => null,
+                    'summary'        => $session->getSummary() ?: '',
+                    'details'        => $session->getDetails() ?: '',
+                    'steps'          => [],
+                    'currentStepId'  => $session->findCurrentStepId(),
+                    'next'           => [
+                        'date'             => $nextDate->format('Y-m-d H:i:s'),
+                        'date_description' => $nextDate ? (($nextDate < (new \DateTime())) ? 'in a few seconds' : Dates::secsToReadable($nextDate->getTimestamp() - time())) : null,
+                    ],
+                ];
+
+                foreach ($session->getStepIds() as $stepId) {
+                    $step = $session->getStep($stepId);
+
+                    if ($step->isRunning()) {
+                        $stepStatus = 'running';
+                    } elseif ($step->isError()) {
+                        $stepStatus = 'error';
+                    } elseif ($step->isFinished()) {
+                        $stepStatus = 'finished';
+                    } else {
+                        $stepStatus = 'waiting';
+                    }
+
+                    $data['steps'][] = [
+                        'status'  => $stepStatus,
+                        'stepId'  => $stepId,
+                        'title'   => $step->getTitle(),
+                        'summary' => $step->getSummary(),
+                        'details' => $step->getDetails(),
+                    ];
+                }
+
+                if ($session->isSuccess()) {
+                    $data['finishedStatus'] = 'success';
+                } elseif ($session->isError()) {
+                    $data['finishedStatus'] = 'error';
+                } elseif ($session->isWaiting()) {
+                    $data['finishedStatus'] = 'warning';
+                }
+
+                if ($session->isWaiting()) {
+                    $nextDate                 = new \DateTime();
+                    $data['status']           = 'waiting';
+                    $data['date']             = $nextDate->format('Y-m-d H:i:s');
+                    $data['date_description'] = 'in a few seconds';
+                    exit;
+                } elseif ($session->isRunning()) {
+                    $data['status'] = 'running';
+                } elseif ($session->isFinished()) {
+                    $data['status'] = 'finished';
+                }
+
+                echo json_encode($data);
+
+                exit;
         }
     }
 
-    private function checkAuth($auth)
+    /**
+     * @return string|null
+     */
+    private function getAuth()
+    {
+        return $this->env->getDatManager()->readTxtFile('server_info_auth', null);
+    }
+
+    private function checkAuth($auth, $action)
     {
         // If installed, we require auth
         if (($this->env->getConfig('database.host') || $this->env->getConfig('database.0.host'))) {
-            $server_info_auth = $this->env->getDatManager()->readTxtFile('server_info_auth', null);
+            $server_info_auth = $this->getAuth();
             if (!$server_info_auth || empty($auth)) {
                 return false;
             }
-            if ($auth !== $server_info_auth) {
+            if ($auth !== $server_info_auth && $auth !== sha1($server_info_auth.$action)) {
                 return false;
             }
         }

@@ -227,12 +227,9 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
      */
     private function getCorrectionMode(FilterControllerEvent $event)
     {
-        $request = $event->getRequest();
         if ($this->interfaceInfo->isInterfaceId([InterfaceInfo::ID_AGENT, InterfaceInfo::ID_ADMIN])) {
-            if (strpos($request->getPathInfo(), '/login') !== false) {
-                // admin and agent logins are handled in the controller so we can show info
-                return self::MODE_ATTR;
-            }
+            // admin and agent logins are handled in the controller so we can show info
+            return self::MODE_ATTR;
         }
 
         $portalMode = $this->portalModeStorage->getMode();

@@ -1,0 +1,189 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+    <div class="form-horizontal dp-form" ng-if="Ctrl.info.next_check_desc">
+        <section class="dp-paneblock dp-listpane">
+            <header style="margin-bottom: 15px;">
+                <h3>Next Update</h3>
+            </header>
+
+            {##################################################################################################}
+
+            <article class="form-horizontal dp-form">
+                <div class="panel panel-innertable">
+                    <div class="form-group">
+                        <p>
+                            The system is scheduled for an automatic update in {{ ng_var('Ctrl.info.next_check_desc') }}
+                            <span style="color: #aaa">(<span dp-date="Ctrl.info.next_check">{{ ng_var('Ctrl.info.next_check') }}</span>)</span>
+                        </p>
+                    </div>
+                    <div class="form-group" style="margin-top: 5px; padding-to: 15px;">
+                        <p>
+                            You can watch the update as it progresses, you can open the update status viewer:
+                            <br/>
+                            <a ng-href="{{ ng_var('Ctrl.info.watcher_url') }}" target="_blank" class="btn btn-primary">Open Update Status</a>
+                        </p>
+                    </div>
+                </div>
+            </article>
+        </section>
+    </div>
+
+    <form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && Ctrl.save()">
+        <section class="dp-paneblock dp-listpane">
+            <header style="margin-bottom: 15px;">
+                <h3>Automatic Updater</h3>
+                <div class="panel-heading">
+                    <p>
+                        Enable the automatic upgrader to keep your helpdesk up-to-date all the time. When DeskPRO releases a new update,
+                        you will get it right away without any manual intervention.
+                    </p>
+                    <p>
+                        <input dp-slider-switch ng-model="Ctrl.settings.is_enabled" />
+                        Enable the automatic updater
+                    </p>
+                </div>
+            </header>
+
+            {##################################################################################################}
+
+
+
+            <article class="form-horizontal dp-form" ng-show="Ctrl.settings.is_enabled">
+                <div class="panel panel-innertable">
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <div class="inner-group">
+                                <label>
+                                    <h4>Frequency</h4>
+                                </label>
+                                <br/>
+                                Check for updates every <input type="text" class="form-control" ng-model="Ctrl.settings.interval_days" style="width: 50px" /> day(s)
+                                at <select ng-model="Ctrl.settings.time_of_day">
+                                    {% for i in 0..23 %}
+                                        <option value="{{ "%02d"|format(i) }}:00">{{ "%02d"|format(i) }}:00</option>
+                                        <option value="{{ "%02d"|format(i) }}:30">{{ "%02d"|format(i) }}:30</option>
+                                    {% endfor %}
+                                </select>
+                                <select ng-model="Ctrl.settings.timezone">
+                                    {% for tz, tzName in get_data('timezones') %}
+                                        <option value="{{ tz }}">{{ tzName }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="inner-group">
+                                <label>
+                                    <h4>Updater Log</h4>
+                                </label>
+                                <br/>
+                                The updater keeps a detailed record of the operations perforemd. Here is the URL to the log file:<br/>
+                                <input type="text" class="form-control" ng-model="Ctrl.info.log_url" style="width: 50%" disabled />
+                                <a ng-href="{{ ng_var('Ctrl.info.log_url') }}" target="_blank">View</a>
+                            </div>
+                            <div class="inner-group">
+                                <label>
+                                    <h4>Backup Path</h4>
+                                </label>
+                                <br/>
+                                A database backup is always made before performing an automatic update. Backups are saved to this directory:<br/>
+                                <input type="text" class="form-control" ng-model="Ctrl.info.backup_path" style="width: 50%" disabled />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            {##################################################################################################}
+
+            <footer>
+                <div class="dp-content">
+                    <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+                        <div dp-hide-spinning="saving">
+                            <button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+                        </div>
+                        <div dp-show-spinning="saving">
+                            <i class="spinner-flat"></i>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </form>
+    <div dp-register-message="saved_settings">Settings saved successfully.</div>
+
+    <div class="form-horizontal dp-form">
+        <section class="dp-paneblock dp-listpane">
+            <header style="margin-bottom: 15px;">
+                <h3>Manually Schedule Update</h3>
+            </header>
+
+            {##################################################################################################}
+
+            <article class="form-horizontal dp-form">
+                <div class="panel panel-innertable">
+                    <div class="form-group">
+                        <p>
+                            You can manually start the updater by clicking the button below. An update will
+                            be scheduled to run immediately.
+                        </p>
+                        <p>
+                            <label><input type="checkbox" ng-model="allowManualBtn" /> I want to manually start the updater to run in </label>
+                            <select ng-model="Ctrl.manualForm.delay">
+                                <option value="60">1 minute</option>
+                                <option value="300">5 minutes</option>
+                                <option value="900">15 minutes</option>
+                                <option value="1800">30 minutes</option>
+                                <option value="2700">45 mUinutes</option>
+                                <option value="3600">1 hour</option>
+                                <option value="7200">2 hours</option>
+                                <option value="10800">3 hours</option>
+                                <option value="14400">4 hours</option>
+                                <option value="18000">5 hours</option>
+                                <option value="21600">6 hours</option>
+                                <option value="2520060">7 hours</option>
+                                <option value="28800">8 hours</option>
+                            </select>
+                            <br/>
+                            <div dp-hide-spinning="saving_manual">
+                                <button ng-disabled="!allowManualBtn" class="btn btn-default" ng-click="Ctrl.doManualSchedule()">Schedule the updater &rarr;</button>
+                            </div>
+                            <div dp-show-spinning="saving_manual">
+                                <i class="spinner-flat"></i>
+                            </div>
+                        </p>
+                    </div>
+                </div>
+                <div ng-show="Ctrl.didManualSet && Ctrl.info.next_check_desc" style="padding: 5px; background: #eee; margin-top: 4px; ">
+                    Next check in {{ ng_var('Ctrl.info.next_check_desc') }}
+                    <span style="color: #aaa">(<span dp-date="Ctrl.info.next_check">{{ ng_var('Ctrl.info.next_check') }}</span>)</span>
+                </div>
+            </article>
+        </section>
+    </div>
+
+    <div class="form-horizontal dp-form">
+        <section class="dp-paneblock dp-listpane">
+            <header style="margin-bottom: 15px;">
+                <h3>Update from the command line</h3>
+            </header>
+
+            {##################################################################################################}
+
+            <article class="form-horizontal dp-form">
+                <div class="panel panel-innertable">
+                    <div class="form-group">
+                        <p>
+                            You can always run the updater yourself from the command-line by issuing the following command:
+                        </p>
+                        <div>
+                            <input type="text" class="form-control" ng-model="Ctrl.info.cli_command" style="width: 75%; font-family: Monaco, Consolas, monospace" />
+                        </div>
+                        <p style="maring-top:5px;">
+                            Running this will start the updater. It will check for updates and prompt you to install them if any
+                            are available
+                        </p>
+                    </div>
+                </div>
+            </article>
+        </section>
+    </div>
+{% endblock %}

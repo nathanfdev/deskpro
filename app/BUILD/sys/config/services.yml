@@ -1,5 +1,9 @@
 services:
 
+  deskpro.low_dp_env:
+    class: DpRun\DpEnv
+    factory: [DeskPRO\Bundle\AppBundle\AppEnv\LowDpEnvGetter, getDpEnv]
+
   deskpro.app_env:
     class: DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface
     factory: [DeskPRO\Bundle\AppBundle\AppEnv\AppEnvFactory, create]
@@ -28,6 +32,14 @@ services:
     public: false
     tags:
       - { name: kernel.cache_warmer, priority: 100 }
+
+  deskpro.zippy:
+    class: "Alchemy\\Zippy\\Zippy"
+    factory: ["DeskPRO\\Bundle\\AppBundle\\Zippy\\ZippyFactory", "getZippy"]
+    arguments: ["@service_container"]
+
+  deskpro.logging.line_formatter:
+    class: DeskPRO\Bundle\AppBundle\Logging\Formatter\CleanLineFormatter
 
   ######################################################################################################################
   # Apps

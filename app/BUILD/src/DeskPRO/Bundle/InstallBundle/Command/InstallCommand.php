@@ -35,6 +35,7 @@ use DeskPRO\Bundle\InstallBundle\InstallSession\InstallSession;
 use DeskPRO\Bundle\InstallBundle\InstallSession\SessionManager;
 use DeskPRO\Component\Exception\Filesystem\FileWriteException;
 use DeskPRO\Component\Util\EnvUtils;
+use DeskPRO\Component\Util\RandUtils;
 use DeskPRO\Component\Util\TypeUtils;
 use DpRun\DpEnv;
 use Orb\Util\Strings;
@@ -186,6 +187,20 @@ class InstallCommand extends ContainerAwareCommand
             $sm->saveInstallSession($session);
         });
 
+        if ($profile->hasAnswer('session_uuid')) {
+            $session->setSessionUuid($profile->getAnswer('session_uuid'));
+        }
+
+        if (!$session->getSessionUuid() && $DP_ENV->getDatManager()->hasTxtFile('install_session_uuid')) {
+            $session->setSessionUuid($DP_ENV->getDatManager()->readTxtFile('install_session_uuid'));
+        }
+
+        if (!$session->getSessionUuid()) {
+            $session->setSessionUuid(RandUtils::randomStringFormat('%30An'));
+        }
+
+        $DP_ENV->getDatManager()->writeTxtFile('install_session_uuid', $session->getSessionUuid());
+
         #------------------------------
         # Create the steps
         #------------------------------
@@ -199,8 +214,36 @@ class InstallCommand extends ContainerAwareCommand
             $this->getHelperSet()
         );
 
+        if (
+            $session->getSource() === InstallSession::SOURCE_AUTO_INSTALLER
+            || $input->getOption('skip-wizard')
+        ) {
+            $skip_list[] = 'admin_account';
+        }
+
+        if (
+            $session->getSource() === InstallSession::SOURCE_WIN_INSTALLER
+            || $session->getSource() === InstallSession::SOURCE_AUTO_INSTALLER
+            || $input->getOption('skip-wizard')
+        ) {
+            $skip_list[] = 'file_integrity';
+            $skip_list[] = 'own_requirements';
+            $skip_list[] = 'install_cron_command';
+            $skip_list[] = 'check_existing';
+        }
+
+        if ($input->getOption('skip-wizard')) {
+            $skip_list[] = 'own_requirements';
+            $skip_list[] = 'check_existing';
+            $skip_list[] = 'accept_paths';
+            $skip_list[] = 'accept_web_url';
+            $skip_list[] = 'accept_database';
+            $skip_list[] = 'install_config';
+            $skip_list[] = 'install_cron_command';
+        }
+
         $steps = [
-            new InstallStep\WelcomeStep($context),
+            new InstallStep\WelcomeStep($context, in_array('admin_account', $skip_list)),
             new InstallStep\FileIntegrityStep($context),
             new InstallStep\OwnRequirementsStep($context),
             new InstallStep\CheckExistingStep($context),
@@ -215,23 +258,8 @@ class InstallCommand extends ContainerAwareCommand
             new InstallStep\DoneStep($context),
         ];
 
-        if ($session->getSource() === InstallSession::SOURCE_WIN_INSTALLER || $input->getOption('skip-wizard')) {
-            $skip_list[] = 'file_integrity';
-            $skip_list[] = 'own_requirements';
-            $skip_list[] = 'install_cron_command';
-            $skip_list[] = 'check_existing';
-        }
-
         if ($input->getOption('skip-wizard')) {
             array_unshift($steps, new InstallStep\SkipWizardStep($context));
-
-            $skip_list[] = 'own_requirements';
-            $skip_list[] = 'check_existing';
-            $skip_list[] = 'accept_paths';
-            $skip_list[] = 'accept_web_url';
-            $skip_list[] = 'accept_database';
-            $skip_list[] = 'install_config';
-            $skip_list[] = 'install_cron_command';
         }
 
         /** @var InstallStep\AbstractStep $step */

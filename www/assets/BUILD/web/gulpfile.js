@@ -377,8 +377,8 @@ gulp.task('loader', ['clean'], function () {
 var rjsLoadFiles = [
   './app/Admin/AdminLoad.js',
   './app/Admin/Cloud/CloudAdminLoad.js',
-  './app/AdminUpgrade/AdminUpgradeLoad.js',
   './app/AdminStart/AdminStartLoad.js',
+  './app/AdminUpdateWatcher/AdminUpdateWatcherLoad.js',
   './app/Reports/ReportsLoad.js',
   './app/Agent/AgentLoad.js'
 ];
@@ -395,8 +395,8 @@ function addRjsTask(rjsBundle) {
     case 'CloudAdminLoad':
       target = 'Admin/Cloud/CloudAdminLoad.min.js';
       break;
-    case 'AdminUpgradeLoad':
-      target = 'AdminUpgrade/AdminUpgradeLoad.min.js';
+    case 'AdminUpdateWatcherLoad':
+      target = 'AdminUpdateWatcher/AdminUpdateWatcherLoad.min.js';
       break;
     case 'AdminStartLoad':
       target = 'AdminStart/AdminStartLoad.min.js';

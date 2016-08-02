@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
@@ -115,7 +116,7 @@ class AvailableTrigger
             file_put_contents($trigger_File, time());
             @chmod($trigger_File, 0777);
         } elseif (is_file($trigger_File)) {
-            unlink($trigger_File);
+            @unlink($trigger_File);
         }
     }
 }

@@ -64,6 +64,11 @@ $collection->create('proxy', [
     'controller' => 'DeskPRO:Widget:proxy',
 ]);
 
+$collection->create('serve_root', [
+    'path'       => '/',
+    'controller' => '(not a real route)',
+]);
+
 $collection->create('serve_file_root', [
     'path'       => '/file.php',
     'controller' => '(see: serve_file.php)',

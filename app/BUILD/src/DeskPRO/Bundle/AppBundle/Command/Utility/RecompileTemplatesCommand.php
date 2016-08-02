@@ -109,6 +109,7 @@ class RecompileTemplatesCommand extends ContainerAwareCommand
 
         foreach ($templates as $tpl) {
             $output->write(sprintf('  Compiling %d: %s ... ', $tpl['id'], $tpl['name']));
+            $this->backupTpl($tpl);
 
             try {
                 $proc     = new EmailPreProcessor();
@@ -121,7 +122,6 @@ class RecompileTemplatesCommand extends ContainerAwareCommand
             } catch (\Exception $e) {
                 $output->writeln('ERROR: '.$e->getMessage());
                 try {
-                    $this->backupTpl($tpl);
                     $db->delete('templates', ['id' => $tpl['id']]);
                 } catch (\Exception $e) {
                     $output->writeln('Failed to backup template!');
@@ -140,7 +140,7 @@ class RecompileTemplatesCommand extends ContainerAwareCommand
     private function recompilePortalTemplates(InputInterface $input, OutputInterface $output)
     {
         $db   = $this->getContainer()->get('database_connection');
-        $twig = $this->getContainer()->get('templating.email.twig');
+        $twig = $this->getContainer()->get('twig');
 
         $templates = $db->fetchAll("
             SELECT *
@@ -153,6 +153,7 @@ class RecompileTemplatesCommand extends ContainerAwareCommand
 
         foreach ($templates as $tpl) {
             $output->write(sprintf('  Compiling %d: %s ... ', $tpl['id'], $tpl['name']));
+            $this->backupTpl($tpl);
 
             try {
                 $code     = $tpl['template_code'];
@@ -203,7 +204,7 @@ class RecompileTemplatesCommand extends ContainerAwareCommand
                 throw new \InvalidArgumentException();
         }
 
-        $cmd  = dp_get_php_command('bin/console', sprintf('--kernel %s dp:utility:recompile-templates %s', $kernel, $type));
+        $cmd  = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand(sprintf('--kernel %s dp:utility:recompile-templates %s', $kernel, $type));
         $proc = new Process(
             $cmd,
             $this->getContainer()->get('deskpro.app_env')->getAppDir()

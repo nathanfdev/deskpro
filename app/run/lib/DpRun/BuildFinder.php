@@ -33,73 +33,29 @@ class BuildFinder
     /**
      * @var string
      */
-    private $baseapp_dir;
-
-    /**
-     * Array of build_id=>dirname
-     * @var array
-     */
-    private $available_builds;
+    private $baseAppDir;
 
     /**
      * @var \DpRun\ConfigReader
      */
-    private $config_reader;
+    private $configReader;
+
+    /**
+     * @var BuildScanner
+     */
+    private $buildScanner;
 
     /**
      * ActiveBuildFinder constructor.
      *
-     * @param ConfigReader $config_reader
-     * @param string       $baseapp_dir
+     * @param ConfigReader $configReader
+     * @param string       $baseAppDir
      */
-    public function __construct(ConfigReader $config_reader, $baseapp_dir)
+    public function __construct(ConfigReader $configReader, $baseAppDir)
     {
-        $this->config_reader = $config_reader;
-        $this->baseapp_dir   = $baseapp_dir;
-    }
-
-    /**
-     * @return array Array of build_id=>dirname
-     */
-    private function findAvailableBuilds()
-    {
-        if ($this->available_builds !== null) {
-            return $this->available_builds;
-        }
-
-        $iter   = new \FilesystemIterator($this->baseapp_dir);
-        $builds = [];
-
-        /** @var \SplFileInfo $f */
-        foreach ($iter as $f) {
-            if ($f->isDir() && $f->getBasename() !== 'run') {
-                $config_dir = $f->getRealPath().'/sys/config';
-                $time_file  = $f->getRealPath().'/sys/config/build-time.txt';
-                if (is_dir($config_dir)) {
-                    if (file_exists($time_file)) {
-                        $time = intval(trim(file_get_contents($time_file)));
-                    } else {
-                        // This case wouldn't happen in prod because a build-time file
-                        // will always exist. So this is a test case generally, or an error case
-                        $time = count($builds);
-                    }
-                    $builds[$time] = $f->getBasename();
-                }
-            }
-        }
-
-        // Fallback on dev build if it exists
-        if (!$builds && is_dir($this->baseapp_dir.'/BUILD')) {
-            $builds[time()] = 'BUILD';
-        }
-
-        if (!$builds) {
-            throw new \RuntimeException('There are no builds available in: ' . $this->baseapp_dir);
-        }
-
-        ksort($builds, SORT_NUMERIC);
-
-        return $this->available_builds = $builds;
+        $this->configReader = $configReader;
+        $this->baseAppDir   = $baseAppDir;
+        $this->buildScanner = new BuildScanner($this->baseAppDir);
     }
 
     /**
@@ -107,9 +63,7 @@ class BuildFinder
      */
     public function getLatestBuildDir()
     {
-        $builds = $this->findAvailableBuilds();
-        end($builds);
-        return current($builds);
+        return $this->buildScanner->getLatestBuildDir();
     }
 
     /**
@@ -124,28 +78,28 @@ class BuildFinder
      *
      * Note: During development and testing, the build is always BUILD.
      *
-     * @param string $active_build_file Path to the file that contains the current build name
-     * @param bool   $force_update
+     * @param string $activeBuildFile Path to the file that contains the current build name
+     * @param bool   $forceUpdate
      * @return int|string
      */
-    public function getActiveBuildDir($active_build_file, $force_update = false)
+    public function getActiveBuildDir($activeBuildFile, $forceUpdate = false)
     {
         if (
-            $this->config_reader->getConfig('env.environment') === 'dev'
-            || $this->config_reader->getConfig('env.environment') === 'test'
+            $this->configReader->getConfig('env.environment') === 'dev'
+            || $this->configReader->getConfig('env.environment') === 'test'
         ) {
             return 'BUILD';
         }
 
-        if (file_exists($active_build_file)) {
-            $exist_build_dir = trim(file_get_contents($active_build_file));
+        if (file_exists($activeBuildFile)) {
+            $existBuildDir = trim(file_get_contents($activeBuildFile));
 
             // The active build dir no longer exists, so we need to re-scan
-            if (!is_dir($this->baseapp_dir.DIRECTORY_SEPARATOR.$exist_build_dir)) {
-                $exist_build_dir = 0;
+            if (!is_dir($this->baseAppDir.DIRECTORY_SEPARATOR.$existBuildDir)) {
+                $existBuildDir = 0;
             }
         } else {
-            $exist_build_dir = 0;
+            $existBuildDir = 0;
         }
 
         // - When an updating is being installed, we write a trigger file
@@ -156,40 +110,40 @@ class BuildFinder
         // to using the cache file like normal
         // - This helps with multi-server setups where it's a two-step
         // process: install new build files, then run upgrade script
-        $is_updating = $force_update || file_exists($active_build_file.'.updating');
+        $is_updating = $forceUpdate || file_exists($activeBuildFile.'.updating');
 
         // Have the cached dirname
-        if ($exist_build_dir && !$is_updating && !$force_update) {
-            return $exist_build_dir;
+        if ($existBuildDir && !$is_updating && !$forceUpdate) {
+            return $existBuildDir;
         }
 
-        $db_build_id = $this->getDbBuildId();
+        $dbBuildId = $this->getDbBuildId();
 
-        if ($db_build_id) {
-            $build_dir = $this->selectDirForBuildId($db_build_id);
-        } else if ($exist_build_dir) {
-            $build_dir = $exist_build_dir;
+        if ($dbBuildId) {
+            $buildDir = $this->selectDirForBuildId($dbBuildId);
+        } else if ($existBuildDir) {
+            $buildDir = $existBuildDir;
         } else {
-            $build_dir = $this->getLatestBuildDir();
+            $buildDir = $this->getLatestBuildDir();
         }
 
-        if ($build_dir !== $exist_build_dir) {
-            @file_put_contents($active_build_file, $build_dir);
-            @unlink($active_build_file . '.updating');
+        if ($buildDir !== $existBuildDir) {
+            @file_put_contents($activeBuildFile, $buildDir);
+            @unlink($activeBuildFile . '.updating');
         }
 
-        return $build_dir;
+        return $buildDir;
     }
 
     /**
-     * @param int $build_id
+     * @param int $buildId
      * @return string
      */
-    private function selectDirForBuildId($build_id)
+    private function selectDirForBuildId($buildId)
     {
         $last = null;
-        foreach ($this->findAvailableBuilds() as $time => $dirname) {
-            if ($time > $build_id) {
+        foreach ($this->buildScanner->getAvailableBuilds() as $time => $dirname) {
+            if ($time > $buildId) {
                 break;
             }
             $last = $dirname;
@@ -215,22 +169,22 @@ class BuildFinder
         }
 
         require_once __DIR__.'/LowUtil.php';
-        $db_config = $this->config_reader->getConfig('database');
+        $dbConfig = $this->configReader->getConfig('database');
 
         // no config info
-        if (!($db_config && !empty($db_config['user']) && !empty($db_config['password']))) {
+        if (!($dbConfig && !empty($dbConfig['user']) && !empty($dbConfig['password']))) {
             return 0;
         }
 
-        $dbinfo = LowUtil::getMysqlInfoFromConfigArray($db_config);
+        $dbinfo = LowUtil::getMysqlInfoFromConfigArray($dbConfig);
 
         try {
             $pdo = new \PDO($dbinfo['dsn'], $dbinfo['user'], $dbinfo['password']);
             $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-            $build_id = $pdo->query("SELECT value FROM settings WHERE name = 'core.deskpro_build' LIMIT 1")->fetchColumn();
+            $buildId = $pdo->query("SELECT value FROM settings WHERE name = 'core.deskpro_build' LIMIT 1")->fetchColumn();
             $pdo = null;
 
-            return $build_id ?: 0;
+            return $buildId ?: 0;
         } catch (\Exception $e) {
             return 0;
         }

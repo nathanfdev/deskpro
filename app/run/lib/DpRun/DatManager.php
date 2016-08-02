@@ -219,5 +219,7 @@ class DatManager implements DatManagerInterface
             }
             $success = @unlink($path);
         } while (!$success && ++$tries < 3);
+
+        return $success;
     }
 }

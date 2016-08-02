@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -70,6 +70,22 @@ class AppEnv implements AppEnvInterface
     public function getWwwRoot()
     {
         return $this->dpEnv->getWwwRoot();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBuildDirRoot()
+    {
+        return $this->dpEnv->getBuildDirRoot();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getKernelCacheDirRoot()
+    {
+        return $this->dpEnv->getKernelCacheDirRoot();
     }
 
     /**
@@ -150,6 +166,24 @@ class AppEnv implements AppEnvInterface
     public function getUserFilesDir()
     {
         return $this->dpEnv->getUserFilesDir();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConsolePhpCommand($params)
+    {
+        if (is_array($params)) {
+            $params = array_map('escapeshellarg', $params);
+            $params = implode(' ', $params);
+        }
+
+        $cmd = $this->getConfig('paths.php_path').' '
+            .escapeshellarg($this->getAppDir().DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'console').' '
+            .(defined('DP_PHP_BIN_ARGS') ? DP_PHP_BIN_ARGS.' ' : '')
+            .$params;
+
+        return $cmd;
     }
 
     /**
