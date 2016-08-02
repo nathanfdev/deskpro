@@ -416,9 +416,12 @@ HTML;
         }
 
         $captcha = null;
+
         if ($check->isCaptchaRecommended()) {
-            $captcha = $this->container->getSystemObject('form_captcha', ['type' => 'user_login']);
-            if (!$captcha->validate()) {
+            $form = $this->createForm('deskpro_captcha');
+
+            $form->submit($request->request->get('deskpro_captcha'));
+            if (!$form->isValid()) {
                 $this->session->set('failed_login_name', $inputEmail);
                 $this->session->setFlash('captcha_login_error', true);
                 $this->session->save();

@@ -195,13 +195,14 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             $logo_blob = $this->em->find(Blob::class, $logo_blob_id);
         }
 
-        $captcha = null;
+        $captchaView = null;
 
         $check = new LoginAbuseCheck($failedLoginName, $request->getClientIp());
         $check->markAsCheckOnly();
         $this->container->get('anti_abuse')->check($check);
         if ($check->isCaptchaRecommended()) {
-            $captcha = $this->container->getSystemObject('form_captcha', ['type' => 'user_login']);
+            $captcha     = $this->createForm('deskpro_captcha');
+            $captchaView = $captcha->createView();
         }
 
         $url_corrections = $request->attributes->get('deskpro.url_corrector.corrections', []);
@@ -221,7 +222,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                 'failed_to_login'   => $failedToLogin,
                 'failed_login_name' => $failedLoginName,
                 'timeout'           => $this->in->getBool('timeout'),
-                'captcha'           => $captcha,
+                'captcha'           => $captchaView,
                 'render_forgot_pw'  => $this->in->getString('forgot') ?: false,
                 'url_corrections'   => $url_corrections,
                 'is_to_admin'       => $is_to_admin,
