@@ -2368,4 +2368,10 @@ $collection->create('agent_jira_ticket_issue_unlink', [
     'requirements' => ['ticketId' => '\\d+', 'issueId' => '\\d+'],
 ]);
 
+$collection->create('gregwar_captcha', [
+    'path'       => '/generate-captcha/{key}',
+    'controller' => 'AgentBundle:Captcha:generate',
+    'methods'    => ['GET'],
+]);
+
 return $collection;

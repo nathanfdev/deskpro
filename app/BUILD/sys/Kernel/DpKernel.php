@@ -117,6 +117,7 @@ class DpKernel extends BaseKernel
             new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new \FOS\ElasticaBundle\FOSElasticaBundle(),
+
             new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
@@ -139,6 +140,7 @@ class DpKernel extends BaseKernel
             new \DeskPRO\Bundle\AuditBundle\AuditBundle(),
 
             new \DeskPRO\Bundle\UpdateBundle\UpdateBundle(),
+            new \Gregwar\CaptchaBundle\GregwarCaptchaBundle(),
         ];
 
         if (defined('DPC_IS_CLOUD')) {

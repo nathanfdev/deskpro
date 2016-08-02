@@ -1,5 +1,41 @@
 {% extends 'AgentBundle:Login:layout.html.twig' %}
 {% set authManager = app.authenticationManager %}
+{% if captcha %}
+	{% form_theme captcha _self %}
+{% endif %}
+
+{# CAPTCHA #}
+{% block deskpro_captcha_widget %}
+	{% if form.captcha is defined %}
+		{{ form_row(form.captcha) }}
+	{% endif %}
+{% endblock deskpro_captcha_widget %}
+
+{% block deskpro_recaptcha_widget %}
+	{% spaceless %}
+		<script src="//www.google.com/recaptcha/api.js"></script>
+		<div class="g-recaptcha" data-sitekey="{{ site_key }}"{% if secure_token %} data-stoken="{{ secure_token }}"{% endif %}></div>
+	{% endspaceless %}
+{% endblock deskpro_recaptcha_widget %}
+
+{% block captcha_widget %}
+	{% spaceless %}
+		<div class="captcha-field">
+			<img id="{{ image_id }}" src="{{ path('agent')|rtrim('/') }}{{ no_cache_url(captcha_code) }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
+			{% if reload %}
+				<script type="text/javascript">
+					function reload_{{ image_id }}() {
+						var img = document.getElementById('{{ image_id }}');
+						img.src = '{{ path('agent')|rtrim('/') }}{{ captcha_code }}?n=' + (new Date()).getTime();
+					}
+				</script>
+				<a class="captcha_reload" href="javascript:reload_{{ image_id }}();"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+			{% endif %}
+			{{ form_widget(form, { attr: { class: 'shorter' } } ) }}
+		</div>
+	{% endspaceless %}
+{% endblock %}
+
 {% block head %}
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -200,14 +236,14 @@
 								<div class="dp-control-label">
 									<label>{{ phrase('user.general.label_captcha') }} *</label>
 								</div>
-								<div class="dp-controls dp-fill">
-									{{ captcha.getHtml()|raw }}
+
+									{{ form_widget(captcha) }}
 									{% if captcha_error %}
 										<div class="dp-help-inline dp-error-explain" style="color: red;">
 											{{ phrase('user.tickets.form_error_captcha_invalid') }}
 										</div>
 									{% endif %}
-								</div>
+
 							</div>
 						{% endif %}
 						{% set token_error = app.session.getFlash('request_token_expired') %}
