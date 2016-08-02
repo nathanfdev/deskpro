@@ -150,8 +150,8 @@ class TextSnippet extends AbstractEntityRepository
             $qb = new QueryBuilder($conn);
             $qb->select('DISTINCT(object_lang.ref_id)')
                ->from('object_lang')
-               ->leftJoin('object_lang', 'text_snippets', 'ts', 'ts.id = object_lang.ref_id')
-               ->leftJoin('ts', 'text_snippet_categories', 'cat', 'cat.id = ts.category_id')
+               ->innerjJoin('object_lang', 'text_snippets', 'ts', 'ts.id = object_lang.ref_id')
+               ->innerjJoin('ts', 'text_snippet_categories', 'cat', 'cat.id = ts.category_id')
                ->andWhere('cat.typename = :type')->setParameter('type', $typename);
 
             if ($agent) {
@@ -179,7 +179,7 @@ class TextSnippet extends AbstractEntityRepository
         $qb = new QueryBuilder($conn);
         $qb->select('text_snippets.*')
            ->from('text_snippets')
-           ->leftJoin('text_snippets', 'text_snippet_categories', 'cat', 'cat.id = text_snippets.category_id')
+           ->innerJoin('text_snippets', 'text_snippet_categories', 'cat', 'cat.id = text_snippets.category_id')
            ->andWhere('cat.typename = :type')->setParameter('type', $typename);
 
         if ($agent) {
@@ -187,7 +187,8 @@ class TextSnippet extends AbstractEntityRepository
         }
 
         if ($filterCatIds) {
-            $qb->setParameter('text_snippets.category_id IN (:catIds)', (array) $filterCatIds, Connection::PARAM_INT_ARRAY);
+            $qb->andWhere('text_snippets.category_id IN (:catIds)')
+                ->setParameter('catIds', (array) $filterCatIds, Connection::PARAM_INT_ARRAY);
         }
         if ($filterLangIds) {
             $qb->innerJoin('text_snippets', 'object_lang', 'l', '(l.ref_id = text_snippets.id AND l.ref_type = "text_snippets" AND l.language_id IN (:langIds))')
