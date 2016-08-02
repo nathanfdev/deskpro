@@ -323,7 +323,12 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
         if (event.data?.type == 'widgetStatus')
           @$scope.$apply =>
             @$scope.widgetLoaded = true
-            @getDpWidget().dispatchCustomEvent('setLiveDemoSampleState', @$scope.sample_state)
+            @getDpWidget().dispatchCustomEvent('setLiveDemoSampleState', {
+              sampleState:      @$scope.sample_state,
+              options:          @getOptions(true),
+              settings:         @$scope.global_settings,
+              chatCustomFields: JSON.parse(angular.toJson(@$scope.chat_custom_fields))
+            })
             @updateLiveDemo()
         else if (event.data?.type == 'widgetDemoStage')
           @$scope.$apply =>
@@ -345,8 +350,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       @$scope.flag_has_changed = @hasChanged()
       localStorage.setItem 'dpWidgetSettings'+@$scope.brand_id, JSON.stringify(@getWidgetSaveData())
       if (@getDpWidget())
-        @getDpWidget().dispatchCustomEvent('reloadOptions', @getOptions(true))
-        @getDpWidget().dispatchCustomEvent('reloadSettings', @$scope.global_settings)
+        @getDpWidget().dispatchCustomEvent('reloadLiveDemoOptions', @getOptions(true))
+        @getDpWidget().dispatchCustomEvent('reloadLiveDemoSettings', @$scope.global_settings)
         @getDpWidget().dispatchCustomEvent('setLiveDemoChatCustomFields', JSON.parse(angular.toJson(@$scope.chat_custom_fields)))
 
     sendInstructions: () ->
