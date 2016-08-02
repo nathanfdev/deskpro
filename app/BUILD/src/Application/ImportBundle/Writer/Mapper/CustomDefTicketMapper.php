@@ -36,12 +36,12 @@ use Application\ImportBundle\Model\TicketCustomDef;
  *
  * Class CustomDefTicket
  */
-class CustomDefTicketMapper extends AbstractEntityManagerMapper implements CustomDefMapperInterface
+class CustomDefTicketMapper extends AbstractContainerMapper implements CustomDefMapperInterface
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return CustomDefTicket::class;
     }

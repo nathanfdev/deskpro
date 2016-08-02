@@ -38,14 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class TicketMessage implements PersonAwareInterface, AttachmentsAwareInterface, OidAwareModelInterface
 {
-    /**
-     * @var int
-     *
-     * @JMS\Type("string")
-     *
-     * @Assert\NotBlank()
-     */
-    private $oid;
+    use OidRequiredAwareModelTrait;
 
     /**
      * @var string
@@ -95,22 +88,6 @@ class TicketMessage implements PersonAwareInterface, AttachmentsAwareInterface, 
      * @Assert\Valid()
      */
     private $attachments = [];
-
-    /**
-     * @param string $oid
-     */
-    public function setOid($oid)
-    {
-        $this->oid = $oid;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOid()
-    {
-        return $this->oid;
-    }
 
     /**
      * {@inheritdoc}

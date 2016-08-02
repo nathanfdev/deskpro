@@ -28,8 +28,8 @@
 
 namespace Application\ImportBundle\Importer;
 
-use Application\ImportBundle\Exporter\ExporterInterface;
 use Application\ImportBundle\Model\BatchConfig;
+use Application\ImportBundle\Parser\ParserInterface;
 use Application\ImportBundle\Writer\EntityHandler\EntityHandlerRegistry;
 use Application\ImportBundle\Writer\WriterInterface;
 use DpSys\LowError\SystemErrorHandler;
@@ -43,9 +43,9 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class Importer
 {
     /**
-     * @var ExporterInterface
+     * @var ParserInterface
      */
-    private $exporter;
+    private $parser;
 
     /**
      * @var ValidatorInterface
@@ -75,7 +75,7 @@ class Importer
     /**
      * Constructor.
      *
-     * @param ExporterInterface     $exporter
+     * @param ParserInterface       $parser
      * @param ValidatorInterface    $validator
      * @param WriterInterface       $writer
      * @param Serializer            $serializer
@@ -83,14 +83,14 @@ class Importer
      * @param LoggerInterface       $logger
      */
     public function __construct(
-        ExporterInterface     $exporter,
+        ParserInterface       $parser,
         ValidatorInterface    $validator,
         WriterInterface       $writer,
         Serializer            $serializer,
         EntityHandlerRegistry $entityHandlerRegistry,
         LoggerInterface       $logger
     ) {
-        $this->exporter              = $exporter;
+        $this->parser                = $parser;
         $this->writer                = $writer;
         $this->validator             = $validator;
         $this->serializer            = $serializer;
@@ -109,7 +109,7 @@ class Importer
     {
         $count = 0;
         foreach ($this->entityHandlerRegistry->getModelClasses() as $modelClass) {
-            $count += $this->exporter->getCountByType($context, $modelClass);
+            $count += $this->parser->getCountByType($context, $modelClass);
         }
 
         return $count;
@@ -125,7 +125,7 @@ class Importer
         $collection = new ImporterCollection();
         foreach ($this->entityHandlerRegistry->getModelClasses() as $type) {
             $this->printHeader("Export `$type` collection");
-            $collection->add($type, $this->exporter->exportByType($context, $type));
+            $collection->add($type, $this->parser->exportByType($context, $type));
         }
 
         return $collection;

@@ -60,6 +60,7 @@ class ArticleHandler extends AbstractEntityHandler
             ->setTitle($model->getTitle())
             ->setContent($model->getContent())
             ->setStatus($model->getStatus())
+            ->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()))
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
             ->setDatePublished($model->getDatePublished())
             ->setDateEnd($model->getDateEnd())
@@ -69,11 +70,6 @@ class ArticleHandler extends AbstractEntityHandler
 
         if ($model->getDateCreated()) {
             $entity->setDateCreated($model->getDateCreated());
-        }
-        if ($model->getPerson()) {
-            $entity->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()));
-        } else {
-            $entity->setPerson(null);
         }
 
         $this->helpers->getCustomDataHelper()->updateCustomData($this->mappers->getArticleCustomDefMapper(), $model, $entity);

@@ -47,6 +47,7 @@ class CustomDefHandlerTest extends AbstractEntityHandlerTest
         $this->clearTable('custom_def_article');
         $this->clearTable('custom_def_feedback');
         $this->clearTable('custom_def_organizations');
+        $this->clearTable('custom_def_chat');
 
         parent::setUp();
     }
@@ -370,6 +371,7 @@ class CustomDefHandlerTest extends AbstractEntityHandlerTest
             [Model\ArticleCustomDef::class, Entity\CustomDefArticle::class],
             [Model\FeedbackCustomDef::class, Entity\CustomDefFeedback::class],
             [Model\OrganizationCustomDef::class, Entity\CustomDefOrganization::class],
+            [Model\ChatCustomDef::class, Entity\CustomDefChat::class],
         ];
     }
 }

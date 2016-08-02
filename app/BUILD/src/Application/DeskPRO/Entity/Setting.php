@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Settings used by the system.
@@ -57,6 +58,8 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
      * The name of the setting.
      *
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $name;
 
@@ -64,8 +67,50 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
      * The value of a setting.
      *
      * @var string
+     *
+     * @Assert\NotNull()
      */
     protected $value;
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->setModelField('name', $name);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function setValue($value)
+    {
+        $this->setModelField('value', $value);
+
+        return $this;
+    }
 
     ############################################################################
     # Doctrine Metadata

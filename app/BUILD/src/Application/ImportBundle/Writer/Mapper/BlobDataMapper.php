@@ -38,24 +38,17 @@ class BlobDataMapper
     /**
      * {@inheritdoc}
      */
-    public static function findOneBy(array $criteria, $throwException = true)
+    public static function findOneBy(array $criteria)
     {
         $data = null;
         if (!empty($criteria['data'])) {
             $data = base64_decode($criteria['data']);
         }
         if (!empty($criteria['path'])) {
-            if (!is_readable($criteria['path']) && $throwException) {
-                throw new MapperException(sprintf('Invalid blob path %s', $criteria['path']), $criteria);
-            }
-
             $data = @file_get_contents($criteria['path']);
         }
         if (!empty($criteria['url'])) {
             $data = @file_get_contents($criteria['url']);
-        }
-        if (!$data && $throwException) {
-            throw new MapperException('Blob data not found', $criteria);
         }
 
         return $data;
@@ -67,13 +60,10 @@ class BlobDataMapper
      * @param string $data
      * @param string $path
      * @param string $url
-     * @param bool   $throwException
-     *
-     * @throws MapperException
      *
      * @return mixed|null|string
      */
-    public static function findOneByParams($data, $path, $url, $throwException = true)
+    public static function findOneByParams($data, $path, $url)
     {
         $criteria = [
             'data' => $data,
@@ -81,6 +71,6 @@ class BlobDataMapper
             'url'  => $url,
         ];
 
-        return self::findOneBy($criteria, $throwException);
+        return self::findOneBy($criteria);
     }
 }

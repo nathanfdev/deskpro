@@ -26,20 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Writer\Mapper;
-
-use Application\DeskPRO\Entity\TicketAttachment;
+namespace Application\ImportBundle\Parser\Reader;
 
 /**
- * Class TicketAttachmentMapper.
+ * Directory json files filter.
+ *
+ * Class DirectoryIteratorFilter
  */
-class TicketAttachmentMapper extends AbstractEntityManagerMapper
+class DirectoryIteratorFilter extends \RecursiveFilterIterator
 {
+    /**
+     * Constructor.
+     *
+     * @param \RecursiveIterator $iterator
+     */
+    public function __construct(\RecursiveIterator $iterator)
+    {
+        parent::__construct($iterator);
+    }
+
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public function accept()
     {
-        return TicketAttachment::class;
+        /** @var \SplFileInfo $current */
+        $current = $this->current();
+
+        // Invalid type
+        if ($current->isDir() === false && $current->getExtension() !== 'json') {
+            return false;
+        }
+
+        return true;
     }
 }

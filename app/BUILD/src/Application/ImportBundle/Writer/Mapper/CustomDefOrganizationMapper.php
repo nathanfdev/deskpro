@@ -36,12 +36,12 @@ use Application\ImportBundle\Model\OrganizationCustomDef;
  *
  * Class CustomDefOrganization
  */
-class CustomDefOrganizationMapper extends AbstractEntityManagerMapper implements CustomDefMapperInterface
+class CustomDefOrganizationMapper extends AbstractContainerMapper implements CustomDefMapperInterface
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return CustomDefOrganization::class;
     }

@@ -41,12 +41,7 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  */
 class CustomField implements GroupSequenceProviderInterface, OidAwareModelInterface
 {
-    /**
-     * @var string
-     *
-     * @JMS\Type("string")
-     */
-    private $oid;
+    use OidAwareModelTrait;
 
     /**
      * @var string
@@ -65,22 +60,6 @@ class CustomField implements GroupSequenceProviderInterface, OidAwareModelInterf
      * @Assert\NotBlank(groups={"common"})
      */
     private $value;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOid()
-    {
-        return $this->oid;
-    }
-
-    /**
-     * @param mixed $oid
-     */
-    public function setOid($oid)
-    {
-        $this->oid = $oid;
-    }
 
     /**
      * @return string

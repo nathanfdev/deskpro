@@ -35,14 +35,26 @@ use Application\DeskPRO\Entity\Usergroup;
  *
  * Class UserGroup
  */
-class UserGroupMapper extends AbstractTitleMapper
+class UserGroupMapper extends AbstractContainerMapper
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return Usergroup::class;
+    }
+
+    /**
+     * Returns the DeskPRO record by sys name.
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function findOneBySysName($name)
+    {
+        return $this->findOneBy(['sys_name' => $name]);
     }
 
     /**
@@ -52,8 +64,8 @@ class UserGroupMapper extends AbstractTitleMapper
      *
      * @return mixed
      */
-    public function findOneBySysName($name)
+    public function findOneByTitle($name)
     {
-        return $this->findOneBy(['sys_name' => $name]);
+        return $this->findOneBy(['title' => $name]);
     }
 }

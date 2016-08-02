@@ -26,22 +26,28 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Writer\Mapper;
+namespace Application\ImportBundle\Writer\EntityHandler;
 
-use Application\DeskPRO\Entity\TicketPriority;
+use Application\ImportBundle\Model;
 
 /**
- * Ticket priority record mapper.
- *
- * Class TicketPriority
+ * Class ChatCustomDefHandler.
  */
-class TicketPriorityMapper extends AbstractTitleMapper
+class ChatCustomDefHandler extends AbstractCustomDefHandler
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getModelClass()
     {
-        return TicketPriority::class;
+        return Model\ChatCustomDef::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getCustomDefMapper()
+    {
+        return $this->mappers->getChatCustomDefMapper();
     }
 }

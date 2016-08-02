@@ -41,6 +41,7 @@ class CustomDefTest extends AbstractModelTest
         Model\ArticleCustomDef::class,
         Model\OrganizationCustomDef::class,
         Model\FeedbackCustomDef::class,
+        Model\ChatCustomDef::class,
     ];
 
     /**

@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Exporter\Reader;
+namespace Application\ImportBundle\Parser\Reader;
 
 use Orb\Util\Strings;
 use RecursiveIteratorIterator;

@@ -26,20 +26,73 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Writer\Mapper;
+namespace Application\ImportBundle\Model;
 
-use Application\DeskPRO\Entity\PersonContactData;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class PersonContactDataMapper.
+ * Class Setting.
  */
-class PersonContactDataMapper extends AbstractEntityManagerMapper
+class Setting implements PrimaryImportModelInterface
 {
+    use PrimaryImportModelTrait;
+
     /**
-     * {@inheritdoc}
+     * @var string
+     *
+     * @JMS\Type("string")
+     *
+     * @Assert\NotBlank()
      */
-    public static function getEntityClass()
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     *
+     * @Assert\NotNull()
+     */
+    private $value;
+
+    /**
+     * @return string
+     */
+    public function getName()
     {
-        return PersonContactData::class;
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+
+        return $this;
     }
 }

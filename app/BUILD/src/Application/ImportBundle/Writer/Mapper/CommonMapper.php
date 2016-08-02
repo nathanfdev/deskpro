@@ -28,18 +28,35 @@
 
 namespace Application\ImportBundle\Writer\Mapper;
 
-use Application\DeskPRO\Entity\ArticleAttachment;
+use Doctrine\ORM\EntityManager;
 
 /**
- * Class ArticleAttachmentMapper.
+ * Class CommonMapper.
  */
-class ArticleAttachmentMapper extends AbstractEntityManagerMapper
+class CommonMapper extends AbstractEntityManagerMapper
 {
+    /**
+     * @var string
+     */
+    private $entityClass;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     * @param string        $entityClass
+     */
+    public function __construct(EntityManager $em, $entityClass)
+    {
+        parent::__construct($em);
+        $this->entityClass = $entityClass;
+    }
+
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public function getEntityClass()
     {
-        return ArticleAttachment::class;
+        return $this->entityClass;
     }
 }

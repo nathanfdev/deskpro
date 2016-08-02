@@ -38,12 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Comment implements OidAwareModelInterface
 {
-    /**
-     * @var int|string
-     *
-     * @JMS\Type("string")
-     */
-    protected $oid;
+    use OidRequiredAwareModelTrait;
 
     /**
      * @var string
@@ -90,24 +85,6 @@ class Comment implements OidAwareModelInterface
      * @JMS\Type("DateTime")
      */
     private $date_created;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOid()
-    {
-        return $this->oid;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setOid($oid)
-    {
-        $this->oid = $oid;
-
-        return $this;
-    }
 
     /**
      * Returns comment content.

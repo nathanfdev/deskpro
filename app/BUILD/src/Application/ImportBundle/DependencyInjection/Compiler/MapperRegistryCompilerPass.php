@@ -28,7 +28,7 @@
 
 namespace Application\ImportBundle\DependencyInjection\Compiler;
 
-use Application\ImportBundle\Writer\Mapper\MapperInterface;
+use Application\ImportBundle\Writer\Mapper\ContainerMapperInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -51,13 +51,13 @@ class MapperRegistryCompilerPass implements CompilerPassInterface
             $class = $container->getDefinition($id)->getClass();
             $ref   = new \ReflectionClass($class);
 
-            if (!$ref->implementsInterface(MapperInterface::class)) {
-                throw new \RuntimeException('Expected instance of '.MapperInterface::class);
+            if (!$ref->implementsInterface(ContainerMapperInterface::class)) {
+                throw new \RuntimeException('Expected instance of '.ContainerMapperInterface::class);
             }
 
-            $mappers[call_user_func([$class, 'getEntityClass'])] = $id;
+            $mappers[call_user_func([$class, 'getMapperEntityClass'])] = $id;
         }
 
-        $container->getDefinition('dp.importer.writer.mapper_registry')->addMethodCall('setMappers', [$mappers]);
+        $container->getDefinition('dp.importer.writer.mapper_registry')->addMethodCall('setContainerMappers', [$mappers]);
     }
 }

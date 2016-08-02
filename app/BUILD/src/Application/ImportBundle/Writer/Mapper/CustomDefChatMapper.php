@@ -28,18 +28,27 @@
 
 namespace Application\ImportBundle\Writer\Mapper;
 
-use Application\DeskPRO\Entity\TextSnippet;
+use Application\DeskPRO\Entity\CustomDefChat;
+use Application\ImportBundle\Model\ChatCustomDef;
 
 /**
- * Class TextSnippetMapper.
+ * Class ChatCustomDefMapper.
  */
-class TextSnippetMapper extends AbstractEntityManagerMapper
+class CustomDefChatMapper extends AbstractContainerMapper implements CustomDefMapperInterface
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
-        return TextSnippet::class;
+        return CustomDefChat::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getModelClass()
+    {
+        return ChatCustomDef::class;
     }
 }

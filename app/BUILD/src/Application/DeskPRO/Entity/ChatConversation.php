@@ -36,6 +36,8 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\Labels\Label;
+use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use Application\DeskPRO\Labels\LabelManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -52,7 +54,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property string $person_email
  * @PortalLinkRoute("portal_chats_view", route_param_map={"chat":"id"})
  */
-class ChatConversation extends DomainObject
+class ChatConversation extends DomainObject implements LabelsOwner
 {
     const STATUS_OPEN  = 'open';
     const STATUS_ENDED = 'ended';
@@ -238,6 +240,8 @@ class ChatConversation extends DomainObject
      * Who ended the chat.
      *
      * @var string
+     *
+     * @Assert\NotNull()
      */
     protected $ended_by = '';
 
@@ -710,6 +714,8 @@ class ChatConversation extends DomainObject
      * Set the agent.
      *
      * @param $agent
+     *
+     * @return $this
      */
     public function setAgent($agent = null)
     {
@@ -720,7 +726,7 @@ class ChatConversation extends DomainObject
         $old_agent = $this->agent;
         if (($agent === null && $old_agent === null) || ($agent && $old_agent && $agent->getId() == $old_agent->getId())
         ) {
-            return;
+            return $this;
         }
 
         $this->_onPropertyChanged('agent', $old_agent, $agent);
@@ -745,6 +751,8 @@ class ChatConversation extends DomainObject
         } else {
             $this->setModelField('date_user_waiting', new \DateTime());
         }
+
+        return $this;
     }
 
     /**
@@ -833,9 +841,29 @@ class ChatConversation extends DomainObject
         return $this->_created_messages;
     }
 
+    /**
+     * @return ArrayCollection|ChatMessage[]
+     */
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+
     public function _clearCreatedMessages()
     {
         $this->_created_messages = [];
+    }
+
+    /**
+     * @param string $subject
+     *
+     * @return $this
+     */
+    public function setSubject($subject)
+    {
+        $this->setModelField('subject', $subject);
+
+        return $this;
     }
 
     /**
@@ -881,6 +909,26 @@ class ChatConversation extends DomainObject
         $this->setModelField('rating_overall', $rating);
 
         return $this;
+    }
+
+    /**
+     * @param string $rating_comment
+     *
+     * @return $this
+     */
+    public function setRatingComment($rating_comment)
+    {
+        $this->setModelField('rating_comment', $rating_comment);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRatingComment()
+    {
+        return $this->rating_comment;
     }
 
     /**
@@ -977,11 +1025,37 @@ class ChatConversation extends DomainObject
     }
 
     /**
-     * Add a label.
-     *
-     * @param \Application\DeskPRO\Entity\LabelChatConversation $label
+     * {@inheritdoc}
      */
-    public function addLabel(LabelChatConversation $label)
+    public function removeLabel(Label $label)
+    {
+        if ($this->labels->contains($label)) {
+            $this->labels->removeElement($label);
+            $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+        }
+    }
+
+    /**
+     * @return LabelChatConversation[]
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clearLabels()
+    {
+        $this->labels->clear();
+        $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addLabel(Label $label)
     {
         $label['chat'] = $this;
         $this->labels->add($label);
@@ -1196,6 +1270,18 @@ class ChatConversation extends DomainObject
     public function setDateTranscriptSent(\DateTime $date = null)
     {
         $this->setModelField('date_transcript_sent', $date);
+
+        return $this;
+    }
+
+    /**
+     * @param \DateTime $date_created
+     *
+     * @return $this
+     */
+    public function setDateCreated($date_created)
+    {
+        $this->setModelField('date_created', $date_created);
 
         return $this;
     }

@@ -26,22 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Writer\Mapper;
+namespace Application\ImportBundle\Model;
 
-use Application\DeskPRO\Entity\Download;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Download record mapper.
+ * Class ChatCustomDef.
  *
- * Class Download
+ * @Assert\GroupSequenceProvider
  */
-class DownloadMapper extends AbstractTitleMapper
+class ChatCustomDef extends AbstractCustomDef
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function getEntityClass()
-    {
-        return Download::class;
-    }
 }

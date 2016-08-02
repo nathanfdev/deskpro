@@ -31,7 +31,7 @@ namespace Application\ImportBundle\Writer\Mapper;
 /**
  * Class AbstractCategoryMapper.
  */
-abstract class AbstractCategoryMapper extends AbstractEntityManagerMapper implements CategoryMapperInterface
+abstract class AbstractCategoryMapper extends AbstractContainerMapper implements CategoryMapperInterface
 {
     /**
      * {@inheritdoc}

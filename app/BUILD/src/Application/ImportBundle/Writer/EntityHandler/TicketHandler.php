@@ -60,7 +60,6 @@ class TicketHandler extends AbstractEntityHandler
             ->disableAutoTicketProcess()
             ->setSubject($model->getSubject())
             ->setDepartment($this->findOrCreateTicketDepartment($model->getDepartment()))
-            ->setCategory($this->findOrCreateTicketCategory($model->getCategory()))
             ->setStatus($model->getStatus())
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
             ->setDateResolved($model->getDateResolved())
@@ -138,6 +137,16 @@ class TicketHandler extends AbstractEntityHandler
             }
         }
 
+        // update ticket category
+        if ($model->getCategory()) {
+            $entity->setCategory($this->helpers->getCategoryHelper()->findOrCreateCategory(
+                $this->mappers->getTicketCategoryMapper(),
+                $model->getCategory()
+            ));
+        } else {
+            $entity->setCategory(null);
+        }
+
         // persist basic entity
         $this->persister->persistAndFlush($entity, $model);
 
@@ -168,18 +177,14 @@ class TicketHandler extends AbstractEntityHandler
     {
         /** @var Entity\TicketMessage $messageEntity */
         $messageEntity = $this->findOrCreateEntity($this->mappers->getTicketMessageMapper(), $model);
-        $messageEntity->setTicket($ticketEntity);
-        $messageEntity->setAsAgentNote($model->isNote());
+        $messageEntity
+            ->setTicket($ticketEntity)
+            ->setAsAgentNote($model->isNote())
+            ->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()))
+        ;
 
         if ($model->getDateCreated()) {
             $messageEntity->setDateCreated($model->getDateCreated());
-        }
-
-        // update message person
-        if ($model->getPerson()) {
-            $messageEntity->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()));
-        } else {
-            $messageEntity->setPerson(null);
         }
 
         // update message content
@@ -214,8 +219,8 @@ class TicketHandler extends AbstractEntityHandler
     {
         $department = null;
         if ($title) {
-            $department = $this->mappers->getDepartmentMapper()->findOneByTitle($title);
-            if ($department) {
+            $department = $this->mappers->getDepartmentMapper()->findOneBy(['title' => $title]);
+            if ($department instanceof Entity\Department) {
                 $this->logger->debug(sprintf(
                     'Found existing department `%d` with title `%s`',
                     $department->getId(), $department->getTitle()
@@ -230,32 +235,5 @@ class TicketHandler extends AbstractEntityHandler
         }
 
         return $department;
-    }
-
-    /**
-     * Returns a ticket category by title
-     * Creates a new ticket category if not found.
-     *
-     * @param string $title
-     *
-     * @return Entity\TicketCategory|null
-     */
-    private function findOrCreateTicketCategory($title)
-    {
-        $category = null;
-        if ($title) {
-            $category = $this->mappers->getTicketCategoryMapper()->findOneByTitle($title);
-            if ($category) {
-                $this->logger->debug(sprintf('Found existing ticket category `%s`', $category->getTitle()));
-            } else {
-                $category = new Entity\TicketCategory();
-                $category->setRealTitle($title);
-
-                $this->logger->info(sprintf('New ticket category creating `%s`', $category->getTitle()));
-                $this->persister->persistAndFlush($category);
-            }
-        }
-
-        return $category;
     }
 }

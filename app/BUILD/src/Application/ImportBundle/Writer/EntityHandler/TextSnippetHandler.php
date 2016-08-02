@@ -55,16 +55,10 @@ class TextSnippetHandler extends AbstractEntityHandler
         $entity = $this->findOrCreateEntity($this->mappers->getTextSnippetMapper(), $model);
         $entity
             ->setCategory($this->helpers->getTextSnippetCategoryHelper()->findOrCreateTextSnippetCategory($model->getCategory()))
+            ->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()))
             ->setShortcutCode($model->getShortcutCode())
             ->setIsDraft($model->isDraft())
         ;
-
-        // update person
-        if ($model->getPerson()) {
-            $entity->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()));
-        } else {
-            $entity->setPerson(null);
-        }
 
         // update translations
         $this->helpers->getTranslationHelper()->updateTranslations($model->getTitleTranslations(), $entity, 'title');

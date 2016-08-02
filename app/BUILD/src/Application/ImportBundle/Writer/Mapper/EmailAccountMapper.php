@@ -35,12 +35,12 @@ use Application\DeskPRO\Entity\EmailAccount;
  *
  * Class EmailAccount
  */
-class EmailAccountMapper extends AbstractEntityManagerMapper
+class EmailAccountMapper extends AbstractContainerMapper
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return EmailAccount::class;
     }

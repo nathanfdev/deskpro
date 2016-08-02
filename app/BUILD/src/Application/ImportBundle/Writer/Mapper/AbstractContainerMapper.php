@@ -26,11 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Exporter\Reader;
+namespace Application\ImportBundle\Writer\Mapper;
 
 /**
- * Class NotFoundException.
+ * Class AbstractContainerMapper.
  */
-final class NotFoundException extends \RuntimeException
+abstract class AbstractContainerMapper extends AbstractEntityManagerMapper implements ContainerMapperInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getEntityClass()
+    {
+        return static::getMapperEntityClass();
+    }
 }

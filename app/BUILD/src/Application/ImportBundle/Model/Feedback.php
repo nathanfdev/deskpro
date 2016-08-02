@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Feedback implements PersonAwareInterface, LabelAwareModelInterface, AttachmentsAwareInterface, CustomDataAwareModelInterface, PrimaryImportModelInterface
 {
-    use PrimaryImportModelTrait, LabelAwareTrait;
+    use PrimaryImportModelTrait, LabelAwareTrait, CustomDataAwareTrait;
 
     /**
      * @var string
@@ -116,15 +116,6 @@ class Feedback implements PersonAwareInterface, LabelAwareModelInterface, Attach
      * @Assert\Valid()
      */
     private $attachments = [];
-
-    /**
-     * @var array
-     *
-     * @JMS\Type("array<Application\ImportBundle\Model\CustomField>")
-     *
-     * @Assert\Valid()
-     */
-    private $custom_fields = [];
 
     /**
      * @var string
@@ -220,26 +211,6 @@ class Feedback implements PersonAwareInterface, LabelAwareModelInterface, Attach
     public function addAttachment(Attachment $attachment)
     {
         $this->attachments[] = $attachment;
-
-        return $this;
-    }
-
-    /**
-     * @return CustomField[]
-     */
-    public function getCustomFields()
-    {
-        return $this->custom_fields;
-    }
-
-    /**
-     * @param CustomField $custom_field
-     *
-     * @return $this
-     */
-    public function addCustomField(CustomField $custom_field)
-    {
-        $this->custom_fields[] = $custom_field;
 
         return $this;
     }

@@ -40,7 +40,7 @@ class DownloadCategoryMapper extends AbstractCategoryMapper
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return DownloadCategory::class;
     }

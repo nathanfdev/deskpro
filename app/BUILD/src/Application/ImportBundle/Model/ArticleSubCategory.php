@@ -28,8 +28,6 @@
 
 namespace Application\ImportBundle\Model;
 
-use JMS\Serializer\Annotation as JMS;
-
 /**
  * Exporting article category entity.
  *
@@ -37,28 +35,5 @@ use JMS\Serializer\Annotation as JMS;
  */
 class ArticleSubCategory extends AbstractArticleCategory
 {
-    /**
-     * @var int|string
-     *
-     * @JMS\Type("string")
-     */
-    protected $oid;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOid()
-    {
-        return $this->oid;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setOid($oid)
-    {
-        $this->oid = $oid;
-
-        return $this;
-    }
+    use OidAwareModelTrait;
 }

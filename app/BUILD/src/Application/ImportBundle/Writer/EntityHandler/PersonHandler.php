@@ -145,7 +145,7 @@ class PersonHandler extends AbstractEntityHandler
 
         // try to find existing person by emails
         if (count($model->getEmails())) {
-            $entity = $this->mappers->getPersonMapper()->findOneByEmails($model->getEmails(), false);
+            $entity = $this->mappers->getPersonMapper()->findOneByEmails($model->getEmails());
             if ($entity) {
                 $this->logger->debug(sprintf(
                     'Found existing user, id=`%d` with email `%s`',

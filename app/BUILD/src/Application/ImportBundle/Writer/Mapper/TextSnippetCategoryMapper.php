@@ -35,12 +35,12 @@ use Doctrine\ORM\Query\Expr\Join;
 /**
  * Class TextSnippetCategoryMapper.
  */
-class TextSnippetCategoryMapper extends AbstractEntityManagerMapper implements MapperByTitleInterface
+class TextSnippetCategoryMapper extends AbstractContainerMapper implements MapperByTitleInterface
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getMapperEntityClass()
     {
         return TextSnippetCategory::class;
     }

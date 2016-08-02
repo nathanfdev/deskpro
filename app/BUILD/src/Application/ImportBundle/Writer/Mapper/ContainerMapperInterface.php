@@ -28,20 +28,13 @@
 
 namespace Application\ImportBundle\Writer\Mapper;
 
-use Application\DeskPRO\Entity\TicketWorkflow;
-
 /**
- * Ticket workflow record mapper.
- *
- * Class TicketWorkflow
+ * Interface ContainerMapperInterface.
  */
-class TicketWorkflowMapper extends AbstractTitleMapper
+interface ContainerMapperInterface extends MapperInterface
 {
     /**
-     * {@inheritdoc}
+     * @return string
      */
-    public static function getEntityClass()
-    {
-        return TicketWorkflow::class;
-    }
+    public static function getMapperEntityClass();
 }

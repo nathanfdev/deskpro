@@ -58,11 +58,7 @@ class ArticleCategoryHandler extends AbstractEntityHandler
             $entity = $this->findArticleCategoryByOid($model);
         }
         if (!$entity) {
-            $entity = $this->mappers->getArticleCategoryMapper()->findOneBy([
-                'title'  => $model->getTitle(),
-                'parent' => null,
-            ]);
-
+            $entity = $this->mappers->getArticleCategoryMapper()->findOneByTitle($model->getTitle());
             if ($entity) {
                 $this->logger->debug("Found existing article category `{$model->getTitle()}` by oid");
             } else {
@@ -85,7 +81,7 @@ class ArticleCategoryHandler extends AbstractEntityHandler
     {
         $entityId = $this->mappers->getImportMapMapper()->findIdByModel($model);
         if ($entityId) {
-            $entity = $this->mappers->getArticleCategoryMapper()->findOneBy(['id' => $entityId]);
+            $entity = $this->mappers->getArticleCategoryMapper()->find($entityId);
             if ($entity) {
                 $this->logger->debug("Found existing article category `{$model->getTitle()}` by oid");
 

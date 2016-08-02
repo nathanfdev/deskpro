@@ -26,35 +26,54 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Exporter;
+namespace DpTest\Application\ImportBundle\Model;
 
-use Application\ImportBundle\Importer\ImporterContext;
-use Application\ImportBundle\Model;
+use Application\ImportBundle\Model\Setting;
 
 /**
- * Exporter interface.
- *
- * Interface ExporterInterface
+ * Class SettingTest.
  */
-interface ExporterInterface
+class SettingTest extends AbstractModelTest
 {
-    /**
-     * Returns a count of records of the current type to be exported.
-     *
-     * @param ImporterContext $context
-     * @param string          $modelClass
-     *
-     * @return int
-     */
-    public function getCountByType(ImporterContext $context, $modelClass);
+    protected static $modelClass = Setting::class;
+
+    public function test_required_params_validation()
+    {
+        $errors = $this->validateData([]);
+
+        $this->assertCount(3, $errors);
+        $this->assertEquals('name', $errors[0]->getPropertyPath());
+        $this->assertEquals('value', $errors[1]->getPropertyPath());
+        $this->assertEquals('raw_data', $errors[2]->getPropertyPath());
+    }
 
     /**
-     * Returns a collection of records of the current type.
+     * @dataProvider paramsProvider
      *
-     * @param ImporterContext $context
-     * @param string          $modelClass
-     *
-     * @return Model\ImportModelCollection
+     * @param mixed $value
      */
-    public function exportByType(ImporterContext $context, $modelClass);
+    public function test_params($value)
+    {
+        $params = [
+            'name'  => 'setting_name',
+            'value' => $value,
+        ];
+
+        $this->assertEquals($this->transformData($params), $params);
+    }
+
+    /**
+     * @return array
+     */
+    public function paramsProvider()
+    {
+        return [
+            [''],
+            [1],
+            ['string'],
+            [true],
+            [false],
+            [0],
+        ];
+    }
 }

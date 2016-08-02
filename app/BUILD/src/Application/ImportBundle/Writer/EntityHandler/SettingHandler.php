@@ -26,22 +26,44 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Writer\Mapper;
+namespace Application\ImportBundle\Writer\EntityHandler;
 
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity;
+use Application\ImportBundle\Model;
 
 /**
- * Feedback record mapper.
- *
- * Class Feedback
+ * Class SettingHandler.
  */
-class FeedbackMapper extends AbstractTitleMapper
+class SettingHandler extends AbstractEntityHandler
 {
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public static function getModelClass()
     {
-        return Feedback::class;
+        return Model\Setting::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param Model\Setting $model
+     */
+    public function writeModel(Model\PrimaryImportModelInterface $model)
+    {
+        $entity = $this->mappers->getSettingMapper()->findOneBy(['name' => $model->getName()]);
+        if ($entity) {
+            $this->logger->debug("Found existing setting `{$model->getName()}`");
+        } else {
+            $this->logger->debug("Import a new setting `{$model->getName()}`");
+
+            $entity = new Entity\Setting();
+            $entity->setName($model->getName());
+        }
+
+        $entity->setValue($model->getValue());
+
+        // persist basic entity
+        $this->persister->persistAndFlush($entity, $model);
     }
 }

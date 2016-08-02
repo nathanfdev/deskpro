@@ -38,7 +38,7 @@ interface MapperInterface
     /**
      * @return string
      */
-    public static function getEntityClass();
+    public function getEntityClass();
 
     /**
      * Returns the DeskPRO record by criteria.

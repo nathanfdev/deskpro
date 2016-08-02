@@ -26,22 +26,49 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\ImportBundle\Writer\Mapper;
-
-use Application\DeskPRO\Entity\Product;
+namespace Application\ImportBundle\Model;
 
 /**
- * Product record mapper.
- *
- * Class Product
+ * Class CustomDataAwareTrait.
  */
-class ProductMapper extends AbstractTitleMapper
+trait CustomDataAwareTrait
 {
+    /**
+     * @var array
+     *
+     * @JMS\Type("array<Application\ImportBundle\Model\CustomField>")
+     *
+     * @Assert\Valid()
+     */
+    protected $custom_fields = [];
+
     /**
      * {@inheritdoc}
      */
-    public static function getEntityClass()
+    public function getCustomFields()
     {
-        return Product::class;
+        return $this->custom_fields;
+    }
+
+    /**
+     * @param array $customFields
+     *
+     * @return $this
+     */
+    public function setCustomFields(array $customFields)
+    {
+        $this->custom_fields = $customFields;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addCustomField(CustomField $custom_field)
+    {
+        $this->custom_fields[] = $custom_field;
+
+        return $this;
     }
 }
