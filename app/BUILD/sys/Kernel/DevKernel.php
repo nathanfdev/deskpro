@@ -26,13 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DpSys\Kernel;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
 
+/**
+ * Class DevKernel.
+ */
 class DevKernel extends BaseKernel
 {
     /**
@@ -63,6 +63,7 @@ class DevKernel extends BaseKernel
             new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
             new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
+            new \Gregwar\CaptchaBundle\GregwarCaptchaBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),

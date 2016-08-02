@@ -8,10 +8,6 @@ security:
     default:
       anonymous: ~
 
-gregwar_captcha:
-    reload: true
-    expiration: 120
-
 services:
   legacy_session_close.listener:
       class: DeskPRO\Bundle\AppBundle\EventListener\LegacySessionCloseListener
