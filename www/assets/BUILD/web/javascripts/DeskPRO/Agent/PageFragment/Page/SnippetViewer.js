@@ -742,9 +742,11 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 			// The initial fire of this is after opening a new edit window,
 			// so we're just setting the defaults but not syncing an empty value back to the lang-x elements
-			if ($(this).hasClass('initial')) {
+			var html = DP.convertTextToWysiwygHtml(langSnippetEl.val(), true);
+
+      if ($(this).hasClass('initial')) {
 				inputTitleEl.val(langTitleEl.val());
-				textarea.data('redactor').setCode(langSnippetEl.val());
+				textarea.data('redactor').setCode(html);
 
 			} else if ($(this).hasClass('set-bound')) {
 				langTitleEl.val(inputTitleEl.val());
@@ -753,7 +755,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			// Else make sure theyre both the same
 			} else {
 				inputTitleEl.val(langTitleEl.val());
-				textarea.data('redactor').setCode(langSnippetEl.val());
+				textarea.data('redactor').setCode(html);
 
 				langTitleEl.val(inputTitleEl.val());
 				langSnippetEl.val(inputSnippetEl.val());
@@ -931,7 +933,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			var text = '{{ ' + varSel.val() + ' }}';
 
 			if (textarea.data('redactor')) {
-				textarea.data('redactor').insertSnippetHtml(DP.convertTextToWysiwygHtml(text, false));
+				textarea.data('redactor').insertSnippetHtml(text);
 			} else {
 				var pos = textarea.getCaretPosition();
 				if (!pos) {
