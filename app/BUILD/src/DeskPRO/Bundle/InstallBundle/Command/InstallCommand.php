@@ -214,11 +214,9 @@ class InstallCommand extends ContainerAwareCommand
             $this->getHelperSet()
         );
 
-        if (
-            $session->getSource() === InstallSession::SOURCE_AUTO_INSTALLER
-            || $input->getOption('skip-wizard')
-        ) {
+        if ($session->getSource() === InstallSession::SOURCE_AUTO_INSTALLER) {
             $skip_list[] = 'admin_account';
+            $skip_list[] = 'accept_web_url';
         }
 
         if (
@@ -233,6 +231,7 @@ class InstallCommand extends ContainerAwareCommand
         }
 
         if ($input->getOption('skip-wizard')) {
+            $skip_list[] = 'admin_account';
             $skip_list[] = 'own_requirements';
             $skip_list[] = 'check_existing';
             $skip_list[] = 'accept_paths';
