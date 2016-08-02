@@ -54,12 +54,6 @@ class CoreExtension extends Extension
         $container->setDefinition('deskpro.api.request_auth', $definition);
 
         $container
-            ->register('kernel.listener.controller_post_action', 'Application\\LegacyApiBundle\\Event\\LogApiCallListener')
-            ->addTag('kernel.event_listener', array(
-                'event' => 'DeskPRO_onControllerPostAction', 'method' => 'onControllerPostAction', )
-            );
-
-        $container
             ->register('apiv1.endpoint_listener', 'Application\\LegacyApiBundle\\Event\\Apiv1EndpointListener')
             ->addArgument(new Reference('security.authorization_checker'))
             ->addTag('kernel.event_subscriber');

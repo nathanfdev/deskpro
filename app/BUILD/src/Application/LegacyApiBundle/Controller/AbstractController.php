@@ -35,6 +35,7 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Validator\ViolationApiRenderer;
+use Application\LegacyApiBundle\Request\RequestAuth;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Form\Form;
@@ -323,6 +324,25 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             $response->headers->set('X-RateLimit-Limit', App::getSetting('core.api_rate_limit'));
             $response->headers->set('X-RateLimit-Remaining', max(0, App::getSetting('core.api_rate_limit') - $this->rate_info['hits']));
             $response->headers->set('X-RateLimit-Reset', $this->rate_info['reset_stamp']);
+        }
+
+        /** @var RequestAuth $auth */
+        $auth = $this->get('deskpro.api.request_auth');
+        if ($auth && ($log = $auth->getApiLogEntry())) {
+            $em = $this->get('doctrine.orm.entity_manager');
+
+            // Dont log rate limit
+            if ($status == 429) {
+                $em->remove($log);
+                $em->flush($log);
+            }
+
+            $log->response = [
+                'status'  => $status,
+                'content' => $data,
+            ];
+
+            $em->flush($log);
         }
 
         return $response;
