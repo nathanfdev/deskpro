@@ -236,21 +236,12 @@ class ChatController extends AbstractApiController
                 $content .= sprintf('<div class="file-thumb"><img src="%s" /></div>', $attachment->getThumbnailUrl(50, true));
             }
 
-            $chatMessage = new ChatMessage();
-            $chatMessage
-                ->setOrigin('user')
-                ->setAuthor($conversation->getPerson())
-                ->setContent($content)
-                ->setIsUser(true)
-                ->setIsHtml(true)
-                ->setMetadata([
-                    'is_html'         => true,
-                    'type'            => 'file',
-                    'blob_id'         => $attachment->getId(),
-                    'blob'            => $serializer->toArray($attachment, new SideloadSerializationContext()),
-                    'is_user_message' => true,
-                ])
-            ;
+            $chatMessage = UserChatMessages::createUserTextMessage($conversation, $content);
+            $chatMessage->setMetadata(array_merge($chatMessage->getMetadata(), [
+                'type'    => 'file',
+                'blob_id' => $attachment->getId(),
+                'blob'    => $serializer->toArray($attachment, new SideloadSerializationContext()),
+            ]));
 
             $conversation->addMessage($chatMessage);
             $chatMessages[] = $chatMessage;

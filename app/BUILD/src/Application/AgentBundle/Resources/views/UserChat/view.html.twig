@@ -115,7 +115,7 @@ pageMeta.baseId = '{{ baseId }}';
                                 {% if convo.person %}
                                     <a class="user-link clean-white as-popover preload" data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box;">
                                         <span style="background-image: url('{{ convo.person.getPictureUrl(20) }}');">
-                                            {{ convo.person.display_name }}
+                                            {{ convo.person_name ?: convo.person.display_name }}
                                             <span class="email"><b class="pemail-{{convo.person.id}}" data-hide="@parent">{{ convo.person.email_address }}</b></span>
                                         </span>
                                     </a>

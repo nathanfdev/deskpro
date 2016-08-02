@@ -30,7 +30,7 @@ export class MessageFactoryContainer extends React.Component {
     const { message, people } = this.props;
     const authorId = message.get('author');
 
-    return authorId && people.get(authorId) || Immutable.fromJS({});
+    return authorId && people.get(authorId) || Immutable.fromJS({ id: authorId, display_name: `ID ${authorId}` });
   }
 
   getMetadata() {

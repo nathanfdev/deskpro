@@ -152,7 +152,7 @@ class ChatMessage extends DomainObject
      *
      * @var array
      */
-    protected $metadata = array();
+    protected $metadata = [];
 
     /**
      * Date message was created.
@@ -231,6 +231,18 @@ class ChatMessage extends DomainObject
     }
 
     /**
+     * @param string $person_name
+     *
+     * @return $this
+     */
+    public function setPersonName($person_name)
+    {
+        $this->setModelField('person_name', $person_name);
+
+        return $this;
+    }
+
+    /**
      * Author id (legacy).
      *
      * @JMS\VirtualProperty()
@@ -273,6 +285,9 @@ class ChatMessage extends DomainObject
         return $this->getConversation()->getId();
     }
 
+    /**
+     * @return int|mixed|string
+     */
     public function getAuthorName()
     {
         if ($this->is_sys) {

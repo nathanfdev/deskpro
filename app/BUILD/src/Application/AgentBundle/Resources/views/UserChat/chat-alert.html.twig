@@ -6,7 +6,7 @@
 			<div class="form-input">
 				<span class="label-by-name">
 					{% if person %}
-						<a data-route="person:{{ path('agent_people_view', {person_id: person.id}) }}">{{ person.display_name }} &lt;{{ person.email_address }}&gt;</a>
+						<a data-route="person:{{ path('agent_people_view', {person_id: person.id}) }}">{{ convo.person_name ?: person.display_name }} &lt;{{ person.email_address }}&gt;</a>
 					{% else %}
 						{% if convo.person_name or convo.person_email %}
 							{% if convo.person_name %}{{ convo.person_name }}{% endif %}

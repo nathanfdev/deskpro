@@ -26,12 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
+use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -47,7 +44,7 @@ class ChatMessageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('message', 'html_textarea')
+            ->add('message', HtmlTextareaType::class)
             ->add('attachments', 'collection', [
                 'type'         => 'auth_blob',
                 'allow_add'    => true,
