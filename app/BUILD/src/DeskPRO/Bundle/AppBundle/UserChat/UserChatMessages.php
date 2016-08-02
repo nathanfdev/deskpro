@@ -50,6 +50,7 @@ class UserChatMessages
         $chatMessage
             ->setOrigin('user')
             ->setAuthor($chat->getPerson())
+            ->setPersonName($chat->getPersonName())
             ->setContent($content)
             ->setIsUser(true)
             ->setIsHtml(true)
