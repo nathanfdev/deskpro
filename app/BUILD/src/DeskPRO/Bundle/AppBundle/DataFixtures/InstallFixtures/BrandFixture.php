@@ -78,7 +78,7 @@ class BrandFixture extends DeskProAbstractFixture implements OrderedFixtureInter
         $setting        = new Setting();
         $setting->name  = 'portal.default_brand';
         $setting->value = $brand->getId();
-        $manager->persist($brand);
+        $manager->persist($setting);
 
         $manager->flush();
     }

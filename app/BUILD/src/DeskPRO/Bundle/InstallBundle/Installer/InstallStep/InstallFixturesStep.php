@@ -158,6 +158,31 @@ class InstallFixturesStep extends AbstractStep
                     break;
             }
         }
+
+        #---------------------------------------------
+        # Brand / URL
+        #---------------------------------------------
+
+        $brandId = $db->fetchColumn("SELECT value FROM settings WHERE name = 'portal.default_brand'");
+        $db->delete('settings', ['name' => 'core.deskpro_url']);
+        $db->delete('settings_brand', ['name' => 'core.deskpro_url']);
+
+        // And insert the web url
+        $url = $this->getSession()->getWebUrl();
+        if (!$url) {
+            $url = $this->getContext()->getProfile()->getAnswer('web_url');
+        }
+        if (!$url) {
+            $url = 'http://deskpro-dev/';
+        }
+        $db->executeUpdate(
+            'INSERT INTO settings (name, value) VALUES (?, ?)',
+            ['core.deskpro_url', $url]
+        );
+        $db->executeUpdate(
+            'INSERT INTO settings_brand (name, brand_id, value) VALUES (?, ?, ?)',
+            ['core.deskpro_url', $brandId, $url]
+        );
     }
 
     public function isComplete()

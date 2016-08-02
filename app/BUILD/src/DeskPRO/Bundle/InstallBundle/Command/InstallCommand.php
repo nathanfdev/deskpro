@@ -214,8 +214,36 @@ class InstallCommand extends ContainerAwareCommand
             $this->getHelperSet()
         );
 
+        if (
+            $session->getSource() === InstallSession::SOURCE_AUTO_INSTALLER
+            || $input->getOption('skip-wizard')
+        ) {
+            $skip_list[] = 'admin_account';
+        }
+
+        if (
+            $session->getSource() === InstallSession::SOURCE_WIN_INSTALLER
+            || $session->getSource() === InstallSession::SOURCE_AUTO_INSTALLER
+            || $input->getOption('skip-wizard')
+        ) {
+            $skip_list[] = 'file_integrity';
+            $skip_list[] = 'own_requirements';
+            $skip_list[] = 'install_cron_command';
+            $skip_list[] = 'check_existing';
+        }
+
+        if ($input->getOption('skip-wizard')) {
+            $skip_list[] = 'own_requirements';
+            $skip_list[] = 'check_existing';
+            $skip_list[] = 'accept_paths';
+            $skip_list[] = 'accept_web_url';
+            $skip_list[] = 'accept_database';
+            $skip_list[] = 'install_config';
+            $skip_list[] = 'install_cron_command';
+        }
+
         $steps = [
-            new InstallStep\WelcomeStep($context),
+            new InstallStep\WelcomeStep($context, in_array('admin_account', $skip_list)),
             new InstallStep\FileIntegrityStep($context),
             new InstallStep\OwnRequirementsStep($context),
             new InstallStep\CheckExistingStep($context),
@@ -230,27 +258,8 @@ class InstallCommand extends ContainerAwareCommand
             new InstallStep\DoneStep($context),
         ];
 
-        if (
-            $session->getSource() === InstallSession::SOURCE_WIN_INSTALLER
-            || $session->getSource() === InstallSession::SOURCE_AUTO_INSTALLER
-            || $input->getOption('skip-wizard')
-        ) {
-            $skip_list[] = 'file_integrity';
-            $skip_list[] = 'own_requirements';
-            $skip_list[] = 'install_cron_command';
-            $skip_list[] = 'check_existing';
-        }
-
         if ($input->getOption('skip-wizard')) {
             array_unshift($steps, new InstallStep\SkipWizardStep($context));
-
-            $skip_list[] = 'own_requirements';
-            $skip_list[] = 'check_existing';
-            $skip_list[] = 'accept_paths';
-            $skip_list[] = 'accept_web_url';
-            $skip_list[] = 'accept_database';
-            $skip_list[] = 'install_config';
-            $skip_list[] = 'install_cron_command';
         }
 
         /** @var InstallStep\AbstractStep $step */
