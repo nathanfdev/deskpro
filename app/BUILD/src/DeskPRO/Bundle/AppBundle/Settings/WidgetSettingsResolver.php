@@ -31,7 +31,6 @@ namespace DeskPRO\Bundle\AppBundle\Settings;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Language;
-use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonTranslation;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupTranslation;
@@ -85,9 +84,6 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     /**
      * Constructor.
      *
-     * Note we are fine to use unwrapped router here, because the only generater url we need is to static file,
-     * so we do not need to attach locale (/en) or brand (/brand-#) parts.
-     *
      * @param BrandAwareSettingsResolver $settingsResolver
      * @param EntityManager              $em
      * @param Packages                   $assetPackages
@@ -107,7 +103,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         $this->em                 = $em;
         $this->assetPackages      = $assetPackages;
-        $this->router             = RouterUtils::unwrapDecoratedRouter($router);
+        $this->router             = $router;
         $this->tokenStorage       = $tokenStorage;
         $this->permissionsManager = $permissionsManager;
     }
@@ -153,7 +149,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     {
         $model = new WidgetSettings();
         $model
-            ->setUrl($this->getWidgetUrlSettings())
+            ->setUrl($this->getWidgetUrlSettings($brand))
             ->setSettings($this->getWidgetOptions($brand))
             ->setEnabledOnPortal($this->isEnabledOnPortal())
             ->setBrand($brand)
@@ -163,11 +159,13 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return WidgetUrlSettings
      */
-    public function getWidgetUrlSettings()
+    public function getWidgetUrlSettings(Brand $brand)
     {
-        $dpUrl     = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $dpUrl     = $this->router->generate('portal_home', ['brand' => $brand], UrlGeneratorInterface::ABSOLUTE_URL);
         $loaderUrl = $this->assetPackages->getUrl('widget_loader.min.js', 'app_assets');
         $widgetUrl = $this->assetPackages->getUrl('DeskPRO_WidgetBundle.js', 'app_assets');
 

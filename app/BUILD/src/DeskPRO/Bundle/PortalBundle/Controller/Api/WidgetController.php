@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
-use Application\DeskPRO\Entity\Brand;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 
@@ -40,14 +39,14 @@ use FOS\RestBundle\View\View;
 class WidgetController extends AbstractApiController
 {
     /**
-     * @param Brand $brand
-     *
      * @return View
      *
-     * @Rest\Get("/brand_options/{brand}")
+     * @Rest\Get("/brand_options")
      */
-    public function getWidgetOptionsAction(Brand $brand)
+    public function getWidgetOptionsAction()
     {
+        $brand = $this->get('brand_stack')->getActive()->getBrand();
+
         return new View($this->wrap($this->container->get('widget_settings_resolver')->getWidgetBrandOptions($brand)));
     }
 }

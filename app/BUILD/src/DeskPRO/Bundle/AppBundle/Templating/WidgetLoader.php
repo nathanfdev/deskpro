@@ -75,7 +75,7 @@ class WidgetLoader
      */
     public function getWidgetCode(Brand $brand, $withOptions = false)
     {
-        $urlSettings = $this->settingsResolver->getWidgetUrlSettings();
+        $urlSettings = $this->settingsResolver->getWidgetUrlSettings($brand);
 
         $loaderSrc = $urlSettings->getWidgetLoader();
         $loaderSrc = preg_replace('#/assets/.*?/pub/#', '/dyn-assets/pub/', $loaderSrc);
@@ -94,7 +94,6 @@ class WidgetLoader
         }
 
         $options = array_merge($options, [
-            'brandId'     => $brand->getId(),
             'helpdeskUrl' => $urlSettings->getHelpdesk(),
         ]);
 

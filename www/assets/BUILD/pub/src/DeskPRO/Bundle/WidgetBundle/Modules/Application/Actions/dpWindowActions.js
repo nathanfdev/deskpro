@@ -146,7 +146,7 @@ export const fetchOptions = createAction(
       setOptions(cachedOptions);
     }
 
-    const promise = widgetApi.sendGet('DP_API/widget/options');
+    const promise = widgetApi.sendGet('DP_API/widget/brand_options');
     promise.then(response => {
       const options = response.data.data;
 
