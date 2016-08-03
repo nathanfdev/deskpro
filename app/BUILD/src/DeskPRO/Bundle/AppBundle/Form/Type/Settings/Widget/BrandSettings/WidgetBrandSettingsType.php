@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
 
-use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Button\WidgetBrandButtonSettingsType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Chat\WidgetBrandChatSettingsType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
@@ -51,9 +50,6 @@ class WidgetBrandSettingsType extends AbstractType
             ->add('button', WidgetBrandButtonSettingsType::class)
             ->add('chat', WidgetBrandChatSettingsType::class)
             ->add('ticket', WidgetBrandTicketSettingsType::class)
-            ->add('brand', 'entity', [
-                'class' => Brand::class,
-            ])
         ;
     }
 

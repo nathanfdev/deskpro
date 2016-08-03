@@ -28,12 +28,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal;
 
-use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-abstract class AbstractAppSettingsType extends AbstractType
+/**
+ * Class AbstractAppSettingsType.
+ */
+class AppSettingsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -44,9 +46,6 @@ abstract class AbstractAppSettingsType extends AbstractType
             ->add('enabled', ApiBooleanType::class)
             ->add('tab_enabled', ApiBooleanType::class)
             ->add('subscriptions', ApiBooleanType::class)
-            ->add('brand', 'entity', [
-                'class' => Brand::class,
-            ])
         ;
     }
 }

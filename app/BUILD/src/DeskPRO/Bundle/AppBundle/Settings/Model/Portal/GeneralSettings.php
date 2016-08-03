@@ -32,8 +32,18 @@ use Application\DeskPRO\Entity\Blob;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use JMS\Serializer\Annotation as JMS;
 
+/**
+ * Class GeneralSettings.
+ */
 class GeneralSettings extends AbstractBrandAwareSettings
 {
+    /**
+     * {@inheritdoc}
+     *
+     * @JMS\Exclude()
+     */
+    protected $brand;
+
     /**
      * Site name.
      *

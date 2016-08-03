@@ -91,6 +91,7 @@ define ['DeskPRO/Util/Util'], (Util)  ->
       me = @
 
       # Virtual value we don't want to save it
+      delete data.brand
       delete data.portal_mode
       delete data.enable_brand_logo
 

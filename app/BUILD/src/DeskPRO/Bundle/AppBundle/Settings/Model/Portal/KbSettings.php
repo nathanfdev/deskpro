@@ -28,6 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\Portal;
 
+/**
+ * Class KbSettings.
+ */
 class KbSettings extends AbstractAppSettings
 {
 }

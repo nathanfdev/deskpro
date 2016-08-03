@@ -29,10 +29,22 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal;
 
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\KbSettings;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class KbSettingsType extends AbstractAppSettingsType
+/**
+ * Class KbSettingsType.
+ */
+class KbSettingsType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return AppSettingsType::class;
+    }
+
     /**
      * {@inheritdoc}
      */
