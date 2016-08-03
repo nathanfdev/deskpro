@@ -9,6 +9,10 @@ class SearchBox extends React.Component {
   static defaultProps = {
     onUserInput() {}
   };
+  constructor() {
+    super();
+    this.handleChange = this.handleChange.bind(this);
+  }
 
   handleChange() {
     this.props.onUserInput(
