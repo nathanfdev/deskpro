@@ -272,11 +272,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       angular.toJson(@$scope.user_group_permission) != angular.toJson(@$scope.remote_user_group_permission) or
       angular.toJson(@$scope.chat_custom_fields) != angular.toJson(@$scope.remote_chat_custom_fields)
 
-    loadCode: (withOptions = false) ->
-      if withOptions
-        @Api2.sendGet('settings/brands/'+@$scope.brand_id+'/widget/code?options=1')
-      else
-        @Api2.sendGet('settings/brands/'+@$scope.brand_id+'/widget/code')
+    loadCode: ->
+      @Api2.sendGet('settings/brands/'+@$scope.brand_id+'/widget/code')
+
+    loadLiveDemoCode: ->
+      @Api2.sendGet('settings/brands/'+@$scope.brand_id+'/widget/live_demo_code')
 
     updateChatCode: ->
       @$scope.code = ''
@@ -335,7 +335,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
             @$scope.demo_state = event.data?.options
       , false)
 
-      @loadCode(true).then (codeResponse) =>
+      @loadLiveDemoCode().then (codeResponse) =>
         code = codeResponse.data.replace(/widget": {/, "widget\": {\n\"live_demo\": true,")
 
         demoDocument = @getLiveDemoDocument()
