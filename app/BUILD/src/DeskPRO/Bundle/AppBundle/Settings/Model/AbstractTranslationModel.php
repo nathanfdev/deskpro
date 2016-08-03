@@ -26,43 +26,42 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractTranslationModel;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class WidgetBrandButtonTranslation.
+ * Class AbstractTranslationModel.
  */
-class WidgetBrandButtonTranslation extends AbstractTranslationModel
+abstract class AbstractTranslationModel
 {
     /**
-     * Button name.
+     * Language.
      *
-     * @var string
+     * @var int
      *
-     * @JMS\Type("string")
-     * @Assert\NotBlank()
+     * @JMS\Type("integer")
+     * @Assert\NotNull()
      */
-    private $name = 'Help';
+    protected $language;
 
     /**
-     * @return string
+     * @return int
      */
-    public function getName()
+    public function getLanguage()
     {
-        return $this->name;
+        return $this->language;
     }
 
     /**
-     * @param string $name
+     * @param int $language
      *
      * @return $this
      */
-    public function setName($name)
+    public function setLanguage($language)
     {
-        $this->name = $name;
+        $this->language = $language;
 
         return $this;
     }
