@@ -60,7 +60,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
       inst = @$modal.open({
         templateUrl: tpl,
-        controller: ['$scope', '$modalInstance', 'options', 'typeDef', ($scope, $modalInstance, options, typeDef) ->
+        controller: ['$scope', '$modalInstance', 'options', 'typeDef', 'dpObTypesDefTicketCriteria', ($scope, $modalInstance, options, typeDef, types) ->
           if not options.criteria? then options.criteria = {}
           if not options.criteria?.terms then options.criteria.terms = {}
           if not options.criteria?.mode then options.criteria.mode = 'all'
