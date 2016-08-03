@@ -40,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\Widget
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetUrlSettings;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Routing\PortalRouter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
@@ -85,6 +86,11 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     private $permissionsManager;
 
     /**
+     * @var PortalModeStorage
+     */
+    private $portalModeStorage;
+
+    /**
      * Constructor.
      *
      * @param BrandAwareSettingsResolver $settingsResolver
@@ -93,6 +99,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
      * @param RouterInterface            $router
      * @param TokenStorageInterface      $tokenStorage
      * @param PortalPermissionsManager   $permissionsManager
+     * @param PortalModeStorage          $portalModeStorage
      */
     public function __construct(
         BrandAwareSettingsResolver $settingsResolver,
@@ -100,7 +107,8 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         Packages                   $assetPackages,
         RouterInterface            $router,
         TokenStorageInterface      $tokenStorage,
-        PortalPermissionsManager   $permissionsManager
+        PortalPermissionsManager   $permissionsManager,
+        PortalModeStorage          $portalModeStorage
     ) {
         parent::__construct($settingsResolver);
 
@@ -108,6 +116,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         $this->assetPackages      = $assetPackages;
         $this->tokenStorage       = $tokenStorage;
         $this->permissionsManager = $permissionsManager;
+        $this->portalModeStorage  = $portalModeStorage;
 
         if ($router instanceof PortalRouter) {
             $this->router = $router->getBaseRouter();
@@ -173,22 +182,30 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
      */
     public function getWidgetUrlSettings(Brand $brand)
     {
-        $dpUrl     = $this->router->generate('portal_home', ['brand' => $brand], UrlGeneratorInterface::ABSOLUTE_URL);
+        $portalMode = $this->portalModeStorage->getMode();
+        if ($portalMode && $portalMode->isBrand()) {
+            $baseUrl     = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+            $helpdeskUrl = rtrim($baseUrl, '/').'/brand-'.$brand->getId();
+        } else {
+            $baseUrl     = $this->router->generate('portal_home', ['brand' => $brand], UrlGeneratorInterface::ABSOLUTE_URL);
+            $helpdeskUrl = $baseUrl;
+        }
+
         $loaderUrl = $this->assetPackages->getUrl('widget_loader.min.js', 'app_assets');
         $widgetUrl = $this->assetPackages->getUrl('DeskPRO_WidgetBundle.js', 'app_assets');
 
         if (!preg_match('#^https?://#i', $loaderUrl)) {
-            $loaderUrl = rtrim($dpUrl, '/').$loaderUrl;
+            $loaderUrl = rtrim($baseUrl, '/').$loaderUrl;
         }
         if (!preg_match('#^https?://#i', $widgetUrl)) {
-            $widgetUrl = rtrim($dpUrl, '/').$widgetUrl;
+            $widgetUrl = rtrim($baseUrl, '/').$widgetUrl;
         }
 
         $model = new WidgetUrlSettings();
         $model
             ->setWidgetLoader($loaderUrl)
             ->setWidgetBundle($widgetUrl)
-            ->setHelpdesk($dpUrl)
+            ->setHelpdesk($helpdeskUrl)
         ;
 
         return $model;
