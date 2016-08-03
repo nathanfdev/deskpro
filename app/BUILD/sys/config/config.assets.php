@@ -125,6 +125,8 @@ $CONFIG['agent_vendors'] = [
         'bower_components/intl-tel-input/build/js/intlTelInput.min.js',
         'bower_components/jquery-qrcode/dist/jquery.qrcode.js',
         'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+        'bower_components/react/react.js',
+        'bower_components/react/react-dom.js',
     ],
 ];
 

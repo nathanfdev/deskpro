@@ -47,7 +47,7 @@ gulp.task('dev', cb => {
   console.log('\tdev:agent    -  For the agent interface');
   console.log('\tdev:portal   -  For the portal');
   console.log('\tdev:widget   -  For the widget');
-  console.log('\tdev:all      -  For both');
+  console.log('\tdev:all      -  For all');
   cb();
 });
 
@@ -276,6 +276,7 @@ function getWebpackConfig(mode, isProd) {
     config.entry.phonenumber_utils         = ['./node_modules/intl-tel-input/lib/libphonenumber/build/utils'];
     config.entry.DeskPRO_AgentBundle       = ['./src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle'];
     config.entry.DeskPRO_AgentBundle_style = ['./src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss'];
+    config.entry.DeskPRO_LegacyAgentBundle = ['./src/DeskPRO/Bundle/AgentBundle/DeskPRO_LegacyAgentBundle'];
   }
 
   //---
@@ -300,6 +301,9 @@ function getWebpackConfig(mode, isProd) {
 
     if (config.entry.DeskPRO_AgentBundle) {
       config.entry.DeskPRO_AgentBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
+    }
+    if (config.entry.DeskPRO_LegacyAgentBundle) {
+      config.entry.DeskPRO_LegacyAgentBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
     }
     if (config.entry.DeskPRO_WidgetBundle) {
       config.entry.DeskPRO_WidgetBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
