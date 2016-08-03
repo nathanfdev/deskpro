@@ -29,10 +29,22 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal;
 
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\DownloadsSettings;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class DownloadsSettingsType extends AbstractAppSettingsType
+/**
+ * Class DownloadsSettingsType.
+ */
+class DownloadsSettingsType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return AppSettingsType::class;
+    }
+
     /**
      * {@inheritdoc}
      */

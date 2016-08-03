@@ -15,7 +15,6 @@ Feature: Feedback brand settings Setup
     When I send a POST request to "/api/v2/settings/brands/{defaultBrandId}/portal/feedback" with body:
     """
 {
-  "brand": "~defaultBrandId~",
   "enabled":true,
   "tab_enabled":false,
   "subscriptions":true
@@ -43,7 +42,6 @@ Feature: Feedback brand settings Setup
     Then I send a POST request to "/api/v2/settings/brands/{lastCreatedId}/portal/feedback" with body:
     """
 {
-  "brand": "~lastCreatedId~",
   "enabled":false,
   "tab_enabled":true,
   "subscriptions":false

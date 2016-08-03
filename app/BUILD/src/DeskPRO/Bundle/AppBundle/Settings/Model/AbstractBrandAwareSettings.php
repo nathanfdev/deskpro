@@ -31,6 +31,9 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model;
 use Application\DeskPRO\Entity\Brand;
 use JMS\Serializer\Annotation as JMS;
 
+/**
+ * Class AbstractBrandAwareSettings.
+ */
 abstract class AbstractBrandAwareSettings
 {
     /**
@@ -38,7 +41,7 @@ abstract class AbstractBrandAwareSettings
      *
      * @var Brand
      *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
+     * @JMS\Exclude()
      */
     protected $brand;
 
@@ -53,7 +56,7 @@ abstract class AbstractBrandAwareSettings
     /**
      * @param Brand $brand
      *
-     * @return AbstractBrandAwareSettings
+     * @return $this
      */
     public function setBrand(Brand $brand)
     {

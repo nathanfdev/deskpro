@@ -39,12 +39,14 @@ use FOS\RestBundle\View\View;
 class WidgetController extends AbstractApiController
 {
     /**
-     * @Rest\Get("/options")
-     *
      * @return View
+     *
+     * @Rest\Get("/brand_options")
      */
     public function getWidgetOptionsAction()
     {
-        return new View($this->wrap($this->container->get('widget_settings_resolver')->getWidgetBrandOptions()));
+        $brand = $this->get('brand_stack')->getActive()->getBrand();
+
+        return new View($this->wrap($this->container->get('widget_settings_resolver')->getWidgetBrandOptions($brand)));
     }
 }

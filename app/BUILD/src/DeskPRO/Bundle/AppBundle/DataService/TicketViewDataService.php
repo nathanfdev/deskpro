@@ -258,6 +258,6 @@ class TicketViewDataService extends AbstractDataService
      */
     private function hasSetting($name)
     {
-        return (bool) $this->brandAwareSettings->getSetting($name, false);
+        return (bool) $this->brandAwareSettings->getSetting($name);
     }
 }

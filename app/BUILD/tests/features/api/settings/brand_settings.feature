@@ -15,7 +15,6 @@ Feature: Brand Settings Setup
     When I send a POST request to "/api/v2/settings/brands/{defaultBrandId}/portal/general" with body:
     """
 {
-  "brand": ~defaultBrandId~,
   "deskpro_name":"Test site",
   "deskpro_url":"http://testsite.com",
   "apps_feedback":true,
@@ -59,7 +58,6 @@ Feature: Brand Settings Setup
     Then I send a POST request to "/api/v2/settings/brands/{lastCreatedId}/portal/general" with body:
     """
 {
-  "brand": "~lastCreatedId~",
   "deskpro_name":"Other Brand",
   "deskpro_url":"http://otherbrand.com",
   "apps_feedback":false,

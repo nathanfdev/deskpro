@@ -1,0 +1,3 @@
+gregwar_captcha:
+    reload: true
+    expiration: 120

@@ -28,72 +28,51 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings\Portal;
 
+use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\GeneralSettingsType;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GeneralSettings;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class BrandSettingsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/settings/brands/{brandId}/portal/general")
+ * @Rest\Route("/settings/brands")
  */
 class GeneralSettingsController extends AbstractBrandAwareSettingsController
 {
     /**
-     * @var GeneralSettings
+     * @ApiDoc(
+     *     section="Portal New Settings",
+     *     description="Get portal general settings",
+     *     statusCodes={
+     *         200="Success",
+     *         404="Not Found error will returned in case we can't find the specified brand"
+     *     },
+     *     output={
+     *          "class"="Application\DeskPRO\Settings\GeneralPortalSettings"
+     *      }
+     * )
+     *
+     * @Rest\Get("/new/portal/general")
+     *
+     * @return View
      */
-    protected $model;
-
-    /**
-     * @return GeneralSettings
-     */
-    protected function getModel()
+    public function getNewAction()
     {
-        $this->model = $this->get('portal_settings_resolver')->getGeneralSettings();
+        $defaultId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+        $brand     = $this->getManager()->getRepository(Brand::class)->find($defaultId);
 
-        $this->model->setBrand($this->brand);
-        $this->model->setBrandLogo($this->brand->getLogoBlob());
-
-        return $this->model;
-    }
-
-    protected function getType()
-    {
-        return GeneralSettingsType::class;
-    }
-
-    /**
-     * @param GeneralSettings $model
-     * @param int             $brandId
-     */
-    protected function persistModel($model, $brandId)
-    {
-        $brand = $this->getBrand($brandId);
-
-        $settings_repository = $this->getSettingRepository();
-        $settings_repository
-            ->updateSetting(PortalSettingsResolver::SITE_NAME, $model->getSiteName(), $brand)
-            ->updateSetting(PortalSettingsResolver::SITE_URL, $model->getSiteUrl(), $brand)
-            ->updateSetting(PortalSettingsResolver::HELPDESK_NAME, $model->getDeskproName(), $brand)
-            ->updateSetting(PortalSettingsResolver::HELPDESK_URL, $model->getDeskproUrl(), $brand)
-            ->updateSetting(PortalSettingsResolver::APPS_FEEDBACK, $model->isAppsFeedback(), $brand)
-            ->updateSetting(PortalSettingsResolver::APPS_KB, $model->isAppsKb(), $brand)
-            ->updateSetting(PortalSettingsResolver::APPS_NEWS, $model->isAppsNews(), $brand)
-            ->updateSetting(PortalSettingsResolver::APPS_DOWNLOADS, $model->isAppsDownloads(), $brand)
-            ->updateSetting(PortalSettingsResolver::IFACE_PORTAL, $model->isIfacePortal(), $brand)
-            ->updateSetting(PortalSettingsResolver::IFACE_WIDGET, $model->isIfaceWidget(), $brand)
-            ->updateSetting(PortalSettingsResolver::SHOW_RATINGS, $model->isShowRatings(), $brand)
-            ->updateSetting(PortalSettingsResolver::SHOW_RATINGS_MIN_VOTES, $model->getShowRatingsMinVotes(), $brand)
-            ->updateSetting(PortalSettingsResolver::PUBLISH_COMMENTS, $model->isPublishComments(), $brand)
-        ;
+        return new View($this->wrap($this->getModel($brand)));
     }
 
     /**
@@ -109,22 +88,15 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
      *      }
      * )
      *
-     * @Rest\Get("")
+     * @Rest\Get("/{brand}/portal/general")
      *
-     * @param int $brandId
+     * @param Brand $brand
      *
      * @return View
      */
-    public function getAction($brandId)
+    public function getAction(Brand $brand)
     {
-        // For a new brand we first retrieve the default settings
-        if ($brandId == 'new') {
-            $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
-        }
-
-        $this->setBrandStack($brandId);
-
-        return new View($this->wrap($this->getModel()));
+        return new View($this->wrap($this->getModel($brand)));
     }
 
     /**
@@ -144,41 +116,84 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
      *         "options"={"method"="POST"},
      *     }
      *)
-     * @Rest\Post("")
+     * @Rest\Post("/{brand}/portal/general")
      *
      * @param Request $request
-     * @param int     $brandId
+     * @param Brand   $brand
      *
      * @return View
      */
-    public function postAction(Request $request, $brandId)
+    public function postAction(Request $request, Brand $brand)
     {
-        $view = $this->handleForm($request, $brandId);
+        $model = $this->getModel($brand);
+        $this->handleForm($request, $model);
 
-        if ($view && $brandId != $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand')) {
-            $url = $this->model->getDeskproUrl();
+        if ($brand->getId() != $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand')) {
+            $url = $model->getDeskproUrl();
 
             /** @var UrlHostChecker $urlHostChecker */
             $urlHostChecker = $this->get('url_host_checker');
 
-            $brand = $this->getBrand($brandId);
             $brand->setUrl($urlHostChecker->simplifyUrl($url));
-            $brand->setName($url = $this->model->getDeskproName());
+            $brand->setName($url = $model->getDeskproName());
 
             $em = $this->getManager();
             $em->persist($brand);
             $em->flush();
         }
 
-        if ($this->model->getBrandLogo()) {
-            $brand = $this->getBrand($brandId);
-            $brand->setLogoBlob($this->model->getBrandLogo());
+        if ($model->getBrandLogo()) {
+            $brand->setLogoBlob($model->getBrandLogo());
 
             $em = $this->getManager();
             $em->persist($brand);
             $em->flush();
         }
 
-        return $view;
+        return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return GeneralSettings
+     */
+    protected function getModel(Brand $brand)
+    {
+        return $this->get('portal_settings_resolver')->getGeneralSettings($brand);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getType()
+    {
+        return GeneralSettingsType::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param GeneralSettings $model
+     */
+    protected function persistModel(AbstractBrandAwareSettings $model)
+    {
+        $brand = $model->getBrand();
+        $this
+            ->getSettingRepository()
+            ->updateSetting(PortalSettingsResolver::SITE_NAME, $model->getSiteName(), $brand)
+            ->updateSetting(PortalSettingsResolver::SITE_URL, $model->getSiteUrl(), $brand)
+            ->updateSetting(PortalSettingsResolver::HELPDESK_NAME, $model->getDeskproName(), $brand)
+            ->updateSetting(PortalSettingsResolver::HELPDESK_URL, $model->getDeskproUrl(), $brand)
+            ->updateSetting(PortalSettingsResolver::APPS_FEEDBACK, $model->isAppsFeedback(), $brand)
+            ->updateSetting(PortalSettingsResolver::APPS_KB, $model->isAppsKb(), $brand)
+            ->updateSetting(PortalSettingsResolver::APPS_NEWS, $model->isAppsNews(), $brand)
+            ->updateSetting(PortalSettingsResolver::APPS_DOWNLOADS, $model->isAppsDownloads(), $brand)
+            ->updateSetting(PortalSettingsResolver::IFACE_PORTAL, $model->isIfacePortal(), $brand)
+            ->updateSetting(PortalSettingsResolver::IFACE_WIDGET, $model->isIfaceWidget(), $brand)
+            ->updateSetting(PortalSettingsResolver::SHOW_RATINGS, $model->isShowRatings(), $brand)
+            ->updateSetting(PortalSettingsResolver::SHOW_RATINGS_MIN_VOTES, $model->getShowRatingsMinVotes(), $brand)
+            ->updateSetting(PortalSettingsResolver::PUBLISH_COMMENTS, $model->isPublishComments(), $brand)
+        ;
     }
 }

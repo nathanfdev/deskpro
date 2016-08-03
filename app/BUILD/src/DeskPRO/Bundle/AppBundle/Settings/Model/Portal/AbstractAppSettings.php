@@ -31,6 +31,9 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model\Portal;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use JMS\Serializer\Annotation as JMS;
 
+/**
+ * Class AbstractAppSettings.
+ */
 abstract class AbstractAppSettings extends AbstractBrandAwareSettings
 {
     /**
@@ -39,12 +42,14 @@ abstract class AbstractAppSettings extends AbstractBrandAwareSettings
      * @JMS\Type("boolean")
      */
     protected $enabled;
+
     /**
      * @var bool
      *
      * @JMS\Type("boolean")
      */
     protected $tab_enabled;
+
     /**
      * @var bool
      *

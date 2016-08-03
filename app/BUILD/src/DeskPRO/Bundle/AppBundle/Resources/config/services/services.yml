@@ -13,7 +13,6 @@ services:
       - "@router"
       - "@security.token_storage"
       - "@portal_permissions_manager"
-      - "@brand_stack"
 
   captcha_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\CaptchaSettingsResolver

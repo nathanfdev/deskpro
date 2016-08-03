@@ -34,6 +34,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 /* @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 $loader->import(__DIR__.'/config.shared.php');
+$loader->import(__DIR__.'/config.captcha.yml');
 $loader->import(__DIR__.'/config.legacy.yml');
 $loader->import(__DIR__.'/updater/loggers.yml');
 $loader->import(__DIR__.'/updater/services.yml');

@@ -28,9 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Language;
-use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonTranslation;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupTranslation;
@@ -39,7 +39,6 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\Widget
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetUrlSettings;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -83,15 +82,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     private $permissionsManager;
 
     /**
-     * @var BrandStack
-     */
-    private $brandStack;
-
-    /**
      * Constructor.
-     *
-     * Note we are fine to use unwrapped router here, because the only generater url we need is to static file,
-     * so we do not need to attach locale (/en) or brand (/brand-#) parts.
      *
      * @param BrandAwareSettingsResolver $settingsResolver
      * @param EntityManager              $em
@@ -99,7 +90,6 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
      * @param RouterInterface            $router
      * @param TokenStorageInterface      $tokenStorage
      * @param PortalPermissionsManager   $permissionsManager
-     * @param BrandStack                 $brandStack
      */
     public function __construct(
         BrandAwareSettingsResolver $settingsResolver,
@@ -107,17 +97,15 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         Packages                   $assetPackages,
         RouterInterface            $router,
         TokenStorageInterface      $tokenStorage,
-        PortalPermissionsManager   $permissionsManager,
-        BrandStack                 $brandStack
+        PortalPermissionsManager   $permissionsManager
     ) {
         parent::__construct($settingsResolver);
 
         $this->em                 = $em;
         $this->assetPackages      = $assetPackages;
-        $this->router             = RouterUtils::unwrapDecoratedRouter($router);
+        $this->router             = $router;
         $this->tokenStorage       = $tokenStorage;
         $this->permissionsManager = $permissionsManager;
-        $this->brandStack         = $brandStack;
     }
 
     /**
@@ -153,26 +141,31 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return WidgetSettings
      */
-    public function getWidgetSettings()
+    public function getWidgetSettings(Brand $brand)
     {
         $model = new WidgetSettings();
         $model
-            ->setUrl($this->getWidgetUrlSettings())
-            ->setSettings($this->getWidgetOptions())
+            ->setUrl($this->getWidgetUrlSettings($brand))
+            ->setSettings($this->getWidgetOptions($brand))
             ->setEnabledOnPortal($this->isEnabledOnPortal())
+            ->setBrand($brand)
         ;
 
         return $model;
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return WidgetUrlSettings
      */
-    public function getWidgetUrlSettings()
+    public function getWidgetUrlSettings(Brand $brand)
     {
-        $dpUrl     = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $dpUrl     = $this->router->generate('portal_home', ['brand' => $brand], UrlGeneratorInterface::ABSOLUTE_URL);
         $loaderUrl = $this->assetPackages->getUrl('widget_loader.min.js', 'app_assets');
         $widgetUrl = $this->assetPackages->getUrl('DeskPRO_WidgetBundle.js', 'app_assets');
 
@@ -194,14 +187,16 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return WidgetOptions
      */
-    public function getWidgetOptions()
+    public function getWidgetOptions(Brand $brand)
     {
         $model = new WidgetOptions();
         $model
             ->setGlobal($this->getWidgetGlobalOptions())
-            ->setBrand($this->getWidgetBrandOptions())
+            ->setBrand($this->getWidgetBrandOptions($brand))
         ;
 
         return $model;
@@ -227,13 +222,17 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return WidgetBrandSettings
      */
-    public function getWidgetBrandOptions()
+    public function getWidgetBrandOptions(Brand $brand)
     {
         $model     = null;
-        $brandId   = $this->brandStack->getActive()->getBrand()->getId();
-        $dataStore = $this->em->getRepository(DataStore::class)->findOneBy(['name' => 'widget.brand_settings.'.$brandId]);
+        $dataStore = $this->em->getRepository(DataStore::class)->findOneBy([
+            'name' => 'widget.brand_settings.'.$brand->getId(),
+        ]);
+
         if ($dataStore) {
             $model = $dataStore->getData('brand_settings');
         }

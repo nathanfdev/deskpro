@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Templating;
 
+use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use JMS\Serializer\Serializer;
@@ -67,13 +68,14 @@ class WidgetLoader
     }
 
     /**
-     * @param bool $withOptions
+     * @param Brand $brand
+     * @param bool  $withOptions
      *
      * @return string
      */
-    public function getWidgetCode($withOptions = false)
+    public function getWidgetCode(Brand $brand, $withOptions = false)
     {
-        $urlSettings = $this->settingsResolver->getWidgetUrlSettings();
+        $urlSettings = $this->settingsResolver->getWidgetUrlSettings($brand);
 
         $loaderSrc = $urlSettings->getWidgetLoader();
         $loaderSrc = preg_replace('#/assets/.*?/pub/#', '/dyn-assets/pub/', $loaderSrc);
@@ -83,14 +85,17 @@ class WidgetLoader
         $assetsUrl = rtrim($assetsUrl, '/');
 
         if ($withOptions) {
-            $options = array_merge($this->serializer->toArray($this->settingsResolver->getWidgetBrandOptions()), [
+            $options = $this->serializer->toArray($this->settingsResolver->getWidgetBrandOptions($brand));
+            $options = array_merge($options, [
                 'noFetchOptions' => true,
             ]);
         } else {
             $options = [];
         }
 
-        $options['helpdeskUrl'] = $urlSettings->getHelpdesk();
+        $options = array_merge($options, [
+            'helpdeskUrl' => $urlSettings->getHelpdesk(),
+        ]);
 
         $encodedOptions = json_encode($options, \JSON_PRETTY_PRINT);
 
