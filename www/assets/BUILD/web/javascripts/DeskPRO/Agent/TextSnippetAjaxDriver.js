@@ -57,7 +57,6 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 	 * @param mutator
 	 */
 	loadSnippets: function(filter, callback, mutator) {
-
 		var snippets = [];
 
 		filter = filter || {};
@@ -103,8 +102,10 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 						snippets = snippet_data.snippets;
 
 						if (!filterString.length && !languageId && page == 1) {
-
               if (!categoryId) {
+								// ensure local cache is empty
+								self.localCache = {};
+
                 Array.each(snippets, function(s) {
                   self.localCache[s.category_id] = self.localCache[s.category_id] || [];
                   self.localCache[s.category_id].push(s);
@@ -162,8 +163,6 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 
 		postData.push({name: 'shortcut_code', value: snippet.shortcut_code});
 		postData.push({name: 'is_draft', value: snippet.is_draft ? 1 : 0});
-
-		var snippetsDb = this.snippetsDb;
 
 		$.ajax({
 			url: BASE_URL+'agent/text-snippets/'+this.typename+'/'+(snippet.id||0)+'/save.json',
