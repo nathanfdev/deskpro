@@ -9,7 +9,7 @@ Feature: Portal Anti-Abuse Setup
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.agent_rate_limit.login_settings.enabled" should be equal to 1
-    And the JSON node "data.agent_rate_limit.login_settings.limit" should be equal to 3
+    And the JSON node "data.agent_rate_limit.login_settings.limit" should be equal to 5
     And the JSON node "data.agent_rate_limit.login_settings.time" should be equal to 15
     And the JSON node "data.agent_rate_limit.login_settings.response" should be equal to "lockout"
     And the JSON node "data.agent_rate_limit.login_settings.lockout_time" should be equal to 15
