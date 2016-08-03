@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\AppBundle\Templating;
 
 use Application\DeskPRO\Entity\Brand;
-use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use JMS\Serializer\Serializer;
 
@@ -38,11 +37,6 @@ use JMS\Serializer\Serializer;
  */
 class WidgetLoader
 {
-    /**
-     * @var AppEnvInterface
-     */
-    private $appEnv;
-
     /**
      * @var WidgetSettingsResolver
      */
@@ -56,13 +50,11 @@ class WidgetLoader
     /**
      * Constructor.
      *
-     * @param AppEnvInterface        $appEnv
      * @param WidgetSettingsResolver $settingsResolver
      * @param Serializer             $serializer
      */
-    public function __construct(AppEnvInterface $appEnv, WidgetSettingsResolver $settingsResolver, Serializer $serializer)
+    public function __construct(WidgetSettingsResolver $settingsResolver, Serializer $serializer)
     {
-        $this->appEnv           = $appEnv;
         $this->settingsResolver = $settingsResolver;
         $this->serializer       = $serializer;
     }
@@ -102,11 +94,7 @@ class WidgetLoader
         $code   = [];
         $code[] = '<!--DESKPRO_WIDGET_LOADER::BEGIN-->';
         $code[] = "<script type=\"text/javascript\">\nwindow.DESKPRO_WIDGET_OPTIONS = $encodedOptions;\n</script>";
-
-        if ($this->appEnv->getEnvId() === 'dev') {
-            $code[] = "<script type=\"text/javascript\">\nwindow.DESKPRO_ASSETS_URL = '$assetsUrl';\n</script>";
-        }
-
+        $code[] = "<script type=\"text/javascript\">\nwindow.DESKPRO_ASSETS_URL = '$assetsUrl';\n</script>";
         $code[] = '<script type="text/javascript" id="dp-widget-loader" src="'.$loaderSrc.'"></script>';
         $code[] = '<!--DESKPRO_WIDGET_LOADER::END-->';
 
