@@ -79,9 +79,7 @@ class ContentSlugManager
     public function ensureValidSlug(ContentAbstract $content)
     {
         $existing_slug = $content->getSlug();
-        $expected_slug = Strings::slugifyTitle($content->getTitle());
-        // we're about trim slug here, to ensure it, otherwise it will be trimmed on query and we are expecting error
-        $expected_slug = substr($expected_slug, 0, 94);
+        $expected_slug = $this->slugifyTitle($content->getTitle());
 
         if ($expected_slug === '') {
             $expected_slug = strtolower(TypeUtils::getBaseTypeName($content));
@@ -96,12 +94,22 @@ class ContentSlugManager
         $i        = 1;
         while (!$this->isValidSlug($new_slug, $content)) {
             // if expected slug is not valid, keep incrementing a value at the end until we get something valid
-            $new_slug = Strings::slugifyTitle($content->getTitle().' '.++$i);
+            $new_slug = sprintf('%s-%d', $this->slugifyTitle($content->getTitle()), ++$i);
         }
 
         $new_history = $content->setSlug($new_slug);
 
         return $new_history;
+    }
+
+    /**
+     * @param $title
+     *
+     * @return string
+     */
+    private function slugifyTitle($title)
+    {
+        return substr(Strings::slugifyTitle($title), 0, 94);
     }
 
     /**
