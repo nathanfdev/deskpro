@@ -22,14 +22,13 @@ define [
       @$scope.replayLogEntry = (entry) =>
         return if !entry?.id?
         entry.response = null
-
-      @$scope.toggle = (scope) ->
-        scope.toggle()
-
         @service.keys.replayLogEntry(entry).then(
           (data) => entry.response = data
           => entry.response = {status: null, content: null}
         )
+
+      @$scope.toggle = (scope) ->
+        scope.toggle()
 
       @$scope.enable = (node) =>
         node.value = 1

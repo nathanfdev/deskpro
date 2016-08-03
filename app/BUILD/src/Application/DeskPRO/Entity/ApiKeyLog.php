@@ -48,19 +48,17 @@ class ApiKeyLog extends \Application\DeskPRO\Domain\DomainObject
     protected $id = null;
 
     /**
-     * @var int
      * @var \Application\DeskPRO\Entity\ApiKey
      */
     protected $key;
 
     /**
-     * @var int
-     * @var \Application\DeskPRO\Entity\Person
+     * @var array
      */
     protected $request;
 
     /**
-     * @var int
+     * @var array
      */
     protected $response;
 
@@ -72,8 +70,8 @@ class ApiKeyLog extends \Application\DeskPRO\Domain\DomainObject
     public function __construct()
     {
         $this['time']     = time();
-        $this['request']  = array();
-        $this['response'] = array();
+        $this['request']  = [];
+        $this['response'] = [];
     }
 
     /**
