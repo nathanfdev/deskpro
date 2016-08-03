@@ -241,6 +241,10 @@ class InstallCommand extends ContainerAwareCommand
             $skip_list[] = 'install_cron_command';
         }
 
+        if ($input->getOption('user') && $key = array_search('admin_account', $skip_list)) {
+            unset($skip_list[$key]);
+        }
+
         $steps = [
             new InstallStep\WelcomeStep($context, in_array('admin_account', $skip_list)),
             new InstallStep\FileIntegrityStep($context),
