@@ -270,10 +270,11 @@ function getWebpackConfig(mode, isProd) {
     config.entry.DeskPRO_EmbedHelpdeskBundle = ['./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_EmbedHelpdeskBundle'];
   }
   if (mode === 'all' || mode === 'agent') {
-    config.entry.phonenumber_utils         = ['./node_modules/intl-tel-input/lib/libphonenumber/build/utils'];
-    config.entry.DeskPRO_AgentBundle       = ['./src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle'];
-    config.entry.DeskPRO_AgentBundle_style = ['./src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss'];
-    config.entry.DeskPRO_LegacyAgentBundle = ['./src/DeskPRO/Bundle/AgentBundle/DeskPRO_LegacyAgentBundle'];
+    config.entry.phonenumber_utils               = ['./node_modules/intl-tel-input/lib/libphonenumber/build/utils'];
+    config.entry.DeskPRO_AgentBundle             = ['./src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle'];
+    config.entry.DeskPRO_AgentBundle_style       = ['./src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss'];
+    config.entry.DeskPRO_AgentLegacyBundle       = ['./src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentLegacyBundle'];
+    config.entry.DeskPRO_AgentLegacyBundle_style = ['./src/DeskPRO/Bundle/AgentBundle/Resources/style/legacy-agent.scss'];
   }
 
   //---
@@ -299,8 +300,8 @@ function getWebpackConfig(mode, isProd) {
     if (config.entry.DeskPRO_AgentBundle) {
       config.entry.DeskPRO_AgentBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
     }
-    if (config.entry.DeskPRO_LegacyAgentBundle) {
-      config.entry.DeskPRO_LegacyAgentBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
+    if (config.entry.DeskPRO_AgentLegacyBundle) {
+      config.entry.DeskPRO_AgentLegacyBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
     }
     if (config.entry.DeskPRO_WidgetBundle) {
       config.entry.DeskPRO_WidgetBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
