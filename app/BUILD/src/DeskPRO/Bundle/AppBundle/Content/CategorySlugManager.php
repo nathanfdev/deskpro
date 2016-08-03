@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\AppBundle\Content;
 
 use Application\DeskPRO\Entity\CategoryAbstract;
+use DeskPRO\Component\Util\TypeUtils;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -71,6 +72,10 @@ class CategorySlugManager
     public function ensureValidSlug(CategoryAbstract $category)
     {
         $expected_slug = Strings::slugifyTitle($category->getTitle());
+
+        if ($expected_slug === '') {
+            $expected_slug = strtolower(str_replace('Category', '', TypeUtils::getBaseTypeName($category)));
+        }
 
         // check if the expected slug is a valid one, in both content repo and in slug history repo
         $new_slug = $expected_slug;
