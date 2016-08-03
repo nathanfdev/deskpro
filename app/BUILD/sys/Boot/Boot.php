@@ -186,6 +186,8 @@ class Boot
             $lowClass = 'DpSys\\LowScript\\DpScript';
         } elseif (substr($path, 0, 9) === '/file.php' && (!isset($path[9]) || $path[9] === '/')) {
             $lowClass = 'DpSys\\LowScript\\ServeFileScript';
+        } elseif (substr($path, 0, 23) === '/app/run/test_ping.html' && (!isset($path[23]) || $path[23] === '/')) {
+            $lowClass = 'DpSys\\LowScript\\TestPing';
         } elseif (substr($path, 0, 17) === '/get_messages.php' && (!isset($path[17]) || $path[17] === '/')) {
             $lowClass = 'DpSys\\LowScript\\GetMsgScript';
         }
