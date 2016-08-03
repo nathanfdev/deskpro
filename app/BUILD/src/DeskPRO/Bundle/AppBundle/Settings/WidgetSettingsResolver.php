@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\Widget
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetUrlSettings;
+use DeskPRO\Bundle\PortalBundle\Routing\PortalRouter;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -103,9 +104,14 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         $this->em                 = $em;
         $this->assetPackages      = $assetPackages;
-        $this->router             = $router;
         $this->tokenStorage       = $tokenStorage;
         $this->permissionsManager = $permissionsManager;
+
+        if ($router instanceof PortalRouter) {
+            $this->router = $router->getBaseRouter();
+        } else {
+            $this->router = $router;
+        }
     }
 
     /**

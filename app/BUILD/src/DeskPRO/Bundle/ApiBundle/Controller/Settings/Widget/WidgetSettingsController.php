@@ -91,14 +91,38 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      *
      * @Rest\Get("/code")
      *
-     * @param Request $request
-     * @param Brand   $brand
+     * @param Brand $brand
      *
      * @return string
      */
-    public function getWidgetCodeAction(Request $request, Brand $brand)
+    public function getWidgetCodeAction(Brand $brand)
     {
-        $code = $this->get('widget_loader_code_renderer')->getWidgetCode($brand, $request->query->get('options'));
+        $code = $this->get('widget_loader_code_renderer')->getWidgetCode($brand, false);
+
+        return new Response($code);
+    }
+
+    /**
+     * Get the HTML code for the widget live demo preview.
+     *
+     * @ApiDoc(
+     *     section="Widget setup",
+     *     resourceDescription="Operations about widget setup",
+     *     description="Get the HTML code for the widget",
+     *     statusCodes={
+     *         200="Returned if request was successful"
+     *     },
+     *     output="string"
+     * )
+     *
+     * @Rest\Get("/live_demo_code")
+     *
+     * @return string
+     */
+    public function getWidgetLiveDemoCodeAction()
+    {
+        $brand = $this->get('brand_stack')->getActive()->getBrand();
+        $code  = $this->get('widget_loader_code_renderer')->getWidgetCode($brand, true);
 
         return new Response($code);
     }
