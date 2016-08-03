@@ -71,21 +71,21 @@ class CategorySlugManager
      */
     public function ensureValidSlug(CategoryAbstract $category)
     {
-        $expected_slug = $this->slugifyTitle($category->getTitle());
+        $expectedSlug = $this->slugifyTitle($category->getTitle());
 
-        if ($expected_slug === '') {
-            $expected_slug = strtolower(str_replace('Category', '', TypeUtils::getBaseTypeName($category)));
+        if ($expectedSlug === '') {
+            $expectedSlug = strtolower(str_replace('Category', '', TypeUtils::getBaseTypeName($category)));
         }
 
         // check if the expected slug is a valid one, in both content repo and in slug history repo
-        $new_slug = $expected_slug;
-        $i        = 1;
-        while (!$this->isValidSlug($new_slug, $category)) {
+        $newSlug = $expectedSlug;
+        $i       = 1;
+        while (!$this->isValidSlug($newSlug, $category)) {
             // if expected slug is not valid, keep incrementing a value at the end until we get something valid
-            $new_slug = sprintf('%s-%d', $this->slugifyTitle($category->getTitle()), ++$i);
+            $newSlug = sprintf('%s-%d', $this->slugifyTitle($category->getTitle()), ++$i);
         }
 
-        return $category->setSlug($new_slug);
+        return $category->setSlug($newSlug);
     }
 
     /**
@@ -110,27 +110,27 @@ class CategorySlugManager
      */
     public function findCategoryObjectBySlug($slug, $categoryClassName)
     {
-        $content_repo = $this->getEm()->getRepository($categoryClassName);
-        if ($content = $content_repo->findOneBy(['slug' => $slug])) {
+        $contentRepo = $this->getEm()->getRepository($categoryClassName);
+        if ($content = $contentRepo->findOneBy(['slug' => $slug])) {
             return $content;
         }
 
         return;
     }
 
-    protected function isValidSlug($new_slug, CategoryAbstract $category)
+    protected function isValidSlug($newSlug, CategoryAbstract $category)
     {
-        if ($content_object = $this->getContentBySlug($new_slug, $category)) {
+        if ($contentObject = $this->getContentBySlug($newSlug, $category)) {
             // valid if it is the current slug (should be covered already in ensureValidSlug, here for sanity)
-            return $content_object->getId() === $category->getId();
+            return $contentObject->getId() === $category->getId();
         }
 
         return true;
     }
 
-    protected function getContentBySlug($new_slug, CategoryAbstract $category)
+    protected function getContentBySlug($newSlug, CategoryAbstract $category)
     {
-        return $this->getRepoForContent($category)->findOneBy(['slug' => $new_slug]);
+        return $this->getRepoForContent($category)->findOneBy(['slug' => $newSlug]);
     }
 
     /**
