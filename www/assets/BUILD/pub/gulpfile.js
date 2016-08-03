@@ -190,9 +190,6 @@ function getWebpackConfig(mode, isProd) {
           loader:  'babel?cacheDirectory',
           include: [
             path.resolve(__dirname, 'src/DeskPRO')
-          ],
-          exclude: [
-            path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Legacy')
           ]
         },
         {
