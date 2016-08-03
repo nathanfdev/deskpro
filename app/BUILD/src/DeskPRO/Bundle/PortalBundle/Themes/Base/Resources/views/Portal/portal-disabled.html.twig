@@ -1,4 +1,3 @@
-{% if app.user and app.user.is_agent and app.user.can_admin %}
     <!DOCTYPE html>
     <html {% if language.is_rtl %}class="as-rtl" dir="rtl"{% endif %}>
         <head>
@@ -10,10 +9,17 @@
         </head>
     <body>
         <div class="world with-searchbox">
+
             <div class="column-full">
-                The portal has been disabled. You can re-enable the portal from <a href="{{ path('admin') }}#/portal/setup">Admin > Portal > Setup</a>.
+                {% if app.user and app.user.can_admin %}
+                    The portal has been disabled. You can re-enable the portal from <a href="{{ path('admin') }}#/portal/setup">Admin > Portal > Setup</a>.
+                {% else %}
+                    The portal has been disabled. If you are an agent, click the button below to go to the agent interface.
+                {% endif %}
             </div>
+
             <section class="welcome-news">
+
                 <ul class="big-button-collection big-buttons dpx-toggle-mobile">
                     <li>
                         <a href="{{ path('agent') }}">
@@ -21,17 +27,17 @@
                             <span class="title">Agent interface</span>
                         </a>
                     </li>
+                    {% if app.user and app.user.can_admin %}
                     <li>
                         <a href="{{ path('admin') }}">
                             <i class="fa fa-gear"></i>
                             <span class="title">Admin interface</span>
                         </a>
                     </li>
+                    {% endif %}
                 </ul>
             </section>
         </div>
     </body>
     </html>
-{% else %}
-    <!-- Portal disabled -->
-{% endif %}
+
