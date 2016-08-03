@@ -486,17 +486,6 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Route("/app/run/test_ping.html", name="portal_ping")
-     * @Method("GET")
-     *
-     * @return Response
-     */
-    public function pingAction()
-    {
-        return new Response('OK', Response::HTTP_OK);
-    }
-
-    /**
      * @param Request $request
      *
      * @return JsonResponse|null
