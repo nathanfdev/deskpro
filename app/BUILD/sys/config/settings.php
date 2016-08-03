@@ -975,7 +975,7 @@ return [
     'rate_limit.upload_attachment.response'     => 'lockout',
 
     'rate_limit.login.agent.enabled'      => true,
-    'rate_limit.login.agent.limit'        => 3,
+    'rate_limit.login.agent.limit'        => 5,
     'rate_limit.login.agent.time'         => 15 * 60, // 15 min
     'rate_limit.login.agent.lockout_time' => 15 * 60, // 15 min
     'rate_limit.login.agent.response'     => 'lockout',
