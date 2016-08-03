@@ -73,7 +73,19 @@ class WidgetBrandChatPopupSettings
     }
 
     /**
-     * @return ArrayCollection
+     * @param WidgetBrandChatPopupTranslation[]|ArrayCollection $translations
+     *
+     * @return $this
+     */
+    public function setTranslations(ArrayCollection $translations)
+    {
+        $this->translations = $translations;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection|WidgetBrandChatPopupTranslation[]
      */
     public function getTranslations()
     {

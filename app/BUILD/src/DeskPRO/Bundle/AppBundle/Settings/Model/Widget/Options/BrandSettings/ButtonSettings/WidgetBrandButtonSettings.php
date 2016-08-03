@@ -119,7 +119,19 @@ class WidgetBrandButtonSettings
     }
 
     /**
-     * @return ArrayCollection
+     * @param WidgetBrandButtonTranslation[]|ArrayCollection $translations
+     *
+     * @return $this
+     */
+    public function setTranslations($translations)
+    {
+        $this->translations = $translations;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection|WidgetBrandButtonTranslation[]
      */
     public function getTranslations()
     {

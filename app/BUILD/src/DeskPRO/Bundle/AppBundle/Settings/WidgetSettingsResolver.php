@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Language;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractTranslationModel;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonTranslation;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupTranslation;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
@@ -40,6 +41,7 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetUrlSettings;
 use DeskPRO\Bundle\PortalBundle\Routing\PortalRouter;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -243,22 +245,49 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
             $model = $dataStore->getData('brand_settings');
         }
 
+        // create new brand settings
         if (!$model instanceof WidgetBrandSettings) {
             $model = new WidgetBrandSettings();
+        }
 
-            // set default translations
-            $defaultLanguage = $this->em->getRepository(Language::class)->findOneBy(['sys_name' => 'default']);
-            if ($defaultLanguage) {
-                $defaultPopupTranslation = new WidgetBrandChatPopupTranslation();
-                $defaultPopupTranslation->setLanguage($defaultLanguage->getId());
+        $popupTranslations  = $model->getChat()->getPopup()->getTranslations();
+        $buttonTranslations = $model->getButton()->getTranslations();
 
-                $defaultButtonTranslation = new WidgetBrandButtonTranslation();
-                $defaultButtonTranslation->setLanguage($defaultLanguage->getId());
+        // filter deleted language translations
+        $languages    = $this->em->getRepository(Language::class)->findAll();
+        $languagesIds = array_map(function (Language $language) {
+            return $language->getId();
+        }, $languages);
 
-                $model->getChat()->getPopup()->getTranslations()->add($defaultPopupTranslation);
-                $model->getButton()->getTranslations()->add($defaultButtonTranslation);
+        /** @var AbstractTranslationModel[]|ArrayCollection $propTranslations */
+        foreach ([$popupTranslations, $buttonTranslations] as $propTranslations) {
+            foreach ($propTranslations as $translation) {
+                if (!in_array($translation->getLanguage(), $languagesIds)) {
+                    $propTranslations->removeElement($translation);
+                }
             }
         }
+
+        // set default translations
+        $defaultLanguage = $this->em->getRepository(Language::class)->findOneBy([]);
+        if ($defaultLanguage) {
+            if (!count($popupTranslations)) {
+                $defaultTranslation = new WidgetBrandChatPopupTranslation();
+                $defaultTranslation->setLanguage($defaultLanguage->getId());
+                $popupTranslations->add($defaultTranslation);
+            }
+
+            if (!count($buttonTranslations)) {
+                $defaultTranslation = new WidgetBrandButtonTranslation();
+                $defaultTranslation->setLanguage($defaultLanguage->getId());
+
+                $buttonTranslations->add($defaultTranslation);
+            }
+        }
+
+        // reset translation collection keys
+        $model->getChat()->getPopup()->setTranslations(new ArrayCollection($popupTranslations->getValues()));
+        $model->getButton()->setTranslations(new ArrayCollection($buttonTranslations->getValues()));
 
         return $model;
     }
