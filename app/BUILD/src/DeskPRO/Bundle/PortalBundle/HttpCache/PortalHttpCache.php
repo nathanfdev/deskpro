@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\PortalBundle\HttpCache;
 use FOS\HttpCache\SymfonyCache\UserContextSubscriber;
 use FOS\HttpCacheBundle\SymfonyCache\EventDispatchingHttpCache;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class PortalHttpCache extends EventDispatchingHttpCache
@@ -102,7 +103,19 @@ class PortalHttpCache extends EventDispatchingHttpCache
             return $this->kernel->handle($request, $type, $catch);
         }
 
-        $response = parent::handle($request, $type, $catch);
+        try {
+            $response = parent::handle($request, $type, $catch);
+        } catch (\Exception $e) {
+            // if its a sub-request (esi cache), then just return a blank string
+            // these generally happen when the sub-request is a 302 (e.g. login required) or 404 (permission error) on a tag
+            if ($type !== HttpKernelInterface::MASTER_REQUEST) {
+                return new Response('', 200);
+
+            // otherwise theres a problem with the main request and we should log this
+            } else {
+                throw $e;
+            }
+        }
 
         // we don't want this to "look" like it should be cached to the outside world. after this method,
         // we send it to the user. so let's strip away the idea of this response being cachable.
