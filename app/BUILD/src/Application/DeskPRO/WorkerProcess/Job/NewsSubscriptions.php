@@ -142,7 +142,7 @@ class NewsSubscriptions extends AbstractJob
                 ', [$categoryIds], 'person_id', null, 'category_id', [Connection::PARAM_INT_ARRAY]);
 
                 $rootSubs = $this->getContainer()->getDb()->fetchAllGrouped('
-                    SELECT person_id
+                    SELECT person_id, root_category
                     FROM news_subscriptions
                     WHERE root_category = 1
                 ', [], 'person_id', null, 'root_category', [Connection::PARAM_INT_ARRAY]);
