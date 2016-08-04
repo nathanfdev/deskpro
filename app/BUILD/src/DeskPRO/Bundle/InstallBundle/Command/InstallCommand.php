@@ -241,7 +241,7 @@ class InstallCommand extends ContainerAwareCommand
             $skip_list[] = 'install_cron_command';
         }
 
-        if ($input->getOption('user') && $key = array_search('admin_account', $skip_list)) {
+        if ($this->shouldIgnoreAdminSkip($input) && $key = array_search('admin_account', $skip_list)) {
             unset($skip_list[$key]);
         }
 
@@ -303,5 +303,13 @@ class InstallCommand extends ContainerAwareCommand
         }
 
         return 0;
+    }
+
+    private function shouldIgnoreAdminSkip(InputInterface $input)
+    {
+        return $input->getOption('user')
+            || $input->getOption('opt_user_name')
+            || $input->getOption('opt_user_email')
+            || $input->getOption('opt_user_password');
     }
 }
