@@ -253,7 +253,7 @@ class UserSearch implements UserSearchInterface
 
         $like_query = new Query\MoreLikeThis();
         $like_query->setFields(['title', 'labels', 'content']);
-        $like_query->setLikeText($this->escapeQueryStringTerm($content));
+        $like_query->setLike($this->escapeQueryStringTerm($content));
         $like_query->setMinTermFrequency(1);
         $like_query->setMinDocFrequency(1);
 
