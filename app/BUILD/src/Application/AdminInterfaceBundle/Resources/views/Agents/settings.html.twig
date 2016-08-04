@@ -274,8 +274,8 @@
                     <div class="col-lg-12">
                         <a href="javascript:;" class="file-upload-wrapper" style="display: inline-block;" ng-hide="logo_uploading">
                             <input type="file" ng-file-select="Settings.onFileSelect($files)" accept="image/*" />
-                            <div ng-if="!logo_blob" style="width: 300px; height: 75px; background: #eee; border: 1px solid #ccc;"></div>
-                            <img ng-if="logo_blob" ng-src="{{ ng_var('logo_blob.thumbnail') }}&size-fit=1" />
+                            <div ng-if="!logo_blob || logo_blob.empty" style="width: 300px; height: 75px; background: #eee; border: 1px solid #ccc;"></div>
+                            <img ng-if="logo_blob && !logo_blob.empty" ng-src="{{ ng_var('logo_blob.thumbnail') }}&size-fit=1" />
                         </a>
                         <i class="spinner-flat" ng-show="logo_uploading"></i>
                     </div>

@@ -694,18 +694,18 @@ class SettingsController extends AbstractController implements ProtectedControll
      */
     public function getLogoBlobAction()
     {
-        if (!$blob_id = $this->settings->get('agent.login_logo_blob_id')) {
-            throw new NotFoundHttpException();
+        /* @var Blob $blob */
+        $blobId = $this->settings->get('agent.login_logo_blob_id');
+        $blob   = $blobId ? $this->em->find(Blob::class, $blobId) : null;
+
+        if ($blob) {
+            $result = array_merge($blob->toApiData(), [
+                'thumbnail' => rtrim($this->settings->get('core.deskpro_url'), '/').$blob->getThumbnailUrl('360x100'),
+            ]);
+        } else {
+            $result = ['empty' => true];
         }
 
-        /** @var $blob Blob */
-        if (!$blob = $this->em->find('DeskPRO:Blob', $blob_id)) {
-            throw new NotFoundHttpException();
-        }
-
-        $data              = $blob->toApiData();
-        $data['thumbnail'] = rtrim($this->settings->get('core.deskpro_url'), '/').$blob->getThumbnailUrl('360x100');
-
-        return $this->createJsonResponse($data);
+        return $this->createJsonResponse($result);
     }
 }
