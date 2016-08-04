@@ -437,12 +437,10 @@
                 return false;
             };
         </script>
-		{% if form.vars.allow_edit %}
-			<a id="link_add_another_{{ form.vars.id }}" href="#" onclick="add_another_{{ form.vars.id }}()">
-				Add another
-			</a>
-			{{ form_widget(form.children.custom_choice) }}
-		{% endif %}
+        <a id="link_add_another_{{ form.vars.id }}" href="#" onclick="add_another_{{ form.vars.id }}()">
+            Add another
+        </a>
+        {{ form_widget(form.children.custom_choice) }}
 	{% endspaceless %}
 {% endblock cf_contextual_choice_widget %}
 
