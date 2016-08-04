@@ -1,26 +1,48 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import { Toggle, Range } from 'DeskPRO/Component/Semantic/Form';
 
 class Chat extends React.Component {
   static propTypes = {
-    onlineAgents: PropTypes.arrayOf(
-      PropTypes.shape({
-        name:       PropTypes.string.isRequired,
-        pictureSrc: PropTypes.string,
-        department: PropTypes.string
-      })
-    )
+    onlineAgents: PropTypes.array,
+    onToggleChat: PropTypes.func
   };
+
+  static defaultProps = {
+    onlineAgents: [],
+    onToggleChat() {}
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      activeChat: false,
-      volume:     5
+      onlineAgents: this.props.onlineAgents,
+      activeChat:   false,
+      volume:       5
     };
     this.toggleChat = this.toggleChat.bind(this);
     this.updateAudioVolume = this.updateAudioVolume.bind(this);
+    this.refreshOnlineAgentsList = this.refreshOnlineAgentsList.bind(this);
+  }
+
+  componentDidMount() {
+    const self = this;
+    window.DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-agents-userchat', info => {
+      self.setState({
+        onlineAgents: info.online_agents
+      });
+      self.refreshOnlineAgentsList();
+    });
+  }
+
+  getStatus() {
+    const { activeChat, onlineAgents } = this.state;
+    const status = activeChat ? 'ON' : 'OFF';
+    return (<div className="status">
+      {status} <span className="count">({onlineAgents.length})</span>
+    </div>);
   }
 
   getAgents() {
@@ -40,8 +62,7 @@ class Chat extends React.Component {
   }
 
   getPopupContent() {
-    const { activeChat, volume } = this.state;
-    const { onlineAgents } = this.props;
+    const { activeChat, volume, onlineAgents } = this.state;
     return (<div id="chat-menu">
       <div className="header"><strong>Chat</strong>
         &nbsp;({onlineAgents.length} Agents, 0 Users)
@@ -60,10 +81,23 @@ class Chat extends React.Component {
     </div>);
   }
 
+  refreshOnlineAgentsList() {
+    const { onlineAgents } = this.state;
+    let hasMe = false;
+    for (const agentId of onlineAgents) {
+      if (parseInt(agentId, 10) === window.DESKPRO_PERSON_ID) {
+        hasMe = true;
+      }
+    }
+    this.setState({
+      activeChat: hasMe
+    });
+  }
+
   sortAgentsByDepartment() {
     const departments = {};
     let key = 0;
-    for (const agent of this.props.onlineAgents) {
+    for (const agent of this.state.onlineAgents) {
       if (!departments.hasOwnProperty(agent.department)) {
         departments[agent.department] = {
           label:  agent.department,
@@ -85,13 +119,39 @@ class Chat extends React.Component {
     });
   }
 
-  toggleChat(newVal) {
-    this.setState({
-      activeChat: newVal
+  toggleChat(status) {
+    const postData = [];
+    const url = `${window.BASE_URL}agent/misc/set-agent-status/available`;
+    const self = this;
+    if (status) {
+      postData.push({
+        name:  'is_chat_available',
+        value: 1
+      });
+    } else {
+      postData.push({
+        name:  'is_chat_available',
+        value: 0
+      });
+    }
+
+    window.$.ajax({
+      url,
+      type: 'POST',
+      data: postData,
+      complete() {
+        self.setState({
+          activeChat: status
+        });
+        if (self.props.onToggleChat) {
+          self.props.onToggleChat();
+        }
+      }
     });
   }
 
   render() {
+    const { activeChat } = this.state;
     return (<div className="chat">
       <PopUp
         positionMy="right top"
@@ -101,7 +161,8 @@ class Chat extends React.Component {
         zIndex={99999}
         content={this.getPopupContent()}
       >
-        <i className="icon talk" />
+        <i className={classNames('icon', 'comments', 'outline', { on: activeChat })} /><br />
+        {this.getStatus()}
       </PopUp>
     </div>);
   }

@@ -7,17 +7,51 @@ class User extends React.Component {
     src: PropTypes.string
   };
 
+  constructor() {
+    super();
+    this.clickSettings = this.clickSettings.bind(this);
+    this.clickHelp = this.clickHelp.bind(this);
+  }
+
   getPopupContent() {
     return (<div id="user-menu">
       <div className="header">Your Profile</div>
       <div className="description">
         <div className="ui vertical menu">
-          <MenuItem><i className="icon setting" /> Preferences</MenuItem>
-          <MenuItem><i className="icon help circle" /> Help</MenuItem>
+          <MenuItem onClick={this.clickSettings}><i className="icon setting" /> Preferences</MenuItem>
+          <MenuItem onClick={this.clickHelp}><i className="icon help circle" /> Help</MenuItem>
           <MenuItem><i className="icon reply" /> Log out</MenuItem>
         </div>
       </div>
     </div>);
+  }
+
+  closePopup() {
+    this.refs.userPopup.closePopup();
+  }
+
+  clickHelp() {
+    const wrap = window.$('#dp_header_help');
+    wrap.addClass('active');
+
+    const closeFn = function closeFn() {
+      wrap.removeClass('active');
+    };
+
+    if (!wrap.data('has-init')) {
+      wrap.find('.btn-menu').on('click', ev => {
+        window.Orb.cancelEvent(ev);
+        window.Orb.shimClickCallbackPop();
+      });
+    }
+
+    window.Orb.shimClickCallback(closeFn, 'zindex-chrome0');
+    this.closePopup();
+  }
+
+  clickSettings() {
+    window.$('#settingswin').trigger('dp_open');
+    this.closePopup();
   }
 
   render() {
@@ -31,6 +65,7 @@ class User extends React.Component {
           elementId="user-menu-popup"
           zIndex={99999}
           content={this.getPopupContent()}
+          ref={'userPopup'}
         >
           <img className="ui circular image" src={src} alt="agent" />
           <i className="dropdown icon" />

@@ -22,7 +22,7 @@ class SearchBox extends React.Component {
 
   render() {
     const { placeholder, text } = this.props;
-    return (<div className="item">
+    return (<div className="item search-box">
       <div className="ui input left icon search">
         <i className="search icon" />
         <input

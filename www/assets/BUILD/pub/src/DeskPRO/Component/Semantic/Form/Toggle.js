@@ -11,6 +11,7 @@ class Toggle extends React.Component {
     onChange() {
     }
   };
+
   constructor() {
     super();
     this.onClick = this.onClick.bind(this);
@@ -29,6 +30,7 @@ class Toggle extends React.Component {
           type="checkbox"
           id={elementId}
           checked={active}
+          onChange={() => {}}
           className="hidden right"
         />
         <label onClick={this.onClick}>

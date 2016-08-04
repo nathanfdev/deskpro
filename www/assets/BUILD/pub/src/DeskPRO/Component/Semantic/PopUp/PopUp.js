@@ -27,13 +27,12 @@ class PopUp extends React.Component {
     this.cancelTimeout = this.cancelTimeout.bind(this);
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
+    this.openPopup = this.openPopup.bind(this);
   }
 
   onMouseEnter() {
     this.cancelTimeout();
-    this.setState({
-      isOpen: true
-    });
+    this.openPopup();
   }
 
   onMouseLeave() {
@@ -42,10 +41,20 @@ class PopUp extends React.Component {
     }
     const self = this;
     this.timeout = setTimeout(() => {
-      self.setState({
-        isOpen: false
-      });
+      self.closePopup();
     }, 500);
+  }
+
+  openPopup() {
+    this.setState({
+      isOpen: true
+    });
+  }
+
+  closePopup() {
+    this.setState({
+      isOpen: false
+    });
   }
 
   cancelTimeout() {
@@ -72,6 +81,7 @@ class PopUp extends React.Component {
       <div
         style={{ display: 'inline-block' }}
         ref={`button${id}`}
+        onClick={this.openPopup}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
       >{children}
