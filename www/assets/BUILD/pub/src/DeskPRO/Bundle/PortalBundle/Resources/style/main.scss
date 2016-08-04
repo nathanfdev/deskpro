@@ -1105,8 +1105,8 @@ button, .button, input[type="submit"] {
   margin-bottom: 10px;
   color: $text-color;
   position: relative;
-  text-align: $text-right;
   width: 100%;
+  overflow: hidden;
 
   .logo {
     max-height: 100px;
@@ -1164,7 +1164,6 @@ button, .button, input[type="submit"] {
     display: inline-block;
     vertical-align: bottom;
     text-align: $float-left;
-    float: $float-left;
 
     a {
       color: inherit;
@@ -1179,9 +1178,8 @@ button, .button, input[type="submit"] {
   }
 
   ul {
-    display: inline-block;
+    display: block;
     vertical-align: bottom;
-    min-width: 50%;
     margin: 0;
     padding: 0;
     list-style: none;
