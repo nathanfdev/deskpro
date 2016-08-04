@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@ use Application\DeskPRO\CustomFields\CustomDataPersister;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\CustomFieldData;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
+use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataOwnerInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -56,7 +57,13 @@ class ChoiceDataTransformer  implements DataTransformerInterface
      */
     protected $previous;
 
-    public function __construct(CustomDataPersister $persister, DomainObject $owner)
+    /**
+     * Constructor.
+     *
+     * @param CustomDataPersister         $persister
+     * @param CustomPerDataOwnerInterface $owner
+     */
+    public function __construct(CustomDataPersister $persister, CustomPerDataOwnerInterface $owner)
     {
         $this->persister = $persister;
         $this->owner     = $owner;
@@ -141,7 +148,7 @@ class ChoiceDataTransformer  implements DataTransformerInterface
 
         // multiple choices
         if ($value instanceof ArrayCollection || is_array($value)) {
-            $ret = array();
+            $ret = [];
 
             foreach ($value as $definition) {
                 /* @var $definition CustomFieldDefinition */
@@ -173,7 +180,7 @@ class ChoiceDataTransformer  implements DataTransformerInterface
         $data->definition      = $definition;
         $data->root_definition = $definition->parent ?: $definition;
         $data->owner           = $this->owner;
-        $this->persister->add($data);
+        $this->owner->getCustomPerData()->add($data);
 
         return $data;
     }
