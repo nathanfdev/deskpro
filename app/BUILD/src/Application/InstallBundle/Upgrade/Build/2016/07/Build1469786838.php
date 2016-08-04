@@ -96,30 +96,5 @@ SQL;
         $this->execDbQuery('default', 'CREATE UNIQUE INDEX glossary_words_word_brand_id_uindex ON glossary_words (word, brand_id);');
 
         $this->execDbQuery('default', sprintf('UPDATE `glossary_words` SET `brand_id` = %d', $brand['id']));
-
-        $this->out('Add tickets link to brand');
-        $instructions   = [];
-        $instructions[] = 'ADD brand_id INT DEFAULT NULL';
-        $instructions[] = 'ADD CONSTRAINT FK_54469DF444F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE SET NULL';
-        $instructions[] = 'ADD INDEX IDX_54469DF444F5D008 (brand_id)';
-
-        $this->execSlowAlterTable('tickets', implode(', ', $instructions));
-
-        $instructions = ['ADD brand_id INT DEFAULT NULL'];
-        $this->execSlowAlterTable('tickets_search_active', implode(', ', $instructions));
-
-        $this->out('Bind existing tickets to brand');
-        $connection = $this->getDbConnection('default');
-        $ticketsSQL = <<<SQL
-UPDATE `tickets`
-SET `brand_id` = :brand
-WHERE `brand_id` IS NULL 
-LIMIT 25000
-SQL;
-        do {
-            $rows = $connection->executeUpdate($ticketsSQL, ['brand' => $brand['id']]);
-            $this->out('Updating 25000 tickets');
-            usleep(1000);
-        } while ($rows);
     }
 }
