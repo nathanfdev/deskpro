@@ -37,6 +37,8 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackSlugHistory;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsSlugHistory;
+use DeskPRO\Component\Util\TypeUtils;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -53,11 +55,19 @@ class ContentSlugManager
      */
     private $container;
 
+    /**
+     * ContentSlugManager constructor.
+     *
+     * @param ContainerInterface $container
+     */
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
 
+    /**
+     * @return EntityManager
+     */
     protected function getEm()
     {
         return $this->container->get('doctrine.orm.default_entity_manager');
@@ -77,26 +87,38 @@ class ContentSlugManager
      */
     public function ensureValidSlug(ContentAbstract $content)
     {
-        $existing_slug = $content->getSlug();
-        $expected_slug = Strings::slugifyTitle($content->getTitle());
-        // we're about trim slug here, to ensure it, otherwise it will be trimmed on query an we are expecting error
-        $expected_slug = substr($expected_slug, 0, 94);
+        $existingSlug = $content->getSlug();
+        $expectedSlug = $this->slugifyTitle($content->getTitle());
 
-        if ($existing_slug === $expected_slug) {
+        if ($expectedSlug === '') {
+            $expectedSlug = strtolower(TypeUtils::getBaseTypeName($content));
+        }
+
+        if ($existingSlug === $expectedSlug) {
             return; // already valid and set, no need to do more here
         }
 
         // check if the expected slug is a valid one, in both content repo and in slug history repo
-        $new_slug = $expected_slug;
-        $i        = 1;
-        while (!$this->isValidSlug($new_slug, $content)) {
+        $newSlug = $expectedSlug;
+        $i       = 1;
+        while (!$this->isValidSlug($newSlug, $content)) {
             // if expected slug is not valid, keep incrementing a value at the end until we get something valid
-            $new_slug = Strings::slugifyTitle($content->getTitle().' '.++$i);
+            $newSlug = sprintf('%s-%d', $this->slugifyTitle($content->getTitle()), ++$i);
         }
 
-        $new_history = $content->setSlug($new_slug);
+        $newHistory = $content->setSlug($newSlug);
 
-        return $new_history;
+        return $newHistory;
+    }
+
+    /**
+     * @param $title
+     *
+     * @return string
+     */
+    private function slugifyTitle($title)
+    {
+        return substr(Strings::slugifyTitle($title), 0, 94);
     }
 
     /**
@@ -111,41 +133,59 @@ class ContentSlugManager
      */
     public function findContentObjectBySlug($slug, $content_class_name)
     {
-        $content_repo = $this->getEm()->getRepository($content_class_name);
-        if ($content = $content_repo->findOneBy(['slug' => $slug])) {
+        $contentRepo = $this->getEm()->getRepository($content_class_name);
+        if ($content = $contentRepo->findOneBy(['slug' => $slug])) {
             return $content;
         }
 
-        $history_repo = $this->getEm()->getRepository(sprintf('%sSlugHistory', $content_class_name));
-        if ($content_history = $history_repo->findOneBy(['slug' => $slug])) {
+        $historyRepo = $this->getEm()->getRepository(sprintf('%sSlugHistory', $content_class_name));
+        if ($content_history = $historyRepo->findOneBy(['slug' => $slug])) {
             return $content_history->getContent();
         }
 
         return;
     }
 
-    protected function isValidSlug($new_slug, ContentAbstract $content)
+    /**
+     * @param string          $newSlug
+     * @param ContentAbstract $content
+     *
+     * @return bool
+     */
+    protected function isValidSlug($newSlug, ContentAbstract $content)
     {
-        if ($content_object = $this->getContentBySlug($new_slug, $content)) {
+        if ($contentObject = $this->getContentBySlug($newSlug, $content)) {
             // valid if it is the current slug (should be covered already in ensureValidSlug, here for sanity)
-            return $content_object->getId() === $content->getId();
+            return $contentObject->getId() === $content->getId();
         }
 
-        if ($history = $this->getSlugHistoryBySlug($new_slug, $content)) {
+        if ($history = $this->getSlugHistoryBySlug($newSlug, $content)) {
             return false;
         }
 
         return true;
     }
 
-    protected function getContentBySlug($new_slug, ContentAbstract $content)
+    /**
+     * @param string          $newSlug
+     * @param ContentAbstract $content
+     *
+     * @return null|object
+     */
+    protected function getContentBySlug($newSlug, ContentAbstract $content)
     {
-        return $this->getRepoForContent($content)->findOneBy(['slug' => $new_slug]);
+        return $this->getRepoForContent($content)->findOneBy(['slug' => $newSlug]);
     }
 
-    protected function getSlugHistoryBySlug($new_slug, ContentAbstract $content)
+    /**
+     * @param string          $newSlug
+     * @param ContentAbstract $content
+     *
+     * @return null|object
+     */
+    protected function getSlugHistoryBySlug($newSlug, ContentAbstract $content)
     {
-        return $this->getHistoryRepoForContent($content)->findOneBy(['slug' => $new_slug]);
+        return $this->getHistoryRepoForContent($content)->findOneBy(['slug' => $newSlug]);
     }
 
     /**
