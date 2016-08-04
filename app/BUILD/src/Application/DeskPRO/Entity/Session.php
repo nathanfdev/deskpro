@@ -127,7 +127,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var bool
      */
-    protected $is_chat_available = true;
+    protected $is_chat_available = false;
 
     /**
      * @var \DateTime
