@@ -26,100 +26,198 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\DevBundle\Command;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Ticket;
+use Doctrine\ORM\EntityManager;
+use Faker\Factory;
 use Orb\Util\Strings;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
+/**
+ * Class DevLoadDataCommand.
+ */
+class DevLoadDataCommand extends ContainerAwareCommand
 {
-    protected function configure()
-    {
-        $this->setName('dpdev:load-data');
-        $this->addOption('count', null, InputOption::VALUE_REQUIRED, 'Amount of data for each type to create', 0);
-        $this->addOption('types', null, InputOption::VALUE_REQUIRED, 'Comma separated list of data types (* for all)', '');
-        $this->addOption('types-not', null, InputOption::VALUE_REQUIRED, 'Comma separated list of data types to skip (implies --types=*)', '');
-        $this->addOption('range', null, InputOption::VALUE_REQUIRED, 'Range of dates to cover data for (eg, "3 years")', '');
-        $this->addOption('wordlist', null, InputOption::VALUE_REQUIRED, 'Optional path to a wordlist file with one word per line. Specify "database" to fetch from a database connection as specified in config.php', '');
-    }
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    private $db;
+
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * @var int
+     */
+    private $num = 1;
 
     /**
      * @var array
      */
     protected $_data_cache = [];
+
     /**
      * @var array
      */
     protected $_batch_insert = [];
+
     /**
      * @var array
      */
     protected $_batch_insert_ignore = [];
+
     /**
      * @var array
      */
     protected $_batch_insert_label_def = [];
+
     /**
      * @var null|int
      */
     protected $_start_ts = null;
+
     /**
      * @var null|int
      */
     protected $_date_offset = null;
-    /**
-     * @var string
-     */
-    protected $_wordlist_file;
 
+    /**
+     * @var array
+     */
+    protected $_ticket_statuses = [
+        0 => 'awaiting_user',
+        1 => 'awaiting_user',
+        2 => 'awaiting_user',
+        3 => 'awaiting_user',
+        4 => 'awaiting_user',
+        5 => 'resolved',
+        6 => 'resolved',
+        7 => 'resolved',
+        8 => 'archived',
+        9 => 'archived',
+    ];
+
+    protected $_label_type_map = [
+        'article'      => ['labels_articles', 'article_id'],
+        'download'     => ['labels_downloads', 'download_id'],
+        'feedback'     => ['labels_feedback', 'feedback_id'],
+        'news'         => ['labels_news', 'news_id'],
+        'organization' => ['labels_organizations', 'organization_id'],
+        'person'       => ['labels_people', 'person_id'],
+        'ticket'       => ['labels_tickets', 'ticket_id'],
+    ];
+
+    /**
+     * @var int
+     */
+    protected $_twitter_hits = 0;
+
+    /**
+     * @var int
+     */
+    protected $_person_hits = 0;
+
+    /**
+     * @var \Faker\Generator
+     */
+    private $faker;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this->setName('dpdev:load-data');
+        $this->addOption(
+            'count',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Amount of data for each type to create',
+            0
+        );
+        $this->addOption(
+            'types',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Comma separated list of data types (* for all)',
+            ''
+        );
+        $this->addOption(
+            'types-not',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Comma separated list of data types to skip (implies --types=*)',
+            ''
+        );
+        $this->addOption(
+            'range',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Range of dates to cover data for (eg, "3 years")',
+            ''
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->faker = Factory::create();
+        $this->db    = $this->getContainer()->get('database_connection');
+        $this->em    = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+
         $GLOBALS['DP_NOSQL_LOG'] = true;
         ini_set('memory_limit', -1);
         set_time_limit(0);
-        App::getDb()->getConfiguration()->setSQLLogger(null);
+        $this->db->getConfiguration()->setSQLLogger(null);
 
         // todo: triggers, escalations, banned emails, banned IPs, agent teams, perm groups
-
-        $available_types = [
+        $availableTypes = [
+            'custom_defs',
             'agent',
-            'org_field', 'organization', 'usergroup',
-            'person_field', 'person',
-            'sla', 'ticket_department', 'ticket_field', 'ticket', 'ticket_filter',
-            'ticket_snippet_category', 'ticket_snippet', 'ticket_macro',
-            'chat_snippet_category', 'chat_snippet',
+            'organization',
+            'usergroup',
+            'person',
+            'sla',
+            'ticket_department',
+            'ticket',
+            'ticket_filter',
+            'ticket_snippet_category',
+            'ticket_snippet',
+            'ticket_macro',
+            'chat_snippet_category',
+            'chat_snippet',
             'chat_department',
-            'feedback_status', 'feedback_type', 'feedback',
-            'article_field', 'article_category', 'article',
-            'news_category', 'news',
-            'download_category', 'download',
+            'feedback_status',
+            'feedback_type',
+            'feedback',
+            'article_category',
+            'article',
+            'news_category',
+            'news',
+            'download_category',
+            'download',
             'glossary',
             'task',
-            'twitter_user', 'twitter_status',
+            'twitter_user',
+            'twitter_status',
         ];
         $types_manual = ['agent', 'twitter_user', 'twitter_status'];
 
         $amount = intval($input->getOption('count'));
         if ($amount <= 0) {
             $amount = 100;
-        }
-
-        $this->_wordlist_file = $input->getOption('wordlist');
-        if ($this->_wordlist_file && $this->_wordlist_file != 'database' && !is_file($this->_wordlist_file)) {
-            echo "--wordlist is not a valid file\n";
-
-            return 1;
         }
 
         $type_input = $input->getOption('types');
@@ -135,7 +233,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         }
 
         if ($type_input === '*') {
-            $types = $available_types;
+            $types = $availableTypes;
 
             foreach ($types_manual as $type_manual) {
                 $manual_type_key = array_search($type_manual, $types);
@@ -158,8 +256,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         }
 
         if (!$types) {
-            sort($available_types);
-            echo "No types given. Cannot continue. Available types:\n\t".implode(', ', $available_types)."\n";
+            sort($availableTypes);
+            echo "No types given. Cannot continue. Available types:\n\t".implode(', ', $availableTypes)."\n";
 
             return 2;
         }
@@ -183,16 +281,15 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $this->_date_offset = (time() - $start_date->getTimestamp()) / $amount;
 
         $total = count($types);
-        $db    = App::getDb();
         $begin = microtime(true);
 
-        $db->exec('SET unique_checks=0');
-        $db->exec('SET foreign_key_checks=0');
-        $db->beginTransaction();
+        $this->db->exec('SET unique_checks=0');
+        $this->db->exec('SET foreign_key_checks=0');
+        $this->db->beginTransaction();
 
         // loop through all to keep the order the same as we create some dependent stuff first
         $type_count = 0;
-        foreach ($available_types as $type) {
+        foreach ($availableTypes as $type) {
             if (!in_array($type, $types)) {
                 continue;
             }
@@ -256,9 +353,9 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             )."\n";
         }
 
-        $db->commit();
-        $db->exec('SET unique_checks=1');
-        $db->exec('SET foreign_key_checks=1');
+        $this->db->commit();
+        $this->db->exec('SET unique_checks=1');
+        $this->db->exec('SET foreign_key_checks=1');
 
         $time   = microtime(true) - $begin;
         $memory = memory_get_usage() / 1024 / 1024;
@@ -269,23 +366,20 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
     protected function _flushAndClear()
     {
-        $orm = App::getOrm();
-        $db  = App::getDb();
-
-        $orm->flush();
+        $this->em->flush();
 
         foreach ($this->_batch_insert as $table => $batches) {
-            $db->batchInsert($table, $batches);
+            $this->db->batchInsert($table, $batches);
         }
         foreach ($this->_batch_insert_ignore as $table => $batches) {
-            $db->batchInsert($table, $batches, true);
+            $this->db->batchInsert($table, $batches, true);
         }
         foreach ($this->_batch_insert_label_def as $type => $labels) {
             $batches = [];
             foreach ($labels as $label => $total) {
                 $batches[] = "('$type', '$label', $total)";
             }
-            $db->executeUpdate('
+            $this->db->executeUpdate('
                 INSERT INTO label_defs
                     (label_type, label, total)
                 VALUES
@@ -294,35 +388,34 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             ');
         }
 
-        $orm->commit();
-        $orm->clear();
+        $this->em->commit();
+        $this->em->clear();
         $this->_data_cache             = [];
         $this->_batch_insert           = [];
         $this->_batch_insert_ignore    = [];
         $this->_batch_insert_label_def = [];
         gc_collect_cycles();
 
-        $db->beginTransaction();
+        $this->db->beginTransaction();
     }
 
-    protected function _loadAgent($i)
+    protected function _loadAgent()
     {
         $agent       = new Entity\Person();
-        $agent->name = $this->_getRandomWords(2);
-        $agent->setEmail($this->_getRandomWords(1).microtime(true).'@example.com', true);
+        $agent->name = $this->faker->name;
+        $agent->setEmail($this->getEmail(), true);
         $agent->date_created = $this->_getRandomDate();
         $agent->is_user      = true;
         $agent->is_confirmed = true;
         $agent->is_agent     = true;
-        App::getOrm()->persist($agent);
-        App::getOrm()->flush();
 
-        $db = App::getDb();
+        $this->em->persist($agent);
+        $this->em->flush();
 
         // Default to non-destructive perm group, or if thats deleted, the default all perms group
-        $has_ug = $db->fetchColumn('SELECT id FROM usergroups WHERE id IN (4,3) ORDER BY id DESC');
+        $has_ug = $this->db->fetchColumn('SELECT id FROM usergroups WHERE id IN (4,3) ORDER BY id DESC');
         if ($has_ug) {
-            $db->insert('person2usergroups', [
+            $this->db->insert('person2usergroups', [
                 'person_id'    => $agent->getId(),
                 'usergroup_id' => $has_ug,
             ]);
@@ -344,21 +437,12 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
                 'is_active'     => 1,
             ];
         }
-        $db->batchInsert('department_permissions', $batch);
 
-//        // Default notifications
-//        $agent_id = $agent->getId();
-//        $db->executeUpdate("
-//            INSERT INTO `ticket_filter_subscriptions` (`id`, `filter_id`, `person_id`, `email_created`, `email_new`, `email_user_activity`, `email_agent_activity`, `email_property_change`, `alert_new`, `alert_user_activity`, `alert_agent_activity`, `alert_property_change`)
-//            VALUES
-//                (NULL, 1, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-//                (NULL, 2, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-//                (NULL, 3, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-//                (NULL, 4, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-//                (NULL, 5, $agent_id, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-//        ");
+        $this->db->batchInsert('department_permissions', $batch);
 
-        $db->executeUpdate("
+        // Default notifications
+        $agent_id = $agent->getId();
+        $this->db->executeUpdate("
             INSERT INTO `people_prefs` (`person_id`, `name`, `value_str`, `value_array`, `date_expire`)
             VALUES
                 ($agent_id, 'agent_notif.chat_message.email', '1', X'4E3B', NULL),
@@ -383,14 +467,14 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         ");
 
         // Add pref for first login marker
-        $db->insert('people_prefs', [
+        $this->db->insert('people_prefs', [
             'person_id'   => $agent_id,
             'name'        => 'agent.first_login',
             'value_str'   => 1,
             'value_array' => null,
             'date_expire' => null,
         ]);
-        $db->insert('people_prefs', [
+        $this->db->insert('people_prefs', [
             'person_id'   => $agent_id,
             'name'        => 'agent.first_login_name',
             'value_str'   => 1,
@@ -399,59 +483,65 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         ]);
     }
 
-    protected function _loadOrgField()
+    protected function _loadCustomDefs()
     {
-        $org_field                = new Entity\CustomDefOrganization();
-        $org_field->title         = $this->_getRandomWords(2);
-        $org_field->description   = $this->_getRandomWords(mt_rand(1, 10));
-        $org_field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
+        $customDefClasses = [
+            Entity\CustomDefOrganization::class,
+            Entity\CustomDefPerson::class,
+            Entity\CustomDefTicket::class,
+            Entity\CustomDefChat::class,
+            Entity\CustomDefFeedback::class,
+            Entity\CustomDefArticle::class,
+        ];
 
-        App::getOrm()->persist($org_field);
+        foreach ($customDefClasses as $customDefClass) {
+            $org_field                = new $customDefClass();
+            $org_field->title         = $this->faker->title;
+            $org_field->description   = $this->faker->realText();
+            $org_field->handler_class = Entity\CustomDefAbstract::HANDLER_CLASS_TEXT;
+
+            $this->em->persist($org_field);
+        }
     }
 
-    protected function _loadOrganization($i)
+    protected function _loadOrganization()
     {
         if (!isset($this->_data_cache['usergroups'])) {
-            $this->_data_cache['usergroups'] = App::getEntityRepository('DeskPRO:Usergroup')->findAll();
+            $this->_data_cache['usergroups'] = $this->em->getRepository('DeskPRO:Usergroup')->findAll();
         }
         if (!isset($this->_data_cache['org_fields'])) {
-            $this->_data_cache['org_fields'] = App::getEntityRepository('DeskPRO:CustomDefOrganization')->findAll();
+            $this->_data_cache['org_fields'] = $this->em->getRepository('DeskPRO:CustomDefOrganization')->findAll();
         }
 
-        $org = [
-            'name'         => $this->_getRandomWords(mt_rand(1, 3)),
+        $this->db->insert('organizations', [
+            'name'         => $this->faker->title,
             'date_created' => $this->_getRandomDate('string'),
-        ];
-        $org_ent = new Entity\Organization();
-        $org     = array_merge($org_ent->getScalarData(), $org);
+        ]);
 
-        $db = App::getDb();
-        $db->insert('organizations', $org);
-        $org['id'] = $db->lastInsertId();
-
-        $this->_applyLabelsDb('organization', $org['id']);
+        $orgId = $this->db->lastInsertId();
+        $this->_applyLabelsDb('organization', $orgId);
 
         if (mt_rand(1, 4) == 1) {
             $count = mt_rand(1, 3);
             for ($i = 0; $i < $count; ++$i) {
                 $ug_id = $this->_getRandomFromCache('usergroups', 'id');
-                $db->executeUpdate('
+                $this->db->executeUpdate('
                     INSERT IGNORE INTO organization2usergroups
                         (organization_id, usergroup_id)
                     VALUES
                         (?, ?)
-                ', [$org['id'], $ug_id]);
+                ', [$orgId, $ug_id]);
             }
         }
 
         foreach ($this->_data_cache['org_fields'] as $field) {
             if ($field->getTypeName() == 'text') {
-                $db->insert('custom_data_organizations', [
-                    'organization_id' => $org['id'],
+                $this->db->insert('custom_data_organizations', [
+                    'organization_id' => $orgId,
                     'field_id'        => $field->id,
                     'root_field_id'   => $field->id,
                     'value'           => 0,
-                    'input'           => $this->_getRandomWords(mt_rand(1, 5)),
+                    'input'           => $this->faker->word,
                 ]);
             }
         }
@@ -462,32 +552,23 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
     protected function _loadUsergroup()
     {
         $usergroup        = new Entity\Usergroup();
-        $usergroup->title = $this->_getRandomWords(2);
-        $usergroup->note  = $this->_getRandomWords(mt_rand(1, 5));
+        $usergroup->title = $this->faker->title;
+        $usergroup->note  = $this->faker->text;
 
-        App::getOrm()->persist($usergroup);
+        $this->em->persist($usergroup);
     }
 
-    protected function _loadPersonField()
-    {
-        $field                = new Entity\CustomDefPerson();
-        $field->title         = $this->_getRandomWords(2);
-        $field->description   = $this->_getRandomWords(mt_rand(1, 10));
-        $field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
-
-        App::getOrm()->persist($field);
-    }
-
-    protected function _loadPerson($i)
+    protected function _loadPerson()
     {
         if (!isset($this->_data_cache['usergroups'])) {
-            $this->_data_cache['usergroups'] = App::getEntityRepository('DeskPRO:Usergroup')->findAll();
+            $this->_data_cache['usergroups'] = $this->em->getRepository('DeskPRO:Usergroup')->findAll();
         }
         if (!isset($this->_data_cache['person_fields'])) {
-            $this->_data_cache['person_fields'] = App::getEntityRepository('DeskPRO:CustomDefPerson')->findAll();
+            $this->_data_cache['person_fields'] = $this->em->getRepository('DeskPRO:CustomDefPerson')->findAll();
         }
 
-        list($first_name, $last_name) = explode(' ', $this->_getRandomWords(2));
+        $first_name = $this->faker->firstName;
+        $last_name  = $this->faker->lastName;
 
         $person = [
             'name'         => "$first_name $last_name",
@@ -503,23 +584,22 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $person_ent = new Entity\Person();
         $person     = array_merge($person_ent->getScalarData(), $person);
 
-        $db = App::getDb();
-        $db->insert('people', $person);
-        $person['id'] = $db->lastInsertId();
+        $this->db->insert('people', $person);
+        $person['id'] = $this->db->lastInsertId();
 
         $email = [
             'person_id'      => $person['id'],
-            'email'          => $this->_getRandomWords(1).microtime(true).'@example.com',
+            'email'          => $this->getEmail(),
             'email_domain'   => 'example.com',
             'is_validated'   => 1,
             'date_created'   => $person['date_created'],
             'date_validated' => $person['date_created'],
         ];
-        $db->insert('people_emails', $email);
-        $email['id'] = $db->lastInsertId();
+        $this->db->insert('people_emails', $email);
+        $email['id'] = $this->db->lastInsertId();
 
         $person['primary_email_id'] = $email['id'];
-        $db->update('people',
+        $this->db->update('people',
             ['primary_email_id' => $email['id']],
             ['id'               => $person['id']]
         );
@@ -543,7 +623,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
                     'field_id'      => $field->id,
                     'root_field_id' => $field->id,
                     'value'         => 0,
-                    'input'         => $this->_getRandomWords(mt_rand(1, 5)),
+                    'input'         => $this->faker->word,
                 ]);
             }
         }
@@ -554,18 +634,18 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
     protected function _loadSla()
     {
         $sla        = new Entity\Sla();
-        $sla->title = $this->_getRandomWords(mt_rand(1, 4));
+        $sla->title = $this->faker->title;
         $types      = [
             0 => \Application\DeskPRO\Entity\Sla::TYPE_FIRST_RESPONSE,
             1 => \Application\DeskPRO\Entity\Sla::TYPE_RESOLUTION,
             2 => \Application\DeskPRO\Entity\Sla::TYPE_WAITING_TIME,
         ];
         $sla->sla_type    = $types[mt_rand(0, 2)];
-        $sla->active_time = \Orb\Util\WorkHoursSet::ACTIVE_24X7;
+        $sla->active_time = 'all';
         $sla->apply_type  = mt_rand(1, 6) == 1 ? 'all' : 'manual';
 
-        App::getOrm()->persist($sla);
-        App::getOrm()->flush();
+        $this->em->persist($sla);
+        $this->em->flush();
 
         $warning_trigger                = new Entity\TicketTrigger();
         $warning_trigger->title         = $sla->title.' - SLA Warning';
@@ -573,48 +653,44 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $warning_time                   = mt_rand(30, 500);
         $time                           = $warning_time.' minutes';
         $warning_trigger->setEventTriggerOption('time', $time);
-        $warning_trigger->terms = [
-            ['type' => 'sla_status', 'op' => 'is', 'options' => ['sla_status' => 'warning', 'sla_id' => $sla->id]],
-        ];
-        $warning_trigger->actions = [
-            ['type' => 'recalculate_sla_status', 'options' => []],
-        ];
+        $warning_trigger->terms->addTermFromArray([
+            'type'    => 'CheckSlaStatus',
+            'op'      => 'is',
+            'options' => ['sla_status' => 'warning', 'sla_ids' => [$sla->id]],
+        ]);
+        $warning_trigger->actions->addActionFromArray([
+            'type'    => 'SetStatus',
+            'options' => ['status' => 'awaiting_agent'],
+        ]);
 
-        App::getOrm()->persist($warning_trigger);
+        $this->em->persist($warning_trigger);
 
         $fail_trigger                = new Entity\TicketTrigger();
         $fail_trigger->title         = $sla->title.' - SLA Failure';
         $fail_trigger->event_trigger = 'sla.fail';
         $time                        = mt_rand($warning_time, 600).' minutes';
         $fail_trigger->setEventTriggerOption('time', $time);
-        $fail_trigger->terms = [
-            ['type' => 'sla_status', 'op' => 'is', 'options' => ['sla_status' => 'fail', 'sla_id' => $sla->id]],
-        ];
-        $fail_trigger->actions = [
-            ['type' => 'recalculate_sla_status', 'options' => []],
-        ];
+        $fail_trigger->terms->addTermFromArray([
+            'type'    => 'CheckSlaStatus',
+            'op'      => 'is',
+            'options' => ['sla_status' => 'fail', 'sla_ids' => [$sla->id]],
+        ]);
+        $fail_trigger->actions->addActionFromArray([
+            'type'    => 'SetStatus',
+            'options' => ['status' => 'awaiting_user'],
+        ]);
 
-        App::getOrm()->persist($fail_trigger);
+        $this->em->persist($fail_trigger);
 
         $sla->warning_trigger = $warning_trigger;
         $sla->fail_trigger    = $fail_trigger;
-        App::getOrm()->persist($sla);
-    }
-
-    protected function _loadTicketField()
-    {
-        $field                = new Entity\CustomDefTicket();
-        $field->title         = $this->_getRandomWords(2);
-        $field->description   = $this->_getRandomWords(mt_rand(1, 10));
-        $field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
-
-        App::getOrm()->persist($field);
+        $this->em->persist($sla);
     }
 
     protected function _loadTicketDepartment()
     {
         $department                     = new Entity\Department();
-        $department->title              = $this->_getRandomWords(mt_rand(2, 4));
+        $department->title              = $this->faker->title;
         $department->is_tickets_enabled = true;
         $department->is_chat_enabled    = false;
         $department->display_order      = mt_rand(1, 1000000);
@@ -622,8 +698,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             $department->parent = $this->_data_cache['ticket_department_parent'];
         }
 
-        App::getOrm()->persist($department);
-        App::getOrm()->flush($department);
+        $this->em->persist($department);
+        $this->em->flush($department);
 
         $dep_perms = [];
 
@@ -637,6 +713,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
                 'app'           => 'tickets',
                 'name'          => 'full',
                 'value'         => 1,
+                'is_active'     => 1,
             ];
             $dep_perms[] = [
                 'department_id' => $department->getId(),
@@ -645,6 +722,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
                 'app'           => 'tickets',
                 'name'          => 'assign',
                 'value'         => 1,
+                'is_active'     => 1,
             ];
         }
 
@@ -658,46 +736,32 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             'is_active'     => 1,
         ];
 
-        App::getDb()->batchInsert('department_permissions', $dep_perms);
+        $this->db->batchInsert('department_permissions', $dep_perms);
 
         if (empty($this->_data_cache['ticket_department_parent'])) {
             $this->_data_cache['ticket_department_parent'] = $department;
         }
     }
 
-    protected $_ticket_statuses = [
-        0 => 'awaiting_user',
-        1 => 'awaiting_user',
-        2 => 'awaiting_user',
-        3 => 'awaiting_user',
-        4 => 'awaiting_user',
-        5 => 'resolved',
-        6 => 'resolved',
-        7 => 'resolved',
-        8 => 'archived',
-        9 => 'archived',
-    ];
-
-    protected function _loadTicket($i)
+    protected function _loadTicket()
     {
         if (!isset($this->_data_cache['ticket_departments'])) {
-            $this->_data_cache['ticket_departments'] =
-                App::getEntityRepository(Department::class)->getChildDepartments('ticket');
+            $this->_data_cache['ticket_departments'] = $this->em->getRepository(Department::class)->getChildDepartments('ticket');
         }
         if (!isset($this->_data_cache['ticket_fields'])) {
-            $this->_data_cache['ticket_fields'] = App::getEntityRepository(CustomDefTicket::class)->findAll();
+            $this->_data_cache['ticket_fields'] = $this->em->getRepository(CustomDefTicket::class)->findAll();
         }
 
         $date_created = $this->_getRandomDate();
-
-        $ticket = [
-            'subject'         => $this->_getRandomWords(mt_rand(2, 6)),
+        $ticket       = [
+            'subject'         => $this->faker->title,
             'date_created'    => $date_created->format('Y-m-d H:i:s'),
             'person_id'       => $this->_getRandomPersonId(),
             'department_id'   => $this->_getRandomFromCache('ticket_departments', 'id'),
             'creation_system' => Entity\Ticket::CREATED_WEB_API,
             'ref'             => App::getRefGenerator()->generateReference(Ticket::class),
         ];
+
         if (mt_rand(0, 2) == 0) {
             $rand = $this->_getRandomAgent();
             if ($rand) {
@@ -717,9 +781,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $ticket_ent = new Entity\Ticket(false);
         $ticket     = array_merge($ticket_ent->getScalarData(), $ticket);
 
-        $db = App::getDb();
-        $db->insert('tickets', $ticket);
-        $ticket['id'] = $db->lastInsertId();
+        $this->db->insert('tickets', $ticket);
+        $ticket['id'] = $this->db->lastInsertId();
 
         $this->_applyLabelsDb('ticket', $ticket['id']);
 
@@ -728,12 +791,13 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             'person_id'       => $ticket['person_id'],
             'is_agent_note'   => 0,
             'creation_system' => Entity\TicketMessage::CREATED_WEB_API,
-            'message'         => $this->_getRandomText(mt_rand(250, 5000)),
+            'message'         => $this->faker->realText(),
             'date_created'    => $ticket['date_created'],
         ];
+
         if (mt_rand(1, 50) == 1) {
-            $db->insert('tickets_messages', $message);
-            $message['id'] = $db->lastInsertId();
+            $this->db->insert('tickets_messages', $message);
+            $message['id'] = $this->db->lastInsertId();
             $this->_addTicketMessageAttachments($ticket['id'], $message);
         } else {
             $this->_addBatchInsert('tickets_messages', $message);
@@ -749,12 +813,12 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
                     'person_id'       => $is_agent ? $ticket['agent_id'] : $ticket['person_id'],
                     'is_agent_note'   => ($is_agent && mt_rand(0, 1) ? 1 : 0),
                     'creation_system' => Entity\TicketMessage::CREATED_WEB_API,
-                    'message'         => $this->_getRandomText(mt_rand(250, 5000)),
+                    'message'         => $this->faker->realText(),
                     'date_created'    => $this->_getRandomDate('string', $ticket['date_created'], $range),
                 ];
                 if (mt_rand(1, 50) == 1) {
-                    $db->insert('tickets_messages', $message);
-                    $message['id'] = $db->lastInsertId();
+                    $this->db->insert('tickets_messages', $message);
+                    $message['id'] = $this->db->lastInsertId();
                     $this->_addTicketMessageAttachments($ticket['id'], $message);
                 } else {
                     $this->_addBatchInsert('tickets_messages', $message);
@@ -769,33 +833,49 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
                     'field_id'      => $field->id,
                     'root_field_id' => $field->id,
                     'value'         => 0,
-                    'input'         => $this->_getRandomWords(mt_rand(1, 5)),
+                    'input'         => $this->faker->words(3, true),
                 ]);
             }
         }
     }
 
+    /**
+     * @param int   $ticket_id
+     * @param array $message
+     */
     protected function _addTicketMessageAttachments($ticket_id, array $message)
     {
-        $files = [
-            DP_WEB_ROOT.'/web/images/dp-logo-16.png'           => 'data-load1.png',
-            DP_WEB_ROOT.'/web/images/dp-logo-130.png'          => 'data-load2.png',
-            DP_WEB_ROOT.'/web/images/agent/icons/big-plus.png' => 'data-load3.png',
-            DP_WEB_ROOT.'/web/images/admin/portal-off.png'     => 'data-load4.png',
-            DP_WEB_ROOT.'/README.txt'                          => 'data-load1.txt',
-            DP_WEB_ROOT.'/robots.txt'                          => 'data-load2.txt',
-        ];
-
         $amount = mt_rand(1, 3);
         for ($i = 0; $i < $amount; ++$i) {
-            $key  = array_rand($files);
-            $name = $files[$key];
-            $mime = substr($name, -3) == 'png' ? 'image/png' : 'text/plain';
+            $file_info = $this->faker->randomElement(
+                [
+                    ['name' => 'file.txt', 'ext' => 'txt', 'type' => 'text/plain', 'content' => 'example file'],
+                    [
+                        'name' => 'file.zip',
+                        'ext'  => 'zip',
+                        'type' => 'application/zip',
+                        'file' => DP_APP_DIR.'/src/Application/AdminInterfaceBundle/Resources/assets/Bulk-Add-Agents-Spreadsheet-Template.zip',
+                    ],
+                    [
+                        'name' => 'file.pdf',
+                        'ext'  => 'pdf',
+                        'type' => 'application/pdf',
+                        'file' => DP_APP_DIR.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf',
+                    ],
+                    [
+                        'name' => 'file.jpg',
+                        'ext'  => 'jpg',
+                        'type' => 'image/jpeg',
+                        'file' => DP_APP_DIR.'/src/Application/DeskPRO/Resources/assets/avatar-man-face.png',
+                    ],
+                ]
+            );
 
-            $key = str_replace('/', DIRECTORY_SEPARATOR, $key);
-
-            $upload = new \Symfony\Component\HttpFoundation\File\UploadedFile($key, $name, $mime, filesize($key), 0);
-            $blob   = App::getContainer()->getAttachmentAccepter()->accept($upload);
+            $blob = $this->getContainer()->get('blob.storage')->createBlobRecordFromString(
+                @$file_info['content'] ?: file_get_contents($file_info['file']),
+                $file_info['name'],
+                $file_info['type']
+            );
 
             $this->_addBatchInsert('tickets_attachments', [
                 'ticket_id'     => $ticket_id,
@@ -835,7 +915,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         ];
 
         $filter            = new Entity\LegacyTicketFilter();
-        $filter->title     = $this->_getRandomWords(2);
+        $filter->title     = $this->faker->title;
         $filter->is_global = true;
 
         $terms = [];
@@ -846,13 +926,13 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         }
         $filter->terms = array_values($terms);
 
-        App::getOrm()->persist($filter);
+        $this->em->persist($filter);
     }
 
     protected function _loadTicketMacro()
     {
         $macro             = new Entity\TicketMacro();
-        $macro->title      = $this->_getRandomWords(mt_rand(2, 4));
+        $macro->title      = $this->faker->title;
         $macro->is_global  = (mt_rand(0, 1) == 1);
         $macro->is_enabled = true;
         $macro->actions    = [
@@ -860,7 +940,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         ];
         $macro->person = $this->_getRandomAgent();
 
-        App::getOrm()->persist($macro);
+        $this->em->persist($macro);
     }
 
     protected function _loadTicketSnippetCategory()
@@ -870,41 +950,41 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $category->person    = $this->_getRandomAgent();
         $category->typename  = 'tickets';
 
-        App::getOrm()->persist($category);
-        App::getOrm()->flush();
+        $this->em->persist($category);
+        $this->em->flush();
 
-        App::getDb()->replace('object_lang', [
+        $this->db->replace('object_lang', [
             'language_id' => 1,
             'ref'         => 'text_snippet_categories.'.$category->getId(),
             'prop_name'   => 'title',
-            'value'       => $this->_getRandomWords(mt_rand(1, 4)),
+            'value'       => $this->faker->word,
         ]);
     }
 
     protected function _loadTicketSnippet()
     {
         if (!isset($this->_data_cache['ticket_snippet_categories'])) {
-            $this->_data_cache['ticket_snippet_categories'] = App::getEntityRepository('DeskPRO:TextSnippetCategory')->findAll();
+            $this->_data_cache['ticket_snippet_categories'] = $this->em->getRepository('DeskPRO:TextSnippetCategory')->findAll();
         }
 
         $snippet           = new Entity\TextSnippet();
         $snippet->category = $this->_getRandomFromCache('text_snippet_categories');
         $snippet->person   = $this->_getRandomAgent();
 
-        $title = $this->_getRandomWords(mt_rand(2, 5));
-        $text  = $this->_getRandomWords(mt_rand(10, 200));
+        $title = $this->faker->title;
+        $text  = $this->faker->text;
 
-        App::getOrm()->persist($snippet);
-        App::getOrm()->flush();
+        $this->em->persist($snippet);
+        $this->em->flush();
 
-        App::getDb()->replace('object_lang', [
+        $this->db->replace('object_lang', [
             'language_id' => 1,
             'ref'         => 'text_snippets.'.$snippet->getId(),
             'prop_name'   => 'title',
             'value'       => $title,
         ]);
 
-        App::getDb()->replace('object_lang', [
+        $this->db->replace('object_lang', [
             'language_id' => 1,
             'ref'         => 'text_snippets.'.$snippet->getId(),
             'prop_name'   => 'snippet',
@@ -917,32 +997,46 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $category            = new Entity\TextSnippetCategory();
         $category->typename  = 'chat';
         $category->is_global = true;
-        $category->title     = $this->_getRandomWords(mt_rand(1, 4));
         $category->person    = $this->_getRandomAgent();
 
-        App::getOrm()->persist($category);
+        $this->em->persist($category);
+        $this->db->replace('object_lang', [
+            'language_id' => 1,
+            'ref'         => 'text_snippet_categories.'.$category->getId(),
+            'prop_name'   => 'title',
+            'value'       => $this->faker->title,
+        ]);
     }
 
     protected function _loadChatSnippet()
     {
         if (!isset($this->_data_cache['chat_snippet_categories'])) {
-            $this->_data_cache['chat_snippet_categories'] = App::getEntityRepository('DeskPRO:TextSnippetCategory')->getAllByType('chat');
+            $this->_data_cache['chat_snippet_categories'] = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getAllByType('chat');
         }
 
-        $snippet          = new Entity\TextSnippet();
-        $snippet->title   = $this->_getRandomWords(mt_rand(2, 5));
-        $snippet->snippet = $this->_getRandomWords(mt_rand(10, 200));
-
+        $snippet           = new Entity\TextSnippet();
         $snippet->category = $this->_getRandomFromCache('chat_snippet_categories');
         $snippet->person   = $this->_getRandomAgent();
 
-        App::getOrm()->persist($snippet);
+        $this->em->persist($snippet);
+        $this->db->replace('object_lang', [
+            'language_id' => 1,
+            'ref'         => 'text_snippets.'.$snippet->getId(),
+            'prop_name'   => 'title',
+            'value'       => $this->faker->title,
+        ]);
+        $this->db->replace('object_lang', [
+            'language_id' => 1,
+            'ref'         => 'text_snippets.'.$snippet->getId(),
+            'prop_name'   => 'snippet',
+            'value'       => $this->faker->text,
+        ]);
     }
 
     protected function _loadChatDepartment()
     {
         $department                     = new Entity\Department();
-        $department->title              = $this->_getRandomWords(mt_rand(2, 4));
+        $department->title              = $this->faker->title;
         $department->is_tickets_enabled = false;
         $department->is_chat_enabled    = true;
         $department->display_order      = mt_rand(1, 1000000);
@@ -950,8 +1044,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             $department->parent = $this->_data_cache['chat_department_parent'];
         }
 
-        App::getOrm()->persist($department);
-        App::getOrm()->flush($department);
+        $this->em->persist($department);
+        $this->em->flush($department);
 
         $dep_perms = [];
 
@@ -964,6 +1058,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
                 'app'           => 'chat',
                 'name'          => 'full',
                 'value'         => 1,
+                'is_active'     => 1,
             ];
         }
 
@@ -977,7 +1072,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             'is_active'     => 1,
         ];
 
-        App::getDb()->batchInsert('department_permissions', $dep_perms);
+        $this->db->batchInsert('department_permissions', $dep_perms);
 
         if (empty($this->_data_cache['chat_department_parent'])) {
             $this->_data_cache['chat_department_parent'] = $department;
@@ -987,13 +1082,13 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
     protected function _loadFeedbackType()
     {
         $category                = new Entity\FeedbackCategory();
-        $category->title         = $this->_getRandomWords(mt_rand(1, 4));
+        $category->title         = $this->faker->title;
         $category->display_order = mt_rand(1, 1000000);
 
-        App::getOrm()->persist($category);
-        App::getOrm()->flush();
+        $this->em->persist($category);
+        $this->em->flush();
 
-        App::getDb()->insert('feedback_category2usergroup', [
+        $this->db->insert('feedback_category2usergroup', [
             'category_id'  => $category->getId(),
             'usergroup_id' => 1,
         ]);
@@ -1002,28 +1097,27 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
     protected function _loadFeedbackStatus()
     {
         $category                = new Entity\FeedbackStatusCategory();
-        $category->title         = $this->_getRandomWords(mt_rand(1, 4));
+        $category->title         = $this->faker->title;
         $category->display_order = mt_rand(1, 1000000);
         $category->status_type   = mt_rand(1, 2) == 1 ? 'active' : 'closed';
 
-        App::getOrm()->persist($category);
+        $this->em->persist($category);
     }
 
-    protected function _loadFeedback($i)
+    protected function _loadFeedback()
     {
         if (!isset($this->_data_cache['feedback_types'])) {
-            $this->_data_cache['feedback_types'] = App::getEntityRepository('DeskPRO:FeedbackCategory')->findAll();
+            $this->_data_cache['feedback_types'] = $this->em->getRepository('DeskPRO:FeedbackCategory')->findAll();
         }
         if (!isset($this->_data_cache['feedback_statuses'])) {
-            $this->_data_cache['feedback_statuses'] = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->findAll();
+            $this->_data_cache['feedback_statuses'] = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->findAll();
         }
 
-        $title = $this->_getRandomWords(mt_rand(2, 6));
-
+        $title    = $this->faker->title;
         $feedback = [
             'title'        => $title,
-            'slug'         => \Orb\Util\Strings::slugifyTitle($title) ?: 'view',
-            'content'      => htmlspecialchars($this->_getRandomText(mt_rand(100, 1000))),
+            'slug'         => Strings::slugifyTitle($title).microtime().$this->num++,
+            'content'      => $this->faker->realText(),
             'date_created' => $this->_getRandomDate('string'),
             'status'       => 'published',
             'person_id'    => $this->_getRandomAgent(true),
@@ -1041,55 +1135,43 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $feedback_ent = new Entity\Feedback();
         $feedback     = array_merge($feedback_ent->getScalarData(), $feedback);
 
-        $db = App::getDb();
-        $db->insert('feedback', $feedback);
-        $feedback['id'] = $db->lastInsertId();
+        $this->db->insert('feedback', $feedback);
+        $feedback['id'] = $this->db->lastInsertId();
 
         $this->_applyLabelsDb('feedback', $feedback['id']);
 
         // todo: attachments, user categories, validation?, comments
     }
 
-    protected function _loadArticleField()
-    {
-        $field                = new Entity\CustomDefArticle();
-        $field->title         = $this->_getRandomWords(2);
-        $field->description   = $this->_getRandomWords(mt_rand(1, 10));
-        $field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
-
-        App::getOrm()->persist($field);
-    }
-
     protected function _loadArticleCategory()
     {
         $category                = new Entity\ArticleCategory();
-        $category->title         = $this->_getRandomWords(mt_rand(1, 4));
+        $category->title         = $this->faker->title;
         $category->display_order = mt_rand(1, 1000000);
 
-        App::getOrm()->persist($category);
-        App::getOrm()->flush();
+        $this->em->persist($category);
+        $this->em->flush();
 
-        App::getDb()->insert('article_category2usergroup', [
+        $this->db->insert('article_category2usergroup', [
             'category_id'  => $category->getId(),
             'usergroup_id' => 1,
         ]);
     }
 
-    protected function _loadArticle($i)
+    protected function _loadArticle()
     {
         if (!isset($this->_data_cache['article_categories'])) {
-            $this->_data_cache['article_categories'] = App::getEntityRepository('DeskPRO:ArticleCategory')->findAll();
+            $this->_data_cache['article_categories'] = $this->em->getRepository('DeskPRO:ArticleCategory')->findAll();
         }
         if (!isset($this->_data_cache['article_fields'])) {
-            $this->_data_cache['article_fields'] = App::getEntityRepository('DeskPRO:CustomDefArticle')->findAll();
+            $this->_data_cache['article_fields'] = $this->em->getRepository('DeskPRO:CustomDefArticle')->findAll();
         }
 
-        $title = $this->_getRandomWords(mt_rand(2, 6));
-
+        $title   = $this->faker->title;
         $article = [
             'title'        => $title,
-            'slug'         => \Orb\Util\Strings::slugifyTitle($title) ?: 'view',
-            'content'      => htmlspecialchars($this->_getRandomWords(30)),
+            'slug'         => Strings::slugifyTitle($title).microtime().$this->num++,
+            'content'      => htmlspecialchars($this->faker->text()),
             'date_created' => $this->_getRandomDate('string'),
             'status'       => 'published',
             'person_id'    => $this->_getRandomAgent(true),
@@ -1098,25 +1180,24 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $article_ent = new Entity\Article();
         $article     = array_merge($article_ent->getScalarData(), $article);
 
-        $db = App::getDb();
-        $db->insert('articles', $article);
-        $article['id'] = $db->lastInsertId();
+        $this->db->insert('articles', $article);
+        $article['id'] = $this->db->lastInsertId();
 
         $this->_applyLabelsDb('article', $article['id']);
 
-        $db->insert('article_to_categories', [
+        $this->db->insert('article_to_categories', [
             'article_id'  => $article['id'],
             'category_id' => $this->_getRandomFromCache('article_categories', 'id'),
         ]);
 
         foreach ($this->_data_cache['article_fields'] as $field) {
             if ($field->getTypeName() == 'text') {
-                $db->insert('custom_data_article', [
+                $this->db->insert('custom_data_article', [
                     'article_id'    => $article['id'],
                     'field_id'      => $field->id,
                     'root_field_id' => $field->id,
                     'value'         => 0,
-                    'input'         => $this->_getRandomWords(mt_rand(1, 5)),
+                    'input'         => $this->faker->word,
                 ]);
             }
         }
@@ -1127,30 +1208,29 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
     protected function _loadNewsCategory()
     {
         $category                = new Entity\NewsCategory();
-        $category->title         = $this->_getRandomWords(mt_rand(1, 4));
+        $category->title         = $this->faker->title;
         $category->display_order = mt_rand(1, 1000000);
 
-        App::getOrm()->persist($category);
-        App::getOrm()->flush();
+        $this->em->persist($category);
+        $this->em->flush();
 
-        App::getDb()->insert('news_category2usergroup', [
+        $this->db->insert('news_category2usergroup', [
             'category_id'  => $category->getId(),
             'usergroup_id' => 1,
         ]);
     }
 
-    protected function _loadNews($i)
+    protected function _loadNews()
     {
         if (!isset($this->_data_cache['news_categories'])) {
-            $this->_data_cache['news_categories'] = App::getEntityRepository('DeskPRO:NewsCategory')->findAll();
+            $this->_data_cache['news_categories'] = $this->em->getRepository('DeskPRO:NewsCategory')->findAll();
         }
 
-        $title = $this->_getRandomWords(mt_rand(2, 6));
-
-        $news = [
+        $title = $this->faker->title;
+        $news  = [
             'title'        => $title,
-            'slug'         => \Orb\Util\Strings::slugifyTitle($title) ?: 'view',
-            'content'      => htmlspecialchars($this->_getRandomText(mt_rand(100, 2000))),
+            'slug'         => Strings::slugifyTitle($title).microtime().$this->num++,
+            'content'      => $this->faker->realText(),
             'date_created' => $this->_getRandomDate('string'),
             'status'       => 'published',
             'person_id'    => $this->_getRandomAgent(true),
@@ -1160,9 +1240,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $ent  = new Entity\News();
         $news = array_merge($ent->getScalarData(), $news);
 
-        $db = App::getDb();
-        $db->insert('news', $news);
-        $news['id'] = $db->lastInsertId();
+        $this->db->insert('news', $news);
+        $news['id'] = $this->db->lastInsertId();
 
         $this->_applyLabelsDb('news', $news['id']);
 
@@ -1172,30 +1251,29 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
     protected function _loadDownloadCategory()
     {
         $category                = new Entity\DownloadCategory();
-        $category->title         = $this->_getRandomWords(mt_rand(1, 4));
+        $category->title         = $this->faker->title;
         $category->display_order = mt_rand(1, 1000000);
 
-        App::getOrm()->persist($category);
-        App::getOrm()->flush();
+        $this->em->persist($category);
+        $this->em->flush();
 
-        App::getDb()->insert('download_category2usergroup', [
+        $this->db->insert('download_category2usergroup', [
             'category_id'  => $category->getId(),
             'usergroup_id' => 1,
         ]);
     }
 
-    protected function _loadDownload($i)
+    protected function _loadDownload()
     {
         if (!isset($this->_data_cache['download_categories'])) {
-            $this->_data_cache['download_categories'] = App::getEntityRepository('DeskPRO:DownloadCategory')->findAll();
+            $this->_data_cache['download_categories'] = $this->em->getRepository('DeskPRO:DownloadCategory')->findAll();
         }
 
-        $title = $this->_getRandomWords(mt_rand(2, 6));
-
+        $title    = $this->faker->title;
         $download = [
             'title'        => $title,
-            'slug'         => \Orb\Util\Strings::slugifyTitle($title) ?: 'view',
-            'content'      => htmlspecialchars($this->_getRandomText(100, 1000)),
+            'slug'         => Strings::slugifyTitle($title).microtime().$this->num++,
+            'content'      => htmlspecialchars($this->faker->realText()),
             'date_created' => $this->_getRandomDate('string'),
             'status'       => 'published',
             'person_id'    => $this->_getRandomAgent(true),
@@ -1205,9 +1283,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $ent      = new Entity\Download();
         $download = array_merge($ent->getScalarData(), $download);
 
-        $db = App::getDb();
-        $db->insert('downloads', $download);
-        $download['id'] = $db->lastInsertId();
+        $this->db->insert('downloads', $download);
+        $download['id'] = $this->db->lastInsertId();
 
         $this->_applyLabelsDb('download', $download['id']);
 
@@ -1217,23 +1294,24 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
     protected function _loadGlossary()
     {
         $def             = new Entity\GlossaryWordDefinition();
-        $def->definition = $this->_getRandomText(mt_rand(50, 100));
+        $def->definition = $this->faker->realText();
         $word_count      = mt_rand(1, 5);
         for ($i = 0; $i < $word_count; ++$i) {
-            $start = chr(mt_rand(64, 90)); // @ and A-Z
-            $def->addWord($start.$this->_getRandomWords(1));
+            $word = new Entity\GlossaryWord();
+            $word->setWord($this->faker->word);
+            $def->addWord($word);
         }
 
         if (count($def->words)) {
-            App::getOrm()->persist($def);
-            App::getOrm()->flush(); // need to flush each as might get a dupe error
+            $this->em->persist($def);
+            $this->em->flush(); // need to flush each as might get a dupe error
         }
     }
 
-    protected function _loadTask($i)
+    protected function _loadTask()
     {
         $task         = new Entity\Task();
-        $task->title  = $this->_getRandomWords(mt_rand(2, 8));
+        $task->title  = $this->faker->title;
         $task->person = $this->_getRandomAgent();
         $task->setVisibility(mt_rand(1, 3) == 1 ? 0 : 1);
         $task->date_created = $this->_getRandomDate();
@@ -1250,7 +1328,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
         // todo: comments, ticket linking
 
-        App::getOrm()->persist($task);
+        $this->em->persist($task);
         $this->_applyLabels($task);
     }
 
@@ -1258,14 +1336,14 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
     {
         $this->_addBatchInsert('twitter_users', [
             'id'                   => mt_rand(1, mt_getrandmax()),
-            'name'                 => $this->_getRandomWords(2),
-            'screen_name'          => $this->_getRandomWords(1).microtime(true),
+            'name'                 => $this->faker->name,
+            'screen_name'          => $this->faker->name,
             'profile_image_url'    => '',
             'language'             => 'en',
             'is_protected'         => 0,
             'is_verified'          => 0,
             'location'             => '',
-            'description'          => $this->_getRandomWords(mt_rand(3, 10)),
+            'description'          => $this->faker->realText(),
             'is_geo_enabled'       => 0,
             'is_stub'              => 0,
             'url'                  => '',
@@ -1279,16 +1357,14 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
     protected function _loadTwitterStatus()
     {
-        $db = App::getDb();
-
         $data = [
             'id'           => mt_rand(1, mt_getrandmax()),
             'user_id'      => $this->_getRandomTwitterUserId(),
-            'text'         => $this->_getRandomWords(mt_rand(1, 20)),
+            'text'         => $this->faker->realText(),
             'date_created' => $this->_getRandomDate('string'),
         ];
 
-        $modified = $db->executeUpdate('
+        $modified = $this->db->executeUpdate('
             INSERT IGNORE INTO twitter_statuses
                 (id, user_id, text, is_truncated, date_created)
             VALUES (?, ?, ?, 0, ?)
@@ -1325,7 +1401,14 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         ]);
     }
 
-    protected function _getRandomDate($format = null, $start = null, $end = null)
+    /**
+     * @param null $format
+     * @param null $start
+     * @param null $end
+     *
+     * @return \DateTime|int|string
+     */
+    private function _getRandomDate($format = null, $start = null, $end = null)
     {
         if ($start === null) {
             $start = $this->_start_ts;
@@ -1359,11 +1442,10 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         }
     }
 
-    protected $_person_hits = 0;
-    protected function _getRandomPersonId()
+    private function _getRandomPersonId()
     {
         if ($this->_person_hits <= 0 || !isset($this->_data_cache['random_people_ids'])) {
-            $this->_data_cache['random_people_ids'] = App::getDb()->fetchAllCol('
+            $this->_data_cache['random_people_ids'] = $this->db->fetchAllCol('
                 SELECT id
                 FROM people
                 WHERE is_agent = 0
@@ -1384,10 +1466,10 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         return $this->_getRandomFromCache('random_people_ids');
     }
 
-    protected function _getRandomAgent($id = false)
+    private function _getRandomAgent($id = false)
     {
         if (!isset($this->_data_cache['agents'])) {
-            $this->_data_cache['agents'] = App::getOrm()->createQuery('
+            $this->_data_cache['agents'] = $this->em->createQuery('
                 SELECT p
                 FROM DeskPRO:Person p INDEX BY p.id
                 WHERE p.is_agent = true AND p.is_deleted = false
@@ -1398,19 +1480,19 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         return $this->_getRandomFromCache('agents', $id ? 'id' : null);
     }
 
-    protected function _getRandomAgentTeam()
+    private function _getRandomAgentTeam()
     {
         if (!isset($this->_data_cache['agent_teams'])) {
-            $this->_data_cache['agent_teams'] = App::getEntityRepository('DeskPRO:AgentTeam')->getTeams();
+            $this->_data_cache['agent_teams'] = $this->em->getRepository('DeskPRO:AgentTeam')->getTeams();
         }
 
         return $this->_getRandomFromCache('agent_teams');
     }
 
-    protected function _getRandomOrgId()
+    private function _getRandomOrgId()
     {
         if (!isset($this->_data_cache['random_org_ids'])) {
-            $this->_data_cache['random_org_ids'] = App::getDb()->fetchAllCol('
+            $this->_data_cache['random_org_ids'] = $this->db->fetchAllCol('
                 SELECT id
                 FROM organizations
                 ORDER BY RAND()
@@ -1421,11 +1503,10 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         return $this->_getRandomFromCache('random_org_ids');
     }
 
-    protected $_twitter_hits = 0;
-    protected function _getRandomTwitterUserId()
+    private function _getRandomTwitterUserId()
     {
         if ($this->_twitter_hits <= 0 || !isset($this->_data_cache['random_twitter_user_ids'])) {
-            $this->_data_cache['random_twitter_user_ids'] = App::getDb()->fetchAllCol('
+            $this->_data_cache['random_twitter_user_ids'] = $this->db->fetchAllCol('
                 SELECT id
                 FROM twitter_users
                 ORDER BY RAND()
@@ -1439,7 +1520,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         return $this->_getRandomFromCache('random_twitter_user_ids');
     }
 
-    protected function _getRandomFromCache($key, $obj_field = null)
+    private function _getRandomFromCache($key, $obj_field = null)
     {
         if (!isset($this->_data_cache[$key]) || empty($this->_data_cache[$key])) {
             return;
@@ -1451,7 +1532,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         return $obj_field ? $data->$obj_field : $data;
     }
 
-    protected function _addBatchInsert($table, array $data, $ignore = false)
+    private function _addBatchInsert($table, array $data, $ignore = false)
     {
         if ($ignore) {
             if (!isset($this->_batch_insert_ignore[$table])) {
@@ -1468,17 +1549,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         }
     }
 
-    protected $_label_type_map = [
-        'article'      => ['labels_articles', 'article_id'],
-        'download'     => ['labels_downloads', 'download_id'],
-        'feedback'     => ['labels_feedback', 'feedback_id'],
-        'news'         => ['labels_news', 'news_id'],
-        'organization' => ['labels_organizations', 'organization_id'],
-        'person'       => ['labels_people', 'person_id'],
-        'ticket'       => ['labels_tickets', 'ticket_id'],
-    ];
-
-    protected function _applyLabelsDb($type, $id)
+    private function _applyLabelsDb($type, $id)
     {
         if (!isset($this->_label_type_map[$type])) {
             throw new \Exception("Unknown label type $type");
@@ -1493,7 +1564,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             for ($i = 0; $i < $labels; ++$i) {
                 list($table, $field) = $this->_label_type_map[$type];
 
-                $label = $this->_getRandomWords(1);
+                $label = $this->faker->word;
                 $label = strtolower(trim($label));
 
                 $this->_addBatchInsert($table, [
@@ -1514,7 +1585,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         }
     }
 
-    protected function _applyLabels($entity)
+    private function _applyLabels($entity)
     {
         if (!method_exists($entity, 'getLabelManager')) {
             return;
@@ -1525,107 +1596,20 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
         $labels = mt_rand(0, 4);
         if ($labels) {
-            App::getOrm()->flush(); // must generate an ID first
+            $this->em->flush(); // must generate an ID first
 
             for ($i = 0; $i < $labels; ++$i) {
-                $label = $manager->addLabel($this->_getRandomWords(1));
-                App::getOrm()->persist($label);
+                $label = $manager->addLabel($this->faker->word);
+                $this->em->persist($label);
             }
         }
     }
 
-    protected $_words   = null;
-    protected $_word_db = null;
-    protected $_max_word_index;
-
-    protected function _getRandomWords($word_length = 1)
+    /**
+     * @return string
+     */
+    private function getEmail()
     {
-        if ($this->_wordlist_file == 'database') {
-            $text = $this->_getRandomText();
-            $text = strip_tags($text);
-            $text = preg_replace('#[^a-zA-Z0-9 ]#', '', $text);
-            $text = Strings::standardEol($text);
-            $text = str_replace("\n", ' ', $text);
-            $text = preg_replace('#[ ]{2,}#', ' ', $text);
-            $text = explode(' ', $text);
-            shuffle($text);
-
-            while (count($text) < $word_length) {
-                $text = array_merge($text, $text);
-            }
-
-            return implode(' ', array_slice($text, 0, $word_length, false));
-        } else {
-            return $this->_getRandomWordlist($word_length);
-        }
-    }
-
-    protected function _getRandomText($max_length = 0)
-    {
-        if ($this->_wordlist_file == 'database') {
-            $text = $this->_getRandomTextDb();
-            $text = strip_tags($text);
-            $text = Strings::standardEol($text);
-            $text = str_replace("\n", ' ', $text);
-            $text = preg_replace('#[ ]{2,}#', ' ', $text);
-            $text = explode(' ', $text);
-            shuffle($text);
-            $text = implode(' ', $text);
-
-            if ($max_length) {
-                while (!isset($text[$max_length])) {
-                    $text .= ' '.$text;
-                }
-            }
-        } else {
-            $text = $this->_getRandomWordlist(0);
-        }
-
-        if ($max_length && isset($text[$max_length])) {
-            $text = substr($text, 0, $max_length);
-        }
-
-        return $text;
-    }
-
-    protected function _getRandomTextDb()
-    {
-        throw new \RuntimeException('Unsupported');
-    }
-
-    protected function _getRandomWordlist($word_length = 1)
-    {
-        if (!is_array($this->_words)) {
-            if ($this->_wordlist_file) {
-                $fp           = fopen($this->_wordlist_file, 'r');
-                $this->_words = [];
-                while (!feof($fp)) {
-                    $line = fgets($fp);
-                    $line = trim($line);
-                    $line = str_replace(["'", '"'], '', $line);
-
-                    $this->_words[] = $line;
-                }
-            } else {
-                $this->_words = explode(' ', 'Lorem ipsum dolor sit amet consectetur adipiscing elit Morbi ac semper lorem Mauris ut suscipit leo Suspendisse orci sem consequat venenatis quis volutpat sit amet lorem Nulla sed sodales leo Duis erat magna commodo nec consectetur quis rhoncus ac arcu Suspendisse egestas metus id nunc interdum nec volutpat orci laoreet Ut porttitor nisi vel urna congue eleifend Fusce semper justo sit amet elit tempor ut ultrices neque pharetra In at tellus at dolor consectetur dapibus in eleifend est Aenean sed neque id sapien aliquet semper id at velit Nullam laoreet est vitae dui pulvinar consectetur Aenean ipsum ipsum convallis ac pellentesque nec ullamcorper sit amet ipsum Fusce accumsan orci in bibendum ornare dolor nunc condimentum massa eget aliquam lectus tortor sed est Proin tempor quam congue mi tempus vitae cursus orci interdum Aliquam aliquet vulputate cursus Etiam hendrerit lorem vitae ipsum lacinia feugiat Fusce ornare purus et felis placerat ut venenatis nisl dignissim Mauris sed lacus nunc Curabitur et metus quis orci molestie sodales Suspendisse interdum cursus ullamcorper Donec pretium consequat lacus ac condimentum Fusce lacinia faucibus urna eu varius Etiam volutpat porta nisi in euismod sapien consequat vitae Ut feugiat porttitor dui nec vehicula Suspendisse sed nibh id leo euismod scelerisque Praesent malesuada sagittis dui et iaculis ante vulputate id Quisque risus nec orci eleifend volutpat sit amet sit amet lectus Aliquam ut felis felis mattis turpis Nulla eget orci lorem id rutrum orci Donec neque nisl tristique ac fringilla vel ullamcorper vitae erat Praesent erat metus tristique in gravida id tempus fringilla diam Integer vitae aliquet nulla Sed dictum lectus ac sem rhoncus et laoreet augue volutpat Ut venenatis laoreet mauris non pulvinar Etiam lacinia augue vel elit facilisis quis molestie sapien congue Praesent eu lacus justo vitae iaculis libero Curabitur nibh massa Aenean sed dui orci Suspendisse vehicula nibh eu dictum bibendum lorem nisl congue felis ac dictum mauris nisl vitae orci Phasellus et turpis massa tempor sodales eget eget quam Cras ut purus nisl sit amet ultricies lacus Nunc congue molestie accumsan Sed ut volutpat dui Donec sit amet nunc rhoncus risus convallis adipiscing Aenean tincidunt tempor consequat Vivamus blandit lacus quam ornare tortor Vestibulum tellus in orci ultrices semper Aenean sit amet libero ipsum aliquet condimentum Quisque volutpat congue felis vel hendrerit Proin congue enim et mi mattis tempor Praesent nec ante nec mauris suscipit pulvinar condimentum eu massa Aliquam iaculis ipsum sed ligula condimentum sed ultrices odio iaculis Nulla viverra ipsum et auctor viverra dolor est condimentum nisl in tincidunt erat massa vitae lacus Donec convallis tincidunt nisl vitae laoreet Mauris ligula mauris lacinia quis dictum volutpat tincidunt ac neque Phasellus dapibus suscipit pulvinar Fusce lacus est ultrices adipiscing sed condimentum sit amet leo Proin mauris ante tempor non tempor at commodo id mi Quisque ac massa justo Quisque lacinia malesuada ipsum hendrerit facilisis Nulla metus augue viverra placerat dapibus ac lacus Integer lectus metus laoreet semper eget dictum at purus Sed');
-            }
-            $this->_max_word_index = count($this->_words) - 1;
-        }
-
-        if (!$word_length) {
-            return implode(' ', $this->_words);
-        }
-
-        $output = [];
-        for ($i = 0; $i < $word_length; ++$i) {
-            $output[] = $this->_words[mt_rand(0, $this->_max_word_index)];
-        }
-
-        return implode(' ', $output);
-    }
-
-    protected function _getPerson($id)
-    {
-        return App::getEntityRepository('DeskPRO:Person')->find($id);
+        return 'mass_generated_'.microtime().$this->num++.'@example.com';
     }
 }
