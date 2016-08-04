@@ -106,6 +106,22 @@ class Column extends AbstractPart
     }
 
     /**
+     * @param string $name
+     *
+     * @throws Exception
+     *
+     * @return array
+     */
+    public static function resolveTable($name)
+    {
+        if (!array_key_exists($name, self::$_tableResolver)) {
+            throw new Exception("Missing `{$name}` table resolving information");
+        }
+
+        return self::$_tableResolver[$name];
+    }
+
+    /**
      * Prepares a part for use, including validating that the usage is valid.
      *
      * @param \Application\DeskPRO\Dpql\Statement\Display             $statement
@@ -361,20 +377,7 @@ class Column extends AbstractPart
         if ($sql === false) {
             $assocTable = $repository->getTableName();
             $name       = $part;
-            if ($assocTable == 'departments') {
-                $call = new FunctionCall('if', [
-                    new self(array_merge($this->parts, ['parent', 'id'])),
-                    new FunctionCall('concat', [
-                        new self(array_merge($this->parts, ['parent', 'title'])),
-                        new StringPart(' > '),
-                        new self(array_merge($this->parts, ['title'])),
-                    ]),
-                    new self(array_merge($this->parts, ['title'])),
-                ]);
-                $prepped = $call->prepare($statement, $section, $stack, $select, $result);
-
-                return new Prepared("`$sqlTable`.`id`", $this->_prettifyColumnName($name), $prepped->sql());
-            } elseif ($assocTable == 'ticket_slas') {
+            if ($assocTable == 'ticket_slas') {
                 $call    = new self(array_merge($this->parts, ['sla']));
                 $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 

@@ -265,6 +265,8 @@ class Display
         'usersources'                 => 'DeskPRO:Usersource',
     );
 
+    private $_sqlSelectContext;
+
     /**
      * @param array  $display Type of display (must not be empty)
      * @param array  $select  Fields to select
@@ -276,8 +278,11 @@ class Display
         $this->setSelect($select);
         $this->setFrom($from);
 
-        $this->_sql           = new Dpql\SqlSelect();
-        $this->_resultHandler = new Dpql\ResultHandler();
+        $this->_sql              = new Dpql\SqlSelect();
+        $this->_resultHandler    = new Dpql\ResultHandler();
+        $this->_sqlSelectContext = new Dpql\SqlSelectContext([
+            new Dpql\Plugin\Hierarchy\HierarchyPlugin(),
+        ]);
     }
 
     /**
@@ -326,11 +331,11 @@ class Display
                         }
                     }
 
-                    $queryResults = $db->executeQuery($sql->toSql())->fetchAll(\PDO::FETCH_NUM);
+                    $queryResults = $this->_sqlSelectContext->execute($sql);
                     $results->addSplitResults($this->_fillResults($queryResults), $splitResult);
                 }
             } else {
-                $queryResults = $db->executeQuery($this->_sql->toSql())->fetchAll(\PDO::FETCH_NUM);
+                $queryResults = $this->_sqlSelectContext->execute($this->_sql);
                 $results->setResults($this->_fillResults($queryResults));
             }
         } catch (\Exception $e) {

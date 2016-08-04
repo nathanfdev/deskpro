@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Renderer;
 
 /**
@@ -241,12 +242,14 @@ class Html extends AbstractRenderer
                     );
                     $rendered = $this->_renderCellValue($row, $groupColumn);
 
-                    $cells[] = "<th$rowSpan>$rendered</th>";
+                    $padding = $this->_getRowPadding($cells, $row);
+                    $cells[] = "<th$rowSpan>{$padding}{$rendered}</th>";
                 }
             }
 
             foreach ($selectColumns as $column) {
-                $cells[] = '<td>'.$this->_renderCellValue($row, $column).'</td>';
+                $padding = $this->_getRowPadding($cells, $row);
+                $cells[] = '<td>'.$padding.$this->_renderCellValue($row, $column).'</td>';
             }
 
             ++$rowCount;
@@ -260,6 +263,16 @@ class Html extends AbstractRenderer
         } else {
             return '';
         }
+    }
+
+    private function _getRowPadding(array $cells, array $row)
+    {
+        $padding = '';
+        if (empty($cells) && array_key_exists('hierarchy_depth', $row) && ($depth = $row['hierarchy_depth'])) {
+            $padding = str_repeat('&nbsp;', 4 * $depth).'&#8209;&#8209;&nbsp;';
+        }
+
+        return $padding;
     }
 
     protected function _renderFooter(array $rows)
