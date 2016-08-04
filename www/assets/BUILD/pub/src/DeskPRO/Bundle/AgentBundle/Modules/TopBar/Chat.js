@@ -171,7 +171,6 @@ class Chat extends React.Component {
         id={2}
         elementId="chat-menu-popup"
         zIndex={99999}
-        opened
         content={this.getPopupContent()}
       >
         <i className={classNames('icon', 'comments', 'outline', { on: activeChat })} /><br />
