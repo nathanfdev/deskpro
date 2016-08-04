@@ -34,47 +34,45 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\From;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class ContextualChoiceType.
+ */
 class ContextualChoiceType extends ChoiceType
 {
     /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
+     * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
+        $builder->add('custom_choice', TextType::class, [
+            'required' => false,
+            'label'    => false,
+            'mapped'   => false,
+            'attr'     => [
+                'placeholder' => 'Custom choice',
+                'style'       => 'display:none;',
+            ],
+        ]);
 
-        if ($options['allow_edit']) {
-            $builder->add('custom_choice', 'text', [
-                'required' => false,
-                'label'    => false,
-                'mapped'   => false,
-                'attr'     => [
-                    'placeholder' => 'Custom choice',
-                    'style'       => 'display:none;',
-                ],
-            ]);
-        }
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetCustomChoice'], 200);
     }
 
     /**
-     * @param OptionsResolver $resolver
+     * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);
-        $options = $this->definition['options'];
-        $resolver
-            ->setRequired(['context'])
-            ->setDefaults([
-                'allow_edit' => isset($options['allow_edit']) ? $options['allow_edit'] : false,
-            ]);
+        $resolver->setRequired(['context']);
     }
 
     /**
@@ -89,30 +87,21 @@ class ContextualChoiceType extends ChoiceType
         $ctx = $options['context'];
         $def = $this->definition;
 
-        return $er->createQueryBuilder('d')
-            ->add('from', new From('DeskPRO:CustomFieldDefinition', 'd', 'd.id'), false)
+        return $er
+            ->createQueryBuilder('d')
+            ->add('from', new From(CustomFieldDefinition::class, 'd', 'd.id'), false)
             ->where('d.parent = :parent')
             ->andWhere('d.owner_class = :owner_class and d.context_class = :cc and d.context_id = :cid')
             ->orderBy('d.display_order', 'ASC')
             ->setParameter('parent', $def['id'])
             ->setParameter('owner_class', $def['owner_class'])
             ->setParameter('cc', ClassUtils::getClass($ctx))
-            ->setParameter('cid', $ctx['id']);
+            ->setParameter('cid', $ctx['id'])
+        ;
     }
 
     /**
-     * @param FormView      $view
-     * @param FormInterface $form
-     * @param array         $options
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
-    {
-        parent::buildView($view, $form, $options);
-        $view->vars['allow_edit'] = $options['allow_edit'];
-    }
-
-    /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -122,24 +111,17 @@ class ContextualChoiceType extends ChoiceType
     /**
      * @param FormEvent $event
      */
-    public function onPreSubmit(FormEvent $event)
+    public function onSetCustomChoice(FormEvent $event)
     {
-        if (!$data = $event->getData()) {
-            parent::onPreSubmit($event);
+        $form = $event->getForm();
+        $data = $event->getData();
 
-            return;
-        }
-
-        $form     = $event->getForm();
-        $editable = $form->getConfig()->getOption('allow_edit');
-
-        if ($editable && !empty($data['custom_choice'])) {
-            /** @var EntityChoiceList $choices */
+        if (!empty($data['custom_choice'])) {
             $choices = $form->get('value')->getConfig()->getOption('choice_list')->getChoices();
             $this->handleCustomChoice($form, $choices, $data);
             $form->remove('value');
-            $form->add('value', 'entity', array_merge($this->getValueOptions(), [
-                'class'   => 'DeskPRO:CustomFieldDefinition',
+            $form->add('value', EntityType::class, array_merge($this->getValueOptions(), [
+                'class'   => CustomFieldDefinition::class,
                 'choices' => $choices,
             ]));
 
@@ -195,6 +177,7 @@ class ContextualChoiceType extends ChoiceType
         if ($newVal && $form->get('value')->getConfig()->getOption('multiple')) {
             $newVal = (array) $newVal;
         }
+
         $data['value'] = $newVal;
         unset($data['custom_choice']);
     }
