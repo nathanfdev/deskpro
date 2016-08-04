@@ -66,26 +66,16 @@ class Build1469786838 extends AbstractBuild
 
         $this->out('Bind departments to existing brand');
 
-        $sql = <<<SQL
-SELECT `d1`.* 
-  FROM `departments` AS `d` 
-INNER JOIN `departments` AS `d1` ON `d1`.`id` != `d`.`parent_id` 
-GROUP BY `d1`.`id`
-SQL;
-        $departments = $this->getDbConnection('default')->fetchAll($sql);
-        $insertSQL   = <<<SQL
-INSERT INTO `department_to_brand` SET 
-  `department_id` = :department, 
-  `brand_id` = :brand
-SQL;
-        $statement = $this->getDbConnection('default')->prepare($insertSQL);
-        foreach ($departments as $department) {
-            $statement->execute(
-                [
-                    'department' => $department['id'],
-                    'brand'      => $brand['id'],
-                ]
-            );
+        $depIds    = $this->getDbConnection('default')->fetchAllCol('SELECT id FROM departments');
+        $statement = $this->getDbConnection('default')->prepare('
+            INSERT INTO `department_to_brand` SET
+            `department_id` = :department, `brand_id` = :brand
+        ');
+        foreach ($depIds as $depId) {
+            $statement->execute([
+                'department' => $depId,
+                'brand'      => $brand['id'],
+            ]);
         }
 
         $this->out('Glossary words brand');
@@ -96,30 +86,5 @@ SQL;
         $this->execDbQuery('default', 'CREATE UNIQUE INDEX glossary_words_word_brand_id_uindex ON glossary_words (word, brand_id);');
 
         $this->execDbQuery('default', sprintf('UPDATE `glossary_words` SET `brand_id` = %d', $brand['id']));
-
-        $this->out('Add tickets link to brand');
-        $instructions   = [];
-        $instructions[] = 'ADD brand_id INT DEFAULT NULL';
-        $instructions[] = 'ADD CONSTRAINT FK_54469DF444F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE SET NULL';
-        $instructions[] = 'ADD INDEX IDX_54469DF444F5D008 (brand_id)';
-
-        $this->execSlowAlterTable('tickets', implode(', ', $instructions));
-
-        $instructions = ['ADD brand_id INT DEFAULT NULL'];
-        $this->execSlowAlterTable('tickets_search_active', implode(', ', $instructions));
-
-        $this->out('Bind existing tickets to brand');
-        $connection = $this->getDbConnection('default');
-        $ticketsSQL = <<<SQL
-UPDATE `tickets`
-SET `brand_id` = :brand
-WHERE `brand_id` IS NULL 
-LIMIT 25000
-SQL;
-        do {
-            $rows = $connection->executeUpdate($ticketsSQL, ['brand' => $brand['id']]);
-            $this->out('Updating 25000 tickets');
-            usleep(1000);
-        } while ($rows);
     }
 }
