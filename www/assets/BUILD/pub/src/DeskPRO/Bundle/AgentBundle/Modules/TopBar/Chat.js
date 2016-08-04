@@ -6,6 +6,7 @@ import { Toggle, Range } from 'DeskPRO/Component/Semantic/Form';
 
 class Chat extends React.Component {
   static propTypes = {
+    agents:       PropTypes.array,
     onlineAgents: PropTypes.array,
     onToggleChat: PropTypes.func
   };
@@ -29,12 +30,14 @@ class Chat extends React.Component {
 
   componentDidMount() {
     const self = this;
-    window.DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-agents-userchat', info => {
-      self.setState({
-        onlineAgents: info.online_agents
+    if (window.DeskPRO_Window) {
+      window.DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-agents-userchat', info => {
+        self.setState({
+          onlineAgents: info.online_agents
+        });
+        self.refreshOnlineAgentsList();
       });
-      self.refreshOnlineAgentsList();
-    });
+    }
   }
 
   getStatus() {
@@ -53,9 +56,14 @@ class Chat extends React.Component {
       result.push(<hr />);
       let agentList = [];
       for (const agent of departments[key].agents) {
-        result.push(<ListElement label={agent.name} />);
+        let img = agent.avatar.default_url_pattern;
+        if (agent.avatar.url_pattern) {
+          img = agent.avatar.url_pattern;
+        }
+        img = img.replace(/\{\{IMG_SIZE}}/, 15);
+        agentList.push(<ListElement label={agent.name} image={img} />);
       }
-      result.push(<List>{agentList}</List>);
+      result.push(<List classes={['agents']}>{agentList}</List>);
       return true;
     });
     return result;
@@ -64,8 +72,8 @@ class Chat extends React.Component {
   getPopupContent() {
     const { activeChat, volume, onlineAgents } = this.state;
     return (<div id="chat-menu">
-      <div className="header"><strong>Chat</strong>
-        &nbsp;({onlineAgents.length} Agents, 0 Users)
+      <div className="header">
+        Chat <span className="count">({onlineAgents.length} Agents)</span>
       </div>
       <div className="description">
         <Toggle active={activeChat} onChange={this.toggleChat}>
@@ -97,7 +105,11 @@ class Chat extends React.Component {
   sortAgentsByDepartment() {
     const departments = {};
     let key = 0;
-    for (const agent of this.state.onlineAgents) {
+    for (const agent of this.props.agents) {
+      agent.key = String(agent.id);
+      if (this.state.onlineAgents.indexOf(agent.key) === -1) {
+        continue;
+      }
       if (!departments.hasOwnProperty(agent.department)) {
         departments[agent.department] = {
           label:  agent.department,
@@ -159,6 +171,7 @@ class Chat extends React.Component {
         id={2}
         elementId="chat-menu-popup"
         zIndex={99999}
+        opened
         content={this.getPopupContent()}
       >
         <i className={classNames('icon', 'comments', 'outline', { on: activeChat })} /><br />

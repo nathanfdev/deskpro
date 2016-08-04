@@ -202,28 +202,11 @@ em.counter, em.list-counter {
 //----------------------------------------------------------------------------------------------------------------------
 
 #dp_header {
-	.gradient-v(@agent_header_bg_color, darken(@agent_header_bg_color, 2%));
 	height: @agent_header_height;
 	overflow: visible;
 	&, * {
 		-webkit-box-sizing: content-box;
 		box-sizing: content-box;
-	}
-
-	.group {
-		position: relative;
-		margin: 8px 0 0 10px;
-		padding: 0 10px;
-		height: 40px;
-		background: url('@{img_path}/header-delimiter.png') no-repeat left top;
-	}
-
-	a.logo {
-		display: block;
-		height: 28px;
-		width: 103px;
-		background: url('@{img_path}/header-logo.png') no-repeat left top;
-		margin-top: 2px;
 	}
 
 	.panevis-switcher {

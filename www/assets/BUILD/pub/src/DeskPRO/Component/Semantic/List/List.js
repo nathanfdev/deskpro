@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import ListElement from './ListElement';
 
 class List extends React.Component {
@@ -7,7 +8,8 @@ class List extends React.Component {
       label: PropTypes.string,
       icon:  PropTypes.string
     })),
-    children: PropTypes.node
+    children: PropTypes.node,
+    classes:  PropTypes.object
   };
 
   getItems() {
@@ -25,8 +27,8 @@ class List extends React.Component {
   }
 
   render() {
-    const { children } = this.props;
-    return (<div className="ui list">
+    const { children, classes } = this.props;
+    return (<div className={classNames('ui', 'list', classes)}>
       {this.getItems()}
       {children}
     </div>);

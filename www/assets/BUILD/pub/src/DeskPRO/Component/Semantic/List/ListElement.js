@@ -7,6 +7,7 @@ class ListElement extends React.Component {
     label:       PropTypes.string,
     description: PropTypes.string,
     icon:        PropTypes.string,
+    image:       PropTypes.string,
     elements:    PropTypes.arrayOf(PropTypes.object)
   };
 
@@ -31,9 +32,12 @@ class ListElement extends React.Component {
   }
 
   getIcon() {
-    const { icon } = this.props;
+    const { icon, image } = this.props;
     if (icon) {
       return <i className={classNames('icon', icon)} />;
+    }
+    if (image) {
+      return <img className="ui avatar image" src={image} role="presentation" />;
     }
     return null;
   }
