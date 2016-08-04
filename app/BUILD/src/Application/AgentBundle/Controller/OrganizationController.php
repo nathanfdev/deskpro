@@ -273,7 +273,7 @@ class OrganizationController extends AbstractController
                 break;
 
             default:
-                return $this->createJsonResponse(array('error' => true, 'message' => 'Unknown action'));
+                return $this->createJsonResponse(['error' => true, 'message' => 'Unknown action']);
                 break;
         }
 
@@ -283,16 +283,22 @@ class OrganizationController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
+    /**
+     * @param Request $request
+     * @param int     $organization_id
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function ajaxSaveCustomFieldsAction(Request $request, $organization_id)
     {
         if (!$this->person->hasPerm('agent_org.edit')) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
         $org = $this->getOrgOr404($organization_id);
 
         $field_manager      = $this->container->getSystemService('org_fields_manager');
-        $post_custom_fields = $this->request->request->get('custom_fields', array());
+        $post_custom_fields = $this->request->request->get('custom_fields', []);
         if (!empty($post_custom_fields)) {
             $field_manager->saveFormToObject($post_custom_fields, $org);
         }
@@ -300,35 +306,49 @@ class OrganizationController extends AbstractController
         // specific org custom fields definitions
         $manager = $this->container->getCustomFieldManager();
         $form    = $manager->createDefinitionsFormForContext($org);
+
         // fix: jquery removes empty arrays from post request
         if (!$request->request->has($form->getName())) {
-            $request->request->set($form->getName(), array());
+            $request->request->set($form->getName(), []);
         }
         if (!$form->handleRequest($request)->isValid()) {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'error'                 => true,
                 'invalid_custom_fields' => $form->getErrors(true, true)->current(),
-            ));
+            ]);
         }
-        $manager->flush($form);
 
+        $manager->flush($form);
         $custom_fields = $field_manager->getDisplayArrayForObject($org);
 
-        return $this->render('AgentBundle:Organization:view-customfields-rendered-rows.html.twig', array(
-            'org'           => $org,
-            'custom_fields' => $custom_fields,
-        ));
+        return $this->render('AgentBundle:Organization:view-customfields-rendered-rows.html.twig', [
+            'org'                       => $org,
+            'custom_fields'             => $custom_fields,
+            'custom_fields_definitions' => $form->createView(),
+        ]);
     }
 
+    /**
+     * @param int $organization_id
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function changePictureOverlayAction($organization_id)
     {
         $org = $this->getOrgOr404($organization_id);
 
-        return $this->render('AgentBundle:Organization:change-org-picture.html.twig', array(
+        return $this->render('AgentBundle:Organization:change-org-picture.html.twig', [
             'org' => $org,
-        ));
+        ]);
     }
 
+    /**
+     * @param int $organization_id
+     *
+     * @throws \Exception
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function saveContactDataAction($organization_id)
     {
         if (!$this->person->hasPerm('agent_org.edit')) {

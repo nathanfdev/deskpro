@@ -35,8 +35,14 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class ChoiceDefinitionType.
+ */
 class ChoiceDefinitionType extends CustomFieldDefinitionType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         // if we need to define all properties, not only children
@@ -59,8 +65,8 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
             ->add('_children', DpCategoryBuilderType::class, [
                 'type'               => SimpleDefinitionType::class,
                 'label'              => false,
-                'allow_add'          => (bool) $options['allow_edit'],
-                'allow_delete'       => (bool) $options['allow_edit'],
+                'allow_add'          => true,
+                'allow_delete'       => true,
                 'required'           => false,
                 'data'               => $children ?: new ArrayCollection(),
                 'mapped'             => false,
@@ -69,13 +75,13 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
                     'label'    => false,
                     'context'  => $options['context'],
                     'parent'   => $options['data'],
-                    'disabled' => !$options['allow_edit'],
+                    'disabled' => false,
                 ],
             ]);
     }
 
     /**
-     * @param OptionsResolver $resolver
+     * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -89,12 +95,12 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
                 'children_collection', 'children_only',
             ])
             ->addAllowedTypes([
-                'children_collection' => ['null', 'Doctrine\Common\Collections\ArrayCollection'],
+                'children_collection' => ['null', ArrayCollection::class],
             ]);
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -102,9 +108,7 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
     }
 
     /**
-     * @param FormView      $view
-     * @param FormInterface $form
-     * @param array         $options
+     * {@inheritdoc}
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
