@@ -66,26 +66,16 @@ class Build1469786838 extends AbstractBuild
 
         $this->out('Bind departments to existing brand');
 
-        $sql = <<<SQL
-SELECT `d1`.* 
-  FROM `departments` AS `d` 
-INNER JOIN `departments` AS `d1` ON `d1`.`id` != `d`.`parent_id` 
-GROUP BY `d1`.`id`
-SQL;
-        $departments = $this->getDbConnection('default')->fetchAll($sql);
-        $insertSQL   = <<<SQL
-INSERT INTO `department_to_brand` SET 
-  `department_id` = :department, 
-  `brand_id` = :brand
-SQL;
-        $statement = $this->getDbConnection('default')->prepare($insertSQL);
-        foreach ($departments as $department) {
-            $statement->execute(
-                [
-                    'department' => $department['id'],
-                    'brand'      => $brand['id'],
-                ]
-            );
+        $depIds    = $this->getDbConnection('default')->fetchAllCol('SELECT id FROM departments');
+        $statement = $this->getDbConnection('default')->prepare('
+            INSERT INTO `department_to_brand` SET
+            `department_id` = :department, `brand_id` = :brand
+        ');
+        foreach ($depIds as $depId) {
+            $statement->execute([
+                'department' => $depId,
+                'brand'      => $brand['id'],
+            ]);
         }
 
         $this->out('Glossary words brand');
