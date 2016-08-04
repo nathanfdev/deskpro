@@ -39,7 +39,7 @@ Feature: /people/counts endpoint
     And "user1@deskpro.dev" user exists
     And "user2@deskpro.dev" user exists
     And I send a DELETE request to "/api/v2/agents/{agent3@deskpro.dev}"
-    And "group" user group exits
+    And "group" user group exists
     And I add "user1@deskpro.dev" usergroup relation "group"
     And I add "user2@deskpro.dev" usergroup relation "group"
 

@@ -7,7 +7,7 @@ Feature: New ticket form validation
     And I have default brand
 
   Scenario: I check empty department
-    Given default everyone user group exits
+    Given default everyone user group exists
     And only the following Department records exist:
       | #  | Title        | Brands           | Is Tickets Enabled |
       | d1 | Department 1 | [{defaultBrand}] | 1                  |
@@ -21,7 +21,7 @@ Feature: New ticket form validation
     And "ticket[department]" form field should have 1 error
 
   Scenario: I check leaf department
-    Given default everyone user group exits
+    Given default everyone user group exists
     And only the following Department records exist:
       | #  | Parent | Title        | Brands           | Is Tickets Enabled |
       | d1 | NULL   | Department 1 | [{defaultBrand}] | 1                  |

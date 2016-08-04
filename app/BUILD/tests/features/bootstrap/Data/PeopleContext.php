@@ -28,6 +28,7 @@
 
 namespace DpBehat\Data;
 
+use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\Usergroup;
@@ -40,7 +41,7 @@ use DpBehat\Data\Factory\SimpleFactory;
 class PeopleContext extends BaseContext
 {
     /**
-     * @Given default everyone user group exits
+     * @Given default everyone user group exists
      *
      * @return Usergroup
      */
@@ -50,7 +51,7 @@ class PeopleContext extends BaseContext
     }
 
     /**
-     * @Given default registered user group exits
+     * @Given default registered user group exists
      *
      * @return Usergroup
      */
@@ -92,7 +93,7 @@ class PeopleContext extends BaseContext
     }
 
     /**
-     * @Given :name user group exits
+     * @Given :name user group exists
      *
      * @param string $name
      *
@@ -101,6 +102,18 @@ class PeopleContext extends BaseContext
     public function usergroupExists($name)
     {
         return $this->createUsergroup($name, false);
+    }
+
+    /**
+     * @Given :name agent group exists
+     *
+     * @param string $name
+     *
+     * @return Usergroup
+     */
+    public function agenntgroupExists($name)
+    {
+        return $this->createUsergroup($name, true);
     }
 
     /**
@@ -276,6 +289,41 @@ class PeopleContext extends BaseContext
     {
         $this->userExists('user@deskpro.dev');
         $this->agentExists('agent@deskpro.dev');
+    }
+
+    /**
+     * @param string $who
+     * @param string $label
+     *
+     * @throws \Exception
+     *
+     * @Given I mark :who user with :label label
+     */
+    public function iMarkUserWithLabel($who, $label)
+    {
+        /** @var Person $person */
+        $person = DataContext::getReference($who);
+        $label  = $this->findOrCreateLabel($label, $person);
+        $person->addLabel($label);
+        $this->persistAndFlush($person);
+    }
+
+    /**
+     * @param string $label
+     *
+     * @return LabelPerson
+     */
+    private function findOrCreateLabel($label, Person $person)
+    {
+        $repo = $this->em()->getRepository(LabelPerson::class);
+        if (!$labelObject = $repo->findOneBy(['label' => $label, 'person' => $person])) {
+            $labelObject = new LabelPerson();
+            $labelObject->setLabel($label);
+            $labelObject->person = $person;
+            $this->persistAndFlush($labelObject);
+        }
+
+        return $labelObject;
     }
 
     /**
