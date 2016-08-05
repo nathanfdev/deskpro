@@ -1,10 +1,9 @@
 <?php
-
 /*
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,35 +25,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace Application\DeskPRO\TicketLayout\Terms;
 
-namespace Application\DeskPRO\Tickets\Triggers;
 
-class TermFactory
+use Application\DeskPRO\Entity\Ticket;
+
+class CheckTicketContextualField extends \Application\DeskPRO\Tickets\Triggers\Terms\CheckTicketContextualField implements TicketLayoutTermInterface
 {
-    public function createFromArray(array $term_info, $namespace = 'Application\\DeskPRO\\Tickets\\Triggers\\Terms')
+    /**
+     * @inheritdoc
+     */
+    public function compileJsCheck()
     {
-        return $this->create($term_info['type'], $term_info['op'], $term_info['options'], $namespace);
+
     }
 
-    public function create($type, $op, array $options, $namespace = 'Application\\DeskPRO\\Tickets\\Triggers\\Terms')
+    /**
+     * @inheritdoc
+     */
+    public function isTicketMatch(Ticket $ticket)
     {
-        if (preg_match('#^Check(User|Ticket|Org)(Contextual)?Field(\d+)$#', $type, $m)) {
-            $class_type          = 'Check'.$m[1].$m[2].'Field';
-            $options['field_id'] = $m[3];
-        } else {
-            $class_type = $type;
-        }
 
-        $class_name = "$namespace\\$class_type";
-        if (!class_exists($class_name)) {
-            throw new \InvalidArgumentException("Unknown term $type (could not locate class: $class_name)");
-        }
+    }
 
-        $term = new $class_name($op, $options);
+    /**
+     * @inheritdoc
+     */
+    public function isSubmittedDataMatch(array $data)
+    {
 
-        return $term;
     }
 }

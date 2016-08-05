@@ -54,37 +54,39 @@ class TicketLayoutHelper
         $form      = $context->getForm();
         $finalData = [];
         $keys      = [
-            FormFields::DEPARTMENT,
-            FormFields::PRODUCT,
-            FormFields::CATEGORY,
-            FormFields::WORKFLOW,
-            FormFields::PRIORITY,
+            FormFields::DEPARTMENT   => 1,
+            FormFields::PRODUCT      => 1,
+            FormFields::CATEGORY     => 1,
+            FormFields::WORKFLOW     => 1,
+            FormFields::PRIORITY     => 1,
+            FormFields::TICKET_FIELD => 1,
+            FormFields::USER_FIELD   => 1,
+            FormFields::ORG_FIELD    => 1,
         ];
 
-        foreach ($keys as $key) {
-            if (array_key_exists($key, $submitted_data) && $form->has($key)) {
-                $submitted_value = $submitted_data[$key];
+        foreach ($submitted_data as $key => $value) {
+            $finalData[$key] = null;
+            $check = preg_replace('/^(.+)_\d*$/', '\\1', $key);
 
-                $choice = null;
-                if (is_scalar($submitted_value)) {
-                    /** @var ChoiceLoaderInterface $choiceLoader */
-                    $choiceLoader = $form->get($key)->getConfig()->getOption('choice_loader');
-                    if ($choiceLoader) {
-                        $choice = current($choiceLoader->loadChoicesForValues([$submitted_value]));
-                    }
-                }
+            if (!isset($keys[$check]) || !$form->has($key)) {
+                continue;
+            }
 
-                if ($choice instanceof HierarchyNode) {
-                    $choice = $choice->getData();
+            $choice = null;
+            if (is_scalar($value)) {
+                /** @var ChoiceLoaderInterface $choiceLoader */
+                $choiceLoader = $form->get($key)->getConfig()->getOption('choice_loader');
+                if ($choiceLoader) {
+                    $choice = current($choiceLoader->loadChoicesForValues([$value]));
                 }
+            }
 
-                if ($choice) {
-                    $finalData[$key] = $choice->getId();
-                } else {
-                    $finalData[$key] = null;
-                }
-            } else {
-                $finalData[$key] = null;
+            if ($choice instanceof HierarchyNode) {
+                $choice = $choice->getData();
+            }
+
+            if ($choice) {
+                $finalData[$key] = $choice->getId();
             }
         }
 

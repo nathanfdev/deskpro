@@ -11,8 +11,14 @@ define ['DeskPRO/Util/Util'], (Util) ->
       @scope.CustomFieldTitleFilter = (f) =>
         @scope.field.field_type == 'custom_field' and (f.id+'') == (@scope.field.field_id+'')
 
-      $q.all([TicketFields.loadList(), UserFields.loadList(), TicketFieldsPerPerson.all(), TicketFieldsPerOrg.all(), OrgFields.loadList()])
-      .then (results) =>
+      $q.all([
+        TicketFields.loadList()
+        UserFields.loadList()
+        TicketFieldsPerPerson.all()
+        TicketFieldsPerOrg.all()
+        OrgFields.loadList()
+        @dpObTypesDefTicketCriteria.loadDataOptions()
+      ]).then (results) =>
         @scope.custom_ticket_fields     = results[0]
         @scope.custom_user_fields       = results[1]
         @scope.ticket_fields_per_person = results[2]
@@ -96,6 +102,60 @@ define ['DeskPRO/Util/Util'], (Util) ->
             title: 'Workflow',
             value: 'CheckWorkflow'
           })
+
+          types.loadDataOptions().then =>
+            if types.options_data?.ticket_fields
+              options = []
+
+              for f in types.options_data.ticket_fields
+                options.push({
+                  title: f.title,
+                  value: types.initFieldGetter('CheckTicketField', f)
+                })
+
+              if types.options_data?.contextual_fields
+                for f in types.options_data.contextual_fields
+                  options.push({
+                    title: f.title,
+                    value: types.initFieldGetter('CheckTicketContextualField', f)
+                  })
+
+              if options.length
+                $scope.criteriaOptions.push({
+                  title: 'Ticket Fields',
+                  subOptions: options
+                })
+
+            if types.options_data?.user_fields
+              options = []
+
+              for f in types.options_data.user_fields
+                options.push({
+                  title: f.title,
+                  value: types.initFieldGetter('CheckUserField', f)
+                })
+
+              if options.length
+                $scope.criteriaOptions.push({
+                  title: 'Person Fields',
+                  subOptions: options
+                })
+
+            if types.options_data?.org_fields
+              options = []
+
+              for f in types.options_data.org_fields
+                options.push({
+                  title: f.title,
+                  value: types.initFieldGetter('CheckOrgField', f)
+                })
+
+              if options.length
+                $scope.criteriaOptions.push({
+                  title: 'Organization Fields',
+                  subOptions: options
+                })
+
 
           $scope.criteriaTypesDef = typeDef
 

@@ -36,7 +36,9 @@ namespace Application\DeskPRO\TicketLayout;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface;
+use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Strings;
+use Zend\Db\Sql\Ddl\Constraint\Check;
 
 class LayoutFieldCriteria implements \Serializable, \Countable
 {
@@ -206,10 +208,14 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         $data['terms']   = [];
 
         foreach ($this->terms as $t) {
+            if (($options = $t->getTermOptions()) instanceof CheckedOptionsArray) {
+                /** @var CheckedOptionsArray $options */
+                $options = $options->all();
+            }
             $data['terms'][] = [
                 'type'    => $t->getTermType(),
                 'op'      => $t->getTermOperator(),
-                'options' => $t->getTermOptions(),
+                'options' => $options,
             ];
         }
 
