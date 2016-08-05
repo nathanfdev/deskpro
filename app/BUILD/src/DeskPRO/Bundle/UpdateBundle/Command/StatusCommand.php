@@ -47,6 +47,7 @@ class StatusCommand extends ContainerAwareCommand
             ->setName('dp:update:status')
             ->setDescription('Check the status of your installation and see if there are updates.')
             ->addOption('session-id', null, InputOption::VALUE_REQUIRED, '(internal)')
+            ->addOption('only-auto', null, InputOption::VALUE_NONE, 'Only update to releases approved for automatic updates')
         ;
     }
 
@@ -62,7 +63,12 @@ class StatusCommand extends ContainerAwareCommand
         $distroLoader   = $this->getContainer()->get('dp.updater.distro.manifest_loader');
 
         try {
-            $releases     = $distroLoader->loadReleases();
+            if ($input->getOption('only-auto')) {
+                $releases = $distroLoader->loadReleases(['with_flags' => 'auto_enabled']);
+            } else {
+                $releases = $distroLoader->loadReleases();
+            }
+
             $returnStatus = 0;
         } catch (\Exception $e) {
             $exHelper = new DistroExceptionHelper($output);

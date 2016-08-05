@@ -107,11 +107,12 @@ class UpdaterController extends BaseController
         /** @var SettingRepository $settingRepos */
         $settingRepos = $this->getRepository(Setting::class);
         $settingRepos
-            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_ENABLED,     $model->isEnabled() ? 1 : 0)
-            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_TIME_OF_DAY, $model->getTimeOfDay())
-            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_TIMEZONE,    $model->getTimezone()->getName())
-            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_INTERVAL,    $model->getIntervalDays())
-            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_NEXT_TIME,   $model->calculateNextTimeUtc() ? $model->calculateNextTimeUtc()->format('Y-m-d H:i:s') : null)
+            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_ENABLED,        $model->isEnabled() ? 1 : 0)
+            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_TIME_OF_DAY,    $model->getTimeOfDay())
+            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_TIMEZONE,       $model->getTimezone()->getName())
+            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_INTERVAL,       $model->getIntervalDays())
+            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_NEXT_TIME,      $model->calculateNextTimeUtc() ? $model->calculateNextTimeUtc()->format('Y-m-d H:i:s') : null)
+            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_NEXT_IS_MANUAL, 0)
         ;
 
         $view = View::create(!$isModify ? $this->wrap($model) : null, $status);
@@ -149,7 +150,10 @@ class UpdaterController extends BaseController
 
         /** @var SettingRepository $settingRepos */
         $settingRepos = $this->getRepository(Setting::class);
-        $settingRepos->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_NEXT_TIME,   $setDate->format('Y-m-d H:i:s'));
+        $settingRepos
+            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_NEXT_TIME,      $setDate->format('Y-m-d H:i:s'))
+            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_NEXT_IS_MANUAL, 0)
+        ;
 
         return View::create($this->wrap(['success' => true]));
     }

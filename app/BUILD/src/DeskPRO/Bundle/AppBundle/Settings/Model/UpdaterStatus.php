@@ -40,6 +40,12 @@ class UpdaterStatus
     private $nextCheck;
 
     /**
+     * @var bool
+     * @JMS\Type("boolean")
+     */
+    private $nextIsManual;
+
+    /**
      * @var string
      * @JMS\Type("string")
      */
@@ -72,6 +78,16 @@ class UpdaterStatus
     }
 
     /**
+     * Is the next update scheduled manually?
+     *
+     * @return bool
+     */
+    public function isNextManual()
+    {
+        return $this->nextIsManual;
+    }
+
+    /**
      * @JMS\VirtualProperty()
      *
      * @return null|string
@@ -91,12 +107,14 @@ class UpdaterStatus
 
     /**
      * @param \DateTime $nextCheck
+     * @param bool      $isManual
      *
      * @return $this
      */
-    public function setNextCheck(\DateTime $nextCheck = null)
+    public function setNextCheck(\DateTime $nextCheck = null, $isManual = false)
     {
-        $this->nextCheck = $nextCheck;
+        $this->nextCheck    = $nextCheck;
+        $this->nextIsManual = $isManual;
 
         return $this;
     }

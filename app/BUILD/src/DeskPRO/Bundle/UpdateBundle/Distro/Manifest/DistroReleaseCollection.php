@@ -53,6 +53,45 @@ class DistroReleaseCollection implements \Countable
     }
 
     /**
+     * Filter this collection by a callback, and return a new collection.
+     *
+     * @param callable $cb
+     *
+     * @return DistroReleaseCollection
+     */
+    public function filterBy($cb)
+    {
+        $releases = ListUtils::filter($this->releases, $cb);
+
+        return new self($releases);
+    }
+
+    /**
+     * @param array $criteria
+     *
+     * @return DistroReleaseCollection
+     */
+    public function filterByCriteria(array $criteria)
+    {
+        return $this->filterBy(function (DistroRelease $r) use ($criteria) {
+            foreach ($criteria as $type => $opt) {
+                switch ($type) {
+                    case 'with_flags':
+                        $opt = (array) $opt;
+                        foreach ($opt as $f) {
+                            if (!$r->hasFlag($f)) {
+                                return false;
+                            }
+                        }
+                        break;
+                }
+            }
+
+            return true;
+        });
+    }
+
+    /**
      * @param string $id
      *
      * @return DistroRelease|null

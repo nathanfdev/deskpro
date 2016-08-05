@@ -44,6 +44,11 @@ class DistroRelease
     private $date;
 
     /**
+     * @var array
+     */
+    private $flags;
+
+    /**
      * @var string
      */
     private $detailUrl;
@@ -79,6 +84,7 @@ class DistroRelease
         $this->zipUrl    = $props['zip_url'];
         $this->filesize  = $props['filesize'];
         $this->sha256    = $props['checksums']['sha256'];
+        $this->flags     = $props['flags'];
     }
 
     /**
@@ -93,6 +99,7 @@ class DistroRelease
             // and we dont use this at the moment:
             'commit', 'track',
         ]);
+        $resolver->setDefault('flags', []);
         $resolver->setAllowedValues('checksums', function ($v) {
             return is_array($v) && !empty($v['sha256']);
         });
@@ -143,6 +150,24 @@ class DistroRelease
     public function getFilesize()
     {
         return $this->filesize;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFlags()
+    {
+        return $this->flags;
+    }
+
+    /**
+     * @param string $flagId
+     *
+     * @return bool
+     */
+    public function hasFlag($flagId)
+    {
+        return in_array($flagId, $this->flags);
     }
 
     /**

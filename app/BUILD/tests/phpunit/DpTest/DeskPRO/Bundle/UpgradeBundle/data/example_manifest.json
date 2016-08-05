@@ -8,6 +8,7 @@
       "detail_url": "https://deskpro.github.io/releases/stable/2016-06/15741.0/release.json",
       "zip_url": "https://github.com/DeskPRO/deskpro.github.io/blob/master/releases/stable/2016-06/15741.0/deskpro.zip?raw=true",
       "filesize": 165581571,
+      "flags": ["foo", "bar", "auto_enabled"],
       "checksums": {
         "crc32": "b66232ec",
         "md5": "7b3bf315bb82edfc252cbaf1fe373a13",
@@ -23,6 +24,7 @@
       "detail_url": "https://deskpro.github.io/releases/stable/2016-06/15742.0/release.json",
       "zip_url": "https://github.com/DeskPRO/deskpro.github.io/blob/master/releases/stable/2016-06/15742.0/deskpro.zip?raw=true",
       "filesize": 165581571,
+      "flags": ["foo", "bar", "baz"],
       "checksums": {
         "crc32": "b66232ec",
         "md5": "7b3bf315bb82edfc252cbaf1fe373a13",
