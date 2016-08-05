@@ -8,6 +8,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @portalSettings = @DataService.get 'PortalGeneralSettings'
 
       @$scope.brand_id = @$stateParams.brandId
+      @$scope.brand = false
 
       @Api2.sendGet('brands/default').then (res) =>
         @$scope.default_brand = res.data.data
@@ -32,16 +33,23 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @portalSettings.updateSettingsTemporary(@settings)
 
     initialLoad: ->
+      promises = []
       if (@$scope.brand_id != 'new')
         @portalSettings.setBrandId(@$scope.brand_id)
-        @portalSettings.getSettings().then((s) =>
-          @settings = s
-          if (@settings.brand_logo)
-            @Api2.sendGet('/brands/' + @settings.brand).then (res) =>
-              @setAvatar res.data.data.logo_blob
-              @settings.enable_brand_logo == !!res.data.data.logo_blob
 
-        )
+        settingPromise = @portalSettings.getSettings()
+        settingPromise.then (res) =>
+          @settings = res
+        promises.push(settingPromise)
+
+        brandPromise = @Api2.sendGet('/brands/' + @$scope.brand_id)
+        brandPromise.then (res) =>
+          @$scope.brand = res.data.data
+          if res.data.data.logo_blo
+            @setAvatar(res.data.data.logo_blob)
+        promises.push(brandPromise)
+
+      @$q.all(promises)
 
     saveSettings: ->
       @startSpinner()
