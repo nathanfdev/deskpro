@@ -38,16 +38,4 @@
     </li>
     {% endif %}
   </ul>
-  {% if portal_custom_logo() %}
-    {#
-      todo possibly we need a better solution for this, but I guess it will affect markup and css much
-      I know that js is the worst way to fix css, but I have no idea how to push menu to the bottom
-      when we don't know the height of element (it's dynamic), so the :before and <div style="width: 1px" ..
-      wont work.
-    #}
-    <script type="text/javascript">
-      var $menu = $('#menu');
-      $menu.css('padding-top', $('.brand.with-logo').height() - $menu.height());
-    </script>
-  {% endif %}
 </header>
