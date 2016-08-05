@@ -49,16 +49,13 @@ find . -type f \( \
     -o -name ".php_cs" -o -name ".php_cs.cache" -o -name ".eslintignore" \
 \) -exec rm -rf {} \;
 
-# dont need web/ node_modules at all
-rm -rf $DIR_ROOT/www/assets/BUILD/web/node_modules
-
 ########################################################################################################################
 # General cleanup
 ########################################################################################################################
 
 cd $DIR_ROOT/app/BUILD/vendor
 
-clean_dirs=("$DIR_ROOT/app/BUILD/vendor" "$DIR_ROOT/app/BUILD/vendor-src" "$DIR_ROOT/www/assets/BUILD/pub/node_modules" "$DIR_ROOT/www/assets/BUILD/web/bower_components")
+clean_dirs=("$DIR_ROOT/app/BUILD/vendor" "$DIR_ROOT/app/BUILD/vendor-src" "$DIR_ROOT/www/assets/BUILD/pub/node_modules" "$DIR_ROOT/www/assets/BUILD/web/bower_components" "$DIR_ROOT/www/assets/BUILD/web/node_modules")
 
 for dir in "${clean_dirs[@]}"
 do
@@ -98,7 +95,7 @@ rm -f $DIR_ROOT/app/BUILD/vendor/firebase/php-jwt/composer.phar
 # Remove potentially bad files from assets
 ########################################################################################################################
 
-clean_dirs=("$DIR_ROOT/www/assets/BUILD/pub/node_modules" "$DIR_ROOT/www/assets/BUILD/web/bower_components")
+clean_dirs=("$DIR_ROOT/www/assets/BUILD/pub/node_modules" "$DIR_ROOT/www/assets/BUILD/web/bower_components" "$DIR_ROOT/www/assets/BUILD/web/node_modules")
 
 for dir in "${clean_dirs[@]}"
 do
