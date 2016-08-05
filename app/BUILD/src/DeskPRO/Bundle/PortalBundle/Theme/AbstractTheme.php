@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use Symfony\Component\Finder\Finder;
@@ -59,6 +60,9 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
         $this->tags = unserialize($serialized);
     }
 
+    /**
+     * @param ThemeInterface $parent
+     */
     public function setParent(ThemeInterface $parent)
     {
         $this->parent = $parent;
@@ -123,8 +127,22 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
         return $this->tags;
     }
 
-    public function getTemplateMap()
+    /**
+     * @param bool $skipCache
+     *
+     * @return array
+     */
+    public function getTemplateMap($skipCache = false)
     {
+        if (!$skipCache) {
+            $cacheFile = $this->getTemplateMapCachePath();
+            if (file_exists($cacheFile)) {
+                $map = require $cacheFile;
+
+                return $this->getParent() ? array_merge($this->parent->getTemplateMap(), $map) : $map;
+            }
+        }
+
         $temps  = array();
         $parser = new YamlParser();
 
@@ -163,6 +181,9 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
         return $this->getParent() ? array_merge($this->parent->getTemplateMap(), $temps) : $temps;
     }
 
+    /**
+     * @param array $tags
+     */
     public function setTags(array $tags)
     {
         $tags_with_names = array();
@@ -172,5 +193,13 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
         }
 
         $this->tags = $tags_with_names;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTemplateMapCachePath()
+    {
+        return realpath($this->getBaseTemplateDir().'/../').'/templates_map_cache.php';
     }
 }

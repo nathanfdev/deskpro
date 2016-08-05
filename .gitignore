@@ -78,6 +78,10 @@ bin/deskpro-importer-tools
 /app/BUILD/src/Application/DeskPRO/Dpql/Parser.out
 /app/BUILD/sys/enc
 
+/app/BUILD/src/DeskPRO/Bundle/PortalBundle/Themes/Base/Resources/templates_map_cache.php
+/app/BUILD/src/DeskPRO/Bundle/PortalBundle/Themes/Sidebar/Resources/templates_map_cache.php
+/app/BUILD/src/DeskPRO/Bundle/PortalBundle/Themes/Standard/Resources/templates_map_cache.php
+
 # tests
 /app/BUILD/tests/config/config.all.php
 /app/BUILD/tests/config/config.test.php

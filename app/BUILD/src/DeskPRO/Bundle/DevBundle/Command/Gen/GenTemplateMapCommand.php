@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\DevBundle\Command\Gen;
 
 use DeskPRO\Bundle\DevBundle\Template\TemplatesScanner;
+use DeskPRO\Bundle\PortalBundle\Themes\Base\BaseTheme;
+use DeskPRO\Bundle\PortalBundle\Themes\Sidebar\SidebarTheme;
+use DeskPRO\Bundle\PortalBundle\Themes\Standard\StandardTheme;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -56,7 +60,26 @@ class GenTemplateMapCommand extends ContainerAwareCommand
 
         TemplatesScanner::dump();
 
-        $output->writeln(sprintf('Done in %.3fs', microtime(true) - $startTime));
         $output->writeln(sprintf('Wrote map to: <info>%s</info>', DP_APP_DIR.TemplatesScanner::DUMP_PATH));
+
+        /** @var \DeskPRO\Bundle\PortalBundle\Theme\AbstractTheme[] $themes */
+        $themes = [
+            'base'     => new BaseTheme(),
+            'standard' => new StandardTheme(),
+            'sidebar'  => new SidebarTheme(),
+        ];
+
+        $themes['standard']->setParent($themes['base']);
+        $themes['sidebar']->setParent($themes['standard']);
+
+        foreach ($themes as $t) {
+            $cacheFile = $t->getTemplateMapCachePath();
+            $map       = $t->getTemplateMap(true);
+
+            file_put_contents($cacheFile, '<?php return '.var_export($map, true).';');
+            $output->writeln(sprintf('Wrote map to <info>%s</info>', $cacheFile));
+        }
+
+        $output->writeln(sprintf('Done in %.3fs', microtime(true) - $startTime));
     }
 }
