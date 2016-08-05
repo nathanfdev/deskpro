@@ -61,9 +61,17 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     {
         set_time_limit(0);
 
+        $doReset       = $input->getOption('reset');
+        $versionError  = false;
         $ignore_errors = $input->getOption('ignore-errors');
 
-        if ($input->getOption('reset')) {
+        $dbVersion = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
+        if ($dbVersion && $dbVersion <= 1463676536) {
+            $doReset      = true;
+            $versionError = true;
+        }
+
+        if ($doReset) {
             @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
             @unlink(dp_get_tmp_dir().'/auto-upgrade-started');
             $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
@@ -74,7 +82,15 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_db', null);
             $this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', null);
 
-            $output->writeln('Reset done.');
+            if ($versionError) {
+                $output->writeln('<error>You must update to DeskPRO #443 before attempting to upgrade</error>');
+                $output->writeln('The version of DeskPRO you are currently using is too old to be upgraded directly. You need to update to version #443 first.');
+                $output->writeln('Read more: https://manuals.deskpro.com/html/sysadmin/upgrade-new-portal/upgrade-new-portal.html');
+
+                return 1;
+            } else {
+                $output->writeln('Reset done.');
+            }
 
             return 0;
         }
