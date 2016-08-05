@@ -30,6 +30,7 @@ namespace Application\DeskPRO\Twig;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Templating\GlobalVariablesInterface;
+use DeskPRO\Bundle\AppBundle\Server\PhpInfo;
 use Symfony\Bridge\Twig\AppVariable as BaseAppVariable;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -305,5 +306,13 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
     public function canResetHelpdesk()
     {
         return $this->container->get('templating.globals')->canResetHelpdesk();
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAccelerator()
+    {
+        return PhpInfo::hasAccelerator();
     }
 }

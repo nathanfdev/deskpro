@@ -9,6 +9,25 @@
 
 		{##################################################################################################}
 
+		{% if not app.hasAccelerator()  %}
+			<article class="padd">
+				<div class="alert alert-danger">
+					<div style="float:left">
+						<i class="fa fa-exclamation-circle" style="font-size: 40px;"></i>
+					</div>
+					<div style="margin-left: 50px;">
+						<h3 style="margin-top: 8px;">Missing OpCache</h3>
+						<p>
+							Your server does not have OpCache enabled. This will severely affect the performance of DeskPRO. We highly recommend enabling OpCache.
+						</p>
+						<p>
+							<a href="http://www.php.net/opcache" class="btn btn-default">Click here to learn more</a>
+						</p>
+					</div>
+				</div>
+			</article>
+		{% endif %}
+
 		<article class="padd">
 			<table class="table table-bordered">
 				<thead>
