@@ -191,7 +191,11 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                     }
                 } while ($check);
 
-                $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:update --no-interaction');
+                if ($updaterStatus->isNextManual()) {
+                    $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:update --no-interaction');
+                } else {
+                    $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:update --no-interaction --only-auto');
+                }
                 if ($output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
                     $output->writeln("Running upgrade: $cmd");
                     $cb = function ($t, $l) use ($output) {

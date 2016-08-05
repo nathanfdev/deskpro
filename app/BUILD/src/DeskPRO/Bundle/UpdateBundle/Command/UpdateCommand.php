@@ -51,6 +51,7 @@ class UpdateCommand extends ContainerAwareCommand
         $this
             ->setName('dp:update')
             ->addOption('session-id', null, InputOption::VALUE_REQUIRED, '(internal)')
+            ->addOption('only-auto', null, InputOption::VALUE_NONE, 'Only update to releases approved for automatic updates')
             ->setDescription('Checks for updates, downloads, and then installs them if they exists')
         ;
     }
@@ -167,11 +168,15 @@ class UpdateCommand extends ContainerAwareCommand
             ['keyEvent' => LogKeyEvent::create('AutoUpgrade.status.start')]
         );
 
-        $command = $this->getApplication()->find('dp:update:status');
-        $args    = new ArrayInput([
+        $command   = $this->getApplication()->find('dp:update:status');
+        $inputArgs = [
             'command'      => 'dp:update:status',
             '--session-id' => $sessionId,
-        ]);
+        ];
+        if ($input->getOption('only-auto')) {
+            $inputArgs['--only-auto'] = true;
+        }
+        $args = new ArrayInput($inputArgs);
         if ($ret = $command->run($args, $output)) {
             $logger->info(
                 '[Auto-Upgrade] dp:update:status - error',

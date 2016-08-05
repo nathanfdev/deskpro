@@ -35,11 +35,12 @@ use Symfony\Component\Routing\RouterInterface;
 
 class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
 {
-    const AUTO_UPDATER_ENABLED     = 'auto_updater_enabled';
-    const AUTO_UPDATER_NEXT_TIME   = 'auto_updater_next_check';
-    const AUTO_UPDATER_TIME_OF_DAY = 'auto_updater_time_of_day';
-    const AUTO_UPDATER_TIMEZONE    = 'auto_updater_time_of_day_tz';
-    const AUTO_UPDATER_INTERVAL    = 'auto_updater_interval_days';
+    const AUTO_UPDATER_ENABLED        = 'auto_updater_enabled';
+    const AUTO_UPDATER_NEXT_TIME      = 'auto_updater_next_check';
+    const AUTO_UPDATER_NEXT_IS_MANUAL = 'auto_updater_next_is_manaul';
+    const AUTO_UPDATER_TIME_OF_DAY    = 'auto_updater_time_of_day';
+    const AUTO_UPDATER_TIMEZONE       = 'auto_updater_time_of_day_tz';
+    const AUTO_UPDATER_INTERVAL       = 'auto_updater_interval_days';
 
     /**
      * @var AppEnvInterface
@@ -70,13 +71,13 @@ class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getUpdaterSettings()
     {
         $updaterSettings = new UpdaterSettings();
-        $updaterSettings->setIsEnabled((bool) $this->getSetting('auto_updater_enabled'));
+        $updaterSettings->setIsEnabled((bool) $this->getSetting(self::AUTO_UPDATER_ENABLED));
 
         if ($updaterSettings->isEnabled() && !$this->getNextCheckDate()) {
             $updaterSettings->setIsEnabled(false);
         }
 
-        $tzName = $this->getSetting('auto_updater_time_of_day_tz') ?: 'UTC';
+        $tzName = $this->getSetting(self::AUTO_UPDATER_TIMEZONE) ?: 'UTC';
         try {
             $tz = new \DateTimeZone($tzName);
         } catch (\Exception $e) {
@@ -84,9 +85,9 @@ class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
         }
         $updaterSettings->setTimezone($tz);
 
-        $days = max(1, (int) $this->getSetting('auto_updater_interval_days'));
+        $days = max(1, (int) $this->getSetting(self::AUTO_UPDATER_INTERVAL));
         $updaterSettings->setIntervalDays($days);
-        $updaterSettings->setTimeOfDay($this->getSetting('auto_updater_time_of_day'));
+        $updaterSettings->setTimeOfDay($this->getSetting(self::AUTO_UPDATER_TIME_OF_DAY));
 
         return $updaterSettings;
     }
@@ -97,7 +98,7 @@ class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getUpdaterStatus()
     {
         $status = new UpdaterStatus();
-        $status->setNextCheck($this->getNextCheckDate());
+        $status->setNextCheck($this->getNextCheckDate(), $this->getSetting(self::AUTO_UPDATER_NEXT_IS_MANUAL));
 
         $phpPath = $this->appEnv->getConfig('paths.php_path');
 
@@ -135,11 +136,11 @@ class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
      */
     private function getNextCheckDate()
     {
-        if (!$this->getSetting('auto_updater_enabled')) {
+        if (!$this->getSetting(self::AUTO_UPDATER_ENABLED)) {
             return;
         }
 
-        $nextDateStr = $this->getSetting('auto_updater_next_check');
+        $nextDateStr = $this->getSetting(self::AUTO_UPDATER_NEXT_TIME);
         $nextDate    = null;
         if ($nextDateStr) {
             try {

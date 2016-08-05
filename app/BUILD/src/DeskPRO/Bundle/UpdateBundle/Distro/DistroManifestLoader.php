@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\UpdateBundle\Distro;
 use DeskPRO\Bundle\UpdateBundle\Distro\Manifest\DistroRelease;
 use DeskPRO\Bundle\UpdateBundle\Distro\Manifest\DistroReleaseCollection;
 use DeskPRO\Bundle\UpdateBundle\Logger\LogKeyEvent;
+use DeskPRO\Component\Util\DebugUtils;
 use DeskPRO\Component\Util\Timer;
 use DeskPRO\Component\Util\TypeUtils;
 use GuzzleHttp;
@@ -111,13 +112,15 @@ class DistroManifestLoader implements LoggerAwareInterface
     }
 
     /**
+     * @param array $criteria Any criteria to filter the release list by
+     *
      * @throws \Exception        Any other uncaught error (dont think there are any)
      * @throws GuzzleException   HTTP error
      * @throws \RuntimeException If the result is invalid
      *
      * @return DistroReleaseCollection
      */
-    public function loadReleases()
+    public function loadReleases(array $criteria = [])
     {
         $t = Timer::start();
         $this->logger->debug('loadReleases -- begin', ['keyEvent' => LogKeyEvent::create('DistroManifestLoader.start')]);
@@ -125,6 +128,12 @@ class DistroManifestLoader implements LoggerAwareInterface
         try {
             $res = $this->doLoadReleases();
             $this->logger->info('Loaded releases OK', ['keyEvent' => LogKeyEvent::create('DistroManifestLoader.success')]);
+
+            if ($criteria) {
+                $this->logger->info('Filtering releases with criteria: '.DebugUtils::varToString($criteria));
+                $res = $res->filterByCriteria($criteria);
+                $this->logger->info(sprintf('Number of filtered releases: %d', $res->count()));
+            }
 
             return $res;
         } catch (\Exception $e) {
@@ -161,6 +170,7 @@ class DistroManifestLoader implements LoggerAwareInterface
                             "detail_url": "https://deskpro.github.io/releases/stable/2016-06/15742.0/release.json",
                             "zip_url": "https://github.com/DeskPRO/deskpro.github.io/blob/master/releases/stable/2016-06/15742.0/deskpro.zip?raw=true",
                             "filesize": 165581571,
+                            "flags": [],
                             "checksums": {
                                 "crc32": "b66232ec",
                                 "md5": "7b3bf315bb82edfc252cbaf1fe373a13",

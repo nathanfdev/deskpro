@@ -66,6 +66,29 @@ class DistroVersionsTest extends DeskProTestCase
 
     /**
      * @test
+     */
+    public function it_filters_flags()
+    {
+        $distroVersions = new DistroManifestLoader($this->createClient());
+        $releases1      = $distroVersions->loadReleases();
+
+        $distroVersions = new DistroManifestLoader($this->createClient());
+        $releases2      = $distroVersions->loadReleases(['with_flags' => 'auto_enabled']);
+
+        $distroVersions = new DistroManifestLoader($this->createClient());
+        $releases3      = $distroVersions->loadReleases(['with_flags' => 'foo']);
+
+        $distroVersions = new DistroManifestLoader($this->createClient());
+        $releases4      = $distroVersions->loadReleases(['with_flags' => ['foo', 'bar']]);
+
+        $this->assertEquals(2, $releases1->count());
+        $this->assertEquals(1, $releases2->count());
+        $this->assertEquals(2, $releases3->count());
+        $this->assertEquals(2, $releases4->count());
+    }
+
+    /**
+     * @test
      * @expectedException RuntimeException
      */
     public function it_should_throw_exception_on_invalid_manifest()

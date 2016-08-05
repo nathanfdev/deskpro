@@ -50,6 +50,7 @@ class DownloadBuildCommand extends ContainerAwareCommand
             ->addOption('skip-existing', null, InputOption::VALUE_NONE, 'Do nothing if the build exists (returns a success code). See also --update-existing.')
             ->addOption('replace-existing', null, InputOption::VALUE_NONE, 'Update the build if it exists. The default behaviour is to return an error status. See also --skip-existing.')
             ->addOption('session-id', null, InputOption::VALUE_REQUIRED, '(internal)')
+            ->addOption('only-auto', null, InputOption::VALUE_NONE, 'If the zip is specified as "latest", only use "latest" with auto-update enabled')
         ;
     }
 
@@ -93,7 +94,11 @@ class DownloadBuildCommand extends ContainerAwareCommand
             $logger->info('build: '.$zipOption);
 
             try {
-                $release = $this->getBuildFromManifest($zipOption);
+                $criteria = [];
+                if ($input->getOption('only-auto')) {
+                    $criteria = ['with_flags' => 'auto_enabled'];
+                }
+                $release = $this->getBuildFromManifest($zipOption, $criteria);
             } catch (\Exception $e) {
                 $exHelper = new DistroExceptionHelper($output);
                 $exHelper->renderManifestFailure($e, $this->getContainer()->get('dp.updater.distro.manifest_loader'));
@@ -219,13 +224,14 @@ class DownloadBuildCommand extends ContainerAwareCommand
 
     /**
      * @param string $buildId
+     * @param array  $criteria
      *
      * @return \DeskPRO\Bundle\UpdateBundle\Distro\Manifest\DistroRelease
      */
-    private function getBuildFromManifest($buildId)
+    private function getBuildFromManifest($buildId, array $criteria = [])
     {
         $distroLoader = $this->getContainer()->get('dp.updater.distro.manifest_loader');
-        $releases     = $distroLoader->loadReleases();
+        $releases     = $distroLoader->loadReleases($criteria);
 
         if ($releases->count() === 0) {
             throw new \OutOfRangeException('The distribution manifest is empty. Did it fail to load?');

@@ -123,7 +123,7 @@ class CmdBuilderTest extends DeskProTestCase
         $dbInfo     = \DpRun\LowUtil::getMysqlInfoFromConfigArray([
             'host'     => 'localhost',
             'user'     => 'deskpro',
-            'password' => 'pass"word!@£$.,,<>--\'\\',
+            'password' => 'pass"word!@$.,,<>--\'\\',
             'dbname'   => 'dpdb',
         ]);
 
