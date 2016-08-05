@@ -6,118 +6,120 @@
         <h1><i class="fa fa-cog"></i> {{ phrase('admin.setup.user_interface') }}</h1>
 
         <form>
-            {##########################################################################################################}
-            {# WEBSITE #}
-            {##########################################################################################################}
+            <div ng-if="brand.name != 'Default'">
+                {##########################################################################################################}
+                {# WEBSITE #}
+                {##########################################################################################################}
 
-            <div class="content-section">
-                <h2 class="with-divider form-header"><span>{{ phrase('admin.setup.website_settings') }}</span></h2>
+                <div class="content-section">
+                    <h2 class="with-divider form-header"><span>{{ phrase('admin.setup.website_settings') }}</span></h2>
 
-                <div class="row">
-                    <div class="bucket-third">
-                        <div class="inline-input">
-                            <label>{{ phrase('admin.setup.website_name') }}:</label>
-                            <input type="text" placeholder="{{ phrase('admin.setup.website_name') }}" ng-model="Ctrl.settings.site_name" />
+                    <div class="row">
+                        <div class="bucket-third">
+                            <div class="inline-input">
+                                <label>{{ phrase('admin.setup.website_name') }}:</label>
+                                <input type="text" placeholder="{{ phrase('admin.setup.website_name') }}" ng-model="Ctrl.settings.site_name" />
+                            </div>
+                        </div>
+
+                        <div class="bucket-two-thirds">
+                            <div class="form-text">
+                                <p>{{ phrase('admin.setup.website_name_help') }}</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="bucket-two-thirds">
-                        <div class="form-text">
-                            <p>{{ phrase('admin.setup.website_name_help') }}</p>
+
+                    <div class="row">
+                        <div class="bucket-third">
+                            <div class="inline-input">
+                                <label>{{ phrase('admin.setup.website_url') }}:</label>
+                                <input type="text" placeholder="{{ phrase('admin.setup.website_url') }}" ng-model="Ctrl.settings.site_url" />
+                            </div>
+                        </div>
+
+                        <div class="bucket-two-thirds">
+                            <div class="form-text">
+                                <p>{{ phrase('admin.setup.website_url_help') }}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </div><!-- End .content-section -->
 
+                {##########################################################################################################}
+                {# HELPDESK #}
+                {##########################################################################################################}
 
-                <div class="row">
-                    <div class="bucket-third">
-                        <div class="inline-input">
-                            <label>{{ phrase('admin.setup.website_url') }}:</label>
-                            <input type="text" placeholder="{{ phrase('admin.setup.website_url') }}" ng-model="Ctrl.settings.site_url" />
+                <div class="content-section">
+                    <h2 class="with-divider form-header"><span>{{ phrase('admin.setup.helpdesk_settings') }}</span></h2>
+
+                    <div class="row">
+                        <div class="bucket-third">
+                            <div class="inline-input">
+                                <label>{{ phrase('admin.setup.helpdesk_name') }}:</label>
+                                <input id="helpdesk_name" type="text" placeholder="{{ phrase('admin.setup.helpdesk_name') }}" ng-model="Ctrl.settings.deskpro_name" />
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="bucket-two-thirds">
-                        <div class="form-text">
-                            <p>{{ phrase('admin.setup.website_url_help') }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- End .content-section -->
-
-            {##########################################################################################################}
-            {# HELPDESK #}
-            {##########################################################################################################}
-
-            <div class="content-section">
-                <h2 class="with-divider form-header"><span>{{ phrase('admin.setup.helpdesk_settings') }}</span></h2>
-
-                <div class="row">
-                    <div class="bucket-third">
-                        <div class="inline-input">
-                            <label>{{ phrase('admin.setup.helpdesk_name') }}:</label>
-                            <input id="helpdesk_name" type="text" placeholder="{{ phrase('admin.setup.helpdesk_name') }}" ng-model="Ctrl.settings.deskpro_name" />
-                        </div>
-                    </div>
-
-                    <div class="bucket-two-thirds">
-                        <div class="form-text">
-                            <p>{{ phrase('admin.setup.helpdesk_name_help') }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="bucket-third">
-                        <div class="inline-input">
-                            <label>{{ phrase('admin.setup.helpdesk_url') }}:</label>
-                            <input id="helpdesk_url" type="text" placeholder="{{ phrase('admin.setup.helpdesk_url') }}" ng-model="Ctrl.settings.deskpro_url" />
+                        <div class="bucket-two-thirds">
+                            <div class="form-text">
+                                <p>{{ phrase('admin.setup.helpdesk_name_help') }}</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="bucket-two-thirds">
-                        <div class="form-text">
-                            <p>{{ phrase('admin.setup.helpdesk_url_help') }}</p>
+                    <div class="row">
+                        <div class="bucket-third">
+                            <div class="inline-input">
+                                <label>{{ phrase('admin.setup.helpdesk_url') }}:</label>
+                                <input id="helpdesk_url" type="text" placeholder="{{ phrase('admin.setup.helpdesk_url') }}" ng-model="Ctrl.settings.deskpro_url" />
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="row" ng-show="brand_id != 'new'">
-                    <div class="bucket-third">
-                        <div class="inline-input">
-                            <label>{{ phrase('admin.setup.view_brand') }}:</label>
-                            <a class="btn btn-primary" href="/brand-{{ ng_var('brand_id') }}" target="_blank">Portal</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row" ng-show="brand_id != 'new'">
-                    <div class="bucket-third">
-                        <div class="inline-input">
-                            <label>{{ phrase('admin.setup.brand_logo') }}:</label>
-                            <input type="checkbox" ng-model="Ctrl.settings.enable_brand_logo" />&nbsp;{{ phrase('admin.setup.enable_brand_logo') }}
-                        </div>
-                        <div class="inline-input" ng-show="Ctrl.settings.enable_brand_logo">
-                            <label></label>
-                            <img ng-src="{{ ng_var('icon_image') }}" ng-show="icon_image" height="50" />&nbsp;&nbsp;&nbsp;
-                            <a href="javascript:;" ng-click="Ctrl.$modal.open({ templateUrl: Ctrl.getTemplatePath('Index/modal-icons.html'), scope: this })">Pick Avatar</a>
-                            |
-                            <a href="javascript:;" class="file-upload-wrapper">
-                                <input type="file" ng-file-select="Ctrl.onFileSelect($files)" accept="image/*" />
-                                Upload Avatar
-                            </a>
-                            <i class="spinner-flat" ng-show="uploading"></i>
+                        <div class="bucket-two-thirds">
+                            <div class="form-text">
+                                <p>{{ phrase('admin.setup.helpdesk_url_help') }}</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="bucket-two-thirds">
-                        <div class="form-text">
-                            <p>{{ phrase('admin.setup.brand_logo_help') }}</p>
+                    <div class="row" ng-show="brand_id != 'new'">
+                        <div class="bucket-third">
+                            <div class="inline-input">
+                                <label>{{ phrase('admin.setup.view_brand') }}:</label>
+                                <a class="btn btn-primary" href="/brand-{{ ng_var('brand_id') }}" target="_blank">Portal</a>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-            </div><!-- End .content-section -->
+                    <div class="row" ng-show="brand_id != 'new'">
+                        <div class="bucket-third">
+                            <div class="inline-input">
+                                <label>{{ phrase('admin.setup.brand_logo') }}:</label>
+                                <input type="checkbox" ng-model="Ctrl.settings.enable_brand_logo" />&nbsp;{{ phrase('admin.setup.enable_brand_logo') }}
+                            </div>
+                            <div class="inline-input" ng-show="Ctrl.settings.enable_brand_logo">
+                                <label></label>
+                                <img ng-src="{{ ng_var('icon_image') }}" ng-show="icon_image" height="50" />&nbsp;&nbsp;&nbsp;
+                                <a href="javascript:;" ng-click="Ctrl.$modal.open({ templateUrl: Ctrl.getTemplatePath('Index/modal-icons.html'), scope: this })">Pick Avatar</a>
+                                |
+                                <a href="javascript:;" class="file-upload-wrapper">
+                                    <input type="file" ng-file-select="Ctrl.onFileSelect($files)" accept="image/*" />
+                                    Upload Avatar
+                                </a>
+                                <i class="spinner-flat" ng-show="uploading"></i>
+                            </div>
+                        </div>
+
+                        <div class="bucket-two-thirds">
+                            <div class="form-text">
+                                <p>{{ phrase('admin.setup.brand_logo_help') }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- End .content-section -->
+            </div>
 
             {##########################################################################################################}
             {# PORTAL MODE #}
