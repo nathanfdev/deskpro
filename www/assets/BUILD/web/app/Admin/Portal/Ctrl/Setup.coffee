@@ -61,21 +61,20 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         name: @settings.deskpro_name,
         url: @settings.deskpro_url
       }
-      @Api2.sendGet('/brands/url/' + encodeURIComponent(@settings.deskpro_url))
+      @Api2.sendGet('/brands/check_url/' + encodeURIComponent(@settings.deskpro_url))
       .then (res) =>
-        @Growl.error("Each brand need to have a different url")
-        $('#helpdesk_url').focus()
-      .catch (err) =>
-        @Api2.sendPostJson('brands', brand).then (res) =>
-          @Growl.success("Brand created")
-          @$scope.brand_id = res.data.data.id
-          @portalSettings.setBrandId(res.data.data.id)
-          @brandId = res.data.data.id
-          @saveSettings().then(=>
-            @$state.go 'portal', {brandId: @brandId}
-          )
-
-
+        if res.data.data.free
+          @Api2.sendPostJson('brands', brand).then (res) =>
+            @Growl.success("Brand created")
+            @$scope.brand_id = res.data.data.id
+            @portalSettings.setBrandId(res.data.data.id)
+            @brandId = res.data.data.id
+            @saveSettings().then(=>
+              @$state.go 'portal', {brandId: @brandId}
+            )
+        else
+          @Growl.error("Each brand need to have a different url")
+          $('#helpdesk_url').focus()
 
     deleteBrand: ->
       if confirm "Are you sure you want to delete this brand? Theme personalization and templates will be lost."

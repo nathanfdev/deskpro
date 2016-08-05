@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Brands;
 
 use Application\DeskPRO\Entity\Brand;
@@ -232,16 +228,29 @@ class BrandsController extends CrudController
      */
     public function getByUrlAction(Request $request, $url)
     {
-        /** @var UrlHostChecker $urlHostChecker */
-        $urlHostChecker = $this->get('url_host_checker');
-
-        $url = $urlHostChecker->simplifyUrl($url);
-
-        /** @var Brand $brand */
+        $url   = $this->get('url_host_checker')->simplifyUrl($url);
         $brand = $this->getRepository(Brand::class)->findOneBy(['url' => $url]);
-        if ($brand) {
-            return parent::getAction($request, $brand->getId());
+        if (!$brand) {
+            throw $this->createNotFoundException();
         }
-        throw $this->createNotFoundException();
+
+        return parent::getAction($request, $brand->getId());
+    }
+
+    /**
+     * @Rest\Get("/check_url/{url}", requirements={"url"=".+"})
+     *
+     * @param string $url
+     *
+     * @return View
+     */
+    public function checkBrandUrlAction($url)
+    {
+        $url   = $this->get('url_host_checker')->simplifyUrl($url);
+        $brand = $this->getRepository(Brand::class)->findOneBy(['url' => $url]);
+
+        return new View($this->wrap([
+            'free' => !$brand,
+        ]));
     }
 }

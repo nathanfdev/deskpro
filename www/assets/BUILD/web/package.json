@@ -46,5 +46,9 @@
     "gulp-prod": "gulp prod",
     "gulp": "gulp",
     "sassdoc": "gulp sassdoc"
+  },
+  "dependencies": {
+    "angular-ui-select2": "0.0.5",
+    "Select2": "^3.5.7"
   }
 }
