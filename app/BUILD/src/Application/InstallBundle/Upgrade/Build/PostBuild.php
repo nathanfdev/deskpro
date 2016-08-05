@@ -39,6 +39,7 @@ use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
 use DpSys\LowError\SystemErrorHandler;
 use Leafo\ScssPhp\Exception\ParserException;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Routing\RouterInterface;
 
 class PostBuild extends AbstractBuild
 {
@@ -83,6 +84,21 @@ class PostBuild extends AbstractBuild
 
         $this->out('invalidate lang cache');
         $this->out('invalidate lang js cache');
+
+        #------------------------------
+        # Reset opcache
+        #------------------------------
+
+        if (function_exists('opcache_reset')) {
+            $url = $this->container->getRouter()->generate('sys_serverinfo', [
+                'path'  => 'opcache',
+                'reset' => '1',
+                'auth'  => $this->container->get('deskpro.app_env')->getServerInfoAuth('opcache'),
+            ], RouterInterface::ABSOLUTE_URL);
+
+            $ctx = stream_context_create(['http' => ['timeout' => 5]]);
+            @file_get_contents($url, null, $ctx);
+        }
 
         #------------------------------
         # Data

@@ -224,4 +224,13 @@ interface AppEnvInterface
      * @return \OutOfRangeException|string
      */
     public function getRuntimeVar($name, $default = '__throw__');
+
+    /**
+     * Get the authcode used to access some __serverinfo/ scripts from the web.
+     *
+     * @param string $forAction Optionally make it only apply to a specific action
+     *
+     * @return string
+     */
+    public function getServerInfoAuth($forAction = null);
 }

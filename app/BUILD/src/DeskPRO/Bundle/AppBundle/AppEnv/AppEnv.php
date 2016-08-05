@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\AppEnv;
 
+use DeskPRO\Component\Util\RandUtils;
+
 /**
  * The app environment is access to the low-level environment including paths
  * and filesystem configuration.
@@ -248,5 +250,21 @@ class AppEnv implements AppEnvInterface
     public function getRuntimeVar($name, $default = '__throw__')
     {
         return $this->dpEnv->getRuntimeVar($name, $default);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getServerInfoAuth($forAction = null)
+    {
+        $datManager = $this->dpEnv->getDatManager();
+
+        if (!$datManager->hasTxtFile('server_info_auth')) {
+            $datManager->writeTxtFile('server_info_auth', RandUtils::randomString(30, RandUtils::CHARS_ALPHANUM_IU));
+        }
+
+        $auth = $datManager->readTxtFile('server_info_auth');
+
+        return $forAction ? sha1($auth.$forAction) : $auth;
     }
 }

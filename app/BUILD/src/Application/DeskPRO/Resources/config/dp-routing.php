@@ -69,6 +69,14 @@ $collection->create('serve_root', [
     'controller' => '(not a real route)',
 ]);
 
+$collection->create('sys_serverinfo', [
+    'path'         => '/__serverinfo/{path}',
+    'controller'   => '(not a real route)',
+    'requirements' => [
+        'path' => '.*+',
+    ],
+]);
+
 $collection->create('serve_file_root', [
     'path'       => '/file.php',
     'controller' => '(see: serve_file.php)',
