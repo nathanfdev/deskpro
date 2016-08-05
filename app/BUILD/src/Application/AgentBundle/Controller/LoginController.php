@@ -86,9 +86,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                 return $this->redirect($return);
             }
 
-            $url = $this->container->getBrandSetting('core.deskpro_url').'agent/';
-
-            return $this->redirect($url);
+            return $this->redirectRoute('agent');
         }
 
         /*
