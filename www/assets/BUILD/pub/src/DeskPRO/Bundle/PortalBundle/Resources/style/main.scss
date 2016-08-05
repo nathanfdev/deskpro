@@ -1176,6 +1176,13 @@ button, .button, input[type="submit"] {
     }
   }
 
+  // the ul menu is on a new line
+  // when a logo is uploaded
+  &.with-logo-img ul {
+    float: none;
+    text-align: right;
+  }
+
   ul {
     display: block;
     vertical-align: bottom;
