@@ -523,11 +523,11 @@ class FeedbackController extends AbstractController
     public function feedbackRateAction(Request $request, Feedback $item, $visitor_id, $up_or_down)
     {
         if (!$this->isGranted('USE_FEEDBACK')) {
-            return $this->createAccessDeniedException($this->phrase('portal.feedback.module_forbidden'));
+            throw $this->createAccessDeniedException($this->phrase('portal.feedback.module_forbidden'));
         }
         if (!$this->isGranted('RATE_FEEDBACK', $item)) {
             if ($this->getUser()) {
-                return $this->createAccessDeniedException($this->phrase('portal.feedback.rate_forbidden'));
+                throw $this->createAccessDeniedException($this->phrase('portal.feedback.rate_forbidden'));
             }
             if ($request->getContentType() == 'json') {
                 return new JsonResponse(
