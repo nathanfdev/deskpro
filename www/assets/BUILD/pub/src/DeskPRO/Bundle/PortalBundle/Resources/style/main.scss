@@ -1105,8 +1105,6 @@ button, .button, input[type="submit"] {
   margin-bottom: 10px;
   color: $text-color;
   position: relative;
-  text-align: $text-right;
-  display: table;
   width: 100%;
 
   .logo {
@@ -1162,9 +1160,8 @@ button, .button, input[type="submit"] {
   }
 
   .brand {
-    display: table-cell;
+    display: inline-block;
     vertical-align: bottom;
-    min-width: 50%;
     text-align: $float-left;
 
     a {
@@ -1179,14 +1176,21 @@ button, .button, input[type="submit"] {
     }
   }
 
+  // the ul menu is on a new line
+  // when a logo is uploaded
+  &.with-logo-img ul {
+    float: none;
+    text-align: right;
+  }
+
   ul {
-    display: table-cell;
+    display: block;
     vertical-align: bottom;
-    width: 50%;
     margin: 0;
     padding: 0;
     list-style: none;
     color: $text-color-lighter;
+    float: $float-right;
 
     .mobile-expand {
       display: none;
