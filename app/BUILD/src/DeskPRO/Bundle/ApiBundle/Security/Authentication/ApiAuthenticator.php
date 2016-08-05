@@ -269,7 +269,10 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
         foreach ($_SESSION as $k => $v) {
             unset($_SESSION[$k]);
         }
-        session_destroy();
+
+        // may *sometimes* get an error because session isn't committed,
+        // but we can ignore it
+        @session_destroy();
 
         return $data;
     }
