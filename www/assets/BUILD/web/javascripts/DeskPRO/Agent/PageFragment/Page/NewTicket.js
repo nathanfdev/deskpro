@@ -582,7 +582,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				// not empty string
         if ($.trim(p.text())) {
 					break;
-				}         
+				}
         p.remove();
       }
       sig.remove();
@@ -671,6 +671,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 							}
 						}
 					});
+
+					var depId = parseInt(actionsRowList.find('.with-department').data('department-id'));
+					if (depId) {
+						this.getEl('dep').select2('val', depId).trigger('change');
+					}
 
 					var agentId = parseInt(actionsRowList.find('.with-agent').data('agent-id'));
 					if (agentId) {
@@ -1807,7 +1812,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       },
 			init: function() {
 				var $form = self.getEl('newticket'),
-					$discard = $('#discard-draft-btn', $form), 
+					$discard = $('#discard-draft-btn', $form),
 					redactor = self.textarea.data('redactor');
 
 				$form.on('keyup change', 'input, select, textarea', function(e, byDraft){
@@ -1834,7 +1839,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					$attachRow = self.getEl('attach_row'),
 					person = 0,
 					map = {};
-				
+
         item.form.forEach(function(el, i){
 					map[el.name] = el.value;
           (function(el){
