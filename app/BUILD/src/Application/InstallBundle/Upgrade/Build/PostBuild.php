@@ -39,6 +39,7 @@ use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
 use DpSys\LowError\SystemErrorHandler;
 use Leafo\ScssPhp\Exception\ParserException;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Routing\RouterInterface;
 
 class PostBuild extends AbstractBuild
@@ -98,6 +99,32 @@ class PostBuild extends AbstractBuild
 
             $ctx = stream_context_create(['http' => ['timeout' => 5]]);
             @file_get_contents($url, null, $ctx);
+        }
+
+        #------------------------------
+        # Opcache warmup
+        #------------------------------
+        $this->out('Warmup OPcache');
+        if (extension_loaded('Zend OPcache')) {
+            $builder = new ProcessBuilder([
+                $this->container->get('deskpro.low_dp_env')->getConfig('paths.php_path', 'php'),
+                $this->container->get('deskpro.low_dp_env')->getAppDir().'/bin/console',
+                'dp:warmup-opcache',
+                '--verbose',
+            ]);
+
+            $builder->setTimeout(10 * 60);
+
+            $proc = $builder->getProcess();
+
+            $proc->start();
+            $proc->wait();
+
+            if (!$proc->isSuccessful()) {
+                $this->out('<error>Failed to warm up OPcache</error>');
+            } else {
+                $this->out('<info>Done OPcache warm up</info>');
+            }
         }
 
         #------------------------------
@@ -215,7 +242,7 @@ class PostBuild extends AbstractBuild
             }
         }
 
-        $this->out('.. doe recompiling CSS');
+        $this->out('.. done recompiling CSS');
 
         $this->out('Post upgrade done');
     }

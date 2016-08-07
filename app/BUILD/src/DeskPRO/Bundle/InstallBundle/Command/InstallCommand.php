@@ -258,6 +258,7 @@ class InstallCommand extends ContainerAwareCommand
             new InstallStep\InstallFixturesStep($context),
             new InstallStep\InstallCronCommand($context),
             new InstallStep\AdminAccountStep($context),
+            new InstallStep\OpCacheWarmUpStep($context),
             new InstallStep\DoneStep($context),
         ];
 
