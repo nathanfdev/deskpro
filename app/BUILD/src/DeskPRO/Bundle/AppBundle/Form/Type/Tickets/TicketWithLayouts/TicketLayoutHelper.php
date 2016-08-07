@@ -66,11 +66,13 @@ class TicketLayoutHelper
 
         foreach ($submitted_data as $key => $value) {
             $finalData[$key] = null;
-            $check = preg_replace('/^(.+)_\d*$/', '\\1', $key);
+            $check           = preg_replace('/^(.+)_\d*$/', '\\1', $key);
 
             if (!isset($keys[$check]) || !$form->has($key)) {
                 continue;
             }
+
+            $finalData[$key] = $value;
 
             $choice = null;
             if (is_scalar($value)) {
