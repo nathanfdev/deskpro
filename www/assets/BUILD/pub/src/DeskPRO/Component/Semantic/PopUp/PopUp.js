@@ -12,11 +12,13 @@ class PopUp extends React.Component {
       PropTypes.string,
       PropTypes.node
     ]).isRequired,
-    id:       PropTypes.number.isRequired,
-    children: PropTypes.any
+    id:        PropTypes.number.isRequired,
+    children:  PropTypes.any,
+    autoClose: PropTypes.bool
   };
   static defaultProps = {
-    onOpen() {}
+    onOpen() {},
+    autoClose: true
   };
 
   constructor(props) {
@@ -24,6 +26,11 @@ class PopUp extends React.Component {
     this.state = {
       isOpen: !!this.props.opened
     };
+    if (this.props.autoClose) {
+      window.document.addEventListener('dpPopupOpen', () => {
+        this.closePopup();
+      });
+    }
     this.cancelTimeout = this.cancelTimeout.bind(this);
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
@@ -46,6 +53,9 @@ class PopUp extends React.Component {
   }
 
   openPopup() {
+    const event = window.document.createEvent('Event');
+    event.initEvent('dpPopupOpen', true, true);
+    window.document.dispatchEvent(event);
     this.setState({
       isOpen: true
     });
