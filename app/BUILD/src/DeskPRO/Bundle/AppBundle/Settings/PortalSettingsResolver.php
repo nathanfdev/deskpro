@@ -148,7 +148,6 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
             ->setShowRatingsMinVotes($this->getSetting(self::SHOW_RATINGS_MIN_VOTES, $brand))
             ->setPublishComments($this->getSetting(self::PUBLISH_COMMENTS, $brand))
             ->setBrand($brand)
-            ->setBrandLogo($brand->getLogoBlob())
         ;
 
         return $model;

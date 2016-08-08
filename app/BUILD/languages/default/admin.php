@@ -2301,11 +2301,8 @@ return [
     'admin.widget.ticket_user_select_department'                                           => 'User selects department',
     'admin.widget.widget_size'                                                             => 'Widget size',
 
-    'admin.setup.delete_brand'      => 'Delete Brand',
-    'admin.setup.view_brand'        => 'View brand portal',
-    'admin.setup.brand_logo'        => 'Brand logo',
-    'admin.setup.brand_logo_help'   => 'This is the logo of your brand that will be shown in the agent section',
-    'admin.setup.enable_brand_logo' => 'Enable Brand logo',
-    'admin.setup.new_brand'         => 'New Brand...',
-    'admin.portal.create_brand'     => 'Create Brand',
+    'admin.setup.delete_brand'  => 'Delete Brand',
+    'admin.setup.view_brand'    => 'View brand portal',
+    'admin.setup.new_brand'     => 'New Brand...',
+    'admin.portal.create_brand' => 'Create Brand',
 ];

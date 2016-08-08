@@ -28,10 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal;
 
-use Application\DeskPRO\Entity\Blob;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GeneralSettings;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -63,9 +61,6 @@ class GeneralSettingsType extends AbstractType
             ->add('show_ratings', ApiBooleanType::class)
             ->add('show_ratings_min_votes', IntegerType::class)
             ->add('publish_comments', ApiBooleanType::class)
-            ->add('brand_logo', EntityType::class, [
-                'class' => Blob::class,
-            ])
         ;
     }
 
