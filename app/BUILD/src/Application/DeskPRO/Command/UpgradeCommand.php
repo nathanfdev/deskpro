@@ -65,6 +65,8 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         $versionError  = false;
         $ignore_errors = $input->getOption('ignore-errors');
 
+        $this->getContainer()->get('audit_log.doctrine_listener')->disableListener();
+
         $dbVersion = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
         if ($dbVersion && $dbVersion <= 1463676536) {
             $doReset      = true;
