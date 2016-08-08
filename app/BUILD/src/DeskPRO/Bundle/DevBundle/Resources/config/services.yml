@@ -1,0 +1,5 @@
+services:
+
+  dpdev.data_loader:
+    class: DeskPRO\Bundle\DevBundle\LoadData\DataLoader
+    arguments: ["@doctrine.orm.entity_manager"]

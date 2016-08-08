@@ -55,8 +55,8 @@ abstract class GroupsRepos implements \Countable, \IteratorAggregate
 
     public function __construct(array $groups)
     {
-        $this->groups       = array();
-        $this->groups_named = array();
+        $this->groups       = [];
+        $this->groups_named = [];
 
         foreach ($groups as $g) {
             $this->groups[$g->id] = $g;
