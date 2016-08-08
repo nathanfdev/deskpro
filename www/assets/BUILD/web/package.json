@@ -48,7 +48,8 @@
     "sassdoc": "gulp sassdoc"
   },
   "dependencies": {
+    "Select2": "^3.5.7",
     "angular-ui-select2": "0.0.5",
-    "Select2": "^3.5.7"
+    "clipboard": "^1.5.12"
   }
 }

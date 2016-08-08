@@ -34,5 +34,6 @@
   "intl-tel-input":                  ["jquery"],
   "spectrum":                        ["jquery"],
   "angularSpectrumColorpicker":      ["angular", "spectrum"],
-  "semanticAccordion":               ["jquery"]
+  "semanticAccordion":               ["jquery"],
+  "clipboard":                       { "exports": "Clipboard" }
 }
