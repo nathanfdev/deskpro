@@ -26,23 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\DevBundle\Command\LoadData;
+namespace DeskPRO\Bundle\DevBundle\Command\MassLoader;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class AwaitingAgentFilterCommand.
+ * Class FilterWithRandomCriteraCommand.
  */
-class AwaitingAgentFilterCommand extends AbstractLoadDataCommand
+class FilterWithRandomCriteraCommand extends AbstractLoadDataCommand
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setName('dpdev:load-data:awaiting-agent');
-        $this->setDescription('Create 2 filters per-agent with criteria being status:awaiting_agent');
+        $this->setName('dpdev:load-data:filter-with-random-criteria');
+        $this->setDescription('Create 2 filters per-agent with random criteria.');
     }
 
     /**
@@ -57,18 +57,24 @@ class AwaitingAgentFilterCommand extends AbstractLoadDataCommand
         $this->iterate('Create %s agent groups', 8, 'loadAgentGroup', [
             'departments' => array_fill(0, 5, 'random'),
         ]);
-        $this->iterate('Create %s agents with random group', 1500, 'loadAgent', [
+        $this->iterate('Create %s agents with random group and subject contain filters', 1500, 'loadAgent', [
             'agent_team' => 'random',
             'usergroups' => array_fill(0, 2, 'random'),
             'filters'    => [
                 [
                     'terms' => [
-                        'status' => 'awaiting_agent',
+                        'subject' => [
+                            'op'    => 'contains',
+                            'value' => 'some text',
+                        ],
                     ],
                 ],
                 [
                     'terms' => [
-                        'status' => 'awaiting_agent',
+                        'subject' => [
+                            'op'    => 'contains',
+                            'value' => 'another text',
+                        ],
                     ],
                 ],
             ],

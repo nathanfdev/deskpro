@@ -26,9 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\DevBundle\Command\LoadData;
+namespace DeskPRO\Bundle\DevBundle\Command\MassLoader;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -41,9 +42,12 @@ abstract class AbstractLoadDataCommand extends ContainerAwareCommand
      */
     protected $output;
 
+    /**
+     * Clear db before inserting.
+     */
     protected function clearDb()
     {
-        $this->getContainer()->get('dpdev.data_loader')->clearDb();
+        $this->getMassLoader()->clearDb();
     }
 
     /**
@@ -54,13 +58,28 @@ abstract class AbstractLoadDataCommand extends ContainerAwareCommand
      */
     protected function iterate($title, $count, $method, array $options = [])
     {
-        $dataLoader = $this->getContainer()->get('dpdev.data_loader');
+        $progressBar = null;
+
         if ($this->output) {
+            $progressBar = new ProgressBar($this->output, $count);
+            $this->output->writeln('');
             $this->output->writeln(sprintf($title, $count));
         }
 
+        $dataLoader = $this->getMassLoader();
         for ($i = 0; $i < $count; ++$i) {
             $dataLoader->$method($options);
+            if ($progressBar) {
+                $progressBar->advance();
+            }
         }
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\DevBundle\MassLoader\MassLoader
+     */
+    protected function getMassLoader()
+    {
+        return $this->getContainer()->get('dpdev.mass_loader');
     }
 }

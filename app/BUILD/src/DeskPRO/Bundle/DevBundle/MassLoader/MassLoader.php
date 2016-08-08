@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\DevBundle\LoadData;
+namespace DeskPRO\Bundle\DevBundle\MassLoader;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Usergroup;
@@ -34,11 +34,13 @@ use Application\DeskPRO\People\PasswordScheme\Bcrypt;
 use Doctrine\ORM\EntityManager;
 use Faker\Factory;
 use Faker\Generator;
+use Orb\Util\DpStrings;
+use Orb\Util\Strings;
 
 /**
- * Class DataLoader.
+ * Class MassLoader.
  */
-class DataLoader
+class MassLoader
 {
     /**
      * @var EntityManager
@@ -81,6 +83,7 @@ class DataLoader
         $this->connection->executeUpdate('DELETE FROM people_emails');
         $this->connection->executeUpdate('DELETE FROM agent_team_members');
         $this->connection->executeUpdate('DELETE FROM people');
+        $this->connection->executeUpdate('DELETE FROM organizations');
         $this->connection->executeUpdate('DELETE FROM agent_teams');
         $this->connection->executeUpdate('DELETE FROM departments');
         $this->connection->executeUpdate('DELETE FROM usergroups WHERE sys_name NOT IN (?)',
@@ -96,6 +99,13 @@ class DataLoader
                 Connection::PARAM_INT_ARRAY,
             ]
         );
+    }
+
+    public function loadOrganization()
+    {
+        $this->connection->insert('organizations', [
+            'name' => $this->faker->title,
+        ]);
     }
 
     /**
@@ -249,12 +259,31 @@ class DataLoader
         ]);
     }
 
-    public function loadTicket()
+    /**
+     * @param array $options
+     */
+    public function loadTicket(array $options = [])
     {
         $this->connection->insert('tickets', [
             'subject'      => $this->faker->title,
+            'ref'          => DpStrings::random(10, Strings::CHARS_ALPHA_IU).'-'.date('YzB'),
             'date_created' => $this->faker->dateTime->format('c'),
+            'person_id'    => $this->faker->randomElement($this->fetchAllIds('people')),
+            'agent_id'     => $this->faker->randomElement($this->fetchAllIds('people')),
         ]);
+
+        $ticketId = $this->connection->lastInsertId();
+
+        if (!isset($options['messageCount'])) {
+            $options['messageCount'] = $this->faker->randomDigitNotNull;
+        }
+
+        for ($i = 0; $i < $options['messageCount']; ++$i) {
+            $this->connection->insert('tickets_messages', [
+                'ticket_id' => $ticketId,
+                'message'   => $this->faker->text,
+            ]);
+        }
     }
 
     /**

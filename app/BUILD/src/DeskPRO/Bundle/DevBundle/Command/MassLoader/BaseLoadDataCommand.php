@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\DevBundle\Command\LoadData;
+namespace DeskPRO\Bundle\DevBundle\Command\MassLoader;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -78,5 +78,6 @@ EOF
                 'status' => 'awaiting_user',
             ],
         ]);
+        $this->iterate('Create %s tickets', 100000, 'loadTicket');
     }
 }

@@ -26,23 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\DevBundle\Command\LoadData;
+namespace DeskPRO\Bundle\DevBundle\Command\MassLoader;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class FilterWithRandomCriteraCommand.
+ * Class AwaitingAgentFilterCommand.
  */
-class FilterWithRandomCriteraCommand extends AbstractLoadDataCommand
+class AwaitingAgentFilterCommand extends AbstractLoadDataCommand
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setName('dpdev:load-data:filter-with-random-criteria');
-        $this->setDescription('Create 2 filters per-agent with random criteria.');
+        $this->setName('dpdev:load-data:awaiting-agent');
+        $this->setDescription('Create 2 filters per-agent with criteria being status:awaiting_agent');
     }
 
     /**
@@ -63,18 +63,12 @@ class FilterWithRandomCriteraCommand extends AbstractLoadDataCommand
             'filters'    => [
                 [
                     'terms' => [
-                        'subject' => [
-                            'op'    => 'contains',
-                            'value' => 'some text',
-                        ],
+                        'status' => 'awaiting_agent',
                     ],
                 ],
                 [
                     'terms' => [
-                        'subject' => [
-                            'op'    => 'contains',
-                            'value' => 'another text',
-                        ],
+                        'status' => 'awaiting_agent',
                     ],
                 ],
             ],

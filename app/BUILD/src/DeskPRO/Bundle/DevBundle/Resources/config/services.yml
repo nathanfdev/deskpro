@@ -1,5 +1,5 @@
 services:
 
-  dpdev.data_loader:
-    class: DeskPRO\Bundle\DevBundle\LoadData\DataLoader
+  dpdev.mass_loader:
+    class: DeskPRO\Bundle\DevBundle\MassLoader\MassLoader
     arguments: ["@doctrine.orm.entity_manager"]
