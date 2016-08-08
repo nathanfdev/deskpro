@@ -39,7 +39,6 @@ use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
 use DpSys\LowError\SystemErrorHandler;
 use Leafo\ScssPhp\Exception\ParserException;
 use Symfony\Component\Process\Process;
-use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Routing\RouterInterface;
 
 class PostBuild extends AbstractBuild
@@ -89,7 +88,7 @@ class PostBuild extends AbstractBuild
         #------------------------------
         # Reset opcache
         #------------------------------
-
+        $this->out('Reset OPcache');
         if (function_exists('opcache_reset')) {
             $url = $this->container->getRouter()->generate('sys_serverinfo', [
                 'path'  => 'opcache',
@@ -105,27 +104,13 @@ class PostBuild extends AbstractBuild
         # Opcache warmup
         #------------------------------
         $this->out('Warmup OPcache');
-        if (extension_loaded('Zend OPcache')) {
-            $builder = new ProcessBuilder([
-                $this->container->get('deskpro.low_dp_env')->getConfig('paths.php_path', 'php'),
-                $this->container->get('deskpro.low_dp_env')->getAppDir().'/bin/console',
-                'dp:warmup-opcache',
-                '--verbose',
-            ]);
+        $url = $this->container->getRouter()->generate('sys_serverinfo', [
+            'path' => 'opcache/warmup',
+            'auth' => $this->container->get('deskpro.app_env')->getServerInfoAuth('opcache/warmup'),
+        ], RouterInterface::ABSOLUTE_URL);
 
-            $builder->setTimeout(10 * 60);
-
-            $proc = $builder->getProcess();
-
-            $proc->start();
-            $proc->wait();
-
-            if (!$proc->isSuccessful()) {
-                $this->out('<error>Failed to warm up OPcache</error>');
-            } else {
-                $this->out('<info>Done OPcache warm up</info>');
-            }
-        }
+        $ctx = stream_context_create(['http' => ['timeout' => 30]]);
+        @file_get_contents($url, null, $ctx);
 
         #------------------------------
         # Data

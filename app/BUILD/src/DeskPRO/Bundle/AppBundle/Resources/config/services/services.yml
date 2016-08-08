@@ -95,11 +95,4 @@ services:
 
   portal_mode_storage:
       class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage
-
-  dp.opcache_helper:
-    class: DeskPRO\Bundle\AppBundle\CacheWarmer\OpCacheStaticFileHelper
-
-  dp.opcache_warmer:
-    class: DeskPRO\Bundle\AppBundle\CacheWarmer\OpCacheWarmer
-    arguments:
-      - "@dp.opcache_helper"
+      

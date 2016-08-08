@@ -28,58 +28,54 @@
 
 namespace DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 
-use Symfony\Component\Process\ProcessBuilder;
-
 class OpCacheWarmUpStep extends AbstractStep
 {
+    /**
+     * @var string
+     */
+    private $authcode;
+
     public function run()
     {
         $this->writeBigTitle('OpCache warmup');
         $this->writeln('');
 
-        if (extension_loaded('Zend OPcache')) {
-            $this->writeln('We are about warming up your cache.');
-            $this->writeln('');
-            $builder = new ProcessBuilder([
-                $this->getSession()->getPaths()->php_path,
-                $this->getContext()->getDpEnv()->getDpRoot().'/bin/console',
-                'dp:warmup-opcache',
-                '--verbose',
-            ]);
-
-            $builder->setTimeout(10 * 60);
-
-            $progress = $this->createProgressBar();
-            $progress->setFormat('Initializing ... [%bar%]');
-            $progress->setRedrawFrequency(1);
-            $progress->setBarWidth(5);
-
-            $proc = $builder->getProcess();
-
-            $proc->start();
-            $proc->wait(function () use ($progress) {
-                $progress->advance();
-            });
-
-            $this->writeln('');
-
-            if (!$proc->isSuccessful()) {
-                $this->writeln('<error>Failed to warmup cache</error>');
-                $this->markAsFailed();
-
-                $this->writeln('<info>'.$proc->getCommandLine().'</info>');
-                $this->writeln($proc->getOutput());
-                $this->writeln($proc->getErrorOutput());
-
-                return;
-            }
-
-            $this->writeln('Done!');
+        $env = $this->getContext()->getDpEnv();
+        if ($env->getDatManager()->hasTxtFile('server_info_auth')) {
+            $this->authcode = $env->getDatManager()->readTxtFile('server_info_auth');
         } else {
-            $this->writeln('<info>You have no enabled OpCache extension.</info>');
+            $this->authcode = '';
         }
 
-        $this->getSession()->enableFlag('installer_done');
+        $check_url = $this->getSession()->getWebUrl().'/__serverinfo/opcache/warmup?auth='.$this->authcode;
+        $res       = $this->loadUrl($check_url);
+
+        if ($res && strpos($res, 'OK') !== false) {
+            $this->writeln('Done!');
+        } else {
+            $this->markAsFailed();
+        }
+    }
+
+    /**
+     * Loads a URL.
+     *
+     * @param string $url
+     * @param string $method
+     *
+     * @return string
+     */
+    private function loadUrl($url, $method = 'GET')
+    {
+        $context = stream_context_create([
+            'http' => [
+                'timeout' => 20,
+                'method'  => $method,
+            ],
+            'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
+        ]);
+
+        return @file_get_contents($url, false, $context);
     }
 
     public function isComplete()

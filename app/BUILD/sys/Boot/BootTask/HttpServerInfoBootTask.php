@@ -155,6 +155,10 @@ class HttpServerInfoBootTask implements BootTaskInterface
             case 'opcache':
                 require __DIR__.'/../../Resources/views/opcache-gui.php';
                 exit;
+            case 'opcache/warmup':
+                $this->warmupOpCache();
+                echo 'OK';
+                exit;
 
             case 'url_check/path':
                 header('Content-Type: text/plain');
@@ -348,5 +352,15 @@ class HttpServerInfoBootTask implements BootTaskInterface
         }
 
         return true;
+    }
+
+    private function warmupOpCache()
+    {
+        if (extension_loaded('Zend OPcache')) {
+            $dir = $this->env->getAppDir();
+            foreach (require($dir.'/sys/Resources/serverinfo/warmupit.php') as $file) {
+                opcache_compile_file($dir.$file);
+            }
+        }
     }
 }
