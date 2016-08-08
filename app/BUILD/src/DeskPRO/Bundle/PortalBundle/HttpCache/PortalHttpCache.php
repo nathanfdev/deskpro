@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\HttpCache;
 
+use DeskPRO\Component\Util\RegexUtils;
 use FOS\HttpCache\SymfonyCache\UserContextSubscriber;
 use FOS\HttpCacheBundle\SymfonyCache\EventDispatchingHttpCache;
 use Symfony\Component\HttpFoundation\Request;
@@ -106,15 +107,39 @@ class PortalHttpCache extends EventDispatchingHttpCache
         try {
             $response = parent::handle($request, $type, $catch);
         } catch (\Exception $e) {
-            // if its a sub-request (esi cache), then just return a blank string
-            // these generally happen when the sub-request is a 302 (e.g. login required) or 404 (permission error) on a tag
-            if ($type !== HttpKernelInterface::MASTER_REQUEST) {
-                return new Response('', 200);
+            $statusCode = RegexUtils::getMatch(
+                '/Error when rendering ".*?" \(Status code is (?P<statusCode>\d+)\)./',
+                $e->getMessage(),
+                'statusCode'
+            );
 
-            // otherwise theres a problem with the main request and we should log this
+            $statusCode = $statusCode ? (int) $statusCode : null;
+            $response   = null;
+
+            if ($statusCode && $statusCode >= 300 && $statusCode < 400) {
+                // error in a tag/esi
+                $response = '';
+            } elseif ($type !== HttpKernelInterface::MASTER_REQUEST) {
+                // error in a tag
+                $response = '';
             } else {
-                throw $e;
+                if (strpos($request->getPathInfo(), '/_proxy') === 0) {
+                    // error in an independant esi call
+                    $response = '';
+                }
             }
+
+            if ($response !== null) {
+                $r = new Response($response);
+                $r->setMaxAge(0);
+                $r->setSharedMaxAge(0);
+                $r->setPrivate();
+
+                return $r;
+            }
+
+            // Otherwise a genuine exception, throw
+            throw $e;
         }
 
         // we don't want this to "look" like it should be cached to the outside world. after this method,
