@@ -31,6 +31,7 @@ namespace DpSys\Boot\BootTask;
 use DeskPRO\Bundle\UpdateBundle\Session\UpdateSessionManager;
 use DpRun\LowUtil;
 use Orb\Util\Dates;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -369,6 +370,22 @@ class HttpServerInfoBootTask implements BootTaskInterface
             foreach (require($dir.'/sys/Resources/serverinfo/warmupit.php') as $file) {
                 if (is_file($dir.$file)) {
                     @opcache_compile_file($dir.'/'.$file);
+                }
+            }
+
+            $dirs = array_filter([
+                $this->env->getDpRoot().'/app/run',
+                $this->env->getAppBaseKernelCacheDir(),
+            ], function ($d) { return is_dir($d); });
+
+            if ($dirs) {
+                $files = Finder::create()
+                    ->in($dirs)
+                    ->name('*.php');
+
+                /** @var \SplFileInfo $f */
+                foreach ($files as $f) {
+                    @opcache_compile_file($f->getRealPath());
                 }
             }
         }
