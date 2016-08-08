@@ -31,6 +31,7 @@ namespace DpSys\Boot\BootTask;
 use DeskPRO\Bundle\UpdateBundle\Session\UpdateSessionManager;
 use DpRun\LowUtil;
 use Orb\Util\Dates;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -153,7 +154,19 @@ class HttpServerInfoBootTask implements BootTaskInterface
                 exit;
 
             case 'opcache':
-                require __DIR__.'/../../Resources/views/opcache-gui.php';
+                if (extension_loaded('Zend OPcache')) {
+                    require __DIR__.'/../../Resources/views/opcache-gui.php';
+                } else {
+                    echo "OPcache not enabled\n";
+                }
+                exit;
+            case 'opcache/warmup':
+                if (extension_loaded('Zend OPcache')) {
+                    $this->warmupOpCache();
+                    echo "OK\n";
+                } else {
+                    echo "OK (no-op, OPcache not enabled)\n";
+                }
                 exit;
 
             case 'url_check/path':
@@ -348,5 +361,33 @@ class HttpServerInfoBootTask implements BootTaskInterface
         }
 
         return true;
+    }
+
+    private function warmupOpCache()
+    {
+        if (extension_loaded('Zend OPcache')) {
+            $dir = $this->env->getAppDir();
+            foreach (require($dir.'/sys/Resources/serverinfo/warmupit.php') as $file) {
+                if (is_file($dir.$file)) {
+                    @opcache_compile_file($dir.'/'.$file);
+                }
+            }
+
+            $dirs = array_filter([
+                $this->env->getDpRoot().'/app/run',
+                $this->env->getAppBaseKernelCacheDir(),
+            ], function ($d) { return is_dir($d); });
+
+            if ($dirs) {
+                $files = Finder::create()
+                    ->in($dirs)
+                    ->name('*.php');
+
+                /** @var \SplFileInfo $f */
+                foreach ($files as $f) {
+                    @opcache_compile_file($f->getRealPath());
+                }
+            }
+        }
     }
 }

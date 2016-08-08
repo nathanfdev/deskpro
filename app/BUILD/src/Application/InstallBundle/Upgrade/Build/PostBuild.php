@@ -89,16 +89,25 @@ class PostBuild extends AbstractBuild
         # Reset opcache
         #------------------------------
 
-        if (function_exists('opcache_reset')) {
-            $url = $this->container->getRouter()->generate('sys_serverinfo', [
-                'path'  => 'opcache',
-                'reset' => '1',
-                'auth'  => $this->container->get('deskpro.app_env')->getServerInfoAuth('opcache'),
-            ], RouterInterface::ABSOLUTE_URL);
+        $this->out('Reset OPcache');
 
-            $ctx = stream_context_create(['http' => ['timeout' => 5]]);
-            @file_get_contents($url, null, $ctx);
-        }
+        $url = $this->container->getRouter()->generate('sys_serverinfo', [
+            'path'  => 'opcache',
+            'reset' => '1',
+            'auth'  => $this->container->get('deskpro.app_env')->getServerInfoAuth('opcache'),
+        ], RouterInterface::ABSOLUTE_URL);
+
+        $ctx = stream_context_create(['http' => ['timeout' => 10, 'ssl' => ['verify_peer' => false, 'verify_peer_name' => false]]]);
+        @file_get_contents($url, null, $ctx);
+
+        $this->out('Warmup OPcache');
+        $url = $this->container->getRouter()->generate('sys_serverinfo', [
+            'path' => 'opcache/warmup',
+            'auth' => $this->container->get('deskpro.app_env')->getServerInfoAuth('opcache/warmup'),
+        ], RouterInterface::ABSOLUTE_URL);
+
+        $ctx = stream_context_create(['http' => ['timeout' => 10, 'ssl' => ['verify_peer' => false, 'verify_peer_name' => false]]]);
+        @file_get_contents($url, null, $ctx);
 
         #------------------------------
         # Data
@@ -215,7 +224,7 @@ class PostBuild extends AbstractBuild
             }
         }
 
-        $this->out('.. doe recompiling CSS');
+        $this->out('.. done recompiling CSS');
 
         $this->out('Post upgrade done');
     }

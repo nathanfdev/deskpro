@@ -239,6 +239,7 @@ class InstallCommand extends ContainerAwareCommand
             $skip_list[] = 'accept_database';
             $skip_list[] = 'install_config';
             $skip_list[] = 'install_cron_command';
+            $skip_list[] = 'op_cache_warm_up';
         }
 
         if ($this->shouldIgnoreAdminSkip($input) && $key = array_search('admin_account', $skip_list)) {
@@ -258,6 +259,7 @@ class InstallCommand extends ContainerAwareCommand
             new InstallStep\InstallFixturesStep($context),
             new InstallStep\InstallCronCommand($context),
             new InstallStep\AdminAccountStep($context),
+            new InstallStep\OpCacheWarmUpStep($context),
             new InstallStep\DoneStep($context),
         ];
 

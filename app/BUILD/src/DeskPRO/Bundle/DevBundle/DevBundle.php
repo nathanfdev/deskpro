@@ -44,6 +44,7 @@ class DevBundle extends Bundle
         $application->add(new Command\Gen\GenIntegrityMapCommand());
         $application->add(new Command\Gen\GenSchemaFileCommand());
         $application->add(new Command\Gen\GenTemplateMapCommand());
+        $application->add(new Command\Gen\GenWarmUpFileCommand());
 
         $application->add(new Command\Lang\CheckMissingCommand());
         $application->add(new Command\Lang\CheckUsesCommand());

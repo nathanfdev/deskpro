@@ -95,3 +95,4 @@ services:
 
   portal_mode_storage:
       class: DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage
+      
