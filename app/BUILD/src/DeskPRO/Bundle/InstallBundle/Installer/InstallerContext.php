@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -162,6 +162,10 @@ class InstallerContext
             $this->getDpEnv()
         );
         $this->mainKernel->boot();
+
+        // we are going to disable audit listener explicitly here, becasue
+        // there are no command was called, so DisableListenerListener is not handling event here
+        $this->mainKernel->getContainer()->get('audit_log.doctrine_listener')->disableListener();
 
         return $this->mainKernel->getContainer();
     }
