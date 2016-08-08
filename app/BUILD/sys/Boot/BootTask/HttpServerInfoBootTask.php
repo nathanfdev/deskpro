@@ -359,7 +359,10 @@ class HttpServerInfoBootTask implements BootTaskInterface
         if (extension_loaded('Zend OPcache')) {
             $dir = $this->env->getAppDir();
             foreach (require($dir.'/sys/Resources/serverinfo/warmupit.php') as $file) {
-                opcache_compile_file($dir.$file);
+                if (is_file($dir.$file)) {
+                    echo $file."\n";
+                    @opcache_compile_file($dir.'/'.$file);
+                }
             }
         }
     }
