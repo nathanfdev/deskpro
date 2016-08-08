@@ -360,7 +360,6 @@ class HttpServerInfoBootTask implements BootTaskInterface
             $dir = $this->env->getAppDir();
             foreach (require($dir.'/sys/Resources/serverinfo/warmupit.php') as $file) {
                 if (is_file($dir.$file)) {
-                    echo $file."\n";
                     @opcache_compile_file($dir.'/'.$file);
                 }
             }
