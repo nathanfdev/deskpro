@@ -33,7 +33,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\Entity\Language;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
+use DeskPRO\Bundle\PortalBundle\Helper\PortalModeTrait;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Bundle\TwigBundle\Extension\AssetsExtension;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -44,6 +44,8 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class PortalCustomizationsTwigExtension extends \Twig_Extension
 {
+    use PortalModeTrait;
+
     private static $default_ltr_css_asset = 'DeskPRO_PortalBundle_style.css';
     private static $default_rtl_css_asset = 'DeskPRO_PortalBundle_rtl_style.css';
 
@@ -93,7 +95,7 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
 
         $text_direction = strtoupper($text_direction);
 
-        $blob = $this->isPreviewMode()
+        $blob = $this->isPreviewMode($this->container)
                 ? $this->getStylesManager()->getEditThemeSetCssBlob($text_direction)
                 : $this->getStylesManager()->getCssBlob($text_direction);
 
@@ -121,7 +123,7 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
      */
     public function getPortalCustomJs()
     {
-        return $this->isPreviewMode()
+        return $this->isPreviewMode($this->container)
                    ? $this->getAdvancedEditsManager()->getEditThemeSetJs()
                    : $this->getAdvancedEditsManager()->getJs();
     }
@@ -131,9 +133,9 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
      */
     public function getPortalCustomLogo()
     {
-        $asset = $this->isPreviewMode()
-            ? $this->getAssetsManager()->getEditThemeSetLogoAsset()
-            : $this->getAssetsManager()->getLogoAsset();
+        $asset = $this->isPreviewMode($this->container)
+            ? $this->getAssetsManager()->getEditThemeSetBlobAsset()
+            : $this->getAssetsManager()->getBlobAsset(AssetsManager::CUSTOM_LOGO_TAG);
 
         if ($asset) {
             return $asset->getBlob()->getDownloadUrl(true);
@@ -188,19 +190,5 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
     private function getRouter()
     {
         return $this->container->get('router');
-    }
-
-    /**
-     * @return bool
-     */
-    private function isPreviewMode()
-    {
-        /** @var PortalModeStorage $portal_mode_storage */
-        $portal_mode_storage = $this->container->get('portal_mode_storage');
-        if ($mode = $portal_mode_storage->getMode()) {
-            return $mode->isAdminPreview();
-        }
-
-        return false;
     }
 }

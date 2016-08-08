@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,8 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\LowLevel;
 
+use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
+use DeskPRO\Bundle\PortalBundle\Helper\PortalModeTrait;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
@@ -39,6 +42,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BlobController extends BaseController
 {
+    use PortalModeTrait;
+
     /**
      * @Route(
      *     "/favicon.ico",
@@ -50,15 +55,13 @@ class BlobController extends BaseController
      */
     public function faviconAction()
     {
-        $settings = $this->container->get('settings_resolver');
-        $em       = $this->container->get('doctrine')->getManager();
-        $bs       = $this->container->get('blob.storage');
+        $assetManager = $this->container->get('dp.portal.designer.assets_manager');
+        $asset        = $this->isPreviewMode($this->container)
+            ? $assetManager->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_FAVICON_TAG)
+            : $assetManager->getBlobAsset(AssetsManager::CUSTOM_FAVICON_TAG);
 
-        $favicon_id = $settings->getGlobalSettings()->get('core.favicon_blob_id');
-        $blob       = null;
-        if ($favicon_id) {
-            $blob = $em->getRepository('DeskPRO:Blob')->find($favicon_id);
-        }
+        $blob = $asset->getBlob();
+        $bs   = $this->container->get('blob.storage');
 
         if ($blob) {
             $response = new Response($bs->copyBlobRecordToString($blob));
