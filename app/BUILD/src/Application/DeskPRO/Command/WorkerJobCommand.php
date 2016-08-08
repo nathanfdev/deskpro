@@ -177,7 +177,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                 $db->delete('settings', ['name' => 'core.croncheck.updater']);
             });
 
-            if ($updaterSettings->isEnabled() && $updaterStatus->getNextCheck() && $updaterStatus->getNextCheck() < (new \DateTime())) {
+            if ($updaterStatus->getNextCheck() && $updaterStatus->getNextCheck() < (new \DateTime())) {
                 do {
                     $check = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name LIKE ? AND name != ?', ['core.croncheck.%', 'core.croncheck.updater']);
                     if ($check) {
