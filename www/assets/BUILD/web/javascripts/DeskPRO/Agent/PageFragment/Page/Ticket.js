@@ -495,7 +495,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						var el = $(this);
 						var t = {
 							id: el.data('ticket-id'),
-							subject: $.trim(el.find('.subject').text()),
+							subject: $.trim(el.find('.subject, .col-subject').text()),
 							last_activity: parseInt(el.data('ticket-lastactivity'))
 						};
 						if (!t.id) {
