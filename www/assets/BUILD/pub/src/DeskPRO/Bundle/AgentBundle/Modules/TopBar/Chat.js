@@ -8,22 +8,27 @@ class Chat extends React.Component {
   static propTypes = {
     agents:       PropTypes.array,
     onlineAgents: PropTypes.array,
-    onToggleChat: PropTypes.func
+    volume:       PropTypes.number,
+    onToggleChat: PropTypes.func,
+    updateVolume: PropTypes.func
   };
 
   static defaultProps = {
     onlineAgents: [],
-    onToggleChat() {}
+    onToggleChat() {},
+    updateVolume() {}
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      onlineAgents: this.props.onlineAgents,
-      activeChat:   false,
-      volume:       5
+      onlineAgents:   this.props.onlineAgents,
+      activeChat:     false,
+      volume:         this.props.volume || 8,
+      previousVolume: 8
     };
     this.toggleChat = this.toggleChat.bind(this);
+    this.toggleVolume = this.toggleVolume.bind(this);
     this.updateAudioVolume = this.updateAudioVolume.bind(this);
     this.refreshOnlineAgentsList = this.refreshOnlineAgentsList.bind(this);
   }
@@ -52,8 +57,8 @@ class Chat extends React.Component {
     const departments = this.sortAgentsByDepartment();
     const result = [];
     Object.keys(departments).map((key) => {
-      result.push(<h4>{departments[key].label}</h4>);
-      result.push(<hr />);
+      result.push(<h4 key={`dep${key}`}>{departments[key].label}</h4>);
+      result.push(<hr key={`hr${key}`} />);
       let agentList = [];
       for (const agent of departments[key].agents) {
         let img = agent.avatar.default_url_pattern;
@@ -61,16 +66,17 @@ class Chat extends React.Component {
           img = agent.avatar.url_pattern;
         }
         img = img.replace(/\{\{IMG_SIZE}}/, 15);
-        agentList.push(<ListElement label={agent.name} image={img} />);
+        agentList.push(<ListElement key={`agent${agent.id}`} label={agent.name} image={img} />);
       }
-      result.push(<List classes={['agents']}>{agentList}</List>);
+      result.push(<List key={`agents${key}`} classes={['agents']}>{agentList}</List>);
       return true;
     });
     return result;
   }
 
   getPopupContent() {
-    const { activeChat, volume, onlineAgents } = this.state;
+    const { activeChat, onlineAgents } = this.state;
+    const volume = parseInt(this.state.volume, 10);
     return (<div id="chat-menu">
       <div className="header">
         Chat <span className="count">({onlineAgents.length} Agents)</span>
@@ -80,7 +86,14 @@ class Chat extends React.Component {
           Online for chat
         </Toggle>
         <hr />
-        <i className="icon volume up" /> Notification volume<br />
+        <i
+          onClick={this.toggleVolume}
+          className={classNames(
+            'icon',
+            'volume',
+            { off: volume === 0, up: volume > 7, down: (volume <= 7 && volume > 0) }
+          )}
+        /> Notification volume {volume}<br />
         <Range min={0} max={10} value={volume} onChange={this.updateAudioVolume} />
         <hr />
         {onlineAgents.length} online agents
@@ -125,9 +138,22 @@ class Chat extends React.Component {
     return departments;
   }
 
+  toggleVolume() {
+    if (this.state.volume === 0) {
+      this.updateAudioVolume(this.state.previousVolume);
+    } else {
+      this.setState({
+        previousVolume: this.state.volume,
+      });
+      this.updateAudioVolume(0);
+    }
+  }
+
   updateAudioVolume(newVal) {
+    const volume = parseInt(newVal, 10);
+    this.props.updateVolume(volume);
     this.setState({
-      volume: newVal
+      volume
     });
   }
 
@@ -171,6 +197,7 @@ class Chat extends React.Component {
         id={2}
         elementId="chat-menu-popup"
         zIndex={99999}
+        opened
         content={this.getPopupContent()}
       >
         <i className={classNames('icon', 'comments', 'outline', { on: activeChat })} /><br />

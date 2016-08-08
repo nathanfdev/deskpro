@@ -4,3 +4,4 @@
 
 @borderRadius: 0;
 @boxShadow: none;
+@bottomArrowBoxShadow: none;

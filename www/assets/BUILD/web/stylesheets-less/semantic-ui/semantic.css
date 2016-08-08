@@ -50215,7 +50215,7 @@ a.ui.nag {
 /* Arrow */
 [data-position~="bottom"][data-tooltip]:before {
   background: #FFFFFF;
-  box-shadow: -1px -1px 0px 0px #bababc;
+  box-shadow: none;
 }
 [data-position="left center"][data-tooltip]:before {
   background: #FFFFFF;
@@ -50231,7 +50231,7 @@ a.ui.nag {
 /* Inverted Arrow Color */
 [data-inverted][data-position~="bottom"][data-tooltip]:before {
   background: #1B1C1D;
-  box-shadow: -1px -1px 0px 0px #bababc;
+  box-shadow: none;
 }
 [data-inverted][data-position="left center"][data-tooltip]:before {
   background: #1B1C1D;
@@ -50313,7 +50313,7 @@ a.ui.nag {
   left: 50%;
   right: auto;
   bottom: auto;
-  box-shadow: -1px -1px 0px 0px #bababc;
+  box-shadow: none;
 }
 .ui.bottom.left.popup {
   margin-left: 0em;
@@ -50325,7 +50325,7 @@ a.ui.nag {
   right: auto;
   bottom: auto;
   margin-left: 0em;
-  box-shadow: -1px -1px 0px 0px #bababc;
+  box-shadow: none;
 }
 .ui.bottom.right.popup {
   margin-right: 0em;
@@ -50337,7 +50337,7 @@ a.ui.nag {
   bottom: auto;
   left: auto;
   margin-left: 0em;
-  box-shadow: -1px -1px 0px 0px #bababc;
+  box-shadow: none;
 }
 /*--- Above ---*/
 .ui.top.center.popup:before {

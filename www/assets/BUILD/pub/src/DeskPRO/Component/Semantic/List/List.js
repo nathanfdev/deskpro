@@ -9,7 +9,7 @@ class List extends React.Component {
       icon:  PropTypes.string
     })),
     children: PropTypes.node,
-    classes:  PropTypes.object
+    classes:  PropTypes.array
   };
 
   getItems() {

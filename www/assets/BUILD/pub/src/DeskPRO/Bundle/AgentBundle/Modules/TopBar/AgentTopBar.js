@@ -27,6 +27,16 @@ class AgentTopBar extends React.Component {
     this.retrieveAgents();
   }
 
+  onChatVolumeUpdate(newVal) {
+    const volume = newVal / 10;
+    window.DeskPRO_Window.volume = volume;
+
+
+    window.$('audio').each(function changeVolume() {
+      this.volume = volume;
+    });
+  }
+
   getUserPicture() {
     const { user } = this.state;
     if (!user) {
@@ -82,11 +92,14 @@ class AgentTopBar extends React.Component {
       <AddButton />
       <TopBarRightMenu>
         <TopBarItem>
+          <div className="view_mode" />
+        </TopBarItem>
+        <TopBarItem>
           <TopBarNotificationIcon elementId="notifications" icon="alarm outline" count="2" />
         </TopBarItem>
         <TopBarItem>
           <User src={this.getUserPicture()} />
-          <Chat agents={agents} />
+          <Chat agents={agents} updateVolume={this.onChatVolumeUpdate} volume={8} />
         </TopBarItem>
       </TopBarRightMenu>
     </TopBar>);
