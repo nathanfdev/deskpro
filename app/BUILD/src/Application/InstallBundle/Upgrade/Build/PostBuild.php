@@ -88,28 +88,25 @@ class PostBuild extends AbstractBuild
         #------------------------------
         # Reset opcache
         #------------------------------
+
         $this->out('Reset OPcache');
-        if (function_exists('opcache_reset')) {
-            $url = $this->container->getRouter()->generate('sys_serverinfo', [
-                'path'  => 'opcache',
-                'reset' => '1',
-                'auth'  => $this->container->get('deskpro.app_env')->getServerInfoAuth('opcache'),
-            ], RouterInterface::ABSOLUTE_URL);
 
-            $ctx = stream_context_create(['http' => ['timeout' => 5]]);
-            @file_get_contents($url, null, $ctx);
-        }
+        $url = $this->container->getRouter()->generate('sys_serverinfo', [
+            'path'  => 'opcache',
+            'reset' => '1',
+            'auth'  => $this->container->get('deskpro.app_env')->getServerInfoAuth('opcache'),
+        ], RouterInterface::ABSOLUTE_URL);
 
-        #------------------------------
-        # Opcache warmup
-        #------------------------------
+        $ctx = stream_context_create(['http' => ['timeout' => 10, 'ssl' => ['verify_peer' => false, 'verify_peer_name' => false]]]);
+        @file_get_contents($url, null, $ctx);
+
         $this->out('Warmup OPcache');
         $url = $this->container->getRouter()->generate('sys_serverinfo', [
             'path' => 'opcache/warmup',
             'auth' => $this->container->get('deskpro.app_env')->getServerInfoAuth('opcache/warmup'),
         ], RouterInterface::ABSOLUTE_URL);
 
-        $ctx = stream_context_create(['http' => ['timeout' => 30]]);
+        $ctx = stream_context_create(['http' => ['timeout' => 10, 'ssl' => ['verify_peer' => false, 'verify_peer_name' => false]]]);
         @file_get_contents($url, null, $ctx);
 
         #------------------------------

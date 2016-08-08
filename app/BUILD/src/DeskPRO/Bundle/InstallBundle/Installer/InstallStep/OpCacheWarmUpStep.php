@@ -47,35 +47,12 @@ class OpCacheWarmUpStep extends AbstractStep
             $this->authcode = '';
         }
 
-        $check_url = $this->getSession()->getWebUrl().'/__serverinfo/opcache/warmup?auth='.$this->authcode;
-        $res       = $this->loadUrl($check_url);
+        $warmupUrl = $this->getSession()->getWebUrl().'/__serverinfo/opcache/warmup?auth='.$this->authcode;
 
-        if ($res && strpos($res, 'OK') !== false) {
-            $this->writeln('Done!');
-        } else {
-            $this->markAsFailed();
-        }
-    }
+        $ctx = stream_context_create(['http' => ['timeout' => 10, 'ssl' => ['verify_peer' => false, 'verify_peer_name' => false]]]);
+        @file_get_contents($warmupUrl, null, $ctx);
 
-    /**
-     * Loads a URL.
-     *
-     * @param string $url
-     * @param string $method
-     *
-     * @return string
-     */
-    private function loadUrl($url, $method = 'GET')
-    {
-        $context = stream_context_create([
-            'http' => [
-                'timeout' => 20,
-                'method'  => $method,
-            ],
-            'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
-        ]);
-
-        return @file_get_contents($url, false, $context);
+        $this->writeln('Done!');
     }
 
     public function isComplete()

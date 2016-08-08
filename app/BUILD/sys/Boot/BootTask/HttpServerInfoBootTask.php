@@ -153,11 +153,19 @@ class HttpServerInfoBootTask implements BootTaskInterface
                 exit;
 
             case 'opcache':
-                require __DIR__.'/../../Resources/views/opcache-gui.php';
+                if (extension_loaded('Zend OPcache')) {
+                    require __DIR__.'/../../Resources/views/opcache-gui.php';
+                } else {
+                    echo "OPcache not enabled\n";
+                }
                 exit;
             case 'opcache/warmup':
-                $this->warmupOpCache();
-                echo 'OK';
+                if (extension_loaded('Zend OPcache')) {
+                    $this->warmupOpCache();
+                    echo "OK\n";
+                } else {
+                    echo "OK (no-op, OPcache not enabled)\n";
+                }
                 exit;
 
             case 'url_check/path':
