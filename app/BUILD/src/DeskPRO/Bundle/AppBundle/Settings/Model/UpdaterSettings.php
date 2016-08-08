@@ -153,10 +153,14 @@ class UpdaterSettings
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function calculateNextTimeUtc()
     {
+        if (!$this->isEnabled()) {
+            return;
+        }
+
         $tz = $this->getTimezone();
 
         $date = new \DateTime('now', $tz);

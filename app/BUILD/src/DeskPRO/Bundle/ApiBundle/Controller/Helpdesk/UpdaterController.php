@@ -152,7 +152,7 @@ class UpdaterController extends BaseController
         $settingRepos = $this->getRepository(Setting::class);
         $settingRepos
             ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_NEXT_TIME,      $setDate->format('Y-m-d H:i:s'))
-            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_NEXT_IS_MANUAL, 0)
+            ->updateSetting(UpdaterSettingsResolver::AUTO_UPDATER_NEXT_IS_MANUAL, 1)
         ;
 
         return View::create($this->wrap(['success' => true]));

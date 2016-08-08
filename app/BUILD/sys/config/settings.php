@@ -1153,7 +1153,7 @@ return [
     /*
      * Enable/disable the automatic upgrader
      */
-    'auto_updater_enabled' => true,
+    'auto_updater_enabled' => false,
 
     /*
      * How often to check/install updates
