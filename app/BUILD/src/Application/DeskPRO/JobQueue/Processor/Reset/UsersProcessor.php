@@ -42,7 +42,7 @@ class UsersProcessor extends Base
     {
         $resolver->setDefaults([
             'context_person_id' => null,
-            'limit'             => 100,
+            'limit'             => 1000,
             'offset'            => 0,
             'labeled_by'        => null,
         ]);

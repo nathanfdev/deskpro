@@ -565,9 +565,9 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     }
 
     /**
-     * @param ArrayCollection $brands
+     * @param array|ArrayCollection $brands
      */
-    public function setBrands(ArrayCollection $brands)
+    public function setBrands($brands)
     {
         $this->brands = $brands;
         foreach ($this->brands as $brand) {
