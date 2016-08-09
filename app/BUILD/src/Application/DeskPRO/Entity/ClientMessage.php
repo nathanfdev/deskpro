@@ -117,8 +117,8 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
      */
     public function __construct()
     {
-        $this->setModelField('date_created', new \DateTime());
-        $this->setModelField('auth', DpStrings::random(15, Strings::CHARS_KEY));
+        $this->date_created = new \DateTime();
+        $this->auth         = DpStrings::random(15, Strings::CHARS_KEY);
     }
 
     /**
@@ -185,6 +185,18 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
     public function setCreatedByClient($client)
     {
         $this->setModelField('created_by_client', $client);
+
+        return $this;
+    }
+
+    /**
+     * @param Person $for_person
+     *
+     * @return $this
+     */
+    public function setForPerson($for_person)
+    {
+        $this->setModelField('for_person', $for_person);
 
         return $this;
     }
