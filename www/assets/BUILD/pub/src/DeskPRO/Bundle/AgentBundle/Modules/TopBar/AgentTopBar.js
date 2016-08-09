@@ -11,8 +11,14 @@ class AgentTopBar extends React.Component {
     this.state = {
       agents:          [],
       chatDepartments: [],
+      notificationCount: 0,
       user:            null
     };
+    window.document.addEventListener('dpUpdateNotifCount', (e) => {
+      this.setState({
+        notificationCount: e.detail.count
+      })
+    });
     this.retrieveAgents = this.retrieveAgents.bind(this);
     this.getUserPicture = this.getUserPicture.bind(this);
   }
@@ -50,7 +56,9 @@ class AgentTopBar extends React.Component {
     window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
   }
 
-  onRecent() {
+  onRecent(e) {
+    e.stopPropagation();
+    e.preventDefault();
     const angularOmnibox = window.angular.element('.dp-omnibox').scope();
     if (angularOmnibox) {
       angularOmnibox.toggleMode('recent');
@@ -138,12 +146,12 @@ class AgentTopBar extends React.Component {
   }
 
   render() {
-    const { agents, chatDepartments } = this.state;
+    const { agents, chatDepartments, notificationCount } = this.state;
     return (<TopBar>
       <div className="logo">
         <img
           src="/assets/BUILD/pub/src/DeskPRO/Bundle/AgentBundle/Resources/img/deskpro_dots_white.svg"
-          alt="DeskPRO logo"
+          role="presentation"
         />
       </div>
       <TopBarItem classes={['search-box']}>
@@ -166,7 +174,7 @@ class AgentTopBar extends React.Component {
           <TopBarNotificationIcon
             elementId="notifications"
             icon="alarm outline"
-            count="2"
+            count={notificationCount}
             onClick={this.onNotification}
           />
         </TopBarItem>

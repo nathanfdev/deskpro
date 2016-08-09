@@ -57,8 +57,7 @@ class PopUp extends React.Component {
   }
 
   openPopup() {
-    const event = window.document.createEvent('Event');
-    event.initEvent('dpPopupOpen', true, true);
+    const event = new Event('dpPopupOpen');
     window.document.dispatchEvent(event);
     this.setState({
       isOpen: true
