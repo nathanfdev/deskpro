@@ -559,7 +559,12 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      */
     public function getWidgetLoader()
     {
-        $brand = $this->getBrandStack()->getActive()->getBrand();
+        $brand         = $this->getBrandStack()->getActive()->getBrand();
+        $widgetOptions = $this->container->get('widget_settings_resolver')->getWidgetBrandOptions($brand);
+
+        if (!$widgetOptions->getWidget()->isEnabled()) {
+            return '';
+        }
 
         return $this->container->get('widget_loader_code_renderer')->getWidgetCode($brand, true);
     }
