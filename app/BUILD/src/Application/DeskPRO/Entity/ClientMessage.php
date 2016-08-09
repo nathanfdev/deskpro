@@ -122,6 +122,9 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $event_dispatcher = null;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
@@ -153,6 +156,22 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getChannel()
+    {
+        return $this->channel;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuth()
+    {
+        return $this->auth;
+    }
+
+    /**
      * @param array $data
      *
      * @return $this
@@ -162,6 +181,14 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('data', $data);
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
     }
 
     /**
@@ -176,11 +203,43 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
+    /**
+     * @return Person
+     */
+    public function getForPerson()
+    {
+        return $this->for_person;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedByClient()
+    {
+        return $this->created_by_client;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getForClient()
+    {
+        return $this->for_client;
+    }
+
     public function getHandler()
     {
         $handler = new BasicArray($this);
 
         return $handler;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
     }
 
     public function notifyMessageServers()

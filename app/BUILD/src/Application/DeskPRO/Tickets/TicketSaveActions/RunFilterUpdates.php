@@ -77,16 +77,20 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
         $agents   = [];
 
         foreach ($client_messages as $cm) {
-            $channels[$cm->channel]                            = true;
-            $agents[$cm->for_person ? $cm->for_person->id : 0] = true;
-            $rows[]                                            = [
-                'channel'           => $cm->channel,
-                'auth'              => $cm->auth,
-                'data'              => serialize($cm->data),
-                'created_by_client' => $cm->created_by_client ?: '',
-                'for_client'        => $cm->for_client ?: null,
-                'date_created'      => $cm->date_created->format('Y-m-d H:i:s'),
-                'for_person_id'     => $cm->for_person ? $cm->for_person->id : null,
+            $channel  = $cm->getChannel();
+            $person   = $cm->getForPerson();
+            $personId = $person ? $person->getId() : null;
+
+            $channels[$channel]      = true;
+            $agents[(int) $personId] = true;
+            $rows[]                  = [
+                'channel'           => $channel,
+                'auth'              => $cm->getAuth(),
+                'data'              => serialize($cm->getData()),
+                'created_by_client' => $cm->getCreatedByClient() ?: '',
+                'for_client'        => $cm->getForClient() ?: null,
+                'date_created'      => $cm->getDateCreated()->format('Y-m-d H:i:s'),
+                'for_person_id'     => $personId,
             ];
         }
 
