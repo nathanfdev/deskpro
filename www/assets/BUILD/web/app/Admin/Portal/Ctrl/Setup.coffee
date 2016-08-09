@@ -38,8 +38,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @portalSettings.setBrandId(@$scope.brand_id)
 
         settingPromise = @portalSettings.getSettings()
-        settingPromise.then (res) =>
-          @settings = res
+
+        settingPromise
+          .then((res) => @settings = res)
+          .catch(() => @$state.go 'portal', {brandId: @$scope.default_brand.id})
         promises.push(settingPromise)
 
         brandPromise = @Api2.sendGet('/brands/' + @$scope.brand_id)
