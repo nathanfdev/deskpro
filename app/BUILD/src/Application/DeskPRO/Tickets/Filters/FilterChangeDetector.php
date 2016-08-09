@@ -188,7 +188,7 @@ class FilterChangeDetector
         // Use the last change set to use values we have already calculated
         if ($context && $context->getVars()->has('filter_change_set')) {
             $exist_set = $context->getVars()->get('filter_change_set');
-            if ($exist_set->getTicket()->id != $ticket->id) {
+            if ($exist_set->getTicket()->getId() != $ticket->getId()) {
                 $exist_set = null;
             }
         }
@@ -251,15 +251,18 @@ class FilterChangeDetector
 
         $distinct_agents = [];
         foreach ($filter_checks as $filter_check) {
+            /** @var Person $agent */
             foreach ($filter_check['scopes'] as $agent) {
-                $distinct_agents[$agent->id] = $agent;
+                $distinct_agents[$agent->getId()] = $agent;
             }
         }
 
         foreach ($distinct_agents as $agent) {
-            /** @var Person $agent */
-            if (!$agent->is_agent) {
-                $agent_perm_cache[$agent->id] = ['old' => false, 'new' => false];
+            /* @var Person $agent */
+            $agentId = $agent->getId();
+
+            if (!$agent->isAgent()) {
+                $agent_perm_cache[$agentId] = ['old' => false, 'new' => false];
                 continue;
             }
 
@@ -282,18 +285,22 @@ class FilterChangeDetector
                 }
             }
 
-            $agent_perm_cache[$agent->id] = ['old' => $see_old, 'new' => $see_new];
+            $agent_perm_cache[$agentId] = ['old' => $see_old, 'new' => $see_new];
         }
+
         $logger->debug(sprintf('[FilterChangeDetector] Permissions of %d agents calculated in %.3fs', count($agent_perm_cache), microtime(true) - $start));
 
         $time = microtime(true);
+
+        /** @var LegacyTicketFilter $filter_check */
         foreach ($filter_checks as $filter_check) {
             $filter       = $filter_check['filter'];
             $filter_id    = $filter->id;
             $agent_scopes = [];
 
             foreach ($filter_check['scopes'] as $a) {
-                $a_id = $a->id;
+                /* @var Person $a */
+                $a_id = $a->getId();
                 if (isset($agent_perm_cache[$a_id]) && ($agent_perm_cache[$a_id]['old'] || $agent_perm_cache[$a_id]['new'])) {
                     $agent_scopes[$a_id] = $a;
                 }
@@ -305,8 +312,8 @@ class FilterChangeDetector
 
             $filter_ts = microtime(true);
 
-            $filter_change        = new FilterChange($filter);
-            $changed[$filter->id] = $filter_change;
+            $filter_change             = new FilterChange($filter);
+            $changed[$filter->getId()] = $filter_change;
 
             if ($this->extended_log_info) {
                 $logger->debug(sprintf('[FilterChangeDetector] ----- BEGIN #%d %s -- %d scopes -----', $filter->id, $filter->title, count($agent_scopes)));
@@ -324,7 +331,6 @@ class FilterChangeDetector
                 }
 
                 $orig_match_real = $new_match_real = null;
-                $pre_orig_match  = $pre_new_match  = null;
                 $new_match       = $orig_match       = false;
 
                 // RESULT_IS_CACHED
@@ -514,12 +520,14 @@ class FilterChangeDetector
             $old_changed_filters = $exist_set->getChangedFilters();
             $copied_ids          = [];
             foreach ($checker->getAffectedFiltersWithNoChanges() as $f) {
-                if (isset($old_changed_filters[$f->id])) {
-                    if (isset($changed_filters[$f->id])) {
-                        $old_changed_filters[$f->id]->merge($changed_filters[$f->id]);
+                $fid = $f->getId();
+
+                if (isset($old_changed_filters[$fid])) {
+                    if (isset($changed_filters[$fid])) {
+                        $old_changed_filters[$fid]->merge($changed_filters[$fid]);
                     }
-                    $changed_filters[$f->id] = $old_changed_filters[$f->id];
-                    $copied_ids[]            = $f->id;
+                    $changed_filters[$fid] = $old_changed_filters[$fid];
+                    $copied_ids[]          = $fid;
                 }
             }
 
