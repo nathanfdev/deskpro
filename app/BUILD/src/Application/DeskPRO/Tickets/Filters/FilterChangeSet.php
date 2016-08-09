@@ -128,9 +128,11 @@ class FilterChangeSet
     /**
      * Get an array of client messages to send to clients about lists updating.
      *
+     * @param array $onlineAgentsIds
+     *
      * @return \Application\DeskPRO\Entity\ClientMessage[]
      */
-    public function getListUpdateClientMessages()
+    public function getListUpdateClientMessages(array $onlineAgentsIds)
     {
         $messages = [];
 
@@ -145,6 +147,10 @@ class FilterChangeSet
             $filterId = $filter->getId();
 
             foreach ($filter_change->getAgentsAdded() as $agent) {
+                if (!in_array($agent->getId(), $onlineAgentsIds)) {
+                    continue;
+                }
+
                 $cm = new ClientMessage();
                 $cm->setChannel('agent.filter-update');
                 $cm->setData([
@@ -159,6 +165,10 @@ class FilterChangeSet
             }
 
             foreach ($filter_change->getAgentsRemoved() as $agent) {
+                if (!in_array($agent->getId(), $onlineAgentsIds)) {
+                    continue;
+                }
+
                 $cm = new ClientMessage();
                 $cm->setChannel('agent.filter-update');
                 $cm->setData([

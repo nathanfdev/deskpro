@@ -35,8 +35,10 @@
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Class RunFilterUpdates.
@@ -49,11 +51,17 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
     protected $container;
 
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
      * @param DeskproContainer $container
      */
     public function __construct(DeskproContainer $container)
     {
         $this->container = $container;
+        $this->em        = $this->container->get('doctrine.orm.default_entity_manager');
     }
 
     /**
@@ -68,9 +76,13 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
             return;
         }
 
+        /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
+        $personRepo     = $this->em->getRepository(Person::class);
+        $onlineAgentIds = $personRepo->getActiveAgents(true);
+
         $detector        = $this->container->getTicketFilterChangeDetector();
         $change_set      = $detector->getFilterChangeSet($ticket, $context);
-        $client_messages = $change_set->getListUpdateClientMessages();
+        $client_messages = $change_set->getListUpdateClientMessages($onlineAgentIds);
 
         $rows     = [];
         $channels = [];

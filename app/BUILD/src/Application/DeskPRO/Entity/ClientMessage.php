@@ -194,7 +194,7 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
      *
      * @return $this
      */
-    public function setForPerson($for_person)
+    public function setForPerson(Person $for_person = null)
     {
         $this->setModelField('for_person', $for_person);
 
