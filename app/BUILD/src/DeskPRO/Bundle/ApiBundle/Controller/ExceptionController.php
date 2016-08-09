@@ -32,7 +32,6 @@ use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\FormExceptionInterface;
 use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -70,16 +69,6 @@ class ExceptionController extends BaseController
             }
         }
 
-        $request = Request::createFromGlobals();
-
-        // in dev environment, display a stack trace, dont show if we have a test.client
-        if ($this->container->getParameter('kernel.debug') && !$this->container->has('test.client') && !$request->headers->has('x-agent-request')) {
-            $error = new Response((string) $exception, 500);
-            $error->headers->set('content-type', 'text/html');
-
-            return $error;
-        }
-
         if ($exception instanceof AccessDeniedException) {
             $exception = new AccessDeniedHttpException($exception->getMessage(), $exception);
         }
@@ -97,11 +86,35 @@ class ExceptionController extends BaseController
             $errors_array
         );
 
+        $representation = $this->addExceptionInfo($exception, $representation);
+
         $headers = [];
         if ($exception instanceof HttpException) {
             $headers = $exception->getHeaders();
         }
 
         return View::create($representation, $status, $headers);
+    }
+
+    /**
+     * @param \Exception $exception
+     * @param array      $representation
+     *
+     * @return array
+     */
+    private function addExceptionInfo(\Exception $exception, array $representation)
+    {
+        // in dev environment, display a stack trace, dont show if we have a test.client
+        if ($this->container->getParameter('kernel.debug') && !$this->container->has('test.client')) {
+            $representation['exception'] = [
+                'class'     => get_class($exception),
+                'code'      => $exception->getCode(),
+                'message'   => $exception->getMessage(),
+                'file'      => $exception->getFile().':'.$exception->getLine(),
+                'backtrace' => explode("\n", $exception->getTraceAsString()),
+            ];
+        }
+
+        return $representation;
     }
 }
