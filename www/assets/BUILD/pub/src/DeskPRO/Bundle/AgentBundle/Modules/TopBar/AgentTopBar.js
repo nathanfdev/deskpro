@@ -9,15 +9,15 @@ class AgentTopBar extends React.Component {
   constructor() {
     super();
     this.state = {
-      agents:          [],
-      chatDepartments: [],
+      agents:            [],
+      chatDepartments:   [],
       notificationCount: 0,
-      user:            null
+      user:              null
     };
     window.document.addEventListener('dpUpdateNotifCount', (e) => {
       this.setState({
         notificationCount: e.detail.count
-      })
+      });
     });
     this.retrieveAgents = this.retrieveAgents.bind(this);
     this.getUserPicture = this.getUserPicture.bind(this);
