@@ -212,7 +212,6 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
         }
 
         $command = $php_path.' '.$file.' dp:elastica:index '.implode(' ', $arguments);
-        echo $command."\n";
         $process = new Process($command);
         $process->setTimeout(600);
 
@@ -247,7 +246,8 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
         $arguments[] = '--type="'.$type.'"';
         $arguments[] = '--offset="'.$offset.'"';
         $arguments[] = '--batch-size="'.$batchSize.'"';
-        $arguments[] = '--no-reset ';
+        $arguments[] = '--single-batch';
+        $arguments[] = '--no-reset';
 
         if ($input->hasOption('ignore-errors')) {
             $arguments[] = '--ignore-errors';

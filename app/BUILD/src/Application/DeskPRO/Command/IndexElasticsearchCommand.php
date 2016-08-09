@@ -87,6 +87,7 @@ class IndexElasticsearchCommand extends ContainerAwareCommand
             ->addOption('offset', null, InputOption::VALUE_REQUIRED, 'Start indexing at offset', 0)
             ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Sleep time between persisting iterations (microseconds)', 0)
             ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)')
+            ->addOption('single-batch', null, InputOption::VALUE_NONE, 'Only do one batch per process')
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Do not stop on errors')
             ->addOption('no-overwrite-format', null, InputOption::VALUE_NONE, 'Prevent this command from overwriting ProgressBar\'s formats')
             ->setDescription('Populates search indexes from providers of a specific index and type')
@@ -114,6 +115,9 @@ class IndexElasticsearchCommand extends ContainerAwareCommand
         );
         if ($input->getOption('batch-size')) {
             $options['batch_size'] = (int) $input->getOption('batch-size');
+        }
+        if ($input->getOption('single-batch')) {
+            $options['single_batch'] = true;
         }
 
         if ($input->isInteractive() && $reset && $input->getOption('offset')) {
@@ -193,7 +197,7 @@ class IndexElasticsearchCommand extends ContainerAwareCommand
         $provider = $this->providerRegistry->getProvider($index, $type);
 
         $lastStep = null;
-        $current  = 0;
+        $current  = $options['offset'];
         $action   = 'Populating';
 
         $loggerClosure = function ($increment, $totalObjects, $message = null) use ($output, $action, $index, $type, &$lastStep, &$current) {
