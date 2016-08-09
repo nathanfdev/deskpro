@@ -113,26 +113,12 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
     protected $date_created;
 
     /**
-     * Event manager. This is used in the PostPersist callback to notify
-     * any listeners. For example, if the web socket server is enabled,
-     * it'll listen to this even and can handle pushing the message through
-     * to clients.
-     *
-     * @var \Symfony\Component\EventDispatcher\EventDispatcher
-     */
-    protected $event_dispatcher = null;
-
-    /**
      * Constructor.
      */
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
         $this->setModelField('auth', DpStrings::random(15, Strings::CHARS_KEY));
-
-        if (App::has('event_dispatcher')) {
-            $this->event_dispatcher = App::get('event_dispatcher');
-        }
     }
 
     /**
@@ -242,15 +228,27 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
         return $this->date_created;
     }
 
+    /**
+     * Should be done in a separate listener.
+     * Used deprecated App::get('event_dispatcher') for now.
+     *
+     * todo refactor
+     */
     public function notifyMessageServers()
     {
-        if (!$this->event_dispatcher) {
-            return;
+        static $dispatcher;
+        if (null === $dispatcher) {
+            if (App::has('event_dispatcher')) {
+                $dispatcher = App::get('event_dispatcher');
+            } else {
+                $dispatcher = false;
+            }
         }
 
-        $event = new \Application\DeskPRO\ClientMessage\Event($this);
-
-        $this->event_dispatcher->dispatch('DeskPRO_onNewClientMessage', $event);
+        if ($dispatcher) {
+            $event = new \Application\DeskPRO\ClientMessage\Event($this);
+            $dispatcher->dispatch('DeskPRO_onNewClientMessage', $event);
+        }
     }
 
     //###########################################################################
