@@ -151,7 +151,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
         ) {
             $request->getSession()->remove('_security.'.$this->providerKey.'.target_path');
 
-            if ($targetUrl != $login_url) {
+            if ($targetUrl != $login_url && strpos($targetUrl, '_proxy') === false) {
                 return $targetUrl;
             }
         }
