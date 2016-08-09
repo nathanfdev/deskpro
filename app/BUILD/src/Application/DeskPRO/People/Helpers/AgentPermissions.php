@@ -103,7 +103,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
     public function isDepartmentAllowed($dep, $context = 'tickets')
     {
         if ($dep instanceof Entity\Department) {
-            $dep = $dep['id'];
+            $dep = $dep->getId();
         }
 
         return in_array($dep, $this->getAllowedDepartments($context));
@@ -172,7 +172,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
         foreach ($uids as $ugid) {
             if ($agent_groups->groupExists($ugid)) {
                 $g = $agent_groups->getGroup($ugid);
-                if ($g->sys_name == 'agent_all_perms' || $g->sys_name == 'agent_all_safe_perms') {
+                if ($g->getSysName() == 'agent_all_perms' || $g->getSysName() == 'agent_all_safe_perms') {
                     $allow_all = true;
                     break;
                 }
@@ -182,20 +182,22 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
         if ($allow_all) {
             $this->_allowed_ids = [];
             foreach ([App::$container->getTicketDepartments()->getAll(), App::$container->getChatDepartments()->getAll()] as $coll) {
+                /** @var Entity\Department $d */
                 foreach ($coll as $d) {
-                    $app = $d->is_tickets_enabled ? 'tickets' : 'chat';
+                    $app = $d->isTicketsEnabled() ? 'tickets' : 'chat';
                     if (!isset($this->_allowed_ids[$app])) {
                         $this->_allowed_ids[$app] = [];
                     }
 
-                    $this->_allowed_ids[$app][] = $d->id;
-                    if ($d && $d->parent) {
-                        $this->_allowed_ids[$app][] = $d->parent->id;
+                    $this->_allowed_ids[$app][] = $d->getId();
+                    $parent                     = $d->getParent();
+                    if ($parent) {
+                        $this->_allowed_ids[$app][] = $parent->getId();
                     }
                 }
             }
         } else {
-            $raw = App::$container->getEm()->getRepository('DeskPRO:DepartmentPermission')->getPermsForAgent($this->person->id, $uids, 'full');
+            $raw = App::$container->getEm()->getRepository('DeskPRO:DepartmentPermission')->getPermsForAgent($this->person->getId(), $uids, 'full');
 
             $this->_allowed_ids = [];
             foreach ($raw as $r) {

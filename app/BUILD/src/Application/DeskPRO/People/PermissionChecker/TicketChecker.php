@@ -36,6 +36,7 @@ namespace Application\DeskPRO\People\PermissionChecker;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\People\Helpers\AgentPermissions;
 
 /**
  * Class TicketChecker.
@@ -100,11 +101,13 @@ class TicketChecker extends AbstractChecker
         // then we know right away they can view
         //------------------------------
 
-        if ($ticket->agent && $ticket->agent->id == $this->person->id) {
+        $agent = $ticket->getAgent();
+        if ($agent && $agent === $this->person) {
             return true;
         }
 
-        if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person->id, $ticket->agent_team->getId())) {
+        $agentTeam = $ticket->getAgentTeam();
+        if ($agentTeam && $this->agents->isAgentMemberOfTeam($this->person->getId(), $agentTeam->getId())) {
             return true;
         }
 
@@ -117,7 +120,12 @@ class TicketChecker extends AbstractChecker
         //------------------------------
 
         $this->person->loadHelper('AgentPermissions');
-        if ($ticket->department && !$this->person->getHelper('AgentPermissions')->isDepartmentAllowed($ticket->department)) {
+
+        /** @var AgentPermissions $helper */
+        $helper     = $this->person->getHelper('AgentPermissions');
+        $department = $ticket->getDepartment();
+
+        if ($department && !$helper->isDepartmentAllowed($department)) {
             return false;
         }
 
@@ -125,7 +133,7 @@ class TicketChecker extends AbstractChecker
         // Cant view unassigned
         //------------------------------
 
-        if (!$ticket->agent && !$this->person->hasPerm('agent_tickets.view_unassigned')) {
+        if (!$agent && !$this->person->hasPerm('agent_tickets.view_unassigned')) {
             return false;
         }
 
@@ -133,7 +141,7 @@ class TicketChecker extends AbstractChecker
         // Cant view others
         //------------------------------
 
-        if ($ticket->agent && !$this->person->hasPerm('agent_tickets.view_others')) {
+        if ($agent && !$this->person->hasPerm('agent_tickets.view_others')) {
             return false;
         }
 
