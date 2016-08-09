@@ -42,68 +42,51 @@ use FOS\ElasticaBundle\Doctrine\ORM\Provider;
  */
 class Doctrine extends Provider
 {
-    /**
-     * @see FOS\ElasticaBundle\Provider\ProviderInterface::populate()
-     */
-    public function populate(\Closure $loggerClosure = null, array $options = array())
+    protected function doPopulate($options, \Closure $loggerClosure = null)
     {
-        $queryBuilder = $this->createQueryBuilder('createSearchQueryBuilder');
+        $manager = $this->managerRegistry->getManagerForClass($this->objectClass);
+
+        $queryBuilder = $this->createQueryBuilder($options['query_builder_method']);
         $nbObjects    = $this->countObjects($queryBuilder);
-        $options      = $this->resolveOptions($options);
+        $offset       = $options['offset'];
 
-        $offset = $options['offset'];
-        $limit  = $options['limit'];
-        $sleep  = $options['sleep'];
+        for (; $offset < $nbObjects; $offset += $options['batch_size']) {
+            $sliceSize = $options['batch_size'];
+            try {
+                $objects   = $this->fetchSlice($queryBuilder, $options['batch_size'], $offset);
+                $sliceSize = count($objects);
+                $objects   = $this->filterObjects($options, $objects);
 
-        $batchSize    = $options['batch_size'];
-        $ignoreErrors = $options['ignore_errors'];
-
-        if ($limit == -1) {
-            $cutoff = $nbObjects;
-        } else {
-            $cutoff = $limit;
-        }
-
-        for (; $offset < $cutoff; $offset += $batchSize) {
-            if ($loggerClosure) {
-                $stepStartTime = microtime(true);
-            }
-
-            $objects       = $this->fetchSlice($queryBuilder, $batchSize, $offset);
-            $stepNbObjects = count($objects);
-
-            if (!$ignoreErrors) {
-                $this->objectPersister->insertMany($objects);
-            } else {
-                try {
+                if (!empty($objects)) {
                     $this->objectPersister->insertMany($objects);
-                } catch (BulkResponseException $e) {
-                    if ($loggerClosure) {
-                        // function ($increment, $totalObjects, $message = null)
-                        $loggerClosure($stepNbObjects, $nbObjects, sprintf('<error>%s</error>', $e->getMessage()));
-                    }
+                }
+            } catch (BulkResponseException $e) {
+                if (!$options['ignore_errors']) {
+                    throw $e;
+                }
+
+                if (null !== $loggerClosure) {
+                    $loggerClosure(
+                        $options['batch_size'],
+                        $nbObjects,
+                        sprintf('<error>%s</error>', $e->getMessage())
+                    );
                 }
             }
 
-            if ($loggerClosure) {
-                // function ($increment, $totalObjects, $message = null)
-                $loggerClosure($stepNbObjects, $nbObjects, '');
-            }
-
             if ($options['clear_object_manager']) {
-                $this->managerRegistry->getManagerForClass($this->objectClass)->clear();
-
-                $objects          = null;
-                $stepCount        = null;
-                $stepNbObjects    = null;
-                $percentComplete  = null;
-                $timeDifference   = null;
-                $objectsPerSecond = null;
-
-                gc_collect_cycles();
+                $manager->clear();
             }
 
-            usleep($sleep);
+            usleep($options['sleep']);
+
+            if (null !== $loggerClosure) {
+                $loggerClosure($sliceSize, $nbObjects);
+            }
+
+            if ($options['single_batch']) {
+                break;
+            }
         }
     }
 
@@ -112,7 +95,7 @@ class Doctrine extends Provider
         parent::configureOptions();
 
         $this->resolver->setDefaults(array(
-            'limit' => -1,
+            'single_batch' => false,
         ));
     }
 

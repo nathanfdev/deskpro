@@ -80,9 +80,6 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
             ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'The type to repopulate')
             ->addOption('auto-reset', null, InputOption::VALUE_REQUIRED, 'Internal')
             ->addOption('reset', null, InputOption::VALUE_NONE, 'Reset index before populating')
-            ->addOption('offset', null, InputOption::VALUE_REQUIRED, 'Start indexing at offset', 0)
-            ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Sleep time between persisting iterations (microseconds)', 0)
-            ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)', 500)
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Do not stop on errors')
             ->setDescription('Populates search indexes from providers');
     }
@@ -178,11 +175,11 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
                 $provider_id = $index.'_'.$type;
 
                 $total     = $all_totals[$provider_id];
-                $offset    = $input->getOption('offset');
-                $batchSize = $input->getOption('batch-size');
+                $offset    = 0;
+                $batchSize = 500;
 
                 for (; $offset < $total; $offset += $batchSize) {
-                    $arguments = $this->getArguments($input, $index, $type, $offset, ($offset + $batchSize), $batchSize);
+                    $arguments = $this->getArguments($input, $index, $type, $offset, $batchSize, $reset);
                     $this->runCommand($arguments, $output);
 
                     $done = min($total, $offset + $batchSize);
@@ -236,25 +233,21 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
      * @param                $index
      * @param                $type
      * @param int            $offset
-     * @param int            $limit
      * @param int            $batchSize
+     * @param int            $doReset
      *
      * @return array
      */
-    private function getArguments($input, $index, $type, $offset, $limit, $batchSize)
+    private function getArguments($input, $index, $type, $offset, $batchSize, $doReset)
     {
         $arguments = [];
 
         $arguments[] = '--index="'.$index.'"';
         $arguments[] = '--type="'.$type.'"';
         $arguments[] = '--offset="'.$offset.'"';
-        $arguments[] = '--limit="'.$limit.'"';
         $arguments[] = '--batch-size="'.$batchSize.'"';
-        $arguments[] = '--no-reset ';
-
-        if ($input->hasOption('sleep')) {
-            $arguments[] = '--sleep="'.$input->getOption('sleep').'"';
-        }
+        $arguments[] = '--single-batch';
+        $arguments[] = '--no-reset';
 
         if ($input->hasOption('ignore-errors')) {
             $arguments[] = '--ignore-errors';

@@ -36,7 +36,6 @@ use FOS\ElasticaBundle\Provider\ProviderRegistry;
 use FOS\ElasticaBundle\Resetter;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -86,9 +85,9 @@ class IndexElasticsearchCommand extends ContainerAwareCommand
             ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'The type to repopulate')
             ->addOption('no-reset', null, InputOption::VALUE_NONE, 'Do not reset index before populating')
             ->addOption('offset', null, InputOption::VALUE_REQUIRED, 'Start indexing at offset', 0)
-            ->addOption('limit', null, InputOption::VALUE_OPTIONAL, 'Stop indexing at limit')
             ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Sleep time between persisting iterations (microseconds)', 0)
             ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)')
+            ->addOption('single-batch', null, InputOption::VALUE_NONE, 'Only do one batch per process')
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Do not stop on errors')
             ->addOption('no-overwrite-format', null, InputOption::VALUE_NONE, 'Prevent this command from overwriting ProgressBar\'s formats')
             ->setDescription('Populates search indexes from providers of a specific index and type')
@@ -102,13 +101,6 @@ class IndexElasticsearchCommand extends ContainerAwareCommand
         $this->providerRegistry       = $this->getContainer()->get('fos_elastica.provider_registry');
         $this->resetter               = $this->getContainer()->get('fos_elastica.resetter');
         $this->progressClosureBuilder = new ProgressClosureBuilder();
-
-        if (!$input->getOption('no-overwrite-format') && class_exists('Symfony\\Component\\Console\\Helper\\ProgressBar')) {
-            ProgressBar::setFormatDefinition('normal', " %current%/%max% [%bar%] %percent:3s%%\n%message%\n");
-            ProgressBar::setFormatDefinition('verbose', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%\n%message%\n");
-            ProgressBar::setFormatDefinition('very_verbose', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%\n%message%\n");
-            ProgressBar::setFormatDefinition('debug', " %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%\n%message%\n");
-        }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -123,6 +115,9 @@ class IndexElasticsearchCommand extends ContainerAwareCommand
         );
         if ($input->getOption('batch-size')) {
             $options['batch_size'] = (int) $input->getOption('batch-size');
+        }
+        if ($input->getOption('single-batch')) {
+            $options['single_batch'] = true;
         }
 
         if ($input->isInteractive() && $reset && $input->getOption('offset')) {
@@ -199,8 +194,42 @@ class IndexElasticsearchCommand extends ContainerAwareCommand
             $this->resetter->resetIndexType($index, $type);
         }
 
-        $provider      = $this->providerRegistry->getProvider($index, $type);
-        $loggerClosure = $this->progressClosureBuilder->build($output, 'Populating', $index, $type);
+        $provider = $this->providerRegistry->getProvider($index, $type);
+
+        $lastStep = null;
+        $current  = $options['offset'];
+        $action   = 'Populating';
+
+        $loggerClosure = function ($increment, $totalObjects, $message = null) use ($output, $action, $index, $type, &$lastStep, &$current) {
+            if ($current + $increment > $totalObjects) {
+                $increment = $totalObjects - $current;
+            }
+
+            if (null !== $message) {
+                $output->writeln(sprintf('<info>%s</info> <error>%s</error>', $action, $message));
+            }
+
+            $currentTime      = microtime(true);
+            $timeDifference   = $currentTime - $lastStep;
+            $objectsPerSecond = $lastStep ? ($increment / $timeDifference) : $increment;
+            $lastStep         = $currentTime;
+            $current += $increment;
+            $percent = 100 * $current / $totalObjects;
+
+            $output->writeln(sprintf(
+                '<info>%s</info> <comment>%s/%s</comment> %0.1f%% (%d/%d), %d objects/s (RAM: current=%uMo peak=%uMo)',
+                $action,
+                $index,
+                $type,
+                $percent,
+                $current,
+                $totalObjects,
+                $objectsPerSecond,
+                round(memory_get_usage() / (1024 * 1024)),
+                round(memory_get_peak_usage() / (1024 * 1024))
+            ));
+        };
+
         $provider->populate($loggerClosure, $event->getOptions());
         $this->dispatcher->dispatch(TypePopulateEvent::POST_TYPE_POPULATE, $event);
 
@@ -219,8 +248,5 @@ class IndexElasticsearchCommand extends ContainerAwareCommand
         if ($postPopulate) {
             $this->resetter->postPopulate($index);
         }
-
-        $output->writeln(sprintf('<info>Refreshing</info> <comment>%s</comment>', $index));
-        $this->indexManager->getIndex($index)->refresh();
     }
 }
