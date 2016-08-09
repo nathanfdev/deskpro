@@ -88,7 +88,7 @@ class FilterChange
      */
     public function addForAgent(Person $agent)
     {
-        $this->added_for_agents[$agent->id] = $agent;
+        $this->added_for_agents[$agent->getId()] = $agent;
     }
 
     /**
@@ -96,7 +96,7 @@ class FilterChange
      */
     public function removeForAgent(Person $agent)
     {
-        $this->removed_for_agents[$agent->id] = $agent;
+        $this->removed_for_agents[$agent->getId()] = $agent;
     }
 
     /**
@@ -104,7 +104,7 @@ class FilterChange
      */
     public function originalMatchForAgent(Person $agent)
     {
-        $this->orig_match_for_agents[$agent->id] = $agent;
+        $this->orig_match_for_agents[$agent->getId()] = $agent;
     }
 
     /**
@@ -112,7 +112,7 @@ class FilterChange
      */
     public function newMatchForAgent(Person $agent)
     {
-        $this->new_match_for_agents[$agent->id] = $agent;
+        $this->new_match_for_agents[$agent->getId()] = $agent;
     }
 
     /**

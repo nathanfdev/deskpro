@@ -124,10 +124,10 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
     public function __construct(Person $person)
     {
         $this->person = $person;
+        $personId     = $person->getId();
+        $agent_data   = App::$container->getAgentData();
 
-        $agent_data = App::$container->getAgentData();
-
-        if ($agent_data->has($person->id)) {
+        if ($agent_data->has($personId)) {
             $this->usergroup_ids = $agent_data->getGroupIdsForAgent($person);
         } else {
             $this->usergroup_ids = App::getDb()->fetchAllCol('
@@ -139,15 +139,15 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         }
 
         $everyone_ug = App::$container->getUserGroups()->getEveryoneGroup();
-        if ($everyone_ug && $everyone_ug->is_enabled) {
-            $this->usergroup_ids[] = $everyone_ug->id;
+        if ($everyone_ug && $everyone_ug->isEnabled()) {
+            $this->usergroup_ids[] = $everyone_ug->getId();
         } else {
             $this->usergroup_ids[] = 0;
         }
 
         $reg_ug = App::$container->getUserGroups()->getRegisteredGroup();
-        if ($person->getId() && $reg_ug->is_enabled) {
-            $this->usergroup_ids[] = $reg_ug->id;
+        if ($personId && $reg_ug->isEnabled()) {
+            $this->usergroup_ids[] = $reg_ug->getId();
         }
 
         // And org ones...
@@ -170,8 +170,8 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
         $this->usergroups_key = PermissionCache::generateUsergroupSetKey($this->usergroup_ids);
 
-        if ($this->person->is_agent) {
-            $this->usergroups_key = $this->usergroups_key.'-person-'.$this->person->id;
+        if ($this->person->isAgent()) {
+            $this->usergroups_key = $this->usergroups_key.'-person-'.$personId;
         }
 
         \DpShutdown::add([$this, 'flushCache']);

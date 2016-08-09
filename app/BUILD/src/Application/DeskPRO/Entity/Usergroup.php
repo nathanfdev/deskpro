@@ -261,6 +261,14 @@ class Usergroup extends DomainObject
     }
 
     /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->is_enabled;
+    }
+
+    /**
      * Generate a key for a set of usergroups. These same usergroups
      * will always generate the same key.
      *

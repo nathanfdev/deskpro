@@ -188,24 +188,24 @@ class AgentNotifyListBuilder implements PersonContextInterface
 
             $agents_with_new_match = [];
             foreach ($filter_change->getAgentsWithNewMatch() as $agent) {
-                $agents_with_new_match[$agent->id] = true;
+                $agents_with_new_match[$agent->getId()] = true;
             }
 
             $agents_with_orig_match = [];
             foreach ($filter_change->getAgentsWithOriginalMatch() as $agent) {
-                $agents_with_orig_match[$agent->id] = true;
+                $agents_with_orig_match[$agent->getId()] = true;
             }
 
             // New ticket entering a list
             // - If its new, then we check subs for everyone
             // - Other notify types, we have to ignore 'all' for entering a list
             foreach ($filter_change->getAgentsWithNewMatch() as $agent) {
-                if (!isset($agent_subs[$agent->id][$filter->id])) {
+                if (!isset($agent_subs[$agent->getId()][$filter->getId()])) {
                     continue;
                 }
 
-                $sub   = $agent_subs[$agent->id][$filter->id];
-                $types = $this->getSubTypesForFilterNewMatch($event_types, isset($agents_with_orig_match[$agent->id]), $filter, $sub);
+                $sub   = $agent_subs[$agent->getId()][$filter->getId()];
+                $types = $this->getSubTypesForFilterNewMatch($event_types, isset($agents_with_orig_match[$agent->getId()]), $filter, $sub);
                 if ($types) {
                     $this->addTypesToList($notify_list, $agent, $filter, 'new', $types);
                 }
@@ -214,12 +214,12 @@ class AgentNotifyListBuilder implements PersonContextInterface
             // Notify about changes done to a ticket in a subscribed list
             // AKA a ticket changed but we want to notify subscribers in whatever filter it was in last
             foreach ($filter_change->getAgentsWithOriginalMatch() as $agent) {
-                if (!isset($agent_subs[$agent->id][$filter->id])) {
+                if (!isset($agent_subs[$agent->getId()][$filter->getId()])) {
                     continue;
                 }
 
-                $sub   = $agent_subs[$agent->id][$filter->id];
-                $types = $this->getSubTypesForFilterOrigMatch($event_types, isset($agents_with_new_match[$agent->id]), $filter, $sub);
+                $sub   = $agent_subs[$agent->getId()][$filter->getId()];
+                $types = $this->getSubTypesForFilterOrigMatch($event_types, isset($agents_with_new_match[$agent->getId()]), $filter, $sub);
                 if ($types) {
                     $this->addTypesToList($notify_list, $agent, $filter, 'update', $types);
                 }
@@ -240,15 +240,18 @@ class AgentNotifyListBuilder implements PersonContextInterface
      */
     private function addTypesToList(array &$notify_list, Person $agent, LegacyTicketFilter $filter, $change_type, array $notify_types)
     {
-        if (!isset($notify_list[$agent->id])) {
-            $notify_list[$agent->id] = [
+        $agentId  = $agent->getId();
+        $filterId = $filter->getId();
+
+        if (!isset($notify_list[$agentId])) {
+            $notify_list[$agentId] = [
                 'agent'       => $agent,
                 'filter_subs' => [],
                 'types'       => [],
             ];
         }
-        if (!isset($notify_list[$agent->id]['filter_subs'][$filter->id])) {
-            $notify_list[$agent->id]['filter_subs'][$filter->id] = [
+        if (!isset($notify_list[$agentId]['filter_subs'][$filterId])) {
+            $notify_list[$agentId]['filter_subs'][$filterId] = [
                 'filter'    => $filter,
                 'is_new'    => false,
                 'is_update' => false,
@@ -256,12 +259,12 @@ class AgentNotifyListBuilder implements PersonContextInterface
             ];
         }
 
-        $notify_list[$agent->id]['filter_subs'][$filter->id]["is_$change_type"] = true;
-        $notify_list[$agent->id]['filter_subs'][$filter->id]['types']           = array_merge($notify_list[$agent->id]['filter_subs'][$filter->id]['types'], $notify_types);
-        $notify_list[$agent->id]['filter_subs'][$filter->id]['types']           = array_unique($notify_list[$agent->id]['filter_subs'][$filter->id]['types']);
+        $notify_list[$agentId]['filter_subs'][$filterId]["is_$change_type"] = true;
+        $notify_list[$agentId]['filter_subs'][$filterId]['types']           = array_merge($notify_list[$agentId]['filter_subs'][$filterId]['types'], $notify_types);
+        $notify_list[$agentId]['filter_subs'][$filterId]['types']           = array_unique($notify_list[$agentId]['filter_subs'][$filterId]['types']);
 
-        $notify_list[$agent->id]['types'] = array_merge($notify_list[$agent->id]['types'], $notify_types);
-        $notify_list[$agent->id]['types'] = array_unique($notify_list[$agent->id]['types']);
+        $notify_list[$agentId]['types'] = array_merge($notify_list[$agentId]['types'], $notify_types);
+        $notify_list[$agentId]['types'] = array_unique($notify_list[$agentId]['types']);
     }
 
     /**
@@ -374,16 +377,20 @@ class AgentNotifyListBuilder implements PersonContextInterface
             $for_filter_ids[] = $filter_id;
 
             foreach ($changes->getAgentsWithOriginalMatch() as $agent) {
-                if ($this->person_context && $this->person_context->id == $agent->id) {
+                $agentId = $agent->getId();
+                if ($this->person_context && $this->person_context->id == $agentId) {
                     continue;
                 }
-                $for_agent_ids[] = $agent->id;
+
+                $for_agent_ids[] = $agentId;
             }
             foreach ($changes->getAgentsWithNewMatch() as $agent) {
-                if ($this->person_context && $this->person_context->id == $agent->id) {
+                $agentId = $agent->getId();
+                if ($this->person_context && $this->person_context->id == $agentId) {
                     continue;
                 }
-                $for_agent_ids[] = $agent->id;
+
+                $for_agent_ids[] = $agentId;
             }
         }
 

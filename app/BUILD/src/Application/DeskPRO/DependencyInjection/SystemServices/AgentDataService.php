@@ -519,18 +519,18 @@ class AgentDataService
         $this->preload();
         $this->preloadTeamMap();
 
-        $aid   = is_object($agent) ? $agent->id : $agent;
+        $aid   = is_object($agent) ? $agent->getId() : $agent;
         $agent = $this->get($aid);
 
         if (!$agent) {
             throw new \InvalidArgumentException();
         }
 
-        if (empty($this->agent_to_groups[$agent->id])) {
+        if (empty($this->agent_to_groups[$agent->getId()])) {
             return [];
         }
 
-        return $this->agent_to_groups[$agent->id];
+        return $this->agent_to_groups[$agent->getId()];
     }
 
     /**
@@ -545,19 +545,19 @@ class AgentDataService
         $this->preload();
         $this->preloadTeamMap();
 
-        $tid  = is_object($team) ? $team->id : $team;
+        $tid  = is_object($team) ? $team->getId() : $team;
         $team = $this->getTeam($tid);
 
         if (!$team) {
             throw new \InvalidArgumentException();
         }
 
-        if (empty($this->team_to_agents[$team->id])) {
+        if (empty($this->team_to_agents[$team->getId()])) {
             return [];
         }
 
         $agents = [];
-        foreach ($this->team_to_agents[$team->id] as $tid) {
+        foreach ($this->team_to_agents[$team->getId()] as $tid) {
             $t = $this->get($tid);
             if ($t) {
                 $agents[] = $t;
