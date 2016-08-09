@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql;
 
 /**
@@ -81,7 +82,7 @@ class Lexer
     protected $_reserved = array(
         'DISPLAY', 'TABLE', 'BAR', 'LINE', 'PIE', 'AREA',
         'SELECT', 'FROM', 'WHERE',
-        'GROUP', 'ORDER', 'SPLIT', 'BY',
+        'GROUP', 'WITH', 'ROLLUP', 'ORDER', 'SPLIT', 'BY',
         'LIMIT', 'OFFSET', 'AS', 'NULL',
         'AND', 'OR', 'NOT', 'IN', 'LIKE', 'REGEXP',
         'ASC', 'DESC',
@@ -131,13 +132,7 @@ class Lexer
         $this->line     = 1;
     }
 
-    /**
-     * @var int
-     */
     private $_yy_state = 1;
-    /**
-     * @var array
-     */
     private $_yy_stack = array();
 
     public function yylex()

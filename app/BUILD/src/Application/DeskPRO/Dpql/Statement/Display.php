@@ -86,6 +86,11 @@ class Display
     protected $_groupBy = array();
 
     /**
+     * @var bool
+     */
+    protected $_withRollup = false;
+
+    /**
      * ORDER BY clause expressions.
      *
      * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
@@ -548,15 +553,16 @@ class Display
         $display = array_map('strtoupper', $this->_display);
 
         return array(
-            'DISPLAY' => $display,
-            'SELECT'  => implode(', ', $selectFields),
-            'FROM'    => $this->_from,
-            'WHERE'   => ($this->_where ? $this->_where->toDpql($this, 'where', array()) : ''),
-            'SPLIT'   => implode(', ', $splitFields),
-            'GROUP'   => implode(', ', $groupFields),
-            'ORDER'   => implode(', ', $orderFields),
-            'LIMIT'   => $this->_limitAmount,
-            'OFFSET'  => $this->_limitOffset,
+            'DISPLAY'     => $display,
+            'SELECT'      => implode(', ', $selectFields),
+            'FROM'        => $this->_from,
+            'WHERE'       => ($this->_where ? $this->_where->toDpql($this, 'where', array()) : ''),
+            'SPLIT'       => implode(', ', $splitFields),
+            'GROUP'       => implode(', ', $groupFields),
+            'ORDER'       => implode(', ', $orderFields),
+            'LIMIT'       => $this->_limitAmount,
+            'OFFSET'      => $this->_limitOffset,
+            'WITH_ROLLUP' => $this->_withRollup,
         );
     }
 
@@ -1158,5 +1164,13 @@ class Display
     public static function getTableEntityList()
     {
         return self::$_tableEntityMap;
+    }
+
+    /**
+     * @param bool $withRollup
+     */
+    public function setWithRollup($withRollup)
+    {
+        $this->_withRollup = $withRollup;
     }
 }
