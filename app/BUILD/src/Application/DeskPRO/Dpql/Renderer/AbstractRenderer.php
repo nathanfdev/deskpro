@@ -286,18 +286,22 @@ abstract class AbstractRenderer
     /**
      * Gets the value of a particular column for the given row.
      *
-     * @param array     $row
-     * @param int|array $id
+     * @param array $row
+     * @param mixed $id
      *
      * @return string
      */
     public function getColumnValue(array $row, $id)
     {
         if (is_array($id) && isset($id['resultId'])) {
-            $id = $id['resultId'];
+            $index = $id['resultId'] - 1;
+        } elseif (is_string($id) && !ctype_digit($id)) {
+            $index = $id;
+        } else {
+            $index = $id - 1;
         }
 
-        return $id ? $row[$id - 1] : '';
+        return $id && array_key_exists($index, $row) ? $row[$index] : '';
     }
 
     /**

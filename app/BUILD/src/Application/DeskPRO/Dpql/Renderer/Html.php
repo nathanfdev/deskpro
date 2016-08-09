@@ -32,6 +32,8 @@
 
 namespace Application\DeskPRO\Dpql\Renderer;
 
+use Application\DeskPRO\Dpql\ResultHandler;
+
 /**
  * Renders DPQL results to HTML.
  */
@@ -121,7 +123,7 @@ class Html extends AbstractRenderer
             return '';
         }
 
-        if ($this->_handler->getGroupXColumns()) {
+        if ($this->_handler->getGroupXColumns() && !$this->_handler->hasFlag(ResultHandler::FLAG_GROUP_ONLY_CHART)) {
             return $this->_renderMatrixTable($rows);
         }
 
@@ -642,7 +644,9 @@ class Html extends AbstractRenderer
             $headerCols = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['xDistinct']);
 
             foreach ($headerCols as $xPath => $printable) {
-                $category          = implode(' / ', $printable);
+                $category = $this->_handler->hasFlag(ResultHandler::FLAG_GROUP_ONLY_CHART)
+                                   ? str_replace('root|', '', $xPath)
+                                   : implode(' / ', $printable);
                 $maxCategoryLength = max($maxCategoryLength, strlen($category));
 
                 $rowData = array('category' => $category);

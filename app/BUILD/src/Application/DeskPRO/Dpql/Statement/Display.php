@@ -280,7 +280,7 @@ class Display
 
         $this->_sql              = new Dpql\SqlSelect();
         $this->_resultHandler    = new Dpql\ResultHandler();
-        $this->_sqlSelectContext = new Dpql\SqlSelectContext([
+        $this->_sqlSelectContext = new Dpql\SqlSelectContext($this->_resultHandler, [
             new Dpql\Plugin\Hierarchy\HierarchyPlugin(),
         ]);
     }

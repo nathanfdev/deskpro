@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql;
 
 /**
@@ -37,6 +38,8 @@ namespace Application\DeskPRO\Dpql;
  */
 class ResultHandler
 {
+    const FLAG_GROUP_ONLY_CHART = 1;
+
     /**
      * List of columns that should be selected.
      *
@@ -94,6 +97,11 @@ class ResultHandler
      * @var array
      */
     protected $_totalColumns = array();
+
+    /**
+     * @var array
+     */
+    protected $_flags = array();
 
     /**
      * Adds a column that will be selected/output into the results.
@@ -156,7 +164,7 @@ class ResultHandler
      * a matrix table.
      *
      * @param string        $title
-     * @param int           $groupResultId The ID of the column in the results that holds the grouping field value
+     * @param int|string    $groupResultId The ID of the column in the results that holds the grouping field value
      * @param int           $resultId
      * @param \Closure|null $renderer
      */
@@ -231,5 +239,23 @@ class ResultHandler
     public function getTotalColumns()
     {
         return $this->_totalColumns;
+    }
+
+    /**
+     * @param int $flag
+     */
+    public function addFlag($flag)
+    {
+        $this->_flags[] = $flag;
+    }
+
+    /**
+     * @param int $flag
+     *
+     * @return bool
+     */
+    public function hasFlag($flag)
+    {
+        return in_array($flag, $this->_flags);
     }
 }

@@ -53,7 +53,7 @@ class HierarchySorting
      * Process hierarchy data.
      *
      * Given $results elements with hierarchy_id and hierarchy_parent_id fields, this function sorts the elements as
-     * they should appear in the view and adds the hierarchy_depth
+     * they should appear in the view and adds hierarchy_depth and hierarchy_root_title fields
      *
      * @param array  $results
      * @param string $hierarchicalTargetTable
@@ -86,8 +86,9 @@ class HierarchySorting
             self::ensureFields($v);
 
             if (!$v['hierarchy_parent_id']) {
-                $v['hierarchy_depth'] = 0;
-                $newResults[]         = $v;
+                $v['hierarchy_depth']      = 0;
+                $v['hierarchy_root_title'] = $v['hierarchy_title'];
+                $newResults[]              = $v;
                 unset($results[$k]);
             }
         }
@@ -106,7 +107,8 @@ class HierarchySorting
 
                 foreach ($results as $j => $potentialChild) {
                     if ($potentialChild['hierarchy_parent_id'] === $node['hierarchy_id']) {
-                        $potentialChild['hierarchy_depth'] = $node['hierarchy_depth'] + 1;
+                        $potentialChild['hierarchy_depth']      = $node['hierarchy_depth'] + 1;
+                        $potentialChild['hierarchy_root_title'] = $node['hierarchy_root_title'];
                         array_splice($newResults, $i + ++$lastIterationInserts, 0, [$potentialChild]);
                         unset($results[$j]);
                     }

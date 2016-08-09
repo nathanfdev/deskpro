@@ -41,15 +41,22 @@ use Application\DeskPRO\Dpql\Plugin\PluginInterface;
 class SqlSelectContext
 {
     /**
+     * @var ResultHandler
+     */
+    private $handler;
+
+    /**
      * @var PluginInterface[]
      */
     private $plugins;
 
     /**
+     * @param ResultHandler            $handler
      * @param Plugin\PluginInterface[] $plugins
      */
-    public function __construct(array $plugins)
+    public function __construct(ResultHandler $handler, array $plugins)
     {
+        $this->handler = $handler;
         $this->plugins = $plugins;
     }
 
@@ -65,23 +72,20 @@ class SqlSelectContext
      */
     public function execute(SqlSelect $sql)
     {
-        try {
-            $pluginsCount = count($this->plugins);
+        $pluginsCount = count($this->plugins);
 
-            for ($i = 0; $i < $pluginsCount; ++$i) {
-                $this->plugins[$i]->provide($sql);
-                $this->plugins[$i]->beforeQuery();
-            }
-
-            $results = App::getDbRead('reports')->executeQuery($sql->toSql())->fetchAll(\PDO::FETCH_NUM);
-
-            for ($i = $pluginsCount - 1; $i >= 0; --$i) {
-                $results = $this->plugins[$i]->afterQuery($results);
-            }
-
-            return $results;
-        } catch (\Exception $e) {
-            die('Exception: '.$e->getMessage()."\n\n".$e->getTraceAsString());
+        for ($i = 0; $i < $pluginsCount; ++$i) {
+            $this->plugins[$i]->provide($sql);
+            $this->plugins[$i]->beforeQuery();
         }
+
+        $results = App::getDbRead('reports')->executeQuery($sql->toSql())->fetchAll(\PDO::FETCH_NUM);
+
+        for ($i = $pluginsCount - 1; $i >= 0; --$i) {
+            $results = $this->plugins[$i]->afterQuery($results);
+            $this->plugins[$i]->resultHandlerCallback($this->handler, $results);
+        }
+
+        return $results;
     }
 }

@@ -33,7 +33,9 @@
 namespace Application\DeskPRO\Dpql\Plugin\Hierarchy;
 
 use Application\DeskPRO\Dpql\Plugin\PluginInterface;
+use Application\DeskPRO\Dpql\ResultHandler;
 use Application\DeskPRO\Dpql\SqlSelect;
+use Application\DeskPRO\Dpql\Statement\Part\Column;
 
 /**
  * Class HierarchyPlugin.
@@ -62,8 +64,10 @@ class HierarchyPlugin implements PluginInterface
             return;
         }
         $hierarchicalTargetTable = Hierarchy::getGroupingTargetTableReference($this->sql);
-        $this->sql->addSelectField("`$hierarchicalTargetTable`.`id` as 'hierarchy_id'");
+        list($id, $title)        = Column::resolveTable(Hierarchy::getGroupingTargetTable($this->sql));
+        $this->sql->addSelectField("`$hierarchicalTargetTable`.`$id` as 'hierarchy_id'");
         $this->sql->addSelectField("`$hierarchicalTargetTable`.`parent_id` as 'hierarchy_parent_id'");
+        $this->sql->addSelectField("`$hierarchicalTargetTable`.`$title` as 'hierarchy_title'");
     }
 
     /**
@@ -75,24 +79,44 @@ class HierarchyPlugin implements PluginInterface
             return $results;
         }
 
-        $parentIdIndex = 1;
-        while (array_key_exists($parentIdIndex, $results[0])) {
-            ++$parentIdIndex;
+        // Turn last three numeric fields to meta data
+        $lastNum = 1;
+        while (array_key_exists($lastNum, $results[0])) {
+            ++$lastNum;
         }
-        --$parentIdIndex;
-        $idIndex = $parentIdIndex - 1;
+        $titleIndex    = $lastNum - 1;
+        $parentIdIndex = $lastNum - 2;
+        $idIndex       = $lastNum - 3;
         foreach ($results as &$result) {
             $result['hierarchy_id']        = $result[$idIndex];
             $result['hierarchy_parent_id'] = $result[$parentIdIndex];
+            $result['hierarchy_title']     = $result[$titleIndex];
             unset($result[$idIndex]);
             unset($result[$parentIdIndex]);
+            unset($result[$titleIndex]);
         }
 
-        return HierarchySorting::sort(
+        // Tree sort and count depth
+        $results = HierarchySorting::sort(
             $results,
             Hierarchy::getGroupingTargetTable($this->sql),
             Hierarchy::getGroupingTargetTableReference($this->sql),
             $this->sql->getSelectFields()
         );
+
+        return $results;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function resultHandlerCallback(ResultHandler $handler, array $results)
+    {
+        if (!Hierarchy::isHierarchical($this->sql)) {
+            return;
+        }
+
+        $handler->addGroupXColumn('', 'hierarchy_root_title', 2); // in count queries 2 refers to COUNT() result
+        $handler->addFlag(ResultHandler::FLAG_GROUP_ONLY_CHART);
     }
 }

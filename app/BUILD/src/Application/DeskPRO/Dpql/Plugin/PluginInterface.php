@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\Dpql\Plugin;
 
+use Application\DeskPRO\Dpql\ResultHandler;
 use Application\DeskPRO\Dpql\SqlSelect;
 
 /**
@@ -58,4 +59,10 @@ interface PluginInterface
      * @return array Modified results
      */
     public function afterQuery(array $results);
+
+    /**
+     * @param ResultHandler $handler
+     * @param array         $results
+     */
+    public function resultHandlerCallback(ResultHandler $handler, array $results);
 }
