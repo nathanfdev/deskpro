@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
@@ -43,6 +44,25 @@ class ErrorController extends AbstractController
 {
     public function showExceptionAction(FlattenException $exception, $logger = null)
     {
+        $requestStack = $this->get('request_stack');
+        if ($requestStack->getParentRequest() && $requestStack->getParentRequest()->attributes->has('tag_request')) {
+            // an error here means we're an error inside of rendering a tag (either inline or esi)
+            // Any 500 type error will have been logged by the exception handler, and any 300s or 400s
+            // are typically caused by permission checks or permission errors.
+            // The tag processor or esi renderer will ignore these already (See TagProcessor, PortalHttpCache),
+            // but we need to avoid rendering an error template here anyway because it can cause an infinite loop.
+            // E.g.:
+            //  1. Sidebar tries to render articles
+            //  2. No permission to use articles, so that tag throws an AccessDeniedHttpException
+            //  3. That is caught by the exception listener and calls this controller
+            //  4. This controller renders an access denied template
+            //  5. ... which draws the sidebar
+            //  6. ... which tries to render articles again...etc until timeout
+            // So the only thing to do really is to return an empty response. The user never sees it because this is
+            // just a fragment of a parent page.
+            return new Response('', $exception->getStatusCode());
+        }
+
         if ($response = $this->delegateApi($exception)) {
             return $response;
         }
