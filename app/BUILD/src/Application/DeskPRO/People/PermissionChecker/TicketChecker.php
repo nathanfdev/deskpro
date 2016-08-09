@@ -37,9 +37,14 @@ namespace Application\DeskPRO\People\PermissionChecker;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 
+/**
+ * Class TicketChecker.
+ */
 class TicketChecker extends AbstractChecker
 {
-    /** @var array */
+    /**
+     * @var array
+     */
     public static $modify_ops = [
         'set_archived',
         'department',
@@ -99,7 +104,7 @@ class TicketChecker extends AbstractChecker
             return true;
         }
 
-        if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person->id, $ticket->agent_team->id)) {
+        if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person->id, $ticket->agent_team->getId())) {
             return true;
         }
 
@@ -341,6 +346,8 @@ class TicketChecker extends AbstractChecker
      * Check if the user can modify (or delete) a message.
      *
      * @param Ticket $ticket
+     *
+     * @return bool
      */
     public function canEditMessages(Ticket $ticket)
     {
@@ -411,6 +418,7 @@ class TicketChecker extends AbstractChecker
      */
     public function canMerge(Ticket $ticket1, Ticket $ticket2)
     {
+        /** @var Ticket $ticket */
         foreach ([$ticket1, $ticket2] as $ticket) {
             if (($ticket->agent && $ticket->agent->id == $this->person->id) || ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team))) {
                 $setSuffix = 'own';
