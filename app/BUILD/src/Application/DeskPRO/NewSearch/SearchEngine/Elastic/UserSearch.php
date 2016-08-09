@@ -171,9 +171,12 @@ class UserSearch implements UserSearchInterface
         $sticky_match->setFieldBoost('sticky_words', 2);
         $bool_query->addShould($sticky_match);
 
-        $filtered_query = new Query\Filtered($bool_query, $filter);
-        $res            = $search->search($filtered_query, ['limit' => self::LIMIT]);
-        $objects        = $this->transformer->transform($res->getResults());
+        $filteredQuery = new Query\BoolQuery();
+        $filteredQuery->addMust($bool_query);
+        $filteredQuery->addFilter($filter);
+
+        $res     = $search->search($filteredQuery, ['limit' => self::LIMIT]);
+        $objects = $this->transformer->transform($res->getResults());
 
         if ($context->getPerson() && !$context->getPerson()->is_agent) {
             $objects = array_filter($objects, function ($ticket) {
@@ -257,9 +260,12 @@ class UserSearch implements UserSearchInterface
         $likeQuery->setMinTermFrequency(1);
         $likeQuery->setMinDocFrequency(1);
 
-        $filteredQuery = new Query\Filtered($likeQuery, $boolQuery);
-        $res           = $search->search($filteredQuery, ['limit' => self::LIMIT]);
-        $objects       = $this->transformer->transform($res->getResults());
+        $filteredQuery = new Query\BoolQuery();
+        $filteredQuery->addMust($likeQuery);
+        $filteredQuery->addFilter($boolQuery);
+
+        $res     = $search->search($filteredQuery, ['limit' => self::LIMIT]);
+        $objects = $this->transformer->transform($res->getResults());
 
         return new ResultSet($objects);
     }
