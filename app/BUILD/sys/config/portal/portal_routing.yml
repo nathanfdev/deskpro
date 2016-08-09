@@ -33,7 +33,7 @@ remove_trailing_slash:
 # without this, the RouterListener throws an exception before FirewallListener
 # runs, and we lose all context of the user
 not_found_catch_all:
-    pattern:  /{path}
+    path:  /{path}
     defaults: { _controller: PortalBundle:Error:notFound, path: '' }
     requirements:
         path: .*

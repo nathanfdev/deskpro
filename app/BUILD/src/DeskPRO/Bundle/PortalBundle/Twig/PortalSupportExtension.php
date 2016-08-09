@@ -324,7 +324,7 @@ class PortalSupportExtension extends \Twig_Extension
         $portal_router = $this->container->get('router');
 
         // $base_url is the base URL to generate API calls to, it includes mode/language info.
-        return $portal_router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        return $portal_router->generate('portal_home', []);
     }
 
     /**
