@@ -55,7 +55,7 @@ find . -type f \( \
 
 # need this because we need it in the interface
 mkdir $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp
-cp $DIR_ROOT/www/assets/BUILD/web/node_modules/Select2 $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp/Select2
+mv $DIR_ROOT/www/assets/BUILD/web/node_modules/Select2 $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp/Select2
 
 # dont need the rest of web/ node_modules at all
 rm -rf $DIR_ROOT/www/assets/BUILD/web/node_modules
