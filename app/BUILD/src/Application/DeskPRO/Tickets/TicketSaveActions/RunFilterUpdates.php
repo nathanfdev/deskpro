@@ -34,12 +34,13 @@
 
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
-use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
 
+/**
+ * Class RunFilterUpdates.
+ */
 class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterface
 {
     /**
@@ -48,8 +49,7 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
     protected $container;
 
     /**
-     * @param Connection           $db
-     * @param FilterChangeDetector $filter_change_detector
+     * @param DeskproContainer $container
      */
     public function __construct(DeskproContainer $container)
     {

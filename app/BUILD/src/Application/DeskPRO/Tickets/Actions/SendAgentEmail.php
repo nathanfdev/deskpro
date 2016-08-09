@@ -65,19 +65,19 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
     /**
      * @param Ticket                   $ticket
-     * @param array                    $agent_ids
+     * @param array                    $agentIds
      * @param ExecutorContextInterface $context
      *
      * @return array
      */
-    private function resolveAgents(Ticket $ticket, array $agent_ids, ExecutorContextInterface $context)
+    private function resolveAgents(Ticket $ticket, array $agentIds, ExecutorContextInterface $context)
     {
         $agents = [];
 
         $person_context    = $context->getPersonContext();
         $is_notif_disabled = $this->getContainer()->getSetting('agent.disable_notifications');
 
-        foreach ($agent_ids as $aid) {
+        foreach ($agentIds as $aid) {
             if ('all_agents' === $aid) {
                 $agents = $this->getContainer()->getAgentData()->getAgents();
                 break;
@@ -237,7 +237,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
             $type_flag = null;
             if ($state->hasChangedField('agent') && $ticket->agent && $ticket->agent === $agent) {
                 $type_flag = 'assigned';
-            } elseif ($state->hasChangedField('agent_team') && $ticket->agent_team && $agent->getHelper('Agent')->isTeamMember($ticket->agent_team->id)) {
+            } elseif ($state->hasChangedField('agent_team') && $ticket->agent_team && $agent->getHelper('Agent')->isTeamMember($ticket->agent_team->getId())) {
                 $type_flag = 'assigned_team';
             } elseif ($state->hasChangedField('participants') && $fn_check_new_part($agent)) {
                 $type_flag = 'added_part';

@@ -39,6 +39,9 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
+/**
+ * Class FilterChangeDetector.
+ */
 class FilterChangeDetector
 {
     /**

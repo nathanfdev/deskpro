@@ -42,19 +42,34 @@ use Application\DeskPRO\Entity;
  */
 class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterface
 {
-    /** @var \Application\DeskPRO\Entity\Person */
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
     protected $person;
 
-    /** @var array|null */
+    /**
+     * @var array|null
+     */
     protected $_allowed_ids = null;
-    /** @var array */
+
+    /**
+     * @var array
+     */
     protected $_disallowed_ids = [];
 
+    /**
+     * Constructor.
+     *
+     * @param Entity\Person $person
+     */
     public function __construct(Entity\Person $person)
     {
         $this->person = $person;
     }
 
+    /**
+     * @return array
+     */
     public function getShortCallableNames()
     {
         return [
@@ -64,10 +79,14 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
         ];
     }
 
-    // we use this because we implement arrayaccess
-    // so the caller gets this, and can use it as an array.
-    // So if the caller gets it through a another array access, it means
-    // we support $whatever['thishelper']['thisobject'];
+    /**
+     * we use this because we implement arrayaccess
+     * so the caller gets this, and can use it as an array.
+     * So if the caller gets it through a another array access, it means
+     * we support $whatever['thishelper']['thisobject'];.
+     *
+     * @return $this
+     */
     public function _getthis()
     {
         return $this;
@@ -76,7 +95,8 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
     /**
      * Check if the user is allowed to use a particular department.
      *
-     * @param int|Department $dep
+     * @param int|Entity\Department $dep
+     * @param string                $context
      *
      * @return bool
      */
@@ -91,6 +111,8 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 
     /**
      * Get an array of departments the user isn't allowed to see.
+     *
+     * @param string $context
      *
      * @return array
      */
@@ -113,6 +135,8 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 
     /**
      * Get an array of departments the user is allowed to see.
+     *
+     * @param string $context
      *
      * @return array
      */
@@ -194,12 +218,19 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
         return $this->_allowed_ids[$context];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function offsetExists($offset)
     {
         $o = ['allowed_dep_ids', 'disallowed_dep_ids'];
 
         return in_array($offset, $o);
     }
+
+    /**
+     * {@inheritdoc}
+     */
     public function offsetGet($offset)
     {
         if ($offset == 'allowed_dep_ids') {
@@ -208,10 +239,18 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
             return $this->getDisallowedDepartments();
         }
     }
+
+    /**
+     * {@inheritdoc}
+     */
     public function offsetSet($offset, $value)
     {
         throw new \BadMethodCallException('offsetSet not supported');
     }
+
+    /**
+     * {@inheritdoc}
+     */
     public function offsetUnset($offset)
     {
         throw new \BadMethodCallException('offsetUnset not supported');
