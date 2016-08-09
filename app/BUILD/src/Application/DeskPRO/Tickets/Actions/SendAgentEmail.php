@@ -142,7 +142,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
         $set_agents = [];
         foreach ($agents as $a) {
-            if (!isset($set_agents[$a->getId()]) && $a->is_agent && !$a->is_deleted && !$a->is_disabled) {
+            if (!isset($set_agents[$a->getId()]) && $a->isAgent() && !$a->isDeleted() && !$a->isDisabled()) {
                 $a->loadHelper('Agent');
                 $set_agents[$a->getId()] = $a;
             }
@@ -198,8 +198,8 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         $state             = $ticket->getStateChangeRecorder();
         $fn_check_new_part = function ($agent) use ($state, $ticket) {
             $has = false;
-            foreach ($ticket->participants as $p) {
-                if ($p->person === $agent) {
+            foreach ($ticket->getParticipants() as $p) {
+                if ($p->getPerson() === $agent) {
                     $has = true;
                     break;
                 }
@@ -211,7 +211,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
             foreach ($state->getChangesForField('participants') as $change) {
                 if ($change instanceof ChangeCollection) {
                     foreach ($change->getAddedElements() as $p) {
-                        if ($p->person === $agent) {
+                        if ($p->getPerson() === $agent) {
                             return true;
                         }
                     }

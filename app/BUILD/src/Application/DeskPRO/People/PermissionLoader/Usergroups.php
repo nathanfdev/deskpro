@@ -80,8 +80,8 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 
     public function getSubkey()
     {
-        if ($this->person && $this->person->is_agent) {
-            return 'person-'.$this->person->id;
+        if ($this->person && $this->person->isAgent()) {
+            return 'person-'.$this->person->getId();
         }
     }
 
@@ -137,7 +137,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
             } else {
                 if ($this->person_id) {
                     $perms = App::getSystemService('PermissionsLoader')->getUsergroupPermissions($this->usergroup_ids);
-                    if ($this->person && $this->person->is_agent) {
+                    if ($this->person && $this->person->isAgent()) {
                         $overrides = App::getSystemService('PermissionsLoader')->getAgentOverridePermissions($this->person_id);
                         if ($overrides) {
                             $this->with_overrides = true;
@@ -197,34 +197,35 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
     }
 
     /**
-     * @param Entity\Usergroup $g
+     * @param Entity\Usergroup $usergroup
      *
      * @return null|array
      */
-    protected static function loadDynamicPerms(Entity\Usergroup $g)
+    protected static function loadDynamicPerms(Entity\Usergroup $usergroup)
     {
         static $set_perms_by_group = [];
 
-        if (!$g->sys_name) {
+        $sysName = $usergroup->getSysName();
+        if (!$sysName) {
             return;
         }
 
-        if (isset($set_perms_by_group[$g->sys_name])) {
-            return $set_perms_by_group[$g->sys_name];
+        if (isset($set_perms_by_group[$sysName])) {
+            return $set_perms_by_group[$sysName];
         }
 
         $set_perms = [];
-        if ($g->sys_name == 'agent_all_perms' || $g->sys_name == 'agent_all_safe_perms') {
+        if ($sysName == 'agent_all_perms' || $sysName == 'agent_all_safe_perms') {
             $loader = App::$container->getSystemService('AgentPermissionNamesLoader');
-            if ($g->sys_name == 'agent_all_perms') {
+            if ($sysName == 'agent_all_perms') {
                 $set_perms = $loader->getNames();
             } else {
                 $set_perms = $loader->getSafeNames();
             }
         }
 
-        $set_perms_by_group[$g->sys_name] = $set_perms;
+        $set_perms_by_group[$sysName] = $set_perms;
 
-        return $set_perms_by_group[$g->sys_name];
+        return $set_perms_by_group[$sysName];
     }
 }

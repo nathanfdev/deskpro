@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
@@ -76,20 +77,20 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
         foreach ($agent_ids as $aid) {
             // -1 = current user
             if ($aid == -1) {
-                if ($context->getPersonContext() && $context->getPersonContext()->is_agent) {
+                if ($context->getPersonContext() && $context->getPersonContext()->isAgent()) {
                     $agents[] = $context->getPersonContext();
                 }
 
             // assigned agent
             } elseif ($aid == 'agent') {
-                if ($ticket->agent) {
-                    $agents[] = $ticket->agent;
+                if ($ticket->getAgent()) {
+                    $agents[] = $ticket->getAgent();
                 }
 
             // agents of assigned team
             } elseif ($aid == 'team') {
-                if ($ticket->agent_team) {
-                    foreach ($ticket->agent_team->members as $agent) {
+                if ($ticket->getAgentTeam()) {
+                    foreach ($ticket->getAgentTeam()->getPersonList() as $agent) {
                         $agents[] = $agent;
                     }
                 }
@@ -111,6 +112,7 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
                     $change_set,
                     $this->getContainer()->getEm()->getRepository('DeskPRO:TicketFilterSubscription')
                 );
+
                 $list_builder->setLogger($context->getLogger());
 
                 $notify = $list_builder->genNotifyList();
@@ -181,15 +183,13 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
             'log_items'          => $this->getActionOption('ticket_logs'),
         ];
 
-        $log_ids = array_map(function ($l) {
-            return $l->id;
-        }, $vars['log_items']);
+        $log_ids = array_map(function ($l) { return $l->getId(); }, $vars['log_items']);
         $alert_sender = $this->getContainer()->getAgentAlertSender();
 
         $alert_data = [
             '@fetch_types'       => ['ticket' => 'DeskPRO:Ticket', 'performer' => 'DeskPRO:Person', 'log_items' => 'DeskPRO:TicketLog'],
             'ticket'             => $ticket->getId(),
-            'performer'          => $vars['performer'] ? $vars['performer']->id : 0,
+            'performer'          => $vars['performer'] ? $vars['performer']->getId() : 0,
             'is_new_ticket'      => $vars['is_new_ticket'],
             'is_new_agent_reply' => $vars['is_new_agent_reply'],
             'is_new_agent_note'  => $vars['is_new_agent_note'],
@@ -204,15 +204,17 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 
         $alert_records = [];
 
+        /** @var Person $agent */
         foreach ($agents as $agent) {
             if (!$agent->PermissionsManager->TicketChecker->canView($ticket)) {
                 continue;
             }
 
             $vars['agent'] = $agent;
+            $agentId       = $agent->getId();
 
-            if (!empty($this->notify_info[$agent->id])) {
-                $vars['notify_info'] = $this->notify_info[$agent->id];
+            if (!empty($this->notify_info[$agentId])) {
+                $vars['notify_info'] = $this->notify_info[$agentId];
             }
 
             $tpl_line = $tr->callWithPersonContext($agent, function () use ($tpl, $vars) {
@@ -233,12 +235,13 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
         $em->flush();
 
         if ($alert_records) {
-            foreach ($alert_records    as $rec) {
+            foreach ($alert_records as $rec) {
                 $cm = $alert_sender->createClientMessage($rec[0], 'tickets', $rec[1], $rec[2]);
                 if ($cm) {
                     $em->persist($cm);
                 }
             }
+
             $em->flush();
         }
 

@@ -154,6 +154,9 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
         return $this->avatar->getThumbnailUrl($size);
     }
 
+    /**
+     * @return ArrayCollection|Person[]
+     */
     public function getPersonList()
     {
         return $this->members;

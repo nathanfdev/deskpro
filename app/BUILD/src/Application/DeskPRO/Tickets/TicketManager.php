@@ -289,6 +289,10 @@ class TicketManager
         return $ret;
     }
 
+    /**
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     */
     private function doSaveTicket(Ticket $ticket, ExecutorContextInterface $context)
     {
         // Noop is sometimes used when we need to save a ticket and have appropriate client-messages
@@ -310,12 +314,14 @@ class TicketManager
             $context->setEventType('noop');
             $is_noop = true;
         }
-        if ($context->getPersonContext()) {
+
+        $contextPerson = $context->getPersonContext();
+        if ($contextPerson) {
             $context->getLogger()->debug(sprintf(
                 'PersonContext: <Person:%d> %s %s',
-                $context->getPersonContext()->id,
-                $context->getPersonContext()->getDisplayName(),
-                $context->getPersonContext()->getPrimaryEmailAddress()
+                $contextPerson->getId(),
+                $contextPerson->getDisplayName(),
+                $contextPerson->getPrimaryEmailAddress()
             ));
         } else {
             $context->getLogger()->debug('PersonContext: NULL');
@@ -397,15 +403,16 @@ class TicketManager
         }
 
         if ($ticket->getStateChangeRecorder()->hasChangedField('locked_by_agent')) {
+            $lockedByAgent = $ticket->getLockedByAgent();
             $this->db->insert('client_messages', [
                 'channel'      => 'agent-notification.tickets.locked-status',
                 'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
                 'data'         => serialize([
                     'ticket_id'      => $ticket->getId(),
-                    'is_locked'      => (bool) $ticket->locked_by_agent,
-                    'locked_by'      => $ticket->locked_by_agent ? $ticket->locked_by_agent->id : null,
-                    'locked_by_name' => $ticket->locked_by_agent ? $ticket->locked_by_agent->getDisplayName() : null,
+                    'is_locked'      => (bool) $lockedByAgent,
+                    'locked_by'      => $lockedByAgent ? $lockedByAgent->getId() : null,
+                    'locked_by_name' => $lockedByAgent ? $lockedByAgent->getDisplayName() : null,
                     'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
                 ]),
             ]);

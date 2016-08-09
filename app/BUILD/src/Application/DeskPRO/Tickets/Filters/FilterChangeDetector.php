@@ -543,21 +543,15 @@ class FilterChangeDetector
         }
 
         foreach ($set->getChangedFilters() as $change) {
-            $added_aids = [];
-            foreach ($change->getAgentsAdded() as $a) {
-                $added_aids[] = $a->getId();
-            }
-            $removed_aids = [];
-            foreach ($change->getAgentsRemoved() as $a) {
-                $removed_aids[] = $a->getId();
-            }
+            $addedAgentIds   = array_keys($change->getAgentsAdded());
+            $removedAgentIds = array_keys($change->getAgentsRemoved());
 
-            if ($added_aids || $removed_aids) {
+            if ($addedAgentIds || $removedAgentIds) {
                 $logger->info(sprintf(
                     '[FilterChangeDetector] Summary: Filter %d -- AddedAgents(%s) -- RemovedAgents(%s)',
                     $change->getFilter()->id,
-                    implode(', ', $added_aids ?: ['none']),
-                    implode(', ', $removed_aids ?: ['none'])
+                    implode(', ', $addedAgentIds ?: ['none']),
+                    implode(', ', $removedAgentIds ?: ['none'])
                 ));
             }
         }

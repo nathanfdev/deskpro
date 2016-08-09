@@ -444,19 +444,19 @@ class AgentDataService
         $this->preload();
         $this->preloadTeamMap();
 
-        $aid   = is_object($agent) ? $agent->id : $agent;
+        $aid   = is_object($agent) ? $agent->getId() : $agent;
         $agent = $this->get($aid);
 
         if (!$agent) {
             throw new \InvalidArgumentException();
         }
 
-        if (empty($this->agent_to_teams[$agent->id])) {
+        if (empty($this->agent_to_teams[$agent->getId()])) {
             return [];
         }
 
         $teams = [];
-        foreach ($this->agent_to_teams[$agent->id] as $tid) {
+        foreach ($this->agent_to_teams[$agent->getId()] as $tid) {
             $t = $this->getTeam($tid);
             if ($t) {
                 $teams[] = $t;
@@ -475,28 +475,28 @@ class AgentDataService
     public function isAgentMemberOfTeam($agent, $team)
     {
         if (is_object($agent)) {
-            $agent_id = $agent->id;
+            $agent_id = $agent->getId();
         } else {
             try {
                 $agent = $this->get($agent);
                 if (!$agent) {
                     return false;
                 }
-                $agent_id = $agent->id;
+                $agent_id = $agent->getId();
             } catch (\InvalidArgumentException $e) {
                 return false;
             }
         }
 
         if (is_object($team)) {
-            $team_id = $team->id;
+            $team_id = $team->getId();
         } else {
             try {
                 $team = $this->getTeam($team);
                 if (!$team) {
                     return false;
                 }
-                $team_id = $team->id;
+                $team_id = $team->getId();
             } catch (\InvalidArgumentException $e) {
                 return false;
             }
@@ -613,15 +613,15 @@ class AgentDataService
         switch ($type) {
             // Ticket agent
             case 'ticket_agent':
-                if ($ticket_context && $ticket_context->agent) {
-                    $return[] = $ticket_context->agent;
+                if ($ticket_context && $ticket_context->getAgent()) {
+                    $return[] = $ticket_context->getAgent();
                 }
                 break;
 
             // Teams of assigned agent
             case 'ticket_agent_teams':
-                if ($ticket_context && $ticket_context->agent) {
-                    $teams = $this->getTeamsForAgent($ticket_context->agent);
+                if ($ticket_context && $ticket_context->getAgent()) {
+                    $teams = $this->getTeamsForAgent($ticket_context->getAgent());
                     foreach ($teams as $t) {
                         $return = array_merge($return, $this->getAgentsForTeam($t));
                     }
@@ -630,8 +630,8 @@ class AgentDataService
 
             // Agents of assigned team
             case 'ticket_team':
-                if ($ticket_context && $ticket_context->agent_team) {
-                    $return = $this->getAgentsForTeam($ticket_context->agent_team);
+                if ($ticket_context && $ticket_context->getAgentTeam()) {
+                    $return = $this->getAgentsForTeam($ticket_context->getAgentTeam());
                 }
                 break;
 
@@ -659,14 +659,14 @@ class AgentDataService
 
             // Current person
             case 'person':
-                if ($person_context && $person_context->is_agent) {
+                if ($person_context && $person_context->isAgent()) {
                     $return[] = $person_context;
                 }
                 break;
 
             // Teams of current person
             case 'person_teams':
-                if ($person_context && $person_context->is_agent) {
+                if ($person_context && $person_context->isAgent()) {
                     $teams = $this->getTeamsForAgent($person_context);
                     foreach ($teams as $t) {
                         $return = array_merge($return, $this->getAgentsForTeam($t));
