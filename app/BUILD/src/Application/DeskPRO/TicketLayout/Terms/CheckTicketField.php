@@ -30,6 +30,9 @@ namespace Application\DeskPRO\TicketLayout\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\Triggers\Terms\AbstractTriggerTerm;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 
 class CheckTicketField extends \Application\DeskPRO\Tickets\Triggers\Terms\CheckTicketField implements TicketLayoutTermInterface
 {
@@ -55,7 +58,37 @@ class CheckTicketField extends \Application\DeskPRO\Tickets\Triggers\Terms\Check
      */
     public function isSubmittedDataMatch(array $data)
     {
-        $options = $this->getTermOptions();
-        $op      = $this->getTermOperator();
+        $options   = $this->getTermOptions();
+        $op        = $this->getTermOperator();
+        $submitted = @$data[FormFields::TICKET_FIELD.'_'.$options->get('field_id')][CustomDataType::KEY];
+        $value     = $options->get('value');
+
+        switch ($op) {
+            case AbstractTriggerTerm::OP_IS:
+                return is_array($submitted) ? in_array($value, $submitted, 1) : $value === $submitted;
+            case AbstractTriggerTerm::OP_NOT:
+                return is_array($submitted) ? !in_array($value, $submitted, 1) : $value !== $submitted;
+            case AbstractTriggerTerm::OP_ISSET:
+                return (bool) $submitted;
+            case AbstractTriggerTerm::OP_NOTISSET:
+                return !$submitted;
+            case AbstractTriggerTerm::OP_CONTAINS:
+                if (is_array($submitted)) {
+                    foreach ($submitted as $sub) {
+                    }
+                }
+
+                return is_array($submitted) ? in_array($value, $submitted, 1) : $value === $submitted;
+            case AbstractTriggerTerm::OP_NOTCONTAINS:
+                return is_array($submitted) ? !in_array($value, $submitted, 1) : $value !== $submitted;
+            case AbstractTriggerTerm::OP_IS_REGEX:
+                break;
+            case AbstractTriggerTerm::OP_NOT_REGEX:
+                break;
+        }
+
+        $a = 1;
+
+        return false;
     }
 }
