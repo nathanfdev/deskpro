@@ -245,6 +245,21 @@ class MassLoader
             'is_tickets_enabled' => true,
             'is_chat_enabled'    => false,
         ]);
+
+        $departmentId = $this->connection->lastInsertId();
+
+        // tie with each existing brand
+        $brandIds = $this->fetchAllIds('brands');
+
+        $department2brands = [];
+        foreach ($brandIds as $brandId) {
+            $department2brands[] = [
+                'department_id' => $departmentId,
+                'brand_id'      => $brandId,
+            ];
+        }
+
+        $this->connection->batchInsert('department_to_brand', $department2brands);
     }
 
     /**
