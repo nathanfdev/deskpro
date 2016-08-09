@@ -6,11 +6,12 @@ import { Toggle, Range } from 'DeskPRO/Component/Semantic/Form';
 
 class Chat extends React.Component {
   static propTypes = {
-    agents:       PropTypes.array,
-    onlineAgents: PropTypes.array,
-    volume:       PropTypes.number,
-    onToggleChat: PropTypes.func,
-    updateVolume: PropTypes.func
+    agents:          PropTypes.array,
+    chatDepartments: PropTypes.array,
+    onlineAgents:    PropTypes.array,
+    volume:          PropTypes.number,
+    onToggleChat:    PropTypes.func,
+    updateVolume:    PropTypes.func
   };
 
   static defaultProps = {
@@ -85,7 +86,7 @@ class Chat extends React.Component {
         <Toggle active={activeChat} onChange={this.toggleChat}>
           Online for chat
         </Toggle>
-        <hr />
+        <hr className="full" />
         <i
           onClick={this.toggleVolume}
           className={classNames(
@@ -93,10 +94,11 @@ class Chat extends React.Component {
             'volume',
             { off: volume === 0, up: volume > 7, down: (volume <= 7 && volume > 0) }
           )}
-        /> Notification volume {volume}<br />
+        /> Notification volume<br />
         <Range min={0} max={10} value={volume} onChange={this.updateAudioVolume} />
-        <hr />
+        <hr className="full" />
         {onlineAgents.length} online agents
+        <button className="ui button basic tiny compact right department-filter"><i className="icon users" />By department</button>
         {this.getAgents()}
       </div>
     </div>);
@@ -123,16 +125,18 @@ class Chat extends React.Component {
       if (this.state.onlineAgents.indexOf(agent.key) === -1) {
         continue;
       }
-      if (!departments.hasOwnProperty(agent.department)) {
-        departments[agent.department] = {
-          label:  agent.department,
-          key:    key++,
-          agents: [
-            agent
-          ]
-        };
-      } else {
-        departments[agent.department].agents.push(agent);
+      for (const group of agent.user_groups) {
+        if (!departments.hasOwnProperty(group)) {
+          departments[group] = {
+            label:  this.props.chatDepartments[group].title,
+            key:    key++,
+            agents: [
+              agent
+            ]
+          };
+        } else {
+          departments[agent.department].agents.push(agent);
+        }
       }
     }
     return departments;
@@ -197,7 +201,6 @@ class Chat extends React.Component {
         id={2}
         elementId="chat-menu-popup"
         zIndex={99999}
-        opened
         content={this.getPopupContent()}
       >
         <i className={classNames('icon', 'comments', 'outline', { on: activeChat })} /><br />

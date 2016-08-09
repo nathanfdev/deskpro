@@ -65,7 +65,7 @@ class User extends React.Component {
           elementId="user-menu-popup"
           zIndex={99999}
           content={this.getPopupContent()}
-          ref={'userPopup'}
+          ref="userPopup"
         >
           <img className="ui circular image" src={src} alt="agent" />
           <i className="dropdown icon" />

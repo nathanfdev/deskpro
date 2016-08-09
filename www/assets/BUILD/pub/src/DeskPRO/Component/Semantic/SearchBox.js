@@ -4,14 +4,19 @@ class SearchBox extends React.Component {
   static propTypes = {
     placeholder: PropTypes.string,
     text:        PropTypes.string,
-    onUserInput: PropTypes.func
+    onUserInput: PropTypes.func,
+    onFocus:     PropTypes.func,
+    onBlur:      PropTypes.func
   };
   static defaultProps = {
-    onUserInput() {}
+    onUserInput() {},
+    onFocus() {},
+    onBlur() {}
   };
   constructor() {
     super();
     this.handleChange = this.handleChange.bind(this);
+    this.clearInput   = this.clearInput.bind(this);
   }
 
   handleChange() {
@@ -20,9 +25,13 @@ class SearchBox extends React.Component {
     );
   }
 
+  clearInput() {
+    this.refs.textInput.value = '';
+  }
+
   render() {
-    const { placeholder, text } = this.props;
-    return (<div className="item search-box">
+    const { placeholder, text, onFocus, onBlur } = this.props;
+    return (
       <div className="ui input left icon search">
         <i className="search icon" />
         <input
@@ -30,10 +39,14 @@ class SearchBox extends React.Component {
           placeholder={placeholder}
           ref="textInput"
           onChange={this.handleChange}
+          onFocus={onFocus}
+          onBlur={onBlur}
           value={text}
+          required="required"
         />
+        <i onClick={this.clearInput} className="remove circle icon right" />
       </div>
-    </div>);
+    );
   }
 }
 export default SearchBox;

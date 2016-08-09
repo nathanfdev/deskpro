@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import AddButton from './AddButton';
@@ -6,18 +6,12 @@ import Chat from './Chat';
 import User from './User';
 
 class AgentTopBar extends React.Component {
-  static propTypes = {
-    onSearch: PropTypes.func
-  };
-  static defaultProps = {
-    onSearch() {}
-  };
-
   constructor() {
     super();
     this.state = {
-      agents: [],
-      user:   null
+      agents:          [],
+      chatDepartments: [],
+      user:            null
     };
     this.retrieveAgents = this.retrieveAgents.bind(this);
     this.getUserPicture = this.getUserPicture.bind(this);
@@ -25,6 +19,7 @@ class AgentTopBar extends React.Component {
 
   componentWillMount() {
     this.retrieveAgents();
+    this.retrieveChatDepartments();
   }
 
   onChatVolumeUpdate(newVal) {
@@ -35,6 +30,38 @@ class AgentTopBar extends React.Component {
     window.$('audio').each(function changeVolume() {
       this.volume = volume;
     });
+  }
+
+  onSearch(searchQuery) {
+    const angularOmnibox = window.angular.element('.dp-omnibox').scope();
+    if (angularOmnibox) {
+      angularOmnibox.searchQuery = searchQuery;
+      angularOmnibox.touchSearch();
+      window.$('.dp-omnibox-results').show();
+    }
+  }
+
+  onSearchFocus() {
+    window.$('.dp-omnibox-results').show();
+    window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
+  }
+
+  onSearchBlur() {
+    window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
+  }
+
+  onRecent() {
+    const angularOmnibox = window.angular.element('.dp-omnibox').scope();
+    if (angularOmnibox) {
+      angularOmnibox.toggleMode('recent');
+    }
+  }
+
+  onNotification() {
+    const angularOmnibox = window.angular.element('.dp-omnibox').scope();
+    if (angularOmnibox) {
+      angularOmnibox.toggleMode('notif');
+    }
   }
 
   getUserPicture() {
@@ -78,28 +105,74 @@ class AgentTopBar extends React.Component {
     });
   }
 
+  retrieveChatDepartments() {
+    const url = `${window.BASE_URL}api/v2/chat_departments`;
+    const self = this;
+
+    // TODO refactor
+    window.$.ajax({
+      url,
+      type:     'GET',
+      dataType: 'json',
+      headers:  {
+        'X-Agent-Request': true
+      },
+      complete(response) {
+        const chatDepartments = [];
+        for (const department of response.responseJSON.data) {
+          chatDepartments[department.id] = department;
+        }
+        self.setState({
+          chatDepartments
+        });
+      }
+    });
+  }
+
+  toggleViewMode() {
+    if (window.DeskPRO_Window.paneVis.tabs) {
+      window.DeskPRO_Window.$scope.oneColumnView();
+    } else {
+      window.DeskPRO_Window.$scope.twoColumnsView();
+    }
+  }
+
   render() {
-    const { onSearch } = this.props;
-    const { agents } = this.state;
+    const { agents, chatDepartments } = this.state;
     return (<TopBar>
       <div className="logo">
-        <img src="/assets/BUILD/web/images/dp-logo-48.png" alt="DeskPRO logo" />
+        <img
+          src="/assets/BUILD/pub/src/DeskPRO/Bundle/AgentBundle/Resources/img/deskpro_dots_white.svg"
+          alt="DeskPRO logo"
+        />
       </div>
-      <SearchBox onUserInput={onSearch} placeholder="Search ..." />
+      <TopBarItem classes={['search-box']}>
+        <SearchBox
+          onUserInput={this.onSearch}
+          onFocus={this.onSearchFocus}
+          onBlur={this.onSearchBlur}
+          placeholder="Search ..."
+        />
+      </TopBarItem>
       <TopBarItem>
-        <i className="icon wait" />
+        <i className="icon wait" onClick={this.onRecent} />
       </TopBarItem>
       <AddButton />
       <TopBarRightMenu>
         <TopBarItem>
-          <div className="view_mode" />
+          <div className="view_mode" onClick={this.toggleViewMode} />
         </TopBarItem>
         <TopBarItem>
-          <TopBarNotificationIcon elementId="notifications" icon="alarm outline" count="2" />
+          <TopBarNotificationIcon
+            elementId="notifications"
+            icon="alarm outline"
+            count="2"
+            onClick={this.onNotification}
+          />
         </TopBarItem>
         <TopBarItem>
           <User src={this.getUserPicture()} />
-          <Chat agents={agents} updateVolume={this.onChatVolumeUpdate} volume={8} />
+          <Chat agents={agents} chatDepartments={chatDepartments} updateVolume={this.onChatVolumeUpdate} volume={8} />
         </TopBarItem>
       </TopBarRightMenu>
     </TopBar>);

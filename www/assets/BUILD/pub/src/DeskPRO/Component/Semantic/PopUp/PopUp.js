@@ -14,11 +14,13 @@ class PopUp extends React.Component {
     ]).isRequired,
     id:        PropTypes.number.isRequired,
     children:  PropTypes.any,
-    autoClose: PropTypes.bool
+    autoClose: PropTypes.bool,
+    autoOpen:  PropTypes.bool
   };
   static defaultProps = {
     onOpen() {},
-    autoClose: true
+    autoClose: true,
+    autoOpen:  true
   };
 
   constructor(props) {
@@ -38,8 +40,10 @@ class PopUp extends React.Component {
   }
 
   onMouseEnter() {
-    this.cancelTimeout();
-    this.openPopup();
+    if (this.props.autoOpen) {
+      this.cancelTimeout();
+      this.openPopup();
+    }
   }
 
   onMouseLeave() {

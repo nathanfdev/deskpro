@@ -1,9 +1,11 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 
 class TopBarItem extends React.Component {
   static propTypes = {
     onClick:  PropTypes.func,
-    children: PropTypes.node
+    children: PropTypes.node,
+    classes:  PropTypes.array
   };
   static defaultProps = {
     onClick() {}
@@ -19,9 +21,10 @@ class TopBarItem extends React.Component {
   }
 
   render() {
-    return (<div className="item" onClick={this.handleClick}>
+    const { children, classes } = this.props;
+    return (<div className={classNames('item', classes)} onClick={this.handleClick}>
       <div>
-        {this.props.children}
+        {children}
       </div>
     </div>);
   }
