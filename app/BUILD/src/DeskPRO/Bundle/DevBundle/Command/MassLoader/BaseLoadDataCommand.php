@@ -78,6 +78,9 @@ EOF
                 'status' => 'awaiting_user',
             ],
         ]);
-        $this->iterate('Create %s tickets', 100000, 'loadTicket');
+        $this->iterate('Create %s ticket batches', 10, 'loadTicketBatch');
+
+        $output->writeln('');
+        $output->writeln('Done.');
     }
 }

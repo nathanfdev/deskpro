@@ -89,5 +89,8 @@ class FilterWithRandomCriteraCommand extends AbstractLoadDataCommand
                 'status' => 'awaiting_user',
             ],
         ]);
+
+        $output->writeln('');
+        $output->writeln('Done.');
     }
 }

@@ -70,8 +70,9 @@ class MassLoader
     public function __construct(EntityManager $em)
     {
         $this->em         = $em;
-        $this->connection = $em->getConnection();
         $this->faker      = Factory::create();
+        $this->connection = $em->getConnection();
+        $this->connection->getConfiguration()->setSQLLogger(null);
     }
 
     public function clearDb()
@@ -262,27 +263,47 @@ class MassLoader
     /**
      * @param array $options
      */
-    public function loadTicket(array $options = [])
+    public function loadTicketBatch(array $options = [])
     {
-        $this->connection->insert('tickets', [
-            'subject'      => $this->faker->title,
-            'ref'          => DpStrings::random(10, Strings::CHARS_ALPHA_IU).'-'.date('YzB'),
-            'date_created' => $this->faker->dateTime->format('c'),
-            'person_id'    => $this->faker->randomElement($this->fetchAllIds('people')),
-            'agent_id'     => $this->faker->randomElement($this->fetchAllIds('people')),
-        ]);
+        $batchSize = 1000;
 
-        $ticketId = $this->connection->lastInsertId();
+        // create tickets
+        $refs    = [];
+        $tickets = [];
 
-        if (!isset($options['messageCount'])) {
-            $options['messageCount'] = $this->faker->randomDigitNotNull;
+        for ($i = 0; $i < $batchSize; ++$i) {
+            $ref = DpStrings::random(10, Strings::CHARS_ALPHA_IU).'-'.date('YzB');
+
+            $refs[]    = $ref;
+            $tickets[] = [
+                'subject'      => $this->faker->title,
+                'ref'          => $ref,
+                'date_created' => $this->faker->dateTime->format('c'),
+                'person_id'    => $this->faker->randomElement($this->fetchAllIds('people')),
+                'agent_id'     => $this->faker->randomElement($this->fetchAllIds('people')),
+            ];
         }
 
-        for ($i = 0; $i < $options['messageCount']; ++$i) {
-            $this->connection->insert('tickets_messages', [
-                'ticket_id' => $ticketId,
-                'message'   => $this->faker->text,
-            ]);
+        $this->connection->batchInsert('tickets', $tickets);
+        $newTicketIds = $this->connection->fetchAllCol('SELECT id FROM tickets WHERE ref IN (?)', [$refs], [Connection::PARAM_INT_ARRAY]);
+
+        // create ticket messages
+        $messages = [];
+        foreach ($newTicketIds as $newTicketId) {
+            if (!isset($options['messageCount'])) {
+                $options['messageCount'] = $this->faker->randomDigitNotNull;
+            }
+
+            for ($i = 0; $i < $options['messageCount']; ++$i) {
+                $messages[] = [
+                    'ticket_id' => $newTicketId,
+                    'message'   => $this->faker->text(50),
+                ];
+            }
+        }
+
+        foreach (array_chunk($messages, $batchSize) as $messagesChunk) {
+            $this->connection->batchInsert('tickets_messages', $messagesChunk);
         }
     }
 

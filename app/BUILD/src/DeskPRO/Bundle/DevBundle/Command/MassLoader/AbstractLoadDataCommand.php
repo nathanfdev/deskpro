@@ -62,6 +62,8 @@ abstract class AbstractLoadDataCommand extends ContainerAwareCommand
 
         if ($this->output) {
             $progressBar = new ProgressBar($this->output, $count);
+            $progressBar->setFormat('debug');
+
             $this->output->writeln('');
             $this->output->writeln(sprintf($title, $count));
         }
