@@ -103,22 +103,17 @@ define ['DeskPRO/Util/Util'], (Util) ->
             value: 'CheckWorkflow'
           })
 
-          initFieldGetter = (base_name, f, force) ->
-            fname = 'Layout' + base_name + f.id
-            if !types['get'+fname] || force?
-              types['get'+fname] = (options = {}) =>
-                options.type = base_name + f.id
-                options.field_id = f.id
-                if field.type_name == 'choice'
-                  options.operators = ['is', 'not', 'isset', 'not_isset']
-                else if field.type_name == 'toggle'
-                  options.operators = ['isset', 'not_isset']
-                else if field.type_name == 'date' || field.type_name == 'datetime'
-                  options.operators = ['isset', 'not_isset', 'lte', 'gte', 'between']
-                else
-                  options.operators = ['isset', 'not_isset', 'is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
-                types.getStandardForFieldDef(f, options)
-            fname
+          initFieldGetter = (base_name, f) ->
+            options = {}
+            if f.type_name == 'choice'
+              options.operators = ['isset', 'not_isset', 'is', 'not']
+            else if f.type_name == 'toggle'
+              options.operators = ['isset', 'not_isset']
+            else if f.type_name == 'date' || f.type_name == 'datetime'
+              options.operators = ['isset', 'not_isset', 'lte', 'gte', 'between']
+            else
+              options.operators = ['isset', 'not_isset', 'is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
+            types.initFieldGetter base_name, f, true, options
 
           types.loadDataOptions().then =>
             if types.options_data?.ticket_fields
@@ -127,15 +122,15 @@ define ['DeskPRO/Util/Util'], (Util) ->
               for f in types.options_data.ticket_fields
                 sub_options.push({
                   title: f.title,
-                  value: initFieldGetter('CheckTicketField', f)
+                  value: initFieldGetter 'CheckTicketField', f
                 })
 
-              if types.options_data?.contextual_fields
-                for f in types.options_data.contextual_fields
-                  sub_options.push({
-                    title: f.title,
-                    value: initFieldGetter('CheckTicketContextualField', f)
-                  })
+            if types.options_data?.contextual_fields
+              for f in types.options_data.contextual_fields
+                sub_options.push({
+                  title: f.title,
+                  value: initFieldGetter 'CheckTicketContextualField', f
+                })
 
               if sub_options.length
                 $scope.criteriaOptions.push({
@@ -149,7 +144,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
               for f in types.options_data.user_fields
                 sub_options.push({
                   title: f.title,
-                  value: initFieldGetter('CheckUserField', f)
+                  value: initFieldGetter 'CheckUserField', f
                 })
 
               if sub_options.length
@@ -164,7 +159,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
               for f in types.options_data.org_fields
                 sub_options.push({
                   title: f.title,
-                  value: initFieldGetter('CheckOrgField', f)
+                  value: initFieldGetter 'CheckOrgField', f
                 })
 
               if sub_options.length
