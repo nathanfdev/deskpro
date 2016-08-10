@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\Filters;
 
+use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -85,20 +86,23 @@ class FilterChangeDetector
         $this->team_to_agents = [];
 
         foreach ($agents as $agent) {
-            if (!($agent->is_agent && !$agent->is_deleted && !$agent->is_disabled)) {
+            if (!($agent->isAgent() && !$agent->isDeleted() && !$agent->isDisabled())) {
                 continue;
             }
 
-            $this->agents[] = $agent;
+            $agentId                = $agent->getId();
+            $this->agents[$agentId] = $agent;
             $agent->loadHelper('Agent');
 
             $teams = $agent->getHelper('Agent')->getTeams();
+            /** @var AgentTeam $t */
             foreach ($teams as $t) {
-                if (!isset($this->team_to_agents[$t->id])) {
-                    $this->team_to_agents[$t->id] = [];
+                $teamId = $t->getId();
+                if (!isset($this->team_to_agents[$teamId])) {
+                    $this->team_to_agents[$teamId] = [];
                 }
 
-                $this->team_to_agents[$t->id][] = $agent;
+                $this->team_to_agents[$teamId][$agentId] = $agent;
             }
         }
 
@@ -117,15 +121,16 @@ class FilterChangeDetector
      */
     public function addExplicitFilterScope(LegacyTicketFilter $filter, Person $agent)
     {
-        if (!isset($this->explicit_filter_scopes[$filter->id])) {
-            $this->explicit_filter_scopes[$filter->id] = ['filter' => $filter, 'scopes' => []];
+        $filterId = $filter->getId();
+        if (!isset($this->explicit_filter_scopes[$filterId])) {
+            $this->explicit_filter_scopes[$filterId] = ['filter' => $filter, 'scopes' => []];
         }
 
-        $this->explicit_filter_scopes[$filter->id]['scopes'][] = $agent;
+        $this->explicit_filter_scopes[$filterId]['scopes'][$agent->getId()] = $agent;
     }
 
     /**
-     * @param array $affected_filters
+     * @param LegacyTicketFilter[] $affected_filters
      *
      * @return array
      */
@@ -134,31 +139,30 @@ class FilterChangeDetector
         $check_list = [];
 
         foreach ($affected_filters as $filter) {
-            if ($filter->sys_name == 'archive_deleted') {
+            if ($filter->getSysName() == 'archive_deleted') {
                 continue;
             }
 
-            $agent_scopes = [];
-            if ($filter->is_global) {
-                $agent_scopes = $this->agents;
-            } elseif ($filter->agent_team) {
-                $team_id = $filter->agent_team->id;
+            $agentScopes = [];
+            if ($filter->isGlobal()) {
+                $agentScopes = $this->agents;
+            } elseif ($team_id = $filter->getAgentTeamId()) {
                 if (isset($this->team_to_agents[$team_id])) {
-                    foreach ($this->team_to_agents[$team_id] as $agent) {
-                        $agent_scopes[] = $agent;
+                    foreach ($this->team_to_agents[$team_id] as $agentId => $agent) {
+                        $agentScopes[$agentId] = $agent;
                     }
                 }
-            } elseif ($filter->person) {
-                $agent_scopes[] = $filter->person;
+            } elseif ($person = $filter->getPerson()) {
+                $agentScopes[$person->getId()] = $person;
             }
 
-            if (!$agent_scopes) {
+            if (!$agentScopes) {
                 continue;
             }
 
-            $check_list[$filter->id] = [
+            $check_list[$filter->getId()] = [
                 'filter' => $filter,
-                'scopes' => $agent_scopes,
+                'scopes' => $agentScopes,
             ];
         }
 
@@ -252,15 +256,13 @@ class FilterChangeDetector
         $distinct_agents = [];
         foreach ($filter_checks as $filter_check) {
             /** @var Person $agent */
-            foreach ($filter_check['scopes'] as $agent) {
-                $distinct_agents[$agent->getId()] = $agent;
+            foreach ($filter_check['scopes'] as $agentId => $agent) {
+                $distinct_agents[$agentId] = $agent;
             }
         }
 
-        foreach ($distinct_agents as $agent) {
+        foreach ($distinct_agents as $agentId => $agent) {
             /* @var Person $agent */
-            $agentId = $agent->getId();
-
             if (!$agent->isAgent()) {
                 $agent_perm_cache[$agentId] = ['old' => false, 'new' => false];
                 continue;
@@ -295,12 +297,10 @@ class FilterChangeDetector
         /** @var LegacyTicketFilter $filter_check */
         foreach ($filter_checks as $filter_check) {
             $filter       = $filter_check['filter'];
-            $filter_id    = $filter->id;
+            $filter_id    = $filter->getId();
             $agent_scopes = [];
 
-            foreach ($filter_check['scopes'] as $a) {
-                /* @var Person $a */
-                $a_id = $a->getId();
+            foreach ($filter_check['scopes'] as $a_id => $a) {
                 if (isset($agent_perm_cache[$a_id]) && ($agent_perm_cache[$a_id]['old'] || $agent_perm_cache[$a_id]['new'])) {
                     $agent_scopes[$a_id] = $a;
                 }

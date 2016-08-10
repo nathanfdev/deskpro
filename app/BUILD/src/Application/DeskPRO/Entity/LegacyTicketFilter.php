@@ -205,6 +205,14 @@ class LegacyTicketFilter extends DomainObject
         }
     }
 
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
     public function getAgentTeamId()
     {
         if (!$this->agent_team) {
@@ -382,6 +390,14 @@ class LegacyTicketFilter extends DomainObject
     public function getSysName()
     {
         return $this->sys_name;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGlobal()
+    {
+        return $this->is_global;
     }
 
     /**
