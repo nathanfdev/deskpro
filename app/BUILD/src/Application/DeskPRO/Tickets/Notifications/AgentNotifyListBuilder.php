@@ -126,7 +126,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
     public function genNotifyList()
     {
         // Never notify about hidden tickets
-        if ($this->ticket->status == 'hidden') {
+        if ($this->ticket->getStatus() == 'hidden') {
             $this->logMessage('ticket hidden, no notifications to send');
 
             return [];
@@ -152,7 +152,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
             $this->logMessage('notify_new = true (new ticket)');
         } elseif (
             // A ticket that was just validated counts as new
-            $this->ticket->status != 'hidden'
+            $this->ticket->getStatus() != 'hidden'
             && $this->state->hasChangedField('hidden_status')
             && $this->state->getFirstChangeForField('hidden_status')->getOld() == 'validating'
         ) {
@@ -184,28 +184,22 @@ class AgentNotifyListBuilder implements PersonContextInterface
         $notify_list = [];
 
         foreach ($this->filter_changes->getChangedFilters() as $filter_change) {
-            $filter = $filter_change->getFilter();
+            $filter   = $filter_change->getFilter();
+            $filterId = $filter->getId();
 
-            $agents_with_new_match = [];
-            foreach ($filter_change->getAgentsWithNewMatch() as $agent) {
-                $agents_with_new_match[$agent->getId()] = true;
-            }
-
-            $agents_with_orig_match = [];
-            foreach ($filter_change->getAgentsWithOriginalMatch() as $agent) {
-                $agents_with_orig_match[$agent->getId()] = true;
-            }
+            $agents_with_new_match  = $filter_change->getAgentsWithNewMatch();
+            $agents_with_orig_match = $filter_change->getAgentsWithOriginalMatch();
 
             // New ticket entering a list
             // - If its new, then we check subs for everyone
             // - Other notify types, we have to ignore 'all' for entering a list
-            foreach ($filter_change->getAgentsWithNewMatch() as $agent) {
-                if (!isset($agent_subs[$agent->getId()][$filter->getId()])) {
+            foreach ($agents_with_new_match as $agentId => $agent) {
+                if (!isset($agent_subs[$agentId][$filterId])) {
                     continue;
                 }
 
-                $sub   = $agent_subs[$agent->getId()][$filter->getId()];
-                $types = $this->getSubTypesForFilterNewMatch($event_types, isset($agents_with_orig_match[$agent->getId()]), $filter, $sub);
+                $sub   = $agent_subs[$agentId][$filterId];
+                $types = $this->getSubTypesForFilterNewMatch($event_types, isset($agents_with_orig_match[$agentId]), $filter, $sub);
                 if ($types) {
                     $this->addTypesToList($notify_list, $agent, $filter, 'new', $types);
                 }
@@ -213,13 +207,13 @@ class AgentNotifyListBuilder implements PersonContextInterface
 
             // Notify about changes done to a ticket in a subscribed list
             // AKA a ticket changed but we want to notify subscribers in whatever filter it was in last
-            foreach ($filter_change->getAgentsWithOriginalMatch() as $agent) {
-                if (!isset($agent_subs[$agent->getId()][$filter->getId()])) {
+            foreach ($agents_with_orig_match as $agentId => $agent) {
+                if (!isset($agent_subs[$agentId][$filterId])) {
                     continue;
                 }
 
-                $sub   = $agent_subs[$agent->getId()][$filter->getId()];
-                $types = $this->getSubTypesForFilterOrigMatch($event_types, isset($agents_with_new_match[$agent->getId()]), $filter, $sub);
+                $sub   = $agent_subs[$agentId][$filterId];
+                $types = $this->getSubTypesForFilterOrigMatch($event_types, isset($agents_with_new_match[$agentId]), $filter, $sub);
                 if ($types) {
                     $this->addTypesToList($notify_list, $agent, $filter, 'update', $types);
                 }
@@ -277,7 +271,9 @@ class AgentNotifyListBuilder implements PersonContextInterface
      */
     private function getSubTypesForFilterNewMatch(array $event_types, $with_origmatch, LegacyTicketFilter $filter, TicketFilterSubscription $sub)
     {
-        $types = [];
+        $types    = [];
+        $sys_name = $filter->getSysName();
+
         if ($event_types['new']) {
             if ($sub->email_created) {
                 $types[] = 'email';
@@ -285,20 +281,24 @@ class AgentNotifyListBuilder implements PersonContextInterface
             if ($sub->alert_created) {
                 $types[] = 'alert';
             }
-        } elseif ($filter->sys_name != 'all') {
+        } elseif ($sys_name != 'all') {
+            $email_new = $sub->email_new;
+            $alert_new = $sub->alert_new;
+
             if (
-                (!$filter->sys_name && $sub->email_new && !$with_origmatch)
-                || (($filter->sys_name == 'agent' || $filter->sys_name == 'unassigned') && $event_types['assign_change'] && $sub->email_new)
-                || ($filter->sys_name == 'agent_team' && $event_types['assign_team_change'] && $sub->email_new)
-                || ($filter->sys_name == 'participant' && $event_types['assign_follow_change'] && $sub->email_new)
+                (!$sys_name && $email_new && !$with_origmatch)
+                || (($sys_name == 'agent' || $sys_name == 'unassigned') && $event_types['assign_change'] && $email_new)
+                || ($sys_name == 'agent_team' && $event_types['assign_team_change'] && $email_new)
+                || ($sys_name == 'participant' && $event_types['assign_follow_change'] && $email_new)
             ) {
                 $types[] = 'email';
             }
+
             if (
-                (!$filter->sys_name && $sub->alert_new && $with_origmatch)
-                || (($filter->sys_name == 'agent' || $filter->sys_name == 'unassigned') && $event_types['assign_change'] && $sub->alert_new)
-                || ($filter->sys_name == 'agent_team' && $event_types['assign_team_change'] && $sub->alert_new)
-                || ($filter->sys_name == 'participant' && $event_types['assign_follow_change'] && $sub->alert_new)
+                (!$sys_name && $alert_new && $with_origmatch)
+                || (($sys_name == 'agent' || $sys_name == 'unassigned') && $event_types['assign_change'] && $alert_new)
+                || ($sys_name == 'agent_team' && $event_types['assign_team_change'] && $alert_new)
+                || ($sys_name == 'participant' && $event_types['assign_follow_change'] && $alert_new)
             ) {
                 $types[] = 'alert';
             }
@@ -342,19 +342,21 @@ class AgentNotifyListBuilder implements PersonContextInterface
         // If orig matched but its not a new match,
         // then we know it's left this list
         if (!$with_newmatch) {
+            $sys_name = $filter->getSysName();
+
             if (
-                (!$filter->sys_name && $sub->email_leave)
-                || (($filter->sys_name == 'agent' || $filter->sys_name == 'unassigned') && $event_types['assign_change'] && $sub->email_leave)
-                || ($filter->sys_name == 'agent_team' && $event_types['assign_team_change'] && $sub->email_leave)
-                || ($filter->sys_name == 'participant' && $event_types['assign_follow_change'] && $sub->email_leave)
+                (!$sys_name && $sub->email_leave)
+                || (($sys_name == 'agent' || $sys_name == 'unassigned') && $event_types['assign_change'] && $sub->email_leave)
+                || ($sys_name == 'agent_team' && $event_types['assign_team_change'] && $sub->email_leave)
+                || ($sys_name == 'participant' && $event_types['assign_follow_change'] && $sub->email_leave)
             ) {
                 $types[] = 'email';
             }
             if (
-                (!$filter->sys_name && $sub->alert_leave)
-                || (($filter->sys_name == 'agent' || $filter->sys_name == 'unassigned') && $event_types['assign_change'] && $sub->alert_leave)
-                || ($filter->sys_name == 'agent_team' && $event_types['assign_team_change'] && $sub->alert_leave)
-                || ($filter->sys_name == 'participant' && $event_types['assign_follow_change'] && $sub->alert_leave)
+                (!$sys_name && $sub->alert_leave)
+                || (($sys_name == 'agent' || $sys_name == 'unassigned') && $event_types['assign_change'] && $sub->alert_leave)
+                || ($sys_name == 'agent_team' && $event_types['assign_team_change'] && $sub->alert_leave)
+                || ($sys_name == 'participant' && $event_types['assign_follow_change'] && $sub->alert_leave)
             ) {
                 $types[] = 'alert';
             }
@@ -370,42 +372,38 @@ class AgentNotifyListBuilder implements PersonContextInterface
      */
     public function getMatchingSubscriptions()
     {
-        $for_agent_ids  = [];
-        $for_filter_ids = [];
+        $forAgentIds  = [];
+        $forFilterIds = [];
 
-        foreach ($this->filter_changes->getChangedFilters() as $filter_id => $changes) {
-            $for_filter_ids[] = $filter_id;
+        $contextPersonId = $this->person_context ? $this->person_context->getId() : null;
 
-            foreach ($changes->getAgentsWithOriginalMatch() as $agent) {
-                $agentId = $agent->getId();
-                if ($this->person_context && $this->person_context->id == $agentId) {
-                    continue;
+        foreach ($this->filter_changes->getChangedFilters() as $filterId => $changes) {
+            $forFilterIds[] = $filterId;
+
+            foreach ($changes->getAgentsWithOriginalMatch() as $agentId => $agent) {
+                if ($contextPersonId != $agentId) {
+                    $forAgentIds[] = $agentId;
                 }
-
-                $for_agent_ids[] = $agentId;
             }
-            foreach ($changes->getAgentsWithNewMatch() as $agent) {
-                $agentId = $agent->getId();
-                if ($this->person_context && $this->person_context->id == $agentId) {
-                    continue;
+            foreach ($changes->getAgentsWithNewMatch() as $agentId => $agent) {
+                if ($contextPersonId != $agentId) {
+                    $forAgentIds[] = $agentId;
                 }
-
-                $for_agent_ids[] = $agentId;
             }
         }
 
-        $for_filter_ids = array_unique($for_filter_ids, \SORT_NUMERIC);
-        $for_agent_ids  = array_unique($for_agent_ids, \SORT_NUMERIC);
+        $forFilterIds = array_unique($forFilterIds, \SORT_NUMERIC);
+        $forAgentIds  = array_unique($forAgentIds, \SORT_NUMERIC);
 
-        if (!$for_agent_ids || !$for_filter_ids) {
+        if (!$forAgentIds || !$forFilterIds) {
             $this->logMessage('no agents or filters match, no notifications to send');
 
             return [];
         }
 
-        $this->logMessage(sprintf('There are %d changed filters for %d agents', count($for_filter_ids), count($for_agent_ids)));
+        $this->logMessage(sprintf('There are %d changed filters for %d agents', count($forFilterIds), count($forAgentIds)));
 
-        $agent_subs = $this->subs_repos->getForAgents($for_agent_ids, $for_filter_ids);
+        $agent_subs = $this->subs_repos->getForAgents($forAgentIds, $forFilterIds);
         $this->logMessage(sprintf("\tThere are %d matching subscriptions", count($agent_subs)));
 
         return $agent_subs;

@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Orb\Util\Arrays;
 
@@ -80,19 +81,21 @@ class TicketFilterSubscription extends AbstractEntityRepository
     public function getForAgents(array $people, array $filters = null)
     {
         $people_ids = [];
+        /** @var PersonEntity $p */
         foreach ($people as $p) {
             if (is_numeric($p)) {
                 $people_ids[] = $p;
             } else {
-                $people_ids[] = $p->id;
+                $people_ids[] = $p->getId();
             }
         }
         $filter_ids = [];
+        /** @var LegacyTicketFilter $f */
         foreach ($filters as $f) {
             if (is_numeric($f)) {
                 $filter_ids[] = $f;
             } else {
-                $filter_ids[] = $f->id;
+                $filter_ids[] = $f->getId();
             }
         }
 
@@ -127,8 +130,8 @@ class TicketFilterSubscription extends AbstractEntityRepository
         $ret = [];
 
         foreach ($results as $s) {
-            $agent_id  = $s->person->id;
-            $filter_id = $s->filter->id;
+            $agent_id  = $s->person->getId();
+            $filter_id = $s->filter->getId();
 
             if (!isset($ret[$agent_id])) {
                 $ret[$agent_id] = [];
