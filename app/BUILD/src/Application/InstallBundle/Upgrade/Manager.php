@@ -46,7 +46,7 @@ use Orb\Util\Arrays;
  * deskpro package (zip file) build time is when it was actually generated and packaged.
  *
  * The database contains a setting `core.deskpro_build`. We call this the "database version".
- * The filesystem contains a file /app/sys/config/build-time.php that defines DP_BUILD_TIME.
+ * The filesystem contains a file /app/sys/config/build-time.txt that defines DP_BUILD_TIME.
  * We call this the "filesystem version"
  *
  * This manager simply detects when the database version is older than the filesystem time,

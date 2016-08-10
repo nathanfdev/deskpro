@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
 use Application\InstallBundle\Util\GenBuildManifest;
@@ -137,8 +138,8 @@ CODE;
         } else {
             file_put_contents($path, $tpl);
 
-            $build_file = DP_ROOT.'/sys/config/build-time.php';
-            file_put_contents($build_file, $header.PHP_EOL."define('DP_BUILD_TIME', ".$time.');'.PHP_EOL);
+            $build_file = DP_ROOT.'/sys/config/build-time.txt';
+            file_put_contents($build_file, $time);
 
             $manifest_path = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
             $builds_path   = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build';

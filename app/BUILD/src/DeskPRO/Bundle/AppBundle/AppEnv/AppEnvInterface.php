@@ -240,4 +240,25 @@ interface AppEnvInterface
      * @return string
      */
     public function getInstallUuid();
+
+    /**
+     * Get the build ID, such as 15839.
+     *
+     * @return string
+     */
+    public function getBuildId();
+
+    /**
+     * Get the build time.
+     *
+     * @return string
+     */
+    public function getBuildTime();
+
+    /**
+     * Get the version name, such as 5.0.
+     *
+     * @return string
+     */
+    public function getVersionName();
 }

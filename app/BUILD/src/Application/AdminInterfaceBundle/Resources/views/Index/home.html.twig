@@ -231,13 +231,13 @@
                         </header>
                         <article style="padding: 10px;">
                             <p>
-                                You are currently using DeskPRO version <strong>#{{ ng_var('Home.version_info.build_name') }}</strong>.
+                                You are currently using DeskPRO version <strong>{{ ng_var('Home.version_info.build_name') }}</strong>.
                             </p>
                             <div class="status-content" ng-if="Home.latest_version_status == 'okay' && Home.latest_version.count_behind > 0">
                                 <header>
                                     <div class="icon bad"><i class="fa fa-warning"></i></div>
                                     <strong>
-                                        The latest version is #{{ ng_var('Home.latest_version.build_id') }}.
+                                        The latest version is {{ ng_var('Home.latest_version.build_name') }}.
                                         Your version is <a href="http://support.deskpro.com/news/1" target="_blank">{{ ng_var('Home.latest_version.days_old') }} day(s) old</a>.<br/>
                                     </strong>
                                 </header>
