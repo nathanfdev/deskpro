@@ -399,7 +399,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
      */
     public function getPrimaryCategory()
     {
-        if (!$this->categories) {
+        if ($this->categories->isEmpty()) {
             return;
         }
 
