@@ -33,9 +33,21 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\Triggers\Terms\AbstractTriggerTerm;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
+use Orb\Util\CheckedOptionsArray;
 
 class CheckTicketField extends \Application\DeskPRO\Tickets\Triggers\Terms\CheckTicketField implements TicketLayoutTermInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('field_id', 'value', 'type_name');
+
+        return $options;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -62,29 +74,46 @@ class CheckTicketField extends \Application\DeskPRO\Tickets\Triggers\Terms\Check
         $op        = $this->getTermOperator();
         $submitted = @$data[FormFields::TICKET_FIELD.'_'.$options->get('field_id')][CustomDataType::KEY];
         $value     = $options->get('value');
+        $type      = $options->get('type_name');
 
-        switch ($op) {
-            case AbstractTriggerTerm::OP_IS:
-                return is_array($submitted) ? in_array($value, $submitted, 1) : $value === $submitted;
-            case AbstractTriggerTerm::OP_NOT:
-                return is_array($submitted) ? !in_array($value, $submitted, 1) : $value !== $submitted;
-            case AbstractTriggerTerm::OP_ISSET:
-                return (bool) $submitted;
-            case AbstractTriggerTerm::OP_NOTISSET:
-                return !$submitted;
-            case AbstractTriggerTerm::OP_CONTAINS:
-                if (is_array($submitted)) {
-                    foreach ($submitted as $sub) {
+        if ($op === AbstractTriggerTerm::OP_ISSET) {
+            return (bool) $submitted;
+        } elseif ($op === AbstractTriggerTerm::OP_NOTISSET) {
+            return !$submitted;
+        }
+
+        switch ($type) {
+            case 'choice':
+                if (!is_array($value)) {
+                    $value = [$value];
+                }
+                $check_ids = array_fill_keys($value, true);
+                $has       = false;
+                foreach ($value as $v) {
+                    if (isset($check_ids[$v])) {
+                        $has = true;
+                        break;
                     }
                 }
 
-                return is_array($submitted) ? in_array($value, $submitted, 1) : $value === $submitted;
-            case AbstractTriggerTerm::OP_NOTCONTAINS:
-                return is_array($submitted) ? !in_array($value, $submitted, 1) : $value !== $submitted;
-            case AbstractTriggerTerm::OP_IS_REGEX:
+                if ($op === AbstractTriggerTerm::OP_IS && $has) {
+                    return true;
+                }
+
+                if ($op === AbstractTriggerTerm::OP_NOT && !$has) {
+                    return true;
+                }
+
+                return false;
+
+            case 'toggle':
                 break;
-            case AbstractTriggerTerm::OP_NOT_REGEX:
+            case 'date':
+            case 'datetime':
                 break;
+            case 'text':
+                break;
+            default:
         }
 
         $a = 1;

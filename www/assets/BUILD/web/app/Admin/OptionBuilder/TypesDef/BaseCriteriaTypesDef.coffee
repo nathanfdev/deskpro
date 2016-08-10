@@ -66,18 +66,18 @@ define [
       if field.type_name == 'choice'
         options.operators = options.operators || ['is', 'not', 'isset', 'not_isset', 'touched', 'nottouched']
         options.options = field.choices.map( (o) -> {title: o.title, value: o.id})
-        return @getStandardSelect(options)
+        return @getStandardSelect(options, field)
       else if field.type_name == 'toggle'
         options.operators = options.operators || ['isset', 'not_isset', 'touched', 'nottouched']
         options.options = [{title: 'On', value: "1"}, {title: "Off", value: "0"}]
         options.single = true
-        return @getStandardSelect(options)
+        return @getStandardSelect(options, field)
       else if field.type_name == 'date' || field.type_name == 'datetime'
         options.operators = options.operators || ['lte', 'gte', 'between']
-        return @getDateInput(options)
+        return @getDateInput(options, field)
       else
         if not options.operators then options.operators = ['is', 'not', 'touched', 'nottouched', 'contains', 'notcontains', 'is_regex', 'not_regex', 'isset', 'not_isset']
-        return @getStandardInput(options)
+        return @getStandardInput(options, field)
 
     ###
       # Sets the getter for a custom field
@@ -93,6 +93,8 @@ define [
         this['get'+fname] = (options = {}) =>
           if base_options.operators
             options.operators = base_options.operators
+          if base_options.type_name
+            options.type_name = base_options.type_name
           options.type = base_name + f.id
           options.field_id = f.id
           return @getStandardForFieldDef(f, options)
@@ -102,7 +104,7 @@ define [
     ###
       # Constructs a standard select box type
     ###
-    getStandardSelect: (options) ->
+    getStandardSelect: (options, field) ->
       type      = options.type
       prop_name = options.propName
       data_name = options.dataName
@@ -174,6 +176,8 @@ define [
               value.op = model.op
               value.options = {}
               value.options[prop_name] = model.value
+              if field
+                value.options.type_name = field.type_name
               return value
           }
       }
@@ -215,7 +219,7 @@ define [
     ###
       # Constructs a standard input box
     ###
-    getStandardInput: (options) ->
+    getStandardInput: (options, field) ->
       type      = options.type
       prop_name = options.propName
       operators = @getOperators(options)
@@ -258,6 +262,8 @@ define [
               value.op = model.op
               value.options = {}
               value.options[prop_name] = val
+              if field
+                value.options.type_name = field.type_name
 
               return value
             }
@@ -298,7 +304,7 @@ define [
           }
       }
 
-    getDateInput: (options) ->
+    getDateInput: (options, field) ->
       type      = options.type
       operators = options.operators || ['lte', 'gte', 'between']
       me = @
@@ -368,6 +374,9 @@ define [
                   d2 = model.date2_relative || [1, 'days']
                   value.options.date2_relative = d2[0]
                   value.options.date2_relative_type = d2[1]
+
+              if field
+                value.options.type_name = field.type_name
 
               # compatibility with Custom Ticket Field
               value.options.value = 'date'

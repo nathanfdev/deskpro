@@ -105,6 +105,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
           initFieldGetter = (base_name, f) ->
             options = {}
+            options.type_name = f.type_name
             if f.type_name == 'choice'
               options.operators = ['isset', 'not_isset', 'is', 'not']
             else if f.type_name == 'toggle'
