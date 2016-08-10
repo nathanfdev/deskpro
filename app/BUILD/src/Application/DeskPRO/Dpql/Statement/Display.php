@@ -1151,6 +1151,7 @@ class Display
                 .(!empty($parts['where'])   ? "\nWHERE $parts[where]"        : '')
                 .(!empty($parts['splitBy']) ? "\nSPLIT BY $parts[splitBy]"   : '')
                 .(!empty($parts['groupBy']) ? "\nGROUP BY $parts[groupBy]"   : '')
+                .(!empty($parts['withRollup']) ? "\nWITH ROLLUP"   : '')
                 .(!empty($parts['orderBy']) ? "\nORDER BY $parts[orderBy]"   : '')
                 .(!empty($parts['limit'])   ? "\nLIMIT $parts[limit]$offset" : '');
         }

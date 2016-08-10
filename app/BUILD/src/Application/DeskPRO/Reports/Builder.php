@@ -328,15 +328,16 @@ class Builder
     {
         if (!$statement) {
             return array(
-                'display' => 'TABLE',
-                'select'  => '',
-                'from'    => '',
-                'where'   => '',
-                'splitBy' => '',
-                'groupBy' => '',
-                'orderBy' => '',
-                'limit'   => '',
-                'offset'  => '',
+                'display'    => 'TABLE',
+                'select'     => '',
+                'from'       => '',
+                'where'      => '',
+                'splitBy'    => '',
+                'groupBy'    => '',
+                'withRollup' => '',
+                'orderBy'    => '',
+                'limit'      => '',
+                'offset'     => '',
             );
         }
 
