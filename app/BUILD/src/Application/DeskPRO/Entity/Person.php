@@ -968,15 +968,16 @@ GroupSequenceProviderInterface
     /**
      * Add a new helper.
      *
-     * @param string $name Name of the helper class
+     * @param string $name    Name of the helper class
+     * @param array  $options
      */
     public function loadHelper($name, array $options = [])
     {
         $classname = 'Application\\DeskPRO\\People\\Helpers\\'.$name;
+        $manager   = $this->getHelperManager();
 
-        if (!$this->getHelperManager()->hasHelper($name)) {
-            $object = new $classname($this, $options);
-            $this->getHelperManager()->addHelper($object);
+        if (!$manager->hasHelper($name)) {
+            $manager->addHelper(new $classname($this, $options));
         }
     }
 
