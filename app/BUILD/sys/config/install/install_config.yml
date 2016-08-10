@@ -20,6 +20,7 @@ services:
   dp.software_service.stats:
     class: DeskPRO\Bundle\AppBundle\SoftwareService\StatService\StatService
     arguments:
+      - "@=service('deskpro.app_env').getConfig('settings.software_services.stats.endpoint')"
       - "@=!service('deskpro.app_env').getConfig('settings.software_services.stats.disabled')"
 
 doctrine:
