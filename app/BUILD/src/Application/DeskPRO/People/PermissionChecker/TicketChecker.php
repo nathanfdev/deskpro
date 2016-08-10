@@ -334,15 +334,7 @@ class TicketChecker extends AbstractChecker
             $permissionsToCheck[] = 'agent_tickets.modify_'.$op.'_followed';
         }
 
-        $personPermissionsManager = $this->person;
-
-        return array_reduce(
-            $permissionsToCheck,
-            function ($carry, $item) use ($personPermissionsManager) {
-                return $carry || $personPermissionsManager->hasPerm($item);
-            },
-            false
-        );
+        return array_reduce($permissionsToCheck, [$this, 'permissionsReducer'], false);
     }
 
     /**
@@ -424,18 +416,39 @@ class TicketChecker extends AbstractChecker
                 $setSuffix = 'own';
             } elseif (!$ticket->agent && !$ticket->agent_team) {
                 $setSuffix = 'unassigned';
-            } elseif ($ticket->hasParticipantPerson($this->person)) {
-                $setSuffix = 'followed';
             } else {
                 $setSuffix = 'others';
             }
 
-            if (!$this->person->hasPerm("agent_tickets.modify_merge_{$setSuffix}")) {
+            $permissionsToCheck = [
+                "agent_tickets.modify_merge_{$setSuffix}",
+                "agent_tickets.modify_{$setSuffix}",
+            ];
+
+            if ($ticket->hasParticipantPerson($this->person)) {
+                $permissionsToCheck[] = 'agent_tickets.modify_followed';
+                $permissionsToCheck[] = 'agent_tickets.modify_merge_followed';
+            }
+
+            if (false === array_reduce($permissionsToCheck, [$this, 'permissionsReducer'], false)) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * @param $carry
+     * @param $item
+     *
+     * @internal
+     *
+     * @return bool
+     */
+    public function permissionsReducer($carry, $item)
+    {
+        return $carry || $this->person->hasPerm($item);
     }
 
     /**
