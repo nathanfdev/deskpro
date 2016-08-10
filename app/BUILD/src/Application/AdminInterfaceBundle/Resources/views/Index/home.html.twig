@@ -177,31 +177,37 @@
 			<tbody>
 				<tr>
 					<td class="dp-item" width="25%">
-						<article><a href="/{{ path('user')|ltrim('/') }}agent/" dp-click-href="#/go_to_agent" onmouseover="$('body').addClass('agent-interface-hover');" onmouseout="$('body').removeClass('agent-interface-hover');" onclick="$('body').removeClass('agent-interface-hover');">
-							<div class="title-wrap"><h3>Agent Interface</h3></div>
-							<div class="img-wrap"><img src="{{ asset('images/admin/agent-screen.png') }}" /></div>
-							<strong>
-								Reply to tickets and manage helpdesk content.
-							</strong>
-						</a></article>
+						<article>
+							<a href="/{{ path('user')|ltrim('/') }}agent/" dp-click-href="#/go_to_agent" onmouseover="$('body').addClass('agent-interface-hover');" onmouseout="$('body').removeClass('agent-interface-hover');" onclick="$('body').removeClass('agent-interface-hover');">
+								<div class="title-wrap"><h3>Agent Interface</h3></div>
+								<div class="img-wrap"><img src="{{ asset('images/admin/agent-screen.png') }}" /></div>
+								<strong>
+									Reply to tickets and manage helpdesk content.
+								</strong>
+							</a>
+						</article>
 					</td>
 					<td class="dp-item" width="25%">
-						<article><a href="{{ path('user') }}" dp-click-href="#/go_to_user" onmouseover="$('body').addClass('user-interface-hover');" onmouseout="$('body').removeClass('user-interface-hover');" onclick="$('body').removeClass('user-interface-hover');">
+						<article>
+							<a href="{{ path('user') }}" dp-click-href="#/go_to_user" onmouseover="$('body').addClass('user-interface-hover');" onmouseout="$('body').removeClass('user-interface-hover');" onclick="$('body').removeClass('user-interface-hover');">
 								<div class="title-wrap"><h3>User Portal</h3></div>
 								<div class="img-wrap"><img src="{{ asset('images/admin/portal-screen.png') }}" /></div>
 								<strong>
 									The helpdesk portal that end-users see.
 								</strong>
-							</a></article>
+							</a>
+						</article>
 					</td>
 					<td class="dp-item" width="25%">
-						<article onmouseover="$('body').addClass('reports-interface-hover');" onmouseout="$('body').removeClass('reports-interface-hover');" onclick="$('body').removeClass('reports-interface-hover');"><a href="/{{ path('user')|ltrim('/') }}reports/" dp-click-href="#/go_to_reports">
-							<div class="title-wrap"><h3>Reports Interface</h3></div>
-							<div class="img-wrap"><img src="{{ asset('images/admin/reports-screen.png') }}" /></div>
-							<strong>
-								View and create reports.
-							</strong>
-						</a></article>
+						<article onmouseover="$('body').addClass('reports-interface-hover');" onmouseout="$('body').removeClass('reports-interface-hover');" onclick="$('body').removeClass('reports-interface-hover');">
+							<a href="/{{ path('user')|ltrim('/') }}reports/" dp-click-href="#/go_to_reports">
+								<div class="title-wrap"><h3>Reports Interface</h3></div>
+								<div class="img-wrap"><img src="{{ asset('images/admin/reports-screen.png') }}" /></div>
+								<strong>
+									View and create reports.
+								</strong>
+							</a>
+						</article>
 					</td>
 					{% if not app.getSetting('disable_admin_billing') %}
 						<td class="dp-item" width="25%">

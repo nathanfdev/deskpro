@@ -7,5 +7,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         window.location.href = window.DP_BASE_URL + 'reports/';
       else
         window.parent.DP_FRAME_OVERLAYS.reports.open()
+        window.parent.DP_FRAME_OVERLAYS.admin.close()
 
   Admin_Main_Ctrl_GoToReports.EXPORT_CTRL()

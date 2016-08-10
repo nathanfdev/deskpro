@@ -13,6 +13,13 @@ define(function() {
     controller: 'Reports_Main_Ctrl_BackToAgent'
   });
 
+  routes.push({
+    id: 'go_to_admin',
+    url: '/go_to_admin',
+    templateName: 'Index/blank.html',
+    controller: 'Reports_Main_Ctrl_GoToAdmin'
+  });
+
   //##################################################################################################################
   // Overview page
   //##################################################################################################################
