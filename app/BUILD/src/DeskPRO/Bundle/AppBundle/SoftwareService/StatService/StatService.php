@@ -40,16 +40,39 @@ class StatService
     private $endpoint;
 
     /**
+     * @var
+     */
+    private $enabled = true;
+
+    /**
      * StatService constructor.
      *
      * @param string $endpoint
+     * @param bool   $enabled
      */
-    public function __construct($endpoint = self::STATS_API_ENDPOINT)
+    public function __construct($endpoint = self::STATS_API_ENDPOINT, $enabled = true)
     {
         if (!$endpoint) {
             $endpoint = self::STATS_API_ENDPOINT;
         }
         $this->endpoint = $endpoint;
+        $this->enabled  = $enabled;
+    }
+
+    /**
+     * Disable the service.
+     */
+    public function disable()
+    {
+        $this->enabled = false;
+    }
+
+    /**
+     * Enable the service.
+     */
+    public function enable()
+    {
+        $this->enabled = true;
     }
 
     /**
@@ -59,14 +82,24 @@ class StatService
      */
     private function getClient($timeout = 5)
     {
-        return new GuzzleHttp\Client([
+        $options = [
             'base_uri' => $this->endpoint,
 
             GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true,
             GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => $timeout,
             GuzzleHttp\RequestOptions::TIMEOUT         => $timeout,
             GuzzleHttp\RequestOptions::DECODE_CONTENT  => 'gzip',
-        ]);
+        ];
+
+        if (!$this->enabled) {
+            $options['handler'] = new GuzzleHttp\Handler\MockHandler([
+                new GuzzleHttp\Psr7\Response(200),
+                new GuzzleHttp\Psr7\Response(200),
+                new GuzzleHttp\Psr7\Response(200),
+            ]);
+        }
+
+        return new GuzzleHttp\Client($options);
     }
 
     /**
