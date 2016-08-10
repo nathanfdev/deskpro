@@ -34,6 +34,7 @@ use Application\DeskPRO\Tickets\Triggers\Terms\AbstractTriggerTerm;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use Orb\Util\CheckedOptionsArray;
+use Orb\Util\Util;
 
 class CheckTicketField extends \Application\DeskPRO\Tickets\Triggers\Terms\CheckTicketField implements TicketLayoutTermInterface
 {
@@ -70,11 +71,11 @@ class CheckTicketField extends \Application\DeskPRO\Tickets\Triggers\Terms\Check
      */
     public function isSubmittedDataMatch(array $data)
     {
-        $options   = $this->getTermOptions();
-        $op        = $this->getTermOperator();
-        $submitted = @$data[FormFields::TICKET_FIELD.'_'.$options->get('field_id')][CustomDataType::KEY];
-        $value     = $options->get('value');
-        $type      = $options->get('type_name');
+        $options     = $this->getTermOptions();
+        $op          = $this->getTermOperator();
+        $submitted   = @$data[FormFields::TICKET_FIELD.'_'.$options->get('field_id')][CustomDataType::KEY];
+        $check_value = $options->get('value');
+        $type        = $options->get('type_name');
 
         if ($op === AbstractTriggerTerm::OP_ISSET) {
             return (bool) $submitted;
@@ -84,12 +85,12 @@ class CheckTicketField extends \Application\DeskPRO\Tickets\Triggers\Terms\Check
 
         switch ($type) {
             case 'choice':
-                if (!is_array($value)) {
-                    $value = [$value];
+                if (!is_array($check_value)) {
+                    $check_value = [$check_value];
                 }
-                $check_ids = array_fill_keys($value, true);
+                $check_ids = array_fill_keys($check_value, true);
                 $has       = false;
-                foreach ($value as $v) {
+                foreach ($check_value as $v) {
                     if (isset($check_ids[$v])) {
                         $has = true;
                         break;
@@ -107,16 +108,71 @@ class CheckTicketField extends \Application\DeskPRO\Tickets\Triggers\Terms\Check
                 return false;
 
             case 'toggle':
+                return $this->isIntValuesMatch($op, $submitted, $check_value);
                 break;
+
             case 'date':
             case 'datetime':
-                break;
-            case 'text':
-                break;
-            default:
-        }
 
-        $a = 1;
+                $date1 = null;
+                $date2 = null;
+
+                try {
+                    if ($options['date1']) {
+                        $date1 = new \DateTime('@'.$options['date1']);
+                    } elseif ($options['date1_relative']) {
+                        $date1 = new \DateTime('@'.@strtotime('-'.$options['date1_relative'].' '.$options->get('date1_relative_type', 'days')));
+                    } else {
+                        $date1 = null;
+                    }
+                } catch (\Exception $e) {
+                    $date1 = null;
+                }
+
+                try {
+                    if ($options['date2']) {
+                        $date2 = new \DateTime('@'.$options['date2']);
+                    } elseif ($options['date2_relative']) {
+                        $date2 = new \DateTime('@'.@strtotime('-'.$options['date2_relative'].' '.$options->get('date2_relative_type', 'days')));
+                    } else {
+                        $date2 = null;
+                    }
+                } catch (\Exception $e) {
+                    $date2 = null;
+                }
+
+                try {
+                    $value = new \DateTime('@'.$submitted);
+                } catch (\Exception $e) {
+                    $value = null;
+                }
+
+                switch ($op) {
+                    case AbstractTriggerTerm::OP_LT:
+                    case AbstractTriggerTerm::OP_LTE:
+                    case AbstractTriggerTerm::OP_GT:
+                    case AbstractTriggerTerm::OP_GTE:
+                        if (!$date1 && !$date2) {
+                            return false;
+                        }
+
+                        $d = Util::coalesce($date1, $date2);
+
+                        return $this->isDateValuesMatch($op, $d, $value);
+
+                    case 'between':
+                        if (!$date1 || !$date2) {
+                            return false;
+                        }
+
+                        return $this->isDateRangeValuesMatch($value, $date1, $date2);
+                }
+
+                return false;
+
+            case 'text':
+                return $this->isStringValuesMatch($op, $submitted, $check_value);
+        }
 
         return false;
     }
