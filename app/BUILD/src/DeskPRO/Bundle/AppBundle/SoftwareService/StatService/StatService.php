@@ -138,4 +138,70 @@ class StatService
             ],
         ]);
     }
+
+    /**
+     * @param StatEvent\UpdateStartEvent $event
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function sendUpdateStart(StatEvent\UpdateStartEvent $event)
+    {
+        $data = [
+            'installer_version' => $event->getBuild(),
+        ];
+
+        return $this->getClient()->request('POST', '/updater/deskpro/'.$event->getUuid().'/start', [
+            'json' => $data,
+        ]);
+    }
+
+    /**
+     * @param StatEvent\UpdateFailEvent $event
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function sendUpdateFail(StatEvent\UpdateFailEvent $event)
+    {
+        $data = [
+            'summary' => $event->getSummary(),
+        ];
+
+        return $this->getClient()->request('POST', '/updater/deskpro/'.$event->getUuid().'/error', [
+            'json' => $data,
+        ]);
+    }
+
+    /**
+     * @param StatEvent\UpdateSuccessEvent $event
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function sendUpdateSuccess(StatEvent\UpdateSuccessEvent $event)
+    {
+        $data = [
+            'summary' => $event->getSummary(),
+        ];
+
+        return $this->getClient()->request('POST', '/updater/deskpro/'.$event->getUuid().'/success', [
+            'json' => $data,
+        ]);
+    }
+
+    /**
+     * @param StatEvent\UpdateLogEvent $event
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function sendUpdateLog(StatEvent\UpdateLogEvent $event)
+    {
+        return $this->getClient(15)->request('POST', '/updater/deskpro/'.$event->getUuid().'/logs', [
+            'multipart' => [
+                [
+                    'name'     => 'fileUpload',
+                    'filename' => 'log.txt',
+                    'contents' => $event->getLogFile() ? file_get_contents($event->getLogFile()->getRealPath()) : $event->getLog(),
+                ],
+            ],
+        ]);
+    }
 }

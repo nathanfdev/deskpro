@@ -28,11 +28,16 @@
 
 namespace DeskPRO\Bundle\UpdateBundle\Session;
 
+use DeskPRO\Bundle\AppBundle\SoftwareService\StatService\StatEvent\UpdateFailEvent;
+use DeskPRO\Bundle\AppBundle\SoftwareService\StatService\StatEvent\UpdateLogEvent;
+use DeskPRO\Bundle\AppBundle\SoftwareService\StatService\StatEvent\UpdateStartEvent;
+use DeskPRO\Bundle\AppBundle\SoftwareService\StatService\StatEvent\UpdateSuccessEvent;
 use DeskPRO\Bundle\UpdateBundle\BuildActivate\ReqCheck\ReqCheckException;
 use DeskPRO\Bundle\UpdateBundle\Logger\LogKeyEvent;
 use DeskPRO\Bundle\UpdateBundle\Session\SessionStep\SessionStep;
 use DeskPRO\Bundle\UpdateBundle\Session\SessionStep\StatusStep;
 use DeskPRO\Component\Util\DebugUtils;
+use DpSys\LowError\SystemErrorHandler;
 use Monolog\Handler\AbstractHandler;
 use Monolog\Logger;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -146,13 +151,36 @@ class SessionLogHandler extends AbstractHandler
      */
     private function handleAutoUpgradeEvent(UpdateSession $session, LogKeyEvent $keyEvent)
     {
+        $statService     = $this->container->get('dp.software_service.stats');
+        $installUuuid    = $this->container->get('deskpro.app_env')->getInstallUuid();
+        $updateSessionId = $this->container->get('dp.updater.session_manager_factory')->getSessionid() ?: 'session';
+        $logId           = $installUuuid.'.'.$updateSessionId;
+
         switch ($keyEvent->getId()) {
             case 'AutoUpgrade.start':
                 $session->start();
+
+                $event = UpdateStartEvent::create()
+                    ->setUuid($logId)
+                    ->setBuild(DP_ACTIVE_BUILD)
+                ;
+                SystemErrorHandler::tryRun(function () use ($statService, $event) {
+                    $statService->sendUpdateStart($event);
+                });
+
                 break;
 
             case 'AutoUpgrade.success':
                 $session->finished('Upgrade process is complete.');
+
+                $event = UpdateSuccessEvent::create()
+                    ->setUuid($logId)
+                    ->setSummary('Complete')
+                ;
+                SystemErrorHandler::tryRun(function () use ($statService, $event) {
+                    $statService->sendUpdateSuccess($event);
+                });
+
                 break;
 
             case 'AutoUpgrade.error':
@@ -163,10 +191,43 @@ class SessionLogHandler extends AbstractHandler
                 } else {
                     $session->finishedWithError('An upgrade process returned with an error status');
                 }
+
+                $event = UpdateFailEvent::create()
+                    ->setUuid($logId)
+                    ->setSummary('Error: '.$session->getSummary())
+                ;
+                SystemErrorHandler::tryRun(function () use ($statService, $event) {
+                    $statService->sendUpdateFail($event);
+                });
+
                 break;
 
             default:
                 return false;
+        }
+
+        switch ($keyEvent->getId()) {
+            case 'AutoUpgrade.success':
+            case 'AutoUpgrade.error':
+                $logParts = [];
+
+                foreach (['updater.log', 'upgrader.log'] as $logFile) {
+                    $p = $this->container->get('deskpro.app_env')->getUserLogsDir().DIRECTORY_SEPARATOR.$logFile;
+                    if (file_exists($p)) {
+                        $logParts[] = "$logFile\n===================================================\n\n".file_get_contents($p);
+                    }
+                }
+
+                if ($logParts) {
+                    $log   = implode("\n\n\n\n\n", $logParts);
+                    $event = UpdateLogEvent::create()
+                        ->setUuid($logId)
+                        ->setLog($log);
+                    SystemErrorHandler::tryRun(function () use ($statService, $event) {
+                        $statService->sendUpdateLog($event);
+                    });
+                }
+                break;
         }
 
         return true;
