@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\People\PermissionChecker;
 
 use Application\DeskPRO\App;
@@ -204,7 +205,7 @@ class TicketChecker extends AbstractChecker
      */
     public function canDeleteAny()
     {
-        return ($this->person->hasPerm('agent_tickets.delete_own') || $this->person->hasPerm('agent_tickets.delete_unassigned') || $this->person->hasPerm('agent_tickets.delete_assigned') || $this->person->hasPerm('agent_tickets.delete_followed'));
+        return $this->person->hasPerm('agent_tickets.delete_own') || $this->person->hasPerm('agent_tickets.delete_unassigned') || $this->person->hasPerm('agent_tickets.delete_assigned') || $this->person->hasPerm('agent_tickets.delete_followed');
     }
 
     /**
@@ -310,28 +311,38 @@ class TicketChecker extends AbstractChecker
         #------------------------------
 
         // Own tickets
-        if (($ticket->agent && $ticket->agent->id == $this->person->id) || ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team))) {
-            $set_suffix = 'own';
-
+        if (
+            ($ticket->agent && $ticket->agent->id == $this->person->id)
+            || ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team))
+        ) {
+            $setSuffix = 'own';
         // Unassigned tickets
         } elseif (!$ticket->agent && !$ticket->agent_team) {
-            $set_suffix = 'unassigned';
-
+            $setSuffix = 'unassigned';
         // Other
-        } elseif ($ticket->hasParticipantPerson($this->person)) {
-            $set_suffix = 'followed';
         } else {
-            $set_suffix = 'others';
+            $setSuffix = 'others';
         }
 
-        $perm_global   = 'agent_tickets.modify_'.$set_suffix;
-        $perm_specific = 'agent_tickets.modify_'.$op.'_'.$set_suffix;
+        $permissionsToCheck = [
+            'agent_tickets.modify_'.$setSuffix,
+            'agent_tickets.modify_'.$op.'_'.$setSuffix,
+        ];
 
-        if ($this->person->hasPerm($perm_global) || $this->person->hasPerm($perm_specific)) {
-            return true;
+        if ($ticket->hasParticipantPerson($this->person)) {
+            $permissionsToCheck[] = 'agent_tickets.modify_followed';
+            $permissionsToCheck[] = 'agent_tickets.modify_'.$op.'_followed';
         }
 
-        return false;
+        $personPermissionsManager = $this->person;
+
+        return array_reduce(
+            $permissionsToCheck,
+            function ($carry, $item) use ($personPermissionsManager) {
+                return $carry || $personPermissionsManager->hasPerm($item);
+            },
+            false
+        );
     }
 
     /**
@@ -346,7 +357,7 @@ class TicketChecker extends AbstractChecker
         }
 
         #------------------------------
-        # Can delete own
+        # Can modify messages own
         #------------------------------
 
         if ($this->person->hasPerm('agent_tickets.modify_messages_own')) {
@@ -360,7 +371,7 @@ class TicketChecker extends AbstractChecker
         }
 
         #------------------------------
-        # Can delete unassigned
+        # Can modify messages unassigned
         #------------------------------
 
         if (!$ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_unassigned')) {
@@ -368,7 +379,7 @@ class TicketChecker extends AbstractChecker
         }
 
         #------------------------------
-        # Can delete others
+        # Can modify messages assigned
         #------------------------------
 
         if ($ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_assigned')) {
@@ -376,7 +387,7 @@ class TicketChecker extends AbstractChecker
         }
 
         #------------------------------
-        # Can delete others
+        # Can modify messages others
         #------------------------------
 
         if ($ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_others')) {
@@ -384,7 +395,7 @@ class TicketChecker extends AbstractChecker
         }
 
         #------------------------------
-        # Can delete followed
+        # Can modify messages followed
         #------------------------------
 
         if ($ticket->hasParticipantPerson($this->person) && $this->person->hasPerm('agent_tickets.modify_messages_followed')) {
@@ -410,16 +421,16 @@ class TicketChecker extends AbstractChecker
     {
         foreach (array($ticket1, $ticket2) as $ticket) {
             if (($ticket->agent && $ticket->agent->id == $this->person->id) || ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team))) {
-                $set_suffix = 'own';
+                $setSuffix = 'own';
             } elseif (!$ticket->agent && !$ticket->agent_team) {
-                $set_suffix = 'unassigned';
+                $setSuffix = 'unassigned';
             } elseif ($ticket->hasParticipantPerson($this->person)) {
-                $set_suffix = 'followed';
+                $setSuffix = 'followed';
             } else {
-                $set_suffix = 'others';
+                $setSuffix = 'others';
             }
 
-            if (!$this->person->hasPerm("agent_tickets.modify_merge_{$set_suffix}")) {
+            if (!$this->person->hasPerm("agent_tickets.modify_merge_{$setSuffix}")) {
                 return false;
             }
         }
