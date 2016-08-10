@@ -267,4 +267,18 @@ class AppEnv implements AppEnvInterface
 
         return $forAction ? sha1($auth.$forAction) : $auth;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getInstallUuid()
+    {
+        $datManager = $this->dpEnv->getDatManager();
+
+        if (!$datManager->hasTxtFile('install_uuid')) {
+            $datManager->writeTxtFile('install_uuid', RandUtils::randomStringFormat('%30An'));
+        }
+
+        return $datManager->readTxtFile('install_uuid');
+    }
 }
