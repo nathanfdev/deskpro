@@ -4,8 +4,9 @@ define([
   'AppPlatform',
   'AppPlatformConfig',
   'Agent/AppPlatform/Context/AppContext',
-  'DeskPRO/Util/Util'
-], function(angular, AgentApp, AppPlatformClass, AppPlatformConfig, AppContext, Util) {
+  'DeskPRO/Util/Util',
+  'angularSelect2',
+], function(angular, AgentApp, AppPlatformClass, AppPlatformConfig, AppContext, Util,angularSelect2) {
 
   if (!window.console) {
     window.console = {

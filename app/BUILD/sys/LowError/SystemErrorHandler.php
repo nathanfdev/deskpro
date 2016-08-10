@@ -108,6 +108,8 @@ class SystemErrorHandler
         E_USER_DEPRECATED   => LogLevel::NOTICE,
     ];
 
+    private static $noShowErrors = false;
+
     ####################################################################################################################
     # Exceptions
     ####################################################################################################################
@@ -1258,8 +1260,35 @@ class SystemErrorHandler
             return false;
         }
 
+        if (self::$noShowErrors) {
+            return;
+        }
+
         $v = ini_get('display_errors');
 
         return $v === '1' || $v === 1 || strtoupper($v) === 'ON' || strtoupper($v) === 'YES';
+    }
+
+    /**
+     * Calls a callback but mutes any kind of error that might happen inside.
+     * Exceptions will be logged through standard error log.
+     *
+     * @param callable $cb
+     *
+     * @return mixed
+     */
+    public static function tryRun($cb)
+    {
+        self::$noShowErrors = true;
+
+        try {
+            return call_user_func($cb);
+        } catch (\Exception $e) {
+            self::logException($e);
+
+            return;
+        } finally {
+            self::$noShowErrors = false;
+        }
     }
 }

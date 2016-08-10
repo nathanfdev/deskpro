@@ -28,6 +28,9 @@
 
 namespace DeskPRO\Bundle\InstallBundle\Command;
 
+use DeskPRO\Bundle\AppBundle\SoftwareService\StatService\StatEvent\InstallFailEvent;
+use DeskPRO\Bundle\AppBundle\SoftwareService\StatService\StatEvent\InstallLogEvent;
+use DeskPRO\Bundle\AppBundle\SoftwareService\StatService\StatEvent\InstallSuccessEvent;
 use DeskPRO\Bundle\InstallBundle\Installer\InstallerContext;
 use DeskPRO\Bundle\InstallBundle\Installer\InstallProfile;
 use DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
@@ -38,6 +41,7 @@ use DeskPRO\Component\Util\EnvUtils;
 use DeskPRO\Component\Util\RandUtils;
 use DeskPRO\Component\Util\TypeUtils;
 use DpRun\DpEnv;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -78,6 +82,7 @@ class InstallCommand extends ContainerAwareCommand
 
         $force_restart = false;
         $profile       = new InstallProfile();
+        $statService   = $this->getContainer()->get('dp.software_service.stats');
 
         if ($input->getOption('dev')) {
             $input->setOption('restart', true);
@@ -191,15 +196,15 @@ class InstallCommand extends ContainerAwareCommand
             $session->setSessionUuid($profile->getAnswer('session_uuid'));
         }
 
-        if (!$session->getSessionUuid() && $DP_ENV->getDatManager()->hasTxtFile('install_session_uuid')) {
-            $session->setSessionUuid($DP_ENV->getDatManager()->readTxtFile('install_session_uuid'));
+        if (!$session->getSessionUuid() && $DP_ENV->getDatManager()->hasTxtFile('install_uuid')) {
+            $session->setSessionUuid($DP_ENV->getDatManager()->readTxtFile('install_uuid'));
         }
 
         if (!$session->getSessionUuid()) {
             $session->setSessionUuid(RandUtils::randomStringFormat('%30An'));
         }
 
-        $DP_ENV->getDatManager()->writeTxtFile('install_session_uuid', $session->getSessionUuid());
+        $DP_ENV->getDatManager()->writeTxtFile('install_uuid', $session->getSessionUuid());
 
         #------------------------------
         # Create the steps
@@ -267,6 +272,21 @@ class InstallCommand extends ContainerAwareCommand
             array_unshift($steps, new InstallStep\SkipWizardStep($context));
         }
 
+        // Send the log after
+        register_shutdown_function(function () use ($statService, $DP_ENV, $session) {
+            $logPath = $DP_ENV->getUserLogsDir().DIRECTORY_SEPARATOR.'installer.log';
+            if (file_exists($logPath)) {
+                $event = InstallLogEvent::create()
+                    ->setUuid($session->getSessionUuid())
+                    ->setLogFile(new \SplFileInfo($logPath))
+                ;
+
+                SystemErrorHandler::tryRun(function () use ($statService, $event) {
+                    $statService->sendInstallLog($event);
+                });
+            }
+        });
+
         /** @var InstallStep\AbstractStep $step */
         foreach ($steps as $num => $step) {
             $step_num = $num + 1;
@@ -300,9 +320,27 @@ class InstallCommand extends ContainerAwareCommand
             $sm->saveInstallSession($session);
 
             if ($step->isFailed()) {
+                $event = InstallFailEvent::create()
+                    ->setUuid($session->getSessionUuid())
+                    ->setSummary('Failed during: '.TypeUtils::getBaseTypeName($step))
+                ;
+
+                SystemErrorHandler::tryRun(function () use ($statService, $event) {
+                    $statService->sendInstallFail($event);
+                });
+
                 return 1;
             }
         }
+
+        $event = InstallSuccessEvent::create()
+            ->setUuid($session->getSessionUuid())
+            ->setSummary('Completed')
+        ;
+
+        SystemErrorHandler::tryRun(function () use ($statService, $event) {
+            $statService->sendInstallSuccess($event);
+        });
 
         return 0;
     }

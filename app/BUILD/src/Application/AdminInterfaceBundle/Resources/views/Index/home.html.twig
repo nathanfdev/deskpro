@@ -237,13 +237,13 @@
                                 <header>
                                     <div class="icon bad"><i class="fa fa-warning"></i></div>
                                     <strong>
-                                        The latest version is #{{ ng_var('Home.latest_version.build_num_base') }}.
-                                        You are behind by <a href="http://support.deskpro.com/news/1" target="_blank">{{ ng_var('Home.latest_version.count_behind') }} version(s)</a>.<br/>
+                                        The latest version is #{{ ng_var('Home.latest_version.build_id') }}.
+                                        Your version is <a href="http://support.deskpro.com/news/1" target="_blank">{{ ng_var('Home.latest_version.days_old') }} day(s) old</a>.<br/>
                                     </strong>
                                 </header>
                                 <article>
                                     <p>
-                                        <a class="btn btn-primary" href="{{ path('admin_upgrade_index') }}">Update DeskPRO Now &rarr;</a>
+                                        <a class="btn btn-primary" href="{{ ng_href('setup.updater') }}">Update DeskPRO Now &rarr;</a>
                                     </p>
                                 </article>
                             </div>

@@ -1,4 +1,5 @@
 #!/usr/bin/env php
 <?php
-//TODO this is a placeholder
-exit(0);
+
+array_splice($_SERVER['argv'], 1, 0, ['dp:update']);
+require __DIR__.'/../app/run/targets/console.php';

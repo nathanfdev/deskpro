@@ -34,6 +34,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\ExpressionLanguage\Expression;
 
 $loader->import(__DIR__.'/config.shared.yml');
+$loader->import(__DIR__.'/config.software_services.yml');
 $loader->import(__DIR__.'/services.yml');
 $loader->import(__DIR__.'/event_listeners.yml');
 

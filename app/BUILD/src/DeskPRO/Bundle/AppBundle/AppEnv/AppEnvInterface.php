@@ -233,4 +233,11 @@ interface AppEnvInterface
      * @return string
      */
     public function getServerInfoAuth($forAction = null);
+
+    /**
+     * Get the uuid for this install.
+     *
+     * @return string
+     */
+    public function getInstallUuid();
 }

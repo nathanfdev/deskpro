@@ -26,75 +26,90 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\UpdateBundle\Session;
+namespace DeskPRO\Bundle\AppBundle\SoftwareService\StatService\StatEvent;
 
-class UpdateSessionManagerFactory
+class InstallLogEvent
 {
     /**
      * @var string
      */
-    private $sessionId;
+    private $uuid;
 
     /**
-     * @var UpdateSessionManager
+     * @var string|null
      */
-    private $sessionManager;
+    private $log;
 
     /**
-     * @var string
+     * @var \SplFileInfo|null
      */
-    private $tmpPath;
+    private $logFile;
 
     /**
-     * UpgradeSessionManagerFactory constructor.
-     *
-     * @param string $tmpPath
+     * @return static
      */
-    public function __construct($tmpPath)
+    public static function create()
     {
-        $this->tmpPath = $tmpPath;
-    }
-
-    /**
-     * @param string $sessionId
-     */
-    public function enableSessionId($sessionId)
-    {
-        if ($this->sessionId) {
-            throw new \RuntimeException('Session has already been set');
-        }
-        $this->sessionId = $sessionId;
+        return new static();
     }
 
     /**
      * @return string
      */
-    public function getSessionid()
+    public function getUuid()
     {
-        return $this->sessionId;
+        return $this->uuid;
     }
 
     /**
-     * @return bool
+     * @param string $uuid
+     *
+     * @return $this
      */
-    public function isEnabled()
+    public function setUuid($uuid)
     {
-        return $this->sessionId !== null;
+        $this->uuid = $uuid;
+
+        return $this;
     }
 
     /**
-     * @return UpdateSessionManager
+     * @return string
      */
-    public function getManager()
+    public function getLog()
     {
-        if (!$this->sessionId) {
-            throw new \RuntimeException('No session has been started');
-        }
+        return $this->log;
+    }
 
-        if (!$this->sessionManager) {
-            $this->sessionManager = new UpdateSessionManager($this->sessionId, $this->tmpPath);
-        }
+    /**
+     * @param string $log
+     *
+     * @return $this
+     */
+    public function setLog($log)
+    {
+        $this->log = $log;
 
-        return $this->sessionManager;
+        return $this;
+    }
+
+    /**
+     * @return null|\SplFileInfo
+     */
+    public function getLogFile()
+    {
+        return $this->logFile;
+    }
+
+    /**
+     * @param \SplFileInfo $logFile
+     *
+     * @return $this
+     */
+    public function setLogFile(\SplFileInfo $logFile)
+    {
+        $this->logFile = $logFile;
+
+        return $this;
     }
 }

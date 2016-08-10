@@ -26,75 +26,65 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\UpdateBundle\Session;
+namespace DeskPRO\Bundle\AppBundle\SoftwareService\StatService\StatEvent;
 
-class UpdateSessionManagerFactory
+class UpdateStartEvent
 {
     /**
      * @var string
      */
-    private $sessionId;
-
-    /**
-     * @var UpdateSessionManager
-     */
-    private $sessionManager;
+    private $uuid;
 
     /**
      * @var string
      */
-    private $tmpPath;
+    private $build;
 
     /**
-     * UpgradeSessionManagerFactory constructor.
-     *
-     * @param string $tmpPath
+     * @return static
      */
-    public function __construct($tmpPath)
+    public static function create()
     {
-        $this->tmpPath = $tmpPath;
-    }
-
-    /**
-     * @param string $sessionId
-     */
-    public function enableSessionId($sessionId)
-    {
-        if ($this->sessionId) {
-            throw new \RuntimeException('Session has already been set');
-        }
-        $this->sessionId = $sessionId;
+        return new static();
     }
 
     /**
      * @return string
      */
-    public function getSessionid()
+    public function getUuid()
     {
-        return $this->sessionId;
+        return $this->uuid;
     }
 
     /**
-     * @return bool
+     * @param string $uuid
+     *
+     * @return $this
      */
-    public function isEnabled()
+    public function setUuid($uuid)
     {
-        return $this->sessionId !== null;
+        $this->uuid = $uuid;
+
+        return $this;
     }
 
     /**
-     * @return UpdateSessionManager
+     * @return string
      */
-    public function getManager()
+    public function getBuild()
     {
-        if (!$this->sessionId) {
-            throw new \RuntimeException('No session has been started');
-        }
+        return $this->build;
+    }
 
-        if (!$this->sessionManager) {
-            $this->sessionManager = new UpdateSessionManager($this->sessionId, $this->tmpPath);
-        }
+    /**
+     * @param string $build
+     *
+     * @return $this
+     */
+    public function setBuild($build)
+    {
+        $this->build = $build;
 
-        return $this->sessionManager;
+        return $this;
     }
 }
