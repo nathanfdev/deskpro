@@ -232,20 +232,22 @@ class TicketChecker extends AbstractChecker
             return false;
         }
 
+        $agent = $ticket->getAgent();
+
         //------------------------------
         // Can delete own
         //------------------------------
 
         if ($this->person->hasPerm('agent_tickets.reply_own')) {
-            if ($ticket->agent && $ticket->agent->id == $this->person->id) {
+            if ($agent && $agent === $this->person) {
                 return true;
             }
 
-            if ($ticket->person && $ticket->person->id == $this->person->id) {
+            if ($ticket->getPerson() && $ticket->getPerson() === $this->person) {
                 return true;
             }
 
-            if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
+            if ($ticket->getAgentTeam() && $this->agents->isAgentMemberOfTeam($this->person, $ticket->getAgentTeam())) {
                 return true;
             }
         }
@@ -254,7 +256,7 @@ class TicketChecker extends AbstractChecker
         // Can delete unassigned
         //------------------------------
 
-        if (!$ticket->agent && $this->person->hasPerm('agent_tickets.reply_unassigned')) {
+        if (!$agent && $this->person->hasPerm('agent_tickets.reply_unassigned')) {
             return true;
         }
 
@@ -262,7 +264,7 @@ class TicketChecker extends AbstractChecker
         // Can delete others
         //------------------------------
 
-        if ($ticket->agent && $this->person->hasPerm('agent_tickets.reply_others')) {
+        if ($agent && $this->person->hasPerm('agent_tickets.reply_others')) {
             return true;
         }
 
@@ -322,6 +324,9 @@ class TicketChecker extends AbstractChecker
         // Figure out which set of permissions
         // the current ticket falls into
         //------------------------------
+
+        $agent     = $ticket->getAgent();
+        $agentTeam = $ticket->getAgentTeam();
 
         // Own tickets
         if (
