@@ -95,6 +95,11 @@ class DepartmentDataService extends BaseRepositoryService
         $this->continer   = $this->options['container'];
     }
 
+    /**
+     * @param $dep_id
+     *
+     * @return Department
+     */
     public function get($dep_id)
     {
         $this->preload();

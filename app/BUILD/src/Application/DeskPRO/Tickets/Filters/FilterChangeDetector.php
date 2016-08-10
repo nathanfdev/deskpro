@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 /**
@@ -217,6 +218,7 @@ class FilterChangeDetector
             $is_dep_change = true;
         }
 
+        /** @var Ticket $orig_ticket */
         $orig_ticket = $ticket->getOriginalStateClone();
         $new_ticket  = $ticket;
 
@@ -279,10 +281,12 @@ class FilterChangeDetector
             // testing check
             // there is no mock for the PermissionsManager yet
             if (!defined('DP_BOOT_MODE') || DP_BOOT_MODE != 'testing') {
-                if ($see_old && !$agent->getPermissionsManager()->TicketChecker->canView($orig_ticket)) {
+                /** @var TicketChecker $ticketChecker */
+                $ticketChecker = $agent->getPermissionsManager()->TicketChecker;
+                if ($see_old && !$ticketChecker->canView($orig_ticket)) {
                     $see_old = false;
                 }
-                if ($see_new && !$agent->getPermissionsManager()->TicketChecker->canView($new_ticket)) {
+                if ($see_new && !$ticketChecker->canView($new_ticket)) {
                     $see_new = false;
                 }
             }

@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DependencyInjection\SystemServices\DepartmentDataService;
 use Application\DeskPRO\Entity;
 
 /**
@@ -124,8 +125,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 
         $all_ids = App::getDataService('Department')->getIds();
 
-        $allowed_ids = $this->getAllowedDepartments($context);
-
+        $allowed_ids    = $this->getAllowedDepartments($context);
         $disallowed_ids = array_diff($all_ids, $allowed_ids);
 
         $this->_disallowed_ids[$context] = $disallowed_ids;
@@ -170,45 +170,34 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 
         $allow_all = false;
         foreach ($uids as $ugid) {
-            if ($agent_groups->groupExists($ugid)) {
-                $g = $agent_groups->getGroup($ugid);
-                if ($g->getSysName() == 'agent_all_perms' || $g->getSysName() == 'agent_all_safe_perms') {
-                    $allow_all = true;
-                    break;
-                }
+            if ($agent_groups->getGroup($ugid)->hasAllSafePermissions()) {
+                $allow_all = true;
+                break;
             }
         }
 
         if ($allow_all) {
-            $this->_allowed_ids = [];
-            foreach ([App::$container->getTicketDepartments()->getAll(), App::$container->getChatDepartments()->getAll()] as $coll) {
-                /** @var Entity\Department $d */
-                foreach ($coll as $d) {
-                    $app = $d->isTicketsEnabled() ? 'tickets' : 'chat';
-                    if (!isset($this->_allowed_ids[$app])) {
-                        $this->_allowed_ids[$app] = [];
-                    }
-
-                    $this->_allowed_ids[$app][] = $d->getId();
-                    $parent                     = $d->getParent();
-                    if ($parent) {
-                        $this->_allowed_ids[$app][] = $parent->getId();
-                    }
-                }
-            }
+            $this->_allowed_ids = [
+                'tickets' => App::$container->getTicketDepartments()->getAllAllowedIds(),
+                'chat'    => App::$container->getChatDepartments()->getAllAllowedIds(),
+            ];
         } else {
             $raw = App::$container->getEm()->getRepository('DeskPRO:DepartmentPermission')->getPermsForAgent($this->person->getId(), $uids, 'full');
+
+            /** @var DepartmentDataService $departmentDataService */
+            $departmentDataService = App::getContainer()->getDataService('Department');
 
             $this->_allowed_ids = [];
             foreach ($raw as $r) {
                 if (!isset($this->_allowed_ids[$r['app']])) {
                     $this->_allowed_ids[$r['app']] = [];
                 }
+
                 $this->_allowed_ids[$r['app']][] = $r['department_id'];
 
-                $dep = App::getContainer()->getDataService('Department')->get($r['department_id']);
-                if ($dep && $dep->parent) {
-                    $this->_allowed_ids[$r['app']][] = $dep->parent->getId();
+                $dep = $departmentDataService->get($r['department_id']);
+                if ($dep && $dep->getParent()) {
+                    $this->_allowed_ids[$r['app']][] = $dep->getParent()->getId();
                 }
             }
         }

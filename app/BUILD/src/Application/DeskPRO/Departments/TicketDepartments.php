@@ -26,16 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Departments;
 
 use Application\DeskPRO\Hierarchy\LazyPreloadedHierarchy;
 
 class TicketDepartments extends LazyPreloadedHierarchy
 {
+    use AllowedIdsTrait;
+
     /**
      * @var int
      */

@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Departments;
 
 use Application\DeskPRO\Entity\Department;
@@ -37,6 +33,8 @@ use Application\DeskPRO\Hierarchy\LazyPreloadedHierarchy;
 
 class ChatDepartments extends LazyPreloadedHierarchy
 {
+    use AllowedIdsTrait;
+
     /**
      * @return array
      */
