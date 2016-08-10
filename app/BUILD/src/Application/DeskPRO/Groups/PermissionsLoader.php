@@ -26,14 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Groups;
 
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\Permission;
+use Application\DeskPRO\Entity\Usergroup;
 
+/**
+ * Class PermissionsLoader.
+ */
 class PermissionsLoader
 {
     /**
@@ -50,6 +51,11 @@ class PermissionsLoader
      * @var array
      */
     private $agent_override_perms;
+
+    /**
+     * @var array
+     */
+    private $effectivePermissions = [];
 
     /**
      * @param Connection $db
@@ -128,5 +134,28 @@ class PermissionsLoader
         }
 
         return $this->agent_override_perms[$agent_id];
+    }
+
+    /**
+     * @param array $uIds
+     *
+     * @return array
+     */
+    public function getEffectivePermissionsForUsergroups(array $uIds)
+    {
+        $uKey = Usergroup::generateUsergroupSetKey($uIds);
+        if (!isset($this->effectivePermissions[$uKey])) {
+            $permissions = $this->getUsergroupPermissions($uIds);
+            $permResult  = [];
+            foreach ($permissions as $permissionGroup) {
+                foreach ($permissionGroup as $p) {
+                    $permResult[] = $p;
+                }
+            }
+
+            $this->effectivePermissions[$uKey] = Permission::getEffectivePermissions($permResult);
+        }
+
+        return $this->effectivePermissions[$uKey];
     }
 }

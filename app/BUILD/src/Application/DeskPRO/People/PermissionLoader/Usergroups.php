@@ -139,25 +139,19 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
                 /** @var PermissionsLoader $permissionLoader */
                 $permissionLoader = App::getSystemService('PermissionsLoader');
 
-                $perms = $permissionLoader->getUsergroupPermissions($this->usergroup_ids);
+                // calc effective permissions for usergroups
+                $this->perms = $permissionLoader->getEffectivePermissionsForUsergroups($this->usergroup_ids);
+
+                // calc effective permissions for overrides
                 if ($this->person_id) {
                     if ($this->person && $this->person->isAgent()) {
                         $overrides = $permissionLoader->getAgentOverridePermissions($this->person_id);
                         if ($overrides) {
                             $this->with_overrides = true;
-                            $perms                = array_merge($perms, [-1 => $overrides]);
+                            $this->perms          = Permission::getEffectivePermissions($overrides, $this->perms);
                         }
                     }
                 }
-
-                $perm_result = [];
-                foreach ($perms as $p_group) {
-                    foreach ($p_group as $p) {
-                        $perm_result[] = $p;
-                    }
-                }
-
-                $this->perms = Permission::getEffectivePermissions($perm_result);
             }
         }
 
