@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Form\Model\NewTicket;
@@ -85,7 +81,6 @@ use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
-use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
@@ -4028,7 +4023,7 @@ class TicketController extends AbstractController
             if (!$newTicket->brand_id) {
                 $brands = $this->getAgentBrands();
                 if (count($brands) === 1) {
-                    $brand               = ListUtils::first($brands);
+                    $brand               = reset($brands);
                     $newTicket->brand_id = $brand->getId();
                 } else {
                     $errors['brand_id'] = true;
