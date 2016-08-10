@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -252,13 +252,23 @@ FILE;
     public function getLatestVersionAction()
     {
         try {
-            $version_info = LicenseService::compareVersion();
+            $instanceReader = $this->getContainer()->get('dp.updater.instance_reader');
+            $distroLoader   = $this->getContainer()->get('dp.updater.distro.manifest_loader');
+            $releases       = $distroLoader->loadReleases();
+
+            $instanceStatus = $instanceReader->getInstanceStatus($releases);
+
+            $versionInfo = [
+                'count_behind' => $instanceStatus->isOutdated() ? max(1, $instanceStatus->getNumBetween()) : 0,
+                'days_old'     => $instanceStatus->isOutdated() ? max(1, $instanceStatus->getDaysOld()) : 0,
+                'build_id'     => $instanceStatus->getLatestRelease()->getId(),
+            ];
         } catch (\Exception $e) {
-            $version_info = null;
+            $versionInfo = null;
         }
 
         return $this->createJsonResponse(array(
-            'version_info' => $version_info,
+            'version_info' => $versionInfo,
         ));
     }
 
