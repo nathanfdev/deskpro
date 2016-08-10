@@ -154,7 +154,7 @@ class AgentTopBar extends React.Component {
           role="presentation"
         />
       </div>
-      <TopBarItem classes={['search-box']}>
+      <TopBarItem classes={['search-box legacy-omnibox']}>
         <SearchBox
           onUserInput={this.onSearch}
           onFocus={this.onSearchFocus}
@@ -162,7 +162,7 @@ class AgentTopBar extends React.Component {
           placeholder="Search ..."
         />
       </TopBarItem>
-      <TopBarItem>
+      <TopBarItem classes={['legacy-omnibox']}>
         <i className="icon wait" onClick={this.onRecent} />
       </TopBarItem>
       <AddButton />
@@ -170,7 +170,7 @@ class AgentTopBar extends React.Component {
         <TopBarItem>
           <div className="view_mode" onClick={this.toggleViewMode} />
         </TopBarItem>
-        <TopBarItem>
+        <TopBarItem classes={['legacy-omnibox']}>
           <TopBarNotificationIcon
             elementId="notifications"
             icon="alarm outline"

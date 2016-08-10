@@ -754,7 +754,8 @@ define([
 				});
 
 				$('body').on('mousedown mouseup click', function(ev) {
-					if (!ev.target || !$(ev.target).closest('.dp-omnibox-wrap')[0]) {
+					if (!ev.target ||
+						!($(ev.target).closest('.dp-omnibox-wrap')[0] || $(ev.target).closest('.legacy-omnibox')[0])) {
 						closeAll();
 					}
 				});
