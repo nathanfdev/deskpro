@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Dpql\Plugin\Hierarchy;
 use Application\DeskPRO\Dpql\Plugin\PluginInterface;
 use Application\DeskPRO\Dpql\ResultHandler;
 use Application\DeskPRO\Dpql\SqlSelect;
+use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql\Statement\Part\Column;
 
 /**
@@ -46,6 +47,19 @@ class HierarchyPlugin implements PluginInterface
      * @var SqlSelect
      */
     private $sql;
+
+    /**
+     * @var Display
+     */
+    private $display;
+
+    /**
+     * @param Display $display
+     */
+    public function __construct(Display $display)
+    {
+        $this->display = $display;
+    }
 
     /**
      * @param SqlSelect $sql
@@ -97,12 +111,19 @@ class HierarchyPlugin implements PluginInterface
         }
 
         // Tree sort and count depth
-        $results = HierarchySorting::sort(
+        $countFieldNum = $this->getCountFieldNum();
+        $results       = HierarchySorting::sort(
             $results,
             Hierarchy::getGroupingTargetTable($this->sql),
             Hierarchy::getGroupingTargetTableReference($this->sql),
-            $this->sql->getSelectFields()
+            $this->sql->getSelectFields(),
+            $countFieldNum
         );
+
+        // Init rollup counts if needed
+        if ($this->display->withRollup() && $countFieldNum) {
+            $results = HierarchyRollup::init($results);
+        }
 
         return $results;
     }
@@ -116,7 +137,32 @@ class HierarchyPlugin implements PluginInterface
             return;
         }
 
-        $handler->addGroupXColumn('', 'hierarchy_root_title', 2); // in count queries 2 refers to COUNT() result
-        $handler->addFlag(ResultHandler::FLAG_GROUP_ONLY_CHART);
+        $countFieldNum = $this->getCountFieldNum();
+        $handler->addGroupXColumn('', 'hierarchy_root_title', $countFieldNum ? $countFieldNum + 1 : 1);
+        $handler->addFlag(ResultHandler::FLAG_HIERARCHICAL);
+    }
+
+    /**
+     * @return int|null
+     */
+    private function getCountFieldNum()
+    {
+        $fields = $this->sql->getSelectFields();
+        foreach ($fields as $i => $field) {
+            if (!is_int($i)) {
+                continue;
+            }
+
+            if (strpos($field, 'COUNT(') === 0) {
+                return $i;
+            }
+
+            // Some COUNT queries are compiled into SUM(IF(`some_field`, 1, 0))
+            if ((strpos($field, 'SUM(IF(`') === 0) && (strrpos($field, ', 1, 0))') === strlen($field) - 8)) {
+                return $i;
+            }
+        }
+
+        return;
     }
 }

@@ -265,15 +265,19 @@ abstract class AbstractRenderer
      * Renders the value for a specific cell.
      *
      * @param mixed [int] $row
-     * @param array       $column
+     * @param mixed       $column
      *
      * @return string
      */
-    protected function _renderCellValue(array $row, array $column)
+    protected function _renderCellValue(array $row, $column)
     {
-        $value = $column['resultId'] ? $row[$column['resultId'] - 1] : '';
+        if (is_string($column)) {
+            $value = array_key_exists($column, $row) ? $row[$column] : '';
+        } else {
+            $value = $column['resultId'] ? $row[$column['resultId'] - 1] : '';
+        }
 
-        $renderer = $column['renderer'];
+        $renderer = is_array($column) && array_key_exists('renderer', $column) ? $column['renderer'] : null;
         if ($renderer instanceof \Closure) {
             /* @var $renderer \Closure */
 

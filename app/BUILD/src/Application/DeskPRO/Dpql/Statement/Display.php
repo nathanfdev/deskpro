@@ -286,7 +286,7 @@ class Display
         $this->_sql              = new Dpql\SqlSelect();
         $this->_resultHandler    = new Dpql\ResultHandler();
         $this->_sqlSelectContext = new Dpql\SqlSelectContext($this->_resultHandler, [
-            new Dpql\Plugin\Hierarchy\HierarchyPlugin(),
+            new Dpql\Plugin\Hierarchy\HierarchyPlugin($this),
         ]);
     }
 
@@ -1172,6 +1172,16 @@ class Display
      */
     public function setWithRollup($withRollup)
     {
-        $this->_withRollup = $withRollup;
+        if ($this->_withRollup = $withRollup) {
+            $this->_resultHandler->addFlag(Dpql\ResultHandler::FLAG_WITH_ROLLUP);
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function withRollup()
+    {
+        return $this->_withRollup;
     }
 }

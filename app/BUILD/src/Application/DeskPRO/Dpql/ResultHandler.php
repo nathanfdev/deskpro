@@ -38,7 +38,8 @@ namespace Application\DeskPRO\Dpql;
  */
 class ResultHandler
 {
-    const FLAG_GROUP_ONLY_CHART = 1;
+    const FLAG_HIERARCHICAL = 1;
+    const FLAG_WITH_ROLLUP  = 2;
 
     /**
      * List of columns that should be selected.

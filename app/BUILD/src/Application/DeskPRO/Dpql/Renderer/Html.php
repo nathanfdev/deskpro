@@ -123,7 +123,9 @@ class Html extends AbstractRenderer
             return '';
         }
 
-        if ($this->_handler->getGroupXColumns() && !$this->_handler->hasFlag(ResultHandler::FLAG_GROUP_ONLY_CHART)) {
+        // If data is hierarchical, then X-grouping is applied to bar charts only, in tables hierarchy
+        // is denoted by sorting and indentation
+        if ($this->_handler->getGroupXColumns() && !$this->_handler->hasFlag(ResultHandler::FLAG_HIERARCHICAL)) {
             return $this->_renderMatrixTable($rows);
         }
 
@@ -162,6 +164,10 @@ class Html extends AbstractRenderer
         }
         foreach ($this->_handler->getSelectColumns() as $column) {
             $columnHtml[] = '<th>'.$this->_valueRenderer->escapeValue($column['title']).'</th>';
+        }
+
+        if ($this->_withRollup()) {
+            $columnHtml[] = '<th>Total</th>';
         }
 
         return '<thead><tr class="row-header">'.implode("\n\t", $columnHtml).'</tr></thead>';
@@ -252,6 +258,9 @@ class Html extends AbstractRenderer
             foreach ($selectColumns as $column) {
                 $padding = $this->_getRowPadding($cells, $row);
                 $cells[] = '<td>'.$padding.$this->_renderCellValue($row, $column).'</td>';
+            }
+            if ($this->_withRollup()) {
+                $cells[] = '<td>'.$this->_renderCellValue($row, 'hierarchy_rollup_count').'</td>';
             }
 
             ++$rowCount;
@@ -644,7 +653,7 @@ class Html extends AbstractRenderer
             $headerCols = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['xDistinct']);
 
             foreach ($headerCols as $xPath => $printable) {
-                $category = $this->_handler->hasFlag(ResultHandler::FLAG_GROUP_ONLY_CHART)
+                $category = $this->_handler->hasFlag(ResultHandler::FLAG_HIERARCHICAL)
                                    ? str_replace('root|', '', $xPath)
                                    : implode(' / ', $printable);
                 $maxCategoryLength = max($maxCategoryLength, strlen($category));
@@ -1058,5 +1067,14 @@ class Html extends AbstractRenderer
         } else {
             return $value;
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function _withRollup()
+    {
+        return $this->_handler->hasFlag(ResultHandler::FLAG_HIERARCHICAL)
+               && $this->_handler->hasFlag(ResultHandler::FLAG_WITH_ROLLUP);
     }
 }

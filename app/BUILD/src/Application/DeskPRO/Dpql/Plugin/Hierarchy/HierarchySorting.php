@@ -55,11 +55,12 @@ class HierarchySorting
      * Given $results elements with hierarchy_id and hierarchy_parent_id fields, this function sorts the elements as
      * they should appear in the view and adds hierarchy_depth and hierarchy_root_title fields
      *
-     * @param array  $results
-     * @param string $hierarchicalTargetTable
-     * @param string $hierarchicalTargetTableAlias
-     * @param array  $selectedFields
-     * @param int    $recursionLevel
+     * @param array    $results
+     * @param string   $hierarchicalTargetTable
+     * @param string   $hierarchicalTargetTableAlias
+     * @param array    $selectedFields
+     * @param int|null $countFieldNum
+     * @param int      $recursionLevel
      *
      * @throws Exception
      *
@@ -70,6 +71,7 @@ class HierarchySorting
         $hierarchicalTargetTable,
         $hierarchicalTargetTableAlias,
         array $selectedFields,
+        $countFieldNum,
         $recursionLevel = 0
     ) {
         if ($recursionLevel > 1) {
@@ -87,6 +89,7 @@ class HierarchySorting
 
             if (!$v['hierarchy_parent_id']) {
                 $v['hierarchy_depth']      = 0;
+                $v['hierarchy_count']      = (int) $v[$countFieldNum];
                 $v['hierarchy_root_title'] = $v['hierarchy_title'];
                 $newResults[]              = $v;
                 unset($results[$k]);
@@ -109,6 +112,7 @@ class HierarchySorting
                     if ($potentialChild['hierarchy_parent_id'] === $node['hierarchy_id']) {
                         $potentialChild['hierarchy_depth']      = $node['hierarchy_depth'] + 1;
                         $potentialChild['hierarchy_root_title'] = $node['hierarchy_root_title'];
+                        $potentialChild['hierarchy_count']      = (int) $potentialChild[$countFieldNum];
                         array_splice($newResults, $i + ++$lastIterationInserts, 0, [$potentialChild]);
                         unset($results[$j]);
                     }
@@ -153,7 +157,9 @@ class HierarchySorting
 
             $results = array_merge($missing, $results);
             $results = self::sort(
-                $results, $hierarchicalTargetTable, $hierarchicalTargetTableAlias, $selectedFields, 1 + $recursionLevel);
+                $results, $hierarchicalTargetTable, $hierarchicalTargetTableAlias, $selectedFields, $countFieldNum,
+                1 + $recursionLevel
+            );
             $newResults = array_merge($newResults, $results);
         }
 
@@ -169,7 +175,7 @@ class HierarchySorting
     {
         if (!array_key_exists('hierarchy_id', $entry) || !key_exists('hierarchy_parent_id', $entry)) {
             throw new Exception(sprintf(
-                'HierarchyHandler expects each entry to have hierarchy_id and hierarchy_parent_id: %s',
+                'HierarchySorting expects each entry to have hierarchy_id and hierarchy_parent_id: %s',
                 print_r($entry, true)
             ));
         }
