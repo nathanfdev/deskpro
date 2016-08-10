@@ -77,6 +77,7 @@ class MassLoader
 
     public function clearDb()
     {
+        $this->connection->executeUpdate('DELETE FROM permissions');
         $this->connection->executeUpdate('DELETE FROM task_links');
         $this->connection->executeUpdate('DELETE FROM task_attachments');
         $this->connection->executeUpdate('DELETE FROM tickets');
@@ -179,6 +180,26 @@ class MassLoader
                 ]);
             }
         }
+
+        // grant individual permissions to use tickets
+        $permissions = [];
+        $permNames   = [
+            'agent_tickets.use',
+            'agent_tickets.create',
+            'agent_tickets.modify_own',
+            'agent_tickets.delete',
+        ];
+
+        foreach ($permNames as $permissionName) {
+            $permissions[] = [
+                'person_id' => $personId,
+                'name'      => $permissionName,
+                'value'     => 1,
+                'is_active' => true,
+            ];
+        }
+
+        $this->connection->batchInsert('permissions', $permissions);
     }
 
     /**
