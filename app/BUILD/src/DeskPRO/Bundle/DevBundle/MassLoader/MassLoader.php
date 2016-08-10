@@ -101,6 +101,31 @@ class MassLoader
                 Connection::PARAM_INT_ARRAY,
             ]
         );
+
+        // grant group permissions to use tickets
+        $usergroupIds = $this->connection->fetchAllCol('SELECT id FROM usergroups WHERE sys_name IN(?, ?)', [
+            Usergroup::EVERYONE,
+            Usergroup::REGISTERED,
+        ]);
+
+        $permissions = [];
+        $permNames   = [
+            'tickets.use',
+            'tickets.create',
+        ];
+
+        foreach ($usergroupIds as $usergroupId) {
+            foreach ($permNames as $permissionName) {
+                $permissions[] = [
+                    'usergroup_id' => $usergroupId,
+                    'name'         => $permissionName,
+                    'value'        => 1,
+                    'is_active'    => true,
+                ];
+            }
+        }
+
+        $this->connection->batchInsert('permissions', $permissions);
     }
 
     public function loadOrganization()
@@ -281,6 +306,26 @@ class MassLoader
         }
 
         $this->connection->batchInsert('department_to_brand', $department2brands);
+
+        // usergroups
+        $usergroupsIds = $this->connection->fetchAllCol('SELECT id FROM usergroups WHERE sys_name IN(?, ?)', [
+            Usergroup::EVERYONE,
+            Usergroup::REGISTERED,
+        ]);
+
+        $permissions = [];
+        foreach ($usergroupsIds as $usergroupId) {
+            $permissions[] = [
+                'department_id' => $departmentId,
+                'usergroup_id'  => $usergroupId,
+                'name'          => 'full',
+                'value'         => 1,
+                'is_active'     => true,
+                'app'           => 'tickets',
+            ];
+        }
+
+        $this->connection->batchInsert('department_permissions', $permissions);
     }
 
     /**
@@ -381,6 +426,11 @@ class MassLoader
         $this->connection->update('people', ['primary_email_id' => $emailId], ['id' => $personId]);
 
         // usergroups
+        $usergroupIds = $this->connection->fetchAllCol('SELECT id FROM usergroups WHERE sys_name IN(?, ?)', [
+            Usergroup::EVERYONE,
+            Usergroup::REGISTERED,
+        ]);
+
         if (isset($options['usergroups'])) {
             foreach ($options['usergroups'] as $agentGroup) {
                 if ($agentGroup === 'random') {
@@ -393,13 +443,20 @@ class MassLoader
                 }
 
                 if ($agentGroup) {
-                    $this->connection->insertIgnore('person2usergroups', [
-                        'person_id'    => $personId,
-                        'usergroup_id' => $agentGroup,
-                    ]);
+                    $usergroupIds[] = $agentGroup;
                 }
             }
         }
+
+        $usergroups = [];
+        foreach (array_unique($usergroupIds) as $usergroupsId) {
+            $usergroups[] = [
+                'person_id'    => $personId,
+                'usergroup_id' => $usergroupsId,
+            ];
+        }
+
+        $this->connection->batchInsert('person2usergroups', $usergroups);
 
         return $personId;
     }
