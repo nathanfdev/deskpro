@@ -78,17 +78,18 @@ class PermissionsLoader
     }
 
     /**
-     * @param array $ug_ids
+     * @param array $usergroupIds
      *
      * @return array
      */
-    public function getUsergroupPermissions(array $ug_ids)
+    public function getUsergroupPermissions(array $usergroupIds)
     {
-        $ug_ids = array_fill_keys($ug_ids, true);
+        $usergroupIds   = array_fill_keys($usergroupIds, true);
+        $allPermissions = $this->getAllPermissions();
 
         $ret = [];
-        foreach ($this->getAllPermissions() as $ugid => $p) {
-            if (isset($ug_ids[$ugid])) {
+        foreach ($allPermissions as $ugid => $p) {
+            if (isset($usergroupIds[$ugid])) {
                 $ret[$ugid] = $p;
             }
         }

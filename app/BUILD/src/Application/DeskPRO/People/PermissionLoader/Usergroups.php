@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Groups\PermissionsLoader;
 
 /**
  * Loads general usergroup permissions likes flags and the like.
@@ -135,18 +136,20 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
             if (!$this->usergroup_ids && !$this->person_id) {
                 $this->perms = [];
             } else {
+                /** @var PermissionsLoader $permissionLoader */
+                $permissionLoader = App::getSystemService('PermissionsLoader');
+
+                $perms = $permissionLoader->getUsergroupPermissions($this->usergroup_ids);
                 if ($this->person_id) {
-                    $perms = App::getSystemService('PermissionsLoader')->getUsergroupPermissions($this->usergroup_ids);
                     if ($this->person && $this->person->isAgent()) {
-                        $overrides = App::getSystemService('PermissionsLoader')->getAgentOverridePermissions($this->person_id);
+                        $overrides = $permissionLoader->getAgentOverridePermissions($this->person_id);
                         if ($overrides) {
                             $this->with_overrides = true;
                             $perms                = array_merge($perms, [-1 => $overrides]);
                         }
                     }
-                } else {
-                    $perms = App::getSystemService('PermissionsLoader')->getUsergroupPermissions($this->usergroup_ids);
                 }
+
                 $perm_result = [];
                 foreach ($perms as $p_group) {
                     foreach ($p_group as $p) {
