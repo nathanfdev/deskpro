@@ -138,6 +138,9 @@
   border-bottom: 1px solid $agent_header_border_color;
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 
+  .pointer {
+    cursor: pointer;
+  }
   .logo {
     width: 24px;
     background-color: $agent_header_border_color;

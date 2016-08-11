@@ -163,7 +163,7 @@ class AgentTopBar extends React.Component {
         />
       </TopBarItem>
       <TopBarItem classes={['legacy-omnibox']}>
-        <i className="icon wait" onClick={this.onRecent} />
+        <i className="icon wait pointer" onClick={this.onRecent} />
       </TopBarItem>
       <AddButton />
       <TopBarRightMenu>

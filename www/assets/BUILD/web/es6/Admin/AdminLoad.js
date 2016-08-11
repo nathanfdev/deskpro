@@ -45,9 +45,10 @@ export const start = () => {
   // to prevent malicious third-parties from trying to redirect us
   $(document).on('click', 'a[target="_blank"]', (ev) => {
     ev.preventDefault();
-    var o    = window.open($(this).attr('href'));
+    var o    = window.open($(ev.target).attr('href'));
     o.opener = null;
   });
+
 
   angular.element().ready(() => {
     $html.addClass('ng-app');
