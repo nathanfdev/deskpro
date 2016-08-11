@@ -54,6 +54,49 @@ class CheckTicketField extends \Application\DeskPRO\Tickets\Triggers\Terms\Check
      */
     public function compileJsCheck()
     {
+        $options     = $this->getTermOptions();
+        $op          = $this->getTermOperator();
+        $id          = $options['field_id'];
+        $check_value = $options->get('value');
+        $type        = $options->get('type_name');
+
+        if ($op === AbstractTriggerTerm::OP_ISSET) {
+            return "function (ticket) { return !!ticket.getTicketFieldValue($id); }";
+        } elseif ($op === AbstractTriggerTerm::OP_NOTISSET) {
+            return "function (ticket) { return !ticket.getTicketFieldValue($id); }";
+        }
+
+        $op_is  = AbstractTriggerTerm::OP_IS;
+        $op_not = AbstractTriggerTerm::OP_NOT;
+
+        switch ($type) {
+            case 'choice':
+                if (!is_array($check_value)) {
+                    $check_value = [$check_value];
+                }
+                foreach ($check_value as &$v) {
+                    $v = (int) $v;
+                }
+                $check_value = json_encode($check_value);
+
+                return <<<JS
+function (ticket) { 
+  var check_value = $check_value;
+  var value = parseInt(ticket.getTicketFieldValue($id)) || null;
+  var op = '$op';
+  if (!value || !value.length) value = [value];
+  
+  var has = false; 
+  for (var i = 0; i < check_value.length; i++) {
+    if (value.indexOf(check_value[i]) !== -1) has = true;
+  }
+  
+  if (op === '$op_is' && has) return true;
+  if (op === '$op_not' && !has) return true;
+  return false;
+}
+JS;
+        }
     }
 
     /**

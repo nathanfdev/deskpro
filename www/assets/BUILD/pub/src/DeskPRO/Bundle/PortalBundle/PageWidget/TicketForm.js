@@ -14,32 +14,36 @@ class TicketValueReader {
     this.$formEl = $formEl;
   }
 
-  _parseIntSelect(f) {
+  parseIntSelect(f) {
     return parseInt(f.val() || 0, 10) || 0;
   }
 
   getDepartmentId() {
-    return this._parseIntSelect($('#ticket_department', this.$formEl));
+    return this.parseIntSelect($('#ticket_department', this.$formEl));
   }
 
   getCategoryId() {
-    return this._parseIntSelect($('#ticket_category', this.$formEl));
+    return this.parseIntSelect($('#ticket_category', this.$formEl));
   }
 
   getPriorityId() {
-    return this._parseIntSelect($('#ticket_priority', this.$formEl));
+    return this.parseIntSelect($('#ticket_priority', this.$formEl));
   }
 
   getProductId() {
-    return this._parseIntSelect($('#ticket_product', this.$formEl));
+    return this.parseIntSelect($('#ticket_product', this.$formEl));
   }
 
   getOrganizationId() {
-    return this._parseIntSelect($('#ticket_user_organization', this.$formEl));
+    return this.parseIntSelect($('#ticket_user_organization', this.$formEl));
   }
 
   getWorkflowId() {
-    return this._parseIntSelect($('#ticket_workflow', this.$formEl));
+    return this.parseIntSelect($('#ticket_workflow', this.$formEl));
+  }
+
+  getTicketFieldValue(fieldId) {
+    return $(`#ticket_ticket_field_${fieldId}_data`, this.$formEl).val();
   }
 }
 
@@ -50,8 +54,6 @@ export class TicketForm extends PageWidget {
     const $tplEl = this.$element.find('.js_form_tpl');
     const ticketReader = new TicketValueReader($formEl);
     const allFormFields = $([]).add($formEl.find('select')).add($tplEl.find('select'));
-
-    let updateHitter;
 
     $('#ticket_message_message_html', this.$formEl).attr('data-blob-path', 'ticket[attachments]');
 
@@ -100,7 +102,7 @@ export class TicketForm extends PageWidget {
       }
     });
 
-    updateHitter = _.throttle(() => this.dynamicForm.update(), 250);
+    const updateHitter = _.throttle(() => this.dynamicForm.update(), 250);
     allFormFields.on('change', () => setTimeout(() => updateHitter(), 0));
   }
 }
