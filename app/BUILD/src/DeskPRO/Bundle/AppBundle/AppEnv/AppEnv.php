@@ -180,7 +180,7 @@ class AppEnv implements AppEnvInterface
             $params = implode(' ', $params);
         }
 
-        $cmd = $this->getConfig('paths.php_path').' '
+        $cmd = escapeshellarg($this->getConfig('paths.php_path')).' '
             .escapeshellarg($this->getAppDir().DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'console').' '
             .(defined('DP_PHP_BIN_ARGS') ? DP_PHP_BIN_ARGS.' ' : '')
             .$params;
