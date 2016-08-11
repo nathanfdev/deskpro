@@ -96,6 +96,15 @@ function (ticket) {
   return false;
 }
 JS;
+            case 'date':
+            case 'datetime':
+            return <<<JS
+function (ticket) { 
+  console.info(ticket.getTicketFieldValue($id));
+  console.info()
+  return false;
+}
+JS;
         }
     }
 
@@ -149,10 +158,6 @@ JS;
                 }
 
                 return false;
-
-            case 'toggle':
-                return $this->isIntValuesMatch($op, $submitted, $check_value);
-                break;
 
             case 'date':
             case 'datetime':

@@ -43,7 +43,18 @@ class TicketValueReader {
   }
 
   getTicketFieldValue(fieldId) {
-    return $(`#ticket_ticket_field_${fieldId}_data`, this.$formEl).val();
+    const $field = $(`#ticket_ticket_field_${fieldId}_data`, this.$formEl);
+    if ($field.is(':checkbox')) {
+      return $field.is(':checked');
+    }
+    if ($(`#ticket_ticket_field_${fieldId}_data_year`, $field)) {
+      return [
+        $(`#ticket_ticket_field_${fieldId}_data_year`, $field).val(),
+        $(`#ticket_ticket_field_${fieldId}_data_month`, $field).val(),
+        $(`#ticket_ticket_field_${fieldId}_data_day`, $field).val()
+      ];
+    }
+    return $field.val();
   }
 }
 
@@ -53,7 +64,7 @@ export class TicketForm extends PageWidget {
     const $formEl = this.$element.find('.dp_ticket_form');
     const $tplEl = this.$element.find('.js_form_tpl');
     const ticketReader = new TicketValueReader($formEl);
-    const allFormFields = $([]).add($formEl.find('select')).add($tplEl.find('select'));
+    const allFormFields = $([]).add($formEl.find('select, input')).add($tplEl.find('select, input'));
 
     $('#ticket_message_message_html', this.$formEl).attr('data-blob-path', 'ticket[attachments]');
 
