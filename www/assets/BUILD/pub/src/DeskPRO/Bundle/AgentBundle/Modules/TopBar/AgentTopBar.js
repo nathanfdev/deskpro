@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import AddButton from './AddButton';
@@ -7,6 +7,7 @@ import User from './User';
 import { connect } from 'react-redux';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import { SeparateComponent } from '../Common/Components/SeparateComponent';
 import Isvg from 'react-inlinesvg';
 
 @connect(state => ({
@@ -14,7 +15,7 @@ import Isvg from 'react-inlinesvg';
   chatDepartments: collectionSelectorFactory('Departments', 'all_tickets')(state),
   me:              meSelector(state)
 }))
-class AgentTopBar extends Component {
+class AgentTopBar extends SeparateComponent {
 
   static propTypes = {
     agents:          PropTypes.object.isRequired,
@@ -33,6 +34,10 @@ class AgentTopBar extends Component {
       });
     });
     this.getUserPicture = this.getUserPicture.bind(this);
+  }
+
+  static getType() {
+    return 'AgentTopBar';
   }
 
   onChatVolumeUpdate(newVal) {

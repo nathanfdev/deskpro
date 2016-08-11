@@ -11,6 +11,7 @@ import AppReducers from '../AppBundle/AppApp_Reducers';
 import * as ampMiddleware from 'Ampliflux/middleware';
 import { preloadData } from './Modules/Application/Actions/bootstrapActions';
 
+
 export class AgentLegacyApp {
   run() {
     window.$(document).on('ready', () => this.start());
@@ -22,27 +23,15 @@ export class AgentLegacyApp {
     } else {
       this.store = AgentLegacyApp.createStore();
       this.store.dispatch(preloadData());
-      this.renderPiece(AgentTopBar);
+      this.renderPiece(AgentTopBar, AgentTopBar.getType());
     }
   }
 
-  renderPiece(piece) {
+  renderPiece(piece, piecePlace) {
     const element = React.createElement(piece, { store: this.store });
-    let elementPlace;
-    if (element.type.WrappedComponent) {
-      elementPlace = element.type.WrappedComponent.name;
-    } else {
-      elementPlace = element.type.name;
-    }
-
-    elementPlace = elementPlace.replace(
-      /([A-Z])/g,
-      ($1) => `_${$1.toLowerCase()}`
-    );
-
+    const elementPlace = piecePlace.replace(/([A-Z])/g, ($1) => `_${$1.toLowerCase()}`);
     const node = document.getElementById(`react_dp${elementPlace}`);
-    // console.log(`react_dp${elementPlace}`);
-    // const node = document.getElementById('dp_header');
+
     if (node) {
       ReactDOM.render(element, node);
     }
