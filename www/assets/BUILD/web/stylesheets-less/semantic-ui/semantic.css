@@ -14414,6 +14414,9 @@ i.icon.fa:before {
 /*******************************
          Site Overrides
 *******************************/
+i.icon {
+  font-family: 'FontAwesome';
+}
 /*!
  * # Semantic UI - Image
  * http://github.com/semantic-org/semantic-ui/
