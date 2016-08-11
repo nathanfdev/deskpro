@@ -1,33 +1,38 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import AddButton from './AddButton';
 import Chat from './Chat';
 import User from './User';
+import { connect } from 'react-redux';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import Isvg from 'react-inlinesvg';
 
+@connect(state => ({
+  agents:          collectionSelectorFactory('Person', 'agents')(state),
+  chatDepartments: collectionSelectorFactory('Departments', 'all_tickets')(state),
+  me:              meSelector(state)
+}))
 class AgentTopBar extends Component {
 
-  constructor() {
-    super();
+  static propTypes = {
+    agents:          PropTypes.object.isRequired,
+    chatDepartments: PropTypes.object.isRequired,
+    me:              PropTypes.object
+  };
+
+  constructor(props) {
+    super(props);
     this.state = {
-      agents:            [],
-      chatDepartments:   [],
-      notificationCount: 0,
-      user:              null
+      notificationCount: 0
     };
     window.document.addEventListener('dpUpdateNotifCount', (e) => {
       this.setState({
         notificationCount: e.detail.count
       });
     });
-    this.retrieveAgents = this.retrieveAgents.bind(this);
     this.getUserPicture = this.getUserPicture.bind(this);
-  }
-
-  componentWillMount() {
-    this.retrieveAgents();
-    this.retrieveChatDepartments();
   }
 
   onChatVolumeUpdate(newVal) {
@@ -76,15 +81,20 @@ class AgentTopBar extends Component {
   }
 
   getUserPicture() {
-    const { user } = this.state;
-    if (!user) {
+    const { me } = this.props;
+    if (!me) {
       return '';
     }
-    let img = user.avatar.default_url_pattern;
-    if (user.avatar.url_pattern) {
-      img = user.avatar.url_pattern;
+
+    let img = me.getIn(['avatar', 'default_url_pattern']);
+    if (me.getIn(['avatar', 'url_pattern'])) {
+      img = me.getIn(['avatar', 'url_pattern']);
     }
-    return img.replace(/\{\{IMG_SIZE}}/, 32);
+    if (img) {
+      return img.replace(/\{\{IMG_SIZE}}/, 32);
+    }
+
+    return '';
   }
 
   closeIframes() {
@@ -96,59 +106,6 @@ class AgentTopBar extends Component {
     }
   }
 
-  retrieveAgents() {
-    const url = `${window.BASE_URL}api/v2/agents`;
-    const self = this;
-
-    // TODO refactor
-    window.$.ajax({
-      url,
-      type:     'GET',
-      dataType: 'json',
-      headers:  {
-        'X-Agent-Request': true
-      },
-      complete(response) {
-        const agents = response.responseJSON.data;
-        self.setState({
-          agents
-        });
-        for (const agent of agents) {
-          if (parseInt(agent.id, 10) === window.DESKPRO_PERSON_ID) {
-            self.setState({
-              user: agent
-            });
-            break;
-          }
-        }
-      }
-    });
-  }
-
-  retrieveChatDepartments() {
-    const url = `${window.BASE_URL}api/v2/chat_departments`;
-    const self = this;
-
-    // TODO refactor
-    window.$.ajax({
-      url,
-      type:     'GET',
-      dataType: 'json',
-      headers:  {
-        'X-Agent-Request': true
-      },
-      complete(response) {
-        const chatDepartments = [];
-        for (const department of response.responseJSON.data) {
-          chatDepartments[department.id] = department;
-        }
-        self.setState({
-          chatDepartments
-        });
-      }
-    });
-  }
-
   toggleViewMode() {
     if (window.DeskPRO_Window.paneVis.tabs && window.DeskPRO_Window.paneVis.list) {
       window.DeskPRO_Window.$scope.oneColumnView();
@@ -158,7 +115,9 @@ class AgentTopBar extends Component {
   }
 
   render() {
-    const { agents, chatDepartments, notificationCount } = this.state;
+    const { notificationCount } = this.state;
+    const { agents, chatDepartments } = this.props;
+
     return (<TopBar>
       <div className="logo" />
       <TopBarItem classes={['search-box legacy-omnibox']}>
@@ -169,8 +128,8 @@ class AgentTopBar extends Component {
           placeholder="Search ..."
         />
       </TopBarItem>
-      <TopBarItem classes={['legacy-omnibox']} onClick={this.onRecent}>
-        <i className="icon wait pointer hover" />
+      <TopBarItem classes={['legacy-omnibox']}>
+        <i className="icon wait" onClick={this.onRecent} />
       </TopBarItem>
       <AddButton closeIframes={this.closeIframes} />
       <TopBarRightMenu>
@@ -186,7 +145,7 @@ class AgentTopBar extends Component {
         </TopBarItem>
         <TopBarItem>
           <User src={this.getUserPicture()} />
-          <Chat agents={agents} chatDepartments={chatDepartments} updateVolume={this.onChatVolumeUpdate} volume={8} />
+          <Chat agents={agents.toArray()} chatDepartments={chatDepartments.toArray()} updateVolume={this.onChatVolumeUpdate} volume={8} />
         </TopBarItem>
       </TopBarRightMenu>
     </TopBar>);
