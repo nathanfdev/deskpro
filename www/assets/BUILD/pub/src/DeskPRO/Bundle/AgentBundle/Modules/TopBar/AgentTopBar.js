@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import AddButton from './AddButton';
 import Chat from './Chat';
 import User from './User';
 
-class AgentTopBar extends React.Component {
+class AgentTopBar extends Component {
+
   constructor() {
     super();
     this.state = {
@@ -31,7 +32,6 @@ class AgentTopBar extends React.Component {
   onChatVolumeUpdate(newVal) {
     const volume = newVal / 10;
     window.DeskPRO_Window.volume = volume;
-
 
     window.$('audio').each(function changeVolume() {
       this.volume = volume;
