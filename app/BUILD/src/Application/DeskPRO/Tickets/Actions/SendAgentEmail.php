@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketFilterSubscription;
 use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
@@ -77,6 +78,9 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         $person_context    = $context->getPersonContext();
         $is_notif_disabled = $this->getContainer()->getSetting('agent.disable_notifications');
 
+        $changeDetector   = $this->getContainer()->getTicketFilterChangeDetector();
+        $subscriptionRepo = $this->getContainer()->getEm()->getRepository(TicketFilterSubscription::class);
+
         foreach ($agentIds as $aid) {
             if ('all_agents' === $aid) {
                 $agents = $this->getContainer()->getAgentData()->getAgents();
@@ -88,13 +92,8 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                     continue;
                 }
 
-                $change_detect = $this->getContainer()->getTicketFilterChangeDetector();
-                $change_set    = $change_detect->getFilterChangeSet($ticket, $context);
-                $list_builder  = new AgentNotifyListBuilder(
-                    $ticket,
-                    $change_set,
-                    $this->getContainer()->getEm()->getRepository('DeskPRO:TicketFilterSubscription')
-                );
+                $change_set   = $changeDetector->getFilterChangeSet($ticket, $context);
+                $list_builder = new AgentNotifyListBuilder($ticket, $change_set, $subscriptionRepo);
                 $list_builder->setLogger($context->getLogger());
 
                 $notify = $list_builder->genNotifyList();
@@ -227,6 +226,8 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
             $mentioned_agents_map = [];
         }
 
+        $emailBuilder = TicketEmailBuilder::createFromContainer($this->getContainer());
+
         foreach ($agents as $agent) {
             ++$sent_count;
 
@@ -235,9 +236,9 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
             $vars = $default_vars;
 
             $type_flag = null;
-            if ($state->hasChangedField('agent') && $ticket->agent && $ticket->agent === $agent) {
+            if ($state->hasChangedField('agent') && $ticket->getAgent() && $ticket->getAgent() === $agent) {
                 $type_flag = 'assigned';
-            } elseif ($state->hasChangedField('agent_team') && $ticket->agent_team && $agent->getHelper('Agent')->isTeamMember($ticket->agent_team->getId())) {
+            } elseif ($state->hasChangedField('agent_team') && $ticket->getAgentTeam() && $agent->getHelper('Agent')->isTeamMember($ticket->getAgentTeam()->getId())) {
                 $type_flag = 'assigned_team';
             } elseif ($state->hasChangedField('participants') && $fn_check_new_part($agent)) {
                 $type_flag = 'added_part';
@@ -258,7 +259,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                 $vars['is_my_mention'] = true;
             }
 
-            $ticket_email = TicketEmailBuilder::createFromContainer($this->getContainer())
+            $ticket_email = $emailBuilder
                 ->setTicket($ticket)
                 ->setToPerson($agent)
                 ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'agent'))
@@ -268,7 +269,8 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                 ->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
                 ->setLogger($context->getLogger())
                 ->setHeaders($this->processHeaders($this->getActionOption('headers', []), $ticket, $context))
-                ->buildTicketEmail();
+                ->buildTicketEmail()
+            ;
 
             try {
                 $ticket_email->send($vars);

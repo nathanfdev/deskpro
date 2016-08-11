@@ -553,7 +553,7 @@ class FilterChangeDetector
             if ($addedAgentIds || $removedAgentIds) {
                 $logger->info(sprintf(
                     '[FilterChangeDetector] Summary: Filter %d -- AddedAgents(%s) -- RemovedAgents(%s)',
-                    $change->getFilter()->id,
+                    $change->getFilter()->getId(),
                     implode(', ', $addedAgentIds ?: ['none']),
                     implode(', ', $removedAgentIds ?: ['none'])
                 ));

@@ -39,6 +39,9 @@ use DeskPRO\Component\Util\RegexUtils;
 use Monolog\Logger;
 use Orb\Util\Arrays;
 
+/**
+ * Class AffectedFiltersCheck.
+ */
 class AffectedFiltersCheck
 {
     /**
@@ -176,11 +179,13 @@ class AffectedFiltersCheck
         $affected_filters_nochange = [];
 
         foreach ($this->filters as $f) {
-            if ($is_new_messages || $is_hidden_change || $f->getSearcher()->hasAnyAffectedFields($changed_fields)) {
+            $searcher = $f->getSearcher();
+
+            if ($is_new_messages || $is_hidden_change || $searcher->hasAnyAffectedFields($changed_fields)) {
                 $affected_filters[] = $f;
 
                 // Do the same test again, but remove ones where previous state version
-                if ($with_new_check && !$f->getSearcher()->hasAnyAffectedFields($new_changed_fields)) {
+                if ($with_new_check && !$searcher->hasAnyAffectedFields($new_changed_fields)) {
                     $affected_filters_nochange[] = $f;
                 }
             }

@@ -591,14 +591,7 @@ class TicketSearch extends SearcherAbstract
      */
     public function hasAnyAffectedFields(array $fields)
     {
-        $affected_fields = array_fill_keys($this->getAffectedFields(), true);
-        foreach ($fields as $f) {
-            if (isset($affected_fields[$f])) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_intersect($fields, $this->getAffectedFields());
     }
 
     /**
