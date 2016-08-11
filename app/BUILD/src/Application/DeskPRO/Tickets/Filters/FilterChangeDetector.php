@@ -257,10 +257,7 @@ class FilterChangeDetector
 
         $distinct_agents = [];
         foreach ($filter_checks as $filter_check) {
-            /** @var Person $agent */
-            foreach ($filter_check['scopes'] as $agentId => $agent) {
-                $distinct_agents[$agentId] = $agent;
-            }
+            $distinct_agents += $filter_check['scopes'];
         }
 
         foreach ($distinct_agents as $agentId => $agent) {
@@ -326,7 +323,6 @@ class FilterChangeDetector
             $cached_terms_new  = [];
 
             foreach ($agent_scopes as $agent_id => $agent) {
-
                 // If the agent couldnt see the old nor the new, then nothing changed
                 $agent_perm_old = $agent_perm_cache[$agent_id]['old'];
                 $agent_perm_new = $agent_perm_cache[$agent_id]['new'];
