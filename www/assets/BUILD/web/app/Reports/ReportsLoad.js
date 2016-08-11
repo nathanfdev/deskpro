@@ -32,6 +32,7 @@ define([
   'Reports/Main/Ctrl/Bare',
 
   'Reports/Main/Ctrl/BackToAgent',
+  'Reports/Main/Ctrl/GoToAdmin',
 
   'Reports/Overview/Ctrl/Overview',
   'Reports/Builder/Ctrl/List',

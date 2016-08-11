@@ -144,6 +144,10 @@
   .logo {
     width: 24px;
     background-color: $agent_header_border_color;
+    background-image: url('../img/deskpro_dots_white.svg');
+    background-position: center;
+    background-size: 24px;
+    background-repeat: no-repeat;
     padding: 11px 15px 11px 16px;
     img {
       width: 24px;

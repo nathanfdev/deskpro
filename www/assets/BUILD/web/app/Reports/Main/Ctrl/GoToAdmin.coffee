@@ -14,4 +14,4 @@ define ['Reports/Main/Ctrl/Base'], (Reports_Main_Ctrl_Bare) ->
         window.parent.DP_FRAME_OVERLAYS.admin.open()
         window.parent.DP_FRAME_OVERLAYS.reports.close()
 
-  Reports_Main_Ctrl_BackToAgent.EXPORT_CTRL()
+  Reports_Main_Ctrl_GoToAdmin.EXPORT_CTRL()

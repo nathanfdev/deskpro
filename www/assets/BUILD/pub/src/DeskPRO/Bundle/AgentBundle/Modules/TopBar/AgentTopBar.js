@@ -107,12 +107,7 @@ class AgentTopBar extends Component {
     const { agents, chatDepartments } = this.props;
 
     return (<TopBar>
-      <div className="logo">
-        <img
-          src="/assets/BUILD/pub/src/DeskPRO/Bundle/AgentBundle/Resources/img/deskpro_dots_white.svg"
-          role="presentation"
-        />
-      </div>
+      <div className="logo" />
       <TopBarItem classes={['search-box legacy-omnibox']}>
         <SearchBox
           onUserInput={this.onSearch}
