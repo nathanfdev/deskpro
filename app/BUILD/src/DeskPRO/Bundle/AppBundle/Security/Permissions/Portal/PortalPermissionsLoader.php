@@ -30,15 +30,15 @@ namespace DeskPRO\Bundle\AppBundle\Security\Permissions\Portal;
 
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\ArticleCategory;
-use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Permission;
+use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -168,84 +168,130 @@ class PortalPermissionsLoader
      */
     private function getAllowedDepartments(array $userGroups, $app)
     {
-        $qb = $this->em->createQueryBuilder();
-        $qb
-            ->select('dp')
-            ->from(DepartmentPermission::class, 'dp')
-            ->join('dp.department', 'd')
-            ->where(
-                'dp.usergroup IN (:usergroup_ids)',
-                'dp.is_active = 1',
-                'dp.value = 1',
-                "d.is_{$app}_enabled = 1"
-            )
-            ->setParameter('usergroup_ids', $userGroups)
-        ;
-
-        /** @var DepartmentPermission[] $permissions */
-        $permissions   = $qb->getQuery()->getResult();
-        $permissionMap = [];
-
-        /** @var Department[]|ArrayCollection $departments */
-        $departments = new ArrayCollection();
-        foreach ($permissions as $permission) {
-            $department   = $permission->getDepartment();
-            $departmentId = $department->getId();
-
-            $departments->offsetSet($departmentId, $department);
-            $permissionMap[$departmentId][] = $permission;
+        $userGroupIds = [];
+        foreach ($userGroups as $userGroup) {
+            if ($userGroup instanceof Usergroup) {
+                $userGroupIds[] = $userGroup->getId();
+            } elseif (is_scalar($userGroup)) {
+                $userGroupIds[] = (int) $userGroup;
+            }
         }
+
+        // load department permissions
+        $permissions = $this->em->getConnection()->fetchAll(
+            "SELECT dp.name, dp.value, dp.department_id
+            FROM department_permissions dp
+            JOIN departments d ON dp.department_id = d.id
+            WHERE dp.usergroup_id IN (:usergroup_ids) AND dp.is_active = 1 AND dp.value = 1 AND d.is_{$app}_enabled = 1",
+
+            ['usergroup_ids' => $userGroupIds],
+            ['usergroup_ids' => Connection::PARAM_INT_ARRAY]
+        );
+
+        $permissionMap = [];
+        foreach ($permissions as $permission) {
+            $permissionMap[$permission['department_id']][] = [
+                'name'  => $permission['name'],
+                'value' => $permission['value'],
+            ];
+        }
+
+        // load departments
+        $departments = $this->em->getConnection()->fetchAll(
+            "SELECT id, parent_id FROM departments WHERE is_{$app}_enabled = 1"
+        );
+
+        $departmentParents  = [];
+        $departmentChildren = [];
+        foreach ($departments as $department) {
+            if ($department['parent_id']) {
+                $departmentParents[$department['id']][$department['parent_id']]  = true;
+                $departmentChildren[$department['parent_id']][$department['id']] = true;
+            }
+        }
+
+        // prepare departments with permission list
+        $departmentsWithPermissions = array_fill_keys(array_keys($permissionMap), true);
 
         // add also parent nodes
-        foreach ($departments as $department) {
-            foreach ($department->getAllParents() as $parent) {
-                $departments->add($parent);
+        $addParentIterator = function (array $departmentIds) use (&$departmentsWithPermissions, $departmentParents, &$addParentIterator) {
+            foreach ($departmentIds as $departmentId => $val) {
+                if (!isset($departmentParents[$departmentId])) {
+                    continue;
+                }
+
+                foreach ($departmentParents[$departmentId] as $parentId => $val2) {
+                    $departmentsWithPermissions[$parentId] = true;
+                }
+
+                $addParentIterator($departmentParents[$departmentId]);
             }
-        }
+        };
+
+        $addParentIterator($departmentsWithPermissions);
 
         // remove empty parent nodes
-        foreach ($departments as $department) {
-            if ($department->isLeaf()) {
-                continue;
+        $hasChildIterator = function ($departmentId) use ($departmentsWithPermissions, $departmentChildren, &$hasChildIterator) {
+            if (!isset($departmentChildren[$departmentId])) {
+                return false;
             }
 
-            $foundAllowedChild = false;
-            foreach ($department->getAllChildren() as $child) {
-                if ($child->isLeaf() && $departments->contains($child)) {
-                    $foundAllowedChild = true;
-                }
-            }
-
-            if (!$foundAllowedChild) {
-                $departments->removeElement($department);
-            }
-        }
-
-        $result = [];
-        foreach ($departments as $department) {
-            $departmentId = $department->getId();
-
-            /** @var DepartmentPermission[]|ArrayCollection $departmentPermissions */
-            $departmentPermissions = isset($permissionMap[$departmentId]) ? $permissionMap[$departmentId] : [];
-
-            // get own permissions
-            foreach ($departmentPermissions as $permission) {
-                $result[$departmentId][$permission->getName()] = 1;
-            }
-
-            // if it's a parent department then get permissions from its children
-            if (!$department->isLeaf()) {
-                foreach ($department->getAllChildren() as $child) {
-                    if ($departments->contains($child)) {
-                        /** @var DepartmentPermission[] $childPermissions */
-                        $childPermissions = isset($permissionMap[$child->getId()]) ? $permissionMap[$child->getId()] : [];
-
-                        foreach ($childPermissions as $permission) {
-                            $result[$departmentId][$permission->getName()] = 1;
-                        }
+            foreach ($departmentChildren[$departmentId] as $childId => $val) {
+                // check current leaf children level
+                if (!isset($departmentChildren[$childId])) {
+                    if (isset($departmentsWithPermissions[$childId])) {
+                        return true;
+                    }
+                } else {
+                    // check deeper
+                    if ($hasChildIterator($childId)) {
+                        return true;
                     }
                 }
             }
+
+            return false;
+        };
+
+        foreach ($departmentsWithPermissions as $departmentId => $val) {
+            // leaf department, no need to check
+            if (!isset($departmentChildren[$departmentId])) {
+                continue;
+            }
+
+            // check that leaf departments of this parent department has permissions
+            if (!$hasChildIterator($departmentId)) {
+                unset($departmentsWithPermissions[$departmentId]);
+            }
+        }
+
+        // prepare result permissions
+        $result = [];
+
+        foreach ($departmentsWithPermissions as $departmentId => $val) {
+            // get own permissions
+            $departmentPermissions = isset($permissionMap[$departmentId]) ? $permissionMap[$departmentId] : [];
+
+            // if it's a parent department then get permissions from its children
+            $childPermissionIterator = function ($departmentId) use (&$departmentPermissions, $departmentChildren, $permissionMap, &$childPermissionIterator) {
+                if (!isset($departmentChildren[$departmentId])) {
+                    return;
+                }
+
+                foreach ($departmentChildren[$departmentId] as $childId => $val) {
+                    $childPermissions = isset($permissionMap[$childId]) ? $permissionMap[$childId] : [];
+                    foreach ($childPermissions as $childPermission) {
+                        $departmentPermissions[] = $childPermission;
+                    }
+
+                    $childPermissionIterator($childId);
+                }
+            };
+
+            $childPermissionIterator($departmentId);
+
+            // calculate permissions
+            $result[$departmentId] = Permission::getEffectivePermissions($departmentPermissions);
         }
 
         return $result;
