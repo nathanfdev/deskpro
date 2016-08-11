@@ -76,6 +76,13 @@ class DistroRelease
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
 
+        // whitelist all unknown keys, they might be new
+        foreach (array_keys($props) as $k) {
+            if (!$resolver->isDefined($k)) {
+                $resolver->setDefined($k);
+            }
+        }
+
         $props = $resolver->resolve($props);
 
         $this->id        = $props['id'];

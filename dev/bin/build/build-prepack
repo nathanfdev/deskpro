@@ -39,6 +39,7 @@ npm install --production
 cd $DIR_ROOT
 
 rm -rf dev/
+rm README.md
 
 find . -type d \( \
     -name ".git" \
