@@ -62,4 +62,4 @@ and automatically re-compile any changes you make.
 | Wiki     | http://wiki.deskprodev.com/ |
 |----------|-----------------------------|
 | User     | reader                      |
-| Password | wikireader                  |
+| Password | dpreader2016                |
