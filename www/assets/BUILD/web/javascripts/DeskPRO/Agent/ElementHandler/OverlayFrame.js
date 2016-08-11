@@ -133,7 +133,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 		}
 	},
 
-	delete: function() {
+	deleteFrame: function() {
 		if (this.frameWrap) {
 			this.frameWrap.remove();
 			this.frame = null;
