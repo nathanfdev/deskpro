@@ -583,6 +583,5 @@ $CONFIG['agent_vendors_css'] = [
         'vendor/bootstrap/css/table.css',
         'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
         'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-patch.css',
-        'app-build/styles/Admin/semantic.css',
     ],
 ];

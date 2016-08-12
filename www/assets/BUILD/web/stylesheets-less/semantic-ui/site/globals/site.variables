@@ -61,6 +61,7 @@
 @googleFontSizes   : '300,400,600,700,400italic,700italic';
 @pageFont: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 @headerFont: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+@imagePath: 'images';
 
 @textColor: @dp-greyscale-1000;
 

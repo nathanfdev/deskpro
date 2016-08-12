@@ -32,7 +32,7 @@
    ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝╚══════╝╚══════╝
 
 */
-/*******************************
+/*******************************/
         Theme Selection
 *******************************/
 /* To override a theme for an individual element
@@ -8452,7 +8452,7 @@ i.flag:not(.icon) {
 i.flag:not(.icon):before {
   display: inline-block;
   content: '';
-  background: url("images/flags.png") no-repeat -108px -1976px;
+  background: url("../img/flags.png") no-repeat -108px -1976px;
   width: 16px;
   height: 11px;
 }
@@ -43746,12 +43746,12 @@ a.ui.card:hover,
 }
 .ui.toggle.checkbox input ~ .box:after,
 .ui.toggle.checkbox input ~ label:after {
-  background: #fff url('BUILD/web/stylesheets-less/semantic-ui/images/x.svg') center no-repeat;
+  background: #fff url('../img/x.svg') center no-repeat;
   background-size: 14px 14px;
 }
 .ui.toggle.checkbox input:checked ~ .box:after,
 .ui.toggle.checkbox input:checked ~ label:after {
-  background: #fff url('BUILD/web/stylesheets-less/semantic-ui/images/tick.svg') center no-repeat;
+  background: #fff url('../img/tick.svg') center no-repeat;
   background-size: 14px 14px;
 }
 /*--------------
