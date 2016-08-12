@@ -167,7 +167,7 @@ class AgentTopBar extends React.Component {
         />
       </TopBarItem>
       <TopBarItem classes={['legacy-omnibox']}>
-        <i className="icon wait pointer" onClick={this.onRecent} />
+        <i className="icon wait pointer hover" onClick={this.onRecent} />
       </TopBarItem>
       <AddButton closeIframes={this.closeIframes} />
       <TopBarRightMenu>
@@ -177,7 +177,7 @@ class AgentTopBar extends React.Component {
         <TopBarItem classes={['legacy-omnibox']}>
           <TopBarNotificationIcon
             elementId="notifications"
-            icon="alarm outline"
+            icon="alarm outline hover pointer"
             count={notificationCount}
             onClick={this.onNotification}
           />

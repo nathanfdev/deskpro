@@ -95,6 +95,10 @@ class AddButton extends React.Component {
     this.props.closeIframes();
   }
 
+  togglePopup() {
+    this.refs.addPopup.togglePopup();
+  }
+
   render() {
     return (<div className="item add">
       <PopUp
@@ -105,8 +109,9 @@ class AddButton extends React.Component {
         zIndex={99999}
         content={this.getPopupContent()}
         ref={'addPopup'}
+        autoOpen={false}
       >
-        <button className="ui button">+</button>
+        <button className="ui button" onClick={this.togglePopup}>+</button>
       </PopUp>
     </div>);
   }
