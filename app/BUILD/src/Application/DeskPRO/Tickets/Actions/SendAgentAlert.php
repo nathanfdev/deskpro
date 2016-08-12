@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketFilterSubscription;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
 use Orb\Util\CheckedOptionsArray;
@@ -105,13 +106,13 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 
             // based on notify list
             } elseif ($aid == 'notify_list') {
+                /** @var \Application\DeskPRO\EntityRepository\TicketFilterSubscription $subscriptionRepo */
+                $subscriptionRepo = $this->getContainer()->getEm()->getRepository(TicketFilterSubscription::class);
+                $forAgentIds      = $subscriptionRepo->getSubscribedActiveAgentIds();
+
                 $change_detect = $this->getContainer()->getTicketFilterChangeDetector();
-                $change_set    = $change_detect->getFilterChangeSet($ticket, $context);
-                $list_builder  = new AgentNotifyListBuilder(
-                    $ticket,
-                    $change_set,
-                    $this->getContainer()->getEm()->getRepository('DeskPRO:TicketFilterSubscription')
-                );
+                $change_set    = $change_detect->getFilterChangeSet($ticket, $context, $forAgentIds);
+                $list_builder  = new AgentNotifyListBuilder($ticket, $change_set, $subscriptionRepo);
 
                 $list_builder->setLogger($context->getLogger());
 

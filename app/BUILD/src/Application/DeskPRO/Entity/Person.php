@@ -868,14 +868,28 @@ GroupSequenceProviderInterface
         return $this->is_disabled;
     }
 
+    /**
+     * @return bool
+     */
     public function isAgent()
     {
         return $this->is_agent;
     }
 
+    /**
+     * @return bool
+     */
     public function isAdmin()
     {
         return $this->can_admin;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActiveAgent()
+    {
+        return $this->is_agent && !$this->is_deleted && !$this->is_disabled;
     }
 
     /**

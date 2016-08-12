@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\Filters;
 
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Component\Util\RegexUtils;
 use Monolog\Logger;
@@ -50,9 +51,9 @@ class AffectedFiltersCheck
     private $ticket;
 
     /**
-     * @var \Application\DeskPRO\Entity\LegacyTicketFilter[]
+     * @var array
      */
-    private $filters;
+    private $groupedByTermFilter;
 
     /**
      * @var Logger
@@ -85,15 +86,17 @@ class AffectedFiltersCheck
     private $has_run = false;
 
     /**
-     * @param Ticket                                           $ticket
-     * @param \Application\DeskPRO\Entity\LegacyTicketFilter[] $filters
-     * @param Logger                                           $logger
+     * Constructor.
+     *
+     * @param Ticket $ticket
+     * @param array  $groupedByTermFilters
+     * @param Logger $logger
      */
-    public function __construct(Ticket $ticket, array $filters, Logger $logger)
+    public function __construct(Ticket $ticket, array $groupedByTermFilters, Logger $logger)
     {
-        $this->ticket  = $ticket;
-        $this->filters = $filters;
-        $this->logger  = $logger;
+        $this->ticket              = $ticket;
+        $this->groupedByTermFilter = $groupedByTermFilters;
+        $this->logger              = $logger;
     }
 
     /**
@@ -106,25 +109,25 @@ class AffectedFiltersCheck
         }
         $this->has_run = true;
 
-        $this->logger->info(sprintf('[AffectedFilters] Checking %d filters', count($this->filters)));
+        $this->logger->info(sprintf('[AffectedFilters] Checking %d filters', count($this->groupedByTermFilter)));
 
         $state = $this->ticket->getStateChangeRecorder();
 
         $changed_fields = $state->getChangedFields();
 
         $this->field_versions = [];
-        foreach ($changed_fields as $f) {
-            $version                  = $state->getStateVersionForChange($state->getLastChangeForField($f));
-            $this->field_versions[$f] = $version;
+        foreach ($changed_fields as $filter) {
+            $version                       = $state->getStateVersionForChange($state->getLastChangeForField($filter));
+            $this->field_versions[$filter] = $version;
         }
 
         if ($this->prev_field_versions) {
             $new_changed_fields = [];
             $with_new_check     = true;
 
-            foreach ($this->field_versions as $f => $v) {
-                if (!isset($this->prev_field_versions[$f]) || $this->prev_field_versions[$f] < $v) {
-                    $new_changed_fields[] = $f;
+            foreach ($this->field_versions as $filter => $v) {
+                if (!isset($this->prev_field_versions[$filter]) || $this->prev_field_versions[$filter] < $v) {
+                    $new_changed_fields[] = $filter;
                 }
             }
         } else {
@@ -178,15 +181,40 @@ class AffectedFiltersCheck
         $affected_filters          = [];
         $affected_filters_nochange = [];
 
-        foreach ($this->filters as $f) {
-            $searcher = $f->getSearcher();
+        /** @var Ticket $originalTicket */
+        $originalTicket = $this->ticket->getOriginalStateClone();
+        $newTicket      = $this->ticket;
+        $isNewTicket    = $state->isNewTicket();
+
+        foreach ($this->groupedByTermFilter as $filterGroup) {
+            /** @var LegacyTicketFilter $filter */
+            $filter   = reset($filterGroup);
+            $searcher = $filter->getSearcher();
 
             if ($is_new_messages || $is_hidden_change || $searcher->hasAnyAffectedFields($changed_fields)) {
-                $affected_filters[] = $f;
+                // check filters w/o agent context
+                // if base check is failed then no need to check it in the agent context
+                $newMatch = false;
+                $origMath = false;
+
+                if (!$isNewTicket && $searcher->doesTicketMatch($originalTicket)) {
+                    $origMath = true;
+                }
+                if ($searcher->doesTicketMatch($newTicket)) {
+                    $newMatch = true;
+                }
+
+                if (!$origMath && !$newMatch) {
+                    $this->logger->debug(sprintf('[FilterChangeDetector] ----- Base check failed #%d -----', $filter->getId()));
+                    continue;
+                }
+
+                // collect affected filters
+                $affected_filters += $filterGroup;
 
                 // Do the same test again, but remove ones where previous state version
                 if ($with_new_check && !$searcher->hasAnyAffectedFields($new_changed_fields)) {
-                    $affected_filters_nochange[] = $f;
+                    $affected_filters_nochange += $filterGroup;
                 }
             }
         }

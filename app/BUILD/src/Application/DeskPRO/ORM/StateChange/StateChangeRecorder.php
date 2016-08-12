@@ -43,12 +43,12 @@ class StateChangeRecorder
     /**
      * @var int
      */
-    private static $global_state_version = 0;
+    protected static $global_state_version = 0;
 
     /**
      * @var int
      */
-    private $state_version;
+    protected $state_version;
 
     /**
      * @var array
@@ -82,6 +82,9 @@ class StateChangeRecorder
      */
     private $current_change_metadata = [];
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->state_version = self::$global_state_version;

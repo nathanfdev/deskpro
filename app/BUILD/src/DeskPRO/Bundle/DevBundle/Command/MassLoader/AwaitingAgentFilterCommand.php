@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\DevBundle\Command\MassLoader;
 
+use Application\DeskPRO\Entity\Ticket;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -63,12 +64,27 @@ class AwaitingAgentFilterCommand extends AbstractLoadDataCommand
             'filters'    => [
                 [
                     'terms' => [
-                        'status' => 'awaiting_agent',
+                        'status' => Ticket::STATUS_AWAITING_USER,
                     ],
                 ],
                 [
                     'terms' => [
-                        'status' => 'awaiting_agent',
+                        'status' => Ticket::STATUS_AWAITING_AGENT,
+                    ],
+                ],
+                [
+                    'terms' => [
+                        'status' => Ticket::STATUS_AWAITING_AGENT,
+                    ],
+                ],
+                [
+                    'terms' => [
+                        'status' => Ticket::STATUS_RESOLVED,
+                    ],
+                ],
+                [
+                    'terms' => [
+                        'status' => Ticket::STATUS_ARCHIVED,
                     ],
                 ],
             ],

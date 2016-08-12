@@ -81,7 +81,7 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
         $onlineAgentIds = $personRepo->getActiveAgents(true);
 
         $detector        = $this->container->getTicketFilterChangeDetector();
-        $change_set      = $detector->getFilterChangeSet($ticket, $context);
+        $change_set      = $detector->getFilterChangeSet($ticket, $context, $onlineAgentIds);
         $client_messages = $change_set->getListUpdateClientMessages($onlineAgentIds);
 
         $rows     = [];

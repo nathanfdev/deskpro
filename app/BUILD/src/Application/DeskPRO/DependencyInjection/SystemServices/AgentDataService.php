@@ -186,6 +186,14 @@ class AgentDataService
     }
 
     /**
+     * @return array
+     */
+    public function getAgentToTeams()
+    {
+        return $this->agent_to_teams;
+    }
+
+    /**
      * @param array $for_ids
      *
      * @return string[]

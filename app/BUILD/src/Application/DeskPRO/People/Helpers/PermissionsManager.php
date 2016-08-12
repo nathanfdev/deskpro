@@ -376,25 +376,25 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
             return true;
         }
 
-        if ($name == 'agent_tickets.create') {
+        if ($name === 'agent_tickets.create') {
             if (!App::getDataService('Department')->getPersonDepartments($this->person, 'tickets', [], 'assign')) {
                 return false;
             }
         }
 
-        if ($name == 'articles.use' && !$crossBrandAppSettings['core.apps_kb']) {
+        if ($name === 'articles.use' && !$crossBrandAppSettings['core.apps_kb']) {
             return false;
         }
-        if ($name == 'feedback.use' && !$crossBrandAppSettings['core.apps_feedback']) {
+        if ($name === 'feedback.use' && !$crossBrandAppSettings['core.apps_feedback']) {
             return false;
         }
-        if ($name == 'downloads.use' && !$crossBrandAppSettings['core.apps_downloads']) {
+        if ($name === 'downloads.use' && !$crossBrandAppSettings['core.apps_downloads']) {
             return false;
         }
-        if ($name == 'news.use' && !$crossBrandAppSettings['core.apps_news']) {
+        if ($name === 'news.use' && !$crossBrandAppSettings['core.apps_news']) {
             return false;
         }
-        if ($name == 'chat.use' || $name == 'agent_chat.use') {
+        if ($name === 'chat.use' || $name === 'agent_chat.use') {
             if (!App::getSetting('core.apps_chat')) {
                 return false;
             }
@@ -403,7 +403,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
                 return false;
             }
         }
-        if ($name == 'articles.comment' || $name == 'downloads.comment' || $name == 'news.comment') {
+        if ($name === 'articles.comment' || $name === 'downloads.comment' || $name === 'news.comment') {
             if (!$crossBrandAppSettings['user.publish_comments']) {
                 return false;
             }

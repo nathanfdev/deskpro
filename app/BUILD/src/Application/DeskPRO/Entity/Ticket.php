@@ -4079,6 +4079,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return $this->organization;
     }
 
+    /**
+     * @return int|null
+     */
+    public function getOrganizationId()
+    {
+        return $this->organization ? $this->organization->getId() : null;
+    }
+
     public function isOwner(Person $person)
     {
         return $person === $this->getPerson();

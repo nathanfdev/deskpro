@@ -36,6 +36,9 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Searcher\OrganizationSearch;
+use Application\DeskPRO\Searcher\PersonSearch;
+use Application\DeskPRO\Searcher\TicketSearch;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -264,14 +267,14 @@ class LegacyTicketFilter extends DomainObject
             return $this->_searcher;
         }
 
-        $searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+        $searcher = new TicketSearch();
 
         if (!$this->sys_name || strpos($this->sys_name, 'archive_') !== 0) {
             $searcher->enableFilterSearch();
         }
 
-        $user_searcher  = new \Application\DeskPRO\Searcher\PersonSearch();
-        $org_searcher   = new \Application\DeskPRO\Searcher\OrganizationSearch();
+        $user_searcher  = new PersonSearch();
+        $org_searcher   = new OrganizationSearch();
         $has_user_terms = false;
         $has_org_terms  = false;
 

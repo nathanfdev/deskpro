@@ -77,9 +77,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
         $person_context    = $context->getPersonContext();
         $is_notif_disabled = $this->getContainer()->getSetting('agent.disable_notifications');
-
-        $changeDetector   = $this->getContainer()->getTicketFilterChangeDetector();
-        $subscriptionRepo = $this->getContainer()->getEm()->getRepository(TicketFilterSubscription::class);
+        $changeDetector    = $this->getContainer()->getTicketFilterChangeDetector();
 
         foreach ($agentIds as $aid) {
             if ('all_agents' === $aid) {
@@ -92,7 +90,11 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                     continue;
                 }
 
-                $change_set   = $changeDetector->getFilterChangeSet($ticket, $context);
+                /** @var \Application\DeskPRO\EntityRepository\TicketFilterSubscription $subscriptionRepo */
+                $subscriptionRepo = $this->getContainer()->getEm()->getRepository(TicketFilterSubscription::class);
+                $forAgentIds      = $subscriptionRepo->getSubscribedActiveAgentIds();
+
+                $change_set   = $changeDetector->getFilterChangeSet($ticket, $context, $forAgentIds);
                 $list_builder = new AgentNotifyListBuilder($ticket, $change_set, $subscriptionRepo);
                 $list_builder->setLogger($context->getLogger());
 

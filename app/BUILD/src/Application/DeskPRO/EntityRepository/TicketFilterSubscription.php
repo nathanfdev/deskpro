@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Orb\Util\Arrays;
@@ -57,6 +58,24 @@ class TicketFilterSubscription extends AbstractEntityRepository
         }
 
         return $ret;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSubscribedActiveAgentIds()
+    {
+        /** @var Connection $connection */
+        $connection = $this->getEntityManager()->getConnection();
+        $agentIds   = $connection->fetchAllCol(<<<SQL
+            SELECT DISTINCT s.person_id
+            FROM ticket_filter_subscriptions s
+            JOIN people p ON p.id = s.person_id
+            WHERE p.is_agent = 1 AND p.is_disabled = 0 AND p.is_deleted = 0
+SQL
+        );
+
+        return array_map('intval', $agentIds);
     }
 
     /**
