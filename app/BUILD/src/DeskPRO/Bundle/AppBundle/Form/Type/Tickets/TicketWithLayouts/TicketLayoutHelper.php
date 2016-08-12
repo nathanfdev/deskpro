@@ -68,11 +68,19 @@ class TicketLayoutHelper
             $finalData[$key] = null;
             $check           = preg_replace('/^(.+)_\d*$/', '\\1', $key);
 
-            if (!isset($keys[$check]) || !$form->has($key)) {
+            if (!isset($keys[$check])) {
                 continue;
             }
 
             $finalData[$key] = $value;
+
+            if (!$form->has($key)) {
+                continue;
+            }
+
+            if ($choiceList = $form->get($key)->getConfig()->getOption('choice_list')) {
+                // todo
+            }
 
             $choice = null;
             if (is_scalar($value)) {

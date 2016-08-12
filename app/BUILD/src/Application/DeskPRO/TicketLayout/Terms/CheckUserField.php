@@ -1,9 +1,10 @@
 <?php
+
 /*
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -27,32 +28,22 @@
 
 namespace Application\DeskPRO\TicketLayout\Terms;
 
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 
-use Application\DeskPRO\Entity\Ticket;
-
-class CheckUserField extends \Application\DeskPRO\Tickets\Triggers\Terms\CheckUserField implements TicketLayoutTermInterface
+class CheckUserField extends CheckCustomField
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function compileJsCheck()
     {
-
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function isTicketMatch(Ticket $ticket)
+    protected function getSubmittedData(array $data)
     {
+        $options = $this->getTermOptions();
 
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isSubmittedDataMatch(array $data)
-    {
-
+        return @$data[FormFields::USER_FIELD.'_'.$options['field_id']][CustomDataType::KEY];
     }
 }

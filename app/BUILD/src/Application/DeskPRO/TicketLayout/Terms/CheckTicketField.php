@@ -28,27 +28,12 @@
 
 namespace Application\DeskPRO\TicketLayout\Terms;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\Triggers\Terms\AbstractTriggerTerm;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
-use Orb\Util\CheckedOptionsArray;
-use Orb\Util\Util;
 
-class CheckTicketField extends \Application\DeskPRO\Tickets\Triggers\Terms\CheckTicketField implements TicketLayoutTermInterface
+class CheckTicketField extends CheckCustomField
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function getOptionsDef()
-    {
-        $options = new CheckedOptionsArray();
-        $options->addRequiredNames('field_id', 'value', 'type_name');
-
-        return $options;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -68,6 +53,11 @@ class CheckTicketField extends \Application\DeskPRO\Tickets\Triggers\Terms\Check
 
         $op_is  = AbstractTriggerTerm::OP_IS;
         $op_not = AbstractTriggerTerm::OP_NOT;
+        $op_lt  = AbstractTriggerTerm::OP_LT;
+        $op_lte = AbstractTriggerTerm::OP_LTE;
+        $op_gt  = AbstractTriggerTerm::OP_GT;
+        $op_gte = AbstractTriggerTerm::OP_GTE;
+        $op_btw = AbstractTriggerTerm::OP_BETWEEN;
 
         switch ($type) {
             case 'choice':
@@ -98,73 +88,6 @@ function (ticket) {
 JS;
             case 'date':
             case 'datetime':
-            return <<<JS
-function (ticket) { 
-  console.info(ticket.getTicketFieldValue($id));
-  console.info()
-  return false;
-}
-JS;
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isTicketMatch(Ticket $ticket)
-    {
-        $context = new ExecutorContext();
-
-        return $this->isTriggerMatch($ticket, $context);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isSubmittedDataMatch(array $data)
-    {
-        $options     = $this->getTermOptions();
-        $op          = $this->getTermOperator();
-        $submitted   = @$data[FormFields::TICKET_FIELD.'_'.$options->get('field_id')][CustomDataType::KEY];
-        $check_value = $options->get('value');
-        $type        = $options->get('type_name');
-
-        if ($op === AbstractTriggerTerm::OP_ISSET) {
-            return (bool) $submitted;
-        } elseif ($op === AbstractTriggerTerm::OP_NOTISSET) {
-            return !$submitted;
-        }
-
-        switch ($type) {
-            case 'choice':
-                if (!is_array($check_value)) {
-                    $check_value = [$check_value];
-                }
-                $check_ids = array_fill_keys($check_value, true);
-                $has       = false;
-                foreach ($check_value as $v) {
-                    if (isset($check_ids[$v])) {
-                        $has = true;
-                        break;
-                    }
-                }
-
-                if ($op === AbstractTriggerTerm::OP_IS && $has) {
-                    return true;
-                }
-
-                if ($op === AbstractTriggerTerm::OP_NOT && !$has) {
-                    return true;
-                }
-
-                return false;
-
-            case 'date':
-            case 'datetime':
-
-                $date1 = null;
-                $date2 = null;
-
                 try {
                     if ($options['date1']) {
                         $date1 = new \DateTime('@'.$options['date1']);
@@ -189,39 +112,35 @@ JS;
                     $date2 = null;
                 }
 
-                try {
-                    $value = new \DateTime('@'.$submitted);
-                } catch (\Exception $e) {
-                    $value = null;
-                }
+                $date1 = $date1 ? 'new Date('.$date1->getTimestamp().'000)' : 'null';
+                $date2 = $date2 ? 'new Date('.$date2->getTimestamp().'000)' : 'null';
 
-                switch ($op) {
-                    case AbstractTriggerTerm::OP_LT:
-                    case AbstractTriggerTerm::OP_LTE:
-                    case AbstractTriggerTerm::OP_GT:
-                    case AbstractTriggerTerm::OP_GTE:
-                        if (!$date1 && !$date2) {
-                            return false;
-                        }
+                return <<<JS
+function (ticket) {
+  var date1 = $date1;
+  var date2 = $date2;
+  var op = '$op';
+  var value = ticket.getTicketFieldValue($id);
+  if (!value || !value.length) {
+    return false;
+  }
+  value = new Date(value[0], value[1], value[2]);
 
-                        $d = Util::coalesce($date1, $date2);
-
-                        return $this->isDateValuesMatch($op, $d, $value);
-
-                    case 'between':
-                        if (!$date1 || !$date2) {
-                            return false;
-                        }
-
-                        return $this->isDateRangeValuesMatch($value, $date1, $date2);
-                }
-
-                return false;
-
-            case 'text':
-                return $this->isStringValuesMatch($op, $submitted, $check_value);
+  switch (op) {
+    case '$op_lt':
+    
+  }
+  
+  return false;
+}
+JS;
         }
+    }
 
-        return false;
+    protected function getSubmittedData(array $data)
+    {
+        $options = $this->getTermOptions();
+
+        return @$data[FormFields::TICKET_FIELD.'_'.$options['field_id']][CustomDataType::KEY];
     }
 }
