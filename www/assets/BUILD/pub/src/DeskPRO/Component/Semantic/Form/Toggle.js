@@ -1,11 +1,13 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 
 class Toggle extends React.Component {
   static propTypes = {
     active:    PropTypes.bool,
     onChange:  PropTypes.func,
     elementId: PropTypes.string,
-    children:  PropTypes.node
+    children:  PropTypes.node,
+    classes:   PropTypes.array
   };
   static defaultProps = {
     onChange() {
@@ -23,9 +25,9 @@ class Toggle extends React.Component {
   }
 
   render() {
-    const { children, elementId, active } = this.props;
+    const { children, elementId, active, classes } = this.props;
     return  (
-      <div className="ui toggle checkbox">
+      <div className={classNames('ui', 'toggle', 'checkbox', classes)}>
         <input
           type="checkbox"
           id={elementId}

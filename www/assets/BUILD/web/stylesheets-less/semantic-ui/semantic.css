@@ -2945,7 +2945,7 @@ h6 {
   font-style: normal;
   text-align: center;
   text-decoration: none;
-  border-radius: 0.28571429rem;
+  border-radius: 2px;
   box-shadow: 0px 2px 0px #3c82b4;
   user-select: none;
   transition: opacity 0.1s ease, background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
@@ -3530,7 +3530,7 @@ h6 {
   background: transparent none !important;
   color: #4c4f50 !important;
   font-weight: normal;
-  border-radius: 0.28571429rem;
+  border-radius: 2px;
   text-transform: none;
   text-shadow: none !important;
   box-shadow: 0px 1px 0px #d4d7d8;
@@ -3538,7 +3538,7 @@ h6 {
 .ui.basic.buttons {
   box-shadow: none;
   border: 1px solid rgba(34, 36, 38, 0.15);
-  border-radius: 0.28571429rem;
+  border-radius: 2px;
 }
 .ui.basic.buttons .button {
   border-radius: 0em;
@@ -3691,20 +3691,20 @@ h6 {
   border-radius: 0em;
 }
 .ui.labeled.icon.buttons .button:first-child > .icon {
-  border-top-left-radius: 0.28571429rem;
-  border-bottom-left-radius: 0.28571429rem;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
 }
 .ui.labeled.icon.buttons .button:last-child > .icon {
-  border-top-right-radius: 0.28571429rem;
-  border-bottom-right-radius: 0.28571429rem;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
 }
 .ui.vertical.labeled.icon.buttons .button:first-child > .icon {
   border-radius: 0em;
-  border-top-left-radius: 0.28571429rem;
+  border-top-left-radius: 2px;
 }
 .ui.vertical.labeled.icon.buttons .button:last-child > .icon {
   border-radius: 0em;
-  border-bottom-left-radius: 0.28571429rem;
+  border-bottom-left-radius: 2px;
 }
 /* Fluid Labeled */
 .ui.fluid[class*="left labeled"].icon.button,
@@ -3790,10 +3790,10 @@ h6 {
 }
 /* Top / Bottom */
 .ui.attached.top.button {
-  border-radius: 0.28571429rem 0.28571429rem 0em 0em;
+  border-radius: 2px 2px 0em 0em;
 }
 .ui.attached.bottom.button {
-  border-radius: 0em 0em 0.28571429rem 0.28571429rem;
+  border-radius: 0em 0em 2px 2px;
 }
 /* Left / Right */
 .ui.left.attached.button {
@@ -3801,13 +3801,13 @@ h6 {
   border-left: none;
   text-align: right;
   padding-right: 0.75em;
-  border-radius: 0.28571429rem 0em 0em 0.28571429rem;
+  border-radius: 2px 0em 0em 2px;
 }
 .ui.right.attached.button {
   display: inline-block;
   text-align: left;
   padding-left: 0.75em;
-  border-radius: 0em 0.28571429rem 0.28571429rem 0em;
+  border-radius: 0em 2px 2px 0em;
 }
 /* Plural */
 .ui.attached.buttons {
@@ -3831,52 +3831,52 @@ h6 {
 /* Top / Bottom */
 .ui[class*="top attached"].buttons {
   margin-bottom: -1px;
-  border-radius: 0.28571429rem 0.28571429rem 0em 0em;
+  border-radius: 2px 2px 0em 0em;
 }
 .ui[class*="top attached"].buttons .button:first-child {
-  border-radius: 0.28571429rem 0em 0em 0em;
+  border-radius: 2px 0em 0em 0em;
 }
 .ui[class*="top attached"].buttons .button:last-child {
-  border-radius: 0em 0.28571429rem 0em 0em;
+  border-radius: 0em 2px 0em 0em;
 }
 .ui[class*="bottom attached"].buttons {
   margin-top: -1px;
-  border-radius: 0em 0em 0.28571429rem 0.28571429rem;
+  border-radius: 0em 0em 2px 2px;
 }
 .ui[class*="bottom attached"].buttons .button:first-child {
-  border-radius: 0em 0em 0em 0.28571429rem;
+  border-radius: 0em 0em 0em 2px;
 }
 .ui[class*="bottom attached"].buttons .button:last-child {
-  border-radius: 0em 0em 0.28571429rem 0em;
+  border-radius: 0em 0em 2px 0em;
 }
 /* Left / Right */
 .ui[class*="left attached"].buttons {
   display: inline-flex;
   margin-right: 0em;
   margin-left: -1px;
-  border-radius: 0em 0.28571429rem 0.28571429rem 0em;
+  border-radius: 0em 2px 2px 0em;
 }
 .ui[class*="left attached"].buttons .button:first-child {
   margin-left: -1px;
-  border-radius: 0em 0.28571429rem 0em 0em;
+  border-radius: 0em 2px 0em 0em;
 }
 .ui[class*="left attached"].buttons .button:last-child {
   margin-left: -1px;
-  border-radius: 0em 0em 0.28571429rem 0em;
+  border-radius: 0em 0em 2px 0em;
 }
 .ui[class*="right attached"].buttons {
   display: inline-flex;
   margin-left: 0em;
   margin-right: -1px;
-  border-radius: 0.28571429rem 0em 0em 0.28571429rem;
+  border-radius: 2px 0em 0em 2px;
 }
 .ui[class*="right attached"].buttons .button:first-child {
   margin-left: -1px;
-  border-radius: 0.28571429rem 0em 0em 0em;
+  border-radius: 2px 0em 0em 0em;
 }
 .ui[class*="right attached"].buttons .button:last-child {
   margin-left: -1px;
-  border-radius: 0em 0em 0em 0.28571429rem;
+  border-radius: 0em 0em 0em 2px;
 }
 /*-------------------
         Fluid
@@ -6074,12 +6074,12 @@ h6 {
 .ui.buttons .button:first-child {
   border-left: none;
   margin-left: 0em;
-  border-top-left-radius: 0.28571429rem;
-  border-bottom-left-radius: 0.28571429rem;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
 }
 .ui.buttons .button:last-child {
-  border-top-right-radius: 0.28571429rem;
-  border-bottom-right-radius: 0.28571429rem;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
 }
 /* Vertical  Style */
 .ui.vertical.buttons {
@@ -6099,7 +6099,7 @@ h6 {
 .ui.vertical.buttons .small.button:first-child,
 .ui.vertical.buttons .massive.button:first-child,
 .ui.vertical.buttons .huge.button:first-child {
-  border-radius: 0.28571429rem 0.28571429rem 0px 0px;
+  border-radius: 2px 2px 0px 0px;
 }
 .ui.vertical.buttons .button:last-child,
 .ui.vertical.buttons .mini.button:last-child,
@@ -6109,7 +6109,7 @@ h6 {
 .ui.vertical.buttons .huge.button:last-child,
 .ui.vertical.buttons .gigantic.button:last-child {
   margin-bottom: 0px;
-  border-radius: 0px 0px 0.28571429rem 0.28571429rem;
+  border-radius: 0px 0px 2px 2px;
 }
 /*******************************
          Theme Overrides
@@ -43754,6 +43754,50 @@ a.ui.card:hover,
 .ui.toggle.checkbox input:checked ~ label:after {
   background: #fff url(../../../../images/admin/semantic/tick.svg) center no-repeat;
   background-size: 14px 14px;
+}
+/*--------------
+   Small Toggle
+---------------*/
+.ui.toggle.checkbox.small {
+  min-height: 1.125rem;
+}
+/* Input */
+.ui.toggle.checkbox.small input {
+  width: 2.109375rem;
+  height: 1.125rem;
+}
+/* Label */
+.ui.toggle.checkbox.small .box,
+.ui.toggle.checkbox.small label {
+  min-height: 0.984375rem;
+  padding-left: 2.671875rem;
+}
+/* Switch */
+.ui.toggle.checkbox.small .box:before,
+.ui.toggle.checkbox.small label:before {
+  top: auto;
+  width: 2.109375rem;
+  height: 1.125rem;
+  border-radius: 281.25rem;
+}
+/* Handle */
+.ui.toggle.checkbox.small .box:after,
+.ui.toggle.checkbox.small label:after {
+  width: 0.984375rem;
+  height: 0.984375rem;
+  top: auto;
+  bottom: 0.0703125rem;
+  left: 0em;
+}
+.ui.toggle.checkbox.small input ~ .box:after,
+.ui.toggle.checkbox.small input ~ label:after {
+  left: 0.0703125rem;
+  background-size: 7.875px;
+}
+.ui.toggle.checkbox.small input:checked ~ .box:after,
+.ui.toggle.checkbox.small input:checked ~ label:after {
+  left: 1.0546875rem;
+  background-size: 7.875px;
 }
 /*!
  * # Semantic UI - Dimmer

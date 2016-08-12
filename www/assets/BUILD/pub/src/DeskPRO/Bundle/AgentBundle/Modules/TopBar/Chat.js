@@ -83,7 +83,7 @@ class Chat extends React.Component {
         Chat <span className="count">({onlineAgents.length} Agents)</span>
       </div>
       <div className="description">
-        <Toggle active={activeChat} onChange={this.toggleChat}>
+        <Toggle active={activeChat} onChange={this.toggleChat} classes={['small']}>
           Online for chat
         </Toggle>
         <hr className="full" />
@@ -201,6 +201,7 @@ class Chat extends React.Component {
         id={2}
         elementId="chat-menu-popup"
         zIndex={99999}
+        opened
         content={this.getPopupContent()}
       >
         <i className={classNames('icon', 'comments', 'outline', { on: activeChat })} /><br />

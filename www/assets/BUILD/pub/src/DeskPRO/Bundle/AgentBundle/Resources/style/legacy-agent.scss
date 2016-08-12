@@ -133,6 +133,16 @@
   }
 }
 
+.ui.toggle.checkbox input ~ .box:after,
+.ui.toggle.checkbox input ~ label:after {
+  background-image: url('../img/semantic/x.svg');
+}
+
+.ui.toggle.checkbox input:checked ~ .box:after,
+.ui.toggle.checkbox input:checked ~ label:after {
+  background-image: url('../img/semantic/tick.svg');
+}
+
 .ui.menu.topbar {
   border: 0;
   border-bottom: 1px solid $agent_header_border_color;
@@ -260,8 +270,12 @@
     margin-right: 20px;
     display: inline-block;
     cursor: pointer;
-    i.icon.on {
-      color: $dp-emerald-primary;
+    text-align: center;
+    i.icon {
+      font-size: 1.2em;
+      &.on {
+        color: $dp-emerald-primary;
+      }
     }
     .status {
       padding-top: 5px;
@@ -289,8 +303,8 @@
     }
   }
   .view_mode {
-    width: 14px;
-    height: 12px;
+    width: 16px;
+    height: 16px;
     background: url("../img/topbar/views.svg") center no-repeat;
     cursor: pointer;
     &.focus {

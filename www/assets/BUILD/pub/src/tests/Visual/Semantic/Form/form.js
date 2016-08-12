@@ -12,6 +12,14 @@ storiesOf('Semantic: form', module)
     () => <Toggle active onChange={linkTo('Semantic: form', 'Toggle off')}>Label</Toggle>
   )
   .add(
+    'Toggle small off',
+    () => <Toggle classes={['small']} onChange={linkTo('Semantic: form', 'Toggle small on')}>Label</Toggle>
+  )
+  .add(
+    'Toggle small on',
+    () => <Toggle classes={['small']} active onChange={linkTo('Semantic: form', 'Toggle small off')}>Label</Toggle>
+  )
+  .add(
     'Range',
     () => <Range min={0} max={20} onChange={action('Range change')} />
   )

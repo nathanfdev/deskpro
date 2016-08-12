@@ -72,15 +72,6 @@ class AgentTopBar extends React.Component {
     }
   }
 
-  closeIframes() {
-    for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
-      const iframe = window.DP_FRAME_OVERLAYS[key];
-      if (iframe.opened) {
-        iframe.close();
-      }
-    }
-  }
-
   getUserPicture() {
     const { user } = this.state;
     if (!user) {
@@ -91,6 +82,15 @@ class AgentTopBar extends React.Component {
       img = user.avatar.url_pattern;
     }
     return img.replace(/\{\{IMG_SIZE}}/, 32);
+  }
+
+  closeIframes() {
+    for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
+      const iframe = window.DP_FRAME_OVERLAYS[key];
+      if (iframe.opened) {
+        iframe.close();
+      }
+    }
   }
 
   retrieveAgents() {
