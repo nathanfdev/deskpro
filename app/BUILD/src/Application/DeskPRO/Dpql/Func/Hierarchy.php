@@ -55,7 +55,7 @@ class Hierarchy extends AbstractFunc
         }
 
         $expression = reset($this->_arguments);
-        $prepped    = $expression->prepare($statement, $section, $stack, $select, $result);
+        $prepared   = $expression->prepare($statement, $section, $stack, $select, $result);
 
         $minDepth = null;
         if (array_key_exists(1, $this->_arguments)) {
@@ -91,6 +91,6 @@ class Hierarchy extends AbstractFunc
         $hierarchyPlugin->setHierarchyMinDepth($minDepth - 1);
         $hierarchyPlugin->setHierarchyMaxDepth($maxDepth - 1);
 
-        return $prepped;
+        return $prepared;
     }
 }

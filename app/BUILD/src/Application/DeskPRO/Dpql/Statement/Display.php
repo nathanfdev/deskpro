@@ -850,7 +850,19 @@ class Display
      */
     public function getFromEntityRepository()
     {
-        $table = strtolower($this->_from);
+        return self::getRepositoryByTable($this->_from);
+    }
+
+    /**
+     * @param $table
+     *
+     * @throws Exception
+     *
+     * @return bool|\Doctrine\ORM\EntityRepository
+     */
+    public static function getRepositoryByTable($table)
+    {
+        $table = strtolower($table);
         if (!isset(self::$_tableEntityMap[$table])) {
             return false;
         }

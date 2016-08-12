@@ -96,6 +96,17 @@ class HierarchySorting
             }
         }
 
+        // If no root elements, then simply init the additional fields and return results as is
+        // (e.g. we can have no root elements if using the HIERARCHY_DESCENDS_FROM() DPQL function)
+        if (empty($newResults)) {
+            foreach ($results as &$result) {
+                $result['hierarchy_depth'] = 0;
+                $result['hierarchy_count'] = (int) $v[$countFieldNum];
+            }
+
+            return $results;
+        }
+
         // Starting from roots, move $results elements into $newResults at the appropriate places
         $iterationNum         = 0;
         $lastIterationInserts = 1;

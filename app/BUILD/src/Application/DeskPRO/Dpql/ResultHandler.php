@@ -38,8 +38,9 @@ namespace Application\DeskPRO\Dpql;
  */
 class ResultHandler
 {
-    const FLAG_HIERARCHICAL = 1;
-    const FLAG_WITH_ROLLUP  = 2;
+    const FLAG_HIERARCHICAL            = 1;
+    const FLAG_WITH_ROLLUP             = 2;
+    const FLAG_HIERARCHY_DESCENDS_FROM = 3;
 
     /**
      * List of columns that should be selected.
@@ -244,10 +245,16 @@ class ResultHandler
 
     /**
      * @param int $flag
+     *
+     * @throws Exception
      */
     public function addFlag($flag)
     {
         $this->_flags[] = $flag;
+
+        if ($this->hasFlag(self::FLAG_WITH_ROLLUP) && $this->hasFlag(self::FLAG_HIERARCHY_DESCENDS_FROM)) {
+            throw new Exception('You cannot use WITH ROLLUP and HIERARCHY_DESCENDS_FROM() together');
+        }
     }
 
     /**

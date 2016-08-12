@@ -32,11 +32,13 @@
 
 namespace Application\DeskPRO\Dpql\Plugin\Hierarchy;
 
+use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Plugin\PluginInterface;
 use Application\DeskPRO\Dpql\ResultHandler;
 use Application\DeskPRO\Dpql\SqlSelect;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql\Statement\Part\Column;
+use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 
 /**
  * Class HierarchyPlugin.
@@ -187,6 +189,33 @@ class HierarchyPlugin implements PluginInterface
     public function setHierarchyMaxDepth($hierarchyMaxDepth)
     {
         $this->hierarchyMaxDepth = $hierarchyMaxDepth;
+    }
+
+    /**
+     * @param string $entityClass
+     * @param int    $rootId
+     *
+     * @throws Exception
+     *
+     * @return array
+     */
+    public function collectChildrenIds($entityClass, $rootId)
+    {
+        $repository = Display::getRepositoryByTable($entityClass);
+
+        /** @var Hierarchical $root */
+        if (!$root = $repository->find($rootId)) {
+            return [];
+        }
+        if (!$root instanceof Hierarchical) {
+            throw new Exception("$entityClass is not a Hierarchical entity");
+        }
+
+        $children                        = $root->getChildren();
+        is_array($children) or $children = $children->toArray();
+        $children                        = array_map(function (Hierarchical $entity) { return $entity->getId(); }, $children);
+
+        return $children;
     }
 
     /**
