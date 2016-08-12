@@ -8,6 +8,8 @@ import { connect } from 'react-redux';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { SeparateComponent } from '../Common/Components/SeparateComponent';
+import { IMContainer } from '../IM/Components/IMContainer';
+import { HeaderWidget } from '../IM/Components/HeaderWidget';
 import Isvg from 'react-inlinesvg';
 
 @connect(state => ({
@@ -136,6 +138,11 @@ class AgentTopBar extends SeparateComponent {
       <TopBarItem classes={['legacy-omnibox']}>
         <i className="icon wait" onClick={this.onRecent} />
       </TopBarItem>
+      <TopBarItem classes={['z-index-stub']}>
+        <HeaderWidget />
+        <IMContainer />
+      </TopBarItem>
+
       <AddButton closeIframes={this.closeIframes} />
       <TopBarRightMenu>
         <TopBarItem classes={['view_mode']} onClick={this.toggleViewMode}>

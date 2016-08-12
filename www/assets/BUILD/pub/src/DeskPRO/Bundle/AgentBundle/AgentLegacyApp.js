@@ -11,22 +11,23 @@ import AgentReducers from './AgentApp_Reducers';
 import AppReducers from '../AppBundle/AppApp_Reducers';
 import * as ampMiddleware from 'Ampliflux/middleware';
 import { preloadData } from './Modules/Application/Actions/bootstrapActions';
-
+import { Provider } from 'react-redux';
 
 export class AgentLegacyApp {
 
   rendered = [];
+  store;
 
   run() {
+    this.store = AgentLegacyApp.createStore();
+    this.store.dispatch(preloadData());
     window.$(document).on('ready', () => this.start());
   }
 
   start() {
-    if (typeof window.DeskPRO_Window === 'undefined') {
+    if (typeof window.DeskPRO_Window === 'undefined' || !this.store.getState().Application.bootstrap.get('isBootstrapped')) {
       setTimeout(this.start.bind(this), 100);
     } else {
-      this.store = AgentLegacyApp.createStore();
-      this.store.dispatch(preloadData());
       this.renderPiece(AgentTopBar, AgentTopBar.getType());
       this.renderPiece(AgentList, AgentList.getType());
     }
@@ -43,7 +44,7 @@ export class AgentLegacyApp {
 
     if (node) {
       this.rendered[piecePlace] = true;
-      ReactDOM.render(element, node);
+      ReactDOM.render(<Provider store={this.store}>{element}</Provider>, node);
       return;
     }
     // this is just a stub. Possibly we just need some event listener or so to handle element rendering when
