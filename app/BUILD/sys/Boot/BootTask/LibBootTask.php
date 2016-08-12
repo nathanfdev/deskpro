@@ -60,22 +60,6 @@ class LibBootTask implements BootTaskInterface
             ini_set('display_errors', 0);
         }
 
-        if (!defined('DP_BUILD_TIME')) {
-            if (file_exists(DP_APP_DIR.'/sys/config/build-time.php')) {
-                require DP_APP_DIR.'/sys/config/build-time.php';
-            } else {
-                define('DP_BUILD_TIME', 1323444089); // would be used by someone who hasnt built yet
-            }
-        }
-
-        if (!defined('DP_BUILD_NUM')) {
-            if (file_exists(DP_APP_DIR.'/sys/config/build-num.php')) {
-                require DP_APP_DIR.'/sys/config/build-num.php';
-            } else {
-                define('DP_BUILD_NUM', 0); // would be used by someone who isnt using default distro
-            }
-        }
-
         // Normalise some env
         @setlocale(LC_CTYPE, 'C');
         @date_default_timezone_set('UTC');

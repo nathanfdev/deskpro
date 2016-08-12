@@ -91,12 +91,12 @@ class StatusCommand extends ContainerAwareCommand
         $instanceStatus = $instanceReader->getInstanceStatus($releases);
 
         $table = new Table($output);
-        $table->addRow(['Current Build', sprintf('%-10s from %s', $instanceStatus->getCurrentRelease()->getId(), $instanceStatus->getCurrentRelease()->getDate()->format('Y-m-d'))]);
-        $table->addRow(['Newest Build', sprintf('%-10s from %s', $instanceStatus->getLatestRelease()->getId(), $instanceStatus->getLatestRelease()->getDate()->format('Y-m-d'))]);
+        $table->addRow(['Current Build', sprintf('%-10s from %s', $instanceStatus->getCurrentRelease()->getName(), $instanceStatus->getCurrentRelease()->getDate()->format('Y-m-d'))]);
+        $table->addRow(['Newest Build', sprintf('%-10s from %s', $instanceStatus->getLatestRelease()->getName(), $instanceStatus->getLatestRelease()->getDate()->format('Y-m-d'))]);
 
         // dupe data in the log
-        $logger->info(sprintf('Current: %s %s', $instanceStatus->getCurrentRelease()->getId(), $instanceStatus->getCurrentRelease()->getDate()->format('Y-m-d')));
-        $logger->info(sprintf('Newest: %s %s', $instanceStatus->getCurrentRelease()->getId(), $instanceStatus->getCurrentRelease()->getDate()->format('Y-m-d')));
+        $logger->info(sprintf('Current: %s %s', $instanceStatus->getCurrentRelease()->getName(), $instanceStatus->getCurrentRelease()->getDate()->format('Y-m-d')));
+        $logger->info(sprintf('Newest: %s %s', $instanceStatus->getCurrentRelease()->getName(), $instanceStatus->getCurrentRelease()->getDate()->format('Y-m-d')));
 
         $table->addRow(new TableSeparator());
         if ($instanceStatus->isOutdated()) {

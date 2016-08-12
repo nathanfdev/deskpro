@@ -102,7 +102,7 @@ define('DP_ENV_ID', $DP_ENV->getEnvId());
 # Legacy path defs
 #------------------------------
 
-/*
+/**
  * This is the path to the currently active build.
  * Use DP_APP_DIR instead.
  *
@@ -111,13 +111,41 @@ define('DP_ENV_ID', $DP_ENV->getEnvId());
 define('DP_ROOT', $DP_ENV->getAppDir());
 define('PCLZIP_TEMPORARY_DIR', $DP_ENV->getUserTmpDir().DIRECTORY_SEPARATOR);
 
-/*
+/**
  * This is the path to the currently active build within the www dir.
  * This should NOT be necessary.
  *
  * @deprecated
  */
 define('DP_WEB_ROOT', $DP_ENV->getAppWwwAssetDir());
+
+$buildInfo = null;
+if (file_exists($DP_ENV->getAppDir() . '/sys/config/build-info.php')) {
+    $buildInfo = require($DP_ENV->getAppDir() . '/sys/config/build-info.php');
+}
+
+$readSysFile = function($name, $default = 0) use ($DP_ENV, $buildInfo) {
+    if ($buildInfo && array_key_exists($buildInfo, $name)) {
+        return $buildInfo[$name];
+    }
+    $f = $DP_ENV->getAppDir() . '/sys/config/' . $name . '.txt';
+    if (file_exists($f)) {
+        return trim(file_get_contents($f));
+    }
+    return $default;
+};
+
+/**
+ * The current build number: 15839
+ * @deprecated Use AppEnv::getBuildId
+ */
+define('DP_BUILD_NUM',  $readSysFile('build-num', 0));
+
+/**
+ * The current build time stamp
+ * @deprecated Use AppEnv::getBuildTime
+ */
+define('DP_BUILD_TIME', $readSysFile('build-time', 1323444089 /* magic value, used when someone has not built yet */));
 
 #------------------------------
 # Erorr handling

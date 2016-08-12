@@ -67,8 +67,6 @@ bin/deskpro-importer-tools
 # builds
 /app/BUILD/sys/bootstrap.php
 /app/BUILD/sys/compiled.php
-/app/BUILD/sys/config/build-time.php
-/app/BUILD/sys/config/build-num.php
 /app/BUILD/sys/config/template-map.php
 /app/BUILD/sys/config/changed-files.php
 /app/BUILD/sys/Resources/distro-checksums.php
@@ -159,8 +157,6 @@ bin/deskpro-importer-tools
 app/sys/logs/*
 /app/sys/bootstrap.php
 /app/sys/compiled.php
-/app/sys/config/build-time.php
-/app/sys/config/build-num.php
 /app/sys/config/template-map.php
 /app/sys/Resources/distro-checksums.php
 /app/sys/Resources/cloudflare-ips.php
@@ -250,9 +246,8 @@ www/assets/BUILD/pub/nightwatch.conf.js
 !/www/assets/index.html
 !/www/assets/BUILD
 
+/app/BUILD/sys/config/build-info.php
 /app/BUILD/sys/config/build-time.txt
-/app/BUILD/sys/config/build-time.php
-/app/BUILD/sys/config/build-num.php
 /app/BUILD/sys/config/build-num.txt
 /app/BUILD/sys/config/commit-id.txt
 /app/run/build-num.txt

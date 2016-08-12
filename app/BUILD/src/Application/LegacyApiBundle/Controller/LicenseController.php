@@ -237,11 +237,11 @@ FILE;
 
     public function getVersionInfoAction()
     {
+        $appEnv = $this->get('deskpro.app_env');
+
         return $this->createJsonResponse(array(
-            'build'          => DP_BUILD_TIME,
-            'build_name'     => defined('DP_BUILD_NUM') && DP_BUILD_NUM ? DP_BUILD_NUM : 'DEV',
-            'build_num_base' => defined('DP_BUILD_NUM_BASE') ? DP_BUILD_NUM_BASE : 0,
-            'build_num_rev'  => defined('DP_BUILD_NUM_REV') ? DP_BUILD_NUM_REV : 0,
+            'build_id'   => $appEnv->getBuildId(),
+            'build_name' => $appEnv->getVersionName(),
         ));
     }
 
@@ -262,6 +262,7 @@ FILE;
                 'count_behind' => $instanceStatus->isOutdated() ? max(1, $instanceStatus->getNumBetween()) : 0,
                 'days_old'     => $instanceStatus->isOutdated() ? max(1, $instanceStatus->getDaysOld()) : 0,
                 'build_id'     => $instanceStatus->getLatestRelease()->getId(),
+                'build_name'   => $instanceStatus->getLatestRelease()->getName(),
             ];
         } catch (\Exception $e) {
             $versionInfo = null;
