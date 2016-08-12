@@ -270,6 +270,9 @@ class Display
         'usersources'                 => 'DeskPRO:Usersource',
     );
 
+    /**
+     * @var Dpql\SqlSelectContext
+     */
     private $_sqlSelectContext;
 
     /**
@@ -1165,6 +1168,14 @@ class Display
     public static function getTableEntityList()
     {
         return self::$_tableEntityMap;
+    }
+
+    /**
+     * @return Dpql\SqlSelectContext
+     */
+    public function getSqlSelectContext()
+    {
+        return $this->_sqlSelectContext;
     }
 
     /**

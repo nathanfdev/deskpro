@@ -54,6 +54,16 @@ class HierarchyPlugin implements PluginInterface
     private $display;
 
     /**
+     * @var int Zero-indexed
+     */
+    protected $hierarchyMinDepth = 0;
+
+    /**
+     * @var int|null Zero-indexed
+     */
+    protected $hierarchyMaxDepth = null;
+
+    /**
      * @param Display $display
      */
     public function __construct(Display $display)
@@ -125,6 +135,11 @@ class HierarchyPlugin implements PluginInterface
             $results = HierarchyRollup::init($results);
         }
 
+        // Limit depth if needed
+        if ($this->hierarchyMinDepth > 0 || !is_null($this->hierarchyMaxDepth)) {
+            $results = HierarchyDepth::limitTo($this->hierarchyMinDepth, $this->hierarchyMaxDepth, $results);
+        }
+
         return $results;
     }
 
@@ -140,6 +155,38 @@ class HierarchyPlugin implements PluginInterface
         $countFieldNum = $this->getCountFieldNum();
         $handler->addGroupXColumn('', 'hierarchy_root_title', $countFieldNum ? $countFieldNum + 1 : 1);
         $handler->addFlag(ResultHandler::FLAG_HIERARCHICAL);
+    }
+
+    /**
+     * @return int
+     */
+    public function getHierarchyMinDepth()
+    {
+        return $this->hierarchyMinDepth;
+    }
+
+    /**
+     * @param int $hierarchyMinDepth
+     */
+    public function setHierarchyMinDepth($hierarchyMinDepth)
+    {
+        $this->hierarchyMinDepth = $hierarchyMinDepth;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getHierarchyMaxDepth()
+    {
+        return $this->hierarchyMaxDepth;
+    }
+
+    /**
+     * @param int|null $hierarchyMaxDepth
+     */
+    public function setHierarchyMaxDepth($hierarchyMaxDepth)
+    {
+        $this->hierarchyMaxDepth = $hierarchyMaxDepth;
     }
 
     /**

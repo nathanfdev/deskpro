@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\Dpql;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Dpql\Plugin\Hierarchy\HierarchyPlugin;
 use Application\DeskPRO\Dpql\Plugin\PluginInterface;
 
 /**
@@ -49,6 +50,11 @@ class SqlSelectContext
      * @var PluginInterface[]
      */
     private $plugins;
+
+    /**
+     * @var HierarchyPlugin
+     */
+    private $hierarchyPlugin;
 
     /**
      * @param ResultHandler            $handler
@@ -87,5 +93,28 @@ class SqlSelectContext
         }
 
         return $results;
+    }
+
+    /**
+     * @throws Exception
+     *
+     * @return HierarchyPlugin|PluginInterface
+     */
+    public function getHierarchyPlugin()
+    {
+        if (!$this->hierarchyPlugin) {
+            foreach ($this->plugins as $plugin) {
+                if ($plugin instanceof HierarchyPlugin) {
+                    $this->hierarchyPlugin = $plugin;
+                    break;
+                }
+            }
+        }
+
+        if (!$this->hierarchyPlugin) {
+            throw new Exception('The HierarchyPlugin is not enabled');
+        }
+
+        return $this->hierarchyPlugin;
     }
 }

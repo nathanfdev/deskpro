@@ -248,16 +248,18 @@ class Html extends AbstractRenderer
                         ? ' rowspan="'.($groupSkipCount[$groupId] + 1).'"'
                         : ''
                     );
-                    $rendered = $this->_renderCellValue($row, $groupColumn);
-
-                    $padding = $this->_getRowPadding($cells, $row);
-                    $cells[] = "<th$rowSpan>{$padding}{$rendered}</th>";
+                    $rendered = ($this->_handler->hasFlag(ResultHandler::FLAG_HIERARCHICAL) && empty($cells))
+                              ? $this->_getRowPadding($row).$row['hierarchy_title']
+                              : $this->_renderCellValue($row, $groupColumn);
+                    $cells[] = "<th$rowSpan>{$rendered}</th>";
                 }
             }
 
             foreach ($selectColumns as $column) {
-                $padding = $this->_getRowPadding($cells, $row);
-                $cells[] = '<td>'.$padding.$this->_renderCellValue($row, $column).'</td>';
+                $rendered = ($this->_handler->hasFlag(ResultHandler::FLAG_HIERARCHICAL) && empty($cells))
+                          ? $this->_getRowPadding($row).$row['hierarchy_title']
+                          : $this->_renderCellValue($row, $column);
+                $cells[] = '<td>'.$rendered.'</td>';
             }
             if ($this->_withRollup()) {
                 $cells[] = '<td>'.$this->_renderCellValue($row, 'hierarchy_rollup_count').'</td>';
@@ -276,10 +278,10 @@ class Html extends AbstractRenderer
         }
     }
 
-    private function _getRowPadding(array $cells, array $row)
+    private function _getRowPadding(array $row)
     {
         $padding = '';
-        if (empty($cells) && array_key_exists('hierarchy_depth', $row) && ($depth = $row['hierarchy_depth'])) {
+        if (array_key_exists('hierarchy_depth', $row) && ($depth = $row['hierarchy_depth'])) {
             $padding = str_repeat('&nbsp;', 4 * $depth).'&#8209;&#8209;&nbsp;';
         }
 
