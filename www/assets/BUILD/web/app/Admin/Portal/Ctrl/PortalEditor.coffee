@@ -28,6 +28,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @is_advanced_expanded = false
       @asset_files = []
       @custom_logo = null
+      @custom_favicon = null
       @uploading_files_count = 0
       @template_options = []
       @selected_template = null
@@ -130,7 +131,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         () =>
           @recompiling = true
           request = @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/discard')
-          promises = [request, @loadAdvancedEdits(), @loadLogo(), @loadValues()]
+          promises = [request, @loadAdvancedEdits(), @loadLogo(), @loadFavicon(), @loadValues()]
           all = @$q.all(promises)
           all.then(
             () => new Promise( (resolve) => resolve(@refreshPreviewUrl())).then(() => @success('Changes were discarded'); @recompiling = false),
@@ -145,6 +146,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         @loadAdvancedEdits(),
         @loadAssetFiles(),
         @loadLogo(),
+        @loadFavicon(),
         @loadTemplateOptions(),
         @loadThemeSet()
         @loadWelcomeBox()
@@ -310,6 +312,9 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     loadLogo: () =>
       @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/logo').success((response) => @custom_logo = response.data?.url)
 
+    loadFavicon: () =>
+      @$http.get('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/favicon').success((response) => @custom_favicon = response.data?.url)
+
     upload: (files) =>
       for file in files
         @uploading_files_count++
@@ -329,6 +334,13 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         .upload({url: '/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/logo', file: files[0]})
         .then(
           (response) => @custom_logo = response.data.data.url,
+          () => @error('Server error occurred. Unable to upload files.')
+        )
+    uploadFavicon: (files) =>
+      @$upload
+        .upload({url: '/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/favicon', file: files[0]})
+        .then(
+          (response) => @custom_favicon = response.data.data.url,
           () => @error('Server error occurred. Unable to upload files.')
         )
 
@@ -354,6 +366,9 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
     deleteLogo: () =>
       @$http.delete('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/logo').success(() => @custom_logo = null)
+
+    deleteFavicon: () =>
+      @$http.delete('/brand-'+@$scope.brand_id+'/portal/api/style/edit-theme-set/favicon').success(() => @custom_favicon = null)
 
     openAdvancedTab: (tab) => @advanced_tab = tab
     isAdvancedTab: (tab) => @advanced_tab == tab

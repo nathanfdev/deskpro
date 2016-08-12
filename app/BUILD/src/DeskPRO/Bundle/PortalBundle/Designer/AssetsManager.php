@@ -43,8 +43,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class AssetsManager
 {
-    const CUSTOM_ASSET_TAG = 'custom_asset';
-    const CUSTOM_LOGO_TAG  = 'custom_logo';
+    const CUSTOM_ASSET_TAG   = 'custom_asset';
+    const CUSTOM_LOGO_TAG    = 'custom_logo';
+    const CUSTOM_FAVICON_TAG = 'custom_favicon';
 
     /**
      * @var EntityManager
@@ -112,6 +113,8 @@ class AssetsManager
 
         $this->em->remove($asset);
         $this->em->flush();
+
+        return;
     }
 
     /**
@@ -126,12 +129,13 @@ class AssetsManager
 
     /**
      * @param UploadedFile $file
+     * @param string       $blobType
      *
      * @return ThemeSetAsset
      */
-    public function uploadLogo(UploadedFile $file)
+    public function uploadBlob(UploadedFile $file, $blobType = self::CUSTOM_LOGO_TAG)
     {
-        if ($logo = $this->getEditThemeSetLogoAsset()) {
+        if ($logo = $this->getEditThemeSetBlobAsset($blobType)) {
             if ($logo->getBlob()) {
                 $this->bs->deleteBlobRecord($logo->getBlob());
             }
@@ -139,20 +143,22 @@ class AssetsManager
             $this->em->flush();
         }
 
-        return $this->upload($file, self::CUSTOM_LOGO_TAG);
+        return $this->upload($file, $blobType);
     }
 
     /**
+     * @param string $blobType asset type
+     *
      * @return ThemeSetAsset|null
      */
-    public function getEditThemeSetLogoAsset()
+    public function getEditThemeSetBlobAsset($blobType = self::CUSTOM_LOGO_TAG)
     {
         $qb = $this->em->createQueryBuilder();
         $qb
             ->select('tsa')
             ->from(ThemeSetAsset::class, 'tsa')
             ->where('tsa.theme_set = ?0 AND tsa.tags = ?1')
-            ->setParameters([$this->edit_theme_set, self::CUSTOM_LOGO_TAG]);
+            ->setParameters([$this->edit_theme_set, $blobType]);
 
         $asset = $qb->getQuery()->getOneOrNullResult();
 
@@ -160,16 +166,20 @@ class AssetsManager
     }
 
     /**
+     * @param $blobType
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
      * @return ThemeSetAsset|null
      */
-    public function getLogoAsset()
+    public function getBlobAsset($blobType = self::CUSTOM_LOGO_TAG)
     {
         $qb = $this->em->createQueryBuilder();
         $qb
             ->select('tsa')
             ->from(ThemeSetAsset::class, 'tsa')
             ->where('tsa.theme_set = ?0 AND tsa.tags = ?1')
-            ->setParameters([$this->theme_set, self::CUSTOM_LOGO_TAG]);
+            ->setParameters([$this->theme_set, $blobType]);
 
         $asset = $qb->getQuery()->getOneOrNullResult();
 

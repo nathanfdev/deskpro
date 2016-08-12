@@ -75,6 +75,29 @@
                     </div>
                 </div>
 
+                <!-- Favicon -->
+                <div class="panel-title">
+                    <a ng-click="Portal.togglePanel('favicon')">
+                        Favicon
+                        <i class="fa fa-caret-right" ng-show="!Portal.isOpen('favicon')"></i>
+                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('favicon')"></i>
+                    </a>
+                </div>
+
+                <div ng-show="Portal.isOpen('favicon')">
+                    <div class="logo-box logo-size-desktop">
+                        <input type="file" ng-file-select="Portal.uploadFavicon($files)" />
+
+                        <div class="bucket" ng-if="Portal.custom_favicon">
+                            <div class="logo-container">
+                                <img ng-src="{{ '{{ Portal.custom_favicon }}' }}">
+                            </div>
+
+                            <a href ng-click="Portal.deleteFavicon()">Delete favicon</a>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Vars -->
 
                 <div ng-repeat="(group, variables) in Portal.groups">
