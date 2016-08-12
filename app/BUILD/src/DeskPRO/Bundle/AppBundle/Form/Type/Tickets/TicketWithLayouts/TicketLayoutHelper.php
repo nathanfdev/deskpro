@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Component\Util\ListUtils;
 use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
@@ -78,25 +79,35 @@ class TicketLayoutHelper
                 continue;
             }
 
-            if ($choiceList = $form->get($key)->getConfig()->getOption('choice_list')) {
-                // todo
+            /** @var ChoiceLoaderInterface $choiceLoader */
+            if (!$choiceLoader = $form->get($key)->getConfig()->getOption('choice_loader')) {
+                continue;
             }
 
-            $choice = null;
-            if (is_scalar($value)) {
-                /** @var ChoiceLoaderInterface $choiceLoader */
-                $choiceLoader = $form->get($key)->getConfig()->getOption('choice_loader');
-                if ($choiceLoader) {
-                    $choice = current($choiceLoader->loadChoicesForValues([$value]));
+            if (is_array($value) && array_key_exists(CustomDataType::KEY, $value)) {
+                $value = $value[CustomDataType::KEY];
+            }
+
+            if (is_array($value)) {
+                $choices         = $choiceLoader->loadChoicesForValues($value);
+                $finalData[$key] = array_map(function ($v) {
+                    if ($v instanceof HierarchyNode) {
+                        $v = $v->getData();
+                    }
+
+                    if ($v) {
+                        return $v->getId();
+                    }
+                }, $choices);
+            } else {
+                $choice = current($choiceLoader->loadChoicesForValues([$value]));
+                if ($choice instanceof HierarchyNode) {
+                    $choice = $choice->getData();
                 }
-            }
 
-            if ($choice instanceof HierarchyNode) {
-                $choice = $choice->getData();
-            }
-
-            if ($choice) {
-                $finalData[$key] = $choice->getId();
+                if ($choice) {
+                    $finalData[$key] = $choice->getId();
+                }
             }
         }
 
