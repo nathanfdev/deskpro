@@ -294,14 +294,14 @@
     .button {
       height: 26px;
       width: 26px;
-      padding: 1px 3px 5px;
-      box-sizing: content-box;
-      box-shadow: none;
-      font-size: 20px;
-      font-weight: 200;
-      vertical-align: middle;
+      padding: 1px 3px 3px;
       margin-right: 0;
-      background: $agent_header_border_color;
+      //box-sizing: content-box;
+      //box-shadow: none;
+      //font-size: 20px;
+      //font-weight: 200;
+      //vertical-align: middle;
+      //background: $agent_header_border_color;
     }
     &::before {
       width: 0;
