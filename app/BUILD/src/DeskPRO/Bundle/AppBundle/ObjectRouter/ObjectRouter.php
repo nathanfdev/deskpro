@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\ObjectRouter;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -71,14 +72,18 @@ class ObjectRouter
      */
     private $link_generators;
 
+    private $isDebug = false;
+
     /**
      * Constructor.
      *
      * @param array $link_generators
+     * @param bool  $isDebug
      */
-    public function __construct(array $link_generators)
+    public function __construct(array $link_generators, $isDebug)
     {
         $this->link_generators = $link_generators;
+        $this->isDebug         = $isDebug;
     }
 
     /**
@@ -164,12 +169,25 @@ class ObjectRouter
      */
     protected function processLink($object, $type, $context, $reference_type, array $extra_params = [])
     {
+        if (!is_object($object) && $this->isDebug) {
+            $this->routerException($object, $type, $context);
+        } elseif (!is_object($object)) {
+            return '';
+        }
+
         foreach ($this->link_generators as $link_generator) {
             if ($link_generator->supports($object, $type, $context)) {
                 return $link_generator->generate($object, $type, $context, $extra_params, $reference_type);
             }
         }
 
+        $this->routerException($object, $type, $context);
+
+        return '';
+    }
+
+    protected function routerException($object, $type, $context)
+    {
         throw new ObjectRouterException(
             sprintf(
                 'could not generate a link for "%s" (type=%s) in context "%s" - no LinkGeneratorInterface that supports it',
