@@ -272,7 +272,7 @@ return [
     /*
      * The max attachment an agent can upload
      */
-    'core.attach_agent_maxsize' => '5242880',
+    'core.attach_agent_maxsize' => 1024 * 1024 * 25,
 
     /*
      * The only file extensions that an agent can upload (whitelist)
@@ -287,7 +287,7 @@ return [
     /*
      * The max attachment a user can upload
      */
-    'core.attach_user_maxsize' => '5242880',
+    'core.attach_user_maxsize' => 1024 * 1024 * 10,
 
     /*
      * The only file extensions that users can upload (whitelist)
