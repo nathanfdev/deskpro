@@ -127,6 +127,9 @@ class DepartmentAction extends AbstractAction implements PermissionableAction
             $name = $names[$this->department_id];
         }
 
-        return $tr->phrase('agent.tickets.set_department_action', array('department' => $name));
+        return '<span class="with-department" data-department-id="'.$this->department_id.'">'
+            .$tr->phrase('agent.tickets.set_department_action', array('department' => $name))
+            .'</span>'
+            ;
     }
 }
