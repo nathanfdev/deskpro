@@ -49,6 +49,11 @@ class AppEnv implements AppEnvInterface
     private $dpEnv;
 
     /**
+     * @var array
+     */
+    private $buildInfo;
+
+    /**
      * AppEnv constructor.
      *
      * @param \DpRun\DpEnv $dpEnv
@@ -280,5 +285,73 @@ class AppEnv implements AppEnvInterface
         }
 
         return $datManager->readTxtFile('install_uuid');
+    }
+
+    private function initBuildInfo()
+    {
+        if ($this->buildInfo !== null) {
+            return;
+        }
+
+        $path = $this->getAppDir().'/sys/config/build-info.php';
+        if (file_exists($path)) {
+            $this->buildInfo = require $path;
+        } else {
+            $this->buildInfo = [];
+        }
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
+    private function getBuildInfoVal($name)
+    {
+        if ($this->buildInfo === null) {
+            $path = $this->getAppDir().'/sys/config/build-info.php';
+            if (file_exists($path)) {
+                $this->buildInfo = require $path;
+            } else {
+                $this->buildInfo = [];
+            }
+        }
+
+        if (array_key_exists($name, $this->buildInfo)) {
+            return $this->buildInfo[$name];
+        }
+
+        $path = $this->getAppDir().'/sys/config/'.$name.'.txt';
+        if (file_exists($path)) {
+            $val = trim(file_get_contents($path));
+        } else {
+            $val = 0;
+        }
+
+        return $this->buildInfo[$name] = $val;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBuildId()
+    {
+        return $this->getBuildInfoVal('build-num');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBuildTime()
+    {
+        return $this->getBuildInfoVal('build-time');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getVersionName()
+    {
+        return $this->getBuildInfoVal('build-name');
     }
 }

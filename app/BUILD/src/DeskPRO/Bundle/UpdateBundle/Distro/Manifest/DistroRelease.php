@@ -39,6 +39,11 @@ class DistroRelease
     private $id;
 
     /**
+     * @var string
+     */
+    private $name;
+
+    /**
      * @var \DateTime
      */
     private $date;
@@ -86,6 +91,7 @@ class DistroRelease
         $props = $resolver->resolve($props);
 
         $this->id        = $props['id'];
+        $this->name      = $props['name'];
         $this->date      = $props['date'];
         $this->detailUrl = $props['detail_url'];
         $this->zipUrl    = $props['zip_url'];
@@ -100,13 +106,14 @@ class DistroRelease
     protected function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired([
-            'id', 'date', 'detail_url',
+            'id', 'name', 'date', 'detail_url',
             'zip_url', 'filesize', 'checksums',
 
             // and we dont use this at the moment:
             'commit', 'track',
         ]);
         $resolver->setDefault('flags', []);
+        $resolver->setDefault('name', null);
         $resolver->setAllowedValues('checksums', function ($v) {
             return is_array($v) && !empty($v['sha256']);
         });
@@ -117,6 +124,9 @@ class DistroRelease
 
             return \DateTime::createFromFormat('Y-m-d H:i:s', $v, new \DateTimeZone('UTC'));
         });
+        $resolver->setNormalizer('name', function (Options $options, $v) {
+            return $v ?: $options['id'];
+        });
     }
 
     /**
@@ -125,6 +135,14 @@ class DistroRelease
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**

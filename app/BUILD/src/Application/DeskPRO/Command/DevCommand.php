@@ -52,7 +52,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         $this->setName('dpdev');
         $this->addOption('regen-build-manifest', null, InputOption::VALUE_NONE, 'Regenerate build-manifest.php file');
         $this->addOption('sync-buildfile-manifest', null, InputOption::VALUE_NONE, 'Like regen-build-manifest, but also goes through PHP build files to make sure the classname matches the filename. Useful if you have mass-moved or renamed files manually.');
-        $this->addOption('touch-build-time', null, InputOption::VALUE_NONE, 'Sets build-time.php file to now');
+        $this->addOption('touch-build-time', null, InputOption::VALUE_NONE, 'Sets build-time.txt file to now');
         $this->addOption('testdb-safe', null, InputOption::VALUE_NONE, 'Removes or rewrites some common settings to make the database safe to use');
         $this->addOption('testdb-rewrite-emails', null, InputOption::VALUE_REQUIRED, 'Rewrites all email addresses to be at the domain provided. someone@example.com becomes someone-at-example-com@domain.com');
         $this->addOption('move-build-scripts', null, InputOption::VALUE_REQUIRED, 'Comma-separated list of build scripts to re-timestamp from now. This is useful when merging an old branch and you want to move buildscripts "up".');
@@ -295,8 +295,8 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
     private function touchBuildTimeAction(InputInterface $input, OutputInterface $output)
     {
         $time       = time();
-        $build_file = DP_ROOT.'/sys/config/build-time.php';
-        file_put_contents($build_file, '<?php define("DP_BUILD_TIME", '.$time.'); ');
+        $build_file = DP_ROOT.'/sys/config/build-time.txt';
+        file_put_contents($build_file, $time);
 
         echo "Updated: $build_file\n";
 
