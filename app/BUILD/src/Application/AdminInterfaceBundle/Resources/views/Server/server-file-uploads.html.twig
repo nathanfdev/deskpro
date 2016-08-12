@@ -117,12 +117,12 @@
 
 			<div class="well danger-message upload-message"
 				 ng-if="fileUploadResults && fileUploadResults.upload_failed">
-				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
+				<strong>{{ phrase('admin.server.failed') }}: {{ ng_var('fileUploadResults.upload_failed') }}</strong><br/>
 				We detected a problem while trying to upload your file. The most common reasons are:
 				<ul style="margin-top: 3px;">
-					<li style="margin-bottom: 3px;" ng-if="!fileUploadResults.is_tmp_writable">
+					<li style="margin-bottom: 3px;" ng-if="data.php_vars.upload_tmp_dir_real && !fileUploadResults.is_tmp_writable">
 						The temporary storage directory (upload_tmp_dir in php.ini)
-						is currently set to {{ php_vars.upload_tmp_dir_real }}. This
+						is currently set to <strong>{{ ng_var('data.php_vars.upload_tmp_dir_real') }}</strong>. This
 						directory
 						<strong>is not writable</strong> by the web server. This means
 						uploads can not be saved and will always fail. Edit php.ini and
@@ -130,15 +130,9 @@
 						path that is writable by the server, or change permissions on the
 						directory so the server can write to it.
 					</li>
-					<li style="margin-bottom: 3px;" ng-if="fileUploadResults.is_tmp_writable">
-						The temporary storage directory defined in php.ini as
-						displayed below is not set or is set to a directory
-						that the web server cannot write to. Correcting the directory or
-						making it writable may solve the problem.
-					</li>
-					<li>
+					<li ng-if="fileUploadResults.upload_failed == '{{ phrase('agent.general.attach_error_size') }}' ">
 						You have chosen a file that is larger than your server
-						configuration allows. File limits are set using the
+						configuration allows <strong>({{ ng_var('data.php_vars.upload_max_filesize') }})</strong>. File limits are set using the
 						options in php.ini as displayed below. In addition to these limits, your
 						web server (such as IIS or Apache)
 						may also enforce its own limits. Limits enforced by the web server
@@ -160,6 +154,7 @@
 		<article class="padd">
 			<p>
 				These settings control the maximum file size allowed by your server. DeskPRO has its own local settings that you can change from <strong>Setup > Settings</strong>, but your server configuration will also impose hard limits.
+                The max file size supported by your server is {{ ng_var('data.php_vars.upload_max_filesize') }}.
 			</p>
 		</article>
 

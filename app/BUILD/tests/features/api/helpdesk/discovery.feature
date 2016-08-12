@@ -20,7 +20,7 @@ Feature: Discover settings
 
     And the JSON node "data.settings.multi_lang" should be equal to 1
     And the JSON node "data.settings.helpdesk_name" should be equal to "DeskPRO"
-    And the JSON node "data.settings.attachments.agents.max_size" should be equal to 5242880
+    And the JSON node "data.settings.attachments.agents.max_size" should be equal to 26214400
     And the JSON node "data.settings.attachments.agents.whitelist" should have 0 elements
     And the JSON node "data.settings.attachments.agents.blacklist" should have 0 elements
 
