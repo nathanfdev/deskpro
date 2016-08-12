@@ -28,10 +28,11 @@ class Chat extends React.Component {
       volume:         this.props.volume || 8,
       previousVolume: 8
     };
+    this.refreshOnlineAgentsList = this.refreshOnlineAgentsList.bind(this);
     this.toggleChat = this.toggleChat.bind(this);
+    this.togglePopup = this.togglePopup.bind(this);
     this.toggleVolume = this.toggleVolume.bind(this);
     this.updateAudioVolume = this.updateAudioVolume.bind(this);
-    this.refreshOnlineAgentsList = this.refreshOnlineAgentsList.bind(this);
   }
 
   componentDidMount() {
@@ -142,6 +143,10 @@ class Chat extends React.Component {
     return departments;
   }
 
+  togglePopup() {
+    this.refs.chatPopup.togglePopup();
+  }
+
   toggleVolume() {
     if (this.state.volume === 0) {
       this.updateAudioVolume(this.state.previousVolume);
@@ -194,14 +199,15 @@ class Chat extends React.Component {
 
   render() {
     const { activeChat } = this.state;
-    return (<div className="chat">
+    return (<div className="chat" onClick={this.togglePopup}>
       <PopUp
         positionMy="right top"
         positionAt="right bottom"
         id={2}
         elementId="chat-menu-popup"
         zIndex={99999}
-        opened
+        autoOpen={false}
+        ref="chatPopup"
         content={this.getPopupContent()}
       >
         <i className={classNames('icon', 'comments', 'outline', { on: activeChat })} /><br />

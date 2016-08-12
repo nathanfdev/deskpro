@@ -11,6 +11,7 @@ class User extends React.Component {
     super();
     this.clickSettings = this.clickSettings.bind(this);
     this.clickHelp = this.clickHelp.bind(this);
+    this.togglePopup = this.togglePopup.bind(this);
   }
 
   getPopupContent() {
@@ -54,10 +55,14 @@ class User extends React.Component {
     this.closePopup();
   }
 
+  togglePopup() {
+    this.refs.userPopup.togglePopup();
+  }
+
   render() {
     const { src } = this.props;
     return (
-      <div className="user">
+      <div className="user" onClick={this.togglePopup}>
         <PopUp
           positionMy="right top"
           positionAt="right bottom"
@@ -66,6 +71,7 @@ class User extends React.Component {
           zIndex={99999}
           content={this.getPopupContent()}
           ref="userPopup"
+          autoOpen={false}
         >
           <img className="ui circular image" src={src} alt="agent" />
           <i className="dropdown icon" />

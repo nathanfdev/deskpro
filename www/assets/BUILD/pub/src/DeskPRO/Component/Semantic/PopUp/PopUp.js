@@ -37,6 +37,7 @@ class PopUp extends React.Component {
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
     this.openPopup = this.openPopup.bind(this);
+    this.togglePopup = this.togglePopup.bind(this);
   }
 
   onMouseEnter() {
@@ -68,6 +69,14 @@ class PopUp extends React.Component {
     this.setState({
       isOpen: false
     });
+  }
+
+  togglePopup() {
+    if (this.state.isOpen) {
+      this.closePopup();
+    } else {
+      this.openPopup();
+    }
   }
 
   cancelTimeout() {
