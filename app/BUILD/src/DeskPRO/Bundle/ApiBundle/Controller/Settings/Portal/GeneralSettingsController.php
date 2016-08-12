@@ -130,6 +130,7 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
 
         if ($brand->getId() != $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand')) {
             $url = $model->getDeskproUrl();
+            $em  = $this->getManager();
 
             /** @var UrlHostChecker $urlHostChecker */
             $urlHostChecker = $this->get('url_host_checker');
@@ -137,15 +138,6 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
             $brand->setUrl($urlHostChecker->simplifyUrl($url));
             $brand->setName($url = $model->getDeskproName());
 
-            $em = $this->getManager();
-            $em->persist($brand);
-            $em->flush();
-        }
-
-        if ($model->getBrandLogo()) {
-            $brand->setLogoBlob($model->getBrandLogo());
-
-            $em = $this->getManager();
             $em->persist($brand);
             $em->flush();
         }

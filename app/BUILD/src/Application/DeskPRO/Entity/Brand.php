@@ -94,11 +94,6 @@ class Brand extends DomainObject
     protected $edit_theme_set;
 
     /**
-     * @var Blob
-     */
-    protected $logo_blob;
-
-    /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $departments;
@@ -228,47 +223,9 @@ class Brand extends DomainObject
         return $this->departments->contains($searchDepartment);
     }
 
-    /**
-     * @return Blob
-     */
-    public function getLogoBlob()
-    {
-        return $this->logo_blob;
-    }
-
-    /**
-     * @param Blob $logo
-     */
-    public function setLogoBlob($logo)
-    {
-        $this->setModelField('logo_blob', $logo);
-    }
-
-    public function hasLogo()
-    {
-        return $this->logo_blob && $this->logo_blob->isImage();
-    }
-
-    public function getLogoUrl($size = 50)
-    {
-        if (!$this->hasLogo()) {
-            return;
-        }
-
-        return $this->logo_blob->getThumbnailUrl($size);
-    }
-
     public function __toString()
     {
         return $this->getName();
-    }
-
-    public function toApiData($primary = true, $deep = true, array $visited = [])
-    {
-        $data              = parent::toApiData($primary, $deep, $visited);
-        $data['logo_blob'] = $this->logo_blob ? $this->logo_blob->toApiData() : null;
-
-        return $data;
     }
 
     ############################################################################
@@ -287,8 +244,6 @@ class Brand extends DomainObject
         $builder->mapString('url', 255, true, true);
         $builder->createOneToOne('theme_set', ThemeSet::class)->cascadePersist()->build();
         $builder->createOneToOne('edit_theme_set', ThemeSet::class)->build();
-        $builder->createOneToOne('logo_blob', Blob::class)
-            ->addJoinColumn('logo_blob_id', 'id', true, false, 'cascade')->build();
 
         $metadata->mapManyToMany(
             [

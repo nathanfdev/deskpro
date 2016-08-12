@@ -91,33 +91,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="row" ng-show="brand_id != 'new'">
-                        <div class="bucket-third">
-                            <div class="inline-input">
-                                <label>{{ phrase('admin.setup.brand_logo') }}:</label>
-                                <input type="checkbox" ng-model="Ctrl.settings.enable_brand_logo" />&nbsp;{{ phrase('admin.setup.enable_brand_logo') }}
-                            </div>
-                            <div class="inline-input" ng-show="Ctrl.settings.enable_brand_logo">
-                                <label></label>
-                                <img ng-src="{{ ng_var('icon_image') }}" ng-show="icon_image" height="50" />&nbsp;&nbsp;&nbsp;
-                                <a href="javascript:;" ng-click="Ctrl.$modal.open({ templateUrl: Ctrl.getTemplatePath('Index/modal-icons.html'), scope: this })">Pick Avatar</a>
-                                |
-                                <a href="javascript:;" class="file-upload-wrapper">
-                                    <input type="file" ng-file-select="Ctrl.onFileSelect($files)" accept="image/*" />
-                                    Upload Avatar
-                                </a>
-                                <i class="spinner-flat" ng-show="uploading"></i>
-                            </div>
-                        </div>
-
-                        <div class="bucket-two-thirds">
-                            <div class="form-text">
-                                <p>{{ phrase('admin.setup.brand_logo_help') }}</p>
-                            </div>
-                        </div>
-                    </div>
-
                 </div><!-- End .content-section -->
             </div>
 
