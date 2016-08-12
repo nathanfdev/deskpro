@@ -36,8 +36,9 @@ class CheckUserField extends CheckCustomField
     /**
      * {@inheritdoc}
      */
-    public function compileJsCheck()
+    public function getTicketFieldValueJs($id)
     {
+        return '';
     }
 
     protected function getSubmittedData(array $data)

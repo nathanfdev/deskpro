@@ -47,10 +47,111 @@ abstract class CheckCustomField extends \Application\DeskPRO\Tickets\Triggers\Te
         return $options;
     }
 
+    abstract protected function getTicketFieldValueJs($id);
+
     /**
      * {@inheritdoc}
      */
-    abstract public function compileJsCheck();
+    public function compileJsCheck()
+    {
+        $options     = $this->getTermOptions();
+        $op          = $this->getTermOperator();
+        $id          = $options['field_id'];
+        $check_value = $options->get('value');
+        $type        = $options->get('type_name');
+        $value       = $this->getTicketFieldValueJs($id);
+
+        if ($op === AbstractTriggerTerm::OP_ISSET) {
+            return "function (ticket) { return !!$value; }";
+        } elseif ($op === AbstractTriggerTerm::OP_NOTISSET) {
+            return "function (ticket) { return !$value; }";
+        }
+
+        $op_is  = AbstractTriggerTerm::OP_IS;
+        $op_not = AbstractTriggerTerm::OP_NOT;
+        $op_lt  = AbstractTriggerTerm::OP_LT;
+        $op_lte = AbstractTriggerTerm::OP_LTE;
+        $op_gt  = AbstractTriggerTerm::OP_GT;
+        $op_gte = AbstractTriggerTerm::OP_GTE;
+        $op_btw = AbstractTriggerTerm::OP_BETWEEN;
+
+        switch ($type) {
+            case 'choice':
+                if (!is_array($check_value)) {
+                    $check_value = [$check_value];
+                }
+                foreach ($check_value as &$v) {
+                    $v = (int) $v;
+                }
+                $check_value = json_encode($check_value);
+
+                return <<<JS
+function (ticket) { 
+  var check_value = $check_value;
+  var value = parseInt($value) || null;
+  var op = '$op';
+  if (!value || !value.length) value = [value];
+  
+  var has = false; 
+  for (var i = 0; i < check_value.length; i++) {
+    if (value.indexOf(check_value[i]) !== -1) has = true;
+  }
+  
+  if (op === '$op_is' && has) return true;
+  if (op === '$op_not' && !has) return true;
+  return false;
+}
+JS;
+            case 'date':
+            case 'datetime':
+                $date1 = null;
+                $date2 = null;
+                if ($options['date1']) {
+                    $date1 = $options['date1'] * 1000;
+                    $date1 = "new Date($date1)";
+                } elseif ($options['date1_relative']) {
+                }
+                if ($options['date2']) {
+                    $date2 = $options['date2'] * 1000;
+                    $date2 = "new Date($date2)";
+                } elseif ($options['date2_relative']) {
+                }
+
+                $date1 = $date1 ?: 'null';
+                $date2 = $date2 ?: 'null';
+
+                return <<<JS
+function (ticket) {
+  var date1 = $date1;
+  var date2 = $date2;
+  date1 = date1 ? date1.getTime() : null;
+  date2 = date2 ? date2.getTime() : null;
+  var op = '$op';
+  var value = $value;
+  if (!value || !value.length) {
+    return false;
+  }
+  value = new Date(parseInt(value[0]), parseInt(value[1]) - 1, parseInt(value[2]));
+  value = value.getTime();
+  if (!date1 && !date2) return false;
+
+  switch (op) {
+    case '$op_lt':
+    case '$op_lte':
+      return value < (date2 || date1);
+    case '$op_gt':
+    case '$op_gte':
+      return value > (date2 || date1);
+    case '$op_btw':
+      if (!date1 || !date2) return false;
+      return Math.min(date1, date2) >= value && value <= Math.max(date1, date2); 
+  }
+  
+  return false;
+}
+JS;
+        }
+    }
 
     /**
      * {@inheritdoc}
@@ -144,6 +245,8 @@ abstract class CheckCustomField extends \Application\DeskPRO\Tickets\Triggers\Te
                 switch ($op) {
                     case AbstractTriggerTerm::OP_LT:
                     case AbstractTriggerTerm::OP_GT:
+                    case AbstractTriggerTerm::OP_LTE:
+                    case AbstractTriggerTerm::OP_GTE:
                         if (!$date1 && !$date2) {
                             return false;
                         }
