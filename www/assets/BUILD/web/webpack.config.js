@@ -9,7 +9,7 @@ module.exports = {
     vendor:       ['jquery', 'underscore', 'angular'],
     Admin:        './es6/Admin/AdminApp.js',
     Reports:      './es6/Reports/ReportsApp.js',
-    AdminUpdate: './es6/AdminUpdate/AdminUpdateApp.js',
+    AdminUpdate:  './es6/AdminUpdate/AdminUpdateApp.js',
     AdminStart:   './es6/AdminStart/AdminStartApp.js',
     styles:       './app/Admin/Resources/style/admin2-style.scss',
     reports:      './app/Reports/Resources/style/reports-style.less',

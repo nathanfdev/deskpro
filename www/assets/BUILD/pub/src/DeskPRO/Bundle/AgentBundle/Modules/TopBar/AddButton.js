@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 
 class AddButton extends React.Component {
+  static propTypes = {
+    closeIframes: PropTypes.func
+  };
+  static defaultProps = {
+    closeIframes() {}
+  };
   constructor() {
     super();
     this.addTicket = this.addTicket.bind(this);
@@ -86,6 +92,7 @@ class AddButton extends React.Component {
 
   closePopup() {
     this.refs.addPopup.closePopup();
+    this.props.closeIframes();
   }
 
   render() {

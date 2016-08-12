@@ -72,6 +72,15 @@ class AgentTopBar extends React.Component {
     }
   }
 
+  closeIframes() {
+    for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
+      const iframe = window.DP_FRAME_OVERLAYS[key];
+      if (iframe.opened) {
+        iframe.close();
+      }
+    }
+  }
+
   getUserPicture() {
     const { user } = this.state;
     if (!user) {
@@ -160,7 +169,7 @@ class AgentTopBar extends React.Component {
       <TopBarItem classes={['legacy-omnibox']}>
         <i className="icon wait pointer" onClick={this.onRecent} />
       </TopBarItem>
-      <AddButton />
+      <AddButton closeIframes={this.closeIframes} />
       <TopBarRightMenu>
         <TopBarItem>
           <div className="view_mode" onClick={this.toggleViewMode} />

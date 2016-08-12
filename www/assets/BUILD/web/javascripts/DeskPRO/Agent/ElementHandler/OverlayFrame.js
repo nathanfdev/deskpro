@@ -13,6 +13,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 		this.frameWrap = null;
 		this.frame = null;
 		this.callback = null;
+		this.opened = false;
 
 		this.el.on('click', function(ev) {
 			Orb.cancelEvent(ev);
@@ -91,6 +92,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 
 	open: function() {
 		var hash;
+		this.opened = true;
 
 		this.frameWrap.css('display', 'block');
 
@@ -126,6 +128,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
 	},
 
 	close: function() {
+		this.opened = false;
 		this.frameWrap.css('display', 'none');
 
 		if (this.frameTitle) {

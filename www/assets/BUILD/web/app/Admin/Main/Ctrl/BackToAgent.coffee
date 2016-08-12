@@ -12,5 +12,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         window.location.href = window.DP_BASE_URL + 'agent/';
       else
         window.parent.DP_FRAME_OVERLAYS.admin.close()
+        window.parent.DP_FRAME_OVERLAYS.billing.close()
 
   Admin_Main_Ctrl_BackToAgent.EXPORT_CTRL()
