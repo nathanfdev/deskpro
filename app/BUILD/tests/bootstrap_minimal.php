@@ -50,45 +50,14 @@ $DP_ENV = new \DpRun\DpEnv(__DIR__.'/../../../', [], $config_reader);
 // needed for behat
 $GLOBALS['DP_ENV'] = $DP_ENV;
 
-/*
- * The root path to DeskPRO.
- */
 define('DP_DIR', $DP_ENV->getDpRoot());
-
-/*
- * The path to the currently active build.
- */
 define('DP_APP_DIR', $DP_ENV->getAppDir());
-
-/*
- * The name of the currently active build.
- */
 define('DP_ACTIVE_BUILD', $DP_ENV->getAppName());
-
-/*
- * The name of the currently active env (prod, dev, test)
- */
 define('DP_ENV_ID', $DP_ENV->getEnvId());
-
-#------------------------------
-# Legacy path defs
-#------------------------------
-
-/*
- * This is the path to the currently active build.
- * Use DP_APP_DIR instead.
- *
- * @deprecated
- */
 define('DP_ROOT', $DP_ENV->getAppDir());
-
-/*
- * This is the path to the currently active build within the www dir.
- * This should NOT be necessary.
- *
- * @deprecated
- */
 define('DP_WEB_ROOT', $DP_ENV->getAppWwwAssetDir());
+define('DP_BUILD_NUM',  0);
+define('DP_BUILD_TIME', 1323444089);
 
 #------------------------------
 # Erorr handling
