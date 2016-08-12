@@ -125,7 +125,7 @@ if (file_exists($DP_ENV->getAppDir() . '/sys/config/build-info.php')) {
 }
 
 $readSysFile = function($name, $default = 0) use ($DP_ENV, $buildInfo) {
-    if ($buildInfo && array_key_exists($buildInfo, $name)) {
+    if ($buildInfo && array_key_exists($name, $buildInfo)) {
         return $buildInfo[$name];
     }
     $f = $DP_ENV->getAppDir() . '/sys/config/' . $name . '.txt';
