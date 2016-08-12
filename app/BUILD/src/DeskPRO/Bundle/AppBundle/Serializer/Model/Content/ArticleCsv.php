@@ -28,12 +28,12 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
-use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\Article as ArticleEntity;
 
 class ArticleCsv extends ContentCsv
 {
     /**
-     * @param Article $entity
+     * @param ArticleEntity $entity
      *
      * @return string
      */

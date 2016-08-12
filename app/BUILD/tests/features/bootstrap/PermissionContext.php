@@ -75,7 +75,7 @@ class PermissionContext extends BaseContext
     {
         AuthContext::scheduleCleanup();
 
-        $person = $this->getPerson($who);
+        $person = DataContext::hasReference($who) ? DataContext::getReference($who) : $this->getPerson($who);
 
         $usergroup = $this->repository(Usergroup::class)->findOneBy(['sys_name' => $sysName]);
         if (!$person) {

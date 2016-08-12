@@ -379,6 +379,7 @@ class ObjectsManager
             'LabelTask'              => [$this, 'find', LabelTask::class],
             'Brand'                  => [$this, 'find', Brand::class],
             'BrandSetting'           => [$this, 'find', BrandSetting::class],
+            'Usergroup'              => [$this, 'find', Usergroup::class],
         ];
     }
 }

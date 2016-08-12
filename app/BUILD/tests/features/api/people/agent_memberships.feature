@@ -1,16 +1,21 @@
+@new
 Feature: /people endpoint
   I want to check setting agent teams
 
   Background:
-    Given I install the api data set
-    And my request is authenticated
+    Given I'm authenticated as "admin"
+    And only the following "AgentTeam" records exist:
+      | #  | name   |
+      | t1 | Team 1 |
+      | t2 | Team 2 |
 
   Scenario: I try to set agent teams to user
-    When I send a PUT request to "/api/v2/people/3" with body:
+    Given "user@deskpro.dev" user exists
+    When I send a PUT request to "/api/v2/people/{user}" with body:
     """
 {
-  "primary_team": 1,
-  "teams": [1, 2]
+  "primary_team": ~t1~,
+  "teams": [~t1~, ~t2~]
 }
     """
     Then the response should be in JSON
@@ -21,17 +26,18 @@ Feature: /people endpoint
     And the JSON node "errors.fields.teams.errors[0].message" should be equal to "This collection should contain 0 elements or less."
 
   Scenario: I set agent teams to agent
-    When I send a PUT request to "/api/v2/people/2" with body:
+    Given "agent@deskpro.dev" agent exists
+    When I send a PUT request to "/api/v2/people/{agent}" with body:
     """
 {
-  "primary_team": 2,
-  "teams": [1, 2]
+  "primary_team": ~t2~,
+  "teams": [~t1~, ~t2~]
 }
     """
     Then the response status code should be 204
 
-    And I send a GET request to "/api/v2/people/2"
-    And the JSON node "data.primary_team" should be equal to 2
+    And I send a GET request to "/api/v2/people/{agent}"
+    And the JSON node "data.primary_team" should be equal to "{t2}"
     And the JSON node "data.teams" should have 2 elements
-    And the JSON node "data.teams[0]" should be equal to 1
-    And the JSON node "data.teams[1]" should be equal to 2
+    And the JSON node "data.teams[0]" should be equal to "{t1}"
+    And the JSON node "data.teams[1]" should be equal to "{t2}"
