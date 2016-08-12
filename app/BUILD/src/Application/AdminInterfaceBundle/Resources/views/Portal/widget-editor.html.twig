@@ -501,13 +501,13 @@
                         <label>Embed code</label>
                         <div class="inline fields">
                             <div class="ui twelve wide field">
-                                <input type="text" readonly="readonly" onClick="this.select();" ng-model="code"/>
+                                <input type="text" id="widget_code" readonly="readonly" onClick="this.select();" ng-model="code"/>
                             </div>
                             <div class="ui four wide field">
-                                <button class="ui basic button" clip-copy="code"
-                                        clip-click="Growl.success('The code snippet was copied to your clipboard')">
-                                    COPY
-                                </button>
+                                <button dp-clipboard
+                                        class="ui basic button"
+                                        data-clipboard-target="#widget_code"
+                                        ngclipboard-success="Growl.success('The code snippet was copied to your clipboard')">COPY</button>
                             </div>
                         </div>
                         <div class="ui top attached tabular menu">
