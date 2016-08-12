@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -158,7 +158,7 @@ class LoginProcessor
                 if (!$set_email) {
                     $em->rollback();
                     // we are making a new person, and no email was sent in. this is not possible. throw an exception:
-                    throw new UsersourceNoEmailException();
+                    throw new UsersourceNoEmailException('The account you are trying to use is invalid because it is missing an email address.');
                 }
                 $this->new_person = true;
                 $this->person     = new Person();
