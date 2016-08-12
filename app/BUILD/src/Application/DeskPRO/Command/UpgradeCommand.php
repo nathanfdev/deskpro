@@ -69,8 +69,10 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         $dbVersion = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
         if ($dbVersion && $dbVersion <= 1463676536) {
-            $doReset      = true;
-            $versionError = true;
+            if (!$input->getOption('info') && !$input->getOption('dobuildrun') && !$input->getOption('runsync') && !$input->getOption('reset')) {
+                $doReset      = true;
+                $versionError = true;
+            }
         }
 
         if ($doReset) {
@@ -95,6 +97,15 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             }
 
             return 0;
+        }
+
+        // 443, we need to reset version back in a time a bit before running the
+        // upgrade because the upgrade scripts need to run from the proper position
+        // at build Build1464777281
+        if (!$input->getOption('info') && !$input->getOption('dobuildrun') && !$input->getOption('runsync') && !$input->getOption('reset')) {
+            if ($dbVersion == '1470650875') {
+                App::getDb()->update('settings', ['value' => '1459273988'], ['name' => 'core.deskpro_build']);
+            }
         }
 
         // Clear caches, including doctrine query caches
@@ -237,7 +248,13 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         if (defined('DP_BUILD_TIME')) {
             $logger->info('Setting deskpro_build = '.DP_BUILD_TIME);
             $db = App::getDb();
-            $db->update('settings', ['value' => DP_BUILD_TIME], ['name' => 'core.deskpro_build']);
+            if (DP_BUILD_TIME == '1323444089') {
+                // dev mode, the timestamp is the magic time
+                $db->update('settings', ['value' => time()], ['name' => 'core.deskpro_build']);
+            } else {
+                $db->update('settings', ['value' => DP_BUILD_TIME], ['name' => 'core.deskpro_build']);
+            }
+
             $db->update('settings', ['value' => DP_BUILD_NUM], ['name' => 'core.deskpro_build_num']);
         }
 
