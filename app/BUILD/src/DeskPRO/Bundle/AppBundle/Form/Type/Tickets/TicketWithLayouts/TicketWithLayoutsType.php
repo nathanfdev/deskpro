@@ -80,6 +80,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetCurrentBrand'], 100);
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetDefaultDepartment'], 100);
     }
 
@@ -121,6 +122,22 @@ class TicketWithLayoutsType extends AbstractType
                 'department_id' => ['null', 'integer'],
             ])
         ;
+    }
+
+    /**
+     * Assign ticket to the current brand.
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onSetCurrentBrand(FormEvent $event)
+    {
+        /** @var Ticket $data */
+        $data = $event->getData();
+        if (!$data->getBrand()) {
+            $data->setBrand($this->brandHelper->getCurrentBrand());
+        }
     }
 
     /**

@@ -79,4 +79,12 @@ class BrandFormHelper
 
         return;
     }
+
+    /**
+     * @return \Application\DeskPRO\Entity\Brand
+     */
+    public function getCurrentBrand()
+    {
+        return $this->brandStack->getActive()->getBrand();
+    }
 }

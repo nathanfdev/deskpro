@@ -136,39 +136,39 @@ Feature: /tickets/{id}/messages endpoint
     When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
 {
-  "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note<\/font><\/p>",
+  "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note 1<\/font><\/p>",
   "format": "html",
   "is_note": false
 }
     """
     Then the response status code should be 201
-    And the JSON node "data.message" should contain "Test Note"
+    And the JSON node "data.message" should contain "Test Note 1"
     And the JSON node "data.is_agent_note" should be equal to 0
 
   Scenario: I create a text message with is_note = 0
     When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
 {
-  "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note<\/font><\/p>",
+  "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note 2<\/font><\/p>",
   "format": "html",
   "is_note": 0
 }
     """
     Then the response status code should be 201
-    And the JSON node "data.message" should contain "Test Note"
+    And the JSON node "data.message" should contain "Test Note 2"
     And the JSON node "data.is_agent_note" should be equal to 0
 
   Scenario: I create a note with is_note = 1
     When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
 {
-  "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note<\/font><\/p>",
+  "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note 3<\/font><\/p>",
   "format": "html",
   "is_note": 1
 }
     """
     Then the response status code should be 201
-    And the JSON node "data.message" should contain "Test Note"
+    And the JSON node "data.message" should contain "Test Note 3"
     And the JSON node "data.is_agent_note" should be equal to 1
 
   Scenario: I delete message
@@ -183,7 +183,7 @@ Feature: /tickets/{id}/messages endpoint
     When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
 {
-  "message": "Test\n\nTest\n\nTest\n<p class=\"dp-signature-start\">Regards,\n\nAdmin Admin",
+  "message": "Test\n\nTest\n\nTest\n<client_type><p class=\"dp-signature-start\">Regards,\n\nAdmin Admin",
   "format": "html"
 }
     """

@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Form\Type\CustomFields\ContextualChoiceType;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DpBehat\Data\DataContext;
@@ -92,9 +93,31 @@ class CommonFactories
             }
         }
 
-        Helper::pick($data, 'subject', $ticket, 'setSubject', uniqid('Ticket_'));
+        if (array_key_exists('message', $data)) {
+            $messageData = [
+                'message' => $data['message'],
+            ];
 
-        return SimpleFactory::provide($ticket, $data);
+            if (isset($data['person'])) {
+                $messageData['person'] = $data['person'];
+            }
+
+            $ticketMessage = new TicketMessage();
+            SimpleFactory::provide($ticketMessage, $messageData);
+
+            unset($data['message']);
+        }
+
+        Helper::pick($data, 'subject', $ticket, 'setSubject', uniqid('Ticket_'));
+        SimpleFactory::provide($ticket, $data);
+
+        if (isset($ticketMessage)) {
+            $ticket->addMessage($ticketMessage);
+        }
+
+        $ticket->recomputeHash();
+
+        return $ticket;
     }
 
     /**

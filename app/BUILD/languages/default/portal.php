@@ -447,6 +447,8 @@ return [
     'portal.forms.error_date_max'                           => 'This date is too far into the future. Please pick a date before {{ date }}.',
     'portal.forms.error_date_min'                           => 'This date is too far into the past. Please pick a date after {{ date }}.',
     'portal.forms.error_dupe_email'                         => 'This email "{{ email }}" is already in use by other user.',
+    'portal.forms.error_dupe_ticket'                        => 'Duplicate ticket.',
+    'portal.forms.error_dupe_ticket_message'                => 'Duplicate ticket message.',
     'portal.forms.error_email_required'                     => 'You must provide your email address',
     'portal.forms.error_invalid_email'                      => 'This email address is not valid',
     'portal.forms.error_length_invalid'                     => 'This value should have exactly {{ limit }} characters.',

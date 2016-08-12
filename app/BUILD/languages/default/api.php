@@ -26,13 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'api.error_codes.already_in_organization'          => 'That user is already in an organization.',
     'api.error_codes.bad_choice'                       => 'One or more of the given values is invalid.',
     'api.error_codes.bad_credentials'                  => 'Bad credentials.',
     'api.error_codes.bad_request'                      => 'Request is invalid.',
     'api.error_codes.banned_email'                     => 'Email "{{ email }}" is banned.',
     'api.error_codes.dupe_email'                       => 'Email "{{ email }}" is already in use by other user.',
+    'api.error_codes.dupe_ticket'                      => 'Duplicate ticket.',
+    'api.error_codes.dupe_ticket_message'              => 'Duplicate ticket message.',
     'api.error_codes.email_already_validated'          => 'Email is already validated.',
     'api.error_codes.email_wrong_validation_code'      => 'Wrong email validation code.',
     'api.error_codes.empty'                            => 'This value should be blank.',
@@ -81,4 +83,4 @@ return array(
     'api.error_codes.unauthorized'                     => 'You must be authenticated to make this request.',
     'api.error_codes.unauthorized_check_server'        => 'Unauthorized. If you are using apache and feel that this is incorrect, please see this article for help: https://support.deskpro.com/kb/articles/415',
     'api.error_codes.unique_entity'                    => 'This value already exists in the system.',
-);
+];

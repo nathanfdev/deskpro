@@ -59,3 +59,17 @@ services:
       - "@ticket_field_settings"
     tags:
       - { name: validator.constraint_validator, alias: 'dp_ticket_layout' }
+
+  validator.ticket_dupe:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\TicketDupeValidator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: validator.constraint_validator }
+
+  validator.ticket_dupe_message:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\TicketDupeMessageValidator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: validator.constraint_validator }

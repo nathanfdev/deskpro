@@ -35,15 +35,12 @@ use Application\DeskPRO\NewSettings\SettingsBag;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use Doctrine\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Class TicketReplyType.
@@ -53,23 +50,16 @@ class TicketReplyType extends AbstractType
     /**
      * @var LanguageManager
      */
-    private $language_manager;
-
-    /**
-     * @var EntityManager
-     */
-    protected $em;
+    private $languageManager;
 
     /**
      * Constructor.
      *
-     * @param LanguageManager $language_manager
-     * @param EntityManager   $em
+     * @param LanguageManager $languageManager
      */
-    public function __construct(LanguageManager $language_manager, EntityManager $em)
+    public function __construct(LanguageManager $languageManager)
     {
-        $this->language_manager = $language_manager;
-        $this->em               = $em;
+        $this->languageManager = $languageManager;
     }
 
     /**
@@ -79,15 +69,21 @@ class TicketReplyType extends AbstractType
     {
         $builder
             ->add('ticket_message', TicketMessageType::class, [
-                'ticket'              => $options['ticket'],
-                'person'              => $options['person'],
-                'ticket_message'      => $options['ticket_message'],
-                'message_label'       => $options['message_label'],
-                'label'               => false,
-                'render_is_note'      => false,
-                'format'              => 'html',
+                'ticket'         => $options['ticket'],
+                'person'         => $options['person'],
+                'ticket_message' => $options['ticket_message'],
+                'message_label'  => $options['message_label'],
+                'label'          => false,
+                'render_is_note' => false,
+                'format'         => 'html',
+                'constraints'    => [
+                    new AppAssert\Ticket\TicketDupeMessage(),
+                ],
                 'message_constraints' => [
                     new NotBlank(),
+                ],
+                'error_mapping' => [
+                    '.' => 'message',
                 ],
             ])
             ->add('attachments', TicketMessageAttachmentCollectionType::class, [
@@ -97,39 +93,12 @@ class TicketReplyType extends AbstractType
             ])
             ->add('more_attachments', SubmitType::class, [
                 'validation_groups' => false,
-                'label'             => $this->language_manager->phrase('portal.forms.label_add_attachment'),
+                'label'             => $this->languageManager->phrase('portal.forms.label_add_attachment'),
             ])
             ->add('submit', SubmitType::class, [
-                'label' => $this->language_manager->phrase('portal.tickets.add-reply'),
+                'label' => $this->languageManager->phrase('portal.tickets.add-reply'),
             ])
         ;
-    }
-
-    /**
-     * @todo should be as independent validator constraint since the validator annotations will be enabled for the portal
-     *
-     * @param string                    $value
-     * @param ExecutionContextInterface $context
-     */
-    public function checkForDupes($value, ExecutionContextInterface $context)
-    {
-        if (!isset($value['ticket_message'])) {
-            return;
-        }
-
-        /** @var Form $form */
-        $form   = $context->getRoot();
-        $ticket = $form->getConfig()->getOption('ticket');
-
-        /** @var \Application\DeskPRO\EntityRepository\TicketMessage $rep */
-        $rep = $this->em->getRepository(TicketMessage::class);
-        if ($rep->checkDupeMessage($value['ticket_message'], $ticket, 5 * 60)) {
-            $context
-                ->buildViolation('Duplicate message')
-                ->atPath('ticket_message')
-                ->addViolation()
-            ;
-        }
     }
 
     /**
@@ -148,9 +117,6 @@ class TicketReplyType extends AbstractType
         $resolver
             ->setDefaults([
                 'message_label' => false,
-                'constraints'   => [
-                    new Callback([$this, 'checkForDupes']),
-                ],
             ])
             ->setRequired([
                 'person', 'ticket', 'ticket_message', 'settings',

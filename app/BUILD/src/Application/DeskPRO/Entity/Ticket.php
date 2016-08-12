@@ -134,6 +134,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @PortalLinkCustom(type="add-cc")
  *
  * @AppAssert\Ticket\TicketLink()
+ * @AppAssert\Ticket\TicketDupe()
  */
 class Ticket extends DomainObject implements HighlightableModelInterface, LabelsOwner, CustomPerDataOwnerInterface
 {
@@ -1566,6 +1567,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         }
 
         return $ids;
+    }
+
+    /**
+     * @return TicketMessage[]|ArrayCollection
+     */
+    public function getMessages()
+    {
+        return $this->messages;
     }
 
     /**
@@ -3503,12 +3512,15 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         $ticket_id = Util::baseDecode($ticket_id, 'letters');
 
-        return array(
+        return [
             'ticket_id' => $ticket_id,
             'auth'      => $auth,
-        );
+        ];
     }
 
+    /**
+     * @return string
+     */
     public function getTicketHash()
     {
         if (!$this->ticket_hash) {
@@ -3523,10 +3535,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function recomputeHash()
     {
-        $hashes   = array();
+        $hashes   = [];
         $hashes[] = sha1(
             $this->subject
-            .($this->person ? $this->person->id : '')
+            .($this->person ? $this->person->getId() : '')
             .$this->getAgentId()
             .$this->getAgentTeamId()
             .$this->getDepartmentId()
@@ -3534,6 +3546,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             .$this->getWorkflowId()
             .$this->getPriorityId()
             .$this->getProductId()
+            .$this->getBrandId()
         );
 
         foreach ($this->custom_data as $d) {
