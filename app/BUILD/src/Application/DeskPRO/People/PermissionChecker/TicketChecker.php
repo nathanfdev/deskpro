@@ -330,12 +330,12 @@ class TicketChecker extends AbstractChecker
 
         // Own tickets
         if (
-            ($ticket->agent && $ticket->agent->id == $this->person->id)
-            || ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team))
+            ($agent && $agent === $this->person)
+            || ($agentTeam && $this->agents->isAgentMemberOfTeam($this->person, $agentTeam))
         ) {
             $setSuffix = 'own';
         // Unassigned tickets
-        } elseif (!$ticket->agent && !$ticket->agent_team) {
+        } elseif (!$agent && !$agentTeam) {
             $setSuffix = 'unassigned';
         // Other
         } else {

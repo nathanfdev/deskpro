@@ -267,9 +267,6 @@ class FilterChangeDetector
 
         $start   = microtime(true);
         $checker = new AffectedFiltersCheck($ticket, $filters, $logger);
-        if ($exist_set) {
-            $checker->setPreviousFieldVersions($exist_set->getFieldVersions());
-        }
 
         $affected_filters = $checker->getNewAffectedFilters();
 
@@ -295,14 +292,18 @@ class FilterChangeDetector
         $agentPermCache = [];
 
         // remove agents from the scopes
-        $forAgentIds = array_combine($forAgentIds, $forAgentIds);
-        foreach ($filter_checks as &$filter_check) {
+        $forAgentIds     = array_combine($forAgentIds, $forAgentIds);
+        $oldFilterChecks = $filter_checks;
+        $filter_checks   = [];
+
+        foreach ($oldFilterChecks as $filter_check) {
             // if defined agent list then exclude others
             if (null !== $forAgentIds) {
                 $filter_check['scopes'] = array_intersect_key($filter_check['scopes'], $forAgentIds);
             }
 
             $distinctAgents += $filter_check['scopes'];
+            $filter_checks[] = $filter_check;
         }
 
         // calculate agent view permissions

@@ -366,7 +366,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @var string
      */
-    protected $status = 'awaiting_agent';
+    protected $status;
 
     /**
      * @var string
@@ -659,6 +659,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this['date_status']  = new \DateTime();
 
         $this['auth'] = DpStrings::random(self::TAC_AUTHCODE_LEN, Strings::CHARS_KEY);
+        $this->setModelField('status', self::STATUS_AWAITING_AGENT);
 
         $this->__dp_auto_ticket_process = true;
     }
