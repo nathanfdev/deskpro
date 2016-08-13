@@ -31,6 +31,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Avatar\AvatarOwner;
+use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
@@ -56,7 +57,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property Department[]|ArrayCollection $children
  * @property Brand[]|ArrayCollection      $brands
  */
-class Department extends DomainObject implements HasPhraseName, PersonList, AvatarOwner
+class Department extends DomainObject implements HasPhraseName, PersonList, AvatarOwner, Hierarchical
 {
     /**
      * @var int
