@@ -53,7 +53,7 @@ class PermissionContext extends BaseContext
     {
         AuthContext::scheduleCleanup();
 
-        $person = $this->getPerson($who);
+        $person = DataContext::hasReference($who) ? DataContext::getReference($who) : $this->getPerson($who);
 
         foreach ($person->getUsergroups() as $usergroup) {
             if ($usergroup->getSysName() === $sysName) {

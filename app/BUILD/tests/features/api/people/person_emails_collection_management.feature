@@ -1,9 +1,9 @@
+@new
 Feature: Person emails collection CRUD
 
   Background:
-    Given I install the api data set
     And there are no registered users
-    And my request is authenticated
+    And I'm authenticated as "admin"
 
   Scenario: I try to create person w/o emails
     When I send a POST request to "/api/v2/people" with body:
