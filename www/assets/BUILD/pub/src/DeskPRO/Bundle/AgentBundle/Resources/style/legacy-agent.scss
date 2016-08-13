@@ -1,6 +1,13 @@
 @import 'variables';
 @import "../../../../../../node_modules/bourbon/app/assets/stylesheets/css3/_placeholder";
-@import "im-container-style";
+@import "../../../../../../node_modules/bourbon/app/assets/stylesheets/addons/_clearfix";
+@import "raw/misc";
+@import "raw/dropdowns";
+@import "raw/dropdown-im";
+@import "raw/dropdown-active-chat";
+@import "raw/dropdown-chat";
+@import "global-widgets/im-container";
+
 
 .menu-with-panel {
   td {
@@ -472,7 +479,10 @@
   right: 143px;
   left: auto;
 }
-.positioned-element.add_menu_popup,
+
+.z-index-stub {
+  z-index: 500;
+}.positioned-element.add_menu_popup,
 .positioned-element.chat_popup,
 .positioned-element.user_popup {
   top: 44px !important;
