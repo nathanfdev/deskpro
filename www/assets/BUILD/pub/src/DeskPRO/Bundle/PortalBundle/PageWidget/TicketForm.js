@@ -42,19 +42,32 @@ class TicketValueReader {
     return this.parseIntSelect($('#ticket_workflow', this.$formEl));
   }
 
-  getTicketFieldValue(fieldId) {
-    const $field = $(`#ticket_ticket_field_${fieldId}_data`, this.$formEl);
+  getFieldValue(prefix, fieldId) {
+    const id = `#ticket_${prefix}_field_${fieldId}_data`;
+    const $field = $(id, this.$formEl);
     if ($field.is(':checkbox')) {
       return $field.is(':checked');
     }
-    if ($(`#ticket_ticket_field_${fieldId}_data_year`, $field)) {
+    if ($field.find(`${id}_year`).length) {
       return [
-        $(`#ticket_ticket_field_${fieldId}_data_year`, $field).val(),
-        $(`#ticket_ticket_field_${fieldId}_data_month`, $field).val(),
-        $(`#ticket_ticket_field_${fieldId}_data_day`, $field).val()
+        $(`${id}_year`, $field).val(),
+        $(`${id}_month`, $field).val(),
+        $(`${id}_day`, $field).val()
       ];
     }
     return $field.val();
+  }
+
+  getTicketFieldValue(fieldId) {
+    return this.getFieldValue('ticket', fieldId);
+  }
+
+  getUserFieldValue(fieldId) {
+    return this.getFieldValue('user', fieldId);
+  }
+
+  getOrgFieldValue(fieldId) {
+    return this.getFieldValue('org', fieldId);
   }
 }
 
@@ -64,7 +77,7 @@ export class TicketForm extends PageWidget {
     const $formEl = this.$element.find('.dp_ticket_form');
     const $tplEl = this.$element.find('.js_form_tpl');
     const ticketReader = new TicketValueReader($formEl);
-    const allFormFields = $([]).add($formEl.find('select, input')).add($tplEl.find('select, input'));
+    const allFormFields = $([]).add($formEl.find('select, input, textarea')).add($tplEl.find('select, input, textarea'));
 
     $('#ticket_message_message_html', this.$formEl).attr('data-blob-path', 'ticket[attachments]');
 

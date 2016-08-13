@@ -38,7 +38,7 @@ class CheckUserField extends CheckCustomField
      */
     public function getTicketFieldValueJs($id)
     {
-        return '';
+        return "ticket.getUserFieldValue($id)";
     }
 
     protected function getSubmittedData(array $data)

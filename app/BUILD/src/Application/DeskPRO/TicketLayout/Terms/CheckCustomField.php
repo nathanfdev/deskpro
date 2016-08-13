@@ -67,13 +67,17 @@ abstract class CheckCustomField extends \Application\DeskPRO\Tickets\Triggers\Te
             return "function (ticket) { return !$value; }";
         }
 
-        $op_is  = AbstractTriggerTerm::OP_IS;
-        $op_not = AbstractTriggerTerm::OP_NOT;
-        $op_lt  = AbstractTriggerTerm::OP_LT;
-        $op_lte = AbstractTriggerTerm::OP_LTE;
-        $op_gt  = AbstractTriggerTerm::OP_GT;
-        $op_gte = AbstractTriggerTerm::OP_GTE;
-        $op_btw = AbstractTriggerTerm::OP_BETWEEN;
+        $op_is          = AbstractTriggerTerm::OP_IS;
+        $op_not         = AbstractTriggerTerm::OP_NOT;
+        $op_lt          = AbstractTriggerTerm::OP_LT;
+        $op_lte         = AbstractTriggerTerm::OP_LTE;
+        $op_gt          = AbstractTriggerTerm::OP_GT;
+        $op_gte         = AbstractTriggerTerm::OP_GTE;
+        $op_btw         = AbstractTriggerTerm::OP_BETWEEN;
+        $op_contains    = AbstractTriggerTerm::OP_CONTAINS;
+        $op_notcontains = AbstractTriggerTerm::OP_NOTCONTAINS;
+        $op_reg         = AbstractTriggerTerm::OP_IS_REGEX;
+        $op_notreg      = AbstractTriggerTerm::OP_NOT_REGEX;
 
         switch ($type) {
             case 'choice':
@@ -147,6 +151,44 @@ function (ticket) {
       return Math.min(date1, date2) >= value && value <= Math.max(date1, date2); 
   }
   
+  return false;
+}
+JS;
+            default:
+                return <<<JS
+function (ticket) { 
+  var check_value = '$check_value'.toLowerCase();
+  var value = $value || '';
+  value = value.toLowerCase();
+  var op = '$op';
+  
+  switch (op) {
+    case '$op_is':
+      return !value.localeCompare(check_value);
+    case '$op_not':
+      return !!value.localeCompare(check_value);
+    case '$op_contains':
+      return value.indexOf(check_value) !== -1;
+    case '$op_notcontains':
+      return value.indexOf(check_value) === -1;
+    case '$op_reg':
+    case '$op_notreg':
+      if (check_value.charAt(0) === '/') {
+        check_value = check_value.substr(1);
+      }
+      if (check_value.charAt(check_value.length - 1) === '/') {
+        check_value = check_value.substr(0, check_value.length - 1);
+      }
+      var patt = new RegExp(check_value);
+      if (op === '$op_reg') {
+        return patt.test(value);
+      }
+      if (op === '$op_notreg') {
+        return !patt.test(value);
+      }
+      return false;
+  }
+ 
   return false;
 }
 JS;

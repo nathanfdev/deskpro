@@ -38,7 +38,7 @@ class CheckOrgField extends CheckCustomField
      */
     public function getTicketFieldValueJs($id)
     {
-        return '';
+        return "ticket.getOrgFieldValue($id)";
     }
 
     protected function getSubmittedData(array $data)
