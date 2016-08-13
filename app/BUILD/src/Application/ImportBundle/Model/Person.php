@@ -608,7 +608,7 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
     /**
      * Checking for person's organization info.
      *
-     * @Assert\True()
+     * @Assert\IsTrue()
      *
      * @return bool
      */
