@@ -56,12 +56,12 @@ class AgentTopBar extends React.Component {
     window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
   }
 
-  onRecent(e) {
-    e.stopPropagation();
-    e.preventDefault();
+  onRecent() {
     const angularOmnibox = window.angular.element('.dp-omnibox').scope();
     if (angularOmnibox) {
       angularOmnibox.toggleMode('recent');
+      const event = new Event('dpPopupOpen');
+      window.document.dispatchEvent(event);
     }
   }
 
@@ -69,6 +69,8 @@ class AgentTopBar extends React.Component {
     const angularOmnibox = window.angular.element('.dp-omnibox').scope();
     if (angularOmnibox) {
       angularOmnibox.toggleMode('notif');
+      const event = new Event('dpPopupOpen');
+      window.document.dispatchEvent(event);
     }
   }
 
@@ -166,20 +168,19 @@ class AgentTopBar extends React.Component {
           placeholder="Search ..."
         />
       </TopBarItem>
-      <TopBarItem classes={['legacy-omnibox']}>
-        <i className="icon wait pointer hover" onClick={this.onRecent} />
+      <TopBarItem classes={['legacy-omnibox']} onClick={this.onRecent}>
+        <i className="icon wait pointer hover" />
       </TopBarItem>
       <AddButton closeIframes={this.closeIframes} />
       <TopBarRightMenu>
-        <TopBarItem>
-          <div className="view_mode" onClick={this.toggleViewMode} />
+        <TopBarItem onClick={this.toggleViewMode}>
+          <div className="view_mode" />
         </TopBarItem>
-        <TopBarItem classes={['legacy-omnibox']}>
+        <TopBarItem classes={['legacy-omnibox']} onClick={this.onNotification}>
           <TopBarNotificationIcon
             elementId="notifications"
             icon="alarm outline hover pointer"
             count={notificationCount}
-            onClick={this.onNotification}
           />
         </TopBarItem>
         <TopBarItem>

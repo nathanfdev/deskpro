@@ -64,7 +64,7 @@
   }
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
-    background-color: $dp-sonic-midnight;
+    background-color: $dp-sonic-primary;
     height: 20px;
     width: 20px;
     border-radius: 10px;
@@ -72,7 +72,7 @@
     cursor: pointer;
   }
   &::-moz-range-thumb {
-    background-color: $dp-sonic-midnight;
+    background-color: $dp-sonic-primary;
     height: 20px;
     width: 20px;
     border-radius: 10px;
@@ -80,7 +80,7 @@
     border: 0;
   }
   &::-ms-thumb {
-    background-color: $dp-sonic-midnight;
+    background-color: $dp-sonic-primary;
     height: 20px;
     width: 20px;
     border-radius: 10px;
@@ -268,6 +268,10 @@
       height: 28px;
       width: 28px;
     }
+    i.icon.dropdown {
+      font-size: 0.8em;
+      color: $dp-greyscale-850;
+    }
   }
   .chat {
     vertical-align: middle;
@@ -330,16 +334,16 @@
 #user-menu-popup,
 #add-menu-popup {
   padding: 0;
-  border-color: $dp-sonic-midnight;
+  border-color: $agent_header_border_color;
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   &:before {
-    background: $dp-sonic-midnight;
+    background: $agent_header_border_color;
   }
   .icon {
     padding-left: 0;
   }
   .header {
-    background: $dp-sonic-midnight;
+    background: $agent_header_border_color;
     color: $dp-greyscale-50;
     padding: 9px 10px 9px 15px;
     font-size: 14px;
@@ -366,7 +370,9 @@
       }
       &:hover {
         background-color: $dp-morning-sky;
-        color: $agent_header_border_color;
+        &, i.icon {
+          color: $agent_header_border_color;
+        }
       }
     }
   }
@@ -395,6 +401,17 @@
       }
       .toggle {
         padding-bottom: 15px;
+      }
+      .ui.range {
+        &::-webkit-slider-thumb {
+          background-color: $agent_header_border_color;
+        }
+        &::-moz-range-thumb {
+          background-color: $agent_header_border_color;
+        }
+        &::-ms-thumb {
+          background-color: $agent_header_border_color;
+        }
       }
       i.icon.volume {
         cursor: pointer;
