@@ -65,6 +65,7 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\Sla;
@@ -78,6 +79,7 @@ use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Entity\TicketWorkflow;
 use Application\DeskPRO\Entity\Usergroup;
+use Application\DeskPRO\Entity\Usersource;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
@@ -310,6 +312,8 @@ class ObjectsManager
             'LabelTask'              => [Factory\SimpleFactory::class, 'create', LabelTask::class],
             'Brand'                  => [Factory\SimpleFactory::class, 'create', Brand::class],
             'BrandSetting'           => [Factory\SimpleFactory::class, 'create', BrandSetting::class],
+            'Usersource'             => [Factory\SimpleFactory::class, 'create', Usersource::class],
+            'UsersourceAssoc'        => [Factory\SimpleFactory::class, 'create', PersonUsersourceAssoc::class],
         ];
     }
 
@@ -389,6 +393,8 @@ class ObjectsManager
             'Usergroup'              => [$this, 'find', Usergroup::class],
             'Session'                => [$this, 'find', Session::class],
             'ApiToken'               => [$this, 'find', ApiToken::class],
+            'Usersource'             => [$this, 'find', Usersource::class],
+            'UsersourceAssoc'        => [$this, 'find', PersonUsersourceAssoc::class],
         ];
     }
 }
