@@ -29,6 +29,7 @@
 namespace DpBehat\Data\Factory;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefFeedback;
@@ -308,5 +309,22 @@ class CommonFactories
         }
 
         return SimpleFactory::provide($feedback, $data);
+    }
+
+    /**
+     * @param array $data
+     *
+     * @throws \Exception
+     *
+     * @return object
+     */
+    public static function chat(array $data)
+    {
+        $chat = new ChatConversation();
+        if ($data['date_created']) {
+            $data['date_created'] = new \DateTime($data['date_created']);
+        }
+
+        return SimpleFactory::provide($chat, $data);
     }
 }

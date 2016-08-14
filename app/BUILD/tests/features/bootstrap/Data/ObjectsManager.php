@@ -253,7 +253,7 @@ class ObjectsManager
             'AgentTeam'              => [Factory\CommonFactories::class, 'agentTeam'],
             'Article'                => [Factory\SimpleFactory::class, 'create', Article::class],
             'ArticleCategory'        => [Factory\SimpleFactory::class, 'create', ArticleCategory::class],
-            'Chat'                   => [Factory\SimpleFactory::class, 'create', ChatConversation::class],
+            'Chat'                   => [Factory\CommonFactories::class, 'chat'],
             'AgentChat'              => [Factory\SimpleFactory::class, 'create', AgentChat::class],
             'AgentChatParticipant'   => [Factory\SimpleFactory::class, 'create', AgentChatParticipant::class],
             'AgentChatMessage'       => [Factory\SimpleFactory::class, 'create', AgentChatMessage::class],
