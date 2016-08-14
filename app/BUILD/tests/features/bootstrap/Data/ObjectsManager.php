@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\BrandSetting;
@@ -253,6 +254,7 @@ class ObjectsManager
             'AgentTeam'              => [Factory\CommonFactories::class, 'agentTeam'],
             'Article'                => [Factory\SimpleFactory::class, 'create', Article::class],
             'ArticleCategory'        => [Factory\SimpleFactory::class, 'create', ArticleCategory::class],
+            'PendingArticle'         => [Factory\SimpleFactory::class, 'create', ArticlePendingCreate::class],
             'Chat'                   => [Factory\CommonFactories::class, 'chat'],
             'AgentChat'              => [Factory\SimpleFactory::class, 'create', AgentChat::class],
             'AgentChatParticipant'   => [Factory\SimpleFactory::class, 'create', AgentChatParticipant::class],
@@ -365,6 +367,7 @@ class ObjectsManager
             'TaskSubtask'            => [$this, 'find', TaskSubtask::class],
             'ProjectMember'          => [$this, 'find', ProjectMember::class],
             'Article'                => [$this, 'find', Article::class],
+            'PendingArticle'         => [$this, 'find', ArticlePendingCreate::class],
             'News'                   => [$this, 'find', News::class],
             'NewsCategory'           => [$this, 'find', NewsCategory::class],
             'Download'               => [$this, 'find', Download::class],
