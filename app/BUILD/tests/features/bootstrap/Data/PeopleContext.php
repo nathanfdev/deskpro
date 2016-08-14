@@ -214,7 +214,7 @@ class PeopleContext extends BaseContext
                 'is_user'      => true,
                 'is_confirmed' => true,
                 'is_agent'     => true,
-                'can_agent'    => false,
+                'can_agent'    => true,
                 'can_admin'    => false,
                 'password'     => 'password',
             ]);

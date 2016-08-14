@@ -438,10 +438,10 @@ class DataContext extends BaseContext
         };
 
         if (!$isJson) {
-            $content = preg_replace_callback('/\{(.+)\}/U', $callback, $content);
+            $content = preg_replace_callback('/\{(.+)\}.*/U', $callback, $content);
         }
 
-        $content = preg_replace_callback('/\~(.+)\~/U', $callback, $content);
+        $content = preg_replace_callback('/\~(.+)\~.*/U', $callback, $content);
 
         return $content;
     }

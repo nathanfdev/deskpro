@@ -181,20 +181,20 @@ class AuthContext extends BaseContext
     }
 
     /**
-     * @Given a valid api token exists with the code :token and id :id for :who
+     * @Given a valid api token with the code :token for :who and referenced as :ref exists
      */
-    public function aValidApiTokenExistsWithTheCodeAndIdForAgent($token, $id, $who)
+    public function aValidApiTokenExistsWithTheCodeAndIdForAgent($token, $who, $ref)
     {
-        $api_token         = new ApiToken();
-        $api_token->token  = $token;
-        $api_token->person = $this->getUserDetails()->getWho($who);
-        $api_token->scope  = ApiToken::SCOPE_CLIENT;
+        $apiToken        = new ApiToken();
+        $apiToken->token = $token;
+        $person          = DataContext::hasReference($who)
+            ? DataContext::getReference($who)
+            : $this->getUserDetails()->getWho($who);
+        $apiToken->person = $person;
+        $apiToken->scope  = ApiToken::SCOPE_CLIENT;
 
-        $this->persistAndFlush($api_token);
-
-        if ($api_token->id != $id) {
-            throw new \Exception('expected api token id ('.$id.') is not correct. please check database.');
-        }
+        $this->persistAndFlush($apiToken);
+        DataContext::setReference($ref, $apiToken);
     }
 
     /**
@@ -207,11 +207,14 @@ class AuthContext extends BaseContext
     }
 
     /**
-     * @Given the agent session auth :session_id is valid for :who
+     * @Given the agent session auth :session_id is valid for :who and referenced as :ref
      */
-    public function theAgentSessionIsValidForPerson($session_id, $who)
+    public function theAgentSessionIsValidForPerson($session_id, $who, $ref)
     {
-        $user = $this->getUserDetails()->getWho($who);
+        $user =
+            DataContext::hasReference($who)
+            ? DataContext::getReference($who, false)
+            : $this->getUserDetails()->getWho($who);
 
         session_start();
         $_SESSION['_sf2_attributes'] = ['auth_person_id' => $user->getId()];
@@ -225,6 +228,8 @@ class AuthContext extends BaseContext
         $session->setPerson($user);
 
         $this->persistAndFlush($session);
+
+        DataContext::setReference($ref, $session);
     }
 
     /**

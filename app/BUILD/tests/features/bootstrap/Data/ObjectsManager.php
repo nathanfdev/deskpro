@@ -29,6 +29,7 @@
 namespace DpBehat\Data;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Blob;
@@ -65,6 +66,7 @@ use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\Product;
+use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
@@ -385,6 +387,8 @@ class ObjectsManager
             'Brand'                  => [$this, 'find', Brand::class],
             'BrandSetting'           => [$this, 'find', BrandSetting::class],
             'Usergroup'              => [$this, 'find', Usergroup::class],
+            'Session'                => [$this, 'find', Session::class],
+            'ApiToken'               => [$this, 'find', ApiToken::class],
         ];
     }
 }
