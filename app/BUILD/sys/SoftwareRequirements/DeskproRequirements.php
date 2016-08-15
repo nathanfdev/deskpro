@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -257,6 +257,12 @@ class DeskproRequirements extends RequirementCollection
             extension_loaded('intl'),
             'intl should be installed',
             'Install and enable the <strong>intl</strong> extension (used for validators).'
+        );
+
+        $this->addRecommendation(
+            extension_loaded('zip'),
+            'zip extension should be installed',
+            'Install and enable the <strong>zip</strong> extension.'
         );
 
         if (extension_loaded('intl')) {
