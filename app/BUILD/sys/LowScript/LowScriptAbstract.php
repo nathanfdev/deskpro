@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpSys\LowScript;
 
 use DpRun\LowUtil;
@@ -177,6 +178,15 @@ abstract class LowScriptAbstract
         }
 
         $read_config = $this->dpEnv->getConfig('database_advanced.read');
+
+        // verify the config is actually set
+        if ($read_config) {
+            $read_config = LowUtil::getMysqlInfoFromConfigArray($read_config);
+            if (empty($read_config['host']) || empty($read_config['dbname'])) {
+                $read_config = null;
+            }
+        }
+
         if ($read_config) {
             $this->pdo_read = LowUtil::getPdoFromMysqlInfo($read_config);
         } else {
