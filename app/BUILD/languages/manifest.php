@@ -152,8 +152,8 @@ return array(
         'flag_image' => 'it.png',
         'is_rtl'     => false,
         'has_user'   => true,
-        'has_agent'  => false,
-        'has_admin'  => false,
+        'has_agent'  => true,
+        'has_admin'  => true,
         'is_managed' => true,
     ),
 
