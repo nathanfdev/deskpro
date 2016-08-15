@@ -1202,7 +1202,7 @@ var RLANG = {
 
 		insertSnippetHtml: function(html)
 		{
-			this.snippetFocus();
+			//this.snippetFocus();
 			this.pasteHtmlAtCaret(html);
 			this.observeImages();
 			this.syncCode();
