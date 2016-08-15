@@ -286,7 +286,7 @@ class HttpServerInfoBootTask implements BootTaskInterface
                     'steps'          => [],
                     'currentStepId'  => $session->findCurrentStepId(),
                     'next'           => [
-                        'date'             => $nextDate->format('Y-m-d H:i:s'),
+                        'date'             => $nextDate ? $nextDate->format('Y-m-d H:i:s') : '',
                         'date_description' => $nextDate ? (($nextDate < (new \DateTime())) ? 'in a few seconds' : Dates::secsToReadable($nextDate->getTimestamp() - time())) : null,
                     ],
                 ];
