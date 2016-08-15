@@ -223,9 +223,9 @@ class TicketMessage extends AbstractEntityRepository
                 JOIN m.ticket t
                 WHERE m.message_hash = ?0 AND m.date_created > ?1 AND m.ticket = ?2 AND m.person = ?3
                 ORDER BY m.id DESC
-            ')->setMaxResults(1)->setParameters(array(
-                $message['message_hash'], $timesnip, $ticket, $message->person,
-            ))->getResult();
+            ')->setMaxResults(1)->setParameters([
+                $message->getMessageHash(), $timesnip, $ticket, $message->getPerson(),
+            ])->getResult();
         } else {
             if ($logger) {
                 $logger->logDebug("[EntityRepository:TicketMessage] Checking {$message['id']} for dupes in any previous ticket (-$secs_ago s)");
@@ -235,9 +235,9 @@ class TicketMessage extends AbstractEntityRepository
                 FROM DeskPRO:TicketMessage m
                 JOIN m.ticket AS t
                 WHERE m.message_hash = ?0 AND m.date_created > ?1 AND t.subject = ?2 AND m.person = ?3
-            ')->setParameters(array(
-                $message['message_hash'], $timesnip, $message->withNewSubject, $message->person,
-            ))->getResult();
+            ')->setParameters([
+                $message->getMessageHash(), $timesnip, $message->withNewSubject, $message->getPerson(),
+            ])->getResult();
         }
 
         $ids = array();

@@ -41,6 +41,9 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Bundle\AppBundle\Form\BrandFormHelper;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 
+/**
+ * Class VerifyDepartment.
+ */
 class VerifyDepartment implements TicketSaveActionInterface
 {
     /**
@@ -48,10 +51,14 @@ class VerifyDepartment implements TicketSaveActionInterface
      */
     private $ticketDeps;
 
-    /** @var BrandFormHelper */
+    /**
+     * @var BrandFormHelper
+     */
     private $helper;
 
     /**
+     * Constructor.
+     *
      * @param TicketDepartments $ticketDeps
      * @param BrandFormHelper   $helper
      */
@@ -83,6 +90,9 @@ class VerifyDepartment implements TicketSaveActionInterface
     {
         if ($ticket->getDepartment() && $this->ticketDeps->getChildren($ticket->getDepartment())) {
             $defaultDepartment = $this->getDefaultDepartment($ticket, $context);
+            if (!$defaultDepartment) {
+                return;
+            }
 
             $set = $ticket->getDepartment();
             $context->getLogger()->info(
@@ -106,6 +116,9 @@ class VerifyDepartment implements TicketSaveActionInterface
     {
         if (!$ticket->getDepartment()) {
             $defaultDepartment = $this->getDefaultDepartment($ticket, $context);
+            if (!$defaultDepartment) {
+                return;
+            }
 
             $context->getLogger()->info(
                 sprintf(
@@ -134,13 +147,15 @@ class VerifyDepartment implements TicketSaveActionInterface
 
         if (!$defaultDepartment || $this->ticketDeps->getChildren($defaultDepartment)) {
             $defaultDepartment = $this->ticketDeps->getDefaultDepartment();
-            $context->getLogger()->info(
-                sprintf(
-                    'Default department for brand not found or invalid. Picking system default: %s ( %d )',
-                    $defaultDepartment->getTitle(),
-                    $defaultDepartment->getId()
-                )
-            );
+            if ($defaultDepartment) {
+                $context->getLogger()->info(
+                    sprintf(
+                        'Default department for brand not found or invalid. Picking system default: %s ( %d )',
+                        $defaultDepartment->getTitle(),
+                        $defaultDepartment->getId()
+                    )
+                );
+            }
         }
 
         return $defaultDepartment;

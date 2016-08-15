@@ -3,6 +3,7 @@ Feature: Ticket logs save context
 
   Background:
     Given I'm authenticated as admin
+    And no Ticket records exist
 
   Scenario: I check api method
     When I send a "POST" request to "/api/v2/tickets" with body:

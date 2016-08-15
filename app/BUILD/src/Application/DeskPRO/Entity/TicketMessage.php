@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -68,7 +69,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property string                             $message_raw
  * @property bool                               $show_full_hint
  * @property string                             $lang_code
+ *
  * @JMS\ExclusionPolicy("all")
+ * @AppAssert\Ticket\TicketDupeMessage()
  */
 class TicketMessage extends DomainObject
 {
@@ -834,7 +837,7 @@ class TicketMessage extends DomainObject
             $hashable_msg
         );
 
-        $hashes[] = sha1($hashable_msg.($this->person ? $this->person->id : 'noperson'));
+        $hashes[] = sha1($hashable_msg.($this->person ? $this->person->getId() : 'noperson'));
 
         foreach ($this->attachments as $a) {
             $hashes[] = $a->blob['blob_hash'];

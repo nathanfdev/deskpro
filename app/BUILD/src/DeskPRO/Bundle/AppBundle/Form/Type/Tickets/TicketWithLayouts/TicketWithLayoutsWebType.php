@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\WebFieldRenderer;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\WebFieldResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -111,6 +112,9 @@ class TicketWithLayoutsWebType extends AbstractType
             'layout_factory'        => function ($department) {
                 return $this->layoutFactory->getLayoutForTicketForm($department, false);
             },
+            'constraints' => [
+                new AppAssert\Ticket\TicketDupe(),
+            ],
         ]);
     }
 

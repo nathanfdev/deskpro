@@ -670,29 +670,28 @@ class Ticket extends AbstractEntityRepository
      *
      * Returns the ticket ID if there was one found, or false if none found.
      *
-     * @param \Application\DeskPRO\Entity\TicketMessage $message
-     * @param int                                       $secs_ago
+     * @param TicketEntity $ticket
+     * @param int          $secs_ago
      *
      * @return bool|mixed
      */
-    public function checkDupeTicket($ticket = null, $secs_ago = 10800 /* 3 hours */)
+    public function checkDupeTicket(TicketEntity $ticket = null, $secs_ago = 10800 /* 3 hours */)
     {
         if (!App::getSetting('core_tickets.enable_dupe_checking')) {
             return false;
         }
 
         $timesnip = date_create('-'.$secs_ago.' seconds');
-
-        $check = $this->getEntityManager()->createQuery('
+        $check    = $this->getEntityManager()->createQuery('
             SELECT t
             FROM DeskPRO:Ticket t
             WHERE t.ticket_hash = ?1 AND t.date_created > ?2
-        ')->setParameters(array(1 => $ticket['ticket_hash'], 2 => $timesnip))->getResult();
+        ')->setParameters([1 => $ticket->getTicketHash(), 2 => $timesnip])->getResult();
+
         if (count($check)) {
             $check = array_shift($check);
         }
-
-        if ($check && $check->id != $ticket->id) {
+        if ($check && $check->getId() != $ticket->getId()) {
             return $check;
         }
 

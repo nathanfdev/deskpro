@@ -12,7 +12,7 @@ Feature: To prevent ticket submitting abuse
     And I set "submit_ticket" rate limit to 1 attempt within 15 minutes with "lockout" response and 15 minutes lockout time
     And I am on "/new-ticket"
 
-    When  I press "Submit"
+    When I press "Submit"
     Then I should be on "/new-ticket"
     And I should not see an ".inline-form-alert" element
 
@@ -36,9 +36,9 @@ Feature: To prevent ticket submitting abuse
     And I should not see an "#ticket_captcha_captcha_auto_added_captcha" element
 
     When I fill in the following:
-      | ticket[subject]          | test subject |
-      | ticket[department]       | 1            |
-      | ticket[message][message] | test message |
+      | ticket[subject]          | test subject 2 |
+      | ticket[department]       | 1              |
+      | ticket[message][message] | test message   |
     And I press "Submit"
     Then the url should match "/thank-you"
 
