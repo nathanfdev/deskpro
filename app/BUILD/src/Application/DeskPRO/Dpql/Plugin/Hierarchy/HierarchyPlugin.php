@@ -180,7 +180,7 @@ class HierarchyPlugin implements PluginInterface
         }
 
         // Init rollup counts if needed
-        if ($this->display->withRollup() && $countFieldNum) {
+        if ($this->display->withRollup() && !is_null($countFieldNum)) {
             $results = HierarchyRollup::init($results);
         }
 
