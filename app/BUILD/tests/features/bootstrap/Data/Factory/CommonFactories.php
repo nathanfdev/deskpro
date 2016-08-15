@@ -321,7 +321,7 @@ class CommonFactories
     public static function chat(array $data)
     {
         $chat = new ChatConversation();
-        if ($data['date_created']) {
+        if (isset($data['date_created'])) {
             $data['date_created'] = new \DateTime($data['date_created']);
         }
 

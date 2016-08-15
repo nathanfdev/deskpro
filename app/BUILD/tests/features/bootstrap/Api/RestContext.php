@@ -46,13 +46,17 @@ class RestContext extends BaseContext
      *
      * @Then I add :name header equal to :value
      */
-    public function iAddHeaderEqualTo($name, $value)
+    public function iAddHeaderEqualTo($name, $value, $isJson = false)
     {
         // we need to pass them as $_SERVER...
         $name = str_replace('-', '_', strtoupper(trim($name)));
         $name = 'HTTP_'.$name;
 
-        $this->server_params[$name] = trim(DataContext::replace($value));
+        if (!$isJson) {
+            $value = DataContext::replace($value);
+        }
+
+        $this->server_params[$name] = trim($value);
     }
 
     /**

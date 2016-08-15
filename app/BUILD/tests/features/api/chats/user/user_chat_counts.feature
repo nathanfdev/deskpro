@@ -16,11 +16,11 @@ Feature: /user_chats/counts endpoint
 
     And only the following Chat records exist:
       | #  | subject | date_created | agent                | person              | department |
-      | c1 | Chat1   | 2000-01-02   | {agent}              | {user}              | {d1}         |
-      | c2 | Chat2   | 2000-01-02   | {agent}              | {user2@deskpro.dev} | {d2}         |
-      | c3 | Chat3   | 2000-01-02   | {agent2@deskpro.dev} | {user}              | {d1}         |
-      | c4 | Chat4   | 2000-01-03   | {agent}              | {user2@deskpro.dev} | {d2}         |
-      | c5 | Chat5   | 2000-01-03   | {agent2@deskpro.dev} | {user}              | {d1}         |
+      | c1 | Chat1   | 2000-01-02   | {agent}              | {user}              | {d1}       |
+      | c2 | Chat2   | 2000-01-02   | {agent}              | {user2@deskpro.dev} | {d2}       |
+      | c3 | Chat3   | 2000-01-02   | {agent2@deskpro.dev} | {user}              | {d1}       |
+      | c4 | Chat4   | 2000-01-03   | {agent}              | {user2@deskpro.dev} | {d2}       |
+      | c5 | Chat5   | 2000-01-03   | {agent2@deskpro.dev} | {user}              | {d1}       |
 
   Scenario: I count chats without grouping
     When I send a GET request to "/api/v2/user_chats/counts"
