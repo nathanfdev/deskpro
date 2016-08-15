@@ -64,9 +64,13 @@ class Column extends AbstractPart
      */
     protected static $_tableResolver = [
         'agent_teams'                => ['id', 'name'],
-        'brands'                     => ['id', 'name'],
-        'departments'                => ['id', 'title'],
+        'article_categories'         => ['id', 'title'],
+        'download_categories'        => ['id', 'title'],
         'feedback_categories'        => ['id', 'title'],
+        'news_categories'            => ['id', 'title'],
+        'brands'                     => ['id', 'name'],
+        'custom_field_definition'    => ['id', 'title'],
+        'departments'                => ['id', 'title'],
         'feedback_status_categories' => ['id', 'title'],
         'labels_tickets'             => ['label', 'label'],
         'languages'                  => ['id', 'title'],

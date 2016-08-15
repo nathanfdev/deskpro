@@ -188,6 +188,14 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName, Hiera
     }
 
     /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * @param string $title
      *
      * @return CustomFieldDefinition
