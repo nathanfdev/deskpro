@@ -265,10 +265,14 @@
       display: inline-block;
       height: 28px;
       width: 28px;
+      border: solid 2px transparent;
     }
     i.icon.dropdown {
       font-size: 0.8em;
       color: $dp-greyscale-850;
+    }
+    .active img.circular {
+      border: solid 2px $agent_header_border_color;
     }
   }
   .chat {
@@ -303,9 +307,24 @@
       width: 26px;
       padding: 1px 3px 3px;
       margin-right: 0;
+      background-color: #2475ad;
+      box-shadow: 0 2px 0 #145775;
+      margin-bottom: 2px;
+      transition: none;
+      &:hover {
+        background-color: #2e86b7;
+      }
+      &:active {
+        box-shadow: 0 -2px 0 #145775;
+        margin-bottom: 0;
+      }
     }
     &::before {
       width: 0;
+    }
+    svg {
+      height: 12px;
+      width: 12px;
     }
   }
   .view_mode {

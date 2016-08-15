@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
+import Isvg from 'react-inlinesvg';
 
 class AddButton extends React.Component {
   static propTypes = {
@@ -111,7 +112,9 @@ class AddButton extends React.Component {
         ref={'addPopup'}
         autoOpen={false}
       >
-        <button className="ui button" onClick={this.togglePopup}>+</button>
+        <button className="ui button" onClick={this.togglePopup}>
+          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/plus.svg`} />
+        </button>
       </PopUp>
     </div>);
   }
