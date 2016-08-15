@@ -58,12 +58,17 @@ class HierarchyPlugin implements PluginInterface
     /**
      * @var int Zero-indexed
      */
-    protected $hierarchyMinDepth = 0;
+    private $hierarchyMinDepth = 0;
 
     /**
      * @var int|null Zero-indexed
      */
-    protected $hierarchyMaxDepth = null;
+    private $hierarchyMaxDepth = null;
+
+    /**
+     * @var string|null
+     */
+    private $titleFieldSql = null;
 
     /**
      * @param Display $display
@@ -94,6 +99,8 @@ class HierarchyPlugin implements PluginInterface
         $this->sql->addSelectField("`$hierarchicalTargetTable`.`$id` as 'hierarchy_id'");
         $this->sql->addSelectField("`$hierarchicalTargetTable`.`parent_id` as 'hierarchy_parent_id'");
         $this->sql->addSelectField("`$hierarchicalTargetTable`.`$title` as 'hierarchy_title'");
+
+        $this->titleFieldSql = "`$hierarchicalTargetTable`.`$title`";
     }
 
     /**
@@ -131,6 +138,15 @@ class HierarchyPlugin implements PluginInterface
             $this->sql->getSelectFields(),
             $countFieldNum
         );
+
+        // Replace table entry name/title with hierarchy_title
+        if ($titleFieldNum = $this->getTitleFieldNum()) {
+            foreach ($results as &$result) {
+                if (array_key_exists('hierarchy_title', $result)) {
+                    $result[$titleFieldNum] = $result['hierarchy_title'];
+                }
+            }
+        }
 
         // Init rollup counts if needed
         if ($this->display->withRollup() && $countFieldNum) {
@@ -235,6 +251,20 @@ class HierarchyPlugin implements PluginInterface
 
             // Some COUNT queries are compiled into SUM(IF(`some_field`, 1, 0))
             if ((strpos($field, 'SUM(IF(`') === 0) && (strrpos($field, ', 1, 0))') === strlen($field) - 8)) {
+                return $i;
+            }
+        }
+
+        return;
+    }
+
+    /**
+     * @return int|null
+     */
+    private function getTitleFieldNum()
+    {
+        foreach ($this->sql->getSelectFields() as $i => $field) {
+            if ($field === $this->titleFieldSql) {
                 return $i;
             }
         }

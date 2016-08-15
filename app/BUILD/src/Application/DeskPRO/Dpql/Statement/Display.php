@@ -738,7 +738,10 @@ class Display
                 }
 
                 $resultTitle = ($alias !== false ? $alias : $groupBy->name());
-                $this->_resultHandler->addGroupYColumn($resultTitle, $groupId, $printId, $groupBy->renderer());
+                $renderer    = $groupBy->renderer() ?: function ($valueRenderer, $value, $row) {
+                    return array_key_exists('hierarchy_title', $row) ? $row['hierarchy_title'] : $value;
+                };
+                $this->_resultHandler->addGroupYColumn($resultTitle, $groupId, $printId, $renderer);
             }
         }
     }

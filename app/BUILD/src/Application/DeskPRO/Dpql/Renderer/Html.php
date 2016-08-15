@@ -248,18 +248,21 @@ class Html extends AbstractRenderer
                         ? ' rowspan="'.($groupSkipCount[$groupId] + 1).'"'
                         : ''
                     );
-                    $rendered = ($this->_handler->hasFlag(ResultHandler::FLAG_HIERARCHICAL) && empty($cells))
-                              ? $this->_getRowPadding($row).$row['hierarchy_title']
-                              : $this->_renderCellValue($row, $groupColumn);
-                    $cells[] = "<th$rowSpan>{$rendered}</th>";
+
+                    $padding = ($this->_handler->hasFlag(ResultHandler::FLAG_HIERARCHICAL) && empty($cells))
+                              ? $this->_getRowPadding($row)
+                              : '';
+                    $rendered = $padding.$this->_renderCellValue($row, $groupColumn);
+                    $cells[]  = "<th$rowSpan>{$rendered}</th>";
                 }
             }
 
             foreach ($selectColumns as $column) {
-                $rendered = ($this->_handler->hasFlag(ResultHandler::FLAG_HIERARCHICAL) && empty($cells))
-                          ? $this->_getRowPadding($row).$row['hierarchy_title']
-                          : $this->_renderCellValue($row, $column);
-                $cells[] = '<td>'.$rendered.'</td>';
+                $padding = ($this->_handler->hasFlag(ResultHandler::FLAG_HIERARCHICAL) && empty($cells))
+                          ? $this->_getRowPadding($row)
+                          : '';
+                $rendered = $padding.$this->_renderCellValue($row, $column);
+                $cells[]  = '<td>'.$rendered.'</td>';
             }
             if ($this->_withRollup()) {
                 $cells[] = '<td>'.$this->_renderCellValue($row, 'hierarchy_rollup_count').'</td>';
