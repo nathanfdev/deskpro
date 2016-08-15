@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\Dpql\Plugin\Hierarchy;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Plugin\PluginInterface;
 use Application\DeskPRO\Dpql\ResultHandler;
@@ -64,6 +65,16 @@ class HierarchyPlugin implements PluginInterface
      * @var int|null Zero-indexed
      */
     private $hierarchyMaxDepth = null;
+
+    /**
+     * @var int|null
+     */
+    private $hierarchyDescendsFromId = null;
+
+    /**
+     * @var string|null
+     */
+    private $hierarchyDescendsFromTable = null;
 
     /**
      * @var string|null
@@ -112,6 +123,26 @@ class HierarchyPlugin implements PluginInterface
             return $results;
         }
 
+        // Load parents name path if HIERARCHY_DESCENDS_FROM was used
+        $path = '';
+        if ($this->hierarchyDescendsFromId && count($results)) {
+            list($id, $title) = Column::resolveTable($this->hierarchyDescendsFromTable);
+            $sql              =
+                "SELECT `{$title}`, `parent_id` FROM `{$this->hierarchyDescendsFromTable}` WHERE `{$id}` = ?";
+            $parentsLimit = 10;
+            $parentId     = $this->hierarchyDescendsFromId;
+            while ($parentsLimit > 0) {
+                $entries = App::getDbRead('reports')->executeQuery($sql, [$parentId])->fetchAll(\PDO::FETCH_NUM);
+                if (count($entries)) {
+                    $path .= "{$entries[0][0]} > ";
+                    if (!$parentId = $entries[0][1]) {
+                        break;
+                    }
+                }
+                --$parentsLimit;
+            }
+        }
+
         // Turn last three numeric fields to meta data
         $lastNum = 1;
         while (array_key_exists($lastNum, $results[0])) {
@@ -123,7 +154,7 @@ class HierarchyPlugin implements PluginInterface
         foreach ($results as &$result) {
             $result['hierarchy_id']        = $result[$idIndex];
             $result['hierarchy_parent_id'] = $result[$parentIdIndex];
-            $result['hierarchy_title']     = $result[$titleIndex];
+            $result['hierarchy_title']     = $path.$result[$titleIndex];
             unset($result[$idIndex]);
             unset($result[$parentIdIndex]);
             unset($result[$titleIndex]);
@@ -140,7 +171,7 @@ class HierarchyPlugin implements PluginInterface
         );
 
         // Replace table entry name/title with hierarchy_title
-        if ($titleFieldNum = $this->getTitleFieldNum()) {
+        if (!is_null($titleFieldNum = $this->getTitleFieldNum())) {
             foreach ($results as &$result) {
                 if (array_key_exists('hierarchy_title', $result)) {
                     $result[$titleFieldNum] = $result['hierarchy_title'];
@@ -208,23 +239,31 @@ class HierarchyPlugin implements PluginInterface
     }
 
     /**
-     * @param string $entityClass
-     * @param int    $rootId
-     *
+     * @param int    $id
+     * @param string $table
+     */
+    public function setHierarchyDescendsFrom($id, $table)
+    {
+        $this->hierarchyDescendsFromId    = $id;
+        $this->hierarchyDescendsFromTable = $table;
+    }
+
+    /**
      * @throws Exception
      *
      * @return array
      */
-    public function collectChildrenIds($entityClass, $rootId)
+    public function collectChildrenIds()
     {
-        $repository = Display::getRepositoryByTable($entityClass);
+        $rootId     = $this->hierarchyDescendsFromId;
+        $repository = Display::getRepositoryByTable($this->hierarchyDescendsFromTable);
 
         /** @var Hierarchical $root */
         if (!$root = $repository->find($rootId)) {
             return [];
         }
         if (!$root instanceof Hierarchical) {
-            throw new Exception("$entityClass is not a Hierarchical entity");
+            throw new Exception("{$this->hierarchyDescendsFromTable} is not a Hierarchical entity");
         }
 
         $children                        = $root->getChildren();
