@@ -68,21 +68,28 @@ class Hierarchy
      *
      * @throws Exception
      *
-     * @return string
+     * @return string|null
      */
     public static function getGroupingTargetTableReference(SqlSelect $sql)
     {
-        $table = self::getGroupingTargetTable($sql);
+        if (!$table = self::getGroupingTargetTable($sql)) {
+            return;
+        }
+
         if ($table === $sql->getTable()) {
             return $table;
         } else {
-            preg_match('/`(.+)`\.`(.+)`/isU', $sql->getGroupBy()[0], $groupByData);
+            $joins = $sql->getGroupBy();
+            if (!count($joins)) {
+                throw new Exception('Cannot resolve grouping table alias (no joins)');
+            }
+            preg_match('/`(.+)`\.`(.+)`/isU', $joins[0], $groupByData);
             if (count($groupByData) > 0) {
                 return $groupByData[1];
             }
         }
 
-        throw new Exception('Cannot resolve grouping table alias');
+        throw new Exception('Cannot resolve grouping table alias (nothing matches)');
     }
 
     /**
@@ -102,12 +109,10 @@ class Hierarchy
                     if (count($joinData) > 0) {
                         return $joinData[1];
                     }
-                } else {
-                    return $sql->getTable();
                 }
             }
         }
 
-        return;
+        return $sql->getTable();
     }
 }

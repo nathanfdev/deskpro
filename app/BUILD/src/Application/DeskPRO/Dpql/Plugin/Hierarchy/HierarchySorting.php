@@ -88,10 +88,10 @@ class HierarchySorting
             self::ensureFields($v);
 
             if (!$v['hierarchy_parent_id']) {
-                $v['hierarchy_depth']      = 0;
-                $v['hierarchy_count']      = (int) $v[$countFieldNum];
-                $v['hierarchy_root_title'] = $v['hierarchy_title'];
-                $newResults[]              = $v;
+                !$countFieldNum or $v['hierarchy_count'] = (int) $v[$countFieldNum];
+                $v['hierarchy_depth']                    = 0;
+                $v['hierarchy_root_title']               = $v['hierarchy_title'];
+                $newResults[]                            = $v;
                 unset($results[$k]);
             }
         }
@@ -100,8 +100,8 @@ class HierarchySorting
         // (e.g. we can have no root elements if using the HIERARCHY_DESCENDS_FROM() DPQL function)
         if (empty($newResults)) {
             foreach ($results as &$result) {
-                $result['hierarchy_depth'] = 0;
-                $result['hierarchy_count'] = (int) $v[$countFieldNum];
+                $result['hierarchy_depth']                    = 0;
+                !$countFieldNum or $result['hierarchy_count'] = (int) $result[$countFieldNum];
             }
 
             return $results;
@@ -121,9 +121,9 @@ class HierarchySorting
 
                 foreach ($results as $j => $potentialChild) {
                     if ($potentialChild['hierarchy_parent_id'] === $node['hierarchy_id']) {
-                        $potentialChild['hierarchy_depth']      = $node['hierarchy_depth'] + 1;
-                        $potentialChild['hierarchy_root_title'] = $node['hierarchy_root_title'];
-                        $potentialChild['hierarchy_count']      = (int) $potentialChild[$countFieldNum];
+                        $potentialChild['hierarchy_depth']                    = $node['hierarchy_depth'] + 1;
+                        $potentialChild['hierarchy_root_title']               = $node['hierarchy_root_title'];
+                        !$countFieldNum or $potentialChild['hierarchy_count'] = (int) $potentialChild[$countFieldNum];
                         array_splice($newResults, $i + ++$lastIterationInserts, 0, [$potentialChild]);
                         unset($results[$j]);
                     }
