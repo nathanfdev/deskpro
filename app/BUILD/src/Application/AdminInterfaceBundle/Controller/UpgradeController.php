@@ -32,15 +32,20 @@
 
 namespace Application\AdminInterfaceBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
+
 class UpgradeController extends AbstractController
 {
-    public function preActionHandler($action, $arguments = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
         if (defined('DPC_IS_CLOUD')) {
             throw $this->createNotFoundException();
         }
 
-        return parent::preActionHandler($action, $arguments);
+        return parent::preActionHandler($request, $action, $arguments);
     }
 
     ####################################################################################################################

@@ -786,13 +786,18 @@ class OrganizationController extends AbstractController
         $field_manager      = $this->container->getOrgFieldManager();
         $custom_fields      = $field_manager->getDisplayArrayForObject(new Entity\Organization(), $custom_fields_form);
 
-        return $this->render('AgentBundle:Organization:neworganization.html.twig', array(
+        return $this->render('AgentBundle:Organization:neworganization.html.twig', [
             'state'         => $state,
             'custom_fields' => $custom_fields,
-        ));
+        ]);
     }
 
-    public function newOrganizationSaveAction()
+    /**
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function newOrganizationSaveAction(Request $request)
     {
         if (!$this->person->hasPerm('agent_org.create')) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -803,12 +808,12 @@ class OrganizationController extends AbstractController
         $formType = new \Application\AgentBundle\Form\Type\NewOrganization();
         $form     = $this->get('form.factory')->create($formType, $neworg);
 
-        if ($this->get('request')->getMethod() == 'POST') {
-            $form->handleRequest($this->get('request'));
+        if ($request->getMethod() == 'POST') {
+            $form->handleRequest($request);
             $form->isValid();
 
             if (!$neworg->name) {
-                return $this->createJsonResponse(array('error' => true, 'error_code' => 'invalid_name'));
+                return $this->createJsonResponse(['error' => true, 'error_code' => 'invalid_name']);
             }
 
             $neworg->setCustomFieldForm($_POST);

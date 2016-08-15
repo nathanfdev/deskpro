@@ -42,6 +42,7 @@ use Application\LegacyApiBundle\Controller\TasksController;
 use Orb\Util\Arrays;
 use Orb\Util\Dates;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -50,7 +51,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class TaskController extends AbstractController
 {
-    public function preActionHandler($action, $arguments = null)
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
         if (!$this->settings->get(TasksController::KEY_ENABLED, 0)) {
             throw new NotFoundHttpException();
@@ -60,7 +61,7 @@ class TaskController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        parent::preActionHandler($action, $arguments);
+        parent::preActionHandler($request, $action, $arguments);
     }
 
     public function getSectionDataAction()

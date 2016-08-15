@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Docs API Controller.
@@ -49,7 +51,7 @@ class DocsController extends AbstractController
         $this->settings = $this->get('deskpro.core.settings');
     }
 
-    public function preActionHandler($action, $arguments = null)
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
         return;
     }

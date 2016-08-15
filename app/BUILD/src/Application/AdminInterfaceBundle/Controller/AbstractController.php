@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,7 @@ namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Service\CheckWhitelistedIP;
+use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -71,8 +72,10 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
     /**
      * Force a login.
+     *
+     * {@inheritdoc}
      */
-    public function preActionHandler($action, $arguments = null)
+    public function preActionHandler(Request $request, $action, $arguments = null)
     {
         $return = '';
         if (!$this->person['id']) {
@@ -85,22 +88,22 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         if (!$this->_userHasPermissions()) {
             if ($this->request->isXmlHttpRequest()) {
-                $data = array('error' => 'session_expired');
+                $data = ['error' => 'session_expired'];
 
                 return $this->createJsonResponse($data, 403);
             }
 
-            return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
+            return $this->render('AgentBundle:Login:redirect-login.html.twig', [
                 'return' => $return,
-            ));
+            ]);
         }
 
         if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
             if ($this->request->isXmlHttpRequest()) {
-                $data = array(
+                $data = [
                     'error'          => 'invalid_request_token',
                     'redirect_login' => $this->generateUrl('agent_login'),
-                );
+                ];
 
                 return $this->createJsonResponse($data, 403);
             } else {
@@ -108,10 +111,10 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             }
         }
 
-        if (!CheckWhitelistedIP::checkIP($this->getRequest(), $this->container, $this->person)) {
-            return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
+        if (!CheckWhitelistedIP::checkIP($request, $this->container, $this->person)) {
+            return $this->render('AgentBundle:Login:whitelist-ip.html.twig', [
                 'ip' => $this->getRequest()->getClientIp(),
-            ));
+            ]);
         }
 
         return;
