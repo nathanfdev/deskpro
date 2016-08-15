@@ -314,10 +314,10 @@
       &:hover {
         background-color: #2e86b7;
       }
-      &:active {
-        box-shadow: 0 -2px 0 #145775;
-        margin-bottom: 0;
-      }
+    }
+    .active .button, .button:active {
+      box-shadow: 0 -2px 0 #145775;
+      margin-bottom: 0;
     }
     &::before {
       width: 0;

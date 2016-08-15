@@ -43758,44 +43758,44 @@ a.ui.card:hover,
    Small Toggle
 ---------------*/
 .ui.toggle.checkbox.small {
-  min-height: 1.28571429rem;
+  min-height: 1.14285714rem;
 }
 /* Input */
 .ui.toggle.checkbox.small input {
-  width: 2.41071429rem;
-  height: 1.28571429rem;
+  width: 2.14285714rem;
+  height: 1.14285714rem;
 }
 /* Label */
 .ui.toggle.checkbox.small .box,
 .ui.toggle.checkbox.small label {
-  min-height: 1.125rem;
-  padding-left: 3.05357143rem;
+  min-height: 1rem;
+  padding-left: 2.71428571rem;
 }
 /* Switch */
 .ui.toggle.checkbox.small .box:before,
 .ui.toggle.checkbox.small label:before {
   top: auto;
-  width: 2.41071429rem;
-  height: 1.28571429rem;
-  border-radius: 321.42857143rem;
+  width: 2.14285714rem;
+  height: 1.14285714rem;
+  border-radius: 285.71428571rem;
 }
 /* Handle */
 .ui.toggle.checkbox.small .box:after,
 .ui.toggle.checkbox.small label:after {
-  width: 1.125rem;
-  height: 1.125rem;
-  top: 6px;
-  bottom: 0.08035714rem;
+  width: 1rem;
+  height: 1rem;
+  top: 7px;
+  bottom: 0.07142857rem;
 }
 .ui.toggle.checkbox.small input ~ .box:after,
 .ui.toggle.checkbox.small input ~ label:after {
-  left: 0.08035714rem;
-  background-size: 9px;
+  left: 0.07142857rem;
+  background-size: 8px;
 }
 .ui.toggle.checkbox.small input:checked ~ .box:after,
 .ui.toggle.checkbox.small input:checked ~ label:after {
-  left: 1.20535714rem;
-  background-size: 9px;
+  left: 1.07142857rem;
+  background-size: 8px;
 }
 /*!
  * # Semantic UI - Dimmer

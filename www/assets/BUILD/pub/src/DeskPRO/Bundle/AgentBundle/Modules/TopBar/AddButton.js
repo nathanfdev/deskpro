@@ -113,7 +113,7 @@ class AddButton extends React.Component {
         autoOpen={false}
       >
         <button className="ui button" onClick={this.togglePopup}>
-          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/plus.svg`} />
+          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/plus.svg`} />
         </button>
       </PopUp>
     </div>);

@@ -24,7 +24,7 @@
   background-size: 14px 14px;
 }
 
-@smallToggleRatio: 18 / 28;
+@smallToggleRatio: 16 / 28;
 /*--------------
    Small Toggle
 ---------------*/
@@ -59,7 +59,7 @@
 .ui.toggle.checkbox.small label:after {
   width: @toggleHandleSize * @smallToggleRatio;
   height: @toggleHandleSize * @smallToggleRatio;
-  top: 6px;
+  top: 7px;
   bottom: @toggleHandleOffset * @smallToggleRatio;
 }
 

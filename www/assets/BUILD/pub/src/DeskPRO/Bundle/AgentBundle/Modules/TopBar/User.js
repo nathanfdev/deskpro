@@ -21,7 +21,7 @@ class User extends React.Component {
         <div className="ui vertical menu">
           <MenuItem onClick={this.clickSettings}><i className="icon setting" /> Preferences</MenuItem>
           <MenuItem onClick={this.clickHelp}><i className="icon help circle" /> Help</MenuItem>
-          <MenuItem><i className="icon reply" /> Log out</MenuItem>
+          <MenuItem onClick={this.clickLogout}><i className="icon reply" /> Log out</MenuItem>
         </div>
       </div>
     </div>);
@@ -53,6 +53,10 @@ class User extends React.Component {
   clickSettings() {
     window.$('#settingswin').trigger('dp_open');
     this.closePopup();
+  }
+
+  clickLogout() {
+    window.location = `${window.DESKPRO_AGENT_LOGOUT}?to=agent`;
   }
 
   togglePopup() {
