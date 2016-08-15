@@ -127,16 +127,18 @@ class Chat extends React.Component {
         continue;
       }
       for (const group of agent.user_groups) {
-        if (!departments.hasOwnProperty(group)) {
-          departments[group] = {
-            label:  this.props.chatDepartments[group].title,
-            key:    key++,
-            agents: [
-              agent
-            ]
-          };
-        } else {
-          departments[agent.department].agents.push(agent);
+        if (this.props.chatDepartments[group]) {
+          if (!departments.hasOwnProperty(group)) {
+            departments[group] = {
+              label:  this.props.chatDepartments[group].title,
+              key:    key++,
+              agents: [
+                agent
+              ]
+            };
+          } else {
+            departments[agent.department].agents.push(agent);
+          }
         }
       }
     }
