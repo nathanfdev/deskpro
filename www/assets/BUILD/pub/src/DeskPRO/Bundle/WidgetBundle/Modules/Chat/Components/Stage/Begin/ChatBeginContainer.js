@@ -116,8 +116,9 @@ export class ChatBeginContainer extends React.Component {
     return createValue({
       onChange: this.onChange,
       value:    {
-        name:  '',
-        email: ''
+        name:   '',
+        email:  '',
+        fields: {}
       }
     });
   }
