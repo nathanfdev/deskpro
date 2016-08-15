@@ -74,6 +74,11 @@ class HierarchyDepth
             return ($result['hierarchy_depth'] >= $min) && ($result['hierarchy_depth'] <= $max);
         });
 
+        // Reduce depth by $min so that it starts from 0
+        foreach ($results as &$result) {
+            $result['hierarchy_depth'] = max(0, $result['hierarchy_depth'] - $min);
+        }
+
         return $results;
     }
 }

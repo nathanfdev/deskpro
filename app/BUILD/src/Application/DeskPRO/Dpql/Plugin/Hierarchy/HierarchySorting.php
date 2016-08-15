@@ -76,7 +76,7 @@ class HierarchySorting
     ) {
         if ($recursionLevel > 1) {
             throw new Exception('
-                The 3rd $recursionLevel param cannot be bigger than 1 because the only allowed recursive call is
+                The $recursionLevel param cannot be bigger than 1 because the only allowed recursive call is
                 when at the end of tree-sort we get elements with missing parents and we load the parents and finish
                 tree building with a single recursive call.
             ');
