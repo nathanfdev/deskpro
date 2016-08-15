@@ -4,6 +4,7 @@ import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import AddButton from './AddButton';
 import Chat from './Chat';
 import User from './User';
+import Isvg from 'react-inlinesvg';
 
 class AgentTopBar extends React.Component {
   constructor() {
@@ -173,8 +174,8 @@ class AgentTopBar extends React.Component {
       </TopBarItem>
       <AddButton closeIframes={this.closeIframes} />
       <TopBarRightMenu>
-        <TopBarItem onClick={this.toggleViewMode}>
-          <div className="view_mode" />
+        <TopBarItem classes={['view_mode']} onClick={this.toggleViewMode}>
+          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
         </TopBarItem>
         <TopBarItem classes={['legacy-omnibox']} onClick={this.onNotification}>
           <TopBarNotificationIcon

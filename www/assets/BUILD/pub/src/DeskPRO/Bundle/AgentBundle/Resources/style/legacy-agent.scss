@@ -244,15 +244,6 @@
     .item:last-child {
       padding-right: 0;
     }
-    .item:hover {
-      &::before {
-        left: -1px;
-        //background-color: $agent_header_border_color;
-      }
-      & + .item::before {
-        //background-color: $agent_header_border_color;
-      }
-    }
   }
   #notifications {
     i.icon {
@@ -312,33 +303,19 @@
       width: 26px;
       padding: 1px 3px 3px;
       margin-right: 0;
-      //box-sizing: content-box;
-      //box-shadow: none;
-      //font-size: 20px;
-      //font-weight: 200;
-      //vertical-align: middle;
-      //background: $agent_header_border_color;
     }
     &::before {
       width: 0;
     }
   }
   .view_mode {
-    width: 16px;
-    height: 16px;
-    background: url("../img/topbar/views.svg") center no-repeat;
     cursor: pointer;
-    &.focus {
-      background-image: url("../img/topbar/focus-mode.svg");
+    svg {
+      width: 20px;
+      height: 19px;
     }
-    &.hover {
-      background-image: url("../img/topbar/hover-mode.svg");
-    }
-    &.two_columns {
-      background-image: url("../img/topbar/2-column.svg");
-    }
-    &.static {
-      background-image: url("../img/topbar/static-mode.svg");
+    &:hover svg path {
+      fill: $agent_header_border_color;
     }
   }
 }

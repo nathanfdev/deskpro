@@ -17,6 +17,7 @@
 	{% endif %}
 	window.DP_USE_RJS_BUILD  = {% if (not app.isDebug() or app.getSetting('core.dev_use_rjs_build') and not app.getSetting('core.disable_rjs_build')) %}true{% else %}false{% endif %};
 	window.DP_BUILD_TIME     = {{ app.getBuildTime() }};
+    window.DESKPRO_APP_ASSETS_URL = '{{ asset('', 'app_assets') }}';
 
 	// Legacy vars
 	var DP_REQUEST_TOKEN = '{{ security_token('request_token', 10800) }}';
