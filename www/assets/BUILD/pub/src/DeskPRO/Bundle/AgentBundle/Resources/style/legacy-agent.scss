@@ -179,6 +179,9 @@
       &, .icon.hover {
         color: $agent_header_border_color;
       }
+      .chat {
+        color: $dp-greyscale-1000;
+      }
       &::before {
         //background-color: $agent_header_border_color;
       }
@@ -237,7 +240,6 @@
       padding-right: 0;
     }
     .item:hover {
-      color: $agent_header_border_color;
       &::before {
         left: -1px;
         //background-color: $agent_header_border_color;
@@ -280,6 +282,11 @@
     display: inline-block;
     cursor: pointer;
     text-align: center;
+    &:hover {
+      .status, i.icon {
+        color: $agent_header_border_color;
+      }
+    }
     i.icon {
       font-size: 1.2em;
       &.on {
