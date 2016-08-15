@@ -20,6 +20,7 @@ class AddButton extends React.Component {
     this.addDownload = this.addDownload.bind(this);
     this.addFeedback = this.addFeedback.bind(this);
     this.addTask = this.addTask.bind(this);
+    this.addTweet = this.addTweet.bind(this);
   }
 
   getPopupContent() {
@@ -34,14 +35,19 @@ class AddButton extends React.Component {
       if (window.DESKPRO_PERSON_PERMS['agent_org.create']) {
         items.push(<MenuItem key="organisation" onClick={this.addOrganisation}><i className="icon users" /> Organisation</MenuItem>);
       }
+      // if (app.getConfig('enable_twitter') && app.user.getTwitterAccountIds()|length %}
+      //   items.push(<MenuItem key="twitter" onClick={this.addTweet}><i className="icon twitter" /> Tweet</MenuItem>);
+      // }
       if (window.DESKPRO_PERSON_PERMS['agent_publish.create']) {
         items.push(<MenuItem key="article" onClick={this.addArticle}><i className="icon edit" /> Article</MenuItem>);
         items.push(<MenuItem key="news" onClick={this.addNewsPost}><i className="icon calendar outline" /> News post</MenuItem>);
         items.push(<MenuItem key="download" onClick={this.addDownload}><i className="icon download" /> Download</MenuItem>);
         items.push(<MenuItem key="feedback" onClick={this.addFeedback}><i className="icon thumbs outline up" /> Feedback</MenuItem>);
       }
+      if (window.DESKPRO_PERSON_PERMS['agent_tasks.use']) {
+        items.push(<MenuItem key="task" onClick={this.addTask}><i className="icon check circle outline" /> Task</MenuItem>);
+      }
     }
-    items.push(<MenuItem key="task" onClick={this.addTask}><i className="icon check circle outline" /> Task</MenuItem>);
     return (<div id="add-menu">
       <div className="header">Add</div>
       <div className="description">
@@ -91,6 +97,10 @@ class AddButton extends React.Component {
     this.closePopup();
   }
 
+  addTweet() {
+
+  }
+
   closePopup() {
     this.refs.addPopup.closePopup();
     this.props.closeIframes();
@@ -113,7 +123,7 @@ class AddButton extends React.Component {
         autoOpen={false}
       >
         <button className="ui button" onClick={this.togglePopup}>
-          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/plus.svg`} />
+          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '')}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/plus.svg`} />
         </button>
       </PopUp>
     </div>);

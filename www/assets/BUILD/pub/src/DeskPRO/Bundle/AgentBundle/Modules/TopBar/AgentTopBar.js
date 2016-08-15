@@ -175,7 +175,7 @@ class AgentTopBar extends React.Component {
       <AddButton closeIframes={this.closeIframes} />
       <TopBarRightMenu>
         <TopBarItem classes={['view_mode']} onClick={this.toggleViewMode}>
-          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
+          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '')}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
         </TopBarItem>
         <TopBarItem classes={['legacy-omnibox']} onClick={this.onNotification}>
           <TopBarNotificationIcon
