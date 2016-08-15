@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -905,8 +901,12 @@ HTML;
 
         // Valid
         if ($result->isValid()) {
-            $login_processor = new LoginProcessor($usersource, $result->getIdentity(), $usersource_test);
-            $person          = $login_processor->getPerson();
+            try {
+                $login_processor = new LoginProcessor($usersource, $result->getIdentity(), $usersource_test);
+                $person          = $login_processor->getPerson();
+            } catch (\Exception $e) {
+                return $this->createJsonResponse($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            }
 
             if ($usersource_test) {
                 //--------------------------------------
