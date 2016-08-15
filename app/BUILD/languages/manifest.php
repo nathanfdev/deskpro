@@ -48,8 +48,8 @@ return array(
         'flag_image' => 'arabic.png',
         'is_rtl'     => true,
         'has_user'   => true,
-        'has_agent'  => false,
-        'has_admin'  => false,
+        'has_agent'  => true,
+        'has_admin'  => true,
         'is_managed' => true,
     ),
 
