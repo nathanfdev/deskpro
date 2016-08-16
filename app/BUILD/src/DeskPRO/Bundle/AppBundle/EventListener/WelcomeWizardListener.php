@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
@@ -73,6 +74,7 @@ final class WelcomeWizardListener implements EventSubscriberInterface
             && !RequestUtils::isLowRequest($event->getRequest())
             && $event->getRequest()->getMethod() === 'GET'
             && !$event->getRequest()->isXmlHttpRequest()
+            && strpos($event->getRequest()->getPathInfo(), '/api') === false
             && strpos($event->getRequest()->getPathInfo(), '/login') === false
             && strpos($event->getRequest()->getPathInfo(), '/admin/start') === false
         )
