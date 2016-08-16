@@ -109,7 +109,7 @@ class AuthContext extends BaseContext
      */
     public function aValidApiKeyExistsWithTheCodeForUser($code, $who)
     {
-        $person = $this->getUserDetails()->getWho($who);
+        $person = $this->peopleDataContext->personByRoleExists($who);
         $this->ensureApiKey($person, $code);
     }
 
@@ -180,9 +180,7 @@ class AuthContext extends BaseContext
      */
     public function myRequestIsAuthenticatedTo($who)
     {
-        if (!$person = $this->getUserDetails()->getWho($who)) {
-            throw new \Exception("$who user is missing");
-        }
+        $person = $this->peopleDataContext->personByRoleExists($who);
         $this->authenticateAs($person);
     }
 

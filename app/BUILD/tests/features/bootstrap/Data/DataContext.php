@@ -32,9 +32,11 @@ use Application\DeskPRO\Entity\Ticket;
 use Behat\Behat\Hook\Scope\BeforeFeatureScope;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
 use Doctrine\Common\Collections\ArrayCollection;
 use DpBehat\BaseContext;
 use DpBehat\Data\Factory\SimpleFactory;
+use DpBehat\Data\PeopleContext as PeopleDataContext;
 use DpBehat\DataSetContext;
 
 /**
@@ -51,6 +53,11 @@ class DataContext extends BaseContext
     private $dataSetContext;
 
     /**
+     * @var PeopleDataContext
+     */
+    private $peopleDataContext;
+
+    /**
      * @var array Map of string reference names to actual objects
      */
     private static $references = [];
@@ -60,11 +67,40 @@ class DataContext extends BaseContext
      */
     private static $placeholders = [];
 
+    /**
+     * @var bool
+     */
     private static $isTheFirstSuiteScenario = true;
 
+    /**
+     * @var bool
+     */
     private static $isNew = false;
 
+    /**
+     * @var bool
+     */
     private static $needCleanup = false;
+
+    /**
+     * @var string
+     */
+    private static $setName;
+
+    /**
+     * @BeforeSuite
+     */
+    public static function onBeforeSuite(BeforeSuiteScope $scope)
+    {
+        switch ($scope->getSuite()->getName()) {
+            case 'api':
+                self::$setName = 'api';
+                break;
+            default:
+                self::$setName = 'fresh';
+                break;
+        }
+    }
 
     /**
      * @BeforeFeature
@@ -95,8 +131,9 @@ class DataContext extends BaseContext
      */
     public function gatherContexts(BeforeScenarioScope $scope)
     {
-        $environment          = $scope->getEnvironment();
-        $this->dataSetContext = $environment->getContext('DpBehat\DataSetContext');
+        $environment             = $scope->getEnvironment();
+        $this->dataSetContext    = $environment->getContext('DpBehat\DataSetContext');
+        $this->peopleDataContext = $environment->getContext('DpBehat\Data\PeopleContext');
     }
 
     /**
@@ -109,11 +146,16 @@ class DataContext extends BaseContext
                 $statement = $this->em()->getConnection()->executeQuery('SHOW TABLES LIKE "people"');
                 $statement->execute();
                 if (!$statement->rowCount()) {
-                    $this->dataSetContext->iInstallDataSet('api');
+                    $this->dataSetContext->iInstallDataSet(self::$setName);
                 }
             } else {
-                $this->dataSetContext->iInstallDataSet('api');
+                $this->dataSetContext->iInstallDataSet(self::$setName);
             }
+
+            $this->peopleDataContext->everyoneGroupExists();
+            $this->peopleDataContext->registeredGroupExists();
+            $this->peopleDataContext->agentAllSafePermGroupExists();
+            $this->peopleDataContext->agentAllPermGroupExists();
 
             self::$isTheFirstSuiteScenario = false;
         }
@@ -135,12 +177,6 @@ class DataContext extends BaseContext
     {
         $this->em()->getConnection()->executeQuery('
             DELETE FROM permissions_cache;
-            DELETE FROM permissions;
-            DELETE FROM task_attachments;
-            DELETE FROM custom_def_ticket;
-            DELETE FROM department_permissions;
-            DELETE FROM people;
-            DELETE FROM usergroups;
         ');
         $this->em()->clear();
         self::clear();
