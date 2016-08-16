@@ -29,8 +29,8 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
 use Application\DeskPRO\Entity\ContentAbstract as ContentAbstractEntity;
-use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Download as DownloadEntity;
+use Application\DeskPRO\Entity\News as NewsEntity;
 use JMS\Serializer\Annotation as JMS;
 
 class ContentCsv extends ContentAbstract
@@ -72,7 +72,7 @@ class ContentCsv extends ContentAbstract
     }
 
     /**
-     * @param ContentAbstract|News|Download $entity
+     * @param ContentAbstract|NewsEntity|DownloadEntity $entity
      *
      * @return string
      */
