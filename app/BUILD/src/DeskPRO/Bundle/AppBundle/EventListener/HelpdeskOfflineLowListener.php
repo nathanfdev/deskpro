@@ -102,7 +102,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
      */
     public function onPreRequest(GetResponseEvent $event)
     {
-        if ($this->isHelpdeskOffline()) {
+        if ($this->isHelpdeskOffline($event->getRequest())) {
             $event->setResponse($this->createOfflineResponse($event->getRequest()));
             $event->stopPropagation();
         } elseif ($this->isUpgradePending()) {
@@ -201,7 +201,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
     /**
      * @return bool
      */
-    private function isHelpdeskOffline()
+    private function isHelpdeskOffline(Request $request)
     {
         if (isset($GLOBALS['DP_HELPDESK_DISABLED']) && $GLOBALS['DP_HELPDESK_DISABLED']) {
             return true;
@@ -211,6 +211,11 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
         if ($this->getBrandSetting('core.helpdesk_disabled')) {
             // exclude admin interface
             if ($this->interfaceInfo->isAdminInterface()) {
+                return false;
+            }
+
+            // exclude agent login page (could be an admin needing to get back in)
+            if (strpos($request->getPathInfo(), '/agent/login') === 0) {
                 return false;
             }
 
