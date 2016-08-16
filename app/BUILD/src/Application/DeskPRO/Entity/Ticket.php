@@ -3666,12 +3666,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return 0;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $hash = $this->getStateChangeRecorder()->getStateVersion().(int) $primary.(int) $deep;
         if ($hash === $this->api_data_hash) {
             return $this->api_data;
         }
+
         $this->api_data_hash = $hash;
 
         $data = parent::toApiData($primary, $deep, $visited);
@@ -3694,9 +3698,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             unset($data['email_account']['incoming_account']);
             unset($data['email_account']['outgoing_account']);
         }
-        $data['department']['parent'] = $this->department && $this->department->parent
-            ? $this->department->parent->toApiData(true, false)
+
+        $data['department']['parent'] = $this->department && $this->department->getParent()
+            ? $this->department->getParent()->toApiData(true, false)
             : [];
+
         $data['total_user_waiting_real']   = $this->getRealTotalUserWaiting();
         $data['total_user_waiting_work']   = $this->getTotalUserWaitingWorkTime();
         $data['current_user_waiting']      = $this->getCurrentUserWaitingTime();
