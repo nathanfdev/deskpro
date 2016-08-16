@@ -124,7 +124,7 @@ class AgentTopBar extends SeparateComponent {
   render() {
     const { notificationCount } = this.state;
     const { agents, chatDepartments } = this.props;
-
+    const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
     return (<TopBar>
       <div className="logo" />
       <TopBarItem classes={['search-box legacy-omnibox']}>
@@ -146,7 +146,7 @@ class AgentTopBar extends SeparateComponent {
       <AddButton closeIframes={this.closeIframes} />
       <TopBarRightMenu>
         <TopBarItem classes={['view_mode']} onClick={this.toggleViewMode}>
-          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '')}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
+          <Isvg src={`${svgSrc}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
         </TopBarItem>
         <TopBarItem classes={['legacy-omnibox']} onClick={this.onNotification}>
           <TopBarNotificationIcon
@@ -157,7 +157,11 @@ class AgentTopBar extends SeparateComponent {
         </TopBarItem>
         <TopBarItem>
           <User src={this.getUserPicture()} />
-          <Chat agents={agents.toArray()} chatDepartments={chatDepartments.toArray()} updateVolume={this.onChatVolumeUpdate} volume={8} />
+          <Chat
+            agents={agents.toArray()}
+            chatDepartments={chatDepartments.toArray()}
+            updateVolume={this.onChatVolumeUpdate} volume={8}
+          />
         </TopBarItem>
       </TopBarRightMenu>
     </TopBar>);
