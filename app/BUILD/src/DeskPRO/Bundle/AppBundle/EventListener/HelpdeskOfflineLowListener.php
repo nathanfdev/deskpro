@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use Application\DeskPRO\Command\WorkerJobCommand;
@@ -36,6 +33,7 @@ use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -64,26 +62,39 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
     private $interfaceInfo;
 
     /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
      * @var string
      */
     private $data_dir;
 
-    public function __construct(InterfaceInfo $interfaceInfo, $data_dir)
+    /**
+     * Constructor.
+     *
+     * @param InterfaceInfo      $interfaceInfo
+     * @param ContainerInterface $container
+     * @param string             $data_dir
+     */
+    public function __construct(InterfaceInfo $interfaceInfo, ContainerInterface $container, $data_dir)
     {
         $this->interfaceInfo = $interfaceInfo;
+        $this->container     = $container;
         $this->data_dir      = $data_dir;
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             // runs before everything
             KernelEvents::REQUEST  => ['onPreRequest', 2000],
             ConsoleEvents::COMMAND => ['onCommand', 2000],
-        );
+        ];
     }
 
     /**
@@ -197,7 +208,20 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
         }
 
         // Offline setting applies to all but admin
-        if ($this->getBrandSetting('core.helpdesk_disabled') && !$this->interfaceInfo->isAdminInterface()) {
+        if ($this->getBrandSetting('core.helpdesk_disabled')) {
+            // exclude admin interface
+            if ($this->interfaceInfo->isAdminInterface()) {
+                return false;
+            }
+
+            // exclude legacy api for admin interface
+            if ($this->container->has('deskpro.api.request_auth')) {
+                $apiUser = $this->container->get('deskpro.api.request_auth')->getApiUser();
+                if ($apiUser && $apiUser->person && $apiUser->person->isAdmin()) {
+                    return false;
+                }
+            }
+
             return true;
         }
 

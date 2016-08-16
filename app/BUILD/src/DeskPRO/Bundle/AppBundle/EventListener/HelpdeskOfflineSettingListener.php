@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,14 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
-use Symfony\Component\HttpKernel\KernelEvents;
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Same as HelpdeskOfflineLowListener except this checks if the helpdesk was turned off
@@ -46,20 +44,28 @@ class HelpdeskOfflineSettingListener extends HelpdeskOfflineLowListener
      */
     private $brandStack;
 
-    public function __construct(InterfaceInfo $interfaceInfo, BrandStack $brandStack, $data_dir)
+    /**
+     * Constructor.
+     *
+     * @param InterfaceInfo      $interfaceInfo
+     * @param ContainerInterface $container
+     * @param BrandStack         $brandStack
+     * @param $data_dir
+     */
+    public function __construct(InterfaceInfo $interfaceInfo, ContainerInterface $container, BrandStack $brandStack, $data_dir)
     {
         $this->brandStack = $brandStack;
-        parent::__construct($interfaceInfo, $data_dir);
+        parent::__construct($interfaceInfo, $container, $data_dir);
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array('onPreRequest', 500), // runs before everything
-        );
+        return [
+            KernelEvents::REQUEST => ['onPreRequest', 500], // runs before everything
+        ];
     }
 
     /**
