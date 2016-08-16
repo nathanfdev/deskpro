@@ -21,6 +21,8 @@ class AddButton extends React.Component {
     this.addFeedback = this.addFeedback.bind(this);
     this.addTask = this.addTask.bind(this);
     this.addTweet = this.addTweet.bind(this);
+    this.closePopup = this.closePopup.bind(this);
+    this.togglePopup = this.togglePopup.bind(this);
   }
 
   getPopupContent() {

@@ -150,7 +150,7 @@ class AgentTopBar extends React.Component {
   }
 
   toggleViewMode() {
-    if (window.DeskPRO_Window.paneVis.tabs) {
+    if (window.DeskPRO_Window.paneVis.tabs && window.DeskPRO_Window.paneVis.list) {
       window.DeskPRO_Window.$scope.oneColumnView();
     } else {
       window.DeskPRO_Window.$scope.twoColumnsView();
