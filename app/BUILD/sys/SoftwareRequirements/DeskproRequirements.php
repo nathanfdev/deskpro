@@ -397,6 +397,16 @@ class DeskproRequirements extends RequirementCollection
                 'attachments directory must be writable',
                 'You need to make your cache directory writable: <strong>'.$DP_ENV->getUserFilesDir().'</strong>'
             );
+            $this->addRequirement(
+                is_writable($DP_ENV->getAppBaseKernelCacheDir()),
+                'var/kernel_cache and all sub-directories must be writable',
+                'You need to make your kernel_cache directory writable: <strong>'.$DP_ENV->getAppBaseKernelCacheDir().'</strong>'
+            );
+            $this->addRequirement(
+                is_writable($DP_ENV->getAppBaseKernelCacheDir()),
+                'var/kernel_cache and all sub-directories must be writable',
+                'You need to make your kernel_cache directory writable: <strong>'.$DP_ENV->getAppBaseKernelCacheDir().'</strong>'
+            );
         }
     }
 
