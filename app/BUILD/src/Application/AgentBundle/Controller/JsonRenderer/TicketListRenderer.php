@@ -426,14 +426,14 @@ class TicketListRenderer
             ];
         }
 
-        $data['picture_url']    = $person->getPictureUrl();
-        $data['picture_url_80'] = $person->getPictureUrl(80);
-        $data['picture_url_64'] = $person->getPictureUrl(64);
-        $data['picture_url_50'] = $person->getPictureUrl(50);
-        $data['picture_url_45'] = $person->getPictureUrl(45);
-        $data['picture_url_32'] = $person->getPictureUrl(32);
-        $data['picture_url_22'] = $person->getPictureUrl(22);
-        $data['picture_url_16'] = $person->getPictureUrl(16);
+        $pictureSizes = [80, 64, 50, 45, 32, 22, 16];
+        $urlTemplate  = $person->getPictureUrl('{{size}}');
+        $encodedTag   = urlencode('{{size}}');
+        foreach ($pictureSizes as $pictureSize) {
+            $data['picture_url_'.$pictureSize] = $urlTemplate ? str_replace($encodedTag, $pictureSize, $urlTemplate) : null;
+        }
+
+        $data['picture_url'] = $data['picture_url_80'];
 
         $custom_data = $this->ticket_display->getUserFieldData($person);
         if ($custom_data) {
