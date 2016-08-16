@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { Detached } from '../../Positioned/Detached';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 
 class PopUp extends React.Component {
   static propTypes = {
@@ -37,6 +38,7 @@ class PopUp extends React.Component {
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
     this.openPopup = this.openPopup.bind(this);
+    this.closePopup = this.closePopup.bind(this);
     this.togglePopup = this.togglePopup.bind(this);
   }
 
@@ -58,8 +60,8 @@ class PopUp extends React.Component {
   }
 
   openPopup() {
-    const event = new Event('dpPopupOpen');
-    window.document.dispatchEvent(event);
+    // const event = new Event('dpPopupOpen');
+    // window.document.dispatchEvent(event);
     this.setState({
       isOpen: true
     });
@@ -87,12 +89,13 @@ class PopUp extends React.Component {
 
   renderBody() {
     const { content, positionAt, elementId } = this.props;
-    return (<div
+    return (<ClickOut
+      onClickOut={this.closePopup}
+    ><div
       id={elementId}
       className={classNames('ui', 'popup', positionAt, { visible: this.state.isOpen })}
-      onMouseEnter={this.cancelTimeout}
-      onMouseLeave={this.onMouseLeave}
-    >{content}</div>);
+    >{content}</div>
+    </ClickOut>);
   }
 
   render() {
@@ -107,14 +110,13 @@ class PopUp extends React.Component {
         ref={`button${id}`}
         onClick={this.openPopup}
         onMouseEnter={this.onMouseEnter}
-        onMouseLeave={this.onMouseLeave}
       >{children}
         <Detached
           isOpen={isOpen}
           positionTarget={this.refs[`button${id}`]}
           {...this.props}
         >
-          {isOpen ? this.renderBody() : null}
+          {this.renderBody()}
         </Detached>
       </div>
     );

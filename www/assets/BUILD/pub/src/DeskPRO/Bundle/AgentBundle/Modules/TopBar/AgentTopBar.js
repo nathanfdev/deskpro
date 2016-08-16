@@ -8,8 +8,8 @@ import { connect } from 'react-redux';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { SeparateComponent } from '../Common/Components/SeparateComponent';
-import { IMContainer } from '../IM/Components/IMContainer';
-import { HeaderWidget } from '../IM/Components/HeaderWidget';
+// import { IMContainer } from '../IM/Components/IMContainer';
+// import { HeaderWidget } from '../IM/Components/HeaderWidget';
 import Isvg from 'react-inlinesvg';
 
 @connect(state => ({
@@ -51,24 +51,24 @@ class AgentTopBar extends SeparateComponent {
     });
   }
 
-  static onSearch(searchQuery) {
+  onSearch(searchQuery) {
     const angularOmnibox = window.angular.element('.dp-omnibox').scope();
-    if (angularOmnibox) {
+    if (angularOmnibox && searchQuery) {
       angularOmnibox.searchQuery = searchQuery;
       angularOmnibox.touchSearch();
       window.$('.dp-omnibox-results').show();
     }
   }
 
-  static onSearchFocus() {
+  onSearchFocus() {
     window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
   }
 
-  static onSearchBlur() {
+  onSearchBlur() {
     window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
   }
 
-  static onRecent() {
+  onRecent() {
     const angularOmnibox = window.angular.element('.dp-omnibox').scope();
     if (angularOmnibox) {
       angularOmnibox.toggleMode('recent');
@@ -77,7 +77,7 @@ class AgentTopBar extends SeparateComponent {
     }
   }
 
-  static onNotification() {
+  onNotification() {
     const angularOmnibox = window.angular.element('.dp-omnibox').scope();
     if (angularOmnibox) {
       angularOmnibox.toggleMode('notif');
@@ -103,7 +103,7 @@ class AgentTopBar extends SeparateComponent {
     return '';
   }
 
-  static closeIframes() {
+  closeIframes() {
     for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
       const iframe = window.DP_FRAME_OVERLAYS[key];
       if (iframe.opened) {
@@ -112,7 +112,7 @@ class AgentTopBar extends SeparateComponent {
     }
   }
 
-  static toggleViewMode() {
+  toggleViewMode() {
     if (window.DeskPRO_Window.paneVis.tabs && window.DeskPRO_Window.paneVis.list) {
       window.DeskPRO_Window.$scope.oneColumnView();
     } else {
@@ -120,7 +120,7 @@ class AgentTopBar extends SeparateComponent {
     }
   }
 
-  static openDeskPro() {
+  openDeskPro() {
     window.open('http://deskpro.com', '_blank');
   }
 
@@ -141,10 +141,10 @@ class AgentTopBar extends SeparateComponent {
       <TopBarItem classes={['legacy-omnibox']}>
         <i className="icon wait" onClick={this.onRecent} />
       </TopBarItem>
-      <TopBarItem classes={['z-index-stub']}>
-        <HeaderWidget />
-        <IMContainer />
-      </TopBarItem>
+      {/* <TopBarItem classes={['z-index-stub']}>*/}
+        {/* <HeaderWidget />*/}
+        {/* <IMContainer />*/}
+      {/* </TopBarItem>*/}
 
       <AddButton closeIframes={this.closeIframes} />
       <TopBarRightMenu>
