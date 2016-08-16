@@ -1752,7 +1752,7 @@ $secondary-surface-border: #d5d6d7;
   padding-bottom: 2px;
 }
 
-.dropdown {
+.dropdown:not(i) {
   border-top: 4px solid darken($secondary-surface, 15%);
   border-bottom: 4px solid darken($secondary-surface, 5%);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);

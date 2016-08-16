@@ -318,16 +318,11 @@
       width: 26px;
       padding: 1px 3px 3px;
       margin-right: 0;
-      background-color: #2475ad;
-      box-shadow: 0 2px 0 #145775;
       margin-bottom: 2px;
       transition: none;
-      &:hover {
-        background-color: #2e86b7;
-      }
     }
     .active .button, .button:active {
-      box-shadow: 0 -2px 0 #145775;
+      box-shadow: 0 -2px 0 #3c82b4;
       margin-bottom: 0;
     }
     &::before {
