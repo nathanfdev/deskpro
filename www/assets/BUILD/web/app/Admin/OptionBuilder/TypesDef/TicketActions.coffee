@@ -1577,8 +1577,8 @@ define [
               else
                 options.must_not_match = false
 
-              if options.at_least?
-                options.at_least_value = options.at_least
+              if parseInt(options.at_least)
+                options.at_least_value = parseInt(options.at_least)
                 options.at_least = true
               else
                 options.at_least = false
@@ -1591,7 +1591,7 @@ define [
               value.options = {
                 must_match: if model.must_match then model.must_match_value else ''
                 must_not_match: if model.must_not_match then model.must_not_match_value else ''
-                at_least: if model.at_least then model.at_least_value else ''
+                at_least: if model.at_least then parseInt(model.at_least_value) || 0 else ''
                 skip_inline: model.skip_inline
               }
               return value
