@@ -199,9 +199,11 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
     }
 
     /**
+     * @param Request $request
+     *
      * @return bool
      */
-    private function isHelpdeskOffline(Request $request)
+    private function isHelpdeskOffline(Request $request = null)
     {
         if (isset($GLOBALS['DP_HELPDESK_DISABLED']) && $GLOBALS['DP_HELPDESK_DISABLED']) {
             return true;
@@ -215,7 +217,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
             }
 
             // exclude agent login page (could be an admin needing to get back in)
-            if (strpos($request->getPathInfo(), '/agent/login') === 0) {
+            if ($request && strpos($request->getPathInfo(), '/agent/login') === 0) {
                 return false;
             }
 
