@@ -15,7 +15,7 @@ pageMeta.agent_id = {{ agent.id|default(0)}};
 {% endblock %}
 {% block listing %}
 {% if convos|length %}
-<section class="search-reuslts page-set" data-page="{{ page }}">
+<section class="search-results page-set" data-page="{{ page }}">
 	{% for convo in convos %}
 		<article
 			class="row-item convo-{{ convo.id }} without-selection"
