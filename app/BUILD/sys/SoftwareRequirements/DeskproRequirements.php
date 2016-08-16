@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -264,7 +264,7 @@ class DeskproRequirements extends RequirementCollection
             if (defined('INTL_ICU_VERSION')) {
                 $version = INTL_ICU_VERSION;
             } else {
-                $reflector = new ReflectionExtension('intl');
+                $reflector = new \ReflectionExtension('intl');
 
                 ob_start();
                 $reflector->info();
@@ -335,9 +335,10 @@ class DeskproRequirements extends RequirementCollection
         if (class_exists('PDO')) {
             $drivers = \PDO::getAvailableDrivers();
             $this->addRequirement(
-                count($drivers) > 0,
-                sprintf('PDO should have some drivers installed (currently available: %s)', count($drivers) ? implode(', ', $drivers) : 'none'),
-                'Install <strong>PDO drivers</strong>.'
+                false !== array_search('mysql', $drivers),
+                sprintf('PDO should have mysql driver installed (currently available: %s)', implode(', ', $drivers) ?
+                    implode(', ', $drivers) : 'none'),
+                'Install <strong>PDO mysql driver</strong>.'
             );
         }
 
@@ -383,13 +384,13 @@ class DeskproRequirements extends RequirementCollection
             );
             $this->addRequirement(
                 is_writable($DP_ENV->getUserDebugDir()),
-                'var/tmp directory must be writable',
-                'You need to make your tmp directory writable: <strong>'.$DP_ENV->getUserDebugDir().'</strong>'
+                'var/debug directory must be writable',
+                'You need to make your debug directory writable: <strong>'.$DP_ENV->getUserDebugDir().'</strong>'
             );
             $this->addRequirement(
                 is_writable($DP_ENV->getUserFilesDir()),
                 'attachments directory must be writable',
-                'You need to make your cache directory writable: <strong>'.$DP_ENV->getUserFilesDir().'</strong>'
+                'You need to make your attachments directory writable: <strong>'.$DP_ENV->getUserFilesDir().'</strong>'
             );
         }
     }
