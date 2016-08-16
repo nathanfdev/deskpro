@@ -113,7 +113,7 @@ class AddButton extends React.Component {
   }
 
   render() {
-    return (<div className="item add">
+    return (<div className="item add" onClick={this.togglePopup}>
       <PopUp
         positionMy="center top"
         positionAt="center bottom"
@@ -121,11 +121,11 @@ class AddButton extends React.Component {
         elementId="add-menu-popup"
         zIndex={99999}
         content={this.getPopupContent()}
-        ref={'addPopup'}
+        ref="addPopup"
         classes={['add_menu_popup']}
         autoOpen={false}
       >
-        <button className="ui button" onClick={this.togglePopup}>
+        <button className="ui button">
           <Isvg src={`${window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '')}/../src/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/plus.svg`} />
         </button>
       </PopUp>
