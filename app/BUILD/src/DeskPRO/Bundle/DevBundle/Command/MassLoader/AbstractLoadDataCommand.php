@@ -43,10 +43,32 @@ abstract class AbstractLoadDataCommand extends ContainerAwareCommand
     protected $output;
 
     /**
+     * @param string $name
+     */
+    protected function clearSection($name)
+    {
+        if ($this->output) {
+            $this->output->writeln("Clear $name...");
+        }
+
+        $loader = $this->getMassLoader();
+        $method = 'clear'.ucfirst($name);
+        if (!method_exists($loader, $method)) {
+            throw new \RuntimeException("Clear method for $name does not exist.");
+        }
+
+        $loader->$method();
+    }
+
+    /**
      * Clear db before inserting.
      */
     protected function clearDb()
     {
+        if ($this->output) {
+            $this->output->writeln('Clear db...');
+        }
+
         $this->getMassLoader()->clearDb();
     }
 

@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\DevBundle\MassLoader;
 
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\People\PasswordScheme\Bcrypt;
 use Doctrine\ORM\EntityManager;
@@ -75,12 +76,18 @@ class MassLoader
         $this->connection->getConfiguration()->setSQLLogger(null);
     }
 
+    public function clearTickets()
+    {
+        $this->connection->executeUpdate('DELETE FROM task_links');
+        $this->connection->executeUpdate('DELETE FROM tickets');
+    }
+
     public function clearDb()
     {
+        $this->clearTickets();
+
         $this->connection->executeUpdate('DELETE FROM permissions');
-        $this->connection->executeUpdate('DELETE FROM task_links');
         $this->connection->executeUpdate('DELETE FROM task_attachments');
-        $this->connection->executeUpdate('DELETE FROM tickets');
         $this->connection->executeUpdate('DELETE FROM ticket_filters');
         $this->connection->executeUpdate('DELETE FROM people_emails');
         $this->connection->executeUpdate('DELETE FROM agent_team_members');
@@ -197,11 +204,12 @@ class MassLoader
         if (isset($options['filters'])) {
             foreach ($options['filters'] as $num => $filterOptions) {
                 $this->connection->insertIgnore('ticket_filters', [
-                    'is_global' => 0,
-                    'title'     => $this->faker->title,
-                    'sys_name'  => $personId.'_'.$num.'_'.$this->faker->word,
-                    'terms'     => $this->transformTicketFilterTerms($filterOptions),
-                    'person_id' => $personId,
+                    'is_global'  => 0,
+                    'is_enabled' => true,
+                    'title'      => $this->faker->title,
+                    'sys_name'   => $personId.'_'.$num.'_'.$this->faker->word,
+                    'terms'      => $this->transformTicketFilterTerms($filterOptions),
+                    'person_id'  => $personId,
                 ]);
             }
         }
@@ -334,10 +342,11 @@ class MassLoader
     public function loadGlobalTicketFilter(array $options = [])
     {
         $this->connection->insert('ticket_filters', [
-            'is_global' => 1,
-            'title'     => $this->faker->title,
-            'sys_name'  => $this->faker->unique()->word,
-            'terms'     => $this->transformTicketFilterTerms($options),
+            'is_global'  => 1,
+            'is_enabled' => true,
+            'title'      => $this->faker->title,
+            'sys_name'   => $this->faker->unique()->word,
+            'terms'      => $this->transformTicketFilterTerms($options),
         ]);
     }
 
@@ -346,11 +355,16 @@ class MassLoader
      */
     public function loadTicketBatch(array $options = [])
     {
-        $batchSize = 1000;
+        $batchSize = isset($options['ticketsBatchCount']) ? $options['ticketsBatchCount'] : 1000;
 
         // create tickets
-        $refs    = [];
-        $tickets = [];
+        $refs     = [];
+        $tickets  = [];
+        $statuses = [
+            Ticket::STATUS_AWAITING_AGENT,
+            Ticket::STATUS_AWAITING_USER,
+            Ticket::STATUS_RESOLVED,
+        ];
 
         for ($i = 0; $i < $batchSize; ++$i) {
             $ref = DpStrings::random(10, Strings::CHARS_ALPHA_IU).'-'.date('YzB');
@@ -362,6 +376,7 @@ class MassLoader
                 'date_created' => $this->faker->dateTime->format('c'),
                 'person_id'    => $this->faker->randomElement($this->fetchAllIds('people')),
                 'agent_id'     => $this->faker->randomElement($this->fetchAllIds('people')),
+                'status'       => $this->faker->randomElement($statuses),
             ];
         }
 
@@ -371,11 +386,11 @@ class MassLoader
         // create ticket messages
         $messages = [];
         foreach ($newTicketIds as $newTicketId) {
-            if (!isset($options['messageCount'])) {
-                $options['messageCount'] = $this->faker->randomDigitNotNull;
+            if (!isset($options['messagesBatchCount'])) {
+                $options['messagesBatchCount'] = $this->faker->randomDigitNotNull;
             }
 
-            for ($i = 0; $i < $options['messageCount']; ++$i) {
+            for ($i = 0; $i < $options['messagesBatchCount']; ++$i) {
                 $messages[] = [
                     'ticket_id' => $newTicketId,
                     'message'   => $this->faker->text(50),
@@ -386,6 +401,10 @@ class MassLoader
         foreach (array_chunk($messages, $batchSize) as $messagesChunk) {
             $this->connection->batchInsert('tickets_messages', $messagesChunk);
         }
+
+        /** @var \Application\DeskPRO\EntityRepository\Ticket $ticketRepository */
+        $ticketRepository = $this->em->getRepository(Ticket::class);
+        $ticketRepository->fillSearchTable();
     }
 
     /**
