@@ -47,7 +47,18 @@ class HierarchySorting
      *
      * Using this const as an additional security.
      */
-    const ITERATIONS_LIMIT = 1000;
+    const TREE_BUILDING_ITERATIONS_LIMIT = 1000;
+
+    /**
+     * DPQL COUNT(*) may miss zero nodes which we may need to build the whole hierarchy tree. This const limits the
+     * number of iterations when we load the missing tree nodes.
+     *
+     * E.g. there is 15 nested departments and only the first and the last have tickets assigned, if we request
+     * COUNT() tickets by departments, the result will contain only two departments and we will need 13 iterations
+     * of loading missing parents to build the whole tree with intermediate 0 count nodes presented between the
+     * first and the last nodes.
+     */
+    const RECURSION_LIMIT = 20;
 
     /**
      * Process hierarchy data.
@@ -74,12 +85,13 @@ class HierarchySorting
         $countFieldNum,
         $recursionLevel = 0
     ) {
-        if ($recursionLevel > 1) {
-            throw new Exception('
-                The $recursionLevel param cannot be bigger than 1 because the only allowed recursive call is
-                when at the end of tree-sort we get elements with missing parents and we load the parents and finish
-                tree building with a single recursive call.
-            ');
+        if ($recursionLevel > self::RECURSION_LIMIT) {
+            --$recursionLevel;
+            throw new Exception("
+                Cannot build a tree structure in $recursionLevel iterations. This has happened because some hierarchy
+                root is either too deep (you can try limiting depth with the HIERARCHY_DESCENDS_FROM() function)
+                or the data is corrupted and root element is missing.
+            ");
         }
 
         // Init the $newResults with root entries
@@ -111,7 +123,7 @@ class HierarchySorting
         $iterationNum         = 0;
         $lastIterationInserts = 1;
         $processedNodeIds     = [];
-        while (!empty($results) && $lastIterationInserts && ($iterationNum < self::ITERATIONS_LIMIT)) {
+        while (!empty($results) && $lastIterationInserts && ($iterationNum < self::TREE_BUILDING_ITERATIONS_LIMIT)) {
             ++$iterationNum;
             $lastIterationInserts = 0;
             foreach ($newResults as $i => $node) {
@@ -136,7 +148,7 @@ class HierarchySorting
             }
         }
 
-        if ($iterationNum >= self::ITERATIONS_LIMIT) {
+        if ($iterationNum >= self::TREE_BUILDING_ITERATIONS_LIMIT) {
             throw new Exception('Reached the iterations limit when sorting hierarchical data');
         }
 
@@ -145,7 +157,15 @@ class HierarchySorting
         if (!empty($results)) {
             $missing = [];
             foreach ($results as $result) {
-                if (!in_array($result['hierarchy_parent_id'], $missing)) {
+                $isMissingFromRemaining = true;
+                foreach ($results as $remainingResult) {
+                    if ($result['hierarchy_parent_id'] === $remainingResult['hierarchy_id']) {
+                        $isMissingFromRemaining = false;
+                        break;
+                    }
+                }
+
+                if ($isMissingFromRemaining && !in_array($result['hierarchy_parent_id'], $missing)) {
                     $missing[] = $result['hierarchy_parent_id'];
                 }
             }
@@ -167,12 +187,11 @@ class HierarchySorting
                 $sql, [$missing], [\Doctrine\DBAL\Connection::PARAM_INT_ARRAY]);
             $missing = $stmt->fetchAll(\PDO::FETCH_BOTH);
 
-            $results = array_merge($missing, $results);
-            $results = self::sort(
-                $results, $hierarchicalTargetTable, $hierarchicalTargetTableAlias, $selectedFields, $countFieldNum,
+            $combined   = array_merge($newResults, $results, $missing);
+            $newResults = self::sort(
+                $combined, $hierarchicalTargetTable, $hierarchicalTargetTableAlias, $selectedFields, $countFieldNum,
                 1 + $recursionLevel
             );
-            $newResults = array_merge($newResults, $results);
         }
 
         return $newResults;
