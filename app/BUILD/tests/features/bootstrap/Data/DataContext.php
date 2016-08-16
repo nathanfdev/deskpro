@@ -29,10 +29,13 @@
 namespace DpBehat\Data;
 
 use Application\DeskPRO\Entity\Ticket;
+use Behat\Behat\Hook\Scope\BeforeFeatureScope;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\TableNode;
 use Doctrine\Common\Collections\ArrayCollection;
 use DpBehat\BaseContext;
 use DpBehat\Data\Factory\SimpleFactory;
+use DpBehat\DataSetContext;
 
 /**
  * Class DataContext.
@@ -43,6 +46,11 @@ use DpBehat\Data\Factory\SimpleFactory;
 class DataContext extends BaseContext
 {
     /**
+     * @var DataSetContext
+     */
+    private $dataSetContext;
+
+    /**
      * @var array Map of string reference names to actual objects
      */
     private static $references = [];
@@ -52,15 +60,90 @@ class DataContext extends BaseContext
      */
     private static $placeholders = [];
 
+    private static $isTheFirstSuiteScenario = true;
+
+    private static $isNew = false;
+
+    private static $needCleanup = false;
+
+    /**
+     * @BeforeFeature
+     *
+     * @param BeforeFeatureScope $scope
+     */
+    public static function checkNew(BeforeFeatureScope $scope)
+    {
+        if ($scope->getFeature()->hasTag('new')) {
+            self::$isNew = true;
+        }
+    }
+
+    /**
+     * Schedule DB cleanup before next login.
+     *
+     * @BeforeFeature
+     */
+    public static function scheduleCleanup()
+    {
+        self::$needCleanup = true;
+    }
+
+    /**
+     * @BeforeScenario
+     *
+     * @param BeforeScenarioScope $scope
+     */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $environment          = $scope->getEnvironment();
+        $this->dataSetContext = $environment->getContext('DpBehat\DataSetContext');
+    }
+
     /**
      * @BeforeScenario
      */
-    public function ensureOm()
+    public function ensureDb()
     {
+        if (self::$isTheFirstSuiteScenario) {
+            if (self::$isNew) {
+                $statement = $this->em()->getConnection()->executeQuery('SHOW TABLES LIKE "people"');
+                $statement->execute();
+                if (!$statement->rowCount()) {
+                    $this->dataSetContext->iInstallDataSet('api');
+                }
+            } else {
+                $this->dataSetContext->iInstallDataSet('api');
+            }
+
+            self::$isTheFirstSuiteScenario = false;
+        }
+
+        if (self::$needCleanup) {
+            $this->cleanup();
+            self::$needCleanup = false;
+        }
+
         // re-create objects manager with new $em for each scenario
         // because kernel reboots for each scenario
-
         self::initOm();
+    }
+
+    /**
+     * Clean up DB.
+     */
+    private function cleanup()
+    {
+        $this->em()->getConnection()->executeQuery('
+            DELETE FROM permissions_cache;
+            DELETE FROM permissions;
+            DELETE FROM task_attachments;
+            DELETE FROM custom_def_ticket;
+            DELETE FROM department_permissions;
+            DELETE FROM people;
+            DELETE FROM usergroups;
+        ');
+        $this->em()->clear();
+        self::clear();
     }
 
     /**

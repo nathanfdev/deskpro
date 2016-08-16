@@ -33,7 +33,6 @@ use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\TmpData;
-use Behat\Behat\Hook\Scope\BeforeFeatureScope;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit;
@@ -41,7 +40,6 @@ use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpBehat\BaseContext;
 use DpBehat\Data\DataContext;
 use DpBehat\Data\PeopleContext as PeopleDataContext;
-use DpBehat\DataSetContext;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
 /**
@@ -55,59 +53,9 @@ class AuthContext extends BaseContext
     private $restContext;
 
     /**
-     * @var DataSetContext
-     */
-    private $dataSetContext;
-
-    /**
      * @var PeopleDataContext
      */
     private $peopleDataContext;
-
-    /**
-     * @var bool DB will be cleaned up before feature if this is set to true
-     */
-    private static $needCleanup = false;
-
-    /**
-     * @var bool
-     */
-    private static $isFirstFeatureScenario = false;
-
-    /**
-     * @var bool
-     */
-    private static $isTheFirstSuiteScenario = true;
-
-    /**
-     * @var bool
-     */
-    private static $isNew = false;
-
-    /**
-     * Schedule DB cleanup before next login.
-     *
-     * @BeforeFeature
-     */
-    public static function scheduleCleanup()
-    {
-        self::$needCleanup = true;
-    }
-
-    /**
-     * @BeforeFeature
-     *
-     * @param BeforeFeatureScope $scope
-     */
-    public static function initFirstFeatureScenarioFlag(BeforeFeatureScope $scope)
-    {
-        self::$isFirstFeatureScenario = true;
-
-        // prevent api db set install for new features
-        if ($scope->getFeature()->hasTag('new')) {
-            self::$isNew = true;
-        }
-    }
 
     /**
      * @BeforeScenario
@@ -119,26 +67,7 @@ class AuthContext extends BaseContext
         $environment = $scope->getEnvironment();
 
         $this->restContext       = $environment->getContext('DpBehat\Api\RestContext');
-        $this->dataSetContext    = $environment->getContext('DpBehat\DataSetContext');
         $this->peopleDataContext = $environment->getContext('DpBehat\Data\PeopleContext');
-    }
-
-    /**
-     * Clean up DB.
-     */
-    public function cleanup()
-    {
-        $this->em()->getConnection()->executeQuery('
-            DELETE FROM permissions_cache;
-            DELETE FROM permissions;
-            DELETE FROM task_attachments;
-            DELETE FROM custom_def_ticket;
-            DELETE FROM department_permissions;
-            DELETE FROM people;
-            DELETE FROM usergroups;
-        ');
-        $this->em()->clear();
-        DataContext::clear();
     }
 
     /**
@@ -148,28 +77,6 @@ class AuthContext extends BaseContext
      */
     public function iAmAuthenticatedAs($role)
     {
-        // Install DB on @BeforeSuite ----------------------------------------------------------------------------------
-        if (self::$isTheFirstSuiteScenario) {
-            if (self::$isNew) {
-                $statement = $this->em()->getConnection()->executeQuery('SHOW TABLES LIKE "people"');
-                $statement->execute();
-                if (!$statement->rowCount()) {
-                    $this->dataSetContext->iInstallDataSet('api');
-                }
-            } else {
-                $this->dataSetContext->iInstallDataSet('api');
-            }
-
-            self::$isTheFirstSuiteScenario = false;
-        }
-
-        // Cleanup on @BeforeFeature if needed -------------------------------------------------------------------------
-        if (self::$needCleanup && self::$isFirstFeatureScenario) {
-            $this->cleanup();
-            self::$needCleanup = false;
-        }
-        self::$isFirstFeatureScenario = false;
-
         // Log in ------------------------------------------------------------------------------------------------------
         $person = $this->peopleDataContext->personByRoleExists($role);
         DataContext::setReference($role, $person);
