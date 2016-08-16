@@ -106,12 +106,13 @@ class TicketListRenderer
         $ticket_ids = [];
 
         foreach ($this->ticket_display->getTickets() as $ticket) {
-            $ticket_ids[] = $ticket->id;
-            if ($ticket->person) {
-                $person_ids[] = $ticket->person->id;
+            $ticket_ids[] = $ticket->getId();
+            if ($ticket->getPerson()) {
+            	$person_ids[] = $ticket->getPersonId();
             }
-            if ($ticket->organization) {
-                $org_ids[] = $ticket->organization->id;
+
+            if ($ticket->getOrganization()) {
+                $org_ids[] = $ticket->getOrganization()->getId();
             }
         }
 
@@ -325,7 +326,8 @@ class TicketListRenderer
         }
 
         $data['previews'] = [];
-        foreach ($this->ticket_display->getTicketPreview($ticket) as $m) {
+        $previews         = $this->ticket_display->getTicketPreview($ticket);
+        foreach ($previews as $m) {
             $data['previews'][] = [
                 'message' => [
                     'id'              => $m['id'],

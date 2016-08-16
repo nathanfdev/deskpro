@@ -1107,7 +1107,7 @@ class TicketSearchController extends AbstractController
         ];
         $vars['search_form'] = $search_form;
 
-        return $this->_getResponseForTickets('filter', $filter['id'], $helper, $vars);
+        return $this->_getResponseForTickets('filter', $filter->getId(), $helper, $vars);
     }
 
     public function runNamedFilterAction($filter_name)
