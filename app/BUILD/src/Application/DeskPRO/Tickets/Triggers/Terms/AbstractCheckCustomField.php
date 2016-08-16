@@ -255,6 +255,12 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
         return 'CheckTicketField'.$this->getTermOptions()->get('field_id');
     }
 
+    /**
+     * note: this method is only used in TicketLayout terms
+     * eg app/BUILD/src/Application/DeskPRO/TicketLayout/Terms/CheckTicketField.php.
+     *
+     * @return string
+     */
     public function compileJsCheck()
     {
         $options     = $this->getTermOptions();
