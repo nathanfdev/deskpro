@@ -702,9 +702,41 @@ GroupSequenceProviderInterface
     /**
      * @return string
      */
+    public function getFirstName()
+    {
+        return $this->first_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastName()
+    {
+        return $this->last_name;
+    }
+
+    /**
+     * @return string
+     */
     public function getOverrideDisplayName()
     {
         return $this->override_display_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitlePrefix()
+    {
+        return $this->title_prefix;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSummary()
+    {
+        return $this->summary;
     }
 
     /**
@@ -795,6 +827,14 @@ GroupSequenceProviderInterface
     }
 
     /**
+     * @return string
+     */
+    public function getOrganizationPosition()
+    {
+        return $this->organization_position;
+    }
+
+    /**
      * Is this a guest?
      *
      * @return bool
@@ -880,6 +920,30 @@ GroupSequenceProviderInterface
      * @return bool
      */
     public function isAdmin()
+    {
+        return $this->can_admin;
+    }
+
+    /**
+     * @return bool
+     */
+    public function wasAgent()
+    {
+        return $this->was_agent;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canAgent()
+    {
+        return $this->can_agent;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canAdmin()
     {
         return $this->can_admin;
     }
@@ -977,6 +1041,14 @@ GroupSequenceProviderInterface
     public function getRealCanBilling()
     {
         return $this->can_billing;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreationSystem()
+    {
+        return $this->creation_system;
     }
 
     /**
@@ -3152,6 +3224,14 @@ GroupSequenceProviderInterface
         $this->setModelField('date_created', $date_created);
 
         return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
     }
 
     public function getTimezone()
