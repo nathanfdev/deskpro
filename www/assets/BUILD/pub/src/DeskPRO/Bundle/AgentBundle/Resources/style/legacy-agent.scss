@@ -197,7 +197,10 @@
       white-space: nowrap;
     }
     .label {
-      padding: 1px 3px;
+      padding: 2px 4px;
+      border-radius: 2px;
+      vertical-align: middle;
+      margin-bottom: 3px;
     }
     &:before {
       background: $dp-greyscale-350;
