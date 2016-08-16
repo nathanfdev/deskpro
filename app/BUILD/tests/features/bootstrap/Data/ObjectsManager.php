@@ -64,8 +64,10 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationNote;
+use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Session;
@@ -316,6 +318,7 @@ class ObjectsManager
             'BrandSetting'           => [Factory\SimpleFactory::class, 'create', BrandSetting::class],
             'Usersource'             => [Factory\SimpleFactory::class, 'create', Usersource::class],
             'UsersourceAssoc'        => [Factory\SimpleFactory::class, 'create', PersonUsersourceAssoc::class],
+            'PersonNote'             => [Factory\SimpleFactory::class, 'create', PersonNote::class],
         ];
     }
 
@@ -398,6 +401,8 @@ class ObjectsManager
             'ApiToken'               => [$this, 'find', ApiToken::class],
             'Usersource'             => [$this, 'find', Usersource::class],
             'UsersourceAssoc'        => [$this, 'find', PersonUsersourceAssoc::class],
+            'PersonNote'             => [$this, 'find',  PersonNote::class],
+            'Permission'             => [$this, 'find',  Permission::class],
         ];
     }
 }
