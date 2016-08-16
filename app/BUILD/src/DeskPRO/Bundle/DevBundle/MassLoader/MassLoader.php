@@ -218,6 +218,7 @@ class MassLoader
         $permissions = [];
         $permNames   = [
             'agent_tickets.use',
+            'agent_tickets.view_others',
             'agent_tickets.create',
             'agent_tickets.modify_own',
             'agent_tickets.delete',
@@ -345,7 +346,6 @@ class MassLoader
             'is_global'  => 1,
             'is_enabled' => true,
             'title'      => $this->faker->title,
-            'sys_name'   => $this->faker->unique()->word,
             'terms'      => $this->transformTicketFilterTerms($options),
         ]);
     }
