@@ -28,12 +28,26 @@
 
 namespace DpSys\Boot\BootTask;
 
+use Symfony\Component\HttpFoundation\Request;
+
 class HttpVerifyRequirementsBootTask
 {
     public function run(\DpRun\DpEnv $env, array $resources)
     {
         if ($env->getConfig('env.skip_req_check')) {
             return;
+        }
+
+        // small optimisation, dont run req checker
+        // on ajax/api requests where we couldnt see the result anyway
+        if (!empty($resources['request'])) {
+            /** @var Request $request */
+            $request = $resources['request'];
+            if ($request->isXmlHttpRequest()) {
+                return;
+            } else if (strpos($request->getPathInfo(), '/api/') === 0) {
+                return;
+            }
         }
 
         /** @var \DpSys\SoftwareRequirements\DeskproRequirements $checker */
