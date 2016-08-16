@@ -1,8 +1,10 @@
 import React from 'react';
 import { storiesOf, action, linkTo } from '@kadira/storybook';
 import { Toggle, Range } from 'DeskPRO/Component/Semantic/Form';
+import { css } from '../../decorators';
 
 storiesOf('Semantic: form', module)
+  .addDecorator(story => css(story()))
   .add(
     'Toggle off',
     () => <Toggle onChange={linkTo('Semantic: form', 'Toggle on')}>Label</Toggle>

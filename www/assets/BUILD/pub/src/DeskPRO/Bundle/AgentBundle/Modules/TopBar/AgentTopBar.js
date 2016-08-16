@@ -51,7 +51,7 @@ class AgentTopBar extends SeparateComponent {
     });
   }
 
-  onSearch(searchQuery) {
+  static onSearch(searchQuery) {
     const angularOmnibox = window.angular.element('.dp-omnibox').scope();
     if (angularOmnibox) {
       angularOmnibox.searchQuery = searchQuery;
@@ -60,16 +60,15 @@ class AgentTopBar extends SeparateComponent {
     }
   }
 
-  onSearchFocus() {
-    window.$('.dp-omnibox-results').show();
+  static onSearchFocus() {
     window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
   }
 
-  onSearchBlur() {
+  static onSearchBlur() {
     window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
   }
 
-  onRecent() {
+  static onRecent() {
     const angularOmnibox = window.angular.element('.dp-omnibox').scope();
     if (angularOmnibox) {
       angularOmnibox.toggleMode('recent');
@@ -78,7 +77,7 @@ class AgentTopBar extends SeparateComponent {
     }
   }
 
-  onNotification() {
+  static onNotification() {
     const angularOmnibox = window.angular.element('.dp-omnibox').scope();
     if (angularOmnibox) {
       angularOmnibox.toggleMode('notif');
@@ -104,7 +103,7 @@ class AgentTopBar extends SeparateComponent {
     return '';
   }
 
-  closeIframes() {
+  static closeIframes() {
     for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
       const iframe = window.DP_FRAME_OVERLAYS[key];
       if (iframe.opened) {
@@ -113,7 +112,7 @@ class AgentTopBar extends SeparateComponent {
     }
   }
 
-  toggleViewMode() {
+  static toggleViewMode() {
     if (window.DeskPRO_Window.paneVis.tabs && window.DeskPRO_Window.paneVis.list) {
       window.DeskPRO_Window.$scope.oneColumnView();
     } else {
@@ -121,12 +120,16 @@ class AgentTopBar extends SeparateComponent {
     }
   }
 
+  static openDeskPro() {
+    window.open('http://deskpro.com', '_blank');
+  }
+
   render() {
     const { notificationCount } = this.state;
     const { agents, chatDepartments } = this.props;
     const svgSrc = window.DESKPRO_APP_ASSETS_URL.replace(/\/$/, '');
     return (<TopBar>
-      <div className="logo" />
+      <div className="logo" onClick={this.openDeskPro} />
       <TopBarItem classes={['search-box legacy-omnibox']}>
         <SearchBox
           onUserInput={this.onSearch}

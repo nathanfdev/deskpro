@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@kadira/storybook';
-import MenuWrapper from 'DeskPRO/Component/Semantic/Menu/MenuWrapper';
+import { MenuWrapper } from 'DeskPRO/Component/Semantic/Menu';
 import Accordion from 'DeskPRO/Component/Semantic/Accordion/Accordion';
 import List from 'DeskPRO/Component/Semantic/List/List';
 

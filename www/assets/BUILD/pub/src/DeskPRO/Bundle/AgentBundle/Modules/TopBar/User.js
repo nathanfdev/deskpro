@@ -7,6 +7,10 @@ class User extends React.Component {
     src: PropTypes.string
   };
 
+  static clickLogout() {
+    window.location = `${window.DESKPRO_AGENT_LOGOUT}?to=agent`;
+  }
+
   constructor() {
     super();
     this.clickSettings = this.clickSettings.bind(this);
@@ -53,10 +57,6 @@ class User extends React.Component {
   clickSettings() {
     window.$('#settingswin').trigger('dp_open');
     this.closePopup();
-  }
-
-  clickLogout() {
-    window.location = `${window.DESKPRO_AGENT_LOGOUT}?to=agent`;
   }
 
   togglePopup() {

@@ -151,9 +151,12 @@
   background-image: url('../img/semantic/tick.svg');
 }
 
+#dp_header {
+  background-color: #fff;
+}
 .ui.menu.topbar {
   border: 0;
-  border-bottom: 1px solid $agent_header_border_color;
+  border-bottom: 3px solid $agent_header_border_color;
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 
   .pointer {
@@ -167,6 +170,7 @@
     background-size: 24px;
     background-repeat: no-repeat;
     padding: 11px 15px 11px 16px;
+    cursor: pointer;
     img {
       width: 24px;
       height: 24px;
@@ -182,19 +186,14 @@
     -webkit-transform: skew(-30deg);
     -ms-transform: skew(-30deg);
     transform: skew(-30deg);
-    padding: 8px 20px;
+    padding: 0 20px;
     &:hover {
-      &, .icon.hover {
+      &, .icon:hover {
         color: $agent_header_border_color;
       }
       .chat {
         color: $dp-greyscale-1000;
       }
-      &::before {
-        //background-color: $agent_header_border_color;
-      }
-      //border-left: 1px solid $agent_header_border_color;
-      //margin-left: -1px;
     }
     > * {
       -moz-transform: skew(30deg);
@@ -316,14 +315,13 @@
     .button {
       height: 26px;
       width: 26px;
-      padding: 1px 3px 3px;
+      padding: 3px;
       margin-right: 0;
-      margin-bottom: 2px;
       transition: none;
     }
     .active .button, .button:active {
       box-shadow: 0 -2px 0 #3c82b4;
-      margin-bottom: 0;
+      margin-bottom: -2px;
     }
     &::before {
       width: 0;
@@ -344,14 +342,12 @@
     }
   }
 }
-#chat-menu-popup,
-#user-menu-popup,
-#add-menu-popup {
+.ui.popup {
   padding: 0;
   border-color: $agent_header_border_color;
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   &:before {
-    background: $agent_header_border_color;
+    background: $agent_header_border_color !important;
   }
   .icon {
     padding-left: 0;
