@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,14 +35,14 @@ use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 class ApiLimitsCacheWarmer implements CacheWarmerInterface
 {
-    protected $metadata_factory;
+    protected $metadataFactory;
 
     protected $finder;
 
-    public function __construct(MetadataFactory $metadata_factory, ApiControllersFinder $finder)
+    public function __construct(MetadataFactory $metadataFactory, ApiControllersFinder $finder)
     {
-        $this->metadata_factory = $metadata_factory;
-        $this->finder           = $finder;
+        $this->metadataFactory = $metadataFactory;
+        $this->finder          = $finder;
     }
 
     /**
@@ -52,7 +52,7 @@ class ApiLimitsCacheWarmer implements CacheWarmerInterface
     {
         foreach ($this->finder->getClasses() as $class) {
             try {
-                $this->metadata_factory->getMetadataForClass($class, true);
+                $this->metadataFactory->getMetadataForClass($class, true);
             } catch (AbstractClassException $e) {
                 // There is nothing to do. Or just output it
             } catch (\ReflectionException $e) {
