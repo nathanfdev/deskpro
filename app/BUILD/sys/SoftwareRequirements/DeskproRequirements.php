@@ -397,15 +397,11 @@ class DeskproRequirements extends RequirementCollection
                 'attachments directory must be writable',
                 'You need to make your cache directory writable: <strong>'.$DP_ENV->getUserFilesDir().'</strong>'
             );
-            $this->addRequirement(
-                is_writable($DP_ENV->getAppBaseKernelCacheDir()),
-                'var/kernel_cache must be writable',
-                'You need to make your kernel_cache directory writable: <strong>'.$DP_ENV->getAppBaseKernelCacheDir().'</strong>'
-            );
 
             if (is_writable($DP_ENV->getAppBaseKernelCacheDir())) {
                 $failedDirs = [];
                 foreach ([
+                    $DP_ENV->getAppBaseKernelCacheDir(),
                     $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$DP_ENV->getEnvId(),
                     $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$DP_ENV->getEnvId().DIRECTORY_SEPARATOR.'annotations',
                     $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$DP_ENV->getEnvId().DIRECTORY_SEPARATOR.'doctrine',
@@ -418,7 +414,7 @@ class DeskproRequirements extends RequirementCollection
                 }
 
                 if ($failedDirs) {
-                    $this->addRequirement(false, 'var/kernel_cache and all sub-directories must be writable', 'The following directories must be writable: '.implode(', ', $failedDirs));
+                    $this->addRequirement(false, 'var/kernel_cache and all sub-directories must be writable', 'Make var/kernel_cache and all sub-dirs writable (not writable : '.implode(', ', $failedDirs).')');
                 }
             }
         }
