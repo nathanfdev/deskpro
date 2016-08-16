@@ -210,6 +210,7 @@ class Chat extends React.Component {
         zIndex={99999}
         autoOpen={false}
         ref="chatPopup"
+        classes={['chat_popup']}
         content={this.getPopupContent()}
       >
         <i className={classNames('icon', 'comments', 'outline', { on: activeChat })} /><br />

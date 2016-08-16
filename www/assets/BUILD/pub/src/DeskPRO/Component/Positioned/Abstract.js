@@ -22,7 +22,8 @@ export class Abstract extends React.Component {
     onOpen:         PropTypes.func,
     onClose:        PropTypes.func,
     children:       PropTypes.any,
-    style:          PropTypes.object
+    style:          PropTypes.object,
+    classes:        PropTypes.array
   };
 
   constructor(props) {

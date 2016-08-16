@@ -471,3 +471,8 @@
   right: 143px;
   left: auto;
 }
+.positioned-element.add_menu_popup,
+.positioned-element.chat_popup,
+.positioned-element.user_popup {
+  top: 44px !important;
+}

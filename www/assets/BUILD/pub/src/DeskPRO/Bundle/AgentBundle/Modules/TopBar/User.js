@@ -75,6 +75,7 @@ class User extends React.Component {
           zIndex={99999}
           content={this.getPopupContent()}
           ref="userPopup"
+          classes={['user_popup']}
           autoOpen={false}
         >
           <img className="ui circular image" src={src} alt="agent" />

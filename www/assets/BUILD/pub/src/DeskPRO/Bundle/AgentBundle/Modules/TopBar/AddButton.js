@@ -122,6 +122,7 @@ class AddButton extends React.Component {
         zIndex={99999}
         content={this.getPopupContent()}
         ref={'addPopup'}
+        classes={['add_menu_popup']}
         autoOpen={false}
       >
         <button className="ui button" onClick={this.togglePopup}>

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import { Abstract } from './Abstract';
 
 export class Simple extends Abstract {
@@ -24,9 +25,9 @@ export class Simple extends Abstract {
    * @return {XML} The rendered element
    */
   render() {
-    const { isOpen, children } = this.props;
+    const { isOpen, children, classes } = this.props;
 
     // Render the component with react, or don't if the prop changes
-    return isOpen ? <div className="positioned-element">{children}</div> : <div />;
+    return isOpen ? <div className={classNames('positioned-element', classes)}>{children}</div> : <div />;
   }
 }
