@@ -800,6 +800,11 @@ $collection->create('agent_ticketsearch_runfilter', [
     'options'      => ['fragment_name' => 'filter', 'fragment_type' => 'list'],
 ]);
 
+$collection->create('agent_ticketsearch_massactionoverlay', [
+    'path'       => '/ticket-search/mass-action-overlay',
+    'controller' => 'AgentBundle:TicketSearch:getTicketMassActionOverlay',
+]);
+
 $collection->create('agent_ticketsearch_getsubgroupcounts', [
     'path'       => '/ticket-search/subgroup-counts.json',
     'controller' => 'AgentBundle:TicketSearch:getSubgroupCounts',

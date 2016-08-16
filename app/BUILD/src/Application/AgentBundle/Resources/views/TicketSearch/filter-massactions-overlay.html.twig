@@ -1,13 +1,12 @@
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
-<script type="text/x-deskpro-plain" class="mass-actions-overlay-tpl">
 <div
 	class="mass-actions-overlay-container mass-actions"
-	data-base-id="%baseId%"
+	data-base-id="mass_actions_overlay"
 	data-upload-url="{{ path('agent_accept_upload') }}"
 >
-	<%scriptWord% type="text/x-deskpro-plain" class="radio-tpl">
+	<script type="text/x-deskpro-plain" class="radio-tpl">
 		<button class="clean-white radio"><span class="radio-title"></span></button>
-	</%scriptWord%>
+	</script>
 	<section class="mass-actions-overlay">
 		<header>
 			<span class="close close-trigger"></span>
@@ -70,13 +69,13 @@
 						<dl>
 							<dt style="white-space: nowrap">
 							    {{ phrase('agent.general.agent') }}
-							    <span id="%baseId%_assign_me" class="assign-self-link-wrap" data-me="{{ app.user.id }}">
+							    <span id="mass_actions_overlay_assign_me" class="assign-self-link-wrap" data-me="{{ app.user.id }}">
 									&middot;
 									<a class="assign-self-link">
 										{{ phrase('agent.general.assign_to_me') }}
 									</a>
 								</span>
-								<span id="%baseId%_unassign_agent" class="assign-self-link-wrap" style="display:none">
+								<span id="mass_actions_overlay_unassign_agent" class="assign-self-link-wrap" style="display:none">
 									&middot;
 									<a class="assign-self-link">
 										{{ phrase('agent.general.unassign') }}
@@ -101,7 +100,7 @@
 							    {{ phrase('agent.general.team') }}
 
                                 {% if app.user.agent.primaryTeam %}
-                                <span id="%baseId%_assign_team" class="assign-self-link-wrap" data-team="{{ app.user.agent.primaryTeam.id }}">
+                                <span id="mass_actions_overlay_assign_team" class="assign-self-link-wrap" data-team="{{ app.user.agent.primaryTeam.id }}">
                                 	&middot;
 									<a class="assign-self-link">
 										{% if 1 == app.user.agent.teams|length %}
@@ -111,7 +110,7 @@
                                         {% endif %}
 									</a>
 								</span>
-                                <span id="%baseId%_unassign_team" class="assign-self-link-wrap" style="display:none;">
+                                <span id="mass_actions_overlay_unassign_team" class="assign-self-link-wrap" style="display:none;">
                                 	&middot;
                                 	<a class="assign-self-link">
                                     	{{ phrase('agent.general.unassign') }}
@@ -136,7 +135,7 @@
 				<dl>
 					<dt>
 					    {{ phrase('agent.general.followers') }}
-					    <span id="%baseId%_follower_me" class="assign-self-link-wrap" data-me="{{ app.user.id }}">
+					    <span id="mass_actions_overlay_follower_me" class="assign-self-link-wrap" data-me="{{ app.user.id }}">
 					    	&middot;
                             <a class="assign-self-link">
                             	{{ phrase('agent.general.add_me') }}
@@ -274,7 +273,7 @@
 					<section class="ticketreply">
 						<article>
 							<section>
-								<ul id="%baseId%_attach_row" style="display: none">
+								<ul id="mass_actions_overlay_attach_row" style="display: none">
 									<li class="attach-row">
 										<label><span>{{ phrase('agent.general.attachments') }}</span></label>
 										<div>
@@ -283,19 +282,19 @@
 										</div>
 									</li>
 
-									{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'actions[reply][attach_ids][]', scriptWord: '%scriptWord%'} %}
+									{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'actions[reply][attach_ids][]'} %}
 								</ul>
 								<div class="input-wrap">
-									<textarea id="%baseId%_signature_value" class="signature-value" style="display: none;">{{ agent_signature }}</textarea>
-									<textarea id="%baseId%_signature_value_html" class="signature-value-html" style="display: none;">{{ agent_signature_html }}</textarea>
-									<textarea id="%baseId%_replybox_txt" name="actions[reply][reply_text]"></textarea>
+									<textarea id="mass_actions_overlay_signature_value" class="signature-value" style="display: none;">{{ agent_signature }}</textarea>
+									<textarea id="mass_actions_overlay_signature_value_html" class="signature-value-html" style="display: none;">{{ agent_signature_html }}</textarea>
+									<textarea id="mass_actions_overlay_replybox_txt" name="actions[reply][reply_text]"></textarea>
 									<input type="hidden" id="{{localBaseId}}_is_html_reply" name="actions[reply][is_html]" value="0" />
 								</div>
 							</section>
 						</article>
 					</section>
 				</div>
-				<input type="hidden" class="do-send-data" id="%baseId%_snippet_ids" name="snippet_ids"/>
+				<input type="hidden" class="do-send-data" id="mass_actions_overlay_snippet_ids" name="snippet_ids"/>
 				{% endif %}
 				<dl>
 					<dt>{{ phrase('agent.general.other_properties') }}</dt>
@@ -326,4 +325,3 @@
 		</footer>
 	</section>
 </div>
-</script>

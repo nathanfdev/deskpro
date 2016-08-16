@@ -35,7 +35,6 @@ namespace Application\AgentBundle\Controller;
 use Application\AgentBundle\Controller\JsonRenderer\TicketListRenderer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\LabelDef;
@@ -1367,10 +1366,6 @@ class TicketSearchController extends AbstractController
 
         $pageinfo = Numbers::getPaginationPages($results_helper->getCount(), $page, $per_page);
 
-        $agents      = $this->em->getRepository(Person::class)->getAgents();
-        $agent_teams = $this->em->getRepository(AgentTeam::class)->findAll();
-        $brands      = $this->em->getRepository(Brand::class)->findAll();
-
         $has_t_fields = false;
         $has_u_fields = false;
 
@@ -1412,9 +1407,6 @@ class TicketSearchController extends AbstractController
         }
 
         $vars = array_merge($vars, [
-            'agents'                 => $agents,
-            'agent_teams'            => $agent_teams,
-            'brands'                 => $brands,
             'type'                   => $type,
             'type_id'                => $type_id,
             'ticket_display'         => $ticket_display,
@@ -2071,6 +2063,22 @@ class TicketSearchController extends AbstractController
             'failed_tickets'  => $permission_errors,
             'client_messages' => $client_messages,
             'ticket_data'     => $ticket_data,
+        ]);
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getTicketMassActionOverlayAction()
+    {
+        $agents      = $this->em->getRepository(Person::class)->getAgents();
+        $agent_teams = $this->em->getRepository(Entity\AgentTeam::class)->findAll();
+        $brands      = $this->em->getRepository(Brand::class)->findAll();
+
+        return $this->render('AgentBundle:TicketSearch:filter-massactions-overlay.html.twig', [
+            'agents'      => $agents,
+            'agent_teams' => $agent_teams,
+            'brands'      => $brands,
         ]);
     }
 }
