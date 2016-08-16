@@ -367,16 +367,18 @@ class MassLoader
         ];
 
         for ($i = 0; $i < $batchSize; ++$i) {
-            $ref = DpStrings::random(10, Strings::CHARS_ALPHA_IU).'-'.date('YzB');
+            $ref         = DpStrings::random(10, Strings::CHARS_ALPHA_IU).'-'.date('YzB');
+            $dateCreated = $this->faker->dateTime->format('c');
 
             $refs[]    = $ref;
             $tickets[] = [
                 'subject'      => $this->faker->title,
                 'ref'          => $ref,
-                'date_created' => $this->faker->dateTime->format('c'),
+                'date_created' => $dateCreated,
                 'person_id'    => $this->faker->randomElement($this->fetchAllIds('people')),
                 'agent_id'     => $this->faker->randomElement($this->fetchAllIds('people')),
                 'status'       => $this->faker->randomElement($statuses),
+                'ticket_hash'  => md5($ref.$dateCreated),
             ];
         }
 
