@@ -118,7 +118,7 @@ class ContentSlugManager
      */
     private function slugifyTitle($title)
     {
-        return substr(Strings::slugifyTitle($title), 0, 94);
+        return substr(Strings::slugifyTitle($title), 0, 94) ?: '';
     }
 
     /**

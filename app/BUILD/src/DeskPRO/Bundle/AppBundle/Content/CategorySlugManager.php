@@ -95,7 +95,7 @@ class CategorySlugManager
      */
     private function slugifyTitle($title)
     {
-        return substr(Strings::slugifyTitle($title), 0, 200);
+        return substr(Strings::slugifyTitle($title), 0, 200) ?: '';
     }
 
     /**
