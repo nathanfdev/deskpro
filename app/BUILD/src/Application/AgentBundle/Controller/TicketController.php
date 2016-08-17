@@ -328,15 +328,6 @@ class TicketController extends AbstractController
             }
         }
 
-        $agent_map = [];
-        foreach ($agents as $agent) {
-            $agent_map[$agent->getId()] = [
-                'name'        => $agent->getDisplayName(),
-                'picture_url' => $agent->getPictureUrl(20),
-            ];
-        }
-        unset($agent_map[$this->person->getId()]);
-
         //------------------------------
         // Validate a ticket to see if we need to lock the reply form
         //------------------------------
@@ -422,7 +413,6 @@ class TicketController extends AbstractController
         $vars = [
             'agents'      => $agents,
             'agent_teams' => $agent_teams,
-            'agent_map'   => $agent_map,
             'tasks'       => $tasks,
             'brands'      => $brands,
 

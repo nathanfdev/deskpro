@@ -4267,7 +4267,21 @@ DeskPRO.Agent.Window = new Orb.Class({
 		return DeskPRO.Agent.RteEditor.initRteAgentReply(textarea, options);
 	},
 
-	initAgentNotifierForRte: function(obj, textarea, agentMap, alwaysAvailable, verifyCallback) {
+	initAgentNotifierForRte: function(obj, textarea, alwaysAvailable, verifyCallback) {
+		var self = this;
+
+		$.ajax({
+			url: BASE_URL + "agent/people/agent_notifier_map.json",
+			type: 'GET',
+			dataType: 'json',
+			noErrorOverride: true,
+			success: function(data) {
+				self._initAgentNotifierForRte(obj, textarea, data, alwaysAvailable, verifyCallback);
+			}
+		});
+	},
+
+	_initAgentNotifierForRte: function(obj, textarea, agentMap, alwaysAvailable, verifyCallback) {
 		var api = textarea.data('redactor');
 		if (!api) {
 			return;

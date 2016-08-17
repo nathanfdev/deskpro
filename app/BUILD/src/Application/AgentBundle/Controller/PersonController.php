@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity\PersonNote;
+use Application\DeskPRO\EntityRepository\Person;
 use Application\DeskPRO\EntityRepository\Ticket;
 use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\Log\Event\UserMerged;
@@ -1612,5 +1613,27 @@ class PersonController extends AbstractController
         $ret = $rep->getTeamsRaw();
 
         return $this->createJsonResponse($ret);
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getNotifierMapAction()
+    {
+        /** @var Person $personRepo */
+        $personRepo = $this->em->getRepository(Entity\Person::class);
+        $agents     = $personRepo->getAgents();
+        $agentMap   = [];
+
+        foreach ($agents as $agent) {
+            $agentMap[$agent->getId()] = [
+                'name'        => $agent->getDisplayName(),
+                'picture_url' => $agent->getPictureUrl(20),
+            ];
+        }
+
+        unset($agentMap[$this->person->getId()]);
+
+        return $this->createJsonResponse($agentMap);
     }
 }

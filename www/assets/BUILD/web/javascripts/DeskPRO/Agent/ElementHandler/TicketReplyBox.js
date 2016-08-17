@@ -1196,7 +1196,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		DeskPRO_Window.initAgentNotifierForRte(
 			this,
 			textarea,
-			this.page && this.page.meta.agentMap ? this.page.meta.agentMap : false,
 			false,
 			function(agentId) {
 				agentId = parseInt(agentId);
