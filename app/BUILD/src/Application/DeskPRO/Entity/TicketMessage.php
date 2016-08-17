@@ -942,6 +942,22 @@ class TicketMessage extends DomainObject
         $this->setModelField('ip_address', $ip_address);
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @return TicketMessageTranslated
+     */
+    public function getPrimaryTranslation()
+    {
+        return $this->primary_translation;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

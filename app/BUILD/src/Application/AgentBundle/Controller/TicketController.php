@@ -202,10 +202,7 @@ class TicketController extends AbstractController
 
         $ticket_flagged = $this->em->getRepository(TicketFlagged::class)->getFlagForTicket($ticket, $this->person);
 
-        $macros = $this->person->Agent->getMacros();
-
-        $tpl = 'AgentBundle:Ticket:view.html.twig';
-
+        $macros      = $this->person->Agent->getMacros();
         $hidden_data = $this->_getHiddenBarData($ticket);
 
         // Check if the search adapter
@@ -519,7 +516,7 @@ class TicketController extends AbstractController
             $this->em->flush();
         }
 
-        return $this->render($tpl, $vars);
+        return $this->render('AgentBundle:Ticket:view.html.twig', $vars);
     }
 
     public function getMessagePageAction($ticket_id, $page)
@@ -686,11 +683,14 @@ class TicketController extends AbstractController
 
         $message_ids = array_slice($all_message_ids, ($page - 1) * $per_page, $per_page);
 
-        $ticket_messages = $this->em->getRepository(TicketMessage::class)->getByIds($message_ids);
+        /** @var \Application\DeskPRO\EntityRepository\TicketMessage $ticketMessageRepo */
+        $ticketMessageRepo = $this->em->getRepository(TicketMessage::class);
+        /** @var TicketMessage[] $ticket_messages */
+        $ticket_messages = $ticketMessageRepo->getByIds($message_ids);
 
-        usort($ticket_messages, function ($a, $b) {
-            $ts_a = $a->date_created->getTimestamp();
-            $ts_b = $b->date_created->getTimestamp();
+        usort($ticket_messages, function (TicketMessage $a, TicketMessage $b) {
+            $ts_a = $a->getDateCreated()->getTimestamp();
+            $ts_b = $b->getDateCreated()->getTimestamp();
 
             if ($ts_a == $ts_b) {
                 return 0;
@@ -706,8 +706,9 @@ class TicketController extends AbstractController
         $ticket_messages_translated = $this->em->getRepository(TicketMessageTranslated::class)->getForMessages($ticket_messages, $this->person->getLanguage()->getLocale());
 
         foreach ($ticket_messages as $message) {
-            if (!isset($ticket_messages_translated[$message->id]) && $message->primary_translation) {
-                $ticket_messages_translated[$message->id] = $message->primary_translation;
+            $messageId = $message->getId();
+            if (!isset($ticket_messages_translated[$messageId]) && $message->getPrimaryTranslation()) {
+                $ticket_messages_translated[$messageId] = $message->getPrimaryTranslation();
             }
         }
 
@@ -727,11 +728,13 @@ class TicketController extends AbstractController
         $last_message_id = 0;
 
         $ticket_messages_num = [];
-        foreach ($ticket_messages as $m) {
-            $ticket_messages_num[$m['id']] = $message_numbers[$m['id']] + 1;
+        foreach ($ticket_messages as $message) {
+            $messageId = $message->getId();
 
-            if ($m['id'] > $last_message_id) {
-                $last_message_id = $m['id'];
+            $ticket_messages_num[$messageId] = $message_numbers[$messageId] + 1;
+
+            if ($messageId > $last_message_id) {
+                $last_message_id = $messageId;
             }
         }
 
@@ -794,18 +797,18 @@ class TicketController extends AbstractController
         $ticket_messages_blockcache = [
             'status'               => $ticket->getStatusCode(),
             'language_id'          => $ticket->getLanguageId(),
-            'urgency'              => $ticket->urgency,
+            'urgency'              => $ticket->getUrgency(),
             'department_id'        => $ticket->getDepartmentId(),
             'category_id'          => $ticket->getCategoryId(),
             'product_id'           => $ticket->getProductId(),
             'workflow_id'          => $ticket->getWorkflowId(),
             'priority_id'          => $ticket->getPriorityId(),
-            'is_hold'              => $ticket->is_hold,
+            'is_hold'              => $ticket->isHold(),
             'agent_id'             => $ticket->getAgentId(),
             'agent_team_id'        => $ticket->getAgentTeamId(),
             'is_locked'            => $ticket->hasLock(),
-            'locked_by_agent_id'   => $ticket->hasLock() ? $ticket->locked_by_agent->getId() : null,
-            'locked_by_agent_name' => $ticket->hasLock() ? $ticket->locked_by_agent->getDisplayName() : null,
+            'locked_by_agent_id'   => $ticket->hasLock() ? $ticket->getLockedByAgent()->getId() : null,
+            'locked_by_agent_name' => $ticket->hasLock() ? $ticket->getLockedByAgent()->getDisplayName() : null,
 
             'incidents'     => $incidents,
             'problem_id'    => $problem_id,
