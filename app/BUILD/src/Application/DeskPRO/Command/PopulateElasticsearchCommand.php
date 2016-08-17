@@ -204,14 +204,7 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
      */
     private function runCommand($arguments, OutputInterface $output)
     {
-        $php_path = $this->getContainer()->get('deskpro.app_env')->getConfig('paths.php_path');
-        $file     = escapeshellarg(realpath(DP_APP_DIR.'/bin/console'));
-
-        if (defined('DPC_IS_CLOUD')) {
-            $file .= ' --dpc-site-id '.DPC_SITE_ID;
-        }
-
-        $command = $php_path.' '.$file.' dp:elastica:index '.implode(' ', $arguments);
+        $command = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:elastica:index '.implode(' ', $arguments));
         $process = new Process($command);
         $process->setTimeout(600);
 
