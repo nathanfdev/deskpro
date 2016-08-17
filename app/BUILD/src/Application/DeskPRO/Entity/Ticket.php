@@ -3671,13 +3671,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
-        $hash = $this->getStateChangeRecorder()->getStateVersion().(int) $primary.(int) $deep;
-        if ($hash === $this->api_data_hash) {
-            return $this->api_data;
-        }
-
-        $this->api_data_hash = $hash;
-
         $data = parent::toApiData($primary, $deep, $visited);
         if ($deep) {
             $data['labels'] = [];
@@ -3724,7 +3717,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $field_manager = App::getContainer()->getTicketFieldManager();
         $field_manager->addApiData($this, $data);
 
-        return $this->api_data = $data;
+        return $data;
     }
 
     /**
