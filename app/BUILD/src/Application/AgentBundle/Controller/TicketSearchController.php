@@ -34,6 +34,8 @@ namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\JsonRenderer\TicketListRenderer;
 use Application\DeskPRO\App;
+use Application\DeskPRO\CustomFields\PeopleFields;
+use Application\DeskPRO\CustomFields\TicketFields;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\ClientMessage;
@@ -1342,23 +1344,23 @@ class TicketSearchController extends AbstractController
             $vars['display_fields'] = ['date_created', 'department'];
         }
 
+        /** @var TicketFields $customTicketFieldsHandler */
+        $customTicketFieldsHandler = App::getApi('custom_fields.tickets');
+        /** @var PeopleFields $customPersonFieldsHandler */
+        $customPersonFieldsHandler = App::getApi('custom_fields.people');
+
+        // ticket and person defs for columns
+        $ticket_field_defs = $customTicketFieldsHandler->getEnabledFields();
+        $person_field_defs = $customPersonFieldsHandler->getEnabledFields();
+
         $ticket_options = null;
         if (!$is_partial) {
             $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
-            $ticket_field_defs                      = App::getApi('custom_fields.tickets')->getEnabledFields();
-            $custom_fields                          = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
-            $ticket_options['custom_ticket_fields'] = $custom_fields;
-
-            // People stuff
+            $ticket_options['custom_ticket_fields'] = $customTicketFieldsHandler->getFieldsDisplayArray($ticket_field_defs);
             $ticket_options['people_organizations'] = $this->em->getRepository(Organization::class)->getOrganizationNames();
-            $people_field_defs                      = App::getApi('custom_fields.people')->getEnabledFields();
-            $ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
+            $ticket_options['custom_people_fields'] = $customPersonFieldsHandler->getFieldsDisplayArray($person_field_defs);
         }
-
-        // ticket and person defs for columns
-        $ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-        $person_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 
         $vars['display_fields'] = array_unique($vars['display_fields']);
 
