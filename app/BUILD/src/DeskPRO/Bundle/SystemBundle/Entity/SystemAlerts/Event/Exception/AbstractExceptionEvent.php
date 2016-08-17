@@ -134,6 +134,14 @@ abstract class AbstractExceptionEvent extends AbstractEvent
     }
 
     /**
+     * @return array
+     */
+    public function getTraceAsString()
+    {
+        return print_r($this->trace, true);
+    }
+
+    /**
      * @return string
      */
     public function getFile()
