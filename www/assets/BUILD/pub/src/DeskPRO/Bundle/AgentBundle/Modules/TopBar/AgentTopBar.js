@@ -14,7 +14,7 @@ import Isvg from 'react-inlinesvg';
 
 @connect(state => ({
   agents:          collectionSelectorFactory('Person', 'agents')(state),
-  chatDepartments: collectionSelectorFactory('Departments', 'all_tickets')(state),
+  chatDepartments: collectionSelectorFactory('Department', 'all_tickets')(state),
   me:              meSelector(state)
 }))
 class AgentTopBar extends SeparateComponent {

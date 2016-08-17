@@ -26,10 +26,12 @@ class Chat extends React.Component {
       onlineAgents:   this.props.onlineAgents,
       activeChat:     false,
       volume:         this.props.volume || 8,
+      departmentMode: false,
       previousVolume: 8
     };
     this.refreshOnlineAgentsList = this.refreshOnlineAgentsList.bind(this);
     this.toggleChat = this.toggleChat.bind(this);
+    this.toggleDepartmentMode = this.toggleDepartmentMode.bind(this);
     this.togglePopup = this.togglePopup.bind(this);
     this.toggleVolume = this.toggleVolume.bind(this);
     this.updateAudioVolume = this.updateAudioVolume.bind(this);
@@ -56,28 +58,49 @@ class Chat extends React.Component {
   }
 
   getAgents() {
-    const departments = this.sortAgentsByDepartment();
-    const result = [];
-    Object.keys(departments).map((key) => {
-      result.push(<h4 key={`dep${key}`}>{departments[key].label}</h4>);
-      result.push(<hr key={`hr${key}`} />);
-      let agentList = [];
-      for (const agent of departments[key].agents) {
-        let img = agent.avatar.default_url_pattern;
-        if (agent.avatar.url_pattern) {
-          img = agent.avatar.url_pattern;
+    const onlineAgents = this.props.agents.filter(agent =>
+      this.state.onlineAgents.indexOf(String(agent.get('id'))) !== -1
+    );
+    let result = [];
+    if (this.state.departmentMode) {
+      this.props.chatDepartments.map((department, index) => {
+        const agents = [];
+        onlineAgents.map((agent) => {
+          if (agent.get('user_groups').toArray().indexOf(department.get('id')) !== -1) {
+            agents.push(agent);
+          }
+          return true;
+        });
+        if (agents.length) {
+          result.push(<h4 key={`dep${index}`}>{department.get('title')}</h4>);
+          result.push(<hr key={`hr${index}`} />);
+          result.push(this.getAgentsList(agents, department.get('id')));
         }
-        img = img.replace(/\{\{IMG_SIZE}}/, 15);
-        agentList.push(<ListElement key={`agent${agent.id}`} label={agent.name} image={img} />);
-      }
-      result.push(<List key={`agents${key}`} classes={['agents']}>{agentList}</List>);
-      return true;
-    });
+        return true;
+      });
+    } else {
+      result = this.getAgentsList(onlineAgents, 0);
+    }
     return result;
   }
 
+  getAgentsList(agents, key) {
+    return (<List key={`list${key}`} classes={['agents']}>
+      {
+        agents.map((agent) => {
+          let img = agent.get('avatar').get('default_url_pattern');
+          if (agent.get('avatar').get('url_pattern')) {
+            img = agent.get('avatar').get('url_pattern');
+          }
+          img = img.replace(/\{\{IMG_SIZE}}/, 15);
+          return <ListElement key={`agent${String(agent.get('id'))}`} label={agent.get('name')} image={img} />;
+        })
+      }
+    </List>);
+  }
+
   getPopupContent() {
-    const { activeChat, onlineAgents } = this.state;
+    const { activeChat, onlineAgents, departmentMode } = this.state;
     const volume = parseInt(this.state.volume, 10);
     return (<div id="chat-menu">
       <div className="header">
@@ -99,7 +122,14 @@ class Chat extends React.Component {
         <Range min={0} max={10} value={volume} onChange={this.updateAudioVolume} />
         <hr className="full" />
         {onlineAgents.length} online agents
-        <button className="ui button basic tiny compact right department-filter"><i className="icon users" />By department</button>
+        <button
+          className={classNames('ui', 'button', 'basic', 'tiny', 'compact', 'right', 'department-filter',
+            { active: departmentMode })}
+          onClick={this.toggleDepartmentMode}
+        >
+          <i className="icon users" />
+          By department
+        </button>
         {this.getAgents()}
       </div>
     </div>);
@@ -118,31 +148,10 @@ class Chat extends React.Component {
     });
   }
 
-  sortAgentsByDepartment() {
-    const departments = {};
-    let key = 0;
-    for (const agent of this.props.agents) {
-      agent.key = String(agent.id);
-      if (this.state.onlineAgents.indexOf(agent.key) === -1) {
-        continue;
-      }
-      for (const group of agent.user_groups) {
-        if (this.props.chatDepartments[group]) {
-          if (!departments.hasOwnProperty(group)) {
-            departments[group] = {
-              label:  this.props.chatDepartments[group].title,
-              key:    key++,
-              agents: [
-                agent
-              ]
-            };
-          } else {
-            departments[agent.department].agents.push(agent);
-          }
-        }
-      }
-    }
-    return departments;
+  toggleDepartmentMode() {
+    this.setState({
+      departmentMode: !this.state.departmentMode
+    });
   }
 
   togglePopup() {

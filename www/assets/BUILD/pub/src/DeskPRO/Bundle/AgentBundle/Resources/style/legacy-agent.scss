@@ -156,7 +156,7 @@
 }
 .ui.menu.topbar {
   border: 0;
-  border-bottom: 3px solid $agent_header_border_color;
+  border-bottom: 3px solid $dp-sonic-primary;
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 
   .pointer {
@@ -164,7 +164,7 @@
   }
   .logo {
     width: 24px;
-    background-color: $agent_header_border_color;
+    background-color: $dp-sonic-primary;
     background-image: url('../img/deskpro_dots_white.svg');
     background-position: center;
     background-size: 24px;
@@ -189,7 +189,7 @@
     padding: 0 20px;
     &:hover {
       &, .icon:hover {
-        color: $agent_header_border_color;
+        color: $dp-sonic-primary;
       }
       .chat {
         color: $dp-greyscale-1000;
@@ -241,6 +241,11 @@
         @include placeholder {
           color: $dp-greyscale-850 !important;
         }
+        &:focus {
+          @include placeholder {
+            color: $dp-greyscale-350 !important;
+          }
+        }
         &:invalid + i.icon.remove {
           display: none;
         }
@@ -265,7 +270,7 @@
     }
   }
   .item:hover #notifications i.icon {
-    color: $agent_header_border_color;
+    color: $dp-sonic-primary;
   }
   .user {
     display: inline-block;
@@ -282,7 +287,7 @@
       color: $dp-greyscale-850;
     }
     .active img.circular {
-      border: solid 2px $agent_header_border_color;
+      border: solid 2px $dp-sonic-primary;
     }
   }
   .chat {
@@ -294,7 +299,7 @@
     text-align: center;
     &:hover {
       .status, i.icon {
-        color: $agent_header_border_color;
+        color: $dp-sonic-primary;
       }
     }
     i.icon {
@@ -318,10 +323,12 @@
       padding: 3px;
       margin-right: 0;
       transition: none;
+      margin-top: -2px;
     }
     .active .button, .button:active {
       box-shadow: 0 -2px 0 #3c82b4;
-      margin-bottom: -2px;
+      margin-top: 2px;
+      padding: 1px 3px 5px;
     }
     &::before {
       width: 0;
@@ -338,22 +345,22 @@
       height: 19px;
     }
     &:hover svg path {
-      fill: $agent_header_border_color;
+      fill: $dp-sonic-primary;
     }
   }
 }
 .ui.popup {
   padding: 0;
-  border-color: $agent_header_border_color;
+  border-color: $dp-sonic-primary;
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   &:before {
-    background: $agent_header_border_color !important;
+    background: $dp-sonic-primary !important;
   }
   .icon {
     padding-left: 0;
   }
   .header {
-    background: $agent_header_border_color;
+    background: $dp-sonic-primary;
     color: $dp-greyscale-50;
     padding: 9px 10px 9px 15px;
     font-size: 14px;
@@ -381,7 +388,7 @@
       &:hover {
         background-color: $dp-morning-sky;
         &, i.icon {
-          color: $agent_header_border_color;
+          color: $dp-sonic-primary;
         }
       }
     }
@@ -414,13 +421,13 @@
       }
       .ui.range {
         &::-webkit-slider-thumb {
-          background-color: $agent_header_border_color;
+          background-color: $dp-sonic-primary;
         }
         &::-moz-range-thumb {
-          background-color: $agent_header_border_color;
+          background-color: $dp-sonic-primary;
         }
         &::-ms-thumb {
-          background-color: $agent_header_border_color;
+          background-color: $dp-sonic-primary;
         }
       }
       i.icon.volume {
@@ -428,6 +435,9 @@
       }
       .department-filter {
         margin-right: 0;
+        &.active, &.active .icon {
+          color: $dp-sonic-primary !important;
+        }
       }
       .ui.avatar.image {
         height: 15px;
