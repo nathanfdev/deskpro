@@ -318,7 +318,7 @@ class SystemErrorHandler
             'errno'             => $errno,
             'errfile'           => $errfile,
             'errline'           => $errline,
-            'build'             => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+            'build'             => self::getDpEnv()->getAppName(),
             'process_log'       => implode("\n", self::$processLog),
             'context_data'      => $context_data,
             'error_time'        => microtime(true),
@@ -574,7 +574,7 @@ class SystemErrorHandler
             'errno'             => $errno,
             'errfile'           => $errfile,
             'errline'           => $errline,
-            'build'             => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+            'build'             => self::getDpEnv()->getAppName(),
             'process_log'       => implode("\n", self::$processLog),
             'context_data'      => $context_data,
             'error_time'        => microtime(true),
@@ -642,7 +642,7 @@ class SystemErrorHandler
             foreach ($extraData as $k => $v) {
                 $str[] = "\t$k: $v\n";
             }
-            $str[] = sprintf("\tBuild: %s\n", defined('DP_BUILD_NUM') ? DP_BUILD_NUM : defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0');
+            $str[] = sprintf("\tBuild: %s\n", @$errinfo['build']);
             if (!empty($errinfo['url'])) {
                 $str[] = sprintf("\tURL: %s\n", $errinfo['url']);
             }
@@ -658,7 +658,7 @@ class SystemErrorHandler
             foreach ($extraData as $k => $v) {
                 $str[] = "\t$k: $v\n";
             }
-            $str[] = sprintf("\tBuild: %s\n", defined('DP_BUILD_NUM') ? DP_BUILD_NUM : defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0');
+            $str[] = sprintf("\tBuild: %s\n", @$errinfo['build']);
             if (!empty($errinfo['url'])) {
                 $str[] = sprintf("\tURL: %s\n", $errinfo['url']);
             }
