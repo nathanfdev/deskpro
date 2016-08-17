@@ -1342,10 +1342,8 @@ class TicketSearchController extends AbstractController
             $vars['display_fields'] = ['date_created', 'department'];
         }
 
-        $macros         = null;
         $ticket_options = null;
         if (!$is_partial) {
-            $macros         = $this->em->getRepository(TicketMacro::class)->getMacrosForPerson($this->person);
             $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
             $ticket_field_defs                      = App::getApi('custom_fields.tickets')->getEnabledFields();
@@ -1418,7 +1416,6 @@ class TicketSearchController extends AbstractController
             'page'                   => $page,
             'pageinfo'               => $pageinfo,
             'per_page'               => $per_page,
-            'macros'                 => $macros,
             'show_flag'              => true,
             'grouped_info'           => $grouped_info,
             'group_by'               => $results_helper->getGroupField(),
@@ -1430,8 +1427,6 @@ class TicketSearchController extends AbstractController
             'load_first'             => $this->in->getBool('load_first'),
             'all_custom_fields'      => $all_custom_fields,
             'user_all_custom_fields' => $user_all_custom_fields,
-            'agent_signature'        => $this->person->getSignature(),
-            'agent_signature_html'   => $this->person->getSignatureHtml(),
         ]);
 
         if ($view_type == 'csv') {
@@ -2074,11 +2069,15 @@ class TicketSearchController extends AbstractController
         $agents      = $this->em->getRepository(Person::class)->getAgents();
         $agent_teams = $this->em->getRepository(Entity\AgentTeam::class)->findAll();
         $brands      = $this->em->getRepository(Brand::class)->findAll();
+        $macros      = $this->em->getRepository(TicketMacro::class)->getMacrosForPerson($this->person);
 
         return $this->render('AgentBundle:TicketSearch:filter-massactions-overlay.html.twig', [
-            'agents'      => $agents,
-            'agent_teams' => $agent_teams,
-            'brands'      => $brands,
+            'agents'               => $agents,
+            'agent_teams'          => $agent_teams,
+            'brands'               => $brands,
+            'macros'               => $macros,
+            'agent_signature'      => $this->person->getSignature(),
+            'agent_signature_html' => $this->person->getSignatureHtml(),
         ]);
     }
 }
