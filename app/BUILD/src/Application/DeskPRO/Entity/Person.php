@@ -1207,16 +1207,7 @@ GroupSequenceProviderInterface
             return $this->first_name;
         } elseif ($this->primary_email) {
             // try to get a nice name from the email address
-            $email      = $this->primary_email->getEmail();
-            list($name) = explode('@', $email, 2);
-
-            $name = str_replace('_', ' ', $name);
-            $name = str_replace('.', ' ', $name);
-            $name = preg_replace('#[ ]{2,}#', ' ', $name); //consec spaces to single space
-
-            $name = Strings::utf8_ucwords($name);
-
-            return $name;
+            return Strings::getNameFromEmail($this->primary_email->getEmail());
         } elseif ($id_fallback) {
             return 'ID-'.$this->id;
         }

@@ -43,6 +43,7 @@ use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
 use Application\DeskPRO\EntityRepository\Helper\IdentityHelper;
 use Doctrine\DBAL\LockMode;
+use Orb\Util\Strings;
 
 class Person extends AbstractEntityRepository
 {
@@ -199,8 +200,6 @@ class Person extends AbstractEntityRepository
      */
     public function getAgentNames($for_ids = null)
     {
-        $names = [];
-
         if ($for_ids && !is_array($for_ids)) {
             $for_ids = [$for_ids];
         }
@@ -210,11 +209,41 @@ class Person extends AbstractEntityRepository
             return [];
         }
 
-        foreach ($this->getAgents() as $agent) {
-            if ($for_ids && !in_array($agent->id, $for_ids)) {
-                continue;
+        $qb = $this->_em->createQueryBuilder();
+        $qb
+            ->select('p.id, p.first_name, p.last_name, p.name, pe.email')
+            ->from(PersonEntity::class, 'p')
+            ->leftJoin('p.primary_email', 'pe')
+            ->where(
+                'p.is_agent = 1',
+                'p.is_disabled = 0',
+                'p.is_deleted = 0'
+            )
+        ;
+
+        if ($for_ids) {
+            $qb->andWhere('p.id IN (:ids)');
+            $qb->setParameter('ids', $for_ids);
+        }
+
+        $agents = $qb->getQuery()->getResult();
+        $names  = [];
+        foreach ($agents as $agent) {
+            if ($agent['first_name'] && $agent['last_name']) {
+                $name = $agent['first_name'].' '.$agent['last_name'];
+            } elseif ($agent['name']) {
+                $name = $agent['name'];
+            } elseif ($agent['last_name']) {
+                $name = $agent['last_name'];
+            } elseif ($agent['name']) {
+                $name = $agent['name'];
+            } elseif ($agent['email']) {
+                $name = Strings::getNameFromEmail($agent['email']);
+            } else {
+                $name = 'ID-'.$agent['id'];
             }
-            $names[$agent->getId()] = $agent->getDisplayName();
+
+            $names[$agent['id']] = $name;
         }
 
         return $names;

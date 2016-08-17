@@ -2716,4 +2716,20 @@ class Strings
 
         return $arr;
     }
+
+    /**
+     * @param string $email
+     *
+     * @return string
+     */
+    public static function getNameFromEmail($email)
+    {
+        list($name) = explode('@', $email, 2);
+
+        $name = str_replace('_', ' ', $name);
+        $name = str_replace('.', ' ', $name);
+        $name = preg_replace('#[ ]{2,}#', ' ', $name); //consec spaces to single space
+
+        return self::utf8_ucwords($name);
+    }
 }
