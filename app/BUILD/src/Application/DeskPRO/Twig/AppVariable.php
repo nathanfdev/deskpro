@@ -42,6 +42,11 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
     private $container;
 
     /**
+     * @var array
+     */
+    private $cache = [];
+
+    /**
      * @deprecated since version 2.7, to be removed in 3.0
      */
     public function setContainer(ContainerInterface $container)
@@ -278,9 +283,18 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
         return $this->container->get('templating.globals')->getBuildTime();
     }
 
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
     public function isAppInstalled($name)
     {
-        return $this->container->get('templating.globals')->isAppInstalled($name);
+        if (!isset($this->cache[__METHOD__][$name])) {
+            $this->cache[__METHOD__][$name] = $this->container->get('templating.globals')->isAppInstalled($name);
+        }
+
+        return $this->cache[__METHOD__][$name];
     }
 
     public function getAppService($name)

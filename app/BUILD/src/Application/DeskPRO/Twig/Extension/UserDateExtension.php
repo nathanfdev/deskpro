@@ -73,6 +73,9 @@ class UserDateExtension extends \Twig_Extension
         return 'deskpro_userdate';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getFilters()
     {
         return [
