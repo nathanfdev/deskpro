@@ -4,6 +4,10 @@ api_routes:
     resource: "@ApiBundle/Resources/config/routing_api.yml"
     prefix: /api/v2
 
+system_routes:
+    resource: "@SystemBundle/Resources/config/routing.yml"
+    prefix: /sys
+
 portal_routes:
     resource: "@PortalBundle/Resources/config/routing_portal.yml"
 

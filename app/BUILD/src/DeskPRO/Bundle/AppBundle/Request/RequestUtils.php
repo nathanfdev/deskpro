@@ -68,4 +68,16 @@ class RequestUtils
     {
         return $request->attributes->has('_dp_is_portal_api');
     }
+
+    /**
+     * Checks if the request is a system request.
+     *
+     * @param Request $request
+     *
+     * @return bool
+     */
+    public static function isSysRequest(Request $request)
+    {
+        return stripos($request->getRequestUri(), '/sys/') === 0;
+    }
 }
