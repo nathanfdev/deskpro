@@ -57,4 +57,16 @@ class StorybookController extends Controller
             ['Content-Type' => stripos(strrev($path), strrev('.js')) === 0 ? 'application/javascript' : 'text/html']
         );
     }
+
+    /**
+     * @Route("/ui/assets-path")
+     */
+    public function assetsPathAction()
+    {
+        /** @var \DeskPRO\Bundle\PortalBundle\Designer\AssetsManager $assets */
+        $assets = $this->get('templating.email.twig.extension.assets');
+        $path   = $assets->getAssetUrl('', 'app_assets');
+
+        return new Response($path);
+    }
 }
