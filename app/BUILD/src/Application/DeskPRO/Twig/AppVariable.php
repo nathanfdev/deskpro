@@ -107,7 +107,11 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
 
     public function getSetting($name)
     {
-        return $this->container->get('templating.globals')->getSetting($name);
+        if (!isset($this->cache[__METHOD__][$name])) {
+            $this->cache[__METHOD__][$name] = $this->container->get('templating.globals')->getSetting($name);
+        }
+
+        return $this->cache[__METHOD__][$name];
     }
 
     public function getSettingDefaultGroup($id)
