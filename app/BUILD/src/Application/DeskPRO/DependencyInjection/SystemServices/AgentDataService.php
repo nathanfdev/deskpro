@@ -517,28 +517,38 @@ class AgentDataService
 
     /**
      * @param int|\Application\DeskPRO\Entity\Person $agent
+     * @param bool                                   $forceAgentData
      *
      * @throws \InvalidArgumentException
      *
      * @return \Application\DeskPRO\Entity\AgentTeam[]
      */
-    public function getGroupIdsForAgent($agent)
+    public function getGroupIdsForAgent($agent, $forceAgentData = false)
     {
-        $this->preload();
-        $this->preloadTeamMap();
+        $aid = is_object($agent) ? $agent->getId() : $agent;
 
-        $aid   = is_object($agent) ? $agent->getId() : $agent;
-        $agent = $this->get($aid);
+        if ($forceAgentData) {
+            return $this->db->fetchAllCol('
+                SELECT usergroup_id
+                FROM person2usergroups
+                WHERE person_id = ?
+            ', [$aid]);
+        } else {
+            $this->preload();
+            $this->preloadTeamMap();
 
-        if (!$agent) {
-            throw new \InvalidArgumentException();
+            $agent = $this->get($aid);
+
+            if (!$agent) {
+                throw new \InvalidArgumentException();
+            }
+
+            if (empty($this->agent_to_groups[$agent->getId()])) {
+                return [];
+            }
+
+            return $this->agent_to_groups[$agent->getId()];
         }
-
-        if (empty($this->agent_to_groups[$agent->getId()])) {
-            return [];
-        }
-
-        return $this->agent_to_groups[$agent->getId()];
     }
 
     /**

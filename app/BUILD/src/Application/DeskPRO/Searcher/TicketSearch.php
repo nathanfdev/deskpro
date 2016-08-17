@@ -900,7 +900,7 @@ class TicketSearch extends SearcherAbstract
             // Cant view anything else:
             // -> No departments
             // -> Or if you cant view unassigned and cant view others, then that leaves nothing (the 'always' perm above will get your own still)
-            if (!$this->person->getAllowedDepartments() || (!$this->person->hasPerm('agent_tickets.view_unassigned') && !$this->person->hasPerm('agent_tickets.view_others'))) {
+            if (!$this->person->getAllowedDepartments('tickets', true) || (!$this->person->hasPerm('agent_tickets.view_unassigned') && !$this->person->hasPerm('agent_tickets.view_others'))) {
                 $where_perm[] = '0';
             } else {
                 if ($this->person->getDisallowedDepartments()) {

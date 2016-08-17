@@ -137,10 +137,11 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
      * Get an array of departments the user is allowed to see.
      *
      * @param string $context
+     * @param bool   $forceAgentData
      *
      * @return array
      */
-    public function getAllowedDepartments($context = 'tickets')
+    public function getAllowedDepartments($context = 'tickets', $forceAgentData = false)
     {
         if ($this->_allowed_ids !== null) {
             if (!isset($this->_allowed_ids[$context])) {
@@ -154,7 +155,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
         $agent_data   = App::$container->getAgentData();
 
         try {
-            $uids = $agent_data->getGroupIdsForAgent($this->person);
+            $uids = $agent_data->getGroupIdsForAgent($this->person, $forceAgentData);
         } catch (\InvalidArgumentException $e) {
             $uids = [];
         }

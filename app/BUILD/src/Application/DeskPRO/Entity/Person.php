@@ -1137,6 +1137,17 @@ GroupSequenceProviderInterface
         return $this->organization;
     }
 
+    /**
+     * @param string $context
+     * @param bool   $forceAgentData
+     *
+     * @return array
+     */
+    public function getAllowedDepartments($context = 'tickets', $forceAgentData = false)
+    {
+        return $this->_onNotCallable('getalloweddepartments', [$context, $forceAgentData]);
+    }
+
     protected function _onNotCallable($name, $arguments)
     {
         if ($this->_helper_manager) {
