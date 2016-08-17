@@ -103,7 +103,7 @@ class CleanCommand extends ContainerAwareCommand
         $table->setStyle('borderless');
         $table->addRow([
             'Database',
-            sprintf("DB Name: %s\n<comment>This database will be dropped.</comment>", $dpEnv->getConfig('database.dbname')),
+            sprintf("DB Name: %s\n<comment>All tables in this database will be dropped.</comment>", $dpEnv->getConfig('database.dbname')),
         ]);
         $rmPaths = [];
         foreach ($dirs as $id => $d) {
@@ -167,24 +167,16 @@ class CleanCommand extends ContainerAwareCommand
 
         $pdo = \DpRun\LowUtil::getPdoFromMysqlInfo($dpEnv->getConfig('database'));
 
-        $output->write("Dropping database $dbName ... ");
-        try {
-            $pdo->exec("DROP DATABASE `$dbName`");
-            $output->writeln('OK');
-        } catch (\Exception $e) {
-            $output->writeln('Failed: '.$e->getMessage());
-            $output->write("Fallback: Dropping all tables in $dbName ");
+        $output->write("Deleting tables in database $dbName ... ");
+        $q      = $pdo->prepare('SHOW TABLES');
+        $tables = $q->fetchAll(\PDO::FETCH_COLUMN);
 
-            $q      = $pdo->prepare('SHOW TABLES');
-            $tables = $q->fetchAll(\PDO::FETCH_COLUMN);
-
-            $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
-            foreach ($tables as $t) {
-                $pdo->exec("DROP TABLE `$t`");
-                $output->write('.');
-            }
-            $output->writeln(' OK');
+        $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
+        foreach ($tables as $t) {
+            $pdo->exec("DROP TABLE `$t`");
+            $output->write('.');
         }
+        $output->writeln(' OK');
 
         $fs = new Filesystem();
 
