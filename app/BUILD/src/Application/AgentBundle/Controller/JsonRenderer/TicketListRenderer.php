@@ -279,7 +279,7 @@ class TicketListRenderer
 
                 case 'agent':
                     $agent     = $ticket->getAgent();
-                    $agentData = $this->container->getAgentData()->get($agent->getId());
+                    $agentData = $this->ticket_display->getAgent($ticket);
 
                     $data['agent'] = $agentData ? $this->renderPerson($agentData) : null;
 

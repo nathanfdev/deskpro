@@ -495,14 +495,10 @@ class TicketResultsDisplay implements PersonContextInterface
 
         $extra_people     = [];
         $extra_people_ids = [];
-        $agent_data       = App::$container->getAgentData();
+
         foreach ($message_data as $m) {
             if (!isset($this->people[$m['person_id']])) {
-                if ($agent_data->has($m['person_id'])) {
-                    $extra_people[$m['person_id']] = $agent_data->get($m['person_id']);
-                } else {
-                    $extra_people_ids[] = $m['person_id'];
-                }
+                $extra_people_ids[] = $m['person_id'];
             }
         }
         if ($extra_people_ids) {
