@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -71,7 +67,9 @@ class Tickets
         $options = [];
 
         if ($person['is_agent']) {
-            $options['agents'] = App::getDataService('Person')->getAgentNames();
+            /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
+            $personRepo        = App::getOrm()->getRepository(Entity\Person::class);
+            $options['agents'] = $personRepo->getAgentNames();
 
             if (App::getSetting('core.use_agent_team')) {
                 $options['agent_teams'] = App::getDataService('AgentTeam')->getTeamNames();

@@ -1197,17 +1197,17 @@ GroupSequenceProviderInterface
      */
     public function getDisplayName($id_fallback = true)
     {
-        if ($this['first_name'] and $this['last_name']) {
-            return $this['first_name'].' '.$this['last_name'];
-        } elseif ($this['name']) {
-            return $this['name'];
-        } elseif ($this['last_name']) {
-            return $this['last_name'];
-        } elseif ($this['first_name']) {
-            return $this['first_name'];
-        } elseif ($this['primary_email']) {
+        if ($this->first_name and $this->last_name) {
+            return $this->first_name.' '.$this->last_name;
+        } elseif ($this->name) {
+            return $this->name;
+        } elseif ($this->last_name) {
+            return $this->last_name;
+        } elseif ($this->first_name) {
+            return $this->first_name;
+        } elseif ($this->primary_email) {
             // try to get a nice name from the email address
-            $email      = $this['primary_email']['email'];
+            $email      = $this->primary_email->getEmail();
             list($name) = explode('@', $email, 2);
 
             $name = str_replace('_', ' ', $name);
@@ -1218,7 +1218,7 @@ GroupSequenceProviderInterface
 
             return $name;
         } elseif ($id_fallback) {
-            return 'ID-'.$this['id'];
+            return 'ID-'.$this->id;
         }
 
         return;
