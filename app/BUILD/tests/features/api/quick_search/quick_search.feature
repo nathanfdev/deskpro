@@ -3,7 +3,8 @@ Feature: Quick Search
   Doctrine search adapter
 
   Background:
-    Given I'm authenticated as "admin"
+    Given there are no "Person" records
+    And I'm authenticated as "admin"
     And the setting "elastica.enabled" is set to 0
     And I set permission "articles.use" = 1 for "registered" usergroup
     And I set permission "downloads.use" = 1 for "registered" usergroup
