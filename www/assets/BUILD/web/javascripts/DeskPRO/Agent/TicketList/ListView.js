@@ -1,4 +1,4 @@
-Orb.createNamespace('DeskPRO.Agent.PageHelper');
+Orb.createNamespace('DeskPRO.Agent.TicketList');
 
 DeskPRO.Agent.TicketList.ListView = new Orb.Class({
 	Implements: [Orb.Util.Events, Orb.Util.Options],
