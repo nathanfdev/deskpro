@@ -34,7 +34,11 @@
             <tr>
                 <td>{{ exception.getDateCreated()|date }}</td>
                 <td>{{ exception.getMessage() }}</td>
-                <td><textarea cols="100" rows="10">{{ dump(exception.getTrace()) }}</textarea></td>
+                <td>
+                    <textarea cols="80" rows="10" title="Stack trace">
+                        {{ exception.getTraceAsString() }}
+                    </textarea>
+                </td>
             </tr>
         {% endfor %}
     </table>
