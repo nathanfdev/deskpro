@@ -55,6 +55,7 @@ use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
+use Application\DeskPRO\Tickets\TicketResultsDisplay;
 use Application\DeskPRO\UI\RuleBuilder;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
@@ -1294,6 +1295,7 @@ class TicketSearchController extends AbstractController
             $cursor = 0;
         }
 
+        /** @var Ticket[] $tickets */
         $tickets = [];
 
         if (!$this->in->checkIsset('grouping_option') || $this->in->getString('grouping_option') == '-1' || $this->in->getString('grouping_option') == 'DP_NOT_SET') {
@@ -1385,19 +1387,19 @@ class TicketSearchController extends AbstractController
             $field_manager      = $this->container->getSystemService('ticket_fields_manager');
             $user_field_manager = $this->container->getSystemService('person_fields_manager');
 
-            foreach ($tickets as $t) {
+            foreach ($tickets as $ticket) {
                 if ($has_t_fields) {
-                    $all_custom_fields[$t->id] = $field_manager->getDisplayArrayForObject($t);
+                    $all_custom_fields[$ticket->getId()] = $field_manager->getDisplayArrayForObject($ticket);
                 }
 
                 if ($has_u_fields) {
-                    $p                              = $t->person;
-                    $user_all_custom_fields[$p->id] = $user_field_manager->getDisplayArrayForObject($p);
+                    $person                                   = $ticket->getPerson();
+                    $user_all_custom_fields[$person->getId()] = $user_field_manager->getDisplayArrayForObject($person);
                 }
             }
         }
 
-        $ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
+        $ticket_display = new TicketResultsDisplay($tickets);
         $ticket_display->setPersonContext($this->person);
 
         $json_renderer = new TicketListRenderer($ticket_display);
