@@ -120,14 +120,16 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
     /**
      * @param \Application\DeskPRO\Entity\Person $person
+     * @param array                              $options
      */
-    public function __construct(Person $person)
+    public function __construct(Person $person, array $options = null)
     {
         $this->person = $person;
         $personId     = $person->getId();
         $agent_data   = App::$container->getAgentData();
+        $forceLoadUg  = isset($options['force_load_usergroups']) && $options['force_load_usergroups'];
 
-        if ($agent_data->has($personId)) {
+        if (!$forceLoadUg && $agent_data->has($personId)) {
             $this->usergroup_ids = $agent_data->getGroupIdsForAgent($person);
         } else {
             $this->usergroup_ids = App::getDb()->fetchAllCol('
