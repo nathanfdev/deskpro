@@ -82,6 +82,9 @@ class Person extends AbstractEntityRepository
         return $this->identity_helper;
     }
 
+    /**
+     * @return \Application\DeskPRO\Entity\Person[]
+     */
     public function getAgents()
     {
         if (($agents = $this->getIdentityHelper()->getCollection('agents')) === null) {

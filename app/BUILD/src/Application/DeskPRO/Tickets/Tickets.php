@@ -46,21 +46,17 @@ class Tickets
      */
     public function getTicketsFromIds(array $ids)
     {
-        return App::getOrm()
-            ->getRepository('DeskPRO:Ticket')
-            ->getTicketsFromIds($ids);
+        return App::getOrm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ids);
     }
 
     /**
-     * @param Ticket $ticket
+     * @param Entity\Ticket $ticket
      *
      * @return TicketEdit
      */
     public function getTicketEditor(Entity\Ticket $ticket)
     {
-        $ticket_edit = new TicketEdit($ticket);
-
-        return $ticket_edit;
+        return new TicketEdit($ticket);
     }
 
     /**
