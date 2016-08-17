@@ -5,6 +5,7 @@ import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
 import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';
+import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 import uniqueId from 'lodash/utility/uniqueId';
 import $ from 'jquery';
 
@@ -46,8 +47,10 @@ export class PortalRte extends React.Component {
   };
 
   onUploadSubmit = (event, data) => {
-    if (data.files[0].type.indexOf('image') === -1) {
-      window.alert('Allowed images only.');
+    const { $textarea } = this.props;
+    const file = data.files[0];
+    if (file.type.indexOf('image') === -1) {
+      pageWidgetEmitter.emit('rteFileUpload', file, $textarea);
       return false;
     }
 
