@@ -241,5 +241,11 @@ services:
     tags:
       - { name: twig.extension }
 
+  jms_serializer_cache_warmer:
+    class: DeskPRO\Bundle\AppBundle\CacheWarmer\JmsSerializerCacheWarmer
+    arguments: ["@jms_serializer.metadata_factory"]
+    tags:
+      - { name: 'kernel.cache_warmer' }
+
 parameters:
   fos_rest.view_handler.default.class: "DeskPRO\Bundle\AppBundle\Serializer\ViewHandler"

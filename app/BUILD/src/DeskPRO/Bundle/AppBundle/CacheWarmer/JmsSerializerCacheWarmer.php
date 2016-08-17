@@ -28,25 +28,25 @@
 
 namespace DeskPRO\Bundle\AppBundle\CacheWarmer;
 
-use DeskPRO\Bundle\AppBundle\ApiTag\TagsCollector;
+use Gnugat\NomoSpaco\File\FileRepository;
+use Gnugat\NomoSpaco\FqcnRepository;
+use Gnugat\NomoSpaco\Token\ParserFactory;
+use Metadata\MetadataFactoryInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 /**
- * Class ActionPermissionsCacheWarmer.
+ * Class JmsSerializerCacheWarmer.
  */
-class ActionPermissionsCacheWarmer implements CacheWarmerInterface
+class JmsSerializerCacheWarmer implements CacheWarmerInterface
 {
-    /**
-     * @var \DeskPRO\Bundle\AppBundle\ApiTag\TagsCollector
-     */
-    protected $tagsCollector;
+    private $metadataFactory;
 
     /**
-     * @param TagsCollector $tagsCollector
+     * @param MetadataFactoryInterface $metadataFactory
      */
-    public function __construct(TagsCollector $tagsCollector)
+    public function __construct(MetadataFactoryInterface $metadataFactory)
     {
-        $this->tagsCollector = $tagsCollector;
+        $this->metadataFactory = $metadataFactory;
     }
 
     /**
@@ -54,7 +54,24 @@ class ActionPermissionsCacheWarmer implements CacheWarmerInterface
      */
     public function warmUp($cacheDir)
     {
-        $this->tagsCollector->collectTags(true);
+        $fqcnRepo = new FqcnRepository(new FileRepository(), new ParserFactory());
+
+        $dirs = [
+            DP_ROOT.'/src/Application/DeskPRO/Entity',
+            DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Entity',
+            DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Serializer/Model',
+        ];
+
+        foreach ($dirs as $dir) {
+            $fqcns = @$fqcnRepo->findIn($dir);
+            foreach ($fqcns as $fqcn) {
+                try {
+                    $this->metadataFactory->getMetadataForClass($fqcn);
+                } catch (\ReflectionException $e) {
+                    // TODO: we should dive into FQCN to know why it return directories as FQCN.
+                }
+            }
+        }
     }
 
     /**
