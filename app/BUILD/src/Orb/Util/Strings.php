@@ -989,6 +989,11 @@ class Strings
      */
     public static function getInputRegexPattern($input)
     {
+        // empty line
+        if (!strlen($input)) {
+            return false;
+        }
+
         // Might be missing delims
         if (@preg_match($input, 'test') === false) {
             $input = '/'.str_replace('/', '\\/', $input).'/';
