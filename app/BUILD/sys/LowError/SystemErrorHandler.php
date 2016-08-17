@@ -30,6 +30,7 @@ namespace DpSys\LowError;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
@@ -115,7 +116,8 @@ class SystemErrorHandler
     ####################################################################################################################
 
     /**
-     * Handle logging of an exception.
+     * Handle an exception that has bubbled all the way to the top.
+     * Usually it'll be caught by an event handler so this isn't normally displayed.
      *
      * @param \Exception $exception
      */
@@ -132,11 +134,45 @@ class SystemErrorHandler
 
         self::$isHandlingException = false;
 
+        $message = 'An server error occurred.';
+        $info    = 'Refer to the error log for full details (var/logs/error.log inside of the root DeskPRO directory).';
+
+        if ($exception instanceof \PDOException) {
+            $message = 'A database error occurred.';
+        }
+
         if (php_sapi_name() === 'cli') {
+
+            // on the cli we can give actual path without any security concerns
+            $info = 'Refer to the error log for full details: '.self::getDpEnv()->getUserLogsDir();
+
+            echo $message;
+            echo "\n";
+            echo $info;
+
             exit(255);
         } else {
+            if (!headers_sent()) {
+                header('Content-Type: text/plain');
+            }
             http_response_code(Response::HTTP_BAD_REQUEST);
-            echo 'An error occurred. Please, try again later';
+            echo $message;
+
+            if (!defined('DPC_IS_CLOUD')) {
+                /** @var Request $req */
+                if ($req = self::getDpEnv()->getRuntimeVar('request', null)) {
+                    $uri = $req->getPathInfo();
+                } else {
+                    $uri = @$_SERVER['REQUEST_URI'] ?: '';
+                }
+
+                // Show message about the error log if its agent/admin
+                if (strpos($uri, '/api/') === 0 || strpos($uri, '/agent/') === 0 || strpos($uri, '/admin/') === 0) {
+                    echo "\n";
+                    echo $info;
+                }
+            }
+
             exit(0);
         }
     }

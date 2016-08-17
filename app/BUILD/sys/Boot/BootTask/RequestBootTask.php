@@ -43,6 +43,8 @@ class RequestBootTask implements BootTaskInterface
             define('DP_REQUEST_URL', $request->getUri());
         }
 
+        $env->setRuntimeVar('request', $request);
+
         return [
             'request' => $request,
         ];
