@@ -114,6 +114,11 @@ class TicketController extends AbstractController
     // view
     //###########################################################################
 
+    /**
+     * @param int $ticket_id
+     *
+     * @return Response
+     */
     public function viewAction($ticket_id)
     {
         $isPdf    = $this->in->getBool('pdf');
@@ -121,7 +126,7 @@ class TicketController extends AbstractController
 
         try {
             $ticket = $this->getTicketOr404($ticket_id);
-        } catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+        } catch (NotFoundHttpException $e) {
             // try to find a delete log
             $delete_log = $this->em->getRepository(TicketDeleted::class)->findOneBy(['ticket_id' => $ticket_id]);
             if ($delete_log) {
@@ -138,6 +143,11 @@ class TicketController extends AbstractController
             $ticket_attachments = [];
         }
 
+        $organization = null;
+        if ($ticket->getPerson()) {
+            $organization = $ticket->getPerson()->getOrganization();
+        }
+
         //------------------------------
         // Custom fields
         //------------------------------
@@ -152,10 +162,10 @@ class TicketController extends AbstractController
 
         $custom_fields        = $field_manager->getDisplayArrayForObject($ticket);
         $person_fields_group  = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
-        $custom_person_fields = $person_field_manager->getDisplayArrayForObject($ticket->person, $person_fields_group);
+        $custom_person_fields = $person_field_manager->getDisplayArrayForObject($ticket->getPerson(), $person_fields_group);
         $org_fields_group     = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
-        $custom_org_fields    = $ticket->person->organization
-            ? $org_field_manager->getDisplayArrayForObject($ticket->person->organization, $org_fields_group)
+        $custom_org_fields    = $organization
+            ? $org_field_manager->getDisplayArrayForObject($organization, $org_fields_group)
             : [];
 
         if (App::getSetting('core_tickets.enable_billing') || App::getSetting('core_tickets.enable_timelog')) {
@@ -171,12 +181,12 @@ class TicketController extends AbstractController
         // new custom fields
         $new_field_manager = $this->container->getCustomFieldManager();
         $new_custom_fields = $new_field_manager->createFormForOwner(
-            $ticket, $ticket->person, null, ['allow_edit' => true]
+            $ticket, $ticket->getPerson(), null, ['allow_edit' => true]
         );
-        if ($org = $ticket->person->organization) {
+        if ($organization) {
             $new_field_manager->merge(
                 $new_custom_fields,
-                $new_field_manager->createFormForOwner($ticket, $org, null, ['allow_edit' => true])
+                $new_field_manager->createFormForOwner($ticket, $organization, null, ['allow_edit' => true])
             );
         }
 
@@ -201,18 +211,22 @@ class TicketController extends AbstractController
         // Check if the search adapter
         $show_related_content = false;
 
-        $participants = $ticket->participants;
+        $participants = $ticket->getParticipants();
 
         $participant_ids = [];
         $agent_parts     = [];
         $user_parts      = [];
 
-        foreach ($participants as $p) {
-            $participant_ids[$p->person->getId()] = $p->person->id;
-            if ($p->person->is_agent) {
-                $agent_parts[$p->person->getId()] = $p;
+        foreach ($participants as $participant) {
+            $participantPerson   = $participant->getPerson();
+            $participantPersonId = $participantPerson->getId();
+
+            $participant_ids[$participantPersonId] = $participantPersonId;
+
+            if ($participantPerson->isAgent()) {
+                $agent_parts[$participantPersonId] = $participant;
             } else {
-                $user_parts[$p->person->getId()] = $p;
+                $user_parts[$participantPersonId] = $participant;
             }
         }
 
@@ -244,20 +258,30 @@ class TicketController extends AbstractController
             $ticket_api[$key] = $ticket->$key;
         }
 
-        foreach ([
-                     'date_created', 'date_resolved', 'date_archived', 'date_first_agent_assign',
-                     'date_first_agent_reply', 'date_last_agent_reply', 'date_last_user_reply',
-                     'date_agent_waiting', 'date_user_waiting', 'date_status', 'date_locked',
-                 ] as $date_key) {
+        $dateProps = [
+            'date_created',
+            'date_resolved',
+            'date_archived',
+            'date_first_agent_assign',
+            'date_first_agent_reply',
+            'date_last_agent_reply',
+            'date_last_user_reply',
+            'date_agent_waiting',
+            'date_user_waiting',
+            'date_status',
+            'date_locked',
+        ];
+
+        foreach ($dateProps as $date_key) {
             if ($ticket->$date_key instanceof \DateTime) {
                 $ticket_api[$date_key] = $ticket->$date_key->getTimestamp();
             }
         }
 
-        $ticket_api['person'] = $ticket->person->getDataForWidget();
+        $ticket_api['person'] = $ticket->getPerson()->getDataForWidget();
 
-        if ($ticket->agent) {
-            $ticket_api['agent'] = $ticket->agent->getDataForWidget();
+        if ($ticket->getAgent()) {
+            $ticket_api['agent'] = $ticket->getAgent()->getDataForWidget();
         }
 
         foreach ([
@@ -272,12 +296,12 @@ class TicketController extends AbstractController
                 $ticket_api[$key] = ['id' => $ticket->$key->id, $title_field => $ticket->$key->$title_field];
             }
         }
-        if ($ticket->product) {
-            $ticket_api['product'] = $ticket->product->toApiData();
+        if ($ticket->getProduct()) {
+            $ticket_api['product'] = $ticket->getProduct()->toApiData();
         }
-        if (count($ticket->labels)) {
+        if (count($ticket->getLabels())) {
             $ticket_api['labels'] = [];
-            foreach ($ticket->labels as $label) {
+            foreach ($ticket->getLabels() as $label) {
                 $ticket_api['labels'][] = $label['label'];
             }
         }
@@ -290,19 +314,19 @@ class TicketController extends AbstractController
             ];
         }
 
-        $draft = $this->em->getRepository(Draft::class)->getDraft('ticket', $ticket->id);
+        $draft = $this->em->getRepository(Draft::class)->getDraft('ticket', $ticket->getId());
         if ($draft && !empty($draft->extras['attach'])) {
             $draft_attachments = $this->em->getRepository(Blob::class)->getByIds($draft->extras['attach'], true);
         } else {
             $draft_attachments = [];
         }
 
-        $active_drafts = $this->em->getRepository(Draft::class)->getActiveDrafts('ticket', $ticket->id);
-        unset($active_drafts[$this->person->id]);
+        $active_drafts = $this->em->getRepository(Draft::class)->getActiveDrafts('ticket', $ticket->getId());
+        unset($active_drafts[$this->person->getId()]);
 
         $edit_person = $this->person->hasPerm('agent_people.edit');
         if ($edit_person) {
-            if (!$this->person->can_admin && $ticket->person->is_agent && $ticket->person->getId() != $this->person->getId()) {
+            if (!$this->person->canAdmin() && $ticket->getPerson()->isAgent() && $ticket->getPerson() !== $this->person) {
                 $edit_person = false;
             }
         }
@@ -346,16 +370,17 @@ class TicketController extends AbstractController
             'count'    => 0,
         ];
 
-        if ($ticket->parent_ticket && $ticket->parent_ticket->status != 'hidden' && $this->checkPerm($ticket->parent_ticket, 'view')) {
-            $linked_tickets['parent'] = $ticket->parent_ticket;
+        $parentTicket = $ticket->getParentTicket();
+        if ($parentTicket && $parentTicket->getStatus() !== 'hidden' && $this->checkPerm($parentTicket, 'view')) {
+            $linked_tickets['parent'] = $parentTicket;
 
             // Find siblings
             $linked_tickets['siblings'] = $this->permCheckArray(
-                $this->em->getRepository(Ticket::class)->getLinkedTickets($ticket->parent_ticket),
+                $this->em->getRepository(Ticket::class)->getLinkedTickets($parentTicket),
                 'view'
             );
             $linked_tickets['siblings'] = array_filter($linked_tickets['siblings'], function ($t) use ($ticket) {
-                if ($t->id == $ticket->id) {
+                if ($t->id == $ticket->getId()) {
                     return false;
                 } else {
                     return true;
@@ -449,7 +474,7 @@ class TicketController extends AbstractController
             'agent_signature_html' => $this->person->getSignatureHtml(),
 
             'addable_slas'         => $addable_slas,
-            'person_object_counts' => $this->em->getRepository(Person::class)->getPersonObjectCounts($ticket->person),
+            'person_object_counts' => $this->em->getRepository(Person::class)->getPersonObjectCounts($ticket->getPerson()),
             'open_problems'        => $open_problems,
             'incidents'            => $incidents,
         ];
