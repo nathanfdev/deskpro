@@ -278,11 +278,14 @@ class TicketListRenderer
                     break;
 
                 case 'agent':
-                    $data['agent'] = $this->container->getAgentData()->has($ticket->agent->getId()) ? $this->renderPerson($this->container->getAgentData()->get($ticket->agent->getId())) : null;
+                    $agent     = $ticket->getAgent();
+                    $agentData = $this->container->getAgentData()->get($agent->getId());
+
+                    $data['agent'] = $agentData ? $this->renderPerson($agentData) : null;
 
                     // Deleted agent, render from the related object
-                    if ($ticket->agent && !$data['agent']) {
-                        $data['agent'] = $this->renderPerson($ticket->agent);
+                    if ($agent && !$data['agent']) {
+                        $data['agent'] = $this->renderPerson($agent);
                     }
                     break;
 

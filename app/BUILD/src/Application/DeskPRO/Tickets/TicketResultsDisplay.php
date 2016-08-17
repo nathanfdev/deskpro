@@ -431,11 +431,9 @@ class TicketResultsDisplay implements PersonContextInterface
      */
     public function getPerson(Ticket $ticket)
     {
-        if (!$ticket->person) {
-            return;
-        }
+        $person = $ticket->getPerson();
 
-        return $this->people[$ticket->person->getId()];
+        return $person ? $this->people[$person->getId()] : null;
     }
 
     /**
@@ -445,11 +443,9 @@ class TicketResultsDisplay implements PersonContextInterface
      */
     public function getAgent(Ticket $ticket)
     {
-        if (!$ticket->agent) {
-            return;
-        }
+        $agent = $ticket->getAgent();
 
-        return $this->people[$ticket->agent->getId()];
+        return $agent ? $this->people[$agent->getId()] : null;
     }
 
     /**
