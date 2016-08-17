@@ -392,7 +392,7 @@ return [
     'portal.flashes.article_cat_subscribe'                  => 'You have successfully subscribed to this category. You will be notified when new articles are posted.',
     'portal.flashes.article_cat_unsubscribe'                => 'You have successfully unsubscribed from this category.',
     'portal.flashes.article_subscribe'                      => 'You have successfully subscribed to this article. You will be notified when it is updated or when there is a new comment.',
-    'portal.flashes.article_unsubscribe'                    => 'You have uccessfully unsubscribed from this article.',
+    'portal.flashes.article_unsubscribe'                    => 'You have successfully unsubscribed from this article.',
     'portal.flashes.article_unsubscribe_everything'         => 'You have unsubscribed from all Knowledgebase notifications',
     'portal.flashes.comment_thank_you'                      => 'Thank you for your comment!',
     'portal.flashes.comment_thank_you_review'               => 'Thank you for your comment! It will be visible on the portal after agent review.',
