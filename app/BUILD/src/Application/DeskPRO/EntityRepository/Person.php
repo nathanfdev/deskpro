@@ -211,7 +211,18 @@ class Person extends AbstractEntityRepository
 
         $qb = $this->_em->createQueryBuilder();
         $qb
-            ->select('p.id, p.first_name, p.last_name, p.name, pe.email')
+            ->select(
+                'p.id',
+                "(CASE
+                    WHEN (p.first_name IS NOT NULL AND p.last_name IS NOT NULL) THEN CONCAT(p.first_name, ' ', p.first_name)
+                    WHEN p.name IS NOT NULL THEN p.name
+                    WHEN p.last_name IS NOT NULL THEN p.last_name
+                    WHEN p.first_name IS NOT NULL THEN p.first_name
+                    ELSE ''
+                END) as name
+                ",
+                'pe.email'
+            )
             ->from(PersonEntity::class, 'p')
             ->leftJoin('p.primary_email', 'pe')
             ->where(
@@ -229,13 +240,7 @@ class Person extends AbstractEntityRepository
         $agents = $qb->getQuery()->getResult();
         $names  = [];
         foreach ($agents as $agent) {
-            if ($agent['first_name'] && $agent['last_name']) {
-                $name = $agent['first_name'].' '.$agent['last_name'];
-            } elseif ($agent['name']) {
-                $name = $agent['name'];
-            } elseif ($agent['last_name']) {
-                $name = $agent['last_name'];
-            } elseif ($agent['name']) {
+            if ($agent['name']) {
                 $name = $agent['name'];
             } elseif ($agent['email']) {
                 $name = Strings::getNameFromEmail($agent['email']);
