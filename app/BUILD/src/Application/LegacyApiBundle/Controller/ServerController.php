@@ -194,6 +194,7 @@ class ServerController extends AbstractController implements ProtectedController
 
         return $this->createApiResponse(
             array(
+                 'path'              => $this->container->get('deskpro.app_env')->getUserLogsDir(),
                  'server_error_logs' => $server_error_logs->getAll(),
             )
         );
