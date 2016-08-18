@@ -311,9 +311,9 @@
 										{{ phrase('agent.general.me') }}
 									</option>
 								{% endif %}
-								{% for agent in agents %}
+								{% for agent in app.getAgentData().getSelectboxList() %}
 									{% if agent.id != app.user.id and ticket_perms.modify_assign_agent %}
-										<option {% if (keep_assign and not ticket_perms.modify_assign_self and ticket.agent.id == agent.id) or (not keep_assign and agent.id == app.user.id) %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(15) }}" data-name-short="{{ agent.getDisplayContactShort(3) }}" value="{{ agent.id }}">
+										<option {% if (keep_assign and not ticket_perms.modify_assign_self and ticket.agent.id == agent.id) or (not keep_assign and agent.id == app.user.id) %}selected="selected"{% endif %} data-icon="{{ agent.picture_url_20 }}" data-name-short="{{ agent.display_name }}" value="{{ agent.id }}">
 											{{ agent.display_name }}
 										</option>
 									{% endif %}
